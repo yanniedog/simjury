@@ -68,9 +68,9 @@ jobs:
           chmod +x gradlew
           ./gradlew test --console=plain
 
-      - name: Set up Android SDK
+      - name: Set up Android SDK (build-only)
         if: hashFiles('pilot/app/**') != ''
-        uses: android-actions/setup-android@v3
+        run: bash .github/scripts/setup-android-sdk.sh pilot/local.properties
 
       - name: Assemble Android debug APK
         if: hashFiles('pilot/app/**') != ''
