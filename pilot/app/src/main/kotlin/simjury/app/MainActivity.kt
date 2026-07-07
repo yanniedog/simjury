@@ -41,7 +41,9 @@ open class MainActivity : ComponentActivity() {
             val updateState by updateViewModel.state.collectAsState()
 
             LaunchedEffect(Unit) {
-                updateViewModel.checkForUpdate(userInitiated = false)
+                if (!testSkipAutoUpdateCheck) {
+                    updateViewModel.checkForUpdate(userInitiated = false)
+                }
             }
 
             SimJuryTheme {

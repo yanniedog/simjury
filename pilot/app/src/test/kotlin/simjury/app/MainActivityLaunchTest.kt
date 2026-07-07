@@ -4,7 +4,9 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.After
+import org.junit.AfterClass
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,11 +18,33 @@ import simjury.app.update.AppUpdateRepository
 @Config(sdk = [34])
 class MainActivityLaunchTest {
 
+    companion object {
+        @JvmStatic
+        @BeforeClass
+        fun setUpClass() {
+            MainActivity.testSkipAutoUpdateCheck = true
+            MainActivity.testUpdateRepositoryOverride = object : AppUpdateRepository() {
+                override fun fetchManifest(): ApkManifest = ApkManifest(
+                    version = "0.0.0",
+                    buildNumber = "0",
+                    downloadUrl = "https://example.com/app.apk",
+                )
+            }
+        }
+
+        @JvmStatic
+        @AfterClass
+        fun tearDownClass() {
+            MainActivity.testUpdateRepositoryOverride = null
+            MainActivity.testSkipAutoUpdateCheck = false
+        }
+    }
+
     @get:Rule
     val composeRule = createAndroidComposeRule<MainActivity>()
 
     @Before
-    fun stubUpdateRepository() {
+    fun ensureTestMode() {
         MainActivity.testSkipAutoUpdateCheck = true
         MainActivity.testUpdateRepositoryOverride = object : AppUpdateRepository() {
             override fun fetchManifest(): ApkManifest = ApkManifest(
@@ -29,11 +53,6 @@ class MainActivityLaunchTest {
                 downloadUrl = "https://example.com/app.apk",
             )
         }
-    }
-
-    @After
-    fun clearUpdateRepositoryOverride() {
-        MainActivity.testUpdateRepositoryOverride = null
     }
 
     @Test
