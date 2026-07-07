@@ -1,16 +1,22 @@
 package simjury.pilot
 
+import simjury.casemodel.GatedTruth
 import simjury.casemodel.LoadedCase
-import simjury.casemodel.Verdict
-import simjury.casemodel.VerdictDiary
+import simjury.deliberation.DeliberationAction
+import simjury.deliberation.DeliberationPhase
+import simjury.deliberation.DeliberationState
+import simjury.deliberation.PilotDeliberationEngine
 import java.util.Scanner
 
 class GameSession(
     private val loaded: LoadedCase,
-    private val gate: RevealGate,
+    private val seed: Long = DEFAULT_SEED,
     private val input: Scanner = Scanner(System.`in`),
     private val output: (String) -> Unit = { println(it) },
 ) {
+    private var state: DeliberationState = PilotDeliberationEngine.initialState(loaded.meta.id, seed)
+    private val gate = RevealGate()
+
     fun run() {
         output("")
         output("=== SimJury Pilot ===")
@@ -22,6 +28,7 @@ class GameSession(
         loaded.meta.contentNotes.forEach { output("Note: $it") }
         output("")
         waitForEnter("Press Enter to enter the courtroom...")
+        dispatch(DeliberationAction.AcknowledgeSummons)
 
         val episode = loaded.trial.episodes.single()
         output("")
@@ -32,9 +39,18 @@ class GameSession(
         episode.itemOrder.forEach { itemId ->
             presentItem(itemId)
             waitForEnter("Press Enter to continue...")
+            dispatch(DeliberationAction.MarkItemRead(itemId))
         }
 
+        dispatch(DeliberationAction.OpenDiary)
         val diary = collectDiary()
+        dispatch(
+            DeliberationAction.CommitDiary(
+                leaning = diary.leaning,
+                topReason = diary.topReason,
+                strongestDoubt = diary.strongestDoubt,
+            ),
+        )
         output("")
         output("Diary committed. You cannot change it.")
         output("  Leaning: ${diary.leaning}")
@@ -42,11 +58,26 @@ class GameSession(
         output("  Strongest doubt: ${diary.strongestDoubt}")
 
         val vote = collectVote()
-        gate.lockVerdict()
+        dispatch(DeliberationAction.CastVote(vote.position))
         output("")
         output("Verdict recorded: ${vote.position}")
 
+        dispatch(DeliberationAction.OpenReveal)
         val truth = gate.openTruth(loaded)
+        renderReveal(truth)
+    }
+
+    fun currentState(): DeliberationState = state
+
+    private fun dispatch(action: DeliberationAction) {
+        val wasLocked = state.verdictLocked
+        state = PilotDeliberationEngine.step(state, action, seed)
+        if (state.verdictLocked && !wasLocked) {
+            gate.lockVerdict()
+        }
+    }
+
+    private fun renderReveal(truth: GatedTruth) {
         output("")
         output("=== REVEAL: ${truth.titleReveal} ===")
         truth.truthFile.layers.forEach { layer ->
@@ -91,7 +122,8 @@ class GameSession(
     private fun pseudonymName(ref: String): String =
         loaded.pseudonyms.entries.find { it.id == ref }?.playName ?: ref
 
-    private fun collectDiary(): VerdictDiary {
+    private fun collectDiary(): simjury.casemodel.VerdictDiary {
+        require(state.phase == DeliberationPhase.DIARY) { "Diary collection requires DIARY phase" }
         while (true) {
             output("")
             output("--- Verdict diary (permanent) ---")
@@ -99,18 +131,19 @@ class GameSession(
             val reason = promptLine("Top reason (one sentence)", minLen = 10)
             val doubt = promptLine("Strongest doubt (one sentence)", minLen = 10)
             if (confirm("Commit diary? This cannot be edited.")) {
-                return VerdictDiary(leaning, reason, doubt)
+                return simjury.casemodel.VerdictDiary(leaning, reason, doubt)
             }
         }
     }
 
-    private fun collectVote(): Verdict {
+    private fun collectVote(): simjury.casemodel.Verdict {
+        require(state.phase == DeliberationPhase.VOTE) { "Vote collection requires VOTE phase" }
         while (true) {
             output("")
             output("--- Final vote ---")
             val position = promptChoice("Your verdict", listOf("Guilty", "Not Guilty"))
             if (confirm("Lock verdict?")) {
-                return Verdict(position)
+                return simjury.casemodel.Verdict(position)
             }
         }
     }
@@ -145,6 +178,8 @@ class GameSession(
     }
 
     companion object {
+        const val DEFAULT_SEED = 1L
+
         const val DISCLAIMER =
             "SimJury presents a trial adapted for play. Names are changed during play and restored afterwards. " +
                 "Nothing in this pilot is legal advice. Synthetic case C-000 — no historical persons."

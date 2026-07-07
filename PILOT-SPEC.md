@@ -60,7 +60,7 @@ pilot/
         └── sources.json
 ```
 
-**Modules (pilot):** `:case-model` + `:deliberation-core` (Phase 2) + CLI app. Next: `:app` (Android).
+**Modules (pilot):** `:case-model` + `:deliberation-core` + `:app` (Android) + CLI app.
 
 ## 4. Case JSON schema (pilot minimum)
 

@@ -1,0 +1,16 @@
+{
+  "id": "C-999",
+  "title_play": "Fixture Case",
+  "title_reveal": "Fixture Case — Test Only",
+  "synthetic": true,
+  "schema_version": "pilot-1",
+  "charge": {
+    "label": "petty larceny",
+    "elements": ["taking"]
+  },
+  "episode_ids": ["E-01"],
+  "content_notes": [
+    "C-999 is a synthetic test fixture. Never shipped in production assets."
+  ],
+  "estimated_minutes": 1
+}

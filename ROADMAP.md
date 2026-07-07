@@ -33,24 +33,24 @@ Phased delivery. **Do not skip phases.** Each phase ends with a gate PR that mus
 
 **Goal:** Split pure Kotlin modules reusable by Android.
 
-| Deliverable | PR scope |
-|-------------|----------|
+| Deliverable | Status |
+|-------------|--------|
 | `:case-model` module (schema + V-rules) | Done |
 | `:deliberation-core` skeleton (state machine stub) | Done |
-| Fixture case `C-999` for tests only | One PR |
-| Pilot CLI refactored to use modules | One PR |
+| Fixture case `C-999` for tests only | Done |
+| Pilot CLI refactored to use modules | Done |
 
-**Gate G-2:** Determinism test on stub engine; fixture validates.
+**Gate G-2:** Met — determinism test on stub engine; C-999 fixture validates.
 
 ---
 
-## Phase 3 — Android Shell
+## Phase 3 — Android Shell (current)
 
 **Goal:** Compose UI for trial reading + diary + vote + reveal.
 
 | Deliverable | PR scope |
 |-------------|----------|
-| `:app` module skeleton | One PR |
+| `:app` module skeleton | Done |
 | Navigation + dark theme tokens | One PR |
 | Trial reader screens | One PR |
 | Diary + verdict + reveal screens | One PR |

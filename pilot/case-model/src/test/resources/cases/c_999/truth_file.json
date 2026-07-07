@@ -1,0 +1,22 @@
+{
+  "layers": [
+    {
+      "heading": "Outcome",
+      "body": "Synthetic fixture outcome for validator tests."
+    }
+  ],
+  "pseudonym_reveal": [
+    {
+      "pseudonym_ref": "P-01",
+      "play_name": "Mr A",
+      "real_name": "Alice",
+      "fate_note": "fined"
+    },
+    {
+      "pseudonym_ref": "P-02",
+      "play_name": "Mr B",
+      "real_name": "Bob",
+      "fate_note": "commended"
+    }
+  ]
+}

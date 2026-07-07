@@ -1,0 +1,14 @@
+{
+  "sources": [
+    {
+      "id": "SRC-01",
+      "citation": "Synthetic ledger A",
+      "public_domain_basis": "pilot fixture"
+    },
+    {
+      "id": "SRC-02",
+      "citation": "Synthetic ledger B",
+      "public_domain_basis": "pilot fixture"
+    }
+  ]
+}
