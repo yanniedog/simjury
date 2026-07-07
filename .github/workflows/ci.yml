@@ -5,6 +5,10 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+  pull-requests: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -34,6 +38,9 @@ jobs:
         run: |
           grep -q "CASE_HARNESS" AGENTS.md
           grep -q "Phase" ROADMAP.md
+          grep -q "bot-review-window" AGENTS.md
+          grep -q "bot-review-window" .github/BRANCH_PROTECTION.md
+          test -x .github/scripts/assert-pr-mergeable.sh || test -f .github/scripts/assert-pr-mergeable.sh
 
       - name: Set up Java
         if: hashFiles('pilot/**') != ''
@@ -52,3 +59,39 @@ jobs:
       - name: Pilot placeholder (Phase 0)
         if: hashFiles('pilot/**') == ''
         run: echo "Phase 0 — pilot app not yet present; docs-only validation passed"
+
+  # Mandatory cooldown so review bots (Sourcery, etc.) can post before merge.
+  # Branch protection must require this check alongside validate.
+  bot-review-window:
+    name: bot-review-window
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enforce minimum bot review window
+        env:
+          MIN_MINUTES: "8"
+        run: |
+          set -euo pipefail
+          echo "Waiting ${MIN_MINUTES} minutes before marking PR merge-eligible."
+          echo "Agents must NOT squash-merge until this job succeeds."
+          sleep "$((MIN_MINUTES * 60))"
+          echo "Bot review window elapsed."
+
+      - name: Log bot reviews received
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request.number;
+            const { data: reviews } = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr,
+            });
+            const bots = reviews.filter((r) => r.user.type === 'Bot');
+            core.info(`PR #${pr}: ${bots.length} bot review(s) on record.`);
+            for (const r of bots) {
+              core.info(`  - ${r.user.login} (${r.state})`);
+            }
+            if (bots.length === 0) {
+              core.warning('No bot reviews yet — read PR comments manually before merging.');
+            }

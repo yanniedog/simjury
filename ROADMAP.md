@@ -104,6 +104,7 @@ Follow v3 Part B where not contradicted by pilot decisions recorded in projectme
 | Max ~400 lines changed per PR | Reviewable; CI fast |
 | One gate concern per PR | Clear rollback |
 | Squash merge to `main` | Linear history |
+| **Wait for `bot-review-window` before merge** | Bot feedback required |
 | projectmem `add_decision` for phase transitions | Audit trail |
 | Resolve all bot comments before merge | PR gates |
 
