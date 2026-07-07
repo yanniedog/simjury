@@ -134,15 +134,6 @@ class AppUpdateViewModel @JvmOverloads constructor(
         }
     }
 
-    fun verifyPendingInstall() {
-        val pending = pendingInstallRemote ?: return
-        val installed = readInstalled()
-        val remoteBuild = pending.buildNumber.toIntOrNull() ?: return
-        if (installed.versionCode >= remoteBuild) {
-            clearPendingInstall()
-        }
-    }
-
     fun dismiss() {
         pendingInstallRemote = null
         _state.value = AppUpdateUiState.Idle

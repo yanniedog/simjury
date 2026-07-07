@@ -1,14 +1,14 @@
 package simjury.app.update
 
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 
 object ApkInstallResultBus {
-    private val _events = MutableSharedFlow<ApkInstallResult>(extraBufferCapacity = 1)
-    val events: SharedFlow<ApkInstallResult> = _events.asSharedFlow()
+    private val _events = Channel<ApkInstallResult>(capacity = Channel.BUFFERED)
+    val events: Flow<ApkInstallResult> = _events.receiveAsFlow()
 
     fun emit(result: ApkInstallResult) {
-        _events.tryEmit(result)
+        _events.trySend(result)
     }
 }
