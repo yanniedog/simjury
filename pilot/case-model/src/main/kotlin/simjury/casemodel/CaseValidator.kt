@@ -53,6 +53,11 @@ object CaseValidator {
         validateClearance(c, errors)
         validateEpisodeCount(c, t.episodes.size, errors)
 
+        val duplicateMetaEpisodes = duplicates(c.episodeIds)
+        if (duplicateMetaEpisodes.isNotEmpty()) {
+            errors += "duplicate episode IDs in case.json: $duplicateMetaEpisodes"
+        }
+
         val duplicateEpisodes = duplicates(t.episodes.map { it.id })
         if (duplicateEpisodes.isNotEmpty()) errors += "duplicate episode IDs: $duplicateEpisodes"
 
@@ -219,8 +224,9 @@ object CaseValidator {
         val playReachable = collectPlayReachableText(loaded)
         banned.forEach { token ->
             if (token.isBlank()) return@forEach
+            val regex = Regex("\\b${Regex.escape(token)}\\b", RegexOption.IGNORE_CASE)
             playReachable.forEach { (label, text) ->
-                if (text.lowercase().contains(token)) {
+                if (regex.containsMatchIn(text)) {
                     errors += "F-4 banned token '$token' in play-reachable $label"
                 }
             }

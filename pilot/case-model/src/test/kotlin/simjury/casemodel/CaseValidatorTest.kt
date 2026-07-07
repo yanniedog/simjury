@@ -93,6 +93,35 @@ class CaseValidatorTest {
     }
 
     @Test
+    fun `accepts play reachable text with substring of banned token`() {
+        val trial = historicalValidCase(episodeCount = 3).trial
+        val safeWitness = trial.witnesses[0].copy(
+            blocks = trial.witnesses[0].blocks.mapIndexed { index, block ->
+                if (index == 0) {
+                    block.copy(text = "This is a savory dish and we should beckon them.")
+                } else {
+                    block
+                }
+            },
+        )
+        val loaded = historicalValidCase(episodeCount = 3).copy(
+            trial = trial.copy(witnesses = listOf(safeWitness) + trial.witnesses.drop(1)),
+        )
+        CaseValidator.validate(loaded)
+    }
+
+    @Test
+    fun `rejects duplicate episode ids in case metadata`() {
+        val loaded = historicalValidCase(episodeCount = 3).copy(
+            meta = historicalValidCase(episodeCount = 3).meta.copy(
+                episodeIds = listOf("E-01", "E-01", "E-02"),
+            ),
+        )
+        val ex = assertFailsWith<CaseValidationException> { CaseValidator.validate(loaded) }
+        assertTrue(ex.errors.any { it.contains("duplicate episode IDs in case.json") })
+    }
+
+    @Test
     fun `historical floors enforce witness and block counts`() {
         val trial = historicalValidCase(episodeCount = 3).trial
         val loaded = historicalValidCase(episodeCount = 3).copy(
