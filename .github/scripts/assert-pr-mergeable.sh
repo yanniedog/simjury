@@ -41,6 +41,32 @@ THREADS=$(gh api "repos/{owner}/{repo}/pulls/${PR_NUMBER}/comments" --paginate 2
 REVIEWS=$(gh api "repos/{owner}/{repo}/pulls/${PR_NUMBER}/reviews" 2>/dev/null | jq 'length' || echo 0)
 echo "INFO: inline comments=$THREADS, reviews=$REVIEWS"
 
+# Unresolved review threads (hard gate)
+REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner)
+OWNER="${REPO%%/*}"
+NAME="${REPO#*/}"
+UNRESOLVED=$(gh api graphql -f query="
+  query(\$owner: String!, \$name: String!, \$number: Int!) {
+    repository(owner: \$owner, name: \$name) {
+      pullRequest(number: \$number) {
+        reviewThreads(first: 100) {
+          nodes { isResolved path }
+        }
+      }
+    }
+  }
+" -f owner="$OWNER" -f name="$NAME" -F number="$PR_NUMBER" | jq -r '
+  [.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved == false)] | length
+')
+
+if [[ "${UNRESOLVED:-0}" != "0" ]]; then
+  echo "ERROR: PR #${PR_NUMBER} has ${UNRESOLVED} unresolved review thread(s)." >&2
+  echo "Fix bot feedback, reply on each thread, then run:" >&2
+  echo "  .github/scripts/resolve-bot-threads.sh ${PR_NUMBER}" >&2
+  exit 1
+fi
+echo "OK: all review threads resolved"
+
 echo ""
 echo "PR #${PR_NUMBER} passes automated merge preflight."
 echo "Still required before merge:"

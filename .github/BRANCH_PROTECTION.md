@@ -51,9 +51,13 @@ Cloud agents and local agents must:
 2. Open PR from `cursor/*-fb69` branches (or documented suffix)
 3. Fix CI failures in the same branch
 4. **Wait for `bot-review-window` to pass** (minimum 8 minutes after last push)
-5. Read all bot review comments; fix or reply; resolve threads
-6. Run preflight before merge: `.github/scripts/assert-pr-mergeable.sh <pr-number>`
-7. Squash merge **only** when validate + bot-review-window pass and conversations resolved
+5. Read all bot review comments; **fix every valid item in code**; reply; resolve threads
+6. Run `.github/scripts/audit-bot-feedback.sh <pr-number>` — must exit 0
+7. Run preflight before merge: `.github/scripts/assert-pr-mergeable.sh <pr-number>`
+8. Resolve any remaining threads: `.github/scripts/resolve-bot-threads.sh <pr-number>`
+9. Squash merge **only** when validate + bot-review-window pass and conversations resolved
+
+**Agents must never wait for the user to ask before addressing bot feedback.**
 
 ## Operator checklist
 

@@ -62,6 +62,63 @@ class CaseValidatorTest {
         assertTrue(ex.errors.any { it.contains(">= 2 witnesses") })
     }
 
+    @Test
+    fun `rejects duplicate source ids`() {
+        val sources = minimalValidCase().sources.copy(
+            sources = listOf(
+                SourceEntry("SRC-01", "A", "fixture"),
+                SourceEntry("SRC-01", "B", "fixture"),
+            ),
+        )
+        val ex = assertFailsWith<CaseValidationException> {
+            CaseValidator.validate(minimalValidCase().copy(sources = sources))
+        }
+        assertTrue(ex.errors.any { it.contains("duplicate source IDs") })
+    }
+
+    @Test
+    fun `rejects witness without truth reveal`() {
+        val truthFile = minimalValidCase().truthFile.copy(
+            pseudonymReveal = listOf(
+                PseudonymReveal("P-01", "Mr A", "Alice", "fined"),
+            ),
+        )
+        val ex = assertFailsWith<CaseValidationException> {
+            CaseValidator.validate(minimalValidCase().copy(truthFile = truthFile))
+        }
+        assertTrue(ex.errors.any { it.contains("has no truth reveal") })
+    }
+
+    @Test
+    fun `rejects orphaned items not in itemOrder`() {
+        val trial = minimalValidCase().trial
+        val episode = trial.episodes[0].copy(
+            itemOrder = trial.episodes[0].itemOrder.filter { it != "X-02" },
+        )
+        val ex = assertFailsWith<CaseValidationException> {
+            CaseValidator.validate(minimalValidCase().copy(trial = trial.copy(episodes = listOf(episode))))
+        }
+        assertTrue(ex.errors.any { it.contains("not in episode itemOrder") })
+    }
+
+    @Test
+    fun `rejects duplicate block ids across witnesses`() {
+        val trial = minimalValidCase().trial
+        val w1 = trial.witnesses[0]
+        val w2 = trial.witnesses[1].copy(
+            blocks = w2BlocksWithId(w1.blocks[0].id),
+        )
+        val ex = assertFailsWith<CaseValidationException> {
+            CaseValidator.validate(minimalValidCase().copy(trial = trial.copy(witnesses = listOf(w1, w2))))
+        }
+        assertTrue(ex.errors.any { it.contains("duplicate block IDs") || it.contains("duplicate item IDs") })
+    }
+
+    private fun w2BlocksWithId(id: String) = listOf(
+        testimony(id, "SRC-02"),
+        testimony("T-W02-002", "SRC-02"),
+    )
+
     private fun minimalValidCase(): LoadedCase {
         val sources = SourcesFile(
             sources = listOf(
