@@ -34,7 +34,7 @@ function printPolicy() {
 
 Required on merge (human work PRs):
   - validate                docs, projectmem, pilot tests (+ Android when present)
-  - bot-presence-gate       waits for gemini, sourcery on human PRs
+  - bot-presence-gate       waits for gemini, codex, sourcery on human PRs
   - bot-feedback-gate       review thread resolution on human PRs
 
 Optional (not in DEFAULT_REQUIRED_KEYS):

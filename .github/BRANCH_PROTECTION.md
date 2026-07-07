@@ -22,7 +22,7 @@ Configure in GitHub **Settings → Rules → Rulesets** (preferred) or **Branche
 | Workflow / job | Check name | Purpose |
 |----------------|------------|---------|
 | `ci` | **validate** | Docs, projectmem, pilot tests |
-| `pr-bot-presence-gate` | **bot-presence-gate** | Required bots (gemini, sourcery) posted since anchor |
+| `pr-bot-presence-gate` | **bot-presence-gate** | Required bots (gemini, codex, sourcery) posted since anchor |
 | `pr-bot-feedback-check` | **bot-feedback-gate** | Review threads resolved |
 
 All three must pass. **Do not merge until `bot-presence-gate` and `bot-feedback-gate` are green.**

@@ -12,6 +12,7 @@
     "pr:gate-exempt-policy:verify": "node scripts/verify-pr-gate-exempt-policy.mjs",
     "pr:gate-logic:verify": "node scripts/verify-pr-gate-logic.mjs",
     "github:bot-gates:operator": "node scripts/github-bot-gates-operator.mjs",
+    "pr:request-codex-review": "node scripts/request-codex-review.mjs",
     "branch-protection:apply": "node scripts/apply-branch-protection.mjs",
     "repo-merge-settings:apply": "node scripts/apply-repo-merge-settings.mjs"
   }

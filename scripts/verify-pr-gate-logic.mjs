@@ -9,6 +9,7 @@ import {
   isBotPrAuthor,
   isChorePrTitle,
 } from './lib/pr-gate-exempt.mjs';
+import { loginMatchesRequiredKey } from './lib/bot-wait-config.mjs';
 
 const BOT = { login: 'gemini-code-assist[bot]', __typename: 'Bot' };
 const HUMAN = { login: 'yanniedog', __typename: 'User' };
@@ -57,6 +58,8 @@ for (const [meta, want] of [
 
 if (!isChorePrTitle('chore: update deps')) failures.push('isChorePrTitle(chore) !== true');
 if (isBotPrAuthor('sourcery-ai[bot]') !== true) failures.push('isBotPrAuthor(sourcery) !== true');
+if (isBotPrAuthor('chatgpt-codex-connector[bot]') !== true) failures.push('isBotPrAuthor(codex) !== true');
+if (!loginMatchesRequiredKey('chatgpt-codex-connector[bot]', 'codex')) failures.push('codex alias mismatch');
 
 if (failures.length) {
   console.error('FAIL verify-pr-gate-logic:');

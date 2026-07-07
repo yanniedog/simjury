@@ -1,7 +1,8 @@
 name: pr-bot-presence-gate
 
-# Single-shot bot presence check. Re-fires on PR lifecycle + bot review/comment events.
-# Also re-runs after ci/validate completes so the gate does not fail while CI is still pending.
+# Single-shot bot presence check. Re-fires on PR lifecycle + bot review/comment events,
+# so a miss while bots are still in flight self-heals when they post (no GraphQL polling from
+# Actions â€” installation quota). Local --watch (npm run wait-for-bots) remains the pre-merge gate.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -9,9 +10,6 @@ on:
     types: [submitted]
   issue_comment:
     types: [created]
-  workflow_run:
-    workflows: [ci]
-    types: [completed]
   workflow_dispatch:
     inputs:
       pr_number:
@@ -25,17 +23,24 @@ permissions:
   issues: read
 
 concurrency:
+  # cancel-in-progress MUST stay false for a required check. Cancelling an
+  # in-flight run leaves a "cancelled" check-run that branch protection reads as
+  # the latest required status, blocking the PR even when a later run succeeds
+  # (the "BLOCKED but all-green" trap that forced empty re-trigger commits on
+  # every PR). With false, the newest event still runs to completion, so the
+  # latest required check-run is always success/failure â€” never a stale cancel.
   group: bot-presence-gate-${{ github.event.pull_request.number || github.event.issue.number || inputs.pr_number || github.run_id }}
   cancel-in-progress: false
 
 jobs:
   bot-presence-gate:
+    # Re-evaluate on bot reviews/comments so a single-shot miss self-heals.
+    # issue_comment fires for both issues and PRs - gate on PR-only.
     if: >-
-      github.event_name == 'workflow_dispatch'
-      || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
-      || github.event.pull_request != null
+      github.event.pull_request != null
       || github.event.review != null
       || (github.event_name == 'issue_comment' && github.event.issue.pull_request != null)
+      || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -53,15 +58,10 @@ jobs:
         run: |
           case "${{ github.event_name }}" in
             workflow_dispatch) PR="${{ inputs.pr_number }}" ;;
-            workflow_run) PR="$(gh api "repos/${{ github.repository }}/commits/${{ github.event.workflow_run.head_sha }}/pulls" --jq '.[0].number')" ;;
             issue_comment)     PR="${{ github.event.issue.number }}" ;;
             pull_request_review) PR="${{ github.event.pull_request.number }}" ;;
             *)                 PR="${{ github.event.pull_request.number }}" ;;
           esac
-          if [ -z "$PR" ] || [ "$PR" = "null" ]; then
-            echo "No PR associated with this event; skipping bot-presence-gate."
-            exit 0
-          fi
           export PR
           EXEMPT=$(node scripts/pr-gate-exempt-reason.mjs || true)
           if [ -n "$EXEMPT" ]; then
@@ -80,38 +80,23 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          SIMJURY_BOT_WAIT_REQUIRED: gemini,codex,sourcery
+          AR_BOT_WAIT_REQUIRED: gemini,codex,sourcery
           BOT_WAIT_IGNORE_CHECK_NAMES: bot-presence-gate,bot-feedback-gate,pr-bot-presence-gate,pr-bot-feedback-check
+          # CI has no .ar-bot-wait state; anchor falls back to PR createdAt (long-open PRs exceed 28m).
           BOT_WAIT_MAX_MIN: "240"
         run: |
           case "${{ github.event_name }}" in
             workflow_dispatch) PR="${{ inputs.pr_number }}" ;;
-            workflow_run) PR="$(gh api "repos/${{ github.repository }}/commits/${{ github.event.workflow_run.head_sha }}/pulls" --jq '.[0].number')" ;;
             issue_comment)     PR="${{ github.event.issue.number }}" ;;
             pull_request_review) PR="${{ github.event.pull_request.number }}" ;;
             *)                 PR="${{ github.event.pull_request.number }}" ;;
           esac
-          if [ -z "$PR" ] || [ "$PR" = "null" ]; then
-            echo "No PR associated with this event; skipping bot-presence-gate."
-            exit 0
+          set +e
+          npm run wait-for-bots -- --pr "$PR"
+          code=$?
+          set -e
+          if [ "$code" -eq 2 ]; then
+            echo "::warning::Bot wait not ready yet (exit 2) â€” run npm run wait-for-bots locally until exit 0, then re-run this workflow"
+            exit 1
           fi
-          attempts=0
-          max_attempts=8
-          while [ "$attempts" -lt "$max_attempts" ]; do
-            attempts=$((attempts + 1))
-            set +e
-            npm run wait-for-bots -- --pr "$PR"
-            code=$?
-            set -e
-            if [ "$code" -eq 0 ]; then
-              exit 0
-            fi
-            if [ "$code" -ne 2 ] || [ "$attempts" -ge "$max_attempts" ]; then
-              if [ "$code" -eq 2 ]; then
-                echo "::warning::Bot wait not ready after ${max_attempts} attempts — run npm run wait-for-bots locally until exit 0, then re-run this workflow"
-              fi
-              exit 1
-            fi
-            echo "Bot wait not ready (CI pending or quiet window); retry ${attempts}/${max_attempts} in 30s..."
-            sleep 30
-          done
+          exit "$code"
