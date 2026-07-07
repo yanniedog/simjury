@@ -240,6 +240,8 @@ Each requires a fresh EX-1 source audit (NBT volume + supplementary class b/d/e)
 
 **Completed:** See `CASE_EX1_AUDITS.md` — per-case source matrices for all §7.1–7.3 survey cases (23 eligible + 12 blocked).
 
+**Multimedia prioritisation:** See `CASE_MULTIMEDIA_CANDIDATES.md` — exhibit-rich trials ranked for handwriting, fingerprint, letter, map, and forensic comparison assets.
+
 ---
 
 ## 11. References
@@ -247,6 +249,7 @@ Each requires a fresh EX-1 source audit (NBT volume + supplementary class b/d/e)
 - `CASE_HARNESS.md` — inclusion, exclusion, phase floors  
 - `PHASE4-PLAN.md` — source classes (a)–(e), EX-5  
 - `CASE_EX1_AUDITS.md` — EX-1 access audits for all survey cases  
+- `CASE_MULTIMEDIA_CANDIDATES.md` — exhibit-rich case ranking for multimedia assets  
 - `pilot/src/main/resources/cases/c_001/EX-1-HANDOFF.md` — worked example for Beck  
 - NBT catalog: http://www.noumenal.com/marc/nbt.html  
 - Old Bailey Online: https://www.oldbaileyonline.org/  
