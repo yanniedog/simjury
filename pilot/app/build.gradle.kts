@@ -17,9 +17,26 @@ val apkManifestUrl: String =
     (project.findProperty("apkManifestUrl") as String?)
         ?: "https://github.com/yanniedog/simjury/releases/download/app-apk-latest/app-apk-latest.json"
 
+val pilotCaseId: String = (project.findProperty("pilotCaseId") as String?) ?: "c_000"
+
+val generatedAssetsRoot = layout.buildDirectory.dir("generated/caseAssets")
+val generatedCasesDir = layout.buildDirectory.dir("generated/caseAssets/cases")
+
+val syncCaseAssets = tasks.register<Copy>("syncCaseAssets") {
+    from("${rootProject.projectDir}/src/main/resources/cases")
+    into(generatedCasesDir)
+    include("**/*")
+}
+
 android {
     namespace = "simjury.app"
     compileSdk = 35
+
+    sourceSets {
+        getByName("main") {
+            assets.srcDir(generatedAssetsRoot)
+        }
+    }
 
     defaultConfig {
         applicationId = "com.simjury.app"
@@ -28,6 +45,7 @@ android {
         versionCode = 1
         versionName = "0.1.2"
         buildConfigField("String", "APK_MANIFEST_URL", "\"$apkManifestUrl\"")
+        buildConfigField("String", "PILOT_CASE_ID", "\"$pilotCaseId\"")
     }
 
     signingConfigs {
@@ -58,6 +76,12 @@ android {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+}
+
+afterEvaluate {
+    tasks.matching { it.name.contains("merge") && it.name.contains("Assets") }.configureEach {
+        dependsOn(syncCaseAssets)
+    }
 }
 
 dependencies {

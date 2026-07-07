@@ -36,4 +36,11 @@ class C001SkeletonTest {
         }
         loaded.trial.episodes.flatMap { it.itemOrder }.forEach { assertTrue(it in ids, "missing $it") }
     }
+
+    @Test
+    fun `C-001 episode item orders are disjoint`() {
+        val allIds = loaded.trial.episodes.flatMap { it.itemOrder }
+        assertEquals(allIds.size, allIds.toSet().size)
+        assertTrue(allIds.size >= 60)
+    }
 }

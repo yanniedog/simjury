@@ -1,6 +1,7 @@
 package simjury.app.data
 
 import android.content.res.AssetManager
+import simjury.app.BuildConfig
 import simjury.casemodel.CaseValidator
 import simjury.casemodel.LoadedCase
 import simjury.casemodel.PilotCase
@@ -12,7 +13,7 @@ import simjury.casemodel.caseJson
 
 class AssetCaseLoader(
     private val assets: AssetManager,
-    private val caseId: String = "c_000",
+    private val caseId: String = BuildConfig.PILOT_CASE_ID,
 ) {
     fun load(): LoadedCase {
         val base = "cases/$caseId/"
