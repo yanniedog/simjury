@@ -25,7 +25,7 @@ sealed interface AppUpdateUiState {
     ) : AppUpdateUiState
     data class Downloading(val progress: Float, val remote: ApkManifest) : AppUpdateUiState
     data class ReadyToInstall(val apkFile: File, val remote: ApkManifest) : AppUpdateUiState
-    data class Error(val message: String) : AppUpdateUiState
+    data class Error(val message: String, val duringDownload: Boolean = false) : AppUpdateUiState
 }
 
 class AppUpdateViewModel @JvmOverloads constructor(
@@ -54,8 +54,15 @@ class AppUpdateViewModel @JvmOverloads constructor(
     private val cacheApk: File
         get() = File(getApplication<Application>().cacheDir, "app-preview-update.apk")
 
-    fun checkForUpdate() {
-        if (_state.value !is AppUpdateUiState.Idle && _state.value !is AppUpdateUiState.Current) return
+    fun checkForUpdate(userInitiated: Boolean = true) {
+        when (_state.value) {
+            is AppUpdateUiState.Checking,
+            is AppUpdateUiState.Available,
+            is AppUpdateUiState.Downloading,
+            is AppUpdateUiState.ReadyToInstall,
+            -> return
+            else -> Unit
+        }
         viewModelScope.launch {
             _state.value = AppUpdateUiState.Checking
             try {
@@ -64,11 +71,17 @@ class AppUpdateViewModel @JvmOverloads constructor(
                 val remoteBuild = remote.buildNumber.toIntOrNull() ?: 0
                 if (VersionCompare.remoteIsNewer(installed.versionName, installed.versionCode, remote.version, remoteBuild)) {
                     _state.value = AppUpdateUiState.Available(installed.versionName, installed.versionCode, remote)
-                } else {
+                } else if (userInitiated) {
                     _state.value = AppUpdateUiState.Current(installed.versionName)
+                } else {
+                    _state.value = AppUpdateUiState.Idle
                 }
             } catch (e: Exception) {
-                _state.value = AppUpdateUiState.Error(e.message ?: "Update check failed")
+                if (userInitiated) {
+                    _state.value = AppUpdateUiState.Error(e.message ?: "Update check failed")
+                } else {
+                    _state.value = AppUpdateUiState.Idle
+                }
             }
         }
     }
@@ -98,7 +111,7 @@ class AppUpdateViewModel @JvmOverloads constructor(
                 _state.value = AppUpdateUiState.ReadyToInstall(cacheApk, available.remote)
                 ApkInstaller.installApk(getApplication(), cacheApk)
             } catch (e: Exception) {
-                _state.value = AppUpdateUiState.Error(e.message ?: "Download failed")
+                _state.value = AppUpdateUiState.Error(e.message ?: "Download failed", duringDownload = true)
             }
         }
     }

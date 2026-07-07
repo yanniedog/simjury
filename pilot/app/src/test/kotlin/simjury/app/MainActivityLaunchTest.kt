@@ -44,5 +44,6 @@ class MainActivityLaunchTest {
                 .isNotEmpty()
         }
         composeRule.onNodeWithText("Enter the courtroom", substring = true).assertExists()
+        composeRule.onNodeWithText("Check for updates", substring = true).assertExists()
     }
 }

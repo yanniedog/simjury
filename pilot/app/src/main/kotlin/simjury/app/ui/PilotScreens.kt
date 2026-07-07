@@ -32,6 +32,7 @@ import java.util.Locale
 import simjury.app.PilotUiState
 import simjury.app.R
 import simjury.app.model.TrialItem
+import simjury.app.update.AppUpdateUiState
 import simjury.deliberation.DeliberationPhase
 
 @Composable
@@ -45,6 +46,10 @@ fun PilotAppShell(
     onOpenDiary: () -> Unit,
     onCommitDiary: (String, String, String) -> Unit,
     onCastVote: (String) -> Unit,
+    installedVersion: String,
+    updateState: AppUpdateUiState,
+    onCheckForUpdate: () -> Unit,
+    onDismissUpdateStatus: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when {
@@ -59,6 +64,10 @@ fun PilotAppShell(
         state.phase == DeliberationPhase.SUMMONS -> SummonsScreen(
             state = state,
             onEnter = onAcknowledgeSummons,
+            installedVersion = installedVersion,
+            updateState = updateState,
+            onCheckForUpdate = onCheckForUpdate,
+            onDismissUpdateStatus = onDismissUpdateStatus,
             modifier = modifier,
         )
         state.phase == DeliberationPhase.READING -> ReadingHubScreen(
@@ -96,7 +105,15 @@ private fun CenteredText(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SummonsScreen(state: PilotUiState, onEnter: () -> Unit, modifier: Modifier = Modifier) {
+fun SummonsScreen(
+    state: PilotUiState,
+    onEnter: () -> Unit,
+    installedVersion: String,
+    updateState: AppUpdateUiState,
+    onCheckForUpdate: () -> Unit,
+    onDismissUpdateStatus: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     ScreenScaffold(title = stringResource(R.string.summons_title), modifier = modifier) { padding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(padding).padding(24.dp).verticalScroll(rememberScrollState()),
@@ -106,6 +123,12 @@ fun SummonsScreen(state: PilotUiState, onEnter: () -> Unit, modifier: Modifier =
             Text(stringResource(R.string.charge_label, state.charge), style = MaterialTheme.typography.titleMedium)
             Text(stringResource(R.string.summons_body), style = MaterialTheme.typography.bodyLarge)
             state.contentNotes.forEach { Text(it, style = MaterialTheme.typography.bodyMedium) }
+            AppUpdateCheckSection(
+                installedVersion = installedVersion,
+                state = updateState,
+                onCheckForUpdate = onCheckForUpdate,
+                onDismissStatus = onDismissUpdateStatus,
+            )
             Button(onClick = onEnter, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.enter_courtroom))
             }
