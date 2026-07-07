@@ -137,7 +137,7 @@ Android mirror: `pilot/app/src/main/assets/cases/c_001/` (same files).
 | `id` | `C-001` |
 | `title_play` | `The List` |
 | `title_reveal` | `R v. Adolf Beck` |
-| `synthetic` | `false` (omit or explicit false) |
+| `synthetic` | `false` (set explicitly in JSON — do not omit) |
 | `schema_version` | `pilot-1` (extend when clearance model lands) |
 | `charge` | Obtaining jewellery by false pretences — four elements per v3 §8.6 |
 | `episode_ids` | `["E-01","E-02","E-03","E-04"]` (proposed 4) |
@@ -243,8 +243,8 @@ Suggested order. Each case-content PR includes harness checklist (`CASE_HARNESS.
 |----|-------|-------|------------|
 | **P4-0** | `PHASE4-PLAN.md` + ROADMAP cross-link | This document only | — |
 | **P4-1** | EX-1 handoff / `sources.json` scaffold | Operator confirms documents; `S-01..S-04` entries; BLOCKED REPORT if needed | P4-0 |
-| **P4-2** | Schema: clearance + adaptations | Extend `:case-model`; validator hooks; tests | P4-0 |
-| **P4-3** | C-001 skeleton + `TABULATION.md` | `case.json`, empty `trial.json` structure, `pseudonyms.json` keys only, tabulation rows for all themes | P4-1 |
+| **P4-2** | Schema: clearance + multi-episode | Extend `:case-model`; add clearance/adaptations; **remove pilot-only 1-episode check** in `CaseValidator.kt` (lines 41–43) so 3–5 episodes pass; tests | P4-0 |
+| **P4-3** | C-001 skeleton + `TABULATION.md` | `case.json`, `trial.json` with minimal valid stub (one episode, one witness block) so `CaseIntegrity*` stays green; `pseudonyms.json` keys only; tabulation rows for all themes | P4-1 |
 | **P4-4** | Episodes E-01–E-02 testimony | W-01..W-02, partial exhibits | P4-3 tabulation |
 | **P4-5** | Episodes E-02–E-03 testimony | W-03..W-05, ID exhibits | P4-4 |
 | **P4-6** | Episode E-03: expert + ruling | W-06, W-07, D-02–D-04 | P4-5 |
@@ -252,7 +252,7 @@ Suggested order. Each case-content PR includes harness checklist (`CASE_HARNESS.
 | **P4-8** | Remaining exhibits + ground truth | X-08..X-10, K-01..K-03 | P4-4..P4-7 |
 | **P4-9** | `truth_file.json` + reveal layers | Post-verdict only; AD-5 enforced | P4-1 sources (e) |
 | **P4-10** | `BALANCE.md` + balance test | §8 below | P4-4..P4-9 |
-| **P4-11** | Android asset sync + case selector | Mirror to `app/src/main/assets`; load `c_001` | P4-4..P4-9 |
+| **P4-11** | Android asset sync + case selector | Mirror to `pilot/app/src/main/assets/cases/c_001/`; load `c_001` | P4-4..P4-9 |
 | **P4-12** | **G-4 gate** | Full playthrough evidence; clearance sign-off; CI green | All above |
 
 **Line-budget guidance:** Split any PR approaching 400 lines at witness or episode boundaries. Testimony text dominates line count — one episode per PR is the default cap.
