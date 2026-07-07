@@ -28,10 +28,6 @@ val syncCaseAssets = tasks.register<Copy>("syncCaseAssets") {
     include("**/*")
 }
 
-tasks.withType<Test>().configureEach {
-    dependsOn(syncCaseAssets)
-}
-
 android {
     namespace = "simjury.app"
     compileSdk = 35
@@ -80,6 +76,12 @@ android {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+}
+
+afterEvaluate {
+    tasks.matching { it.name.contains("merge") && it.name.contains("Assets") }.configureEach {
+        dependsOn(syncCaseAssets)
+    }
 }
 
 dependencies {
