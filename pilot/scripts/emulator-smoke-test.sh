@@ -86,6 +86,33 @@ try_ui_text() {
   return 1
 }
 
+dump_app_logcat() {
+  local pid="$1"
+  if [[ -n "${pid}" ]]; then
+    adb logcat -d --pid="${pid}" 2>/dev/null | tail -120 >&2 || true
+  else
+    adb logcat -d 2>/dev/null | grep -E "FATAL EXCEPTION|AndroidRuntime|${PACKAGE}" -A 20 | tail -80 >&2 || true
+  fi
+}
+
+app_pid() {
+  adb shell pidof "${PACKAGE}" 2>/dev/null | tr -d '\r' | awk '{print $1}'
+}
+
+assert_app_running() {
+  local label="$1"
+  local pid
+  pid="$(app_pid)"
+  if [[ -z "${pid}" ]]; then
+    dump_app_logcat ""
+    die "${label}"
+  fi
+  if adb logcat -d --pid="${pid}" 2>/dev/null | grep -Fq "FATAL EXCEPTION"; then
+    dump_app_logcat "${pid}"
+    die "App crashed (${label})"
+  fi
+}
+
 require_cmd adb
 
 if [[ -n "${APK_PATH:-}" ]]; then
@@ -118,15 +145,7 @@ log "Launching ${ACTIVITY}"
 adb logcat -c
 adb shell am start -W -n "${ACTIVITY}"
 
-if adb logcat -d 2>/dev/null | grep -Fq "FATAL EXCEPTION: main"; then
-  adb logcat -d 2>/dev/null | grep -E "FATAL EXCEPTION|AndroidRuntime" -A 20 | tail -80 >&2 || true
-  die "App crashed on launch"
-fi
-
-if ! adb shell pidof "${PACKAGE}" >/dev/null 2>&1; then
-  adb logcat -d 2>/dev/null | grep -E "FATAL EXCEPTION|AndroidRuntime|${PACKAGE}" -A 20 | tail -80 >&2 || true
-  die "App process is not running after launch"
-fi
+assert_app_running "App process is not running after launch"
 
 wait_for_resumed_activity
 
@@ -136,9 +155,6 @@ else
   log "WARN: summons UI text not detected (Compose accessibility can lag on CI); MainActivity is resumed"
 fi
 
-if adb logcat -d 2>/dev/null | grep -Fq "FATAL EXCEPTION: main"; then
-  adb logcat -d 2>/dev/null | grep -E "FATAL EXCEPTION|AndroidRuntime" -A 20 | tail -80 >&2 || true
-  die "App crashed after initial render"
-fi
+assert_app_running "App process exited after initial render"
 
 log "Smoke test passed"

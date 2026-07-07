@@ -129,7 +129,7 @@ jobs:
           arch: x86_64
           disable-animations: true
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
-          script: APK_PATH="${{ steps.apk.outputs.path }}" BOOT_TIMEOUT_SEC=300 ACTIVITY_TIMEOUT_SEC=120 UI_TIMEOUT_SEC=60 UI_DUMP_TIMEOUT_SEC=20 bash pilot/scripts/emulator-smoke-test.sh
+          script: APK_PATH="${{ steps.apk.outputs.path }}" BOOT_TIMEOUT_SEC=300 ACTIVITY_TIMEOUT_SEC=120 UI_TIMEOUT_SEC=30 UI_DUMP_TIMEOUT_SEC=15 bash pilot/scripts/emulator-smoke-test.sh
 
       - name: Install publish dependencies
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
