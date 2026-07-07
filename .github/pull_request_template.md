@@ -14,11 +14,13 @@
 
 - [ ] CI `validate` passes
 - [ ] CI `bot-review-window` passes (wait ≥8 min — do not merge early)
-- [ ] Bot review comments read and addressed
+- [ ] **All bot review comments fixed in code** (do not wait for user to ask)
+- [ ] Reply posted on each bot thread confirming fix or N/A
+- [ ] `resolve-bot-threads.sh <pr>` run — zero unresolved threads
+- [ ] `audit-bot-feedback.sh <pr>` exits 0
 - [ ] projectmem decision logged (if scope changed)
 - [ ] Case harness checklist (if case content)
-- [ ] Review threads resolved
-- [ ] `assert-pr-mergeable.sh` passes
+- [ ] `assert-pr-mergeable.sh <pr>` passes
 
 ## Testing
 
