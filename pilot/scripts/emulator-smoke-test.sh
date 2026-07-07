@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+# Build the release APK, install it on a connected emulator/device, launch it,
+# and fail if the process crashes or the summons screen never appears.
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+APK="${ROOT_DIR}/app/build/outputs/apk/release/app-release.apk"
+PACKAGE="com.simjury.app"
+ACTIVITY="${PACKAGE}/simjury.app.MainActivity"
+BOOT_TIMEOUT_SEC="${BOOT_TIMEOUT_SEC:-180}"
+UI_TIMEOUT_SEC="${UI_TIMEOUT_SEC:-60}"
+
+log() {
+  printf '[smoke] %s\n' "$*"
+}
+
+die() {
+  printf '[smoke] ERROR: %s\n' "$*" >&2
+  exit 1
+}
+
+require_cmd() {
+  command -v "$1" >/dev/null 2>&1 || die "Missing required command: $1"
+}
+
+wait_for_boot() {
+  local elapsed=0
+  while (( elapsed < BOOT_TIMEOUT_SEC )); do
+    local boot
+    boot="$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)"
+    if [[ "${boot}" == "1" ]]; then
+      log "Device boot complete after ${elapsed}s"
+      return 0
+    fi
+    sleep 2
+    elapsed=$((elapsed + 2))
+  done
+  die "Device did not finish booting within ${BOOT_TIMEOUT_SEC}s"
+}
+
+wait_for_ui_text() {
+  local needle="$1"
+  local elapsed=0
+  while (( elapsed < UI_TIMEOUT_SEC )); do
+    adb shell uiautomator dump /sdcard/simjury-smoke-ui.xml >/dev/null 2>&1 || true
+    if adb shell cat /sdcard/simjury-smoke-ui.xml 2>/dev/null | rg -q "${needle}"; then
+      log "Found UI text: ${needle}"
+      return 0
+    fi
+    if ! adb shell pidof "${PACKAGE}" >/dev/null 2>&1; then
+      die "Process exited before UI text '${needle}' appeared"
+    fi
+    sleep 2
+    elapsed=$((elapsed + 2))
+  done
+  die "Timed out waiting for UI text '${needle}'"
+}
+
+require_cmd adb
+[[ -n "${ANDROID_HOME:-}" ]] || die "ANDROID_HOME is not set"
+
+if ! adb get-state >/dev/null 2>&1; then
+  die "No adb device connected"
+fi
+
+wait_for_boot
+
+log "Building release APK"
+(
+  cd "${ROOT_DIR}"
+  ./gradlew :app:assembleRelease --no-daemon --console=plain
+)
+
+[[ -f "${APK}" ]] || die "Release APK not found at ${APK}"
+
+log "Installing ${APK}"
+adb uninstall "${PACKAGE}" >/dev/null 2>&1 || true
+adb install -r "${APK}"
+
+log "Launching ${ACTIVITY}"
+adb logcat -c
+adb shell am start -W -n "${ACTIVITY}"
+
+if adb logcat -d 2>/dev/null | rg -q "FATAL EXCEPTION: main"; then
+  adb logcat -d 2>/dev/null | rg "FATAL EXCEPTION|AndroidRuntime" -A 20 | tail -80 >&2 || true
+  die "App crashed on launch"
+fi
+
+if ! adb shell pidof "${PACKAGE}" >/dev/null 2>&1; then
+  adb logcat -d 2>/dev/null | rg "FATAL EXCEPTION|AndroidRuntime|${PACKAGE}" -A 20 | tail -80 >&2 || true
+  die "App process is not running after launch"
+fi
+
+wait_for_ui_text "Enter the courtroom"
+
+if adb logcat -d 2>/dev/null | rg -q "FATAL EXCEPTION: main"; then
+  adb logcat -d 2>/dev/null | rg "FATAL EXCEPTION|AndroidRuntime" -A 20 | tail -80 >&2 || true
+  die "App crashed after initial render"
+fi
+
+log "Smoke test passed"
