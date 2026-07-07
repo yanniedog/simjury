@@ -11,6 +11,22 @@ val caseJson = Json {
 }
 
 @Serializable
+data class Clearance(
+    @SerialName("all_participants_deceased") val allParticipantsDeceased: Boolean,
+    @SerialName("youngest_participant_birth_year_bound") val youngestParticipantBirthYearBound: Int? = null,
+    @SerialName("matter_finally_closed") val matterFinallyClosed: Boolean,
+    @SerialName("no_live_review_prospect") val noLiveReviewProspect: Boolean,
+    @SerialName("sources_public_domain_or_licensed") val sourcesPublicDomainOrLicensed: Boolean,
+    @SerialName("no_sexual_offence_content") val noSexualOffenceContent: Boolean,
+    @SerialName("no_child_victim_content") val noChildVictimContent: Boolean,
+    @SerialName("no_identification_suppression_orders") val noIdentificationSuppressionOrders: Boolean,
+    @SerialName("indigenous_sensitivity_check") val indigenousSensitivityCheck: String,
+    @SerialName("descendants_risk_note") val descendantsRiskNote: String,
+    @SerialName("cleared_by") val clearedBy: String,
+    @SerialName("cleared_date") val clearedDate: String,
+)
+
+@Serializable
 data class PilotCase(
     val id: String,
     @SerialName("title_play") val titlePlay: String,
@@ -19,6 +35,7 @@ data class PilotCase(
     @SerialName("schema_version") val schemaVersion: String,
     val charge: Charge,
     @SerialName("episode_ids") val episodeIds: List<String>,
+    val clearance: Clearance? = null,
     @SerialName("content_notes") val contentNotes: List<String> = emptyList(),
     @SerialName("estimated_minutes") val estimatedMinutes: Int = 5,
 )
@@ -123,9 +140,13 @@ data class PseudonymReveal(
 )
 
 @Serializable
+data class Adaptation(val note: String)
+
+@Serializable
 data class TruthFile(
     val layers: List<TruthLayer>,
     @SerialName("pseudonym_reveal") val pseudonymReveal: List<PseudonymReveal>,
+    val adaptations: List<Adaptation> = emptyList(),
 )
 
 @Serializable

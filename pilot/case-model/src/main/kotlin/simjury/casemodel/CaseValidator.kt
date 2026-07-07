@@ -10,6 +10,12 @@ object CaseValidator {
     private val idDirection = Regex("^D-\\d{2}$")
     private val allowedFidelity = setOf("verbatim", "summarised")
 
+    /** Static F-4 tokens from v3 — must not appear in play-reachable text. */
+    private val staticBannedTokens = listOf(
+        "beck", "smith", "thomas", "gurrin", "spurrell", "fulton", "avory", "gill",
+        "old bailey", "1896", "1877", "1904",
+    )
+
     fun validate(loaded: LoadedCase) {
         val errors = mutableListOf<String>()
         val c = loaded.meta
@@ -38,8 +44,18 @@ object CaseValidator {
             }
         }
 
-        if (t.episodes.size != 1) {
-            errors += "pilot limitation: case must have exactly 1 episode (found ${t.episodes.size})"
+        loaded.truthFile.adaptations.forEachIndexed { index, adaptation ->
+            if (adaptation.note.isBlank()) {
+                errors += "adaptation[$index]: blank note"
+            }
+        }
+
+        validateClearance(c, errors)
+        validateEpisodeCount(c, t.episodes.size, errors)
+
+        val duplicateMetaEpisodes = duplicates(c.episodeIds)
+        if (duplicateMetaEpisodes.isNotEmpty()) {
+            errors += "duplicate episode IDs in case.json: $duplicateMetaEpisodes"
         }
 
         val duplicateEpisodes = duplicates(t.episodes.map { it.id })
@@ -118,15 +134,135 @@ object CaseValidator {
             }
         }
 
-        if (t.witnesses.size < 2) errors += "floor: need >= 2 witnesses"
-        val blocks = t.witnesses.sumOf { it.blocks.size }
-        if (blocks < 4) errors += "floor: need >= 4 testimony blocks"
-        if (t.exhibits.size < 2) errors += "floor: need >= 2 exhibits"
-        if (loaded.sources.sources.size < 2) errors += "floor: need >= 2 sources"
+        validateFloors(loaded, errors)
+        scanBannedTokens(loaded, errors)
 
         if (errors.isNotEmpty()) {
             throw CaseValidationException(errors)
         }
+    }
+
+    private fun validateClearance(c: PilotCase, errors: MutableList<String>) {
+        if (c.synthetic) return
+        val clearance = c.clearance
+        if (clearance == null) {
+            errors += "historical case requires clearance object in case.json"
+            return
+        }
+        val booleanFields = listOf(
+            "all_participants_deceased" to clearance.allParticipantsDeceased,
+            "matter_finally_closed" to clearance.matterFinallyClosed,
+            "no_live_review_prospect" to clearance.noLiveReviewProspect,
+            "sources_public_domain_or_licensed" to clearance.sourcesPublicDomainOrLicensed,
+            "no_sexual_offence_content" to clearance.noSexualOffenceContent,
+            "no_child_victim_content" to clearance.noChildVictimContent,
+            "no_identification_suppression_orders" to clearance.noIdentificationSuppressionOrders,
+        )
+        booleanFields.forEach { (name, value) ->
+            if (!value) errors += "clearance.$name must be true"
+        }
+        if (clearance.indigenousSensitivityCheck.isBlank()) {
+            errors += "clearance.indigenous_sensitivity_check must be non-empty"
+        }
+        if (clearance.descendantsRiskNote.isBlank()) {
+            errors += "clearance.descendants_risk_note must be non-empty"
+        }
+        if (clearance.clearedBy.isBlank()) {
+            errors += "clearance.cleared_by must be non-empty"
+        }
+        if (clearance.clearedDate.isBlank()) {
+            errors += "clearance.cleared_date must be non-empty"
+        }
+    }
+
+    private fun validateEpisodeCount(c: PilotCase, episodeCount: Int, errors: MutableList<String>) {
+        if (c.synthetic) {
+            if (episodeCount != 1) {
+                errors += "synthetic pilot case must have exactly 1 episode (found $episodeCount)"
+            }
+            return
+        }
+        if (episodeCount !in 3..5) {
+            errors += "historical case must have 3–5 episodes (found $episodeCount)"
+        }
+        if (c.episodeIds.size !in 3..5) {
+            errors += "historical case episode_ids must list 3–5 episodes (found ${c.episodeIds.size})"
+        }
+    }
+
+    private fun validateFloors(loaded: LoadedCase, errors: MutableList<String>) {
+        val t = loaded.trial
+        val blocks = t.witnesses.sumOf { it.blocks.size }
+        if (loaded.meta.synthetic) {
+            if (t.witnesses.size < 2) errors += "floor: need >= 2 witnesses"
+            if (blocks < 4) errors += "floor: need >= 4 testimony blocks"
+            if (t.exhibits.size < 2) errors += "floor: need >= 2 exhibits"
+            if (loaded.sources.sources.size < 2) errors += "floor: need >= 2 sources"
+        } else {
+            if (t.witnesses.size !in 6..9) {
+                errors += "floor: historical case needs 6–9 witnesses (found ${t.witnesses.size})"
+            }
+            if (blocks < 60) errors += "floor: historical case needs >= 60 testimony blocks (found $blocks)"
+            if (t.exhibits.size !in 8..12) {
+                errors += "floor: historical case needs 8–12 exhibits (found ${t.exhibits.size})"
+            }
+            if (loaded.sources.sources.size < 4) {
+                errors += "floor: historical case needs >= 4 sources (found ${loaded.sources.sources.size})"
+            }
+        }
+    }
+
+    private fun scanBannedTokens(loaded: LoadedCase, errors: MutableList<String>) {
+        if (loaded.meta.synthetic) return
+
+        val banned = buildSet {
+            addAll(staticBannedTokens)
+            loaded.pseudonyms.entries.forEach { entry ->
+                add(entry.realName.lowercase())
+            }
+        }
+        val playReachable = collectPlayReachableText(loaded)
+        banned.forEach { token ->
+            if (token.isBlank()) return@forEach
+            val regex = Regex("\\b${Regex.escape(token)}\\b", RegexOption.IGNORE_CASE)
+            playReachable.forEach { (label, text) ->
+                if (regex.containsMatchIn(text)) {
+                    errors += "F-4 banned token '$token' in play-reachable $label"
+                }
+            }
+        }
+    }
+
+    private fun collectPlayReachableText(loaded: LoadedCase): List<Pair<String, String>> {
+        val c = loaded.meta
+        val t = loaded.trial
+        val texts = mutableListOf<Pair<String, String>>()
+        texts += "case.title_play" to c.titlePlay
+        texts += "case.charge.label" to c.charge.label
+        c.charge.elements.forEachIndexed { i, el -> texts += "case.charge.elements[$i]" to el }
+        c.contentNotes.forEachIndexed { i, note -> texts += "case.content_notes[$i]" to note }
+        t.episodes.forEach { ep ->
+            texts += "episode.${ep.id}.title" to ep.title
+            texts += "episode.${ep.id}.intro_text" to ep.introText
+        }
+        t.witnesses.forEach { w ->
+            w.blocks.forEach { b -> texts += b.id to b.text }
+        }
+        t.exhibits.forEach { x ->
+            texts += x.id to x.title
+            texts += "${x.id}.text" to x.text
+            texts += "${x.id}.prosecution_claim" to x.prosecutionClaim
+            texts += "${x.id}.defence_claim" to x.defenceClaim
+        }
+        t.directions.forEach { d ->
+            texts += d.id to d.title
+            texts += "${d.id}.text" to d.text
+        }
+        loaded.pseudonyms.entries.forEach { p ->
+            texts += "pseudonym.${p.id}.play_name" to p.playName
+            texts += "pseudonym.${p.id}.role" to p.role
+        }
+        return texts
     }
 
     private fun <T> duplicates(items: List<T>): Set<T> =
