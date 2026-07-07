@@ -61,6 +61,7 @@ fun AppUpdateBanner(
             }
         }
         is AppUpdateUiState.Error -> {
+            if (!state.duringDownload) return
             UpdateSurface(modifier) {
                 Text(state.message, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
                 TextButton(onClick = onDismiss) {

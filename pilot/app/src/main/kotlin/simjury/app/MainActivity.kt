@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import simjury.app.ui.AppUpdateBanner
 import simjury.app.ui.PilotAppShell
+import simjury.app.BuildConfig
 import simjury.app.update.AppUpdateRepository
 import simjury.app.update.AppUpdateUiState
 import simjury.app.update.AppUpdateViewModel
@@ -29,6 +30,7 @@ open class MainActivity : ComponentActivity() {
 
     companion object {
         internal var testUpdateRepositoryOverride: AppUpdateRepository? = null
+        internal var testSkipAutoUpdateCheck: Boolean = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +41,9 @@ open class MainActivity : ComponentActivity() {
             val updateState by updateViewModel.state.collectAsState()
 
             LaunchedEffect(Unit) {
-                updateViewModel.checkForUpdate()
+                if (!testSkipAutoUpdateCheck) {
+                    updateViewModel.checkForUpdate(userInitiated = false)
+                }
             }
 
             SimJuryTheme {
@@ -64,6 +68,10 @@ open class MainActivity : ComponentActivity() {
                         onOpenDiary = pilotViewModel::openDiary,
                         onCommitDiary = pilotViewModel::commitDiary,
                         onCastVote = pilotViewModel::castVote,
+                        installedVersion = BuildConfig.VERSION_NAME,
+                        updateState = updateState,
+                        onCheckForUpdate = { updateViewModel.checkForUpdate(userInitiated = true) },
+                        onDismissUpdateStatus = updateViewModel::dismiss,
                         modifier = Modifier.weight(1f),
                     )
                 }
