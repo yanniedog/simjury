@@ -47,6 +47,8 @@ class MainActivity : ComponentActivity() {
                         state = uiState,
                         allItemsRead = pilotViewModel.allItemsRead,
                         onAcknowledgeSummons = pilotViewModel::acknowledgeSummons,
+                        onSelectEpisode = pilotViewModel::selectEpisode,
+                        onBackToEpisodeHub = pilotViewModel::backToEpisodeHub,
                         onOpenItem = pilotViewModel::openItem,
                         onCloseItem = pilotViewModel::closeItem,
                         onMarkItemRead = pilotViewModel::markItemRead,

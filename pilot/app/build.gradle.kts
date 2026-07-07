@@ -17,6 +17,18 @@ val apkManifestUrl: String =
     (project.findProperty("apkManifestUrl") as String?)
         ?: "https://github.com/yanniedog/simjury/releases/download/app-apk-latest/app-apk-latest.json"
 
+val pilotCaseId: String = (project.findProperty("pilotCaseId") as String?) ?: "c_000"
+
+val syncCaseAssets = tasks.register<Copy>("syncCaseAssets") {
+    from("${rootProject.projectDir}/src/main/resources/cases")
+    into("${project.projectDir}/src/main/assets/cases")
+    include("**/*")
+}
+
+tasks.named("preBuild") {
+    dependsOn(syncCaseAssets)
+}
+
 android {
     namespace = "simjury.app"
     compileSdk = 35
@@ -28,6 +40,7 @@ android {
         versionCode = 1
         versionName = "0.1.2"
         buildConfigField("String", "APK_MANIFEST_URL", "\"$apkManifestUrl\"")
+        buildConfigField("String", "PILOT_CASE_ID", "\"$pilotCaseId\"")
     }
 
     signingConfigs {

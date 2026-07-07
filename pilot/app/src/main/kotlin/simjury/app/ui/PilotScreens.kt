@@ -40,6 +40,8 @@ fun PilotAppShell(
     state: PilotUiState,
     allItemsRead: Boolean,
     onAcknowledgeSummons: () -> Unit,
+    onSelectEpisode: (String) -> Unit,
+    onBackToEpisodeHub: () -> Unit,
     onOpenItem: (String) -> Unit,
     onCloseItem: () -> Unit,
     onMarkItemRead: (String) -> Unit,
@@ -62,11 +64,19 @@ fun PilotAppShell(
             onEnter = onAcknowledgeSummons,
             modifier = modifier,
         )
+        state.phase == DeliberationPhase.READING && state.showEpisodeHub -> EpisodeHubScreen(
+            state = state,
+            allItemsRead = allItemsRead,
+            onSelectEpisode = onSelectEpisode,
+            onOpenDiary = onOpenDiary,
+            modifier = modifier,
+        )
         state.phase == DeliberationPhase.READING -> ReadingHubScreen(
             state = state,
             allItemsRead = allItemsRead,
             onOpenItem = onOpenItem,
             onOpenDiary = onOpenDiary,
+            onBackToEpisodeHub = if (state.episodes.size > 1) onBackToEpisodeHub else null,
             modifier = modifier,
         )
         state.phase == DeliberationPhase.DIARY -> DiaryScreen(onCommit = onCommitDiary, modifier = modifier)
@@ -115,11 +125,68 @@ fun SummonsScreen(state: PilotUiState, onEnter: () -> Unit, modifier: Modifier =
 }
 
 @Composable
+fun EpisodeHubScreen(
+    state: PilotUiState,
+    allItemsRead: Boolean,
+    onSelectEpisode: (String) -> Unit,
+    onOpenDiary: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    ScreenScaffold(title = stringResource(R.string.episode_hub_title), modifier = modifier) { padding ->
+        Column(modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp)) {
+            Text(
+                stringResource(R.string.episode_hub_intro),
+                modifier = Modifier.padding(vertical = 12.dp),
+            )
+            LazyColumn(
+                contentPadding = PaddingValues(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                items(state.episodes, key = { it.id }) { episode ->
+                    val complete = episode.itemsRead == episode.itemsTotal
+                    Card(
+                        modifier = Modifier.fillMaxWidth().clickable { onSelectEpisode(episode.id) },
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(episode.title, style = MaterialTheme.typography.titleMedium)
+                            Text(
+                                stringResource(
+                                    R.string.episode_progress,
+                                    episode.id,
+                                    episode.itemsRead,
+                                    episode.itemsTotal,
+                                ),
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                            if (complete) {
+                                Text(
+                                    stringResource(R.string.episode_complete),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            if (allItemsRead) {
+                Button(onClick = onOpenDiary, modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                    Text(stringResource(R.string.open_diary))
+                }
+            } else {
+                Text(stringResource(R.string.read_all_items_hint), style = MaterialTheme.typography.bodySmall)
+            }
+        }
+    }
+}
+
+@Composable
 fun ReadingHubScreen(
     state: PilotUiState,
     allItemsRead: Boolean,
     onOpenItem: (String) -> Unit,
     onOpenDiary: () -> Unit,
+    onBackToEpisodeHub: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     ScreenScaffold(title = state.episodeTitle, modifier = modifier) { padding ->
@@ -149,6 +216,11 @@ fun ReadingHubScreen(
                 }
             } else {
                 Text(stringResource(R.string.read_all_items_hint), style = MaterialTheme.typography.bodySmall)
+            }
+            if (onBackToEpisodeHub != null) {
+                Button(onClick = onBackToEpisodeHub, modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                    Text(stringResource(R.string.back_to_episodes))
+                }
             }
         }
     }

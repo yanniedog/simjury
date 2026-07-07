@@ -30,16 +30,17 @@ class GameSession(
         waitForEnter("Press Enter to enter the courtroom...")
         dispatch(DeliberationAction.AcknowledgeSummons)
 
-        val episode = loaded.trial.episodes.single()
-        output("")
-        output("--- ${episode.title} ---")
-        output(episode.introText)
-        output("")
+        loaded.trial.episodes.forEach { episode ->
+            output("")
+            output("--- ${episode.title} ---")
+            output(episode.introText)
+            output("")
 
-        episode.itemOrder.forEach { itemId ->
-            presentItem(itemId)
-            waitForEnter("Press Enter to continue...")
-            dispatch(DeliberationAction.MarkItemRead(itemId))
+            episode.itemOrder.forEach { itemId ->
+                presentItem(itemId)
+                waitForEnter("Press Enter to continue...")
+                dispatch(DeliberationAction.MarkItemRead(itemId))
+            }
         }
 
         dispatch(DeliberationAction.OpenDiary)

@@ -3,7 +3,7 @@
     <string name="app_name">SimJury</string>
     <string name="loading_case">Loading case…</string>
     <string name="summons_title">Jury summons</string>
-    <string name="summons_body">You have been called to serve on a jury. Names are changed during play and restored after your verdict is locked. This pilot presents synthetic case C-000 only.</string>
+    <string name="summons_body">You have been called to serve on a jury. Names are changed during play and restored after your verdict is locked. This pilot is for educational play only — not legal advice.</string>
     <string name="charge_label">Charge: %1$s</string>
     <string name="enter_courtroom">Enter the courtroom</string>
     <string name="item_read">%1$s (read)</string>
@@ -11,7 +11,12 @@
     <string name="read_all_items_hint">Read every item before opening your verdict diary.</string>
     <string name="open_diary">Open verdict diary</string>
     <string name="mark_read_continue">Mark read and continue</string>
-    <string name="back_to_hub">Back to episode hub</string>
+    <string name="back_to_hub">Back to items</string>
+    <string name="back_to_episodes">Back to episodes</string>
+    <string name="episode_hub_title">Episodes</string>
+    <string name="episode_hub_intro">Read every episode before opening your verdict diary.</string>
+    <string name="episode_progress">%1$s — %2$d/%3$d read</string>
+    <string name="episode_complete">Complete</string>
     <string name="diary_title">Verdict diary</string>
     <string name="diary_permanent_warning">Your diary is permanent once committed.</string>
     <string name="diary_leaning_guilty">Guilty</string>
