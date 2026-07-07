@@ -130,7 +130,7 @@ fun openTruth(loaded: LoadedCase): GatedTruth {
 **Prerequisites:**
 1. Physical Android device or local emulator with KVM support
 2. APK: `/workspace/pilot/app/build/outputs/apk/debug/app-debug.apk`
-3. Install: `adb install -r app-debug.apk`
+3. Install: `adb install -r app/build/outputs/apk/debug/app-debug.apk`
 
 #### Test Case 1: Full C-000 Flow
 **Steps:**
@@ -290,8 +290,8 @@ adb shell am start -n com.simjury.app/.MainActivity
 # 5. Force-kill for persistence test
 adb shell am force-stop com.simjury.app
 
-# 6. Clear DataStore (if needed for clean test)
-adb shell run-as com.simjury.app rm -rf /data/data/com.simjury.app/files/datastore/
+# 6. Clear app state (if needed for clean test)
+adb shell pm clear com.simjury.app
 ```
 
 ---
