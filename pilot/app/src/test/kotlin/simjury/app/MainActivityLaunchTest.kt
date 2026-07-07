@@ -46,4 +46,20 @@ class MainActivityLaunchTest {
         composeRule.onNodeWithText("Enter the courtroom", substring = true).assertExists()
         composeRule.onNodeWithText("Check for updates", substring = true).assertExists()
     }
+
+    @Test
+    fun mainActivity_manualUpdateCheck_showsUpToDateMessage() {
+        composeRule.waitUntil(timeoutMillis = 15_000) {
+            composeRule.onAllNodesWithText("Check for updates", substring = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty()
+        }
+        composeRule.onNodeWithText("Check for updates", substring = true).performClick()
+        composeRule.waitUntil(timeoutMillis = 15_000) {
+            composeRule.onAllNodesWithText("latest version", substring = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty()
+        }
+        composeRule.onNodeWithText("latest version", substring = true).assertExists()
+    }
 }
