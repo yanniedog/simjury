@@ -38,7 +38,6 @@ import simjury.deliberation.DeliberationPhase
 @Composable
 fun PilotAppShell(
     state: PilotUiState,
-    allItemsRead: Boolean,
     onAcknowledgeSummons: () -> Unit,
     onSelectEpisode: (String) -> Unit,
     onBackToEpisodeHub: () -> Unit,
@@ -74,14 +73,12 @@ fun PilotAppShell(
         )
         state.phase == DeliberationPhase.READING && state.showEpisodeHub -> EpisodeHubScreen(
             state = state,
-            allItemsRead = allItemsRead,
             onSelectEpisode = onSelectEpisode,
             onOpenDiary = onOpenDiary,
             modifier = modifier,
         )
         state.phase == DeliberationPhase.READING -> ReadingHubScreen(
             state = state,
-            allItemsRead = allItemsRead,
             onOpenItem = onOpenItem,
             onOpenDiary = onOpenDiary,
             onBackToEpisodeHub = if (state.episodes.size > 1) onBackToEpisodeHub else null,
@@ -149,7 +146,6 @@ fun SummonsScreen(
 @Composable
 fun EpisodeHubScreen(
     state: PilotUiState,
-    allItemsRead: Boolean,
     onSelectEpisode: (String) -> Unit,
     onOpenDiary: () -> Unit,
     modifier: Modifier = Modifier,
@@ -197,7 +193,7 @@ fun EpisodeHubScreen(
                 }
             }
             item {
-                if (allItemsRead) {
+                if (state.allItemsRead) {
                     Button(
                         onClick = onOpenDiary,
                         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
@@ -215,7 +211,6 @@ fun EpisodeHubScreen(
 @Composable
 fun ReadingHubScreen(
     state: PilotUiState,
-    allItemsRead: Boolean,
     onOpenItem: (String) -> Unit,
     onOpenDiary: () -> Unit,
     onBackToEpisodeHub: (() -> Unit)? = null,
@@ -248,7 +243,7 @@ fun ReadingHubScreen(
                 }
             }
             item {
-                if (allItemsRead) {
+                if (state.allItemsRead) {
                     Button(
                         onClick = onOpenDiary,
                         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),

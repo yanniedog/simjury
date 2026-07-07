@@ -19,19 +19,23 @@ val apkManifestUrl: String =
 
 val pilotCaseId: String = (project.findProperty("pilotCaseId") as String?) ?: "c_000"
 
+val generatedCaseAssetsDir = layout.buildDirectory.dir("generated/caseAssets")
+
 val syncCaseAssets = tasks.register<Copy>("syncCaseAssets") {
     from("${rootProject.projectDir}/src/main/resources/cases")
-    into("${project.projectDir}/src/main/assets/cases")
+    into(generatedCaseAssetsDir)
     include("**/*")
-}
-
-tasks.named("preBuild") {
-    dependsOn(syncCaseAssets)
 }
 
 android {
     namespace = "simjury.app"
     compileSdk = 35
+
+    sourceSets {
+        getByName("main") {
+            assets.srcDir(generatedCaseAssetsDir)
+        }
+    }
 
     defaultConfig {
         applicationId = "com.simjury.app"

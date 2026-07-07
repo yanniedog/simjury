@@ -42,6 +42,7 @@ data class PilotUiState(
     val phase: DeliberationPhase = DeliberationPhase.SUMMONS,
     val showEpisodeHub: Boolean = false,
     val episodes: List<EpisodeSummary> = emptyList(),
+    val allItemsRead: Boolean = false,
     val episodeTitle: String = "",
     val episodeIntro: String = "",
     val itemOrder: List<String> = emptyList(),
@@ -144,11 +145,7 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     val allItemsRead: Boolean
-        get() {
-            if (!::loaded.isInitialized) return false
-            val allIds = loaded.trial.episodes.flatMap { it.itemOrder }
-            return allIds.isNotEmpty() && allIds.all { it in engineState.itemsRead }
-        }
+        get() = _uiState.value.allItemsRead
 
     private fun dispatch(action: DeliberationAction) {
         val wasLocked = engineState.verdictLocked
@@ -193,6 +190,8 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
             selectedEpisodeId != null -> episodes.find { it.id == selectedEpisodeId }
             else -> null
         }
+        val allIds = episodes.flatMap { it.itemOrder }
+        val allItemsRead = allIds.isNotEmpty() && allIds.all { it in engineState.itemsRead }
 
         var state = PilotUiState(
             loading = false,
@@ -202,6 +201,7 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
             phase = engineState.phase,
             showEpisodeHub = showEpisodeHub,
             episodes = episodeSummaries,
+            allItemsRead = allItemsRead,
             episodeTitle = activeEpisode?.title.orEmpty(),
             episodeIntro = activeEpisode?.introText.orEmpty(),
             itemOrder = activeEpisode?.itemOrder.orEmpty(),

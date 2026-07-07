@@ -60,7 +60,6 @@ open class MainActivity : ComponentActivity() {
                     )
                     PilotAppShell(
                         state = uiState,
-                        allItemsRead = pilotViewModel.allItemsRead,
                         onAcknowledgeSummons = pilotViewModel::acknowledgeSummons,
                         onSelectEpisode = pilotViewModel::selectEpisode,
                         onBackToEpisodeHub = pilotViewModel::backToEpisodeHub,

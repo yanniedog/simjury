@@ -1,0 +1,35 @@
+{
+  "id": "C-001",
+  "title_play": "The List",
+  "title_reveal": "R v. Adolf Beck",
+  "synthetic": false,
+  "schema_version": "pilot-1",
+  "charge": {
+    "label": "Obtaining jewellery by false pretences",
+    "elements": [
+      "The defendant is the person who met the complainant",
+      "The defendant made the pretences alleged",
+      "The pretences were false",
+      "The complainant parted with property because of them"
+    ]
+  },
+  "episode_ids": ["E-01", "E-02", "E-03", "E-04"],
+  "clearance": {
+    "all_participants_deceased": true,
+    "matter_finally_closed": true,
+    "no_live_review_prospect": true,
+    "sources_public_domain_or_licensed": true,
+    "no_sexual_offence_content": true,
+    "no_child_victim_content": true,
+    "no_identification_suppression_orders": true,
+    "indigenous_sensitivity_check": "n/a — no Indigenous participants",
+    "descendants_risk_note": "Historical fraud trial; all participants deceased. Descendant reputational risk to be reviewed at operator clearance (EX-3).",
+    "cleared_by": "PENDING HUMAN SIGN-OFF",
+    "cleared_date": "2026-07-07"
+  },
+  "content_notes": [
+    "Identification-heavy fraud trial. No graphic content.",
+    "Skeleton assets — testimony placeholders only until EX-1 handoff completes."
+  ],
+  "estimated_minutes": 30
+}
