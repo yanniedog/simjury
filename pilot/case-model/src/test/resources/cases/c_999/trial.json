@@ -1,0 +1,92 @@
+{
+  "episodes": [
+    {
+      "id": "E-01",
+      "title": "Day one",
+      "intro_text": "Court opens.",
+      "item_order": [
+        "T-W01-001",
+        "T-W01-002",
+        "T-W02-001",
+        "T-W02-002",
+        "X-01",
+        "X-02",
+        "D-01"
+      ]
+    }
+  ],
+  "witnesses": [
+    {
+      "id": "W-01",
+      "pseudonym_ref": "P-01",
+      "role_label": "shopkeeper",
+      "called_by": "prosecution",
+      "blocks": [
+        {
+          "id": "T-W01-001",
+          "mode": "examination",
+          "fidelity": "summarised",
+          "text": "Witness speaks.",
+          "source": { "source_id": "SRC-01", "locator": "p.1" }
+        },
+        {
+          "id": "T-W01-002",
+          "mode": "examination",
+          "fidelity": "summarised",
+          "text": "Witness speaks again.",
+          "source": { "source_id": "SRC-01", "locator": "p.2" }
+        }
+      ]
+    },
+    {
+      "id": "W-02",
+      "pseudonym_ref": "P-02",
+      "role_label": "constable",
+      "called_by": "prosecution",
+      "blocks": [
+        {
+          "id": "T-W02-001",
+          "mode": "examination",
+          "fidelity": "summarised",
+          "text": "Constable testifies.",
+          "source": { "source_id": "SRC-02", "locator": "p.1" }
+        },
+        {
+          "id": "T-W02-002",
+          "mode": "examination",
+          "fidelity": "summarised",
+          "text": "Constable continues.",
+          "source": { "source_id": "SRC-02", "locator": "p.2" }
+        }
+      ]
+    }
+  ],
+  "exhibits": [
+    {
+      "id": "X-01",
+      "title": "Receipt",
+      "kind": "document",
+      "text": "Receipt text.",
+      "prosecution_claim": "crown",
+      "defence_claim": "defence",
+      "source": { "source_id": "SRC-01", "locator": "p.1" }
+    },
+    {
+      "id": "X-02",
+      "title": "Ticket",
+      "kind": "document",
+      "text": "Ticket text.",
+      "prosecution_claim": "crown",
+      "defence_claim": "defence",
+      "source": { "source_id": "SRC-02", "locator": "p.2" }
+    }
+  ],
+  "directions": [
+    {
+      "id": "D-01",
+      "title": "Burden",
+      "text": "Beyond reasonable doubt.",
+      "source": { "source_id": "SRC-01", "locator": "p.3" }
+    }
+  ]
+}

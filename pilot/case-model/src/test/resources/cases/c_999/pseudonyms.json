@@ -1,0 +1,16 @@
+{
+  "entries": [
+    {
+      "id": "P-01",
+      "play_name": "Mr A",
+      "real_name": "Alice",
+      "role": "shopkeeper"
+    },
+    {
+      "id": "P-02",
+      "play_name": "Mr B",
+      "real_name": "Bob",
+      "role": "constable"
+    }
+  ]
+}

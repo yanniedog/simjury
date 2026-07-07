@@ -13,9 +13,11 @@ repositories {
 
 dependencies {
     implementation(project(":case-model"))
+    implementation(project(":deliberation-core"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     testImplementation(kotlin("test"))
     testImplementation(project(":case-model"))
+    testImplementation(project(":deliberation-core"))
 }
 
 kotlin {

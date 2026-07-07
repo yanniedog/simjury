@@ -68,6 +68,15 @@ jobs:
           chmod +x gradlew
           ./gradlew test --console=plain
 
+      - name: Set up Android SDK
+        if: hashFiles('pilot/app/**') != ''
+        uses: android-actions/setup-android@v3
+
+      - name: Assemble Android debug APK
+        if: hashFiles('pilot/app/**') != ''
+        working-directory: pilot
+        run: ./gradlew :app:assembleDebug --console=plain
+
       - name: Pilot placeholder (Phase 0)
         if: hashFiles('pilot/**') == ''
         run: echo "Phase 0 — pilot app not yet present; docs-only validation passed"

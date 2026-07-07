@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SimJury</string>
+    <string name="summons_title">Jury summons</string>
+    <string name="summons_body">You have been called to serve on a jury. Names are changed during play and restored after your verdict is locked. This pilot presents synthetic case C-000 only.</string>
+    <string name="engine_phase_label">Engine phase: %1$s</string>
+</resources>
