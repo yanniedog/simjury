@@ -3,8 +3,17 @@
 # Requires gh auth with admin access to the repository.
 set -euo pipefail
 
-OWNER="${1:-yanniedog}"
-REPO="${2:-simjury}"
+DETECTED_OWNER=""
+DETECTED_REPO=""
+if [[ -z "${1:-}" || -z "${2:-}" ]]; then
+  if CURRENT_REPO=$(gh repo view --json owner,name 2>/dev/null); then
+    DETECTED_OWNER=$(echo "$CURRENT_REPO" | jq -r '.owner.login')
+    DETECTED_REPO=$(echo "$CURRENT_REPO" | jq -r '.name')
+  fi
+fi
+
+OWNER="${1:-${DETECTED_OWNER:-yanniedog}}"
+REPO="${2:-${DETECTED_REPO:-simjury}}"
 BRANCH="${3:-main}"
 
 echo "Applying branch protection to ${OWNER}/${REPO}:${BRANCH}..."

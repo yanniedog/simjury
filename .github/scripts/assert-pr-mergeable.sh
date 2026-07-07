@@ -12,23 +12,22 @@ fi
 
 echo "Checking merge readiness for PR #${PR_NUMBER} (bot window >= ${MIN_WAIT_MINUTES}m)..."
 
-if ! gh pr view "$PR_NUMBER" --json state,mergeable,mergeStateStatus,statusCheckRollup,reviewDecision \
-  >/tmp/pr-mergeable.json 2>/dev/null; then
+if ! PR_JSON=$(gh pr view "$PR_NUMBER" --json state,mergeable,mergeStateStatus,statusCheckRollup,reviewDecision 2>/dev/null); then
   echo "ERROR: cannot read PR #${PR_NUMBER}" >&2
   exit 1
 fi
 
-STATE=$(jq -r '.state' /tmp/pr-mergeable.json)
+STATE=$(jq -r '.state' <<< "$PR_JSON")
 if [[ "$STATE" != "OPEN" ]]; then
   echo "ERROR: PR #${PR_NUMBER} is not open (state=$STATE)" >&2
   exit 1
 fi
 
-# Required status checks
+# Required status checks (support CheckRun .name and StatusContext .context)
 for CHECK in validate bot-review-window; do
   RESULT=$(jq -r --arg c "$CHECK" '
-    .statusCheckRollup[]? | select(.name == $c) | .conclusion // .state
-  ' /tmp/pr-mergeable.json | head -1)
+    .statusCheckRollup[]? | select(.name == $c or .context == $c) | .conclusion // .state
+  ' <<< "$PR_JSON" | head -1)
   if [[ "$RESULT" != "SUCCESS" ]]; then
     echo "ERROR: required check '$CHECK' is not SUCCESS (got: ${RESULT:-missing})" >&2
     echo "Wait for CI — do not merge until bot-review-window completes." >&2
@@ -37,8 +36,8 @@ for CHECK in validate bot-review-window; do
   echo "OK: $CHECK"
 done
 
-# Unresolved review threads
-THREADS=$(gh api "repos/{owner}/{repo}/pulls/${PR_NUMBER}/comments" --paginate 2>/dev/null | jq -s 'length' || echo 0)
+# Inline review comments (informational)
+THREADS=$(gh api "repos/{owner}/{repo}/pulls/${PR_NUMBER}/comments" --paginate 2>/dev/null | jq -s 'add // [] | length' || echo 0)
 REVIEWS=$(gh api "repos/{owner}/{repo}/pulls/${PR_NUMBER}/reviews" 2>/dev/null | jq 'length' || echo 0)
 echo "INFO: inline comments=$THREADS, reviews=$REVIEWS"
 
