@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "projectmem": {
+      "command": "/usr/bin/python3",
+      "args": [
+        "-m",
+        "projectmem.mcp_server",
+        "--root",
+        "/workspace"
+      ]
+    }
+  }
+}

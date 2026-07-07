@@ -1,0 +1,55 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify required docs exist
+        run: |
+          set -euo pipefail
+          for f in README.md PILOT-SPEC.md ROADMAP.md CASE_HARNESS.md AGENTS.md CLAUDE.md; do
+            test -f "$f" || { echo "Missing $f"; exit 1; }
+          done
+          test -d .projectmem || { echo "Missing .projectmem"; exit 1; }
+          test -f .projectmem/events.jsonl || { echo "Missing projectmem events"; exit 1; }
+
+      - name: Validate projectmem config
+        run: |
+          test -f .projectmem/config.toml
+          test -f .projectmem/AI_INSTRUCTIONS.md
+
+      - name: Check agent harness references
+        run: |
+          grep -q "CASE_HARNESS" AGENTS.md
+          grep -q "Phase" ROADMAP.md
+
+      - name: Set up Java
+        if: hashFiles('pilot/**') != ''
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Run pilot tests
+        if: hashFiles('pilot/**') != ''
+        working-directory: pilot
+        run: |
+          chmod +x gradlew
+          ./gradlew test --console=plain
+
+      - name: Pilot placeholder (Phase 0)
+        if: hashFiles('pilot/**') == ''
+        run: echo "Phase 0 — pilot app not yet present; docs-only validation passed"
