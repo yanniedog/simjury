@@ -2,35 +2,30 @@
 
 Required bots on human work PRs (presence gate): **gemini**, **codex**, **sourcery**.
 
-| Repository | `*_BOT_WAIT_REQUIRED` | Status |
-|------------|------------------------|--------|
-| [cursor-global-workflow](https://github.com/yanniedog/cursor-global-workflow) | `gemini,codex,sourcery` (template) | OK |
-| [jcs2-mod](https://github.com/yanniedog/jcs2-mod) | `JCS2_BOT_WAIT_REQUIRED=gemini,codex,sourcery` | OK |
-| [simjury](https://github.com/yanniedog/simjury) | `SIMJURY_BOT_WAIT_REQUIRED=gemini,codex,sourcery` | PR #15 |
-| [AR-local](https://github.com/yanniedog/AR-local) | was `gemini` only | **Apply patch below** |
+| Repository | `*_BOT_WAIT_REQUIRED` | Auto `@codex review` | Status |
+|------------|------------------------|----------------------|--------|
+| [cursor-global-workflow](https://github.com/yanniedog/cursor-global-workflow) | `gemini,codex,sourcery` (template) | add `pr-request-bot-reviews.yml` | Template OK; sync workflow |
+| [jcs2-mod](https://github.com/yanniedog/jcs2-mod) | `JCS2_BOT_WAIT_REQUIRED=gemini,codex,sourcery` | manual `@codex review` | OK |
+| [simjury](https://github.com/yanniedog/simjury) | `SIMJURY_BOT_WAIT_REQUIRED=gemini,codex,sourcery` | `pr-request-bot-reviews` workflow | PR #15 |
+| [AR-local](https://github.com/yanniedog/AR-local) | was `gemini` only | none yet | **Operator apply** — see `docs/cross-repo-patches/AR-local/` |
+
+Only these four repos use `pr-bot-presence-gate.yml`. Other yanniedog repos do not use this gate.
 
 ## Operator: install Codex GitHub App
 
-On each repo: **Settings → Integrations → GitHub Apps → ChatGPT Codex Connector** → Configure → grant access to the repository.
+On each gated repo: **Settings → Integrations → GitHub Apps → ChatGPT Codex Connector** → Configure → grant access.
 
-Without the app installed, `bot-presence-gate` will wait until timeout for `chatgpt-codex-connector[bot]`.
+Without the app, `bot-presence-gate` waits until timeout for `chatgpt-codex-connector[bot]`. The `pr-request-bot-reviews` workflow posts `@codex review` automatically but Codex must still be installed.
 
-## AR-local patch (apply on `main`)
+## AR-local patch
+
+Full operator instructions: [`docs/cross-repo-patches/AR-local/README.md`](cross-repo-patches/AR-local/README.md).
+
+Minimal workflow change:
 
 ```diff
---- a/.github/workflows/pr-bot-presence-gate.yml
-+++ b/.github/workflows/pr-bot-presence-gate.yml
-@@ -80,10 +80,7 @@
-         env:
-           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
-           GITHUB_REPOSITORY: ${{ github.repository }}
--          # gemini is the required reviewer. sourcery was dropped 2026-06-09 because it
--          # stalled (free-tier review quota / outage) and blocked merges; re-add it here
--          # (AR_BOT_WAIT_REQUIRED: gemini,sourcery) once it's reliably reviewing again.
 -          AR_BOT_WAIT_REQUIRED: gemini
 +          AR_BOT_WAIT_REQUIRED: gemini,codex,sourcery
 ```
-
-Update `docs/HANDOFF.md` §6 required-bots bullet to match.
 
 Branch: `cursor/codex-required-bots-a216`

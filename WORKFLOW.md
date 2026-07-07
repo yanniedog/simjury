@@ -22,6 +22,8 @@ Waits until **gemini**, **codex**, and **sourcery** have posted on the PR since 
 | codex | `chatgpt-codex-connector[bot]` |
 | sourcery | `sourcery-ai[bot]` |
 
+Codex does not auto-review on every repo. The `pr-request-bot-reviews` workflow posts `@codex review` once when Codex has not yet appeared. Install **ChatGPT Codex Connector** on the repository (Settings → Integrations → GitHub Apps). Manual fallback: comment `@codex review` on the PR.
+
 Local pre-merge check:
 
 ```sh
