@@ -1,6 +1,7 @@
 package simjury.app.update
 
 import android.app.Application
+import android.content.pm.PackageInstaller
 import android.content.pm.PackageManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import simjury.app.R
 import java.io.File
 
 sealed interface AppUpdateUiState {
@@ -55,6 +57,19 @@ class AppUpdateViewModel @JvmOverloads constructor(
     private val cacheApk: File
         get() = File(getApplication<Application>().cacheDir, "app-preview-update.apk")
 
+    private var pendingInstallRemote: ApkManifest? = null
+
+    init {
+        viewModelScope.launch {
+            ApkInstallResultBus.events.collect { result ->
+                when (result) {
+                    ApkInstallResult.Success -> clearPendingInstall()
+                    is ApkInstallResult.Failure -> handleInstallFailure(result)
+                }
+            }
+        }
+    }
+
     fun checkForUpdate(userInitiated: Boolean = true) {
         when (_state.value) {
             is AppUpdateUiState.Checking,
@@ -90,7 +105,7 @@ class AppUpdateViewModel @JvmOverloads constructor(
 
     fun installPending() {
         val ready = _state.value as? AppUpdateUiState.ReadyToInstall ?: return
-        ApkInstaller.installApk(getApplication(), ready.apkFile)
+        launchInstall(ready.apkFile, ready.remote)
     }
 
     fun downloadAndInstall() {
@@ -111,7 +126,7 @@ class AppUpdateViewModel @JvmOverloads constructor(
                     }
                 }
                 _state.value = AppUpdateUiState.ReadyToInstall(cacheApk, available.remote)
-                ApkInstaller.installApk(getApplication(), cacheApk)
+                launchInstall(cacheApk, available.remote)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 _state.value = AppUpdateUiState.Error(e.message ?: "Download failed", duringDownload = true)
@@ -120,6 +135,51 @@ class AppUpdateViewModel @JvmOverloads constructor(
     }
 
     fun dismiss() {
+        pendingInstallRemote = null
+        _state.value = AppUpdateUiState.Idle
+    }
+
+    private fun launchInstall(apkFile: File, remote: ApkManifest) {
+        val app = getApplication<Application>()
+        if (!ApkSigning.canInstallOverExisting(app, apkFile)) {
+            pendingInstallRemote = null
+            _state.value = AppUpdateUiState.Error(
+                app.getString(R.string.update_signature_mismatch),
+                duringDownload = true,
+            )
+            return
+        }
+        try {
+            pendingInstallRemote = remote
+            ApkInstaller.installApk(app, apkFile)
+            _state.value = AppUpdateUiState.ReadyToInstall(apkFile, remote)
+        } catch (e: Exception) {
+            pendingInstallRemote = null
+            _state.value = AppUpdateUiState.Error(
+                e.message ?: app.getString(R.string.update_install_failed),
+                duringDownload = true,
+            )
+        }
+    }
+
+    private fun handleInstallFailure(result: ApkInstallResult.Failure) {
+        pendingInstallRemote = null
+        val app = getApplication<Application>()
+        val message = when (result.status) {
+            PackageInstaller.STATUS_FAILURE_ABORTED ->
+                app.getString(R.string.update_install_aborted)
+            PackageInstaller.STATUS_FAILURE_INCOMPATIBLE,
+            PackageInstaller.STATUS_FAILURE_CONFLICT,
+            ->
+                app.getString(R.string.update_signature_mismatch)
+            else -> result.message.takeIf { it.isNotBlank() }
+                ?: app.getString(R.string.update_install_failed)
+        }
+        _state.value = AppUpdateUiState.Error(message, duringDownload = true)
+    }
+
+    private fun clearPendingInstall() {
+        pendingInstallRemote = null
         _state.value = AppUpdateUiState.Idle
     }
 
