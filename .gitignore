@@ -1,2 +1,4 @@
 .projectmem/watch.pid
 .projectmem/watch.log
+.simjury-bot-wait/
+node_modules/

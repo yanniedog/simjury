@@ -77,16 +77,16 @@ On every open PR the Orchestrator must automatically:
 
 1. Open PR as **draft** first; mark ready only after initial CI run starts
 2. Run `gh pr checks <n>` — fix failures and push until green
-3. **Wait for `bot-review-window` to pass** (minimum 8 minutes after last push) — do not merge before this
+3. **Wait for `bot-presence-gate`** — run `npm run wait-for-bots -- --watch --pr <n>` until exit 0; do not merge while bots are missing
 4. Read all bot review comments (`gh api repos/.../pulls/<n>/comments` and `/reviews`)
 5. **Apply every valid fix**; reply on each thread confirming the fix (or why N/A)
 6. **Resolve every review thread** via `.github/scripts/resolve-bot-threads.sh <n>` — never merge with open threads
-7. Run `.github/scripts/audit-bot-feedback.sh <n>` — abort if unresolved threads remain on this PR
-8. Run `.github/scripts/assert-pr-mergeable.sh <n>` — abort if it fails (includes unresolved-thread gate)
-9. Squash merge when **all** gates pass: `gh pr merge <n> --squash --delete-branch`
+7. Run `npm run pr:gates:check -- --pr <n>` — abort if exit non-zero
+8. Run `.github/scripts/assert-pr-mergeable.sh <n>` — abort if it fails
+9. Squash merge when **all** gates pass: `gh pr merge <n> --auto --squash --delete-branch`
 10. Rebase stacked PRs onto `main` after upstream merge
 
-**Never merge immediately after `validate` passes.** The `bot-review-window` job exists specifically to prevent this.
+**Never merge immediately after `validate` passes.** `bot-presence-gate` and `bot-feedback-gate` must also be green. See `WORKFLOW.md`.
 
 ### Backlog hygiene (mandatory — no user prompt)
 
@@ -134,10 +134,10 @@ Orchestrator **must** synthesize subagent output; never merge unreviewed subagen
 No squash merge to `main` unless:
 
 1. CI `validate` — **success**
-2. CI `bot-review-window` — **success** (8-minute minimum wait; never merge early)
-3. All review threads — **resolved** (enforced by `assert-pr-mergeable.sh`; use `resolve-bot-threads.sh`)
+2. CI `bot-presence-gate` — **success** (required bots posted; see `npm run wait-for-bots`)
+3. CI `bot-feedback-gate` — **success** (review threads resolved)
 4. Bot comments read and **fixed in code** (or explicitly acknowledged as N/A with reply)
-5. `audit-bot-feedback.sh <n>` exits 0 for the PR under merge
+5. `npm run pr:gates:check -- --pr <n>` exits 0
 6. `assert-pr-mergeable.sh <pr>` passes
 7. Case content PRs include harness checklist (if applicable)
 8. projectmem decision logged for scope-affecting changes

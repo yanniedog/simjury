@@ -37,7 +37,7 @@ cd pilot
 `main` is protected. All changes require:
 
 - Pull request (no direct pushes)
-- Passing CI (`validate` + **`bot-review-window`** — 8-minute bot review wait)
+- Passing CI (`validate` + **`bot-presence-gate`** + **`bot-feedback-gate`** — see `WORKFLOW.md`)
 - All review threads resolved
 
 See `.github/BRANCH_PROTECTION.md` for operator setup on GitHub.

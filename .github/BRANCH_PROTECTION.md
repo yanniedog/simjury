@@ -1,6 +1,8 @@
 # Branch Protection for `main`
 
-SimJury requires PR gates on `main`. Configure in GitHub **Settings → Branches → Branch protection rules**.
+SimJury uses the **jcs2-mod / AR-local bot gate template**: dynamic bot presence + thread closure gates (not a fixed sleep).
+
+Configure in GitHub **Settings → Rules → Rulesets** (preferred) or **Branches → Branch protection rules**.
 
 ## Required settings
 
@@ -8,62 +10,44 @@ SimJury requires PR gates on `main`. Configure in GitHub **Settings → Branches
 |---------|-------|
 | Branch name pattern | `main` |
 | Require a pull request before merging | Yes |
-| Require approvals | 1 for teams; **uncheck entirely** for solo operator (PR still required) |
-| Dismiss stale reviews | Yes |
+| Require approvals | 0 for solo operator (PR still required) |
 | Require status checks to pass | Yes |
-| Required checks | `validate` **and** `bot-review-window` (from `ci.yml`) |
+| Required checks | `validate`, `bot-presence-gate`, `bot-feedback-gate` |
 | Require conversation resolution before merging | Yes |
-| Do not allow bypassing | **Required** — prevents agents merging before bot window |
-| Restrict pushes | No direct pushes to `main` |
-| Allow squash merging | Yes (preferred) |
-| Allow merge commits | No |
-| Allow rebase merging | Optional |
+| Do not allow bypassing | **Required** |
+| Allow squash merging | Yes (only) |
 
 ## CI gates
 
-The `ci` workflow runs on every pull request:
+| Workflow / job | Check name | Purpose |
+|----------------|------------|---------|
+| `ci` | **validate** | Docs, projectmem, pilot tests |
+| `pr-bot-presence-gate` | **bot-presence-gate** | Required bots (gemini, sourcery) posted since anchor |
+| `pr-bot-feedback-check` | **bot-feedback-gate** | Review threads resolved |
 
-| Job | Purpose |
-|-----|---------|
-| **validate** | Docs, projectmem, pilot tests |
-| **bot-review-window** | **8-minute mandatory wait** so review bots (Sourcery, etc.) can post before merge |
-
-Both jobs must pass. **Do not merge until `bot-review-window` is green** — merging early bypasses bot feedback.
+All three must pass. **Do not merge until `bot-presence-gate` and `bot-feedback-gate` are green.**
 
 ## Operator setup (one-time)
 
-If you have admin access, apply protection from the repo:
-
 ```bash
-chmod +x .github/scripts/apply-branch-protection.sh
-./.github/scripts/apply-branch-protection.sh yanniedog simjury main
+npm run github:bot-gates:operator
+npm run repo-merge-settings:apply
+npm run branch-protection:apply
 ```
 
-Or configure manually in GitHub Settings → Branches → `main` → add both required checks.
+Or import `.github/rulesets/main-bot-gates.json` via GitHub UI.
 
-Verify both checks appear under "Require status checks to pass before merging".
+See also `WORKFLOW.md` and `.github/MERGE_POLICY.md`.
 
 ## Agent responsibility
 
-Cloud agents and local agents must:
-
 1. Never `git push origin main`
-2. Open PR from `cursor/*-fb69` branches (or documented suffix)
+2. Open PR from `cursor/*` branches
 3. Fix CI failures in the same branch
-4. **Wait for `bot-review-window` to pass** (minimum 8 minutes after last push)
-5. Read all bot review comments; **fix every valid item in code**; reply; resolve threads
-6. Run `.github/scripts/audit-bot-feedback.sh <pr-number>` — must exit 0
-7. Run preflight before merge: `.github/scripts/assert-pr-mergeable.sh <pr-number>`
-8. Resolve any remaining threads: `.github/scripts/resolve-bot-threads.sh <pr-number>`
-9. Squash merge **only** when validate + bot-review-window pass and conversations resolved
+4. Run `npm run wait-for-bots -- --watch --pr <n>` until exit 0
+5. Fix bot feedback; resolve all review threads
+6. Run `npm run pr:gates:check -- --pr <n>` — must exit 0
+7. Run `.github/scripts/assert-pr-mergeable.sh <n>`
+8. Squash merge: `gh pr merge <n> --auto --squash --delete-branch`
 
 **Agents must never wait for the user to ask before addressing bot feedback.**
-
-## Operator checklist
-
-- [ ] Branch protection rule applied to `main`
-- [ ] `validate` check required
-- [ ] **`bot-review-window` check required**
-- [ ] "Require conversation resolution" enabled
-- [ ] "Do not allow bypassing" enabled (blocks admin/agent early merge)
-- [ ] Direct push to `main` disabled for bots/agents
