@@ -40,7 +40,7 @@ data class DeliberationState(
     val caseId: String,
     val seed: Long,
     val phase: DeliberationPhase = DeliberationPhase.SUMMONS,
-    val itemsRead: List<String> = emptyList(),
+    val itemsRead: Set<String> = emptySet(),
     val diary: DiarySnapshot? = null,
     val vote: String? = null,
     val verdictLocked: Boolean = false,
@@ -55,6 +55,9 @@ sealed class DeliberationAction {
 
     @Serializable
     data class MarkItemRead(val itemId: String) : DeliberationAction()
+
+    @Serializable
+    data object OpenDiary : DeliberationAction()
 
     @Serializable
     data class CommitDiary(

@@ -6,6 +6,8 @@ package simjury.deliberation
  */
 object PilotDeliberationEngine {
 
+    private val allowedLeanings = setOf("G", "NG", "U")
+
     fun initialState(caseId: String, seed: Long): DeliberationState =
         DeliberationState(caseId = caseId, seed = seed)
 
@@ -14,6 +16,7 @@ object PilotDeliberationEngine {
         return when (action) {
             is DeliberationAction.AcknowledgeSummons -> onSummons(state, action)
             is DeliberationAction.MarkItemRead -> onMarkItemRead(state, action)
+            is DeliberationAction.OpenDiary -> onOpenDiary(state, action)
             is DeliberationAction.CommitDiary -> onCommitDiary(state, action)
             is DeliberationAction.CastVote -> onCastVote(state, action)
             is DeliberationAction.OpenReveal -> onOpenReveal(state, action)
@@ -46,16 +49,35 @@ object PilotDeliberationEngine {
         if (action.itemId.isBlank()) {
             throw IllegalDeliberationTransition("MarkItemRead requires non-blank itemId")
         }
-        val updated = state.copy(itemsRead = (state.itemsRead + action.itemId).distinct())
-        return updated.withEvent("item_read", action.itemId)
+        if (action.itemId in state.itemsRead) {
+            return state.withEvent("item_already_read", action.itemId)
+        }
+        return state
+            .copy(itemsRead = state.itemsRead + action.itemId)
+            .withEvent("item_read", action.itemId)
+    }
+
+    private fun onOpenDiary(
+        state: DeliberationState,
+        action: DeliberationAction.OpenDiary,
+    ): DeliberationState {
+        if (state.phase != DeliberationPhase.READING) {
+            throw IllegalDeliberationTransition("OpenDiary invalid in ${state.phase}")
+        }
+        return state
+            .withPhase(DeliberationPhase.DIARY)
+            .withEvent("diary_opened")
     }
 
     private fun onCommitDiary(
         state: DeliberationState,
         action: DeliberationAction.CommitDiary,
     ): DeliberationState {
-        if (state.phase != DeliberationPhase.READING && state.phase != DeliberationPhase.DIARY) {
+        if (state.phase != DeliberationPhase.DIARY) {
             throw IllegalDeliberationTransition("CommitDiary invalid in ${state.phase}")
+        }
+        if (action.leaning !in allowedLeanings) {
+            throw IllegalDeliberationTransition("Leaning must be one of: ${allowedLeanings.joinToString()}")
         }
         if (action.topReason.length < 10 || action.strongestDoubt.length < 10) {
             throw IllegalDeliberationTransition("Diary fields must be at least 10 characters")

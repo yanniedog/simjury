@@ -15,6 +15,7 @@ class PilotDeliberationEngineTest {
     val actions = listOf(
       DeliberationAction.AcknowledgeSummons,
       DeliberationAction.MarkItemRead("T-W01-001"),
+      DeliberationAction.OpenDiary,
       DeliberationAction.CommitDiary("G", "Receipt matches witness account.", "Pawn timing unclear."),
       DeliberationAction.CastVote("Guilty"),
       DeliberationAction.OpenReveal,
@@ -27,7 +28,7 @@ class PilotDeliberationEngineTest {
     assertEquals(DeliberationPhase.COMPLETE, end.phase)
     assertTrue(end.verdictLocked)
     assertTrue(end.revealComplete)
-    assertEquals(5, end.eventLog.size)
+    assertEquals(6, end.eventLog.size)
   }
 
   @Test
@@ -36,6 +37,7 @@ class PilotDeliberationEngineTest {
       DeliberationAction.AcknowledgeSummons,
       DeliberationAction.MarkItemRead("T-W01-001"),
       DeliberationAction.MarkItemRead("X-01"),
+      DeliberationAction.OpenDiary,
       DeliberationAction.CommitDiary("NG", "No proof of intent to steal.", "Watch was found elsewhere."),
       DeliberationAction.CastVote("Not Guilty"),
       DeliberationAction.OpenReveal,
@@ -64,11 +66,32 @@ class PilotDeliberationEngineTest {
   }
 
   @Test
+  fun `diary phase requires OpenDiary transition`() {
+    val reading = PilotDeliberationEngine.reduce(
+      PilotDeliberationEngine.initialState(caseId, seed),
+      listOf(
+        DeliberationAction.AcknowledgeSummons,
+        DeliberationAction.MarkItemRead("T-W01-001"),
+      ),
+      seed,
+    )
+    assertEquals(DeliberationPhase.READING, reading.phase)
+    assertFailsWith<IllegalDeliberationTransition> {
+      PilotDeliberationEngine.step(
+        reading,
+        DeliberationAction.CommitDiary("G", "Valid reason here.", "Valid doubt here."),
+        seed,
+      )
+    }
+  }
+
+  @Test
   fun `replay reset returns to summons`() {
     val complete = PilotDeliberationEngine.reduce(
       PilotDeliberationEngine.initialState(caseId, seed),
       listOf(
         DeliberationAction.AcknowledgeSummons,
+        DeliberationAction.OpenDiary,
         DeliberationAction.CommitDiary("U", "Need more time to decide.", "Conflicting testimony."),
         DeliberationAction.CastVote("Guilty"),
         DeliberationAction.OpenReveal,
@@ -77,7 +100,7 @@ class PilotDeliberationEngineTest {
     )
     val reset = PilotDeliberationEngine.step(complete, DeliberationAction.ResetForReplay, seed)
     assertEquals(DeliberationPhase.SUMMONS, reset.phase)
-    assertEquals(emptyList<String>(), reset.itemsRead)
+    assertEquals(emptySet<String>(), reset.itemsRead)
     assertEquals(null, reset.diary)
   }
 }
