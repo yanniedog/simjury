@@ -48,13 +48,13 @@ Phased delivery. **Do not skip phases.** Each phase ends with a gate PR that mus
 
 **Goal:** Compose UI for trial reading + diary + vote + reveal.
 
-| Deliverable | PR scope |
-|-------------|----------|
+| Deliverable | Status |
+|-------------|--------|
 | `:app` module skeleton | Done |
-| Navigation + dark theme tokens | One PR |
-| Trial reader screens | One PR |
-| Diary + verdict + reveal screens | One PR |
-| DataStore save model | One PR |
+| Navigation + dark theme tokens | Done |
+| Trial reader screens | Done |
+| Diary + verdict + reveal screens | Done |
+| DataStore save model | Done |
 
 **Gate G-3:** Emulator run of C-000; reveal gating on device.
 
