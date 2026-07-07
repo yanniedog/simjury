@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
-# Build the release APK, install it on a connected emulator/device, launch it,
-# and fail if the process crashes or the summons screen never appears.
+# Install a release APK on a connected emulator/device, launch it, and fail if the
+# process crashes or the summons screen never appears.
+#
+# Usage:
+#   APK_PATH=/path/to/app-release.apk bash pilot/scripts/emulator-smoke-test.sh
+#   # or, from pilot/: builds release APK first when APK_PATH is unset
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-APK="${ROOT_DIR}/app/build/outputs/apk/release/app-release.apk"
+DEFAULT_APK="${ROOT_DIR}/app/build/outputs/apk/release/app-release.apk"
+APK="${APK_PATH:-${DEFAULT_APK}}"
 PACKAGE="com.simjury.app"
 ACTIVITY="${PACKAGE}/simjury.app.MainActivity"
 UI_DUMP="/data/local/tmp/simjury-smoke-ui.xml"
@@ -59,7 +64,6 @@ wait_for_ui_text() {
 }
 
 require_cmd adb
-[[ -n "${ANDROID_HOME:-}" ]] || die "ANDROID_HOME is not set"
 
 if ! adb get-state >/dev/null 2>&1; then
   die "No adb device connected"
@@ -67,13 +71,20 @@ fi
 
 wait_for_boot
 
-log "Building release APK"
-(
-  cd "${ROOT_DIR}"
-  ./gradlew :app:assembleRelease --no-daemon --console=plain
-)
+if [[ -z "${APK_PATH:-}" ]]; then
+  if [[ -z "${ANDROID_HOME:-}" ]]; then
+    die "ANDROID_HOME is not set (required to build APK when APK_PATH is unset)"
+  fi
+  log "Building release APK"
+  (
+    cd "${ROOT_DIR}"
+    ./gradlew :app:assembleRelease --no-daemon --console=plain
+  )
+else
+  log "Using prebuilt APK: ${APK}"
+fi
 
-[[ -f "${APK}" ]] || die "Release APK not found at ${APK}"
+[[ -f "${APK}" ]] || die "APK not found at ${APK}"
 
 log "Installing ${APK}"
 adb uninstall "${PACKAGE}" >/dev/null 2>&1 || true

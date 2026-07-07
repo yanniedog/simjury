@@ -1,5 +1,6 @@
 # Build SimJury pilot Android APK and publish to GitHub Releases (AR-local parity).
 #
+# Release gate: emulator install + launch smoke test must pass before publish.
 # Rolling: app-apk-latest (manifest app-apk-latest.json for in-app self-update)
 # Versioned: app-v{semver} e.g. app-v0.1.1
 #
@@ -15,6 +16,13 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+    paths:
+      - 'pilot/app/**'
+      - 'pilot/case-model/**'
+      - 'pilot/deliberation-core/**'
+      - 'pilot/scripts/**'
+      - '.github/workflows/pilot-android-apk.yml'
+  pull_request:
     paths:
       - 'pilot/app/**'
       - 'pilot/case-model/**'
@@ -113,10 +121,27 @@ jobs:
           echo "path=$apk" >> "$GITHUB_OUTPUT"
           ls -lh "$apk"
 
+      - name: Emulator install + launch smoke test (release gate)
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          script: |
+            set -euo pipefail
+            export APK_PATH="${{ steps.apk.outputs.path }}"
+            export BOOT_TIMEOUT_SEC=300
+            export UI_TIMEOUT_SEC=120
+            bash pilot/scripts/emulator-smoke-test.sh
+
       - name: Install publish dependencies
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: npm install --no-save qrcode@1.5.4
 
       - name: Publish preview APK manifest (GitHub release)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_SHA: ${{ github.sha }}
@@ -126,6 +151,7 @@ jobs:
             --repo "${{ github.repository }}"
 
       - name: Upload workflow artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
           name: simjury-preview-apk
