@@ -28,8 +28,9 @@ sealed interface AppUpdateUiState {
 
 class AppUpdateViewModel(
     application: Application,
-    private val repository: AppUpdateRepository = AppUpdateRepository(),
 ) : AndroidViewModel(application) {
+
+    private val repository = AppUpdateRepository()
 
     private val _state = MutableStateFlow<AppUpdateUiState>(AppUpdateUiState.Idle)
     val state: StateFlow<AppUpdateUiState> = _state.asStateFlow()
