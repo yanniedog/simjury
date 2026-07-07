@@ -18,6 +18,8 @@ Phased delivery. **Do not skip phases.** Each phase ends with a gate PR that mus
 | Branch protection docs | Done |
 | Archive v3 spec | Done |
 
+**G-0:** Met on merge of foundation PR.
+
 **Gate G-0:** CI green on `main`; projectmem populated; README accurate.
 
 ---
@@ -26,13 +28,13 @@ Phased delivery. **Do not skip phases.** Each phase ends with a gate PR that mus
 
 **Goal:** End-to-end playable CLI loop on case C-000.
 
-| Deliverable | PR scope |
-|-------------|----------|
-| Gradle JVM project in `pilot/` | Small PR |
-| Case loader + validator | Small PR |
-| C-000 synthetic case assets | Small PR |
-| Game session (summons → reveal) | Small PR |
-| Reveal gate + validator tests | Small PR |
+| Deliverable | PR scope | Status |
+|-------------|----------|--------|
+| Gradle JVM project in `pilot/` | PR #3 | Done |
+| Case loader + validator | PR #3 | Done |
+| C-000 synthetic case assets | PR #3 | Done |
+| Game session (summons → reveal) | PR #3 | Done |
+| Reveal gate + validator tests | PR #3 | Done |
 
 **Gate G-1:**
 - `./gradlew test` green in CI

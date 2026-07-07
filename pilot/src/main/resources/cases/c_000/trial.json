@@ -1,0 +1,85 @@
+{
+  "episodes": [
+    {
+      "id": "E-01",
+      "title": "The trial",
+      "intro_text": "You are Juror 12 in the City. The Crown alleges Mr Crane stole a pocket watch from Mr Alden's shop.",
+      "item_order": ["T-W01-001", "T-W01-002", "T-W02-001", "T-W02-002", "X-01", "X-02", "D-01"]
+    }
+  ],
+  "witnesses": [
+    {
+      "id": "W-01",
+      "pseudonym_ref": "P-01",
+      "role_label": "Complainant",
+      "called_by": "prosecution",
+      "blocks": [
+        {
+          "id": "T-W01-001",
+          "mode": "examination",
+          "fidelity": "summarised",
+          "text": "Mr Alden keeps a small jeweller's shop. On a Tuesday afternoon a gentleman entered, asked to see gold watches, and selected one priced at twelve pounds. He gave a name and address, took the watch to examine it by the window, and left while Mr Alden turned to his ledger. When Mr Alden looked up, the gentleman and the watch were gone.",
+          "source": { "source_id": "S-01", "locator": "W-01 examination block 1" }
+        },
+        {
+          "id": "T-W01-002",
+          "mode": "cross",
+          "fidelity": "summarised",
+          "text": "Under cross-examination Mr Alden admitted he did not see the man's face clearly in the dim shop, that no deposit was paid, and that he had never done business with the gentleman before.",
+          "source": { "source_id": "S-01", "locator": "W-01 cross block 1" }
+        }
+      ]
+    },
+    {
+      "id": "W-02",
+      "pseudonym_ref": "P-02",
+      "role_label": "Police constable",
+      "called_by": "prosecution",
+      "blocks": [
+        {
+          "id": "T-W02-001",
+          "mode": "examination",
+          "fidelity": "summarised",
+          "text": "Constable Marsh arrested Mr Crane two days later at a pawn office. Mr Crane was offering a gold pocket watch matching Mr Alden's description. Mr Crane said he had found it.",
+          "source": { "source_id": "S-01", "locator": "W-02 examination block 1" }
+        },
+        {
+          "id": "T-W02-002",
+          "mode": "cross",
+          "fidelity": "summarised",
+          "text": "Constable Marsh agreed under cross that he did not witness the taking, that the pawn ticket was made out in another name, and that Mr Crane had been calm and cooperative.",
+          "source": { "source_id": "S-01", "locator": "W-02 cross block 1" }
+        }
+      ]
+    }
+  ],
+  "exhibits": [
+    {
+      "id": "X-01",
+      "title": "Shop receipt book entry",
+      "kind": "document",
+      "text": "Ledger entry: 'Gold hunter watch — twelve pounds — shown to gentleman, name given as Mr Hartley, Brook Street.' No payment recorded.",
+      "prosecution_claim": "The watch was the property offered at pawn.",
+      "defence_claim": "The entry does not identify the accused.",
+      "source": { "source_id": "S-01", "locator": "Exhibit X-01" }
+    },
+    {
+      "id": "X-02",
+      "title": "Pawn ticket",
+      "kind": "document",
+      "text": "Pawn ticket dated two days after the shop incident. Item: gold hunter watch. Name on ticket: Hartley. Advance sought: eight pounds.",
+      "prosecution_claim": "The accused possessed the stolen watch.",
+      "defence_claim": "The name on the ticket is not the accused's.",
+      "source": { "source_id": "S-01", "locator": "Exhibit X-02" }
+    }
+  ],
+  "directions": [
+    {
+      "id": "D-01",
+      "title": "Burden and standard",
+      "text": "The Crown must prove each element so you are sure. The accused need prove nothing. Decide only on the evidence.",
+      "source": { "source_id": "S-02", "locator": "Westhaven pilot direction" },
+      "citable": true
+    }
+  ]
+}
