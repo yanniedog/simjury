@@ -103,7 +103,8 @@ function main() {
   console.error(`apply-repo-merge-settings: API failed (exit ${r.status})`);
   if (r.stderr) console.error(r.stderr.trim());
   printManualSteps(repo);
-  process.exit(r.status === 403 || r.status === 404 ? 2 : 1);
+  const hasAuthError = r.stderr && (r.stderr.includes('403') || r.stderr.includes('404'));
+  process.exit(hasAuthError ? 2 : 1);
 }
 
 main();

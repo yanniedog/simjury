@@ -183,7 +183,7 @@ function threadHasBotSelfAddressed(comments) {
 function threadHasOwnerClosure(comments, botAt) {
   for (const c of comments.slice(1)) {
     const login = c.author.login;
-    if (isBotLogin(login) && c.author.__typename === 'Bot') continue;
+    if (isBotLogin(login) || c.author.__typename === 'Bot') continue;
     if (new Date(c.createdAt).getTime() < botAt) continue;
     if (isClosureReply(c.body)) return true;
   }

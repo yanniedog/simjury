@@ -101,6 +101,33 @@ export function fetchRequiredCi(prNumber) {
     ['pr', 'checks', String(prNumber), '--required', '--json', 'name,bucket,state'],
     { encoding: 'utf8' },
   );
+  const stdout = (r.stdout || '').trim();
+  if (stdout) {
+    try {
+      const checks = JSON.parse(stdout);
+      let pending = false;
+      let failed = false;
+      const failedNames = [];
+      if (Array.isArray(checks)) {
+        for (const c of checks) {
+          if (c.bucket === 'pending') pending = true;
+          if (
+            c.bucket === 'fail' ||
+            c.bucket === 'cancel' ||
+            c.state === 'FAILURE' ||
+            c.state === 'ERROR' ||
+            c.state === 'CANCELLED'
+          ) {
+            failed = true;
+            failedNames.push(c.name);
+          }
+        }
+      }
+      return { ok: true, pending, failed, failedNames, checks };
+    } catch {
+      // fall through to status-based handling
+    }
+  }
   if (r.status === 8) {
     return { ok: true, pending: true, failed: false, failedNames: [], checks: [] };
   }
@@ -111,24 +138,7 @@ export function fetchRequiredCi(prNumber) {
     }
     return { ok: false, error: msg };
   }
-  const checks = JSON.parse(r.stdout || '[]');
-  let pending = false;
-  let failed = false;
-  const failedNames = [];
-  for (const c of checks) {
-    if (c.bucket === 'pending') pending = true;
-    if (
-      c.bucket === 'fail' ||
-      c.bucket === 'cancel' ||
-      c.state === 'FAILURE' ||
-      c.state === 'ERROR' ||
-      c.state === 'CANCELLED'
-    ) {
-      failed = true;
-      failedNames.push(c.name);
-    }
-  }
-  return { ok: true, pending, failed, failedNames, checks };
+  return { ok: true, pending: false, failed: false, failedNames: [], checks: [] };
 }
 
 export function fetchNamedChecks(prNumber, names) {
@@ -137,22 +147,32 @@ export function fetchNamedChecks(prNumber, names) {
     ['pr', 'checks', String(prNumber), '--json', 'name,bucket,state,completedAt'],
     { encoding: 'utf8' },
   );
+  const stdout = (r.stdout || '').trim();
+  if (stdout) {
+    try {
+      const all = JSON.parse(stdout);
+      const want = new Set(names.map((n) => n.toLowerCase()));
+      const found = {};
+      if (Array.isArray(all)) {
+        for (const c of all) {
+          const lower = (c.name || '').toLowerCase();
+          const tail = lower.includes('/') ? lower.slice(lower.lastIndexOf('/') + 1) : lower;
+          for (const key of want) {
+            if (lower === key || tail === key) found[key] = c;
+          }
+        }
+      }
+      return { found };
+    } catch {
+      // fall through to status-based handling
+    }
+  }
   if (r.status !== 0) {
     const msg = (r.stderr || '').trim() || `gh pr checks exit ${r.status}`;
     if (/no checks reported/i.test(msg)) return { found: {}, skipped: true };
     return { found: {}, error: msg };
   }
-  const all = JSON.parse(r.stdout || '[]');
-  const want = new Set(names.map((n) => n.toLowerCase()));
-  const found = {};
-  for (const c of all) {
-    const lower = (c.name || '').toLowerCase();
-    const tail = lower.includes('/') ? lower.slice(lower.lastIndexOf('/') + 1) : lower;
-    for (const key of want) {
-      if (lower === key || tail === key) found[key] = c;
-    }
-  }
-  return { found };
+  return { found: {} };
 }
 
 function checkBucketPass(c) {
