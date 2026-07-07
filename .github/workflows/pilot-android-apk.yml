@@ -46,7 +46,8 @@ jobs:
         with:
           node-version: "24"
 
-      - uses: android-actions/setup-android@v3
+      - name: Set up Android SDK (build-only)
+        run: bash .github/scripts/setup-android-sdk.sh pilot/local.properties
 
       - name: Bump Android versionCode from rolling manifest
         env:

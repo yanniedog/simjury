@@ -8,13 +8,13 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import simjury.app.BuildConfig
 
-class AppUpdateRepository(
+open class AppUpdateRepository(
     private val client: OkHttpClient = OkHttpClient(),
     private val manifestUrl: String = BuildConfig.APK_MANIFEST_URL,
     private val json: Json = Json { ignoreUnknownKeys = true },
 ) {
 
-    fun fetchManifest(): ApkManifest {
+    open fun fetchManifest(): ApkManifest {
         val url = "${manifestUrl.trimEnd('/')}?_=${System.currentTimeMillis()}"
         val request = Request.Builder().url(url).get().build()
         client.newCall(request).execute().use { response ->
