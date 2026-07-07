@@ -3,7 +3,7 @@
     {
       "id": "E-01",
       "title": "The method",
-      "intro_text": "[AUTHORING PENDING \u2014 episode E-01 intro]",
+      "intro_text": "You are Juror 12 at Westhaven Crown Court. The Crown alleges the defendant obtained jewellery and other valuables from several women by false pretences, posing as a wealthy gentleman with a written list of clothing and a worthless cheque. This episode opens with the first two complainants.",
       "item_order": [
         "T-W01-001",
         "T-W01-002",
@@ -23,13 +23,15 @@
         "T-W02-007",
         "T-W02-008",
         "T-W02-009",
+        "X-01",
+        "X-02",
         "T-W03-001"
       ]
     },
     {
       "id": "E-02",
       "title": "Many accounts",
-      "intro_text": "[AUTHORING PENDING \u2014 episode E-02 intro]",
+      "intro_text": "[AUTHORING PENDING — episode E-02 intro]",
       "item_order": [
         "T-W03-002",
         "T-W03-003",
@@ -55,7 +57,7 @@
     {
       "id": "E-03",
       "title": "Handwriting and history",
-      "intro_text": "[AUTHORING PENDING \u2014 episode E-03 intro]",
+      "intro_text": "[AUTHORING PENDING — episode E-03 intro]",
       "item_order": [
         "T-W05-003",
         "T-W05-004",
@@ -81,7 +83,7 @@
     {
       "id": "E-04",
       "title": "The accused speaks",
-      "intro_text": "[AUTHORING PENDING \u2014 episode E-04 intro]",
+      "intro_text": "[AUTHORING PENDING — episode E-04 intro]",
       "item_order": [
         "T-W08-001",
         "T-W08-002",
@@ -93,8 +95,6 @@
         "T-W08-008",
         "T-W08-009",
         "T-W08-010",
-        "X-01",
-        "X-02",
         "X-03",
         "X-04",
         "X-05",
@@ -119,90 +119,90 @@
           "id": "T-W01-001",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W01-001 before P4-4]",
+          "text": "Mrs Elling testified she was a widow in Regent's Park that December. About six o'clock one Monday evening she stood in Bond Street in mourning when a well-dressed gentleman spoke to her, said she must be a very young widow, and asked how her husband had died. After talking for about a quarter of an hour she gave him her address though she rarely received gentlemen. He said he was dining out and would write. He did not give his name.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 118–119, examination (Sessions Papers cross-check)"
           }
         },
         {
           "id": "T-W01-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W01-002 before P4-4]",
+          "text": "Next morning she received a letter on Grand Hotel notepaper asking her to expect him between one and two. He arrived by cab, removed his coat, and sat by the fire. He described a house in St John's Wood and offered her work as his housekeeper, saying the previous lady was being sent away without money though she kept jewellery he had given her. He promised five pounds a week to begin, rising to ten if she suited him, and spoke of Lincolnshire estates and grapes to be sent next day.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 118–119, examination"
           }
         },
         {
           "id": "T-W01-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W01-003 before P4-4]",
+          "text": "He said she must leave off mourning and wrote a list of dresses and jewellery she was to order, without her suggesting items. He named shops and handed her a cheque for fifteen guineas to pay a ten-pound deposit, having two cheques already written in his pocket. He sealed the cheque in an envelope addressed to a bank at Belgrave Mansions. When she asked if it could be changed nearer home he refused, saying a gentleman in his position could not have cheques changed casually.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 118–119, examination"
           }
         },
         {
           "id": "T-W01-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W01-004 before P4-4]",
+          "text": "He asked to see her rings, took her wedding ring and another for sizing, and promised their return about five o'clock by a one-armed commissionaire from the Grand Hotel, together with jewellery he would buy. The rings were worth about five or six pounds. After he left she found a brooch missing from her dressing table. She showed the cheque to her brother and, on his advice, never presented it and did not go to the police at the time.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 119–120, examination"
           }
         },
         {
           "id": "T-W01-005",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W01-005 before P4-4]",
+          "text": "In January, after reading newspaper reports of a man charged with similar frauds, she went to the police court without contacting the police first. She saw the accused in the dock, recognised him at once from his back, and said she would know him among a thousand. She was quite sure he was the same man.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT p. 120, examination; S-03 Morning Advertiser cross-check"
           }
         },
         {
           "id": "T-W01-006",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W01-006 before P4-4]",
+          "text": "Under cross-examination she admitted reading two or three newspaper accounts, including in the Standard and the People, before attending court. She knew a man was in custody for conduct like her own complaint. She was angry about the wedding ring. She had stood in the street with him ten to fifteen minutes near a lighted shop window and was calm at both meetings.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT p. 120, cross-examination"
           }
         },
         {
           "id": "T-W01-007",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W01-007 before P4-4]",
+          "text": "He was middle-aged with light hair tinged grey, very well dressed, with a gold watch and heavy chain. She could not say whether he faced her in the street. She identified him by his back at the police court and had never identified anyone before. One ring bore the motto Love and Friendship inside; the brooch was a mounted five-shilling piece enamelled with a date.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT p. 120, cross-examination"
           }
         },
         {
           "id": "T-W01-008",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W01-008 before P4-4]",
+          "text": "She attended the police court four times and heard one other lady give evidence. Nothing was peculiar about his dress except the watch and chain. She saw him write the list freely and heard him say the departing housekeeper had jewellery worth eight thousand pounds.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT p. 120, cross-examination"
           }
         },
         {
           "id": "T-W01-009",
-          "mode": "cross",
+          "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W01-009 before P4-4]",
+          "text": "Re-examined, she said he wore a blue overcoat with a velvet collar in Bond Street and a black frock coat with fawn spats when he called. The shop was well lighted and she saw his face clearly during a visit of one to one and a half hours. She thought him English though he might have had a slight foreign accent.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT p. 120, re-examination"
           }
         }
       ]
@@ -217,90 +217,90 @@
           "id": "T-W02-001",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W02-001 before P4-4]",
+          "text": "Mrs Garner lived in St John's Wood. On a July afternoon in St James's Street she was with a lady and a small boy when the accused spoke to her, gave the name Wilton, and said he would call. She did not know him. He wrote her address in a pocket book and called the next afternoon about four o'clock, staying three-quarters of an hour.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 135–136, examination"
           }
         },
         {
           "id": "T-W02-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W02-002 before P4-4]",
+          "text": "When he called she said neither she nor anyone she knew recognised the name. He claimed it was an excuse to speak to her and said he was Lord Wilton. He described an empty house in St John's Wood and suggested she move there. When she said she was happy where she was, he offered better dresses and jewellery and wrote a list on paper she supplied.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 135–136, examination"
           }
         },
         {
           "id": "T-W02-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W02-003 before P4-4]",
+          "text": "He arranged to return the following Monday and gave her a cheque for thirty-five pounds in an envelope addressed to a bank in St James's Street, saying she should pay a deposit. He asked for a ring to measure her finger and she gave him a small diamond ring and a dented gold bracelet he offered to repair. He said a one-armed commissionaire would return them within an hour.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 135–136, examination"
           }
         },
         {
           "id": "T-W02-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W02-004 before P4-4]",
+          "text": "She also showed him a marquise ring in a case and left the room twice for matches and a photograph. After he left she missed the marquise ring, worth about fifteen pounds though she had first valued all he took at that sum. She went to St James's Street but could find no Union Bank there.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 135–136, examination"
           }
         },
         {
           "id": "T-W02-005",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W02-005 before P4-4]",
+          "text": "On 9 July she gave the police a description. On 16 December she was sent for, viewed seven or eight men at the station, and recognised the accused after asking that he remove his hat. She was with him in her rooms for three-quarters of an hour and now said he was the man.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 135–136, examination"
           }
         },
         {
           "id": "T-W02-006",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W02-006 before P4-4]",
+          "text": "Under cross-examination she agreed she was influenced by his removing his hat when picking him out. She described him as between fifty and sixty, rather short, stout, with a dark complexion and a short brown moustache turning grey. She had never seen him before in St James's Street though she later learned he lived nearby.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 136, cross-examination"
           }
         },
         {
           "id": "T-W02-007",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W02-007 before P4-4]",
+          "text": "The lady with her in the street walked on and did not attend court. When he called he wore a frock coat, white waistcoat lining, white spats, and a heavy gold chain. He wrote normally but signed the cheque holding the pen between two fingers. She was sent for soon after his arrest and had not read a description of him beforehand.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 136, cross-examination"
           }
         },
         {
           "id": "T-W02-008",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W02-008 before P4-4]",
+          "text": "Another witness spoke to her at the police court about what she had lost. Among the men shown she noticed the accused at once but would not swear until his hat came off. Another man had a grey moustache but was too tall with a ruddy face. In the street he wore a low round hat and she thought a brownish coat; he dressed differently when he called.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 136, cross-examination"
           }
         },
         {
           "id": "T-W02-009",
-          "mode": "cross",
+          "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W02-009 before P4-4]",
+          "text": "Re-examined, she said the property could be easily identified. She valued the loss higher once she knew the marquise ring's true worth. Her name and address were not found among the accused's papers.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 136, re-examination (inferred from examination close)"
           }
         }
       ]
@@ -315,90 +315,90 @@
           "id": "T-W03-001",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W03-001 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W03-001 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W03-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W03-002 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W03-002 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W03-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W03-003 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W03-003 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W03-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W03-004 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W03-004 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W03-005",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W03-005 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W03-005 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W03-006",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W03-006 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W03-006 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W03-007",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W03-007 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W03-007 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W03-008",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W03-008 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W03-008 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W03-009",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W03-009 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W03-009 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         }
       ]
@@ -413,90 +413,90 @@
           "id": "T-W04-001",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W04-001 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W04-001 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W04-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W04-002 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W04-002 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W04-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W04-003 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W04-003 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W04-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W04-004 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W04-004 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W04-005",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W04-005 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W04-005 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W04-006",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W04-006 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W04-006 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W04-007",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W04-007 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W04-007 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W04-008",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W04-008 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W04-008 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W04-009",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W04-009 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W04-009 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         }
       ]
@@ -511,80 +511,80 @@
           "id": "T-W05-001",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W05-001 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W05-001 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W05-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W05-002 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W05-002 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W05-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W05-003 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W05-003 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W05-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W05-004 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W05-004 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W05-005",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W05-005 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W05-005 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W05-006",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W05-006 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W05-006 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W05-007",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W05-007 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W05-007 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W05-008",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W05-008 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W05-008 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         }
       ]
@@ -599,70 +599,70 @@
           "id": "T-W06-001",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W06-001 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W06-001 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W06-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W06-002 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W06-002 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W06-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W06-003 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W06-003 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W06-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W06-004 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W06-004 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W06-005",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W06-005 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W06-005 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W06-006",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W06-006 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W06-006 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W06-007",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W06-007 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W06-007 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         }
       ]
@@ -677,60 +677,60 @@
           "id": "T-W07-001",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W07-001 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W07-001 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W07-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W07-002 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W07-002 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W07-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W07-003 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W07-003 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W07-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W07-004 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W07-004 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W07-005",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W07-005 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W07-005 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W07-006",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W07-006 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W07-006 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         }
       ]
@@ -745,100 +745,100 @@
           "id": "T-W08-001",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W08-001 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W08-001 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W08-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W08-002 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W08-002 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W08-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W08-003 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W08-003 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W08-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W08-004 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W08-004 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W08-005",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W08-005 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W08-005 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W08-006",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W08-006 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W08-006 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W08-007",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W08-007 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W08-007 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W08-008",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W08-008 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W08-008 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W08-009",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W08-009 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W08-009 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         },
         {
           "id": "T-W08-010",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING \u2014 tabulate T-W08-010 before P4-4]",
+          "text": "[AUTHORING PENDING — tabulate T-W08-010 before P4-4]",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED \u2014 see TABULATION.md"
+            "locator": "BLOCKED — see TABULATION.md"
           }
         }
       ]
@@ -847,98 +847,98 @@
   "exhibits": [
     {
       "id": "X-01",
-      "title": "Exhibit 1 (pending)",
+      "title": "Clothing list (Mrs Elling)",
       "kind": "document",
-      "text": "[AUTHORING PENDING \u2014 tabulate before P4-8]",
-      "prosecution_claim": "Pending tabulation.",
-      "defence_claim": "Pending tabulation.",
+      "text": "Handwritten list headed dresses and mourning wear to be ordered, including bonnets (spelled bonetBr in the original), silk gowns, gloves, and mourning trim. The accused specified named shops including a court dressmaker.",
+      "prosecution_claim": "Shows the method of building trust through an elaborate wardrobe order.",
+      "defence_claim": "The list proves nothing about identity or intent to defraud.",
       "source": {
-        "source_id": "S-02",
-        "locator": "BLOCKED \u2014 see TABULATION.md"
+        "source_id": "S-01",
+        "locator": "Cd. 2315 facsimile; NBT p. 119 list Q"
       }
     },
     {
       "id": "X-02",
-      "title": "Exhibit 2 (pending)",
+      "title": "Clothing list (Mrs Garner)",
       "kind": "document",
-      "text": "[AUTHORING PENDING \u2014 tabulate before P4-8]",
-      "prosecution_claim": "Pending tabulation.",
-      "defence_claim": "Pending tabulation.",
+      "text": "Second list of dresses and accessories written for Mrs Garner on paper she supplied, with items to be ordered before a further appointment on the following Monday.",
+      "prosecution_claim": "Repeats the same fraudulent pattern used against Mrs Elling.",
+      "defence_claim": "A list alone does not show the accused wrote it or meant to cheat.",
       "source": {
         "source_id": "S-02",
-        "locator": "BLOCKED \u2014 see TABULATION.md"
+        "locator": "NBT pp. 135–136, list in Daisy Grant examination"
       }
     },
     {
       "id": "X-03",
       "title": "Exhibit 3 (pending)",
       "kind": "document",
-      "text": "[AUTHORING PENDING \u2014 tabulate before P4-8]",
+      "text": "[AUTHORING PENDING — tabulate before P4-8]",
       "prosecution_claim": "Pending tabulation.",
       "defence_claim": "Pending tabulation.",
       "source": {
         "source_id": "S-02",
-        "locator": "BLOCKED \u2014 see TABULATION.md"
+        "locator": "BLOCKED — see TABULATION.md"
       }
     },
     {
       "id": "X-04",
       "title": "Exhibit 4 (pending)",
       "kind": "document",
-      "text": "[AUTHORING PENDING \u2014 tabulate before P4-8]",
+      "text": "[AUTHORING PENDING — tabulate before P4-8]",
       "prosecution_claim": "Pending tabulation.",
       "defence_claim": "Pending tabulation.",
       "source": {
         "source_id": "S-02",
-        "locator": "BLOCKED \u2014 see TABULATION.md"
+        "locator": "BLOCKED — see TABULATION.md"
       }
     },
     {
       "id": "X-05",
       "title": "Exhibit 5 (pending)",
       "kind": "document",
-      "text": "[AUTHORING PENDING \u2014 tabulate before P4-8]",
+      "text": "[AUTHORING PENDING — tabulate before P4-8]",
       "prosecution_claim": "Pending tabulation.",
       "defence_claim": "Pending tabulation.",
       "source": {
         "source_id": "S-02",
-        "locator": "BLOCKED \u2014 see TABULATION.md"
+        "locator": "BLOCKED — see TABULATION.md"
       }
     },
     {
       "id": "X-06",
       "title": "Exhibit 6 (pending)",
       "kind": "document",
-      "text": "[AUTHORING PENDING \u2014 tabulate before P4-8]",
+      "text": "[AUTHORING PENDING — tabulate before P4-8]",
       "prosecution_claim": "Pending tabulation.",
       "defence_claim": "Pending tabulation.",
       "source": {
         "source_id": "S-02",
-        "locator": "BLOCKED \u2014 see TABULATION.md"
+        "locator": "BLOCKED — see TABULATION.md"
       }
     },
     {
       "id": "X-07",
       "title": "Exhibit 7 (pending)",
       "kind": "document",
-      "text": "[AUTHORING PENDING \u2014 tabulate before P4-8]",
+      "text": "[AUTHORING PENDING — tabulate before P4-8]",
       "prosecution_claim": "Pending tabulation.",
       "defence_claim": "Pending tabulation.",
       "source": {
         "source_id": "S-02",
-        "locator": "BLOCKED \u2014 see TABULATION.md"
+        "locator": "BLOCKED — see TABULATION.md"
       }
     },
     {
       "id": "X-08",
       "title": "Exhibit 8 (pending)",
       "kind": "document",
-      "text": "[AUTHORING PENDING \u2014 tabulate before P4-8]",
+      "text": "[AUTHORING PENDING — tabulate before P4-8]",
       "prosecution_claim": "Pending tabulation.",
       "defence_claim": "Pending tabulation.",
       "source": {
         "source_id": "S-02",
-        "locator": "BLOCKED \u2014 see TABULATION.md"
+        "locator": "BLOCKED — see TABULATION.md"
       }
     }
   ],
@@ -946,40 +946,40 @@
     {
       "id": "D-01",
       "title": "Burden and standard",
-      "text": "[AUTHORING PENDING \u2014 tabulate before P4-6]",
+      "text": "[AUTHORING PENDING — tabulate before P4-6]",
       "source": {
         "source_id": "S-03",
-        "locator": "BLOCKED \u2014 see TABULATION.md"
+        "locator": "BLOCKED — see TABULATION.md"
       },
       "citable": true
     },
     {
       "id": "D-02",
       "title": "Identification caution",
-      "text": "[AUTHORING PENDING \u2014 tabulate before P4-6]",
+      "text": "[AUTHORING PENDING — tabulate before P4-6]",
       "source": {
         "source_id": "S-01",
-        "locator": "BLOCKED \u2014 see TABULATION.md"
+        "locator": "BLOCKED — see TABULATION.md"
       },
       "citable": true
     },
     {
       "id": "D-03",
       "title": "Expert evidence",
-      "text": "[AUTHORING PENDING \u2014 tabulate before P4-6]",
+      "text": "[AUTHORING PENDING — tabulate before P4-6]",
       "source": {
         "source_id": "S-01",
-        "locator": "BLOCKED \u2014 see TABULATION.md"
+        "locator": "BLOCKED — see TABULATION.md"
       },
       "citable": true
     },
     {
       "id": "D-04",
       "title": "Prior-allegation ruling",
-      "text": "[AUTHORING PENDING \u2014 tabulate before P4-6]",
+      "text": "[AUTHORING PENDING — tabulate before P4-6]",
       "source": {
         "source_id": "S-01",
-        "locator": "BLOCKED \u2014 see TABULATION.md"
+        "locator": "BLOCKED — see TABULATION.md"
       },
       "citable": true
     }
