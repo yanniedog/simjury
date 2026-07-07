@@ -1,6 +1,5 @@
 package simjury.app.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -137,7 +136,8 @@ fun ReadingHubScreen(
             items(state.itemOrder, key = { it }) { itemId ->
                 val read = itemId in state.itemsRead
                 Card(
-                    modifier = Modifier.fillMaxWidth().clickable { onOpenItem(itemId) },
+                    onClick = { onOpenItem(itemId) },
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
                         text = if (read) stringResource(R.string.item_read, itemId)
