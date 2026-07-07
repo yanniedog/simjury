@@ -23,7 +23,7 @@ props_file="${1:-pilot/local.properties}"
 mkdir -p "$(dirname "${props_file}")"
 printf 'sdk.dir=%s\n' "${sdk_root}" > "${props_file}"
 
-yes | "${sdkmanager_bin}" --licenses >/dev/null
+yes | "${sdkmanager_bin}" --licenses >/dev/null || true
 "${sdkmanager_bin}" --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
 echo "Android SDK ready at ${sdk_root}"
