@@ -11,7 +11,7 @@ SimJury puts the player on a jury. They read condensed trial evidence, record a 
 
 | ID | Rule |
 |----|------|
-| P-1 | Fully offline — no network code, no `INTERNET` permission (future Android) |
+| P-1 | Fully offline for trial play — no network during case reading. **Exception:** `INTERNET` allowed only for optional app self-update checks against GitHub Releases (`app-apk-latest.json`). Case content never fetched at runtime. |
 | P-2 | No runtime AI — all player-facing text is pre-authored in JSON |
 | P-3 | Case content lives in `pilot/src/main/resources/cases/` — not embedded in Kotlin |
 | P-4 | Every content block has a `source` object citing a verifiable document |

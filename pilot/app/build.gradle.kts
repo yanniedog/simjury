@@ -6,12 +6,16 @@ plugins {
 }
 
 group = "com.simjury"
-version = "0.1.0-pilot"
+version = "0.1.0"
 
 repositories {
     google()
     mavenCentral()
 }
+
+val apkManifestUrl: String =
+    (project.findProperty("apkManifestUrl") as String?)
+        ?: "https://github.com/yanniedog/simjury/releases/download/app-apk-latest/app-apk-latest.json"
 
 android {
     namespace = "simjury.app"
@@ -22,12 +26,18 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = 1
-        versionName = "0.1.0-pilot"
+        versionName = "0.1.0"
+        buildConfigField("String", "APK_MANIFEST_URL", "\"$apkManifestUrl\"")
+    }
+
+    signingConfigs {
+        getByName("debug")
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
@@ -38,6 +48,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -50,6 +61,8 @@ dependencies {
     implementation(project(":deliberation-core"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation(platform("androidx.compose:compose-bom:2024.10.01"))
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.compose.ui:ui")

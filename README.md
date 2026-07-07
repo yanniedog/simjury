@@ -12,7 +12,20 @@ cd pilot
 ./gradlew test --console=plain
 ```
 
-## What exists today
+## Android preview APK
+
+After a PR merges to `main` (and the PR queue drains), **pilot-auto-release-on-queue-drain** bumps the app version and **pilot-android-apk** publishes to GitHub Releases:
+
+| Asset | URL |
+|-------|-----|
+| Rolling APK | `https://github.com/yanniedog/simjury/releases/download/app-apk-latest/app-preview.apk` |
+| Update manifest | `https://github.com/yanniedog/simjury/releases/download/app-apk-latest/app-apk-latest.json` |
+| Install page | `https://github.com/yanniedog/simjury/releases/download/app-apk-latest/install.html` |
+
+The installed app checks the manifest on launch and offers an in-app update (AR-local parity). Enable **Install unknown apps** for `SimJury` when prompted.
+
+Manual workflow dispatch: **Actions → pilot-android-apk → Run workflow**.
+
 
 | Area | Location | Phase |
 |------|----------|-------|
