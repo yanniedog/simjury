@@ -3,26 +3,26 @@
     {
       "id": "S-01",
       "citation": "Report of the Committee of Inquiry into the Case of Mr Adolf Beck (Parl. Paper Cd. 2315, 1904–05)",
-      "public_domain_basis": "Crown copyright expired — parliamentary paper",
-      "url_if_any": null
+      "public_domain_basis": "Crown copyright expired — parliamentary command paper",
+      "url_if_any": "https://catalogue.nli.ie/Record/vtls000420486"
     },
     {
       "id": "S-02",
-      "citation": "Central Criminal Court Sessions Papers / Proceedings, 1896 (trial of Adolf Beck)",
-      "public_domain_basis": "Publication pre-1926 — public domain (independent transcription from PD images required; EX-5: no OBO text)",
-      "url_if_any": null
+      "citation": "Proceedings of the Central Criminal Court, session 24 February 1896 (Adolf Beck trial, 3–5 March 1896)",
+      "public_domain_basis": "Publication pre-1926 — PD page images at dhi.ac.uk; independent transcription (EX-5: no OBO text)",
+      "url_if_any": "https://www.dhi.ac.uk/san/ccc/18960224/"
     },
     {
       "id": "S-03",
-      "citation": "Contemporaneous newspaper report of the 1896 Beck trial",
+      "citation": "The Morning Advertiser (London), January–March 1896 — Beck police court and trial reports",
       "public_domain_basis": "Publication pre-1926 — public domain",
-      "url_if_any": null
+      "url_if_any": "https://www.britishnewspaperarchive.co.uk/titles/morning-advertiser"
     },
     {
       "id": "S-04",
-      "citation": "Pardon notice and parliamentary compensation record (Adolf Beck)",
-      "public_domain_basis": "Official government record — public domain",
-      "url_if_any": null
+      "citation": "Parliamentary record: free pardon and compensation for Adolf Beck (Hansard, 1904)",
+      "public_domain_basis": "Official parliamentary record — Crown copyright expired",
+      "url_if_any": "https://api.parliament.uk/historic-hansard/commons/1904/aug/03/wrongful-conviction-compensation-for"
     }
   ]
 }
