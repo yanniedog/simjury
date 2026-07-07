@@ -19,7 +19,7 @@ SimJury is an offline jury simulation game. The repository is in **pilot phase**
 - Session start: read CLAUDE.md + pjm brief; never read full v3 spec unless Phase 4+ [AGENTS.md]
 
 ## Key files
-- `simjury-build-spec-v3.md`
+- `archive/simjury-build-spec-v3.md`
 - `PILOT-SPEC.md`
 - `CLAUDE.md`
 

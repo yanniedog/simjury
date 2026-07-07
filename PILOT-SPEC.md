@@ -66,7 +66,7 @@ pilot/
 `entries[]` — `{ id, play_name, real_name, role }`
 
 ### `truth_file.json`
-`layers[]` — `{ heading, body }` plus `pseudonym_reveal[]`
+`layers[]` — `{ heading, body }` plus `pseudonym_reveal[]` and optional `adaptations[]` — `{ note }` items listing deliberate differences from the historical record (Phase 4+)
 
 ### `source` object (required on every block)
 `{ source_id, citation, locator }`

@@ -50,6 +50,7 @@ When a trigger fires, you MUST call the corresponding tool IMMEDIATELY, before c
 
 | Trigger | MCP tool | CLI command |
 | --- | --- | --- |
+| Before modifying any file | `precheck_file(path)` | `pjm precheck` (staged) |
 | Bug, error, or unexpected behavior | `log_issue(summary, location)` | `pjm log "<text>" --at "<file:line>"` |
 | Fix attempt FAILED | `record_attempt(summary, outcome="failed")` | `pjm attempt "<text>" --failed --at "<file:line>"` |
 | Fix attempt PARTIAL (helped but didn't fully fix) | `record_attempt(summary, outcome="partial")` | `pjm attempt "<text>" --partial --at "<file:line>"` |

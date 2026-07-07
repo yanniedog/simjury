@@ -43,7 +43,7 @@ A case is **eligible** only when every row passes:
 | E-1 | Record requires invention to fill gaps | **STOP** — BLOCKED REPORT listing missing documents |
 | E-2 | Identification suppression orders active | Exclude case |
 | E-3 | Indigenous sensitivity unresolved | Human review required |
-| E-4 | Old Bailey Online text without licence | Use Section 8.2(b)–(e) sources only |
+| E-4 | Old Bailey Online text without licence | Use `archive/simjury-build-spec-v3.md` Section 8.2 classes (b)–(e) only |
 | E-5 | Case exceeds current phase floors | Defer or condense per adaptation rules |
 | E-6 | `fidelity: "reconstructed"` needed | Forbidden — summarise or omit |
 | E-7 | Real names would leak pre-reveal | Fix pseudonym pipeline |
@@ -99,7 +99,7 @@ Every row in the eventual trial must trace to a tabulation row. Empty cells = ga
 
 Allowed:
 
-- Condense repetitive witnesses (note in `truth_file.adaptations`)
+- Condense repetitive witnesses (note in `truth_file.json` → `adaptations[]`)
 - Modernise Q&A form with `fidelity: "summarised"`
 - Translate procedure to Westhaven jurisdiction
 

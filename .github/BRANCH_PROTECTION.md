@@ -8,7 +8,7 @@ SimJury requires PR gates on `main`. Configure in GitHub **Settings → Branches
 |---------|-------|
 | Branch name pattern | `main` |
 | Require a pull request before merging | Yes |
-| Required approvals | 1 (or 0 for solo operator — still require PR) |
+| Require approvals | 1 for teams; **uncheck entirely** for solo operator (PR still required) |
 | Dismiss stale reviews | Yes |
 | Require status checks to pass | Yes |
 | Required checks | `validate` (from `ci.yml`) |
