@@ -19,12 +19,17 @@ val apkManifestUrl: String =
 
 val pilotCaseId: String = (project.findProperty("pilotCaseId") as String?) ?: "c_000"
 
-val generatedCaseAssetsDir = layout.buildDirectory.dir("generated/caseAssets")
+val generatedAssetsRoot = layout.buildDirectory.dir("generated/caseAssets")
+val generatedCasesDir = layout.buildDirectory.dir("generated/caseAssets/cases")
 
 val syncCaseAssets = tasks.register<Copy>("syncCaseAssets") {
     from("${rootProject.projectDir}/src/main/resources/cases")
-    into(generatedCaseAssetsDir)
+    into(generatedCasesDir)
     include("**/*")
+}
+
+tasks.withType<Test>().configureEach {
+    dependsOn(syncCaseAssets)
 }
 
 android {
@@ -33,7 +38,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            assets.srcDir(generatedCaseAssetsDir)
+            assets.srcDir(generatedAssetsRoot)
         }
     }
 
