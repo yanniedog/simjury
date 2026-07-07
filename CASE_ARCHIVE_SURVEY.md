@@ -238,12 +238,15 @@ Priority order for Content Curator scoping — **subject to operator approval**:
 
 Each requires a fresh EX-1 source audit (NBT volume + supplementary class b/d/e) before skeleton JSON.
 
+**Completed:** See `CASE_EX1_AUDITS.md` — per-case source matrices for all §7.1–7.3 survey cases (23 eligible + 12 blocked).
+
 ---
 
 ## 11. References
 
 - `CASE_HARNESS.md` — inclusion, exclusion, phase floors  
 - `PHASE4-PLAN.md` — source classes (a)–(e), EX-5  
+- `CASE_EX1_AUDITS.md` — EX-1 access audits for all survey cases  
 - `pilot/src/main/resources/cases/c_001/EX-1-HANDOFF.md` — worked example for Beck  
 - NBT catalog: http://www.noumenal.com/marc/nbt.html  
 - Old Bailey Online: https://www.oldbaileyonline.org/  
