@@ -34,14 +34,27 @@ class AppUpdateViewModelTest {
         }
     }
 
-    private fun currentManifest(): ApkManifest = ApkManifest(
-        version = BuildConfig.VERSION_NAME,
-        buildNumber = BuildConfig.VERSION_CODE.toString(),
-        downloadUrl = "https://example.com/app.apk",
-    )
-
-    @After
-    fun tearDown() {
+    private fun currentManifest(): ApkManifest {
+        val pm = application.packageManager
+        val pkg = application.packageName
+        val info = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            pm.getPackageInfo(pkg, PackageManager.PackageInfoFlags.of(0))
+        } else {
+            @Suppress("DEPRECATION")
+            pm.getPackageInfo(pkg, 0)
+        }
+        val versionName = info.versionName ?: "0.0.0"
+        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            info.longVersionCode.toInt()
+        } else {
+            @Suppress("DEPRECATION")
+            info.versionCode
+        }
+        return ApkManifest(
+            version = versionName,
+            buildNumber = versionCode.toString(),
+            downloadUrl = "https://example.com/app.apk",
+        )
     }
 
     @Test
