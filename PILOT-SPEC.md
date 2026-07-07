@@ -42,6 +42,10 @@ pilot/
 │   └── src/main/kotlin/simjury/casemodel/
 │       ├── CaseModels.kt
 │       └── CaseValidator.kt
+├── deliberation-core/          # Phase 2 — pilot state machine stub
+│   └── src/main/kotlin/simjury/deliberation/
+│       ├── DeliberationModels.kt
+│       └── PilotDeliberationEngine.kt
 └── src/main/
     ├── kotlin/simjury/pilot/
     │   ├── Main.kt              # CLI entry
@@ -56,7 +60,7 @@ pilot/
         └── sources.json
 ```
 
-**Modules (pilot):** `:case-model` (Phase 2) + CLI app. Next: `:deliberation-core`, then `:app` (Android).
+**Modules (pilot):** `:case-model` + `:deliberation-core` (Phase 2) + CLI app. Next: `:app` (Android).
 
 ## 4. Case JSON schema (pilot minimum)
 
