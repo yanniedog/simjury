@@ -73,6 +73,13 @@ jobs:
             echo "No ANDROID_KEYSTORE_B64 — using Gradle debug signing for release build"
           fi
 
+      - name: Cache Android debug keystore
+        if: steps.keystore.outputs.configured != 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: simjury-preview-debug-keystore-v1
+
       - name: Gradle assembleRelease
         working-directory: pilot
         env:

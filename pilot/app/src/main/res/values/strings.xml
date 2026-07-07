@@ -41,4 +41,7 @@
     <string name="update_ready">Update downloaded. Complete install in the system prompt.</string>
     <string name="update_retry_install">Open installer</string>
     <string name="update_dismiss">Dismiss</string>
+    <string name="update_install_failed">Update was not installed. Try again or reinstall from GitHub.</string>
+    <string name="update_install_aborted">Install cancelled. The update was not installed.</string>
+    <string name="update_signature_mismatch">Update was not installed because the APK signature does not match this install. Uninstall SimJury, then install the latest APK from GitHub Releases.</string>
 </resources>

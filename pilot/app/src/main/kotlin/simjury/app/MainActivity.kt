@@ -78,4 +78,9 @@ open class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        updateViewModel.verifyPendingInstall()
+    }
 }
