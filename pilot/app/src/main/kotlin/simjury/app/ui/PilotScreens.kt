@@ -145,7 +145,8 @@ fun EpisodeHubScreen(
                 items(state.episodes, key = { it.id }) { episode ->
                     val complete = episode.itemsRead == episode.itemsTotal
                     Card(
-                        modifier = Modifier.fillMaxWidth().clickable { onSelectEpisode(episode.id) },
+                        onClick = { onSelectEpisode(episode.id) },
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(episode.title, style = MaterialTheme.typography.titleMedium)
