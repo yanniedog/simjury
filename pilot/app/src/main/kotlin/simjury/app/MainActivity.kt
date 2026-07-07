@@ -30,6 +30,7 @@ open class MainActivity : ComponentActivity() {
 
     companion object {
         internal var testUpdateRepositoryOverride: AppUpdateRepository? = null
+        internal var testSkipAutoUpdateCheck: Boolean = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

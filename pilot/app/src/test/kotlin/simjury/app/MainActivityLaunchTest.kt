@@ -21,6 +21,7 @@ class MainActivityLaunchTest {
 
     @Before
     fun stubUpdateRepository() {
+        MainActivity.testSkipAutoUpdateCheck = true
         MainActivity.testUpdateRepositoryOverride = object : AppUpdateRepository() {
             override fun fetchManifest(): ApkManifest = ApkManifest(
                 version = "0.0.0",
