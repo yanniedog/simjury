@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import java.util.Locale
 import simjury.app.PilotUiState
 import simjury.app.R
 import simjury.app.model.TrialItem
@@ -123,7 +124,7 @@ fun ReadingHubScreen(
                 contentPadding = PaddingValues(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                items(state.itemOrder) { itemId ->
+                items(state.itemOrder, key = { it }) { itemId ->
                     val read = itemId in state.itemsRead
                     Card(
                         modifier = Modifier.fillMaxWidth().clickable { onOpenItem(itemId) },
@@ -155,7 +156,7 @@ fun ItemDetailScreen(item: TrialItem, onContinue: () -> Unit, onBack: () -> Unit
             modifier = Modifier.fillMaxSize().padding(padding).padding(24.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text(item.kind.uppercase(), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+            Text(item.kind.uppercase(Locale.ROOT), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
             Text(item.body, style = MaterialTheme.typography.bodyLarge)
             if (item.subtitle.isNotBlank()) {
                 Text(item.subtitle, style = MaterialTheme.typography.bodyMedium)
@@ -184,11 +185,15 @@ fun DiaryScreen(onCommit: (String, String, String) -> Unit) {
         ) {
             Text(stringResource(R.string.diary_permanent_warning), style = MaterialTheme.typography.bodyMedium)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf("G", "NG", "U").forEach { option ->
+                listOf(
+                    "G" to stringResource(R.string.diary_leaning_guilty),
+                    "NG" to stringResource(R.string.diary_leaning_not_guilty),
+                    "U" to stringResource(R.string.diary_leaning_undecided),
+                ).forEach { (code, label) ->
                     FilterChip(
-                        selected = leaning == option,
-                        onClick = { leaning = option },
-                        label = { Text(option) },
+                        selected = leaning == code,
+                        onClick = { leaning = code },
+                        label = { Text(label) },
                     )
                 }
             }

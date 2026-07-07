@@ -11,32 +11,33 @@ data class TrialItem(
 )
 
 fun LoadedCase.resolveItem(itemId: String): TrialItem? {
-    trial.witnesses.forEach { witness ->
-        witness.blocks.filter { it.id == itemId }.forEach { block ->
-            val name = pseudonyms.entries.find { it.id == witness.pseudonymRef }?.playName ?: witness.pseudonymRef
-            return TrialItem(
-                id = block.id,
-                kind = block.mode,
-                title = "$name (${witness.roleLabel})",
-                body = block.text,
-            )
-        }
-    }
-    trial.exhibits.filter { it.id == itemId }.forEach { ex ->
+    for (witness in trial.witnesses) {
+        val block = witness.blocks.find { it.id == itemId } ?: continue
+        val name = pseudonyms.entries.find { it.id == witness.pseudonymRef }?.playName ?: witness.pseudonymRef
         return TrialItem(
-            id = ex.id,
-            kind = "exhibit",
-            title = ex.title,
-            body = ex.text,
-            subtitle = "Crown: ${ex.prosecutionClaim}\nDefence: ${ex.defenceClaim}",
+            id = block.id,
+            kind = block.mode,
+            title = "$name (${witness.roleLabel})",
+            body = block.text,
         )
     }
-    trial.directions.filter { it.id == itemId }.forEach { dir ->
+    val exhibit = trial.exhibits.find { it.id == itemId }
+    if (exhibit != null) {
         return TrialItem(
-            id = dir.id,
+            id = exhibit.id,
+            kind = "exhibit",
+            title = exhibit.title,
+            body = exhibit.text,
+            subtitle = "Crown: ${exhibit.prosecutionClaim}\nDefence: ${exhibit.defenceClaim}",
+        )
+    }
+    val direction = trial.directions.find { it.id == itemId }
+    if (direction != null) {
+        return TrialItem(
+            id = direction.id,
             kind = "direction",
-            title = dir.title,
-            body = dir.text,
+            title = direction.title,
+            body = direction.text,
         )
     }
     return null

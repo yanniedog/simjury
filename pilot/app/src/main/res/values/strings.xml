@@ -14,6 +14,9 @@
     <string name="back_to_hub">Back to episode hub</string>
     <string name="diary_title">Verdict diary</string>
     <string name="diary_permanent_warning">Your diary is permanent once committed.</string>
+    <string name="diary_leaning_guilty">Guilty</string>
+    <string name="diary_leaning_not_guilty">Not guilty</string>
+    <string name="diary_leaning_undecided">Undecided</string>
     <string name="diary_reason_label">Top reason (at least 10 characters)</string>
     <string name="diary_doubt_label">Strongest doubt (at least 10 characters)</string>
     <string name="commit_diary">Commit diary</string>
