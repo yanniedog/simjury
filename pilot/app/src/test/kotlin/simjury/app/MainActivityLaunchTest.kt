@@ -72,7 +72,9 @@ class MainActivityLaunchTest {
                 .fetchSemanticsNodes()
                 .isNotEmpty()
         }
-        composeRule.onNodeWithText("Check for updates", substring = true).performClick()
+        composeRule.onNodeWithText("Check for updates", substring = true)
+            .performScrollTo()
+            .performClick()
         composeRule.waitUntil(timeoutMillis = 15_000) {
             composeRule.onAllNodesWithText("latest version", substring = true)
                 .fetchSemanticsNodes()

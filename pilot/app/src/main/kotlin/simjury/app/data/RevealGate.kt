@@ -11,6 +11,10 @@ class RevealGate(private var verdictLocked: Boolean = false) {
 
     fun isVerdictLocked(): Boolean = verdictLocked
 
+    fun reset() {
+        verdictLocked = false
+    }
+
     fun openTruth(loaded: LoadedCase): GatedTruth {
         if (!verdictLocked) {
             throw IllegalStateException("Truth reveal is blocked until verdict is committed.")

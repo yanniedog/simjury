@@ -13,6 +13,7 @@
     <string name="mark_read_continue">Mark read and continue</string>
     <string name="back_to_hub">Back to items</string>
     <string name="back_to_episodes">Back to episodes</string>
+    <string name="case_picker_label">Debug case</string>
     <string name="episode_hub_title">Episodes</string>
     <string name="episode_hub_intro">Read every episode before opening your verdict diary.</string>
     <string name="episode_progress">%1$s — %2$d/%3$d read</string>
