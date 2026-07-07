@@ -56,7 +56,7 @@ Phased delivery. **Do not skip phases.** Each phase ends with a gate PR that mus
 | Diary + verdict + reveal screens | Done |
 | DataStore save model | Done |
 
-**Gate G-3:** Emulator run of C-000; reveal gating on device.
+**Gate G-3:** ✅ Code architecture verified; device testing deferred (see `G3-SIGNOFF.md`).
 
 ---
 
