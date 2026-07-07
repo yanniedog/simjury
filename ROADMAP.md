@@ -19,6 +19,7 @@ Phased delivery. **Do not skip phases.** Each phase ends with a gate PR that mus
 | Deliverable | Status |
 |-------------|--------|
 | Gradle JVM project in `pilot/` | Done |
+| `:case-model` module (schema + V-rules) | Done |
 | Case loader + validator | Done |
 | C-000 synthetic case assets | Done |
 | Game session (summons → reveal) | Done |

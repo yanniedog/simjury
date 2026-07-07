@@ -1,5 +1,8 @@
 package simjury.pilot
 
+import simjury.casemodel.LoadedCase
+import simjury.casemodel.Verdict
+import simjury.casemodel.VerdictDiary
 import java.util.Scanner
 
 class GameSession(

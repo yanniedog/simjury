@@ -1,4 +1,4 @@
-package simjury.pilot
+package simjury.casemodel
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
