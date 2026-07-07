@@ -7,6 +7,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 APK="${ROOT_DIR}/app/build/outputs/apk/release/app-release.apk"
 PACKAGE="com.simjury.app"
 ACTIVITY="${PACKAGE}/simjury.app.MainActivity"
+UI_DUMP="/data/local/tmp/simjury-smoke-ui.xml"
 BOOT_TIMEOUT_SEC="${BOOT_TIMEOUT_SEC:-180}"
 UI_TIMEOUT_SEC="${UI_TIMEOUT_SEC:-60}"
 
@@ -25,6 +26,7 @@ require_cmd() {
 
 wait_for_boot() {
   local elapsed=0
+  adb wait-for-device
   while (( elapsed < BOOT_TIMEOUT_SEC )); do
     local boot
     boot="$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)"
@@ -42,8 +44,8 @@ wait_for_ui_text() {
   local needle="$1"
   local elapsed=0
   while (( elapsed < UI_TIMEOUT_SEC )); do
-    adb shell uiautomator dump /sdcard/simjury-smoke-ui.xml >/dev/null 2>&1 || true
-    if adb shell cat /sdcard/simjury-smoke-ui.xml 2>/dev/null | rg -q "${needle}"; then
+    adb shell uiautomator dump "${UI_DUMP}" >/dev/null 2>&1 || true
+    if adb shell cat "${UI_DUMP}" 2>/dev/null | grep -Fq "${needle}"; then
       log "Found UI text: ${needle}"
       return 0
     fi
@@ -81,20 +83,20 @@ log "Launching ${ACTIVITY}"
 adb logcat -c
 adb shell am start -W -n "${ACTIVITY}"
 
-if adb logcat -d 2>/dev/null | rg -q "FATAL EXCEPTION: main"; then
-  adb logcat -d 2>/dev/null | rg "FATAL EXCEPTION|AndroidRuntime" -A 20 | tail -80 >&2 || true
+if adb logcat -d 2>/dev/null | grep -Fq "FATAL EXCEPTION: main"; then
+  adb logcat -d 2>/dev/null | grep -E "FATAL EXCEPTION|AndroidRuntime" -A 20 | tail -80 >&2 || true
   die "App crashed on launch"
 fi
 
 if ! adb shell pidof "${PACKAGE}" >/dev/null 2>&1; then
-  adb logcat -d 2>/dev/null | rg "FATAL EXCEPTION|AndroidRuntime|${PACKAGE}" -A 20 | tail -80 >&2 || true
+  adb logcat -d 2>/dev/null | grep -E "FATAL EXCEPTION|AndroidRuntime|${PACKAGE}" -A 20 | tail -80 >&2 || true
   die "App process is not running after launch"
 fi
 
 wait_for_ui_text "Enter the courtroom"
 
-if adb logcat -d 2>/dev/null | rg -q "FATAL EXCEPTION: main"; then
-  adb logcat -d 2>/dev/null | rg "FATAL EXCEPTION|AndroidRuntime" -A 20 | tail -80 >&2 || true
+if adb logcat -d 2>/dev/null | grep -Fq "FATAL EXCEPTION: main"; then
+  adb logcat -d 2>/dev/null | grep -E "FATAL EXCEPTION|AndroidRuntime" -A 20 | tail -80 >&2 || true
   die "App crashed after initial render"
 fi
 

@@ -12,6 +12,9 @@ fi
 
 sdkmanager_bin="${sdk_root}/cmdline-tools/latest/bin/sdkmanager"
 if [[ ! -x "${sdkmanager_bin}" ]]; then
+  sdkmanager_bin="${sdk_root}/tools/bin/sdkmanager"
+fi
+if [[ ! -x "${sdkmanager_bin}" ]]; then
   sdkmanager_bin="$(command -v sdkmanager || true)"
 fi
 if [[ -z "${sdkmanager_bin}" || ! -x "${sdkmanager_bin}" ]]; then
@@ -23,8 +26,8 @@ props_file="${1:-pilot/local.properties}"
 mkdir -p "$(dirname "${props_file}")"
 printf 'sdk.dir=%s\n' "${sdk_root}" > "${props_file}"
 
-yes | "${sdkmanager_bin}" --licenses >/dev/null || true
-"${sdkmanager_bin}" --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+yes | "${sdkmanager_bin}" --sdk_root="${sdk_root}" --licenses >/dev/null || true
+"${sdkmanager_bin}" --sdk_root="${sdk_root}" --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
 echo "Android SDK ready at ${sdk_root}"
-"${sdkmanager_bin}" --list_installed | rg "platforms;android-35|build-tools;35.0.0|platform-tools" || true
+"${sdkmanager_bin}" --sdk_root="${sdk_root}" --list_installed | grep -E "platforms;android-35|build-tools;35.0.0|platform-tools" || true
