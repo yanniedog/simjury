@@ -243,8 +243,8 @@ Suggested order. Each case-content PR includes harness checklist (`CASE_HARNESS.
 |----|-------|-------|------------|
 | **P4-0** | `PHASE4-PLAN.md` + ROADMAP cross-link | This document only | — |
 | **P4-1** | EX-1 handoff / `sources.json` scaffold | Operator confirms documents; `S-01..S-04` entries; BLOCKED REPORT if needed | P4-0 |
-| **P4-2** | Schema: clearance + multi-episode | Extend `:case-model`; add clearance/adaptations; **remove pilot-only 1-episode check** in `CaseValidator.kt` (lines 41–43) so 3–5 episodes pass; tests | P4-0 |
-| **P4-3** | C-001 skeleton + `TABULATION.md` | `case.json`, `trial.json` with minimal valid stub (one episode, one witness block) so `CaseIntegrity*` stays green; `pseudonyms.json` keys only; tabulation rows for all themes | P4-1 |
+| **P4-2** | Schema: clearance + multi-episode | Extend `:case-model`; add clearance/adaptations; **remove pilot-only 1-episode check** in `CaseValidator.kt` (lines 41–43) and update/remove the matching test in `CaseIntegrityTest.kt` (lines 40–43) so 3–5 episodes pass; tests | P4-0 |
+| **P4-3** | C-001 skeleton + `TABULATION.md` | `case.json`, `trial.json` with minimal valid stub (one episode, at least two witnesses and four testimony blocks to satisfy current validator floors) so `CaseIntegrity*` stays green; `pseudonyms.json` keys only; tabulation rows for all themes | P4-1 |
 | **P4-4** | Episodes E-01–E-02 testimony | W-01..W-02, partial exhibits | P4-3 tabulation |
 | **P4-5** | Episodes E-02–E-03 testimony | W-03..W-05, ID exhibits | P4-4 |
 | **P4-6** | Episode E-03: expert + ruling | W-06, W-07, D-02–D-04 | P4-5 |
