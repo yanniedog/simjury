@@ -3,6 +3,8 @@ package simjury.app.update
 import android.app.Application
 import android.content.pm.PackageManager
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,10 +28,25 @@ sealed interface AppUpdateUiState {
     data class Error(val message: String) : AppUpdateUiState
 }
 
-class AppUpdateViewModel(
+class AppUpdateViewModel @JvmOverloads constructor(
     application: Application,
     private val repository: AppUpdateRepository = AppUpdateRepository(),
 ) : AndroidViewModel(application) {
+
+    companion object {
+        fun factory(
+            application: Application,
+            repository: AppUpdateRepository = AppUpdateRepository(),
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(AppUpdateViewModel::class.java)) {
+                    return AppUpdateViewModel(application, repository) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel: $modelClass")
+            }
+        }
+    }
 
     private val _state = MutableStateFlow<AppUpdateUiState>(AppUpdateUiState.Idle)
     val state: StateFlow<AppUpdateUiState> = _state.asStateFlow()

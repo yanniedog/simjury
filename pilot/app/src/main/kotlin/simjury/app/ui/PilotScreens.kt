@@ -1,6 +1,5 @@
 package simjury.app.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -123,32 +122,42 @@ fun ReadingHubScreen(
     modifier: Modifier = Modifier,
 ) {
     ScreenScaffold(title = state.episodeTitle, modifier = modifier) { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp)) {
-            Text(state.episodeIntro, modifier = Modifier.padding(vertical = 12.dp))
-            LazyColumn(
-                contentPadding = PaddingValues(bottom = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                items(state.itemOrder, key = { it }) { itemId ->
-                    val read = itemId in state.itemsRead
-                    Card(
-                        modifier = Modifier.fillMaxWidth().clickable { onOpenItem(itemId) },
-                    ) {
-                        Text(
-                            text = if (read) stringResource(R.string.item_read, itemId)
-                            else stringResource(R.string.item_unread, itemId),
-                            modifier = Modifier.padding(16.dp),
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                    }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(horizontal = 16.dp),
+            contentPadding = PaddingValues(bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            item {
+                Text(state.episodeIntro, modifier = Modifier.padding(vertical = 12.dp))
+            }
+            items(state.itemOrder, key = { it }) { itemId ->
+                val read = itemId in state.itemsRead
+                Card(
+                    onClick = { onOpenItem(itemId) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = if (read) stringResource(R.string.item_read, itemId)
+                        else stringResource(R.string.item_unread, itemId),
+                        modifier = Modifier.padding(16.dp),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
                 }
             }
-            if (allItemsRead) {
-                Button(onClick = onOpenDiary, modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-                    Text(stringResource(R.string.open_diary))
+            item {
+                if (allItemsRead) {
+                    Button(
+                        onClick = onOpenDiary,
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    ) {
+                        Text(stringResource(R.string.open_diary))
+                    }
+                } else {
+                    Text(stringResource(R.string.read_all_items_hint), style = MaterialTheme.typography.bodySmall)
                 }
-            } else {
-                Text(stringResource(R.string.read_all_items_hint), style = MaterialTheme.typography.bodySmall)
             }
         }
     }
