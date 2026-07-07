@@ -69,6 +69,18 @@ Orchestrator (Lead)
 3. Read `PILOT-SPEC.md` + current phase in `ROADMAP.md`
 4. Declare role and task in first commit/PR message
 
+### PR automation (mandatory — no user prompt)
+
+On every open PR the Orchestrator must automatically:
+
+1. Run `gh pr checks <n>` — fix failures and push until green
+2. Read all bot review comments (`gh api repos/.../pulls/<n>/comments`)
+3. Apply valid fixes; reply confirming each fix
+4. Resolve every review thread before merge
+5. Mark draft PRs ready: `gh pr ready <n>`
+6. Squash merge when gates pass: `gh pr merge <n> --squash --delete-branch`
+7. Rebase stacked PRs onto `main` after upstream merge
+
 ### During work
 
 | Event | Action |

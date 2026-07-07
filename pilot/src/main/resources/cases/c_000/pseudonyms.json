@@ -1,0 +1,28 @@
+{
+  "entries": [
+    {
+      "id": "P-01",
+      "play_name": "Mr Alden",
+      "real_name": "Synthetic — shopkeeper persona",
+      "role": "Complainant, jeweller"
+    },
+    {
+      "id": "P-02",
+      "play_name": "Constable Marsh",
+      "real_name": "Synthetic — constable persona",
+      "role": "Arresting officer"
+    },
+    {
+      "id": "P-03",
+      "play_name": "Mr Crane",
+      "real_name": "Synthetic — accused persona",
+      "role": "Defendant"
+    },
+    {
+      "id": "P-04",
+      "play_name": "the City",
+      "real_name": "Synthetic — unnamed city",
+      "role": "Setting"
+    }
+  ]
+}

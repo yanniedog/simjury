@@ -6,3 +6,4 @@
 {"git_commit": "e182516", "id": "evt_e8b7e1db5a5442b9b223", "location": "AGENTS.md", "summary": "Session start: read CLAUDE.md + pjm brief; never read full v3 spec unless Phase 4+", "timestamp": "2026-07-07T05:06:51Z", "type": "note"}
 {"git_commit": "a9aa732", "id": "evt_bc6e7587b34e4619b2d2", "location": "pilot/build.gradle.kts", "summary": "Phase 1 pilot: Kotlin JVM CLI with kotlinx.serialization JSON cases", "timestamp": "2026-07-07T05:09:16Z", "type": "decision"}
 {"git_commit": "a9aa732", "id": "evt_5fb1fb72589a4ee797b4", "location": "pilot/src/main/resources/cases/c_000/", "summary": "C-000 synthetic case: 2 witnesses, 4 blocks, 2 exhibits, 1 episode", "timestamp": "2026-07-07T05:09:16Z", "type": "note"}
+{"git_commit": "5ee1357", "id": "evt_7c03a0688e3e41d6b513", "location": "ROADMAP.md", "summary": "G-0 and G-1 complete \u2014 foundation and pilot app on main", "timestamp": "2026-07-07T05:20:53Z", "type": "decision"}
