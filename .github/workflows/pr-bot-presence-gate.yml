@@ -1,0 +1,117 @@
+name: pr-bot-presence-gate
+
+# Single-shot bot presence check. Re-fires on PR lifecycle + bot review/comment events.
+# Also re-runs after ci/validate completes so the gate does not fail while CI is still pending.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_review:
+    types: [submitted]
+  issue_comment:
+    types: [created]
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+concurrency:
+  group: bot-presence-gate-${{ github.event.pull_request.number || github.event.issue.number || inputs.pr_number || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  bot-presence-gate:
+    if: >-
+      github.event_name == 'workflow_dispatch'
+      || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+      || github.event.pull_request != null
+      || github.event.review != null
+      || (github.event_name == 'issue_comment' && github.event.issue.pull_request != null)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Skip bot wait for non-human / chore PRs
+        id: gate_exempt
+        env:
+          GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_AUTHOR_TYPE: ${{ github.event.pull_request.user.type }}
+        run: |
+          case "${{ github.event_name }}" in
+            workflow_dispatch) PR="${{ inputs.pr_number }}" ;;
+            workflow_run) PR="$(gh api "repos/${{ github.repository }}/commits/${{ github.event.workflow_run.head_sha }}/pulls" --jq '.[0].number')" ;;
+            issue_comment)     PR="${{ github.event.issue.number }}" ;;
+            pull_request_review) PR="${{ github.event.pull_request.number }}" ;;
+            *)                 PR="${{ github.event.pull_request.number }}" ;;
+          esac
+          if [ -z "$PR" ] || [ "$PR" = "null" ]; then
+            echo "No PR associated with this event; skipping bot-presence-gate."
+            exit 0
+          fi
+          export PR
+          EXEMPT=$(node scripts/pr-gate-exempt-reason.mjs || true)
+          if [ -n "$EXEMPT" ]; then
+            echo "gate_exempt=true" >> "$GITHUB_OUTPUT"
+            echo "gate_exempt_reason=$EXEMPT" >> "$GITHUB_OUTPUT"
+            echo "PR #$PR is gate-exempt ($EXEMPT) — bot review not required"
+          else
+            echo "gate_exempt=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Gate exempt — pass (no bot wait)
+        if: steps.gate_exempt.outputs.gate_exempt == 'true'
+        run: |
+          echo "bot-presence-gate: skipped (${{ steps.gate_exempt.outputs.gate_exempt_reason }} — human bot review not required)"
+      - name: Required bot wait gate (single shot)
+        if: steps.gate_exempt.outputs.gate_exempt != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          SIMJURY_BOT_WAIT_REQUIRED: gemini,sourcery
+          BOT_WAIT_IGNORE_CHECK_NAMES: bot-presence-gate,bot-feedback-gate,pr-bot-presence-gate,pr-bot-feedback-check
+          BOT_WAIT_MAX_MIN: "240"
+        run: |
+          case "${{ github.event_name }}" in
+            workflow_dispatch) PR="${{ inputs.pr_number }}" ;;
+            workflow_run) PR="$(gh api "repos/${{ github.repository }}/commits/${{ github.event.workflow_run.head_sha }}/pulls" --jq '.[0].number')" ;;
+            issue_comment)     PR="${{ github.event.issue.number }}" ;;
+            pull_request_review) PR="${{ github.event.pull_request.number }}" ;;
+            *)                 PR="${{ github.event.pull_request.number }}" ;;
+          esac
+          if [ -z "$PR" ] || [ "$PR" = "null" ]; then
+            echo "No PR associated with this event; skipping bot-presence-gate."
+            exit 0
+          fi
+          attempts=0
+          max_attempts=8
+          while [ "$attempts" -lt "$max_attempts" ]; do
+            attempts=$((attempts + 1))
+            set +e
+            npm run wait-for-bots -- --pr "$PR"
+            code=$?
+            set -e
+            if [ "$code" -eq 0 ]; then
+              exit 0
+            fi
+            if [ "$code" -ne 2 ] || [ "$attempts" -ge "$max_attempts" ]; then
+              if [ "$code" -eq 2 ]; then
+                echo "::warning::Bot wait not ready after ${max_attempts} attempts — run npm run wait-for-bots locally until exit 0, then re-run this workflow"
+              fi
+              exit 1
+            fi
+            echo "Bot wait not ready (CI pending or quiet window); retry ${attempts}/${max_attempts} in 30s..."
+            sleep 30
+          done

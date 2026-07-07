@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Operator script: apply main branch protection requiring bot-review-window.
-# Requires gh auth with admin access to the repository.
+# Operator script: apply main branch protection requiring bot gates.
+# Prefer: npm run branch-protection:apply (Node) or ruleset import.
 set -euo pipefail
 
 DETECTED_OWNER=""
@@ -27,7 +27,8 @@ gh api \
     "strict": true,
     "checks": [
       { "context": "validate" },
-      { "context": "bot-review-window" }
+      { "context": "bot-presence-gate" },
+      { "context": "bot-feedback-gate" }
     ]
   },
   "enforce_admins": true,
@@ -47,5 +48,5 @@ gh api \
 EOF
 
 echo ""
-echo "Branch protection applied. Required checks: validate, bot-review-window"
+echo "Branch protection applied. Required checks: validate, bot-presence-gate, bot-feedback-gate"
 echo "Verify at: https://github.com/${OWNER}/${REPO}/settings/branches"
