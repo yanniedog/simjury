@@ -35,8 +35,8 @@ Phased delivery. **Do not skip phases.** Each phase ends with a gate PR that mus
 
 | Deliverable | PR scope |
 |-------------|----------|
-| `:case-model` module (schema + V-rules) | One PR |
-| `:deliberation-core` skeleton (state machine stub) | One PR |
+| `:case-model` module (schema + V-rules) | Done |
+| `:deliberation-core` skeleton (state machine stub) | Done |
 | Fixture case `C-999` for tests only | One PR |
 | Pilot CLI refactored to use modules | One PR |
 
