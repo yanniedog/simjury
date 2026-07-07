@@ -38,6 +38,7 @@ class AppUpdateViewModel(
         get() = File(getApplication<Application>().cacheDir, "app-preview-update.apk")
 
     fun checkForUpdate() {
+        if (_state.value !is AppUpdateUiState.Idle && _state.value !is AppUpdateUiState.Current) return
         viewModelScope.launch {
             _state.value = AppUpdateUiState.Checking
             try {
@@ -70,11 +71,11 @@ class AppUpdateViewModel(
                     repository.downloadApk(available.remote.downloadUrl, cacheApk) { progress ->
                         _state.value = AppUpdateUiState.Downloading(progress, available.remote)
                     }
-                    available.remote.sha256?.let { expected ->
-                        val actual = ApkInstaller.sha256Hex(cacheApk)
-                        check(actual.equals(expected, ignoreCase = true)) {
-                            "APK checksum mismatch"
-                        }
+                    val expected = available.remote.sha256?.takeIf { it.isNotBlank() }
+                        ?: error("APK manifest missing sha256 checksum")
+                    val actual = ApkInstaller.sha256Hex(cacheApk)
+                    check(actual.equals(expected, ignoreCase = true)) {
+                        "APK checksum mismatch"
                     }
                 }
                 _state.value = AppUpdateUiState.ReadyToInstall(cacheApk, available.remote)

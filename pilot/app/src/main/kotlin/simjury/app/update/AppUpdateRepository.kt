@@ -1,6 +1,9 @@
 package simjury.app.update
 
 import kotlinx.serialization.json.Json
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import simjury.app.BuildConfig
@@ -27,11 +30,11 @@ class AppUpdateRepository(
         }
     }
 
-    fun downloadApk(
+    suspend fun downloadApk(
         url: String,
         destination: java.io.File,
         onProgress: (Float) -> Unit = {},
-    ) {
+    ) = withContext(Dispatchers.IO) {
         val request = Request.Builder().url(url).get().build()
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) error("APK download HTTP ${response.code}")
@@ -42,10 +45,16 @@ class AppUpdateRepository(
                     val buffer = ByteArray(8192)
                     var read: Int
                     var written = 0L
+                    var lastReported = -1f
                     while (input.read(buffer).also { read = it } != -1) {
+                        yield()
                         out.write(buffer, 0, read)
                         written += read
-                        onProgress((written.toFloat() / total.toFloat()).coerceIn(0f, 1f))
+                        val progress = (written.toFloat() / total.toFloat()).coerceIn(0f, 1f)
+                        if (progress - lastReported >= 0.01f || progress >= 1f) {
+                            lastReported = progress
+                            onProgress(progress)
+                        }
                     }
                 }
             }
