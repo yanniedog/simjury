@@ -62,6 +62,8 @@ Phased delivery. **Do not skip phases.** Each phase ends with a gate PR that mus
 
 ## Phase 4 — First Historical Case
 
+**Planning:** [`PHASE4-PLAN.md`](PHASE4-PLAN.md) — Beck source acquisition, harness floors, PR breakdown, G-4 gate.
+
 **Goal:** Case 001 (Beck) authored per harness, not per raw v3 quantities.
 
 | Deliverable | PR scope |
