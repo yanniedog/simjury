@@ -1,5 +1,8 @@
 package simjury.pilot
 
+import simjury.casemodel.GatedTruth
+import simjury.casemodel.LoadedCase
+
 class RevealGate(private var verdictLocked: Boolean = false) {
 
     fun lockVerdict() {

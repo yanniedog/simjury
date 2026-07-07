@@ -36,8 +36,12 @@ Case 001 (R v. Adolf Beck) is **out of scope** until Phase 4. See `CASE_HARNESS.
 
 ```
 pilot/
-├── build.gradle.kts
+├── build.gradle.kts          # CLI application
 ├── settings.gradle.kts
+├── case-model/               # Phase 2 — pure Kotlin schema + V-rules
+│   └── src/main/kotlin/simjury/casemodel/
+│       ├── CaseModels.kt
+│       └── CaseValidator.kt
 └── src/main/
     ├── kotlin/simjury/pilot/
     │   ├── Main.kt              # CLI entry
@@ -52,7 +56,7 @@ pilot/
         └── sources.json
 ```
 
-**Modules (pilot):** single JVM module. Phase 2 splits `:case-model` and `:deliberation-core`. Phase 3 adds `:app` (Android).
+**Modules (pilot):** `:case-model` (Phase 2) + CLI app. Next: `:deliberation-core`, then `:app` (Android).
 
 ## 4. Case JSON schema (pilot minimum)
 
