@@ -55,9 +55,9 @@ UNRESOLVED=$(gh api graphql -f query="
       }
     }
   }
-" -f owner="$OWNER" -f name="$NAME" -F number="$PR_NUMBER" 2>/dev/null | jq -r '
+" -f owner="$OWNER" -f name="$NAME" -F number="$PR_NUMBER" | jq -r '
   [.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved == false)] | length
-' || echo "0")
+')
 
 if [[ "${UNRESOLVED:-0}" != "0" ]]; then
   echo "ERROR: PR #${PR_NUMBER} has ${UNRESOLVED} unresolved review thread(s)." >&2
