@@ -70,8 +70,9 @@ class GameSession(
     fun currentState(): DeliberationState = state
 
     private fun dispatch(action: DeliberationAction) {
+        val wasLocked = state.verdictLocked
         state = PilotDeliberationEngine.step(state, action, seed)
-        if (state.verdictLocked) {
+        if (state.verdictLocked && !wasLocked) {
             gate.lockVerdict()
         }
     }
