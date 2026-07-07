@@ -37,7 +37,7 @@ class CaseIntegrityTest {
   }
 
   @Test
-  fun `exactly one episode required for pilot`() {
+  fun `C-000 has single episode`() {
     assertEquals(1, loaded.trial.episodes.size)
   }
 
