@@ -3,7 +3,9 @@ package simjury.app
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -73,16 +75,18 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(PilotUiState())
     val uiState: StateFlow<PilotUiState> = _uiState.asStateFlow()
+    private var bootstrapJob: Job? = null
 
     init {
-        viewModelScope.launch {
+        bootstrapJob = viewModelScope.launch {
             bootstrapCase(activeCaseId)
         }
     }
 
     fun selectCase(caseId: String) {
         if (caseId == activeCaseId) return
-        viewModelScope.launch {
+        bootstrapJob?.cancel()
+        bootstrapJob = viewModelScope.launch {
             bootstrapCase(caseId)
         }
     }
@@ -171,6 +175,7 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
                 showCasePicker = BuildConfig.DEBUG && availableCases.size > 1,
             )
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             _uiState.value = PilotUiState(loading = false, error = e.message ?: "Failed to load case")
         }
     }
