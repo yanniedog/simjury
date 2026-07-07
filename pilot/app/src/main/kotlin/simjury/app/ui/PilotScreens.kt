@@ -46,46 +46,50 @@ fun PilotAppShell(
     onOpenDiary: () -> Unit,
     onCommitDiary: (String, String, String) -> Unit,
     onCastVote: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     when {
-        state.loading -> LoadingScreen()
-        state.error != null -> ErrorScreen(state.error)
+        state.loading -> LoadingScreen(modifier)
+        state.error != null -> ErrorScreen(state.error, modifier)
         state.selectedItem != null -> ItemDetailScreen(
             item = state.selectedItem,
             onContinue = { onMarkItemRead(state.selectedItem.id) },
             onBack = onCloseItem,
+            modifier = modifier,
         )
         state.phase == DeliberationPhase.SUMMONS -> SummonsScreen(
             state = state,
             onEnter = onAcknowledgeSummons,
+            modifier = modifier,
         )
         state.phase == DeliberationPhase.READING -> ReadingHubScreen(
             state = state,
             allItemsRead = allItemsRead,
             onOpenItem = onOpenItem,
             onOpenDiary = onOpenDiary,
+            modifier = modifier,
         )
-        state.phase == DeliberationPhase.DIARY -> DiaryScreen(onCommit = onCommitDiary)
-        state.phase == DeliberationPhase.VOTE -> VoteScreen(onVote = onCastVote)
+        state.phase == DeliberationPhase.DIARY -> DiaryScreen(onCommit = onCommitDiary, modifier = modifier)
+        state.phase == DeliberationPhase.VOTE -> VoteScreen(onVote = onCastVote, modifier = modifier)
         state.phase == DeliberationPhase.REVEAL || state.phase == DeliberationPhase.COMPLETE ->
-            RevealScreen(state = state)
+            RevealScreen(state = state, modifier = modifier)
     }
 }
 
 @Composable
-private fun LoadingScreen() {
-    CenteredText(stringResource(R.string.loading_case))
+private fun LoadingScreen(modifier: Modifier = Modifier) {
+    CenteredText(stringResource(R.string.loading_case), modifier)
 }
 
 @Composable
-private fun ErrorScreen(message: String) {
-    CenteredText(message)
+private fun ErrorScreen(message: String, modifier: Modifier = Modifier) {
+    CenteredText(message, modifier)
 }
 
 @Composable
-private fun CenteredText(text: String) {
+private fun CenteredText(text: String, modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
+        modifier = modifier.fillMaxSize().padding(24.dp),
         verticalArrangement = Arrangement.Center,
     ) {
         Text(text, style = MaterialTheme.typography.bodyLarge)
@@ -93,8 +97,8 @@ private fun CenteredText(text: String) {
 }
 
 @Composable
-fun SummonsScreen(state: PilotUiState, onEnter: () -> Unit) {
-    ScreenScaffold(title = stringResource(R.string.summons_title)) { padding ->
+fun SummonsScreen(state: PilotUiState, onEnter: () -> Unit, modifier: Modifier = Modifier) {
+    ScreenScaffold(title = stringResource(R.string.summons_title), modifier = modifier) { padding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(padding).padding(24.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -116,8 +120,9 @@ fun ReadingHubScreen(
     allItemsRead: Boolean,
     onOpenItem: (String) -> Unit,
     onOpenDiary: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    ScreenScaffold(title = state.episodeTitle) { padding ->
+    ScreenScaffold(title = state.episodeTitle, modifier = modifier) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp)) {
             Text(state.episodeIntro, modifier = Modifier.padding(vertical = 12.dp))
             LazyColumn(
@@ -150,8 +155,8 @@ fun ReadingHubScreen(
 }
 
 @Composable
-fun ItemDetailScreen(item: TrialItem, onContinue: () -> Unit, onBack: () -> Unit) {
-    ScreenScaffold(title = item.title) { padding ->
+fun ItemDetailScreen(item: TrialItem, onContinue: () -> Unit, onBack: () -> Unit, modifier: Modifier = Modifier) {
+    ScreenScaffold(title = item.title, modifier = modifier) { padding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(padding).padding(24.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -172,13 +177,13 @@ fun ItemDetailScreen(item: TrialItem, onContinue: () -> Unit, onBack: () -> Unit
 }
 
 @Composable
-fun DiaryScreen(onCommit: (String, String, String) -> Unit) {
+fun DiaryScreen(onCommit: (String, String, String) -> Unit, modifier: Modifier = Modifier) {
     var leaning by rememberSaveable { mutableStateOf("G") }
     var reason by rememberSaveable { mutableStateOf("") }
     var doubt by rememberSaveable { mutableStateOf("") }
     val canCommit = reason.length >= 10 && doubt.length >= 10
 
-    ScreenScaffold(title = stringResource(R.string.diary_title)) { padding ->
+    ScreenScaffold(title = stringResource(R.string.diary_title), modifier = modifier) { padding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(padding).padding(24.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -221,8 +226,8 @@ fun DiaryScreen(onCommit: (String, String, String) -> Unit) {
 }
 
 @Composable
-fun VoteScreen(onVote: (String) -> Unit) {
-    ScreenScaffold(title = stringResource(R.string.vote_title)) { padding ->
+fun VoteScreen(onVote: (String) -> Unit, modifier: Modifier = Modifier) {
+    ScreenScaffold(title = stringResource(R.string.vote_title), modifier = modifier) { padding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(padding).padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -239,8 +244,8 @@ fun VoteScreen(onVote: (String) -> Unit) {
 }
 
 @Composable
-fun RevealScreen(state: PilotUiState) {
-    ScreenScaffold(title = stringResource(R.string.reveal_title)) { padding ->
+fun RevealScreen(state: PilotUiState, modifier: Modifier = Modifier) {
+    ScreenScaffold(title = stringResource(R.string.reveal_title), modifier = modifier) { padding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(padding).padding(24.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -265,8 +270,13 @@ fun RevealScreen(state: PilotUiState) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ScreenScaffold(title: String, content: @Composable (PaddingValues) -> Unit) {
+private fun ScreenScaffold(
+    title: String,
+    modifier: Modifier = Modifier,
+    content: @Composable (PaddingValues) -> Unit,
+) {
     Scaffold(
+        modifier = modifier,
         topBar = { TopAppBar(title = { Text(title) }) },
         containerColor = MaterialTheme.colorScheme.background,
         content = content,

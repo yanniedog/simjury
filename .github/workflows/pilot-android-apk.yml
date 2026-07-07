@@ -1,0 +1,129 @@
+# Build SimJury pilot Android APK and publish to GitHub Releases (AR-local parity).
+#
+# Rolling: app-apk-latest (manifest app-apk-latest.json for in-app self-update)
+# Versioned: app-v{semver} e.g. app-v0.1.1
+#
+# Assets: app-preview.apk, app-apk-latest.json, app-preview-qr.png, install.html
+#
+# Optional secrets for signed release APK:
+#   ANDROID_KEYSTORE_B64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
+# Without secrets, builds unsigned release APK (debug signing fallback in Gradle).
+
+name: pilot-android-apk
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pilot/app/**'
+      - 'pilot/case-model/**'
+      - 'pilot/deliberation-core/**'
+      - 'pilot/scripts/**'
+      - '.github/workflows/pilot-android-apk.yml'
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: pilot-android-apk-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  android-apk:
+    name: pilot preview apk (GHA)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Bump Android versionCode from rolling manifest
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
+        run: node pilot/scripts/bump-android-version-code.mjs --repo "${{ github.repository }}"
+
+      - name: Materialize release keystore (optional)
+        id: keystore
+        env:
+          ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -n "${ANDROID_KEYSTORE_B64:-}" ]; then
+            echo "$ANDROID_KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+            echo "path=$RUNNER_TEMP/release.keystore" >> "$GITHUB_OUTPUT"
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "No ANDROID_KEYSTORE_B64 — using Gradle debug signing for release build"
+          fi
+
+      - name: Gradle assembleRelease
+        working-directory: pilot
+        env:
+          KEYSTORE_PATH: ${{ steps.keystore.outputs.path }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEYSTORE_CONFIGURED: ${{ steps.keystore.outputs.configured }}
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          if [ "${KEYSTORE_CONFIGURED}" = "true" ]; then
+            ./gradlew :app:assembleRelease --no-daemon \
+              -Pandroid.injected.signing.store.file="$KEYSTORE_PATH" \
+              -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+              -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+              -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
+          else
+            ./gradlew :app:assembleRelease --no-daemon
+          fi
+
+      - name: Locate release APK
+        id: apk
+        run: |
+          set -euo pipefail
+          apk=$(find pilot/app/build/outputs/apk -name '*-release.apk' -type f | head -1)
+          if [ -z "$apk" ]; then
+            echo "::error::No release APK found"
+            exit 1
+          fi
+          echo "path=$apk" >> "$GITHUB_OUTPUT"
+          ls -lh "$apk"
+
+      - name: Install publish dependencies
+        run: npm install --no-save qrcode@1.5.4
+
+      - name: Publish preview APK manifest (GitHub release)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          node pilot/scripts/publish-apk-manifest.mjs --apk "${{ steps.apk.outputs.path }}" \
+            --repo "${{ github.repository }}"
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: simjury-preview-apk
+          path: |
+            pilot/build/apk-publish/app-preview.apk
+            pilot/build/apk-publish/app-apk-latest.json
+            pilot/build/apk-publish/app-preview-qr.png
+            pilot/build/apk-publish/install.html
+          if-no-files-found: error

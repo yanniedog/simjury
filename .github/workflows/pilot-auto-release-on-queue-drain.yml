@@ -1,0 +1,42 @@
+# Auto pilot APK release when the last open PR to main is squash-merged.
+# Bumps versionName in pilot/app/build.gradle.kts and dispatches pilot-android-apk.
+# Parity with AR-local mobile-auto-release-on-queue-drain.yml
+
+name: pilot-auto-release-on-queue-drain
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: pilot-auto-release-on-drain
+  cancel-in-progress: false
+
+jobs:
+  maybe-release:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    name: bump pilot version when queue drained
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Queue drained → patch bump to main (APK via pilot-android-apk)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha || '' }}
+        run: node pilot/scripts/pilot-auto-release-on-drain.mjs
