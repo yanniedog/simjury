@@ -22,9 +22,13 @@ class C001SkeletonTest {
     }
 
     @Test
-    fun `C-001 skeleton blocks are placeholders`() {
-        val first = loaded.trial.witnesses.first().blocks.first().text
-        assertTrue(first.contains("AUTHORING PENDING"))
+    fun `C-001 W-01 and W-02 testimony authored`() {
+        val w01 = loaded.trial.witnesses.first { it.id == "W-01" }
+        val w02 = loaded.trial.witnesses.first { it.id == "W-02" }
+        assertFalse(w01.blocks.first().text.contains("AUTHORING PENDING"))
+        assertFalse(w02.blocks.first().text.contains("AUTHORING PENDING"))
+        val w03 = loaded.trial.witnesses.first { it.id == "W-03" }
+        assertTrue(w03.blocks.first().text.contains("AUTHORING PENDING"))
     }
 
     @Test
