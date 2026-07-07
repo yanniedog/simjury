@@ -14,6 +14,7 @@ SimJury is an offline jury simulation game. The repository is in **pilot phase**
 - Case C-000 is synthetic; historical Case 001 deferred to Phase 4 [CASE_HARNESS.md]
 - PR gates: CI validate required, squash merge, cursor/*-61f6 branches [.github/BRANCH_PROTECTION.md]
 - Phase 1 pilot: Kotlin JVM CLI with kotlinx.serialization JSON cases [pilot/build.gradle.kts]
+- G-0 and G-1 complete — foundation and pilot app on main [ROADMAP.md]
 
 ## Notes
 - initialise
@@ -21,7 +22,7 @@ SimJury is an offline jury simulation game. The repository is in **pilot phase**
 - C-000 synthetic case: 2 witnesses, 4 blocks, 2 exhibits, 1 episode [pilot/src/main/resources/cases/c_000/]
 
 ## Key files
-- `archive/simjury-build-spec-v3.md`
+- `simjury-build-spec-v3.md`
 - `PILOT-SPEC.md`
 - `CLAUDE.md`
 - `kotlinx.serialization`

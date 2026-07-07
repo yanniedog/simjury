@@ -4,42 +4,27 @@ Phased delivery. **Do not skip phases.** Each phase ends with a gate PR that mus
 
 ---
 
-## Phase 0 — Foundation (current)
+## Phase 0 — Foundation
 
 **Goal:** Governance, memory, harness, branch protection.
 
-| Deliverable | Status |
-|-------------|--------|
-| `PILOT-SPEC.md` | Done |
-| `CASE_HARNESS.md` | Done |
-| `AGENTS.md` | Done |
-| projectmem init + `CLAUDE.md` | Done |
-| `.github/workflows/ci.yml` | Done |
-| Branch protection docs | Done |
-| Archive v3 spec | Done |
-
-**G-0:** Met on merge of foundation PR.
-
-**Gate G-0:** CI green on `main`; projectmem populated; README accurate.
+**G-0:** Met — merged to `main`.
 
 ---
 
-## Phase 1 — JVM Pilot App
+## Phase 1 — JVM Pilot App (current)
 
 **Goal:** End-to-end playable CLI loop on case C-000.
 
-| Deliverable | PR scope | Status |
-|-------------|----------|--------|
-| Gradle JVM project in `pilot/` | PR #3 | Done |
-| Case loader + validator | PR #3 | Done |
-| C-000 synthetic case assets | PR #3 | Done |
-| Game session (summons → reveal) | PR #3 | Done |
-| Reveal gate + validator tests | PR #3 | Done |
+| Deliverable | Status |
+|-------------|--------|
+| Gradle JVM project in `pilot/` | Done |
+| Case loader + validator | Done |
+| C-000 synthetic case assets | Done |
+| Game session (summons → reveal) | Done |
+| Reveal gate + validator tests | Done |
 
-**Gate G-1:**
-- `./gradlew test` green in CI
-- Manual run completes C-000
-- `CASE_HARNESS.md` inclusion checklist signed off in PR description
+**G-1:** Met — merged to `main`.
 
 ---
 
