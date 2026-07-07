@@ -1,0 +1,35 @@
+{
+  "layers": [
+    {
+      "heading": "Legal outcome",
+      "body": "[AUTHORING PENDING — truth file layer 1; source S-04 after EX-1 handoff]"
+    },
+    {
+      "heading": "Factual aftermath",
+      "body": "[AUTHORING PENDING — post-trial record only; AD-5 enforced for trial phase]"
+    },
+    {
+      "heading": "Unknown at trial",
+      "body": "[AUTHORING PENDING — minimum five entries per harness]"
+    },
+    {
+      "heading": "Aftermath",
+      "body": "[AUTHORING PENDING — inquiry and appeal consequence]"
+    }
+  ],
+  "pseudonym_reveal": [
+    { "pseudonym_ref": "P-01", "play_name": "Mrs Elling", "real_name": "Complainant witness (historical)", "fate_note": "Pending tabulation." },
+    { "pseudonym_ref": "P-02", "play_name": "Mrs Garner", "real_name": "Complainant witness (historical)", "fate_note": "Pending tabulation." },
+    { "pseudonym_ref": "P-03", "play_name": "Mrs Holt", "real_name": "Complainant witness (historical)", "fate_note": "Pending tabulation." },
+    { "pseudonym_ref": "P-04", "play_name": "Mrs Irwin", "real_name": "Complainant witness (historical)", "fate_note": "Pending tabulation." },
+    { "pseudonym_ref": "P-05", "play_name": "Inspector Vale", "real_name": "Police officer (historical)", "fate_note": "Pending tabulation." },
+    { "pseudonym_ref": "P-06", "play_name": "Mr Penrose", "real_name": "Handwriting expert (historical)", "fate_note": "Pending tabulation." },
+    { "pseudonym_ref": "P-07", "play_name": "Mr Quill", "real_name": "Retired constable (historical)", "fate_note": "Pending tabulation." },
+    { "pseudonym_ref": "P-08", "play_name": "Mr Norland", "real_name": "Adolf Beck", "fate_note": "Pending tabulation." },
+    { "pseudonym_ref": "P-09", "play_name": "Westhaven", "real_name": "London (jurisdiction adaptation)", "fate_note": "Pending tabulation." }
+  ],
+  "adaptations": [
+    { "note": "Skeleton case — testimony placeholders only; Westhaven jurisdiction per AD-2." },
+    { "note": "Witness condensation to four complainants planned per PHASE4-PLAN §4.3." }
+  ]
+}

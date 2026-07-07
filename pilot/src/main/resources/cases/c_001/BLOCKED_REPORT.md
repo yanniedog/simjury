@@ -23,7 +23,7 @@
 - Cannot tabulate rows: fraud method, identification procedure, handwriting expert, prior-conviction ruling, accused denial, truth-file aftermath
 - Cannot author witnesses: W-01..W-09 testimony blocks
 - Cannot author exhibits: X-01..X-10 period documents
-- `sources.json` contains bibliographic scaffold only — locators are placeholders until operator confirms access
+- `sources.json` contains bibliographic scaffold only — locators will be tracked in `TABULATION.md` once operator confirms access
 
 ---
 
@@ -35,7 +35,7 @@
 4. Supply **pardon / compensation** official record text for truth-file layers (post-trial only).
 5. Record EX-5 decision: OBO licence yes/no.
 
-When each row is **obtained** or **access confirmed**, update this report and `sources.json` locators, then begin `TABULATION.md` (P4-3).
+When each row is **obtained** or **access confirmed**, update this report, then begin `TABULATION.md` (P4-3) with the correct locators.
 
 ---
 
