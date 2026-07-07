@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SimJury</string>
+    <string name="loading_case">Loading case…</string>
     <string name="summons_title">Jury summons</string>
     <string name="summons_body">You have been called to serve on a jury. Names are changed during play and restored after your verdict is locked. This pilot presents synthetic case C-000 only.</string>
-    <string name="engine_phase_label">Engine phase: %1$s</string>
+    <string name="charge_label">Charge: %1$s</string>
+    <string name="enter_courtroom">Enter the courtroom</string>
+    <string name="item_read">%1$s (read)</string>
+    <string name="item_unread">%1$s (unread)</string>
+    <string name="read_all_items_hint">Read every item before opening your verdict diary.</string>
+    <string name="open_diary">Open verdict diary</string>
+    <string name="mark_read_continue">Mark read and continue</string>
+    <string name="back_to_hub">Back to episode hub</string>
+    <string name="diary_title">Verdict diary</string>
+    <string name="diary_permanent_warning">Your diary is permanent once committed.</string>
+    <string name="diary_reason_label">Top reason (at least 10 characters)</string>
+    <string name="diary_doubt_label">Strongest doubt (at least 10 characters)</string>
+    <string name="commit_diary">Commit diary</string>
+    <string name="vote_title">Final vote</string>
+    <string name="vote_instruction">Lock your verdict. You cannot change it.</string>
+    <string name="vote_guilty">Guilty</string>
+    <string name="vote_not_guilty">Not Guilty</string>
+    <string name="reveal_title">Reveal</string>
+    <string name="reveal_locked_hint">Your verdict is locked. Open the reveal when ready.</string>
+    <string name="open_reveal">Open reveal</string>
+    <string name="names_restored">Names restored</string>
 </resources>
