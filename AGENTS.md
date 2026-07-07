@@ -73,13 +73,17 @@ Orchestrator (Lead)
 
 On every open PR the Orchestrator must automatically:
 
-1. Run `gh pr checks <n>` — fix failures and push until green
-2. Read all bot review comments (`gh api repos/.../pulls/<n>/comments`)
-3. Apply valid fixes; reply confirming each fix
-4. Resolve every review thread before merge
-5. Mark draft PRs ready: `gh pr ready <n>`
-6. Squash merge when gates pass: `gh pr merge <n> --squash --delete-branch`
-7. Rebase stacked PRs onto `main` after upstream merge
+1. Open PR as **draft** first; mark ready only after initial CI run starts
+2. Run `gh pr checks <n>` — fix failures and push until green
+3. **Wait for `bot-review-window` to pass** (minimum 8 minutes after last push) — do not merge before this
+4. Read all bot review comments (`gh api repos/.../pulls/<n>/comments` and `/reviews`)
+5. Apply valid fixes; reply confirming each fix
+6. Resolve every review thread before merge
+7. Run `.github/scripts/assert-pr-mergeable.sh <n>` — abort if it fails
+8. Squash merge when **all** gates pass: `gh pr merge <n> --squash --delete-branch`
+9. Rebase stacked PRs onto `main` after upstream merge
+
+**Never merge immediately after `validate` passes.** The `bot-review-window` job exists specifically to prevent this.
 
 ### During work
 
@@ -117,11 +121,14 @@ Orchestrator **must** synthesize subagent output; never merge unreviewed subagen
 
 No squash merge to `main` unless:
 
-1. CI workflow `ci` — **success**
-2. All review threads — **resolved**
-3. Case content PRs include harness checklist (if applicable)
-4. projectmem decision logged for scope-affecting changes
-5. PR size ≤ ~400 lines (split if larger)
+1. CI `validate` — **success**
+2. CI `bot-review-window` — **success** (8-minute minimum wait; never merge early)
+3. All review threads — **resolved**
+4. Bot comments read and addressed (or explicitly acknowledged as N/A)
+5. `assert-pr-mergeable.sh <pr>` passes
+6. Case content PRs include harness checklist (if applicable)
+7. projectmem decision logged for scope-affecting changes
+8. PR size ≤ ~400 lines (split if larger)
 
 ---
 
