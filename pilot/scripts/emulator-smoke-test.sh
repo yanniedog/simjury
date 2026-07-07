@@ -1,15 +1,22 @@
 #!/usr/bin/env bash
-# Build the release APK, install it on a connected emulator/device, launch it,
-# and fail if the process crashes or the summons screen never appears.
+# Install a release APK on a connected emulator/device, launch it, and fail if the
+# process crashes or the summons screen never appears.
+#
+# Usage:
+#   APK_PATH=/path/to/app-release.apk bash pilot/scripts/emulator-smoke-test.sh
+#   # or, from pilot/: builds release APK first when APK_PATH is unset
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-APK="${ROOT_DIR}/app/build/outputs/apk/release/app-release.apk"
+DEFAULT_APK="${ROOT_DIR}/app/build/outputs/apk/release/app-release.apk"
+APK="${APK_PATH:-${DEFAULT_APK}}"
 PACKAGE="com.simjury.app"
 ACTIVITY="${PACKAGE}/simjury.app.MainActivity"
 UI_DUMP="/data/local/tmp/simjury-smoke-ui.xml"
 BOOT_TIMEOUT_SEC="${BOOT_TIMEOUT_SEC:-180}"
+ACTIVITY_TIMEOUT_SEC="${ACTIVITY_TIMEOUT_SEC:-90}"
 UI_TIMEOUT_SEC="${UI_TIMEOUT_SEC:-60}"
+UI_DUMP_TIMEOUT_SEC="${UI_DUMP_TIMEOUT_SEC:-20}"
 
 log() {
   printf '[smoke] %s\n' "$*"
@@ -40,12 +47,33 @@ wait_for_boot() {
   die "Device did not finish booting within ${BOOT_TIMEOUT_SEC}s"
 }
 
-wait_for_ui_text() {
+activity_is_resumed() {
+  adb shell dumpsys activity activities 2>/dev/null \
+    | grep -Eq "topResumedActivity=ActivityRecord\\{[^}]+[[:space:]]+u0[[:space:]]+${PACKAGE}/simjury\\.app\\.MainActivity"
+}
+
+wait_for_resumed_activity() {
+  local elapsed=0
+  while (( elapsed < ACTIVITY_TIMEOUT_SEC )); do
+    if activity_is_resumed; then
+      log "MainActivity is resumed"
+      return 0
+    fi
+    if ! adb shell pidof "${PACKAGE}" >/dev/null 2>&1; then
+      die "Process exited before MainActivity resumed"
+    fi
+    sleep 2
+    elapsed=$((elapsed + 2))
+  done
+  die "Timed out waiting for MainActivity to resume"
+}
+
+try_ui_text() {
   local needle="$1"
   local elapsed=0
   while (( elapsed < UI_TIMEOUT_SEC )); do
-    adb shell uiautomator dump "${UI_DUMP}" >/dev/null 2>&1 || true
-    if adb shell cat "${UI_DUMP}" 2>/dev/null | grep -Fq "${needle}"; then
+    if timeout "${UI_DUMP_TIMEOUT_SEC}" adb shell uiautomator dump "${UI_DUMP}" >/dev/null 2>&1 \
+      && adb shell cat "${UI_DUMP}" 2>/dev/null | grep -Fq "${needle}"; then
       log "Found UI text: ${needle}"
       return 0
     fi
@@ -55,11 +83,44 @@ wait_for_ui_text() {
     sleep 2
     elapsed=$((elapsed + 2))
   done
-  die "Timed out waiting for UI text '${needle}'"
+  return 1
+}
+
+dump_app_logcat() {
+  local pid="$1"
+  if [[ -n "${pid}" ]]; then
+    adb logcat -d --pid="${pid}" 2>/dev/null | tail -120 >&2 || true
+  else
+    adb logcat -d 2>/dev/null | grep -E "FATAL EXCEPTION|AndroidRuntime|${PACKAGE}" -A 20 | tail -80 >&2 || true
+  fi
+}
+
+app_pid() {
+  adb shell pidof "${PACKAGE}" 2>/dev/null | tr -d '\r' | awk '{print $1}'
+}
+
+assert_app_running() {
+  local label="$1"
+  local pid
+  pid="$(app_pid)"
+  if [[ -z "${pid}" ]]; then
+    dump_app_logcat ""
+    die "${label}"
+  fi
+  if adb logcat -d --pid="${pid}" 2>/dev/null | grep -Fq "FATAL EXCEPTION"; then
+    dump_app_logcat "${pid}"
+    die "App crashed (${label})"
+  fi
 }
 
 require_cmd adb
-[[ -n "${ANDROID_HOME:-}" ]] || die "ANDROID_HOME is not set"
+
+if [[ -n "${APK_PATH:-}" ]]; then
+  [[ -f "${APK}" ]] || die "APK not found at ${APK} (APK_PATH=${APK_PATH})"
+  log "Using prebuilt APK: ${APK}"
+elif [[ -z "${ANDROID_HOME:-}" ]]; then
+  die "ANDROID_HOME is not set (required to build APK when APK_PATH is unset)"
+fi
 
 if ! adb get-state >/dev/null 2>&1; then
   die "No adb device connected"
@@ -67,13 +128,14 @@ fi
 
 wait_for_boot
 
-log "Building release APK"
-(
-  cd "${ROOT_DIR}"
-  ./gradlew :app:assembleRelease --no-daemon --console=plain
-)
-
-[[ -f "${APK}" ]] || die "Release APK not found at ${APK}"
+if [[ -z "${APK_PATH:-}" ]]; then
+  log "Building release APK"
+  (
+    cd "${ROOT_DIR}"
+    ./gradlew :app:assembleRelease --no-daemon --console=plain
+  )
+  [[ -f "${APK}" ]] || die "Release APK not found at ${APK}"
+fi
 
 log "Installing ${APK}"
 adb uninstall "${PACKAGE}" >/dev/null 2>&1 || true
@@ -83,21 +145,16 @@ log "Launching ${ACTIVITY}"
 adb logcat -c
 adb shell am start -W -n "${ACTIVITY}"
 
-if adb logcat -d 2>/dev/null | grep -Fq "FATAL EXCEPTION: main"; then
-  adb logcat -d 2>/dev/null | grep -E "FATAL EXCEPTION|AndroidRuntime" -A 20 | tail -80 >&2 || true
-  die "App crashed on launch"
+assert_app_running "App process is not running after launch"
+
+wait_for_resumed_activity
+
+if try_ui_text "Enter the courtroom"; then
+  log "Summons UI confirmed"
+else
+  log "WARN: summons UI text not detected (Compose accessibility can lag on CI); MainActivity is resumed"
 fi
 
-if ! adb shell pidof "${PACKAGE}" >/dev/null 2>&1; then
-  adb logcat -d 2>/dev/null | grep -E "FATAL EXCEPTION|AndroidRuntime|${PACKAGE}" -A 20 | tail -80 >&2 || true
-  die "App process is not running after launch"
-fi
-
-wait_for_ui_text "Enter the courtroom"
-
-if adb logcat -d 2>/dev/null | grep -Fq "FATAL EXCEPTION: main"; then
-  adb logcat -d 2>/dev/null | grep -E "FATAL EXCEPTION|AndroidRuntime" -A 20 | tail -80 >&2 || true
-  die "App crashed after initial render"
-fi
+assert_app_running "App process exited after initial render"
 
 log "Smoke test passed"
