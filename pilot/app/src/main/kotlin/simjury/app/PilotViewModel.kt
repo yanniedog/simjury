@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import simjury.app.BuildConfig
 import simjury.app.data.AssetCaseLoader
+import simjury.app.data.CaseCatalog
 import simjury.app.data.PilotSave
 import simjury.app.data.PilotSaveRepository
 import simjury.app.data.RevealGate
@@ -43,6 +45,9 @@ data class PilotUiState(
     val showEpisodeHub: Boolean = false,
     val episodes: List<EpisodeSummary> = emptyList(),
     val allItemsRead: Boolean = false,
+    val availableCases: List<String> = emptyList(),
+    val activeCaseId: String = "",
+    val showCasePicker: Boolean = false,
     val episodeTitle: String = "",
     val episodeIntro: String = "",
     val itemOrder: List<String> = emptyList(),
@@ -64,32 +69,21 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
     private val gate = RevealGate()
     private var revealShown = false
     private var selectedEpisodeId: String? = null
+    private var activeCaseId: String = BuildConfig.PILOT_CASE_ID
 
     private val _uiState = MutableStateFlow(PilotUiState())
     val uiState: StateFlow<PilotUiState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            try {
-                val restored = withContext(Dispatchers.IO) {
-                    val case = AssetCaseLoader(application.assets).load()
-                    val save = saveRepository.load()
-                    SessionBootstrap(case, save)
-                }
-                loaded = restored.case
-                if (restored.save != null && restored.save.caseId == loaded.meta.id && restored.save.seed == seed) {
-                    engineState = restored.save.engineState
-                    revealShown = restored.save.revealShown
-                    if (restored.save.verdictLocked) {
-                        gate.lockVerdict()
-                    }
-                } else {
-                    engineState = PilotDeliberationEngine.initialState(loaded.meta.id, seed)
-                }
-                publish(selectedItem = null)
-            } catch (e: Exception) {
-                _uiState.value = PilotUiState(loading = false, error = e.message ?: "Failed to load case")
-            }
+            bootstrapCase(activeCaseId)
+        }
+    }
+
+    fun selectCase(caseId: String) {
+        if (caseId == activeCaseId) return
+        viewModelScope.launch {
+            bootstrapCase(caseId)
         }
     }
 
@@ -147,6 +141,40 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
     val allItemsRead: Boolean
         get() = _uiState.value.allItemsRead
 
+    private suspend fun bootstrapCase(caseId: String) {
+        try {
+            val availableCases = withContext(Dispatchers.IO) {
+                CaseCatalog.listFromAssets(getApplication<Application>().assets)
+            }
+            val restored = withContext(Dispatchers.IO) {
+                val case = AssetCaseLoader(getApplication<Application>().assets, caseId).load()
+                val save = saveRepository.load()
+                SessionBootstrap(case, save)
+            }
+            activeCaseId = caseId
+            selectedEpisodeId = null
+            gate.reset()
+            revealShown = false
+            loaded = restored.case
+            if (restored.save != null && restored.save.caseId == loaded.meta.id && restored.save.seed == seed) {
+                engineState = restored.save.engineState
+                revealShown = restored.save.revealShown
+                if (restored.save.verdictLocked) {
+                    gate.lockVerdict()
+                }
+            } else {
+                engineState = PilotDeliberationEngine.initialState(loaded.meta.id, seed)
+            }
+            publish(
+                selectedItem = null,
+                availableCases = availableCases,
+                showCasePicker = BuildConfig.DEBUG && availableCases.size > 1,
+            )
+        } catch (e: Exception) {
+            _uiState.value = PilotUiState(loading = false, error = e.message ?: "Failed to load case")
+        }
+    }
+
     private fun dispatch(action: DeliberationAction) {
         val wasLocked = engineState.verdictLocked
         engineState = PilotDeliberationEngine.step(engineState, action, seed)
@@ -180,7 +208,11 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
         )
     }
 
-    private fun publish(selectedItem: TrialItem?) {
+    private fun publish(
+        selectedItem: TrialItem?,
+        availableCases: List<String> = _uiState.value.availableCases,
+        showCasePicker: Boolean = _uiState.value.showCasePicker,
+    ) {
         val episodes = loaded.trial.episodes
         val episodeSummaries = episodes.map { ep -> ep.toSummary(engineState.itemsRead) }
         val multiEpisode = episodes.size > 1
@@ -202,6 +234,9 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
             showEpisodeHub = showEpisodeHub,
             episodes = episodeSummaries,
             allItemsRead = allItemsRead,
+            availableCases = availableCases,
+            activeCaseId = activeCaseId,
+            showCasePicker = showCasePicker,
             episodeTitle = activeEpisode?.title.orEmpty(),
             episodeIntro = activeEpisode?.introText.orEmpty(),
             itemOrder = activeEpisode?.itemOrder.orEmpty(),

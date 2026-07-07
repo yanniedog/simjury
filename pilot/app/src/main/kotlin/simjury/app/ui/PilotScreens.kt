@@ -41,6 +41,7 @@ fun PilotAppShell(
     onAcknowledgeSummons: () -> Unit,
     onSelectEpisode: (String) -> Unit,
     onBackToEpisodeHub: () -> Unit,
+    onSelectCase: (String) -> Unit,
     onOpenItem: (String) -> Unit,
     onCloseItem: () -> Unit,
     onMarkItemRead: (String) -> Unit,
@@ -65,6 +66,7 @@ fun PilotAppShell(
         state.phase == DeliberationPhase.SUMMONS -> SummonsScreen(
             state = state,
             onEnter = onAcknowledgeSummons,
+            onSelectCase = onSelectCase,
             installedVersion = installedVersion,
             updateState = updateState,
             onCheckForUpdate = onCheckForUpdate,
@@ -115,6 +117,7 @@ private fun CenteredText(text: String, modifier: Modifier = Modifier) {
 fun SummonsScreen(
     state: PilotUiState,
     onEnter: () -> Unit,
+    onSelectCase: (String) -> Unit,
     installedVersion: String,
     updateState: AppUpdateUiState,
     onCheckForUpdate: () -> Unit,
@@ -130,6 +133,18 @@ fun SummonsScreen(
             Text(stringResource(R.string.charge_label, state.charge), style = MaterialTheme.typography.titleMedium)
             Text(stringResource(R.string.summons_body), style = MaterialTheme.typography.bodyLarge)
             state.contentNotes.forEach { Text(it, style = MaterialTheme.typography.bodyMedium) }
+            if (state.showCasePicker) {
+                Text(stringResource(R.string.case_picker_label), style = MaterialTheme.typography.titleMedium)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    state.availableCases.forEach { caseId ->
+                        FilterChip(
+                            selected = caseId == state.activeCaseId,
+                            onClick = { onSelectCase(caseId) },
+                            label = { Text(caseId) },
+                        )
+                    }
+                }
+            }
             AppUpdateCheckSection(
                 installedVersion = installedVersion,
                 state = updateState,

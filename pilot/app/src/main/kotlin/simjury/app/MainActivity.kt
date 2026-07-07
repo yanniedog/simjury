@@ -63,6 +63,7 @@ open class MainActivity : ComponentActivity() {
                         onAcknowledgeSummons = pilotViewModel::acknowledgeSummons,
                         onSelectEpisode = pilotViewModel::selectEpisode,
                         onBackToEpisodeHub = pilotViewModel::backToEpisodeHub,
+                        onSelectCase = pilotViewModel::selectCase,
                         onOpenItem = pilotViewModel::openItem,
                         onCloseItem = pilotViewModel::closeItem,
                         onMarkItemRead = pilotViewModel::markItemRead,
