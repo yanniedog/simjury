@@ -80,7 +80,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          SIMJURY_BOT_WAIT_REQUIRED: gemini,sourcery
+          SIMJURY_BOT_WAIT_REQUIRED: gemini,codex,sourcery
           BOT_WAIT_IGNORE_CHECK_NAMES: bot-presence-gate,bot-feedback-gate,pr-bot-presence-gate,pr-bot-feedback-check
           BOT_WAIT_MAX_MIN: "240"
         run: |

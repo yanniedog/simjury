@@ -19,7 +19,7 @@ export const BOT_ALIASES = {
 };
 
 /** Required on human work PRs (branch protection + wait-for-bots). */
-export const DEFAULT_REQUIRED_KEYS = ['gemini', 'sourcery'];
+export const DEFAULT_REQUIRED_KEYS = ['gemini', 'codex', 'sourcery'];
 
 export const OPTIONAL_BOT_LOGINS = [
   'claude[bot]',

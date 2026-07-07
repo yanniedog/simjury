@@ -14,11 +14,12 @@ The `ci` workflow runs docs/projectmem checks and `./gradlew test` (plus `:app:a
 
 ## 3. Bot presence gate (`bot-presence-gate`)
 
-Waits until **gemini** and **sourcery** have posted on the PR since the wait anchor.
+Waits until **gemini**, **codex**, and **sourcery** have posted on the PR since the wait anchor.
 
 | Key | GitHub logins |
 |-----|---------------|
 | gemini | `gemini-code-assist[bot]`, `google-github-actions-bot[bot]`, … |
+| codex | `chatgpt-codex-connector[bot]` |
 | sourcery | `sourcery-ai[bot]` |
 
 Local pre-merge check:
@@ -29,7 +30,7 @@ npm run wait-for-bots -- --watch --pr <n>
 
 Exit **0** = ready. Exit **2** = still waiting. Exit **1** = error or missing bots at cap.
 
-Env: `SIMJURY_BOT_WAIT_REQUIRED=gemini,sourcery` (fallback: `JCS2_BOT_WAIT_REQUIRED`, `AR_BOT_WAIT_REQUIRED`, `BOT_WAIT_REQUIRED`).
+Env: `SIMJURY_BOT_WAIT_REQUIRED=gemini,codex,sourcery` (fallback: `JCS2_BOT_WAIT_REQUIRED`, `AR_BOT_WAIT_REQUIRED`, `BOT_WAIT_REQUIRED`).
 
 ## 4. Bot feedback gate (`bot-feedback-gate`)
 
