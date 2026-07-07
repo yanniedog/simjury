@@ -63,18 +63,19 @@ fun AppUpdateCheckSection(
                 }
             }
             is AppUpdateUiState.Error -> {
-                if (state.duringDownload) return@Column
-                Text(
-                    state.message,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = onCheckForUpdate) {
-                        Text(stringResource(R.string.update_check_again))
-                    }
-                    TextButton(onClick = onDismissStatus) {
-                        Text(stringResource(R.string.update_dismiss))
+                if (!state.duringDownload) {
+                    Text(
+                        state.message,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(onClick = onCheckForUpdate) {
+                            Text(stringResource(R.string.update_check_again))
+                        }
+                        TextButton(onClick = onDismissStatus) {
+                            Text(stringResource(R.string.update_dismiss))
+                        }
                     }
                 }
             }

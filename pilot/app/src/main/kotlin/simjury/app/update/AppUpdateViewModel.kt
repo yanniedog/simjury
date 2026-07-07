@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -77,6 +78,7 @@ class AppUpdateViewModel @JvmOverloads constructor(
                     _state.value = AppUpdateUiState.Idle
                 }
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 if (userInitiated) {
                     _state.value = AppUpdateUiState.Error(e.message ?: "Update check failed")
                 } else {
@@ -111,6 +113,7 @@ class AppUpdateViewModel @JvmOverloads constructor(
                 _state.value = AppUpdateUiState.ReadyToInstall(cacheApk, available.remote)
                 ApkInstaller.installApk(getApplication(), cacheApk)
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 _state.value = AppUpdateUiState.Error(e.message ?: "Download failed", duringDownload = true)
             }
         }
