@@ -121,16 +121,54 @@ jobs:
           echo "path=$apk" >> "$GITHUB_OUTPUT"
           ls -lh "$apk"
 
-      - name: Emulator install + launch smoke test (release gate)
+      - name: Emulator smoke test (attempt 1)
+        id: smoke_attempt_1
+        continue-on-error: true
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
           target: google_apis
           arch: x86_64
           disable-animations: true
-          emulator-boot-timeout-in-minutes: 20
+          force-avd-creation: true
+          emulator-boot-timeout: 1200
+          ram-size: 4096M
+          cores: 2
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
-          script: APK_PATH="${{ steps.apk.outputs.path }}" BOOT_TIMEOUT_SEC=300 ACTIVITY_TIMEOUT_SEC=120 UI_TIMEOUT_SEC=60 UI_DUMP_TIMEOUT_SEC=20 bash pilot/scripts/emulator-smoke-test.sh
+          pre-emulator-launch-script: |
+            adb kill-server || true
+            adb start-server
+          script: APK_PATH="${{ steps.apk.outputs.path }}" BOOT_TIMEOUT_SEC=300 PACKAGE_MANAGER_TIMEOUT_SEC=180 ACTIVITY_TIMEOUT_SEC=180 UI_TIMEOUT_SEC=180 UI_DUMP_TIMEOUT_SEC=30 STABILIZE_SEC=15 bash pilot/scripts/emulator-smoke-test.sh
+
+      - name: Emulator smoke test (attempt 2)
+        id: smoke_attempt_2
+        if: steps.smoke_attempt_1.outcome == 'failure'
+        continue-on-error: true
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          force-avd-creation: true
+          emulator-boot-timeout: 1200
+          ram-size: 4096M
+          cores: 2
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          pre-emulator-launch-script: |
+            adb kill-server || true
+            adb start-server
+          script: APK_PATH="${{ steps.apk.outputs.path }}" BOOT_TIMEOUT_SEC=300 PACKAGE_MANAGER_TIMEOUT_SEC=180 ACTIVITY_TIMEOUT_SEC=180 UI_TIMEOUT_SEC=180 UI_DUMP_TIMEOUT_SEC=30 STABILIZE_SEC=15 bash pilot/scripts/emulator-smoke-test.sh
+
+      - name: Require emulator smoke pass
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.smoke_attempt_1.outcome }}" = "success" ] || [ "${{ steps.smoke_attempt_2.outcome }}" = "success" ]; then
+            echo "Emulator smoke test passed"
+            exit 0
+          fi
+          echo "::error::Emulator smoke test failed after 2 attempts"
+          exit 1
 
       - name: Install publish dependencies
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

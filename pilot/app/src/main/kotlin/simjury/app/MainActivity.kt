@@ -39,6 +39,8 @@ open class MainActivity : ComponentActivity() {
         testUpdateRepositoryOverride ?: AppUpdateRepository()
 
     companion object {
+        const val EXTRA_SKIP_AUTO_UPDATE_CHECK = "skipAutoUpdateCheck"
+
         internal var testUpdateRepositoryOverride: AppUpdateRepository? = null
         internal var testSkipAutoUpdateCheck: Boolean = false
     }
@@ -46,12 +48,15 @@ open class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val skipAutoUpdateCheck =
+            testSkipAutoUpdateCheck ||
+                intent?.getBooleanExtra(EXTRA_SKIP_AUTO_UPDATE_CHECK, false) == true
         setContent {
             val uiState by pilotViewModel.uiState.collectAsState()
             val updateState by updateViewModel.state.collectAsState()
 
             LaunchedEffect(Unit) {
-                if (!testSkipAutoUpdateCheck) {
+                if (!skipAutoUpdateCheck) {
                     updateViewModel.checkForUpdate(userInitiated = false)
                 }
             }
