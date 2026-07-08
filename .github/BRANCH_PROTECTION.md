@@ -50,4 +50,6 @@ See also `WORKFLOW.md` and `.github/MERGE_POLICY.md`.
 7. Run `.github/scripts/assert-pr-mergeable.sh <n>`
 8. Squash merge: `gh pr merge <n> --auto --squash --delete-branch`
 
+**Auto-release:** `pilot-auto-release-on-queue-drain` commits version bumps directly to `main` when the PR queue drains. Add **GitHub Actions** to the ruleset bypass list (see [WORKFLOW.md](../WORKFLOW.md#auto-release-when-pr-queue-drains)). Fallback bump PRs are gate-exempt (`chore(pilot): auto-release bump v…`).
+
 **Agents must never wait for the user to ask before addressing bot feedback.**
