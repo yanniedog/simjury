@@ -7,9 +7,14 @@ import kotlinx.coroutines.yield
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import simjury.app.BuildConfig
+import java.util.concurrent.TimeUnit
 
 open class AppUpdateRepository(
-    private val client: OkHttpClient = OkHttpClient(),
+    private val client: OkHttpClient = OkHttpClient.Builder()
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .callTimeout(45, TimeUnit.SECONDS)
+        .build(),
     private val manifestUrl: String = BuildConfig.APK_MANIFEST_URL,
     private val json: Json = Json { ignoreUnknownKeys = true },
 ) {
