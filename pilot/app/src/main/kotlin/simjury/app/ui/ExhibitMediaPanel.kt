@@ -1,6 +1,8 @@
 package simjury.app.ui
 
 import android.media.MediaPlayer
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -90,6 +92,7 @@ private fun ExhibitImage(item: ExhibitMediaItem) {
 @Composable
 private fun ExhibitAudio(item: ExhibitMediaItem) {
     val context = LocalContext.current
+    val mainHandler = remember { Handler(Looper.getMainLooper()) }
     var playing by remember(item.assetPath) { mutableStateOf(false) }
     var player by remember(item.assetPath) { mutableStateOf<MediaPlayer?>(null) }
     var loadFailed by remember(item.assetPath) { mutableStateOf(false) }
@@ -111,7 +114,7 @@ private fun ExhibitAudio(item: ExhibitMediaItem) {
                     setDataSource(descriptor.fileDescriptor, descriptor.startOffset, descriptor.length)
                     descriptor.close()
                     prepare()
-                    setOnCompletionListener { playing = false }
+                    setOnCompletionListener { mainHandler.post { playing = false } }
                 }
             }.getOrNull()
         }
