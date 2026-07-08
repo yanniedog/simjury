@@ -8,6 +8,10 @@
     <string name="enter_courtroom">Enter the courtroom</string>
     <string name="item_read">%1$s (read)</string>
     <string name="item_unread">%1$s (unread)</string>
+    <string name="item_status_read">Read</string>
+    <string name="item_status_unread">Unread</string>
+    <string name="reading_progress_label">Evidence reviewed</string>
+    <string name="reading_progress_count">%1$d of %2$d</string>
     <string name="read_all_items_hint">Read every item before opening your verdict diary.</string>
     <string name="open_diary">Open verdict diary</string>
     <string name="mark_read_continue">Mark read and continue</string>
@@ -20,11 +24,13 @@
     <string name="episode_complete">Complete</string>
     <string name="diary_title">Verdict diary</string>
     <string name="diary_permanent_warning">Your diary is permanent once committed.</string>
+    <string name="diary_leaning_prompt">Current leaning</string>
     <string name="diary_leaning_guilty">Guilty</string>
     <string name="diary_leaning_not_guilty">Not guilty</string>
     <string name="diary_leaning_undecided">Undecided</string>
     <string name="diary_reason_label">Top reason (at least 10 characters)</string>
     <string name="diary_doubt_label">Strongest doubt (at least 10 characters)</string>
+    <string name="diary_char_count">%1$d / %2$d characters minimum</string>
     <string name="commit_diary">Commit diary</string>
     <string name="vote_title">Final vote</string>
     <string name="vote_instruction">Lock your verdict. You cannot change it.</string>
