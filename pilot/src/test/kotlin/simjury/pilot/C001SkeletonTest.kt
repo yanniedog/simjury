@@ -22,13 +22,21 @@ class C001SkeletonTest {
     }
 
     @Test
-    fun `C-001 W-01 and W-02 testimony authored`() {
-        val w01 = loaded.trial.witnesses.first { it.id == "W-01" }
-        val w02 = loaded.trial.witnesses.first { it.id == "W-02" }
-        assertFalse(w01.blocks.first().text.contains("AUTHORING PENDING"))
-        assertFalse(w02.blocks.first().text.contains("AUTHORING PENDING"))
-        val w03 = loaded.trial.witnesses.first { it.id == "W-03" }
-        assertTrue(w03.blocks.first().text.contains("AUTHORING PENDING"))
+    fun `C-001 W-01 through W-05 testimony authored`() {
+        val witnesses = listOf("W-01", "W-02", "W-03", "W-04", "W-05")
+        witnesses.forEach { id ->
+            val witness = loaded.trial.witnesses.first { it.id == id }
+            witness.blocks.forEach { block ->
+                assertFalse(
+                    block.text.contains("AUTHORING PENDING"),
+                    "${block.id} still pending",
+                )
+            }
+        }
+        val w06 = loaded.trial.witnesses.first { it.id == "W-06" }
+        w06.blocks.forEach { block ->
+            assertTrue(block.text.contains("AUTHORING PENDING"), "${block.id} should still be pending")
+        }
     }
 
     @Test

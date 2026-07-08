@@ -31,7 +31,7 @@
     {
       "id": "E-02",
       "title": "Many accounts",
-      "intro_text": "[AUTHORING PENDING — episode E-02 intro]",
+      "intro_text": "Two more complainants describe the same pattern: a titled stranger, a written list, a sealed cheque, and jewellery taken for sizing. A police inspector then explains how the women were asked to pick out the accused.",
       "item_order": [
         "T-W03-002",
         "T-W03-003",
@@ -315,90 +315,90 @@
           "id": "T-W03-001",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W03-001 before P4-4]",
+          "text": "Mrs Holt testified that in February she lived in Upper Baker Street. On a Saturday about one o'clock she was passing through Ludgate Hill with her sister when a well-dressed man, who she believed to be the accused, asked if she was waiting for an omnibus. After brief conversation he asked her address and permission to call the next day, which she gave.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 123–124, examination (Sessions Papers cross-check)"
           }
         },
         {
           "id": "T-W03-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W03-002 before P4-4]",
+          "text": "He called the next day about two, announced as Mr Wilton, and said he was the Earl of Wilton. He sat with her for three-quarters of an hour, wrote a list of dresses, and spoke of a house in Abbey Road, St John's Wood with conservatories, servants, and good wine. He proposed she dine there on the Tuesday to see whether she liked the place.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 123–124, examination"
           }
         },
         {
           "id": "T-W03-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W03-003 before P4-4]",
+          "text": "She was to order at Redfern's, a riding habit at Cobb's in Baker Street, and boots at Norman's in Victoria Street. He tore a cheque for forty pounds from a cheque-book, wrote and signed it with his hand shielding the paper, and put it in an envelope addressed to a bank at Belgravia Mansions. He asked for her rings to size replacements and took her wedding ring and a plain foreign gold ring, promising return by a commissionaire from Streeter's.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 123–124, examination"
           }
         },
         {
           "id": "T-W03-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W03-004 before P4-4]",
+          "text": "Next morning she found no London and South-Western Bank at Belgravia Mansions, opened the envelope, and later sent the cheque to the Balham branch, which refused payment and kept it. The commissionaire never came and the rings were not returned. She made no complaint to the police at the time.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 124, examination"
           }
         },
         {
           "id": "T-W03-005",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W03-005 before P4-4]",
+          "text": "On the second of January the police fetched her to Westminster Police Court, where she picked the accused out from about a dozen men. She touched him with her umbrella. She thought at the time of their talks that he was not English, though he claimed an English title. She had no doubt he was the man.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 124, examination; Cd. 2315 p. 77 cross-check"
           }
         },
         {
           "id": "T-W03-006",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W03-006 before P4-4]",
+          "text": "Under cross-examination she agreed the police came to her after seeing her name on the cheque. She had been with him only about two minutes in the street; her sister saw him there but did not attend court. She read about the case in the papers after being subpoenaed and knew a man was in custody.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 124–125, cross-examination"
           }
         },
         {
           "id": "T-W03-007",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W03-007 before P4-4]",
+          "text": "The accused looked slightly thinner now and his moustache was not waxed as before, but she remained pretty sure of him. He was remarkably well dressed with spats and a black frock coat, a black satin tie with a large pearl pin, and something white inside his waistcoat. She could not say whether he had a watch and chain.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 124–125, cross-examination"
           }
         },
         {
           "id": "T-W03-008",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W03-008 before P4-4]",
+          "text": "Five or six women attended to identify him; they went in one by one and she went first. She hesitated only because she disliked the task. She did not touch anyone else. When he wrote the dress list he wrote freely but indistinctly, holding his pen backwards.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 125, cross-examination"
           }
         },
         {
           "id": "T-W03-009",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W03-009 before P4-4]",
+          "text": "Re-examined, she said she was the first to identify him and was surprised later to see Miss Taylor among the witnesses. They had not spoken about the case beforehand and neither helped the other to point him out. Apart from being thinner and the moustache, he looked much as he had in February and at the police court.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 125, re-examination"
           }
         }
       ]
@@ -413,90 +413,90 @@
           "id": "T-W04-001",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W04-001 before P4-4]",
+          "text": "Mrs Irwin testified she was a widow living in a flat in Shaftesbury Avenue. On the sixth of March about one fifteen she was walking in Piccadilly with her little daughter when the accused asked if she was Lady somebody; she said she was not. He asked where she lived and whether she knew Lord Aberdeen, and she thought from that she had met him before. He kept a handkerchief to the left side of his face for about three minutes.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 127–128, examination (Sessions Papers cross-check)"
           }
         },
         {
           "id": "T-W04-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W04-002 before P4-4]",
+          "text": "He called the next afternoon about three forty, again partly concealing his face while her sister admitted him. He said he was Lord Winton de Willoughby, had just returned from Canada, and had stayed with the Earl of Aberdeen. He offered a house in St John's Wood with twelve servants, a carriage, and a wine cellar, and dictated a list of clothes she should order, including items from Redfern's.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 127–128, examination"
           }
         },
         {
           "id": "T-W04-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W04-003 before P4-4]",
+          "text": "He wrote a cheque for one hundred and twenty pounds, sealed it in an envelope, and promised jewellery from Streeter's. She gave her wedding ring for sizing and lent a thick gold curb bracelet, her sister's bracelet, an ostrich-feather fan, a pair of elephant tusks, and a hand-painted porcelain photograph. He said a one-armed commissionaire would return the ring.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 127–128, examination"
           }
         },
         {
           "id": "T-W04-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W04-004 before P4-4]",
+          "text": "She left the room to fetch tea. Two or three hours after he left she missed tiger claws and teeth of an animal mounted in silver with her monogram. She valued what he took at about one hundred and eighty pounds. Next day the Balham bank kept the cheque and it was dishonoured. Two days later she reported the matter at Vine Street and gave a description.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 128, examination"
           }
         },
         {
           "id": "T-W04-005",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W04-005 before P4-4]",
+          "text": "She did not see him again until late December, when police brought her to Westminster Police Court. She viewed thirteen men in the yard and at once recognised the accused. When she heard him speak she was doubtful, because in her flat he had a Yankee twang but in court he used a foreign accent she thought Swiss. His hands, hair, and feet seemed the same.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 128, examination"
           }
         },
         {
           "id": "T-W04-006",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W04-006 before P4-4]",
+          "text": "Under cross-examination she agreed she might have met him in India, where she had lived eleven years, but did not recognise him from that. In Piccadilly he wore a black overcoat with a velvet collar and spats. When he called it was very dark and he kept the handkerchief to his face while her sister let him in.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 128, cross-examination"
           }
         },
         {
           "id": "T-W04-007",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W04-007 before P4-4]",
+          "text": "She made the articles into a parcel for him; none was found in his possession though she could identify them. No other man shown with him was like him. She read the case in the papers but had spoken to the police before that. She described him as about fifty-three, with no whiskers and the same moustache as now.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 128–129, cross-examination"
           }
         },
         {
           "id": "T-W04-008",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W04-008 before P4-4]",
+          "text": "He seemed to write freely though she did not watch closely because his back was towards her. He appeared to have a gold watch and chain. She gave police a full list of her property. He looked just the same now as then and fidgeted at her flat, refusing the tea prepared for him.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 128–129, cross-examination"
           }
         },
         {
           "id": "T-W04-009",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W04-009 before P4-4]",
+          "text": "Re-examined, she said at the police court he wore an overcoat like the man's and fawn-coloured spats when he called. At the station she heard him speak a foreign language to an interpreter; it was not French and might have been Norwegian. She felt he wanted to leave as quickly as possible.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 129, re-examination"
           }
         }
       ]
@@ -511,80 +511,80 @@
           "id": "T-W05-001",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W05-001 before P4-4]",
+          "text": "Inspector Vale testified that he took charge of the case after the third remand in January, succeeding a local inspector who had handled earlier hearings. Before that he had not been responsible for the accused's clothing being left at his lodgings, which he would not have allowed.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "Cd. 2315 pp. 52–54; NBT introduction cross-check"
           }
         },
         {
           "id": "T-W05-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W05-002 before P4-4]",
+          "text": "He conducted the remaining identifications at Westminster Police Court after taking charge, including Mrs Elling and three other complainants whose cases were still outstanding. He chose men put up with him as far as possible resembling the accused, gave the women no hint, and let the accused place himself where he liked among fourteen or sixteen others.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "Cd. 2315 pp. 77, 85–86; NBT introduction"
           }
         },
         {
           "id": "T-W05-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W05-003 before P4-4]",
+          "text": "Several women identified the accused under his supervision. He noticed they seemed to feel sympathy for him on account of his age. Two women had failed to identify at an earlier December hearing and five in all had failed, while others identified but would give no names or addresses.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "Cd. 2315 pp. 85–86; NBT introduction"
           }
         },
         {
           "id": "T-W05-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W05-004 before P4-4]",
+          "text": "He did not regard identification in the dock alone as sufficient unless supported by other identifications. Suitable members of the public could not be compelled to stand in a line; the police had to take whom they could find in the street and adjoining shops.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "Cd. 2315 pp. 52–55; NBT introduction"
           }
         },
         {
           "id": "T-W05-005",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W05-005 before P4-4]",
+          "text": "He searched the accused's box at the Covent Garden Hotel and found white and brown spats, several white waistcoats, underwear, an opera hat, a wedding ring, photographs of ladies and views of Norway and Sweden, and a large quantity of business correspondence.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 146–147, examination"
           }
         },
         {
           "id": "T-W05-006",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W05-006 before P4-4]",
+          "text": "Under cross-examination he understood the accused had stayed at the hotel until the previous September and later at the Buckingham Hotel in the Strand. He did not go to Victoria Street and took charge only after the third of January. The waistcoats produced were typical of those found.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT p. 147, cross-examination"
           }
         },
         {
           "id": "T-W05-007",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W05-007 before P4-4]",
+          "text": "He had inquired about a Mrs Gardiner, who had been convicted of passing bad cheques and pretending to be a person of distinction, with a warrant out for assault later withdrawn by her landlady. Despite every effort he could not find her to subpoena as a witness.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT p. 147, cross-examination"
           }
         },
         {
           "id": "T-W05-008",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W05-008 before P4-4]",
+          "text": "Re-examined, he repeated that he was not in charge until the third remand and would not have left the prisoner's clothes at his lodgings. He had made every effort to trace Mrs Gardiner for the defence.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT p. 147, re-examination"
           }
         }
       ]
