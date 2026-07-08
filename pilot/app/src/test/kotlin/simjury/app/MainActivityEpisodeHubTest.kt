@@ -7,6 +7,7 @@ import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.ExternalResource
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import simjury.app.update.ApkManifest
@@ -46,9 +47,11 @@ class MainActivityEpisodeHubTest {
     @Test
     fun mainActivity_c001_showsEpisodeHubAfterSummons() {
         composeRule.waitUntil(timeoutMillis = 15_000) {
-            composeRule.onAllNodesWithTag("summons_enter").fetchSemanticsNodes().isNotEmpty()
+            composeRule.onAllNodesWithText("The List", substring = true).fetchSemanticsNodes().isNotEmpty()
         }
-        composeRule.onNodeWithTag("summons_enter").performClick()
+        composeRule.onNodeWithText("The List", substring = true).assertExists()
+        composeRule.onNodeWithTag("summons_enter").performScrollTo().performClick()
+        composeRule.waitForIdle()
         composeRule.waitUntil(timeoutMillis = 15_000) {
             composeRule.onAllNodesWithTag("episode_hub").fetchSemanticsNodes().isNotEmpty()
         }

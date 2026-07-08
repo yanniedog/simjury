@@ -75,7 +75,10 @@ data class PilotUiState(
     val revealNames: List<PseudonymReveal> = emptyList(),
 )
 
-class PilotViewModel(application: Application) : AndroidViewModel(application) {
+class PilotViewModel(
+    application: Application,
+    initialCaseId: String = testInitialCaseId ?: BuildConfig.PILOT_CASE_ID,
+) : AndroidViewModel(application) {
 
     companion object {
         /** Robolectric/instrumentation override for default case id. */
@@ -89,7 +92,7 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
     private val gate = RevealGate()
     private var revealShown = false
     private var selectedEpisodeId: String? = null
-    private var activeCaseId: String = testInitialCaseId ?: BuildConfig.PILOT_CASE_ID
+    private var activeCaseId: String = initialCaseId
 
     private val _uiState = MutableStateFlow(PilotUiState())
     val uiState: StateFlow<PilotUiState> = _uiState.asStateFlow()
