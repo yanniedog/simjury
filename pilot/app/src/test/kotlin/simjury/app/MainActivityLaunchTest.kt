@@ -38,6 +38,7 @@ class MainActivityLaunchTest {
         fun tearDownClass() {
             MainActivity.testUpdateRepositoryOverride = null
             MainActivity.testSkipAutoUpdateCheck = false
+            PilotViewModel.testInitialCaseId = null
             PilotViewModel.speechControllerOverride = null
         }
     }

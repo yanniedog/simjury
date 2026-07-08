@@ -289,7 +289,8 @@ private fun EpisodeHubBody(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
+            .testTag("episode_hub"),
         contentPadding = PaddingValues(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
@@ -310,7 +311,7 @@ private fun EpisodeHubBody(
             val complete = episode.itemsRead == episode.itemsTotal
             Card(
                 onClick = { onSelectEpisode(episode.id) },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("episode_card_${episode.id}"),
                 colors = CardDefaults.cardColors(
                     containerColor = if (complete) {
                         MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)

@@ -21,7 +21,11 @@ class MultiEpisodeEngineTest {
             add(DeliberationAction.OpenDiary)
         }
         val end = PilotDeliberationEngine.reduce(
-            PilotDeliberationEngine.initialState(loaded.meta.id, GameSession.DEFAULT_SEED),
+            PilotDeliberationEngine.initialState(
+                loaded.meta.id,
+                GameSession.DEFAULT_SEED,
+                expectedItemIds = allItemIds.toSet(),
+            ),
             actions,
             GameSession.DEFAULT_SEED,
         )

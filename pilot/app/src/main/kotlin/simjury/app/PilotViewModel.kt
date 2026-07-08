@@ -100,10 +100,17 @@ data class PilotUiState(
     val canMarkItemsRead: Boolean = false,
 )
 
-class PilotViewModel(application: Application) : AndroidViewModel(application) {
+class PilotViewModel(
+    application: Application,
+    initialCaseId: String,
+) : AndroidViewModel(application) {
 
     companion object {
+        /** Robolectric/instrumentation override read by [MainActivity] ViewModel factory. */
+        var testInitialCaseId: String? = null
         var speechControllerOverride: TrialSpeechController? = null
+
+        fun resolveInitialCaseId(): String = testInitialCaseId ?: BuildConfig.PILOT_CASE_ID
     }
 
     private val seed = 1L
@@ -115,7 +122,7 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
     private val gate = RevealGate()
     private var revealShown = false
     private var selectedEpisodeId: String? = null
-    private var activeCaseId: String = BuildConfig.PILOT_CASE_ID
+    private var activeCaseId: String = initialCaseId
     private var browseSection: PilotSection? = null
 
     private val _uiState = MutableStateFlow(PilotUiState())
@@ -301,8 +308,9 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
                     gate.lockVerdict()
                 }
             } else {
-                engineState = PilotDeliberationEngine.initialState(loaded.meta.id, seed)
+                engineState = newEngineState(loaded)
             }
+            engineState = backfillExpectedItems(engineState, loaded)
             publish(
                 selectedItem = null,
                 availableCases = availableCases,
@@ -310,7 +318,11 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
             )
         } catch (e: Exception) {
             if (e is CancellationException) throw e
-            _uiState.value = PilotUiState(loading = false, error = e.message ?: "Failed to load case")
+            _uiState.value = _uiState.value.copy(
+                loading = false,
+                error = e.message ?: "Failed to load case",
+                activeCaseId = caseId,
+            )
         }
     }
 
@@ -427,6 +439,19 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
             canMarkItemsRead = engineState.phase == DeliberationPhase.READING,
         )
         _uiState.value = state
+    }
+
+    private fun newEngineState(case: LoadedCase): DeliberationState =
+        PilotDeliberationEngine.initialState(
+            caseId = case.meta.id,
+            seed = seed,
+            expectedItemIds = case.trial.episodes.flatMap { it.itemOrder }.toSet(),
+        )
+
+    private fun backfillExpectedItems(state: DeliberationState, case: LoadedCase): DeliberationState {
+        if (state.expectedItemIds.isNotEmpty()) return state
+        val expected = case.trial.episodes.flatMap { it.itemOrder }.toSet()
+        return if (expected.isEmpty()) state else state.copy(expectedItemIds = expected)
     }
 
     private fun currentItemOrder(): List<String> {

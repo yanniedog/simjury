@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +23,14 @@ import simjury.app.update.AppUpdateUiState
 import simjury.app.update.AppUpdateViewModel
 
 open class MainActivity : ComponentActivity() {
-    private val pilotViewModel: PilotViewModel by viewModels()
+    private val pilotViewModel: PilotViewModel by viewModels {
+        val caseId = PilotViewModel.resolveInitialCaseId()
+        object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T =
+                PilotViewModel(application, caseId) as T
+        }
+    }
     private val updateViewModel: AppUpdateViewModel by viewModels {
         AppUpdateViewModel.factory(application, createAppUpdateRepository())
     }
