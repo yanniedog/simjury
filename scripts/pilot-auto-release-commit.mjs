@@ -35,9 +35,16 @@ export function isProtectedMainRejection(stderr) {
   );
 }
 
+/** @param {unknown} raw @param {number} [fallback] */
+export function normalizePushRetries(raw, fallback = 3) {
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n < 1) return fallback;
+  return Math.floor(n);
+}
+
 export function pushHeadToMain({
   branch = process.env.AUTO_RELEASE_COMMIT_BRANCH || 'main',
-  maxAttempts = Number(process.env.AUTO_RELEASE_PUSH_RETRIES || 3),
+  maxAttempts = normalizePushRetries(process.env.AUTO_RELEASE_PUSH_RETRIES),
   dryRun = false,
   runCommand = run,
 } = {}) {

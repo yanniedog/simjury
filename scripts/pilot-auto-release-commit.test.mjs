@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { pushHeadToMain } from './pilot-auto-release-commit.mjs';
+import { pushHeadToMain, normalizePushRetries } from './pilot-auto-release-commit.mjs';
 
 function result(status = 0, stdout = '', stderr = '') {
   return { status, stdout, stderr };
@@ -70,4 +70,13 @@ test('warns and retains the restored invocation stash when stash listing fails',
     console.warn = warn;
   }
   assert.ok(warnings.some((message) => message.includes('stash list warning: bad stash state')));
+});
+
+test('normalizePushRetries clamps invalid values to fallback', () => {
+  assert.equal(normalizePushRetries(undefined), 3);
+  assert.equal(normalizePushRetries(''), 3);
+  assert.equal(normalizePushRetries('0'), 3);
+  assert.equal(normalizePushRetries('NaN'), 3);
+  assert.equal(normalizePushRetries('2.9'), 2);
+  assert.equal(normalizePushRetries('5'), 5);
 });
