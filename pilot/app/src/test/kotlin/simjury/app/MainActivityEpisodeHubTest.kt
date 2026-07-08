@@ -41,7 +41,14 @@ class MainActivityEpisodeHubTest {
         }
     }
 
-    @get:Rule
+    @get:Rule(order = 0)
+    val caseIdRule = object : ExternalResource() {
+        override fun before() {
+            PilotViewModel.testInitialCaseId = "c_001"
+        }
+    }
+
+    @get:Rule(order = 1)
     val composeRule = createAndroidComposeRule<MainActivity>()
 
     @Test

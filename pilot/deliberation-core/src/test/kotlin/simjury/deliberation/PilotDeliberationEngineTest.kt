@@ -124,6 +124,27 @@ class PilotDeliberationEngineTest {
     val reset = PilotDeliberationEngine.step(complete, DeliberationAction.ResetForReplay, seed)
     assertEquals(DeliberationPhase.SUMMONS, reset.phase)
     assertEquals(emptySet<String>(), reset.itemsRead)
+    assertEquals(emptySet<String>(), reset.expectedItemIds)
     assertEquals(null, reset.diary)
+  }
+
+  @Test
+  fun `replay reset preserves expected item ids`() {
+    val expected = setOf("T-W01-001", "X-01")
+    val complete = PilotDeliberationEngine.reduce(
+      PilotDeliberationEngine.initialState(caseId, seed, expectedItemIds = expected),
+      listOf(
+        DeliberationAction.AcknowledgeSummons,
+        DeliberationAction.MarkItemRead("T-W01-001"),
+        DeliberationAction.MarkItemRead("X-01"),
+        DeliberationAction.OpenDiary,
+        DeliberationAction.CommitDiary("G", "Valid reason here.", "Valid doubt here."),
+        DeliberationAction.CastVote("Guilty"),
+        DeliberationAction.OpenReveal,
+      ),
+      seed,
+    )
+    val reset = PilotDeliberationEngine.step(complete, DeliberationAction.ResetForReplay, seed)
+    assertEquals(expected, reset.expectedItemIds)
   }
 }

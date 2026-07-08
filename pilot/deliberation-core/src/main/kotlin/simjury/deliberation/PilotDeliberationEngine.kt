@@ -137,7 +137,7 @@ object PilotDeliberationEngine {
         if (state.phase != DeliberationPhase.COMPLETE) {
             throw IllegalDeliberationTransition("ResetForReplay only valid after COMPLETE")
         }
-        return initialState(state.caseId, state.seed)
+        return initialState(state.caseId, state.seed, state.expectedItemIds)
             .withEvent("replay_reset")
     }
 
