@@ -173,7 +173,7 @@ class PilotViewModel(
     }
 
     fun openItem(itemId: String) {
-        val item = loaded.resolveItem(itemId) ?: return
+        val item = loaded.resolveItem(activeCaseId, itemId) ?: return
         speech.stop()
         publish(selectedItem = item)
     }
@@ -379,7 +379,7 @@ class PilotViewModel(
         val allIds = episodes.flatMap { it.itemOrder }
         val allItemsRead = allIds.isNotEmpty() && allIds.all { it in engineState.itemsRead }
         val readingItems = activeEpisode?.itemOrder.orEmpty().mapNotNull { itemId ->
-            loaded.resolveItem(itemId)?.let { item ->
+            loaded.resolveItem(activeCaseId, itemId)?.let { item ->
                 ReadingItemRow(
                     id = item.id,
                     title = item.title,

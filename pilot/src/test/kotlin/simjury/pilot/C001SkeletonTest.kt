@@ -40,6 +40,30 @@ class C001SkeletonTest {
     }
 
     @Test
+    fun `C-001 exhibits X-01 through X-08 authored with media`() {
+        val expectedAssets = mapOf(
+            "X-01" to "exhibits/x-01-clothing-list.png",
+            "X-02" to "exhibits/x-02-clothing-list.png",
+            "X-03" to "exhibits/x-03-handwriting-chart.png",
+            "X-04" to "exhibits/x-04-cheque.png",
+            "X-05" to "exhibits/x-05-encounter-schedule.png",
+            "X-06" to "exhibits/x-06-identification-record.png",
+            "X-07" to "exhibits/x-07-chronology.png",
+            "X-08" to "exhibits/x-08-supporting-papers.png",
+        )
+        loaded.trial.exhibits.forEach { exhibit ->
+            assertFalse(
+                exhibit.text.contains("AUTHORING PENDING"),
+                "${exhibit.id} still pending",
+            )
+            val asset = expectedAssets[exhibit.id]
+            if (asset != null) {
+                assertEquals(asset, exhibit.renderAsset, "${exhibit.id} render_asset")
+            }
+        }
+    }
+
+    @Test
     fun `C-001 episode item order resolves`() {
         val ids = buildSet {
             loaded.trial.witnesses.flatMap { it.blocks }.forEach { add(it.id) }

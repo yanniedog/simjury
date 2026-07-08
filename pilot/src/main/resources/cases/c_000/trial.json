@@ -61,6 +61,14 @@
       "text": "Ledger entry: 'Gold hunter watch — twelve pounds — shown to gentleman, name given as Mr Hartley, Brook Street.' No payment recorded.",
       "prosecution_claim": "The watch was the property offered at pawn.",
       "defence_claim": "The entry does not identify the accused.",
+      "render_asset": "exhibits/x-01-ledger.png",
+      "media": [
+        {
+          "type": "audio",
+          "path": "exhibits/exhibit-presented.ogg",
+          "caption": "Clerk presents the ledger entry."
+        }
+      ],
       "source": { "source_id": "S-01", "locator": "Exhibit X-01" }
     },
     {
@@ -70,6 +78,7 @@
       "text": "Pawn ticket dated two days after the shop incident. Item: gold hunter watch. Name on ticket: Hartley. Advance sought: eight pounds.",
       "prosecution_claim": "The accused possessed the stolen watch.",
       "defence_claim": "The name on the ticket is not the accused's.",
+      "render_asset": "exhibits/x-02-pawn-ticket.png",
       "source": { "source_id": "S-01", "locator": "Exhibit X-02" }
     }
   ],

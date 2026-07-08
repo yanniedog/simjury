@@ -9,6 +9,10 @@ object CaseValidator {
     private val idExhibit = Regex("^X-\\d{2}$")
     private val idDirection = Regex("^D-\\d{2}$")
     private val allowedFidelity = setOf("verbatim", "summarised")
+    private val allowedMediaTypes = setOf("image", "audio")
+    private val mediaPathPattern = Regex("^[a-zA-Z0-9][a-zA-Z0-9_./-]*$")
+    private val imageExtensions = setOf("png", "jpg", "jpeg", "webp")
+    private val audioExtensions = setOf("ogg", "mp3", "wav")
 
     /** Static F-4 tokens from v3 — must not appear in play-reachable text. */
     private val staticBannedTokens = listOf(
@@ -95,6 +99,7 @@ object CaseValidator {
         t.exhibits.forEach { x ->
             if (!idExhibit.matches(x.id)) errors += "exhibit id invalid: ${x.id}"
             checkSource(x.source, x.id)
+            validateExhibitMedia(x, errors)
         }
 
         val duplicateDirections = duplicates(t.directions.map { it.id })
@@ -139,6 +144,47 @@ object CaseValidator {
 
         if (errors.isNotEmpty()) {
             throw CaseValidationException(errors)
+        }
+    }
+
+    private fun validateExhibitMedia(exhibit: Exhibit, errors: MutableList<String>) {
+        exhibit.renderAsset?.let { path ->
+            validateMediaPath(path, "image", "${exhibit.id}.render_asset", errors)
+        }
+        exhibit.media.forEachIndexed { index, media ->
+            val label = "${exhibit.id}.media[$index]"
+            if (media.type !in allowedMediaTypes) {
+                errors += "$label: unsupported media type ${media.type}"
+            }
+            validateMediaPath(media.path, media.type, label, errors)
+        }
+    }
+
+    private fun validateMediaPath(path: String, type: String, label: String, errors: MutableList<String>) {
+        if (path.isBlank()) {
+            errors += "$label: blank media path"
+            return
+        }
+        if (path.contains("..") || path.startsWith("/")) {
+            errors += "$label: media path must be relative without traversal: $path"
+            return
+        }
+        if (!mediaPathPattern.matches(path)) {
+            errors += "$label: invalid media path characters: $path"
+            return
+        }
+        val extension = path.substringAfterLast('.', "").lowercase()
+        if (extension.isBlank()) {
+            errors += "$label: media path must include a file extension: $path"
+            return
+        }
+        when (type) {
+            "image" -> if (extension !in imageExtensions) {
+                errors += "$label: image must use ${imageExtensions.joinToString("/")}, got .$extension"
+            }
+            "audio" -> if (extension !in audioExtensions) {
+                errors += "$label: audio must use ${audioExtensions.joinToString("/")}, got .$extension"
+            }
         }
     }
 

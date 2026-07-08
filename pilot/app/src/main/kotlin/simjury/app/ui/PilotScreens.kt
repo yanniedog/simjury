@@ -442,6 +442,7 @@ private fun ItemDetailBody(item: TrialItem, canMarkRead: Boolean, onContinue: ()
         Spacer(modifier = Modifier.height(4.dp))
         KindBadge(kind = item.kind)
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        ExhibitMediaPanel(media = item.media)
         Text(item.body, style = MaterialTheme.typography.bodyLarge)
         if (item.subtitle.isNotBlank()) {
             Card(
