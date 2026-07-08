@@ -102,13 +102,15 @@ data class PilotUiState(
 
 class PilotViewModel(
     application: Application,
-    initialCaseId: String = testInitialCaseId ?: BuildConfig.PILOT_CASE_ID,
+    initialCaseId: String,
 ) : AndroidViewModel(application) {
 
     companion object {
-        /** Robolectric/instrumentation override for default case id. */
+        /** Robolectric/instrumentation override read by [MainActivity] ViewModel factory. */
         var testInitialCaseId: String? = null
         var speechControllerOverride: TrialSpeechController? = null
+
+        fun resolveInitialCaseId(): String = testInitialCaseId ?: BuildConfig.PILOT_CASE_ID
     }
 
     private val seed = 1L

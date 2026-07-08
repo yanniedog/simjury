@@ -3,8 +3,6 @@ package simjury.app
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.AfterClass
-import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExternalResource
@@ -18,10 +16,9 @@ import simjury.app.update.AppUpdateRepository
 @Config(sdk = [34])
 class MainActivityEpisodeHubTest {
 
-    companion object {
-        @JvmStatic
-        @BeforeClass
-        fun setUpClass() {
+    @get:Rule(order = 0)
+    val testModeRule = object : ExternalResource() {
+        override fun before() {
             PilotViewModel.testInitialCaseId = "c_001"
             PilotViewModel.speechControllerOverride = NoOpTrialSpeechController()
             MainActivity.testSkipAutoUpdateCheck = true
@@ -34,21 +31,11 @@ class MainActivityEpisodeHubTest {
             }
         }
 
-        @JvmStatic
-        @AfterClass
-        fun tearDownClass() {
+        override fun after() {
             PilotViewModel.testInitialCaseId = null
             PilotViewModel.speechControllerOverride = null
             MainActivity.testUpdateRepositoryOverride = null
             MainActivity.testSkipAutoUpdateCheck = false
-        }
-    }
-
-    @get:Rule(order = 0)
-    val caseIdRule = object : ExternalResource() {
-        override fun before() {
-            PilotViewModel.testInitialCaseId = "c_001"
-            PilotViewModel.speechControllerOverride = NoOpTrialSpeechController()
         }
     }
 

@@ -24,7 +24,7 @@ import simjury.app.update.AppUpdateViewModel
 
 open class MainActivity : ComponentActivity() {
     private val pilotViewModel: PilotViewModel by viewModels {
-        val caseId = PilotViewModel.testInitialCaseId ?: BuildConfig.PILOT_CASE_ID
+        val caseId = PilotViewModel.resolveInitialCaseId()
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T =
