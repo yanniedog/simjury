@@ -1,0 +1,7 @@
+# Large binary source files (re-fetch via fetch_case_sources.py)
+case_sources/**/nbt/*.pdf
+case_sources/**/sessions/**/*.jpg
+case_sources/**/multimedia/**/*
+case_sources/ACQUISITION_LOG.jsonl
+
+# Keep: INDEX.md, ACQUISITION_SUMMARY.json, */ACQUISITION.md, */nbt/*_djvu.txt, supplementary/*
