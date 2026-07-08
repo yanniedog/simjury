@@ -170,12 +170,12 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
     fun openItem(itemId: String) {
         val item = loaded.resolveItem(itemId) ?: return
         speech.stop()
-        _uiState.value = _uiState.value.copy(selectedItem = item)
+        publish(selectedItem = item)
     }
 
     fun closeItem() {
         speech.stop()
-        _uiState.value = _uiState.value.copy(selectedItem = null)
+        publish(selectedItem = null)
     }
 
     fun openAdjacentItem(delta: Int) {
@@ -198,12 +198,16 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
             PilotSection.EVIDENCE -> {
                 if (engineState.phase.ordinal >= DeliberationPhase.READING.ordinal) {
                     browseSection = PilotSection.EVIDENCE
-                    _uiState.value = _uiState.value.copy(selectedItem = null)
                 }
             }
             PilotSection.DIARY -> {
                 when (engineState.phase) {
-                    DeliberationPhase.READING -> if (_uiState.value.allItemsRead) openDiary()
+                    DeliberationPhase.READING -> {
+                        if (_uiState.value.allItemsRead) {
+                            openDiary()
+                            return
+                        }
+                    }
                     DeliberationPhase.DIARY, DeliberationPhase.VOTE,
                     DeliberationPhase.REVEAL, DeliberationPhase.COMPLETE,
                     -> browseSection = PilotSection.DIARY
@@ -213,33 +217,34 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
             PilotSection.VOTE -> {
                 if (engineState.phase.ordinal >= DeliberationPhase.VOTE.ordinal) {
                     browseSection = PilotSection.VOTE
-                    _uiState.value = _uiState.value.copy(selectedItem = null)
                 }
             }
             PilotSection.REVEAL -> {
                 if (engineState.phase.ordinal >= DeliberationPhase.REVEAL.ordinal) {
                     browseSection = PilotSection.REVEAL
-                    _uiState.value = _uiState.value.copy(selectedItem = null)
                 }
             }
         }
-        publish(selectedItem = _uiState.value.selectedItem)
+        val clearItem = section in setOf(
+            PilotSection.EVIDENCE,
+            PilotSection.DIARY,
+            PilotSection.VOTE,
+            PilotSection.REVEAL,
+        )
+        publish(selectedItem = if (clearItem) null else _uiState.value.selectedItem)
     }
 
     fun listenAloud() {
-        val segments = ScreenSpeechBuilder.forSection(_uiState.value)
-        speech.speak(segments)
-        _uiState.value = _uiState.value.copy(isSpeaking = true)
+        speech.speak(ScreenSpeechBuilder.forSection(_uiState.value))
     }
 
     fun stopListening() {
         speech.stop()
-        _uiState.value = _uiState.value.copy(isSpeaking = false)
     }
 
     fun markItemRead(itemId: String) {
         dispatch(DeliberationAction.MarkItemRead(itemId))
-        _uiState.value = _uiState.value.copy(selectedItem = null)
+        publish(selectedItem = null)
     }
 
     fun openDiary() = dispatch(DeliberationAction.OpenDiary)
