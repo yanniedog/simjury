@@ -37,6 +37,13 @@ data class EpisodeSummary(
     val itemsRead: Int,
 )
 
+data class ReadingItemRow(
+    val id: String,
+    val title: String,
+    val kind: String,
+    val isRead: Boolean,
+)
+
 data class PilotUiState(
     val loading: Boolean = true,
     val error: String? = null,
@@ -53,6 +60,7 @@ data class PilotUiState(
     val episodeTitle: String = "",
     val episodeIntro: String = "",
     val itemOrder: List<String> = emptyList(),
+    val readingItems: List<ReadingItemRow> = emptyList(),
     val itemsRead: Set<String> = emptySet(),
     val selectedItem: TrialItem? = null,
     val diary: DiarySnapshot? = null,
@@ -229,6 +237,16 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
         }
         val allIds = episodes.flatMap { it.itemOrder }
         val allItemsRead = allIds.isNotEmpty() && allIds.all { it in engineState.itemsRead }
+        val readingItems = activeEpisode?.itemOrder.orEmpty().mapNotNull { itemId ->
+            loaded.resolveItem(itemId)?.let { item ->
+                ReadingItemRow(
+                    id = item.id,
+                    title = item.title,
+                    kind = item.kind,
+                    isRead = itemId in engineState.itemsRead,
+                )
+            }
+        }
 
         var state = PilotUiState(
             loading = false,
@@ -245,6 +263,7 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
             episodeTitle = activeEpisode?.title.orEmpty(),
             episodeIntro = activeEpisode?.introText.orEmpty(),
             itemOrder = activeEpisode?.itemOrder.orEmpty(),
+            readingItems = readingItems,
             itemsRead = engineState.itemsRead,
             selectedItem = selectedItem,
             diary = engineState.diary,

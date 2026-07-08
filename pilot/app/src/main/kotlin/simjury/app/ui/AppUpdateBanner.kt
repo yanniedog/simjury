@@ -77,7 +77,8 @@ fun AppUpdateBanner(
 private fun UpdateSurface(modifier: Modifier, content: @Composable () -> Unit) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.secondaryContainer,
+        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+        shape = MaterialTheme.shapes.medium,
         tonalElevation = 2.dp,
     ) {
         Column(
