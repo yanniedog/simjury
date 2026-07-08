@@ -131,6 +131,106 @@ def c001_assets(exhibits_dir: Path) -> None:
     draw.text((40, h - 36), "Exhibit X-03 — schematic comparison (not a facsimile)", fill=RULE, font=_font(13))
     img.save(exhibits_dir / "x-03-handwriting-chart.png")
 
+    _draw_document(
+        "Bank Cheque (schematic)",
+        [
+            "Pay: Dressmaker deposit",
+            "Sum: fifteen guineas (£15 15s)",
+            "Drawn on: ——— Mansions branch",
+            "Signed with pen held between two fingers",
+            "Sealed in envelope before handing over",
+        ],
+        footer="Exhibit X-04 — pattern cheque (not a facsimile)",
+    ).save(exhibits_dir / "x-04-cheque.png")
+
+    _draw_schedule(
+        "Complainant Encounters — intervals",
+        [
+            ("Mrs Elling", "Street meeting → same day visit", "~2 hours"),
+            ("Mrs Garner", "First call → Monday return", "3 days"),
+            ("Mrs Holt", "Street → next-morning discovery", "overnight"),
+            ("Mrs Irwin", "Visit → report two days later", "2 days"),
+        ],
+        footer="Exhibit X-05 — chronological schedule (summarised)",
+    ).save(exhibits_dir / "x-05-encounter-schedule.png")
+
+    _draw_document(
+        "Identification Record",
+        [
+            "Place: Westminster Police Court",
+            "Line-up: 14–16 men including accused",
+            "Accused chose his own position",
+            "Complainants: no prior description given",
+            "Result: several picked accused; others failed",
+            "Note: five complainants failed in total",
+        ],
+        footer="Exhibit X-06 — schematic record",
+    ).save(exhibits_dir / "x-06-identification-record.png")
+
+    _draw_schedule(
+        "Chronology — tension point",
+        [
+            ("Prior conviction", "Eighteen years before trial", "Defence: stale"),
+            ("Hotel stay", "Accused at Strand hotel until autumn", "Gap before charges"),
+            ("Police identifications", "December failures, January line-ups", "Mixed results"),
+            ("Expert opinion", "Handwriting said identical", "Crown: decisive"),
+        ],
+        footer="Exhibit X-07 — one genuine tension in the record",
+    ).save(exhibits_dir / "x-07-chronology.png")
+
+    _draw_document(
+        "Supporting papers (hotel search)",
+        [
+            "White and brown spats; opera hat",
+            "Several white waistcoats",
+            "Wedding ring; ladies' photographs",
+            "Business correspondence (quantity)",
+            "Envelopes addressed to non-existent bank branches",
+        ],
+        footer="Exhibit X-08 — supporting documents (schematic)",
+    ).save(exhibits_dir / "x-08-supporting-papers.png")
+
+
+def _draw_schedule(
+    title: str,
+    rows: list[tuple[str, str, str]],
+    *,
+    width: int = 720,
+    footer: str | None = None,
+) -> Image.Image:
+    col_w = (width - 96) // 3
+    row_h = 32
+    header_h = 56
+    table_h = row_h * (len(rows) + 1) + 16
+    height = 48 + header_h + table_h + (32 if footer else 0)
+    img = Image.new("RGB", (width, height), PAPER)
+    draw = ImageDraw.Draw(img)
+    title_font = _font(20)
+    header_font = _font(14)
+    body_font = _font(15)
+    margin = 48
+
+    draw.rectangle((12, 12, width - 12, height - 12), outline=RULE, width=2)
+    draw.text((margin, 20), title.upper(), fill=ACCENT, font=title_font)
+
+    y = 48 + header_h
+    headers = ("Party", "Event", "Interval")
+    for i, label in enumerate(headers):
+        x = margin + i * col_w
+        draw.text((x, y), label, fill=ACCENT, font=header_font)
+    draw.line((margin, y + 22, width - margin, y + 22), fill=RULE)
+    y += row_h
+
+    for party, event, interval in rows:
+        draw.text((margin, y), party, fill=INK, font=body_font)
+        draw.text((margin + col_w, y), event, fill=INK, font=body_font)
+        draw.text((margin + 2 * col_w, y), interval, fill=INK, font=body_font)
+        y += row_h
+
+    if footer:
+        draw.text((margin, height - 28), footer, fill=RULE, font=_font(13))
+    return img
+
 
 def shared_audio(exhibits_dir: Path) -> None:
     exhibits_dir.mkdir(parents=True, exist_ok=True)

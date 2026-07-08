@@ -880,74 +880,80 @@
     },
     {
       "id": "X-03",
-      "title": "Exhibit 3 (pending)",
-      "kind": "document",
-      "text": "[AUTHORING PENDING — tabulate before P4-8]",
-      "prosecution_claim": "Pending tabulation.",
-      "defence_claim": "Pending tabulation.",
+      "title": "Handwriting comparison chart",
+      "kind": "comparison",
+      "text": "Chart comparing specimens from the clothing lists and cheques with writing attributed to the accused. The expert marked several letter-forms as identical and said he could not be mistaken.",
+      "prosecution_claim": "The same hand wrote the lists, cheques, and accused samples.",
+      "defence_claim": "Comparison charts oversimplify natural variation in handwriting.",
+      "render_asset": "exhibits/x-03-handwriting-chart.png",
       "source": {
-        "source_id": "S-02",
-        "locator": "BLOCKED — see TABULATION.md"
+        "source_id": "S-01",
+        "locator": "Cd. 2315 appendix facsimiles; expert evidence pp. 89–90"
       }
     },
     {
       "id": "X-04",
-      "title": "Exhibit 4 (pending)",
+      "title": "Sealed cheque and envelope",
       "kind": "document",
-      "text": "[AUTHORING PENDING — tabulate before P4-8]",
-      "prosecution_claim": "Pending tabulation.",
-      "defence_claim": "Pending tabulation.",
+      "text": "Representative cheque torn from a pocket book, signed with the pen held between two fingers, and placed in a sealed envelope addressed to a bank branch at a grand mansion address. Complainants were told not to present it casually.",
+      "prosecution_claim": "The cheques were worthless props to obtain jewellery and deposits.",
+      "defence_claim": "A cheque in an envelope does not prove who wrote it or that it was meant to defraud.",
+      "render_asset": "exhibits/x-04-cheque.png",
       "source": {
         "source_id": "S-02",
-        "locator": "BLOCKED — see TABULATION.md"
+        "locator": "NBT p. 118; Cd. 2315 exhibit refs"
       }
     },
     {
       "id": "X-05",
-      "title": "Exhibit 5 (pending)",
-      "kind": "document",
-      "text": "[AUTHORING PENDING — tabulate before P4-8]",
-      "prosecution_claim": "Pending tabulation.",
-      "defence_claim": "Pending tabulation.",
+      "title": "Schedule of complainants' encounters",
+      "kind": "schedule",
+      "text": "Condensed schedule of how each complainant met the gentleman, how long between first contact and the taking of rings or cheques, and when police became involved. Intervals range from a single afternoon to several days.",
+      "prosecution_claim": "The same rapid method was repeated against multiple women.",
+      "defence_claim": "Brief meetings and varying intervals weaken identification and intent.",
+      "render_asset": "exhibits/x-05-encounter-schedule.png",
       "source": {
-        "source_id": "S-02",
-        "locator": "BLOCKED — see TABULATION.md"
+        "source_id": "S-01",
+        "locator": "Cd. 2315 chronological statement p. 42+"
       }
     },
     {
       "id": "X-06",
-      "title": "Exhibit 6 (pending)",
-      "kind": "document",
-      "text": "[AUTHORING PENDING — tabulate before P4-8]",
-      "prosecution_claim": "Pending tabulation.",
-      "defence_claim": "Pending tabulation.",
+      "title": "Identification parade record",
+      "kind": "record",
+      "text": "Record of identifications at Westminster Police Court: the accused stood among fourteen or sixteen other men of roughly similar appearance, chose his own place, and several complainants picked him out while others had failed at earlier hearings.",
+      "prosecution_claim": "Multiple independent identifications under police supervision.",
+      "defence_claim": "Line-ups used whoever was available; sympathy and suggestion may have tainted picks.",
+      "render_asset": "exhibits/x-06-identification-record.png",
       "source": {
-        "source_id": "S-02",
-        "locator": "BLOCKED — see TABULATION.md"
+        "source_id": "S-01",
+        "locator": "Cd. 2315 pp. 52–54; NBT police evidence"
       }
     },
     {
       "id": "X-07",
-      "title": "Exhibit 7 (pending)",
-      "kind": "document",
-      "text": "[AUTHORING PENDING — tabulate before P4-8]",
-      "prosecution_claim": "Pending tabulation.",
-      "defence_claim": "Pending tabulation.",
+      "title": "Chronology of key dates",
+      "kind": "schedule",
+      "text": "Timeline juxtaposing the accused's prior conviction eighteen years earlier, his hotel stay until the autumn before the charges, the mixed police identifications in winter, and the expert's certainty about handwriting. The jury must weigh whether old guilt and modern science outweigh weak first meetings.",
+      "prosecution_claim": "Pattern, identification, and handwriting converge on guilt.",
+      "defence_claim": "Stale prior guilt and doubtful ID procedures create reasonable doubt.",
+      "render_asset": "exhibits/x-07-chronology.png",
       "source": {
-        "source_id": "S-02",
-        "locator": "BLOCKED — see TABULATION.md"
+        "source_id": "S-01",
+        "locator": "Cd. 2315 pp. 115–116"
       }
     },
     {
       "id": "X-08",
-      "title": "Exhibit 8 (pending)",
+      "title": "Papers from the accused's lodgings",
       "kind": "document",
-      "text": "[AUTHORING PENDING — tabulate before P4-8]",
-      "prosecution_claim": "Pending tabulation.",
-      "defence_claim": "Pending tabulation.",
+      "text": "Items seized from the accused's hotel box: formal clothing, a wedding ring, photographs, a quantity of business letters, and envelopes addressed to bank branches that complainants later could not find.",
+      "prosecution_claim": "Props and correspondence show a prepared fraud, not a gentleman's errand.",
+      "defence_claim": "Personal effects and post do not prove the taking charged in court.",
+      "render_asset": "exhibits/x-08-supporting-papers.png",
       "source": {
-        "source_id": "S-02",
-        "locator": "BLOCKED — see TABULATION.md"
+        "source_id": "S-01",
+        "locator": "Cd. 2315 appendix; NBT search evidence"
       }
     }
   ],
