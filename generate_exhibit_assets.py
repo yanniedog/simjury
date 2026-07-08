@@ -137,28 +137,35 @@ def shared_audio(exhibits_dir: Path) -> None:
     out = exhibits_dir / "exhibit-presented.ogg"
     if out.exists():
         return
+    if shutil.which("ffmpeg") is None:
+        print(f"warning: ffmpeg not found — skipping {out}", file=sys.stderr)
+        return
     # Short procedural court-room chime (no external samples)
-    subprocess.run(
-        [
-            "ffmpeg",
-            "-y",
-            "-f",
-            "lavfi",
-            "-i",
-            "sine=frequency=440:duration=0.15",
-            "-f",
-            "lavfi",
-            "-i",
-            "sine=frequency=330:duration=0.25",
-            "-filter_complex",
-            "[0][1]concat=n=2:v=0:a=1,afade=t=out:st=0.3:d=0.1",
-            "-c:a",
-            "libvorbis",
-            str(out),
-        ],
-        check=True,
-        capture_output=True,
-    )
+    try:
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-f",
+                "lavfi",
+                "-i",
+                "sine=frequency=440:duration=0.15",
+                "-f",
+                "lavfi",
+                "-i",
+                "sine=frequency=330:duration=0.25",
+                "-filter_complex",
+                "[0][1]concat=n=2:v=0:a=1,afade=t=out:st=0.3:d=0.1",
+                "-c:a",
+                "libvorbis",
+                str(out),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError) as exc:
+        print(f"warning: could not generate {out}: {exc}", file=sys.stderr)
 
 
 def main() -> None:
