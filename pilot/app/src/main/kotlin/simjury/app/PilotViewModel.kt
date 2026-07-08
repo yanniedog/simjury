@@ -37,6 +37,11 @@ data class EpisodeSummary(
     val itemsRead: Int,
 )
 
+data class CaseOption(
+    val id: String,
+    val titlePlay: String,
+)
+
 data class PilotUiState(
     val loading: Boolean = true,
     val error: String? = null,
@@ -47,12 +52,13 @@ data class PilotUiState(
     val showEpisodeHub: Boolean = false,
     val episodes: List<EpisodeSummary> = emptyList(),
     val allItemsRead: Boolean = false,
-    val availableCases: List<String> = emptyList(),
+    val availableCases: List<CaseOption> = emptyList(),
     val activeCaseId: String = "",
     val showCasePicker: Boolean = false,
     val episodeTitle: String = "",
     val episodeIntro: String = "",
     val itemOrder: List<String> = emptyList(),
+    val itemLabels: Map<String, String> = emptyMap(),
     val itemsRead: Set<String> = emptySet(),
     val selectedItem: TrialItem? = null,
     val diary: DiarySnapshot? = null,
@@ -88,6 +94,13 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
         bootstrapJob?.cancel()
         bootstrapJob = viewModelScope.launch {
             bootstrapCase(caseId)
+        }
+    }
+
+    fun retryLoad() {
+        bootstrapJob?.cancel()
+        bootstrapJob = viewModelScope.launch {
+            bootstrapCase(activeCaseId)
         }
     }
 
@@ -146,9 +159,11 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
         get() = _uiState.value.allItemsRead
 
     private suspend fun bootstrapCase(caseId: String) {
+        _uiState.value = _uiState.value.copy(loading = true, error = null, selectedItem = null)
         try {
             val availableCases = withContext(Dispatchers.IO) {
-                CaseCatalog.listFromAssets(getApplication<Application>().assets)
+                CaseCatalog.listEntriesFromAssets(getApplication<Application>().assets)
+                    .map { CaseOption(it.id, it.titlePlay) }
             }
             val restored = withContext(Dispatchers.IO) {
                 val case = AssetCaseLoader(getApplication<Application>().assets, caseId).load()
@@ -176,7 +191,11 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
             )
         } catch (e: Exception) {
             if (e is CancellationException) throw e
-            _uiState.value = PilotUiState(loading = false, error = e.message ?: "Failed to load case")
+            _uiState.value = _uiState.value.copy(
+                loading = false,
+                error = e.message ?: "Failed to load case",
+                activeCaseId = caseId,
+            )
         }
     }
 
@@ -215,7 +234,7 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun publish(
         selectedItem: TrialItem?,
-        availableCases: List<String> = _uiState.value.availableCases,
+        availableCases: List<CaseOption> = _uiState.value.availableCases,
         showCasePicker: Boolean = _uiState.value.showCasePicker,
     ) {
         val episodes = loaded.trial.episodes
@@ -229,6 +248,9 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
         }
         val allIds = episodes.flatMap { it.itemOrder }
         val allItemsRead = allIds.isNotEmpty() && allIds.all { it in engineState.itemsRead }
+        val itemLabels = activeEpisode?.itemOrder?.associateWith { itemId ->
+            loaded.resolveItem(itemId)?.title ?: itemId
+        }.orEmpty()
 
         var state = PilotUiState(
             loading = false,
@@ -245,6 +267,7 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
             episodeTitle = activeEpisode?.title.orEmpty(),
             episodeIntro = activeEpisode?.introText.orEmpty(),
             itemOrder = activeEpisode?.itemOrder.orEmpty(),
+            itemLabels = itemLabels,
             itemsRead = engineState.itemsRead,
             selectedItem = selectedItem,
             diary = engineState.diary,

@@ -25,7 +25,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import java.util.Locale
@@ -52,11 +54,12 @@ fun PilotAppShell(
     updateState: AppUpdateUiState,
     onCheckForUpdate: () -> Unit,
     onDismissUpdateStatus: () -> Unit,
+    onRetryLoad: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when {
         state.loading -> LoadingScreen(modifier)
-        state.error != null -> ErrorScreen(state.error, modifier)
+        state.error != null -> ErrorScreen(state.error, onRetry = onRetryLoad, modifier = modifier)
         state.selectedItem != null -> ItemDetailScreen(
             item = state.selectedItem,
             onContinue = { onMarkItemRead(state.selectedItem.id) },
@@ -95,12 +98,21 @@ fun PilotAppShell(
 
 @Composable
 private fun LoadingScreen(modifier: Modifier = Modifier) {
-    CenteredText(stringResource(R.string.loading_case), modifier)
+    CenteredText(stringResource(R.string.loading_case), modifier.testTag("loading_case"))
 }
 
 @Composable
-private fun ErrorScreen(message: String, modifier: Modifier = Modifier) {
-    CenteredText(message, modifier)
+private fun ErrorScreen(message: String, onRetry: () -> Unit, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize().padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(message, style = MaterialTheme.typography.bodyLarge)
+        Button(onClick = onRetry, modifier = Modifier.testTag("error_retry")) {
+            Text(stringResource(R.string.retry_load))
+        }
+    }
 }
 
 @Composable
@@ -136,11 +148,12 @@ fun SummonsScreen(
             if (state.showCasePicker) {
                 Text(stringResource(R.string.case_picker_label), style = MaterialTheme.typography.titleMedium)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    state.availableCases.forEach { caseId ->
+                    state.availableCases.forEach { option ->
                         FilterChip(
-                            selected = caseId == state.activeCaseId,
-                            onClick = { onSelectCase(caseId) },
-                            label = { Text(caseId) },
+                            selected = option.id == state.activeCaseId,
+                            onClick = { onSelectCase(option.id) },
+                            enabled = !state.loading,
+                            label = { Text(option.titlePlay) },
                         )
                     }
                 }
@@ -151,7 +164,10 @@ fun SummonsScreen(
                 onCheckForUpdate = onCheckForUpdate,
                 onDismissStatus = onDismissUpdateStatus,
             )
-            Button(onClick = onEnter, modifier = Modifier.fillMaxWidth()) {
+            Button(
+                onClick = onEnter,
+                modifier = Modifier.fillMaxWidth().testTag("summons_enter"),
+            ) {
                 Text(stringResource(R.string.enter_courtroom))
             }
         }
@@ -191,7 +207,6 @@ fun EpisodeHubScreen(
                         Text(
                             stringResource(
                                 R.string.episode_progress,
-                                episode.id,
                                 episode.itemsRead,
                                 episode.itemsTotal,
                             ),
@@ -241,17 +256,26 @@ fun ReadingHubScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             item {
+                if (isAuthoringPending(state.episodeIntro)) {
+                    Text(
+                        stringResource(R.string.content_in_progress),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.padding(bottom = 8.dp),
+                    )
+                }
                 Text(state.episodeIntro, modifier = Modifier.padding(vertical = 12.dp))
             }
             items(state.itemOrder, key = { it }) { itemId ->
                 val read = itemId in state.itemsRead
+                val label = state.itemLabels[itemId] ?: itemId
                 Card(
                     onClick = { onOpenItem(itemId) },
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
-                        text = if (read) stringResource(R.string.item_read, itemId)
-                        else stringResource(R.string.item_unread, itemId),
+                        text = if (read) stringResource(R.string.item_read, label)
+                        else stringResource(R.string.item_unread, label),
                         modifier = Modifier.padding(16.dp),
                         style = MaterialTheme.typography.bodyLarge,
                     )
@@ -396,6 +420,9 @@ fun RevealScreen(state: PilotUiState, modifier: Modifier = Modifier) {
         }
     }
 }
+
+private fun isAuthoringPending(text: String): Boolean =
+    text.trimStart().startsWith("[AUTHORING PENDING")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
