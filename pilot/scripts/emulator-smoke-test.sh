@@ -42,7 +42,7 @@ require_cmd() {
 
 wait_for_boot() {
   local elapsed=0
-  adb wait-for-device
+  adb wait-for-device || die "adb wait-for-device failed"
   while (( elapsed < BOOT_TIMEOUT_SEC )); do
     local boot
     boot="$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)"

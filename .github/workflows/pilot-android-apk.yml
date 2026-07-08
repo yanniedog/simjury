@@ -121,6 +121,15 @@ jobs:
           echo "path=$apk" >> "$GITHUB_OUTPUT"
           ls -lh "$apk"
 
+      - name: Reset adb before emulator (avoid daemon conflicts with SDK setup)
+        run: |
+          set -euo pipefail
+          pkill -9 adb 2>/dev/null || true
+          adb kill-server 2>/dev/null || true
+          sleep 2
+          adb start-server
+          adb devices
+
       - name: Emulator install + launch smoke test (release gate)
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -132,6 +141,9 @@ jobs:
           emulator-boot-timeout: 1200
           ram-size: 4096M
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          pre-emulator-launcher-script: |
+            adb kill-server || true
+            adb start-server
           script: APK_PATH="${{ steps.apk.outputs.path }}" BOOT_TIMEOUT_SEC=300 PACKAGE_MANAGER_TIMEOUT_SEC=180 ACTIVITY_TIMEOUT_SEC=180 UI_TIMEOUT_SEC=180 UI_DUMP_TIMEOUT_SEC=30 bash pilot/scripts/emulator-smoke-test.sh
 
       - name: Install publish dependencies
