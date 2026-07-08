@@ -61,11 +61,9 @@ class MainActivityLaunchTest {
     @Test
     fun mainActivity_showsSummonsAfterCaseLoad() {
         composeRule.waitUntil(timeoutMillis = 15_000) {
-            composeRule.onAllNodesWithText("Enter the courtroom", substring = true)
-                .fetchSemanticsNodes()
-                .isNotEmpty()
+            composeRule.onAllNodesWithTag("summons_enter").fetchSemanticsNodes().isNotEmpty()
         }
-        composeRule.onNodeWithText("Enter the courtroom", substring = true).assertExists()
+        composeRule.onNodeWithTag("summons_enter").assertExists()
         composeRule.onNodeWithText("Check for updates", substring = true).assertExists()
     }
 

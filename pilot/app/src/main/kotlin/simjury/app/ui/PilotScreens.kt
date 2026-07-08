@@ -56,7 +56,6 @@ import simjury.app.PilotUiState
 import simjury.app.R
 import simjury.app.model.TrialItem
 import simjury.app.update.AppUpdateUiState
-import simjury.deliberation.DeliberationPhase
 
 private const val DIARY_MIN_CHARS = 10
 
