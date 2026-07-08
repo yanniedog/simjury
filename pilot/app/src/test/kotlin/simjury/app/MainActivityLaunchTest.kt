@@ -10,6 +10,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import simjury.app.speech.NoOpTrialSpeechController
 import simjury.app.update.ApkManifest
 import simjury.app.update.AppUpdateRepository
 
@@ -22,6 +23,7 @@ class MainActivityLaunchTest {
         @BeforeClass
         fun setUpClass() {
             MainActivity.testSkipAutoUpdateCheck = true
+            PilotViewModel.speechControllerOverride = NoOpTrialSpeechController()
             MainActivity.testUpdateRepositoryOverride = object : AppUpdateRepository() {
                 override fun fetchManifest(): ApkManifest = ApkManifest(
                     version = "0.0.0",
@@ -36,6 +38,7 @@ class MainActivityLaunchTest {
         fun tearDownClass() {
             MainActivity.testUpdateRepositoryOverride = null
             MainActivity.testSkipAutoUpdateCheck = false
+            PilotViewModel.speechControllerOverride = null
         }
     }
 
@@ -45,6 +48,7 @@ class MainActivityLaunchTest {
     @Before
     fun ensureTestMode() {
         MainActivity.testSkipAutoUpdateCheck = true
+        PilotViewModel.speechControllerOverride = NoOpTrialSpeechController()
         MainActivity.testUpdateRepositoryOverride = object : AppUpdateRepository() {
             override fun fetchManifest(): ApkManifest = ApkManifest(
                 version = "0.0.0",
