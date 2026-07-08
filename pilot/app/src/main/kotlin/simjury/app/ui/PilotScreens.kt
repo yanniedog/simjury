@@ -516,7 +516,7 @@ fun DiaryScreen(onCommit: (String, String, String) -> Unit, modifier: Modifier =
             OutlinedTextField(
                 value = reason,
                 onValueChange = { reason = it },
-                label = { Text(stringResource(R.string.diary_reason_label)) },
+                label = { Text(stringResource(R.string.diary_reason_label, DIARY_MIN_CHARS)) },
                 supportingText = {
                     Text(stringResource(R.string.diary_char_count, reason.length, DIARY_MIN_CHARS))
                 },
@@ -527,7 +527,7 @@ fun DiaryScreen(onCommit: (String, String, String) -> Unit, modifier: Modifier =
             OutlinedTextField(
                 value = doubt,
                 onValueChange = { doubt = it },
-                label = { Text(stringResource(R.string.diary_doubt_label)) },
+                label = { Text(stringResource(R.string.diary_doubt_label, DIARY_MIN_CHARS)) },
                 supportingText = {
                     Text(stringResource(R.string.diary_char_count, doubt.length, DIARY_MIN_CHARS))
                 },

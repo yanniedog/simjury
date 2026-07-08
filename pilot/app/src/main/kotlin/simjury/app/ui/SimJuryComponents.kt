@@ -38,11 +38,12 @@ import androidx.compose.ui.unit.dp
 import simjury.app.R
 import java.util.Locale
 
+@Composable
 fun kindLabel(kind: String): String = when (kind.lowercase(Locale.ROOT)) {
-    "examination" -> "Examination in chief"
-    "cross" -> "Cross-examination"
-    "exhibit" -> "Exhibit"
-    "direction" -> "Judge's direction"
+    "examination" -> stringResource(R.string.kind_examination)
+    "cross" -> stringResource(R.string.kind_cross)
+    "exhibit" -> stringResource(R.string.kind_exhibit)
+    "direction" -> stringResource(R.string.kind_direction)
     else -> kind.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
 }
 

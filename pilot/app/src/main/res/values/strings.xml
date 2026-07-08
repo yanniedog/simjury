@@ -28,9 +28,13 @@
     <string name="diary_leaning_guilty">Guilty</string>
     <string name="diary_leaning_not_guilty">Not guilty</string>
     <string name="diary_leaning_undecided">Undecided</string>
-    <string name="diary_reason_label">Top reason (at least 10 characters)</string>
-    <string name="diary_doubt_label">Strongest doubt (at least 10 characters)</string>
+    <string name="diary_reason_label">Top reason (at least %1$d characters)</string>
+    <string name="diary_doubt_label">Strongest doubt (at least %1$d characters)</string>
     <string name="diary_char_count">%1$d / %2$d characters minimum</string>
+    <string name="kind_examination">Examination in chief</string>
+    <string name="kind_cross">Cross-examination</string>
+    <string name="kind_exhibit">Exhibit</string>
+    <string name="kind_direction">Judge\'s direction</string>
     <string name="commit_diary">Commit diary</string>
     <string name="vote_title">Final vote</string>
     <string name="vote_instruction">Lock your verdict. You cannot change it.</string>
