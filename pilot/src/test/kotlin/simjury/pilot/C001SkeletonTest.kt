@@ -61,14 +61,14 @@ class C001SkeletonTest {
     fun `C-001 truth file layers authored`() {
         loaded.truthFile.layers.forEach { layer ->
             assertFalse(
-                layer.body.contains("AUTHORING PENDING"),
+                layer.body.contains("AUTHORING PENDING", ignoreCase = true),
                 "${layer.heading} still pending",
             )
         }
         assertTrue(loaded.truthFile.layers.size >= 4)
         loaded.truthFile.pseudonymReveal.forEach { reveal ->
             assertFalse(
-                reveal.fateNote.contains("Pending tabulation"),
+                reveal.fateNote.contains("Pending tabulation", ignoreCase = true),
                 "${reveal.pseudonymRef} fate still pending",
             )
         }
