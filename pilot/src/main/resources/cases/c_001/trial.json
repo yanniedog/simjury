@@ -852,6 +852,14 @@
       "text": "Handwritten list headed dresses and mourning wear to be ordered, including bonnets (spelled bonets in the original), silk gowns, gloves, and mourning trim. The accused specified named shops including a court dressmaker.",
       "prosecution_claim": "Shows the method of building trust through an elaborate wardrobe order.",
       "defence_claim": "The list proves nothing about identity or intent to defraud.",
+      "render_asset": "exhibits/x-01-clothing-list.png",
+      "media": [
+        {
+          "type": "audio",
+          "path": "exhibits/exhibit-presented.ogg",
+          "caption": "Usher presents the clothing list to the jury."
+        }
+      ],
       "source": {
         "source_id": "S-01",
         "locator": "Cd. 2315 facsimile; NBT p. 119 list Q"
@@ -864,6 +872,7 @@
       "text": "Second list of dresses and accessories written for Mrs Garner on paper she supplied, with items to be ordered before a further appointment on the following Monday.",
       "prosecution_claim": "Repeats the same fraudulent pattern used against Mrs Elling.",
       "defence_claim": "A list alone does not show the accused wrote it or meant to cheat.",
+      "render_asset": "exhibits/x-02-clothing-list.png",
       "source": {
         "source_id": "S-02",
         "locator": "NBT pp. 135–136, list in Daisy Grant examination"
