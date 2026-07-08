@@ -68,6 +68,27 @@ wait_for_resumed_activity() {
   die "Timed out waiting for MainActivity to resume"
 }
 
+try_ui_test_tag() {
+  local tag="$1"
+  local elapsed=0
+  while (( elapsed < UI_TIMEOUT_SEC )); do
+    if timeout "${UI_DUMP_TIMEOUT_SEC}" adb shell uiautomator dump "${UI_DUMP}" >/dev/null 2>&1; then
+      local dump
+      dump="$(adb shell cat "${UI_DUMP}" 2>/dev/null || true)"
+      if grep -Fq "${tag}" <<<"${dump}"; then
+        log "Found UI test tag: ${tag}"
+        return 0
+      fi
+    fi
+    if ! adb shell pidof "${PACKAGE}" >/dev/null 2>&1; then
+      die "Process exited before UI tag '${tag}' appeared"
+    fi
+    sleep 2
+    elapsed=$((elapsed + 2))
+  done
+  return 1
+}
+
 try_ui_text() {
   local needle="$1"
   local elapsed=0
@@ -149,10 +170,11 @@ assert_app_running "App process is not running after launch"
 
 wait_for_resumed_activity
 
-if try_ui_text "Enter the courtroom"; then
+if try_ui_text "Enter the courtroom" || try_ui_test_tag "summons_enter"; then
   log "Summons UI confirmed"
 else
-  log "WARN: summons UI text not detected (Compose accessibility can lag on CI); MainActivity is resumed"
+  dump_app_logcat "$(app_pid)"
+  die "Summons UI not detected within ${UI_TIMEOUT_SEC}s (text or test tag)"
 fi
 
 assert_app_running "App process exited after initial render"
