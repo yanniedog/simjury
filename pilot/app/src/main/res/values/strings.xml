@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">SimJury</string>
     <string name="loading_case">Loading case…</string>
+    <string name="retry_load">Try again</string>
     <string name="summons_title">Jury summons</string>
     <string name="summons_body">You have been called to serve on a jury. Names are changed during play and restored after your verdict is locked. This pilot is for educational play only — not legal advice.</string>
     <string name="charge_label">Charge: %1$s</string>
@@ -20,7 +21,8 @@
     <string name="case_picker_label">Debug case</string>
     <string name="episode_hub_title">Episodes</string>
     <string name="episode_hub_intro">Read every episode before opening your verdict diary.</string>
-    <string name="episode_progress">%1$s — %2$d/%3$d read</string>
+    <string name="episode_progress">%1$d of %2$d items read</string>
+    <string name="content_in_progress">Some items in this episode are still being prepared for play.</string>
     <string name="episode_complete">Complete</string>
     <string name="diary_title">Verdict diary</string>
     <string name="diary_permanent_warning">Your diary is permanent once committed.</string>
