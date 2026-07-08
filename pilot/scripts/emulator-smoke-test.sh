@@ -48,6 +48,7 @@ wait_for_boot() {
     boot="$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)"
     if [[ "${boot}" == "1" ]]; then
       log "Device boot complete after ${elapsed}s"
+      sleep 5
       return 0
     fi
     sleep 2
