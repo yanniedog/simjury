@@ -1,7 +1,7 @@
 package simjury.pilot
 
 import java.io.File
-import java.net.URLDecoder
+import java.net.URI
 import java.util.jar.JarFile
 
 object CaseCatalog {
@@ -25,16 +25,16 @@ object CaseCatalog {
                 }
             }
             "jar" -> {
-                val jarPath = URLDecoder.decode(
-                    rootUrl.path.substringAfter("file:").substringBefore("!"),
-                    Charsets.UTF_8.name(),
-                )
-                if (jarPath.isNotEmpty()) {
-                    JarFile(jarPath).use { jar ->
-                        jar.entries().asSequence().forEach { entry ->
-                            val match = caseJsonEntry.matchEntire(entry.name) ?: return@forEach
-                            ids.add(match.groupValues[1])
-                        }
+                val jarUriString = rootUrl.toString().substringBefore("!")
+                val jarFile = if (jarUriString.startsWith("jar:")) {
+                    File(URI(jarUriString.removePrefix("jar:")))
+                } else {
+                    File(URI(jarUriString))
+                }
+                JarFile(jarFile).use { jar ->
+                    jar.entries().asSequence().forEach { entry ->
+                        val match = caseJsonEntry.matchEntire(entry.name) ?: return@forEach
+                        ids.add(match.groupValues[1])
                     }
                 }
             }

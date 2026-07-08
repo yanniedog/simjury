@@ -1,6 +1,7 @@
 package simjury.app.data
 
 import android.content.res.AssetManager
+import kotlinx.coroutines.CancellationException
 import simjury.casemodel.PilotCase
 import simjury.casemodel.caseJson
 
@@ -22,10 +23,13 @@ object CaseCatalog {
             .orEmpty()
 
     private fun readEntry(assets: AssetManager, id: String): CaseEntry? =
-        runCatching {
+        try {
             assets.open("cases/$id/case.json").bufferedReader().use { reader ->
                 val meta = caseJson.decodeFromString<PilotCase>(reader.readText())
                 CaseEntry(id = id, titlePlay = meta.titlePlay)
             }
-        }.getOrNull()
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            null
+        }
 }
