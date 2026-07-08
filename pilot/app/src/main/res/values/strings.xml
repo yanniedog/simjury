@@ -43,8 +43,6 @@
     <string name="vote_guilty">Guilty</string>
     <string name="vote_not_guilty">Not Guilty</string>
     <string name="reveal_title">Reveal</string>
-    <string name="reveal_locked_hint">Your verdict is locked. Open the reveal when ready.</string>
-    <string name="open_reveal">Open reveal</string>
     <string name="names_restored">Names restored</string>
     <string name="update_section_title">App updates</string>
     <string name="update_installed_version">Installed version: %1$s</string>

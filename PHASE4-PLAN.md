@@ -6,7 +6,7 @@
 
 **Play title (v3):** *The List*  
 **Reveal title:** R v. Adolf Beck, Central Criminal Court, London, 1896  
-**Asset path:** `pilot/src/main/resources/cases/c_001/` (+ mirrored `pilot/app/src/main/assets/cases/c_001/` for Android)
+**Asset path:** `pilot/src/main/resources/cases/c_001/` (Android copies via Gradle `syncCaseAssets` into `pilot/app/build/generated/caseAssets/`)
 
 ---
 
@@ -128,7 +128,7 @@ pilot/src/main/resources/cases/c_001/
 └── BALANCE.md             # G-4 deliverable (new)
 ```
 
-Android mirror: `pilot/app/src/main/assets/cases/c_001/` (same files).
+Android: Gradle task `syncCaseAssets` copies `pilot/src/main/resources/cases/**` into the app build’s generated assets directory (no manual mirror under `src/main/assets/`).
 
 ### 4.1 `case.json`
 
@@ -252,7 +252,7 @@ Suggested order. Each case-content PR includes harness checklist (`CASE_HARNESS.
 | **P4-8** | Remaining exhibits + ground truth | X-08..X-10, K-01..K-03 | P4-4..P4-7 |
 | **P4-9** | `truth_file.json` + reveal layers | Post-verdict only; AD-5 enforced | P4-1 sources (e) |
 | **P4-10** | `BALANCE.md` + balance test | §8 below | P4-4..P4-9 |
-| **P4-11** | Android asset sync + case selector | Mirror to `pilot/app/src/main/assets/cases/c_001/`; load `c_001` | P4-4..P4-9 |
+| **P4-11** | Android asset sync + case selector | `syncCaseAssets` Gradle copy; debug case picker loads `c_001` | P4-4..P4-9 |
 | **P4-12** | **G-4 gate** | Full playthrough evidence; clearance sign-off; CI green | All above |
 
 **Line-budget guidance:** Split any PR approaching 400 lines at witness or episode boundaries. Testimony text dominates line count — one episode per PR is the default cap.
@@ -329,7 +329,7 @@ Required for harness **I-8** and G-4. Format per v3 §8.6.9 (adapted for Phase 4
 | Schema lacks `clearance`, `adaptations`, ground truth | Validator gaps | P4-2 before content PRs |
 | Condensation unbalances AD-1 | BALANCE.md fails | Tabulate prosecution/defence points; proportional cuts |
 | F-4 banned tokens (Beck, Smith, Old Bailey, 1896, …) | CI failure | Pseudonym pipeline + scan in P4-2 |
-| Dual asset paths (CLI + Android) | Drift between copies | P4-11 sync PR; consider copy task in Gradle |
+| Dual asset paths (CLI + Android) | Drift between copies | `syncCaseAssets` on every Android build; single source in `src/main/resources/cases/` |
 | Harness juror floor vs Phase 5 deliberation | Scope creep | Log `pjm decision`; defer juror JSON to Phase 5 |
 | Phase 3 case loader hard-coded `c_000` | C-001 not playable | P4-11 selector / build flag |
 | G-3 not met on `main` | No device target | Confirm G-3 before G-4 gate |

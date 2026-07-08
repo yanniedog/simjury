@@ -77,6 +77,11 @@ data class PilotUiState(
 
 class PilotViewModel(application: Application) : AndroidViewModel(application) {
 
+    companion object {
+        /** Robolectric/instrumentation override for default case id. */
+        var testInitialCaseId: String? = null
+    }
+
     private val seed = 1L
     private val saveRepository = PilotSaveRepository(application)
     private lateinit var loaded: LoadedCase
@@ -84,7 +89,7 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
     private val gate = RevealGate()
     private var revealShown = false
     private var selectedEpisodeId: String? = null
-    private var activeCaseId: String = BuildConfig.PILOT_CASE_ID
+    private var activeCaseId: String = testInitialCaseId ?: BuildConfig.PILOT_CASE_ID
 
     private val _uiState = MutableStateFlow(PilotUiState())
     val uiState: StateFlow<PilotUiState> = _uiState.asStateFlow()
@@ -189,8 +194,9 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
                     gate.lockVerdict()
                 }
             } else {
-                engineState = PilotDeliberationEngine.initialState(loaded.meta.id, seed)
+                engineState = newEngineState(loaded)
             }
+            engineState = backfillExpectedItems(engineState, loaded)
             publish(
                 selectedItem = null,
                 availableCases = availableCases,
@@ -296,6 +302,19 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
         _uiState.value = state
+    }
+
+    private fun newEngineState(case: LoadedCase): DeliberationState =
+        PilotDeliberationEngine.initialState(
+            caseId = case.meta.id,
+            seed = seed,
+            expectedItemIds = case.trial.episodes.flatMap { it.itemOrder }.toSet(),
+        )
+
+    private fun backfillExpectedItems(state: DeliberationState, case: LoadedCase): DeliberationState {
+        if (state.expectedItemIds.isNotEmpty()) return state
+        val expected = case.trial.episodes.flatMap { it.itemOrder }.toSet()
+        return if (expected.isEmpty()) state else state.copy(expectedItemIds = expected)
     }
 
     private fun Episode.toSummary(itemsRead: Set<String>): EpisodeSummary =

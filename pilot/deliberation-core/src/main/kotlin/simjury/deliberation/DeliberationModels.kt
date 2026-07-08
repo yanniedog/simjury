@@ -40,6 +40,8 @@ data class DeliberationState(
     val caseId: String,
     val seed: Long,
     val phase: DeliberationPhase = DeliberationPhase.SUMMONS,
+    /** When non-empty, OpenDiary is blocked until every id is in [itemsRead]. */
+    val expectedItemIds: Set<String> = emptySet(),
     val itemsRead: Set<String> = emptySet(),
     val diary: DiarySnapshot? = null,
     val vote: String? = null,

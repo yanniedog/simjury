@@ -8,8 +8,12 @@ object PilotDeliberationEngine {
 
     private val allowedLeanings = setOf("G", "NG", "U")
 
-    fun initialState(caseId: String, seed: Long): DeliberationState =
-        DeliberationState(caseId = caseId, seed = seed)
+    fun initialState(
+        caseId: String,
+        seed: Long,
+        expectedItemIds: Set<String> = emptySet(),
+    ): DeliberationState =
+        DeliberationState(caseId = caseId, seed = seed, expectedItemIds = expectedItemIds)
 
     fun step(state: DeliberationState, action: DeliberationAction, seed: Long): DeliberationState {
         require(state.seed == seed) { "Seed mismatch: state=${state.seed}, arg=$seed" }
@@ -63,6 +67,14 @@ object PilotDeliberationEngine {
     ): DeliberationState {
         if (state.phase != DeliberationPhase.READING) {
             throw IllegalDeliberationTransition("OpenDiary invalid in ${state.phase}")
+        }
+        if (state.expectedItemIds.isNotEmpty()) {
+            val unread = state.expectedItemIds - state.itemsRead
+            if (unread.isNotEmpty()) {
+                throw IllegalDeliberationTransition(
+                    "OpenDiary blocked until all items read (${unread.size} unread)",
+                )
+            }
         }
         return state
             .withPhase(DeliberationPhase.DIARY)

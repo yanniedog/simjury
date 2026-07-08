@@ -272,7 +272,7 @@ fun EpisodeHubScreen(
 ) {
     val totalItems = state.episodes.sumOf { it.itemsTotal }
     val readItems = state.episodes.sumOf { it.itemsRead }
-    ScreenScaffold(title = stringResource(R.string.episode_hub_title), modifier = modifier) { padding ->
+    ScreenScaffold(title = stringResource(R.string.episode_hub_title), modifier = modifier.testTag("episode_hub")) { padding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -298,7 +298,7 @@ fun EpisodeHubScreen(
                 val complete = episode.itemsRead == episode.itemsTotal
                 Card(
                     onClick = { onSelectEpisode(episode.id) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("episode_card_${episode.id}"),
                     colors = CardDefaults.cardColors(
                         containerColor = if (complete) {
                             MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)

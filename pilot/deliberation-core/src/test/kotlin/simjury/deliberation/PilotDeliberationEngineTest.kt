@@ -86,6 +86,29 @@ class PilotDeliberationEngineTest {
   }
 
   @Test
+  fun `openDiary blocked until all expected items read`() {
+    val expected = setOf("T-W01-001", "X-01")
+    val reading = PilotDeliberationEngine.reduce(
+      PilotDeliberationEngine.initialState(caseId, seed, expectedItemIds = expected),
+      listOf(
+        DeliberationAction.AcknowledgeSummons,
+        DeliberationAction.MarkItemRead("T-W01-001"),
+      ),
+      seed,
+    )
+    assertFailsWith<IllegalDeliberationTransition> {
+      PilotDeliberationEngine.step(reading, DeliberationAction.OpenDiary, seed)
+    }
+    val ready = PilotDeliberationEngine.step(
+      reading,
+      DeliberationAction.MarkItemRead("X-01"),
+      seed,
+    )
+    val diary = PilotDeliberationEngine.step(ready, DeliberationAction.OpenDiary, seed)
+    assertEquals(DeliberationPhase.DIARY, diary.phase)
+  }
+
+  @Test
   fun `replay reset returns to summons`() {
     val complete = PilotDeliberationEngine.reduce(
       PilotDeliberationEngine.initialState(caseId, seed),
