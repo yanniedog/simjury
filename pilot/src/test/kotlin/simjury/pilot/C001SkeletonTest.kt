@@ -34,7 +34,9 @@ class C001SkeletonTest {
             }
         }
         val w06 = loaded.trial.witnesses.first { it.id == "W-06" }
-        assertTrue(w06.blocks.first().text.contains("AUTHORING PENDING"))
+        w06.blocks.forEach { block ->
+            assertTrue(block.text.contains("AUTHORING PENDING"), "${block.id} should still be pending")
+        }
     }
 
     @Test
