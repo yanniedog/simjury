@@ -10,6 +10,7 @@ import org.junit.Test
 import org.junit.rules.ExternalResource
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import simjury.app.speech.NoOpTrialSpeechController
 import simjury.app.update.ApkManifest
 import simjury.app.update.AppUpdateRepository
 
@@ -22,6 +23,7 @@ class MainActivityEpisodeHubTest {
         @BeforeClass
         fun setUpClass() {
             PilotViewModel.testInitialCaseId = "c_001"
+            PilotViewModel.speechControllerOverride = NoOpTrialSpeechController()
             MainActivity.testSkipAutoUpdateCheck = true
             MainActivity.testUpdateRepositoryOverride = object : AppUpdateRepository() {
                 override fun fetchManifest(): ApkManifest = ApkManifest(
@@ -36,6 +38,7 @@ class MainActivityEpisodeHubTest {
         @AfterClass
         fun tearDownClass() {
             PilotViewModel.testInitialCaseId = null
+            PilotViewModel.speechControllerOverride = null
             MainActivity.testUpdateRepositoryOverride = null
             MainActivity.testSkipAutoUpdateCheck = false
         }
@@ -45,6 +48,7 @@ class MainActivityEpisodeHubTest {
     val caseIdRule = object : ExternalResource() {
         override fun before() {
             PilotViewModel.testInitialCaseId = "c_001"
+            PilotViewModel.speechControllerOverride = NoOpTrialSpeechController()
         }
     }
 

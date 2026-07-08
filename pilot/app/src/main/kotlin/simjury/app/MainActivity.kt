@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -55,6 +56,12 @@ open class MainActivity : ComponentActivity() {
                 }
             }
 
+            DisposableEffect(Unit) {
+                onDispose {
+                    pilotViewModel.stopListening()
+                }
+            }
+
             SimJuryTheme {
                 Column(modifier = Modifier.fillMaxSize()) {
                     AppUpdateBanner(
@@ -79,6 +86,11 @@ open class MainActivity : ComponentActivity() {
                         onOpenDiary = pilotViewModel::openDiary,
                         onCommitDiary = pilotViewModel::commitDiary,
                         onCastVote = pilotViewModel::castVote,
+                        onNavigate = pilotViewModel::navigateTo,
+                        onListenAloud = pilotViewModel::listenAloud,
+                        onStopListening = pilotViewModel::stopListening,
+                        onPreviousItem = { pilotViewModel.openAdjacentItem(-1) },
+                        onNextItem = { pilotViewModel.openAdjacentItem(1) },
                         installedVersion = BuildConfig.VERSION_NAME,
                         updateState = updateState,
                         onCheckForUpdate = { updateViewModel.checkForUpdate(userInitiated = true) },

@@ -1,5 +1,6 @@
 package simjury.app.model
 
+import simjury.app.speech.SpeechRole
 import simjury.casemodel.LoadedCase
 
 data class TrialItem(
@@ -8,6 +9,7 @@ data class TrialItem(
     val title: String,
     val body: String,
     val subtitle: String = "",
+    val speakerRole: String = SpeechRole.NARRATOR,
 )
 
 fun LoadedCase.resolveItem(itemId: String): TrialItem? {
@@ -19,6 +21,7 @@ fun LoadedCase.resolveItem(itemId: String): TrialItem? {
             kind = block.mode,
             title = "$name (${witness.roleLabel})",
             body = block.text,
+            speakerRole = SpeechRole.witness(witness.pseudonymRef),
         )
     }
     val exhibit = trial.exhibits.find { it.id == itemId }
@@ -29,6 +32,7 @@ fun LoadedCase.resolveItem(itemId: String): TrialItem? {
             title = exhibit.title,
             body = exhibit.text,
             subtitle = "Crown: ${exhibit.prosecutionClaim}\nDefence: ${exhibit.defenceClaim}",
+            speakerRole = SpeechRole.CLERK,
         )
     }
     val direction = trial.directions.find { it.id == itemId }
@@ -38,6 +42,7 @@ fun LoadedCase.resolveItem(itemId: String): TrialItem? {
             kind = "direction",
             title = direction.title,
             body = direction.text,
+            speakerRole = SpeechRole.JUDGE,
         )
     }
     return null
