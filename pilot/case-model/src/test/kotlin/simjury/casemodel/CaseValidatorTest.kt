@@ -373,4 +373,60 @@ class CaseValidatorTest {
         text = "Witness speaks.",
         source = SourceRef(sourceId, "p.1"),
     )
+
+    @Test
+    fun `rejects invalid exhibit media path`() {
+        val base = minimalValidCase()
+        val badExhibit = Exhibit(
+            id = "X-01",
+            title = "Bad",
+            kind = "document",
+            text = "text",
+            prosecutionClaim = "crown",
+            defenceClaim = "defence",
+            source = SourceRef("SRC-01", "p.1"),
+            renderAsset = "../escape.png",
+        )
+        val loaded = base.copy(trial = base.trial.copy(exhibits = listOf(badExhibit)))
+        val ex = assertFailsWith<CaseValidationException> { CaseValidator.validate(loaded) }
+        assertTrue(ex.errors.any { it.contains("render_asset") })
+    }
+
+    @Test
+    fun `accepts exhibit with render_asset and audio media`() {
+        val base = minimalValidCase()
+        val exhibit = Exhibit(
+            id = "X-01",
+            title = "Ledger",
+            kind = "document",
+            text = "text",
+            prosecutionClaim = "crown",
+            defenceClaim = "defence",
+            source = SourceRef("SRC-01", "p.1"),
+            renderAsset = "exhibits/x-01.png",
+            media = listOf(
+                ExhibitMedia("audio", "exhibits/chime.ogg", caption = "Presented"),
+            ),
+        )
+        val loaded = base.copy(trial = base.trial.copy(exhibits = listOf(exhibit, base.trial.exhibits[1])))
+        CaseValidator.validate(loaded)
+    }
+
+    @Test
+    fun `resolvedMedia merges render_asset with media list`() {
+        val exhibit = Exhibit(
+            id = "X-01",
+            title = "Doc",
+            kind = "document",
+            text = "t",
+            prosecutionClaim = "c",
+            defenceClaim = "d",
+            source = SourceRef("S-01", "p.1"),
+            renderAsset = "exhibits/a.png",
+            media = listOf(ExhibitMedia("audio", "exhibits/b.ogg")),
+        )
+        assertEquals(2, exhibit.resolvedMedia().size)
+        assertEquals("image", exhibit.resolvedMedia()[0].type)
+        assertEquals("exhibits/a.png", exhibit.resolvedMedia()[0].path)
+    }
 }

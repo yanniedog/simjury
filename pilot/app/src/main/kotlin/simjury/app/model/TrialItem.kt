@@ -3,6 +3,13 @@ package simjury.app.model
 import simjury.app.speech.SpeechRole
 import simjury.casemodel.LoadedCase
 
+data class ExhibitMediaItem(
+    val type: String,
+    val assetPath: String,
+    val caption: String = "",
+    val altText: String = "",
+)
+
 data class TrialItem(
     val id: String,
     val kind: String,
@@ -10,9 +17,10 @@ data class TrialItem(
     val body: String,
     val subtitle: String = "",
     val speakerRole: String = SpeechRole.NARRATOR,
+    val media: List<ExhibitMediaItem> = emptyList(),
 )
 
-fun LoadedCase.resolveItem(itemId: String): TrialItem? {
+fun LoadedCase.resolveItem(caseFolderId: String, itemId: String): TrialItem? {
     for (witness in trial.witnesses) {
         val block = witness.blocks.find { it.id == itemId } ?: continue
         val name = pseudonyms.entries.find { it.id == witness.pseudonymRef }?.playName ?: witness.pseudonymRef
@@ -26,6 +34,14 @@ fun LoadedCase.resolveItem(itemId: String): TrialItem? {
     }
     val exhibit = trial.exhibits.find { it.id == itemId }
     if (exhibit != null) {
+        val media = exhibit.resolvedMedia().map { entry ->
+            ExhibitMediaItem(
+                type = entry.type,
+                assetPath = "cases/$caseFolderId/${entry.path}",
+                caption = entry.caption.orEmpty(),
+                altText = entry.altText.orEmpty(),
+            )
+        }
         return TrialItem(
             id = exhibit.id,
             kind = "exhibit",
@@ -33,6 +49,7 @@ fun LoadedCase.resolveItem(itemId: String): TrialItem? {
             body = exhibit.text,
             subtitle = "Crown: ${exhibit.prosecutionClaim}\nDefence: ${exhibit.defenceClaim}",
             speakerRole = SpeechRole.CLERK,
+            media = media,
         )
     }
     val direction = trial.directions.find { it.id == itemId }

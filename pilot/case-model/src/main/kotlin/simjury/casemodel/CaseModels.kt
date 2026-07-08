@@ -93,6 +93,14 @@ data class Witness(
 )
 
 @Serializable
+data class ExhibitMedia(
+    val type: String,
+    val path: String,
+    val caption: String? = null,
+    @SerialName("alt_text") val altText: String? = null,
+)
+
+@Serializable
 data class Exhibit(
     val id: String,
     val title: String,
@@ -101,7 +109,17 @@ data class Exhibit(
     @SerialName("prosecution_claim") val prosecutionClaim: String,
     @SerialName("defence_claim") val defenceClaim: String,
     val source: SourceRef,
-)
+    /** v3 shorthand — single bundled image path relative to the case folder. */
+    @SerialName("render_asset") val renderAsset: String? = null,
+    val media: List<ExhibitMedia> = emptyList(),
+) {
+    fun resolvedMedia(): List<ExhibitMedia> {
+        val fromRender = renderAsset?.let {
+            listOf(ExhibitMedia(type = "image", path = it))
+        }.orEmpty()
+        return fromRender + media
+    }
+}
 
 @Serializable
 data class Direction(
