@@ -14,7 +14,7 @@ cd pilot
 
 ## Android preview APK
 
-After a PR merges to `main` (and the PR queue drains), **pilot-auto-release-on-queue-drain** bumps the app version and **pilot-android-apk** publishes to GitHub Releases:
+After a PR merges to `main` and the **PR queue drains** (no other open PRs to `main`), **pilot-auto-release-on-queue-drain** bumps `versionName` in `pilot/app/build.gradle.kts` and **pilot-android-apk** publishes to GitHub Releases. This matches [AR-local](https://github.com/yanniedog/AR-local) `mobile-auto-release-on-queue-drain` behaviour: one release per drained merge batch, not per intermediate PR while others are still open.
 
 | Asset | URL |
 |-------|-----|
@@ -24,7 +24,9 @@ After a PR merges to `main` (and the PR queue drains), **pilot-auto-release-on-q
 
 The installed app checks the manifest on launch and offers an in-app update (AR-local parity). Enable **Install unknown apps** for `SimJury` when prompted.
 
-Manual workflow dispatch: **Actions → pilot-android-apk → Run workflow**.
+Manual recovery: **Actions → pilot-auto-release-on-queue-drain → Run workflow** (re-bump if missed), or **Actions → pilot-android-apk → Run workflow** (build only).
+
+**One-time operator setup:** GitHub Actions must be on the `main` ruleset bypass list so the drain workflow can push version bumps directly. See [WORKFLOW.md](WORKFLOW.md#auto-release-when-pr-queue-drains).
 
 
 | Area | Location | Phase |

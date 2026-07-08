@@ -5,9 +5,13 @@
  */
 import {
   gateExemptReasonFromPrMeta,
+  isAutoReleaseBumpTitle,
   isBotPrAuthor,
   isChorePrTitle,
 } from './lib/pr-gate-exempt.mjs';
+import {
+  isAutoReleaseCommitOnly,
+} from './lib/pr-pilot-auto-release-commit.mjs';
 
 const failures = [];
 
@@ -37,6 +41,27 @@ check(
   gateExemptReasonFromPrMeta({ title: 'feat: automated', authorLogin: 'github-actions[bot]', authorType: 'Bot' }),
   'bot-authored',
 );
+check(
+  'pilot auto-release bump skips bots',
+  gateExemptReasonFromPrMeta({
+    title: 'chore(pilot): auto-release bump v0.1.3',
+    authorLogin: 'github-actions[bot]',
+    authorType: 'Bot',
+  }),
+  'bot-authored',
+);
+check(
+  'pilot auto-release title skips',
+  gateExemptReasonFromPrMeta({
+    title: 'chore(pilot): auto-release bump v0.1.3',
+    authorLogin: 'yanniedog',
+    authorType: 'User',
+  }),
+  'pilot-auto-release',
+);
+check('auto-release title prefix', isAutoReleaseBumpTitle('chore(pilot): auto-release bump v0.1.3'), true);
+check('auto-release files only', isAutoReleaseCommitOnly(['pilot/app/build.gradle.kts']), true);
+check('auto-release rejects mixed files', isAutoReleaseCommitOnly(['pilot/app/build.gradle.kts', 'README.md']), false);
 
 if (failures.length) {
   console.error('FAIL verify-pr-gate-exempt-policy:');

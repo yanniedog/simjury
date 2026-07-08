@@ -43,6 +43,13 @@ Optional (not in DEFAULT_REQUIRED_KEYS):
 Skipped automatically (scripts/lib/pr-gate-exempt.mjs):
   - PR author is a GitHub bot (login ends with [bot])
   - Title is conventional chore (chore: or chore(scope):)
+  - Pilot auto-release bump PRs (chore(pilot): auto-release bump v…)
+
+Auto release when PR queue drains:
+  - Workflow: .github/workflows/pilot-auto-release-on-queue-drain.yml
+  - Bumps pilot/app/build.gradle.kts versionName on main after last open PR merges
+  - Dispatches pilot-android-apk (GITHUB_TOKEN push does not re-trigger workflows)
+  - One-time: add GitHub Actions to main ruleset bypass list (see WORKFLOW.md)
 `);
 }
 

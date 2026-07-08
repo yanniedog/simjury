@@ -53,6 +53,7 @@ jobs:
         run: |
           npm run pr:gate-logic:verify
           npm run pr:gate-exempt-policy:verify
+          npm run pilot:auto-release-commit:verify
 
       - name: Set up Java
         if: hashFiles('pilot/**') != ''
