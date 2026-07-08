@@ -1,0 +1,41 @@
+[
+  {
+    "case_id": "c_001",
+    "name": "R v. Adolf Beck",
+    "archive": [
+      {
+        "identifier": "in.ernet.dli.2015.31183",
+        "downloaded": [
+          {
+            "file": "2015.31183.Adolf-Beck1877-1904_djvu.txt",
+            "bytes": 761888,
+            "sha256": "8e02bace33cc965d9c5184ee640c3f8b9845234b75a0565f6043ab9484c05d1c"
+          }
+        ],
+        "skipped": [
+          "2015.31183.Adolf-Beck1877-1904.pdf",
+          "2015.31183.Adolf-Beck1877-1904_text.pdf"
+        ],
+        "errors": []
+      }
+    ],
+    "dhi": [
+      {
+        "folder": "18960224",
+        "downloaded": 54,
+        "missing": 12
+      }
+    ],
+    "hansard": [
+      {
+        "url": "https://api.parliament.uk/historic-hansard/commons/1904/aug/03/wrongful-conviction-compensation-for",
+        "ok": true
+      },
+      {
+        "url": "https://api.parliament.uk/historic-hansard/lords/1905/feb/14/adolf-beck-committee-of-inquiry",
+        "ok": true
+      }
+    ],
+    "gutenberg": []
+  }
+]

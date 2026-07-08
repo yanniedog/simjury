@@ -242,6 +242,8 @@ Each requires a fresh EX-1 source audit (NBT volume + supplementary class b/d/e)
 
 **Multimedia prioritisation:** See `CASE_MULTIMEDIA_CANDIDATES.md` — exhibit-rich trials ranked for handwriting, fingerprint, letter, map, and forensic comparison assets.
 
+**Source bundle:** See `CASE_SOURCE_ACQUISITION.md` — 30 cases fetched (~1.4 GB on disk); 26 full NBT transcripts + 1,084 Sessions JPGs committed or local via `fetch_case_sources.py`.
+
 ---
 
 ## 11. References

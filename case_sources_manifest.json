@@ -1,0 +1,290 @@
+{
+  "version": "1.0",
+  "updated": "2026-07-08",
+  "ex5_note": "No Old Bailey Online XML text. NBT djvu.txt and DHI Sessions JPGs are independent PD sources.",
+  "cases": [
+    {
+      "id": "c_001",
+      "name": "R v. Adolf Beck",
+      "harness": "eligible",
+      "archive_org": ["in.ernet.dli.2015.31183"],
+      "dhi_sessions": [{"folder": "18960224", "page_start": 95, "page_end": 160}],
+      "hansard": [
+        "https://api.parliament.uk/historic-hansard/commons/1904/aug/03/wrongful-conviction-compensation-for",
+        "https://api.parliament.uk/historic-hansard/lords/1905/feb/14/adolf-beck-committee-of-inquiry"
+      ],
+      "gutenberg": []
+    },
+    {
+      "id": "c_002",
+      "name": "Oscar Slater",
+      "harness": "eligible",
+      "archive_org": ["trialofoscarslat00slatuoft"],
+      "dhi_sessions": [],
+      "hansard": [
+        "https://api.parliament.uk/historic-hansard/lords/1927/nov/28/criminal-appeal-scotland-bill",
+        "https://api.parliament.uk/historic-hansard/commons/1927/nov/30/oscar-slater-appeal"
+      ],
+      "gutenberg": ["51456"]
+    },
+    {
+      "id": "c_003",
+      "name": "Harold Greenwood",
+      "harness": "eligible",
+      "archive_org": ["bwb_KU-773-114"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_004",
+      "name": "Madeleine Smith",
+      "harness": "eligible",
+      "archive_org": ["trialofmadeleine0000jess"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_005",
+      "name": "Adelaide Bartlett",
+      "harness": "eligible",
+      "archive_org": ["in.ernet.dli.2015.173664"],
+      "dhi_sessions": [{"folder": "18860405", "page_start": 1, "page_end": 120}],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_006",
+      "name": "H. R. Armstrong",
+      "harness": "eligible",
+      "archive_org": ["TrialOfHerbertRowseArmstrong"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_007",
+      "name": "Hawley Harvey Crippen",
+      "harness": "eligible",
+      "archive_org": ["trialofhawleyhar00cripiala"],
+      "dhi_sessions": [{"folder": "19101011", "page_start": 1, "page_end": 150}],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_008",
+      "name": "Bywaters and Edith Thompson",
+      "harness": "eligible",
+      "archive_org": ["trialoffrederick0000bywa"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_009",
+      "name": "George Joseph Smith",
+      "harness": "eligible",
+      "archive_org": ["trialofgeorgejos015895mbp"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_010",
+      "name": "Dr. Smethurst",
+      "harness": "eligible",
+      "archive_org": [],
+      "dhi_sessions": [
+        {"folder": "18590704", "page_start": 1, "page_end": 120},
+        {"folder": "18590815", "page_start": 1, "page_end": 120}
+      ],
+      "hansard": [],
+      "gutenberg": [],
+      "notes": "NBT Parry 1931 not on Archive.org — library only"
+    },
+    {
+      "id": "c_011",
+      "name": "A. J. Monson",
+      "harness": "eligible",
+      "archive_org": ["trialofajmonson00mons"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_012",
+      "name": "Robert Wood",
+      "harness": "eligible",
+      "archive_org": [],
+      "dhi_sessions": [{"folder": "19071210", "page_start": 1, "page_end": 120}],
+      "hansard": [],
+      "gutenberg": [],
+      "notes": "NBT Hogarth 1936 not on Archive.org"
+    },
+    {
+      "id": "c_013",
+      "name": "Alfred Arthur Rouse",
+      "harness": "eligible",
+      "archive_org": ["in.ernet.dli.2015.173609"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_014",
+      "name": "Rattenbury and Stoner",
+      "harness": "eligible",
+      "archive_org": ["trialofalmavicto015893mbp"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_015",
+      "name": "Mrs. Maybrick",
+      "harness": "eligible",
+      "archive_org": ["in.ernet.dli.2015.221940"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_016",
+      "name": "Eugene Aram",
+      "harness": "eligible",
+      "archive_org": ["bwb_KU-773-118"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_017",
+      "name": "Charles Peace",
+      "harness": "eligible",
+      "archive_org": ["trialsofcharlesf0000wtsh"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_018",
+      "name": "William Palmer",
+      "harness": "eligible",
+      "archive_org": ["trialofwilliampa00palmiala"],
+      "dhi_sessions": [{"folder": "18560514", "page_start": 1, "page_end": 150}],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_019",
+      "name": "Trial of the Seddons",
+      "harness": "eligible",
+      "archive_org": ["trialofseddons00seddiala"],
+      "dhi_sessions": [{"folder": "19120227", "page_start": 1, "page_end": 150}],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_020",
+      "name": "Steinie Morrison",
+      "harness": "eligible",
+      "archive_org": ["trialofsteiniemo0000hfle"],
+      "dhi_sessions": [{"folder": "19110228", "page_start": 1, "page_end": 120}],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_021",
+      "name": "John Dickman",
+      "harness": "eligible",
+      "archive_org": ["trialofjohnalexa0000dick"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_022",
+      "name": "Royal Mail Case (Lord Kylsant)",
+      "harness": "eligible",
+      "archive_org": ["royalmailcaserex0000unse"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_023",
+      "name": "City of Glasgow Bank Directors",
+      "harness": "eligible",
+      "archive_org": ["trialofcityofgla00city"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_024",
+      "name": "Browne and Kennedy",
+      "harness": "eligible",
+      "archive_org": ["in.ernet.dli.2015.173616"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_025",
+      "name": "Franz Muller",
+      "harness": "eligible",
+      "archive_org": ["trialoffranzmull00mulliala"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_026",
+      "name": "Tichborne Claimant (perjury)",
+      "harness": "eligible",
+      "archive_org": ["trialatbarofsirr02ortouoft", "trialatbarofsirr03ortouoft"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": [],
+      "notes": "Very large record — vols 2-3 of trial at bar"
+    },
+    {
+      "id": "c_027",
+      "name": "Baccarat Case",
+      "harness": "eligible",
+      "archive_org": ["baccaratcasegord0000gord"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_028",
+      "name": "Samuel Herbert Dougal",
+      "harness": "eligible",
+      "archive_org": ["in.ernet.dli.2015.173634"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_029",
+      "name": "William Gardiner (Peasenhall)",
+      "harness": "eligible",
+      "archive_org": ["in.ernet.dli.2015.173684"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": []
+    },
+    {
+      "id": "c_030",
+      "name": "Stratton Brothers (Deptford)",
+      "harness": "eligible",
+      "archive_org": ["fingerprintsorig0000beav"],
+      "dhi_sessions": [],
+      "hansard": [],
+      "gutenberg": [],
+      "notes": "No NBT volume; auxiliary forensic account + press — primary trial pamphlet TBD"
+    }
+  ]
+}
