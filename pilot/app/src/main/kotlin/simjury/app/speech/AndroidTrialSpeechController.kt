@@ -23,6 +23,7 @@ class AndroidTrialSpeechController(
     private val utteranceCounter = AtomicInteger(0)
     private var pendingSegments: List<SpeechSegment> = emptyList()
     private var segmentIndex = 0
+    private var currentUtteranceId: String? = null
 
     private val _isSpeaking = MutableStateFlow(false)
     override val isSpeaking: StateFlow<Boolean> = _isSpeaking.asStateFlow()
@@ -35,18 +36,23 @@ class AndroidTrialSpeechController(
         tts.language = Locale.UK
         englishVoices = tts.voices
             ?.filter { voice ->
-                voice.locale.language.equals("en", ignoreCase = true) && !voice.isNetworkConnectionRequired
+                voice.locale?.language?.equals("en", ignoreCase = true) == true &&
+                    !voice.isNetworkConnectionRequired
             }
             ?.sortedBy { it.name }
             .orEmpty()
-        bindVoiceSlots()
+        synchronized(this) {
+            bindVoiceSlots()
+        }
         tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) = Unit
 
             override fun onDone(utteranceId: String?) {
                 if (utteranceId == null) return
-                if (!utteranceId.startsWith(UTTERANCE_PREFIX)) return
-                playNextSegment()
+                synchronized(this@AndroidTrialSpeechController) {
+                    if (utteranceId != currentUtteranceId) return
+                    playNextSegment()
+                }
             }
 
             @Deprecated("Deprecated in Java")
@@ -59,14 +65,20 @@ class AndroidTrialSpeechController(
             }
         })
         _isReady.value = true
-        if (pendingSegments.isNotEmpty()) {
-            speak(pendingSegments)
+        synchronized(this) {
+            if (pendingSegments.isNotEmpty()) {
+                val queued = pendingSegments
+                pendingSegments = emptyList()
+                speakLocked(queued)
+            }
         }
     }
 
     override fun configureWitnessRoles(pseudonymRefs: Collection<String>) {
-        voiceAssigner = VoiceAssigner.fromCaseWitnessRefs(pseudonymRefs)
-        bindVoiceSlots()
+        synchronized(this) {
+            voiceAssigner = VoiceAssigner.fromCaseWitnessRefs(pseudonymRefs)
+            bindVoiceSlots()
+        }
     }
 
     override fun speak(segments: List<SpeechSegment>) {
@@ -74,10 +86,38 @@ class AndroidTrialSpeechController(
             val text = segment.text.trim()
             if (text.isEmpty()) null else segment.copy(text = text)
         }
-        if (!_isReady.value) {
-            pendingSegments = cleaned
-            return
+        synchronized(this) {
+            if (!_isReady.value) {
+                pendingSegments = cleaned
+                return
+            }
+            speakLocked(cleaned)
         }
+    }
+
+    override fun speakSingle(text: String, roleKey: String) {
+        speak(listOf(SpeechSegment(text = text, roleKey = roleKey)))
+    }
+
+    override fun stop() {
+        synchronized(this) {
+            if (_isReady.value) {
+                tts.stop()
+            }
+            pendingSegments = emptyList()
+            segmentIndex = 0
+            currentUtteranceId = null
+            _isSpeaking.value = false
+        }
+    }
+
+    override fun shutdown() {
+        stop()
+        tts.shutdown()
+        _isReady.value = false
+    }
+
+    private fun speakLocked(cleaned: List<SpeechSegment>) {
         stop()
         if (cleaned.isEmpty()) return
         pendingSegments = cleaned
@@ -86,40 +126,23 @@ class AndroidTrialSpeechController(
         playNextSegment()
     }
 
-    override fun speakSingle(text: String, roleKey: String) {
-        speak(listOf(SpeechSegment(text = text, roleKey = roleKey)))
-    }
-
-    override fun stop() {
-        if (_isReady.value) {
-            tts.stop()
-        }
-        pendingSegments = emptyList()
-        segmentIndex = 0
-        _isSpeaking.value = false
-    }
-
-    override fun shutdown() {
-        stop()
-        if (_isReady.value) {
-            tts.shutdown()
-        }
-        _isReady.value = false
-    }
-
     private fun playNextSegment() {
-        if (segmentIndex >= pendingSegments.size) {
-            pendingSegments = emptyList()
-            segmentIndex = 0
-            _isSpeaking.value = false
-            return
+        synchronized(this) {
+            if (segmentIndex >= pendingSegments.size) {
+                pendingSegments = emptyList()
+                segmentIndex = 0
+                currentUtteranceId = null
+                _isSpeaking.value = false
+                return
+            }
+            val segment = pendingSegments[segmentIndex]
+            segmentIndex += 1
+            applyProfile(voiceAssigner.profileFor(segment.roleKey))
+            val utteranceId = UTTERANCE_PREFIX + utteranceCounter.incrementAndGet()
+            currentUtteranceId = utteranceId
+            val params = Bundle()
+            tts.speak(segment.text, TextToSpeech.QUEUE_FLUSH, params, utteranceId)
         }
-        val segment = pendingSegments[segmentIndex]
-        segmentIndex += 1
-        applyProfile(voiceAssigner.profileFor(segment.roleKey))
-        val utteranceId = UTTERANCE_PREFIX + utteranceCounter.incrementAndGet()
-        val params = Bundle()
-        tts.speak(segment.text, TextToSpeech.QUEUE_FLUSH, params, utteranceId)
     }
 
     private fun applyProfile(profile: VoiceProfile) {
