@@ -57,7 +57,7 @@
     {
       "id": "E-03",
       "title": "Handwriting and history",
-      "intro_text": "[AUTHORING PENDING — episode E-03 intro]",
+      "intro_text": "A handwriting expert compares the lists and cheques with papers from the accused's lodgings. A retired officer then testifies about a conviction from nearly twenty years before, as the defence begins to challenge whether the Crown has the right man.",
       "item_order": [
         "T-W05-003",
         "T-W05-004",
@@ -83,7 +83,7 @@
     {
       "id": "E-04",
       "title": "The accused speaks",
-      "intro_text": "[AUTHORING PENDING — episode E-04 intro]",
+      "intro_text": "The accused addresses the jury directly. The remaining exhibits are assembled, and the judge gives directions on burden, identification, expert opinion, and what you may consider about the earlier conviction.",
       "item_order": [
         "T-W08-001",
         "T-W08-002",
@@ -599,70 +599,70 @@
           "id": "T-W06-001",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W06-001 before P4-4]",
+          "text": "Mr Penrose testified he was a handwriting expert of many years' standing at Holborn Viaduct. He examined the cheques and promissory-note forms, a manuscript book found at the Covent Garden Hotel, and three letters sworn to be the prisoner's writing to Mr Chetwynd. They were all in the same hand.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "Cd. 2315 pp. 89–90; NBT pp. 170–171, examination (Gurrin)"
           }
         },
         {
           "id": "T-W06-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W06-002 before P4-4]",
+          "text": "The lists and cheques were not in the prisoner's ordinary hand. Two disguises had been adopted: a back-handed or vertical scribble on signatures, address lists, and envelopes; and a larger distorted ordinary hand more resembling his writing in the books.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "Cd. 2315 pp. 89–90; NBT p. 171, examination"
           }
         },
         {
           "id": "T-W06-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W06-003 before P4-4]",
+          "text": "He prepared a report with facsimiles showing similarities and pointed them out in court. Comparing specimens from the clothing lists and cheques with writing attributed to the accused, he said he could not be mistaken.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "Cd. 2315 appendix facsimiles; NBT pp. 170–171"
           }
         },
         {
           "id": "T-W06-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W06-004 before P4-4]",
+          "text": "Re-examined, he said the writing was that of a foreigner — the Scandinavian type, which would include Norway — distinct from the usual English type. He again indicated matching letter-forms on the documents before the jury.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "NBT p. 172, re-examination; Cd. 2315 p. 290"
           }
         },
         {
           "id": "T-W06-005",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W06-005 before P4-4]",
+          "text": "Cross-examined, he agreed the dress lists were written with freedom and that control of the fingers was not exercised; the arm did the work. Photographs in his report were much reduced. He did not suggest the accused held his pen differently for those lists.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "NBT p. 171, cross-examination"
           }
         },
         {
           "id": "T-W06-006",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W06-006 before P4-4]",
+          "text": "When counsel asked whether exhibits from an earlier fraud trial eighteen years before were in the same writing, prosecuting counsel objected that this raised a collateral issue. The judge ruled the question inadmissible: whether the accused was the man convicted then was a distinct matter that might mislead the jury if introduced before verdict.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "NBT pp. 171–172, ruling on cross-examination; Cd. 2315 pp. 108–109"
           }
         },
         {
           "id": "T-W06-007",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W06-007 before P4-4]",
+          "text": "Pressed whether he could still be mistaken after allowing for disguised writing, he said the whole of the documents put to him were undoubtedly in the same handwriting; he was perfectly satisfied and could give his reasons if wanted.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "Cd. 2315 pp. 116, 290; NBT p. 221, report extract"
           }
         }
       ]
@@ -677,60 +677,60 @@
           "id": "T-W07-001",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W07-001 before P4-4]",
+          "text": "Mr Quill testified he lived in Marylebone and was pensioned from the Metropolitan Police.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "Cd. 2315 pp. 108–117; NBT p. 219, examination (Spurrell)"
           }
         },
         {
           "id": "T-W07-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W07-002 before P4-4]",
+          "text": "Eighteen years earlier he was stationed at Hunter Street when present at the central criminal court as a prisoner was convicted of felony under a false name, stealing earrings, a ring, and money, and sentenced to five years' penal servitude.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "Cd. 2315 pp. 108–109; NBT p. 219, examination"
           }
         },
         {
           "id": "T-W07-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W07-003 before P4-4]",
+          "text": "He produced the certificate of that conviction. The prisoner in the dock was the man; he took him into custody at Euston Road.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "Cd. 2315 pp. 108–117; NBT p. 219–220, examination"
           }
         },
         {
           "id": "T-W07-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W07-004 before P4-4]",
+          "text": "The prisoner then represented himself as Lord Willoughby. He could not find where the man had been living. Nothing was found out about him beyond addresses in seventeen similar cases on that occasion. When charged he refused his address.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "NBT p. 220, examination; Cd. 2315 pp. 108–117"
           }
         },
         {
           "id": "T-W07-005",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W07-005 before P4-4]",
+          "text": "Cross-examined, counsel asked whether the same man might have committed these frauds while the accused was known abroad; the witness said he knew what was at stake and, without doubt, the prisoner was the man he arrested.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "NBT p. 220, cross-examination; Cd. 2315 pp. 108–109"
           }
         },
         {
           "id": "T-W07-006",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W07-006 before P4-4]",
+          "text": "When counsel sought to show the man imprisoned from the spring of that earlier year until four years later could not be the accused now before the court, the judge intervened. He ruled this was not for the jury on the present indictment: the earlier conviction could not be litigated as proof of a different offender until after verdict, lest it confuse the issue.",
           "source": {
             "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "locator": "Cd. 2315 pp. 108–109; NBT pp. 171–172, 178, ruling (§8.6.5)"
           }
         }
       ]
@@ -745,100 +745,100 @@
           "id": "T-W08-001",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W08-001 before P4-4]",
+          "text": "Mr Norland, permitted to address the jury, said that from beginning to end of these charges he had had nothing to do with them. He was absolutely innocent.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT p. 178, third-day statement"
           }
         },
         {
           "id": "T-W08-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W08-002 before P4-4]",
+          "text": "He had lived for years at the Covent Garden Hotel and later at the Buckingham Hotel in the Strand, then in rooms in Victoria Street sub-let to him alone.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 150–155, defence evidence; hotel witnesses"
           }
         },
         {
           "id": "T-W08-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W08-003 before P4-4]",
+          "text": "He was engaged in mining business, attended a solicitor's office in Cornhill almost daily, received substantial cheques for shares, and improved his dress as his affairs prospered — not from cheating women.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 151–153, Kistner and hotel evidence"
           }
         },
         {
           "id": "T-W08-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W08-004 before P4-4]",
+          "text": "When arrested he told police it was a great mistake; he had never seen the ladies before in his life. He denied being the titled gentleman they described.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 142–143, Watts arrest evidence"
           }
         },
         {
           "id": "T-W08-005",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W08-005 before P4-4]",
+          "text": "In the autumn he sent his wardrobe to be cleaned because he was going to Norway to survey mining property; his clothes had been shabby earlier in the year.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 150–151, Ellis tailor evidence"
           }
         },
         {
           "id": "T-W08-006",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W08-006 before P4-4]",
+          "text": "Those who knew him daily said he wrote very badly and slowly, holding the pen in a peculiar way; his natural writing was laboured, not the rapid lists described.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 151–152, chambermaid and clerk evidence"
           }
         },
         {
           "id": "T-W08-007",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W08-007 before P4-4]",
+          "text": "Cross-examined, he was asked about the foreign accent several complainants noticed. He spoke with a Scandinavian origin and Spanish from years abroad; he had asked to speak to the jury so they might hear him directly.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT p. 178, permission to speak; complainant cross themes"
           }
         },
         {
           "id": "T-W08-008",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W08-008 before P4-4]",
+          "text": "He was asked about white spats, waistcoats, and fine dress matching the descriptions. He said hotel staff never saw him in white spats or a white waistcoat; his dress improved only in the summer after mine payments.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 150–153, defence hotel and tailor evidence"
           }
         },
         {
           "id": "T-W08-009",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W08-009 before P4-4]",
+          "text": "On the handwriting expert, he said disguised writing on cheques was not how he wrote letters at the hotel; a clerk who saw him daily could not swear to his hand on the disputed documents.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT pp. 152–153, Kistner cross-examination"
           }
         },
         {
           "id": "T-W08-010",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "[AUTHORING PENDING — tabulate T-W08-010 before P4-4]",
+          "text": "He maintained his innocence. His case was that the man convicted long ago and imprisoned for years was the same person who had carried out these frauds, and he had been mistaken for that man.",
           "source": {
-            "source_id": "S-01",
-            "locator": "BLOCKED — see TABULATION.md"
+            "source_id": "S-02",
+            "locator": "NBT p. 178, defence application on prior indictments"
           }
         }
       ]
@@ -961,40 +961,40 @@
     {
       "id": "D-01",
       "title": "Burden and standard",
-      "text": "[AUTHORING PENDING — tabulate before P4-6]",
+      "text": "The Crown must prove each charge so you are sure before you convict. The accused need prove nothing. You must decide only on the evidence you have heard, not on speculation.",
       "source": {
-        "source_id": "S-03",
-        "locator": "BLOCKED — see TABULATION.md"
+        "source_id": "S-02",
+        "locator": "NBT trial record; Westhaven adaptation AD-2"
       },
       "citable": true
     },
     {
       "id": "D-02",
       "title": "Identification caution",
-      "text": "[AUTHORING PENDING — tabulate before P4-6]",
+      "text": "Identification evidence calls for special care. Several women picked the accused from police lines after brief or dark meetings, and some failed to identify. Consider whether excitement, sympathy for an elderly man, or suggestion may have affected them. This caution is given in modern Westhaven form; the historical trial predated today's standard warnings.",
       "source": {
         "source_id": "S-01",
-        "locator": "BLOCKED — see TABULATION.md"
+        "locator": "Cd. 2315; pre-modern trial AD-2 note"
       },
       "citable": true
     },
     {
       "id": "D-03",
       "title": "Expert evidence",
-      "text": "[AUTHORING PENDING — tabulate before P4-6]",
+      "text": "You have heard opinion from a handwriting expert. Experts may assist you, but the decision remains yours. Consider whether disguised writing, comparison charts, and certainty of phrase are enough to link the lists and cheques to the accused beyond reasonable doubt.",
       "source": {
         "source_id": "S-01",
-        "locator": "BLOCKED — see TABULATION.md"
+        "locator": "Cd. 2315 expert evidence pp. 290+; NBT Gurrin testimony"
       },
       "citable": true
     },
     {
       "id": "D-04",
       "title": "Prior-allegation ruling",
-      "text": "[AUTHORING PENDING — tabulate before P4-6]",
+      "text": "You heard a retired officer speak of a conviction eighteen years earlier, and the defence sought to show another man was imprisoned then. The judge ruled that this earlier guilt could not be tried as part of the present indictment. You must not treat that conviction as proof of guilt here; consider only whether the Crown has proved this case on its own evidence.",
       "source": {
         "source_id": "S-01",
-        "locator": "BLOCKED — see TABULATION.md"
+        "locator": "Cd. 2315 pp. 108–109; NBT ruling on prior conviction (§8.6.5)"
       },
       "citable": true
     }

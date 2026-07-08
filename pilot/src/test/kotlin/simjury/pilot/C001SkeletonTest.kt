@@ -22,8 +22,8 @@ class C001SkeletonTest {
     }
 
     @Test
-    fun `C-001 W-01 through W-05 testimony authored`() {
-        val witnesses = listOf("W-01", "W-02", "W-03", "W-04", "W-05")
+    fun `C-001 W-01 through W-08 testimony authored`() {
+        val witnesses = listOf("W-01", "W-02", "W-03", "W-04", "W-05", "W-06", "W-07", "W-08")
         witnesses.forEach { id ->
             val witness = loaded.trial.witnesses.first { it.id == id }
             witness.blocks.forEach { block ->
@@ -33,9 +33,27 @@ class C001SkeletonTest {
                 )
             }
         }
-        val w06 = loaded.trial.witnesses.first { it.id == "W-06" }
-        w06.blocks.forEach { block ->
-            assertTrue(block.text.contains("AUTHORING PENDING"), "${block.id} should still be pending")
+    }
+
+    @Test
+    fun `C-001 directions D-01 through D-04 authored`() {
+        val directions = listOf("D-01", "D-02", "D-03", "D-04")
+        directions.forEach { id ->
+            val direction = loaded.trial.directions.first { it.id == id }
+            assertFalse(
+                direction.text.contains("AUTHORING PENDING"),
+                "${direction.id} still pending",
+            )
+        }
+    }
+
+    @Test
+    fun `C-001 episode intros authored`() {
+        loaded.trial.episodes.forEach { episode ->
+            assertFalse(
+                episode.introText.contains("AUTHORING PENDING"),
+                "${episode.id} intro still pending",
+            )
         }
     }
 
