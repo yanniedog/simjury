@@ -121,15 +121,6 @@ jobs:
           echo "path=$apk" >> "$GITHUB_OUTPUT"
           ls -lh "$apk"
 
-      - name: Reset adb before emulator (avoid daemon conflicts with SDK setup)
-        run: |
-          set -euo pipefail
-          pkill -9 adb 2>/dev/null || true
-          adb kill-server 2>/dev/null || true
-          sleep 2
-          adb start-server
-          adb devices
-
       - name: Emulator smoke test (attempt 1)
         id: smoke_attempt_1
         continue-on-error: true
