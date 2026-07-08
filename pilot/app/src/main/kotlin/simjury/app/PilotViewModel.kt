@@ -62,6 +62,11 @@ data class PilotNavTarget(
     val selected: Boolean,
 )
 
+data class CaseOption(
+    val id: String,
+    val titlePlay: String,
+)
+
 data class PilotUiState(
     val loading: Boolean = true,
     val error: String? = null,
@@ -74,7 +79,7 @@ data class PilotUiState(
     val showEpisodeHub: Boolean = false,
     val episodes: List<EpisodeSummary> = emptyList(),
     val allItemsRead: Boolean = false,
-    val availableCases: List<String> = emptyList(),
+    val availableCases: List<CaseOption> = emptyList(),
     val activeCaseId: String = "",
     val showCasePicker: Boolean = false,
     val episodeTitle: String = "",
@@ -140,6 +145,13 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
         bootstrapJob?.cancel()
         bootstrapJob = viewModelScope.launch {
             bootstrapCase(caseId)
+        }
+    }
+
+    fun retryLoad() {
+        bootstrapJob?.cancel()
+        bootstrapJob = viewModelScope.launch {
+            bootstrapCase(activeCaseId)
         }
     }
 
@@ -259,9 +271,11 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
         get() = _uiState.value.allItemsRead
 
     private suspend fun bootstrapCase(caseId: String) {
+        _uiState.value = _uiState.value.copy(loading = true, error = null, selectedItem = null)
         try {
             val availableCases = withContext(Dispatchers.IO) {
-                CaseCatalog.listFromAssets(getApplication<Application>().assets)
+                CaseCatalog.listEntriesFromAssets(getApplication<Application>().assets)
+                    .map { CaseOption(it.id, it.titlePlay) }
             }
             val restored = withContext(Dispatchers.IO) {
                 val case = AssetCaseLoader(getApplication<Application>().assets, caseId).load()
@@ -335,7 +349,7 @@ class PilotViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun publish(
         selectedItem: TrialItem?,
-        availableCases: List<String> = _uiState.value.availableCases,
+        availableCases: List<CaseOption> = _uiState.value.availableCases,
         showCasePicker: Boolean = _uiState.value.showCasePicker,
     ) {
         val episodes = loaded.trial.episodes

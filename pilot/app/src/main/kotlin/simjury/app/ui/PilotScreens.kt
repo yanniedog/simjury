@@ -13,8 +13,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -45,6 +46,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -80,6 +82,7 @@ fun PilotAppShell(
     updateState: AppUpdateUiState,
     onCheckForUpdate: () -> Unit,
     onDismissUpdateStatus: () -> Unit,
+    onRetryLoad: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val screenKey = when {
@@ -117,7 +120,7 @@ fun PilotAppShell(
         ) { _ ->
             when {
                 state.loading -> LoadingBody()
-                state.error != null -> ErrorBody(state.error)
+                state.error != null -> ErrorBody(state.error, onRetry = onRetryLoad)
                 state.selectedItem != null -> ItemDetailBody(
                     item = state.selectedItem,
                     canMarkRead = state.canMarkItemsRead,
@@ -176,17 +179,20 @@ private fun LoadingBody() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        LoadingContent(stringResource(R.string.loading_case))
+        LoadingContent(
+            message = stringResource(R.string.loading_case),
+            modifier = Modifier.testTag("loading_case"),
+        )
     }
 }
 
 @Composable
-private fun ErrorBody(message: String) {
+private fun ErrorBody(message: String, onRetry: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
@@ -195,6 +201,13 @@ private fun ErrorBody(message: String) {
             color = MaterialTheme.colorScheme.error,
             textAlign = TextAlign.Center,
         )
+        Button(
+            onClick = onRetry,
+            modifier = Modifier.testTag("error_retry"),
+            shape = MaterialTheme.shapes.medium,
+        ) {
+            Text(stringResource(R.string.retry_load))
+        }
     }
 }
 
@@ -231,12 +244,16 @@ private fun SummonsBody(
         if (state.showCasePicker) {
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             Text(stringResource(R.string.case_picker_label), style = MaterialTheme.typography.titleSmall)
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                state.availableCases.forEach { caseId ->
+            Row(
+                modifier = Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                state.availableCases.forEach { option ->
                     FilterChip(
-                        selected = caseId == state.activeCaseId,
-                        onClick = { onSelectCase(caseId) },
-                        label = { Text(caseId) },
+                        selected = option.id == state.activeCaseId,
+                        onClick = { onSelectCase(option.id) },
+                        enabled = !state.loading,
+                        label = { Text(option.titlePlay) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                         ),
@@ -251,7 +268,11 @@ private fun SummonsBody(
             onCheckForUpdate = onCheckForUpdate,
             onDismissStatus = onDismissUpdateStatus,
         )
-        Button(onClick = onEnter, modifier = Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium) {
+        Button(
+            onClick = onEnter,
+            modifier = Modifier.fillMaxWidth().testTag("summons_enter"),
+            shape = MaterialTheme.shapes.medium,
+        ) {
             Text(stringResource(R.string.enter_courtroom))
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -324,7 +345,7 @@ private fun EpisodeHubBody(
                         trackColor = MaterialTheme.colorScheme.surface,
                     )
                     Text(
-                        stringResource(R.string.episode_progress, episode.id, episode.itemsRead, episode.itemsTotal),
+                        stringResource(R.string.episode_progress, episode.itemsRead, episode.itemsTotal),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -356,6 +377,9 @@ private fun ReadingHubBody(
                 modifier = Modifier.padding(vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
+                if (isAuthoringPending(state.episodeIntro)) {
+                    WarningBanner(text = stringResource(R.string.content_in_progress))
+                }
                 if (state.episodeIntro.isNotBlank()) {
                     Text(
                         state.episodeIntro,
@@ -674,3 +698,6 @@ private fun ScreenScaffold(
         content = content,
     )
 }
+
+private fun isAuthoringPending(text: String): Boolean =
+    text.trimStart().startsWith("[AUTHORING PENDING")

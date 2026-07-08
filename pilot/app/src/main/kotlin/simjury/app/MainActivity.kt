@@ -86,6 +86,7 @@ open class MainActivity : ComponentActivity() {
                         updateState = updateState,
                         onCheckForUpdate = { updateViewModel.checkForUpdate(userInitiated = true) },
                         onDismissUpdateStatus = updateViewModel::dismiss,
+                        onRetryLoad = pilotViewModel::retryLoad,
                         modifier = Modifier.weight(1f),
                     )
                 }
