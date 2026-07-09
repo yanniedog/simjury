@@ -2,20 +2,120 @@
  * GitHub release helpers for SimJury pilot APK publish.
  */
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdirSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { basename, join } from 'node:path';
+import { crc32 } from 'node:zlib';
 import QRCode from 'qrcode';
 import {
+  APK_ASSET,
   INSTALL_HTML,
   MANIFEST_ASSET,
   QR_ASSET,
   ROLLING_TAG,
+  ZIP_ASSET,
   installReleaseUrl,
   manifestReleaseUrl,
   qrReleaseUrl,
+  zipDownloadUrl,
 } from './app-release-meta.mjs';
 
 export * from './app-release-meta.mjs';
+
+const INSTALL_README = `SimJury — install steps
+1. Extract this zip (tap it in your Files app -> Extract).
+2. Tap ${APK_ASSET} to install.
+3. If prompted, allow install from this app, and if Play Protect warns,
+   tap "More details -> Install anyway" (the app is signed and safe).
+After this first install, SimJury updates itself in-app — no browser needed again.
+`;
+
+/** DOS date/time fields for a ZIP entry. @param {Date} d */
+function dosDateTime(d) {
+  const time = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
+  const date = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+  return { time, date };
+}
+
+/**
+ * Build a minimal STORE-method ZIP (no compression — the APK is already
+ * compressed) with pure Node built-ins, so CI needs no extra dependency.
+ * @param {{name: string, data: Buffer}[]} entries
+ * @returns {Buffer}
+ */
+function buildStoreZip(entries) {
+  const { time, date } = dosDateTime(new Date());
+  const fileParts = [];
+  const centralParts = [];
+  let offset = 0;
+  for (const { name, data } of entries) {
+    const nameBuf = Buffer.from(name, 'utf8');
+    const crc = crc32(data) >>> 0;
+    const size = data.length;
+
+    const local = Buffer.alloc(30);
+    local.writeUInt32LE(0x04034b50, 0); // local file header signature
+    local.writeUInt16LE(20, 4); // version needed to extract
+    local.writeUInt16LE(0, 6); // flags
+    local.writeUInt16LE(0, 8); // method: 0 = store
+    local.writeUInt16LE(time, 10);
+    local.writeUInt16LE(date, 12);
+    local.writeUInt32LE(crc, 14);
+    local.writeUInt32LE(size, 18); // compressed size
+    local.writeUInt32LE(size, 22); // uncompressed size
+    local.writeUInt16LE(nameBuf.length, 26);
+    local.writeUInt16LE(0, 28); // extra length
+    fileParts.push(local, nameBuf, data);
+
+    const central = Buffer.alloc(46);
+    central.writeUInt32LE(0x02014b50, 0); // central directory header signature
+    central.writeUInt16LE(20, 4); // version made by
+    central.writeUInt16LE(20, 6); // version needed
+    central.writeUInt16LE(0, 8);
+    central.writeUInt16LE(0, 10);
+    central.writeUInt16LE(time, 12);
+    central.writeUInt16LE(date, 14);
+    central.writeUInt32LE(crc, 16);
+    central.writeUInt32LE(size, 20);
+    central.writeUInt32LE(size, 24);
+    central.writeUInt16LE(nameBuf.length, 28);
+    central.writeUInt16LE(0, 30); // extra length
+    central.writeUInt16LE(0, 32); // comment length
+    central.writeUInt16LE(0, 34); // disk number
+    central.writeUInt16LE(0, 36); // internal attrs
+    central.writeUInt32LE(0, 38); // external attrs
+    central.writeUInt32LE(offset, 42); // local header offset
+    centralParts.push(central, nameBuf);
+
+    offset += local.length + nameBuf.length + size;
+  }
+
+  const centralBuf = Buffer.concat(centralParts);
+  const eocd = Buffer.alloc(22);
+  eocd.writeUInt32LE(0x06054b50, 0); // end of central directory signature
+  eocd.writeUInt16LE(0, 4);
+  eocd.writeUInt16LE(0, 6);
+  eocd.writeUInt16LE(entries.length, 8);
+  eocd.writeUInt16LE(entries.length, 10);
+  eocd.writeUInt32LE(centralBuf.length, 12);
+  eocd.writeUInt32LE(offset, 16);
+  eocd.writeUInt16LE(0, 20); // comment length
+  return Buffer.concat([...fileParts, centralBuf, eocd]);
+}
+
+/**
+ * Write app-preview.zip (APK + install README) next to the APK.
+ * @param {string} outDir @param {string} apkPath @returns {string} zip path
+ */
+export function writeInstallZip(outDir, apkPath) {
+  mkdirSync(outDir, { recursive: true });
+  const zip = buildStoreZip([
+    { name: basename(APK_ASSET), data: readFileSync(apkPath) },
+    { name: 'INSTALL-README.txt', data: Buffer.from(INSTALL_README, 'utf8') },
+  ]);
+  const zipPath = join(outDir, ZIP_ASSET);
+  writeFileSync(zipPath, zip);
+  return zipPath;
+}
 
 /**
  * @param {string} outDir
@@ -25,12 +125,16 @@ export * from './app-release-meta.mjs';
  */
 export async function generateInstallAssets(outDir, downloadUrl, repo, tag) {
   mkdirSync(outDir, { recursive: true });
+  // Point the QR + primary download at the .zip: Chrome silently deletes bare
+  // .apk downloads, but not .zip. downloadUrl (the raw .apk) stays as an advanced
+  // fallback.
+  const zipUrl = zipDownloadUrl(repo, tag);
   const qrPath = join(outDir, QR_ASSET);
   const qrOptions = { width: 512, margin: 2, errorCorrectionLevel: 'M' };
-  await QRCode.toFile(qrPath, downloadUrl, { type: 'png', ...qrOptions });
+  await QRCode.toFile(qrPath, zipUrl, { type: 'png', ...qrOptions });
   // Inline data URI so install.html is self-contained (release assets are not
   // served relative to each other, so a same-folder <img src> would 404).
-  const qrDataUrl = await QRCode.toDataURL(downloadUrl, qrOptions);
+  const qrDataUrl = await QRCode.toDataURL(zipUrl, qrOptions);
 
   const manifestUrl = manifestReleaseUrl(repo, ROLLING_TAG);
   const html = `<!DOCTYPE html>
@@ -55,31 +159,34 @@ export async function generateInstallAssets(outDir, downloadUrl, repo, tag) {
 </head>
 <body>
   <h1>Install SimJury</h1>
-  <p>Scan the QR with Android Chrome, or tap the download button below.</p>
-  <img src="${qrDataUrl}" alt="QR code linking to the SimJury APK download" width="512" height="512" />
-  <p><a class="btn" href="${downloadUrl}">Download SimJury APK</a></p>
+  <p>Scan the QR with your phone camera, or tap the button below to download.</p>
+  <img src="${qrDataUrl}" alt="QR code linking to the SimJury install download" width="512" height="512" />
+  <p><a class="btn" href="${zipUrl}">Download SimJury (.zip)</a></p>
 
   <div class="note">
-    <strong>Android will try to block this APK because it isn't from the Play Store.</strong>
-    That's expected — the file is safe, but you must confirm each prompt or the download
-    silently disappears from your list.
+    <strong>Download the .zip, not a bare .apk.</strong> Chrome silently deletes
+    <code>.apk</code> downloads (they vanish from your list with no prompt) — but it
+    leaves <code>.zip</code> alone. The zip just contains the app; you extract it and
+    tap the APK inside. The app is signed and safe.
   </div>
 
   <h2>Install steps</h2>
   <ol>
-    <li>Tap <strong>Download</strong> above. If Chrome warns
-      <em>"This type of file can harm your device"</em>, tap the menu / arrow and choose
-      <strong>Download anyway</strong> — do not dismiss it, or the file is discarded.</li>
-    <li>Open the APK from your <strong>Files app &rarr; Downloads</strong>
-      (more reliable than Chrome's download list).</li>
+    <li>Tap <strong>Download SimJury (.zip)</strong> above — it saves normally and won't disappear.</li>
+    <li>Open <strong>Files app &rarr; Downloads</strong>, tap the <strong>.zip</strong>, and
+      <strong>Extract</strong> it.</li>
+    <li>Tap the extracted <strong>${APK_ASSET}</strong> to install.</li>
     <li>If prompted, allow installs from this app:
-      <strong>Settings &rarr; Install unknown apps &rarr; (Chrome or Files) &rarr; Allow.</strong></li>
+      <strong>Settings &rarr; Install unknown apps &rarr; (Files) &rarr; Allow.</strong></li>
     <li>If <strong>Play Protect</strong> shows <em>"Blocked by Play Protect"</em>,
       tap <strong>More details &rarr; Install anyway</strong>.</li>
     <li>If install fails with <em>"App not installed"</em> or a signature mismatch,
       <strong>uninstall any existing SimJury first</strong>, then reinstall — release
       builds are signed with a different key than earlier preview builds.</li>
   </ol>
+
+  <p style="font-size:0.9em">After this first install, SimJury updates itself in-app — no browser needed again.<br>
+    Advanced: <a href="${downloadUrl}">direct .apk download</a> (Chrome may silently delete it).</p>
 
   <p>Still vanishing? In the Play Store: <strong>Profile &rarr; Play Protect &rarr; Settings</strong>,
      turn off scanning, install, then turn it back on.</p>
