@@ -132,6 +132,17 @@ class CaseValidatorTest {
     }
 
     @Test
+    fun `historical case requires at least one real_decisive contradiction`() {
+        val base = historicalValidCase(episodeCount = 3)
+        val withoutDecisive = base.trial.groundTruth.map { k ->
+            if (k.kind == "real_decisive") k.copy(kind = "real_immaterial") else k
+        }
+        val loaded = base.copy(trial = base.trial.copy(groundTruth = withoutDecisive))
+        val ex = assertFailsWith<CaseValidationException> { CaseValidator.validate(loaded) }
+        assertTrue(ex.errors.any { it.contains("real_decisive") })
+    }
+
+    @Test
     fun `rejects ground-truth with unknown block ref`() {
         val base = historicalValidCase(episodeCount = 3)
         val badGt = base.trial.groundTruth[0].copy(blockRefs = listOf("T-W99-999"))

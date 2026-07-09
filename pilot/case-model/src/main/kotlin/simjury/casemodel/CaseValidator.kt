@@ -298,11 +298,17 @@ object CaseValidator {
             }
         }
 
-        // Harness §4 floor: historical cases carry >= 3 real/illusory contradictions.
+        // Harness §4 floor: historical cases carry >= 3 real/illusory contradictions,
+        // and at least one must be real_decisive (case must turn on a real tension).
         // Synthetic pilot cases (C-000) are intentionally left unconstrained here.
-        if (!loaded.meta.synthetic && contradictions.size < 3) {
-            errors += "floor: historical case needs >= 3 ground-truth contradictions " +
-                "(found ${contradictions.size})"
+        if (!loaded.meta.synthetic) {
+            if (contradictions.size < 3) {
+                errors += "floor: historical case needs >= 3 ground-truth contradictions " +
+                    "(found ${contradictions.size})"
+            }
+            if (contradictions.none { it.kind == "real_decisive" }) {
+                errors += "floor: historical case needs at least one 'real_decisive' ground-truth contradiction"
+            }
         }
     }
 
