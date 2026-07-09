@@ -71,11 +71,14 @@ the same action. Two phones in a pub is a functioning two-person jury room.
 
 One pinned Discussion per case (e.g. **"Jury Room — Case C-001"**). Players paste
 their verdict card and argue below it, with anything past the card wrapped in
-`<details>Spoilers — locked verdicts only</details>`. The operator edits a running
+`<details><summary>Spoilers — locked verdicts only</summary>…</details>`. The operator edits a running
 tally into the thread header (e.g. *"14 verdicts: 9 G / 5 NG"*) — a community counter
 with zero backend. The install page and README link to it.
 
-### M-4 — Jury Night host kit *(§5 — one host = 5–30 users)*
+### M-4 — Jury Night host kit *(operator playbook, no code)*
+
+A run-of-show for hosting face-to-face deliberation sessions — kitchens, pubs,
+classrooms. One host converts 5–30 people in a single sitting. Full kit in §5.
 
 ### M-5 — Deferred (do not build yet)
 
@@ -111,7 +114,7 @@ respects local self-promotion rules (read each subreddit's rules before posting)
   real Victorian trial record, with a validator that bans real names pre-reveal."*
 - **Interactive fiction community** (intfiction.org forum) — this is their genre.
 - **Reddit**, in order of fit: r/AndroidGaming, r/WebGames-adjacent IF subs,
-  r/TrueCrime / r/UnresolvedMysteries (mind rule constraints), r/historyteachers.
+  r/TrueCrime / r/UnresolvedMysteries (mind each sub's rules), r/historyteachers.
 - **Legal-history / true-crime podcasts and newsletters** — small ones answer email.
   Offer the reveal as the story; ask only for a link in show notes.
 
@@ -152,7 +155,7 @@ Anyone with a table can host. Works in kitchens, pubs, classrooms, staff rooms.
 The app ships no telemetry, no accounts, no tracking — that is a feature, and the
 public pitch says so. Growth is measured at the edges:
 
-```powershell
+```sh
 # Release download counts (rolling APK + zip asset)
 gh api repos/yanniedog/simjury/releases --jq '.[].assets[] | {name, download_count}'
 ```
