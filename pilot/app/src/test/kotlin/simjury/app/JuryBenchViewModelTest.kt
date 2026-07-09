@@ -76,6 +76,13 @@ class JuryBenchViewModelTest {
         viewModel.addJurorCode(friendCode.lowercase().replace("-", " "))
         assertEquals(BenchNotice.DUPLICATE, viewModel.uiState.value.benchNotice)
 
+        // Dedup is by playthrough tag: a fresh code from the same juror with a
+        // different verdict/leaning is still a duplicate, not a second seat.
+        val friendChangedMind = JurorCode.encode("C-000", "Guilty", "G", friendTag)
+        viewModel.addJurorCode(friendChangedMind)
+        assertEquals(BenchNotice.DUPLICATE, viewModel.uiState.value.benchNotice)
+        assertEquals(1, viewModel.uiState.value.benchJurors.size)
+
         // Garbage and wrong-case codes are refused.
         viewModel.addJurorCode("not a code")
         assertEquals(BenchNotice.INVALID, viewModel.uiState.value.benchNotice)

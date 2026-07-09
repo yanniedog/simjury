@@ -58,7 +58,6 @@ import simjury.app.PilotSection
 import simjury.app.PilotUiState
 import simjury.app.R
 import simjury.app.model.TrialItem
-import simjury.app.share.JurorCode
 import simjury.app.share.VerdictCard
 import simjury.app.update.AppUpdateUiState
 
@@ -665,7 +664,7 @@ private fun JuryBenchSection(state: PilotUiState, onAddJurorCode: (String) -> Un
                         leaningLabel = benchLeaningLabel(juror.leaning),
                     )
                 }
-                val emptySeats = JurorCode.BENCH_SEATS - 1 - state.benchJurors.size
+                val emptySeats = state.benchSeatsTotal - 1 - state.benchJurors.size
                 if (emptySeats > 0) {
                     Text(
                         stringResource(R.string.bench_empty_seats, emptySeats),
@@ -741,10 +740,15 @@ private fun JuryBenchSection(state: PilotUiState, onAddJurorCode: (String) -> Un
 
 @Composable
 private fun BenchSeatRow(seatLabel: String, verdict: String, leaningLabel: String?) {
+    val displayVerdict = when (verdict) {
+        "Guilty" -> stringResource(R.string.vote_guilty)
+        "Not Guilty" -> stringResource(R.string.vote_not_guilty)
+        else -> verdict
+    }
     Column {
         Text(seatLabel, style = MaterialTheme.typography.labelMedium)
         Text(
-            if (leaningLabel != null) "$verdict — $leaningLabel" else verdict,
+            if (leaningLabel != null) "$displayVerdict — $leaningLabel" else displayVerdict,
             style = MaterialTheme.typography.titleSmall,
         )
     }

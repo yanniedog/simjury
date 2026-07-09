@@ -108,6 +108,8 @@ data class PilotUiState(
     val revealNames: List<PseudonymReveal> = emptyList(),
     /** This juror's shareable code; empty until the verdict locks. */
     val myJurorCode: String = "",
+    /** Total seats on the bench (player + fellow jurors); UI need not know the codec. */
+    val benchSeatsTotal: Int = 0,
     val benchJurors: List<BenchJuror> = emptyList(),
     val benchNotice: BenchNotice? = null,
     val isSpeaking: Boolean = false,
@@ -305,7 +307,7 @@ class PilotViewModel(
             decoded == null -> BenchNotice.INVALID
             decoded.caseCompact != JurorCode.compactCaseId(loaded.meta.id) -> BenchNotice.WRONG_CASE
             decoded.tag == jurorTag -> BenchNotice.OWN_CODE
-            decoded.normalized in benchCodes -> BenchNotice.DUPLICATE
+            benchCodes.any { JurorCode.decode(it)?.tag == decoded.tag } -> BenchNotice.DUPLICATE
             benchCodes.size >= JurorCode.BENCH_SEATS - 1 -> BenchNotice.FULL
             else -> {
                 benchCodes.add(decoded.normalized)
@@ -479,6 +481,7 @@ class PilotViewModel(
             diary = engineState.diary,
             vote = engineState.vote,
             myJurorCode = myJurorCode,
+            benchSeatsTotal = JurorCode.BENCH_SEATS,
             benchJurors = benchJurors,
             benchNotice = benchNotice,
         )

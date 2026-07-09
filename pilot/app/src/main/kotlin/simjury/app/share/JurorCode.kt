@@ -26,6 +26,7 @@ object JurorCode {
     private const val TAG_LENGTH = 3
     private val VERDICTS = listOf("Guilty", "Not Guilty")
     private val LEANINGS = listOf("G", "NG", "U")
+    private val SEGMENT_REGEX = Regex("[\\s-]+")
 
     data class Decoded(
         val caseCompact: String,
@@ -46,13 +47,13 @@ object JurorCode {
         val verdictIndex = VERDICTS.indexOf(verdict).coerceAtLeast(0)
         val leaningIndex = LEANINGS.indexOf(leaning).let { if (it >= 0) it else LEANINGS.lastIndex }
         val packed = verdictIndex * LEANINGS.size + leaningIndex
-        val payloadChar = ALPHABET[Math.floorMod(packed + mask(tag), ALPHABET.length)]
+        val payloadChar = ALPHABET[(packed + mask(tag)).modAlphabet()]
         return "$PREFIX-$caseCompact-$payloadChar-$tag-${checksum(caseCompact, payloadChar, tag)}"
     }
 
     /** Returns null for anything that is not a well-formed, checksum-valid code. */
     fun decode(raw: String): Decoded? {
-        val segments = raw.trim().uppercase().split(Regex("[\\s-]+")).filter { it.isNotEmpty() }
+        val segments = raw.trim().uppercase().split(SEGMENT_REGEX).filter { it.isNotEmpty() }
         if (segments.size != 5 || segments[0] != PREFIX) return null
         val (_, caseCompact, payload, tag, check) = segments
         if (payload.length != 1 || tag.length != TAG_LENGTH || check.length != 1) return null
@@ -61,7 +62,7 @@ object JurorCode {
         val payloadChar = payload.single()
         if (payloadChar !in ALPHABET) return null
         if (check.single() != checksum(caseCompact, payloadChar, tag)) return null
-        val packed = Math.floorMod(ALPHABET.indexOf(payloadChar) - mask(tag), ALPHABET.length)
+        val packed = (ALPHABET.indexOf(payloadChar) - mask(tag)).modAlphabet()
         if (packed >= VERDICTS.size * LEANINGS.size) return null
         return Decoded(
             caseCompact = caseCompact,
@@ -71,6 +72,9 @@ object JurorCode {
             normalized = "$PREFIX-$caseCompact-$payload-$tag-$check",
         )
     }
+
+    /** Euclidean modulo into `[0, ALPHABET.length)`, correct for negative inputs. */
+    private fun Int.modAlphabet(): Int = ((this % ALPHABET.length) + ALPHABET.length) % ALPHABET.length
 
     private fun mask(tag: String): Int = tag.sumOf { it.code } % ALPHABET.length
 
