@@ -1,5 +1,6 @@
 package simjury.app.ui
 
+import android.content.Intent
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -46,6 +47,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -55,6 +57,7 @@ import simjury.app.PilotSection
 import simjury.app.PilotUiState
 import simjury.app.R
 import simjury.app.model.TrialItem
+import simjury.app.share.VerdictCard
 import simjury.app.update.AppUpdateUiState
 
 private const val DIARY_MIN_CHARS = 10
@@ -625,7 +628,49 @@ private fun RevealBody(state: PilotUiState) {
                 }
             }
         }
+        ShareVerdictCardSection(state)
         Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+@Composable
+private fun ShareVerdictCardSection(state: PilotUiState) {
+    val vote = state.vote ?: return
+    val context = LocalContext.current
+    val installUrl = stringResource(R.string.share_install_url)
+    val chooserTitle = stringResource(R.string.share_card_chooser_title)
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(stringResource(R.string.share_card_heading), style = MaterialTheme.typography.titleMedium)
+        Text(
+            stringResource(R.string.share_card_hint),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Button(
+            onClick = {
+                val card = VerdictCard.build(
+                    caseId = state.caseMetaId,
+                    caseTitle = state.caseTitle,
+                    charge = state.charge,
+                    vote = vote,
+                    itemsRead = state.itemsRead.size,
+                    installUrl = installUrl,
+                )
+                val send = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, card)
+                }
+                context.startActivity(Intent.createChooser(send, chooserTitle))
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("share_verdict_card"),
+        ) {
+            Text(stringResource(R.string.share_verdict_card))
+        }
     }
 }
 
