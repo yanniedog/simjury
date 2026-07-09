@@ -314,7 +314,7 @@ class PilotViewModel(
             publish(
                 selectedItem = null,
                 availableCases = availableCases,
-                showCasePicker = BuildConfig.DEBUG && availableCases.size > 1,
+                showCasePicker = BuildConfig.SHOW_CASE_PICKER && availableCases.size > 1,
             )
         } catch (e: Exception) {
             if (e is CancellationException) throw e

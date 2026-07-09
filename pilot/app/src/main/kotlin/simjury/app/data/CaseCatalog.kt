@@ -1,6 +1,7 @@
 package simjury.app.data
 
 import android.content.res.AssetManager
+import java.io.IOException
 import kotlinx.coroutines.CancellationException
 import simjury.casemodel.PilotCase
 import simjury.casemodel.caseJson
@@ -16,11 +17,29 @@ object CaseCatalog {
         listEntriesFromAssets(assets).map { it.id }
 
     fun listEntriesFromAssets(assets: AssetManager): List<CaseEntry> =
-        assets.list("cases")
-            ?.filter { it.startsWith("c_") }
-            ?.sorted()
-            ?.mapNotNull { id -> readEntry(assets, id) }
-            .orEmpty()
+        discoverCaseIds(assets)
+            .sorted()
+            .mapNotNull { id -> readEntry(assets, id) }
+
+    /**
+     * Device AssetManager returns immediate child directory names (`c_000`).
+     * Robolectric's asset overlay often returns flattened relative paths
+     * (`c_000/case.json`). Accept both so the debug case picker works in tests.
+     */
+    internal fun discoverCaseIds(assets: AssetManager): Set<String> =
+        try {
+            assets.list("cases")
+                .orEmpty()
+                .mapNotNull { entry ->
+                    val first = entry.substringBefore('/')
+                    first.takeIf { it.matches(CASE_ID) }
+                }
+                .toSet()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: IOException) {
+            emptySet()
+        }
 
     private fun readEntry(assets: AssetManager, id: String): CaseEntry? =
         try {
@@ -32,4 +51,6 @@ object CaseCatalog {
             if (e is CancellationException) throw e
             null
         }
+
+    private val CASE_ID = Regex("""^c_\d{3}$""")
 }

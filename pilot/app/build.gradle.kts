@@ -78,8 +78,12 @@ android {
     }
 
     buildTypes {
+        getByName("debug") {
+            buildConfigField("boolean", "SHOW_CASE_PICKER", "true")
+        }
         release {
             isMinifyEnabled = false
+            buildConfigField("boolean", "SHOW_CASE_PICKER", "false")
             signingConfig = if (hasReleaseSigning) {
                 signingConfigs.getByName("release")
             } else {

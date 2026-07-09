@@ -54,7 +54,8 @@ class MainActivityEpisodeHubTest {
         composeRule.waitUntil(timeoutMillis = 15_000) {
             composeRule.onAllNodesWithText("The List", substring = true).fetchSemanticsNodes().isNotEmpty()
         }
-        composeRule.onNodeWithText("The List", substring = true).assertExists()
+        // Headline + debug case chip both show the play title when the picker is visible.
+        composeRule.onAllNodesWithText("The List", substring = true).onFirst().assertExists()
         composeRule.onNodeWithTag("summons_enter").performScrollTo().performClick()
         composeRule.waitForIdle()
         composeRule.waitUntil(timeoutMillis = 15_000) {

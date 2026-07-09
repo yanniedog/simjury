@@ -1,14 +1,15 @@
 # Phase 4 Status & Handoff — Case 001 (Beck)
 
-**Last verified:** 2026-07-09 against `main` (post P4-8 / P4-10). **CI on `main`: green.**
+**Last verified:** 2026-07-09 against `main` (post P4-8 / P4-10 / R4 CLI + Robolectric). **CI on `main`: green.**
 
 > **Progress 2026-07-09:** R1 (ground truth) and R2 (`BALANCE.md`) are **merged**.
-> R4 CLI playthrough evidence + operator-clearance gate helper landed (this PR).
+> R4 automated evidence is on `main` (CLI + ViewModel). This follow-up adds debug
+> case-picker Compose coverage + [`G4-SIGNOFF.md`](G4-SIGNOFF.md) for operator device QA.
 > Remaining for G-4: **R3 (human clearance), R4 device QA, R5 (gate PR)** — see §2.
 
 **Read these for authority (do not re-derive):** [`ROADMAP.md`](ROADMAP.md) (Phase 4),
 [`PHASE4-PLAN.md`](PHASE4-PLAN.md) (PR breakdown), [`CASE_HARNESS.md`](CASE_HARNESS.md)
-(floors + rules), [`PILOT-SPEC.md`](PILOT-SPEC.md).
+(floors + rules), [`PILOT-SPEC.md`](PILOT-SPEC.md), [`G4-SIGNOFF.md`](G4-SIGNOFF.md).
 
 > **Memory note:** the projectmem MCP layer that `CLAUDE.md` calls "MANDATORY" is
 > **DISABLED as of 2026-07-09.** Those tools are not available — **ignore the
@@ -20,6 +21,7 @@
 ## 1. Where Phase 4 stands
 
 Merged: **P4-0 … P4-9 and P4-11**. Case `c_001` assets are authored and validating in CI.
+R4 automated playthrough PRs: #43 (CLI), #45 (ViewModel).
 
 Content vs harness floors ([`CASE_HARNESS.md`](CASE_HARNESS.md) §4):
 
@@ -106,13 +108,15 @@ a historical disclaimer for non-synthetic cases.
 `PilotViewModel` through the same C-001 loop and checks play-reachable UI fields for F-4 tokens.
 Runs under CI `:app:testDebugUnitTest`.
 
-**Device QA (still required for G-4):** `c_001` is selected by the build flag
-`BuildConfig.PILOT_CASE_ID`
-([`AssetCaseLoader.kt`](pilot/app/src/main/kotlin/simjury/app/data/AssetCaseLoader.kt)), **not** a
-runtime picker. Build with `-PpilotCaseId=c_001`, run on emulator/device, and verify: episodes →
-diary → vote → reveal, and **no real names** (Beck / 1896 / etc.) appear pre-reveal. The
-`pilot-android-apk` emulator smoke gate has been flaky (commit `13ca72b`) — if it's red, rule that
-out before assuming a content regression.
+**Debug case-picker evidence (automated):** `MainActivityCasePickerTest` starts on default `c_000`,
+selects **The List** via the debug summons picker, and asserts the four-episode hub. Prefer this
+path for local device QA (no rebuild). Release builds without the picker need
+`-PpilotCaseId=c_001`.
+
+**Device QA (still required for G-4):** Full checklist and build commands live in
+[`G4-SIGNOFF.md`](G4-SIGNOFF.md). Cloud agents lack `/dev/kvm` — operator must run on a local
+emulator or physical device. The `pilot-android-apk` smoke gate covers install/launch of the
+**default** release APK (`c_000`), not a full C-001 playthrough.
 
 **Operator clearance helper:** `CaseValidator.validateOperatorClearanceComplete` rejects
 `PENDING HUMAN SIGN-OFF` / unfinished descendants notes. Wire it into the G-4 gate PR (R5) after
@@ -121,8 +125,9 @@ pending).
 
 ### R5 — G-4 gate PR  (P4-12)
 
-Bundle the evidence (playthrough proof, `BALANCE.md`, clearance complete, CI green). Follow
-[`WORKFLOW.md`](WORKFLOW.md) bot gates (`bot-presence-gate` + `bot-feedback-gate`) before merge.
+Bundle the evidence (playthrough proof, `BALANCE.md`, clearance complete, CI green, device QA notes
+from [`G4-SIGNOFF.md`](G4-SIGNOFF.md)). Follow [`WORKFLOW.md`](WORKFLOW.md) bot gates
+(`bot-presence-gate` + `bot-feedback-gate`) before merge.
 
 ---
 
@@ -140,7 +145,7 @@ Bundle the evidence (playthrough proof, `BALANCE.md`, clearance complete, CI gre
 
 - **Never invent testimony.** Every block/exhibit/contradiction traces to a `TABULATION.md` row +
   source. Empty locator = gap = **STOP** (BLOCKED REPORT).
-- **No real names in play-reachable text (F-4).** The validator scans for `beck`, `1896`, etc. plus
+- **No real names in play-reachable text (F-4).** The validator scans for `Beck`, `1896`, etc. plus
   each pseudonym's real name.
 - **Pilot floors only** — never import v3 §10 quantities (110 blocks, 12–16 exhibits) until Phase 5.
 - **One concern per PR, ≤ 400 lines, squash merge.**
@@ -154,6 +159,14 @@ Bundle the evidence (playthrough proof, `BALANCE.md`, clearance complete, CI gre
 pilot\gradlew.bat -p pilot test                                   # build + all tests
 pilot\gradlew.bat -p pilot test --tests "*CaseIntegrity*" --tests "*C001*"   # case validation only
 gh run list --branch main                                         # CI status
+```
+
+Debug APK with case picker (device QA):
+
+```powershell
+pilot\gradlew.bat -p pilot :app:assembleDebug
+adb install -r pilot\app\build\outputs\apk\debug\app-debug.apk
+# Summons → Debug case → The List → Enter the courtroom
 ```
 
 ---
