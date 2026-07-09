@@ -138,12 +138,29 @@ data class Episode(
     @SerialName("item_order") val itemOrder: List<String>,
 )
 
+/**
+ * Ground-truth contradiction (harness §4, v3 §8.6). One per real evidential tension the
+ * case turns on. [kind] is one of `real_decisive`, `real_immaterial`, or `illusory`.
+ * [blockRefs]/[exhibitRefs] anchor the contradiction to already-authored trial items —
+ * never invent a block to fit a contradiction.
+ */
+@Serializable
+data class Contradiction(
+    val id: String,
+    val kind: String,
+    @SerialName("block_refs") val blockRefs: List<String> = emptyList(),
+    @SerialName("exhibit_refs") val exhibitRefs: List<String> = emptyList(),
+    val note: String,
+    val source: SourceRef,
+)
+
 @Serializable
 data class TrialFile(
     val episodes: List<Episode>,
     val witnesses: List<Witness>,
     val exhibits: List<Exhibit>,
     val directions: List<Direction>,
+    @SerialName("ground_truth") val groundTruth: List<Contradiction> = emptyList(),
 )
 
 @Serializable

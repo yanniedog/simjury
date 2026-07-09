@@ -122,6 +122,49 @@ class CaseValidatorTest {
     }
 
     @Test
+    fun `historical case requires at least three ground-truth contradictions`() {
+        val base = historicalValidCase(episodeCount = 3)
+        val loaded = base.copy(
+            trial = base.trial.copy(groundTruth = base.trial.groundTruth.take(2)),
+        )
+        val ex = assertFailsWith<CaseValidationException> { CaseValidator.validate(loaded) }
+        assertTrue(ex.errors.any { it.contains(">= 3 ground-truth contradictions") })
+    }
+
+    @Test
+    fun `rejects ground-truth with unknown block ref`() {
+        val base = historicalValidCase(episodeCount = 3)
+        val badGt = base.trial.groundTruth[0].copy(blockRefs = listOf("T-W99-999"))
+        val loaded = base.copy(
+            trial = base.trial.copy(groundTruth = listOf(badGt) + base.trial.groundTruth.drop(1)),
+        )
+        val ex = assertFailsWith<CaseValidationException> { CaseValidator.validate(loaded) }
+        assertTrue(ex.errors.any { it.contains("unknown block ref") })
+    }
+
+    @Test
+    fun `rejects ground-truth with invalid kind`() {
+        val base = historicalValidCase(episodeCount = 3)
+        val badGt = base.trial.groundTruth[0].copy(kind = "made_up")
+        val loaded = base.copy(
+            trial = base.trial.copy(groundTruth = listOf(badGt) + base.trial.groundTruth.drop(1)),
+        )
+        val ex = assertFailsWith<CaseValidationException> { CaseValidator.validate(loaded) }
+        assertTrue(ex.errors.any { it.contains("invalid kind") })
+    }
+
+    @Test
+    fun `rejects ground-truth with no anchor`() {
+        val base = historicalValidCase(episodeCount = 3)
+        val badGt = base.trial.groundTruth[0].copy(blockRefs = emptyList(), exhibitRefs = emptyList())
+        val loaded = base.copy(
+            trial = base.trial.copy(groundTruth = listOf(badGt) + base.trial.groundTruth.drop(1)),
+        )
+        val ex = assertFailsWith<CaseValidationException> { CaseValidator.validate(loaded) }
+        assertTrue(ex.errors.any { it.contains("must anchor to at least one block or exhibit") })
+    }
+
+    @Test
     fun `historical floors enforce witness and block counts`() {
         val trial = historicalValidCase(episodeCount = 3).trial
         val loaded = historicalValidCase(episodeCount = 3).copy(
@@ -345,7 +388,31 @@ class CaseValidatorTest {
                 itemOrder = allItemIds.subList(start, end),
             )
         }
-        val trial = TrialFile(episodes, witnesses, exhibits, directions)
+        val groundTruth = listOf(
+            Contradiction(
+                id = "K-01",
+                kind = "real_decisive",
+                blockRefs = listOf("T-W01-001"),
+                exhibitRefs = listOf("X-01"),
+                note = "Fixture decisive contradiction.",
+                source = SourceRef("S-01", "p.1"),
+            ),
+            Contradiction(
+                id = "K-02",
+                kind = "real_immaterial",
+                blockRefs = listOf("T-W02-001"),
+                note = "Fixture immaterial contradiction.",
+                source = SourceRef("S-01", "p.2"),
+            ),
+            Contradiction(
+                id = "K-03",
+                kind = "illusory",
+                blockRefs = listOf("T-W03-001"),
+                note = "Fixture illusory contradiction.",
+                source = SourceRef("S-01", "p.3"),
+            ),
+        )
+        val trial = TrialFile(episodes, witnesses, exhibits, directions, groundTruth)
         val meta = PilotCase(
             id = "C-998",
             titlePlay = "The List",

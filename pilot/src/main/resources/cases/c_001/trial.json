@@ -998,5 +998,40 @@
       },
       "citable": true
     }
+  ],
+  "ground_truth": [
+    {
+      "id": "K-01",
+      "kind": "real_decisive",
+      "block_refs": ["T-W01-006", "T-W02-006", "T-W03-008", "T-W05-003", "T-W05-004"],
+      "exhibit_refs": ["X-06"],
+      "note": "The Crown's case depends on confident eyewitness identification, yet the complainants concede the encounters were brief and the caller partly concealed his face, and that they had read newspaper reports and attended the police court together before picking him out. Inspector Vale himself would not treat identification in the dock as sufficient without independent support. The tension goes directly to whether the jury can be sure the accused is the man.",
+      "source": {
+        "source_id": "S-01",
+        "locator": "Cd. 2315 pp. 52–55 (identifications); complainant cross-examinations"
+      }
+    },
+    {
+      "id": "K-02",
+      "kind": "real_immaterial",
+      "block_refs": ["T-W02-004", "T-W02-009"],
+      "exhibit_refs": [],
+      "note": "Mrs Garner's stated value of the property she lost rises between her examination and her re-examination. It is a genuine inconsistency in her evidence, but immaterial to the charge: it touches neither the identity of the caller nor whether a false pretence was made.",
+      "source": {
+        "source_id": "S-01",
+        "locator": "Cd. 2315 (complainant evidence); Sessions Papers schedule of loss"
+      }
+    },
+    {
+      "id": "K-03",
+      "kind": "illusory",
+      "block_refs": ["T-W08-006", "T-W06-002", "T-W06-005"],
+      "exhibit_refs": ["X-03"],
+      "note": "It appears contradictory that those who know the accused say he writes slowly and badly while the fraud documents were written with freedom. The contradiction is illusory: the handwriting expert attributes the documents to a deliberately disguised hand, so fluency in a disguised script does not conflict with the accused's ordinary laboured writing.",
+      "source": {
+        "source_id": "S-01",
+        "locator": "Cd. 2315 pp. 89–90, 116 (handwriting evidence)"
+      }
+    }
   ]
 }
