@@ -19,8 +19,8 @@ import simjury.app.update.ApkManifest
 import simjury.app.update.AppUpdateRepository
 
 /**
- * R4 Android UI evidence: debug case picker lists C-001, and selecting it loads
- * the four-episode hub without a `-PpilotCaseId` rebuild.
+ * R4 Android UI evidence: C-001 can be selected and opens the four-episode hub.
+ * Debug builds also assert the summons case-picker chips (hidden in release).
  */
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [34])
@@ -58,19 +58,24 @@ class MainActivityCasePickerTest {
     val composeRule = createAndroidComposeRule<MainActivity>()
 
     @Test
-    fun mainActivity_debugCasePicker_switchesToC001AndOpensHub() {
+    fun mainActivity_selectsC001AndOpensFourEpisodeHub() {
         awaitNodesWithTag("summons_enter")
         composeRule.onAllNodesWithText("The Pocket Watch", substring = true)
             .onFirst()
             .assertExists()
-        composeRule.onNodeWithTag("case_picker_c_000").assertExists()
-        composeRule.onNodeWithTag("case_picker_c_001").assertExists()
+
+        // Picker is debug-only (BuildConfig.DEBUG); release unit tests skip chip asserts.
+        if (BuildConfig.DEBUG) {
+            composeRule.onNodeWithTag("case_picker_c_000").assertExists()
+            composeRule.onNodeWithTag("case_picker_c_001").assertExists()
+        }
 
         // Prefer ViewModel selectCase: FilterChip clicks are flaky under Robolectric
         // when bootstrap hops Dispatchers.IO. Chip presence above is the UI evidence.
         val viewModel = ViewModelProvider(composeRule.activity)[PilotViewModel::class.java]
         viewModel.selectCase("c_001")
-        awaitTextCount("The List", minCount = 2)
+        val minTitleCount = if (BuildConfig.DEBUG) 2 else 1
+        awaitTextCount("The List", minCount = minTitleCount)
 
         composeRule.onNodeWithTag("summons_enter").performScrollTo().performClick()
         composeRule.waitForIdle()
@@ -82,28 +87,24 @@ class MainActivityCasePickerTest {
         composeRule.onNodeWithTag("episode_card_E-04").assertExists()
     }
 
-    private fun awaitNodesWithTag(tag: String, maxAttempts: Int = 800) {
-        repeat(maxAttempts) {
-            if (composeRule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()) return
+    /**
+     * [composeRule.waitUntil] plus [ShadowLooper.idleMainLooper] inside the predicate.
+     * Idle is required because [PilotViewModel.bootstrapCase] hops [Dispatchers.IO];
+     * plain waitUntil alone can stall under Robolectric (see C001ViewModelPlaythroughTest).
+     */
+    private fun awaitNodesWithTag(tag: String, timeoutMillis: Long = 15_000) {
+        composeRule.waitUntil(timeoutMillis) {
             ShadowLooper.idleMainLooper()
-            composeRule.waitForIdle()
-            Thread.sleep(10)
+            composeRule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
         }
-        throw AssertionError("No nodes with tag='$tag' after $maxAttempts attempts")
     }
 
-    private fun awaitTextCount(text: String, minCount: Int, maxAttempts: Int = 800) {
-        repeat(maxAttempts) {
-            val count = composeRule.onAllNodesWithText(text, substring = true)
-                .fetchSemanticsNodes()
-                .size
-            if (count >= minCount) return
+    private fun awaitTextCount(text: String, minCount: Int, timeoutMillis: Long = 15_000) {
+        composeRule.waitUntil(timeoutMillis) {
             ShadowLooper.idleMainLooper()
-            composeRule.waitForIdle()
-            Thread.sleep(10)
+            composeRule.onAllNodesWithText(text, substring = true)
+                .fetchSemanticsNodes()
+                .size >= minCount
         }
-        throw AssertionError(
-            "Expected >= $minCount nodes containing '$text' after $maxAttempts attempts",
-        )
     }
 }

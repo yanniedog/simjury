@@ -26,13 +26,18 @@ object CaseCatalog {
      * (`c_000/case.json`). Accept both so the debug case picker works in tests.
      */
     internal fun discoverCaseIds(assets: AssetManager): Set<String> =
-        assets.list("cases")
-            .orEmpty()
-            .mapNotNull { entry ->
-                val first = entry.substringBefore('/')
-                first.takeIf { it.matches(CASE_ID) }
-            }
-            .toSet()
+        try {
+            assets.list("cases")
+                .orEmpty()
+                .mapNotNull { entry ->
+                    val first = entry.substringBefore('/')
+                    first.takeIf { it.matches(CASE_ID) }
+                }
+                .toSet()
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            emptySet()
+        }
 
     private fun readEntry(assets: AssetManager, id: String): CaseEntry? =
         try {
