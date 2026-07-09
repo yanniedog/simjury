@@ -1,38 +1,31 @@
 # CLAUDE.md
 
-<!-- >>> projectmem bridge >>> -->
-## projectmem (MANDATORY)
+## Start here
 
-This project uses projectmem for persistent memory + workflow rules.
+This repo is in **Phase 4** (authoring historical Case 001 / Beck). Before working:
 
-SESSION START — call these three MCP tools, in this order, BEFORE
-answering ANY question about this project:
+1. Read [`PHASE4-STATUS.md`](PHASE4-STATUS.md) — current state, remaining G-4 work, and the
+   guardrails. It is the single source of truth for "where are we / what next".
+2. Read the authority docs it points to, as needed: [`ROADMAP.md`](ROADMAP.md) (phase gates),
+   [`CASE_HARNESS.md`](CASE_HARNESS.md) (case authoring rules + floors),
+   [`PHASE4-PLAN.md`](PHASE4-PLAN.md) (PR breakdown), [`PILOT-SPEC.md`](PILOT-SPEC.md),
+   [`WORKFLOW.md`](WORKFLOW.md) (PR bot gates).
 
-  1. `get_instructions()` — loads the project's mandatory workflow
-     rules. Without this you will not know how to log work
-     correctly, when to use `add_note` vs `add_decision`, or how
-     the event log is structured.
-  2. `get_summary()` — loads project content. Do NOT answer from
-     conversation history or by re-reading package.json / README /
-     source files.
-  3. `get_project_map()` — loads structural layout when relevant.
+## Non-negotiable rules (from CASE_HARNESS.md)
 
-BEFORE modifying ANY file:
-  - Call `precheck_file(path)` — check failure history first.
+- **Never invent testimony or evidence.** Every block/exhibit/contradiction must trace to a
+  `TABULATION.md` row + a real source. An empty locator is a gap — **STOP** and file a BLOCKED
+  REPORT rather than filling it from memory.
+- **No real names in play-reachable text (F-4).** The validator scans for banned tokens.
+- **Pilot floors only** — never import v3 §10 quantities until Phase 5 is in scope.
+- **One concern per PR, ≤ 400 lines, squash merge.** Wait for the bot gates (`WORKFLOW.md`).
 
-DURING work — use MCP write tools, NEVER edit `.projectmem/`
-files directly via filesystem write:
-  - On a bug discovery → `log_issue(summary, location)`.
-  - After each fix attempt → `record_attempt(summary, outcome)`.
-  - After confirmation → `record_fix(summary)`.
-  - On a design choice → `add_decision(summary)`.
-  - On a gotcha / setup detail → `add_note(summary)`.
+## Build & test
 
-Editing `.projectmem/summary.md` or `.projectmem/PROJECT_MAP.md`
-directly bypasses event logging and breaks audit replay. The
-summary file regenerates from `events.jsonl` automatically — write
-via the MCP tools and the summary will follow.
+```powershell
+pilot\gradlew.bat -p pilot test        # build + all JVM tests (case-model + pilot)
+```
 
-Do not re-scan source files when MCP tools can give you the same
-answer in ~500 tokens instead of ~5000. This is not optional.
-<!-- <<< projectmem bridge <<< -->
+> **Note:** projectmem (the old MCP memory layer this file used to mandate) is **disabled**.
+> There is no `get_instructions()` / `get_summary()` / `precheck_file()` to call. Use
+> `PHASE4-STATUS.md` as the project memory and keep it current as you work.
