@@ -638,33 +638,38 @@ private fun ShareVerdictCardSection(state: PilotUiState) {
     val context = LocalContext.current
     val installUrl = stringResource(R.string.share_install_url)
     val chooserTitle = stringResource(R.string.share_card_chooser_title)
-    Text(stringResource(R.string.share_card_heading), style = MaterialTheme.typography.titleMedium)
-    Text(
-        stringResource(R.string.share_card_hint),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
-    Button(
-        onClick = {
-            val card = VerdictCard.build(
-                caseId = state.caseMetaId,
-                caseTitle = state.caseTitle,
-                charge = state.charge,
-                vote = vote,
-                itemsRead = state.itemsRead.size,
-                installUrl = installUrl,
-            )
-            val send = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, card)
-            }
-            context.startActivity(Intent.createChooser(send, chooserTitle))
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .testTag("share_verdict_card"),
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Text(stringResource(R.string.share_verdict_card))
+        Text(stringResource(R.string.share_card_heading), style = MaterialTheme.typography.titleMedium)
+        Text(
+            stringResource(R.string.share_card_hint),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Button(
+            onClick = {
+                val card = VerdictCard.build(
+                    caseId = state.caseMetaId,
+                    caseTitle = state.caseTitle,
+                    charge = state.charge,
+                    vote = vote,
+                    itemsRead = state.itemsRead.size,
+                    installUrl = installUrl,
+                )
+                val send = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, card)
+                }
+                context.startActivity(Intent.createChooser(send, chooserTitle))
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("share_verdict_card"),
+        ) {
+            Text(stringResource(R.string.share_verdict_card))
+        }
     }
 }
 
