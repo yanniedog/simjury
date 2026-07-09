@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 import simjury.app.BuildConfig
+import simjury.app.R
 import simjury.app.data.AssetCaseLoader
 import simjury.app.data.CaseCatalog
 import simjury.app.data.PilotSave
@@ -298,30 +299,31 @@ class PilotViewModel(
      * player's own verdict is locked, and only for the same case (GROWTH.md M-2).
      */
     fun redeemJurorCode(raw: String) {
+        val app = getApplication<Application>()
         if (!gate.isVerdictLocked()) {
-            benchMessage = "Lock your own verdict before seating another juror."
+            benchMessage = app.getString(R.string.bench_err_lock_first)
             publish(selectedItem = _uiState.value.selectedItem)
             return
         }
         val payload = JurorCode.parse(raw)
         if (payload == null) {
-            benchMessage = "That code is not valid."
+            benchMessage = app.getString(R.string.bench_err_invalid)
             publish(selectedItem = _uiState.value.selectedItem)
             return
         }
         if (payload.caseMetaId != loaded.meta.id) {
-            benchMessage = "That code is for a different case."
+            benchMessage = app.getString(R.string.bench_err_wrong_case)
             publish(selectedItem = _uiState.value.selectedItem)
             return
         }
         if (benchSeats.any { it.code.equals(raw.trim(), ignoreCase = true) }) {
-            benchMessage = "That juror is already seated."
+            benchMessage = app.getString(R.string.bench_err_already_seated)
             publish(selectedItem = _uiState.value.selectedItem)
             return
         }
         val nextSeat = (2..12).firstOrNull { n -> benchSeats.none { it.seat == n } }
         if (nextSeat == null) {
-            benchMessage = "The bench is full (12 seats)."
+            benchMessage = app.getString(R.string.bench_err_full)
             publish(selectedItem = _uiState.value.selectedItem)
             return
         }
@@ -333,7 +335,7 @@ class PilotViewModel(
             code = raw.trim().uppercase(),
             self = false,
         )).sortedBy { it.seat }
-        benchMessage = "Seat $nextSeat filled."
+        benchMessage = app.getString(R.string.bench_ok_seated, nextSeat)
         persist()
         publish(selectedItem = _uiState.value.selectedItem)
     }
@@ -432,18 +434,17 @@ class PilotViewModel(
 
     private fun persist() {
         if (!::loaded.isInitialized) return
+        val saveState = PilotSave(
+            caseId = loaded.meta.id,
+            seed = seed,
+            engineState = engineState,
+            verdictLocked = gate.isVerdictLocked(),
+            revealShown = revealShown,
+            playerJurorCode = playerJurorCode,
+            benchSeats = benchSeats,
+        )
         viewModelScope.launch(Dispatchers.IO) {
-            saveRepository.save(
-                PilotSave(
-                    caseId = loaded.meta.id,
-                    seed = seed,
-                    engineState = engineState,
-                    verdictLocked = gate.isVerdictLocked(),
-                    revealShown = revealShown,
-                    playerJurorCode = playerJurorCode,
-                    benchSeats = benchSeats,
-                ),
-            )
+            saveRepository.save(saveState)
         }
     }
 

@@ -732,7 +732,8 @@ private fun JuryBenchSection(
                 val occupant = filled[seat]
                 val label = when {
                     occupant?.self == true -> "You"
-                    occupant != null -> occupant.vote.take(1)
+                    occupant?.vote == "Not Guilty" -> "NG"
+                    occupant != null -> "G"
                     else -> "·"
                 }
                 Text(

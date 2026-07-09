@@ -39,7 +39,7 @@ object JurorCode {
     }
 
     fun parse(raw: String): Payload? {
-        val parts = raw.trim().uppercase().split('-')
+        val parts = raw.split('-').map { it.trim().uppercase() }.filter { it.isNotEmpty() }
         if (parts.size != 6) return null
         val scheme = parts[0]
         val casePart = parts[1]

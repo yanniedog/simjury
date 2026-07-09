@@ -58,6 +58,13 @@ class JurorCodeTest {
     }
 
     @Test
+    fun parse_toleratesSpacesAroundHyphens() {
+        val code = JurorCode.mint("C-001", "Guilty", "G", token = "2NP")
+        val spaced = code.replace("-", " - ")
+        assertNotNull(JurorCode.parse(spaced))
+    }
+
+    @Test
     fun randomToken_staysInAlphabet() {
         repeat(20) {
             val t = JurorCode.randomToken(Random(it))
