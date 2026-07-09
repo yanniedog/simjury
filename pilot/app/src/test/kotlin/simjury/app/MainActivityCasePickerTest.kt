@@ -64,8 +64,8 @@ class MainActivityCasePickerTest {
             .onFirst()
             .assertExists()
 
-        // Picker is debug-only (BuildConfig.DEBUG); release unit tests skip chip asserts.
-        if (BuildConfig.DEBUG) {
+        // Picker visibility is BuildConfig.SHOW_CASE_PICKER (debug=true, release=false).
+        if (BuildConfig.SHOW_CASE_PICKER) {
             composeRule.onNodeWithTag("case_picker_c_000").assertExists()
             composeRule.onNodeWithTag("case_picker_c_001").assertExists()
         }
@@ -74,7 +74,7 @@ class MainActivityCasePickerTest {
         // when bootstrap hops Dispatchers.IO. Chip presence above is the UI evidence.
         val viewModel = ViewModelProvider(composeRule.activity)[PilotViewModel::class.java]
         viewModel.selectCase("c_001")
-        val minTitleCount = if (BuildConfig.DEBUG) 2 else 1
+        val minTitleCount = if (BuildConfig.SHOW_CASE_PICKER) 2 else 1
         awaitTextCount("The List", minCount = minTitleCount)
 
         composeRule.onNodeWithTag("summons_enter").performScrollTo().performClick()

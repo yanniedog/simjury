@@ -1,6 +1,7 @@
 package simjury.app.data
 
 import android.content.res.AssetManager
+import java.io.IOException
 import kotlinx.coroutines.CancellationException
 import simjury.casemodel.PilotCase
 import simjury.casemodel.caseJson
@@ -34,8 +35,9 @@ object CaseCatalog {
                     first.takeIf { it.matches(CASE_ID) }
                 }
                 .toSet()
-        } catch (e: Exception) {
-            if (e is CancellationException) throw e
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: IOException) {
             emptySet()
         }
 
