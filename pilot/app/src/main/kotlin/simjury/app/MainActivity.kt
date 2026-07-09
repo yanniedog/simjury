@@ -91,6 +91,7 @@ open class MainActivity : ComponentActivity() {
                         onOpenDiary = pilotViewModel::openDiary,
                         onCommitDiary = pilotViewModel::commitDiary,
                         onCastVote = pilotViewModel::castVote,
+                        onAddJurorCode = pilotViewModel::addJurorCode,
                         onNavigate = pilotViewModel::navigateTo,
                         onListenAloud = pilotViewModel::listenAloud,
                         onStopListening = pilotViewModel::stopListening,

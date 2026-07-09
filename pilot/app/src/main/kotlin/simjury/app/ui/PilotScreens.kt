@@ -52,11 +52,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import simjury.app.BenchNotice
 import simjury.app.PilotNavTarget
 import simjury.app.PilotSection
 import simjury.app.PilotUiState
 import simjury.app.R
 import simjury.app.model.TrialItem
+import simjury.app.share.JurorCode
 import simjury.app.share.VerdictCard
 import simjury.app.update.AppUpdateUiState
 
@@ -75,6 +77,7 @@ fun PilotAppShell(
     onOpenDiary: () -> Unit,
     onCommitDiary: (String, String, String) -> Unit,
     onCastVote: (String) -> Unit,
+    onAddJurorCode: (String) -> Unit,
     onNavigate: (PilotSection) -> Unit,
     onListenAloud: () -> Unit,
     onStopListening: () -> Unit,
@@ -153,7 +156,10 @@ fun PilotAppShell(
                     onCommit = onCommitDiary,
                 )
                 state.activeSection == PilotSection.VOTE -> VoteBody(onVote = onCastVote)
-                state.activeSection == PilotSection.REVEAL -> RevealBody(state = state)
+                state.activeSection == PilotSection.REVEAL -> RevealBody(
+                    state = state,
+                    onAddJurorCode = onAddJurorCode,
+                )
             }
         }
     }
@@ -597,7 +603,7 @@ private fun VoteBody(onVote: (String) -> Unit) {
 }
 
 @Composable
-private fun RevealBody(state: PilotUiState) {
+private fun RevealBody(state: PilotUiState, onAddJurorCode: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -628,9 +634,137 @@ private fun RevealBody(state: PilotUiState) {
                 }
             }
         }
+        JuryBenchSection(state = state, onAddJurorCode = onAddJurorCode)
         ShareVerdictCardSection(state)
         Spacer(modifier = Modifier.height(16.dp))
     }
+}
+
+@Composable
+private fun JuryBenchSection(state: PilotUiState, onAddJurorCode: (String) -> Unit) {
+    val vote = state.vote ?: return
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(stringResource(R.string.bench_heading), style = MaterialTheme.typography.titleMedium)
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        ) {
+            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                BenchSeatRow(
+                    seatLabel = stringResource(R.string.bench_seat_you),
+                    verdict = vote,
+                    leaningLabel = null,
+                )
+                state.benchJurors.forEachIndexed { index, juror ->
+                    BenchSeatRow(
+                        seatLabel = stringResource(R.string.bench_seat_juror, index + 2),
+                        verdict = juror.verdict,
+                        leaningLabel = benchLeaningLabel(juror.leaning),
+                    )
+                }
+                val emptySeats = JurorCode.BENCH_SEATS - 1 - state.benchJurors.size
+                if (emptySeats > 0) {
+                    Text(
+                        stringResource(R.string.bench_empty_seats, emptySeats),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+        if (state.myJurorCode.isNotEmpty()) {
+            val context = LocalContext.current
+            val inviteText = stringResource(
+                R.string.bench_invite_text,
+                state.caseMetaId,
+                state.myJurorCode,
+                stringResource(R.string.share_install_url),
+            )
+            val chooserTitle = stringResource(R.string.bench_share_chooser_title)
+            Text(
+                stringResource(R.string.bench_your_code, state.myJurorCode),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            OutlinedButton(
+                onClick = {
+                    val send = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, inviteText)
+                    }
+                    context.startActivity(Intent.createChooser(send, chooserTitle))
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("bench_invite"),
+            ) {
+                Text(stringResource(R.string.bench_invite_button))
+            }
+        }
+        var codeInput by rememberSaveable { mutableStateOf("") }
+        OutlinedTextField(
+            value = codeInput,
+            onValueChange = { codeInput = it },
+            label = { Text(stringResource(R.string.bench_add_label)) },
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("bench_code_input"),
+        )
+        Button(
+            onClick = {
+                onAddJurorCode(codeInput)
+                codeInput = ""
+            },
+            enabled = codeInput.isNotBlank(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("bench_seat_button"),
+        ) {
+            Text(stringResource(R.string.bench_seat_button))
+        }
+        state.benchNotice?.let { notice ->
+            Text(
+                benchNoticeLabel(notice),
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (notice == BenchNotice.ADDED) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.error
+                },
+            )
+        }
+    }
+}
+
+@Composable
+private fun BenchSeatRow(seatLabel: String, verdict: String, leaningLabel: String?) {
+    Column {
+        Text(seatLabel, style = MaterialTheme.typography.labelMedium)
+        Text(
+            if (leaningLabel != null) "$verdict — $leaningLabel" else verdict,
+            style = MaterialTheme.typography.titleSmall,
+        )
+    }
+}
+
+@Composable
+private fun benchLeaningLabel(leaning: String): String = when (leaning) {
+    "G" -> stringResource(R.string.bench_leaned_guilty)
+    "NG" -> stringResource(R.string.bench_leaned_not_guilty)
+    else -> stringResource(R.string.bench_was_undecided)
+}
+
+@Composable
+private fun benchNoticeLabel(notice: BenchNotice): String = when (notice) {
+    BenchNotice.ADDED -> stringResource(R.string.bench_notice_added)
+    BenchNotice.INVALID -> stringResource(R.string.bench_notice_invalid)
+    BenchNotice.WRONG_CASE -> stringResource(R.string.bench_notice_wrong_case)
+    BenchNotice.OWN_CODE -> stringResource(R.string.bench_notice_own_code)
+    BenchNotice.DUPLICATE -> stringResource(R.string.bench_notice_duplicate)
+    BenchNotice.FULL -> stringResource(R.string.bench_notice_full)
 }
 
 @Composable

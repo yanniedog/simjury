@@ -20,6 +20,7 @@ import simjury.app.data.PilotSaveRepository
 import simjury.app.data.RevealGate
 import simjury.app.model.TrialItem
 import simjury.app.model.resolveItem
+import simjury.app.share.JurorCode
 import simjury.app.speech.AndroidTrialSpeechController
 import simjury.app.speech.ScreenSpeechBuilder
 import simjury.app.speech.TrialSpeechController
@@ -67,6 +68,14 @@ data class CaseOption(
     val titlePlay: String,
 )
 
+/** A fellow juror seated on the bench via an exchanged juror code. */
+data class BenchJuror(
+    val verdict: String,
+    val leaning: String,
+)
+
+enum class BenchNotice { ADDED, INVALID, WRONG_CASE, OWN_CODE, DUPLICATE, FULL }
+
 data class PilotUiState(
     val loading: Boolean = true,
     val error: String? = null,
@@ -97,6 +106,10 @@ data class PilotUiState(
     val revealTitle: String? = null,
     val revealLayers: List<TruthLayer> = emptyList(),
     val revealNames: List<PseudonymReveal> = emptyList(),
+    /** This juror's shareable code; empty until the verdict locks. */
+    val myJurorCode: String = "",
+    val benchJurors: List<BenchJuror> = emptyList(),
+    val benchNotice: BenchNotice? = null,
     val isSpeaking: Boolean = false,
     val canListenAloud: Boolean = false,
     val canMarkItemsRead: Boolean = false,
@@ -126,6 +139,9 @@ class PilotViewModel(
     private var selectedEpisodeId: String? = null
     private var activeCaseId: String = initialCaseId
     private var browseSection: PilotSection? = null
+    private var jurorTag: String = ""
+    private var benchCodes: MutableList<String> = mutableListOf()
+    private var benchNotice: BenchNotice? = null
 
     private val _uiState = MutableStateFlow(PilotUiState())
     val uiState: StateFlow<PilotUiState> = _uiState.asStateFlow()
@@ -281,6 +297,25 @@ class PilotViewModel(
         applyReveal(truth)
     }
 
+    /** Seats a fellow juror from an exchanged code. Reveal-only by construction:
+     *  the bench UI exists only behind the verdict lock (P-7 stays intact). */
+    fun addJurorCode(raw: String) {
+        val decoded = JurorCode.decode(raw)
+        benchNotice = when {
+            decoded == null -> BenchNotice.INVALID
+            decoded.caseCompact != JurorCode.compactCaseId(loaded.meta.id) -> BenchNotice.WRONG_CASE
+            decoded.tag == jurorTag -> BenchNotice.OWN_CODE
+            decoded.normalized in benchCodes -> BenchNotice.DUPLICATE
+            benchCodes.size >= JurorCode.BENCH_SEATS - 1 -> BenchNotice.FULL
+            else -> {
+                benchCodes.add(decoded.normalized)
+                persist()
+                BenchNotice.ADDED
+            }
+        }
+        publish(selectedItem = _uiState.value.selectedItem)
+    }
+
     val allItemsRead: Boolean
         get() = _uiState.value.allItemsRead
 
@@ -301,11 +336,16 @@ class PilotViewModel(
             browseSection = null
             gate.reset()
             revealShown = false
+            jurorTag = JurorCode.newTag()
+            benchCodes = mutableListOf()
+            benchNotice = null
             loaded = restored.case
             speech.configureWitnessRoles(loaded.pseudonyms.entries.map { it.id })
             if (restored.save != null && restored.save.caseId == loaded.meta.id && restored.save.seed == seed) {
                 engineState = restored.save.engineState
                 revealShown = restored.save.revealShown
+                jurorTag = restored.save.jurorTag.ifBlank { jurorTag }
+                benchCodes = restored.save.benchCodes.toMutableList()
                 if (restored.save.verdictLocked) {
                     gate.lockVerdict()
                 }
@@ -353,6 +393,8 @@ class PilotViewModel(
                     engineState = engineState,
                     verdictLocked = gate.isVerdictLocked(),
                     revealShown = revealShown,
+                    jurorTag = jurorTag,
+                    benchCodes = benchCodes.toList(),
                 ),
             )
         }
@@ -395,6 +437,15 @@ class PilotViewModel(
         val defaultSection = defaultSectionForPhase(engineState.phase)
         val activeSection = browseSection?.takeIf { canBrowseTo(it, engineState.phase, allItemsRead) }
             ?: defaultSection
+        val vote = engineState.vote
+        val myJurorCode = if (engineState.verdictLocked && vote != null) {
+            JurorCode.encode(loaded.meta.id, vote, engineState.diary?.leaning ?: "U", jurorTag)
+        } else {
+            ""
+        }
+        val benchJurors = benchCodes.mapNotNull { code ->
+            JurorCode.decode(code)?.let { BenchJuror(verdict = it.verdict, leaning = it.leaning) }
+        }
         val navTargets = buildNavTargets(engineState.phase, activeSection, allItemsRead)
         val itemOrder = activeEpisode?.itemOrder.orEmpty()
         val selectedId = selectedItem?.id
@@ -427,6 +478,9 @@ class PilotViewModel(
             nextItemId = nextItemId,
             diary = engineState.diary,
             vote = engineState.vote,
+            myJurorCode = myJurorCode,
+            benchJurors = benchJurors,
+            benchNotice = benchNotice,
         )
         if (revealShown && gate.isVerdictLocked()) {
             val truth = gate.openTruth(loaded)

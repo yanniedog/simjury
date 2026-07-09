@@ -59,6 +59,25 @@
     <string name="share_verdict_card">Share your verdict card</string>
     <string name="share_card_chooser_title">Share verdict card</string>
     <string name="share_install_url" translatable="false">https://github.com/yanniedog/simjury/releases/latest</string>
+    <string name="bench_heading">Your jury</string>
+    <string name="bench_seat_you">Seat 1 — you</string>
+    <string name="bench_seat_juror">Seat %1$d — fellow juror</string>
+    <string name="bench_empty_seats">%1$d seats are empty. Send your juror code to fill them.</string>
+    <string name="bench_your_code">Your juror code: %1$s</string>
+    <string name="bench_invite_button">Invite a juror</string>
+    <string name="bench_share_chooser_title">Invite a juror</string>
+    <string name="bench_invite_text">I just served on SimJury case %1$s. My juror code: %2$s. Hear the case, lock your verdict, then seat me on your bench and compare: %3$s</string>
+    <string name="bench_add_label">Seat a fellow juror — enter their code</string>
+    <string name="bench_seat_button">Seat juror</string>
+    <string name="bench_notice_added">Juror seated.</string>
+    <string name="bench_notice_invalid">That code doesn\'t check out — ask your juror to resend it.</string>
+    <string name="bench_notice_wrong_case">That juror served on a different case.</string>
+    <string name="bench_notice_own_code">That\'s your own code — send it to a friend instead.</string>
+    <string name="bench_notice_duplicate">That juror is already seated on your bench.</string>
+    <string name="bench_notice_full">Your bench is full — twelve jurors.</string>
+    <string name="bench_leaned_guilty">diary leaned guilty</string>
+    <string name="bench_leaned_not_guilty">diary leaned not guilty</string>
+    <string name="bench_was_undecided">was undecided in the diary</string>
     <string name="update_section_title">App updates</string>
     <string name="update_installed_version">Installed version: %1$s</string>
     <string name="update_check">Check for updates</string>
