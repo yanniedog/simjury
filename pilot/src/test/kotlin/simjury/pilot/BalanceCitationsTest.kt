@@ -5,14 +5,15 @@ import kotlin.test.assertTrue
 
 /**
  * P4-10 lightweight check: every trial-item ID cited in `BALANCE.md` must exist in `trial.json`,
- * and each argument must cite at least five distinct items (PHASE4-PLAN §7). Ground-truth IDs
- * (`K-*`) are intentionally not treated as citable trial items.
+ * and each argument must cite at least five distinct items (PHASE4-PLAN §7). The citation regex
+ * also matches ground-truth (`K-*`) and other `T`/`X`/`D`/`K` prefixes so invalid or non-trial
+ * citations are extracted and rejected by the existence check (they are not in `trial.json`).
  */
 class BalanceCitationsTest {
 
     private val loaded = CaseLoader(caseId = "c_001").load()
     private val balanceText = readResource("cases/c_001/BALANCE.md")
-    private val itemIdRegex = Regex("\\b(?:T-W\\d{2}-\\d{3}|X-\\d{2}|D-\\d{2})\\b")
+    private val itemIdRegex = Regex("\\b[TXDK]-[A-Z0-9-]+(?:-[A-Z0-9-]+)*\\b")
 
     private val allItemIds: Set<String> = buildSet {
         loaded.trial.witnesses.flatMap { it.blocks }.forEach { add(it.id) }

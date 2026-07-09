@@ -44,7 +44,7 @@ would not treat identification in the dock as sufficient without independent sup
 the women "seemed to feel sympathy" (T-W05-003, T-W05-004). The handwriting is equivocal: the fraud
 documents were written "with freedom," whereas those who deal with the accused daily say he writes
 slowly and badly, with a peculiar grip (T-W06-005, T-W08-006) — the expert's case depends on
-assuming disguise (K-03). Crucially, the prior conviction cuts the other way: the defence sought to
+assuming disguise (T-W06-002). Crucially, the prior conviction cuts the other way: the defence sought to
 show that the man convicted long ago was imprisoned during the period of some of these very frauds
 (T-W07-005, T-W07-006). Inspector Vale had himself inquired after another person known for passing
 bad cheques by similar pretences (T-W05-007), and no complainant's property was ever found on the
