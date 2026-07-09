@@ -16,9 +16,7 @@ class C001PlaythroughTest {
 
     private val loaded = CaseLoader(caseId = "c_001").load()
 
-    private val bannedPreReveal = listOf(
-        "beck", "smith", "gurrin", "spurrell", "fulton", "old bailey", "1896", "1904",
-    )
+    private val bannedPreReveal = simjury.casemodel.CaseValidator.f4StaticBannedTokens
 
     @Test
     fun `C-001 scripted CLI playthrough reaches reveal without pre-reveal leaks`() {
@@ -56,8 +54,8 @@ class C001PlaythroughTest {
             "historical disclaimer required for C-001",
         )
         assertFalse(
-            joined.contains("Synthetic case C-000"),
-            "synthetic C-000 disclaimer must not appear for historical cases",
+            joined.contains("Synthetic case"),
+            "synthetic disclaimer must not appear for historical cases",
         )
 
         val revealIndex = lines.indexOfFirst { it.contains("REVEAL") }

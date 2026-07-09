@@ -22,6 +22,13 @@ object CaseValidator {
         "old bailey", "1896", "1877", "1904",
     )
 
+    /** Shared with playthrough tests so CLI F-4 scans cannot drift from the validator. */
+    val f4StaticBannedTokens: List<String> get() = staticBannedTokens
+
+    private val pendingClearedByPlaceholder = Regex("""(?iu)^pending\b.*""")
+    private val placeholderToken = Regex("""(?iu)\b(TODO|TBD|PENDING)\b""")
+    private val isoDate = Regex("""^\d{4}-\d{2}-\d{2}$""")
+
     fun validate(loaded: LoadedCase) {
         val errors = mutableListOf<String>()
         val c = loaded.meta
@@ -236,27 +243,33 @@ object CaseValidator {
         val errors = mutableListOf<String>()
         val c = loaded.meta
         if (c.synthetic) {
-            throw CaseValidationException(listOf("operator clearance gate applies to historical cases only"))
+            errors += "operator clearance gate applies to historical cases only"
         }
         val clearance = c.clearance
-        if (clearance == null) {
-            throw CaseValidationException(listOf("historical case requires clearance object in case.json"))
+        if (!c.synthetic && clearance == null) {
+            errors += "historical case requires clearance object in case.json"
         }
-        val clearedBy = clearance.clearedBy.trim()
-        if (clearedBy.isBlank() ||
-            clearedBy.equals("PENDING HUMAN SIGN-OFF", ignoreCase = true) ||
-            clearedBy.contains("PENDING", ignoreCase = true)
-        ) {
-            errors += "clearance.cleared_by must be a real operator name (not PENDING placeholder)"
-        }
-        val descendants = clearance.descendantsRiskNote.trim()
-        if (descendants.isBlank() ||
-            descendants.contains("to be reviewed", ignoreCase = true)
-        ) {
-            errors += "clearance.descendants_risk_note must be completed (not 'to be reviewed')"
-        }
-        if (clearance.clearedDate.isBlank()) {
-            errors += "clearance.cleared_date must be non-empty"
+        if (clearance != null) {
+            val clearedBy = clearance.clearedBy.trim()
+            val isClearedByPlaceholder =
+                clearedBy.equals("PENDING HUMAN SIGN-OFF", ignoreCase = true) ||
+                    clearedBy.equals("TODO", ignoreCase = true) ||
+                    clearedBy.equals("TBD", ignoreCase = true) ||
+                    pendingClearedByPlaceholder.matches(clearedBy)
+            if (clearedBy.isBlank() || isClearedByPlaceholder) {
+                errors += "clearance.cleared_by must be a real operator name (not placeholder)"
+            }
+            val descendants = clearance.descendantsRiskNote.trim()
+            if (descendants.isBlank() ||
+                descendants.contains("to be reviewed", ignoreCase = true) ||
+                placeholderToken.containsMatchIn(descendants)
+            ) {
+                errors += "clearance.descendants_risk_note must be completed (not placeholder)"
+            }
+            val clearedDate = clearance.clearedDate.trim()
+            if (clearedDate.isBlank() || !isoDate.matches(clearedDate)) {
+                errors += "clearance.cleared_date must be a valid ISO date (YYYY-MM-DD)"
+            }
         }
         if (errors.isNotEmpty()) throw CaseValidationException(errors)
     }

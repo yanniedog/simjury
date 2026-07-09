@@ -185,15 +185,18 @@ class GameSession(
     companion object {
         const val DEFAULT_SEED = 1L
 
-        const val DISCLAIMER =
-            "SimJury presents a trial adapted for play. Names are changed during play and restored afterwards. " +
-                "Nothing in this pilot is legal advice. Synthetic case C-000 — no historical persons."
-
         const val HISTORICAL_DISCLAIMER =
             "SimJury presents a trial adapted for play. Names are changed during play and restored afterwards. " +
                 "Nothing in this pilot is legal advice. Historical case — persons and places are pseudonymised until reveal."
 
+        fun syntheticDisclaimer(caseId: String): String =
+            "SimJury presents a trial adapted for play. Names are changed during play and restored afterwards. " +
+                "Nothing in this pilot is legal advice. Synthetic case $caseId — no historical persons."
+
+        /** @deprecated Prefer [disclaimerFor]; kept for callers that still reference the C-000 constant. */
+        val DISCLAIMER: String = syntheticDisclaimer("C-000")
+
         fun disclaimerFor(loaded: LoadedCase): String =
-            if (loaded.meta.synthetic) DISCLAIMER else HISTORICAL_DISCLAIMER
+            if (loaded.meta.synthetic) syntheticDisclaimer(loaded.meta.id) else HISTORICAL_DISCLAIMER
     }
 }
