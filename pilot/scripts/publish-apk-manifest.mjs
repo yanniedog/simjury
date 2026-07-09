@@ -65,7 +65,7 @@ async function publishVersionedRelease({ apkBuf, version, buildNumber, outDir })
   mkdirSync(versionOutDir, { recursive: true });
   const apkPath = join(versionOutDir, APK_ASSET);
   writeFileSync(apkPath, apkBuf);
-  const zipPath = writeInstallZip(versionOutDir, apkPath);
+  const zipPath = writeInstallZip(versionOutDir, apkBuf);
 
   const downloadUrl = apkDownloadUrl(repo, tag);
   const { qrPath, installPath } = await generateInstallAssets(versionOutDir, downloadUrl, repo, tag);
@@ -93,7 +93,7 @@ async function main() {
   mkdirSync(outDir, { recursive: true });
   const apkPath = join(outDir, APK_ASSET);
   writeFileSync(apkPath, apkBuf);
-  const zipPath = writeInstallZip(outDir, apkPath);
+  const zipPath = writeInstallZip(outDir, apkBuf);
 
   const sha256 = sha256File(apkPath);
   const downloadUrl = apkDownloadUrl(repo, ROLLING_TAG);

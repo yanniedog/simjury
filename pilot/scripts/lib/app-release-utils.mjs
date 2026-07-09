@@ -2,9 +2,8 @@
  * GitHub release helpers for SimJury pilot APK publish.
  */
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
-import { crc32 } from 'node:zlib';
 import QRCode from 'qrcode';
 import {
   APK_ASSET,
@@ -28,6 +27,22 @@ const INSTALL_README = `SimJury — install steps
    tap "More details -> Install anyway" (the app is signed and safe).
 After this first install, SimJury updates itself in-app — no browser needed again.
 `;
+
+/** Standard CRC-32 (IEEE 802.3), pure JS so it has no Node-version dependency. */
+let CRC_TABLE;
+function crc32(buf) {
+  if (!CRC_TABLE) {
+    CRC_TABLE = new Uint32Array(256);
+    for (let n = 0; n < 256; n += 1) {
+      let c = n;
+      for (let k = 0; k < 8; k += 1) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+      CRC_TABLE[n] = c >>> 0;
+    }
+  }
+  let crc = 0xffffffff;
+  for (let i = 0; i < buf.length; i += 1) crc = CRC_TABLE[(crc ^ buf[i]) & 0xff] ^ (crc >>> 8);
+  return (crc ^ 0xffffffff) >>> 0;
+}
 
 /** DOS date/time fields for a ZIP entry. @param {Date} d */
 function dosDateTime(d) {
@@ -103,13 +118,13 @@ function buildStoreZip(entries) {
 }
 
 /**
- * Write app-preview.zip (APK + install README) next to the APK.
- * @param {string} outDir @param {string} apkPath @returns {string} zip path
+ * Write app-preview.zip (APK + install README) into outDir.
+ * @param {string} outDir @param {Buffer} apkData raw APK bytes @returns {string} zip path
  */
-export function writeInstallZip(outDir, apkPath) {
+export function writeInstallZip(outDir, apkData) {
   mkdirSync(outDir, { recursive: true });
   const zip = buildStoreZip([
-    { name: basename(APK_ASSET), data: readFileSync(apkPath) },
+    { name: basename(APK_ASSET), data: apkData },
     { name: 'INSTALL-README.txt', data: Buffer.from(INSTALL_README, 'utf8') },
   ]);
   const zipPath = join(outDir, ZIP_ASSET);
