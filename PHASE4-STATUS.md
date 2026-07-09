@@ -102,6 +102,10 @@ In [`case.json`](pilot/src/main/resources/cases/c_001/case.json), `clearance.cle
 from pre-reveal output. `GameSession` now seeds `expectedItemIds` (parity with Android) and uses
 a historical disclaimer for non-synthetic cases.
 
+**Android unit evidence (automated):** `C001ViewModelPlaythroughTest` (Robolectric) drives
+`PilotViewModel` through the same C-001 loop and checks play-reachable UI fields for F-4 tokens.
+Runs under CI `:app:testDebugUnitTest`.
+
 **Device QA (still required for G-4):** `c_001` is selected by the build flag
 `BuildConfig.PILOT_CASE_ID`
 ([`AssetCaseLoader.kt`](pilot/app/src/main/kotlin/simjury/app/data/AssetCaseLoader.kt)), **not** a

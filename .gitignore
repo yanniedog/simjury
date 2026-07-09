@@ -2,3 +2,4 @@
 .projectmem/watch.log
 .simjury-bot-wait/
 node_modules/
+pilot/local.properties
