@@ -59,8 +59,13 @@ class GameSessionEngineTest {
             add(DeliberationAction.CastVote("Not Guilty"))
             add(DeliberationAction.OpenReveal)
         }
+        val expectedItemIds = episode.itemOrder.toSet()
         val expected = PilotDeliberationEngine.reduce(
-            PilotDeliberationEngine.initialState(loaded.meta.id, GameSession.DEFAULT_SEED),
+            PilotDeliberationEngine.initialState(
+                loaded.meta.id,
+                GameSession.DEFAULT_SEED,
+                expectedItemIds = expectedItemIds,
+            ),
             actions,
             GameSession.DEFAULT_SEED,
         )

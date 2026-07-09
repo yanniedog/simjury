@@ -14,7 +14,11 @@ class GameSession(
     private val input: Scanner = Scanner(System.`in`),
     private val output: (String) -> Unit = { println(it) },
 ) {
-    private var state: DeliberationState = PilotDeliberationEngine.initialState(loaded.meta.id, seed)
+    private val expectedItemIds: Set<String> =
+        loaded.trial.episodes.flatMap { it.itemOrder }.toSet()
+
+    private var state: DeliberationState =
+        PilotDeliberationEngine.initialState(loaded.meta.id, seed, expectedItemIds = expectedItemIds)
     private val gate = RevealGate()
 
     fun run() {
@@ -23,7 +27,7 @@ class GameSession(
         output("Case: ${loaded.meta.titlePlay}")
         output("Charge: ${loaded.meta.charge.label}")
         output("")
-        output(DISCLAIMER)
+        output(disclaimerFor(loaded))
         output("")
         loaded.meta.contentNotes.forEach { output("Note: $it") }
         output("")
@@ -181,8 +185,18 @@ class GameSession(
     companion object {
         const val DEFAULT_SEED = 1L
 
-        const val DISCLAIMER =
+        const val HISTORICAL_DISCLAIMER =
             "SimJury presents a trial adapted for play. Names are changed during play and restored afterwards. " +
-                "Nothing in this pilot is legal advice. Synthetic case C-000 — no historical persons."
+                "Nothing in this pilot is legal advice. Historical case — persons and places are pseudonymised until reveal."
+
+        fun syntheticDisclaimer(caseId: String): String =
+            "SimJury presents a trial adapted for play. Names are changed during play and restored afterwards. " +
+                "Nothing in this pilot is legal advice. Synthetic case $caseId — no historical persons."
+
+        /** @deprecated Prefer [disclaimerFor]; kept for callers that still reference the C-000 constant. */
+        val DISCLAIMER: String = syntheticDisclaimer("C-000")
+
+        fun disclaimerFor(loaded: LoadedCase): String =
+            if (loaded.meta.synthetic) syntheticDisclaimer(loaded.meta.id) else HISTORICAL_DISCLAIMER
     }
 }
