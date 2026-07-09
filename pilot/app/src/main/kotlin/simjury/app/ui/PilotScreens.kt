@@ -1,6 +1,8 @@
 package simjury.app.ui
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -85,6 +87,7 @@ fun PilotAppShell(
     onCheckForUpdate: () -> Unit,
     onDismissUpdateStatus: () -> Unit,
     onRetryLoad: () -> Unit,
+    onRedeemJurorCode: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val screenKey = when {
@@ -153,7 +156,10 @@ fun PilotAppShell(
                     onCommit = onCommitDiary,
                 )
                 state.activeSection == PilotSection.VOTE -> VoteBody(onVote = onCastVote)
-                state.activeSection == PilotSection.REVEAL -> RevealBody(state = state)
+                state.activeSection == PilotSection.REVEAL -> RevealBody(
+                    state = state,
+                    onRedeemJurorCode = onRedeemJurorCode,
+                )
             }
         }
     }
@@ -597,7 +603,10 @@ private fun VoteBody(onVote: (String) -> Unit) {
 }
 
 @Composable
-private fun RevealBody(state: PilotUiState) {
+private fun RevealBody(
+    state: PilotUiState,
+    onRedeemJurorCode: (String) -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -629,6 +638,7 @@ private fun RevealBody(state: PilotUiState) {
             }
         }
         ShareVerdictCardSection(state)
+        JuryBenchSection(state = state, onRedeem = onRedeemJurorCode)
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
@@ -663,13 +673,130 @@ private fun ShareVerdictCardSection(state: PilotUiState) {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_TEXT, card)
                 }
-                context.startActivity(Intent.createChooser(send, chooserTitle))
+                startShareChooser(context, send, chooserTitle)
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .testTag("share_verdict_card"),
         ) {
             Text(stringResource(R.string.share_verdict_card))
+        }
+    }
+}
+
+private fun startShareChooser(
+    context: android.content.Context,
+    send: Intent,
+    chooserTitle: String,
+) {
+    val chooser = Intent.createChooser(send, chooserTitle)
+    try {
+        context.startActivity(chooser)
+    } catch (_: ActivityNotFoundException) {
+        Toast.makeText(context, R.string.share_no_handler, Toast.LENGTH_SHORT).show()
+    }
+}
+
+@Composable
+private fun JuryBenchSection(
+    state: PilotUiState,
+    onRedeem: (String) -> Unit,
+) {
+    if (state.vote == null) return
+    var codeInput by rememberSaveable { mutableStateOf("") }
+    val context = LocalContext.current
+    val filled = state.benchSeats.associateBy { it.seat }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("jury_bench"),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(stringResource(R.string.bench_heading), style = MaterialTheme.typography.titleMedium)
+        Text(
+            stringResource(R.string.bench_hint),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        state.playerJurorCode?.let { code ->
+            Text(
+                stringResource(R.string.bench_your_code, code),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.testTag("player_juror_code"),
+            )
+            OutlinedButton(
+                onClick = {
+                    val send = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, code)
+                    }
+                    startShareChooser(
+                        context,
+                        send,
+                        context.getString(R.string.bench_share_code_title),
+                    )
+                },
+                modifier = Modifier.fillMaxWidth().testTag("share_juror_code"),
+            ) {
+                Text(stringResource(R.string.bench_share_code))
+            }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            (1..12).forEach { seat ->
+                val occupant = filled[seat]
+                val label = when {
+                    occupant?.self == true -> "You"
+                    occupant?.vote == "Not Guilty" -> "NG"
+                    occupant != null -> "G"
+                    else -> "·"
+                }
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.labelSmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag("bench_seat_$seat"),
+                    color = if (occupant != null) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                )
+            }
+        }
+        Text(
+            stringResource(R.string.bench_filled_count, state.benchSeats.size),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        OutlinedTextField(
+            value = codeInput,
+            onValueChange = { codeInput = it },
+            label = { Text(stringResource(R.string.bench_redeem_label)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth().testTag("redeem_juror_code_input"),
+        )
+        Button(
+            onClick = {
+                onRedeem(codeInput)
+                codeInput = ""
+            },
+            enabled = codeInput.isNotBlank(),
+            modifier = Modifier.fillMaxWidth().testTag("redeem_juror_code"),
+        ) {
+            Text(stringResource(R.string.bench_redeem))
+        }
+        state.benchMessage?.let { msg ->
+            Text(
+                msg,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.testTag("bench_message"),
+            )
         }
     }
 }
