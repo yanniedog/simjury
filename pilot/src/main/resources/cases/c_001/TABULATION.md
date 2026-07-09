@@ -29,9 +29,9 @@ Testimony JSON authoring (P4-4+) may begin. Blocks remain placeholders until eac
 | Identification caution (Westhaven) | S-01 | Cd. 2315; pre-modern trial AD-2 note | summarised | D-02 |
 | Expert evidence direction | S-01 | Cd. 2315 Gurrin evidence pp. 290+ | summarised | D-03 |
 | Prior-allegation direction | S-01 | Cd. 2315 pp. 108–109 (Fulton ruling) | summarised | D-04 |
-| Ground truth K-01 identification vs certainty | S-01 | Cd. 2315; Nutt/Froest blocks | — | Anchor in W-01, W-05 |
-| Ground truth K-02 immaterial | S-01 | Cd. 2315 committee findings | — | Per record |
-| Ground truth K-03 illusory | S-01 | Cd. 2315 | — | Per record |
+| Ground truth K-01 identification vs certainty | S-01 | Cd. 2315 pp. 52–55; complainant cross | summarised | `real_decisive` — anchors T-W01-006, T-W02-006, T-W03-008, T-W05-003, T-W05-004, X-06 |
+| Ground truth K-02 immaterial | S-01 | Cd. 2315 complainant evidence | summarised | `real_immaterial` — anchors T-W02-004, T-W02-009 (valuation shift) |
+| Ground truth K-03 illusory | S-01 | Cd. 2315 pp. 89–90, 116 | summarised | `illusory` — anchors T-W08-006 vs T-W06-002/005, X-03 (disguised-hand resolves it) |
 | Truth file legal layer | S-01/S-04 | Hansard + Cd. 2315 legal outcome | summarised | Post-verdict only |
 | Truth file factual / pardon arc | S-04 | Hansard HC 3 Aug 1904 cc719-720 | summarised | AD-5 — not in trial phase |
 | Truth file unknown entries (≥5) | S-01/S-04 | Cd. 2315 unknown layers | summarised | Reveal only |

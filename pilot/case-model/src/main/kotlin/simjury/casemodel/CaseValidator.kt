@@ -8,6 +8,8 @@ object CaseValidator {
     private val idBlock = Regex("^T-W\\d{2}-\\d{3}$")
     private val idExhibit = Regex("^X-\\d{2}$")
     private val idDirection = Regex("^D-\\d{2}$")
+    private val idContradiction = Regex("^K-\\d{2}$")
+    private val allowedContradictionKinds = setOf("real_decisive", "real_immaterial", "illusory")
     private val allowedFidelity = setOf("verbatim", "summarised")
     private val allowedMediaTypes = setOf("image", "audio")
     private val mediaPathPattern = Regex("^[a-zA-Z0-9][a-zA-Z0-9_./-]*$")
@@ -139,6 +141,10 @@ object CaseValidator {
             }
         }
 
+        val blockIdSet = blockIds.toSet()
+        val exhibitIdSet = t.exhibits.map { it.id }.toSet()
+        validateGroundTruth(loaded, blockIdSet, exhibitIdSet, sourceIds, errors)
+
         validateFloors(loaded, errors)
         scanBannedTokens(loaded, errors)
 
@@ -254,6 +260,54 @@ object CaseValidator {
             }
             if (loaded.sources.sources.size < 4) {
                 errors += "floor: historical case needs >= 4 sources (found ${loaded.sources.sources.size})"
+            }
+        }
+    }
+
+    private fun validateGroundTruth(
+        loaded: LoadedCase,
+        blockIds: Set<String>,
+        exhibitIds: Set<String>,
+        sourceIds: Set<String>,
+        errors: MutableList<String>,
+    ) {
+        val contradictions = loaded.trial.groundTruth
+
+        val duplicateIds = duplicates(contradictions.map { it.id })
+        if (duplicateIds.isNotEmpty()) errors += "duplicate ground-truth IDs: $duplicateIds"
+
+        contradictions.forEach { k ->
+            if (!idContradiction.matches(k.id)) errors += "ground-truth id invalid: ${k.id}"
+            if (k.kind !in allowedContradictionKinds) {
+                errors += "ground-truth ${k.id}: invalid kind '${k.kind}' " +
+                    "(allowed: ${allowedContradictionKinds.joinToString("/")})"
+            }
+            if (k.note.isBlank()) errors += "ground-truth ${k.id}: blank note"
+            if (k.source.sourceId !in sourceIds) {
+                errors += "ground-truth ${k.id}: unknown source ${k.source.sourceId}"
+            }
+            if (k.source.locator.isBlank()) errors += "ground-truth ${k.id}: blank source locator"
+            if (k.blockRefs.isEmpty() && k.exhibitRefs.isEmpty()) {
+                errors += "ground-truth ${k.id}: must anchor to at least one block or exhibit"
+            }
+            k.blockRefs.forEach { ref ->
+                if (ref !in blockIds) errors += "ground-truth ${k.id}: unknown block ref $ref"
+            }
+            k.exhibitRefs.forEach { ref ->
+                if (ref !in exhibitIds) errors += "ground-truth ${k.id}: unknown exhibit ref $ref"
+            }
+        }
+
+        // Harness §4 floor: historical cases carry >= 3 real/illusory contradictions,
+        // and at least one must be real_decisive (case must turn on a real tension).
+        // Synthetic pilot cases (C-000) are intentionally left unconstrained here.
+        if (!loaded.meta.synthetic) {
+            if (contradictions.size < 3) {
+                errors += "floor: historical case needs >= 3 ground-truth contradictions " +
+                    "(found ${contradictions.size})"
+            }
+            if (contradictions.none { it.kind == "real_decisive" }) {
+                errors += "floor: historical case needs at least one 'real_decisive' ground-truth contradiction"
             }
         }
     }

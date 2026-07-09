@@ -99,6 +99,27 @@ class C001SkeletonTest {
     }
 
     @Test
+    fun `C-001 ground truth has at least three anchored contradictions`() {
+        val gt = loaded.trial.groundTruth
+        assertTrue(gt.size >= 3, "need >= 3 contradictions, found ${gt.size}")
+
+        val blockIds = loaded.trial.witnesses.flatMap { it.blocks }.map { it.id }.toSet()
+        val exhibitIds = loaded.trial.exhibits.map { it.id }.toSet()
+        val kinds = setOf("real_decisive", "real_immaterial", "illusory")
+        gt.forEach { k ->
+            assertTrue(k.kind in kinds, "${k.id} bad kind ${k.kind}")
+            assertTrue(
+                k.blockRefs.isNotEmpty() || k.exhibitRefs.isNotEmpty(),
+                "${k.id} has no anchor",
+            )
+            k.blockRefs.forEach { assertTrue(it in blockIds, "${k.id} unknown block $it") }
+            k.exhibitRefs.forEach { assertTrue(it in exhibitIds, "${k.id} unknown exhibit $it") }
+        }
+        // At least one decisive contradiction — the case must turn on a real tension.
+        assertTrue(gt.any { it.kind == "real_decisive" }, "no real_decisive contradiction")
+    }
+
+    @Test
     fun `C-001 episode item order resolves`() {
         val ids = buildSet {
             loaded.trial.witnesses.flatMap { it.blocks }.forEach { add(it.id) }
