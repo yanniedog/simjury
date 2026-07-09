@@ -253,6 +253,7 @@ private fun SummonsBody(
                         onClick = { onSelectCase(option.id) },
                         enabled = !state.loading,
                         label = { Text(option.titlePlay) },
+                        modifier = Modifier.testTag("case_picker_${option.id}"),
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                         ),
