@@ -316,7 +316,12 @@ class PilotViewModel(
             publish(selectedItem = _uiState.value.selectedItem)
             return
         }
-        if (benchSeats.any { it.code.equals(raw.trim(), ignoreCase = true) }) {
+        // Dedup by the parsed token (the per-playthrough juror identity), not by
+        // the raw string. Cosmetic-but-parseable variants of the same code — a
+        // trailing hyphen, doubled separators, mixed case — would otherwise slip
+        // past a raw-string match and seat the same juror twice. The token also
+        // covers the player's own seat, so a self-code is rejected here too.
+        if (benchSeats.any { JurorCode.parse(it.code)?.token == payload.token }) {
             benchMessage = app.getString(R.string.bench_err_already_seated)
             publish(selectedItem = _uiState.value.selectedItem)
             return
