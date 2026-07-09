@@ -54,6 +54,11 @@
     <string name="vote_not_guilty">Not Guilty</string>
     <string name="reveal_title">Reveal</string>
     <string name="names_restored">Names restored</string>
+    <string name="share_card_heading">Tell someone — spoiler-free</string>
+    <string name="share_card_hint">Your card shows your verdict and the charge. It never shows the reveal or the restored names.</string>
+    <string name="share_verdict_card">Share your verdict card</string>
+    <string name="share_card_chooser_title">Share verdict card</string>
+    <string name="share_install_url" translatable="false">https://github.com/yanniedog/simjury/releases/latest</string>
     <string name="update_section_title">App updates</string>
     <string name="update_installed_version">Installed version: %1$s</string>
     <string name="update_check">Check for updates</string>

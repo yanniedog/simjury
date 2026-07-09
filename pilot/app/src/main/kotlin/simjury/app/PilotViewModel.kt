@@ -70,6 +70,8 @@ data class CaseOption(
 data class PilotUiState(
     val loading: Boolean = true,
     val error: String? = null,
+    /** Case metadata id (e.g. "C-001"), distinct from the asset-folder [activeCaseId]. */
+    val caseMetaId: String = "",
     val caseTitle: String = "",
     val charge: String = "",
     val contentNotes: List<String> = emptyList(),
@@ -402,6 +404,7 @@ class PilotViewModel(
 
         var state = PilotUiState(
             loading = false,
+            caseMetaId = loaded.meta.id,
             caseTitle = loaded.meta.titlePlay,
             charge = loaded.meta.charge.label,
             contentNotes = loaded.meta.contentNotes,
