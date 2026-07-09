@@ -78,6 +78,44 @@ class CaseValidatorTest {
     }
 
     @Test
+    fun `operator clearance gate rejects PENDING placeholder`() {
+        val loaded = historicalValidCase(episodeCount = 3)
+        CaseValidator.validate(loaded) // content PRs still accept placeholder
+        val ex = assertFailsWith<CaseValidationException> {
+            CaseValidator.validateOperatorClearanceComplete(loaded)
+        }
+        assertTrue(ex.errors.any { it.contains("cleared_by") && it.contains("PENDING") })
+    }
+
+    @Test
+    fun `operator clearance gate rejects unfinished descendants note`() {
+        val clearance = historicalClearance().copy(
+            clearedBy = "Operator Name",
+            descendantsRiskNote = "Descendant reputational risk to be reviewed at operator clearance.",
+        )
+        val loaded = historicalValidCase(episodeCount = 3).copy(
+            meta = historicalValidCase(episodeCount = 3).meta.copy(clearance = clearance),
+        )
+        val ex = assertFailsWith<CaseValidationException> {
+            CaseValidator.validateOperatorClearanceComplete(loaded)
+        }
+        assertTrue(ex.errors.any { it.contains("descendants_risk_note") })
+    }
+
+    @Test
+    fun `operator clearance gate accepts completed clearance`() {
+        val clearance = historicalClearance().copy(
+            clearedBy = "Operator Name",
+            descendantsRiskNote = "All participants deceased; no living descendants identified with reputational risk.",
+            clearedDate = "2026-07-09",
+        )
+        val loaded = historicalValidCase(episodeCount = 3).copy(
+            meta = historicalValidCase(episodeCount = 3).meta.copy(clearance = clearance),
+        )
+        CaseValidator.validateOperatorClearanceComplete(loaded)
+    }
+
+    @Test
     fun `rejects banned token in play reachable text`() {
         val trial = historicalValidCase(episodeCount = 3).trial
         val badWitness = trial.witnesses[0].copy(

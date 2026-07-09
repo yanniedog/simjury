@@ -227,6 +227,40 @@ object CaseValidator {
         }
     }
 
+    /**
+     * G-4 operator clearance gate. Stricter than [validate]: rejects placeholder
+     * `cleared_by` / unfinished descendants notes. Call from the G-4 gate PR only —
+     * normal [validate] still accepts `PENDING HUMAN SIGN-OFF` so content PRs stay green.
+     */
+    fun validateOperatorClearanceComplete(loaded: LoadedCase) {
+        val errors = mutableListOf<String>()
+        val c = loaded.meta
+        if (c.synthetic) {
+            throw CaseValidationException(listOf("operator clearance gate applies to historical cases only"))
+        }
+        val clearance = c.clearance
+        if (clearance == null) {
+            throw CaseValidationException(listOf("historical case requires clearance object in case.json"))
+        }
+        val clearedBy = clearance.clearedBy.trim()
+        if (clearedBy.isBlank() ||
+            clearedBy.equals("PENDING HUMAN SIGN-OFF", ignoreCase = true) ||
+            clearedBy.contains("PENDING", ignoreCase = true)
+        ) {
+            errors += "clearance.cleared_by must be a real operator name (not PENDING placeholder)"
+        }
+        val descendants = clearance.descendantsRiskNote.trim()
+        if (descendants.isBlank() ||
+            descendants.contains("to be reviewed", ignoreCase = true)
+        ) {
+            errors += "clearance.descendants_risk_note must be completed (not 'to be reviewed')"
+        }
+        if (clearance.clearedDate.isBlank()) {
+            errors += "clearance.cleared_date must be non-empty"
+        }
+        if (errors.isNotEmpty()) throw CaseValidationException(errors)
+    }
+
     private fun validateEpisodeCount(c: PilotCase, episodeCount: Int, errors: MutableList<String>) {
         if (c.synthetic) {
             if (episodeCount != 1) {
