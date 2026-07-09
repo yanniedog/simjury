@@ -1,13 +1,17 @@
 package simjury.app
 
+import android.app.Application
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExternalResource
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import simjury.app.data.PilotSaveRepository
 import simjury.app.speech.NoOpTrialSpeechController
 import simjury.app.update.ApkManifest
 import simjury.app.update.AppUpdateRepository
@@ -29,6 +33,9 @@ class MainActivityEpisodeHubTest {
                     downloadUrl = "https://example.com/app.apk",
                 )
             }
+            // Clear any prior Robolectric DataStore save so summons is shown.
+            val app = ApplicationProvider.getApplicationContext<Application>()
+            runBlocking { PilotSaveRepository(app).clear() }
         }
 
         override fun after() {

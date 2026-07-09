@@ -3,6 +3,7 @@ package simjury.app
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -12,33 +13,42 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowLooper
+import simjury.app.data.PilotSaveRepository
 import simjury.app.speech.NoOpTrialSpeechController
 import simjury.deliberation.DeliberationPhase
 
 /**
  * R4 Android unit evidence: drive PilotViewModel through the full C-001 loop
  * (summons → mark all items → diary → vote → reveal) under Robolectric.
- * Complements CLI [simjury.pilot.C001PlaythroughTest]; device/emulator QA still required for G-4.
+ * Complements CLI playthrough coverage; device/emulator QA still required for G-4.
  */
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [34])
 class C001ViewModelPlaythroughTest {
 
     private lateinit var viewModel: PilotViewModel
+    private lateinit var app: Application
 
     @Before
     fun setUp() {
         PilotViewModel.speechControllerOverride = NoOpTrialSpeechController()
-        val app = ApplicationProvider.getApplicationContext<Application>()
+        app = ApplicationProvider.getApplicationContext()
+        // Isolate from other Robolectric tests that share the same DataStore file.
+        runBlocking { PilotSaveRepository(app).clear() }
         viewModel = PilotViewModel(app, "c_001")
         awaitLoaded()
     }
 
     @After
     fun tearDown() {
-        viewModel.stopListening()
+        if (::viewModel.isInitialized) {
+            viewModel.stopListening()
+        }
+        if (::app.isInitialized) {
+            runBlocking { PilotSaveRepository(app).clear() }
+        }
         PilotViewModel.speechControllerOverride = null
-        PilotViewModel.testInitialCaseId = null
     }
 
     @Test
@@ -99,7 +109,7 @@ class C001ViewModelPlaythroughTest {
     }
 
     private fun awaitLoaded() {
-        awaitCondition(timeoutMs = 20_000) {
+        awaitCondition(maxAttempts = 800) {
             val s = viewModel.uiState.value
             !s.loading && s.error == null && s.caseTitle.isNotBlank()
         }
@@ -111,13 +121,16 @@ class C001ViewModelPlaythroughTest {
         awaitCondition { viewModel.uiState.value.phase == phase }
     }
 
-    private fun awaitCondition(timeoutMs: Long = 15_000, predicate: () -> Boolean) {
-        val deadline = System.currentTimeMillis() + timeoutMs
-        while (System.currentTimeMillis() < deadline) {
+    /**
+     * Iteration-bounded wait (not wall-clock). Robolectric virtual time can freeze
+     * [System.currentTimeMillis], so a deadline loop may hang forever.
+     */
+    private fun awaitCondition(maxAttempts: Int = 600, predicate: () -> Boolean) {
+        repeat(maxAttempts) {
             if (predicate()) return
-            Thread.sleep(25)
-            org.robolectric.shadows.ShadowLooper.idleMainLooper()
+            ShadowLooper.idleMainLooper()
+            Thread.sleep(10)
         }
-        throw AssertionError("Condition not met within ${timeoutMs}ms; state=${viewModel.uiState.value}")
+        throw AssertionError("Condition not met after $maxAttempts attempts; state=${viewModel.uiState.value}")
     }
 }
