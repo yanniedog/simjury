@@ -26,12 +26,11 @@ export * from './app-release-meta.mjs';
 export async function generateInstallAssets(outDir, downloadUrl, repo, tag) {
   mkdirSync(outDir, { recursive: true });
   const qrPath = join(outDir, QR_ASSET);
-  await QRCode.toFile(qrPath, downloadUrl, {
-    type: 'png',
-    width: 512,
-    margin: 2,
-    errorCorrectionLevel: 'M',
-  });
+  const qrOptions = { width: 512, margin: 2, errorCorrectionLevel: 'M' };
+  await QRCode.toFile(qrPath, downloadUrl, { type: 'png', ...qrOptions });
+  // Inline data URI so install.html is self-contained (release assets are not
+  // served relative to each other, so a same-folder <img src> would 404).
+  const qrDataUrl = await QRCode.toDataURL(downloadUrl, qrOptions);
 
   const manifestUrl = manifestReleaseUrl(repo, ROLLING_TAG);
   const html = `<!DOCTYPE html>
@@ -57,6 +56,7 @@ export async function generateInstallAssets(outDir, downloadUrl, repo, tag) {
 <body>
   <h1>Install SimJury</h1>
   <p>Scan the QR with Android Chrome, or tap the download button below.</p>
+  <img src="${qrDataUrl}" alt="QR code linking to the SimJury APK download" width="512" height="512" />
   <p><a class="btn" href="${downloadUrl}">Download SimJury APK</a></p>
 
   <div class="note">
@@ -76,6 +76,9 @@ export async function generateInstallAssets(outDir, downloadUrl, repo, tag) {
       <strong>Settings &rarr; Install unknown apps &rarr; (Chrome or Files) &rarr; Allow.</strong></li>
     <li>If <strong>Play Protect</strong> shows <em>"Blocked by Play Protect"</em>,
       tap <strong>More details &rarr; Install anyway</strong>.</li>
+    <li>If install fails with <em>"App not installed"</em> or a signature mismatch,
+      <strong>uninstall any existing SimJury first</strong>, then reinstall — release
+      builds are signed with a different key than earlier preview builds.</li>
   </ol>
 
   <p>Still vanishing? In the Play Store: <strong>Profile &rarr; Play Protect &rarr; Settings</strong>,

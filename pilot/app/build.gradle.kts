@@ -50,17 +50,29 @@ android {
 
     // Release signing is driven by CI secrets, surfaced as env vars in the
     // pilot-android-apk workflow (KEYSTORE_PATH, KEYSTORE_PASSWORD, KEY_ALIAS,
-    // KEY_PASSWORD). When they are absent (local dev), fall back to debug signing.
-    val releaseKeystorePath: String? = System.getenv("KEYSTORE_PATH")?.takeIf { it.isNotBlank() }
+    // KEY_PASSWORD). All four must be present to sign; when none are set (local
+    // dev) we fall back to debug signing. A partial set is treated as a
+    // misconfiguration and fails fast rather than silently shipping a
+    // debug-signed or broken release.
+    fun signingEnv(name: String): String? = System.getenv(name)?.takeIf { it.isNotBlank() }
+    val releaseSigningEnv = listOf("KEYSTORE_PATH", "KEYSTORE_PASSWORD", "KEY_ALIAS", "KEY_PASSWORD")
+    val presentSigningEnv = releaseSigningEnv.filter { signingEnv(it) != null }
+    val hasReleaseSigning = presentSigningEnv.size == releaseSigningEnv.size
+    if (presentSigningEnv.isNotEmpty() && !hasReleaseSigning) {
+        throw org.gradle.api.GradleException(
+            "Incomplete release signing config: set all of ${releaseSigningEnv.joinToString()} " +
+                "or none. Missing: ${(releaseSigningEnv - presentSigningEnv.toSet()).joinToString()}",
+        )
+    }
 
     signingConfigs {
         getByName("debug")
         create("release") {
-            if (releaseKeystorePath != null) {
-                storeFile = file(releaseKeystorePath)
-                storePassword = System.getenv("KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("KEY_ALIAS")
-                keyPassword = System.getenv("KEY_PASSWORD")
+            if (hasReleaseSigning) {
+                storeFile = file(signingEnv("KEYSTORE_PATH")!!)
+                storePassword = signingEnv("KEYSTORE_PASSWORD")
+                keyAlias = signingEnv("KEY_ALIAS")
+                keyPassword = signingEnv("KEY_PASSWORD")
             }
         }
     }
@@ -68,7 +80,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = if (releaseKeystorePath != null) {
+            signingConfig = if (hasReleaseSigning) {
                 signingConfigs.getByName("release")
             } else {
                 signingConfigs.getByName("debug")
