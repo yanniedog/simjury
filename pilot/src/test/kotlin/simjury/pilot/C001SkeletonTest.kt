@@ -58,6 +58,23 @@ class C001SkeletonTest {
     }
 
     @Test
+    fun `C-001 truth file layers authored`() {
+        loaded.truthFile.layers.forEach { layer ->
+            assertFalse(
+                layer.body.contains("AUTHORING PENDING", ignoreCase = true),
+                "${layer.heading} still pending",
+            )
+        }
+        assertTrue(loaded.truthFile.layers.size >= 4)
+        loaded.truthFile.pseudonymReveal.forEach { reveal ->
+            assertFalse(
+                reveal.fateNote.contains("Pending tabulation", ignoreCase = true),
+                "${reveal.pseudonymRef} fate still pending",
+            )
+        }
+    }
+
+    @Test
     fun `C-001 exhibits X-01 through X-08 authored with media`() {
         val expectedAssets = mapOf(
             "X-01" to "exhibits/x-01-clothing-list.png",

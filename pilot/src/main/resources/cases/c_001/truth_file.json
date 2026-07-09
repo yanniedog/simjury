@@ -2,34 +2,92 @@
   "layers": [
     {
       "heading": "Legal outcome",
-      "body": "[AUTHORING PENDING — truth file layer 1; source S-04 after EX-1 handoff]"
+      "body": "The jury at the Central Criminal Court in March 1896 convicted Adolf Beck of obtaining jewellery by false pretences. The Common Serjeant sentenced him to seven years' penal servitude on consecutive counts, treating him as if he had not been previously convicted because the earlier felony indictments were postponed. No criminal appeal court existed; Beck could not appeal the verdict. Source: S-02 Sessions Papers; NBT trial record pp. 178–179."
     },
     {
-      "heading": "Factual aftermath",
-      "body": "[AUTHORING PENDING — post-trial record only; AD-5 enforced for trial phase]"
+      "heading": "Factual record",
+      "body": "Beck was innocent of the charges you heard. The same disguised handwriting and fraud method were the work of William Augustus Wyatt, who had been convicted in 1877 under the name John Smith and who resumed the offences while Beck was wrongly imprisoned. In July 1904 Wyatt was caught mid-fraud; he pleaded guilty in September 1904 as William Thomas. Beck received free pardons for both mistaken convictions in July 1904. The Home Secretary told the Commons he was arranging a Treasury grant of compensation (Hansard, 3 August 1904); Beck later received a £5,000 Treasury grant. Source: S-01 Cd. 2315; S-04 Hansard cc719–720."
     },
     {
-      "heading": "Unknown at trial",
-      "body": "[AUTHORING PENDING — minimum five entries per harness]"
+      "heading": "What the jury did not know",
+      "body": "1. Prison medical records showed Beck and Smith were physically different men — including circumcision and distinctive ear marks noted in Cd. 2315 appendix VI — but this was never put before the 1896 jury.\n2. The defence Peru and South America alibi for the years Smith was in prison was blocked by the judge's ruling on the prior conviction; the jury never heard whether another man was imprisoned then.\n3. Five or six women failed to identify Beck at police court hearings, and others who had complained never picked him out — facts the prosecution did not emphasise.\n4. Handwriting expert Thomas Henry Gurrin's full opinion linked the 1877 and 1896 documents as one hand; cross-examination on the earlier exhibits was stopped before the jury could weigh that evidence.\n5. Mrs Gardiner, whose stolen cheque book supplied many of the Balham cheques, was never produced in court despite defence applications.\n6. No Court of Criminal Appeal existed in 1896; a wrongful conviction could not be reviewed as it would be after this scandal."
     },
     {
       "heading": "Aftermath",
-      "body": "[AUTHORING PENDING — inquiry and appeal consequence]"
+      "body": "Beck was wrongfully convicted again in 1904 before Wyatt's arrest exposed the error. A committee of inquiry reported in November 1904 (Cd. 2315), criticising the 1896 ruling and systemic failures. The case directly led to the creation of the Court of Criminal Appeal. Beck received a Treasury grant of compensation and died in December 1909. Everything you just read is the documented record. The names you knew were not their names. These are:"
     }
   ],
   "pseudonym_reveal": [
-    { "pseudonym_ref": "P-01", "play_name": "Mrs Elling", "real_name": "Complainant witness (historical)", "fate_note": "Pending tabulation." },
-    { "pseudonym_ref": "P-02", "play_name": "Mrs Garner", "real_name": "Complainant witness (historical)", "fate_note": "Pending tabulation." },
-    { "pseudonym_ref": "P-03", "play_name": "Mrs Holt", "real_name": "Complainant witness (historical)", "fate_note": "Pending tabulation." },
-    { "pseudonym_ref": "P-04", "play_name": "Mrs Irwin", "real_name": "Complainant witness (historical)", "fate_note": "Pending tabulation." },
-    { "pseudonym_ref": "P-05", "play_name": "Inspector Vale", "real_name": "Police officer (historical)", "fate_note": "Pending tabulation." },
-    { "pseudonym_ref": "P-06", "play_name": "Mr Penrose", "real_name": "Handwriting expert (historical)", "fate_note": "Pending tabulation." },
-    { "pseudonym_ref": "P-07", "play_name": "Mr Quill", "real_name": "Retired constable (historical)", "fate_note": "Pending tabulation." },
-    { "pseudonym_ref": "P-08", "play_name": "Mr Norland", "real_name": "Adolf Beck", "fate_note": "Pending tabulation." },
-    { "pseudonym_ref": "P-09", "play_name": "Westhaven", "real_name": "London (jurisdiction adaptation)", "fate_note": "Pending tabulation." }
+    {
+      "pseudonym_ref": "P-01",
+      "play_name": "Mrs Elling",
+      "real_name": "Fanny Nutt",
+      "fate_note": "First complainant in the condensed trial; identified Beck at Westminster Police Court in January 1896. Historical witness, deceased."
+    },
+    {
+      "pseudonym_ref": "P-02",
+      "play_name": "Mrs Garner",
+      "real_name": "Daisy Grant",
+      "fate_note": "Complainant robbed in St James's Street, July 1895; identified Beck at Rochester Row in December 1895. Historical witness, deceased."
+    },
+    {
+      "pseudonym_ref": "P-03",
+      "play_name": "Mrs Holt",
+      "real_name": "Alice Sinclair",
+      "fate_note": "Complainant met the swindler in Ludgate Hill, April 1895; picked Beck out among fourteen men in January 1896. Historical witness, deceased."
+    },
+    {
+      "pseudonym_ref": "P-04",
+      "play_name": "Mrs Irwin",
+      "real_name": "Ethel Annie Townsend",
+      "fate_note": "Widow robbed in Piccadilly, March 1895; identified Beck with hesitation over his accent at police court. Historical witness, deceased."
+    },
+    {
+      "pseudonym_ref": "P-05",
+      "play_name": "Inspector Vale",
+      "real_name": "Detective Inspector Frank Froest",
+      "fate_note": "Scotland Yard officer who took charge of identifications after January 1896 and searched Beck's hotel box. Historical witness, deceased."
+    },
+    {
+      "pseudonym_ref": "P-06",
+      "play_name": "Mr Penrose",
+      "real_name": "Thomas Henry Gurrin",
+      "fate_note": "Treasury handwriting expert whose certainty linked lists and cheques to Beck; later withdrew that opinion when Wyatt's writing was compared. Historical witness, deceased."
+    },
+    {
+      "pseudonym_ref": "P-07",
+      "play_name": "Mr Quill",
+      "real_name": "Eless Spurrell",
+      "fate_note": "Retired constable who swore Beck was John Smith convicted in 1877; failed to recognise Beck when Beck visited him after release. Historical witness, deceased."
+    },
+    {
+      "pseudonym_ref": "P-08",
+      "play_name": "Mr Norland",
+      "real_name": "Adolf Beck",
+      "fate_note": "Norwegian businessman wrongfully convicted twice; pardoned and compensated 1904; died December 1909."
+    },
+    {
+      "pseudonym_ref": "P-09",
+      "play_name": "Westhaven",
+      "real_name": "London (jurisdiction adaptation)",
+      "fate_note": "Play setting maps to London venues named in the historical record — Westminster Police Court, Covent Garden Hotel, and the Central Criminal Court."
+    }
   ],
   "adaptations": [
-    { "note": "Skeleton case — testimony placeholders only; Westhaven jurisdiction per AD-2." },
-    { "note": "Witness condensation to four complainants planned per PHASE4-PLAN §4.3." }
+    {
+      "note": "Ten historical complainants condensed to four (W-01..W-04) per PHASE4-PLAN §4.3; repetitive accounts merged with balanced cuts noted here."
+    },
+    {
+      "note": "Westhaven jurisdiction and modern identification caution (D-02) per AD-2; historical trial predated standard ID warnings."
+    },
+    {
+      "note": "W-09 defence character witness omitted — no single ninth witness met harness floor without invention; defence case carried through W-08 and hotel witnesses condensed into accused blocks."
+    },
+    {
+      "note": "Counsel speeches and procedural detail compressed; witness block counts preserved per PILOT-SPEC condensation rule."
+    },
+    {
+      "note": "Absolute years in trial text rendered as intervals (eighteen years earlier) per PS-5; reveal restores true dates."
+    }
   ]
 }
