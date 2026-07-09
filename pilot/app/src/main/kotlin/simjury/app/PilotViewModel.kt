@@ -23,6 +23,8 @@ import simjury.app.model.resolveItem
 import simjury.app.speech.AndroidTrialSpeechController
 import simjury.app.speech.ScreenSpeechBuilder
 import simjury.app.speech.TrialSpeechController
+import simjury.app.share.BenchSeat
+import simjury.app.share.JurorCode
 import simjury.casemodel.Episode
 import simjury.casemodel.GatedTruth
 import simjury.casemodel.LoadedCase
@@ -97,6 +99,12 @@ data class PilotUiState(
     val revealTitle: String? = null,
     val revealLayers: List<TruthLayer> = emptyList(),
     val revealNames: List<PseudonymReveal> = emptyList(),
+    /** Minted juror code for this playthrough (null until verdict locks). */
+    val playerJurorCode: String? = null,
+    /** Local jury bench (seat 1 = self; 2–12 from redeemed codes). */
+    val benchSeats: List<BenchSeat> = emptyList(),
+    /** Last redeem attempt message (success or error); cleared on next publish. */
+    val benchMessage: String? = null,
     val isSpeaking: Boolean = false,
     val canListenAloud: Boolean = false,
     val canMarkItemsRead: Boolean = false,
@@ -126,6 +134,9 @@ class PilotViewModel(
     private var selectedEpisodeId: String? = null
     private var activeCaseId: String = initialCaseId
     private var browseSection: PilotSection? = null
+    private var playerJurorCode: String? = null
+    private var benchSeats: List<BenchSeat> = emptyList()
+    private var benchMessage: String? = null
 
     private val _uiState = MutableStateFlow(PilotUiState())
     val uiState: StateFlow<PilotUiState> = _uiState.asStateFlow()
@@ -277,8 +288,78 @@ class PilotViewModel(
         dispatch(DeliberationAction.OpenReveal)
         val truth = gate.openTruth(loaded)
         revealShown = true
+        ensurePlayerSeat()
         persist()
         applyReveal(truth)
+    }
+
+    /**
+     * Redeem a friend's juror code onto the local bench. Only valid after the
+     * player's own verdict is locked, and only for the same case (GROWTH.md M-2).
+     */
+    fun redeemJurorCode(raw: String) {
+        if (!gate.isVerdictLocked()) {
+            benchMessage = "Lock your own verdict before seating another juror."
+            publish(selectedItem = _uiState.value.selectedItem)
+            return
+        }
+        val payload = JurorCode.parse(raw)
+        if (payload == null) {
+            benchMessage = "That code is not valid."
+            publish(selectedItem = _uiState.value.selectedItem)
+            return
+        }
+        if (payload.caseMetaId != loaded.meta.id) {
+            benchMessage = "That code is for a different case."
+            publish(selectedItem = _uiState.value.selectedItem)
+            return
+        }
+        if (benchSeats.any { it.code.equals(raw.trim(), ignoreCase = true) }) {
+            benchMessage = "That juror is already seated."
+            publish(selectedItem = _uiState.value.selectedItem)
+            return
+        }
+        val nextSeat = (2..12).firstOrNull { n -> benchSeats.none { it.seat == n } }
+        if (nextSeat == null) {
+            benchMessage = "The bench is full (12 seats)."
+            publish(selectedItem = _uiState.value.selectedItem)
+            return
+        }
+        benchSeats = (benchSeats + BenchSeat(
+            seat = nextSeat,
+            caseMetaId = payload.caseMetaId,
+            vote = payload.vote,
+            leaning = payload.leaning,
+            code = raw.trim().uppercase(),
+            self = false,
+        )).sortedBy { it.seat }
+        benchMessage = "Seat $nextSeat filled."
+        persist()
+        publish(selectedItem = _uiState.value.selectedItem)
+    }
+
+    private fun ensurePlayerSeat() {
+        if (playerJurorCode != null) return
+        val vote = engineState.vote ?: return
+        val leaning = engineState.diary?.leaning ?: "U"
+        val code = JurorCode.mint(
+            caseMetaId = loaded.meta.id,
+            vote = vote,
+            leaning = leaning,
+        )
+        playerJurorCode = code
+        if (benchSeats.none { it.self }) {
+            benchSeats = listOf(
+                BenchSeat(
+                    seat = 1,
+                    caseMetaId = loaded.meta.id,
+                    vote = vote,
+                    leaning = leaning,
+                    code = code,
+                    self = true,
+                ),
+            ) + benchSeats.filter { it.seat != 1 }
+        }
     }
 
     val allItemsRead: Boolean
@@ -301,13 +382,19 @@ class PilotViewModel(
             browseSection = null
             gate.reset()
             revealShown = false
+            playerJurorCode = null
+            benchSeats = emptyList()
+            benchMessage = null
             loaded = restored.case
             speech.configureWitnessRoles(loaded.pseudonyms.entries.map { it.id })
             if (restored.save != null && restored.save.caseId == loaded.meta.id && restored.save.seed == seed) {
                 engineState = restored.save.engineState
                 revealShown = restored.save.revealShown
+                playerJurorCode = restored.save.playerJurorCode
+                benchSeats = restored.save.benchSeats
                 if (restored.save.verdictLocked) {
                     gate.lockVerdict()
+                    ensurePlayerSeat()
                 }
             } else {
                 engineState = newEngineState(loaded)
@@ -353,6 +440,8 @@ class PilotViewModel(
                     engineState = engineState,
                     verdictLocked = gate.isVerdictLocked(),
                     revealShown = revealShown,
+                    playerJurorCode = playerJurorCode,
+                    benchSeats = benchSeats,
                 ),
             )
         }
@@ -363,6 +452,9 @@ class PilotViewModel(
             revealTitle = truth.titleReveal,
             revealLayers = truth.truthFile.layers,
             revealNames = truth.truthFile.pseudonymReveal,
+            playerJurorCode = playerJurorCode,
+            benchSeats = benchSeats,
+            benchMessage = benchMessage,
         )
     }
 
@@ -427,6 +519,9 @@ class PilotViewModel(
             nextItemId = nextItemId,
             diary = engineState.diary,
             vote = engineState.vote,
+            playerJurorCode = playerJurorCode,
+            benchSeats = benchSeats,
+            benchMessage = benchMessage,
         )
         if (revealShown && gate.isVerdictLocked()) {
             val truth = gate.openTruth(loaded)
@@ -442,6 +537,8 @@ class PilotViewModel(
             canMarkItemsRead = engineState.phase == DeliberationPhase.READING,
         )
         _uiState.value = state
+        // One-shot: don't keep redeem feedback across later publishes.
+        benchMessage = null
     }
 
     private fun newEngineState(case: LoadedCase): DeliberationState =

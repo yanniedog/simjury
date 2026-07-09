@@ -203,7 +203,7 @@ statistics against the historical jury, quotes from reveal layers or `truth_file
 |------|------|------|------------|
 | 1 | This playbook | docs PR | — |
 | 2 | M-1 verdict card | app PR | — |
-| 3 | M-2 jury bench + juror codes | app PR | M-1 (share plumbing) |
+| 3 | M-2 jury bench + juror codes | app PR (in progress) | M-1 (share plumbing) ✅ |
 | 4 | M-3 Jury Room discussion + pinned tally | operator (GitHub UI) | — |
 | 5 | Tier 1: 2 jury nights + 1 classroom | operator | M-1 shipped |
 | 6 | itch.io page, Show HN, podcast emails | operator | 10 stranger cards |

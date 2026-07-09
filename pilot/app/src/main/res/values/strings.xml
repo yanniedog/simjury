@@ -59,6 +59,14 @@
     <string name="share_verdict_card">Share your verdict card</string>
     <string name="share_card_chooser_title">Share verdict card</string>
     <string name="share_install_url" translatable="false">https://github.com/yanniedog/simjury/releases/latest</string>
+    <string name="bench_heading">Jury bench</string>
+    <string name="bench_hint">Seat 1 is you. Share your juror code; redeem a friend\'s code to fill an empty seat. Codes never carry the reveal.</string>
+    <string name="bench_your_code">Your juror code: %1$s</string>
+    <string name="bench_share_code">Share your juror code</string>
+    <string name="bench_share_code_title">Share juror code</string>
+    <string name="bench_filled_count">%1$d of 12 seats filled</string>
+    <string name="bench_redeem_label">Friend\'s juror code</string>
+    <string name="bench_redeem">Seat a juror</string>
     <string name="update_section_title">App updates</string>
     <string name="update_installed_version">Installed version: %1$s</string>
     <string name="update_check">Check for updates</string>

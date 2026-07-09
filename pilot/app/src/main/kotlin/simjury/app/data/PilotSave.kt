@@ -12,4 +12,8 @@ data class PilotSave(
     @SerialName("engine_state") val engineState: DeliberationState,
     @SerialName("verdict_locked") val verdictLocked: Boolean = false,
     @SerialName("reveal_shown") val revealShown: Boolean = false,
+    /** Player's minted juror code (GROWTH.md M-2); null until verdict locks. */
+    @SerialName("player_juror_code") val playerJurorCode: String? = null,
+    /** Local jury bench seats filled by self + redeemed codes. */
+    @SerialName("bench_seats") val benchSeats: List<simjury.app.share.BenchSeat> = emptyList(),
 )
