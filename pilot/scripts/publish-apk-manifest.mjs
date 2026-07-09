@@ -21,6 +21,8 @@ import {
   manifestReleaseUrl,
   releaseTitle,
   versionTag,
+  writeInstallZip,
+  zipDownloadUrl,
 } from './lib/app-release-utils.mjs';
 import { readPilotVersions } from './lib/pilot-version.mjs';
 
@@ -63,13 +65,14 @@ async function publishVersionedRelease({ apkBuf, version, buildNumber, outDir })
   mkdirSync(versionOutDir, { recursive: true });
   const apkPath = join(versionOutDir, APK_ASSET);
   writeFileSync(apkPath, apkBuf);
+  const zipPath = writeInstallZip(versionOutDir, apkBuf);
 
   const downloadUrl = apkDownloadUrl(repo, tag);
   const { qrPath, installPath } = await generateInstallAssets(versionOutDir, downloadUrl, repo, tag);
 
   const targetRef = process.env.GITHUB_SHA?.trim() || '';
   ensureGitHubRelease(ghToken, repo, tag, title, notes, targetRef);
-  gh(ghToken, repo, ['release', 'upload', tag, apkPath, qrPath, installPath, '--clobber']);
+  gh(ghToken, repo, ['release', 'upload', tag, apkPath, zipPath, qrPath, installPath, '--clobber']);
   console.log(`Versioned release ${tag}: https://github.com/${repo}/releases/tag/${tag}`);
 }
 
@@ -90,6 +93,7 @@ async function main() {
   mkdirSync(outDir, { recursive: true });
   const apkPath = join(outDir, APK_ASSET);
   writeFileSync(apkPath, apkBuf);
+  const zipPath = writeInstallZip(outDir, apkBuf);
 
   const sha256 = sha256File(apkPath);
   const downloadUrl = apkDownloadUrl(repo, ROLLING_TAG);
@@ -131,6 +135,7 @@ async function main() {
     'upload',
     ROLLING_TAG,
     apkPath,
+    zipPath,
     manifestPath,
     qrPath,
     installPath,
@@ -155,6 +160,7 @@ async function main() {
         '',
         `| Asset | URL |`,
         `|---|---|`,
+        `| ZIP (recommended install) | ${zipDownloadUrl(repo, ROLLING_TAG)} |`,
         `| APK (rolling) | ${downloadUrl} |`,
         `| Manifest | ${manifestReleaseUrl(repo, ROLLING_TAG)} |`,
         `| Install page | ${installUrl} |`,

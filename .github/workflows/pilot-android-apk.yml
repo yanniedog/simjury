@@ -4,7 +4,7 @@
 # Rolling: app-apk-latest (manifest app-apk-latest.json for in-app self-update)
 # Versioned: app-v{semver} e.g. app-v0.1.1
 #
-# Assets: app-preview.apk, app-apk-latest.json, app-preview-qr.png, install.html
+# Assets: app-preview.apk, app-preview.zip (browser-safe install), app-apk-latest.json, app-preview-qr.png, install.html
 #
 # Optional secrets for signed release APK:
 #   ANDROID_KEYSTORE_B64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
@@ -191,6 +191,7 @@ jobs:
           name: simjury-preview-apk
           path: |
             pilot/build/apk-publish/app-preview.apk
+            pilot/build/apk-publish/app-preview.zip
             pilot/build/apk-publish/app-apk-latest.json
             pilot/build/apk-publish/app-preview-qr.png
             pilot/build/apk-publish/install.html
