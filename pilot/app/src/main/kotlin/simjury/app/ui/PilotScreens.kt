@@ -1,6 +1,8 @@
 package simjury.app.ui
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -671,7 +673,7 @@ private fun ShareVerdictCardSection(state: PilotUiState) {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_TEXT, card)
                 }
-                context.startActivity(Intent.createChooser(send, chooserTitle))
+                startShareChooser(context, send, chooserTitle)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -679,6 +681,19 @@ private fun ShareVerdictCardSection(state: PilotUiState) {
         ) {
             Text(stringResource(R.string.share_verdict_card))
         }
+    }
+}
+
+private fun startShareChooser(
+    context: android.content.Context,
+    send: Intent,
+    chooserTitle: String,
+) {
+    val chooser = Intent.createChooser(send, chooserTitle)
+    try {
+        context.startActivity(chooser)
+    } catch (_: ActivityNotFoundException) {
+        Toast.makeText(context, R.string.share_no_handler, Toast.LENGTH_SHORT).show()
     }
 }
 
@@ -715,8 +730,10 @@ private fun JuryBenchSection(
                         type = "text/plain"
                         putExtra(Intent.EXTRA_TEXT, code)
                     }
-                    context.startActivity(
-                        Intent.createChooser(send, context.getString(R.string.bench_share_code_title)),
+                    startShareChooser(
+                        context,
+                        send,
+                        context.getString(R.string.bench_share_code_title),
                     )
                 },
                 modifier = Modifier.fillMaxWidth().testTag("share_juror_code"),
