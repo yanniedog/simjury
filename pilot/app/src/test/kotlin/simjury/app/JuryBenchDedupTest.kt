@@ -79,8 +79,9 @@ class JuryBenchDedupTest {
         viewModel.redeemJurorCode(myCode)
         assertEquals("own code must be rejected", 2, viewModel.uiState.value.benchSeats.size)
 
-        // A genuinely different juror still seats.
-        val otherToken = if (friendToken == "XYZ") "XY9" else "XYZ"
+        // A genuinely different juror still seats. Pick a token distinct from both
+        // the player's and the friend's so this can never collide with either.
+        val otherToken = listOf("XYZ", "XY9", "XY8").first { it != myToken && it != friendToken }
         viewModel.redeemJurorCode(JurorCode.mint("C-000", "Guilty", "G", otherToken))
         assertEquals("distinct juror should seat", 3, viewModel.uiState.value.benchSeats.size)
     }
