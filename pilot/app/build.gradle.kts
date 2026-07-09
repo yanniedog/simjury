@@ -48,14 +48,31 @@ android {
         buildConfigField("String", "PILOT_CASE_ID", "\"$pilotCaseId\"")
     }
 
+    // Release signing is driven by CI secrets, surfaced as env vars in the
+    // pilot-android-apk workflow (KEYSTORE_PATH, KEYSTORE_PASSWORD, KEY_ALIAS,
+    // KEY_PASSWORD). When they are absent (local dev), fall back to debug signing.
+    val releaseKeystorePath: String? = System.getenv("KEYSTORE_PATH")?.takeIf { it.isNotBlank() }
+
     signingConfigs {
         getByName("debug")
+        create("release") {
+            if (releaseKeystorePath != null) {
+                storeFile = file(releaseKeystorePath)
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+            }
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (releaseKeystorePath != null) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 
