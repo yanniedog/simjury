@@ -114,7 +114,7 @@ Bundle the evidence (playthrough proof, `BALANCE.md`, clearance complete, CI gre
 
 ## 3. Optional — allowed to skip at G-4 (floors already met)
 
-- **W-09** defence witness (harness allows 8). Add only if the record honestly supports it; else
+- **W-09** defence witness (harness floor of 6–9 is met with 8). Add only if the record honestly supports it; else
   document the skip in `TABULATION.md`.
 - **X-09/X-10** exhibits (8 is at floor).
 - **D-05** deadlock direction — stub, deferred to Phase 5.
