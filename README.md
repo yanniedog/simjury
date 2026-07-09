@@ -34,6 +34,7 @@ Manual recovery: **Actions → pilot-auto-release-on-queue-drain → Run workflo
 | Pilot spec (authoritative for now) | `PILOT-SPEC.md` | 0 |
 | Phased rollout | `ROADMAP.md` | 0 |
 | Case selection & authoring harness | `CASE_HARNESS.md` | 0 |
+| Growth & cold-start playbook | `GROWTH.md` | 4+ |
 | Agent roles & supervision | `AGENTS.md` | 0 |
 | Project memory (projectmem) | `.projectmem/`, `CLAUDE.md` | 0 |
 | JVM pilot app | `pilot/` | 1 |
