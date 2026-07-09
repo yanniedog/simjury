@@ -79,9 +79,12 @@ function main() {
     process.exit(0);
   }
 
+  // Re-request when a prior @codex review never produced a connector response
+  // (app lag, missed webhook). Idempotent once chatgpt-codex-connector appears.
   if (triggerAlreadyPosted(prNumber)) {
-    console.log(`request-codex-review: @codex review already requested on PR #${prNumber} — skip`);
-    process.exit(0);
+    console.log(
+      `request-codex-review: prior @codex review on PR #${prNumber} with no connector reply — re-requesting`,
+    );
   }
 
   process.exit(postCodexTrigger(prNumber, args.dryRun));
