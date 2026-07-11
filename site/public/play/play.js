@@ -74,7 +74,7 @@ function episodeScene(ep) {
   return key ? { src: `/art/${key}.webp`, alt: `Court sketch: ${ep.title}.` } : SCENES.courtroom;
 }
 function jurorScene(jid) {
-  const jz = S.juryRoom?.jurors.find((x) => x.id === jid);
+  const jz = S.juryRoom?.jurors?.find((x) => x.id === jid);
   if (!jz) return SCENES.juryroom;
   return { src: `/art/juror-${String(jz.seat).padStart(2, '0')}.webp`, alt: `Court sketch: ${jz.label} at the deliberation table.` };
 }
@@ -84,8 +84,12 @@ function shortLine(text, max = 170) {
   return clean.length > max ? `${clean.slice(0, max - 3).trimEnd()}...` : clean;
 }
 
-function speechBubble(who, text, side = 'right') {
-  return `<span class="sketch-bubble ${side}" aria-hidden="true">
+// `hidden` defaults true because most bubbles duplicate text shown elsewhere on the
+// card (testimony body, episode <h1>, exhibit title) — hiding avoids a double read.
+// Pass false where the bubble text is the ONLY copy on screen (summons, verdict,
+// jury-room close, reveal), so screen readers still get it.
+function speechBubble(who, text, side = 'right', hidden = true) {
+  return `<span class="sketch-bubble ${side}"${hidden ? ' aria-hidden="true"' : ''}>
     <span class="bubble-who">${esc(who)}</span>
     <span class="bubble-text">${esc(shortLine(text))}</span>
   </span>`;
@@ -237,7 +241,7 @@ function renderSummons() {
   const resume = (S.pos > 0 || S.verdict) ? `<button class="btn ghost" data-act="resume">Resume</button>` : '';
   app.innerHTML = `
     <p class="brand"><a href="/">SimJury</a></p>
-    ${trialScene('summons', speechBubble('The usher', 'Juror #1, the court is ready for you.', 'right'), 'summons-scene')}
+    ${trialScene('summons', speechBubble('The usher', 'Juror #1, the court is ready for you.', 'right', false), 'summons-scene')}
     <p class="eyebrow">You are Juror #1</p>
     <h1>${esc(c.title_play)}</h1>
     <div class="charge"><strong>The charge:</strong> ${esc(c.charge.label)}.</div>
@@ -364,7 +368,7 @@ function renderVerdict() {
   const d = S.diary;
   app.innerHTML = `
     <p class="brand"><a href="/">SimJury</a></p>
-    ${trialScene('verdict', speechBubble('Foreperson', 'Your verdict must be locked before the room speaks.', 'right'))}
+    ${trialScene('verdict', speechBubble('Foreperson', 'Your verdict must be locked before the room speaks.', 'right', false))}
     <p class="eyebrow">Your verdict</p>
     <h1>Sure, beyond reasonable doubt?</h1>
     <div class="verdict-choices">
@@ -417,7 +421,7 @@ function drawRoom() {
     </div>` : renderRoomVerdict();
   const roomScene = beat
     ? trialScene(jurorScene(beat.speaker), speechBubble(labelFor(beat.speaker), beat.text, 'right'))
-    : trialScene('juryroom', speechBubble('Foreperson', 'The room is ready to return its verdict.', 'center'));
+    : trialScene('juryroom', speechBubble('Foreperson', 'The room is ready to return its verdict.', 'center', false));
 
   app.innerHTML = `
     <p class="brand">The jury room</p>
@@ -531,7 +535,7 @@ async function renderReveal() {
 
   app.innerHTML = `
     <p class="brand">${esc(S.meta.title_reveal)}</p>
-    ${trialScene('record', speechBubble('Clerk', 'The sealed record is opened.', 'right'))}
+    ${trialScene('record', speechBubble('Clerk', 'The sealed record is opened.', 'right', false))}
     <div class="outcome">
       <p class="eyebrow">Your verdict</p>
       <p class="big">${yours}</p>
