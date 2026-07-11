@@ -1,0 +1,3 @@
+# Raw image-model deliveries (large PNGs) stay local; only the compiled
+# prompt pack + manifest are versioned.
+images-sol-*/
