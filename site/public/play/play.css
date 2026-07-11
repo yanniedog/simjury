@@ -1,0 +1,189 @@
+/* SimJury browser player — builds on /styles.css tokens (--ink, --paper, --mist, --brass…). */
+
+.play {
+  width: min(46rem, calc(100% - 2.5rem));
+  margin-inline: auto;
+  padding: clamp(1.5rem, 5vh, 3rem) 0 4rem;
+}
+
+.play-loading,
+.play-note {
+  color: var(--mist);
+}
+
+/* --- shared bits --- */
+.play .brand {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  margin: 0 0 1.25rem;
+}
+.play .brand a { color: inherit; text-decoration: none; }
+
+.play h1 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  line-height: 1.2;
+  color: var(--mist);
+  margin: 0 0 1rem;
+}
+.play h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.3rem;
+  color: var(--brass);
+  margin: 0 0 0.6rem;
+}
+.play p { margin: 0 0 1rem; }
+
+.eyebrow {
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brass);
+  margin: 0 0 0.5rem;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-top: 1.5rem;
+}
+.btn[disabled] { opacity: 0.4; pointer-events: none; }
+
+/* --- charge / elements --- */
+.charge {
+  background: var(--panel);
+  border-left: 3px solid var(--brass-deep);
+  padding: 1rem 1.2rem;
+  margin: 0 0 1.5rem;
+}
+.charge ul { margin: 0.5rem 0 0; padding-left: 1.1rem; }
+.charge li { margin: 0.35rem 0; color: var(--mist); }
+
+/* --- reading progress bar --- */
+.reader-bar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  margin-bottom: 1.25rem;
+  background: linear-gradient(var(--ink) 70%, transparent);
+}
+.progress {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--mist) 25%, transparent);
+  overflow: hidden;
+}
+.progress > span {
+  display: block;
+  height: 100%;
+  background: var(--brass);
+  transition: width 0.3s ease;
+}
+.progress-label { font-size: 0.8rem; color: var(--mist); white-space: nowrap; }
+
+/* --- item card --- */
+.card {
+  background: color-mix(in srgb, var(--panel) 92%, black 8%);
+  border: 1px solid color-mix(in srgb, var(--mist) 16%, transparent);
+  border-radius: 0.5rem;
+  padding: 1.25rem 1.4rem;
+  margin-bottom: 1.25rem;
+  animation: cardin 0.35s ease;
+}
+@keyframes cardin { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.card .kind {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brass);
+  margin: 0 0 0.35rem;
+}
+.card .speaker { font-family: var(--font-display); font-size: 1.15rem; color: var(--paper); margin: 0 0 0.75rem; }
+.card .speaker small { font-family: var(--font-body); font-size: 0.8rem; color: var(--mist); font-weight: 400; }
+.card .body { color: color-mix(in srgb, var(--paper) 92%, transparent); white-space: pre-wrap; }
+.card .claims { margin-top: 0.9rem; display: grid; gap: 0.5rem; }
+.card .claim { font-size: 0.9rem; padding: 0.5rem 0.7rem; border-radius: 0.35rem; }
+.card .claim.crown { background: rgba(150, 90, 70, 0.18); }
+.card .claim.defence { background: rgba(90, 120, 110, 0.2); }
+.card .claim b { color: var(--brass); }
+.card figure { margin: 0.9rem 0 0; }
+.card img { max-width: 100%; height: auto; border-radius: 0.35rem; border: 1px solid color-mix(in srgb, var(--mist) 20%, transparent); background: #fff; }
+.card figcaption { font-size: 0.8rem; color: var(--mist); margin-top: 0.4rem; }
+.card .locator { margin-top: 0.75rem; font-size: 0.75rem; color: color-mix(in srgb, var(--mist) 70%, transparent); }
+
+.episode-head { text-align: center; padding: 1.5rem 0 0.5rem; }
+.episode-head .eyebrow { text-align: center; }
+
+.nav-row { display: flex; justify-content: space-between; gap: 1rem; margin-top: 0.5rem; }
+
+/* --- verdict --- */
+.field { margin: 0 0 1.1rem; }
+.field label { display: block; font-size: 0.9rem; color: var(--mist); margin-bottom: 0.35rem; }
+.field textarea,
+.field input {
+  width: 100%;
+  font: inherit;
+  color: var(--paper);
+  background: rgba(0,0,0,0.25);
+  border: 1px solid color-mix(in srgb, var(--mist) 30%, transparent);
+  border-radius: 0.35rem;
+  padding: 0.6rem 0.75rem;
+  resize: vertical;
+}
+.verdict-choices { display: grid; gap: 0.75rem; grid-template-columns: 1fr 1fr; margin: 1rem 0; }
+.choice {
+  padding: 1rem;
+  text-align: center;
+  border-radius: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--mist) 30%, transparent);
+  background: transparent;
+  color: var(--paper);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+.choice:hover { transform: translateY(-1px); border-color: var(--brass); }
+.choice[aria-pressed="true"] { border-color: var(--brass); background: var(--glow); color: var(--brass); }
+.warn { font-size: 0.85rem; color: color-mix(in srgb, var(--brass) 85%, white); }
+
+/* --- reveal --- */
+.outcome {
+  text-align: center;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  background: var(--panel);
+  border: 1px solid var(--brass-deep);
+}
+.outcome .big { font-family: var(--font-display); font-size: 1.5rem; color: var(--paper); margin: 0.25rem 0; }
+.layer { margin-bottom: 1.25rem; }
+.layer .body { white-space: pre-wrap; color: color-mix(in srgb, var(--paper) 90%, transparent); }
+.contradiction { border-left: 3px solid var(--brass); padding: 0.5rem 0 0.5rem 0.9rem; margin: 0.75rem 0; }
+.contradiction .tag { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--brass); }
+.reveal-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; margin-top: 0.5rem; }
+.reveal-table td { padding: 0.5rem 0.6rem; border-top: 1px solid color-mix(in srgb, var(--mist) 18%, transparent); vertical-align: top; }
+.reveal-table .play-name { color: var(--mist); }
+.reveal-table .real-name { color: var(--brass); font-weight: 600; white-space: nowrap; }
+details { margin-top: 1rem; }
+summary { cursor: pointer; color: var(--brass); }
+
+.footlinks { margin-top: 2rem; font-size: 0.9rem; color: color-mix(in srgb, var(--mist) 70%, transparent); }
+.footlinks a { color: var(--brass); }
+
+@media (max-width: 30rem) {
+  .verdict-choices { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card { animation: none; }
+}
