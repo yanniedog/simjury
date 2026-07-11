@@ -30,6 +30,20 @@ are unchanged; see `PILOT-SPEC.md`, `archive/simjury-build-spec-v3.md`.)
   synced into the player alongside the pilot case assets. It is intentionally distinct from a
   future full-v3 `jurors.json` (Phase 5, ≥40 authored lines + reaction rules per juror).
 
+## D-WEB-3 — Court-sketch art layer (owner-directed, 2026-07-11)
+
+- The whole site gets **court-sketch-artist visuals**, all in **first person** from
+  Juror #1's seat (the site opens on the juror's-eye view of the full courtroom), with
+  **HTML speech bubbles** overlaid while a character's narration plays — bubbles are
+  never baked into the images.
+- Final artwork is produced by an **external image-generation model**. The contract is
+  [`site/art/IMAGE-BRIEF.md`](art/IMAGE-BRIEF.md) + [`site/art/image-manifest.json`](art/image-manifest.json)
+  (style bible, cast sheet, per-image briefs, exact filenames, quiet zones for bubbles);
+  [`site/art/prompts/`](art/prompts/) holds the compiled hand-off — a primer plus one
+  self-contained prompt file per image, fed to the generator one at a time.
+  Hand-drawn SVGs in `public/art/` are temporary placeholders until generated files land.
+- Images contain **no legible text** (F-4 safety) and no real person's likeness.
+
 ## Unchanged, still binding on the web
 
 - **No real names / no reveal content pre-verdict (F-4 / P-5).** Enforced for juror text by a

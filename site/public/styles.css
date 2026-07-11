@@ -4,6 +4,9 @@
   --mist: #c5d4cb;
   --brass: #c4a35a;
   --brass-deep: #8f7340;
+  --oxblood: #8a3d31;
+  --sketch-paper: #eadfc4;
+  --sketch-ink: #3f3022;
   --panel: rgba(26, 36, 33, 0.72);
   --glow: rgba(196, 163, 90, 0.18);
   --font-display: "Fraunces", Georgia, serif;
@@ -35,9 +38,11 @@ body {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(ellipse 90% 60% at 70% -10%, var(--glow), transparent 55%),
-    radial-gradient(ellipse 70% 50% at 10% 100%, rgba(90, 120, 110, 0.25), transparent 50%),
-    linear-gradient(165deg, #121916 0%, #1a2421 45%, #24332e 100%);
+    linear-gradient(90deg, rgba(26, 36, 33, 0.95), rgba(26, 36, 33, 0.78) 42%, rgba(18, 25, 22, 0.96)),
+    linear-gradient(180deg, rgba(18, 25, 22, 0.1), rgba(18, 25, 22, 0.92)),
+    url("/art/backdrop-panelling.webp") center / cover no-repeat,
+    #121916;
+  opacity: 0.84;
   animation: drift 18s ease-in-out infinite alternate;
 }
 
@@ -46,7 +51,6 @@ body {
   to { filter: saturate(1.08) brightness(1.04); }
 }
 
-.hero,
 .install,
 .one-job,
 footer {
@@ -55,10 +59,43 @@ footer {
 }
 
 .hero {
-  padding: clamp(4.5rem, 14vh, 7rem) 0 2.5rem;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: min(78svh, 48rem);
+  padding: clamp(5rem, 13vh, 7rem) 0 clamp(2.25rem, 8vh, 4rem);
+  display: grid;
+  align-content: end;
   opacity: 0;
   transform: translateY(0.75rem);
   transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(12, 16, 14, 0.9) 0%, rgba(12, 16, 14, 0.62) 44%, rgba(12, 16, 14, 0.24) 100%),
+    linear-gradient(0deg, rgba(12, 16, 14, 0.82) 0%, rgba(12, 16, 14, 0.08) 42%);
+}
+
+.hero-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 48%;
+  filter: saturate(0.92) contrast(1.05) brightness(0.88);
+}
+
+.hero > :not(.hero-art):not(.hero-bubble) {
+  width: min(42rem, calc(100% - 2.5rem));
+  margin-inline: auto;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
 }
 
 html.ready .hero {
@@ -97,6 +134,97 @@ html.ready .hero {
   font-size: 1.05rem;
   color: color-mix(in srgb, var(--paper) 88%, transparent);
   max-width: 38ch;
+}
+
+.scene-frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--sketch-paper) 40%, transparent);
+  border-radius: 0.5rem;
+  background: var(--sketch-paper);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.32);
+}
+
+.scene-frame::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 34%;
+  pointer-events: none;
+  background: linear-gradient(0deg, rgba(22, 18, 14, 0.42), transparent);
+}
+
+.scene-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.92) contrast(1.04);
+}
+
+.sketch-bubble {
+  position: absolute;
+  z-index: 2;
+  max-width: min(19rem, 64%);
+  padding: 0.72rem 0.86rem;
+  color: var(--sketch-ink);
+  background: color-mix(in srgb, var(--sketch-paper) 94%, white);
+  border: 2px solid var(--sketch-ink);
+  border-radius: 1.2rem 1.05rem 1.3rem 0.9rem;
+  box-shadow: 0.18rem 0.22rem 0 rgba(63, 48, 34, 0.2);
+  font-family: var(--font-body);
+  font-size: clamp(0.82rem, 2.1vw, 0.96rem);
+  line-height: 1.28;
+}
+
+.sketch-bubble::after {
+  content: "";
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  bottom: -0.48rem;
+  left: 1.25rem;
+  background: inherit;
+  border-right: 2px solid var(--sketch-ink);
+  border-bottom: 2px solid var(--sketch-ink);
+  transform: rotate(45deg);
+}
+
+.sketch-bubble.right::after {
+  right: 1.25rem;
+  left: auto;
+}
+
+.hero-bubble {
+  display: none;
+  top: clamp(5rem, 12vh, 7rem);
+  right: clamp(1.25rem, 8vw, 8rem);
+}
+
+.hero-bubble-judge {
+  max-width: 17rem;
+}
+
+.install-sketch {
+  aspect-ratio: 16 / 9;
+  margin: 0 0 1.6rem;
+}
+
+.install-sketch .sketch-bubble {
+  right: 6%;
+  top: 11%;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .cta {
@@ -210,6 +338,28 @@ footer {
   padding: 0 0 2.5rem;
   font-size: 0.9rem;
   color: color-mix(in srgb, var(--mist) 70%, transparent);
+}
+
+@media (max-width: 30rem) {
+  .hero {
+    min-height: 72svh;
+  }
+
+  .hero::after {
+    background:
+      linear-gradient(0deg, rgba(12, 16, 14, 0.9) 0%, rgba(12, 16, 14, 0.46) 64%, rgba(12, 16, 14, 0.2) 100%);
+  }
+
+  .sketch-bubble {
+    max-width: 82%;
+    font-size: 0.82rem;
+  }
+}
+
+@media (min-width: 52rem) {
+  .hero-bubble {
+    display: block;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

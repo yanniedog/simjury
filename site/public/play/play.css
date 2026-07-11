@@ -11,6 +11,43 @@
   color: var(--mist);
 }
 
+.trial-scene {
+  aspect-ratio: 16 / 9;
+  margin: 0 0 1rem;
+}
+
+.trial-scene.summons-scene {
+  margin-bottom: 1.35rem;
+}
+
+.trial-scene .sketch-bubble {
+  top: 9%;
+  right: 6%;
+}
+
+.trial-scene .sketch-bubble.left {
+  right: auto;
+  left: 6%;
+}
+
+.trial-scene .sketch-bubble.center {
+  top: 8%;
+  right: 50%;
+  transform: translateX(50%);
+}
+
+.bubble-who {
+  display: block;
+  margin: 0 0 0.22rem;
+  font-family: var(--font-display);
+  font-size: 0.95em;
+  color: var(--oxblood);
+}
+
+.bubble-text {
+  margin: 0;
+}
+
 /* --- shared bits --- */
 .play .brand {
   font-family: var(--font-display);
@@ -120,6 +157,16 @@
 .card img { max-width: 100%; height: auto; border-radius: 0.35rem; border: 1px solid color-mix(in srgb, var(--mist) 20%, transparent); background: #fff; }
 .card figcaption { font-size: 0.8rem; color: var(--mist); margin-top: 0.4rem; }
 .card .locator { margin-top: 0.75rem; font-size: 0.75rem; color: color-mix(in srgb, var(--mist) 70%, transparent); }
+.card .trial-scene {
+  margin: 0 0 1rem;
+}
+.card .trial-scene > img {
+  max-width: none;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
 
 .episode-head { text-align: center; padding: 1.5rem 0 0.5rem; }
 .episode-head .eyebrow { text-align: center; }
@@ -257,6 +304,14 @@ details.diary summary { color: var(--brass); cursor: pointer; font-size: 0.9rem;
 
 @media (max-width: 30rem) {
   .verdict-choices { grid-template-columns: 1fr; }
+  .trial-scene {
+    aspect-ratio: 4 / 3;
+  }
+  .trial-scene .sketch-bubble {
+    top: 7%;
+    right: 5%;
+    max-width: 86%;
+  }
 }
 @media (max-width: 26rem) {
   .bench { grid-template-columns: repeat(4, 1fr); }
