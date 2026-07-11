@@ -1,0 +1,20 @@
+{
+  "name": "simjury-web",
+  "private": true,
+  "description": "simjury.com landing + install site (Cloudflare Workers static assets)",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "sync": "node scripts/sync-cases.mjs",
+    "predev": "node scripts/sync-cases.mjs",
+    "dev": "wrangler dev",
+    "predeploy": "node scripts/sync-cases.mjs",
+    "deploy": "wrangler deploy",
+    "precheck": "node scripts/sync-cases.mjs",
+    "check": "wrangler deploy --dry-run"
+  },
+  "devDependencies": {
+    "wrangler": "^4.69.0"
+  }
+}

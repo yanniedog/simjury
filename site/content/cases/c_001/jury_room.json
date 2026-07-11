@@ -1,0 +1,34 @@
+{
+  "case_id": "C-001",
+  "intro": "Your verdict is sealed. Now the other eleven jurors take the same evidence into the room. Listen.",
+  "jurors": [
+    { "id": "J-01", "seat": 2, "label": "Juror 2", "persona": "Takes the numbers at face value — four accusers cannot all be wrong.", "initial": "G", "arc": "vibes" },
+    { "id": "J-02", "seat": 3, "label": "Juror 3", "persona": "Practical; trusts what was found and what was written.", "initial": "G", "arc": "steady" },
+    { "id": "J-03", "seat": 4, "label": "Juror 4", "persona": "The principled holdout; fixes on how brief and how old each sighting was.", "initial": "NG", "arc": "principled_holdout" },
+    { "id": "J-04", "seat": 5, "label": "Juror 5", "persona": "Keeps the room honest about the burden of proof.", "initial": "G", "arc": "steady" },
+    { "id": "J-05", "seat": 6, "label": "Juror 6", "persona": "Foreperson; keeps order and leans to convict.", "initial": "G", "arc": "foreperson" },
+    { "id": "J-06", "seat": 7, "label": "Juror 7", "persona": "Persuaded by the handwriting evidence.", "initial": "G", "arc": "drifter" },
+    { "id": "J-07", "seat": 8, "label": "Juror 8", "persona": "Comes in certain; undone by the parade.", "initial": "G", "arc": "mind_changer" },
+    { "id": "J-08", "seat": 9, "label": "Juror 9", "persona": "Quiet doubter; distrusts certainty offered too easily.", "initial": "NG", "arc": "steady" },
+    { "id": "J-09", "seat": 10, "label": "Juror 10", "persona": "Wants the accused to account for himself.", "initial": "G", "arc": "burden_drifter" },
+    { "id": "J-10", "seat": 11, "label": "Juror 11", "persona": "The undecided one; talks himself into a verdict.", "initial": "U", "arc": "drifter" },
+    { "id": "J-11", "seat": 12, "label": "Juror 12", "persona": "Uneasy about the identifications, swayed by their number.", "initial": "NG", "arc": "steady" }
+  ],
+  "script": [
+    { "speaker": "J-05", "text": "Juror One has sealed a verdict; the rest of us must reach our own. Round the table, then — guilty or not, and the reason that weighs most." },
+    { "speaker": "J-01", "text": "Four women, none of them acquainted, and every one names the same man. I cannot make that a coincidence. Guilty." },
+    { "speaker": "J-03", "text": "Each saw a stranger for a few minutes — in a doorway, on a step — and picked him out months afterward, once the papers had run his description. That is not memory. That is suggestion." },
+    { "speaker": "J-09", "text": "If he is the wrong man, let him tell us where he was on each of those days. He cannot.", "note": "burden drift" },
+    { "speaker": "J-04", "text": "That is not his burden. He need prove nothing. It is for the Crown to prove it was him, and to prove it so that we are sure.", "note": "corrects the burden" },
+    { "speaker": "J-06", "text": "The handwriting man was certain. The lists were in the accused's hand, disguised." },
+    { "speaker": "J-08", "text": "He also granted the hand was disguised. A disguise one man can put on, another can put on for him. Certainty like that makes me less sure, not more." },
+    { "speaker": "J-02", "text": "And the good clothes — the spats — found in his room, matching how the caller was dressed." },
+    { "speaker": "J-03", "text": "Fine dress is not a crime. Half the gentlemen in town are turned out the same." },
+    { "speaker": "J-07", "text": "I came in sure. But I keep returning to the parade — they were shown him one at a time, the first woman hesitated, and the rest followed where she led. If she was wrong, they were all wrong together. I cannot call that being sure.", "change": "NG" },
+    { "speaker": "J-10", "text": "I have gone back and forth all afternoon. But four accounts, the writing, the matter from years before — set side by side, it is too much to lay to chance. I say guilty.", "change": "G" },
+    { "speaker": "J-11", "text": "I do not trust the identifications either. Yet I cannot get past how many of them there are. Guilty, then.", "change": "G" },
+    { "speaker": "J-03", "text": "Then I will be the one who cannot be sure. That is what the doubt is for." },
+    { "speaker": "J-05", "text": "We are not of one mind. But we have enough to return. Let it be counted.", "vote": true }
+  ],
+  "verdict_intro": "The foreperson rises."
+}

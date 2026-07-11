@@ -4,6 +4,8 @@ A dramatically simplified pilot for **SimJury** — a single-player, offline jur
 
 This repository is in **pilot phase**. The full v3 specification (`archive/simjury-build-spec-v3.md`) remains the long-term target; the pilot proves the core loop on a tiny case before scaling up.
 
+**Public site:** [simjury.com](https://simjury.com) (Cloudflare Worker `simjury-web` in `site/`).
+
 ## Quick start
 
 ```bash
@@ -18,9 +20,10 @@ After a PR merges to `main` and the **PR queue drains** (no other open PRs to `m
 
 | Asset | URL |
 |-------|-----|
+| Install page | [simjury.com/install](https://simjury.com/install/) |
 | Rolling APK | `https://github.com/yanniedog/simjury/releases/download/app-apk-latest/app-preview.apk` |
 | Update manifest | `https://github.com/yanniedog/simjury/releases/download/app-apk-latest/app-apk-latest.json` |
-| Install page | `https://github.com/yanniedog/simjury/releases/download/app-apk-latest/install.html` |
+| Install page (GitHub mirror) | `https://github.com/yanniedog/simjury/releases/download/app-apk-latest/install.html` |
 
 The installed app checks the manifest on launch and offers an in-app update (AR-local parity). Enable **Install unknown apps** for `SimJury` when prompted.
 

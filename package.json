@@ -15,6 +15,9 @@
     "github:bot-gates:operator": "node scripts/github-bot-gates-operator.mjs",
     "pr:request-codex-review": "node scripts/request-codex-review.mjs",
     "branch-protection:apply": "node scripts/apply-branch-protection.mjs",
-    "repo-merge-settings:apply": "node scripts/apply-repo-merge-settings.mjs"
+    "repo-merge-settings:apply": "node scripts/apply-repo-merge-settings.mjs",
+    "site:dev": "npm --prefix site run dev",
+    "site:deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File site/deploy.ps1",
+    "site:check": "npm --prefix site run check"
   }
 }

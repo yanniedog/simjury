@@ -1,0 +1,7 @@
+node_modules/
+.wrangler/
+.dev.vars
+.env
+dist/
+# Synced from pilot/src/main/resources/cases (single source of truth) — see scripts/sync-cases.mjs
+public/cases/
