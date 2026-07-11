@@ -1,0 +1,60 @@
+name: site
+
+# simjury.com (Cloudflare Worker) CI/CD.
+#   - On PRs touching site/**: build + F-4 spoiler scan + wrangler dry-run (no deploy).
+#   - On push to main (i.e. AFTER a PR merges through the bot gates): deploy.
+# Deploys never run from a PR — only from a merged change on main.
+
+on:
+  pull_request:
+    paths:
+      - "site/**"
+      - ".github/workflows/site.yml"
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/site.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: site-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install
+        working-directory: site
+        run: npm ci
+      - name: Validate (case sync + F-4 spoiler scan + wrangler dry-run)
+        working-directory: site
+        run: npm run check
+
+  deploy:
+    name: site-deploy
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install
+        working-directory: site
+        run: npm ci
+      - name: Deploy to Cloudflare Workers
+        working-directory: site
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npm run deploy
