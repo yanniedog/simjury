@@ -4,7 +4,9 @@
 // The jury room is a scripted, fictional deliberation (D-WEB-2). truth_file.json is
 // fetched only after the verdict is locked (soft spoiler gate).
 
-const CASE_ID = new URLSearchParams(location.search).get('case') || 'c_001';
+const RAW_CASE = new URLSearchParams(location.search).get('case') || 'c_001';
+// Whitelist the case id so it can never be used for path traversal in fetch() below.
+const CASE_ID = /^c_\d{3}$/.test(RAW_CASE) ? RAW_CASE : 'c_001';
 const BASE = `/cases/${CASE_ID}/`;
 const SAVE_KEY = `simjury:play:${CASE_ID}`;
 const AUDIO_KEY = 'simjury:narration';
@@ -55,7 +57,9 @@ function speak(text, key, done) {
   u.pitch = pitch; u.rate = rate;
   onSpeechEnd = done || null;
   u.onend = () => { if (onSpeechEnd === done) { onSpeechEnd = null; if (done) done(); } };
-  u.onerror = u.onend;
+  // On a genuine speech error, stop — do NOT run `done` (which would auto-advance and
+  // could skip the entire trial if narration fails on every item).
+  u.onerror = () => { if (onSpeechEnd === done) onSpeechEnd = null; };
   paused = false;
   synth.speak(u);
 }
@@ -119,7 +123,11 @@ const errorCard = (m) => `<p class="brand"><a href="/">SimJury</a></p>
 function loadSave() {
   try {
     const s = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
-    return { phase: s.phase, pos: s.pos | 0, verdict: s.verdict || null, diary: s.diary || undefined };
+    // Only include keys that are present — never spread `undefined` over the S defaults
+    // (otherwise the default diary object gets clobbered and renderVerdict throws).
+    const out = { phase: s.phase, pos: s.pos | 0, verdict: s.verdict || null };
+    if (s.diary) out.diary = s.diary;
+    return out;
   } catch { return {}; }
 }
 function save() {
