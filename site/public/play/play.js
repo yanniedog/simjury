@@ -19,6 +19,86 @@ const app = document.getElementById('app');
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) =>
   ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+const SCENES = {
+  courtroom: {
+    src: '/art/courtroom.webp',
+    alt: 'Court sketch from Juror #1 perspective across a full courtroom.',
+  },
+  witness: {
+    src: '/art/witness-stand.webp',
+    alt: 'Court sketch of a witness in the witness stand with counsel in the foreground.',
+  },
+  juryroom: {
+    src: '/art/jury-room.webp',
+    alt: 'Court sketch of jurors around a deliberation table.',
+  },
+  record: {
+    src: '/art/sealed-record.webp',
+    alt: 'Court sketch of a sealed court record opened on a clerk desk.',
+  },
+  summons: {
+    src: '/art/summons-usher.webp',
+    alt: 'Court sketch: the usher holds the jury-box door open for you.',
+  },
+  verdict: {
+    src: '/art/verdict-hands.webp',
+    alt: "Court sketch: your own hands holding a folded verdict slip over the jury rail.",
+  },
+  exhibit: {
+    src: '/art/exhibit-presented.webp',
+    alt: 'Court sketch: the usher brings an exhibit across the court to the jury.',
+  },
+  direction: {
+    src: '/art/judge-direction.webp',
+    alt: 'Court sketch: the judge leans over the bench to direct the jury.',
+  },
+};
+
+// Per-speaker / per-episode art. Falls back to a base SCENE when unmapped, so the
+// player still works if a case uses ids these maps don't cover.
+const WITNESS_ART = {
+  'P-01': 'witness-w01', 'P-02': 'witness-w02', 'P-03': 'witness-w03', 'P-04': 'witness-w04',
+  'P-05': 'witness-inspector', 'P-06': 'witness-expert', 'P-07': 'witness-constable', 'P-08': 'accused-dock',
+};
+const EPISODE_ART = { 'E-01': 'ep-01-method', 'E-02': 'ep-02-accounts', 'E-03': 'ep-03-documents', 'E-04': 'ep-04-accused' };
+
+function witnessScene(w) {
+  const key = WITNESS_ART[w.pseudonym_ref];
+  if (!key) return SCENES.witness;
+  const who = S.pseudonyms.get(w.pseudonym_ref)?.play_name || w.pseudonym_ref;
+  const where = w.pseudonym_ref === 'P-08' ? 'in the dock' : 'in the witness box';
+  return { src: `/art/${key}.webp`, alt: `Court sketch: ${who} ${where}.` };
+}
+function episodeScene(ep) {
+  const key = EPISODE_ART[ep.id];
+  return key ? { src: `/art/${key}.webp`, alt: `Court sketch: ${ep.title}.` } : SCENES.courtroom;
+}
+function jurorScene(jid) {
+  const jz = S.juryRoom?.jurors.find((x) => x.id === jid);
+  if (!jz) return SCENES.juryroom;
+  return { src: `/art/juror-${String(jz.seat).padStart(2, '0')}.webp`, alt: `Court sketch: ${jz.label} at the deliberation table.` };
+}
+
+function shortLine(text, max = 170) {
+  const clean = String(text ?? '').replace(/\s+/g, ' ').trim();
+  return clean.length > max ? `${clean.slice(0, max - 3).trimEnd()}...` : clean;
+}
+
+function speechBubble(who, text, side = 'right') {
+  return `<span class="sketch-bubble ${side}" aria-hidden="true">
+    <span class="bubble-who">${esc(who)}</span>
+    <span class="bubble-text">${esc(shortLine(text))}</span>
+  </span>`;
+}
+
+function trialScene(kindOrScene, bubbleHtml = '', className = '') {
+  const scene = (typeof kindOrScene === 'string' ? SCENES[kindOrScene] : kindOrScene) || SCENES.courtroom;
+  return `<figure class="scene-frame trial-scene ${className}">
+    <img src="${esc(scene.src)}" alt="${esc(scene.alt)}" loading="lazy" />
+    ${bubbleHtml}
+  </figure>`;
+}
+
 /* ============================ Narration engine ============================ */
 const synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
 let VOICES = [];
@@ -157,6 +237,7 @@ function renderSummons() {
   const resume = (S.pos > 0 || S.verdict) ? `<button class="btn ghost" data-act="resume">Resume</button>` : '';
   app.innerHTML = `
     <p class="brand"><a href="/">SimJury</a></p>
+    ${trialScene('summons', speechBubble('The usher', 'Juror #1, the court is ready for you.', 'right'), 'summons-scene')}
     <p class="eyebrow">You are Juror #1</p>
     <h1>${esc(c.title_play)}</h1>
     <div class="charge"><strong>The charge:</strong> ${esc(c.charge.label)}.</div>
@@ -202,6 +283,7 @@ function episodeHead(ep) {
     voiceKey: 'narrator',
     speech: `Episode ${n}. ${ep.title}. ${ep.intro_text}`,
     html: `<div class="card episode-head">
+      ${trialScene(episodeScene(ep), speechBubble('Clerk of the court', ep.title, 'right'))}
       <p class="eyebrow">Episode ${n} of ${S.trial.episodes.length}</p>
       <h1>${esc(ep.title)}</h1>
       <p class="body">${esc(ep.intro_text)}</p>
@@ -217,6 +299,7 @@ function itemView(id) {
       voiceKey: w.pseudonym_ref,
       speech: b.text,
       html: `<div class="card">
+        ${trialScene(witnessScene(w), speechBubble(who, b.text, 'right'))}
         <p class="kind">${esc(KIND_LABEL[b.mode] || b.mode)}</p>
         <p class="speaker">${esc(who)} <small>· ${esc(w.role_label)}</small></p>
         <p class="body">${esc(b.text)}</p>
@@ -231,6 +314,7 @@ function itemView(id) {
       voiceKey: 'narrator',
       speech: `Exhibit. ${x.title}. ${x.text} The Crown says: ${x.prosecution_claim} The defence says: ${x.defence_claim}`,
       html: `<div class="card">
+        ${trialScene('exhibit', speechBubble('Clerk', `Exhibit. ${x.title}.`, 'left'))}
         <p class="kind">Exhibit</p>
         <p class="speaker">${esc(x.title)}</p>
         <p class="body">${esc(x.text)}</p>${img}
@@ -247,6 +331,7 @@ function itemView(id) {
       voiceKey: 'judge',
       speech: `A direction from the judge. ${d.title}. ${d.text}`,
       html: `<div class="card direction">
+        ${trialScene('direction', speechBubble('The judge', d.text, 'right'))}
         <p class="kind">Direction from the judge</p>
         <p class="speaker">${esc(d.title)}</p>
         <p class="body">${esc(d.text)}</p>
@@ -279,6 +364,7 @@ function renderVerdict() {
   const d = S.diary;
   app.innerHTML = `
     <p class="brand"><a href="/">SimJury</a></p>
+    ${trialScene('verdict', speechBubble('Foreperson', 'Your verdict must be locked before the room speaks.', 'right'))}
     <p class="eyebrow">Your verdict</p>
     <h1>Sure, beyond reasonable doubt?</h1>
     <div class="verdict-choices">
@@ -329,10 +415,14 @@ function drawRoom() {
       <p class="who">${esc(labelFor(beat.speaker))}${beat.note ? ` <small>· ${esc(beat.note)}</small>` : ''}</p>
       <p class="body">${esc(beat.text)}</p>
     </div>` : renderRoomVerdict();
+  const roomScene = beat
+    ? trialScene(jurorScene(beat.speaker), speechBubble(labelFor(beat.speaker), beat.text, 'right'))
+    : trialScene('juryroom', speechBubble('Foreperson', 'The room is ready to return its verdict.', 'center'));
 
   app.innerHTML = `
     <p class="brand">The jury room</p>
     <p class="sub">Your verdict is sealed. The other eleven take the same evidence in.</p>
+    ${roomScene}
     <div class="bench">
       <div class="seat you" title="You"><span class="seat-n">1</span><span class="seat-pos">${S.verdict === 'guilty' ? 'G' : 'NG'}</span></div>
       ${seats}
@@ -441,6 +531,7 @@ async function renderReveal() {
 
   app.innerHTML = `
     <p class="brand">${esc(S.meta.title_reveal)}</p>
+    ${trialScene('record', speechBubble('Clerk', 'The sealed record is opened.', 'right'))}
     <div class="outcome">
       <p class="eyebrow">Your verdict</p>
       <p class="big">${yours}</p>
