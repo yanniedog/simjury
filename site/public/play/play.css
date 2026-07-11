@@ -181,6 +181,11 @@ summary { cursor: pointer; color: var(--brass); }
 .footlinks { margin-top: 2rem; font-size: 0.9rem; color: color-mix(in srgb, var(--mist) 70%, transparent); }
 .footlinks a { color: var(--brass); }
 
+details.sources { margin-top: 1.5rem; }
+details.sources ul { margin: 0.5rem 0 0; padding-left: 1.1rem; font-size: 0.9rem; color: var(--mist); }
+details.sources li { margin: 0.3rem 0; }
+details.sources .fine { margin-top: 0.5rem; }
+
 .sub { color: color-mix(in srgb, var(--paper) 85%, transparent); max-width: 42ch; }
 .btn.mini { padding: 0.4rem 0.7rem; font-size: 0.8rem; }
 

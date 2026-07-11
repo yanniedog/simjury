@@ -95,7 +95,7 @@ async function boot() {
     }
 
     S = {
-      meta, trial, pseudonyms, blockIndex, exhibitIndex, directionIndex, steps,
+      meta, trial, pseudonyms, blockIndex, exhibitIndex, directionIndex, steps, sources,
       phase: 'summons', pos: 0, verdict: null,
       diary: { topReason: '', strongestDoubt: '' },
       juryRoom: null, roomPos: 0, roomPositions: null,
@@ -158,8 +158,7 @@ function renderSummons() {
       <button class="btn primary" data-act="begin">${synth ? '▶ Take your seat &amp; listen' : 'Take your seat'}</button>
       ${resume}
     </div>
-    <p class="fine">${synth ? 'Narration uses your device voice — headphones recommended.' : 'Your browser has no speech support; you can read along.'}
-    · <a href="/install/">Android app</a></p>`;
+    <p class="fine">${synth ? 'Narration uses your device voice — headphones recommended.' : 'Your browser has no speech support; you can read along.'}</p>`;
 }
 
 /* ================================ Reading ================================ */
@@ -403,8 +402,26 @@ async function renderReveal() {
       : `The jury in ${esc(pres.juryYear)} returned <b>${esc(pres.juryVerdict)}</b> and convicted him. The record is that he was <b>innocent</b> — the verdict they did not reach.`;
   }
 
-  const layers = truth.layers.map((l, i) =>
+  // Keep sources out of the prose: split the trailing "Source: …" off each layer and
+  // gather all citations into one collapsed section (owner request: sources not prominent).
+  const splitSource = (body) => {
+    const k = body.indexOf('Source:');
+    return k === -1 ? { text: body, cite: '' } : { text: body.slice(0, k).trim(), cite: body.slice(k).trim() };
+  };
+  const cites = [];
+  const strippedLayers = truth.layers.map((l) => {
+    const s = splitSource(l.body);
+    if (s.cite) cites.push(s.cite);
+    return { heading: l.heading, body: s.text };
+  });
+  const layers = strippedLayers.map((l, i) =>
     `<div class="layer" data-layer="${i}"><h2>${esc(l.heading)}</h2><p class="body">${esc(l.body)}</p></div>`).join('');
+  const sourceItems = (S.sources?.sources || []).map((s) => `<li><b>${esc(s.id)}</b> — ${esc(s.citation)}</li>`).join('');
+  const sourcesBlock = (sourceItems || cites.length)
+    ? `<details class="sources"><summary>Sources &amp; citations</summary>
+        ${sourceItems ? `<ul>${sourceItems}</ul>` : ''}
+        ${cites.length ? `<p class="fine">${cites.map(esc).join('<br>')}</p>` : ''}
+      </details>` : '';
   const gt = S.trial.ground_truth || [];
   const contradictions = gt.length ? `<h2>What the evidence turned on</h2>` + gt.map((k) =>
     `<div class="contradiction"><span class="tag">${esc(({ real_decisive: 'Decisive', real_immaterial: 'Immaterial', illusory: 'Illusory' })[k.kind] || k.kind)} contradiction</span>
@@ -427,10 +444,11 @@ async function renderReveal() {
     ${contradictions}
     <h2>The names you knew were not their names</h2>
     <table class="reveal-table"><tbody>${reveal}</tbody></table>
+    ${sourcesBlock}
     ${adaptations}
-    <p class="footlinks"><a href="/install/">Android app</a> · <a href="/">Home</a> · <a href="#" data-act="restart">Play again</a></p>`;
+    <p class="footlinks"><a href="/">Home</a> · <a href="#" data-act="restart">Play again</a></p>`;
 
-  S._revealLayers = truth.layers;
+  S._revealLayers = strippedLayers;
   speak(compare ? compare.replace(/<[^>]+>/g, '') : `You returned ${yours}.`, 'narrator', null);
 }
 
