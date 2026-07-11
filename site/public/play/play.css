@@ -181,9 +181,82 @@ summary { cursor: pointer; color: var(--brass); }
 .footlinks { margin-top: 2rem; font-size: 0.9rem; color: color-mix(in srgb, var(--mist) 70%, transparent); }
 .footlinks a { color: var(--brass); }
 
+.sub { color: color-mix(in srgb, var(--paper) 85%, transparent); max-width: 42ch; }
+.btn.mini { padding: 0.4rem 0.7rem; font-size: 0.8rem; }
+
+/* --- audio control bar (sticky bottom) --- */
+.controls {
+  position: sticky;
+  bottom: 0;
+  margin-top: 1.5rem;
+  padding: 0.75rem 0 1rem;
+  background: linear-gradient(transparent, var(--ink) 35%);
+}
+.ctl-buttons { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem; }
+.ctl {
+  width: 2.4rem; height: 2.4rem; border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--mist) 35%, transparent);
+  background: rgba(0, 0, 0, 0.25); color: var(--paper); font-size: 1rem; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.ctl:hover { border-color: var(--brass); }
+.ctl.playpause { background: var(--brass); color: var(--ink); border-color: var(--brass); font-size: 1.1rem; }
+.controls .progress-label { margin-left: auto; }
+
+.card.direction { border-left: 3px solid var(--brass-deep); }
+
+/* --- optional diary --- */
+details.diary { margin: 0.25rem 0 1rem; }
+details.diary summary { color: var(--brass); cursor: pointer; font-size: 0.9rem; }
+
+/* --- jury bench --- */
+.bench {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
+  margin: 1rem 0 1.25rem;
+}
+.seat {
+  aspect-ratio: 1;
+  border-radius: 0.4rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.1rem;
+  border: 1px solid color-mix(in srgb, var(--mist) 25%, transparent);
+  background: rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+}
+.seat-n { font-size: 0.7rem; color: var(--mist); }
+.seat-pos { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
+.seat.G { background: rgba(150, 90, 70, 0.28); }
+.seat.NG { background: rgba(90, 120, 110, 0.3); }
+.seat.U { background: rgba(196, 163, 90, 0.2); }
+.seat.G .seat-pos { color: #e2a48c; }
+.seat.NG .seat-pos { color: #9fd0bf; }
+.seat.U .seat-pos { color: var(--brass); }
+.seat.you { border-color: var(--brass); box-shadow: 0 0 0 1px var(--brass); }
+.seat.active { transform: translateY(-2px); box-shadow: 0 0 0 2px var(--brass); }
+
+.room-line {
+  background: var(--panel);
+  border-radius: 0.5rem;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1rem;
+  min-height: 5rem;
+  animation: cardin 0.3s ease;
+}
+.room-line.change { border-left: 3px solid var(--brass); }
+.room-line .who { font-family: var(--font-display); color: var(--brass); margin: 0 0 0.4rem; }
+.room-line .who small { font-family: var(--font-body); color: var(--mist); font-weight: 400; }
+.room-line .body { color: var(--paper); margin: 0; }
+.outcome.room .big { color: var(--brass); }
+
 @media (max-width: 30rem) {
   .verdict-choices { grid-template-columns: 1fr; }
 }
+@media (max-width: 26rem) {
+  .bench { grid-template-columns: repeat(4, 1fr); }
+}
 @media (prefers-reduced-motion: reduce) {
-  .card { animation: none; }
+  .card, .room-line { animation: none; }
+  .seat { transition: none; }
 }
