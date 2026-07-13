@@ -97,6 +97,27 @@ describe('checkDocketCase', () => {
     expect(checkDocketCase(c).join()).toMatch(/unreachable/)
   })
 
+  it('flags a direction-constrained rule no beat can ever satisfy', () => {
+    const c = makeDocketCase()
+    // Every digital_forensics beat in the fixture argues innocence, so a rule
+    // pinned to stance 'proves' + direction 'guilt' on that theme can never
+    // fire (proves always pushes the beat's own direction).
+    const j = makeJuror(1, {
+      reaction_rules: [
+        {
+          when: { theme: 'digital_forensics', stance: 'proves', direction: 'guilt' },
+          effect: { delta: 1, confidence: 10, line: 'agree' },
+        },
+        {
+          when: { theme: 'any', stance: 'any' },
+          effect: { delta: 0, confidence: 0, line: 'pushback' },
+        },
+      ],
+    })
+    c.jury.jurors[0] = j
+    expect(checkDocketCase(c).join()).toMatch(/unreachable/)
+  })
+
   it('flags a rule that voices a line the juror does not have', () => {
     const c = makeDocketCase()
     const j = makeJuror(1)
@@ -111,6 +132,48 @@ describe('checkDocketCase', () => {
     j.lines = { agree: ['ok'], pushback: ['no'], concede: ['fine'], final: ['done'] }
     c.jury.jurors[0] = j
     expect(checkDocketCase(c).join()).toMatch(/authored lines/)
+  })
+
+  it('flags a duplicate cast id (defense in depth beyond the schema check)', () => {
+    const c = makeDocketCase()
+    c.cast = [...c.cast, { ...c.cast[0] }]
+    expect(checkDocketCase(c).join()).toMatch(/cast ids must be unique/)
+  })
+
+  it('flags a duplicate beat id (defense in depth beyond the schema check)', () => {
+    const c = makeDocketCase()
+    c.beats = c.beats.map((b, i) => (i === 1 ? { ...b, id: c.beats[0].id } : b))
+    expect(checkDocketCase(c).join()).toMatch(/beat ids must be unique/)
+  })
+
+  it('flags too few witnesses', () => {
+    const c = makeDocketCase()
+    // Collapse every witness beat onto a single speaker.
+    c.beats = c.beats.map((b) =>
+      b.kind === 'witness' ? { ...b, speaker: 'w1' } : b,
+    )
+    expect(checkDocketCase(c).join()).toMatch(/3-4 witnesses/)
+  })
+
+  it('flags when no rule actually voices burden_drift or burden_correct', () => {
+    const c = makeDocketCase()
+    c.jury.jurors = c.jury.jurors.map((j) => ({
+      ...j,
+      reaction_rules: j.reaction_rules.filter(
+        (r) => r.effect.line !== 'burden_drift' && r.effect.line !== 'burden_correct',
+      ),
+    }))
+    expect(checkDocketCase(c).join()).toMatch(/voices both burden_drift and burden_correct/)
+  })
+
+  it('flags a burden beat that is not a court direction', () => {
+    const c = makeDocketCase()
+    c.beats = c.beats.map((b) =>
+      b.tags.includes('burden')
+        ? { ...b, kind: 'witness' as const, speaker: 'w1', mode: 'examination' as const }
+        : b,
+    )
+    expect(checkDocketCase(c).join()).toMatch(/judge's instruction/)
   })
 })
 

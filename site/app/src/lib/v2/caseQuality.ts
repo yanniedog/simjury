@@ -6,6 +6,12 @@ import {
   type Theme,
 } from './caseSchema'
 
+type Direction = 'guilt' | 'innocence'
+
+function opposite(direction: Direction): Direction {
+  return direction === 'guilt' ? 'innocence' : 'guilt'
+}
+
 /**
  * Design-quality gate v2 — the docket case. Everything the v1 gate enforces
  * (trap, real signal, both sides, solvable, honest stamps, queue uniqueness
@@ -23,9 +29,9 @@ import {
  *    burden-correct pair so the room can err and recover.
  */
 
-/** Narration pacing floors: per-beat spoken words. */
-export const BEAT_WORDS_MIN = 25
-export const BEAT_WORDS_MAX = 90
+/** Narration pacing floors: per-beat spoken words (DAILY-PIVOT.md's 40-70/beat). */
+export const BEAT_WORDS_MIN = 40
+export const BEAT_WORDS_MAX = 70
 /** Total evidence budget (all beat words) for the 4.5–5.5 min reading phase. */
 export const CASE_WORDS_MIN = 550
 export const CASE_WORDS_MAX = 1050
@@ -36,14 +42,21 @@ export const JURY_G_MAX = 8
 export const JUROR_LINES_MIN = 6
 /** The queue must never run more than this many identical verdicts in a row. */
 export const VERDICT_RUN_MAX = 3
+/** DAILY-PIVOT.md's 8-10 minute structure calls for 3-4 witnesses. */
+export const WITNESS_COUNT_MIN = 3
+export const WITNESS_COUNT_MAX = 4
 
 export function wordCount(text: string): number {
   const words = text.trim().split(/\s+/)
   return words[0] === '' ? 0 : words.length
 }
 
-function jurorIssues(j: Juror, beatThemes: Set<Theme>): string[] {
+function jurorIssues(
+  j: Juror,
+  themeDirections: Map<Theme, Set<Direction>>,
+): string[] {
   const issues: string[] = []
+  const beatThemes = new Set(themeDirections.keys())
 
   const lineFunctions = new Set(
     Object.entries(j.lines)
@@ -82,6 +95,27 @@ function jurorIssues(j: Juror, beatThemes: Set<Theme>): string[] {
       issues.push(
         `${j.id} rule ${i} matches theme '${r.when.theme}' which no beat carries (unreachable)`,
       )
+    } else if (r.when.direction && r.when.stance !== 'any') {
+      // 'proves' pushes a beat's own direction; 'unreliable' pushes the
+      // opposite (see caseSchema.ts). With stance pinned, the rule can only
+      // fire if some beat on this theme actually produces that push — with
+      // stance 'any' the player can always pick whichever stance is needed,
+      // so only a pinned stance can make a direction unreachable.
+      const dirs =
+        r.when.theme === 'any'
+          ? new Set([...themeDirections.values()].flatMap((s) => [...s]))
+          : themeDirections.get(r.when.theme)
+      const reachable = [...(dirs ?? [])].some((beatDirection) =>
+        r.when.stance === 'proves'
+          ? beatDirection === r.when.direction
+          : opposite(beatDirection) === r.when.direction,
+      )
+      if (!reachable) {
+        issues.push(
+          `${j.id} rule ${i} needs a '${r.when.stance}' argument pushing '${r.when.direction}' on theme ` +
+            `'${r.when.theme}', but no beat can produce that push (unreachable)`,
+        )
+      }
     }
   }
 
@@ -115,9 +149,22 @@ export function checkDocketCase(c: DocketCase): string[] {
     )
   }
 
-  // Courtroom structure.
+  // Courtroom structure. A duplicate cast/beat id would otherwise silently
+  // shadow an earlier entry in these maps (the schema also rejects this — see
+  // caseSchema.ts's superRefine — but the gate checks it independently since
+  // it can be called on data that never went through schema.parse).
+  const castIds = c.cast.map((m) => m.id)
+  if (new Set(castIds).size !== castIds.length) {
+    issues.push('cast ids must be unique')
+  }
+  const rawBeatIds = c.beats.map((b) => b.id)
+  if (new Set(rawBeatIds).size !== rawBeatIds.length) {
+    issues.push('beat ids must be unique')
+  }
+
   const cast = new Map(c.cast.map((m) => [m.id, m]))
-  const beatIds = new Set(c.beats.map((b) => b.id))
+  const beatIds = new Set(rawBeatIds)
+  const witnessSpeakers = new Set<string>()
   for (const b of c.beats) {
     const speaker = cast.get(b.speaker)
     if (!speaker) {
@@ -127,20 +174,44 @@ export function checkDocketCase(c: DocketCase): string[] {
     if (b.kind === 'direction' && speaker.side !== 'court') {
       issues.push(`direction beat ${b.id} must be spoken by the court`)
     }
-    if (b.kind === 'witness' && !b.mode) {
-      issues.push(`witness beat ${b.id} must declare examination or cross`)
+    if (b.kind === 'witness') {
+      if (!b.mode) {
+        issues.push(`witness beat ${b.id} must declare examination or cross`)
+      }
+      witnessSpeakers.add(b.speaker)
     }
   }
   if (!c.beats.some((b) => b.kind === 'direction')) {
     issues.push('needs at least one direction beat (the judge must speak)')
   }
+  if (
+    witnessSpeakers.size < WITNESS_COUNT_MIN ||
+    witnessSpeakers.size > WITNESS_COUNT_MAX
+  ) {
+    issues.push(
+      `case must have ${WITNESS_COUNT_MIN}-${WITNESS_COUNT_MAX} witnesses (has ${witnessSpeakers.size})`,
+    )
+  }
 
-  const beatThemes = new Set(c.beats.flatMap((b) => b.tags))
+  const themeDirections = new Map<Theme, Set<Direction>>()
+  for (const b of c.beats) {
+    for (const tag of b.tags) {
+      const dirs = themeDirections.get(tag) ?? new Set<Direction>()
+      dirs.add(b.direction)
+      themeDirections.set(tag, dirs)
+    }
+  }
+  const beatThemes = new Set(themeDirections.keys())
   if (beatThemes.size < 3) {
     issues.push('beats must span at least three distinct themes')
   }
-  if (!beatThemes.has('burden')) {
-    issues.push("at least one beat must carry the 'burden' theme (the engine's burden-correct cite target)")
+  const burdenDirectionBeat = c.beats.some(
+    (b) => b.tags.includes('burden') && b.kind === 'direction',
+  )
+  if (!burdenDirectionBeat) {
+    issues.push(
+      "a 'burden'-tagged beat must be a direction beat (the judge's instruction the burden-correct line cites)",
+    )
   }
 
   // Check-ins resolve, are unique, and appear in beat order.
@@ -183,13 +254,19 @@ export function checkDocketCase(c: DocketCase): string[] {
     }
   }
 
-  const hasLine = (fn: (typeof LINE_FUNCTIONS)[number]) =>
-    jurors.some((j) => (j.lines[fn]?.length ?? 0) > 0)
-  if (!hasLine('burden_drift') || !hasLine('burden_correct')) {
-    issues.push('the jury needs both a burden_drift and a burden_correct voice')
+  // A line function only matters if some juror's *reaction rules* actually
+  // voice it — authored text nobody's rule ever selects can never be heard
+  // (the per-rule "no such line" check below catches the opposite mistake:
+  // a rule voicing a line the juror never wrote).
+  const hasReachableLine = (fn: (typeof LINE_FUNCTIONS)[number]) =>
+    jurors.some((j) => j.reaction_rules.some((r) => r.effect.line === fn))
+  if (!hasReachableLine('burden_drift') || !hasReachableLine('burden_correct')) {
+    issues.push(
+      'the jury needs a reaction rule that voices both burden_drift and burden_correct',
+    )
   }
 
-  for (const j of jurors) issues.push(...jurorIssues(j, beatThemes))
+  for (const j of jurors) issues.push(...jurorIssues(j, themeDirections))
 
   return issues
 }

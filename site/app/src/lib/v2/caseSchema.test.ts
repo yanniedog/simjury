@@ -53,6 +53,11 @@ describe('docketCaseSchema', () => {
     }
   })
 
+  it('rejects fewer than 3 check-ins', () => {
+    const c = makeDocketCase({ checkins: ['b3', 'b6'] })
+    expect(docketCaseSchema.safeParse(c).success).toBe(false)
+  })
+
   it('rejects a duplicate beat id', () => {
     const c = makeDocketCase()
     c.beats = c.beats.map((b, i) => (i === 3 ? { ...b, id: c.beats[0].id } : b))

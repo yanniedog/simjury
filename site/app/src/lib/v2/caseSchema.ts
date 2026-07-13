@@ -149,7 +149,7 @@ export const docketCaseSchema = z
     cast: z.array(castMemberSchema).min(3).max(9),
     beats: z.array(docketBeatSchema).min(10).max(14),
     /** Beat ids after which the conviction check-in appears (in beat order). */
-    checkins: z.array(z.string().min(1)).min(2).max(5),
+    checkins: z.array(z.string().min(1)).min(3).max(5),
     verdict_truth: z.enum(['Guilty', 'Not Guilty']),
     twist: z.string().min(1),
     difficulty_target: z.number().min(0).max(1),
