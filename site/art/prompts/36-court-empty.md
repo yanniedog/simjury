@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: court-empty.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1600x900px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 From the jury box: the courtroom empty and dim — dust sheets over the clerk's table, one gas lamp left burning low, the judge's chair pushed back, cold light through the tall windows. Your view over the empty jury rail.

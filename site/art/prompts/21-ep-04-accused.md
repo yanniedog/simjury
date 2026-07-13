@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: ep-04-accused.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1600x900px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 From the jury box: the whole court turned toward the dock. The accused rises to speak, one hand on the rail, the other pressed flat to his chest; the judge watches over his spectacles; every wig in the well is turned. The gas lamps seem brighter against a darkening afternoon window.

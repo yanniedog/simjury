@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: jury-room.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1600x900px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 First person from YOUR chair at the near end of the jury-room table: the long scarred oak table runs away from you, eleven men around it — leaning in, arms folded, one on his feet mid-argument — the foreperson at the far end with his papers squared. A single gas pendant over the table, a high frosted window beyond. Your own blank notepaper and a pencil at the bottom edge of frame.

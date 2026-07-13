@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: juror-03.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: landscape (4:3 feel; 3:2 is fine).
+FORMAT: 1024x768px target; landscape (4:3 feel; 3:2 is fine).
 
 SCENE TO DRAW:
 Across the jury-room table, first person: Juror 3 — a practical ironmonger, heavy hands flat on the table, nodding at the papers in front of him. Persona: trusts what was found and what was written.

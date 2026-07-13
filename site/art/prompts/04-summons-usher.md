@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: summons-usher.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1600x900px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 First person, arriving: the usher holds open the low door of the jury box for YOU, looking straight at the viewer, papers under one arm, half-bowing you toward the empty jury bench in the foreground. Beyond him the courtroom waits — bench, dock and witness box out of focus in loose wash. Your view is from standing height at the jury-box steps.

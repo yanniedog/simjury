@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: verdict-hands.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1600x900px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 Pure first person, looking down: your own two hands in the lower half of frame, resting on the jury-box ledge, holding a small folded slip of paper — blank, no writing. Beyond and above, out of focus in loose pale wash, the courtroom waits: the smeared scarlet of the judge, the dark smudge of the dock. Everything hangs on the slip. Top half of the frame is quiet wash.

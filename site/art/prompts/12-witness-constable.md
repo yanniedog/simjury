@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: witness-constable.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1600x900px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 From the jury box: Mr Quill, the retired constable, filling the witness box — heavy-set, mutton-chop whiskers, Sunday-best suit strained at the buttons, one big hand flat on the rail, remembering something from long ago. Jury rail at the very bottom of frame.

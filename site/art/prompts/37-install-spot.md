@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: install-spot.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: landscape (4:3 feel; 3:2 is fine).
+FORMAT: 1200x800px target; landscape (4:3 feel; 3:2 is fine).
 
 SCENE TO DRAW:
 First person, looking down at your own gloved hand holding a dark rectangular pocket case the size of a cigarette case (reads as a phone without being one), a folded jury summons paper beneath it on a wooden table — no lettering, wax seal only.

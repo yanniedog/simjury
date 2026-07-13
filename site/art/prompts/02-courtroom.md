@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: courtroom.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 2048x1152px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 THE OPENING IMAGE. From Juror #1's seat: the full courtroom in session spread before you. Centre-back: the judge high on his bench beneath a carved oak canopy with a loose scribbled royal coat of arms. Right: the raised witness box with a witness standing. Left: the dock with the accused standing between the rails, a warder's shoulder behind him. Below the bench: the clerk's green-baize table stacked with papers and tied bundles; two clerks' wig-backs. Mid-ground: counsel benches from behind — seated barristers' wigs, one counsel on his feet mid-question, arm extended toward the witness. Tall arched windows with cold daylight shafts; two gas sconces burning warm. FOREGROUND, first person: the polished jury-box rail sweeping across the bottom of frame with your own folded notes and a pencil on the ledge, and the dark cropped shoulders of the jurors beside you at the bottom corners.

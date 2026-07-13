@@ -6,6 +6,62 @@ import { join } from 'node:path';
 
 const m = JSON.parse(readFileSync('site/art/image-manifest.json', 'utf8'));
 const outDir = 'site/art/prompts';
+
+const requireString = (value, label) => {
+  if (typeof value !== 'string' || value.trim() === '') {
+    throw new Error(`${label} must be a non-empty string`);
+  }
+};
+
+const validateManifest = (manifest) => {
+  if (!manifest || typeof manifest !== 'object') throw new Error('Manifest must be an object');
+  if (!manifest.style || typeof manifest.style !== 'object') throw new Error('Manifest is missing style');
+  requireString(manifest.style.base_prompt, 'style.base_prompt');
+  requireString(manifest.style.avoid, 'style.avoid');
+  if (!manifest.pov || typeof manifest.pov !== 'object') throw new Error('Manifest is missing pov');
+  requireString(manifest.pov.rule, 'pov.rule');
+  requireString(manifest.pov.never, 'pov.never');
+  if (!manifest.cast || typeof manifest.cast !== 'object' || Array.isArray(manifest.cast)) {
+    throw new Error('Manifest is missing cast definitions');
+  }
+  Object.entries(manifest.cast).forEach(([id, description]) => {
+    requireString(description, `cast.${id}`);
+  });
+  if (!Array.isArray(manifest.images) || manifest.images.length === 0) {
+    throw new Error('Manifest must include a non-empty images array');
+  }
+
+  const ids = new Set();
+  const files = new Set();
+  manifest.images.forEach((img, index) => {
+    const label = img && img.id ? `image ${img.id}` : `images[${index}]`;
+    requireString(img?.id, `${label}.id`);
+    requireString(img?.file, `${label}.file`);
+    requireString(img?.priority, `${label}.priority`);
+    requireString(img?.composition, `${label}.composition`);
+    requireString(img?.quiet_zone, `${label}.quiet_zone`);
+    if (ids.has(img.id)) throw new Error(`Duplicate image id: ${img.id}`);
+    if (files.has(img.file)) throw new Error(`Duplicate image file: ${img.file}`);
+    ids.add(img.id);
+    files.add(img.file);
+
+    if (!img.size || typeof img.size.w !== 'number' || typeof img.size.h !== 'number') {
+      throw new Error(`${label}.size must include numeric w and h`);
+    }
+    if (!Number.isFinite(img.size.w) || !Number.isFinite(img.size.h) || img.size.w <= 0 || img.size.h <= 0) {
+      throw new Error(`${label}.size values must be positive finite numbers`);
+    }
+    if (!Array.isArray(img.cast)) throw new Error(`${label}.cast must be an array`);
+    img.cast.forEach((castId) => {
+      if (!Object.hasOwn(manifest.cast, castId)) {
+        throw new Error(`${label}.cast references unknown character ${castId}`);
+      }
+    });
+  });
+};
+
+validateManifest(m);
+
 rmSync(outDir, { recursive: true, force: true });
 mkdirSync(outDir, { recursive: true });
 
@@ -21,6 +77,21 @@ const ratioLabel = (img) => {
 };
 
 const stem = (img) => img.file.replace(/\.(webp|png)$/, '');
+
+const targetSizeLine = (img) => `${img.size.w}x${img.size.h}px target; ${ratioLabel(img)}`;
+
+const promptIntro = (img, n) => {
+  const sharedRules = 'No text anywhere, no speech bubbles, no gavel; keep the cast consistent.';
+  if (img.alpha) {
+    return `Image ${n} of ${total}. Same house rules as the primer, except this is a transparent overlay asset rather than a courtroom scene. ${sharedRules}`;
+  }
+  if (img.ships === false) {
+    return `Image ${n} of ${total}. Same house style and character rules as the primer, except this is a reference model sheet rather than a juror-POV scene. ${sharedRules}`;
+  }
+  return `Image ${n} of ${total}. Same house rules as the primer: a buff-paper court sketch of a
+real moment exactly as Juror #1 sees it — strict first person, seated eye-level, no
+narrated summary. ${sharedRules}`;
+};
 
 // Render the "quiet zone" instruction so it reads as a clean sentence for the
 // special cases (no bubble / whole-frame backdrop / transparent centre) as well
@@ -104,8 +175,11 @@ m.images.forEach((img, i) => {
   const fname = `${pad(n)}-${stem(img)}.md`;
   files.push({ fname, save: img.file, priority: img.priority });
 
+  const castInstruction = img.ships === false
+    ? 'match these descriptions'
+    : 'match the cast sheet and your earlier images';
   const castBlock = img.cast.length
-    ? `\nCHARACTERS in this scene (match the cast sheet and your earlier images):\n${img.cast.map((c) => `- ${c} — ${m.cast[c]}`).join('\n')}\n`
+    ? `\nCHARACTERS in this scene (${castInstruction}):\n${img.cast.map((c) => `- ${c} — ${m.cast[c]}`).join('\n')}\n`
     : '';
 
   const body = `# ${pad(n)} — image ${n} of ${total} — save as: ${img.file}
@@ -114,14 +188,12 @@ Paste everything below the line into ChatGPT as ONE message.
 
 ---
 
-Image ${n} of ${total}. Same house rules as the primer: a buff-paper court sketch of a
-real moment exactly as Juror #1 sees it — strict first person, seated eye-level, no
-narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast consistent.
+${promptIntro(img, n)}
 
 FILENAME: after generating, print on its own line: SAVE AS: ${img.file}
 (Never draw the filename or any text in the image.)
 
-FORMAT: ${ratioLabel(img)}.
+FORMAT: ${targetSizeLine(img)}.
 
 SCENE TO DRAW:
 ${img.composition}

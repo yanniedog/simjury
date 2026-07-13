@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: ep-03-documents.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1600x900px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 From the jury box: the well of the court given over to paper — the clerk's table crowded with tied bundles and lists, the usher pinning a large comparison chart of scribbled illegible handwriting onto an easel angled toward the jury, the expert waiting by the box with his own folder. Gaslight catches the paper edges.

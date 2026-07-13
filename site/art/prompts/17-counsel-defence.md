@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: counsel-defence.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1600x900px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 From the jury box: defence counsel rising with deliberate slowness, spectacles pushed up on his forehead, one eyebrow raised at the jury — at YOU — gown gathered in one fist, a single sheet of paper dangling from the other hand as if it proved nothing at all. Jury rail at the very bottom of frame.

@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: ep-02-accounts.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1600x900px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 From the jury box: one woman stands in the witness box mid-testimony while, on the benches below, two more well-dressed women wait their turn, one twisting her gloves; the usher leans in to summon the next. The repetition is the point — the same story queuing up. The witness box holds nothing on its rail: no microphone, no stand, no rod or post of any kind in front of any speaker — an 1890s court has no amplification and everyone speaks unaided. Jury rail at the very bottom of frame.

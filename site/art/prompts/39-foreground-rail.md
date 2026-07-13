@@ -4,14 +4,12 @@ Paste everything below the line into ChatGPT as ONE message.
 
 ---
 
-Image 39 of 39. Same house rules as the primer: a buff-paper court sketch of a
-real moment exactly as Juror #1 sees it — strict first person, seated eye-level, no
-narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast consistent.
+Image 39 of 39. Same house rules as the primer, except this is a transparent overlay asset rather than a courtroom scene. No text anywhere, no speech bubbles, no gavel; keep the cast consistent.
 
 FILENAME: after generating, print on its own line: SAVE AS: foreground-rail.png
 (Never draw the filename or any text in the image.)
 
-FORMAT: the widest landscape you can produce, with a TRANSPARENT background (PNG with alpha) — I will crop it to a strip.
+FORMAT: 2400x420px target; the widest landscape you can produce, with a TRANSPARENT background (PNG with alpha) — I will crop it to a strip.
 
 SCENE TO DRAW:
 TRANSPARENT BACKGROUND (alpha). A foreground overlay strip for the bottom of the screen: the dark polished jury-box rail sweeping low across the full width, and at the far bottom-left and bottom-right corners only, the cropped dark sketch silhouettes of your neighbouring jurors' shoulders. The centre 60% is fully transparent. Ink and wash only, no paper background.

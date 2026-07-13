@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: juror-06.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: landscape (4:3 feel; 3:2 is fine).
+FORMAT: 1024x768px target; landscape (4:3 feel; 3:2 is fine).
 
 SCENE TO DRAW:
 Down the length of the jury-room table, first person: the foreperson at the head — silver side-whiskers, watch chain, papers squared — calling the room to order with a lifted hand. Persona: keeps order and leans to convict.

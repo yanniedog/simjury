@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: counsel-crown.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1600x900px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 From the jury box: Crown counsel on his feet at the counsel bench, turned to the jury — addressing YOU — pince-nez pinched in one hand, the other hand flat on his brief, mid-argument. Seated wigs of his juniors beside him. Jury rail at the very bottom of frame.

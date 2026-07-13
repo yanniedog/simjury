@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: witness-stand.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1600x900px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 From the jury box: the raised oak witness box centre-right with a witness standing at the rail, lit half by cold window light and half by gas glow. Bottom-left foreground, large and cropped: the back of examining counsel's wig and gown shoulder as he faces the witness. The jury rail crosses the very bottom of frame.

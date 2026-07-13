@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: backdrop-panelling.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1920x1080px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 Near-abstract architectural study for a page background: faint sepia line sketch of tall courtroom panelling, an arched window and a gas sconce, mostly raw paper, very low contrast, no figures. Composition must tolerate heavy darkening and cropping at any aspect ratio.

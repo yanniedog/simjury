@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: ep-01-method.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1600x900px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 From the jury box, the trial opening: Crown counsel stands facing the jury full-on — opening the case to YOU — arms spread a little over the evidence laid out on the bench before him: a folded list, a sealed envelope. The court settles behind him; the judge dips his quill. Morning light, lamps still lit.

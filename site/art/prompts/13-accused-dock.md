@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: accused-dock.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1600x900px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 From the jury box: the dock, straight on. Mr Norland stands between the dock rails to address the jury — looking directly at YOU — silver hair, heavy grey moustache, worn frock coat, knuckles white on the rail, dignified and desperate. A warder's dark shoulder at the edge of the dock. Gas sconce burning above. Jury rail at the very bottom of frame.

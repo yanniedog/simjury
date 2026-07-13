@@ -11,7 +11,7 @@ narrated summary. No text anywhere, no speech bubbles, no gavel; keep the cast c
 FILENAME: after generating, print on its own line: SAVE AS: sealed-record.webp
 (Never draw the filename or any text in the image.)
 
-FORMAT: wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
+FORMAT: 1600x900px target; wide landscape (16:9 feel; 3:2 is fine — keep key content clear of the top and bottom edges).
 
 SCENE TO DRAW:
 Pure first person, looking down at a clerk's desk by lamplight: your own hands in the lower frame untying the red legal tape of a thick sealed case file, the wax seal just cracked, loose papers of illegible scribbled script sliding out, a magnifying glass and an oil lamp at the edge of the pool of light. The moment the truth opens.
