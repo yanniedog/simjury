@@ -30,9 +30,16 @@ interactive jury room on simjury.com. Before working:
 ## Build & test
 
 ```powershell
+# site/app (the Daily Docket — where D1+ work happens)
+cd site/app; npm ci  # once
+npm run lint; npm run typecheck; npm test; npm run validate:cases; npm run build
+
+# pilot (parked JVM/Android track — see "Start here" above)
 pilot\gradlew.bat -p pilot test        # build + all JVM tests (case-model + pilot)
 ```
 
 > **Note:** projectmem (the old MCP memory layer this file used to mandate) is **disabled**.
-> There is no `get_instructions()` / `get_summary()` / `precheck_file()` to call. Use
-> `PHASE4-STATUS.md` as the project memory and keep it current as you work.
+> There is no `get_instructions()` / `get_summary()` / `precheck_file()` to call. For the
+> daily track, use `DAILY-PIVOT.md`'s delivery ladder (D0–D9) as project memory — keep it
+> and this file current as PRs land. `PHASE4-STATUS.md` is the **frozen** handoff for the
+> parked historical track only; do not update it as if it were live memory.

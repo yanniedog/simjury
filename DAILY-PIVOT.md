@@ -75,7 +75,7 @@ approved plan of record for this pivot; D2/D3/D7 land the details in-repo as the
 
 intro 20–30s · evidence 4.5–5.5 min (10–14 narrated beats, 40–70 words each, 3–4
 witnesses, 3–5 conviction check-ins) · verdict lock 30–45s · jury room 2–2.5 min
-(2 open rounds → mid-vote → 1 round → final vote; ~3 player argue actions; 3–4 jurors
-speak per round) · reveal + share 1–1.5 min. Pacing is a launch verification step: the
+(2 open rounds → mid-vote → 1 round → final vote; ~3 actions where the player argues;
+3–4 jurors speak per round) · reveal + share 1–1.5 min. Pacing is a launch verification step: the
 fixture case `dd-0000` must clock 8–10 minutes with narration on before launch content
 is drafted.

@@ -1,9 +1,18 @@
-# projectmem - workspace
+# projectmem - simjury-dailypivot-wt
 
-_Last updated: 2026-07-07_
+_Last updated: 2026-07-13_
 
 ## Project purpose
-SimJury is an offline jury simulation game. The repository is in **pilot phase**: a simplified spec, agent harness, and JVM CLI app prove the core loop before the full Android build described in `archive/simjury-build-spec-v3.md`.
+SimJury is an offline jury simulation game on simjury.com. **Owner pivot 2026-07-13
+(`DAILY-PIVOT.md`): the repo's primary work is now "The Daily Docket"** — one synthetic,
+fictional, 2026-relevant case per day, playable end-to-end with a dynamic, interactive
+seeded jury deliberation, shipping into `site/app/` (absorbing the separate `simjury-daily`
+repo's pipeline). The original JVM/Android pilot (a simplified spec, agent harness, and
+Kotlin CLI/Compose app proving the core loop toward the full Android build in
+`archive/simjury-build-spec-v3.md`) and the historical-case track (Case 001 / Beck) are
+**parked, not removed** — `c_001` stays live at `simjury.com/play` as "the deep case," but
+no further pilot/Android effort is scheduled while the daily track is built. See
+`DAILY-PIVOT.md` for the decision record and `ROADMAP.md`'s Track D for the delivery ladder.
 
 ## Recent issues
 - No issues logged yet.
@@ -15,6 +24,11 @@ SimJury is an offline jury simulation game. The repository is in **pilot phase**
 - PR gates: CI validate required, squash merge, cursor/*-61f6 branches [.github/BRANCH_PROTECTION.md]
 - Phase 1 pilot: Kotlin JVM CLI with kotlinx.serialization JSON cases [pilot/build.gradle.kts]
 - G-0 and G-1 complete — foundation and pilot app on main [ROADMAP.md]
+- Phase 2 started: :case-model module extracted with schema and CaseValidator V-rules [pilot/case-model/]
+- Mandatory bot-review-window CI job (8 min) blocks premature PR merge; branch protection script added [.github/workflows/ci.yml]
+- Phase 2: deliberation-core stub with deterministic PilotDeliberationEngine and phase state machine [pilot/deliberation-core/]
+- Owner pivot 2026-07-13: simjury.com pivots to The Daily Docket - one synthetic fictional 2026-relevant case/day with an interactive seeded jury room, absorbing the simjury-daily repo's pipeline into site/app/. The JVM/Android pilot (Phases 1-3) and the historical track (Phases 4-6, Case 001/Beck) are parked, not removed; c_001 stays live at /play. [DAILY-PIVOT.md]
+- Case supply for the daily track is LLM-drafted batches behind hardened CI gates (schema, design-quality, jury floors, deliberation-dynamics simulation, banned-token scan, queue rules), with human spot-checks rather than a human reading every case. [DAILY-PIVOT.md]
 
 ## Notes
 - initialise
@@ -26,6 +40,7 @@ SimJury is an offline jury simulation game. The repository is in **pilot phase**
 - `PILOT-SPEC.md`
 - `CLAUDE.md`
 - `kotlinx.serialization`
+- `simjury.com`
 
 ## Open questions
 - None logged yet.

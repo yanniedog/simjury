@@ -9,8 +9,9 @@ Phased delivery. **Do not skip phases.** Each phase ends with a gate PR that mus
 **Owner pivot 2026-07-13 — see [`DAILY-PIVOT.md`](DAILY-PIVOT.md) for the decision record
 and the D0–D9 delivery ladder.** Daily synthetic 2026-relevant cases (8–10 min, fiction,
 interactive seeded jury room) on simjury.com, absorbing the `simjury-daily` repo's
-pipeline into `site/app/`. Phases 4–6 below belong to the **historical track**, which is
-**parked** (c_001 stays live at `/play`; G-4 and Android work paused).
+pipeline into `site/app/`. The JVM/Android pilot (Phases 1–3) and the historical track
+(Phases 4–6) below are both **parked** (c_001 stays live at `/play`; G-4 and Android work
+paused).
 
 ---
 
@@ -22,7 +23,7 @@ pipeline into `site/app/`. Phases 4–6 below belong to the **historical track**
 
 ---
 
-## Phase 1 — JVM Pilot App (current)
+## Phase 1 — JVM Pilot App (parked)
 
 **Goal:** End-to-end playable CLI loop on case C-000.
 
@@ -54,7 +55,7 @@ pipeline into `site/app/`. Phases 4–6 below belong to the **historical track**
 
 ---
 
-## Phase 3 — Android Shell (current)
+## Phase 3 — Android Shell (parked)
 
 **Goal:** Compose UI for trial reading + diary + vote + reveal.
 
