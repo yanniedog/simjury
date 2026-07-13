@@ -181,7 +181,7 @@
           "final": ["My skin decided early. Happily, the exhibits agree with my skin."]
         },
         "reaction_rules": [
-          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
           { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": -1, "confidence": -10, "line": "concede" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
@@ -202,7 +202,7 @@
           "final": ["I lined the dates up on day one. Nothing since has moved a single one of them."]
         },
         "reaction_rules": [
-          { "when": { "theme": "timeline", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
           { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
@@ -278,7 +278,7 @@
         "persona": "Swings with the room; the lost-property report keeps luring him back.",
         "register": "hesitant",
         "arc": "drifter",
-        "initial": { "position": "G", "confidence": 45 },
+        "initial": { "position": "U", "confidence": 45 },
         "weights": { "credibility": 1, "timeline": 2 },
         "lines": {
           "agree": ["Yes — filed the night after her statement. When you say the date out loud it stops being paperwork and starts being a move.", "That is the piece I will hold onto this time."],
