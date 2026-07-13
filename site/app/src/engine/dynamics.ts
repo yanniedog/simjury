@@ -59,8 +59,9 @@ export function checkDynamics(c: DocketCase): string[] {
 
   // Variance must exist for a fixed player verdict — otherwise the "variety"
   // is just the player's own vote moving the tally, not the room moving.
+  // Required for BOTH verdicts: whichever way the player locks their own
+  // vote, their arguments must still be able to change the room's outcome.
   const outcomes = new Map<string, Outcome>()
-  let alive = false
   for (const v of verdicts) {
     const seen = new Set<string>()
     for (const [name, actions] of Object.entries(space)) {
@@ -68,19 +69,17 @@ export function checkDynamics(c: DocketCase): string[] {
       seen.add(signature(outcome))
       outcomes.set(`${v}:${name}`, outcome)
     }
-    if (seen.size >= 2) alive = true
-  }
-
-  if (!alive) {
-    issues.push(
-      'the room reaches the same outcome under every strategy — the deliberation is a foregone conclusion',
-    )
+    if (seen.size < 2) {
+      issues.push(
+        `the room reaches the same outcome under every strategy when the player locks ${v} — the deliberation is a foregone conclusion`,
+      )
+    }
   }
 
   for (const v of verdicts) {
-    const decisive = outcomes.get(`${v}:decisive`)!
-    const passive = outcomes.get(`${v}:passive`)!
-    if (decisive.tally[truthSide] < passive.tally[truthSide]) {
+    const decisive = outcomes.get(`${v}:decisive`)
+    const passive = outcomes.get(`${v}:passive`)
+    if (decisive && passive && decisive.tally[truthSide] < passive.tally[truthSide]) {
       issues.push(
         `arguing the decisive evidence (as ${v}) moves the room away from the true verdict — the room does not reward skilled play`,
       )
