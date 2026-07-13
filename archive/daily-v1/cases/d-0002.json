@@ -1,0 +1,74 @@
+{
+  "id": "d-0002",
+  "publish_date": "2026-01-02",
+  "label": "fiction",
+  "title": "The Short Till",
+  "era": "present day",
+  "charge": "Theft of cash by an employee from her employer",
+  "elements": [
+    "Cash belonging to the employer went missing.",
+    "The accused took it.",
+    "She intended to keep it permanently."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "A co-worker testifies the shop's till was chronically miscounted and that half the staff knew the code to the cash drawer.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A chaotic till invites doubt, but chaos is not innocence — the shortages didn't fall randomly across the staff, they tracked to one person."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "Shift logs show the drawer came up short on 14 of the 15 evenings the accused closed alone — and almost never otherwise.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The quiet pattern that actually decides it: opportunity shared by many, losses suffered under one."
+    },
+    {
+      "id": "b3",
+      "kind": "direction",
+      "text": "The judge instructs that having the opportunity to steal is not proof of stealing; many people had access to the drawer.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "A fair caution — access alone proves nothing. It is the pattern and the marked notes that carry the weight."
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "text": "A character witness describes the accused as a devoted sole carer with an unblemished twenty-year record.",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.25,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Good character is why we hesitate to believe it — and exactly why it goes unnoticed for so long. It does not answer the serial numbers."
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "text": "The owner had secretly recorded the serial numbers of a bundle of notes left in the drawer. Three of them were in the accused's wallet that same evening.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Marked notes from the till, in her wallet, the same night. This is the fact the sympathy has to get past — and cannot."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The messy till and the moving character reference are both real, and both beside the point. The shortages fell on one roster, and the marked notes were in her wallet the same night. Her good name is why it took so long to look — not a reason she didn't do it.",
+  "difficulty_target": 0.6,
+  "gen_meta": {
+    "model": "human-seed",
+    "prompt_version": "m3-seed-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3"
+  }
+}

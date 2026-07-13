@@ -1,0 +1,73 @@
+{
+  "id": "d-0030",
+  "publish_date": "2026-01-30",
+  "label": "fiction",
+  "title": "The Gaslight Corridor",
+  "era": "1880s lodging house",
+  "charge": "Murder of a fellow lodger",
+  "elements": [
+    "The lodger was murdered.",
+    "The accused killed him."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "text": "The knife found beside the body is the accused's — his initials scratched into the haft, as three fellow lodgers confirm.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "His initials, yes — on the knife that had lived in the common kitchen's rack for a year, used by every lodger in the house. Ownership had long since become the house's; only the scratches stayed his."
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "text": "The landlady: at supper that evening the two men quarrelled loudly over money — 'words like blows,' she says. The whole table heard it.",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A boarding-house quarrel — the kind the same table heard monthly. It handed the police a story on the first night, and the story then chose the evidence."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "Blood on the accused's shirt cuff and forearm, dried by the time the constables arrived.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The surgeon read the stain in court: a soaked cuff and a smeared forearm — the pattern of a man who cradled a bleeding head, exactly as he said. A striking arm is flecked, not soaked."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "Produced at the eleventh hour by an uneasy sergeant: a constable's notebook recording that, at dawn after the murder, a third lodger was seen burning clothing in the yard — reported at the time, marked 'noted', and never acted upon.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The evidence that nearly never reached the courtroom. A man burning his clothes at dawn was written down, shelved, and buried under the supper-quarrel story — the investigation had chosen its lodger by then."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge, with visible anger: the crown must disclose what cuts both ways. The jury should weigh hardest the evidence that nearly never reached them — and ask why it nearly didn't.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The last lesson of the month: a verdict is only as good as what reaches the courtroom. This one nearly rested on a communal knife, a monthly quarrel, and a shelved page."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The knife was the kitchen's, the blood was a cradling man's, and the quarrel was any Tuesday in that house. What nearly hanged him was a page in a constable's notebook that sat 'noted' and shelved: another lodger, burning his clothes at dawn. The first story chose the evidence — until the evidence finally chose back.",
+  "difficulty_target": 0.65,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

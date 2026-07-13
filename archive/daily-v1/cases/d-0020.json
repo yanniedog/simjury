@@ -1,0 +1,73 @@
+{
+  "id": "d-0020",
+  "publish_date": "2026-01-20",
+  "label": "fiction",
+  "title": "The Cellar Print",
+  "era": "present day",
+  "charge": "Burglary — breaking into a jeweller's strongroom",
+  "elements": [
+    "The strongroom was broken into and its contents taken.",
+    "The accused did it."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The defence expert is compelling: fingerprint identification has failed before. He recites documented misattributions, examiner bias, certainty overstated on oath. 'This discipline has convicted innocent men.'",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.25,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Every word true — of other cases. Generic doubt about a discipline is not a defect in this evidence, which was verified blind and stands beside blood and stolen goods."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "The broken window sash yielded blood, dried into the splintered frame. The profile matches the accused.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The borrowed scepticism has nothing to say to this: his blood, his cut, his window."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "Bearer bonds from the strongroom, recovered from the chimney flue of the accused's flat.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Possession of the proceeds, hidden — the beat no cross-examination touched."
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "text": "The fingerprint examiner: three prints on the strongroom door, verified independently by a second examiner who was told nothing about the case or the suspect.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.45,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The blind check is exactly the safeguard whose absence the defence expert lamented — and it was present here."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: scepticism is a tool for weighing evidence, not a verdict. The jury must ask what this evidence shows — not what other evidence, in other courts, once failed to.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The hard lesson inverted: warnings about junk science can be aimed at sound science too. Doubt is owed to the evidence in front of you, not borrowed from history."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "Everything the defence said about forensic failure was true — somewhere else. Here there were three blind-verified prints, his blood on the sash, and the bonds up his own chimney. Scepticism is a tool; his counsel used it as a smoke machine.",
+  "difficulty_target": 0.6,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

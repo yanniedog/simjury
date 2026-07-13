@@ -1,0 +1,63 @@
+{
+  "id": "d-0008",
+  "publish_date": "2026-01-08",
+  "label": "fiction",
+  "title": "The Sunday Painter",
+  "era": "present day",
+  "charge": "Fraud — selling a forged old-master panel as genuine",
+  "elements": [
+    "The panel is a forgery.",
+    "The accused knew it was when she sold it."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "A television connoisseur testifies with relish: his pigment analysis found titanium white in the panel — a pigment unavailable before the twentieth century. 'An instant fake.'",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The pigment is real and modern — and sits only in a repair layer. He sampled a patch without asking what the conservation file would have told him."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "The defence produces a public gallery's conservation file: a documented 1974 restoration of flake damage, with the repair site diagrammed — precisely where the prosecution took its sample.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The boring paper trail decides it. Modern pigment in a documented modern repair is exactly what an honest old panel looks like."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "The prosecution traces the panel's ownership and finds a hole: no record of it anywhere between 1939 and 1952.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A mid-century gap is the rule, not the exception, in honest collections — wars scatter paperwork. A gap is an absence of evidence, not evidence of forgery."
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "text": "A conservator shows the court a cross-section from the panel: original ground and paint layers under centuries of craquelure, with the modern pigment confined to the repair.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.45,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Quiet corroboration: the panel's body is old; only its bandage is new."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The 'instant fake' was an old panel with a documented 1974 repair — the modern pigment sat exactly where the gallery's own conservation file said it would. The loud expert sampled the bandage and called the patient a fraud.",
+  "difficulty_target": 0.35,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

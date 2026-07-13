@@ -1,0 +1,73 @@
+{
+  "id": "d-0023",
+  "publish_date": "2026-01-23",
+  "label": "fiction",
+  "title": "The Poison-Pen of Alder Lane",
+  "era": "1920s village",
+  "charge": "Criminal libel — sending obscene and threatening letters",
+  "elements": [
+    "The letters were sent as charged.",
+    "The accused wrote and sent them."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "text": "The letters themselves are handed to the jury: vile, fluent, on the accused's own brand of notepaper — and signed with her initials.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Who signs a poison-pen letter? The paper is sold in the village shop to half the lane, and initials at the foot of a libel are bait, not a confession."
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "text": "The complainant, tearful and precise: the feud over the boundary fence, the letters on her mat week after week, the shame of the postman knowing her name.",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Every word of the suffering could be true — and she wrote the letters herself. Real tears are not proof of authorship; they were the performance that kept the accusation alive."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "The post office's evidence: stamps invisibly marked and sold only to the complainant. The next letter to arrive bears one — posted while the accused was under continuous observation elsewhere.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The sting closes the case: the complainant's own stamp, on a letter the accused could not have posted. The victim was the author all along."
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "text": "The village schoolmistress, who taught the accused her letters forty years ago: the woman's hand is laboured and schoolroom-round. 'She could no more sustain that flowing script than fly.'",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.45,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Quiet corroboration: the letters' fluent copperplate was always beyond her."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge invites the jury to ask one question: who benefits from a signature on an anonymous letter — the person it names, or the person it points away from?",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The question that unravels it: initials on a libel are evidence of a snare."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The letters were signed with her initials, on her brand of notepaper — which is precisely the problem: poison pens don't sign. Marked stamps sold only to the complainant turned up on a letter posted while the accused was watched elsewhere. The tears in the witness box were real; so was the pen in the same hand.",
+  "difficulty_target": 0.5,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

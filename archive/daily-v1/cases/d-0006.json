@@ -1,0 +1,73 @@
+{
+  "id": "d-0006",
+  "publish_date": "2026-01-06",
+  "label": "fiction",
+  "title": "The Man Who Confessed Twice",
+  "era": "present day",
+  "charge": "Armed robbery of an all-night filling station",
+  "elements": [
+    "An armed robbery of the filling station took place as charged.",
+    "The accused is the person who carried it out."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "text": "The recorded confession is played to the court: the accused describes the robbery calmly and in detail — the till, the threats, the walk out across the forecourt. He gave the same account again two days later.",
+      "surface_persuasion": 0.85,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Fluency is not knowledge. Nothing in either recording could only have come from the robber — and the second confession repeated the first because by then it was the only story he knew."
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "text": "The interviewing detective testifies that the accused knew things 'only the robber could know' — the make of the till, where the cash was bagged, which pump the getaway car stood at.",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Every one of those details ran in the county Gazette's front-page story two days before the interview. The confession contains nothing the newspaper didn't."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "The scene examiner's report: the accused's statement describes entering and leaving through the kiosk's side door. That door has been welded shut for years — entry was in fact through a storeroom window.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The confession's route is physically impossible. A true account can be wrong in small things — but not about the only way in."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "The custody log: thirteen hours of interview before the first admission, no solicitor present, the statement signed at ten past three in the morning.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.8,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Exhaustion produces agreement, not truth. Thirteen sleepless hours assembled a story from newspaper details, and a tired man signed it to make the room stop."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge directs the jury: a confession is evidence, but it must be tested for reliability like any other evidence — how it was obtained matters as much as what it says.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The instruction that decides the case: test the confession against the scene, and the scene wins."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "He confessed — twice — and the confessions are worthless. Thirteen sleepless hours produced a story assembled from newspaper details, describing an entry through a door welded shut for years. The window the real robber used was never in his account.",
+  "difficulty_target": 0.6,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

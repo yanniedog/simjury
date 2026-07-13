@@ -1,0 +1,84 @@
+{
+  "id": "d-0028",
+  "publish_date": "2026-01-28",
+  "label": "fiction",
+  "title": "The Man from the Sea",
+  "era": "1870s county seat",
+  "charge": "Perjury — swearing himself to be the lost heir to an estate",
+  "elements": [
+    "He swore on oath that he is the heir.",
+    "He is not.",
+    "He knew he was not."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The heir's mother takes the oath, and takes the claimant's hand: 'A mother knows her son. Twelve years and the sea change a man's face, not his soul. This is my boy.'",
+      "surface_persuasion": 0.9,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The most powerful witness in the case, and the least reliable: she grieved twelve years for a drowned son and was offered him back. Recognition wanted is recognition given."
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "text": "The old groom is delighted by him: the claimant knew the pony's name, the loose stair by the nursery, the initials cut into the summer-house sill.",
+      "surface_persuasion": 0.75,
+      "true_weight": 0.25,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Every one of those details appears in the coaching letters found in his sea chest — a childhood, catalogued and rehearsed. He knew everything that could be taught."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "Found in the claimant's sea chest: forty letters from a former shipmate of the drowned heir — page after page on the family's houses, servants, pets and habits, annotated in the claimant's own hand.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The syllabus of an impersonation. A true son has no use for a correspondence course in his own childhood."
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "text": "The family's old tutor: the heir was raised half in French from the nursery — dreamed and quarrelled in it. Handed a simple French sentence in court, the claimant cannot read it; asked to conjugate the plainest verb, he will not try.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Twelve years may coarsen a man's hands; it does not take his first language. The tongue he never had is the one thing the coaching letters couldn't give him."
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "text": "Photograph comparison: the heir's last portrait beside the claimant, measured — the ear's lobe and the line of the brow do not agree.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.45,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Early photographic comparison — imperfect alone, but it points where the tutor and the sea chest already point."
+    },
+    {
+      "id": "b6",
+      "kind": "direction",
+      "text": "The judge: the jury should weigh what can be coached against what cannot. Sentiment can be rehearsed; a childhood tongue cannot.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The scales the case needed: everything moving in that courtroom could be taught; everything unteachable failed him."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "Everything a grieving family wanted to hear, he had learned — forty coaching letters catalogued the pony, the stair, the summer-house sill. What no letter could teach was the French he would have dreamed in since the nursery. The mother's recognition was real grief, expertly farmed; the verb he couldn't conjugate was the estate's best lock.",
+  "difficulty_target": 0.75,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

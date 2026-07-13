@@ -1,0 +1,73 @@
+{
+  "id": "d-0012",
+  "publish_date": "2026-01-12",
+  "label": "fiction",
+  "title": "The Sleepwalker's Kitchen",
+  "era": "present day",
+  "charge": "Wounding with intent to cause grievous bodily harm",
+  "elements": [
+    "The accused struck the injured man.",
+    "He intended to cause him serious harm."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The injured brother-in-law describes it: at three in the morning he woke on the sofa-bed to find the accused standing over him with the pan, eyes wide open. 'He looked straight at me. He knew exactly what he was doing.'",
+      "surface_persuasion": 0.85,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The detail that convinces everyone proves the opposite of what it seems: open, unseeing eyes are the textbook presentation of the condition."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "The defence produces a sleep clinic's file opened nineteen years earlier: recorded episodes, an overnight EEG study, and a documented history of complex behaviour while asleep — including cooking full meals.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The diagnosis predates the marriage, the quarrel, and any imaginable motive by two decades. Nobody plants a medical history nineteen years deep."
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "text": "The accused's own sister concedes there had been words at dinner — about money the couple had lent the visitor and not seen back.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A mild, resolved dinner-table disagreement — retold in a courtroom, it swells into motive. Every family has that evening; almost none has this night."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "The emergency call is played: seconds after 'waking', the accused's voice — confusion, then horror, begging the operator to hurry.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.45,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Real distress, seconds old. It corroborates the medicine but couldn't stand alone — which is why the clinic file matters more."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: the charge requires intent, and intent requires a conscious mind. An act done while genuinely asleep is not, in law, the act of a guilty man.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The whole case in one instruction: the question was never who held the pan, but whether anyone was behind the eyes."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "He did it — and he was asleep. The open eyes that terrified the victim are the classic sign of the condition, and the sleep-clinic file is nineteen years older than the quarrel. The law asks for a guilty mind; that night there was no mind present at all.",
+  "difficulty_target": 0.6,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

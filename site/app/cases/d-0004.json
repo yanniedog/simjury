@@ -1,0 +1,74 @@
+{
+  "id": "d-0004",
+  "publish_date": "2026-01-04",
+  "label": "fiction",
+  "title": "A Face You Don't Forget",
+  "era": "present day",
+  "charge": "Burglary of a home and theft of jewellery",
+  "elements": [
+    "Someone entered the home as a trespasser at night.",
+    "Jewellery was stolen.",
+    "The person who did it was the accused."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The homeowner is certain: 'I will never forget that face.' She picks the accused from the lineup without a moment's hesitation.",
+      "surface_persuasion": 0.9,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Confidence reads as accuracy, but the two barely correlate. A frightened glimpse in poor light, identified days later, is the classic wrongful-conviction beat."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "A motorway tolling camera photographed the accused's car 200 km away, timestamped twenty minutes before the break-in.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "He cannot be in two places at once. A timestamped photograph outranks a certain memory every time."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "The accused has a conviction for theft from eight years ago.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "It makes him feel like 'the type.' But a past offence is not presence at this one; propensity is not proof."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "The stolen ring resurfaced in a pawnshop two towns over, logged to a different named seller the following week.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.75,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The property trail leads to someone else entirely — quiet, documentary, and hard to argue with."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge instructs that the confidence of an eyewitness is not a reliable measure of how accurate the identification is.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "A caution the whole case turns on: weight the toll photo and the pawn record over the certainty of the pointing finger."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The homeowner isn't lying — she's certain. But certainty isn't accuracy. The accused's car was photographed 200 km away minutes before the break-in, and the ring was pawned by someone else. A confident finger can point at the wrong man.",
+  "difficulty_target": 0.65,
+  "gen_meta": {
+    "model": "human-seed",
+    "prompt_version": "m3-seed-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3"
+  }
+}

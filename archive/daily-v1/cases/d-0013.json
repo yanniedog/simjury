@@ -1,0 +1,74 @@
+{
+  "id": "d-0013",
+  "publish_date": "2026-01-13",
+  "label": "fiction",
+  "title": "The Hand of M. Corbin",
+  "era": "1890s provincial city",
+  "charge": "Forging a will and offering it for probate",
+  "elements": [
+    "The will is not the testator's.",
+    "The accused made it or procured its making.",
+    "He offered it for probate knowing it false."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "A celebrated graphologist, for the defence: the will is 'indubitably' the old man's hand — he has matched the loops, the pressure, the tremor of age.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "His rival said the opposite with equal grandeur. When two virtuosos read the same loops both ways, the loops are telling you nothing."
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "text": "An equally celebrated graphologist, for the prosecution: 'a patent forgery' — the tremor is painted on, the pen-lifts all wrong.",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Also a performance. The case is not decided by either maestro but by a fact no expert can argue with: the chemistry of the ink."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "An industrial chemist gives plain evidence: the will's ink contains a synthetic dye first manufactured two years after M. Corbin died.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The dead do not buy new ink. Whatever hand drew the signature drew it years after the funeral."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "A stationer's receipt, entered without comment: a letter-copying outfit, sold to the nephew three weeks after the death.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.45,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "On its own, a purchase. Next to the ink, it is preparation — the workshop assembled for the document that followed."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: where experts stand opposed, look for the fact that no expertise can bend, and build outward from there.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The instruction the jury needed: forget the duel of loops; date the ink."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The battle of handwriting virtuosos was a draw, as it usually is. The ink settled it: a dye that did not exist until two years after the testator's death, applied with a copying outfit bought three weeks after his funeral. The devoted nephew nursed his uncle — then improved on his will.",
+  "difficulty_target": 0.6,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "id": "d-0026",
+  "publish_date": "2026-01-26",
+  "label": "fiction",
+  "title": "The Quarry Gate",
+  "era": "present day",
+  "charge": "Gross-negligence manslaughter of a maintenance fitter",
+  "elements": [
+    "The accused owed the fitter a duty of care.",
+    "His breach of it was truly exceptional negligence.",
+    "The breach caused the death."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The site manager is unequivocal: 'The shot-firer owns the exclusion zone. The rules are one page long. If a man was inside it when the shot fired, that is on him.'",
+      "surface_persuasion": 0.75,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The rulebook the company waves is the one it starved: the zone he 'owned' had a dead radio the company left dead for six weeks. Responsibility was delegated; the means weren't."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "The prosecution's timeline lands hard: from siren to blast, forty seconds short of the mandated interval.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Measured from the wrong siren. The quarry sounds two — the plant-yard horn and the blast siren proper. The blast siren's own log shows the full interval, to the second."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "Six maintenance fault reports, filed by the accused over six weeks, each flagging the exclusion-zone radio as dead — each stamped 'received' by the site office, none actioned.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The paper trail runs the wrong way for the prosecution: the man in the dock is the only person on site who tried, six times, in writing, to fix the thing that killed his colleague."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "The victim's phone, recovered from the zone: a text from his supervisor, sent after the all-clear sweep, telling him to 'nip back in' for a left tool before the shot.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.85,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The fitter was inside the zone because management sent him there — after clearance, past a radio that couldn't warn him. That order was never in the prosecution's timeline."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: gross negligence is measured against the system a man was actually given. The jury must ask what more this defendant could have done with the tools he had.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The question that acquits: he swept the zone, sounded the siren, filed the faults. The failures that killed were above his pay grade — and in writing."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The case against the shot-firer was built on the wrong siren and someone else's order. He had reported the dead radio six times in writing; the company filed the reports, and a supervisor texted the fitter back into the zone after clearance. The prosecution stopped one rung too low on the ladder.",
+  "difficulty_target": 0.55,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

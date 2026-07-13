@@ -1,0 +1,73 @@
+{
+  "id": "d-0014",
+  "publish_date": "2026-01-14",
+  "label": "fiction",
+  "title": "The Lighthouse Keepers",
+  "era": "1860s rock lighthouse",
+  "charge": "Murder of a fellow lighthouse keeper",
+  "elements": [
+    "The keeper's death was caused by another's act.",
+    "The accused caused it."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The relief crew describe what they found after five weeks of storm: the survivor wild-eyed and whispering to himself, and his colleague's body lashed upright to the gallery rail, weeks dead.",
+      "surface_persuasion": 0.85,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Horror, honestly reported — and read exactly backwards. A murderer has the whole sea for a grave; only an innocent man needs the body seen."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "The official light log, entered in evidence: it stops three days before the death and never resumes.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The log drowned with the lantern-room door — the soaked pages were in evidence too. He kept the record on a slate after that, and the relief crew wiped it clean before anyone thought to copy it."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "The surgeon's findings: injuries consistent with a fall from the lamp gallery to the rocks — and rope-burns across the dead man's own palms, days old, from line run out fast.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.85,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The dead man's hands tell it: he was working the vane line when the gust took him over. Fists leave marks on a beaten man; a fall from a working gallery leaves these."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "The shore station's weather log: five unbroken weeks in which no boat could land at the rock — and a passing brig's note that the light's distress signal was correctly flown throughout.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.8,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "He did everything a man alone on a rock could do: flew the signal, kept the light, and kept his friend where the relief would find him. The weather, not guilt, wrote the delay."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: what five weeks alone with the dead does to a man is a matter for pity, not proof. The jury must convict on evidence of an act — not on the state they found him in.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The caution the whole case turned on: his broken mind was the sea's work; the charge required it to be his hands'."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "He lashed his friend's body where the relief would see it for the same reason he flew the signal: so no one could say the sea had swallowed a secret. The surgeon read a fall — and the vane line — in the dead man's palms; the shore log proved no boat could land for five weeks. The man they carried off the rock was guilty of nothing but surviving it.",
+  "difficulty_target": 0.7,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

@@ -1,0 +1,49 @@
+# The Daily Docket app (site/app) CI: lint · typecheck · test · validate:cases · build.
+# Build/test only — the app's output is connected to the site deploy at the D8 cutover
+# (see DAILY-PIVOT.md); until then site.yml remains the only deploying workflow.
+name: site-app
+
+on:
+  pull_request:
+    paths:
+      - "site/app/**"
+      - ".github/workflows/site-app-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "site/app/**"
+      - ".github/workflows/site-app-ci.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-app-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: site-app-check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site/app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: site/app/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Test
+        run: npm test
+      - name: Validate cases (schema + design-quality gate)
+        run: npm run validate:cases
+      - name: Build
+        run: npm run build

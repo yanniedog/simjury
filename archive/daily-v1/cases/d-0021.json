@@ -1,0 +1,73 @@
+{
+  "id": "d-0021",
+  "publish_date": "2026-01-21",
+  "label": "fiction",
+  "title": "The Night Nurse",
+  "era": "present day",
+  "charge": "Murder of two patients on a hospital ward",
+  "elements": [
+    "The two patients were killed, and did not die of their illnesses.",
+    "The accused killed them."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "A statistician for the prosecution: the chance that one nurse would be on duty for every flagged death on the ward is one in seven million.",
+      "surface_persuasion": 0.9,
+      "true_weight": 0.15,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The number answers the wrong question. It assumes shifts were dealt like cards — hers were set by a roster that gave her the sickest patients. And the chance of a coincidence is not the chance of her innocence."
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "text": "A ward colleague, troubled, choosing her words: 'You started to notice — whenever something happened, she was there.'",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Hindsight with a suspect already in it. Once a name attaches, memory reorganises: deaths on her shifts became 'incidents'; identical deaths on other shifts stayed 'natural causes'."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "The defence's roster analysis: she was assigned the acute bay precisely because she took the sickest patients. Adjusted for how ill her patients actually were, the 'cluster' disappears — and three colleagues acquire clusters of their own.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The statistic dies on the roster. Being where the dying are is the job description of the nurse they trusted with the dying."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "Ward records after her suspension: deaths continued at the same rate without her. The two exhumations ordered found no toxin, no mark — nothing.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.85,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The pattern that was supposed to be her stopped for no one — because it was never a pattern, it was a ward where people die. And no poison was found because none was given."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: the probability of a coincidence is not the probability of innocence, and the jury must not let arithmetic do the work of evidence.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction this case exists to teach: a dazzling number built on a false assumption is the most persuasive false witness ever called."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "One in seven million — if shifts were dealt like cards. They weren't: she was rostered to the sickest patients, her 'cluster' was compiled after suspicion had chosen her, the deaths continued without her, and the exhumations found nothing. The statistic was the weapon, and it was pointed at her.",
+  "difficulty_target": 0.75,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

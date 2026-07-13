@@ -1,0 +1,74 @@
+{
+  "id": "d-0003",
+  "publish_date": "2026-01-03",
+  "label": "fiction",
+  "title": "Last Call",
+  "era": "present day",
+  "charge": "Assault causing injury after a fight outside a bar",
+  "elements": [
+    "The accused struck the complainant.",
+    "The blow caused injury.",
+    "It was not lawful self-defence."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The complainant, his jaw wired shut, testifies that the accused set on him without warning, 'out of nowhere.'",
+      "surface_persuasion": 0.85,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A gravely injured man is compelling, but memory of a fast, drunken, painful moment is unreliable — and here it is flatly contradicted by the footage."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "The bar's outside camera shows the complainant swinging a bottle at the accused's head first; the accused's single punch lands only after.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The camera does not take a side. It shows unlawful force came first, and one blow answered it."
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "text": "A friend of the complainant says the accused 'looked like he was after a fight' and is known to have a temper.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A partisan witness describing a mood. A temper is not this act, and 'looked like' is not evidence of who struck first."
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "text": "A bartender with no connection to either man confirms the bottle came first and that the accused stepped back before throwing the single punch.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.75,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "A neutral account, matching the tape: the accused retreated, then defended himself."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge instructs that a person met with unlawful force may defend himself, so long as the force he uses is proportionate.",
+      "surface_persuasion": 0.35,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The frame for everything else: one punch to answer a swung bottle is not obviously excessive."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "A broken jaw and a furious victim make the accused look like the aggressor. But the footage doesn't take sides: the bottle came first, and the punch that followed was a man protecting his head. A temper and a hard face are not evidence of who started it.",
+  "difficulty_target": 0.55,
+  "gen_meta": {
+    "model": "human-seed",
+    "prompt_version": "m3-seed-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3"
+  }
+}
