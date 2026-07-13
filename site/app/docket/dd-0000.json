@@ -181,7 +181,7 @@
           "final": ["I go with what the logs say."]
         },
         "reaction_rules": [
-          { "when": { "theme": "identity", "stance": "proves" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
           { "when": { "theme": "digital_forensics", "stance": "unreliable" }, "effect": { "delta": -1, "confidence": -10, "line": "concede" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
@@ -224,8 +224,8 @@
           "final": ["Not guilty. That is what the doubt is for."]
         },
         "reaction_rules": [
-          { "when": { "theme": "burden", "stance": "proves" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
-          { "when": { "theme": "credibility", "stance": "unreliable" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
         ]
       },
@@ -246,7 +246,7 @@
           "final": ["Held to the proper standard, I know which way this goes."]
         },
         "reaction_rules": [
-          { "when": { "theme": "burden", "stance": "proves" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
           { "when": { "theme": "procedure", "stance": "unreliable" }, "effect": { "delta": 0, "confidence": -5, "line": "concede" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
@@ -308,8 +308,8 @@
           "final": ["I changed my mind in this room, and I can tell you the exact exhibit that did it."]
         },
         "reaction_rules": [
-          { "when": { "theme": "digital_forensics", "stance": "proves" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
-          { "when": { "theme": "method", "stance": "proves" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
           { "when": { "theme": "digital_forensics", "stance": "unreliable" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
         ]
@@ -353,8 +353,8 @@
           "final": ["I want to say guilty. Wanting is not the standard, though, is it."]
         },
         "reaction_rules": [
-          { "when": { "theme": "burden", "stance": "proves" }, "effect": { "delta": -1, "confidence": -10, "line": "burden_correct" } },
-          { "when": { "theme": "motive", "stance": "proves" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": -1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "motive", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
         ]
       },
@@ -395,8 +395,8 @@
           "final": ["Between two stacks of screens, I take the one the judge's direction points at."]
         },
         "reaction_rules": [
-          { "when": { "theme": "digital_forensics", "stance": "proves" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
-          { "when": { "theme": "burden", "stance": "proves" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
       }
