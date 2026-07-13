@@ -1,0 +1,423 @@
+{
+  "id": "dd-0004",
+  "publish_date": "2026-08-05",
+  "label": "fiction",
+  "title": "The Overtime Ghost",
+  "setting": "the site office of a mid-tier construction firm, payroll week, the present day",
+  "charge": "obtaining a financial advantage by deception",
+  "elements": [
+    "Wages were paid to employees who did not exist",
+    "The accused created or controlled the ghost employees",
+    "He did so dishonestly, for his own benefit"
+  ],
+  "cast": [
+    { "id": "judge", "name": "Judge Marchetti", "role_label": "the judge", "side": "court" },
+    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "w1", "name": "Avery Stroud", "role_label": "forensic auditor", "side": "prosecution" },
+    { "id": "w2", "name": "Lena Karvelas", "role_label": "site bookkeeper", "side": "prosecution" },
+    { "id": "w3", "name": "Douglas Prentiss", "role_label": "the accused — operations manager", "side": "defence" },
+    { "id": "w4", "name": "Mick Tanoa", "role_label": "site foreman", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "Two labourers sat on the payroll for fourteen months — ninety-one thousand dollars in wages between them. No one on site ever met either man. No protective equipment was ever issued to them, no induction records exist, and neither name appears once in three thousand daily sign-in entries.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.5,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The ghosts were real in exactly one system: the one that pays money out. Every system that touches a living body had never heard of them.",
+      "tags": ["method", "digital_forensics"]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "Their pay went to accounts with almost the same numbers, just different endings. I raised it with Mr Prentiss twice. He said head office handled labour hire and I should stay in my lane. A month later my payroll access was cut back and I was put on a performance plan.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The person who saw it first was the person whose access was trimmed and whose competence was suddenly in question. That sequence is itself evidence — of something.",
+      "tags": ["credibility", "procedure"]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "In cross-examination she faltered. She named the wrong month for when she first noticed. She agreed she had applied for the office-manager role and lost it — to the accused. She agreed the performance plan cited real invoice errors, hers. By the end her hands were shaking.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "A nervous witness with a grievance and a shaky memory for dates — and not one wobble touched a thing the bank records later proved on their own.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit three, tendered by the defence: the accused's email to the chief financial officer, sent three days before any police involvement. 'I believe we have ghost employees on the books. I have frozen labour payroll pending a full audit. This stops today.' The prosecution does not dispute he sent it.",
+      "surface_persuasion": 0.75,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The controlled burn. He sent it the day after the bookkeeper copied a union rep into her concerns — freezing a scheme he was losing control of, and casting himself as the smoke alarm on his own fire.",
+      "tags": ["credibility", "timeline"]
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit four, also tendered by the defence: the payroll system's access log. Both ghost profiles were created under the bookkeeper's login — her username, her permissions, eighteen minutes apart on the same evening. The accused's own login never touched either profile, not once in fourteen months.",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The log recorded a seat, not a person. Whose hands were on the keyboard was answered by a different exhibit — the one with an IP address and a boarding pass.",
+      "tags": ["digital_forensics", "identity"]
+    },
+    {
+      "id": "b6",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "The auditor conceded the firm's payroll controls had been poor for years: shared terminals in the site office, sessions left logged in over lunch, passwords on sticky notes. He agreed that a login name, in that office, established very little about who was actually typing.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Offered by the defence to muddy the water — and it did, in both directions: if a login proves nothing, Exhibit four proves nothing against the bookkeeper either.",
+      "tags": ["procedure", "digital_forensics"]
+    },
+    {
+      "id": "b7",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit six: the ghosts' bank accounts. Both were opened online with the same recovery email — an address found configured on the accused's seized phone. The linked mobile was a prepaid SIM bought, per retailer records, with his loyalty card. Withdrawals clustered within a kilometre of his house, never on his rostered site days.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Money is shy but it goes home eventually. The recovery email, the loyalty card, and the withdrawal map all pointed at the same front door — his.",
+      "tags": ["identity", "digital_forensics", "method"]
+    },
+    {
+      "id": "b8",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit seven: creation metadata for the ghost profiles. Both were made at 9:40 in the evening from a residential IP address assigned to the accused's home — using the bookkeeper's credentials — in a week she spent interstate at her sister's wedding. Her boarding passes are attached. The session cookie matches a browser on his laptop.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.75,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Exhibit four, completed: her login, yes — from his house, on his browser, while she was six hundred kilometres away holding a bouquet.",
+      "tags": ["digital_forensics", "timeline", "identity"]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I found the anomaly, I froze payroll, I reported it upstairs — that is the record. Lena had the access and, I say this with regret, the resentment. As for our home internet, we had a lodger in the granny flat that year, and half the site's contractors have used our wifi at one barbecue or another.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Fluent, calm, plausible — a witness performing exactly as well as fourteen months of practice would predict.",
+      "tags": ["credibility", "alibi"]
+    },
+    {
+      "id": "b10",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "He could not give the lodger's surname, forwarding address, or a single rent receipt. The loyalty card was his — 'cards get scanned by mistake'. Asked why his phone carried the ghosts' recovery email, he paused and said it was an old account, possibly compromised. He did not say by whom.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.5,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Every loose thread got an answer, and every answer needed another stranger nobody could produce: a lodger, a mistaken scan, an unnamed hacker.",
+      "tags": ["credibility", "identity"]
+    },
+    {
+      "id": "b11",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "Doug is first in and last out, has been for years. And I will say this for free: labour-hire paperwork on that site was chaos long before him. Blokes come and go weekly. Half the site would not recognise half the payroll, and nobody thinks that is a crime.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.25,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "True colour about a chaotic industry — none of which explains why the chaos's wages were withdrawn a kilometre from one particular house.",
+      "tags": ["credibility", "method"]
+    },
+    {
+      "id": "b12",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "Do not research this case or these people online. A witness's nervousness is not falsehood, and a witness's polish is not truth — test what each said against the records, not against your impression of them. The prosecution must make you sure it was the accused behind the ghosts. Nothing less will do.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The whole case in one instruction: the shaking witness and the smooth one were both auditioning — only the records were under oath.",
+      "tags": ["burden", "credibility"]
+    }
+  ],
+  "checkins": ["b3", "b6", "b8", "b10"],
+  "verdict_truth": "Guilty",
+  "twist": "The room's instincts ran on performance: she shook, he didn't. But the email that made him the whistleblower was sent the day after she copied in the union; the login that framed her fired from his home IP while she was at a wedding six hundred kilometres away; and the ghosts' wages walked out of cash machines a kilometre from his door. The nervous witness was right about everything that mattered. The confident one had simply rehearsed longer.",
+  "difficulty_target": 0.5,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "Reads people, or believes he does; the bookkeeper's shaking hands decided him early.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": { "position": "NG", "confidence": 75 },
+        "weights": { "credibility": 2, "motive": 1 },
+        "lines": {
+          "agree": ["Exactly — she wanted his job, she had the access, and she fell apart up there.", "The manager reported it himself. Guilty men do not ring the alarm."],
+          "pushback": ["I have hired a hundred people. I know a flake when I see one shake.", "You are all reading spreadsheets. I was reading her face."],
+          "concede": ["A boarding pass, though. You cannot perform your way around a boarding pass."],
+          "final": ["I judged the witnesses. The exhibits judged the case. They did not agree with me."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Follows the money and only the money; withdrawals near one house settle most arguments.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 65 },
+        "weights": { "identity": 2, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["Ninety-one thousand dollars, withdrawn a kilometre from his door, never on his site days. Money draws maps.", "The recovery email on his own phone. That is the scheme signing its work."],
+          "pushback": ["Nerves are not numbers.", "Whose house did the money walk home to? Answer that and we are done."],
+          "concede": ["I accept the office was a security shambles. Shambles cut both ways."],
+          "final": ["I followed the money. It stopped at his street."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; wants the alternative suspect properly excluded, not just outshone.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 70 },
+        "weights": { "burden": 2, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["That is the discipline: exclude her, do not merely prefer him."],
+          "pushback": ["Her login created the ghosts. That fact does not vanish because we like her.", "An office of shared terminals is an office of reasonable doubts."],
+          "concede": ["The wedding week is difficult. Credentials travel; people mostly do not."],
+          "holdout": ["Until someone excludes the bookkeeper with evidence rather than sympathy, I hold.", "Sure means the alternative is closed, not unfashionable."],
+          "final": ["The boarding passes closed it. I can say sure now, and mean it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Process-minded; keeps reminding the room the accused proves nothing, not even his lodger.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "burden": 2, "procedure": 1 },
+        "lines": {
+          "agree": ["Correct — and held to that standard, the exhibits still get there."],
+          "pushback": ["The performance plan is workplace politics. Keep it out of the verdict.", "We convict on the records, not on which witness we would rather have dinner with."],
+          "concede": ["The judge's line about polish cuts at my own instincts too. Noted and taken."],
+          "burden_correct": ["Careful — he does not have to produce the lodger. The Crown must prove the hands on the keyboard were his.", "The bookkeeper is not on trial. Neither sympathy for her nor suspicion of her shifts the burden."],
+          "final": ["On the standard, with the metadata and the money, I am sure."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "procedure", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; keeps the room off the office soap opera and on the ledger.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "method": 1, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["Noted — and it should weigh with the count.", "Good. Bring exactly that to the vote."],
+          "pushback": ["We are drifting into who deserved the office-manager job. Back to the exhibits.", "One at a time, and nobody diagnose anybody's nerves again."],
+          "concede": ["Fairly put. Consider me moved that far."],
+          "final": ["It has had a fair airing. Hands, please."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Drifts with the loudest recent point; the whistleblower email keeps pulling him back.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "G", "confidence": 45 },
+        "weights": { "timeline": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["Yes — the day after she emailed the union. The timing is the tell, isn't it.", "Say that again about the dates. Dates I can hold onto."],
+          "pushback": ["But he did freeze the payroll. That part actually happened.", "I keep coming back to that email. It reads so… reasonable."],
+          "concede": ["Put next to the union email, though, it reads like a man getting ahead of the weather."],
+          "final": ["I drifted all day. The timeline is where I finally anchored."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Believed the polished manager at first; the wedding-week metadata is dismantling that.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "NG", "confidence": 70 },
+        "weights": { "digital_forensics": 2, "identity": 2 },
+        "lines": {
+          "agree": ["Her login, his house, her boarding passes. There is only one way to arrange those three facts.", "The prepaid SIM bought on his loyalty card — schemes leak identity at the edges, and this one leaked his."],
+          "pushback": ["I believed him on the stand, and I want to say why: he was clear, he was calm. I now think that was the product, not the proof.", "The shared-terminal point is real. It just points at his terminal too."],
+          "concede": ["All right. I cannot keep 'he reported it himself' standing in front of the metadata."],
+          "final": ["He convinced me in an afternoon. The exhibits took a day, and they were right."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; smooth answers that require invisible strangers bother her most.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 50 },
+        "weights": { "credibility": 2 },
+        "lines": {
+          "agree": ["Mm. A lodger with no surname, a hacker with no name, a scan by mistake. That is three ghosts defending two.", "That is the first answer of his that did not need a stranger in it."],
+          "pushback": ["She did get the dates wrong. I am not ready to canonise her either.", "Everyone is very confident about which nervous person to believe."],
+          "concede": ["Her grievance is real. I hold it against her account a little, and against the records not at all."],
+          "final": ["Quietly: I counted his invisible strangers, and I ran out of belief."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 0, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Keeps demanding the accused produce the lodger; the burden slides in his hands.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "identity": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Exactly. His phone, his card, his street. The edges of this thing are all him."],
+          "pushback": ["Then where is the lodger? A real lodger has a surname."],
+          "burden_drift": ["If the wifi story is true, let him bring one contractor who used it. One.", "He should have to walk us through that 9:40pm session minute by minute."],
+          "concede": ["Yes, all right — it is the Crown's to prove, not his to alibi every evening of his life."],
+          "burden_correct": ["Withdrawn. The exhibits have to carry it — and, as it happens, they do."],
+          "final": ["I stopped asking him for proof. The prosecution had already brought it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "Undecided; keeps re-running the two performances against the paperwork.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "digital_forensics": 1, "credibility": 1 },
+        "lines": {
+          "agree": ["There — said twice, it still stands. I will lean on it.", "Right. Cookies and IP addresses do not get nervous."],
+          "pushback": ["And then I remember how good he was up there, and I slide back.", "Ask me again after the next point lands."],
+          "concede": ["That one settles a wobble. Thank you."],
+          "final": ["I re-ran both performances against the paperwork. The paperwork kept its story straight."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Has worked sites like this; knows the chaos is real and knows chaos has beneficiaries.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 50 },
+        "weights": { "method": 2, "procedure": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Fair — chaos does not pick a beneficiary. This chaos paid one address for fourteen months.", "And the direction fits: test the stories against the records, both ways."],
+          "pushback": ["The foreman is right about labour hire. Half these books have been fiction for years, and mostly nobody is stealing.", "Do not convict the manager for the industry."],
+          "concede": ["Ghost wages that never miss his rostered days off — that is not the industry. That is a schedule."],
+          "final": ["I gave the chaos every benefit of the doubt. The withdrawals kept office hours — his."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-2026-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "D7b-1"
+  }
+}
