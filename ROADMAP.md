@@ -4,6 +4,16 @@ Phased delivery. **Do not skip phases.** Each phase ends with a gate PR that mus
 
 ---
 
+## Track D — The Daily Docket (current, primary)
+
+**Owner pivot 2026-07-13 — see [`DAILY-PIVOT.md`](DAILY-PIVOT.md) for the decision record
+and the D0–D9 delivery ladder.** Daily synthetic 2026-relevant cases (8–10 min, fiction,
+interactive seeded jury room) on simjury.com, absorbing the `simjury-daily` repo's
+pipeline into `site/app/`. Phases 4–6 below belong to the **historical track**, which is
+**parked** (c_001 stays live at `/play`; G-4 and Android work paused).
+
+---
+
 ## Phase 0 — Foundation
 
 **Goal:** Governance, memory, harness, branch protection.
