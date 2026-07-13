@@ -1,0 +1,73 @@
+{
+  "id": "d-0019",
+  "publish_date": "2026-01-19",
+  "label": "fiction",
+  "title": "The False Alibi",
+  "era": "present day",
+  "charge": "Burglary of a dwelling house",
+  "elements": [
+    "The house was burgled.",
+    "The accused was the burglar."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "A neighbour saw a man 'about his height' at the side fence around the time — in the dark, for a second or two.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.35,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "A height and a shadow. Honest, thin, and it never claimed to be more."
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "text": "The prosecution's big moment: under cross-examination, the accused's sister admits the evening she described — the sofa, the film, the takeaway — never happened. The alibi is a lie.",
+      "surface_persuasion": 0.85,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Her lie, invented to spare him — not his. A demolished alibi feels like proof of guilt; it is only proof that someone was frightened enough to lie."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "Produced late, with an apology to the court: the door log and camera still from a payday-loan office across town — the accused, timestamped, pleading for an extension during the burglary window.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.85,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The real alibi, too humiliating to give at first. He preferred 'home with my sister' to 'begging a lender' — and nearly went to prison for his pride."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "The scene examiner: the shoeprint under the sill is a size 8. The accused takes an 11.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.45,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Quietly incompatible. Feet don't lie, and these were three sizes short of his."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: a false alibi may be the refuge of the frightened as well as the guilty. It may support a case; it cannot make one.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction the instinct needs: the lie collapsed, and with it nothing else — the case still had to stand on its own feet. Size 8 feet."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The alibi was a lie — his sister's, told out of love. The truth was worse to say out loud: he spent the burglary window pleading with a payday lender, on their camera. The instinct that liars are guilty nearly convicted a man whose only crime was shame.",
+  "difficulty_target": 0.55,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

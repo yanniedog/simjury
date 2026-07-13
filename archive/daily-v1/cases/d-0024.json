@@ -1,0 +1,73 @@
+{
+  "id": "d-0024",
+  "publish_date": "2026-01-24",
+  "label": "fiction",
+  "title": "The Bitter Tonic",
+  "era": "1850s market town",
+  "charge": "Murder of her husband by arsenic",
+  "elements": [
+    "The husband died of arsenic poisoning.",
+    "The accused administered it."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The housemaid: she saw her mistress soaking flypapers in a basin in the scullery — and everyone knows what soaking extracts from them.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "She did soak flypapers — for the draper shop's summer flies, as the shop's order book confirms. A household chore, retold in a poisoning trial, becomes an apothecary's confession."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "The chemist's poison register: her signature in it, twice that spring.",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Both entries match fly-poison purchases in the shop's order book. The register proves access — which, in that town, in that decade, half the wives on the street also had."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "The defence produces a rival pharmacy's ledger: the husband's own standing order — an arsenical 'strengthening tonic', collected monthly, for two years.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The dead man dosed himself, on schedule, for years. The poison in him had a paying customer, and it was him."
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "text": "The analyst who sectioned the husband's hair: arsenic distributed along its whole length — steady ingestion over years, not a sudden dose in the final weeks.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.8,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The body keeps its own ledger. Years of steady arsenic is the signature of a habit; a poisoning wife writes a spike, not a line."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: means and a quarrel prove opportunity and unhappiness. The charge requires administration — and that gap is the whole case.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The instruction that names the trap: everything proved about her was true of half the county's unhappy wives. What was proved about him explained the death."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The flypapers were for the shop and the signatures were for the flies — but her husband's arsenic was his own: a 'strengthening tonic' on standing order for two years, written down the whole length of his hair. He dosed himself into the grave, and the town's oldest story nearly hanged his widow for it.",
+  "difficulty_target": 0.55,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

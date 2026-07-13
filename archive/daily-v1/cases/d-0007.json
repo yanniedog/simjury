@@ -1,0 +1,74 @@
+{
+  "id": "d-0007",
+  "publish_date": "2026-01-07",
+  "label": "fiction",
+  "title": "The Anchor and the Storm",
+  "era": "1870s merchant sail",
+  "charge": "Murder of an able seaman, lost overboard at sea",
+  "elements": [
+    "The seaman's death was caused by a human act, not the sea.",
+    "The master caused it.",
+    "He acted intending to kill or do grievous harm."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The mate testifies: seas were boarding the ship all night, and a man could be taken from the deck without a cry. 'The sea takes men,' he says. 'It always has.'",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.25,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "True of the sea, and an honest man believed it. But the log that should anchor his storm to the calendar was written after the fact."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "A document examiner has studied the ship's log: the entries for three separate storm days were written in a single sitting — one ink-load, one state of the hand, no re-dipping between 'days'.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "A log written backwards is not a record but an alibi. The only reason to forge three days of weather is that the truth of one of them could hang a man."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "Filed at the last port of call: the dead man's written complaint over withheld wages, naming the master, with a hearing set for the end of the voyage.",
+      "surface_persuasion": 0.35,
+      "true_weight": 0.45,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Motive, quietly documented. It proves a grievance, not a killing — but it says the master had reason to want that hearing never held."
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "text": "A young ordinary seaman breaks the crew's account at last: after the middle watch he heard a quarrel aft by the taffrail — the master's voice and the dead man's — then a single cry, and nothing.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.8,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The crew's silence was loyalty to the living. The boy's account puts the master with the dead man at the rail — in weather the forged log was built to exaggerate."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: there is no body, and the law does not require one — but where the sea itself could be the culprit, the jury must be sure it was not.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "A fair caution — answered by the forged log, not the missing body. Honest grief does not rewrite the weather."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The sea was the perfect suspect — except the master forged its testimony. Three days of storm written in one sitting, a wage complaint due for a hearing ashore, and a boy who heard the quarrel at the rail: the weather was moderate, and the man went over with help.",
+  "difficulty_target": 0.65,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

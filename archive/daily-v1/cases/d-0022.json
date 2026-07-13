@@ -1,0 +1,63 @@
+{
+  "id": "d-0022",
+  "publish_date": "2026-01-22",
+  "label": "fiction",
+  "title": "The Miller's Measure",
+  "era": "1300s manor court",
+  "charge": "Theft by false measure — taking excess toll from the manor's grain",
+  "elements": [
+    "The toll-dish used at the mill was false.",
+    "The miller knew it, and used it to take excess grain."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The reeve himself concedes it before the jurors: in a lean year, every miller on the river is called a thief. It is the oldest slander in the village, and this year the village is hungry.",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "True, and honestly said: the proverb has wronged innocent millers for a hundred years. It also taught this one exactly what he could hide behind."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "The toll-dish is set against the king's standard measure before the whole court: a tenth heavy. Warmed at the brazier, it yields up a false bottom of blackened wax.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The dish speaks for itself: a tenth of every man's grain, taken by a bottom that melts. The village's grudge needed no help this year."
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "text": "The carter who hauls for three farms: the miller alone handled the toll-dish, and kept it locked in the mill chest between market days.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.45,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The wax needed a keeper. One key, one hand, one beneficiary."
+    },
+    {
+      "id": "b4",
+      "kind": "direction",
+      "text": "The steward's charge to the jurors: prejudice against a trade convicts no one — but neither does it acquit. Weigh the dish, not the proverb.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Both halves matter: the village's grudge proved nothing, and excused nothing. The wax was real."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "Everyone hates the miller — which is exactly why 'everyone knows' proves nothing, and exactly what he was counting on. The dish settled it without the village's help: a tenth heavy, with a wax false bottom that melted by the courtroom brazier.",
+  "difficulty_target": 0.45,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

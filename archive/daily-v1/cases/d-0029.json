@@ -1,0 +1,73 @@
+{
+  "id": "d-0029",
+  "publish_date": "2026-01-29",
+  "label": "fiction",
+  "title": "The Borrowed Face",
+  "era": "1890s gaslight city",
+  "charge": "Obtaining money by false pretences from five women",
+  "elements": [
+    "The five women were defrauded by the man who courted their savings.",
+    "The accused is that man."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The first of the five complainants: she sat across a tea table from the swindler for a month. 'I picked him from the line without a breath of doubt. I'd know him anywhere.'",
+      "surface_persuasion": 0.85,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Certain, honest — and wrong. And not alone, which is the trap: five separate certainties feel like proof multiplied. They were the same error repeated, under the same rigged conditions."
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "text": "The inspector, with pardonable pride: five complainants, no two acquainted, each picked the accused from the identification line independently.",
+      "surface_persuasion": 0.75,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Independently — from a line in which the accused was the only grey-haired man, each time. Five honest witnesses shown one plausible choice make one mistake five times, not five proofs."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "The defence lays the swindler's begging letters beside the accused's writing: the swindler courted in fluent French, in a fine copperplate hand. The accused — a grinder from the mill towns — cannot write French, and a surgeon confirms his stiffened right hand has not managed copperplate since a workshop injury years ago.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The letters are the swindler's true face, and it is not this man's. Five memories can be mistaken; a hand that cannot form the letters cannot have written them."
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "text": "His landlady believes he was at his lodgings on the evenings in question — though pressed on exact dates, she wavers.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Honest and human: nobody logs ordinary evenings. Her wobble is what real memory looks like — it was the five polished certainties that should have worried the court."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: an identification may be perfectly honest and perfectly wrong — and five such are five times the caution, not five times the proof. Weigh the conditions of the line.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction that names the mathematics of the trap: repetition of an error is not corroboration of a fact."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "Five women, five certainties, one rigged line: he was the only grey-haired man in it, five times over. The swindler's own letters acquit him — fluent French in a copperplate hand that the accused's broken right hand could never form. Certainty multiplied is not proof; it is the same mistake, echoing.",
+  "difficulty_target": 0.5,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

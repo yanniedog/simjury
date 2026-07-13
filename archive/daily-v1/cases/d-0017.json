@@ -1,0 +1,74 @@
+{
+  "id": "d-0017",
+  "publish_date": "2026-01-17",
+  "label": "fiction",
+  "title": "The Salted Claim",
+  "era": "1870s gold country",
+  "charge": "Fraud — selling shares in a mine he had salted",
+  "elements": [
+    "The mine's richness was falsely shown.",
+    "The accused created the false showing.",
+    "He sold shares on the strength of it."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The district's most respected assayer, visibly unhappy to be called: his assays of the sample rock were accurate. 'Rich ore. I stand by my numbers.'",
+      "surface_persuasion": 0.75,
+      "true_weight": 0.25,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "His numbers were honest — that was the design. You don't fool the buyers; you feed true assays of doctored rock and let honesty do the selling."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "A metallurgist examines gold recovered from the working face: the flakes are impact-flattened, and they carry smears of lead.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Nature does not fire gold into rock. Flattened flakes and gun-lead are the signature of salting: charge a shotgun with dust, and shoot the fortune in."
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "text": "A parade of old diggers for the defence: thirty years on the fields and never a crooked deal. 'If he says there's gold, there's gold.'",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Thirty honest years are what made the trick work. Reputation was the one asset the claim genuinely held."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "The consulting engineer's drill cores, taken at the buyers' insistence: beyond the first six inches of the face, the rock is barren — values die to nothing in every direction.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "A real strike goes somewhere. Six inches of wealth wrapped around a mountain of nothing is a stage set, measured."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: a true report of a false thing is still a false pretence — the honesty of the assayer does not launder the rock.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The instruction that unpicks the cleverness: he outsourced the lying to honest men."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "Every assay was honest; the rock was not. The gold had been fired into the face with a shotgun — flattened flakes, lead smears — and the buyers' own drill found nothing six inches in. He sold them a mountain wearing six inches of make-up.",
+  "difficulty_target": 0.5,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

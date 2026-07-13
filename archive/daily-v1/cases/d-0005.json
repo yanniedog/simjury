@@ -1,0 +1,74 @@
+{
+  "id": "d-0005",
+  "publish_date": "2026-01-05",
+  "label": "fiction",
+  "title": "The Trusted Treasurer",
+  "era": "present day",
+  "charge": "Fraud by a charity's volunteer treasurer, diverting its funds",
+  "elements": [
+    "Money left the charity's accounts.",
+    "The accused directed it to himself.",
+    "He did so dishonestly, meaning to gain."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "Board members line up to vouch for the accused's decades of unpaid service. 'He would never take a cent,' one says.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.25,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Reputation is disarming — and it is precisely what lets a trusted insider move money unwatched for years."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "Bank records show 23 transfers from the charity to an account whose only signatory is the accused, paid to a 'supplier' that does not exist.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "You do not accidentally invent a supplier you alone control and pay it 23 times. This is the spine of the case."
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "text": "The accused explains the discrepancies as hopeless bookkeeping: 'I'm a volunteer, not an accountant.'",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Incompetence is a tempting excuse, but it does not create a fake company registered to your own account."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "File metadata shows that the night after the auditor's first email, the accused edited the ledger, relabelling the transfers.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Altering the records the moment questions arrive is the act of a man who knows what they will find."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge instructs that dishonesty may be inferred from concealment and the deliberate alteration of records.",
+      "surface_persuasion": 0.35,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "It licenses the obvious inference: the midnight edit was not tidying up, it was hiding."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The reputation and the 'I'm just bad with spreadsheets' defence are disarming — which is how it worked for years. But you don't accidentally invent a supplier you alone control, and you don't edit the ledger the night the auditor emails. The trust was the cover, not the alibi.",
+  "difficulty_target": 0.6,
+  "gen_meta": {
+    "model": "human-seed",
+    "prompt_version": "m3-seed-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3"
+  }
+}

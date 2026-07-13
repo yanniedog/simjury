@@ -1,0 +1,74 @@
+{
+  "id": "d-0009",
+  "publish_date": "2026-01-09",
+  "label": "fiction",
+  "title": "The Nine-Minute Gap",
+  "era": "present day",
+  "charge": "Causing death by dangerous driving, and failing to stop after a collision",
+  "elements": [
+    "The car that struck the cyclist was the accused's.",
+    "The accused was driving it.",
+    "He failed to stop and report the collision."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The accused's wife testifies he was home by half past eleven; they watched the late news together. She remembers because the lead story annoyed him.",
+      "surface_persuasion": 0.75,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "An alibi of habit, told in loyalty or in good faith. The car's own record puts its bonnet into a cyclist eleven minutes after the news began."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "The body-shop manager describes the bonnet damage he repaired that week: 'Looked like a deer strike — we see them all the time on that road.'",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.25,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The damage height matches handlebars, not a deer's body line, and no hair or hide was found in the repair. 'We see them all the time' is a story about other cars."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "A collision investigator extracts the car's airbag control module: a recorded frontal impact at 23:41 that night, speed logged at 47 in a 30 zone. The system noted the event; the airbags did not deploy.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The car kept the diary its driver wouldn't. An impact at 23:41, at 47 in a 30, is the collision — timed and measured."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "Paint analysis: flakes recovered from the cyclist's frame are a two-stage respray matching the batch used on the accused's car at its last repaint.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.8,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Batch-level paint transfer ties this car — not a car like it — to the bicycle."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge on circumstantial evidence: strands of a cord, not links of a chain — no single strand need bear the whole weight, but together they may hold it.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Module, paint, and the nine unexplained minutes plait together; the alibi is the strand that snaps."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The phone stayed home and the wife stayed loyal, but the car testified: a logged impact at 23:41, forty-seven in a thirty, and its respray batch on the cyclist's frame. The 'deer strike' stood at handlebar height.",
+  "difficulty_target": 0.5,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

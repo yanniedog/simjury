@@ -1,0 +1,73 @@
+{
+  "id": "d-0025",
+  "publish_date": "2026-01-25",
+  "label": "fiction",
+  "title": "The Vanishing Bridegroom",
+  "era": "1900s seaside towns",
+  "charge": "Obtaining money by false pretences through promises of marriage",
+  "elements": [
+    "He obtained the women's money by representations of marriage and station.",
+    "The representations were false, and he knew it."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "His third wife — still wearing the ring — testifies for him: 'Whatever the newspapers say, he is incapable of deceit. He was robbed of his memory, not his honour.'",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Loyalty as evidence — moving, sincere, and exactly what he counted on producing. She defends the character he performed; the ledgers record the one he had."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "Four bundles of love letters, one per courtship, laid side by side for the jury: word-for-word identical, down to the endearments. Only the names change.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Nobody falls in love four times in the same words. The letters are a manufactured product, and the factory kept a mailing list."
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "text": "A defence physician: the head injury from his merchant-sailing years could produce genuine amnesia. The gaps in his account may be affliction, not evasion.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.25,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Could — but under the standard tests he 'forgot' only what incriminated: the towns, the banks, the names. Affliction takes memory at random; strategy takes it selectively."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "The bank drafts, mapped on a board: each woman's savings drawn within days of his departure and re-presented in the next town along the coast. Four towns, four windfalls, one traveller.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The route is the confession: money and man travel together, town by town, engagement by engagement."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: a misfortune may befall a man once. A pattern repeated four times, to his profit each time, is design.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The arithmetic of intent: one lost memory is pitiable; four, synchronised with four dowries, is a business."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The amnesia took only what a prosecutor would want: names, towns, banks. What it left behind was four identical sets of love letters and a paper trail of dowries travelling the coast in his luggage. The third wife's loyalty was real; so was the mailing list.",
+  "difficulty_target": 0.55,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

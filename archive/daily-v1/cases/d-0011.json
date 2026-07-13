@@ -1,0 +1,74 @@
+{
+  "id": "d-0011",
+  "publish_date": "2026-01-11",
+  "label": "fiction",
+  "title": "The Second Set of Books",
+  "era": "1920s city",
+  "charge": "Fraud — taking investors' money for share purchases never made",
+  "elements": [
+    "The accused represented that clients' money was buying shares.",
+    "No such purchases were made.",
+    "He knew the representation was false."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "An early investor testifies for the defence, indignant at the whole proceeding: eleven years with the house, paid every quarter to the day. 'If that is theft, I wish more men would rob me.'",
+      "surface_persuasion": 0.75,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "He was paid from newer deposits — the machine runs sweetly right up until it doesn't. The steadiness of his dividends is the mechanism of the fraud, not a defence to it."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "A paper analyst examines the client statements: the watermark in the paper was not manufactured until three years after the earliest dates printed on it.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Paper younger than the words on it. The 'records' of a decade of trading were printed in one guilty season."
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "text": "His chief clerk, near tears in the box: the principal believed in the ventures — 'he seemed as sure as scripture.'",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Perhaps he did believe tomorrow would rescue yesterday. Sincerity about the future is not honesty about the ledger."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "The exchange's registrar gives the shortest evidence of the trial: in eleven years, no purchase of any share in any client's name — by him, or by any broker acting for him.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The core fact, in one line of the register: there was never anything behind the statements at all."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: optimism, however genuine, is no defence to telling a man you have bought him shares you never bought.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The instruction closes the only exit: the charge is about the representation, not his hopes for it."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "Everyone was paid on time — from each other's deposits. The statements recording eleven years of trading were printed on paper that didn't exist for the first three of them, and the exchange never once saw his name. The clockwork dividends weren't proof of honesty; they were the fraud itself.",
+  "difficulty_target": 0.45,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

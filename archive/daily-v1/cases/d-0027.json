@@ -1,0 +1,73 @@
+{
+  "id": "d-0027",
+  "publish_date": "2026-01-27",
+  "label": "fiction",
+  "title": "The Locked Gallery",
+  "era": "present day",
+  "charge": "Theft of a jewel collection from a gallery strongroom",
+  "elements": [
+    "The collection was stolen.",
+    "The accused stole it."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The investigating detective, called by the defence: the accused discovered the theft, raised the alarm, and has cooperated with every request since. 'In my experience, thieves don't summon the police.'",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.25,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "In everyone's experience — which is the move's whole value. Controlling the discovery controls the clock, the scene, and the first story everyone hears."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "A systems auditor on the vault's records: an integrity gap — entries missing, checksums broken — spanning ninety minutes, exactly inside the accused's badge-logged 'system test' the night before the theft was reported.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Logs don't develop gaps by coincidence inside a maintenance window keyed to one man's badge. The system recorded who silenced it."
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "text": "A master locksmith for the defence: the strongroom cannot be breached from outside. 'Not by me — not by anyone I have ever met.'",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.25,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Precisely. Evidence that no outsider could get in is evidence about insiders — the defence proved the prosecution's geometry."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "An invoice trail: museum-grade paste replicas of eleven pieces from the collection, commissioned months earlier, paid from the accused's card, delivered to a storage unit rented in his name.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Nobody rehearses a theft they haven't planned. The replicas are intent — itemised and receipted."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: exclusive opportunity is powerful evidence where access truly was exclusive. The jury should first decide who could — then ask who did.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The funnel of the case: the locksmith shrank 'who could' to a handful; the log gap and the replicas picked the man."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The impossible crime was the confession: a vault only an insider could open, a log silenced during his own badge-logged test, and paste replicas of the collection invoiced to his card months in advance. He raised the alarm because the first voice at the scene writes the story — it's the oldest move there is.",
+  "difficulty_target": 0.6,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

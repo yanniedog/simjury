@@ -1,0 +1,73 @@
+{
+  "id": "d-0010",
+  "publish_date": "2026-01-10",
+  "label": "fiction",
+  "title": "The Choirmaster's Watch",
+  "era": "1920s cathedral town",
+  "charge": "Burglary of the cathedral vestry and theft of its silver",
+  "elements": [
+    "The vestry was broken into and the silver taken.",
+    "The accused took it."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The bloodhound's handler gives thrilling evidence: from the vestry sill the dog ran the scent across the market square, up the accused's lane, and bayed at his door.",
+      "surface_persuasion": 0.85,
+      "true_weight": 0.15,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A two-day-old trail across a market square trodden by hundreds — and a handler who already knew whose door it was. The dog performed; it did not testify."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "The pawnbroker's ledger: the dean's watch, pledged under the name 'J. Marsh'. The handwriting examiner finds the ledger signature is the accused's verified hand.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "An alias in a man's own handwriting is a confession with a false name on it."
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "text": "A senior chorister speaks for the whole stalls: thirty years of unlocked doors and untouched collection boxes around this man. 'The idea is impossible.'",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.25,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Character is real evidence and real misdirection at once: it explains why nobody looked at him for thirty years — not what he did this winter."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "Found in the vice on the accused's workbench: silver filings. The assay matches the vestry plate — the same alloy the cathedral's Victorian silversmith recorded in the chapter books.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.8,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Plate is awkward to sell whole. Filings in a vice are what turning sacred silver into anonymous metal looks like."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: the jury should follow the dog nowhere — such displays have misled better courts than this one. Weigh the ledger and the bench vice instead.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Right verdict, right reasons: the theatrical evidence deserved nothing and the boring evidence deserved everything. Convict on the ledger, not the bloodhound."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The bloodhound was theatre — a stale trail and a cued handler, worth nothing — and it bayed at a guilty man's door anyway. The pawn ledger in his own disguised hand and church silver filed to anonymity in his vice convict him without a single bark.",
+  "difficulty_target": 0.5,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

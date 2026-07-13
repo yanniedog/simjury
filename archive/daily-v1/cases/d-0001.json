@@ -1,0 +1,74 @@
+{
+  "id": "d-0001",
+  "publish_date": "2026-01-01",
+  "label": "fiction",
+  "title": "The Emberline Bakery Fire",
+  "era": "present day",
+  "charge": "Arson with intent to defraud an insurer",
+  "elements": [
+    "The fire was deliberately set, not accidental.",
+    "The accused set the fire or caused it to be set.",
+    "The accused acted intending to collect on an insurance claim."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "A neighbour testifies: about an hour before the smoke, she saw the bakery's owner leave through the back lane carrying a red fuel can.",
+      "surface_persuasion": 0.85,
+      "true_weight": 0.15,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The red can held water for the community garden two doors down, and the neighbour's kitchen clock was later shown to run 90 minutes fast. A vivid image that falls apart on the details."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "The fire investigator's report: the burn originated inside the walk-in freezer's compressor wiring. No trace of accelerant was found anywhere on the premises.",
+      "surface_persuasion": 0.35,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "An electrical point of origin with zero accelerant is extremely hard to reconcile with deliberate arson. The quiet, technical exhibit that actually decides the case."
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "text": "Bank statements show the bakery was three months behind on rent and carrying heavy debt.",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Debt is a motive story, not a method. Struggling businesses burn down by accident at least as often as they are torched — the number proves nothing about how this fire started."
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "text": "An insurance clerk testifies that the bakery's fire policy had lapsed 11 days earlier for non-payment. Any claim would have paid nothing.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.85,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "If there is no payout to collect, the entire fraud theory has no engine. One of the strongest facts in the case, and the easiest to skim straight past."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge instructs the jury: motive alone is not evidence that a crime took place. The prosecution must prove beyond reasonable doubt that the fire was set deliberately.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Not a fact about the fire, but it tells you how to weigh the rest: the origin report outranks the debt story."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The story writes itself — a drowning business, a red can, a fire. But the blaze started in failed freezer wiring, left no accelerant, and the insurance had already lapsed. There was nothing to collect. The obvious arsonist was just an unlucky baker.",
+  "difficulty_target": 0.6,
+  "gen_meta": {
+    "model": "human-seed",
+    "prompt_version": "m1-seed-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M1"
+  }
+}

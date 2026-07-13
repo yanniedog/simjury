@@ -1,0 +1,74 @@
+{
+  "id": "d-0015",
+  "publish_date": "2026-01-15",
+  "label": "fiction",
+  "title": "The Silver Hoof",
+  "era": "1900s racing stable",
+  "charge": "Killing a racehorse to defraud its insurers",
+  "elements": [
+    "The horse was deliberately killed.",
+    "The accused killed it or had it done.",
+    "He acted to obtain the insurance money."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "A stable lad remembers a vagrant at the yard gate at dusk — a stranger to the district, gone by morning.",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A casual labourer walking to the next town, later found and fully alibied. The stranger at the gate is the story every inside job needs."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "The policy file: cover on the horse was trebled five weeks before its death, the new premium paid in cash by the trainer himself.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Prudence insures a horse; design trebles it just in time — and cash keeps the increase off the stable's books."
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "text": "The night watchman: the yard dog challenges every stranger who so much as touches the gate. That night it never barked.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.45,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Small and telling: whoever crossed the yard was known to the dog."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "The veterinary necropsy: an injection site in the neck where no treatment was recorded — and the trainer's own kit found one syringe short at inventory.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The mechanism, physically present: a needle mark with no medical excuse, from a kit only one man kept."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: insurance is what prudent men buy. The jury must find the act, not merely the incentive.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Correct — and satisfied: the syringe and the silent dog supply the act that the policy only motivates."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "It looked exactly like what it was. The trebled policy paid in cash, the dog that knew its visitor, and the missing syringe: the intruder theory needed a stranger, and the yard had none that night.",
+  "difficulty_target": 0.4,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

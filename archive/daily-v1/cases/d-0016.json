@@ -1,0 +1,73 @@
+{
+  "id": "d-0016",
+  "publish_date": "2026-01-16",
+  "label": "fiction",
+  "title": "The Turnstile Twin",
+  "era": "present day",
+  "charge": "Robbery of a betting shop",
+  "elements": [
+    "The shop was robbed as charged.",
+    "The accused was the robber."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "Defence counsel puts it squarely through their expert: the accused has an identical twin. The CCTV face-match is a match for both of them. 'That footage convicts a face my client shares.'",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.25,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "True, and cleverly framed — the camera alone can't choose between them. But the argument only lives while the twin's whereabouts are unknown, and they aren't."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "Hospital records: the twin was in the emergency department across town — triaged, treated, discharged — throughout the entire window of the robbery.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The twin defence dies in triage. If the face on camera belongs to one of two men, and one was on a hospital trolley, the camera has chosen."
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "text": "The cashier noticed something the camera half-caught: the robber kept his left wrist stiff and worked the counter with his right, 'like it hurt him.' The accused's medical file shows an old left-wrist fracture, badly healed.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "A body's habit, not a face: the kind of detail a twin doesn't share."
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "text": "Fibre analysis: tufts recovered from the counter's tape strip match the accused's jacket — the one seized from his flat, star-shaped repair stitch and all.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.75,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Clothes are not genetic. The jacket at the counter is the jacket from his wardrobe."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: the doubt the law requires is reasonable doubt — a real possibility, not a merely conceivable one.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The line the whole case walks: an identical twin is a real possibility only until the hospital record makes him a merely conceivable one."
+    }
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The twin defence is the rare trick that's true right up until it isn't: the camera really can't tell them apart. The emergency department could — one brother was on a trolley across town all evening, and the other one's jacket left its fibres on the counter.",
+  "difficulty_target": 0.5,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "id": "d-0018",
+  "publish_date": "2026-01-18",
+  "label": "fiction",
+  "title": "The Wrecker of Point Morrow",
+  "era": "1830s coast",
+  "charge": "Luring a ship ashore by false lights, causing her wreck",
+  "elements": [
+    "The ship was lured onto the shore by a light shown for that purpose.",
+    "The accused showed it."
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "text": "The parish constable, with the weight of the village behind him: 'Everyone on this coast knows what the Tregans are. His grandfather wrecked ships, and so does he.'",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.15,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A family's name on trial instead of a fact. Nobody in the parish has ever actually seen a Tregan show a light — 'everyone knows' is how a legend gives evidence."
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "text": "Recovered from the accused's barn: a ship's lantern, bolts of sail-cloth, and a crate of tea bearing the wrecked ship's marks.",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Taken from the beach after she struck — a lesser offence he admitted at once, as half the parish could have. Plunder proves the wreck was robbed, not that it was caused."
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "text": "The ship's surviving mate: they struck in thick fog on a falling tide, and he was on deck the whole watch. 'We saw no light. There was nothing to see, and no seeing it.'",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.85,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The one man actually aboard demolishes the charge's engine: you cannot be lured by a light no one saw, in fog no light could pierce."
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "text": "A licensed pilot of thirty years' local water: the window said to have shown the lamp bears inland, up the combe — from seaward it cannot be seen at all until a vessel is already inside the reef.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.8,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Geometry ends the case: a lamp invisible from open water cannot lead a ship out of it. The 'false light' could only ever have lit the way to the kitchen."
+    },
+    {
+      "id": "b5",
+      "kind": "direction",
+      "text": "The judge: the jury must try the act charged — not the family's reputation, and not the parish's grief for the wreck.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The whole trial in a sentence: the sea took the ship; the village needed it to be a Tregan."
+    }
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The wreck was real, the plunder was real, and the luring was a legend. The only man on deck saw fog and no light; the infamous window faces inland where no ship can see it. The parish put a family's name on trial and called it evidence.",
+  "difficulty_target": 0.55,
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "docket-30-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "M3-docket-30"
+  }
+}
