@@ -1,0 +1,423 @@
+{
+  "id": "dd-0001",
+  "publish_date": "2026-08-02",
+  "label": "fiction",
+  "title": "The Five-Star Stranger",
+  "setting": "a kerbside outside an apartment block, after a late rideshare trip, the present day",
+  "charge": "assault causing injury",
+  "elements": [
+    "The driver applied unlawful force to the passenger",
+    "The force caused the passenger's injuries",
+    "The driver was not acting in reasonable self-defence"
+  ],
+  "cast": [
+    { "id": "judge", "name": "Judge Ferren", "role_label": "the judge", "side": "court" },
+    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "w1", "name": "Callum Voss", "role_label": "the complainant — passenger", "side": "prosecution" },
+    { "id": "w2", "name": "Renata Hsu", "role_label": "bystander from the apartment block", "side": "prosecution" },
+    { "id": "w3", "name": "Sergeant Dale Whitcombe", "role_label": "arresting officer", "side": "prosecution" },
+    { "id": "w4", "name": "Ade Bakare", "role_label": "the accused — rideshare driver", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit one: the passenger's phone video, eleven seconds long, four million views by the morning of the arrest. It begins mid-struggle on the kerb: the driver shoves the complainant hard to the pavement, stands over him, and says, 'Stay down.' The clip ends as a bystander reaches them.",
+      "surface_persuasion": 0.85,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Eleven seconds of a forty-minute night, starting exactly where its poster wanted the story to begin. Nothing before the first frame existed online — and everything before the first frame decided the case.",
+      "tags": ["method", "credibility"]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "He was fine the whole ride, then he just snapped. He dragged me out of the car, threw me down, and stood over me screaming. I broke my wrist going down. I posted the video because nobody believes a passenger's word against a five-star driver's rating.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "His account never explained the twelve minutes before the clip — and 'he just snapped' fit the video only because the video began where it did.",
+      "tags": ["credibility"]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "He accepted he had been drinking since mid-afternoon — nine drinks by his own count. He accepted the trip had ended at his own address, that he refused to get out for more than ten minutes, and that he began filming only once they were both already on the street.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Three concessions, one picture: the confrontation did not start at the kerb, and the camera was the last thing to arrive.",
+      "tags": ["credibility", "timeline"]
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I heard shouting from my balcony and came down. The driver was on top of him at the kerb, pinning his arms. The passenger was yelling that he was being attacked. I did not see how it started — but what I saw looked like an assault to me.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Honest, and honestly late. Pinning a man who has just swung at you and pinning a stranger look identical from a balcony.",
+      "tags": ["credibility"]
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit three: the rideshare platform's trip record. The ride ended at 1:12. At 1:15, and again at 1:19, the driver phoned the platform's safety line to report a passenger refusing to leave the vehicle. On the second recording, a man can be heard shouting threats in the background.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.8,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The quiet log that reordered the night: the driver asked for help twice, minutes before a single frame of video existed.",
+      "tags": ["timeline", "digital_forensics"]
+    },
+    {
+      "id": "b6",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "The driver's account history shows an aggression complaint from a rider last year. At the scene he said almost nothing — no mention of self-defence, no complaint of injury. In my experience, people who have defended themselves say so straight away. He asked for a lawyer instead.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.15,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A one-line anonymous rating from a stranger, and a man doing exactly what the caution he had just been read told him he could do. Neither is evidence of a beating.",
+      "tags": ["credibility", "procedure"]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "The sergeant agreed the driver had a bite mark on his forearm and a shirt torn at the collar, both photographed at the scene. He agreed the complainant refused a breath test for two hours, and that the wrist fracture was recorded as a fall onto an outstretched hand.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.55,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The scene photographs argued self-defence before the driver ever did.",
+      "tags": ["procedure", "credibility"]
+    },
+    {
+      "id": "b8",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit five: the vehicle's interior camera, recovered from the platform's ninety-day retention system after a defence request. At 1:21 the passenger lunges between the seats and strikes the driver twice in the head. The driver exits. The passenger follows him out of frame, still swinging.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The footage the viral clip began three minutes too late to show — recovered because someone asked the right platform the right question inside ninety days.",
+      "tags": ["method", "digital_forensics", "timeline"]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "I ended the trip and asked him to leave. He would not. I called the safety line twice — I did not want a fight, I wanted help. When he hit me I got out to walk away. He came after me still swinging. I pushed him off once, and he went down.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.45,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "An account that matched the trip log, the interior camera, and the scene photographs — none of which he could have seen when he first gave it.",
+      "tags": ["credibility", "method"]
+    },
+    {
+      "id": "b10",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "cross",
+      "text": "He accepted the shove in the video came after the complainant had already stumbled once, and that by then he was angry. 'I was not calm, no. I had been hit twice and followed up the street. I pushed him once so he could not swing at me again.'",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The prosecution's best moment: the anger was real — and it is also what being attacked feels like from the inside.",
+      "tags": ["credibility", "method"]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit six: the medical report. A fractured right wrist consistent with a fall onto an outstretched hand, bruising to both knees, and no injuries to the face or torso. A blood-alcohol reading, finally taken at 3:40, still measured more than twice the legal driving limit.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.35,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Injuries that fit falling drunk onto a pavement — and fit being shoved onto one. The report never chose between them; the jury had to.",
+      "tags": ["method", "procedure"]
+    },
+    {
+      "id": "b12",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "You must not research this case, the driver, or the video online — four million views are not evidence. The prosecution must make you sure this was not self-defence. If the driver may have used reasonable force against an attack, you must find him not guilty.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction that mattered: the burden never moves, and a verdict is decided on forty minutes, not eleven seconds.",
+      "tags": ["burden", "procedure"]
+    }
+  ],
+  "checkins": ["b3", "b6", "b9", "b11"],
+  "verdict_truth": "Not Guilty",
+  "twist": "Eleven seconds of vertical video made him a monster by morning. The full record ran the other way: a trip log with two calls for help before the clip began, an interior camera showing who swung first, and scene photographs of a bitten forearm nobody posted online. The shove was real, the anger was real — and so was the right to push back.",
+  "difficulty_target": 0.45,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "Watched the clip before the summons arrived; cannot unsee the shove.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": { "position": "G", "confidence": 80 },
+        "weights": { "method": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["You all saw it. He put a man on the pavement and stood over him.", "The shove is on film. Films do not stumble drunk."],
+          "pushback": ["Whatever happened in the car, you do not get to floor a man in the street.", "Everyone keeps talking around the eleven seconds we actually have."],
+          "concede": ["If the camera in the car shows him hit first… then the clip starts in the middle of someone else's fight."],
+          "final": ["I know what I saw. I am just no longer certain what I did not see."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "any", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Trusts timestamps over testimony; wants the night in order.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "digital_forensics": 2, "timeline": 1 },
+        "lines": {
+          "agree": ["The log does not care who is charming. 1:12, 1:15, 1:19 — that is the night, in order.", "Two calls for help before any camera. That is hard to argue with."],
+          "pushback": ["Feelings about the video are not timestamps.", "Put the events in order first; argue after."],
+          "concede": ["All right — the order of events cuts the other way from where I started."],
+          "final": ["I follow the record. The record starts before the clip does."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; keeps asking who has to disprove self-defence.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 80 },
+        "weights": { "burden": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["Precisely. It is for the prosecution to exclude self-defence, and to make us sure of it."],
+          "pushback": ["A viral clip is not a standard of proof.", "Nine drinks and a refused breath test — and his word is the spine of the case."],
+          "concede": ["The shove itself is not in dispute. Only its character is."],
+          "holdout": ["If he may have been defending himself, the law has already decided this verdict for us.", "I would rather hang this jury than guess with it."],
+          "final": ["Not guilty. Sure means sure."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Keeps the room honest about the burden; leans to convict on the anger.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "burden": 2, "procedure": 1 },
+        "lines": {
+          "agree": ["That is the right frame: they must exclude self-defence, not merely doubt it."],
+          "pushback": ["He admitted he was angry when he shoved. Anger past the point of danger stops being defence.", "We are not here to punish the passenger for being drunk."],
+          "concede": ["I will grant the scene photographs are not the portrait of an aggressor."],
+          "burden_correct": ["Stop asking why the driver stayed silent — the caution told him he could, and silence proves nothing.", "The judge was plain: if it may have been self-defence, we acquit. Nobody here gets to reverse that."],
+          "final": ["Hold it to the standard, and the standard gives the answer."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "procedure", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 0, "confidence": -5, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; counts hands, keeps the clip from running the room.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "credibility": 1, "procedure": 1 },
+        "lines": {
+          "agree": ["Noted, and I happen to agree — that point should move the count.", "Good. Say that again when we vote."],
+          "pushback": ["One voice at a time. The question is self-defence, not manners.", "We keep replaying the clip. The case is bigger than the clip."],
+          "concede": ["Fair. The count should reflect that concession."],
+          "final": ["We have done this properly. Hands up, and let it be counted."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Sways with the last confident voice; the shove haunts him, then the bite mark does.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "G", "confidence": 45 },
+        "weights": { "method": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["Yes — when you put it that way it seems obvious.", "That is the piece I keep circling back to as well."],
+          "pushback": ["But he said 'stay down'. Who says that defending themselves?", "The wrist was actually broken, though. That happened."],
+          "concede": ["Although… a bite mark is not something you give yourself. I had not sat with that."],
+          "final": ["I have changed my mind twice tonight. I am going with how it stands now."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Came in sure after seeing the clip online; the interior camera is undoing him.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "G", "confidence": 70 },
+        "weights": { "digital_forensics": 2, "timeline": 2 },
+        "lines": {
+          "agree": ["The in-car footage answers the only question that matters: who started it.", "Two safety calls, then two punches to his head, then the shove. In that order, the clip means something different."],
+          "pushback": ["I saw the video before I ever got the summons. I am telling you what that certainty was built on — eleven seconds.", "The rating complaint is noise. Anonymous stars are not witnesses."],
+          "concede": ["All right. I cannot hold 'sure' together with that camera."],
+          "final": ["I walked in with a verdict from my phone. The evidence took it off me."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; nine drinks buys very little belief from her.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 60 },
+        "weights": { "credibility": 2 },
+        "lines": {
+          "agree": ["Mm. A witness who starts filming after the interesting part has opinions, not evidence.", "That is the first thing today that sounded like the whole night."],
+          "pushback": ["The bystander is honest and saw one third of one minute.", "Everyone keeps saying 'we all saw it'. We saw an ending."],
+          "concede": ["The driver was angry. I will give the prosecution that much."],
+          "final": ["Quietly: not sure. So not guilty."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 0, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Keeps demanding the driver prove his innocence; the silence at the scene gnaws at him.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 65 },
+        "weights": { "procedure": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Exactly. An innocent man says 'he attacked me' right there at the kerb."],
+          "pushback": ["Then let someone explain the broken wrist to me. Somebody did that."],
+          "burden_drift": ["If it was really self-defence, why did he not say one word until he had a lawyer?", "He should have to show us he tried to walk away. Show us, not tell us."],
+          "concede": ["Fine — the judge did say his silence cannot be held against him."],
+          "burden_correct": ["I take it back. It is theirs to prove, and his to prove nothing."],
+          "final": ["I wanted him to account for himself. Wanting is not the law, apparently."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "procedure", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "Genuinely torn; argues each side aloud to see which survives her saying it.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "credibility": 1, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["Say that part again — that is the part that holds.", "Right. The camera in the car does not have a rating to protect."],
+          "pushback": ["And then I flip it over and see a drunk man with a broken wrist.", "Give me one more pass at it. I am close."],
+          "concede": ["That lands. I will stop wobbling on that point at least."],
+          "final": ["I argued both sides out loud. Only one of them kept standing."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Suspicious of every camera in the case — the viral one most of all.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 50 },
+        "weights": { "method": 1, "digital_forensics": 1, "burden": 1 },
+        "lines": {
+          "agree": ["That is fair — the platform's log was written by nobody's lawyer.", "And the direction backs it: sure means the whole night, not the famous part."],
+          "pushback": ["Four million people judged this man in eleven seconds. We are the twelve who cannot.", "A clip cut to start at the shove is an argument, not a record."],
+          "concede": ["The interior camera is still a camera. But it starts earlier, and earlier is what we needed."],
+          "final": ["Between the camera that went viral and the one that stayed in the car, I trust the boring one."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-2026-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "D7b-1"
+  }
+}
