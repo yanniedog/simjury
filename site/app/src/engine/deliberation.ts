@@ -93,6 +93,8 @@ export interface DeliberationState {
   rng: Rng
   driftActive: boolean
   driftCorrectedByPlayer: boolean
+  /** The room voiced its own burden_correct line; a later cite is not the player's catch. */
+  driftRoomCorrected: boolean
   outcome: Outcome | null
 }
 
@@ -155,6 +157,7 @@ export function startDeliberation(
     rng: rngFor(`${caseData.id}:${playerVerdict}`),
     driftActive: false,
     driftCorrectedByPlayer: false,
+    driftRoomCorrected: false,
     outcome: null,
   }
   emit(state, { actor: 'room', type: 'positions', tally: tallyOf(state.jurors) })
@@ -198,16 +201,18 @@ function respond(
   const js = state.jurors.find((s) => s.id === juror.id)!
 
   // How hard the argument lands: the gullible arcs weigh how the beat feels,
-  // everyone else weighs what it is worth; a juror's theme weight amplifies.
+  // everyone else weighs what it is worth; a juror's theme weight amplifies a
+  // matching argument (positive) or dampens/resists it (zero or negative) —
+  // pick the tag the juror feels most strongly about, sign included.
   const q =
     juror.arc === 'vibes' || juror.arc === 'drifter'
       ? beat.surface_persuasion
       : beat.true_weight
-  const weight = Math.max(
-    0,
-    ...beat.tags.map((t) => juror.weights[t] ?? 0),
-  )
-  const raw = Math.abs(rule.effect.delta) * (0.4 + q + 0.2 * weight)
+  const tagWeights = beat.tags.map((t) => juror.weights[t] ?? 0)
+  const weight = tagWeights.length > 0 ? Math.max(...tagWeights) : 0
+  // Floor at 0 so a strongly-resisted beat dampens toward "no reaction"
+  // rather than reversing the argument's direction.
+  const raw = Math.abs(rule.effect.delta) * Math.max(0, 0.4 + q + 0.2 * weight)
   const steps = rule.effect.delta === 0 ? 0 : Math.min(2, Math.floor(raw + state.rng()))
   const pushSign = push === 'guilt' ? 1 : -1
   const moveSign = pushSign * sign(rule.effect.delta)
@@ -278,6 +283,16 @@ export function playRound(state: DeliberationState, action: PlayerAction): void 
     }
   } else {
     const beat = beatById(state.caseData, action.beatId)
+    if (action.type === 'cite_direction' && beat.kind !== 'direction') {
+      throw new Error(
+        `cite_direction requires a direction beat, got ${action.beatId} (${beat.kind})`,
+      )
+    }
+    if (action.type === 'argue' && beat.kind === 'direction') {
+      throw new Error(
+        `argue cannot target direction beat ${action.beatId}; use cite_direction`,
+      )
+    }
     const stance: Stance = action.type === 'cite_direction' ? 'proves' : action.stance
     const push: 'guilt' | 'innocence' =
       stance === 'proves'
@@ -295,6 +310,9 @@ export function playRound(state: DeliberationState, action: PlayerAction): void 
 
     // Responders: jurors whose non-default rule matches speak first (heaviest
     // theme weight first), then one rng pick keeps the room lively.
+    // Snapshot drift state before responders run: a drift that this same
+    // action's responses newly trigger is not one the player just corrected.
+    const driftActiveBeforeResponse = state.driftActive
     const jurors = state.caseData.jury.jurors
     const matched = jurors
       .filter((j) => {
@@ -311,11 +329,13 @@ export function playRound(state: DeliberationState, action: PlayerAction): void 
     const speakers = rest.length > 0 ? [...matched, pick(state.rng, rest)] : matched
     for (const juror of speakers) respond(state, juror, beat, stance, push)
 
-    // Citing the burden direction while the room has drifted corrects it.
+    // Citing the burden direction while the room has drifted corrects it —
+    // unless the room already voiced its own correction first.
     if (
       action.type === 'cite_direction' &&
-      state.driftActive &&
+      driftActiveBeforeResponse &&
       !state.driftCorrectedByPlayer &&
+      !state.driftRoomCorrected &&
       beat.tags.includes('burden')
     ) {
       state.driftCorrectedByPlayer = true
@@ -334,8 +354,12 @@ export function playRound(state: DeliberationState, action: PlayerAction): void 
     state.phase = 'open_3'
     // An uncorrected drift gives the room a chance to correct itself (v3 §9.5).
     if (state.driftActive && !state.driftCorrectedByPlayer && state.rng() < ROOM_SELF_CORRECT_P) {
+      // Only a juror whose reaction rules actually reach `burden_correct` may
+      // voice it — authored-but-unwired lines don't count as reachable.
       const corrector = state.caseData.jury.jurors.find(
-        (j) => (j.lines.burden_correct?.length ?? 0) > 0,
+        (j) =>
+          (j.lines.burden_correct?.length ?? 0) > 0 &&
+          j.reaction_rules.some((r) => r.effect.line === 'burden_correct'),
       )
       if (corrector) {
         emit(state, {
@@ -346,6 +370,9 @@ export function playRound(state: DeliberationState, action: PlayerAction): void 
           delta: 0,
           position: state.jurors.find((s) => s.id === corrector.id)!.position,
         })
+        // The room voiced its own correction; a later player cite is not the
+        // player's catch.
+        state.driftRoomCorrected = true
       }
     }
   } else {
