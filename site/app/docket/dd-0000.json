@@ -1,0 +1,410 @@
+{
+  "id": "dd-0000",
+  "publish_date": "2026-08-01",
+  "label": "fiction",
+  "title": "The Voice on the Line",
+  "setting": "the finance office of a mid-size freight company, the present day",
+  "charge": "obtaining company funds by deception",
+  "elements": [
+    "A transfer of company funds was authorised on false pretences",
+    "The accused acted dishonestly, not merely carelessly"
+  ],
+  "cast": [
+    { "id": "judge", "name": "Judge Corven", "role_label": "the judge", "side": "court" },
+    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "w1", "name": "Marcus Webb", "role_label": "forensic accountant", "side": "prosecution" },
+    { "id": "w3", "name": "Tom Grigson", "role_label": "accounts team colleague", "side": "prosecution" },
+    { "id": "w4", "name": "Dr Lena Moss", "role_label": "audio forensics examiner", "side": "defence" },
+    { "id": "w5", "name": "Dana Reyes", "role_label": "the accused — accounts manager", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit one: the payment record. At 11:47 on the night in question, a transfer of forty-eight thousand dollars left Vantrelle Freight's operating account for a beneficiary added that same evening. It was authorised from the accused's laptop, on the office network, using her credentials, her passphrase, and the hardware security key issued to her alone.",
+      "surface_persuasion": 0.85,
+      "true_weight": 0.15,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Every marker pointed at her machine because it was her machine. A live impersonation call is precisely how you get an honest employee to authorise a transfer themselves. The record proved the payment happened — it never said why.",
+      "tags": ["identity", "digital_forensics"]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "The beneficiary account was registered eleven days earlier under the handle dreyes-ledger — the same username the accused used for years on an old bookkeeping forum. Once the money landed it moved out within forty minutes, split through three intermediate wallets, and finished at an overseas cash-out service we could not reach.",
+      "surface_persuasion": 0.75,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The handle came from a public breach dump. Whoever built the scam dressed the beneficiary in her name — a fall guy stitched into the scheme eleven days before the call was ever placed.",
+      "tags": ["identity", "digital_forensics"]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "Under cross-examination he agreed the handle appears in a breach dump published three years ago — the accused's old email and username, leaked alongside sixty million others. He agreed anyone could have registered the beneficiary under that name, and that nothing ties her devices to the wallets or to the cash-out service.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.55,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The concession that mattered: the only thread tying her to the money was a username the whole internet already had.",
+      "tags": ["credibility", "digital_forensics"]
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "Two weeks before the transfer she told me she had been passed over for the finance-director role for the second time. Her exact words were, 'this place owes me.' She had been carrying the month-end close on her own for a year, and everybody on the floor knew she was angry about it.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.15,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A canteen grievance, retold in a courtroom. Being owed is not a plan; half the finance team had said worse that same quarter.",
+      "tags": ["motive"]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "Company policy requires callback verification before any new beneficiary above ten thousand dollars is paid. She did not call back. She approved the payment on the strength of a video call that nobody else at Vantrelle saw, on an evening when she was the only person left in the office.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.35,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "True, and it goes to carelessness. The charge is dishonesty. The gap between those two words is the whole case.",
+      "tags": ["procedure"]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit four: the conference platform's trust-and-safety report. A video call reached the accused's account at 11:31 that night from an account created three days earlier with a synthetic identity, connecting through a residential proxy. The platform's integrity system flagged the caller's video stream as reenacted media — its highest-confidence category.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The buried annexe that decided the case: the call was real, and the caller was manufactured. Three days old, synthetic papers, hiding its route home.",
+      "tags": ["digital_forensics", "identity"]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "The caller's voice was assembled from the chief executive's podcast appearances — I found phrase-level artefacts matching four separate episodes. The response latency rises and falls with the conversation itself. That is a live operator puppeteering a cloned voice in real time. A recording cannot answer questions; this caller answered hers.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.7,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Live puppeteering means a crew ran the call — someone who researched her, her chief executive, and that morning's meeting before dialling.",
+      "tags": ["digital_forensics", "method"]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "cross",
+      "text": "She accepted that her detection toolchain reports a false-positive rate near seven per cent, and that she was retained and paid by the defence. She held her ground on the pattern: these artefacts could occur singly in a degraded genuine stream, but they do not occur at this density across an entire call.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "A fair jab at any expert. Seven per cent of doubt about the audio still leaves the synthetic account, the proxy, and the wallets unexplained.",
+      "tags": ["credibility"]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w5",
+      "mode": "examination",
+      "text": "He used our internal shipment codes and quoted the morning's operations meeting back to me. It was his face. It was his voice, his impatience, the way he cuts you off. He said the acquisition would leak if I looped anyone in. I have replayed that call every night since. I believed him.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Her account never changed from the first police interview — and every checkable detail in it checked out.",
+      "tags": ["credibility", "method"]
+    },
+    {
+      "id": "b10",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit six: the forensic download of the accused's personal devices. No contact with the beneficiary account. No wallet applications, no searches touching any part of the scheme, no unexplained deposits across eighteen months of statements. The cash-out service's records tie the final wallet to a phishing-kit vendor already under investigation abroad.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.75,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "If she built the scheme, she built it leaving no trace on anything she owned — while the trail that does exist runs straight to a known fraud crew.",
+      "tags": ["digital_forensics", "identity"]
+    },
+    {
+      "id": "b11",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "You decide this case only on the evidence heard in this room — you must not research it elsewhere. The prosecution must make you sure the accused acted dishonestly. Skipping a callback is carelessness, and carelessness is not the charge. If she may genuinely have believed her caller, you must acquit.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction the room needed: negligence and dishonesty are different verdicts, and the burden never moves.",
+      "tags": ["burden", "procedure"]
+    }
+  ],
+  "checkins": ["b3", "b5", "b8", "b10"],
+  "verdict_truth": "Not Guilty",
+  "twist": "Her login, her machine, her grudge — every loud fact pointed at the easiest person to see. The quiet annexe said the call was real and the caller was manufactured: a three-day-old synthetic account running a live voice clone built from podcasts, cashing out through a phishing crew that had dressed the money in her old username. The callback she skipped made her negligent. It never made her a thief.",
+  "difficulty_target": 0.6,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "Takes the access logs at face value — her key, her laptop, her passphrase.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": { "position": "G", "confidence": 80 },
+        "weights": { "identity": 2, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["That is what I have been saying — her key signed it, end of story.", "See, even the machines agree with me."],
+          "pushback": ["You can spin the details however you like; the transfer still came from her chair.", "Nobody walked in and borrowed her hands."],
+          "concede": ["Fine — if the caller was a fake, the login proves less than I thought."],
+          "final": ["I go with what the logs say."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "any", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Practical; trusts what was written down and what was found.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 65 },
+        "weights": { "digital_forensics": 1, "procedure": 1 },
+        "lines": {
+          "agree": ["The records line up; I will follow the records.", "That report is the most solid thing we have heard."],
+          "pushback": ["We keep talking feelings. Show me a document.", "The policy existed and she skipped it — that is on paper too."],
+          "concede": ["The device download is a document as well. I have to weigh it."],
+          "final": ["On the papers alone, I can live with either answer — but sure is a high bar."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "procedure", "stance": "proves" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; keeps repeating what 'sure' is supposed to mean.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 75 },
+        "weights": { "burden": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["Precisely. The standard is sure — not suspicious, not probably."],
+          "pushback": ["You are asking her to explain the crime. That is not her job, it is the prosecution's.", "Anger at an employer is evidence of nothing but employment."],
+          "concede": ["I accept the transfer itself is beyond dispute."],
+          "holdout": ["If a manufactured call is even reasonably possible, then sure is out of reach, and so is guilty.", "I would rather be the last vote in the room than the first to guess."],
+          "final": ["Not guilty. That is what the doubt is for."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Keeps the room honest about who has to prove what.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "burden": 2, "procedure": 1 },
+        "lines": {
+          "agree": ["That is the right way round: they prove it, she proves nothing."],
+          "pushback": ["Careless and dishonest are different accusations. Only one of them is charged.", "We cannot convict her for being alone in the office."],
+          "concede": ["I lean guilty on the whole picture, but I will not pretend the burden moved."],
+          "burden_correct": ["Stop. She does not have to show where the money went. They have to show she sent it dishonestly.", "The judge said it plainly: if she may genuinely have believed the caller, we acquit."],
+          "final": ["Held to the proper standard, I know which way this goes."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "procedure", "stance": "unreliable" }, "effect": { "delta": 0, "confidence": -5, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; keeps order, counts hands, leans to convict.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "identity": 1, "procedure": 1 },
+        "lines": {
+          "agree": ["Noted — and for what it is worth, I agree with that.", "Good. That is the kind of point a verdict can stand on."],
+          "pushback": ["One at a time. The question is dishonesty, not tidiness.", "We are going in circles; someone bring us back to the evidence."],
+          "concede": ["All right. That point stands, and the count should reflect it."],
+          "final": ["We have argued it properly. Let us be counted."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "proves" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Impressed by the username trail; drifts with whoever spoke last.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "G", "confidence": 45 },
+        "weights": { "identity": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["Yes — that is the bit I keep coming back to as well.", "When you put it like that, it does seem clear."],
+          "pushback": ["But the account had her name on it. Her actual old name.", "Eleven days of planning sounds like somebody who works there."],
+          "concede": ["Although… if the name came from a leak, anyone could have worn it. I had not thought of it as a costume."],
+          "final": ["I think… I will go with how it sounded once everything was said."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "identity", "stance": "proves" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Came in certain; the platform report is working on him.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "G", "confidence": 70 },
+        "weights": { "digital_forensics": 2, "method": 1 },
+        "lines": {
+          "agree": ["I keep rereading that trust-and-safety line. A three-day-old synthetic account is not an accident.", "If a crew ran that call live, then everything I was sure about happens exactly the same whether she is guilty or innocent."],
+          "pushback": ["The seven per cent bothers me less than you want it to.", "I was certain when I sat down. I am telling you what certainty was built on: the login. Just the login."],
+          "concede": ["All right — I cannot call it sure anymore. Not with that report on the table."],
+          "final": ["I changed my mind in this room, and I can tell you the exact exhibit that did it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; distrusts certainty offered too easily, from either side.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 60 },
+        "weights": { "credibility": 2 },
+        "lines": {
+          "agree": ["Mm. The louder the witness, the less I tend to believe.", "That is the first thing said today that sounded like evidence."],
+          "pushback": ["The colleague heard a complaint, not a confession.", "Everyone here keeps saying 'obviously'. Nothing about this is obvious."],
+          "concede": ["The expert took money from the defence; I hold that against her a little."],
+          "final": ["Quietly, then: not sure. So not guilty."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "motive", "stance": "proves" }, "effect": { "delta": 0, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Wants the accused to account for herself; keeps reversing the burden.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 65 },
+        "weights": { "motive": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Exactly. Money gone, story ready — too neat by half."],
+          "pushback": ["Then where did the money go? Someone in this room tell me that."],
+          "burden_drift": ["If she is innocent, let her show us the caller was fake. She was the only one on that call.", "An honest person rings the boss back. She never explained why she did not."],
+          "concede": ["All right, all right — the judge did say it is not hers to prove."],
+          "burden_correct": ["I withdraw it. They have to make us sure; she owes us nothing."],
+          "final": ["I want to say guilty. Wanting is not the standard, though, is it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "motive", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "The undecided one; argues both sides out loud until one sticks.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "motive": 1, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["Yes — say that part again, that is the part that moves me.", "Right, right — the wallets. The wallets are hard to argue with."],
+          "pushback": ["But then I flip it around and it reads the other way entirely.", "Five minutes ago I was where you are; give me five more."],
+          "concede": ["That one lands. I will stop wobbling on it."],
+          "final": ["I have talked myself around the table twice. This is where I stopped."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "motive", "stance": "proves" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Uneasy about convicting on screens; uneasy about acquitting on them too.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 50 },
+        "weights": { "digital_forensics": 1, "burden": 1 },
+        "lines": {
+          "agree": ["That is fair. The wallets lead somewhere, and it is not to her.", "And the direction backs that reading — sure means sure."],
+          "pushback": ["A machine flagged the video and a machine logged her key. I refuse to worship one machine and ignore the other.", "Both sides keep handing me printouts and calling them proof."],
+          "concede": ["The device download cuts through it, I admit. You cannot fake an absence that thorough."],
+          "final": ["Between two stacks of screens, I take the one the judge's direction points at."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-fixture-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "D2b"
+  }
+}
