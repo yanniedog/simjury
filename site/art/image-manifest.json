@@ -1,0 +1,424 @@
+{
+  "version": 1,
+  "purpose": "Machine-readable generation manifest for simjury.com artwork. Read site/art/IMAGE-BRIEF.md first — it is the contract. For each entry in images[], build the prompt as: style.base_prompt + ' ' + pov.rule + ' ' + composition (+ cast descriptions for every id in cast[]). Apply style.avoid as the negative prompt for every image.",
+  "delivery": {
+    "directory": "site/public/art/",
+    "format": "webp (lossy, quality ~82); png only where alpha=true",
+    "color": "sRGB",
+    "naming": "exact `file` value below — the site references these paths verbatim",
+    "integration_points": [
+      "site/public/play/play.js — SCENES map (scene images per play state)",
+      "site/public/styles.css — .atmosphere background url (site-wide backdrop)",
+      "site/public/index.html — hero <img> and og:image meta"
+    ]
+  },
+  "style": {
+    "base_prompt": "Courtroom sketch by a Victorian-era court reporter-artist: loose, confident pastel and charcoal (conte crayon) drawing on warm buff toned paper. Rapid reportage linework in dark sepia ink; muted colour washes laid down loosely so pigment drifts outside the outlines; cross-hatched shadows; drawing edges left unfinished with raw paper showing at the margins. Setting is an 1890s gaslight-era English criminal courtroom: dark oak panelling, brass rails, gas lamps with a warm amber glow against cold grey window daylight, barristers in short white wigs and black gowns, judge in scarlet robe with white bands. Palette: sepia, buff, oxblood red, brass gold, slate green, faded navy, chalk white.",
+    "avoid": "photorealism, photograph, 3D render, digital painting gloss, anime, cartoon, caricature, modern clothing, modern furniture, microphones, gavels (English courts have none), wristwatches, legible text, letters, numerals, signage, watermark, signature, speech bubbles, comic panels, decorative border or frame, likeness of any real identifiable person",
+    "notes": [
+      "Faces are court-sketch faces: a few confident strokes, expressive but not portrait-detailed.",
+      "NO drawn speech bubbles ever — the site overlays live HTML speech bubbles on top of these images.",
+      "Each image declares a quiet_zone: keep that region compositionally calm (sky, panelling, soft wash) so the HTML bubble sits legibly over it.",
+      "No text anywhere in any image. This is also a content-safety rule (the game hides real names): any accidental legible lettering fails review.",
+      "Recurring characters must stay visually consistent across images — generate images/cast-sheet.webp first and use it as the visual reference for every later image."
+    ]
+  },
+  "pov": {
+    "rule": "STRICT FIRST PERSON: every image is exactly what Juror #1 sees with their own eyes, seated in the jury box (or, where stated, at the jury-room table / at a desk). Seated adult eye-level. The jury-box rail may enter the bottom of frame; neighbouring jurors' dark shoulders may crop the left/right edges. The viewer's own hands may appear in the lower frame where the entry says so. Anyone addressing the jury looks toward the viewer — at YOU.",
+    "never": "No third-person views, no bird's-eye views, no shots that include Juror #1's own face or body beyond hands/forearms."
+  },
+  "cast": {
+    "JUDGE": "The judge: elderly, hollow-cheeked, small oval spectacles, long judicial bench wig, scarlet robe with white fur trim and white bands, seated high behind the bench. Stern, unhurried.",
+    "CROWN": "Crown counsel (prosecuting): tall, sharp-featured barrister in short white wig and black gown, gold pince-nez on a ribbon, precise chopping hand gestures, brief held in the left hand.",
+    "DEFENCE": "Defence counsel: shorter, rounder barrister in short white wig and black gown, rumpled bands, reading spectacles pushed up on his forehead, patient sceptical expression, thumbs hooked in gown.",
+    "USHER": "The court usher: middle-aged man in a plain black gown over a dark suit, long white staff or papers in hand, brisk and deferential.",
+    "ACCUSED": "The accused, 'Mr Norland': a gentleman near sixty, thick silver-grey hair, heavy grey moustache, once-fine dark frock coat now worn at the cuffs, high collar, upright but weary bearing, standing in the dock with hands on the dock rail.",
+    "W01": "First complainant, 'Mrs Elling': a young widow in full Victorian mourning — black crepe dress, black bonnet with veil lifted, pale composed face, gloved hands folded on the witness-box rail.",
+    "W02": "Second complainant, 'Mrs Garner': an older woman in a russet-brown walking dress with a fur tippet and small feathered hat, indignant, chin high.",
+    "W03": "Third complainant, 'Mrs Holt': middle-aged, in a grey-blue day dress with a high lace collar, pince-nez on a chain, careful and hesitant.",
+    "W04": "Fourth complainant, 'Mrs Irwin': tall, in a dark green fitted jacket-bodice and a wide feathered hat, direct and certain manner.",
+    "INSPECTOR": "'Inspector Vale': a police inspector in a dark high-buttoned uniform coat, cropped hair, waxed moustache, notebook open in one hand.",
+    "EXPERT": "'Mr Penrose', handwriting expert: a dry, precise man in a black frock coat, wing collar, small spectacles, holding up comparison papers; long careful fingers.",
+    "CONSTABLE": "'Mr Quill', retired constable: heavy-set, older, weathered face, mutton-chop whiskers, ill-fitting Sunday-best suit, slow deliberate manner.",
+    "FOREPERSON": "Juror 6, the foreperson: silver side-whiskers, upright posture, dark waistcoat with a brass watch chain, papers squared in front of him.",
+    "JURORS": "The jury (1890s, all men): a mix of clerks, shopkeepers and tradesmen in dark suits, varied ages and builds, whiskers and moustaches of the period."
+  },
+  "images": [
+    {
+      "id": "cast-sheet",
+      "file": "cast-sheet.webp",
+      "priority": "P0",
+      "ships": false,
+      "size": { "w": 2048, "h": 1152 },
+      "used_on": ["(reference only — not deployed; used to keep characters consistent)"],
+      "cast": ["JUDGE", "CROWN", "DEFENCE", "USHER", "ACCUSED", "W01", "W02", "W03", "W04", "INSPECTOR", "EXPERT", "CONSTABLE", "FOREPERSON"],
+      "quiet_zone": "none",
+      "composition": "Character model sheet in the house sketch style: all thirteen recurring characters in a loose grid, each a half-length study with one small full-length study beside it, on one sheet of buff paper. Keep each character clearly separated with raw paper between them. No labels or lettering of any kind.",
+      "alt": "(internal reference sheet)"
+    },
+    {
+      "id": "courtroom-pov",
+      "file": "courtroom.webp",
+      "priority": "P0",
+      "size": { "w": 2048, "h": 1152 },
+      "used_on": ["index.html hero (the site OPENS on this image)", "play.js SCENES.courtroom (summons + episode heads)", "styles.css .atmosphere backdrop (darkened by CSS)"],
+      "cast": ["JUDGE", "CROWN", "DEFENCE", "ACCUSED", "W01", "USHER"],
+      "quiet_zone": "top-right and top-left corners",
+      "composition": "THE OPENING IMAGE. From Juror #1's seat: the full courtroom in session spread before you. Centre-back: the judge high on his bench beneath a carved oak canopy with a loose scribbled royal coat of arms. Right: the raised witness box with a witness standing. Left: the dock with the accused standing between the rails, a warder's shoulder behind him. Below the bench: the clerk's green-baize table stacked with papers and tied bundles; two clerks' wig-backs. Mid-ground: counsel benches from behind — seated barristers' wigs, one counsel on his feet mid-question, arm extended toward the witness. Tall arched windows with cold daylight shafts; two gas sconces burning warm. FOREGROUND, first person: the polished jury-box rail sweeping across the bottom of frame with your own folded notes and a pencil on the ledge, and the dark cropped shoulders of the jurors beside you at the bottom corners.",
+      "alt": "Court sketch: the full courtroom seen from the jury box — judge beneath the canopy, witness box right, dock left, counsel below."
+    },
+    {
+      "id": "og-card",
+      "file": "og-card.webp",
+      "priority": "P0",
+      "size": { "w": 1200, "h": 630 },
+      "used_on": ["index.html + play/index.html og:image meta (social sharing card)"],
+      "cast": ["JUDGE", "ACCUSED"],
+      "quiet_zone": "left third (title text is composited by the page, keep it near-empty wash)",
+      "composition": "Social-card crop of the courtroom: from the jury box, a tighter diagonal view past the jury rail toward the judge's bench and the dock, gaslight warm against grey window light. Left third of the frame is calm buff paper and soft wash only.",
+      "alt": "Court sketch of a gaslit courtroom from the jury box."
+    },
+    {
+      "id": "summons-usher",
+      "file": "summons-usher.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js summons screen (replaces SCENES.courtroom there once shipped)"],
+      "cast": ["USHER"],
+      "quiet_zone": "top-right",
+      "composition": "First person, arriving: the usher holds open the low door of the jury box for YOU, looking straight at the viewer, papers under one arm, half-bowing you toward the empty jury bench in the foreground. Beyond him the courtroom waits — bench, dock and witness box out of focus in loose wash. Your view is from standing height at the jury-box steps.",
+      "alt": "Court sketch: the usher holds the jury-box door open for you."
+    },
+    {
+      "id": "witness-stand",
+      "file": "witness-stand.webp",
+      "priority": "P0",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js SCENES.witness (generic testimony scene until per-witness set ships)"],
+      "cast": ["W01", "CROWN"],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box: the raised oak witness box centre-right with a witness standing at the rail, lit half by cold window light and half by gas glow. Bottom-left foreground, large and cropped: the back of examining counsel's wig and gown shoulder as he faces the witness. The jury rail crosses the very bottom of frame.",
+      "alt": "Court sketch of a witness in the witness box, counsel's wig in the foreground."
+    },
+    {
+      "id": "witness-w01",
+      "file": "witness-w01.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js testimony blocks where speaker=P-01 (Mrs Elling)"],
+      "cast": ["W01"],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box: Mrs Elling alone in the witness box, three-quarter view, turned slightly toward the jury — toward YOU — as she gives her account. Black crepe mourning dress, veil lifted over her bonnet, gloved hands tight on the box rail. Cold light on her face, gas glow behind. Jury rail at the very bottom of frame.",
+      "alt": "Court sketch: the young widow testifying in the witness box."
+    },
+    {
+      "id": "witness-w02",
+      "file": "witness-w02.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js testimony blocks where speaker=P-02 (Mrs Garner)"],
+      "cast": ["W02"],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box: Mrs Garner in the witness box, russet dress and fur tippet, chin high, one gloved finger raised mid-sentence, addressing the jury directly — looking at YOU. Jury rail at the very bottom of frame.",
+      "alt": "Court sketch: the second complainant testifying, finger raised."
+    },
+    {
+      "id": "witness-w03",
+      "file": "witness-w03.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js testimony blocks where speaker=P-03 (Mrs Holt)"],
+      "cast": ["W03"],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box: Mrs Holt in the witness box in grey-blue with a high lace collar, pince-nez in hand, hesitating over her words, eyes down at the rail then lifted toward the jury. A careful, uncertain pose. Jury rail at the very bottom of frame.",
+      "alt": "Court sketch: the third complainant, hesitant in the witness box."
+    },
+    {
+      "id": "witness-w04",
+      "file": "witness-w04.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js testimony blocks where speaker=P-04 (Mrs Irwin)"],
+      "cast": ["W04"],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box: Mrs Irwin in the witness box, dark green jacket-bodice and wide feathered hat, standing square and certain, pointing across the well of the court toward the dock (off-frame left). Jury rail at the very bottom of frame.",
+      "alt": "Court sketch: the fourth complainant pointing toward the dock."
+    },
+    {
+      "id": "witness-inspector",
+      "file": "witness-inspector.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js testimony blocks where speaker=P-05 (Inspector Vale)"],
+      "cast": ["INSPECTOR"],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box: Inspector Vale in the witness box in his dark high-buttoned uniform coat, reading evenly from his open notebook, waxed moustache, all procedure. Jury rail at the very bottom of frame.",
+      "alt": "Court sketch: the police inspector reading from his notebook."
+    },
+    {
+      "id": "witness-expert",
+      "file": "witness-expert.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js testimony blocks where speaker=P-06 (Mr Penrose)"],
+      "cast": ["EXPERT"],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box: Mr Penrose the handwriting expert in the witness box, holding two papers up side by side toward the jury — toward YOU — as if inviting comparison, spectacles catching the gaslight. The papers show only illegible scribbled strokes. Jury rail at the very bottom of frame.",
+      "alt": "Court sketch: the handwriting expert holding up two papers for comparison."
+    },
+    {
+      "id": "witness-constable",
+      "file": "witness-constable.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js testimony blocks where speaker=P-07 (Mr Quill)"],
+      "cast": ["CONSTABLE"],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box: Mr Quill, the retired constable, filling the witness box — heavy-set, mutton-chop whiskers, Sunday-best suit strained at the buttons, one big hand flat on the rail, remembering something from long ago. Jury rail at the very bottom of frame.",
+      "alt": "Court sketch: the retired constable in the witness box."
+    },
+    {
+      "id": "accused-dock",
+      "file": "accused-dock.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js testimony blocks where speaker=P-08 (Mr Norland, the accused)"],
+      "cast": ["ACCUSED"],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box: the dock, straight on. Mr Norland stands between the dock rails to address the jury — looking directly at YOU — silver hair, heavy grey moustache, worn frock coat, knuckles white on the rail, dignified and desperate. A warder's dark shoulder at the edge of the dock. Gas sconce burning above. Jury rail at the very bottom of frame.",
+      "alt": "Court sketch: the accused addressing the jury from the dock."
+    },
+    {
+      "id": "judge-direction",
+      "file": "judge-direction.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js direction items (voiceKey=judge)"],
+      "cast": ["JUDGE"],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box, looking up: the judge leans forward over the bench edge to address the jury — looking down directly at YOU over his spectacles — quill set down, fingers laced. Scarlet robe, white fur, the carved canopy and a loose royal-arms scribble above him. Jury rail at the very bottom of frame.",
+      "alt": "Court sketch: the judge leaning over the bench to direct the jury."
+    },
+    {
+      "id": "exhibit-presented",
+      "file": "exhibit-presented.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js exhibit items (scene behind the exhibit's own document render)"],
+      "cast": ["USHER", "CROWN"],
+      "quiet_zone": "top-left",
+      "composition": "From the jury box: the usher carries a document on a small tray across the well of the court toward the jury — toward YOU — while Crown counsel stands mid-sentence gesturing at it. On the clerk's green-baize table: tied bundles, a sealed envelope with a red wax seal, a magnifying glass. The document face shows only illegible scribbles. Jury rail at the very bottom of frame.",
+      "alt": "Court sketch: the usher bringing an exhibit across the court to the jury."
+    },
+    {
+      "id": "counsel-crown",
+      "file": "counsel-crown.webp",
+      "priority": "P2",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js exhibit claim bubbles (Crown side); available for cross-examination framing"],
+      "cast": ["CROWN"],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box: Crown counsel on his feet at the counsel bench, turned to the jury — addressing YOU — pince-nez pinched in one hand, the other hand flat on his brief, mid-argument. Seated wigs of his juniors beside him. Jury rail at the very bottom of frame.",
+      "alt": "Court sketch: Crown counsel addressing the jury."
+    },
+    {
+      "id": "counsel-defence",
+      "file": "counsel-defence.webp",
+      "priority": "P2",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js exhibit claim bubbles (defence side); available for cross-examination framing"],
+      "cast": ["DEFENCE"],
+      "quiet_zone": "top-left",
+      "composition": "From the jury box: defence counsel rising with deliberate slowness, spectacles pushed up on his forehead, one eyebrow raised at the jury — at YOU — gown gathered in one fist, a single sheet of paper dangling from the other hand as if it proved nothing at all. Jury rail at the very bottom of frame.",
+      "alt": "Court sketch: defence counsel rising, unimpressed."
+    },
+    {
+      "id": "ep-01-method",
+      "file": "ep-01-method.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js episode 1 head — 'The method'"],
+      "cast": ["CROWN", "JUDGE"],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box, the trial opening: Crown counsel stands facing the jury full-on — opening the case to YOU — arms spread a little over the evidence laid out on the bench before him: a folded list, a sealed envelope. The court settles behind him; the judge dips his quill. Morning light, lamps still lit.",
+      "alt": "Court sketch: Crown counsel opens the case to the jury."
+    },
+    {
+      "id": "ep-02-accounts",
+      "file": "ep-02-accounts.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js episode 2 head — 'Many accounts'"],
+      "cast": ["W02", "W03", "W04", "USHER"],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box: one woman stands in the witness box mid-testimony while, on the benches below, two more well-dressed women wait their turn, one twisting her gloves; the usher leans in to summon the next. The repetition is the point — the same story queuing up. The witness box holds nothing on its rail: no microphone, no stand, no rod or post of any kind in front of any speaker — an 1890s court has no amplification and everyone speaks unaided. Jury rail at the very bottom of frame.",
+      "alt": "Court sketch: one woman testifies while more complainants wait their turn."
+    },
+    {
+      "id": "ep-03-documents",
+      "file": "ep-03-documents.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js episode 3 head — 'Handwriting and history'"],
+      "cast": ["EXPERT", "USHER"],
+      "quiet_zone": "top-left",
+      "composition": "From the jury box: the well of the court given over to paper — the clerk's table crowded with tied bundles and lists, the usher pinning a large comparison chart of scribbled illegible handwriting onto an easel angled toward the jury, the expert waiting by the box with his own folder. Gaslight catches the paper edges.",
+      "alt": "Court sketch: a handwriting comparison chart set up on an easel for the jury."
+    },
+    {
+      "id": "ep-04-accused",
+      "file": "ep-04-accused.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js episode 4 head — 'The accused speaks'"],
+      "cast": ["ACCUSED", "JUDGE"],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box: the whole court turned toward the dock. The accused rises to speak, one hand on the rail, the other pressed flat to his chest; the judge watches over his spectacles; every wig in the well is turned. The gas lamps seem brighter against a darkening afternoon window.",
+      "alt": "Court sketch: the accused rises in the dock and the whole court turns."
+    },
+    {
+      "id": "verdict-hands",
+      "file": "verdict-hands.webp",
+      "priority": "P1",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js verdict screen"],
+      "cast": [],
+      "quiet_zone": "top half",
+      "composition": "Pure first person, looking down: your own two hands in the lower half of frame, resting on the jury-box ledge, holding a small folded slip of paper — blank, no writing. Beyond and above, out of focus in loose pale wash, the courtroom waits: the smeared scarlet of the judge, the dark smudge of the dock. Everything hangs on the slip. Top half of the frame is quiet wash.",
+      "alt": "Court sketch: your own hands holding a folded verdict slip over the jury rail."
+    },
+    {
+      "id": "jury-room",
+      "file": "jury-room.webp",
+      "priority": "P0",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js SCENES.juryroom (deliberation phase)"],
+      "cast": ["FOREPERSON", "JURORS"],
+      "quiet_zone": "top-right",
+      "composition": "First person from YOUR chair at the near end of the jury-room table: the long scarred oak table runs away from you, eleven men around it — leaning in, arms folded, one on his feet mid-argument — the foreperson at the far end with his papers squared. A single gas pendant over the table, a high frosted window beyond. Your own blank notepaper and a pencil at the bottom edge of frame.",
+      "alt": "Court sketch: the jury room from your seat at the table, eleven jurors deliberating."
+    },
+    {
+      "id": "juror-seat-02", "file": "juror-02.webp", "priority": "P2", "size": { "w": 1024, "h": 768 },
+      "used_on": ["play.js jury-room beats where speaker=J-01 (Juror 2)"], "cast": ["JURORS"], "quiet_zone": "top-right",
+      "composition": "Across the jury-room table, first person: Juror 2 — a brisk commercial clerk, neat dark suit, counting off points on his fingers, certain. Persona: takes the numbers at face value; four accusers cannot all be wrong. Table edge and scattered papers in the near frame.",
+      "alt": "Court sketch: Juror 2 counting off points on his fingers."
+    },
+    {
+      "id": "juror-seat-03", "file": "juror-03.webp", "priority": "P2", "size": { "w": 1024, "h": 768 },
+      "used_on": ["play.js jury-room beats where speaker=J-02 (Juror 3)"], "cast": ["JURORS"], "quiet_zone": "top-right",
+      "composition": "Across the jury-room table, first person: Juror 3 — a practical ironmonger, heavy hands flat on the table, nodding at the papers in front of him. Persona: trusts what was found and what was written.",
+      "alt": "Court sketch: Juror 3, hands flat on the table."
+    },
+    {
+      "id": "juror-seat-04", "file": "juror-04.webp", "priority": "P2", "size": { "w": 1024, "h": 768 },
+      "used_on": ["play.js jury-room beats where speaker=J-03 (Juror 4)"], "cast": ["JURORS"], "quiet_zone": "top-right",
+      "composition": "Across the jury-room table, first person: Juror 4 — lean, intense schoolmaster type, leaning far forward, both elbows on the table, spectacles in his fist, eyes on YOU. Persona: the principled holdout; fixes on how brief and how old each sighting was.",
+      "alt": "Court sketch: Juror 4 leaning across the table, insistent."
+    },
+    {
+      "id": "juror-seat-05", "file": "juror-05.webp", "priority": "P2", "size": { "w": 1024, "h": 768 },
+      "used_on": ["play.js jury-room beats where speaker=J-04 (Juror 5)"], "cast": ["JURORS"], "quiet_zone": "top-right",
+      "composition": "Across the jury-room table, first person: Juror 5 — a careful solicitor's clerk, one finger raised in caution, half-smiling. Persona: keeps the room honest about the burden of proof.",
+      "alt": "Court sketch: Juror 5 raising a cautionary finger."
+    },
+    {
+      "id": "juror-seat-06", "file": "juror-06.webp", "priority": "P2", "size": { "w": 1024, "h": 768 },
+      "used_on": ["play.js jury-room beats where speaker=J-05 (Juror 6, foreperson)"], "cast": ["FOREPERSON"], "quiet_zone": "top-right",
+      "composition": "Down the length of the jury-room table, first person: the foreperson at the head — silver side-whiskers, watch chain, papers squared — calling the room to order with a lifted hand. Persona: keeps order and leans to convict.",
+      "alt": "Court sketch: the foreperson calling the jury room to order."
+    },
+    {
+      "id": "juror-seat-07", "file": "juror-07.webp", "priority": "P2", "size": { "w": 1024, "h": 768 },
+      "used_on": ["play.js jury-room beats where speaker=J-06 (Juror 7)"], "cast": ["JURORS"], "quiet_zone": "top-right",
+      "composition": "Across the jury-room table, first person: Juror 7 — a bank teller, precise, tapping one fingertip on the table as if on a ledger line. Persona: persuaded by the handwriting evidence.",
+      "alt": "Court sketch: Juror 7 tapping the table precisely."
+    },
+    {
+      "id": "juror-seat-08", "file": "juror-08.webp", "priority": "P2", "size": { "w": 1024, "h": 768 },
+      "used_on": ["play.js jury-room beats where speaker=J-07 (Juror 8)"], "cast": ["JURORS"], "quiet_zone": "top-right",
+      "composition": "Across the jury-room table, first person: Juror 8 — a florid shopkeeper who arrived certain, now rubbing the back of his neck, staring at the parade record. Persona: comes in certain; undone by the identification parade.",
+      "alt": "Court sketch: Juror 8, certainty slipping."
+    },
+    {
+      "id": "juror-seat-09", "file": "juror-09.webp", "priority": "P2", "size": { "w": 1024, "h": 768 },
+      "used_on": ["play.js jury-room beats where speaker=J-08 (Juror 9)"], "cast": ["JURORS"], "quiet_zone": "top-right",
+      "composition": "Across the jury-room table, first person: Juror 9 — a quiet watchmaker, small round spectacles, speaking barely above the lamp hiss, everyone leaning in to hear. Persona: distrusts certainty offered too easily.",
+      "alt": "Court sketch: Juror 9, the quiet doubter, speaking softly."
+    },
+    {
+      "id": "juror-seat-10", "file": "juror-10.webp", "priority": "P2", "size": { "w": 1024, "h": 768 },
+      "used_on": ["play.js jury-room beats where speaker=J-09 (Juror 10)"], "cast": ["JURORS"], "quiet_zone": "top-right",
+      "composition": "Across the jury-room table, first person: Juror 10 — a stern builder's foreman, arms crossed, jaw set, demanding with his whole posture. Persona: wants the accused to account for himself.",
+      "alt": "Court sketch: Juror 10, arms crossed, demanding answers."
+    },
+    {
+      "id": "juror-seat-11", "file": "juror-11.webp", "priority": "P2", "size": { "w": 1024, "h": 768 },
+      "used_on": ["play.js jury-room beats where speaker=J-10 (Juror 11)"], "cast": ["JURORS"], "quiet_zone": "top-right",
+      "composition": "Across the jury-room table, first person: Juror 11 — a young draper's assistant turning his pencil over and over, looking from one face to another. Persona: the undecided one; talks himself into a verdict.",
+      "alt": "Court sketch: Juror 11 turning his pencil, undecided."
+    },
+    {
+      "id": "juror-seat-12", "file": "juror-12.webp", "priority": "P2", "size": { "w": 1024, "h": 768 },
+      "used_on": ["play.js jury-room beats where speaker=J-11 (Juror 12)"], "cast": ["JURORS"], "quiet_zone": "top-right",
+      "composition": "Across the jury-room table, first person: Juror 12 — a grey schoolteacher with a worried brow, palms open on the table, weighing both halves of the argument in the air. Persona: uneasy about the identifications, swayed by their number.",
+      "alt": "Court sketch: Juror 12 weighing the argument with open palms."
+    },
+    {
+      "id": "sealed-record",
+      "file": "sealed-record.webp",
+      "priority": "P0",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["play.js SCENES.record (exhibits pre-verdict; the reveal after)"],
+      "cast": [],
+      "quiet_zone": "top-left",
+      "composition": "Pure first person, looking down at a clerk's desk by lamplight: your own hands in the lower frame untying the red legal tape of a thick sealed case file, the wax seal just cracked, loose papers of illegible scribbled script sliding out, a magnifying glass and an oil lamp at the edge of the pool of light. The moment the truth opens.",
+      "alt": "Court sketch: your own hands opening a sealed court record by lamplight."
+    },
+    {
+      "id": "court-empty",
+      "file": "court-empty.webp",
+      "priority": "P2",
+      "size": { "w": 1600, "h": 900 },
+      "used_on": ["404.html", "play.js error card ('The court could not convene')"],
+      "cast": [],
+      "quiet_zone": "top-right",
+      "composition": "From the jury box: the courtroom empty and dim — dust sheets over the clerk's table, one gas lamp left burning low, the judge's chair pushed back, cold light through the tall windows. Your view over the empty jury rail.",
+      "alt": "Court sketch: the empty courtroom, one lamp still burning."
+    },
+    {
+      "id": "install-spot",
+      "file": "install-spot.webp",
+      "priority": "P2",
+      "size": { "w": 1200, "h": 800 },
+      "used_on": ["install/index.html header"],
+      "cast": [],
+      "quiet_zone": "top-right",
+      "composition": "First person, looking down at your own gloved hand holding a dark rectangular pocket case the size of a cigarette case (reads as a phone without being one), a folded jury summons paper beneath it on a wooden table — no lettering, wax seal only.",
+      "alt": "Court sketch: a pocket case and a sealed jury summons in your hand."
+    },
+    {
+      "id": "backdrop-panelling",
+      "file": "backdrop-panelling.webp",
+      "priority": "P2",
+      "size": { "w": 1920, "h": 1080 },
+      "used_on": ["styles.css .atmosphere (site-wide fixed backdrop; CSS darkens it heavily)"],
+      "cast": [],
+      "quiet_zone": "everywhere — must stay extremely low-contrast",
+      "composition": "Near-abstract architectural study for a page background: faint sepia line sketch of tall courtroom panelling, an arched window and a gas sconce, mostly raw paper, very low contrast, no figures. Composition must tolerate heavy darkening and cropping at any aspect ratio.",
+      "alt": "(decorative backdrop)"
+    },
+    {
+      "id": "foreground-rail",
+      "file": "foreground-rail.png",
+      "priority": "P2",
+      "alpha": true,
+      "size": { "w": 2400, "h": 420 },
+      "used_on": ["landing + summons: fixed foreground strip at the bottom of the viewport (pointer-events none)"],
+      "cast": ["JURORS"],
+      "quiet_zone": "entire middle — content shows through",
+      "composition": "TRANSPARENT BACKGROUND (alpha). A foreground overlay strip for the bottom of the screen: the dark polished jury-box rail sweeping low across the full width, and at the far bottom-left and bottom-right corners only, the cropped dark sketch silhouettes of your neighbouring jurors' shoulders. The centre 60% is fully transparent. Ink and wash only, no paper background.",
+      "alt": "(decorative foreground: jury rail and neighbouring jurors' shoulders)"
+    }
+  ]
+}
