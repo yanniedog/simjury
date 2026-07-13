@@ -1,0 +1,397 @@
+{
+  "id": "dd-0006",
+  "publish_date": "2026-08-07",
+  "label": "fiction",
+  "title": "The Splice",
+  "setting": "a night intersection, a delivery van's dashcam, and two experts who disagree about eleven frames, the present day",
+  "charge": "dangerous driving causing injury",
+  "elements": [
+    "The accused drove dangerously through the intersection",
+    "The dangerous driving caused the cyclist's injuries"
+  ],
+  "cast": [
+    { "id": "judge", "name": "Judge Baptiste", "role_label": "the judge", "side": "court" },
+    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "w1", "name": "Rosa Lindqvist", "role_label": "the injured cyclist", "side": "prosecution" },
+    { "id": "w2", "name": "Dr Imogen Voss", "role_label": "prosecution video-forensics expert", "side": "prosecution" },
+    { "id": "w4", "name": "Professor Han Okonjo", "role_label": "defence media-provenance expert", "side": "defence" },
+    { "id": "w5", "name": "Dev Chandra", "role_label": "the accused — delivery van driver", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I entered the crossing on my light — I ride that corner every single night and I do not gamble with vans. He came through fast and I was on his bonnet before I even heard him. I woke up on the road with strangers holding my head still, asking my name. I am certain my light was green. I have always been certain.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Honest certainty from a woman who was genuinely hurt — remembering a light she crossed a thousand times, on the one night the telemetry says it was against her.",
+      "tags": ["credibility", "timeline"]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "My toolkit flags the dashcam file as manipulated with high confidence. Around the traffic-signal head I found frame-level inconsistencies — pixel neighbourhoods that do not agree with the camera's noise pattern. In my opinion this is textbook generative inpainting: someone painted that signal green after the fact.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Confident, fluent, and built on sand: her toolkit was benchmarked on social-media re-encodes, and what it flagged were the compression scars every camera of that model leaves on blinking LEDs at night. She never touched the original card.",
+      "tags": ["digital_forensics", "credibility"]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "She agreed she analysed a copy exported through the insurer's web portal, which re-encodes video on upload. She agreed she never examined the camera or the original card, and that her tool's false-positive rate on re-encoded night footage is, in her words, 'not separately benchmarked'.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.55,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The expert examined a photocopy and diagnosed the original. Every downstream conclusion inherited that first shortcut.",
+      "tags": ["digital_forensics", "procedure"]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit three: the original memory card, seized by police the night of the collision. The file carries the camera's built-in content-credential signature, applied at the moment of recording. The cryptographic hash matches the insurer upload exactly. The card's write log is continuous. Any edit after recording would break the signature. It is intact.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.85,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The camera signed its own work the instant it recorded, and the signature survived. There was never an 'after the fact' in which the splice could have happened.",
+      "tags": ["digital_forensics", "procedure"]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "The 'inconsistencies' Dr Voss found are this camera's night-mode compression struggling with a flashing LED signal — I reproduced identical artefacts on the same model, on this corner, last month; the comparison frames are before you. Provenance is the boring answer here: a signed file with an unbroken hash was never edited by anyone.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The demonstration that let twelve non-experts weigh two experts: same camera, same corner, same 'manipulation' artefacts — on footage nobody disputes is genuine.",
+      "tags": ["digital_forensics", "credibility"]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit five: the city's traffic-signal telemetry, produced by the roads authority from its own control system, which logs every light change at every junction. At the recorded moment of impact the cycle crossing had been red for eleven seconds and the vehicle lane green for nine. The sequence matches the dashcam footage frame for frame.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.75,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "A second, independent machine — one nobody accused of lying — told the same story as the dashcam, down to the second.",
+      "tags": ["timeline", "digital_forensics"]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w5",
+      "mode": "examination",
+      "text": "My light was green and she came from my left, fast, out of the dark between two parked cars. I braked before I hit her — the camera shows the front end nosedive. I handed the footage to the police that same night, three hours after the crash, before anyone had accused me of anything. If I had faked it, I would be the fastest video forger alive.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The three-hour window was the common-sense version of what the cryptography proved formally: there was no time in which the fake could have been made.",
+      "tags": ["credibility", "timeline"]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w5",
+      "mode": "cross",
+      "text": "He accepted the dashcam's own speed overlay read forty-seven in a forty zone as he approached. He accepted he was eleven hours into a shift and that the collision happened on his last delivery. 'You were tired and over the limit.' — 'Seven over, and awake enough to brake. She had no lights on her bike.'",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.35,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The prosecution's real ground, argued honestly: seven over, hour eleven. It went to carefulness — the charge needed dangerousness that caused the crash, and the light did that work.",
+      "tags": ["method", "credibility"]
+    },
+    {
+      "id": "b9",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit six: the accused's delivery-app record for that shift. At the time of the collision he was running twelve minutes behind his slot, with an on-time bonus at stake. The prosecution says that is a man with a reason to force a light — and a reason to doctor what his camera saw.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.15,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Every rider on every shift is behind a timer; the bonus at stake was four dollars. Motive priced at four dollars was the loudest cheap evidence in the trial.",
+      "tags": ["motive", "method"]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "You will find commentary about this footage online. You must not look — commentary is not evidence and is not under oath. Weigh each expert by the foundations of their work, not their confidence. The prosecution must make you sure the driving was dangerous and caused the injury. If the footage may be genuine, act accordingly.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The modern direction in one line: judge the expert by her foundations, not her certainty. One expert examined a re-encoded copy; the other examined the camera. That was the whole case.",
+      "tags": ["burden", "digital_forensics"]
+    }
+  ],
+  "checkins": ["b3", "b5", "b8", "b9"],
+  "verdict_truth": "Not Guilty",
+  "twist": "The word 'deepfake' nearly convicted a man whose camera had signed its own footage the moment it recorded. The prosecution expert diagnosed inpainting from a re-encoded copy without ever touching the card; the compression scars she flagged appear on every unit of that camera filming a blinking LED at night. The signature was unbroken, the city's own signal telemetry agreed frame for frame, and the 'motive' was a four-dollar bonus. He was seven over the limit and bone tired — but the light was his, and the crash was not the crime charged.",
+  "difficulty_target": 0.7,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "Heard 'AI-doctored footage' on day one and cannot hear anything past it.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": { "position": "G", "confidence": 75 },
+        "weights": { "digital_forensics": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["The expert said textbook inpainting. Textbook. Her word.", "You can fake anything now. That is just the world — why not this?"],
+          "pushback": ["A cyclist is in pieces and his own camera conveniently acquits him? Please.", "One expert says fake. That is doubt enough for me to keep my vote."],
+          "concede": ["If the signature really cannot be forged after recording… then there was nothing to inpaint onto."],
+          "final": ["I came in fearing fakes. I leave having met a real file."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Weighs experts by their homework; the re-encoded copy offends her professionally.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "procedure": 2, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["One expert examined the camera. One examined a portal export. That is not a tie.", "Foundations, the judge said. Exactly that."],
+          "pushback": ["Confidence is a performance. Show me the method.", "'Not separately benchmarked' is expert for 'I don't know my own error rate'."],
+          "concede": ["Her tool is respectable on the footage it was built for. This was not that footage."],
+          "final": ["I graded the homework. Only one expert handed any in."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "procedure", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout — for the prosecution's benefit this time; a hurt cyclist deserves the standard too.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 65 },
+        "weights": { "burden": 2, "timeline": 1 },
+        "lines": {
+          "agree": ["Quite — and the telemetry is the disinterested witness in a courtroom full of interested ones."],
+          "pushback": ["Do not acquit him because the internet cried deepfake and it annoyed you. Weigh it properly.", "He was speeding, tired, and a woman went over his bonnet. Sit with that before voting."],
+          "concede": ["Forty-seven in a forty is a genuine point against him. I do not wave it away."],
+          "holdout": ["If the footage may be genuine, the case rests on a light that was against her. Sure is simply out of reach.", "I hold until we have treated her injuries and his rights with equal seriousness."],
+          "final": ["With the signature, the telemetry, and the burden — not guilty, said without joy."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Wants the speeding to matter; keeps testing whether seven-over can carry the charge alone.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "method": 2, "burden": 1 },
+        "lines": {
+          "agree": ["Forty-seven in a forty, hour eleven of a shift. The charge says dangerous — that is at least the doorstep of it."],
+          "pushback": ["We are not obliged to acquit the speed just because we acquit the splice.", "The van was still the heavier, faster party. Care scales with tonnage."],
+          "concede": ["Causation is the wall, though: if her light was red, the seven-over did not cause this."],
+          "burden_correct": ["No — he does not have to prove the footage genuine. They must prove it false, or work without it.", "The standard does not soften because the injuries are real."],
+          "final": ["The speed troubles me. The causation acquits him. Verdicts follow causation."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "burden_correct" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; has banned the word 'deepfake' until someone earns it.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "G", "confidence": 50 },
+        "weights": { "digital_forensics": 1, "procedure": 1 },
+        "lines": {
+          "agree": ["Noted for the count — and yes, well put.", "Good. That is an argument with a paper trail."],
+          "pushback": ["The banned word was used. Rephrase it with an exhibit number.", "One at a time, and nobody quotes anything they watched online."],
+          "concede": ["Fair. The count moves."],
+          "final": ["We have earned a vote. Hands."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Undecided between two confident experts; waiting for a reason that isn't a tone of voice.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "digital_forensics": 1, "credibility": 1 },
+        "lines": {
+          "agree": ["That — that is a reason, not a tone. I will take it.", "The same artefacts on footage nobody disputes. That demonstration keeps working on me."],
+          "pushback": ["But she was so specific. 'Pixel neighbourhoods.' It sounded like knowledge.", "Give me one more pass; I am between the two of them."],
+          "concede": ["Sounding like knowledge and being knowledge — fine. Point taken."],
+          "final": ["I stopped listening to voices and started counting foundations. Then it was easy."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Trusted the prosecution expert at first — flag from a tool felt like science; the signature is unteaching him.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "G", "confidence": 70 },
+        "weights": { "digital_forensics": 2, "procedure": 2 },
+        "lines": {
+          "agree": ["The signature was applied at recording and never broke. Walk me past that. Nobody has.", "Two machines that have never met told the same story. The tool that disagreed never met the original."],
+          "pushback": ["I believed the flag because it came from software. I am saying that out loud so I stop doing it.", "Her confidence was the exhibit I actually convicted on. It is not in evidence."],
+          "concede": ["All right — 'sure it was faked' collapsed the moment the card came out of the evidence bag."],
+          "final": ["The tool flagged it and I saluted. The provenance stood at ease. I know which one was science."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "procedure", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; feels the pull of the injured witness and distrusts the pull.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 50 },
+        "weights": { "credibility": 2 },
+        "lines": {
+          "agree": ["Mm. She is honest, hurt, and remembering a habit. All three can be true.", "That is the first account today that let the machines check it."],
+          "pushback": ["Do not sneer at her certainty. You would be certain too, with those scars.", "The driver's 'she had no lights' — noted, and self-serving."],
+          "concede": ["Eleven seconds of red on the telemetry. Her memory loses to that, gently."],
+          "final": ["Quietly: I believe she believes it. The signals do not."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 0, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Keeps demanding the driver prove the footage clean; the timer exhibit has him leaning.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "motive": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Twelve minutes behind with money on the line. People force lights for less."],
+          "pushback": ["A man with a bonus at stake hands over the one video that saves him? Convenient."],
+          "burden_drift": ["Let him prove the file is clean — bring the camera maker to court if he has to.", "He should account for every minute of that shift before we take his word on a light."],
+          "concede": ["The bonus was four dollars. I heard it. Fine."],
+          "burden_correct": ["Withdrawn — the file is presumed nothing; the Crown must prove it false, and it did not."],
+          "final": ["I priced his motive at a conspiracy. The receipts priced it at four dollars."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "motive", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "Undecided; keeps re-watching the nosedive in his head, frame by frame.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "timeline": 1, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["Frame for frame with the city's own system. Say it again — it steadies me.", "Right. The brake nosedive is in the footage everyone says is fake. Odd thing to forge against yourself."],
+          "pushback": ["And then I picture her waking up on the road, and I loop again.", "Once more around, please. I am nearly parked."],
+          "concede": ["Good. That loop is closed."],
+          "final": ["I looped all afternoon. The telemetry never once changed its answer."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Arrived assuming all footage lies now; the signed card is quietly restoring something.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 45 },
+        "weights": { "digital_forensics": 1, "burden": 1, "procedure": 1 },
+        "lines": {
+          "agree": ["That is the point of the signature — the fake had nowhere to happen. Time itself is the alibi.", "And the direction says weigh foundations. One expert brought a lab; the other brought adjectives."],
+          "pushback": ["I assumed everything on a screen lies. I still mostly assume it.", "The era is the problem: 'it could be faked' now shadows every honest file too."],
+          "concede": ["Which is exactly why provenance matters more, not less. I argued myself around."],
+          "final": ["If we let 'could be fake' beat 'provably wasn't', no camera will ever acquit anyone again."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-2026-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "D7b-1"
+  }
+}
