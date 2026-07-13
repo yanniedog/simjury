@@ -61,6 +61,7 @@ export function makeBeats(): DocketBeat[] {
     makeBeat({ id: 'b5', speaker: 'w2', direction: 'innocence', tags: ['digital_forensics', 'method'] }),
     makeBeat({ id: 'b6', speaker: 'w2', mode: 'cross', tags: ['credibility'] }),
     makeBeat({ id: 'b7', kind: 'exhibit', speaker: 'clerk', mode: undefined, direction: 'innocence', reveal_stamp: 'decisive', surface_persuasion: 0.4, true_weight: 0.7, tags: ['identity', 'digital_forensics'] }),
+    makeBeat({ id: 'b7b', kind: 'exhibit', speaker: 'clerk', mode: undefined, direction: 'innocence', reveal_stamp: 'decisive', surface_persuasion: 0.3, true_weight: 0.9, tags: ['digital_forensics'] }),
     makeBeat({ id: 'b8', speaker: 'w3', tags: ['procedure'] }),
     makeBeat({ id: 'b9', speaker: 'w2', direction: 'innocence', tags: ['credibility'] }),
     makeBeat({ id: 'b10', kind: 'direction', speaker: 'judge', mode: undefined, direction: 'innocence', tags: ['burden'] }),

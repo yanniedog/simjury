@@ -11,19 +11,37 @@ import {
  * strategy space and rejects rooms with foregone conclusions. A docket case
  * only ships if
  *
- *  1. the room can reach at least two distinct terminal outcomes across the
- *     strategy space (the deliberation must be able to surprise), and
- *  2. arguing the decisive evidence moves the room further toward
- *     `verdict_truth` than saying nothing (skilled play must matter).
+ *  1. for EACH verdict the player can lock, the room reaches at least two
+ *     distinct terminal outcomes (kind + verdict) across the strategy space
+ *     (the deliberation must be able to surprise, whichever way the player
+ *     locks their own vote), and
+ *  2. for each locked verdict, arguing the decisive evidence moves the room
+ *     strictly further toward `verdict_truth` than saying nothing — unless
+ *     passive play already maxes out the truth-side tally (skilled play
+ *     must matter).
  *
  * Strategies are deterministic functions of the case, so this gate is as
  * reproducible as the engine itself.
  */
 
+function truthDirection(c: DocketCase): 'guilt' | 'innocence' {
+  return c.verdict_truth === 'Guilty' ? 'guilt' : 'innocence'
+}
+
+/**
+ * Top beats by weight for a reveal stamp, as `argue` actions. `direction`
+ * beats are never eligible — `playRound` requires those to be cited, not
+ * argued — and for the `decisive` stamp only truth-aligned beats are picked,
+ * since a case may (validly) carry decisive evidence on both sides as long
+ * as the true side wins on total weight; arguing an opposed decisive beat
+ * would spend a skilled-play round pushing away from the truth.
+ */
 function byWeightDesc(c: DocketCase, stamp: 'decisive' | 'misleading'): PlayerAction[] {
   const key = stamp === 'decisive' ? 'true_weight' : 'surface_persuasion'
+  const truth = truthDirection(c)
   return c.beats
-    .filter((b) => b.reveal_stamp === stamp)
+    .filter((b) => b.kind !== 'direction' && b.reveal_stamp === stamp)
+    .filter((b) => stamp !== 'decisive' || b.direction === truth)
     .sort((a, b) => b[key] - a[key])
     .slice(0, 3)
     .map((b) => ({ type: 'argue', beatId: b.id, stance: 'proves' }))
@@ -46,8 +64,11 @@ export function strategies(c: DocketCase): Record<string, PlayerAction[]> {
   }
 }
 
+// Outcome variety is judged at the verdict level (kind + verdict), not the
+// exact vote tally — two "hung" results with different splits (8-4 vs 9-3)
+// are the same terminal outcome for a player, not evidence the room moved.
 function signature(o: Outcome): string {
-  return `${o.kind}:${o.verdict ?? 'none'}:${o.tally.g}-${o.tally.ng}`
+  return `${o.kind}:${o.verdict ?? 'none'}`
 }
 
 /** Dynamics issues for one case (empty array = the room is alive). */
@@ -76,12 +97,21 @@ export function checkDynamics(c: DocketCase): string[] {
     }
   }
 
+  const MAX_TRUTH_TALLY = 12
   for (const v of verdicts) {
     const decisive = outcomes.get(`${v}:decisive`)
     const passive = outcomes.get(`${v}:passive`)
-    if (decisive && passive && decisive.tally[truthSide] < passive.tally[truthSide]) {
+    if (!decisive || !passive) continue
+    if (decisive.tally[truthSide] < passive.tally[truthSide]) {
       issues.push(
         `arguing the decisive evidence (as ${v}) moves the room away from the true verdict — the room does not reward skilled play`,
+      )
+    } else if (
+      decisive.tally[truthSide] === passive.tally[truthSide] &&
+      passive.tally[truthSide] < MAX_TRUTH_TALLY
+    ) {
+      issues.push(
+        `arguing the decisive evidence (as ${v}) does not move the room any further toward the true verdict than doing nothing — the room does not reward skilled play`,
       )
     }
   }
