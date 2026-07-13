@@ -13,7 +13,6 @@
     { "id": "judge", "name": "Judge Corven", "role_label": "the judge", "side": "court" },
     { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
     { "id": "w1", "name": "Marcus Webb", "role_label": "forensic accountant", "side": "prosecution" },
-    { "id": "w2", "name": "Elif Kaya", "role_label": "IT security lead, Meridian Freight", "side": "prosecution" },
     { "id": "w3", "name": "Tom Grigson", "role_label": "accounts team colleague", "side": "prosecution" },
     { "id": "w4", "name": "Dr Lena Moss", "role_label": "audio forensics examiner", "side": "defence" },
     { "id": "w5", "name": "Dana Reyes", "role_label": "the accused — accounts manager", "side": "defence" }
@@ -23,7 +22,7 @@
       "id": "b1",
       "kind": "exhibit",
       "speaker": "clerk",
-      "text": "Exhibit one: the payment record. At 11:47 on the night in question, a transfer of forty-eight thousand dollars left Meridian Freight's operating account for a beneficiary added that same evening. It was authorised from the accused's laptop, on the office network, using her credentials, her passphrase, and the hardware security key issued to her alone.",
+      "text": "Exhibit one: the payment record. At 11:47 on the night in question, a transfer of forty-eight thousand dollars left Vantrelle Freight's operating account for a beneficiary added that same evening. It was authorised from the accused's laptop, on the office network, using her credentials, her passphrase, and the hardware security key issued to her alone.",
       "surface_persuasion": 0.85,
       "true_weight": 0.15,
       "direction": "guilt",
@@ -73,9 +72,9 @@
     {
       "id": "b5",
       "kind": "witness",
-      "speaker": "w2",
+      "speaker": "w3",
       "mode": "examination",
-      "text": "Company policy requires callback verification before any new beneficiary above ten thousand dollars is paid. She did not call back. She approved the payment on the strength of a video call that nobody else at Meridian saw, on an evening when she was the only person left in the office.",
+      "text": "Company policy requires callback verification before any new beneficiary above ten thousand dollars is paid. She did not call back. She approved the payment on the strength of a video call that nobody else at Vantrelle saw, on an evening when she was the only person left in the office.",
       "surface_persuasion": 0.65,
       "true_weight": 0.35,
       "direction": "guilt",
@@ -310,7 +309,7 @@
         "reaction_rules": [
           { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
           { "when": { "theme": "method", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
-          { "when": { "theme": "digital_forensics", "stance": "unreliable" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
         ]
       },

@@ -152,7 +152,7 @@ describe('checkDocketCase', () => {
     c.beats = c.beats.map((b) =>
       b.kind === 'witness' ? { ...b, speaker: 'w1' } : b,
     )
-    expect(checkDocketCase(c).join()).toMatch(/3-5 witnesses/)
+    expect(checkDocketCase(c).join()).toMatch(/3-4 witnesses/)
   })
 
   it('flags when no rule actually voices burden_drift or burden_correct', () => {
