@@ -182,7 +182,7 @@
         },
         "reaction_rules": [
           { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
-          { "when": { "theme": "digital_forensics", "stance": "unreliable" }, "effect": { "delta": -1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "digital_forensics", "stance": "any", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
       },
@@ -287,7 +287,7 @@
           "final": ["I think… I will go with how it sounded once everything was said."]
         },
         "reaction_rules": [
-          { "when": { "theme": "identity", "stance": "unreliable" }, "effect": { "delta": -1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "identity", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
           { "when": { "theme": "identity", "stance": "proves" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
@@ -353,7 +353,7 @@
           "final": ["I want to say guilty. Wanting is not the standard, though, is it."]
         },
         "reaction_rules": [
-          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": -1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
           { "when": { "theme": "motive", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
         ]
