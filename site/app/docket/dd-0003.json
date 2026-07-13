@@ -1,0 +1,423 @@
+{
+  "id": "dd-0003",
+  "publish_date": "2026-08-04",
+  "label": "fiction",
+  "title": "The Doorbell Match",
+  "setting": "a terraced street at 2am, a doorbell camera, and a police facial-recognition queue, the present day",
+  "charge": "burglary of a dwelling",
+  "elements": [
+    "Someone entered the dwelling as a trespasser and stole from it",
+    "The accused is the person on the doorbell footage"
+  ],
+  "cast": [
+    { "id": "judge", "name": "Judge Sylvaine", "role_label": "the judge", "side": "court" },
+    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "w1", "name": "Detective Rhea Callows", "role_label": "investigating detective", "side": "prosecution" },
+    { "id": "w2", "name": "Gordon Pryce", "role_label": "neighbour, two doors down", "side": "prosecution" },
+    { "id": "w3", "name": "Professor Idris Vane", "role_label": "defence expert in face-recognition systems", "side": "defence" },
+    { "id": "w4", "name": "Terrence Odum", "role_label": "the accused — warehouse night-shift worker", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit one: the doorbell clip and the match report. Eleven frames of a hooded man at the door, 2:04am. The force's face-recognition system compared a single still against its database and returned the accused at ninety-four per cent similarity. His custody photograph is printed beside the still. The resemblance is immediate.",
+      "surface_persuasion": 0.85,
+      "true_weight": 0.15,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Ninety-four per cent similarity, from a forty-pixel face in compressed night footage, against a database of millions. The number measured the machine's confidence in a guess — and everyone downstream of it inherited the confidence without the guess.",
+      "tags": ["identity", "digital_forensics"]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "The system flagged the accused within an hour of the footage being uploaded. He was known to the database. I prepared a photo board of eight men and showed it to the neighbour who had seen the offender flee. He picked the accused without hesitation. On that basis we arrested him.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.35,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "A tidy chain — machine, board, arrest — in which every link after the first was checking the first link's homework.",
+      "tags": ["identity", "procedure"]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "The detective agreed the doorbell clip had appeared on a neighbourhood app before the photo board was shown, posted with the accused's name in the comments. She agreed the neighbour follows that app. She agreed no fingerprint, fibre, tool mark, or recovered property connects the accused to the house.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.55,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The identification was contaminated before it was collected: the witness had already seen the answer, with a name attached.",
+      "tags": ["procedure", "credibility"]
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I was up with the dog and saw him come off the porch and go past under the streetlight. I am good with faces — always have been. Hood or no hood, the man I saw is the man sitting there. I picked him from the board in about two seconds.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Sincere, quick, and certain — the three qualities juries trust most and identification science trusts least.",
+      "tags": ["identity", "credibility"]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "He accepted the man was forty metres away, moving, at two in the morning, in view for a few seconds. He accepted he had seen the app post before the police came — the clip, the still, and the accused's name — and had commented 'caught' under it himself.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "By the time the board was shown, he was not remembering a face from the street. He was remembering a post.",
+      "tags": ["identity", "credibility"]
+    },
+    {
+      "id": "b6",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "A similarity score is not a probability of identity. On low-light, compressed footage this system's false-positive rate rises sharply, and it does not rise evenly — it errs more often on some faces than others. The face in this still is forty pixels tall. The vendor's own guidance says do not rely on it.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.75,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The machine's own manufacturer drew the line, and this still fell below it. Everything the case had was built on the far side of that line.",
+      "tags": ["digital_forensics", "identity"]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "The professor accepted he was retained and paid by the defence, and that in daylight benchmark tests the system performs well. 'It is a good tool used outside its manual,' he said. 'I am not here to bury the machine. I am here to read you its instructions.'",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The standard jab at the paid expert — blunted, this time, by the fact that his key exhibit was the vendor's own guidance.",
+      "tags": ["credibility"]
+    },
+    {
+      "id": "b8",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit five: the accused's night, in records. His warehouse badge clocked in at 11:58pm and out at 6:04am. The shift supervisor's roster lists him on pack line three all night. His phone sat on the warehouse tower, nine kilometres from the burgled house, from midnight until morning without a gap.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.85,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Three independent systems — badge, roster, tower — agreeing he was nine kilometres away. Nobody posted those to the neighbourhood app.",
+      "tags": ["alibi", "timeline", "digital_forensics"]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "I was on pack line three. Same as every Tuesday. When they showed me the still I said: that could be any man with my beard, and I was at work — check the badge. I have said the same sentence since the first minute. Nobody checked the badge for nine days.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The alibi he gave in the first minute was the alibi the records confirmed in the second week.",
+      "tags": ["alibi", "credibility"]
+    },
+    {
+      "id": "b10",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "cross",
+      "text": "He accepted he has a theft conviction from eight years ago — the reason his face was in the database at all. He accepted a phone can be left in a locker, and that badge systems can be tricked if two workers cooperate. 'They can,' he said. 'Mine wasn't. Ask line three.'",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The prior is why the database knew his face. Being in a database is not being at a door — but it is why the machine could only ever pick from people with pasts.",
+      "tags": ["credibility", "identity"]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit six: the search of the accused's flat. Nothing from the burgled house was found. A dark hooded jacket 'similar in style' to the clip was seized — a mass-market item, tens of thousands sold. Laboratory examination found no fibres, soil, or glass connecting it to the scene.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "A jacket like everyone's jacket, holding no trace of the house. Presented for the prosecution; heard by most of the room as the opposite.",
+      "tags": ["method", "identity"]
+    },
+    {
+      "id": "b12",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "You must not research this case, the system, or the accused online. Treat the identification evidence with particular care: an honest, confident witness can be mistaken, and a computer's score is not a witness at all. The prosecution must make you sure it was him. Suspicion, even strong suspicion, acquits.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "A modern identification caution: the machine and the neighbour were one witness wearing two coats — and the coats were checked against each other, not against the night.",
+      "tags": ["burden", "identity"]
+    }
+  ],
+  "checkins": ["b3", "b5", "b8", "b10"],
+  "verdict_truth": "Not Guilty",
+  "twist": "The number did all the damage: ninety-four per cent, printed beside his face, repeated by everyone who saw it. But the score came from a forty-pixel face the vendor's own manual said not to trust, the 'independent' witness had already seen the match with a name attached, and three boring systems — a badge, a roster, a phone tower — put him on pack line three, nine kilometres away, all night. The machine picked a face from the people it knew. It never knew the man at the door.",
+  "difficulty_target": 0.6,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "Ninety-four per cent settles it for him; computers don't have grudges.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": { "position": "G", "confidence": 80 },
+        "weights": { "identity": 2, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["Ninety-four per cent. You would board a plane on worse odds.", "The machine and the neighbour both picked him. Twice is not luck."],
+          "pushback": ["People lie. Software doesn't have a reason to.", "You all keep attacking the score without giving me a better name for the face."],
+          "concede": ["If the manual itself says don't use a still that small… then the ninety-four was never a real number."],
+          "final": ["I trusted the number. I am less sure the number deserved it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "any", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Trusts systems — which is exactly why the badge and the tower speak to her.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "digital_forensics": 2, "alibi": 1, "timeline": 1 },
+        "lines": {
+          "agree": ["The badge, the roster, and the tower do not know each other. Three strangers telling one story.", "That is a record, not a recollection. I weigh it accordingly."],
+          "pushback": ["Let us keep to things with timestamps.", "The neighbour's certainty is not data."],
+          "concede": ["Fair — if I trust the recognition system, I owe the badge system the same trust, and they disagree."],
+          "final": ["When the systems disagree, I go with the three that agree with each other."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; identification cases are where he digs in hardest.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 80 },
+        "weights": { "burden": 2, "identity": 1 },
+        "lines": {
+          "agree": ["Precisely — the judge's caution exists because honest certainty convicts innocent men."],
+          "pushback": ["One witness saw a post. One machine saw forty pixels. That is the entire case for identity.", "Strong suspicion acquits. His words, from the bench, an hour ago."],
+          "concede": ["The resemblance in the printout is real. I grant the trap its teeth."],
+          "holdout": ["I will not convict on a similarity score wearing a percentage sign like a badge.", "If the room wants a conviction, the room must first find me some evidence."],
+          "final": ["Not guilty — and I would say it again at half the doubt."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "identity", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Keeps the burden where it belongs while leaning on the neighbour's sincerity.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "burden": 2, "procedure": 1 },
+        "lines": {
+          "agree": ["That is the correct order: they prove presence; he need prove nothing."],
+          "pushback": ["The neighbour is sincere. Sincerity earned a hearing, so give it one.", "We should argue the evidence, not our feelings about software."],
+          "concede": ["The contaminated photo board troubles me more each time it is said aloud."],
+          "burden_correct": ["No — he does not have to 'explain the jacket'. Owning a black hoodie is not a charge.", "The standard is theirs to meet. If the identification wobbles, the case wobbles with it."],
+          "final": ["Held to the standard, the identification does not reach it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "procedure", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -5, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; determined the verdict comes from the room, not the neighbourhood app.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "identity": 1, "procedure": 1 },
+        "lines": {
+          "agree": ["Noted for the count — and yes, I agree with it.", "Good. Keep it that concrete when we vote."],
+          "pushback": ["One at a time. And nobody quotes the app in this room again.", "The question is the man at the door, not the man in the comments."],
+          "concede": ["Fair. The count will reflect that."],
+          "final": ["We have done it properly — hands, please."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Drifts toward whoever spoke last; the side-by-side photo pulls him back nightly.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "G", "confidence": 45 },
+        "weights": { "identity": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["Yes — when you line it up like that, I am with you.", "That is the bit that keeps deciding me, too."],
+          "pushback": ["But the photos do look alike. We all went quiet when we saw them.", "The neighbour was so sure, though. Two seconds, he said."],
+          "concede": ["Although… he was sure about a post he had already liked. That is different, isn't it."],
+          "final": ["I will go with how the room reads it now that I have heard everyone twice."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Came in convinced by the match report; the badge and the tower are prying it loose.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "G", "confidence": 70 },
+        "weights": { "alibi": 2, "digital_forensics": 2 },
+        "lines": {
+          "agree": ["Nine kilometres away, on three systems, all night. Say that against ninety-four per cent and listen to which one blinks.", "The vendor's manual was the end of it for me. The tool was used outside its instructions."],
+          "pushback": ["I sat down certain. I am telling you what certain was made of: one still and one score.", "The prior conviction explains the database hit. It does not explain the badge."],
+          "concede": ["All right. I cannot keep 'sure' and the warehouse records in the same head."],
+          "final": ["The match report walked me in here. The clock-in walked me back out."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "alibi", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; certainty offered in two seconds is her least favourite kind.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 60 },
+        "weights": { "credibility": 2 },
+        "lines": {
+          "agree": ["Mm. 'I am good with faces' is what everyone believes and almost nobody is.", "That is the first careful sentence anyone has offered about that clip."],
+          "pushback": ["He commented 'caught' before the police ever knocked. Sit with that.", "Everyone keeps saying the photos look alike. Lookalikes are why we are here."],
+          "concede": ["The resemblance is genuinely strong. I hold my doubt anyway, but I hold it honestly."],
+          "final": ["Quietly: a post is not a memory. Not guilty."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 0, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Wants the accused to out-prove the machine; keeps handing him the burden.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 65 },
+        "weights": { "identity": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Exactly. Flagged by the system, picked from the board, owns the jacket. Enough for me."],
+          "pushback": ["Then who is the man at the door? Somebody give me a name."],
+          "burden_drift": ["If it truly was not him, let him bring a workmate from line three to say so under oath.", "He should have to account for that jacket, item by item."],
+          "concede": ["All right — the judge did say suspicion acquits. I heard it too."],
+          "burden_correct": ["Withdrawn. They must prove the door was his. He owes this room nothing."],
+          "final": ["I still do not like the coincidence. But 'don't like' is not 'sure'."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "Undecided; keeps auditioning both stories against the streetlight.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "digital_forensics": 1, "timeline": 1 },
+        "lines": {
+          "agree": ["Say that again — that version stands up when you lean on it.", "Right, the tower data. Phones are terrible liars."],
+          "pushback": ["And then I look at the two photographs again and wobble straight back.", "One more round. I am nearly somewhere."],
+          "concede": ["That lands. I will stop relitigating that one point."],
+          "final": ["I auditioned both stories all afternoon. Only one kept its lines straight."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Distrusts the app-fuelled pile-on more than she distrusts anyone in the case.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 55 },
+        "weights": { "procedure": 2, "identity": 1, "burden": 1 },
+        "lines": {
+          "agree": ["That is the point: the board was a formality once the app had voted.", "And the direction backs it — treat identification with particular care. Particular. Care."],
+          "pushback": ["A neighbourhood app convicted this man nine days before anyone checked a badge.", "We are the first twelve people in this story who are required to be fair."],
+          "concede": ["The clip itself is genuine, and someone did burgle that house. That much stands."],
+          "final": ["The internet had its verdict in an hour. Ours took a day, and it is the other one."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "procedure", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-2026-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "D7b-1"
+  }
+}
