@@ -65,7 +65,7 @@ function jurorIssues(j: Juror, beatThemes: Set<Theme>): string[] {
 
   const rules = j.reaction_rules
   const isDefault = (r: Juror['reaction_rules'][number]) =>
-    r.when.theme === 'any' && r.when.stance === 'any'
+    r.when.theme === 'any' && r.when.stance === 'any' && !r.when.direction
   const defaults = rules.filter(isDefault)
   if (defaults.length !== 1 || !isDefault(rules[rules.length - 1])) {
     issues.push(

@@ -89,6 +89,13 @@ export const reactionRuleSchema = z.object({
   when: z.object({
     theme: z.union([themeSchema, z.literal('any')]),
     stance: z.union([stanceSchema, z.literal('any')]),
+    /**
+     * Which way the argument pushes ('proves' pushes the beat's direction,
+     * 'unreliable' pushes the opposite). Constrain it when the rule's line
+     * only reads sensibly agreeing with one side; omitted = any. The juror's
+     * voiced line must agree with the argument being made.
+     */
+    direction: z.enum(['guilt', 'innocence']).optional(),
   }),
   effect: z.object({
     /** Position steps toward the argument's direction (see engine). */
