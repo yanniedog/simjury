@@ -31,7 +31,7 @@ export function VerdictView({
       </div>
 
       <p className="text-center text-sm text-neutral-500">
-        On the charge of {trial.charge.toLowerCase()}, how do you find?
+        On the charge of {trial.charge}, how do you find?
       </p>
 
       <div className="grid grid-cols-2 gap-3">

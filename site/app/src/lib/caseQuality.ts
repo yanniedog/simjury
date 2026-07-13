@@ -59,6 +59,24 @@ export function checkCase(c: TrialCase): string[] {
           `(surface_persuasion - true_weight >= ${MISLEAD_MIN_GAP})`,
       )
     }
+    // A trap that actually points at the truth isn't a trap — a player who
+    // follows it ends up correct, so `analyzePlay` would wrongly count "moved
+    // toward the truth" as "took the bait".
+    if (directionMatchesVerdict(b.direction, c.verdict_truth)) {
+      issues.push(
+        `misleading beat ${b.id} must point away from the true verdict ` +
+          `(a trap that reinforces the truth cannot mislead)`,
+      )
+    }
+    // Same reasoning as the minor-beat guard below: a beat stamped "misleading"
+    // must not secretly be the real, decisive evidence, or the reveal lies to
+    // the player about which beats mattered.
+    if (b.true_weight >= DECISIVE_MIN_WEIGHT - EPSILON) {
+      issues.push(
+        `misleading beat ${b.id} must not carry decisive weight ` +
+          `(true_weight < ${DECISIVE_MIN_WEIGHT})`,
+      )
+    }
   }
   for (const b of decisive) {
     if (b.true_weight < DECISIVE_MIN_WEIGHT - EPSILON) {
@@ -79,13 +97,17 @@ export function checkCase(c: TrialCase): string[] {
     }
   }
 
-  const aligned = decisive.filter((b) =>
-    directionMatchesVerdict(b.direction, c.verdict_truth),
-  ).length
-  const opposed = decisive.length - aligned
-  if (decisive.length > 0 && aligned <= opposed) {
+  // Weighed, not just counted: a single heavy decisive beat can outweigh
+  // several light ones, so solvability must be judged by true_weight, not by
+  // how many decisive beats fall on each side.
+  const alignedWeight = decisive
+    .filter((b) => directionMatchesVerdict(b.direction, c.verdict_truth))
+    .reduce((sum, b) => sum + b.true_weight, 0)
+  const totalDecisiveWeight = decisive.reduce((sum, b) => sum + b.true_weight, 0)
+  const opposedWeight = totalDecisiveWeight - alignedWeight
+  if (decisive.length > 0 && alignedWeight - opposedWeight <= EPSILON) {
     issues.push(
-      'the decisive beats must, on balance, point to the true verdict ' +
+      'the decisive beats must, on balance by weight, point to the true verdict ' +
         '(the case must be solvable)',
     )
   }

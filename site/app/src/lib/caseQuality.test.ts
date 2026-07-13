@@ -109,6 +109,48 @@ describe('checkCase', () => {
       /point to the true verdict/,
     )
   })
+
+  it('flags a trap that points toward the true verdict instead of away from it', () => {
+    const c = make({
+      beats: make().beats.map((b) =>
+        // make()'s trap is 'guilt' against a 'Not Guilty' truth (correctly misleading);
+        // flip it to 'innocence' so it now reinforces the truth instead.
+        b.reveal_stamp === 'misleading' ? { ...b, direction: 'innocence' } : b,
+      ),
+    })
+    expect(checkCase(c).join()).toMatch(/must point away from the true verdict/)
+  })
+
+  it('flags a misleading beat that secretly carries decisive weight', () => {
+    const c = make({
+      beats: make().beats.map((b) =>
+        b.reveal_stamp === 'misleading'
+          ? { ...b, surface_persuasion: 0.95, true_weight: 0.65 }
+          : b,
+      ),
+    })
+    expect(checkCase(c).join()).toMatch(
+      /misleading beat .* must not carry decisive weight/,
+    )
+  })
+
+  it('flags a case where decisive weight, not count, opposes the verdict', () => {
+    // Three light decisive beats aligned with the verdict outnumber two heavy
+    // ones against it (3 vs 2 by count), but the heavy pair outweighs them —
+    // the case is unsolvable "on average" even though it looks fine by count.
+    const c = make({
+      verdict_truth: 'Guilty',
+      beats: [
+        beat({ id: 'b1', direction: 'innocence', reveal_stamp: 'misleading', surface_persuasion: 0.85, true_weight: 0.2 }),
+        beat({ id: 'b2', direction: 'guilt', reveal_stamp: 'decisive', surface_persuasion: 0.3, true_weight: 0.6 }),
+        beat({ id: 'b3', direction: 'guilt', reveal_stamp: 'decisive', surface_persuasion: 0.3, true_weight: 0.6 }),
+        beat({ id: 'b4', direction: 'guilt', reveal_stamp: 'decisive', surface_persuasion: 0.3, true_weight: 0.6 }),
+        beat({ id: 'b5', direction: 'innocence', reveal_stamp: 'decisive', surface_persuasion: 0.3, true_weight: 1 }),
+        beat({ id: 'b6', direction: 'innocence', reveal_stamp: 'decisive', surface_persuasion: 0.3, true_weight: 1 }),
+      ],
+    })
+    expect(checkCase(c).join()).toMatch(/point to the true verdict/)
+  })
 })
 
 describe('checkQueue', () => {

@@ -8,9 +8,17 @@ import { z } from 'zod'
  * `correct` and the trap counts are recorded so cross-day stats (streaks, win
  * rate) can be computed without re-deriving them from each day's case. They are
  * optional for backward compatibility with plays saved before stats existed.
+ *
+ * `caseId` pins the play to the specific case it was scored against. Without
+ * it, a queue edit (reorder, replace, resize) that shifts which case falls on
+ * a day index could make a stored play "valid" (right length) but actually
+ * belong to a different case than the one now showing for that day — silently
+ * revealing/scoring the wrong trial. A schema mismatch (e.g. an older stored
+ * play with no `caseId`) just fails to restore, same as any other corrupt entry.
  */
 const storedPlaySchema = z.object({
   day: z.number(),
+  caseId: z.string(),
   convictions: z.array(z.number()),
   verdict: z.enum(['Guilty', 'Not Guilty']),
   correct: z.boolean().optional(),

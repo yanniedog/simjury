@@ -22,9 +22,10 @@ afterEach(() => vi.unstubAllGlobals())
 describe('storage', () => {
   it('round-trips a valid play', () => {
     vi.stubGlobal('localStorage', memoryStorage())
-    savePlay({ day: 5, convictions: [60, 40], verdict: 'Not Guilty' })
+    savePlay({ day: 5, caseId: 'd-0001', convictions: [60, 40], verdict: 'Not Guilty' })
     expect(loadPlay(5)).toEqual({
       day: 5,
+      caseId: 'd-0001',
       convictions: [60, 40],
       verdict: 'Not Guilty',
     })
@@ -32,7 +33,7 @@ describe('storage', () => {
 
   it('returns null when there is no play for that day', () => {
     vi.stubGlobal('localStorage', memoryStorage())
-    savePlay({ day: 5, convictions: [60], verdict: 'Guilty' })
+    savePlay({ day: 5, caseId: 'd-0001', convictions: [60], verdict: 'Guilty' })
     expect(loadPlay(6)).toBeNull()
   })
 
@@ -57,6 +58,7 @@ describe('storage', () => {
     vi.stubGlobal('localStorage', memoryStorage())
     savePlay({
       day: 5,
+      caseId: 'd-0001',
       convictions: [70],
       verdict: 'Guilty',
       correct: true,
@@ -66,14 +68,24 @@ describe('storage', () => {
     expect(loadPlay(5)?.correct).toBe(true)
     expect(loadPlay(5)?.swayedByTraps).toBe(1)
   })
+
+  it('rejects a play saved without a caseId (pre-caseId schema)', () => {
+    const store = memoryStorage()
+    store.setItem(
+      KEY,
+      JSON.stringify({ day: 5, convictions: [60], verdict: 'Guilty' }),
+    )
+    vi.stubGlobal('localStorage', store)
+    expect(loadPlay(5)).toBeNull()
+  })
 })
 
 describe('loadAllPlays', () => {
   it('returns every valid play and skips corrupt entries', () => {
     const store = memoryStorage()
     vi.stubGlobal('localStorage', store)
-    savePlay({ day: 1, convictions: [50], verdict: 'Guilty', correct: true })
-    savePlay({ day: 2, convictions: [40], verdict: 'Not Guilty', correct: false })
+    savePlay({ day: 1, caseId: 'd-0001', convictions: [50], verdict: 'Guilty', correct: true })
+    savePlay({ day: 2, caseId: 'd-0002', convictions: [40], verdict: 'Not Guilty', correct: false })
     store.setItem('simjury-daily:v1:3', '{ corrupt')
     store.setItem('unrelated-key', 'ignored')
 
