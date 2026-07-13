@@ -1,14 +1,15 @@
-import type { TrialCase } from '../lib/caseSchema'
-import type { Verdict } from '../lib/game'
+import type { DocketCase } from '../../lib/v2/caseSchema'
 
-export function VerdictView({
+export type Verdict = DocketCase['verdict_truth']
+
+export function DocketVerdict({
   trial,
   conviction,
-  onChoose,
+  onLock,
 }: {
-  trial: TrialCase
+  trial: DocketCase
   conviction: number
-  onChoose: (verdict: Verdict) => void
+  onLock: (verdict: Verdict) => void
 }) {
   return (
     <div className="space-y-6">
@@ -31,20 +32,21 @@ export function VerdictView({
       </div>
 
       <p className="text-center text-sm text-neutral-500">
-        On the charge of {trial.charge}, how do you find?
+        On the charge of {trial.charge}, how do you find? Locking is
+        permanent — the room deliberates only after you cannot be swayed.
       </p>
 
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
-          onClick={() => onChoose('Not Guilty')}
+          onClick={() => onLock('Not Guilty')}
           className="rounded-lg border border-emerald-700 bg-emerald-950/40 px-4 py-4 font-semibold text-emerald-300 transition hover:bg-emerald-900/40"
         >
           Not Guilty
         </button>
         <button
           type="button"
-          onClick={() => onChoose('Guilty')}
+          onClick={() => onLock('Guilty')}
           className="rounded-lg border border-red-800 bg-red-950/40 px-4 py-4 font-semibold text-red-300 transition hover:bg-red-900/40"
         >
           Guilty
