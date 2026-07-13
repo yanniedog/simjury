@@ -28,6 +28,14 @@ export interface QualityIssue {
   message: string
 }
 
+/**
+ * The structural slice the design checks need. Both the v1 daily case and the
+ * v2 docket case satisfy it, so `checkCase` / `checkQueue` serve both gates.
+ */
+export type DesignedCase = Pick<TrialCase, 'beats' | 'verdict_truth'>
+export type QueueCase = DesignedCase &
+  Pick<TrialCase, 'id' | 'publish_date' | 'title'>
+
 function directionMatchesVerdict(
   direction: TrialBeat['direction'],
   verdict: Verdict,
@@ -36,7 +44,7 @@ function directionMatchesVerdict(
 }
 
 /** Design issues for a single case (empty array = good). */
-export function checkCase(c: TrialCase): string[] {
+export function checkCase(c: DesignedCase): string[] {
   const issues: string[] = []
   const misleading = c.beats.filter((b) => b.reveal_stamp === 'misleading')
   const decisive = c.beats.filter((b) => b.reveal_stamp === 'decisive')
@@ -116,7 +124,7 @@ export function checkCase(c: TrialCase): string[] {
 }
 
 /** Design + integrity issues across the whole queue (empty array = good). */
-export function checkQueue(cases: TrialCase[]): QualityIssue[] {
+export function checkQueue(cases: QueueCase[]): QualityIssue[] {
   const issues: QualityIssue[] = []
 
   for (const c of cases) {

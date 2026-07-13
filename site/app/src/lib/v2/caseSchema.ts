@@ -1,0 +1,158 @@
+import { z } from 'zod'
+import { beatSchema } from '../caseSchema'
+
+/**
+ * Schema v2 — the Daily Docket case (`dd-*`), per DAILY-PIVOT.md.
+ *
+ * Extends the v1 daily case from a 3-minute beat list into the 8–10 minute
+ * courtroom loop: beats carry a speaker (cast member) and closed-enum theme
+ * tags; the case carries a cast, conviction check-in points, and a full
+ * 11-juror jury block that drives the interactive deliberation engine.
+ *
+ * The `label` pin is inherited unchanged from v1: every docket case is
+ * fiction, built from real trial *patterns*, never real events — a safety
+ * invariant, not a formality. No real names of people, companies, brands, or
+ * places anywhere in player-visible text.
+ */
+
+/** Closed theme enum (v3 §11.3 at daily scale). Tags beats; keys juror weights. */
+export const THEMES = [
+  'identity',
+  'alibi',
+  'digital_forensics',
+  'motive',
+  'opportunity',
+  'method',
+  'timeline',
+  'credibility',
+  'procedure',
+  'burden',
+] as const
+export const themeSchema = z.enum(THEMES)
+export type Theme = z.infer<typeof themeSchema>
+
+/** The closed set of line functions a juror can voice (v3 §7.7, reduced). */
+export const LINE_FUNCTIONS = [
+  'agree',
+  'pushback',
+  'concede',
+  'burden_drift',
+  'burden_correct',
+  'holdout',
+  'final',
+] as const
+export const lineFunctionSchema = z.enum(LINE_FUNCTIONS)
+export type LineFunction = z.infer<typeof lineFunctionSchema>
+
+/** Juror behavioural arcs (v3 §8.6.7, reduced to the daily-lite set). */
+export const ARCS = [
+  'vibes',
+  'steady',
+  'principled_holdout',
+  'mind_changer',
+  'drifter',
+  'burden_drifter',
+  'foreperson',
+] as const
+
+export const castMemberSchema = z.object({
+  id: z.string().regex(/^[a-z][a-z0-9_]*$/, 'cast id must be a lowercase slug'),
+  /** Invented name — never a real person, company, or brand. */
+  name: z.string().min(1),
+  role_label: z.string().min(1),
+  side: z.enum(['prosecution', 'defence', 'court']),
+})
+export type CastMember = z.infer<typeof castMemberSchema>
+
+/**
+ * A v2 beat: the v1 hidden-weight beat plus who speaks it and which themes it
+ * touches. `mode` distinguishes examination from cross for witness beats.
+ */
+export const docketBeatSchema = beatSchema.extend({
+  speaker: z.string().min(1),
+  mode: z.enum(['examination', 'cross']).optional(),
+  tags: z.array(themeSchema).min(1).max(3),
+})
+export type DocketBeat = z.infer<typeof docketBeatSchema>
+
+export const positionSchema = z.enum(['G', 'NG', 'U'])
+export type Position = z.infer<typeof positionSchema>
+
+/**
+ * A player argument's stance toward a beat: it proves what it says, or it
+ * cannot be trusted. Rules may match either, or wildcard with 'any'.
+ */
+export const stanceSchema = z.enum(['proves', 'unreliable'])
+export type Stance = z.infer<typeof stanceSchema>
+
+export const reactionRuleSchema = z.object({
+  when: z.object({
+    theme: z.union([themeSchema, z.literal('any')]),
+    stance: z.union([stanceSchema, z.literal('any')]),
+  }),
+  effect: z.object({
+    /** Position steps toward the argument's direction (see engine). */
+    delta: z.number().int().min(-2).max(2),
+    confidence: z.number().int().min(-20).max(20),
+    /** Which line function the juror voices when this rule fires. */
+    line: lineFunctionSchema,
+  }),
+})
+export type ReactionRule = z.infer<typeof reactionRuleSchema>
+
+export const jurorSchema = z.object({
+  id: z.string().regex(/^J-\d{2}$/, 'juror id must look like J-01'),
+  /** Bench seat 2–12; seat 1 is the player. */
+  seat: z.number().int().min(2).max(12),
+  label: z.string().min(1),
+  persona: z.string().min(1),
+  register: z.enum(['plain', 'formal', 'blunt', 'hesitant']),
+  arc: z.enum(ARCS),
+  initial: z.object({
+    position: positionSchema,
+    confidence: z.number().int().min(0).max(100),
+  }),
+  /**
+   * How receptive the juror is to arguments per theme (−2..+2). Positive
+   * amplifies a matching argument; zero or negative dampens or resists it.
+   */
+  weights: z.record(themeSchema, z.number().int().min(-2).max(2)),
+  /** Authored voice, keyed by function. Ordered rules pick from these. */
+  lines: z.record(lineFunctionSchema, z.array(z.string().min(1)).min(1)),
+  /**
+   * Ordered, first match wins; the last rule must be the default
+   * (`theme: 'any', stance: 'any'`) so every argument gets a response.
+   */
+  reaction_rules: z.array(reactionRuleSchema).min(2),
+})
+export type Juror = z.infer<typeof jurorSchema>
+
+export const docketCaseSchema = z.object({
+  id: z.string().regex(/^dd-\d{4}$/, 'id must look like dd-0001'),
+  publish_date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'publish_date must be YYYY-MM-DD'),
+  label: z.literal('fiction'),
+  title: z.string().min(1),
+  /** Contemporary setting sketch (replaces v1 `era`) — always the present day. */
+  setting: z.string().min(1),
+  charge: z.string().min(1),
+  elements: z.array(z.string().min(1)).min(2).max(4),
+  cast: z.array(castMemberSchema).min(3).max(9),
+  beats: z.array(docketBeatSchema).min(10).max(14),
+  /** Beat ids after which the conviction check-in appears (in beat order). */
+  checkins: z.array(z.string().min(1)).min(2).max(5),
+  verdict_truth: z.enum(['Guilty', 'Not Guilty']),
+  twist: z.string().min(1),
+  difficulty_target: z.number().min(0).max(1),
+  jury: z.object({
+    jurors: z.array(jurorSchema).length(11),
+  }),
+  gen_meta: z.object({
+    model: z.string(),
+    prompt_version: z.string(),
+    reviewer: z.string(),
+    batch_pr: z.string(),
+  }),
+})
+export type DocketCase = z.infer<typeof docketCaseSchema>
