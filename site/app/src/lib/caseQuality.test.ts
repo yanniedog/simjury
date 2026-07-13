@@ -183,4 +183,27 @@ describe('checkQueue', () => {
     expect(messages.join()).toMatch(/duplicate id/)
     expect(messages.join()).toMatch(/same verdict/)
   })
+
+  it('tags each issue with a structural kind, not just message text', () => {
+    // A duplicate id (queue-level) alongside a per-case design flaw (missing
+    // trap), so callers (e.g. the v2 gate) can select "queue-level only" by
+    // `kind` instead of pattern-matching `message` — see v2/caseQuality.ts.
+    // Only two cases, so the length>=3 verdict-variety rule can't also fire.
+    const flawed = make({
+      id: 'd-0002',
+      publish_date: '2026-01-02',
+      title: 'B',
+      beats: make().beats.map((b) =>
+        b.reveal_stamp === 'misleading' ? { ...b, reveal_stamp: 'minor' } : b,
+      ),
+    })
+    const q = [
+      make({ id: 'd-0001', publish_date: '2026-01-01', title: 'A' }),
+      { ...flawed, id: 'd-0001' },
+    ]
+    const issues = checkQueue(q)
+    expect(issues.some((i) => i.kind === 'duplicate')).toBe(true)
+    expect(issues.some((i) => i.kind === 'design')).toBe(true)
+    expect(issues.every((i) => i.kind === 'design' || i.kind === 'duplicate')).toBe(true)
+  })
 })

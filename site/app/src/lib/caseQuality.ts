@@ -26,6 +26,14 @@ const EPSILON = 1e-9
 export interface QualityIssue {
   caseId: string
   message: string
+  /**
+   * What kind of issue this is: a single case's design (from `checkCase`), or
+   * a whole-queue integrity/variety problem (from `checkQueue` itself). Lets
+   * callers — notably the v2 gate, which re-runs `checkCase` per case via
+   * `checkDocketCase` — select just the queue-level issues without matching
+   * on `message` text, which would silently break if the wording changed.
+   */
+  kind: 'design' | 'duplicate' | 'variety'
 }
 
 /**
@@ -128,7 +136,9 @@ export function checkQueue(cases: QueueCase[]): QualityIssue[] {
   const issues: QualityIssue[] = []
 
   for (const c of cases) {
-    for (const message of checkCase(c)) issues.push({ caseId: c.id, message })
+    for (const message of checkCase(c)) {
+      issues.push({ caseId: c.id, message, kind: 'design' })
+    }
   }
 
   const flagDuplicates = (field: 'id' | 'publish_date' | 'title') => {
@@ -136,7 +146,11 @@ export function checkQueue(cases: QueueCase[]): QualityIssue[] {
     for (const c of cases) {
       const value = c[field]
       if (seen.has(value)) {
-        issues.push({ caseId: c.id, message: `duplicate ${field}: ${value}` })
+        issues.push({
+          caseId: c.id,
+          message: `duplicate ${field}: ${value}`,
+          kind: 'duplicate',
+        })
       }
       seen.add(value)
     }
@@ -153,6 +167,7 @@ export function checkQueue(cases: QueueCase[]): QualityIssue[] {
       issues.push({
         caseId: '(queue)',
         message: 'every case has the same verdict; vary Guilty / Not Guilty',
+        kind: 'variety',
       })
     }
   }

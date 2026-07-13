@@ -196,17 +196,17 @@ export function checkDocketCase(c: DocketCase): string[] {
 
 /** Design + integrity issues across the whole docket queue. */
 export function checkDocketQueue(cases: DocketCase[]): QualityIssue[] {
-  // v1 queue rules (per-case design is re-run by checkDocketCase below, so
-  // strip checkCase duplicates by running uniqueness/variety on empty-beat
-  // shells would be worse — instead run the full v1 queue check and add the
-  // v2 per-case issues that checkCase does not know about).
+  // v1 queue-level rules only (duplicate id/date/title, verdict variety) —
+  // per-case design issues are re-run by checkDocketCase below, so we select
+  // by QualityIssue.kind rather than matching on message text, which would
+  // silently break if v1's wording ever changed.
   const issues: QualityIssue[] = checkQueue(cases).filter(
-    (i) => i.caseId === '(queue)' || i.message.startsWith('duplicate'),
+    (i) => i.kind !== 'design',
   )
 
   for (const c of cases) {
     for (const message of checkDocketCase(c)) {
-      issues.push({ caseId: c.id, message })
+      issues.push({ caseId: c.id, message, kind: 'design' })
     }
   }
 
@@ -223,6 +223,7 @@ export function checkDocketQueue(cases: DocketCase[]): QualityIssue[] {
       issues.push({
         caseId: c.id,
         message: `more than ${VERDICT_RUN_MAX} '${c.verdict_truth}' verdicts in a row — vary the queue`,
+        kind: 'variety',
       })
     }
   }
