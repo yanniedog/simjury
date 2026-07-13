@@ -134,32 +134,61 @@ export const jurorSchema = z.object({
 })
 export type Juror = z.infer<typeof jurorSchema>
 
-export const docketCaseSchema = z.object({
-  id: z.string().regex(/^dd-\d{4}$/, 'id must look like dd-0001'),
-  publish_date: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'publish_date must be YYYY-MM-DD'),
-  label: z.literal('fiction'),
-  title: z.string().min(1),
-  /** Contemporary setting sketch (replaces v1 `era`) — always the present day. */
-  setting: z.string().min(1),
-  charge: z.string().min(1),
-  elements: z.array(z.string().min(1)).min(2).max(4),
-  cast: z.array(castMemberSchema).min(3).max(9),
-  beats: z.array(docketBeatSchema).min(10).max(14),
-  /** Beat ids after which the conviction check-in appears (in beat order). */
-  checkins: z.array(z.string().min(1)).min(2).max(5),
-  verdict_truth: z.enum(['Guilty', 'Not Guilty']),
-  twist: z.string().min(1),
-  difficulty_target: z.number().min(0).max(1),
-  jury: z.object({
-    jurors: z.array(jurorSchema).length(11),
-  }),
-  gen_meta: z.object({
-    model: z.string(),
-    prompt_version: z.string(),
-    reviewer: z.string(),
-    batch_pr: z.string(),
-  }),
-})
+export const docketCaseSchema = z
+  .object({
+    id: z.string().regex(/^dd-\d{4}$/, 'id must look like dd-0001'),
+    publish_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'publish_date must be YYYY-MM-DD'),
+    label: z.literal('fiction'),
+    title: z.string().min(1),
+    /** Contemporary setting sketch (replaces v1 `era`) — always the present day. */
+    setting: z.string().min(1),
+    charge: z.string().min(1),
+    elements: z.array(z.string().min(1)).min(2).max(4),
+    cast: z.array(castMemberSchema).min(3).max(9),
+    beats: z.array(docketBeatSchema).min(10).max(14),
+    /** Beat ids after which the conviction check-in appears (in beat order). */
+    checkins: z.array(z.string().min(1)).min(2).max(5),
+    verdict_truth: z.enum(['Guilty', 'Not Guilty']),
+    twist: z.string().min(1),
+    difficulty_target: z.number().min(0).max(1),
+    jury: z.object({
+      jurors: z.array(jurorSchema).length(11),
+    }),
+    gen_meta: z.object({
+      model: z.string(),
+      prompt_version: z.string(),
+      reviewer: z.string(),
+      batch_pr: z.string(),
+    }),
+  })
+  .superRefine((c, ctx) => {
+    // Cast and beat ids are used as map keys downstream (speaker resolution,
+    // check-in ordering) — a duplicate would silently shadow an earlier entry
+    // instead of failing loudly, so reject it here at the schema boundary.
+    const castIds = new Set<string>()
+    c.cast.forEach((m, i) => {
+      if (castIds.has(m.id)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `duplicate cast id: ${m.id}`,
+          path: ['cast', i, 'id'],
+        })
+      }
+      castIds.add(m.id)
+    })
+
+    const beatIds = new Set<string>()
+    c.beats.forEach((b, i) => {
+      if (beatIds.has(b.id)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `duplicate beat id: ${b.id}`,
+          path: ['beats', i, 'id'],
+        })
+      }
+      beatIds.add(b.id)
+    })
+  })
 export type DocketCase = z.infer<typeof docketCaseSchema>

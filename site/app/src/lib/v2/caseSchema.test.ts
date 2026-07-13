@@ -42,4 +42,24 @@ describe('docketCaseSchema', () => {
     c.jury.jurors[0] = j
     expect(docketCaseSchema.safeParse(c).success).toBe(false)
   })
+
+  it('rejects a duplicate cast id', () => {
+    const c = makeDocketCase()
+    c.cast = [...c.cast, { ...c.cast[0] }]
+    const result = docketCaseSchema.safeParse(c)
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues.some((i) => i.message.includes('duplicate cast id'))).toBe(true)
+    }
+  })
+
+  it('rejects a duplicate beat id', () => {
+    const c = makeDocketCase()
+    c.beats = c.beats.map((b, i) => (i === 3 ? { ...b, id: c.beats[0].id } : b))
+    const result = docketCaseSchema.safeParse(c)
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues.some((i) => i.message.includes('duplicate beat id'))).toBe(true)
+    }
+  })
 })
