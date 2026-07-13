@@ -1,5 +1,11 @@
 # Phase 4 Status & Handoff — Case 001 (Beck)
 
+> **⏸ PARKED (2026-07-13):** the owner pivoted the repo to the daily synthetic track —
+> see [`DAILY-PIVOT.md`](DAILY-PIVOT.md). Case c_001 **stays live** at simjury.com/play;
+> the remaining G-4 items below (R3 human clearance, R4 device QA, R5 gate PR) and the
+> Android pilot are paused indefinitely. This file is the frozen handoff for whenever the
+> historical track resumes — do not resume it without an owner instruction.
+
 **Last verified:** 2026-07-09 against `main` (post P4-8 / P4-10 / R4 CLI + Robolectric). **CI on `main`: green.**
 
 > **Progress 2026-07-09:** R1 (ground truth) and R2 (`BALANCE.md`) are **merged**.
