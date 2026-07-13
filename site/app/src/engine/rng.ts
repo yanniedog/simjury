@@ -34,5 +34,8 @@ export function rngFor(seedText: string): Rng {
 
 /** Pick one element deterministically. */
 export function pick<T>(rng: Rng, items: readonly T[]): T {
+  if (items.length === 0) {
+    throw new Error('pick: cannot pick from an empty array')
+  }
   return items[Math.floor(rng() * items.length) % items.length]
 }

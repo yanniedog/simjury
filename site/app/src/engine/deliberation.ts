@@ -240,7 +240,7 @@ function peerPressure(state: DeliberationState, boost = 0): void {
   const toward = roomSign(state)
   if (toward === 0) return
   for (const js of state.jurors) {
-    const p = PRESSURE[js.arc] + boost
+    const p = clamp(PRESSURE[js.arc] + boost, 0, 1)
     if (state.rng() < p && sign(js.position) !== toward) {
       js.position = clamp(js.position + toward, -2, 2)
     }
@@ -255,9 +255,13 @@ export function playRound(state: DeliberationState, action: PlayerAction): void 
 
   if (action.type === 'pass') {
     emit(state, { actor: 'player', type: 'pass' })
-    // Quiet round: two jurors fill the silence with default-rule chatter.
-    for (let i = 0; i < 2; i++) {
-      const juror = pick(state.rng, state.caseData.jury.jurors)
+    // Quiet round: two distinct jurors fill the silence with default-rule
+    // chatter (picking the second from the remaining pool avoids the same
+    // juror speaking both lines back-to-back).
+    const firstJuror = pick(state.rng, state.caseData.jury.jurors)
+    const remaining = state.caseData.jury.jurors.filter((j) => j.id !== firstJuror.id)
+    const secondJuror = pick(state.rng, remaining)
+    for (const juror of [firstJuror, secondJuror]) {
       const fn = juror.reaction_rules[juror.reaction_rules.length - 1].effect.line
       emit(state, {
         actor: juror.id,
@@ -304,7 +308,7 @@ export function playRound(state: DeliberationState, action: PlayerAction): void 
       })
       .slice(0, SPEAKERS_PER_ROUND - 1)
     const rest = jurors.filter((j) => !matched.includes(j))
-    const speakers = [...matched, pick(state.rng, rest)]
+    const speakers = rest.length > 0 ? [...matched, pick(state.rng, rest)] : matched
     for (const juror of speakers) respond(state, juror, beat, stance, push)
 
     // Citing the burden direction while the room has drifted corrects it.
