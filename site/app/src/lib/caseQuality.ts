@@ -26,7 +26,23 @@ const EPSILON = 1e-9
 export interface QualityIssue {
   caseId: string
   message: string
+  /**
+   * What kind of issue this is: a single case's design (from `checkCase`), or
+   * a whole-queue integrity/variety problem (from `checkQueue` itself). Lets
+   * callers — notably the v2 gate, which re-runs `checkCase` per case via
+   * `checkDocketCase` — select just the queue-level issues without matching
+   * on `message` text, which would silently break if the wording changed.
+   */
+  kind: 'design' | 'duplicate' | 'variety'
 }
+
+/**
+ * The structural slice the design checks need. Both the v1 daily case and the
+ * v2 docket case satisfy it, so `checkCase` / `checkQueue` serve both gates.
+ */
+export type DesignedCase = Pick<TrialCase, 'beats' | 'verdict_truth'>
+export type QueueCase = DesignedCase &
+  Pick<TrialCase, 'id' | 'publish_date' | 'title'>
 
 function directionMatchesVerdict(
   direction: TrialBeat['direction'],
@@ -36,7 +52,7 @@ function directionMatchesVerdict(
 }
 
 /** Design issues for a single case (empty array = good). */
-export function checkCase(c: TrialCase): string[] {
+export function checkCase(c: DesignedCase): string[] {
   const issues: string[] = []
   const misleading = c.beats.filter((b) => b.reveal_stamp === 'misleading')
   const decisive = c.beats.filter((b) => b.reveal_stamp === 'decisive')
@@ -116,11 +132,13 @@ export function checkCase(c: TrialCase): string[] {
 }
 
 /** Design + integrity issues across the whole queue (empty array = good). */
-export function checkQueue(cases: TrialCase[]): QualityIssue[] {
+export function checkQueue(cases: QueueCase[]): QualityIssue[] {
   const issues: QualityIssue[] = []
 
   for (const c of cases) {
-    for (const message of checkCase(c)) issues.push({ caseId: c.id, message })
+    for (const message of checkCase(c)) {
+      issues.push({ caseId: c.id, message, kind: 'design' })
+    }
   }
 
   const flagDuplicates = (field: 'id' | 'publish_date' | 'title') => {
@@ -128,7 +146,11 @@ export function checkQueue(cases: TrialCase[]): QualityIssue[] {
     for (const c of cases) {
       const value = c[field]
       if (seen.has(value)) {
-        issues.push({ caseId: c.id, message: `duplicate ${field}: ${value}` })
+        issues.push({
+          caseId: c.id,
+          message: `duplicate ${field}: ${value}`,
+          kind: 'duplicate',
+        })
       }
       seen.add(value)
     }
@@ -145,6 +167,7 @@ export function checkQueue(cases: TrialCase[]): QualityIssue[] {
       issues.push({
         caseId: '(queue)',
         message: 'every case has the same verdict; vary Guilty / Not Guilty',
+        kind: 'variety',
       })
     }
   }
