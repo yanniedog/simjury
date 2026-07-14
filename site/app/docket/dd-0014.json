@@ -1,0 +1,397 @@
+{
+  "id": "dd-0014",
+  "publish_date": "2026-08-15",
+  "label": "fiction",
+  "title": "The Shrinkage Score",
+  "setting": "a suburban supermarket, a loss-prevention dashboard, and one employee's risk score, the present day",
+  "charge": "theft as an employee",
+  "elements": [
+    "Money or stock was stolen from the store",
+    "The accused took it"
+  ],
+  "cast": [
+    { "id": "judge", "name": "Judge Herrera", "role_label": "the judge", "side": "court" },
+    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "w1", "name": "Drew Volkers", "role_label": "regional loss-prevention manager", "side": "prosecution" },
+    { "id": "w2", "name": "Stavros Illing", "role_label": "store manager", "side": "prosecution" },
+    { "id": "w3", "name": "Priti Raghavan", "role_label": "independent retail auditor", "side": "defence" },
+    { "id": "w4", "name": "Corinne Abello", "role_label": "the accused — service desk supervisor, eight years", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit one: the loss-prevention dashboard. The supermarket chain's risk model scores every single employee, and the accused scored eighty-seven out of a hundred — the highest score in the entire region. The printout is stark: stock shrinkage on her shifts ran at more than twice the store's baseline, week after week, for an entire quarter.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.15,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The model scored correlation and everyone downstream read causation. She worked the busiest shifts at the registers where shrinkage happens — so, therefore, did the shrinkage. Eighty-seven measured her roster, not her honesty.",
+      "tags": ["digital_forensics", "identity"]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "Once head office flagged her, I pulled the camera footage and watched for two nights. She hovers around the self-checkouts constantly. She handles voids and refunds all shift, opens her drawer without sales, moves between registers. Watching it with the score in front of me, honestly, it looked like method.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "He watched a service-desk supervisor doing a service-desk job — hovering, voiding, assisting — with a number that said thief propped beside the screen. The score wrote the story; the footage just illustrated it.",
+      "tags": ["credibility", "procedure"]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "The loss-prevention manager agreed the vendor's own manual describes the scores as 'investigative leads, not evidence of wrongdoing'. He agreed nobody at the chain had ever audited what data feeds the model. And he agreed that in three months of watching, no one ever observed the accused take a single item or dollar.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "A quarter of surveillance produced no theft, no pocketed note, no bag check failure — only a number, restated with increasing confidence.",
+      "tags": ["digital_forensics", "procedure"]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit three: her register activity. Voided transactions at three times the store average, and roughly two no-sale drawer openings every shift. The prosecution says voids are how a till thief skims — ring it up, void it quietly, keep the cash — and that her numbers fit that method precisely.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.35,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Service-desk staff process the whole store's refunds — the void count was her job description rendered as statistics. The no-sales were locker change and trolley coins, required by the same head office now prosecuting them.",
+      "tags": ["method", "digital_forensics"]
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit four: the comparison nobody ran until the defence demanded it. During the accused's three weeks of annual leave — interstate, with boarding passes in evidence — shrinkage on her usual shifts did not fall. It rose, by eleven per cent. The pattern the model attributed to her carried on comfortably without her.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.85,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The experiment the dashboard never thought to run: remove the suspect, watch the number. The number went up. Whatever was leaking, it was not her.",
+      "tags": ["timeline", "digital_forensics"]
+    },
+    {
+      "id": "b6",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "The audit took nine days to find what three months of surveillance missed. Self-checkout scale four had under-weighed loose produce by around nine per cent since a firmware update — on busy shifts it processes thousands of items. And the receiving dock had been double-counting one supplier's deliveries, creating phantom stock that could never be sold. The theft was arithmetic.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.75,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "A light scale and a double-counted dock: two boring faults that manufactured a crime wave, and a model happy to pin it on whoever worked the most Saturdays.",
+      "tags": ["method", "procedure"]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "The service desk is voids — that is the entire job. Every refund in that store crosses my counter, and I trained half the staff who process the rest. I reported scale four weighing light twice myself; I have the ticket numbers in my diary. Eight years I have worked there. I found out my own score from a detective.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "She reported the actual cause of the shrinkage twice, months before the model blamed her for it. Both tickets were closed without anyone testing the scale.",
+      "tags": ["credibility", "procedure"]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "cross",
+      "text": "She agreed she has a car loan in arrears and that the family budget is tight — 'like most of my colleagues,' she added. She agreed she cannot, at this distance, account for every individual void across a quarter. 'Can you?' she asked the prosecutor, and was directed to just answer the questions.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "A tight budget shared with half the workforce, and an impossible memory test no honest cashier could pass — the cross-examination proved she was ordinary, not guilty.",
+      "tags": ["motive", "credibility"]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "The store manager agreed he only ever reviewed footage the system flagged, never a random sample. He agreed her two scale-fault tickets were closed 'no fault found' without the scale being tested. And he agreed that after her suspension, he assigned her void workload to three separate people — because it was too much for one.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "It took three employees to replace the workload that the dashboard had scored as one woman's crime spree.",
+      "tags": ["procedure", "credibility"]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "You must not research this case, this employer, or these scoring systems anywhere online. A risk score is not a witness: it cannot be cross-examined, and its confidence is not evidence of anything. Correlation is where an investigation begins, not where a verdict rests. The prosecution must make you sure that she stole — an observed act, not an inferred pattern.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction the era needed: a score cannot take the oath. Somewhere between the scale and the dock, the actual facts had been waiting the whole time.",
+      "tags": ["burden", "digital_forensics"]
+    }
+  ],
+  "checkins": ["b3", "b5", "b8", "b9"],
+  "verdict_truth": "Not Guilty",
+  "twist": "Eighty-seven out of a hundred sounded like science, and it measured her roster: the busiest shifts, the void-heavy service desk, the self-checkouts she was paid to supervise. When she took three weeks' leave, the 'theft' rose eleven per cent without her. The real culprits were a scale under-weighing produce since a firmware update — the fault she herself reported twice — and a receiving dock double-counting deliveries. The model found the person most correlated with the store being busy. The store was always busy when things went missing. So was she.",
+  "difficulty_target": 0.5,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "Eighty-seven out of a hundred sounds like a grade; he trusts grades.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": { "position": "G", "confidence": 80 },
+        "weights": { "digital_forensics": 2, "identity": 1 },
+        "lines": {
+          "agree": ["Highest score in the region. Regions have thousands of employees. Numbers like that mean something.", "Twice the baseline shrinkage, every week she worked. The pattern is the case."],
+          "pushback": ["Companies do not buy million-dollar systems that accuse people at random.", "You all keep explaining away the score. Someone explain the missing money instead."],
+          "concede": ["The missing money went up while she was on a beach interstate. The score never noticed."],
+          "final": ["I trusted the grade. Nobody told me the exam was rigged by a broken scale."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Data analyst; has watched dashboards launder coincidence into confidence for a living.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 60 },
+        "weights": { "digital_forensics": 2, "timeline": 1 },
+        "lines": {
+          "agree": ["Remove the variable, rerun the experiment: shrinkage rose without her. That is the cleanest test in the whole trial, and the defence had to beg for it.", "The vendor's manual says leads, not evidence. The vendor knows its own model."],
+          "pushback": ["Nobody audited the inputs. A model fed a busy roster will flag the busiest person forever.", "Show me one observed theft. A quarter of cameras. One."],
+          "concede": ["Her void rate is genuinely extreme — until you learn what desk she runs."],
+          "final": ["I build these dashboards. You should hear how we talk about them internally."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; 'no observed act' is where he plants the flag.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 80 },
+        "weights": { "burden": 2, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["Precisely — an observed act, not an inferred pattern. The direction is the verdict's skeleton."],
+          "pushback": ["Three months of surveillance and not one theft on camera. Sit with that before quoting the score again.", "A number that cannot be cross-examined has no seat in that witness box."],
+          "concede": ["The arrears are real, and motive is legitimate context. Context, not proof."],
+          "holdout": ["If the model is the whole case, then there is no case — there is a subscription.", "I hold until someone shows me a hand in a till. No one will, because no one ever saw one."],
+          "final": ["Not guilty — and this store owes that woman eight years of apology."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Wants the prosecution's strongest reading tested fairly before the room buries it.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "burden": 2, "method": 1 },
+        "lines": {
+          "agree": ["Tested at full strength, the till-skimming theory still needs the leave weeks to behave — and they do not."],
+          "pushback": ["Be fair to the other side: void-skimming is a real method, and her numbers did fit it.", "The auditor was hired by the defence. Weigh that as you weighed the vendor."],
+          "concede": ["Three people to cover her workload. The store's own rostering acquitted her void count."],
+          "burden_correct": ["She does not have to account for a quarter of voids from memory. No honest employee could.", "The burden sits with the Crown, and a dashboard cannot lift it."],
+          "final": ["I gave the prosecution its best case. The leave-week numbers ended it on the merits."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "method", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; keeps the room from putting the software industry on trial instead of the facts.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "G", "confidence": 50 },
+        "weights": { "procedure": 1, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["Noted for the count — measured and sourced. Good.", "That is the standard of argument we vote on."],
+          "pushback": ["We are not here to ban dashboards. We are here to weigh one woman's quarter.", "One at a time — and the word 'dystopian' is now rationed."],
+          "concede": ["Fair. Counted."],
+          "final": ["The facts have had their say. Hands, please."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "procedure", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Drifts with whoever spoke last; the manager's two nights of footage haunt him.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "G", "confidence": 45 },
+        "weights": { "credibility": 1, "method": 1 },
+        "lines": {
+          "agree": ["Yes — that version survives repeating. I will keep it.", "The three-replacements detail. Every time I stray, someone hands it back to me."],
+          "pushback": ["But the manager watched her for two nights and it looked like method. He was there.", "The voids really are three times average, though."],
+          "concede": ["He watched with the score beside the screen. I would have seen method too."],
+          "final": ["I drifted toward the footage twice. Both times the leave weeks were waiting when I got back."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Believed the score because it was specific; the leave-week experiment reversed him.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "G", "confidence": 70 },
+        "weights": { "timeline": 2, "method": 2 },
+        "lines": {
+          "agree": ["She left for three weeks and the theft got worse. There is no version of guilty that survives that sentence.", "A light scale and a double-counted dock — the shrinkage finally has a face, and it is a firmware version."],
+          "pushback": ["Eighty-seven sounded like precision to me. I am telling you why: it had a decimal culture around it and no methods page.", "The void statistics deserved an answer. They got one: it was her job."],
+          "concede": ["All right. The score measured her Saturdays. I measured the score. We were both wrong once."],
+          "final": ["The dashboard convicted her in my head for a day. The experiment took one sentence to undo it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; the closed fault tickets bother her more than anything the model said.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 55 },
+        "weights": { "procedure": 2 },
+        "lines": {
+          "agree": ["Mm. She reported the broken scale twice and they closed the tickets without testing it. Then they prosecuted her for what the scale did.", "That is the first witness today who audited instead of assumed."],
+          "pushback": ["Only flagged footage was ever reviewed. The system graded its own homework all quarter.", "Everyone is very confident about what till thieves look like on camera."],
+          "concede": ["Her arrears are real. So are half the country's."],
+          "final": ["Quietly: they ignored her fault reports, then blamed her for the fault. Not guilty."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "procedure", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "procedure", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Wants her to reconcile every void; keeps handing the defence the ledger.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "method": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Exactly — three times the void average is not nothing, whatever desk you run."],
+          "pushback": ["Money left that store for a quarter. Somebody carried it out."],
+          "burden_drift": ["Let her reconcile a single week of voids, line by line, and I will listen.", "She should have to show us her budget covered that car loan without help."],
+          "concede": ["The judge said it plainly: an observed act. Nobody observed one."],
+          "burden_correct": ["Withdrawn — she owes this room no arithmetic. The Crown owed us a theft, and brought a graph."],
+          "final": ["I demanded her ledger all afternoon. The store's own audit was the only ledger that mattered."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "Undecided; keeps replaying the phrase 'investigative lead' against three months of treating it as proof.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "digital_forensics": 1, "timeline": 1 },
+        "lines": {
+          "agree": ["There — the lead became the verdict somewhere around week two, and nobody noticed the promotion.", "Right: the score never took leave. She did. The difference is the whole case."],
+          "pushback": ["Could there be two causes — the scale and her? I keep testing the both-things theory.", "One more pass at the leave weeks, slowly."],
+          "concede": ["The both-things theory needs her theft to show up somewhere the scale cannot reach. It never does."],
+          "final": ["I tried to keep half the accusation alive. The arithmetic would not share."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Worked retail through university; knows exactly what a service desk shift contains.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 55 },
+        "weights": { "method": 1, "credibility": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Fair — I ran a service desk. Voids are the job. Two no-sales a shift is trolley coins and locker change, exactly as she said.", "And the direction lands it: a score cannot take the oath."],
+          "pushback": ["Watching service-desk footage cold, you would flag every one of us who ever worked one.", "The busiest person will always correlate with the busiest losses. That is not insight; it is rostering."],
+          "concede": ["The car loan is the only real thing the prosecution owns. It is not enough to own a person."],
+          "final": ["I did her job for four years. The model would have scored me eighty-seven too."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-2026-v1",
+    "reviewer": "yanniedog",
+    "batch_pr": "D7b-2"
+  }
+}
