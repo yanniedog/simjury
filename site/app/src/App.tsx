@@ -39,18 +39,23 @@ export default function App() {
   const trial = useMemo(() => docketCaseForDate(today), [today])
   const stored = useMemo(() => loadPlay(day), [day])
 
-  // Only restore a completed docket play that belongs to the case now assigned
-  // to this day (a queue edit can shift which case falls on a day index) and
-  // whose check-in trace matches it; anything else starts fresh.
+  // Only restore a stored play that belongs to the case now assigned to this
+  // day (a queue edit can shift which case falls on a day index) and whose
+  // check-in trace matches it; anything else starts fresh. A play with a room
+  // result is complete (restore at reveal); one without is a verdict locked
+  // before the jury room finished (restore at the room — the lock is
+  // permanent, so a refresh must not allow a fresh verdict).
   const validStored = useMemo(() => {
-    if (!stored || !trial || !stored.room) return null
+    if (!stored || !trial) return null
     return stored.caseId === trial.id &&
       stored.convictions.length === trial.checkins.length
       ? stored
       : null
   }, [stored, trial])
 
-  const [phase, setPhase] = useState<Phase>(validStored ? 'reveal' : 'intro')
+  const [phase, setPhase] = useState<Phase>(
+    validStored ? (validStored.room ? 'reveal' : 'juryroom') : 'intro',
+  )
   const [beatIndex, setBeatIndex] = useState(0)
   const [checkinValues, setCheckinValues] = useState<number[]>(
     validStored?.convictions ?? [],
@@ -63,7 +68,7 @@ export default function App() {
     validStored?.room ?? null,
   )
   const [revealStats, setRevealStats] = useState<Stats | null>(() =>
-    validStored ? statsFromStorage() : null,
+    validStored?.room ? statsFromStorage() : null,
   )
 
   const analysis = useMemo(
@@ -135,6 +140,14 @@ export default function App() {
 
   function lockVerdict(chosen: Verdict) {
     setVerdict(chosen)
+    // Persist the lock before the jury room: the verdict is permanent, so a
+    // refresh mid-room must resume at the room, not offer a fresh verdict.
+    savePlay({
+      day,
+      caseId: activeTrial.id,
+      convictions: checkinValues,
+      verdict: chosen,
+    })
     setPhase('juryroom')
   }
 

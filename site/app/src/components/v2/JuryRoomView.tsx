@@ -144,9 +144,15 @@ export function JuryRoomView({
 
   const beat = trial.beats.find((b) => b.id === selectedBeat)!
   const inOpenRound = state.phase.startsWith('open')
+  // The phase this render was painted for. `state` is mutable, so a rapid
+  // double-click would re-enter act() after playRound already advanced the
+  // phase — burning a second round on the same action, or throwing once the
+  // room reaches final_vote. A stale click (live phase != rendered phase) is
+  // simply ignored; the re-render re-arms the buttons for the new round.
+  const renderedPhase = state.phase
 
   function act(action: PlayerAction) {
-    if (!inOpenRound) return
+    if (!inOpenRound || state.phase !== renderedPhase) return
     const before = state.log.length
     stopSpeech()
     playRound(state, action)
@@ -159,6 +165,9 @@ export function JuryRoomView({
   }
 
   function callVote() {
+    // Same double-click hazard as act(): finish() throws once the phase has
+    // left final_vote, so a second click before re-render must be a no-op.
+    if (state.phase !== 'final_vote') return
     stopSpeech()
     setOutcome(finish(state))
     setTick((t) => t + 1)
