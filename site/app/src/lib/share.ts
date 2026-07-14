@@ -16,6 +16,11 @@ export interface ShareInput {
   totalTraps: number
   /** Current correct-day streak; shown only when it's worth bragging about (>= 2). */
   currentStreak?: number
+  /**
+   * The jury room's own result (docket loop). Spoiler-safe by construction:
+   * the room's split says nothing about the true verdict or the player's.
+   */
+  room?: { kind: 'unanimous' | 'majority' | 'hung'; g: number; ng: number }
 }
 
 /** One emoji tile for a conviction value — the journey's shape, not its content. */
@@ -47,6 +52,15 @@ export function buildShareText(
   if (input.totalTraps > 0) {
     const dodged = input.totalTraps - input.swayedByTraps
     lines.push(`🃏 ${dodged}/${input.totalTraps} traps dodged`)
+  }
+
+  if (input.room) {
+    const split = `${Math.max(input.room.g, input.room.ng)}–${Math.min(input.room.g, input.room.ng)}`
+    lines.push(
+      input.room.kind === 'hung'
+        ? `🏛️ My jury hung ${split}`
+        : `🏛️ My jury: ${split}${input.room.kind === 'unanimous' ? ' unanimous' : ''}`,
+    )
   }
 
   if (input.currentStreak !== undefined && input.currentStreak >= 2) {

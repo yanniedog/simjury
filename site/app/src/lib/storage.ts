@@ -24,6 +24,15 @@ const storedPlaySchema = z.object({
   correct: z.boolean().optional(),
   swayedByTraps: z.number().optional(),
   totalTraps: z.number().optional(),
+  /** The jury room's own result (docket loop); absent on v1 plays. */
+  room: z
+    .object({
+      kind: z.enum(['unanimous', 'majority', 'hung']),
+      verdict: z.enum(['guilty', 'not_guilty']).nullable(),
+      g: z.number(),
+      ng: z.number(),
+    })
+    .optional(),
 })
 
 export type StoredPlay = z.infer<typeof storedPlaySchema>
