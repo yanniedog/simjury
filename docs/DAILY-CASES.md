@@ -20,7 +20,7 @@ enforce the hard rules; this file holds the taste. Companion: the drafting promp
 
 | Piece | Budget | Why |
 |---|---|---|
-| Beats | 10–14, each 25–90 words (aim 40–70) | ≈25s narration per beat |
+| Beats | 10–14, each 40–70 words | ≈25s narration per beat |
 | Total evidence | 550–1050 words | 4.5–5.5 min reading phase |
 | Witnesses | 3–4 speaking cast + judge/clerk | speaker variety without sprawl |
 | Check-ins | 3–5, in beat order | the conviction trace that powers trap analysis |
