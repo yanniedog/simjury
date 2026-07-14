@@ -37,5 +37,5 @@ export function docketCaseForDate(
   queue: DocketCase[] = docketQueue,
 ): DocketCase | null {
   if (queue.length === 0) return null
-  return queue[caseIndexForDate(date, queue.length)]
+  return queue[caseIndexForDate(date, queue.length)] ?? null
 }

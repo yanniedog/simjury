@@ -70,12 +70,17 @@ export function setNarrationEnabled(on: boolean): void {
   if (!on) stopSpeech()
 }
 
-let onSpeechEnd: (() => void) | null = null
+// A transaction id (not a callback reference) tracks the active utterance:
+// two speak() calls can legitimately share the same `done` reference (e.g. a
+// caller re-using one callback across lines), so comparing by identity to
+// the callback itself would let a late, cancelled utterance's onend/onerror
+// match a newer call and fire or clear state it doesn't own.
+let activeId = 0
 
 export function stopSpeech(): void {
   const s = synth()
   if (s) {
-    onSpeechEnd = null
+    activeId++
     s.cancel()
   }
 }
@@ -92,20 +97,18 @@ export function speak(text: string, key: string, done?: () => void): void {
     return
   }
   s.cancel()
+  const myId = ++activeId
   const u = new SpeechSynthesisUtterance(text)
   const params = voiceParamsFor(key || 'narrator', voices.length)
   if (voices.length > 0) u.voice = voices[params.voiceIndex]
   u.pitch = params.pitch
   u.rate = params.rate
-  onSpeechEnd = done ?? null
   u.onend = () => {
-    if (onSpeechEnd === done) {
-      onSpeechEnd = null
-      if (done) done()
-    }
+    if (activeId === myId && done) done()
   }
   u.onerror = () => {
-    if (onSpeechEnd === done) onSpeechEnd = null
+    // No-op: do not call done on error, so a failing voice never
+    // auto-advances the player past content it never heard.
   }
   s.speak(u)
 }
@@ -115,6 +118,10 @@ export function speakAll(
   lines: Array<{ text: string; key: string }>,
   done?: () => void,
 ): void {
+  if (!narrationEnabled()) {
+    if (done) done()
+    return
+  }
   const next = (i: number): void => {
     if (i >= lines.length) {
       if (done) done()
