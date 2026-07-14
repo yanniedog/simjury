@@ -44,6 +44,7 @@ export function DocketBeatView({
         ? 'Cross-examination'
         : 'Examination'
       : KIND_LABEL[beat.kind]
+  const subtitle = [speaker?.role_label, modeLabel].filter(Boolean).join(' · ')
 
   return (
     <div className="space-y-6">
@@ -58,7 +59,7 @@ export function DocketBeatView({
         <p className="text-sm font-semibold text-neutral-200">
           {speaker?.name ?? beat.speaker}
           <span className="ml-2 font-normal text-neutral-500">
-            · {speaker?.role_label ?? ''} · {modeLabel}
+            {subtitle && `· ${subtitle}`}
           </span>
         </p>
         <p className="mt-2 min-h-[6rem] text-lg leading-relaxed text-neutral-100">

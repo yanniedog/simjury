@@ -119,8 +119,14 @@ export default function App() {
     const beat = activeTrial.beats[beatIndex]
     if (activeTrial.checkins.includes(beat.id)) {
       // Guarded append: a double-fire can't record the same check-in twice.
+      // The cap is the number of check-ins up to and including this beat, not
+      // the case total — two queued functional updates in one render cycle
+      // would both pass a total-length check.
+      const checkinsUpToCurrent = activeTrial.beats
+        .slice(0, beatIndex + 1)
+        .filter((b) => activeTrial.checkins.includes(b.id)).length
       setCheckinValues((prev) =>
-        prev.length >= activeTrial.checkins.length ? prev : [...prev, conviction],
+        prev.length >= checkinsUpToCurrent ? prev : [...prev, conviction],
       )
     }
     if (beatIndex + 1 >= beatCount) setPhase('verdict')
@@ -179,6 +185,7 @@ export default function App() {
       )}
       {phase === 'juryroom' && verdict && (
         <JuryRoomView
+          key={`${activeTrial.id}-${verdict}`}
           trial={activeTrial}
           playerVerdict={verdict}
           onDone={roomDone}

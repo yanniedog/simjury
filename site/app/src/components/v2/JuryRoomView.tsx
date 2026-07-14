@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
 import {
   finish,
@@ -128,6 +128,10 @@ export function JuryRoomView({
   playerVerdict: Verdict
   onDone: (outcome: Outcome) => void
 }) {
+  // Stop any in-flight juror narration when the room unmounts (e.g. the
+  // player moves on to the reveal) so audio can't overlap the next screen.
+  useEffect(() => stopSpeech, [])
+
   const stateRef = useRef<DeliberationState | null>(null)
   stateRef.current ??= startDeliberation(
     trial,
