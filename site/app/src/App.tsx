@@ -1,13 +1,18 @@
-import { type ReactNode, useEffect, useLayoutEffect, useMemo, useState } from 'react'
-import { caseForDate } from './lib/cases'
+import { type ReactNode, useEffect, useMemo, useState } from 'react'
+import type { Outcome } from './engine/deliberation'
+import { analyzeDocketPlay } from './lib/v2/analyze'
+import { docketCaseForDate } from './lib/v2/cases'
 import { dayIndex } from './lib/daily'
-import { START_CONVICTION, analyzePlay, type Phase, type Verdict } from './lib/game'
-import { loadAllPlays, loadPlay, savePlay } from './lib/storage'
+import { START_CONVICTION } from './lib/game'
+import { loadAllPlays, loadPlay, savePlay, type StoredPlay } from './lib/storage'
 import { computeStats, type DayResult, type Stats } from './lib/stats'
-import { IntroCard } from './components/IntroCard'
-import { BeatView } from './components/BeatView'
-import { VerdictView } from './components/VerdictView'
-import { RevealView } from './components/RevealView'
+import { DocketIntro } from './components/v2/DocketIntro'
+import { DocketBeatView } from './components/v2/DocketBeatView'
+import { DocketVerdict, type Verdict } from './components/v2/DocketVerdict'
+import { JuryRoomView } from './components/v2/JuryRoomView'
+import { DocketReveal } from './components/v2/DocketReveal'
+
+type Phase = 'intro' | 'beats' | 'verdict' | 'juryroom' | 'reveal'
 
 function Shell({ children }: { children: ReactNode }) {
   return (
@@ -31,50 +36,46 @@ function statsFromStorage(): Stats {
 export default function App() {
   const today = useMemo(() => new Date(), [])
   const day = useMemo(() => dayIndex(today), [today])
-  const trial = useMemo(() => caseForDate(today), [today])
+  const trial = useMemo(() => docketCaseForDate(today), [today])
   const stored = useMemo(() => loadPlay(day), [day])
 
-  // Only restore a completed play whose length matches today's case *and* whose
-  // caseId matches the case now assigned to this day; otherwise it can't be
-  // scored cleanly (or belongs to a case a queue edit has since replaced), so
-  // we start fresh.
+  // Only restore a stored play that belongs to the case now assigned to this
+  // day (a queue edit can shift which case falls on a day index) and whose
+  // check-in trace matches it; anything else starts fresh. A play with a room
+  // result is complete (restore at reveal); one without is a verdict locked
+  // before the jury room finished (restore at the room — the lock is
+  // permanent, so a refresh must not allow a fresh verdict).
   const validStored = useMemo(() => {
     if (!stored || !trial) return null
-    return stored.convictions.length === trial.beats.length &&
-      stored.caseId === trial.id
+    return stored.caseId === trial.id &&
+      stored.convictions.length === trial.checkins.length
       ? stored
       : null
   }, [stored, trial])
 
-  const beatCount = trial ? trial.beats.length : 0
-
-  const [phase, setPhase] = useState<Phase>(validStored ? 'reveal' : 'intro')
-  const [convictions, setConvictions] = useState<number[]>(
+  const [phase, setPhase] = useState<Phase>(
+    validStored ? (validStored.room ? 'reveal' : 'juryroom') : 'intro',
+  )
+  const [beatIndex, setBeatIndex] = useState(0)
+  const [checkinValues, setCheckinValues] = useState<number[]>(
     validStored?.convictions ?? [],
   )
   const [conviction, setConviction] = useState(START_CONVICTION)
   const [verdict, setVerdict] = useState<Verdict | null>(
     validStored?.verdict ?? null,
   )
-  // Computed once when a play completes (or on restore), never per render.
+  const [room, setRoom] = useState<StoredPlay['room'] | null>(
+    validStored?.room ?? null,
+  )
   const [revealStats, setRevealStats] = useState<Stats | null>(() =>
-    validStored ? statsFromStorage() : null,
+    validStored?.room ? statsFromStorage() : null,
   )
 
-  // Play analysis for the reveal, memoized so it isn't recomputed every render.
-  const revealAnalysis = useMemo(
-    () => (trial && verdict ? analyzePlay(trial, convictions, verdict) : null),
-    [trial, convictions, verdict],
+  const analysis = useMemo(
+    () =>
+      trial && verdict ? analyzeDocketPlay(trial, checkinValues, verdict) : null,
+    [trial, checkinValues, verdict],
   )
-
-  // Once every beat has a recorded conviction, move to the verdict. Deriving the
-  // current beat from convictions.length (rather than a second index state)
-  // removes any stale-closure risk on rapid submissions.
-  useLayoutEffect(() => {
-    if (phase === 'beats' && beatCount > 0 && convictions.length >= beatCount) {
-      setPhase('verdict')
-    }
-  }, [phase, convictions, beatCount])
 
   // A tab left open across local midnight would otherwise keep showing (and
   // let the player finish) yesterday's case forever, since `today` is only
@@ -99,7 +100,7 @@ export default function App() {
     return (
       <Shell>
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold">⚖️ SimJury Daily</h1>
+          <h1 className="text-2xl font-semibold">⚖️ SimJury — The Daily Docket</h1>
           <p className="text-neutral-400">
             No case is queued for today. Check back soon.
           </p>
@@ -110,33 +111,65 @@ export default function App() {
 
   const activeTrial = trial
   const dayNumber = day + 1
-  const currentBeat = Math.min(convictions.length, beatCount - 1)
+  const beatCount = activeTrial.beats.length
 
   function begin() {
-    setConvictions([])
+    setBeatIndex(0)
+    setCheckinValues([])
     setConviction(START_CONVICTION)
     setPhase('beats')
   }
 
-  function submitBeat() {
-    // Guarded append: a double-fire can't push past the last beat.
-    setConvictions((prev) =>
-      prev.length >= beatCount ? prev : [...prev, conviction],
-    )
-    // conviction carries over as the running belief into the next beat.
+  function nextBeat() {
+    const beat = activeTrial.beats[beatIndex]
+    if (activeTrial.checkins.includes(beat.id)) {
+      // Guarded append: a double-fire can't record the same check-in twice.
+      // The cap is the number of check-ins up to and including this beat, not
+      // the case total — two queued functional updates in one render cycle
+      // would both pass a total-length check.
+      const checkinsUpToCurrent = activeTrial.beats
+        .slice(0, beatIndex + 1)
+        .filter((b) => activeTrial.checkins.includes(b.id)).length
+      setCheckinValues((prev) =>
+        prev.length >= checkinsUpToCurrent ? prev : [...prev, conviction],
+      )
+    }
+    if (beatIndex + 1 >= beatCount) setPhase('verdict')
+    else setBeatIndex(beatIndex + 1)
   }
 
-  function chooseVerdict(chosen: Verdict) {
-    const analysis = analyzePlay(activeTrial, convictions, chosen)
+  function lockVerdict(chosen: Verdict) {
     setVerdict(chosen)
+    // Persist the lock before the jury room: the verdict is permanent, so a
+    // refresh mid-room must resume at the room, not offer a fresh verdict.
     savePlay({
       day,
       caseId: activeTrial.id,
-      convictions,
+      convictions: checkinValues,
       verdict: chosen,
-      correct: analysis.correct,
-      swayedByTraps: analysis.swayedByTraps,
-      totalTraps: analysis.totalTraps,
+    })
+    setPhase('juryroom')
+  }
+
+  function roomDone(outcome: Outcome) {
+    if (!verdict) return
+    const done = analyzeDocketPlay(activeTrial, checkinValues, verdict)
+    const roomRecord: NonNullable<StoredPlay['room']> = {
+      kind: outcome.kind,
+      verdict: outcome.verdict,
+      g: outcome.tally.g,
+      ng: outcome.tally.ng,
+    }
+    setRoom(roomRecord)
+    savePlay({
+      day,
+      caseId: activeTrial.id,
+      convictions: checkinValues,
+      verdict,
+      correct: done.correct,
+      swayedByTraps: done.trapsSwayed,
+      totalTraps: done.totalTraps,
+      room: roomRecord,
     })
     setRevealStats(statsFromStorage())
     setPhase('reveal')
@@ -145,29 +178,38 @@ export default function App() {
   return (
     <Shell>
       {phase === 'intro' && (
-        <IntroCard trial={trial} dayNumber={dayNumber} onBegin={begin} />
+        <DocketIntro trial={activeTrial} dayNumber={dayNumber} onBegin={begin} />
       )}
       {phase === 'beats' && (
-        <BeatView
-          trial={trial}
-          beatIndex={currentBeat}
+        <DocketBeatView
+          trial={activeTrial}
+          beatIndex={beatIndex}
           value={conviction}
           onChange={setConviction}
-          onSubmit={submitBeat}
+          onNext={nextBeat}
         />
       )}
       {phase === 'verdict' && (
-        <VerdictView
-          trial={trial}
+        <DocketVerdict
+          trial={activeTrial}
           conviction={conviction}
-          onChoose={chooseVerdict}
+          onLock={lockVerdict}
         />
       )}
-      {phase === 'reveal' && verdict && revealAnalysis && revealStats && (
-        <RevealView
-          trial={trial}
-          analysis={revealAnalysis}
+      {phase === 'juryroom' && verdict && (
+        <JuryRoomView
+          key={`${activeTrial.id}-${verdict}`}
+          trial={activeTrial}
+          playerVerdict={verdict}
+          onDone={roomDone}
+        />
+      )}
+      {phase === 'reveal' && verdict && analysis && room && revealStats && (
+        <DocketReveal
+          trial={activeTrial}
+          analysis={analysis}
           verdict={verdict}
+          room={room}
           dayNumber={dayNumber}
           stats={revealStats}
         />

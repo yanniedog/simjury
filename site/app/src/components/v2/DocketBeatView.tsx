@@ -1,0 +1,88 @@
+import { useEffect } from 'react'
+import type { DocketBeat, DocketCase } from '../../lib/v2/caseSchema'
+import { speak, stopSpeech } from '../../lib/narration'
+import { ConvictionSlider } from '../ConvictionSlider'
+
+const KIND_LABEL: Record<DocketBeat['kind'], string> = {
+  witness: '🗣️ Witness',
+  exhibit: '📄 Exhibit',
+  direction: '⚖️ Judge’s direction',
+}
+
+function speakerOf(trial: DocketCase, beat: DocketBeat) {
+  return trial.cast.find((m) => m.id === beat.speaker)
+}
+
+export function DocketBeatView({
+  trial,
+  beatIndex,
+  value,
+  onChange,
+  onNext,
+}: {
+  trial: DocketCase
+  beatIndex: number
+  value: number
+  onChange: (value: number) => void
+  onNext: () => void
+}) {
+  const beat = trial.beats[beatIndex]
+  const total = trial.beats.length
+  const speaker = speakerOf(trial, beat)
+  const isCheckin = trial.checkins.includes(beat.id)
+  const isLast = beatIndex === total - 1
+
+  // Narrate each beat in its speaker's voice; stop when it unmounts.
+  useEffect(() => {
+    speak(beat.text, beat.speaker)
+    return stopSpeech
+  }, [beat])
+
+  const modeLabel =
+    beat.kind === 'witness'
+      ? beat.mode === 'cross'
+        ? 'Cross-examination'
+        : 'Examination'
+      : KIND_LABEL[beat.kind]
+  const subtitle = [speaker?.role_label, modeLabel].filter(Boolean).join(' · ')
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between text-xs uppercase tracking-wider text-neutral-500">
+        <span>{KIND_LABEL[beat.kind]}</span>
+        <span>
+          {beatIndex + 1} / {total}
+        </span>
+      </div>
+
+      <div>
+        <p className="text-sm font-semibold text-neutral-200">
+          {speaker?.name ?? beat.speaker}
+          <span className="ml-2 font-normal text-neutral-500">
+            {subtitle && `· ${subtitle}`}
+          </span>
+        </p>
+        <p className="mt-2 min-h-[6rem] text-lg leading-relaxed text-neutral-100">
+          {beat.text}
+        </p>
+      </div>
+
+      {isCheckin && (
+        <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
+          <p className="mb-4 text-center text-xs uppercase tracking-wider text-neutral-500">
+            Check-in: where does this leave you?
+          </p>
+          <ConvictionSlider value={value} onChange={onChange} />
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={onNext}
+        className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
+      >
+        {isLast ? 'Reach a verdict' : 'Next →'}
+      </button>
+    </div>
+  )
+}
