@@ -53,19 +53,30 @@ export function narrationSupported(): boolean {
   return synth() !== null
 }
 
+// In-memory fallback for the on/off preference. Sandboxed/privacy contexts
+// can throw on every localStorage access; without this, narrationEnabled()
+// would default to false and setNarrationEnabled(true) could never
+// override it, silencing narration for the whole session even though
+// speechSynthesis itself is available.
+let memoryEnabled = true
+
 export function narrationEnabled(): boolean {
+  if (!narrationSupported()) return false
   try {
-    return narrationSupported() && localStorage.getItem(STORAGE_KEY) !== 'off'
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return stored === null ? memoryEnabled : stored !== 'off'
   } catch {
-    return false
+    return memoryEnabled
   }
 }
 
 export function setNarrationEnabled(on: boolean): void {
+  memoryEnabled = on
   try {
     localStorage.setItem(STORAGE_KEY, on ? 'on' : 'off')
   } catch {
-    // Storage can be blocked; the toggle just won't persist.
+    // Storage can be blocked; the toggle won't persist across reloads, but
+    // the in-memory override above still takes effect for this session.
   }
   if (!on) stopSpeech()
 }

@@ -69,11 +69,22 @@ export function analyzeDocketPlay(
     })),
   )
 
+  // A trailing tail (no closing check-in) is created with after === before,
+  // so a misleading beat there can never be marked tookBait — it never had a
+  // movement window. Only count traps that fall inside a scored segment, or
+  // "traps dodged" inflates with beats the player had no chance to sway on.
+  const scorableTraps = segments
+    .filter((s) => s.checkinId !== null)
+    .reduce(
+      (n, s) => n + s.beats.filter((b) => b.reveal_stamp === 'misleading').length,
+      0,
+    )
+
   return {
     correct: verdict === c.verdict_truth,
     segments,
     reveals,
     trapsSwayed: reveals.filter((r) => r.tookBait).length,
-    totalTraps: c.beats.filter((b) => b.reveal_stamp === 'misleading').length,
+    totalTraps: scorableTraps,
   }
 }
