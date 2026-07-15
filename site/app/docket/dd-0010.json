@@ -10,9 +10,39 @@
     "The accused performed the export",
     "He did so dishonestly, for gain"
   ],
+  "hook": "At 2:14 in the morning, someone pulled 1.1 million customer records out of FreshMint in eleven minutes — no wrong turns, no tripped alarms. Nine days earlier, Leo Brandt had reported a phishing email that stole his password. He is either the unluckiest administrator alive, or the only one who knew the map by heart.",
+  "accused": {
+    "cast_id": "w3",
+    "human": "Leo Brandt, 38. Senior systems administrator; spent three years writing memos about the company's sloppy security — the shared logins, the sticky-note PINs — until colleagues hid them when he walked past.",
+    "if_guilty": "prison for the data theft, and three years of being the one who cared reread as reconnaissance"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "This is a circumstantial case, and a complete one. The export ran through an administrator session at 2:14am — approved not just by a password, but by Leo Brandt's personal hardware key, which needs his PIN and his physical touch, over a VPN paid from his own card. The proceeds of the sale walked, over six weeks, into an exchange account opened with his passport and his face. He will tell you he was phished. A phishing kit cannot hold a key and press a thumb to it."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Leo Brandt is the man who reported the phishing email — the same day, before any breach — and thieves do not ring the alarm on themselves. He is the man who wrote the memos about shared logins and PINs on sticky notes, in a shared-drawer culture where anyone in operations could lift a key overnight and return it by morning. The Crown has built a chain out of an institution's own carelessness. The judge will tell you: one honest break in that chain, and you must acquit."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Test every link. The password — maybe phished. But the hardware key needs a PIN he swears he never wrote down. His onboarding form says the key stays on his person; the convenient desk drawer appeared only after the charge. The VPN exits in the same city as the 2:14 session. The money retired into an account wearing his own face. He reported the phish nine days early because he knew he would need it. Not a defence. A prop."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "A circumstantial case asks you to be sure of the whole chain, end to end — and this company has admitted, under oath, that its logs had gaps it deferred for budget, that accounts were shared against policy, that Leo was the one flagging all of it. The man who mapped every hole in the fence is not therefore the man who climbed through. If the shared drawer, the phish, the sloppy logging leave you with one genuine doubt anywhere along that chain, the law requires acquittal."
+      }
+    }
+  },
+  "epilogue": "The jury convicted; the foreperson later said the hardware key's physical touch was the link no one could break. Leo received four years. FreshMint's breach cost it a regulator's fine and a third of its subscribers; it finally rebuilt its access logging, using Leo's old memos as the specification. The exchange account was frozen and the customers partially compensated. Nia Fontaine, who testified that he was 'the one who cared', has not spoken to him since the passport evidence was read. He is appealing.",
   "cast": [
     { "id": "judge", "name": "Judge Ilsa Renner", "role_label": "the judge", "side": "court" },
-    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "pc", "name": "Vaughn Attaway", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Simone Okafor", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Petra Onishi", "role_label": "head of security, FreshMint Subscriptions", "side": "prosecution" },
     { "id": "w2", "name": "Detective Sam Kettler", "role_label": "cybercrime detective", "side": "prosecution" },
     { "id": "w3", "name": "Leo Brandt", "role_label": "the accused — senior systems administrator", "side": "defence" },
@@ -35,7 +65,7 @@
     {
       "id": "b2",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit two, tendered by the defence: a phishing email received by the accused nine days before the breach — a pixel-perfect fake of the company's IT portal, asking him to re-enter his administrator credentials. He clicked it. The defence says his stolen credentials, not his hands, performed the export.",
       "surface_persuasion": 0.75,
       "true_weight": 0.2,
@@ -73,7 +103,7 @@
     {
       "id": "b5",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit four: the export session's authentication chain. Beyond the password, the session was approved by the accused's personal hardware security key — a device requiring both his PIN and a physical touch, registered to him alone, never reported lost or stolen. The session arrived through a personal VPN subscription paid from his own card.",
       "surface_persuasion": 0.55,
       "true_weight": 0.85,
@@ -85,7 +115,7 @@
     {
       "id": "b6",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit five: the money. The wallet that received the sale proceeds moved them, over six weeks, into an exchange account opened eight months earlier with the accused's passport and a selfie verification. From there, regular withdrawals landed in his everyday bank account — the same account his salary goes into.",
       "surface_persuasion": 0.5,
       "true_weight": 0.75,
@@ -112,7 +142,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "He agreed the key also requires his PIN, which he never wrote down. He agreed his onboarding attestation states the key 'remains on my person or keyring at all times' — the drawer appeared in his account only after the charge. Shown the VPN receipt in his own inbox, he said, eventually, that he used it for streaming sport.",
+      "text": "'The key needs a PIN as well. Where is that PIN written?' 'Nowhere. I never wrote it down.' 'Your onboarding form says the key stays on your person at all times. When did the desk drawer enter your account?' Silence. 'Shown a VPN receipt in your own inbox, Mr Brandt — what was it for?' A pause. 'Streaming sport.' 'It exits in the city the export came from.'",
       "surface_persuasion": 0.6,
       "true_weight": 0.55,
       "direction": "guilt",
@@ -391,7 +421,7 @@
   },
   "gen_meta": {
     "model": "claude-fable-5",
-    "prompt_version": "dd-2026-v1",
+    "prompt_version": "dd-2026-v2",
     "reviewer": "yanniedog",
     "batch_pr": "D7b-2"
   }

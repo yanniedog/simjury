@@ -10,9 +10,39 @@
     "The accused lit it, or had it lit",
     "She did so to claim on her insurance"
   ],
+  "hook": "At three in the morning the Nine Bells cafe burned to its brick. Marta Kovar had locked up alone, as she had every night for nine years, and she held the only keys. Six weeks earlier, the insurer's own inspector had photographed the thing that started it — and written 'recommend remediation' underneath.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Marta Kovar, 47. Her grandmother named the Nine Bells and ran it before her; Marta kept it alive through nine hard years and one brutal squeeze from the delivery apps. She lost all of it in a single night.",
+    "if_guilty": "prison for arson, a fraud record, and the cafe's memory turned into a motive"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "A hundred and forty thousand dollars of debt. Two missed rent cycles. And five weeks before the fire, the contents policy raised by forty per cent — the exact payout she claimed while the ash was still warm. The fire began at three in the morning, behind her locks, in a building only she could enter. The fire investigator found burn patterns consistent with a poured accelerant at floor level. Motive, means, and opportunity rarely line up this cleanly."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Every loud fact in this case has a quiet, innocent explanation the Crown hopes you won't wait for. The policy increase was her broker's idea, in his handwriting. The fast claim was her accountant sister at her side. And the fire started where a cheap delivery-scooter battery was charging — the same corner the insurer's own inspector had photographed and flagged as a hazard six weeks before. Marta Kovar did not burn down her grandmother's cafe. A powerboard did."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The defence offers you a battery. But she held the only keys, she was the last soul in that building, she stood to be paid, and a supplier heard her call the cafe 'the death of me — or the making of me.' The claim came in itemised to the clause number while honest claimants are still dazed. You are being asked to believe a coincidence of hazard, timing, and debt. I ask you to believe the locks."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The judge will tell you motive alone cannot prove arson, and that an expert opinion is worth only its foundations. The 'pour pattern' collapsed under cross — it cannot survive flashover, and the lab found nothing because nothing was poured. Meanwhile the battery's cells show thermal runaway at the hour such fires start, in the corner the insurer photographed. She was the last soul in that building every night for nine years. To convict, you must be sure. You cannot be."
+      }
+    }
+  },
+  "epilogue": "The jury acquitted in ninety minutes. The insurer paid the claim in full the following spring, after a second engineer confirmed the battery; the inspector who had written 'recommend remediation' was quietly reassigned. The 'pour pattern' investigator still gives evidence — his technique has now been excluded by name in two later trials that cited this one. Marta did not reopen the Nine Bells. She runs a three-table place across the river under a new name, and keeps every device charging on a bench by the door, in plain sight.",
   "cast": [
     { "id": "judge", "name": "Judge Ostrander", "role_label": "the judge", "side": "court" },
-    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "pc", "name": "Gideon Marsh", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Aoife Brennan", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Inspector Reece Maddan", "role_label": "fire investigator", "side": "prosecution" },
     { "id": "w2", "name": "Yusuf Berhane", "role_label": "insurance claims assessor", "side": "prosecution" },
     { "id": "w3", "name": "Dr Silke Andrada", "role_label": "defence fire scientist", "side": "defence" },
@@ -35,7 +65,7 @@
     {
       "id": "b2",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit two: the finances, laid out plainly. A hundred and forty thousand dollars of debt across three separate lenders. Two missed rent cycles inside the last six months. And five weeks before the fire, the cafe's contents insurance was increased by forty per cent — the very payout she claimed within days of the ash going cold.",
       "surface_persuasion": 0.8,
       "true_weight": 0.15,
@@ -99,7 +129,7 @@
     {
       "id": "b7",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit six: the insurer's own risk-inspection photographs, taken six weeks before the fire during the policy review. They show the scooter charging in that exact storeroom corner, plugged into a daisy-chained powerboard, with the inspector's note beneath: 'charging arrangement — recommend remediation.' No remediation was ever followed up by anyone.",
       "surface_persuasion": 0.5,
       "true_weight": 0.75,
@@ -126,7 +156,7 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "She agreed she locked up alone, as always, and holds the only keys. She agreed a supplier once heard her say the cafe would be 'the death of me — or the making of me'. 'You were the last soul in that building.' — 'I was the last soul in that building every night for nine years.'",
+      "text": "'You locked up alone that night?' 'As always. I hold the only keys.' 'A supplier heard you say the cafe would be the death of you — or the making of you.' 'I say a lot of things at 5am unloading crates.' 'You were the last soul in that building.' 'I was the last soul in that building every night for nine years.'",
       "surface_persuasion": 0.55,
       "true_weight": 0.4,
       "direction": "guilt",
@@ -392,7 +422,7 @@
   },
   "gen_meta": {
     "model": "claude-fable-5",
-    "prompt_version": "dd-2026-v1",
+    "prompt_version": "dd-2026-v2",
     "reviewer": "yanniedog",
     "batch_pr": "D7b-2"
   }

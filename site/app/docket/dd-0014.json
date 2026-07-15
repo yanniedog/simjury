@@ -9,9 +9,39 @@
     "Money or stock was stolen from the store",
     "The accused took it"
   ],
+  "hook": "The supermarket's risk model scored Corinne Abello eighty-seven out of a hundred — the highest in the region, a number that read like a verdict. Then the defence asked one question nobody had: what did the shrinkage do during her three weeks of leave? It rose eleven per cent.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Corinne Abello, 44. Eight years on the service desk, where she supervises every refund in the store and trained half the staff who process the rest. She found out she had a 'score' at all from a detective.",
+    "if_guilty": "a theft conviction, eight years of trusted work erased, and unemployability across the whole trade"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The chain's loss-prevention model scores every employee for risk, and Corinne Abello scored the highest in the region: eighty-seven. On her shifts, stock shrinkage ran at more than twice the store's baseline, week after week for a quarter. When the manager pulled the footage, he watched her hover the self-checkouts, open her drawer without sales, void transactions all shift. The number found her. The camera confirmed the shape of it. This is what a modern till thief looks like."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "A number is not a witness, and this one measured the wrong thing. Corinne Abello scored high because she works the busiest shifts at the service desk — where every refund in the store crosses her counter, where voids and no-sales are the entire job. Three months of surveillance never caught her taking a single item or dollar. The vendor's own manual calls these scores 'investigative leads, not evidence'. The prosecution mistook a woman's roster for her character. The real thief, you'll find, was arithmetic."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "I accept the audit found faults — a light scale, a double-counting dock. But she voided at three times the average, opened a no-sale drawer twice a shift, has a car loan in arrears and a tight budget, and could not account for her own transactions. The defence says the machine blamed her roster. Perhaps. Or perhaps someone who understood the service desk better than anyone knew exactly where a busy store stops watching. The pattern was real, and it was hers."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The judge will tell you a risk score cannot take the oath, and correlation is where an investigation begins, not where a verdict rests. Remove her — three weeks interstate, boarding passes in evidence — and the theft rose. The audit found a self-checkout scale under-weighing produce since a firmware update, the fault she reported twice, and a dock inventing stock that never existed. She reported the cause months before the model named her the cause. There is no observed theft. There is a spreadsheet. You must acquit."
+      }
+    }
+  },
+  "epilogue": "The jury acquitted; the eleven-per-cent line — theft rising while she sat on a beach interstate — was, one juror said, 'the whole trial in a single number.' Corinne was reinstated with back pay but transferred stores; the old one felt, she said, 'like being watched by a ghost that already decided.' The chain suspended the scoring model pending review and fixed scale four. Her two ignored fault tickets were entered into evidence. She now sits on the union committee that negotiates how such systems may — and may not — be used.",
   "cast": [
     { "id": "judge", "name": "Judge Herrera", "role_label": "the judge", "side": "court" },
-    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "pc", "name": "Lionel Ashcroft", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Priya Chandra", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Drew Volkers", "role_label": "regional loss-prevention manager", "side": "prosecution" },
     { "id": "w2", "name": "Stavros Illing", "role_label": "store manager", "side": "prosecution" },
     { "id": "w3", "name": "Priti Raghavan", "role_label": "independent retail auditor", "side": "defence" },
@@ -21,7 +51,7 @@
     {
       "id": "b1",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit one: the loss-prevention dashboard. The supermarket chain's risk model scores every single employee, and the accused scored eighty-seven out of a hundred — the highest score in the entire region. The printout is stark: stock shrinkage on her shifts ran at more than twice the store's baseline, week after week, for an entire quarter.",
       "surface_persuasion": 0.8,
       "true_weight": 0.15,
@@ -59,7 +89,7 @@
     {
       "id": "b4",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit three: her register activity. Voided transactions at three times the store average, and roughly two no-sale drawer openings every shift. The prosecution says voids are how a till thief skims — ring it up, void it quietly, keep the cash — and that her numbers fit that method precisely.",
       "surface_persuasion": 0.55,
       "true_weight": 0.35,
@@ -71,7 +101,7 @@
     {
       "id": "b5",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit four: the comparison nobody ran until the defence demanded it. During the accused's three weeks of annual leave — interstate, with boarding passes in evidence — shrinkage on her usual shifts did not fall. It rose, by eleven per cent. The pattern the model attributed to her carried on comfortably without her.",
       "surface_persuasion": 0.5,
       "true_weight": 0.85,
@@ -111,7 +141,7 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "She agreed she has a car loan in arrears and that the family budget is tight — 'like most of my colleagues,' she added. She agreed she cannot, at this distance, account for every individual void across a quarter. 'Can you?' she asked the prosecutor, and was directed to just answer the questions.",
+      "text": "'You have a car loan in arrears? A tight budget?' 'Like most of my colleagues, yes.' 'Can you account for every void you processed last quarter?' 'Every single one, across three months?' 'Answer the question.' 'No. Can you account for every email you sent? Can anyone—' 'Just answer the questions, please,' the prosecutor said, and moved on quickly.",
       "surface_persuasion": 0.5,
       "true_weight": 0.25,
       "direction": "guilt",
@@ -265,14 +295,15 @@
         "register": "hesitant",
         "arc": "drifter",
         "initial": { "position": "G", "confidence": 45 },
-        "weights": { "credibility": 1, "method": 1 },
+        "weights": { "credibility": 1, "method": 2 },
         "lines": {
           "agree": ["Yes — that version survives repeating. I will keep it.", "The three-replacements detail. Every time I stray, someone hands it back to me."],
           "pushback": ["But the manager watched her for two nights and it looked like method. He was there.", "The voids really are three times average, though."],
-          "concede": ["He watched with the score beside the screen. I would have seen method too."],
+          "concede": ["He watched with the score beside the screen. I would have seen method too.", "A light scale and a double-counted dock. That is the method — and it is not hers. All right, I'm there."],
           "final": ["I drifted toward the footage twice. Both times the leave weeks were waiting when I got back."]
         },
         "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": -10, "line": "concede" } },
           { "when": { "theme": "method", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
           { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
@@ -390,7 +421,7 @@
   },
   "gen_meta": {
     "model": "claude-fable-5",
-    "prompt_version": "dd-2026-v1",
+    "prompt_version": "dd-2026-v2",
     "reviewer": "yanniedog",
     "batch_pr": "D7b-2"
   }

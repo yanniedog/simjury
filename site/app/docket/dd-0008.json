@@ -9,9 +9,39 @@
     "Buyers paid for goods that were never sent",
     "The accused took the payments dishonestly, knowing the goods would not come"
   ],
+  "hook": "Two hundred and sixty-nine people paid Aaron Voskuil for a games console that never came. He says he was robbed too — a middleman drowning in the same scam, with eight months of desperate messages to prove it. Every one of those messages was typed on his own keyboard.",
+  "accused": {
+    "cast_id": "w3",
+    "human": "Aaron Voskuil, 24. Has been fixing consoles in his mother's garage since he was fifteen; his storefront had years of clean five-star history before the orders stopped shipping. His mother has sat behind him every day.",
+    "if_guilty": "prison for fraud, and every kindness his family swears to becomes part of the act"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Three hundred and ten consoles sold. Forty-one shipped. A hundred and eighty thousand dollars taken for goods that never existed, and — this is the part to hold onto — decoy parcels of socks posted out under real tracking numbers to make refunds look honoured. The defence will show you a heartbreaking supplier who robbed him. Ask one question as you listen: a man robbed by his supplier does not post socks to strangers to buy himself four more weeks of orders."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Aaron Voskuil built something real in his mother's garage — you will see the forty-one consoles he shipped at a loss, the years of clean history, the reviews. Then a bulk supplier called HKDirect took his money and vanished, and a young man who had scaled up too fast panicked and did some stupid things to buy time. Panic is not a plan. The detective herself will tell you middlemen burned by fake suppliers walk through her unit every month."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "HKDirect was created from his browser. Its apologies — 'stock delayed, customs, so sorry boss' — sat pre-written in his own notes app, days before the supplier 'sent' them. Its account-recovery number is his second phone. And not one dollar, on any date, ever flowed upstream to any supplier: it went to a car lease, a loan, an exchange account in his name. He was not robbed by HKDirect. He was HKDirect. He built a victim and cast himself in the role."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The Crown must make you sure he took your money knowing the consoles would never come — that this was a scheme, not a small business that drowned. A young man in over his head, doing foolish things to stall for the stock he believed was coming, is not the same as a thief. The notes app looks bad. He told you he summarised expected replies to stay organised. If that leaves you unsure — genuinely unsure — the law gives that doubt to him."
+      }
+    }
+  },
+  "epilogue": "The jury convicted; Aaron was sentenced to three years, and the socks — entered as Exhibit one — were the detail the foreperson said settled it. Restitution reached the buyers at nineteen cents on the dollar. His mother, Dora, still tells people it was the supplier, and testified to that in genuine belief; the forensics never reached her. The marketplace platform used the case to launch a seller-verification scheme it named after no one. Aaron has an electronics-repair certificate he earned inside, and a garage bench waiting for him.",
   "cast": [
     { "id": "judge", "name": "Judge Weyland", "role_label": "the judge", "side": "court" },
-    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "pc", "name": "Helena Frost", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Ravi Sundaram", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Detective Cara Osei", "role_label": "fraud investigator", "side": "prosecution" },
     { "id": "w2", "name": "Bree Tallis", "role_label": "buyer of two consoles that never arrived", "side": "prosecution" },
     { "id": "w3", "name": "Aaron Voskuil", "role_label": "the accused — marketplace seller", "side": "defence" },
@@ -47,7 +77,7 @@
     {
       "id": "b3",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit two, tendered by the defence: the accused's message history with 'HKDirect', his supposed supplier — eight months of orders, invoices, and increasingly desperate pleas. 'Where is my stock? You are ruining me.' The defence says he was a middleman drowning in the same scam as his buyers.",
       "surface_persuasion": 0.8,
       "true_weight": 0.2,
@@ -72,7 +102,7 @@
     {
       "id": "b5",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit four: forensic examination of the accused's laptop. The 'HKDirect' account was created from his browser. Draft messages from the supplier — including 'stock delayed, customs, so sorry boss' — sit in his own notes app, written days before HKDirect sent them. The supplier's email recovery number is his second phone.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
@@ -84,7 +114,7 @@
     {
       "id": "b6",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit five: the money, traced end to end. Buyer payments left the storefront account within days — sixty-two thousand to a cryptocurrency exchange account under his own name, the rest to rent, a car lease, and repayments on a personal loan taken out the same month the storefront's sales exploded. No payment of any size, on any date, ever went to any supplier anywhere.",
       "surface_persuasion": 0.5,
       "true_weight": 0.75,
@@ -111,7 +141,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "Asked why the supplier's apologies sat drafted in his own notes app, he said he sometimes 'summarised expected replies to stay organised'. Asked why HKDirect's recovery number was his second phone, there was a long silence. 'I cannot explain that one,' he said. 'Someone must have used my details.'",
+      "text": "'Why do the supplier's apologies sit drafted in your notes app, days early?' 'I — sometimes I summarise expected replies. To stay organised.' 'And HKDirect's account-recovery number. Whose phone is it?' A long silence. 'I cannot explain that one.' 'It is your second phone, Mr Voskuil.' 'Then someone must have used my details.'",
       "surface_persuasion": 0.6,
       "true_weight": 0.6,
       "direction": "guilt",
@@ -390,7 +420,7 @@
   },
   "gen_meta": {
     "model": "claude-fable-5",
-    "prompt_version": "dd-2026-v1",
+    "prompt_version": "dd-2026-v2",
     "reviewer": "yanniedog",
     "batch_pr": "D7b-2"
   }

@@ -10,9 +10,39 @@
     "The accused made them knowing they were false",
     "He obtained the deposit money by those claims"
   ],
+  "hook": "Saoirse Adeniyi filmed every wall of the flat on her way out. Three weeks later her landlord claimed a burnt benchtop, cracked tiles, a stained carpet — forty-eight hundred dollars of her deposit, gone. She could not find her own kitchen in the photos. In one, the benchtop reflects a window the flat never had.",
+  "accused": {
+    "cast_id": "w3",
+    "human": "Gerald Pomfret, 58. Landlord of six flats, mortgaged to the hilt; keeps a decade of quarterly inspection reports, dated checklists, and filed receipts — by reputation the most meticulously documented landlord the tribunal has seen.",
+    "if_guilty": "prison for fraud, forfeiture of the retained deposits, and a decade of 'careful' recast as a factory for lies"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "This is fraud for the generative age. Gerald Pomfret's claim photographs have no camera behind them — no device signature, no capture data, and a kitchen that reflects a window his flat does not have. The defence will parade a decade of immaculate paperwork and ask why such a careful man would ever fabricate. Hold that question. Then look at the carpet stain in this claim, and watch it appear — pixel for pixel — in four other tenants' flats. Real stains are fingerprints. His repeated."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Gerald Pomfret is one bad tenant from ruin — the bank owns more of those flats than he does — and he photographs and files obsessively because tribunals demand it of landlords. His repairman works cash-and-handshake; when the tribunal wanted invoices, he reconstructed them, badly. Sloppy, yes. The Crown's own expert conceded that metadata gets stripped innocently and that a missing signature proves nothing on its own. Why would the most documented landlord in this building's memory need to invent a thing?"
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Because the documentation was the fraud. Tribunals believe paperwork, and he had industrialised the making of it. The same carpet stain in five flats over three years. Cracked tiles repeating, once rotated ninety degrees. Repair invoices from a company deregistered six years ago, created on his own laptop, dated before the repairs they describe. Twenty-three thousand dollars retained, every claim a dollar under the scrutiny threshold. And he waived claims only against the tenants who filmed their exits. The mercy was target selection."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The judge will tell you a photograph is an assertion, not a fact — and asks you to decide on exhibits, not on your feelings about landlords. The expert would not stake a verdict on any single image. If detection tools have error rates, if metadata vanishes innocently, if an informal tradesman really exists — then the portfolio is a pattern with an innocent reading, and you are not sure. Distaste for a landlord is not proof. Where you cannot be certain he knew these claims were false, you acquit."
+      }
+    }
+  },
+  "epilogue": "The jury convicted; the pixel-identical stain, projected side by side across five flats, was what the foreperson called 'the moment the room exhaled.' Pomfret got three and a half years and orders to repay every deposit. Saoirse Adeniyi got her forty-eight hundred dollars back and now films a dated walkthrough of every rental she leaves. The tribunal changed its rules to require camera-provenance on all photographic claims. Rhonda Casella, who called him 'a soft touch with a camera', has not been charged; she says she never knew.",
   "cast": [
     { "id": "judge", "name": "Judge Beaumont", "role_label": "the judge", "side": "court" },
-    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "pc", "name": "Yara Nasser", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Warwick Bell", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Saoirse Adeniyi", "role_label": "former tenant", "side": "prosecution" },
     { "id": "w2", "name": "Dr Emil Kraus", "role_label": "image-forensics examiner", "side": "prosecution" },
     { "id": "w3", "name": "Gerald Pomfret", "role_label": "the accused — landlord of six flats", "side": "defence" },
@@ -48,7 +78,7 @@
     {
       "id": "b3",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit three, tendered by the defence: the accused's inspection dossier. A decade of quarterly reports, dated checklists, signed condition statements, receipts filed by year. The defence asks the obvious question: why would the most meticulously documented landlord in this tribunal's memory ever need to fabricate anything at all?",
       "surface_persuasion": 0.75,
       "true_weight": 0.2,
@@ -73,7 +103,7 @@
     {
       "id": "b5",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit five: the portfolio comparison. The carpet stain in this claim appears — identical in shape, pixel for pixel — in claim photographs for four other flats across three years. The cracked tile pattern recurs twice, once rotated ninety degrees. Five different properties, five different tenants, one recurring stain that never existed anywhere.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
@@ -85,7 +115,7 @@
     {
       "id": "b6",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit six: the ledger. Five prior deposit claims in three years, every one settling just beneath the threshold that triggers tribunal scrutiny — twenty-three thousand dollars retained in all. The supporting repair invoices came from a company deregistered six years ago, and their document metadata shows each one was created on the accused's own laptop.",
       "surface_persuasion": 0.5,
       "true_weight": 0.7,
@@ -112,7 +142,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "He could not produce the repairman — no surname, no phone number, no way to reach a man he claims to have paid for a decade. He agreed the 'reconstructed' invoices carry creation dates before the repairs they describe. Shown the recurring stain, he said: 'Stains look alike. Carpet is carpet.'",
+      "text": "'Give the tribunal your repairman's surname.' 'I — we only dealt in cash. First names.' 'A phone number? Any way to reach a man you paid for ten years?' 'No.' 'Your reconstructed invoices are dated before the repairs they bill. Explain that.' Silence. 'And this stain, in five different flats?' He barely glanced. 'Stains look alike. Carpet is carpet.'",
       "surface_persuasion": 0.6,
       "true_weight": 0.55,
       "direction": "guilt",
@@ -391,7 +421,7 @@
   },
   "gen_meta": {
     "model": "claude-fable-5",
-    "prompt_version": "dd-2026-v1",
+    "prompt_version": "dd-2026-v2",
     "reviewer": "yanniedog",
     "batch_pr": "D7b-2"
   }

@@ -9,9 +9,39 @@
     "The 'Dex' phone line was used to sell controlled drugs",
     "The accused was the person operating the line"
   ],
+  "hook": "The Dex drug line sold to three hundred people from a phone number registered to Theo Nakamura for nine years — his name, his direct debit, every month. During its best week, Theo was in a surgical ward having his appendix out. The line never even slowed down.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Theo Nakamura, 26. A third-year apprentice electrician who runs a weekend market stall selling salvaged tools; lives and works four hundred kilometres from the city where every Dex meet took place. He kept a diary of complaint numbers because no one would call him back.",
+    "if_guilty": "prison for supplying drugs, the end of his apprenticeship, and a stolen number that becomes his crime"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "For six weeks a drug line called Dex served over three hundred customers from a single number — the number the whole trade trusted because it never changed. That number has belonged to Theo Nakamura for nine years: his account, his name, his monthly bill. A customer met the dealer in person: about his height, dark hoodie. The defence will spin you a tale of hijacking. Start from the simplest fact — the phone that ran the line was, and had always been, his."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "A phone number is not a person, and this case is about to prove it in the most concrete way you will ever see. The carrier's own records show Theo's number ported to a new SIM in a city four hundred kilometres away, on a forged licence, while his real handset died mid-call. He spent five weeks and eleven reference numbers fighting to get it back. And during the line's busiest week, he was in hospital under anaesthetic. He didn't run Dex. Dex ran on the number stolen from him."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "I do not dispute the SIM-swap paperwork exists. Weigh it against nine years of ownership, a customer who met a man his height, a message showing he knew how these lines work, and cash deposits the defence explains with a market stall. The number is who the customers trusted, and it was his. When something is this consistent for this long, a scan of a forged licence is a thin thing to hang three hundred sales on."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The judge will tell you plainly: a number identifies an account, not a hand. The number left him in a shop he was never in, on an ID not his, while his phone went dark — and he reported it before Dex's first advert. Its best week ran while he lay in a surgical ward. No drugs, no cash, no scales, never once in that city. Numbers get stolen precisely because everyone assumes they can't be. Do not make that assumption a verdict."
+      }
+    }
+  },
+  "epilogue": "The jury acquitted; two members asked afterward how to protect their own numbers. Theo finished his apprenticeship a year late — the trial cost him a placement — and now carries a carrier PIN and a note in his wallet that reads 'the number is not me.' The real Dex operator was never identified; the forged-licence scan matched no one on file. The carrier settled a civil claim over the swap confidentially. Casey Drummond, the customer who 'met the dealer', later admitted he could not describe the face at all.",
   "cast": [
     { "id": "judge", "name": "Judge Calloway", "role_label": "the judge", "side": "court" },
-    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "pc", "name": "Bram Halloway", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Ingrid Sollis", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Detective Marcus Ilori", "role_label": "drugs squad detective", "side": "prosecution" },
     { "id": "w2", "name": "Casey Drummond", "role_label": "customer of the Dex line, testifying under caution", "side": "prosecution" },
     { "id": "w3", "name": "Anouk Verhoeven", "role_label": "telecommunications fraud analyst", "side": "defence" },
@@ -60,7 +90,7 @@
     {
       "id": "b4",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit three: messages recovered from the accused's old cloud backup, two years before the charge — a short exchange in which he buys a small amount of cannabis from an unrelated number. The prosecution says it shows a man familiar with how these lines work: the codes, the etiquette, the trade.",
       "surface_persuasion": 0.6,
       "true_weight": 0.15,
@@ -85,7 +115,7 @@
     {
       "id": "b6",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit five: hospital records. In the third week of the Dex line's operation, the accused was an inpatient for four days — appendicitis, surgery, observed recovery, wristband and ward roster in evidence. Across those same four days the Dex line sent six hundred messages and served its usual meet spots in Calder City, without pause.",
       "surface_persuasion": 0.5,
       "true_weight": 0.75,
@@ -112,7 +142,7 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "He agreed the old cannabis purchase was his. Asked why a hijacker would want his number of all numbers, he said: 'Ask the analyst, not me — she told you. Aged numbers pass the banks' fraud checks. Mine was nine years old and boring. That is apparently worth stealing now.'",
+      "text": "'That cannabis purchase, two years ago — yours?' 'Yes. One time. I'm not proud of it.' 'Then why would a hijacker want your number, of all numbers?' 'Ask the analyst, not me — she told you. Aged numbers pass the banks' fraud checks. Mine was nine years old and boring. That is apparently worth stealing now.'",
       "surface_persuasion": 0.55,
       "true_weight": 0.3,
       "direction": "guilt",
@@ -123,7 +153,7 @@
     {
       "id": "b9",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit six: the accused's bank statements for the period, showing three cash deposits totalling nine hundred dollars. The prosecution calls them unexplained income. The defence produced his weekend market-stall permit and the stall's takings book, entries matching each deposit within a few dollars, in his handwriting, dated before any arrest.",
       "surface_persuasion": 0.5,
       "true_weight": 0.3,
@@ -390,7 +420,7 @@
   },
   "gen_meta": {
     "model": "claude-fable-5",
-    "prompt_version": "dd-2026-v1",
+    "prompt_version": "dd-2026-v2",
     "reviewer": "yanniedog",
     "batch_pr": "D7b-2"
   }
