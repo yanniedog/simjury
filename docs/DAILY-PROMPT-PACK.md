@@ -29,10 +29,39 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 > feels-innocent-is-guilty | over-trusted-machine | under-trusted-human}** ·
 > difficulty_target **{0.3–0.8}** · scenario family **{from DAILY-CASES.md, 2026}**.
 >
+> **Top-level fields:** `"title"` (invented case title), `"setting"` (contemporary
+> 2026 setting sketch), `"elements"` (array of 2–4 short sentences defining the legal
+> elements of the charge), `"verdict_truth"` (set to the true verdict slot value), and
+> `"gen_meta"` (`{ model: "model-name", prompt_version: "dd-2026-v2", reviewer:
+> "reviewer-name", batch_pr: "pr-number" }`).
+>
+> **Cast:** 3–4 witnesses, a judge (`side: "court"`), and named prosecuting and
+> defence counsel (ids `pc`/`dc`; there is no clerk). The accused is a defence-side
+> cast member (`accused.cast_id`); only make them a witness-beat speaker when the
+> scenario calls for testimony — many cases leave the accused silent. Exhibits are
+> tendered by the counsel they help — a guilt-pointing exhibit by the prosecution, an
+> innocence-pointing one by the defence — and exactly the judge speaks `direction`
+> beats.
+>
+> **Engagement layer (all required):** these are what make a juror care about the
+> people, not just the puzzle — never skip them. `hook`: a 15–60 word present-tense
+> cold open, the first thing read, ending on the case's central tension. `accused`:
+> `{ cast_id` (the defence-side accused), `human` (who they are outside this room —
+> age, life, who waits in the gallery), `if_guilty` (the concrete human cost of
+> conviction) `}`. `statements`: `{ opening: { prosecution: { speaker, text },
+> defence: { speaker, text } }, closing: { prosecution: { speaker, text }, defence:
+> { speaker, text } } }` — each speech 40–90 words, `speaker` = the matching counsel
+> id, telling that side's *story* of the case (not a fact list). `epilogue`: 50–130
+> words of outcome-neutral aftermath — what became of these people in the months after
+> trial (avoid naming acquittal, conviction, or hung jury; the app shows one epilogue
+> regardless of the player's room outcome). Hook + all four statements + evidence
+> must total ≤ 1250 narrated words.
+>
 > **Evidence:** 10–14 beats, each 40–70 words, total 550–1050 words, set in the
 > present day (2026), grouped by speaker with examination/cross `mode` on witness
-> beats. Cast of 3–4 witnesses plus a judge and clerk (`side: "court"`); exhibits are
-> read by the clerk; exactly the judge speaks `direction` beats. Each beat carries
+> beats. Write the two or three load-bearing cross-examinations as live Q&A dialogue
+> (counsel's question, the witness's answer, the pause before a bad one) rather than
+> reported summary — it is where the drama lands. Each beat carries
 > 1–3 `tags` from: identity, alibi, digital_forensics, motive, opportunity, method,
 > timeline, credibility, procedure, burden. At least one direction beat tagged
 > `burden` (plain-English burden/standard + "do not research this case online").
@@ -56,19 +85,28 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 > argument their line contradicts. Lines are spoken 2026 English in the juror's
 > register, referencing the case's evidence generically (no real names).
 >
-> Output only the JSON.
+> Write the whole thing to be *listened to* on a commute: the hook should hook, the
+> counsel should sound like rival storytellers, the epilogue should land. Output only
+> the JSON.
 
 ## After drafting — the gates will check (do not fight them)
 
-schema v2 → design v2 (trap/signal/both-sides/solvable, pacing, courtroom structure,
+schema v2 (incl. the engagement layer and its word budgets) → design v2
+(trap/signal/both-sides/solvable, pacing, courtroom structure,
 check-ins, jury floors) → **deliberation dynamics** (the simulated room must be able
 to reach ≥2 outcomes for a fixed player verdict, and arguing the decisive evidence
 must beat silence toward the truth) → queue rules (uniqueness, verdict variety,
 ≤3-run) → banned-token scan (extend `BANNED` lists as new content introduces risks).
 
-If dynamics fail: raise the mind-changer's weight on the decisive theme, soften two
-G-jurors' initial confidence below 70, or add a themed rule with a real delta —
-before touching the case text.
+If dynamics fail (usually "foregone conclusion" for one locked verdict): only four
+jurors respond to each argued beat — the top three by their weight on that beat's
+themes, plus one random — so a juror the decisive evidence should move must actually
+carry weight on that beat's theme, or it never gets called. The reliable fix is to
+give one swing juror (a drifter or the mind-changer) weight 2 on the decisive theme
+plus a `proves`-toward-truth rule with delta 2, so skilled play can push the room past
+the 10-vote majority even when the player locked the wrong verdict. Then soften a
+G-juror's confidence below 70, or add a themed rule with a real delta — before
+touching the case text.
 
 ---
-prompt_version: dd-2026-v1
+prompt_version: dd-2026-v2
