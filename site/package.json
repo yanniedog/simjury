@@ -7,11 +7,14 @@
   },
   "scripts": {
     "sync": "node scripts/sync-cases.mjs",
-    "predev": "node scripts/sync-cases.mjs",
+    "build:app": "npm --prefix app ci && npm --prefix app run build",
+    "prebuild:assets": "node scripts/sync-cases.mjs",
+    "build:assets": "npm run build:app",
+    "predev": "npm run build:assets",
     "dev": "wrangler dev",
-    "predeploy": "node scripts/sync-cases.mjs",
+    "predeploy": "npm run build:assets",
     "deploy": "wrangler deploy",
-    "precheck": "node scripts/sync-cases.mjs",
+    "precheck": "npm run build:assets",
     "check": "wrangler deploy --dry-run"
   },
   "devDependencies": {
