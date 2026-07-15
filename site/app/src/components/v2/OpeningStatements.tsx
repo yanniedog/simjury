@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import type { DocketCase, Statement } from '../../lib/v2/caseSchema'
-import { speakAll, stopSpeech } from '../../lib/narration'
+import { narrationEnabled, speakAll, stopSpeech } from '../../lib/narration'
 
 /**
  * A counsel statement card — the visual voice of one side of the duel.
@@ -51,12 +51,15 @@ export function OpeningStatements({
 
   // Narrate both openings in their advocates' voices; stop on unmount.
   useEffect(() => {
+    if (!narrationEnabled()) {
+      return stopSpeech
+    }
     speakAll([
       { text: prosecution.text, key: prosecution.speaker },
       { text: defence.text, key: defence.speaker },
     ])
     return stopSpeech
-  }, [prosecution, defence])
+  }, [prosecution.text, prosecution.speaker, defence.text, defence.speaker])
 
   return (
     <div className="space-y-6">
