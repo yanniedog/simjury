@@ -20,12 +20,16 @@ enforce the hard rules; this file holds the taste. Companion: the drafting promp
 
 | Piece | Budget | Why |
 |---|---|---|
+| Hook | 15–60 words | the cold open — make them care in ten seconds |
+| Accused | human + `if_guilty` | a person on trial, not a charge |
+| Statements | opening + closing × prosecution/defence, 40–90 words each | the advocates' duel |
 | Beats | 10–14, each 40–70 words | ≈25s narration per beat |
-| Total evidence | 550–1050 words | 4.5–5.5 min reading phase |
-| Witnesses | 3–4 speaking cast + judge/clerk | speaker variety without sprawl |
+| Total evidence | 550–1050 words (all narrated ≤ 1250) | 4.5–5.5 min reading phase |
+| Witnesses | 3–4 + judge + prosecution/defence counsel (no clerk) | speaker variety without sprawl |
 | Check-ins | 3–5, in beat order | the conviction trace that powers trap analysis |
 | Jury | exactly 11, contested 3–8 G split | the interactive room |
 | Twist | 2–4 sentences | the reveal's centrepiece |
+| Epilogue | 50–130 words | what the verdict did to these people |
 
 The puzzle core is unchanged from v1: **the gap between how a beat feels
 (`surface_persuasion`) and what it is worth (`true_weight`)**. Every case needs ≥1
@@ -33,6 +37,26 @@ The puzzle core is unchanged from v1: **the gap between how a beat feels
 and the decisive beats on balance pointing at `verdict_truth`. Put the loud trap early
 and the quiet decisive beat late, so the first instinct is the wrong one. Keep every
 trap **before the final check-in** — a trap after it can never be scored as bait.
+
+## Make them care (the engagement layer)
+
+A puzzle nobody's invested in is a crossword. The engagement fields exist so the player
+meets a **person** before a charge and carries the **stakes** all the way to the reveal:
+
+- **Hook** — a present-tense cold open that states the case's central tension in one
+  breath. Not "the defendant is charged with…" but the image the whole trial turns on.
+- **Accused** — `human` gives them a life outside the dock (who waits in the gallery),
+  `if_guilty` names the concrete cost of a wrong conviction. Shown at the intro and
+  again as they stand to face the jury before the lock.
+- **Statements** — prosecution and defence each tell their *story* of the case (opening)
+  and land their last word (closing), narrated in their own voices. Rival storytellers,
+  not fact lists. Exhibits are tendered by the counsel they help.
+- **Epilogue** — what the verdict did to these people. Consequence is what makes a
+  verdict feel heavy; the guilty-but-sympathetic and the acquitted-but-scarred both get
+  their aftermath.
+
+Write the load-bearing cross-examinations as live Q&A, not reported summary — the pause
+before a witness answers badly is the most engaging beat in the case.
 
 ## 2026 scenario space (rotate; never two alike in a week)
 
