@@ -10,27 +10,27 @@
     "The accused added it, or supplied the product knowing it was there",
     "The stimulant caused the customers' injuries"
   ],
-  "hook": "Jonah Aldervale's smartwatch hit a hundred and ninety beats a minute on a warm-up jog, and he spent the night in intensive care. He had chosen Cleanline precisely because of the certificate on the tub: tested, clean, nothing hidden. The certificate's serial number belonged to someone else's coffee.",
+  "hook": "Jonah Aldervale's smartwatch hit a hundred and ninety beats a minute on a warm-up jog, and he spent the night in intensive care. He had chosen PureForm precisely because of the certificate on the tub: tested, clean, nothing hidden. The certificate's serial number belonged to someone else's coffee.",
   "accused": {
     "cast_id": "w3",
-    "human": "Kip Marsden, 36. Founded Cleanline Nutrition after his own health scare, gives tubs to charity events, and drinks a scoop himself every morning at the gym counter — witnesses have watched him do it for two years.",
+    "human": "Kip Marsden, 36. Founded PureForm Nutrition after his own health scare, gives tubs to charity events, and drinks a scoop himself every morning at the gym counter — witnesses have watched him do it for two years.",
     "if_guilty": "prison for recklessly poisoning his own customers, and the honest brand he built exposed as the con"
   },
   "statements": {
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Three people in hospital in a fortnight, three hospitals, one product: Cleanline, carrying a prescription-strength stimulant, undeclared and so unevenly mixed that one scoop might double the last. The defence will show you a lovable founder who drinks his own powder. Keep your eye on the tub's certificate of analysis — the thing that made careful customers trust it — and on the question of where two kilograms of a banned stimulant went after it was delivered to his front door."
+        "text": "Three people in hospital in a fortnight, three hospitals, one product: PureForm, carrying a prescription-strength stimulant, undeclared and so unevenly mixed that one scoop might double the last. The defence will show you a lovable founder who drinks his own powder. Keep your eye on the tub's certificate of analysis — the thing that made careful customers trust it — and on the question of where two kilograms of a banned stimulant went after it was delivered to his front door."
       },
       "defence": {
         "speaker": "dc",
-        "text": "Kip Marsden built Cleanline after a health scare so he could sell a product he would give his own brother. Contamination at shared blending facilities is a real, documented curse that has burned reputable brands before — the Crown's own toxicologist will tell you chemistry says what, not who. A sloppy certificate a marketing apprentice mocked up is embarrassing. It is not poison. A man who drinks his own product every morning is not hiding a stimulant in it."
+        "text": "Kip Marsden built PureForm after a health scare so he could sell a product he would give his own brother. Contamination at shared blending facilities is a real, documented curse that has burned reputable brands before — the Crown's own toxicologist will tell you chemistry says what, not who. A sloppy certificate a marketing apprentice mocked up is embarrassing. It is not poison. A man who drinks his own product every morning is not hiding a stimulant in it."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The month after Cleanline's sales fell forty per cent, Kip Marsden ordered two kilograms of the exact stimulant from his own card, to his own home. His product file logs 'boost blend v2' under his initials, the week the reviews turned electric — 'nothing legal feels like this'. His kitchen blender's seals carry the residue; the factory's machines are clean; 1.7 kilos of the 'never used' powder is simply gone. He drank from the batches he didn't dose. The clean label was the product. The powder was the delivery."
+        "text": "The month after PureForm's sales fell forty per cent, Kip Marsden ordered two kilograms of the exact stimulant from his own card, to his own home. His product file logs 'boost blend v2' under his initials, the week the reviews turned electric — 'nothing legal feels like this'. His kitchen blender's seals carry the residue; the factory's machines are clean; 1.7 kilos of the 'never used' powder is simply gone. He drank from the batches he didn't dose. The clean label was the product. The powder was the delivery."
       },
       "defence": {
         "speaker": "dc",
@@ -38,14 +38,14 @@
       }
     }
   },
-  "epilogue": "The jury convicted; several later said the forged certificate — betraying the exact customers who read labels — angered them more than the stimulant. Kip received five years and a lifetime ban from directing a food business. Cleanline collapsed within a month. Jonah Aldervale recovered but developed an arrhythmia he now manages for life, and campaigns for mandatory lab-result verification with QR codes that actually resolve. The 'boost blend v2' spreadsheet, printed and enlarged, sat facing the jury for the whole trial.",
+  "epilogue": "The jury convicted; several later said the forged certificate — betraying the exact customers who read labels — angered them more than the stimulant. Kip received five years and a lifetime ban from directing a food business. PureForm collapsed within a month. Jonah Aldervale recovered but developed an arrhythmia he now manages for life, and campaigns for mandatory lab-result verification with QR codes that actually resolve. The 'boost blend v2' spreadsheet, printed and enlarged, sat facing the jury for the whole trial.",
   "cast": [
     { "id": "judge", "name": "Judge Adeyemi", "role_label": "the judge", "side": "court" },
     { "id": "pc", "name": "Delphine Roux", "role_label": "prosecuting counsel", "side": "prosecution" },
     { "id": "dc", "name": "Callum Reyes", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Dr Mireille Fossey", "role_label": "forensic toxicologist", "side": "prosecution" },
     { "id": "w2", "name": "Jonah Aldervale", "role_label": "hospitalised customer", "side": "prosecution" },
-    { "id": "w3", "name": "Kip Marsden", "role_label": "the accused — founder of Cleanline Nutrition", "side": "defence" },
+    { "id": "w3", "name": "Kip Marsden", "role_label": "the accused — founder of PureForm Nutrition", "side": "defence" },
     { "id": "w4", "name": "Tessa Brankovic", "role_label": "gym owner who stocked the product", "side": "defence" }
   ],
   "beats": [
@@ -67,7 +67,7 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "My watch alarmed at a hundred and ninety beats a minute on a warm-up jog, and I spent that night in intensive care wired to monitors. I bought Cleanline because of the certificate on the tub — clean, tested, nothing hidden. I have a toddler. I read labels. That is the whole reason I chose them.",
+      "text": "My watch alarmed at a hundred and ninety beats a minute on a warm-up jog, and I spent that night in intensive care wired to monitors. I bought PureForm because of the certificate on the tub — clean, tested, nothing hidden. I have a toddler. I read labels. That is the whole reason I chose them.",
       "surface_persuasion": 0.6,
       "true_weight": 0.35,
       "direction": "guilt",
@@ -79,12 +79,12 @@
       "id": "b3",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit two, relied on by the defence: the certificate of analysis displayed on the website and linked from a code on every tub. Veritek Laboratories letterhead, a signature, a serial number, and the words 'no undeclared substances detected'. The defence says a man who publishes independent testing is not a man hiding a stimulant.",
+      "text": "Exhibit two, relied on by the defence: the certificate of analysis displayed on the website and linked from a code on every tub. AssayPoint Laboratories letterhead, a signature, a serial number, and the words 'no undeclared substances detected'. The defence says a man who publishes independent testing is not a man hiding a stimulant.",
       "surface_persuasion": 0.8,
       "true_weight": 0.2,
       "direction": "innocence",
       "reveal_stamp": "misleading",
-      "reveal_note": "Veritek's records ended the mystery: that serial number belongs to another client's coffee sample, and no Cleanline product was ever submitted for testing. The certificate was a graphic, not a result.",
+      "reveal_note": "AssayPoint's records ended the mystery: that serial number belongs to another client's coffee sample, and no PureForm product was ever submitted for testing. The certificate was a graphic, not a result.",
       "tags": ["credibility", "procedure"]
     },
     {
@@ -104,7 +104,7 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit four: supplier invoices and bank records. Four months before the hospitalisations — the month after Cleanline's sales fell forty per cent — the accused personally ordered two kilograms of the exact stimulant from an overseas chemical reseller, paid from his own card, delivered to his home address. The contract blender never ordered any such substance.",
+      "text": "Exhibit four: supplier invoices and bank records. Four months before the hospitalisations — the month after PureForm's sales fell forty per cent — the accused personally ordered two kilograms of the exact stimulant from an overseas chemical reseller, paid from his own card, delivered to his home address. The contract blender never ordered any such substance.",
       "surface_persuasion": 0.55,
       "true_weight": 0.85,
       "direction": "guilt",
@@ -129,7 +129,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "examination",
-      "text": "I built Cleanline after my own health scare — the whole point was a product I would give my own brother. I trusted the contract blender and they have failed brands before. The powder order was research for a caffeine-free stimulant a customer kept requesting; I never used it. The certificate was a template our marketing kid mocked up — sloppy, absolutely, but not sinister.",
+      "text": "I built PureForm after my own health scare — the whole point was a product I would give my own brother. I trusted the contract blender and they have failed brands before. The powder order was research for a caffeine-free stimulant a customer kept requesting; I never used it. The certificate was a template our marketing kid mocked up — sloppy, absolutely, but not sinister.",
       "surface_persuasion": 0.65,
       "true_weight": 0.3,
       "direction": "innocence",

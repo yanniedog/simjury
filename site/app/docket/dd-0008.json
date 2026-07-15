@@ -9,7 +9,7 @@
     "Buyers paid for goods that were never sent",
     "The accused took the payments dishonestly, knowing the goods would not come"
   ],
-  "hook": "Two hundred and sixty-nine people paid Aaron Voskuil for a games console that never came. He says he was robbed too — a middleman drowning in the same scam, with eight months of desperate messages to prove it. Every one of those messages was typed on his own keyboard.",
+  "hook": "Two hundred and sixty-nine people paid Aaron Voskuil for a games console that never came. He says he was robbed too — a middleman who trusted a bulk supplier that vanished, with eight months of desperate messages to prove it. Someone is lying about who that supplier was.",
   "accused": {
     "cast_id": "w3",
     "human": "Aaron Voskuil, 24. Has been fixing consoles in his mother's garage since he was fifteen; his storefront had years of clean five-star history before the orders stopped shipping. His mother has sat behind him every day.",
@@ -23,13 +23,13 @@
       },
       "defence": {
         "speaker": "dc",
-        "text": "Aaron Voskuil built something real in his mother's garage — you will see the forty-one consoles he shipped at a loss, the years of clean history, the reviews. Then a bulk supplier called HKDirect took his money and vanished, and a young man who had scaled up too fast panicked and did some stupid things to buy time. Panic is not a plan. The detective herself will tell you middlemen burned by fake suppliers walk through her unit every month."
+        "text": "Aaron Voskuil built something real in his mother's garage — you will see the forty-one consoles he shipped at a loss, the years of clean history, the reviews. Then a bulk supplier called BulkHarbor took his money and vanished, and a young man who had scaled up too fast panicked and did some stupid things to buy time. Panic is not a plan. The detective herself will tell you middlemen burned by fake suppliers walk through her unit every month."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "HKDirect was created from his browser. Its apologies — 'stock delayed, customs, so sorry boss' — sat pre-written in his own notes app, days before the supplier 'sent' them. Its account-recovery number is his second phone. And not one dollar, on any date, ever flowed upstream to any supplier: it went to a car lease, a loan, an exchange account in his name. He was not robbed by HKDirect. He was HKDirect. He built a victim and cast himself in the role."
+        "text": "BulkHarbor was created from his browser. Its apologies — 'stock delayed, customs, so sorry boss' — sat pre-written in his own notes app, days before the supplier 'sent' them. Its account-recovery number is his second phone. And not one dollar, on any date, ever flowed upstream to any supplier: it went to a car lease, a loan, an exchange account in his name. He was not robbed by BulkHarbor. He was BulkHarbor. He built a victim and cast himself in the role."
       },
       "defence": {
         "speaker": "dc",
@@ -78,7 +78,7 @@
       "id": "b3",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit two, tendered by the defence: the accused's message history with 'HKDirect', his supposed supplier — eight months of orders, invoices, and increasingly desperate pleas. 'Where is my stock? You are ruining me.' The defence says he was a middleman drowning in the same scam as his buyers.",
+      "text": "Exhibit two, tendered by the defence: the accused's message history with 'BulkHarbor', his supposed supplier — eight months of orders, invoices, and increasingly desperate pleas. 'Where is my stock? You are ruining me.' The defence says he was a middleman drowning in the same scam as his buyers.",
       "surface_persuasion": 0.8,
       "true_weight": 0.2,
       "direction": "innocence",
@@ -103,7 +103,7 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit four: forensic examination of the accused's laptop. The 'HKDirect' account was created from his browser. Draft messages from the supplier — including 'stock delayed, customs, so sorry boss' — sit in his own notes app, written days before HKDirect sent them. The supplier's email recovery number is his second phone.",
+      "text": "Exhibit four: forensic examination of the accused's laptop. The 'BulkHarbor' account was created from his browser. Draft messages from the supplier — including 'stock delayed, customs, so sorry boss' — sit in his own notes app, written days before BulkHarbor sent them. The supplier's email recovery number is his second phone.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
       "direction": "guilt",
@@ -128,7 +128,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "examination",
-      "text": "I started the shop to flip consoles I refurbished myself in my mother's garage, and it worked — that is the forty-one. Then HKDirect offered bulk stock and I scaled up much too fast. When they went quiet I panicked. The fake tracking numbers were stupid — I was buying time, not stealing anything. I always meant to deliver every order.",
+      "text": "I started the shop to flip consoles I refurbished myself in my mother's garage, and it worked — that is the forty-one. Then BulkHarbor offered bulk stock and I scaled up much too fast. When they went quiet I panicked. The fake tracking numbers were stupid — I was buying time, not stealing anything. I always meant to deliver every order.",
       "surface_persuasion": 0.6,
       "true_weight": 0.3,
       "direction": "innocence",
@@ -141,7 +141,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "'Why do the supplier's apologies sit drafted in your notes app, days early?' 'I — sometimes I summarise expected replies. To stay organised.' 'And HKDirect's account-recovery number. Whose phone is it?' A long silence. 'I cannot explain that one.' 'It is your second phone, Mr Voskuil.' 'Then someone must have used my details.'",
+      "text": "'Why do the supplier's apologies sit drafted in your notes app, days early?' 'I — sometimes I summarise expected replies. To stay organised.' 'And BulkHarbor's account-recovery number. Whose phone is it?' A long silence. 'I cannot explain that one.' 'It is your second phone, Mr Voskuil.' 'Then someone must have used my details.'",
       "surface_persuasion": 0.6,
       "true_weight": 0.6,
       "direction": "guilt",
@@ -177,7 +177,7 @@
   ],
   "checkins": ["b3", "b5", "b8", "b9"],
   "verdict_truth": "Guilty",
-  "twist": "The middleman defence was almost perfect — real early shipments, a clean history, eight months of desperate messages to a supplier who robbed him. Except he was the supplier: the HKDirect account came from his browser, its apologies sat pre-drafted in his own notes app, its recovery number was his second phone, and not one dollar ever flowed upstream. He didn't fall for an exit scam. He performed one, complete with a victim to play.",
+  "twist": "The middleman defence was almost perfect — real early shipments, a clean history, eight months of desperate messages to a supplier who robbed him. Except he was the supplier: the BulkHarbor account came from his browser, its apologies sat pre-drafted in his own notes app, its recovery number was his second phone, and not one dollar ever flowed upstream. He didn't fall for an exit scam. He performed one, complete with a victim to play.",
   "difficulty_target": 0.5,
   "jury": {
     "jurors": [
@@ -258,7 +258,7 @@
           "agree": ["Correct — and even at that standard, the exhibits carry it."],
           "pushback": ["His mother's pain is real and proves nothing in either direction. Leave her out of the count.", "The judge was plain: a business honestly run into the ground acquits."],
           "concede": ["If only the tracking numbers existed, I would call it desperation and vote to acquit."],
-          "burden_correct": ["He does not have to produce HKDirect. They had to prove HKDirect was him — and they did.", "Keep the standard where the judge put it. It is satisfied there."],
+          "burden_correct": ["He does not have to produce BulkHarbor. They had to prove BulkHarbor was him — and they did.", "Keep the standard where the judge put it. It is satisfied there."],
           "final": ["Held to the proper bar, the notes app clears it alone."]
         },
         "reaction_rules": [
@@ -355,7 +355,7 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "Wants the accused to produce HKDirect in the flesh; keeps inverting the burden.",
+        "persona": "Wants the accused to produce BulkHarbor in the flesh; keeps inverting the burden.",
         "register": "blunt",
         "arc": "burden_drifter",
         "initial": { "position": "G", "confidence": 60 },
@@ -363,7 +363,7 @@
         "lines": {
           "agree": ["Exactly — no supplier, no shipments, decoy socks. The shape of it is theft."],
           "pushback": ["A hundred and eighty grand of other people's birthdays. Someone answers for that."],
-          "burden_drift": ["If HKDirect is real, let him produce one invoice that was ever paid. One.", "He should have to unlock that second phone in front of us."],
+          "burden_drift": ["If BulkHarbor is real, let him produce one invoice that was ever paid. One.", "He should have to unlock that second phone in front of us."],
           "concede": ["Yes, yes — it is theirs to prove. And the laptop proved it."],
           "burden_correct": ["Withdrawn. The Crown carried it; he owed us nothing — not even the silence he gave us."],
           "final": ["I demanded he prove a supplier existed. Turns out the prosecution proved one never did."]

@@ -10,7 +10,7 @@
     "The accused performed the export",
     "He did so dishonestly, for gain"
   ],
-  "hook": "At 2:14 in the morning, someone pulled 1.1 million customer records out of FreshMint in eleven minutes — no wrong turns, no tripped alarms. Nine days earlier, Leo Brandt had reported a phishing email that stole his password. He is either the unluckiest administrator alive, or the only one who knew the map by heart.",
+  "hook": "At 2:14 in the morning, someone pulled 1.1 million customer records out of MintVault in eleven minutes — no wrong turns, no tripped alarms. Nine days earlier, Leo Brandt had reported a phishing email that stole his password. He is either the unluckiest administrator alive, or the only one who knew the map by heart.",
   "accused": {
     "cast_id": "w3",
     "human": "Leo Brandt, 38. Senior systems administrator; spent three years writing memos about the company's sloppy security — the shared logins, the sticky-note PINs — until colleagues hid them when he walked past.",
@@ -38,12 +38,12 @@
       }
     }
   },
-  "epilogue": "The jury convicted; the foreperson later said the hardware key's physical touch was the link no one could break. Leo received four years. FreshMint's breach cost it a regulator's fine and a third of its subscribers; it finally rebuilt its access logging, using Leo's old memos as the specification. The exchange account was frozen and the customers partially compensated. Nia Fontaine, who testified that he was 'the one who cared', has not spoken to him since the passport evidence was read. He is appealing.",
+  "epilogue": "The jury convicted; the foreperson later said the hardware key's physical touch was the link no one could break. Leo received four years. MintVault's breach cost it a regulator's fine and a third of its subscribers; it finally rebuilt its access logging, using Leo's old memos as the specification. The exchange account was frozen and the customers partially compensated. Nia Fontaine, who testified that he was 'the one who cared', has not spoken to him since the passport evidence was read. He is appealing.",
   "cast": [
     { "id": "judge", "name": "Judge Ilsa Renner", "role_label": "the judge", "side": "court" },
     { "id": "pc", "name": "Vaughn Attaway", "role_label": "prosecuting counsel", "side": "prosecution" },
     { "id": "dc", "name": "Simone Okafor", "role_label": "defence counsel", "side": "defence" },
-    { "id": "w1", "name": "Petra Onishi", "role_label": "head of security, FreshMint Subscriptions", "side": "prosecution" },
+    { "id": "w1", "name": "Petra Onishi", "role_label": "head of security, MintVault Subscriptions", "side": "prosecution" },
     { "id": "w2", "name": "Detective Sam Kettler", "role_label": "cybercrime detective", "side": "prosecution" },
     { "id": "w3", "name": "Leo Brandt", "role_label": "the accused — senior systems administrator", "side": "defence" },
     { "id": "w4", "name": "Nia Fontaine", "role_label": "former operations colleague", "side": "defence" }
@@ -279,7 +279,7 @@
         "weights": { "method": 1, "identity": 1 },
         "lines": {
           "agree": ["Noted for the count. Cleanly argued.", "Good — keep it to exhibits when we vote."],
-          "pushback": ["FreshMint's sloppiness is context, not a defendant. Back to him.", "One at a time, and nobody relitigates the sticky notes again."],
+          "pushback": ["MintVault's sloppiness is context, not a defendant. Back to him.", "One at a time, and nobody relitigates the sticky notes again."],
           "concede": ["Fair. Moved."],
           "final": ["It has been thorough. Hands, please."]
         },
@@ -408,7 +408,7 @@
         "lines": {
           "agree": ["Fair — the negligence widened the password pool and left the key pool at exactly one.", "And the direction stands: test the chain. I tested it angry, and it still held."],
           "pushback": ["A million customers were failed twice: once by the drawer culture, once tonight if we get this wrong.", "The deferred logging fixes would have settled this in an afternoon. Remember that when you feel certain."],
-          "concede": ["My anger at FreshMint kept trying to acquit him. The exhibits kept declining."],
+          "concede": ["My anger at MintVault kept trying to acquit him. The exhibits kept declining."],
           "final": ["The company deserves a regulator. He deserves this verdict. Both things are true."]
         },
         "reaction_rules": [
