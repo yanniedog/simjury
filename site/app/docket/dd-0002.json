@@ -9,9 +9,39 @@
     "Money moved through the accused's account was the proceeds of fraud",
     "The accused knew, or believed, the money was criminal when she moved it"
   ],
+  "hook": "For fourteen months, Margaret Hale said goodnight to a man who never existed. She still keeps his photographs. The prosecution says that somewhere around month four, the widow being farmed became part of the farm.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Margaret Hale, 64. A retired school cook, widowed three years; sings alto in the church choir whose roof her four per cent helped repair. Her grandson thinks she has been unwell.",
+    "if_guilty": "a criminal record at 64, restitution she cannot pay, and the word 'launderer' beside her name"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "No one in this room will enjoy this case. Margaret Hale was robbed by a fiction called Franklin, and we say she then helped him rob eleven other people of two hundred and fourteen thousand dollars. She was warned by her bank, in writing, line by line. She kept a ledger of her four per cent in her own hand. And when her account 'got noticed', she offered her sister's. Compassion is owed to her. So is the truth about what she knew."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The men who built Franklin studied Margaret Hale for months before they spent a single kind word on her. Everything the prosecution will show you — the transfers, the ledger, even the message about her sister — happened inside a relationship engineered by professionals to feel more real than her empty house. She kept nothing. She bought nothing. She believed she was saving the man she loved. A victim who obeys her abuser is not his business partner."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Love explains the first nine thousand dollars — hers. It does not explain the margin of a ledger where a school cook worked out four per cent of other people's ruin, nineteen times. It does not explain searching 'money mule penalties first offence', or the sentence she typed herself: mine is getting noticed. You may leave this room heartbroken for Margaret Hale. The eleven people whose savings passed through her hands are owed your verdict anyway."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Sure. Not 'probably'. Not 'she must have realised'. Sure. The prosecution's own witnesses told you how this fraud holds a lonely person: sixty victims, four countries, professionals. The searches they call knowledge, she calls fear — and fear is exactly what those searches look like. The ledger kept 'things straight' for a man auditing her devotion. She is the poorest person in this story. Ask who profited — and who wept when they told her he wasn't real."
+      }
+    }
+  },
+  "epilogue": "Margaret received a suspended sentence — the judge called her 'an offender it is impossible to hate' — and a restitution order that takes forty dollars from her pension each fortnight. The syndicate behind Franklin has never been arrested. His photographs, it turned out, belonged to an engineer in another country who has spent years asking platforms to stop his face from breaking hearts. Margaret still writes to two of the eleven depositors. One writes back.",
   "cast": [
     { "id": "judge", "name": "Judge Okonkwo", "role_label": "the judge", "side": "court" },
-    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "pc", "name": "Priya Vasan", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Colm Brady", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Detective Ines Ferrar", "role_label": "financial-crimes investigator", "side": "prosecution" },
     { "id": "w2", "name": "Sam Uduike", "role_label": "branch banker, Harlow Mutual", "side": "prosecution" },
     { "id": "w3", "name": "Dr Petra Nyland", "role_label": "counsellor specialising in romance-fraud victims", "side": "defence" },
@@ -34,7 +64,7 @@
     {
       "id": "b2",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit two: the message history with 'Franklin', fourteen months, forty thousand messages. Good morning, my love. Photographs of an oil platform. Plans for a house with a garden. Early on, she sent him nine thousand dollars of her own savings. When officers told her Franklin was not real, she wept for an hour.",
       "surface_persuasion": 0.8,
       "true_weight": 0.2,
@@ -48,7 +78,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "The detective agreed the accused was herself defrauded of nine thousand dollars before any stranger's money arrived. She agreed recruiters deliberately target the lonely and the recently widowed, and that the accused's own spending never changed — no holidays, no car, the same small flat.",
+      "text": "'Before any stranger's money arrived, what happened to hers?' 'She sent nine thousand dollars of her own savings to Franklin.' 'Who do these recruiters choose, Detective?' 'They target the lonely. The recently widowed.' 'And her spending, across five months of alleged crime?' 'Unchanged. No holidays, no car. The same small flat.'",
       "surface_persuasion": 0.5,
       "true_weight": 0.45,
       "direction": "innocence",
@@ -72,7 +102,7 @@
     {
       "id": "b5",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit four: from her own devices. Searches — can my bank see incoming transfers, money mule penalties first offence. A handwritten ledger of every deposit with its four per cent worked out in the margin. And a message to Franklin, in her words: we should use my sister's account next, mine is getting noticed.",
       "surface_persuasion": 0.55,
       "true_weight": 0.85,
@@ -99,7 +129,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "The counsellor accepted the accused did not meet the criteria for coercive control. She accepted that in her clinical experience, victims who discover the truth usually stop and report — and that in month four, this account did not slow down. It sped up.",
+      "text": "'Did she meet your clinical criteria for coercive control?' 'Not the formal criteria, no.' 'In your experience, when victims discover the truth, what do they do?' 'Usually they stop. Usually they report it.' 'And this account, in month four — did it slow down?' The counsellor looked at her notes for a moment. 'No. It sped up.'",
       "surface_persuasion": 0.45,
       "true_weight": 0.3,
       "direction": "guilt",
@@ -136,7 +166,7 @@
     {
       "id": "b10",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit seven: her finances at arrest. Three hundred and twelve dollars in the account. A part-pension, rent in arrears once that winter. Of the eight and a half thousand dollars her four per cent came to, bank records show most of it went to her church's roof appeal and her grandson's school fees.",
       "surface_persuasion": 0.6,
       "true_weight": 0.2,
@@ -148,7 +178,7 @@
     {
       "id": "b11",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit eight: the platform's takedown report on 'Franklin'. The profile was a syndicate persona operated against more than sixty victims in four countries. The deposits into the accused's account match the syndicate's standard mule schedule — including the pause whenever a receiving account drew a bank's attention.",
       "surface_persuasion": 0.5,
       "true_weight": 0.4,
@@ -415,7 +445,7 @@
   },
   "gen_meta": {
     "model": "claude-fable-5",
-    "prompt_version": "dd-2026-v1",
+    "prompt_version": "dd-2026-v2",
     "reviewer": "yanniedog",
     "batch_pr": "D7b-1"
   }

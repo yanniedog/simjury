@@ -10,9 +10,39 @@
     "The force caused the passenger's injuries",
     "The driver was not acting in reasonable self-defence"
   ],
+  "hook": "Eleven seconds of phone video made Ade Bakare the most hated driver on the internet before breakfast. Four million people watched him shove a passenger to the pavement. Not one of them saw the twelve minutes that came first.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Ade Bakare, 46. Drives nights so he can do the school pick-up; 4,900 trips and a 4.97 rating. His daughter found the video in her group chat before he had even been charged.",
+    "if_guilty": "a conviction for violence, the end of every driving job, and the clip becomes true forever"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "You have probably seen the video. Watch it again in this courtroom and hear what it shows: a working man throwing a drunk passenger onto concrete and standing over him — 'stay down' — until a stranger intervened. The complainant left that kerb with a broken wrist. The defence will talk about everything except those eleven seconds. Keep your eyes on what the camera saw: force, applied by the man in the dock, to a man on the ground."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The video is real. It is also the end of the story sold as the whole of it. Ade Bakare spent twelve minutes trying to end that night politely: he called the platform's safety line twice and asked for help. Then he was hit, twice, in the head, in his own car, and followed up the street. You will see all of it — because the car was filming long before the passenger's phone was."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Self-defence ends when the danger ends. Whatever happened inside that car, the video shows a man already on the pavement — down, drunk, beaten to the ground — and a driver who stayed over him. The bite mark, the torn collar, the phone calls: none of them were happening in those eleven seconds. His own words to you were 'I was not calm.' Angry men are not reasonable ones. The shove that broke a wrist did not defend anybody."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Line the evidence up in order and the case dissolves. 1:12, the trip ends. 1:15 and 1:19, Ade calls for help — you heard the threats shouted behind the second call. 1:21, he is struck twice in the head and followed out of his own car, still under attack when they reach the kerb. One push, to stop the swinging. The law does not demand he retreat forever, and it does not let eleven viral seconds replace forty minutes of truth."
+      }
+    }
+  },
+  "epilogue": "The verdict never trended. The clip, four million views strong, is still online under its original caption; the interior footage, played once in court, was never released. Ade drives again — days now, not nights — with a dashcam of his own on the visor, and he has never once read the comments. Callum Voss deleted the account that posted the video three days after the acquittal. The bite mark took a month to fade.",
   "cast": [
     { "id": "judge", "name": "Judge Ferren", "role_label": "the judge", "side": "court" },
-    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "pc", "name": "Elin Marsh", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Sam Okonkwo", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Callum Voss", "role_label": "the complainant — passenger", "side": "prosecution" },
     { "id": "w2", "name": "Renata Hsu", "role_label": "bystander from the apartment block", "side": "prosecution" },
     { "id": "w3", "name": "Sergeant Dale Whitcombe", "role_label": "arresting officer", "side": "prosecution" },
@@ -22,7 +52,7 @@
     {
       "id": "b1",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit one: the passenger's phone video, eleven seconds long, four million views by the morning of the arrest. It begins mid-struggle on the kerb: the driver shoves the complainant hard to the pavement, stands over him, and says, 'Stay down.' The clip ends as a bystander reaches them.",
       "surface_persuasion": 0.85,
       "true_weight": 0.2,
@@ -49,7 +79,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "He accepted he had been drinking since mid-afternoon — nine drinks by his own count. He accepted the trip had ended at his own address, that he refused to get out for more than ten minutes, and that he began filming only once they were both already on the street.",
+      "text": "'How many drinks that day, by your own count?' 'Nine. Maybe ten.' 'Where did the trip end?' 'My address.' 'And you stayed in his car ten more minutes.' 'I was getting my things.' 'When did you start filming, Mr Voss?' A silence. 'When we were on the street.' 'After the part you'd rather we never saw?' 'Objection—' Withdrawn.",
       "surface_persuasion": 0.5,
       "true_weight": 0.5,
       "direction": "innocence",
@@ -73,7 +103,7 @@
     {
       "id": "b5",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit three: the rideshare platform's trip record. The ride ended at 1:12. At 1:15, and again at 1:19, the driver phoned the platform's safety line to report a passenger refusing to leave the vehicle. On the second recording, a man can be heard shouting threats in the background.",
       "surface_persuasion": 0.55,
       "true_weight": 0.8,
@@ -100,7 +130,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "The sergeant agreed the driver had a bite mark on his forearm and a shirt torn at the collar, both photographed at the scene. He agreed the complainant refused a breath test for two hours, and that the wrist fracture was recorded as a fall onto an outstretched hand.",
+      "text": "'You photographed my client at the scene?' 'We did.' 'Describe what you photographed.' 'A bite mark on the forearm. A shirt torn at the collar.' 'And the complainant — he gave a breath sample promptly?' 'He refused for two hours.' 'The wrist fracture. How is it recorded?' 'A fall onto an outstretched hand. That is what the paramedic wrote.'",
       "surface_persuasion": 0.5,
       "true_weight": 0.55,
       "direction": "innocence",
@@ -111,7 +141,7 @@
     {
       "id": "b8",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit five: the vehicle's interior camera, recovered from the platform's ninety-day retention system after a defence request. At 1:21 the passenger lunges between the seats and strikes the driver twice in the head. The driver exits. The passenger follows him out of frame, still swinging.",
       "surface_persuasion": 0.6,
       "true_weight": 0.9,
@@ -149,7 +179,7 @@
     {
       "id": "b11",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit six: the medical report. A fractured right wrist consistent with a fall onto an outstretched hand, bruising to both knees, and no injuries to the face or torso. A blood-alcohol reading, finally taken at 3:40, still measured more than twice the legal driving limit.",
       "surface_persuasion": 0.55,
       "true_weight": 0.35,
@@ -416,7 +446,7 @@
   },
   "gen_meta": {
     "model": "claude-fable-5",
-    "prompt_version": "dd-2026-v1",
+    "prompt_version": "dd-2026-v2",
     "reviewer": "yanniedog",
     "batch_pr": "D7b-1"
   }

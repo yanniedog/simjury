@@ -10,9 +10,39 @@
     "The conduct included keeping her under surveillance",
     "He knew the conduct was likely to cause her fear or serious distress"
   ],
+  "hook": "Noa Brandt's phone told her before anyone else believed her: unknown tracker travelling with you. She cut open the lining of her tote bag with nail scissors and found it — a coin-sized answer to three months of small worlds.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Julian Ashe, 33. An architect, engaged to be married in the spring; he helped Noa move her boxes out when it ended. Everyone who knows him calls him the reasonable one.",
+    "if_guilty": "a stalking conviction, a five-year restraining order, and a wedding that likely never happens"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "This is a case about a man who never raised his voice. He didn't need to. The prosecution will show you his tracker sewn into her bag, his account behind it, and his phone opening her live location two hundred and fourteen times — a third of them between midnight and four in the morning. Stalking is not rage. It is patience. Count the timestamps and you will see how patient he was."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Julian Ashe ended a long relationship kindly, got engaged to someone else, and helped his ex move out — and for that, he is on trial. The tag is his; he owned four and reported one lost. The bag was his gift. They shared a wardrobe for three years. The prosecution will show you a map and ask you to see a hand placing a tracker. Maps show tags. They have never once shown a hand."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The defence needs you to believe a chain of accidents: a tag lost in a wardrobe that stopped existing, into a bag bought two months after the breakup, awake and travelling three weeks after they parted, two days after he stood alone in her hallway. Accidents do not screenshot addresses at two in the morning. He checked. He filed the covering report the night after she went to the police. That is not grief. That is method."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Nobody in this trial says Julian threatened anyone — because he didn't. What is left? A tag anyone could have moved, an app that stays logged in on any unlocked phone, and a woman who — honestly, understandably — rereads every coincidence as menace once an alert tells her to. Suspicion has done its work here. The law demands you be sure. Sure of the hand, sure of the intent, sure of the fear. You cannot be."
+      }
+    }
+  },
+  "epilogue": "Julian received a suspended sentence, a five-year restraining order, and a course his lawyer called 'perspective work'. The wedding did not survive the trial; the screenshots were read aloud while his fiancée sat in the second row. Noa kept the tote bag — resewn, deliberately — and still checks her tracker alerts every Sunday night. Felix, the mutual friend, wrote to them both afterwards. Only one of them answered.",
   "cast": [
     { "id": "judge", "name": "Judge Halloran", "role_label": "the judge", "side": "court" },
-    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "pc", "name": "Mara Okafor", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Rohan Datta", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Noa Brandt", "role_label": "the complainant", "side": "prosecution" },
     { "id": "w2", "name": "Analyst Priya Chetty", "role_label": "police digital investigator", "side": "prosecution" },
     { "id": "w3", "name": "Felix Marlowe", "role_label": "mutual friend of both parties", "side": "defence" },
@@ -61,7 +91,7 @@
     {
       "id": "b4",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit two, tendered by the defence: a lost-property report the accused filed with the tag's manufacturer — 'keys with tracker attached, lost, please disable' — together with receipts showing he bought four tags for family use: his keys, his car, his dog's collar, one spare. The defence says the spare is the tag she found.",
       "surface_persuasion": 0.75,
       "true_weight": 0.2,
@@ -86,7 +116,7 @@
     {
       "id": "b6",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit four: the tag's location history. It begins moving with the complainant three weeks after the breakup. It maps her new gym, her new office, her mother's new flat — none of which existed in her life while the couple were together. It settles into the tote two days after the accused visited to return her books.",
       "surface_persuasion": 0.55,
       "true_weight": 0.85,
@@ -98,7 +128,7 @@
     {
       "id": "b7",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit five: the accused's own phone. The tag application's activity cache shows her live location opened two hundred and fourteen times across five months — a third of them between midnight and four in the morning. The photo roll holds screenshots of the map: her dot, at named addresses, with timestamps.",
       "surface_persuasion": 0.5,
       "true_weight": 0.8,
@@ -322,15 +352,16 @@
         "register": "hesitant",
         "arc": "steady",
         "initial": { "position": "NG", "confidence": 50 },
-        "weights": { "credibility": 2 },
+        "weights": { "credibility": 2, "digital_forensics": 2 },
         "lines": {
           "agree": ["Mm. The friend testified about the man he knows at barbecues. The phone testified about the man at 2am.", "That is the first fact today that did not need anyone's good opinion."],
           "pushback": ["Everyone is very sure they can spot a stalker. That is precisely the problem.", "Her memory of 'coincidences' grew after the alert. Memories do that."],
-          "concede": ["The screenshots do not care what I think of group chats. Noted."],
+          "concede": ["The screenshots do not care what I think of group chats. Noted.", "The phone cache is not a witness I can talk myself out of. I move."],
           "final": ["Quietly: the public man and the phone disagree. I believe the phone."]
         },
         "reaction_rules": [
           { "when": { "theme": "credibility", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 10, "line": "concede" } },
           { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 0, "confidence": -5, "line": "pushback" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
@@ -387,16 +418,17 @@
         "register": "plain",
         "arc": "steady",
         "initial": { "position": "NG", "confidence": 50 },
-        "weights": { "digital_forensics": 1, "burden": 1, "timeline": 1 },
+        "weights": { "digital_forensics": 2, "burden": 1, "timeline": 1 },
         "lines": {
           "agree": ["Fair — the tag's own network flagged him to her phone. The system worked exactly once in this story, and it worked against him.", "And the direction is clear: surveillance alone can be the crime."],
           "pushback": ["Tags misreport. Apps stay logged in. I want the machine cross-examined as hard as the man.", "A seam is damning until you remember who gifted whom the bag."],
-          "concede": ["The receipt killed the gift point. I let it go."],
+          "concede": ["The receipt killed the gift point. I let it go.", "I cross-examined the machine as hard as the man. Two hundred and fourteen times, it answered the same. I'm satisfied."],
           "final": ["I cross-examined the machine all day. It gave better answers than he did."]
         },
         "reaction_rules": [
           { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "pushback" } },
           { "when": { "theme": "timeline", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "concede" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
       }
@@ -404,7 +436,7 @@
   },
   "gen_meta": {
     "model": "claude-fable-5",
-    "prompt_version": "dd-2026-v1",
+    "prompt_version": "dd-2026-v2",
     "reviewer": "yanniedog",
     "batch_pr": "D7b-1"
   }

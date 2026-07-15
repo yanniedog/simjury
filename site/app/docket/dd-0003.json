@@ -9,9 +9,39 @@
     "Someone entered the dwelling as a trespasser and stole from it",
     "The accused is the person on the doorbell footage"
   ],
+  "hook": "The machine found Terrence Odum in under an hour. Ninety-four per cent, said the match report, and the neighbourhood app agreed by morning. His warehouse badge, clocked in nine kilometres away all night, took nine days to be asked.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Terrence Odum, 37. Nine years on warehouse night shifts, pack line three, every Tuesday. One conviction eight years back that he has paid for ever since — it is why the database knew his face at all.",
+    "if_guilty": "prison for a burglary nine kilometres from where he stood, and the database proven right by winning"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "At 2:04 in the morning a hooded man stood at a family's door, and eleven frames caught his face. The system put a name to it in under an hour, and an eyewitness — a neighbour with no reason to lie — picked the same man from a board of eight in two seconds. That man is Terrence Odum. The defence will attack the technology. Technology did not comment 'caught'. A human being who saw him did."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "One machine guessed, and everyone after it obeyed. The score came from forty pixels of compressed night footage — below the line where the system's own maker says stop. The eyewitness saw the app post, with Terrence's name attached, before any photo board. And while a hooded man stood at that door, three separate systems — badge, roster, phone — put Terrence on pack line three, nine kilometres away. This is not an identification. It is an echo."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Strip the case to what nobody disputes: a man with a past, whose face satisfied the system, whose build fits the clip, who owns the jacket, identified without hesitation by a witness under oath. Badges can be swapped between friends; phones sleep in lockers. The defence has explanations for each piece — but you should ask why one man needs this many explanations. Ninety-four per cent, a board of eight, two seconds. At some point, coincidence retires."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Follow the timeline of certainty. Hour one: a machine guesses from forty pixels. By morning: the guess is on the app, wearing his name. Day two: a neighbour who wrote 'caught' under that post picks the face he had already been given. Day nine: someone finally reads the badge log — in at 11:58, out at 6:04, phone on the warehouse tower all night. Not one fibre, print, or stolen item says otherwise. The echo has to stop in this room."
+      }
+    }
+  },
+  "epilogue": "The burglaries continued — same hood, same hour — until a man was arrested climbing a fence two suburbs over, four months later. He was not in any face database. Terrence went back to pack line three the night after the verdict; his supervisor left a printed copy of the badge log taped inside his locker, 'in case anyone ever asks again'. The neighbourhood app thread was quietly deleted. The force still uses the system. Its manual has a new page.",
   "cast": [
     { "id": "judge", "name": "Judge Sylvaine", "role_label": "the judge", "side": "court" },
-    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "pc", "name": "Nadia Ferro", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Ellis Wynter", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Detective Rhea Callows", "role_label": "investigating detective", "side": "prosecution" },
     { "id": "w2", "name": "Gordon Pryce", "role_label": "neighbour, two doors down", "side": "prosecution" },
     { "id": "w3", "name": "Professor Idris Vane", "role_label": "defence expert in face-recognition systems", "side": "defence" },
@@ -21,7 +51,7 @@
     {
       "id": "b1",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit one: the doorbell clip and the match report. Eleven frames of a hooded man at the door, 2:04am. The force's face-recognition system compared a single still against its database and returned the accused at ninety-four per cent similarity. His custody photograph is printed beside the still. The resemblance is immediate.",
       "surface_persuasion": 0.85,
       "true_weight": 0.15,
@@ -48,7 +78,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "The detective agreed the doorbell clip had appeared on a neighbourhood app before the photo board was shown, posted with the accused's name in the comments. She agreed the neighbour follows that app. She agreed no fingerprint, fibre, tool mark, or recovered property connects the accused to the house.",
+      "text": "'When did the clip appear on the neighbourhood app?' 'The evening before the photo board.' 'Posted with what, in the comments?' 'His name.' 'Does your identifying witness follow that app?' 'He does.' 'And forensically — fingerprint, fibre, tool mark, recovered property — what connects my client to that house?' 'Nothing of that kind was found.'",
       "surface_persuasion": 0.5,
       "true_weight": 0.55,
       "direction": "innocence",
@@ -74,7 +104,7 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "cross",
-      "text": "He accepted the man was forty metres away, moving, at two in the morning, in view for a few seconds. He accepted he had seen the app post before the police came — the clip, the still, and the accused's name — and had commented 'caught' under it himself.",
+      "text": "'How far away was this man?' 'Forty metres, about.' 'Moving, at two in the morning, in view for how long?' 'A few seconds.' 'And before the police ever showed you a board, you had seen the app post — the clip, the still, the name?' 'Yes.' 'You commented under it, didn't you.' He looked at his shoes. 'I wrote caught.'",
       "surface_persuasion": 0.5,
       "true_weight": 0.4,
       "direction": "innocence",
@@ -111,7 +141,7 @@
     {
       "id": "b8",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit five: the accused's night, in records. His warehouse badge clocked in at 11:58pm and out at 6:04am. The shift supervisor's roster lists him on pack line three all night. His phone sat on the warehouse tower, nine kilometres from the burgled house, from midnight until morning without a gap.",
       "surface_persuasion": 0.5,
       "true_weight": 0.85,
@@ -149,7 +179,7 @@
     {
       "id": "b11",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit six: the search of the accused's flat. Nothing from the burgled house was found. A dark hooded jacket 'similar in style' to the clip was seized — a mass-market item, tens of thousands sold. Laboratory examination found no fibres, soil, or glass connecting it to the scene.",
       "surface_persuasion": 0.45,
       "true_weight": 0.25,
@@ -416,7 +446,7 @@
   },
   "gen_meta": {
     "model": "claude-fable-5",
-    "prompt_version": "dd-2026-v1",
+    "prompt_version": "dd-2026-v2",
     "reviewer": "yanniedog",
     "batch_pr": "D7b-1"
   }

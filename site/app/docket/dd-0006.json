@@ -9,9 +9,39 @@
     "The accused drove dangerously through the intersection",
     "The dangerous driving caused the cyclist's injuries"
   ],
+  "hook": "Rosa Lindqvist woke on the road with strangers holding her head still. She is certain her light was green — she has ridden that corner a thousand nights. A prosecution expert says the driver's dashcam was faked. The camera says it signed the footage the instant it recorded.",
+  "accused": {
+    "cast_id": "w5",
+    "human": "Dev Chandra, 29. Drives a delivery van eleven-hour shifts to finish an engineering degree part-time; handed his dashcam card to police three hours after the crash, before anyone accused him of anything.",
+    "if_guilty": "prison for dangerous driving, and living as the man who put a cyclist on the road and then faked his way out"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Rosa Lindqvist entered that crossing on her green light and a van destroyed her certainty of ever cycling again. The driver produced a video that clears him — and a forensic expert will tell you that video was doctored, the signal painted green after the fact, with textbook AI inpainting around the traffic light. He was behind schedule, chasing a bonus, on the eleventh hour of his shift. Ask yourself who had the reason, and who had the footage."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "'Deepfake' is a frightening word, and the prosecution is counting on the fright. Here is the boring truth underneath it. Dev Chandra's camera cryptographically signed its footage the moment it recorded — a signature that shatters if a single pixel is altered afterwards. It is intact. The city's own traffic computer, which no one accuses of anything, agrees with the video second by second. Their expert never touched the camera. She examined a re-encoded copy and mistook this model's night-compression for a crime."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "I will not pretend the provenance evidence is nothing — it is significant. But Dev Chandra was seven over the limit, eleven hours in, twelve minutes behind, on a dark corner where a woman was lawfully crossing. He walked away; she did not. Even a genuine recording shows a tired man driving too fast to stop. If that is not dangerous driving, on that night, causing those injuries — I would ask you what word you would prefer."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The charge is dangerous driving that caused this crash — and the light decides that, not the speedometer. Two independent machines, one of them the camera's own unbreakable signature, put the green in Dev's lane and the red in Rosa's. The 'motive' to forge was a four-dollar bonus. Rosa is honestly, heartbreakingly certain — and honestly mistaken, as the telemetry proves. Seven over is a fine. It is not this. You must acquit."
+      }
+    }
+  },
+  "epilogue": "Dev was acquitted; the judge remarked that the word 'deepfake' had done more work in the case than the evidence for it. He paid a separate fine for speeding and finished his degree the following year. Dr Voss's toolkit was quietly re-benchmarked after the trial to account for content-credential signatures. Rosa Lindqvist rode again eight months later, on a bike now strung with three lights; she and Dev have never spoken. The camera's signature standard is now cited in a road-safety guideline that bears none of their names.",
   "cast": [
     { "id": "judge", "name": "Judge Baptiste", "role_label": "the judge", "side": "court" },
-    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "pc", "name": "Roland Achebe", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Simone Vey", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Rosa Lindqvist", "role_label": "the injured cyclist", "side": "prosecution" },
     { "id": "w2", "name": "Dr Imogen Voss", "role_label": "prosecution video-forensics expert", "side": "prosecution" },
     { "id": "w4", "name": "Professor Han Okonjo", "role_label": "defence media-provenance expert", "side": "defence" },
@@ -49,7 +79,7 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "cross",
-      "text": "She agreed she analysed a copy exported through the insurer's web portal, which re-encodes video on upload. She agreed she never examined the camera or the original card, and that her tool's false-positive rate on re-encoded night footage is, in her words, 'not separately benchmarked'.",
+      "text": "'The file you analysed — where did it come from?' 'The insurer's web portal.' 'Which re-encodes video on upload. Yes?' 'It does.' 'Did you ever examine the camera itself, or the original card?' 'No.' 'And your tool's false-positive rate on re-encoded night footage?' A beat. 'That is — not separately benchmarked.'",
       "surface_persuasion": 0.5,
       "true_weight": 0.55,
       "direction": "innocence",
@@ -60,7 +90,7 @@
     {
       "id": "b4",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit three: the original memory card, seized by police the night of the collision. The file carries the camera's built-in content-credential signature, applied at the moment of recording. The cryptographic hash matches the insurer upload exactly. The card's write log is continuous. Any edit after recording would break the signature. It is intact.",
       "surface_persuasion": 0.5,
       "true_weight": 0.85,
@@ -85,7 +115,7 @@
     {
       "id": "b6",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit five: the city's traffic-signal telemetry, produced by the roads authority from its own control system, which logs every light change at every junction. At the recorded moment of impact the cycle crossing had been red for eleven seconds and the vehicle lane green for nine. The sequence matches the dashcam footage frame for frame.",
       "surface_persuasion": 0.5,
       "true_weight": 0.75,
@@ -112,7 +142,7 @@
       "kind": "witness",
       "speaker": "w5",
       "mode": "cross",
-      "text": "He accepted the dashcam's own speed overlay read forty-seven in a forty zone as he approached. He accepted he was eleven hours into a shift and that the collision happened on his last delivery. 'You were tired and over the limit.' — 'Seven over, and awake enough to brake. She had no lights on her bike.'",
+      "text": "'Your own speed overlay reads forty-seven in a forty zone.' 'Yes. Seven over.' 'Eleven hours into your shift. Your last delivery.' 'Yes.' 'You were tired and over the limit, Mr Chandra.' 'I was seven over, and awake enough to brake before I hit her. She had no lights on her bike, and my light was green.'",
       "surface_persuasion": 0.55,
       "true_weight": 0.35,
       "direction": "guilt",
@@ -123,7 +153,7 @@
     {
       "id": "b9",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit six: the accused's delivery-app record for that shift. At the time of the collision he was running twelve minutes behind his slot, with an on-time bonus at stake. The prosecution says that is a man with a reason to force a light — and a reason to doctor what his camera saw.",
       "surface_persuasion": 0.6,
       "true_weight": 0.15,
@@ -390,7 +420,7 @@
   },
   "gen_meta": {
     "model": "claude-fable-5",
-    "prompt_version": "dd-2026-v1",
+    "prompt_version": "dd-2026-v2",
     "reviewer": "yanniedog",
     "batch_pr": "D7b-1"
   }

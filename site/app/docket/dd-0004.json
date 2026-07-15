@@ -10,9 +10,39 @@
     "The accused created or controlled the ghost employees",
     "He did so dishonestly, for his own benefit"
   ],
+  "hook": "Douglas Prentiss reported the ghost employees himself. He wrote the email that froze the payroll, sat the auditors down, and pointed them at his bookkeeper. The prosecution says he was pointing at the one person who nearly caught him.",
+  "accused": {
+    "cast_id": "w3",
+    "human": "Douglas Prentiss, 52. Operations manager, first on site and last to leave for eleven years; coaches the company five-a-side team. The kind of steady, capable man a jury instinctively trusts — which is the whole problem.",
+    "if_guilty": "prison for fraud, and a bookkeeper's ruined name handed quietly back to her"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Two men drew ninety-one thousand dollars in wages for fourteen months. They had no faces, no lockers, no boots — they existed only where money leaves a company. Douglas Prentiss will tell you he is the hero of this story, the man who raised the alarm. Watch when he raised it: the day after his bookkeeper took her worries to a union rep. He did not catch the fraud. He got caught, and reached for a fire alarm and a scapegoat in the same motion."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Douglas Prentiss found the fraud, froze it, and reported it in writing before a single officer was involved. The payroll profiles were built under Lena Karvelas's login, with her permissions — not his, not once in fourteen months. She had the access. She had the grudge: she wanted his job and didn't get it. The prosecution's answer is a tangle of IP addresses in an office where passwords lived on sticky notes. Reasonable doubt is not a tangle. It is this whole case."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Yes, the profiles were made under her login — from his house, on his browser, the week she was six hundred kilometres away at her sister's wedding. Her boarding passes are in evidence. The ghosts' bank accounts trace to a recovery email on his phone, a SIM bought with his loyalty card, cash withdrawn a kilometre from his door. He built a frame and signed it with his own devices. The whistle he blew was to be heard blowing it."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The Crown needs you sure it was Douglas — not that it might have been, not that the pattern is ugly. A home network a lodger and half the site's contractors used. A loyalty card scanned at tills he never stood at. An old email account he says was compromised. Each thread has an innocent end, and the man who reports a crime he is committing is a story police love and evidence rarely supports. Where you are unsure, the law is not: you acquit."
+      }
+    }
+  },
+  "epilogue": "The jury convicted. Sentencing heard that Prentiss had run a near-identical scheme at a previous employer, settled privately and never charged — the reason he knew exactly how a whistle should sound. Lena Karvelas was reinstated with back pay and an apology read aloud in the site office; she took the payroll manager's job he had blocked. Prentiss still insists he was framed. The ninety-one thousand dollars, spent, was recovered at eleven cents on the dollar.",
   "cast": [
     { "id": "judge", "name": "Judge Marchetti", "role_label": "the judge", "side": "court" },
-    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "pc", "name": "Imani Sow", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Gareth Llewyn", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Avery Stroud", "role_label": "forensic auditor", "side": "prosecution" },
     { "id": "w2", "name": "Lena Karvelas", "role_label": "site bookkeeper", "side": "prosecution" },
     { "id": "w3", "name": "Douglas Prentiss", "role_label": "the accused — operations manager", "side": "defence" },
@@ -61,7 +91,7 @@
     {
       "id": "b4",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit three, tendered by the defence: the accused's email to the chief financial officer, sent three days before any police involvement. 'I believe we have ghost employees on the books. I have frozen labour payroll pending a full audit. This stops today.' The prosecution does not dispute he sent it.",
       "surface_persuasion": 0.75,
       "true_weight": 0.2,
@@ -73,7 +103,7 @@
     {
       "id": "b5",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit four, also tendered by the defence: the payroll system's access log. Both ghost profiles were created under the bookkeeper's login — her username, her permissions, eighteen minutes apart on the same evening. The accused's own login never touched either profile, not once in fourteen months.",
       "surface_persuasion": 0.7,
       "true_weight": 0.2,
@@ -87,7 +117,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "The auditor conceded the firm's payroll controls had been poor for years: shared terminals in the site office, sessions left logged in over lunch, passwords on sticky notes. He agreed that a login name, in that office, established very little about who was actually typing.",
+      "text": "'These payroll controls — how would you describe them?' 'Poor. Poor for years.' 'Meaning what, concretely?' 'Shared terminals. Sessions left open over lunch. Passwords on sticky notes.' 'So in that office, a login name tells us what about who was actually typing?' The auditor hesitated. 'On its own — very little.'",
       "surface_persuasion": 0.45,
       "true_weight": 0.35,
       "direction": "innocence",
@@ -98,7 +128,7 @@
     {
       "id": "b7",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit six: the ghosts' bank accounts. Both were opened online with the same recovery email — an address found configured on the accused's seized phone. The linked mobile was a prepaid SIM bought, per retailer records, with his loyalty card. Withdrawals clustered within a kilometre of his house, never on his rostered site days.",
       "surface_persuasion": 0.55,
       "true_weight": 0.85,
@@ -110,7 +140,7 @@
     {
       "id": "b8",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit seven: creation metadata for the ghost profiles. Both were made at 9:40 in the evening from a residential IP address assigned to the accused's home — using the bookkeeper's credentials — in a week she spent interstate at her sister's wedding. Her boarding passes are attached. The session cookie matches a browser on his laptop.",
       "surface_persuasion": 0.5,
       "true_weight": 0.75,
@@ -137,7 +167,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "He could not give the lodger's surname, forwarding address, or a single rent receipt. The loyalty card was his — 'cards get scanned by mistake'. Asked why his phone carried the ghosts' recovery email, he paused and said it was an old account, possibly compromised. He did not say by whom.",
+      "text": "'The lodger's surname?' 'I — we only ever used first names.' 'A forwarding address? One rent receipt?' 'Cash, mostly.' 'Your loyalty card bought the SIM.' 'Cards get scanned by mistake all the time.' 'And the ghosts' recovery email, sitting on your phone?' A long pause. 'An old account. Compromised, probably.' 'By whom, Mr Prentiss?' He said nothing.",
       "surface_persuasion": 0.55,
       "true_weight": 0.5,
       "direction": "guilt",
@@ -416,7 +446,7 @@
   },
   "gen_meta": {
     "model": "claude-fable-5",
-    "prompt_version": "dd-2026-v1",
+    "prompt_version": "dd-2026-v2",
     "reviewer": "yanniedog",
     "batch_pr": "D7b-1"
   }

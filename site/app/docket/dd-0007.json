@@ -9,9 +9,39 @@
     "A rider struck the pedestrian and rode away",
     "The accused was that rider"
   ],
+  "hook": "A man chased the rider who left Howard Belic bleeding on the crossing — two blocks, then lost him. Forty minutes later he saw the teal jacket, the square bag, the drop-bar bike outside a kebab shop and called the police. He was certain. He was also looking at the wrong courier.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Sefu Diallo, 31. Six years couriering, two of them on this same corner every Friday; sends most of what he earns to family overseas. Arrested in his work kit, three hundred metres from a crash he can prove he missed.",
+    "if_guilty": "prison for leaving an injured man, and a six-year clean record erased by a jacket"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Howard Belic was halfway across a crossing when a delivery rider knocked him down, paused, and rode away into the dark. A witness gave chase, and within the hour found the man: same teal kit, same square bag, same bike, three hundred metres away — who then pushed off and rode from the police. His bike bore a fresh scrape and a broken reflector. An honest witness pointed at him. Ask yourself why an innocent courier rides away."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The platform called Dartly dresses hundreds of riders in identical teal, on identical bikes, with identical bags. On the night in question, nine of them were working within five hundred metres of that crossing — and two rode straight through it. Sefu Diallo was not either of those two. At the exact minute of the collision he was four blocks away, photographing a customer's doormat, with a timestamp and a map to prove it. This is not identification. It is a uniform."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "I do not say the witnesses lied — I say they saw what they saw: the kit, the bag, the bike, a rider moving off from police. The defence points to other riders in other places. But the man who fled the officer, whose bike was scraped, who was there on that corner, is the man in the dock. The platform data is tidy; tidiness is not the same as being sure it exonerates him."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "At 9:47 and 31 seconds — the minute Howard Belic's watch stopped — Sefu's hand is in a photograph on a doorstep four blocks north, geotagged, timestamped, the customer confirming the knock. He cannot have been in two places. The 'flight' was earbuds and thirty metres; the scrape had a service ticket three weeks old. Nine identical uniforms, two through the crossing itself. 'The kit matched,' the witness said. The kit always matches. You must acquit."
+      }
+    }
+  },
+  "epilogue": "Sefu was acquitted in under two hours. Police reopened the case against the two riders whose routes crossed the scene; one was later cautioned, the collision never firmly pinned to either. Sefu went back to the same Friday-night corner — he needed the work — but keeps his delivery photos now long after the app deletes them. Howard Belic's hip healed by winter; he still crosses at that light and still cannot say which rider it was. Dartly added a rider-ID number to the back of every bag the following year.",
   "cast": [
     { "id": "judge", "name": "Judge Priya Ramanathan", "role_label": "the judge", "side": "court" },
-    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "pc", "name": "Dominic Rourke", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Yasmin Adebayo", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Howard Belic", "role_label": "the injured pedestrian", "side": "prosecution" },
     { "id": "w2", "name": "Tomas Reiner", "role_label": "witness who chased the rider", "side": "prosecution" },
     { "id": "w3", "name": "Constable Ada Nwosu", "role_label": "attending officer", "side": "prosecution" },
@@ -49,7 +79,7 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "cross",
-      "text": "He agreed he lost sight of the rider for over forty minutes before the kebab shop. He agreed he never saw the rider's face, that half the couriers in this city ride drop-bar bikes, and that the accused was simply the first teal rider he laid eyes on afterwards. 'The kit matched,' he repeated.",
+      "text": "'How long did you lose sight of the rider?' 'Forty minutes. Maybe more.' 'Did you ever see the rider's face?' 'No — but the kit—' 'Half the couriers in this city ride drop-bar bikes, don't they?' 'A lot do.' 'The accused was simply the first teal rider you saw afterwards.' 'The kit matched,' he said again. 'The kit matched.'",
       "surface_persuasion": 0.5,
       "true_weight": 0.45,
       "direction": "innocence",
@@ -75,7 +105,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "The constable agreed the accused was wearing earbuds and stopped immediately at the second, louder hail. She agreed she could not date the scrape, and that the defence produced a bike-shop service record from three weeks earlier already noting the broken reflector. 'He rode thirty metres,' she accepted, 'not two blocks.'",
+      "text": "'Was my client wearing earbuds?' 'He was.' 'And at the second, louder hail, he stopped?' 'Immediately.' 'Can you date the scrape on his fork?' 'No.' 'The defence has a service record noting that broken reflector three weeks earlier. You've seen it?' 'I have.' 'How far did he actually ride from you — two blocks?' 'Thirty metres,' she said. 'Not two blocks.'",
       "surface_persuasion": 0.45,
       "true_weight": 0.4,
       "direction": "innocence",
@@ -86,7 +116,7 @@
     {
       "id": "b6",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit four: the Dartly platform's records. The victim's watch stopped at 9:47pm, matching the emergency call. From 9:45 to 9:49 the accused's device pinged continuously at a doorstep four blocks north. His 'handed to customer' photograph is timestamped 9:47 and 31 seconds, geotagged at that address, showing his gloved hand, the meal, and the customer's doormat.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
@@ -98,7 +128,7 @@
     {
       "id": "b7",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit five: the platform's rider-density map for that window, produced under subpoena. Between 9:40 and 9:55 that night, nine Dartly riders in identical kit were active within five hundred metres of the crossing. Two of them logged routes passing directly through it. Neither of those two was the accused.",
       "surface_persuasion": 0.5,
       "true_weight": 0.5,
@@ -266,15 +296,15 @@
         "register": "hesitant",
         "arc": "drifter",
         "initial": { "position": "G", "confidence": 45 },
-        "weights": { "method": 2, "alibi": 1 },
+        "weights": { "method": 2, "alibi": 2 },
         "lines": {
           "agree": ["Yes — when you lay it out like that, I am with you.", "The doormat photo. Every time I wander, someone shows me the doormat photo."],
           "pushback": ["But the rider paused. Paused, looked, and left a man on the road. Somebody did that.", "The kebab shop is so close, though."],
-          "concede": ["Close for him and for eight others. All right."],
+          "concede": ["Close for him and for eight others. All right.", "The doormat photo. I keep coming back to it because it keeps being true. I'm there."],
           "final": ["I will land where the room's best evidence lands, and I think I know where that is."]
         },
         "reaction_rules": [
-          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": -10, "line": "concede" } },
           { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
@@ -353,14 +383,15 @@
         "register": "hesitant",
         "arc": "drifter",
         "initial": { "position": "U", "confidence": 40 },
-        "weights": { "timeline": 1, "identity": 1 },
+        "weights": { "timeline": 1, "identity": 1, "alibi": 2 },
         "lines": {
-          "agree": ["There — the two stories only fit if there were two riders. And there were nine.", "Say the timestamps again. They are the only part that does not bend."],
+          "agree": ["There — the two stories only fit if there were two riders. And there were nine.", "Say the timestamps again. They are the only part that does not bend.", "The doormat photo settles the minute. He cannot be there and at the crossing at once."],
           "pushback": ["And yet the chaser was so sure. People are not usually that sure for no reason.", "One more pass. I want the minutes in order once more."],
           "concede": ["In order, they acquit him. Settled."],
           "final": ["I tried all afternoon to make one rider do both things at 9:47. It takes two. He was the other one."]
         },
         "reaction_rules": [
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
           { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
           { "when": { "theme": "identity", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
@@ -391,7 +422,7 @@
   },
   "gen_meta": {
     "model": "claude-fable-5",
-    "prompt_version": "dd-2026-v1",
+    "prompt_version": "dd-2026-v2",
     "reviewer": "yanniedog",
     "batch_pr": "D7b-1"
   }
