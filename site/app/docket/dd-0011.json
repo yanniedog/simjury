@@ -1,0 +1,428 @@
+{
+  "id": "dd-0011",
+  "publish_date": "2026-08-12",
+  "label": "fiction",
+  "title": "Clean Label",
+  "setting": "a boutique supplement brand run from a home kitchen, and three hospital admissions, the present day",
+  "charge": "recklessly causing harm by supplying an adulterated product",
+  "elements": [
+    "The pre-workout powder contained an undeclared prescription-strength stimulant",
+    "The accused added it, or supplied the product knowing it was there",
+    "The stimulant caused the customers' injuries"
+  ],
+  "hook": "Jonah Aldervale's smartwatch hit a hundred and ninety beats a minute on a warm-up jog, and he spent the night in intensive care. He had chosen PureForm precisely because of the certificate on the tub: tested, clean, nothing hidden. The certificate's serial number belonged to someone else's coffee.",
+  "accused": {
+    "cast_id": "w3",
+    "human": "Kip Marsden, 36. Founded PureForm Nutrition after his own health scare, gives tubs to charity events, and drinks a scoop himself every morning at the gym counter — witnesses have watched him do it for two years.",
+    "if_guilty": "prison for recklessly poisoning his own customers, and the honest brand he built exposed as the con"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Three people in hospital in a fortnight, three hospitals, one product: PureForm, carrying a prescription-strength stimulant, undeclared and so unevenly mixed that one scoop might double the last. The defence will show you a lovable founder who drinks his own powder. Keep your eye on the tub's certificate of analysis — the thing that made careful customers trust it — and on the question of where two kilograms of a banned stimulant went after it was delivered to his front door."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Kip Marsden built PureForm after a health scare so he could sell a product he would give his own brother. Contamination at shared blending facilities is a real, documented curse that has burned reputable brands before — the Crown's own toxicologist will tell you chemistry says what, not who. A sloppy certificate a marketing apprentice mocked up is embarrassing. It is not poison. A man who drinks his own product every morning is not hiding a stimulant in it."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The month after PureForm's sales fell forty per cent, Kip Marsden ordered two kilograms of the exact stimulant from his own card, to his own home. His product file logs 'boost blend v2' under his initials, the week the reviews turned electric — 'nothing legal feels like this'. His kitchen blender's seals carry the residue; the factory's machines are clean; 1.7 kilos of the 'never used' powder is simply gone. He drank from the batches he didn't dose. The clean label was the product. The powder was the delivery."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The judge will remind you that your sympathy for three injured people, however natural, cannot fill an evidentiary gap — and that industry contamination is real. Kip ordered that powder as research for a caffeine-free product a customer kept asking for. The certificate was an apprentice's careless template. If the contract blender — which has failed brands before — is a live possibility, then you are not sure it was him, and 'not sure' is the end of the matter. You must acquit."
+      }
+    }
+  },
+  "epilogue": "The jury convicted; several later said the forged certificate — betraying the exact customers who read labels — angered them more than the stimulant. Kip received five years and a lifetime ban from directing a food business. PureForm collapsed within a month. Jonah Aldervale recovered but developed an arrhythmia he now manages for life, and campaigns for mandatory lab-result verification with QR codes that actually resolve. The 'boost blend v2' spreadsheet, printed and enlarged, sat facing the jury for the whole trial.",
+  "cast": [
+    { "id": "judge", "name": "Judge Adeyemi", "role_label": "the judge", "side": "court" },
+    { "id": "pc", "name": "Delphine Roux", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Callum Reyes", "role_label": "defence counsel", "side": "defence" },
+    { "id": "w1", "name": "Dr Mireille Fossey", "role_label": "forensic toxicologist", "side": "prosecution" },
+    { "id": "w2", "name": "Jonah Aldervale", "role_label": "hospitalised customer", "side": "prosecution" },
+    { "id": "w3", "name": "Kip Marsden", "role_label": "the accused — founder of PureForm Nutrition", "side": "defence" },
+    { "id": "w4", "name": "Tessa Brankovic", "role_label": "gym owner who stocked the product", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "Three admissions in a fortnight, three different hospitals, one product. The tubs we analysed contained a synthetic stimulant at prescription strength — undeclared, unlisted, and unevenly mixed, so one scoop might carry double the dose of the next. The patients' blood work matched the powder exactly. Nothing else they took could explain it.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.5,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The uneven mixing was the quiet detail: industrial blenders homogenise. Kitchen blenders do not.",
+      "tags": ["method"]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "My watch alarmed at a hundred and ninety beats a minute on a warm-up jog, and I spent that night in intensive care wired to monitors. I bought PureForm because of the certificate on the tub — clean, tested, nothing hidden. I have a toddler. I read labels. That is the whole reason I chose them.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.35,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "He did everything a careful customer can do — which is exactly why the forged certificate, not the stimulant, was the detail the room came back to angriest.",
+      "tags": ["credibility", "method"]
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit two, relied on by the defence: the certificate of analysis displayed on the website and linked from a code on every tub. AssayPoint Laboratories letterhead, a signature, a serial number, and the words 'no undeclared substances detected'. The defence says a man who publishes independent testing is not a man hiding a stimulant.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "AssayPoint's records ended the mystery: that serial number belongs to another client's coffee sample, and no PureForm product was ever submitted for testing. The certificate was a graphic, not a result.",
+      "tags": ["credibility", "procedure"]
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "The toxicologist agreed that contamination at third-party blending facilities is a documented industry problem, that several reputable brands have been burned by shared equipment, and that her analysis alone cannot say whose hand introduced the stimulant. 'Chemistry tells you what,' she said. 'It rarely tells you who.'",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "A genuinely fair point that kept the contract-blender theory alive — until the invoices arrived with a name on them.",
+      "tags": ["method", "credibility"]
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit four: supplier invoices and bank records. Four months before the hospitalisations — the month after PureForm's sales fell forty per cent — the accused personally ordered two kilograms of the exact stimulant from an overseas chemical reseller, paid from his own card, delivered to his home address. The contract blender never ordered any such substance.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The who, the when, and the why in one exhibit: his card, his doorstep, and a sales graph that had just fallen off a cliff.",
+      "tags": ["timeline", "method", "identity"]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit five: his own records. A spreadsheet line in his product file reading 'boost blend v2' with his initials, dated the week the reviews turned electric — 'insane energy', 'nothing legal feels like this'. And from his kitchen: the bench blender's seals tested positive for the stimulant's residue. The contract blender's machines tested clean.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.75,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The spiking happened where the residue was: at home, at the bench, under his own initials. The five-star reviews were the dosage chart.",
+      "tags": ["digital_forensics", "method"]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I built PureForm after my own health scare — the whole point was a product I would give my own brother. I trusted the contract blender and they have failed brands before. The powder order was research for a caffeine-free stimulant a customer kept requesting; I never used it. The certificate was a template our marketing kid mocked up — sloppy, absolutely, but not sinister.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Passion, an origin story, and an apprentice to blame for the certificate — an account that explained everything except the residue, the shortfall, and the initials.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "'Did you mention boost blend v2 to your contract blender?' 'No. A note to myself.' 'The powder you never used, seized from your home, was one point seven kilos short. Where did it go?' No answer. 'How did the stimulant's residue get inside your kitchen blender, Mr Marsden?' He looked at his hands a long moment. 'I make a lot of things in that kitchen.'",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "One point seven kilograms of an unused chemical had left its jar. The kitchen made a lot of things; the exhibits only cared about one of them.",
+      "tags": ["credibility", "method"]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "Kip gave away tubs at our charity events, refunded anyone who asked without a receipt, and drinks the product himself every single morning — I have watched him do it at my counter for two years. Whatever happened in some factory, the man I know built this brand to be the honest one on the shelf.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "All true, and all compatible: he drank from the batches he hadn't dosed. Generosity was the marketing budget of a brand whose real ingredient list was a secret.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "You must not research this case, this brand, or these substances online. The prosecution must make you sure the accused added the stimulant or supplied the product knowing it was there — industry contamination is a real phenomenon and you must weigh it honestly. Your sympathy for three injured customers is natural, and it cannot fill a single evidentiary gap.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction held the door open for the contract-blender theory to the very end. The invoices, the residue, and the initials closed it from the inside.",
+      "tags": ["burden", "method"]
+    }
+  ],
+  "checkins": ["b3", "b5", "b8", "b9"],
+  "verdict_truth": "Guilty",
+  "twist": "He was the believable one: the health-scare origin story, the charity tubs, the morning scoop taken at the gym counter, the certificate on every lid. But the certificate's serial belonged to someone else's coffee sample, the stimulant arrived at his own doorstep the month after sales collapsed, 1.7 kilograms of it went missing into 'boost blend v2' under his initials, and the residue was in his kitchen blender — not the factory's. The clean label was the product. The powder was just the delivery mechanism.",
+  "difficulty_target": 0.45,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "Watched him drink his own product on video; cannot square poisoners with that.",
+        "register": "plain",
+        "arc": "vibes",
+        "initial": { "position": "NG", "confidence": 75 },
+        "weights": { "credibility": 2, "motive": 1 },
+        "lines": {
+          "agree": ["The man drinks it every morning at a gym counter. Poisoners do not sip their own poison.", "Free tubs at charity events. That is not a man cutting corners for money."],
+          "pushback": ["Factories fail brands all the time — the toxicologist said so herself.", "You are convicting the best story in the case because the worst thing happened."],
+          "concede": ["The residue was in his kitchen, though. Not the factory. His kitchen."],
+          "final": ["I believed the morning scoop. Turns out he knew which tubs were safe to scoop from."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Reads the invoices like a bank statement; the timeline is the whole case to her.",
+        "register": "blunt",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "timeline": 2, "method": 1 },
+        "lines": {
+          "agree": ["Sales fall forty per cent, and the next month two kilos of stimulant arrive at his door. Read it in order.", "The reviews turned electric the same week as 'boost blend v2'. Sales charts do not lie for anyone."],
+          "pushback": ["Stop debating his personality and put the dates in a line.", "The factory theory has no invoice. His theory needs one and has none."],
+          "concede": ["Contamination is real in that industry. It simply is not what these dates spell."],
+          "final": ["I lined up the collapse, the order, the blend, the reviews, the hospitals. It reads left to right."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; the industry-contamination door must be closed with evidence, not distaste.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 70 },
+        "weights": { "burden": 2, "method": 1 },
+        "lines": {
+          "agree": ["Quite — the judge left the contamination door open, and it is our job to check it honestly."],
+          "pushback": ["Reputable brands have been ruined by shared equipment. That is sworn evidence, not speculation.", "The certificate being fake proves marketing dishonesty. The charge is poisoning, not Photoshop."],
+          "concede": ["The factory's machines tested clean and his bench did not. That is the door closing."],
+          "holdout": ["Until someone explains why the residue chose his kitchen, I keep the question open.", "Sure means the innocent route is walked to its end. Walk it with me once more."],
+          "final": ["I walked the factory theory to its end. It ends at his bench. Guilty."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Keeps sympathy for the ICU night out of the standard of proof, both ways.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "burden": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["Held to the standard: the order, the shortfall, the residue, the initials. It reaches."],
+          "pushback": ["A father in intensive care makes us want a villain. Wanting is not weighing.", "The marketing kid did not order two kilograms of stimulant. Keep the blame where the invoices put it."],
+          "concede": ["The toxicologist's 'what, not who' concession was honest and important."],
+          "burden_correct": ["He does not have to explain the missing 1.7 kilograms — but the Crown may prove it missing, and it did.", "Sympathy fills no gaps. As it happens, the exhibits left none."],
+          "final": ["On the standard, with the kitchen residue, I am sure."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; insists the fake certificate and the spiking be weighed as separate questions.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "G", "confidence": 50 },
+        "weights": { "procedure": 1, "method": 1 },
+        "lines": {
+          "agree": ["Noted for the count — and yes, that separates the questions properly.", "Good. That is a votable point."],
+          "pushback": ["The certificate proves he lies on labels. Do not let it prove more than that on its own.", "One at a time — and nobody diagnoses the marketing kid again."],
+          "concede": ["Fair. The count moves."],
+          "final": ["Both questions have answers now. Hands."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Undecided; the origin story and the invoices take turns owning him.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "method": 1, "credibility": 1 },
+        "lines": {
+          "agree": ["Yes — said plainly like that, it stays said.", "The bench residue. Every time I drift, someone hands me the bench residue."],
+          "pushback": ["But he built the brand after a health scare. People like that don't… do they?", "The industry really is filthy, though. That part was sworn."],
+          "concede": ["Filthy industry, clean factory machines, dirty home blender. The order of those matters."],
+          "final": ["I drifted between the story and the spreadsheet. The spreadsheet had his initials on it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Trusted the certificate herself as a shopper; learning it was a graphic flipped something.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "NG", "confidence": 65 },
+        "weights": { "timeline": 2, "credibility": 2 },
+        "lines": {
+          "agree": ["The serial belonged to somebody's coffee. I buy by those certificates. We all do.", "The month after sales collapsed, the stimulant arrived. The timeline is a confession with dates."],
+          "pushback": ["I came in believing him — I want that on record, because the certificate is why. It is built to be believed.", "The blender theory deserved its hearing. It got one."],
+          "concede": ["All right. The man who forged the test knew what a real test would find."],
+          "final": ["He counterfeited the exact thing that made me trust him. That is what decided me."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; the gym owner's warmth moves her, and she distrusts being moved.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 50 },
+        "weights": { "credibility": 2 },
+        "lines": {
+          "agree": ["Mm. 'I make a lot of things in that kitchen' — he answered a chemistry question with an alibi for his blender.", "That is the first fact today that did not need anyone's affection to stand up."],
+          "pushback": ["Two years of morning scoops at her counter is real testimony. She was not performing.", "Everyone is very sure they can spot a poisoner by his origin story."],
+          "concede": ["She testified to the man she saw. The invoices testify to the one she didn't."],
+          "final": ["Quietly: the warm witness saw the brand. The cold exhibits saw the kitchen."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 0, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Wants the accused to produce the missing 1.7 kilograms; keeps inverting the burden.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "method": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Exactly. Ordered it, initialled it, blended it at home. Three injured people later, here we are."],
+          "pushback": ["A man ended up in intensive care on a warm-up jog. Somebody measured that scoop."],
+          "burden_drift": ["Let him produce the missing 1.7 kilos, sealed, and I will apologise personally.", "He should have to walk us through 'boost blend v2' line by line."],
+          "concede": ["The spreadsheet already walked us through it. Initials and all."],
+          "burden_correct": ["Withdrawn — the Crown had to trace the powder, and traced it into the tubs."],
+          "final": ["I demanded the jar back. The prosecution showed me where it went instead."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "Undecided; keeps stress-testing the contract-blender theory because it deserves it.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "method": 1, "procedure": 1 },
+        "lines": {
+          "agree": ["There — the factory theory just failed another fitting.", "Right: the factory's machines were clean. The theory needs them dirty."],
+          "pushback": ["Shared-equipment contamination has ruined honest brands. It was sworn to.", "Give the blender theory one more round. It has earned that much."],
+          "concede": ["It had its round. The residue voted against it."],
+          "final": ["I gave the innocent theory every fitting it asked for. Nothing about it fit his kitchen."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Trains daily and reads every label; takes the forged certificate personally.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "U", "confidence": 45 },
+        "weights": { "credibility": 1, "burden": 1, "timeline": 1 },
+        "lines": {
+          "agree": ["Fair — and the reviews spiking the same week as the blend is the market confirming the chemistry.", "The direction cut both ways and I honoured both: no sympathy verdicts, no origin-story discounts."],
+          "pushback": ["Half this industry is theatre. That does not make every founder a poisoner.", "I want the verdict resting on the powder, not on our feelings about influencer brands."],
+          "concede": ["The QR code on every tub pointed at somebody else's coffee test. Personally, I find that unforgivable. Legally, I find it revealing."],
+          "final": ["I read labels for a living, practically. His best label was fiction, and his kitchen wasn't."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "yanniedog",
+    "batch_pr": "D7b-2"
+  }
+}

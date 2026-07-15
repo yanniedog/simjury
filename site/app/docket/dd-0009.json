@@ -1,0 +1,429 @@
+{
+  "id": "dd-0009",
+  "publish_date": "2026-08-10",
+  "label": "fiction",
+  "title": "Nine Bells",
+  "setting": "the burnt shell of a corner cafe, and the paperwork that survived it, the present day",
+  "charge": "arson with intent to defraud an insurer",
+  "elements": [
+    "The cafe fire was deliberately lit",
+    "The accused lit it, or had it lit",
+    "She did so to claim on her insurance"
+  ],
+  "hook": "At three in the morning the Nine Bells cafe burned to its brick. Marta Kovar had locked up alone, as she had every night for nine years, and she held the only keys. Six weeks earlier, the insurer's own inspector had photographed the thing that started it — and written 'recommend remediation' underneath.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Marta Kovar, 47. Her grandmother named the Nine Bells and ran it before her; Marta kept it alive through nine hard years and one brutal squeeze from the delivery apps. She lost all of it in a single night.",
+    "if_guilty": "prison for arson, a fraud record, and the cafe's memory turned into a motive"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "A hundred and forty thousand dollars of debt. Two missed rent cycles. And five weeks before the fire, the contents policy raised by forty per cent — the exact payout she claimed while the ash was still warm. The fire began at three in the morning, behind her locks, in a building only she could enter. The fire investigator found burn patterns consistent with a poured accelerant at floor level. Motive, means, and opportunity rarely line up this cleanly."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Every loud fact in this case has a quiet, innocent explanation the Crown hopes you won't wait for. The policy increase was her broker's idea, in his handwriting. The fast claim was her accountant sister at her side. And the fire started where a cheap delivery-scooter battery was charging — the same corner the insurer's own inspector had photographed and flagged as a hazard six weeks before. Marta Kovar did not burn down her grandmother's cafe. A powerboard did."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The defence offers you a battery. But she held the only keys, she was the last soul in that building, she stood to be paid, and a supplier heard her call the cafe 'the death of me — or the making of me.' The claim came in itemised to the clause number while honest claimants are still dazed. You are being asked to believe a coincidence of hazard, timing, and debt. I ask you to believe the locks."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The judge will tell you motive alone cannot prove arson, and that an expert opinion is worth only its foundations. The 'pour pattern' collapsed under cross — it cannot survive flashover, and the lab found nothing because nothing was poured. Meanwhile the battery's cells show thermal runaway at the hour such fires start, in the corner the insurer photographed. She was the last soul in that building every night for nine years. To convict, you must be sure. You cannot be."
+      }
+    }
+  },
+  "epilogue": "The jury acquitted in ninety minutes. The insurer paid the claim in full the following spring, after a second engineer confirmed the battery; the inspector who had written 'recommend remediation' was quietly reassigned. The 'pour pattern' investigator still gives evidence — his technique has now been excluded by name in two later trials that cited this one. Marta did not reopen the Nine Bells. She runs a three-table place across the river under a new name, and keeps every device charging on a bench by the door, in plain sight.",
+  "cast": [
+    { "id": "judge", "name": "Judge Ostrander", "role_label": "the judge", "side": "court" },
+    { "id": "pc", "name": "Gideon Marsh", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Aoife Brennan", "role_label": "defence counsel", "side": "defence" },
+    { "id": "w1", "name": "Inspector Reece Maddan", "role_label": "fire investigator", "side": "prosecution" },
+    { "id": "w2", "name": "Yusuf Berhane", "role_label": "insurance claims assessor", "side": "prosecution" },
+    { "id": "w3", "name": "Dr Silke Andrada", "role_label": "defence fire scientist", "side": "defence" },
+    { "id": "w4", "name": "Marta Kovar", "role_label": "the accused — owner of the Nine Bells cafe", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "The fire started in the rear storeroom around three in the morning, in an empty, deadlocked building with no sign of forced entry at any door or window. The accused locked up at nine bells that evening — her phrase, her routine, nine years of it — and she holds the only set of keys. Whatever began that fire began behind her locks.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "True, and equally true of every fire that starts in a locked building — including the electrical ones. Behind her locks sat everything she owned, and one charging battery.",
+      "tags": ["opportunity", "method"]
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit two: the finances, laid out plainly. A hundred and forty thousand dollars of debt across three separate lenders. Two missed rent cycles inside the last six months. And five weeks before the fire, the cafe's contents insurance was increased by forty per cent — the very payout she claimed within days of the ash going cold.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.15,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The loudest exhibit in the case, and the emptiest: the increase rode along with the new espresso machine's lease — the broker's file shows it was his standard advice, in his handwriting, at his suggestion.",
+      "tags": ["motive", "timeline"]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "In the storeroom I found low, irregular burn patterns of the kind classically associated with a poured liquid accelerant. The laboratory found no accelerant residue, but that is common — a hot fire consumes its own evidence. In my opinion these patterns indicate the fire was deliberately set at floor level.",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Reading pour patterns in a room that reached flashover is a technique fire science retired years ago — after it helped convict innocent people. The lab found nothing because nothing was poured.",
+      "tags": ["method", "credibility"]
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "The inspector agreed the storeroom reached flashover, and agreed that after flashover, floor-level burn patterns can appear in accidental fires too. He agreed the laboratory result was negative, that a burnt-out electric scooter was recovered from the corner of the room, and that he had not examined its battery himself.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The concessions dismantled his own headline: after flashover, his patterns proved nothing — and the object in the corner had never interested him.",
+      "tags": ["credibility", "method"]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "The claim arrived faster and cleaner than any I have assessed — itemised to the dollar, receipts attached, submitted while the site was still cordoned. In my experience honest claimants are dazed for weeks. She knew her policy cold, down to the clause numbers, and she claimed the maximum on every line.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Her sister is an accountant who sat with her the day after the fire; competence at paperwork is not evidence of matches. 'Dazed for weeks' is not a legal standard.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b6",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "The seat of the fire is the corner where the delivery scooter charged — the deepest damage radiates from there, not from the floor. The battery cells show the internal signatures of thermal runaway: a cell shorted, cascaded, and burned at over eight hundred degrees. The timeline fits a battery fire exactly, and a poured fire poorly.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.85,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The cause of the fire had been sitting in the evidence store for months: a cheap battery that failed the way cheap batteries fail, at the hour they fail, in the corner it charged.",
+      "tags": ["method", "timeline"]
+    },
+    {
+      "id": "b7",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit six: the insurer's own risk-inspection photographs, taken six weeks before the fire during the policy review. They show the scooter charging in that exact storeroom corner, plugged into a daisy-chained powerboard, with the inspector's note beneath: 'charging arrangement — recommend remediation.' No remediation was ever followed up by anyone.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.75,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The insurer photographed the cause of the fire before the fire, filed it under housekeeping, and then paid its lawyers to call the same corner arson.",
+      "tags": ["procedure", "timeline"]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "I bought the scooter for deliveries when the food apps squeezed us, and it charged overnight in the storeroom like always — the insurer's man saw it there himself and said fix the powerboard someday. The debt was being restructured; my bank meeting emails are from that same week. I did not burn my life down. My grandmother named that cafe.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Her account was checkable at every point — the bank emails, the broker's advice, the inspection photos — and every check came back her way.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "cross",
+      "text": "'You locked up alone that night?' 'As always. I hold the only keys.' 'A supplier heard you say the cafe would be the death of you — or the making of you.' 'I say a lot of things at 5am unloading crates.' 'You were the last soul in that building.' 'I was the last soul in that building every night for nine years.'",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Nine years of being the last to leave, offered as one night of opportunity. Gallows humour to a supplier was the closest thing to a plan the prosecution ever produced.",
+      "tags": ["opportunity", "credibility"]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "Do not research this case, this fire, or fire science online. An expert's opinion is worth exactly its foundations — a technique that cannot survive flashover cannot survive cross-examination either. Motive, even very strong motive, cannot alone prove arson. The prosecution must make you sure the fire was deliberately lit, and lit for her benefit.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Motive is a spotlight, not a fingerprint: it shows you where to look and proves nothing about what you find there.",
+      "tags": ["burden", "method"]
+    }
+  ],
+  "checkins": ["b3", "b5", "b7", "b9"],
+  "verdict_truth": "Not Guilty",
+  "twist": "Debt, a bigger policy, a fast claim — the motive evidence was deafening, and it was all noise. The policy increase was her broker's idea, the fast claim was her accountant sister, and the fire itself was the cheap delivery-scooter battery the insurer had photographed and flagged in that exact corner six weeks earlier. The discredited 'pour pattern' reading dressed an electrical fire as arson. She lost nine years of work at three in the morning, and then nearly lost the rest to a spreadsheet of her own debts.",
+  "difficulty_target": 0.55,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "Broke owner, bigger policy, midnight fire — he finished the maths on day one.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": { "position": "G", "confidence": 80 },
+        "weights": { "motive": 2, "opportunity": 1 },
+        "lines": {
+          "agree": ["A hundred and forty grand under and the policy goes up five weeks out. Do the maths with me.", "Only keyholder, empty building, 3am. That is not weather."],
+          "pushback": ["Everyone broke enough gets ideas. The fire just picked her month.", "You are all romanticising a cafe. Businesses burn for money."],
+          "concede": ["If the insurer photographed the scooter in that corner… then the fire had its own idea first."],
+          "final": ["The maths said guilty. The photographs did different maths."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "motive", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "procedure", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Respects fire science exactly as far as its error rates; the flashover concession registered.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "method": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["Once he conceded flashover, his patterns stopped being evidence and became decor.", "Thermal runaway leaves signatures inside the cells. That is physics, not opinion."],
+          "pushback": ["Bring the argument back to the seat of the fire. Everything else is atmosphere.", "The negative lab result is not a footnote. It is the lab."],
+          "concede": ["The deadlocks are real. Whatever happened, happened on her keys."],
+          "final": ["Two readings of one room: retired technique versus battery metallurgy. Not close."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; arson-for-insurance verdicts built on motive frighten him professionally.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 75 },
+        "weights": { "burden": 2, "method": 1 },
+        "lines": {
+          "agree": ["Precisely — motive is a spotlight, not a fingerprint. The judge's words, and the right ones."],
+          "pushback": ["Nobody has yet put a flame in her hand. Everything else is her bank balance.", "We do not convict people for knowing their own insurance policy."],
+          "concede": ["The overheard remark is uncomfortable. Nine years of exhaustion usually is."],
+          "holdout": ["Until the battery is excluded as the cause, arson is not even the leading theory.", "I hold where the science holds."],
+          "final": ["The cause was photographed six weeks early. Not guilty, comfortably."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Keeps motive in its lane; wants each exhibit to say only what it can.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "burden": 2, "motive": 1 },
+        "lines": {
+          "agree": ["Held to the standard, the battery is the fire and the debts are just weather."],
+          "pushback": ["The fast claim deserves scrutiny. Scrutiny, not a verdict.", "Let us not convict the debt and call it her."],
+          "concede": ["The broker's handwriting on the policy increase — that pulled the loudest exhibit's teeth."],
+          "burden_correct": ["She does not have to explain 3am. They must prove a hand lit it, and no hand has appeared.", "Motive alone cannot convict — that is not my opinion, it is the direction."],
+          "final": ["On the standard, with the cause photographed in advance, I am sure the other way."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "motive", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; rations the word 'suspicious' and asks for exhibit numbers.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "G", "confidence": 50 },
+        "weights": { "method": 1, "timeline": 1 },
+        "lines": {
+          "agree": ["Noted, and agreed — the count should hear that one.", "Good. Exhibit numbers, not adjectives."],
+          "pushback": ["'Suspicious' is rationed in this room. Spend it with a page reference.", "One at a time — and the grandmother's name is not evidence for either side."],
+          "concede": ["Fairly put. Moved accordingly."],
+          "final": ["We have done the work. Hands."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Drifts with the room; the 40% policy bump keeps reeling him back in.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "G", "confidence": 45 },
+        "weights": { "motive": 2, "timeline": 1 },
+        "lines": {
+          "agree": ["Yes — that is the reading that holds up when I say it back.", "The broker's file. Right. The bump was his idea. I keep forgetting the file."],
+          "pushback": ["But forty per cent, five weeks out. Five weeks!", "I know, I know — and yet the timing itches."],
+          "concede": ["The espresso machine lease explains the timing. Scratched."],
+          "final": ["The itch was the trap, wasn't it. I drifted straight into it twice."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "motive", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "motive", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Trusted the fire inspector's certainty; the retired technique retired her certainty with it.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "G", "confidence": 70 },
+        "weights": { "method": 2, "procedure": 2 },
+        "lines": {
+          "agree": ["The insurer photographed the cause six weeks early and filed it under someday. That sentence ends the case for me.", "Cells that shorted from the inside. You cannot pour that."],
+          "pushback": ["I believed the pour patterns because an inspector said 'classically associated'. I am reporting my own error out loud.", "His certainty was the exhibit. It is not in the bundle."],
+          "concede": ["All right — 'sure it was lit' did not survive the metallurgy."],
+          "final": ["I convicted on patterns a textbook buried years ago. The battery acquitted her. Science moved; I moved with it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "procedure", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; the assessor's 'honest claimants are dazed' theory of grief offends her.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 55 },
+        "weights": { "credibility": 2 },
+        "lines": {
+          "agree": ["Mm. There is no correct speed for grief, and no policy clause for it either.", "That is the first witness today who measured something instead of someone."],
+          "pushback": ["An assessor who pays fewer claims when he testifies well — weigh that too.", "Everyone keeps grading her reaction to losing everything. Grade the fire."],
+          "concede": ["The overheard remark was hers. I hold it lightly, but I hold it."],
+          "final": ["Quietly: they proved she was broke and organised. Neither is arson."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 0, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Wants her to account for every minute after nine bells; the burden keeps slipping.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "opportunity": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Exactly — her locks, her keys, her debts, her fire."],
+          "pushback": ["Buildings do not burn themselves at 3am. Someone owns this."],
+          "burden_drift": ["Let her walk us through her night, nine bells to the sirens, minute by minute.", "If the scooter did it, let the defence prove the charger was even plugged in."],
+          "concede": ["The insurer's photo shows it plugged in. Six weeks early. Fine."],
+          "burden_correct": ["Withdrawn — the Crown must light that fire with evidence, and it brought a battery instead."],
+          "final": ["I wanted her night accounted for. The battery accounted for it instead."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "opportunity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "Undecided; keeps putting the debts and the battery on opposite scales.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "method": 1, "motive": 1 },
+        "lines": {
+          "agree": ["There — the scale tipped and stayed tipped this time.", "Right: the fire has a physical cause with signatures. The motive has a broker with handwriting."],
+          "pushback": ["And then the missed rent floats back up and I hover again.", "One more pass at the storeroom, please."],
+          "concede": ["The corner, the cells, the photographs. Landed."],
+          "final": ["I weighed money against metallurgy all day. Metallurgy does not need her to be innocent. It just is."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "motive", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Ran a shop for a decade; knows what closing-time exhaustion sounds like when it talks.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 55 },
+        "weights": { "credibility": 1, "procedure": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Fair — and the insurer flagged that powerboard and did nothing. Their file, their photo, their someday.", "The direction has it: motive shows you where to look. We looked. There was a battery."],
+          "pushback": ["'The death of me or the making of me' — every shopkeeper alive has said that by Thursday.", "Being last out for nine years is called owning a cafe."],
+          "concede": ["The fast, perfect claim is unusual. Unusual and criminal live on different streets."],
+          "final": ["I have locked up alone a thousand nights. The verdict protects every one of us who did."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "yanniedog",
+    "batch_pr": "D7b-2"
+  }
+}

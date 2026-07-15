@@ -12,4 +12,10 @@ describe('docket queue', () => {
     expect(docketCaseForDate(date)).toBe(docketCaseForDate(date))
     expect(docketCaseForDate(date, [])).toBeNull()
   })
+
+  it('only serves cases whose publish_date is on or before the play date', () => {
+    const future = new Date(2026, 0, 1)
+    const onlyFuture = docketQueue.filter((c) => c.publish_date > '2026-01-01')
+    expect(docketCaseForDate(future, onlyFuture)).toBeNull()
+  })
 })

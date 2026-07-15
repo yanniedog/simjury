@@ -1,0 +1,428 @@
+{
+  "id": "dd-0013",
+  "publish_date": "2026-08-14",
+  "label": "fiction",
+  "title": "Wear and Tear",
+  "setting": "an end-of-tenancy dispute, a deposit ledger, and photographs of damage that never happened, the present day",
+  "charge": "fraud by false representation",
+  "elements": [
+    "The damage claims made against tenants' deposits were false",
+    "The accused made them knowing they were false",
+    "He obtained the deposit money by those claims"
+  ],
+  "hook": "Saoirse Adeniyi filmed every wall of the flat on her way out. Three weeks later her landlord claimed a burnt benchtop, cracked tiles, a stained carpet — forty-eight hundred dollars of her deposit, gone. She could not find her own kitchen in the photos. In one, the benchtop reflects a window the flat never had.",
+  "accused": {
+    "cast_id": "w3",
+    "human": "Gerald Pomfret, 58. Landlord of six flats, mortgaged to the hilt; keeps a decade of quarterly inspection reports, dated checklists, and filed receipts — by reputation the most meticulously documented landlord the tribunal has seen.",
+    "if_guilty": "prison for fraud, forfeiture of the retained deposits, and a decade of 'careful' recast as a factory for lies"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "This is fraud for the generative age. Gerald Pomfret's claim photographs have no camera behind them — no device signature, no capture data, and a kitchen that reflects a window his flat does not have. The defence will parade a decade of immaculate paperwork and ask why such a careful man would ever fabricate. Hold that question. Then look at the carpet stain in this claim, and watch it appear — pixel for pixel — in four other tenants' flats. Real stains are fingerprints. His repeated."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Gerald Pomfret is one bad tenant from ruin — the bank owns more of those flats than he does — and he photographs and files obsessively because tribunals demand it of landlords. His repairman works cash-and-handshake; when the tribunal wanted invoices, he reconstructed them, badly. Sloppy, yes. The Crown's own expert conceded that metadata gets stripped innocently and that a missing signature proves nothing on its own. Why would the most documented landlord in this building's memory need to invent a thing?"
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Because the documentation was the fraud. Tribunals believe paperwork, and he had industrialised the making of it. The same carpet stain in five flats over three years. Cracked tiles repeating, once rotated ninety degrees. Repair invoices from a company deregistered six years ago, created on his own laptop, dated before the repairs they describe. Twenty-three thousand dollars retained, every claim a dollar under the scrutiny threshold. And he waived claims only against the tenants who filmed their exits. The mercy was target selection."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The judge will tell you a photograph is an assertion, not a fact — and asks you to decide on exhibits, not on your feelings about landlords. The expert would not stake a verdict on any single image. If detection tools have error rates, if metadata vanishes innocently, if an informal tradesman really exists — then the portfolio is a pattern with an innocent reading, and you are not sure. Distaste for a landlord is not proof. Where you cannot be certain he knew these claims were false, you acquit."
+      }
+    }
+  },
+  "epilogue": "The jury convicted; the pixel-identical stain, projected side by side across five flats, was what the foreperson called 'the moment the room exhaled.' Pomfret got three and a half years and orders to repay every deposit. Saoirse Adeniyi got her forty-eight hundred dollars back and now films a dated walkthrough of every rental she leaves. The tribunal changed its rules to require camera-provenance on all photographic claims. Rhonda Casella, who called him 'a soft touch with a camera', has not been charged; she says she never knew.",
+  "cast": [
+    { "id": "judge", "name": "Judge Beaumont", "role_label": "the judge", "side": "court" },
+    { "id": "pc", "name": "Yara Nasser", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Warwick Bell", "role_label": "defence counsel", "side": "defence" },
+    { "id": "w1", "name": "Saoirse Adeniyi", "role_label": "former tenant", "side": "prosecution" },
+    { "id": "w2", "name": "Dr Emil Kraus", "role_label": "image-forensics examiner", "side": "prosecution" },
+    { "id": "w3", "name": "Gerald Pomfret", "role_label": "the accused — landlord of six flats", "side": "defence" },
+    { "id": "w4", "name": "Rhonda Casella", "role_label": "property manager who worked with the accused", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I scrubbed that flat for two full days and filmed a walkthrough on my way out — every room, every bench, every wall. Three weeks later came the claim: a burnt benchtop, cracked bathroom tiles, a stained lounge carpet. Four thousand eight hundred dollars of my deposit, gone. I sat staring at those photographs and could not recognise my own kitchen in them.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Her exit video and his claim photos could not both be true. One of them had a camera; the other had a text prompt.",
+      "tags": ["credibility", "method"]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "The claim photographs carry no camera provenance whatsoever — no device signature, no capture metadata, nothing a phone or camera leaves behind. The lighting in the kitchen image is internally inconsistent, and the benchtop reflection shows a window that flat does not have. These images were generated, not taken.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.5,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "A reflection of a window that was never built — the kind of mistake image generators make and kitchens do not.",
+      "tags": ["digital_forensics", "method"]
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit three, tendered by the defence: the accused's inspection dossier. A decade of quarterly reports, dated checklists, signed condition statements, receipts filed by year. The defence asks the obvious question: why would the most meticulously documented landlord in this tribunal's memory ever need to fabricate anything at all?",
+      "surface_persuasion": 0.75,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The paperwork was not evidence against fabrication — it was the fabrication's delivery system. Tribunals believe documentation, and he had industrialised the manufacture of belief.",
+      "tags": ["credibility", "procedure"]
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "The examiner accepted that automated detection tools carry error rates, that phone apps and messaging platforms can strip metadata innocently, and that a missing device signature alone proves nothing. 'On any single image, I would hedge,' he said. 'My conclusions rest on what repeats across the portfolio.'",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Fair hedges on single images — and a signpost to where the case actually lived: the repetition.",
+      "tags": ["digital_forensics", "credibility"]
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit five: the portfolio comparison. The carpet stain in this claim appears — identical in shape, pixel for pixel — in claim photographs for four other flats across three years. The cracked tile pattern recurs twice, once rotated ninety degrees. Five different properties, five different tenants, one recurring stain that never existed anywhere.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Real stains are fingerprints; no two fall alike. His flats suffered the same stain five times because he kept reusing his favourite prompt.",
+      "tags": ["digital_forensics", "method", "identity"]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit six: the ledger. Five prior deposit claims in three years, every one settling just beneath the threshold that triggers tribunal scrutiny — twenty-three thousand dollars retained in all. The supporting repair invoices came from a company deregistered six years ago, and their document metadata shows each one was created on the accused's own laptop.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.7,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "A repair company that no longer existed kept invoicing from his laptop, for repairs no tradesman ever made, priced always a dollar short of scrutiny.",
+      "tags": ["method", "timeline"]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I am one bad tenant away from losing everything — the bank owns more of those flats than I do. I photograph and file obsessively because tribunals demand it of landlords. My repairman works informally, cash and a handshake, and when the tribunal wanted invoices I reconstructed them afterwards. Sloppy bookkeeping, I accept. Not fraud.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Mortgage stress and an informal tradesman — a defence built from things that are true of thousands of honest landlords, none of whom share a recurring stain.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "'Give the tribunal your repairman's surname.' 'I — we only dealt in cash. First names.' 'A phone number? Any way to reach a man you paid for ten years?' 'No.' 'Your reconstructed invoices are dated before the repairs they bill. Explain that.' Silence. 'And this stain, in five different flats?' He barely glanced. 'Stains look alike. Carpet is carpet.'",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Invoices written before the repairs they invoice, a tradesman made of air, and 'carpet is carpet' offered against pixel-identical geometry.",
+      "tags": ["credibility", "timeline"]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "I managed lettings alongside Gerald for six years and I know what tenants can be. Tenants trash places and lie about it — I have seen flats after parties that you would not believe were habitable. And I have watched him waive whole claims for good tenants, more than once, out of his own pocket. That is not a fraudster. That is a soft touch with a camera.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.15,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "True, and chilling in reverse: he waived claims against tenants who documented everything, and claimed against the ones who hadn't filmed their exit. The mercy was target selection.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "You must not research this case, these tools, or these parties online. A photograph is an assertion, not a fact — its weight depends on where it came from, and provenance was contested here from the first day. The prosecution must make you sure the claims were false and that he knew it. Decide on the exhibits, not on your feelings about landlords or tenants.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction for the generative age: a photograph is an assertion. His assertions repeated themselves, pixel for pixel, until they became a confession.",
+      "tags": ["burden", "digital_forensics"]
+    }
+  ],
+  "checkins": ["b3", "b5", "b8", "b9"],
+  "verdict_truth": "Guilty",
+  "twist": "He looked like the careful one — a decade of checklists against a tenant's word. But the carpet stain in her claim had already appeared, pixel for pixel, in four other flats' claims; the tiles cracked the same way twice, once sideways; the repair invoices were written on his laptop, dated before the repairs, for a company six years dead. The famous documentation was the con: tribunals believe paperwork, and he had learned to print belief on demand. The soft touch waived claims only against tenants who filmed their exits.",
+  "difficulty_target": 0.55,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A small landlord herself; his dossier looks like her own filing cabinet.",
+        "register": "plain",
+        "arc": "vibes",
+        "initial": { "position": "NG", "confidence": 75 },
+        "weights": { "credibility": 2, "procedure": 1 },
+        "lines": {
+          "agree": ["That dossier is exactly what the tribunal forces on us. Documentation is survival, not scheming.", "He waived claims from his own pocket. I have done that. Fraudsters do not."],
+          "pushback": ["One bad tenant genuinely can ruin a small landlord. That fear is not a motive, it is a Tuesday.", "You are convicting the paperwork because it is tidy."],
+          "concede": ["The same stain in five flats. My flats have never once shared a stain."],
+          "final": ["I defended the filing cabinet. Nobody warned me what he kept in it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Treats the recurring stain as arithmetic; probability finished this case for her.",
+        "register": "blunt",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 65 },
+        "weights": { "digital_forensics": 2, "method": 1 },
+        "lines": {
+          "agree": ["Five flats, three years, one identical stain. Compute the odds of that and get back to me.", "Invoices dated before their own repairs. Time does not do that for honest men."],
+          "pushback": ["Stop arguing about landlords in general. Argue about this stain in particular.", "The examiner hedged on single images and none of us are relying on a single image."],
+          "concede": ["Metadata stripping happens innocently. Once. Not across an entire portfolio."],
+          "final": ["Carpet is carpet, he said. Geometry disagrees, five times."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; wants the AI-forensics treated as sceptically as any other expert claim.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 70 },
+        "weights": { "burden": 2, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["Correct — a photograph is an assertion. So is a detection report. Both need provenance."],
+          "pushback": ["Detection tools have error rates the examiner himself conceded. Start there.", "We must not convict a man because his industry is unpopular this decade."],
+          "concede": ["The recurrence does not need any tool. Eyes and a ruler will do."],
+          "holdout": ["Until the repetition is explained or excluded, I keep the question open — and it will not be explained by 'carpet is carpet'.", "Test the strongest innocent story, not the weakest."],
+          "final": ["The strongest innocent story required five identical accidents of pixels. I am done. Guilty."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Holds the burden steady against the room's landlord-versus-tenant instincts, whichever way they blow.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "burden": 2, "method": 1 },
+        "lines": {
+          "agree": ["Held to the standard, the portfolio evidence reaches it without borrowing anyone's politics."],
+          "pushback": ["Half this room arrived with a landlord story. The exhibits did not.", "His mortgage stress is context for a motive, not proof of an act. Keep the order straight."],
+          "concede": ["The waived claims are genuinely in his favour, as far as they go."],
+          "burden_correct": ["He does not have to produce the repairman. But when his own invoices predate their repairs, the Crown may say so, and it lands.", "No tenant sympathy fills gaps either. As it happens, there are none to fill."],
+          "final": ["On the standard, with the recurrence and the ledger, I am sure."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; has banned the phrase 'all landlords' and its cousin 'all tenants'.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "NG", "confidence": 50 },
+        "weights": { "method": 1, "credibility": 1 },
+        "lines": {
+          "agree": ["Noted for the count, and tidily put.", "Good — exhibits and page numbers, that is our dialect."],
+          "pushback": ["Both banned phrases just left someone's mouth. Rephrase with an exhibit.", "One at a time. The stain cannot hear you if you all shout at it."],
+          "concede": ["Fair. Counted and moved."],
+          "final": ["We judged one man, not a housing market. Hands."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Drifts between the soft-touch stories and the deregistered company, round by round.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "NG", "confidence": 45 },
+        "weights": { "timeline": 1, "credibility": 1 },
+        "lines": {
+          "agree": ["Yes — the invoice dates. Say them slowly and the case says itself.", "That holds. I will stop relitigating it."],
+          "pushback": ["But he paid out of pocket for good tenants. That detail is so human.", "The manager worked beside him six years. Six years is a lot of fooled."],
+          "concede": ["Waiving claims against the well-documented ones — human, yes. Also excellent risk management for a fraud."],
+          "final": ["I drifted on the kindness twice. Both times the ledger was still there when I got back."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Believed the dossier — order reads as honesty to him; the recurring stain broke the spell.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "NG", "confidence": 70 },
+        "weights": { "digital_forensics": 2, "method": 2 },
+        "lines": {
+          "agree": ["One stain, five flats, three years. There is no honest arrangement of those numbers.", "The window reflection that the flat never had — the kitchen itself testified against him."],
+          "pushback": ["I trusted the checklists because I keep checklists. I am telling you how the trick works from the inside.", "The detection-tool hedging was fair. The repetition needed no tool at all."],
+          "concede": ["All right. Tidy is not honest. I have updated accordingly, painfully."],
+          "final": ["He documented his way into my trust and generated his way out of it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; renders her verdicts on what could not have been staged by either side.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 50 },
+        "weights": { "credibility": 2 },
+        "lines": {
+          "agree": ["Mm. Her exit video was filmed before any dispute existed. That is the one artefact in this case with clean hands.", "That is the first argument today that did not need me to like anyone."],
+          "pushback": ["The tenant is angry and anger edits memory. Watch the video, not her adjectives.", "The manager's loyalty is real. Loyalty is not evidence; it is weather."],
+          "concede": ["The invoices predating repairs — I tried to make that innocent. It declined."],
+          "final": ["Quietly: the video, the stain, the dates. Three clean things, one verdict."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 0, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Wants the phantom repairman produced; keeps assigning the defence the Crown's job.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "method": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Exactly. Twenty-three grand in three years, always a dollar under the scrutiny line. That is not luck, that is calibration."],
+          "pushback": ["Five tenants lost their deposits to a stain that does not exist. Someone signs for that."],
+          "burden_drift": ["Let him produce the repairman. A first name and a handshake is not a witness.", "He should have to walk us through every one of those five claims, photo by photo."],
+          "concede": ["The Crown already walked us through them. Stain by identical stain."],
+          "burden_correct": ["Withdrawn — the burden stayed put and was met where it stood."],
+          "final": ["I kept demanding the phantom tradesman. The pixels had already signed the confession."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "Undecided; rents, and is fighting not to let her own bond history vote.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "digital_forensics": 1, "credibility": 1 },
+        "lines": {
+          "agree": ["There — that stands on exhibits alone. I can vote on that.", "Right: the reflection of a nonexistent window. Rooms do not perjure themselves."],
+          "pushback": ["I have lost a bond unfairly and I know how badly I want him guilty. Check me on it.", "Run the portfolio comparison past me once more, slowly."],
+          "concede": ["Slowly was devastating. Settled."],
+          "final": ["I benched my own bond story all day. The verdict never needed it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Photographer by trade; provenance is her native language and this case speaks it.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "digital_forensics": 2, "burden": 1 },
+        "lines": {
+          "agree": ["Every real photo carries its birth certificate. His carry nothing — six times, across years. Absence that consistent is authorship.", "And the direction has it right: a photograph is an assertion. His asserted the same stain five times."],
+          "pushback": ["Apps do strip metadata — one image proves little. Portfolios prove plenty.", "Do not lean on the detection tool. Lean on the geometry; geometry has no error rate."],
+          "concede": ["The tenant's video is ordinary phone footage with full provenance. The contrast is the case."],
+          "final": ["I have developed thousands of honest photographs. Not one of them ever came back identical in another house."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "yanniedog",
+    "batch_pr": "D7b-2"
+  }
+}

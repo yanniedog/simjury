@@ -1,0 +1,428 @@
+{
+  "id": "dd-0010",
+  "publish_date": "2026-08-11",
+  "label": "fiction",
+  "title": "The Export",
+  "setting": "a subscription company's server room, a dark-market listing, and one hardware key, the present day",
+  "charge": "unauthorised access and sale of personal data",
+  "elements": [
+    "The customer database was exported and sold without authority",
+    "The accused performed the export",
+    "He did so dishonestly, for gain"
+  ],
+  "hook": "At 2:14 in the morning, someone pulled 1.1 million customer records out of MintVault in eleven minutes — no wrong turns, no tripped alarms. Nine days earlier, Leo Brandt had reported a phishing email that stole his password. He is either the unluckiest administrator alive, or the only one who knew the map by heart.",
+  "accused": {
+    "cast_id": "w3",
+    "human": "Leo Brandt, 38. Senior systems administrator; spent three years writing memos about the company's sloppy security — the shared logins, the sticky-note PINs — until colleagues hid them when he walked past.",
+    "if_guilty": "prison for the data theft, and three years of being the one who cared reread as reconnaissance"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "This is a circumstantial case, and a complete one. The export ran through an administrator session at 2:14am — approved not just by a password, but by Leo Brandt's personal hardware key, which needs his PIN and his physical touch, over a VPN paid from his own card. The proceeds of the sale walked, over six weeks, into an exchange account opened with his passport and his face. He will tell you he was phished. A phishing kit cannot hold a key and press a thumb to it."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Leo Brandt is the man who reported the phishing email — the same day, before any breach — and thieves do not ring the alarm on themselves. He is the man who wrote the memos about shared logins and PINs on sticky notes, in a shared-drawer culture where anyone in operations could lift a key overnight and return it by morning. The Crown has built a chain out of an institution's own carelessness. The judge will tell you: one honest break in that chain, and you must acquit."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Test every link. The password — maybe phished. But the hardware key needs a PIN he swears he never wrote down. His onboarding form says the key stays on his person; the convenient desk drawer appeared only after the charge. The VPN exits in the same city as the 2:14 session. The money retired into an account wearing his own face. He reported the phish nine days early because he knew he would need it. Not a defence. A prop."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "A circumstantial case asks you to be sure of the whole chain, end to end — and this company has admitted, under oath, that its logs had gaps it deferred for budget, that accounts were shared against policy, that Leo was the one flagging all of it. The man who mapped every hole in the fence is not therefore the man who climbed through. If the shared drawer, the phish, the sloppy logging leave you with one genuine doubt anywhere along that chain, the law requires acquittal."
+      }
+    }
+  },
+  "epilogue": "The jury convicted; the foreperson later said the hardware key's physical touch was the link no one could break. Leo received four years. MintVault's breach cost it a regulator's fine and a third of its subscribers; it finally rebuilt its access logging, using Leo's old memos as the specification. The exchange account was frozen and the customers partially compensated. Nia Fontaine, who testified that he was 'the one who cared', has not spoken to him since the passport evidence was read. He is appealing.",
+  "cast": [
+    { "id": "judge", "name": "Judge Ilsa Renner", "role_label": "the judge", "side": "court" },
+    { "id": "pc", "name": "Vaughn Attaway", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Simone Okafor", "role_label": "defence counsel", "side": "defence" },
+    { "id": "w1", "name": "Petra Onishi", "role_label": "head of security, MintVault Subscriptions", "side": "prosecution" },
+    { "id": "w2", "name": "Detective Sam Kettler", "role_label": "cybercrime detective", "side": "prosecution" },
+    { "id": "w3", "name": "Leo Brandt", "role_label": "the accused — senior systems administrator", "side": "defence" },
+    { "id": "w4", "name": "Nia Fontaine", "role_label": "former operations colleague", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "We learned of the breach the way you never want to: our customers' records appeared for sale online. The export itself ran at 2:14 in the morning through an internal administrator session — one point one million records, names, addresses, and payment tokens, pulled in eleven minutes by someone who knew exactly where everything lived.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.5,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Eleven minutes, no wrong turns, no tripped alarms — the export was a tour given by someone who had drawn the map.",
+      "tags": ["method", "digital_forensics"]
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit two, tendered by the defence: a phishing email received by the accused nine days before the breach — a pixel-perfect fake of the company's IT portal, asking him to re-enter his administrator credentials. He clicked it. The defence says his stolen credentials, not his hands, performed the export.",
+      "surface_persuasion": 0.75,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The phish was real, the click was real — and he reported it himself the same afternoon, so the password was rotated within hours. What the phishing kit could never capture was the hardware key that later authorised the export with a physical touch.",
+      "tags": ["credibility", "digital_forensics"]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "She agreed the administrator account had historically been shared among three operations staff, against policy. She agreed there were gaps in the access logging that her own team had flagged and deferred twice for budget reasons, and that the accused was the person who had written the memo complaining about both.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.45,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Real institutional sloppiness, honestly conceded — which widened the suspect pool for the password, and did nothing to widen it for the key.",
+      "tags": ["procedure", "digital_forensics"]
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "The database was listed on a dark market by a vendor called corvid underscore nine — a fresh account with no history, asking a premium price. The sample rows the vendor posted matched our victim's records exactly. Within a week the listing was marked sold, and the vendor account went silent for good.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.5,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "A vendor born for one sale and retired after it — the signature of an insider cashing out, not a career criminal building a reputation.",
+      "tags": ["method", "identity"]
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit four: the export session's authentication chain. Beyond the password, the session was approved by the accused's personal hardware security key — a device requiring both his PIN and a physical touch, registered to him alone, never reported lost or stolen. The session arrived through a personal VPN subscription paid from his own card.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The phishing story could explain the password. It could not explain a physical key, in someone's hand, entering his PIN, on a VPN he was paying for.",
+      "tags": ["digital_forensics", "identity"]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit five: the money. The wallet that received the sale proceeds moved them, over six weeks, into an exchange account opened eight months earlier with the accused's passport and a selfie verification. From there, regular withdrawals landed in his everyday bank account — the same account his salary goes into.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.75,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The proceeds of corvid_9's one and only sale retired into an account verified with his own face. Anonymity held for exactly as long as the money stayed still.",
+      "tags": ["identity", "method"]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I reported that phishing email myself, the same day — ask anyone what thieves do, and it is not that. Security here was a shared-drawer culture: keys, badges, even PINs on sticky notes; I wrote the memo saying so. Anyone in operations could have taken my key from my desk drawer overnight and returned it by morning.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The reported phish was genuine good citizenship — nine days before the export it also, conveniently, seeded the exact defence he would later need.",
+      "tags": ["credibility", "procedure"]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "'The key needs a PIN as well. Where is that PIN written?' 'Nowhere. I never wrote it down.' 'Your onboarding form says the key stays on your person at all times. When did the desk drawer enter your account?' Silence. 'Shown a VPN receipt in your own inbox, Mr Brandt — what was it for?' A pause. 'Streaming sport.' 'It exits in the city the export came from.'",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The drawer arrived late, the PIN had no explanation at all, and the sports VPN happened to exit in the same city as the 2:14am session.",
+      "tags": ["credibility", "digital_forensics"]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "Leo was the one who cared. He escalated the shared account, he wrote the memo about the logging gaps, he nagged about the sticky notes until people hid them when he walked past. You are asking me to believe the man who spent three years reporting the holes in the fence is the one who climbed through it.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.25,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Sincere — and double-edged. The man who mapped every hole in the fence is also the only person who knew precisely which holes an export would slip through unlogged.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "You must not research this case, this market, or any of these technologies online. This is a circumstantial case: test every single link — the key, the PIN, the VPN, the money — and ask whether the innocent explanation survives each one in turn. The prosecution must make you sure of the whole chain, end to end. A chain with one honest break in it acquits.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction invited the jury to break the chain anywhere. Every link — touch, PIN, VPN, passport, bank — held.",
+      "tags": ["burden", "digital_forensics"]
+    }
+  ],
+  "checkins": ["b3", "b5", "b8", "b9"],
+  "verdict_truth": "Guilty",
+  "twist": "The phishing email was real, the click was real, the shared-drawer culture was real — a whole ecosystem of reasonable doubt, most of it documented by the accused himself. But the export was approved by a hardware key that needs his PIN and his touch, over a VPN he paid for, and the sale's proceeds retired into an exchange account verified with his own passport and face. He reported the phish nine days early because he knew he'd need it: it was not a defence, it was a prop.",
+  "difficulty_target": 0.6,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "The reported phish won her instantly — thieves don't ring the alarm on themselves.",
+        "register": "plain",
+        "arc": "vibes",
+        "initial": { "position": "NG", "confidence": 75 },
+        "weights": { "credibility": 2, "procedure": 1 },
+        "lines": {
+          "agree": ["He reported the phishing email himself. Same day. That is not what guilt looks like.", "Their own security was sticky notes and shared drawers — and they want one scapegoat for it."],
+          "pushback": ["The company's mess does not become his crime just because he mapped it.", "You are punishing the whistleblower for the accuracy of his warnings."],
+          "concede": ["The passport selfie on the exchange account. There is no drawer that explains a passport."],
+          "final": ["I believed the alarm-ringer. Then I saw whose face was on the money."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Works in IT; knows exactly what a hardware key's touch requirement means.",
+        "register": "blunt",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 65 },
+        "weights": { "digital_forensics": 2, "identity": 1 },
+        "lines": {
+          "agree": ["A phish captures what you type. It cannot press a button on a key in your pocket.", "PIN plus touch plus his VPN. The password story ended at Exhibit four."],
+          "pushback": ["Stop arguing the password. Nobody disputes the password. Argue the key.", "Logging gaps hide what happened. They do not authenticate anything."],
+          "concede": ["The shared-drawer culture was real. It just needed his PIN to matter."],
+          "final": ["I have carried one of those keys for years. Mine has never exported a database without me."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; circumstantial chains get tested link by link, out loud.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 70 },
+        "weights": { "burden": 2, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["Correct — one honest break in the chain acquits. The judge said it; I intend to look for one."],
+          "pushback": ["A company that shared admin passwords will not get the benefit of my certainty cheaply.", "The insider who wrote the security memo is the easiest man to frame. Consider that seriously."],
+          "concede": ["The PIN is the link I cannot break. Keys travel; PINs live in heads."],
+          "holdout": ["I will test the drawer story properly before I abandon it, not because I believe it but because testing is the job.", "Hold the chain up. Link by link. Slowly."],
+          "final": ["I tried every link. Touch, PIN, VPN, passport, bank. Five held. I am done."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Keeps the burden fixed while insisting the accused's own paperwork gets read.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "burden": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["Held to the full standard, the chain still closes — that is what sure means here."],
+          "pushback": ["His onboarding attestation is his own signature. 'On my person at all times.' Read it back to the drawer story.", "The memo proves he knew the fence. It does not prove he respected it."],
+          "concede": ["The deferred logging fixes are the company's shame. Twice deferred, for budget."],
+          "burden_correct": ["He does not have to explain the VPN. But when the Crown proves he paid for it, the proof stands whether he explains it or not.", "The standard has not moved. The evidence reached it."],
+          "final": ["On the standard, with the chain intact, I am sure."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; keeps the room from re-trying the company's security culture.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "G", "confidence": 50 },
+        "weights": { "method": 1, "identity": 1 },
+        "lines": {
+          "agree": ["Noted for the count. Cleanly argued.", "Good — keep it to exhibits when we vote."],
+          "pushback": ["MintVault's sloppiness is context, not a defendant. Back to him.", "One at a time, and nobody relitigates the sticky notes again."],
+          "concede": ["Fair. Moved."],
+          "final": ["It has been thorough. Hands, please."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Drifts between the whistleblower and the wallet, depending on who spoke last.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "NG", "confidence": 45 },
+        "weights": { "identity": 1, "credibility": 1 },
+        "lines": {
+          "agree": ["Yes — say the money part again. The money part stays said.", "Right, the selfie verification. You cannot phish a face onto a passport."],
+          "pushback": ["But he nagged them about security for three years. Three years!", "The drawer thing does happen in real offices. I have seen drawers like that."],
+          "concede": ["Drawers do not know PINs. I keep arriving back here."],
+          "final": ["I drifted between the memo and the money all day. The money never moved."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "The phishing email had him fully convinced; the authentication chain is prying him loose.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "NG", "confidence": 70 },
+        "weights": { "digital_forensics": 2, "identity": 2 },
+        "lines": {
+          "agree": ["The key needed a touch and a PIN. The phish got neither. I have run out of innocent geometry.", "corvid_9 was born for one sale and its money died in his bank. Follow that arc and try to land anywhere else."],
+          "pushback": ["I want it on record: the phish was real, and it fooled me exactly the way it was meant to fool us.", "The reported email felt like character evidence. It was set dressing."],
+          "concede": ["All right. The chain closed and my doubt did not survive the closing."],
+          "final": ["He built himself a reasonable doubt nine days early. It worked on me for most of a day."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; stories that improve after arrest earn her particular attention.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 50 },
+        "weights": { "credibility": 2 },
+        "lines": {
+          "agree": ["Mm. The drawer appeared in his story only after the charge. Late additions are load-bearing.", "That is the first exhibit today neither side could have staged."],
+          "pushback": ["The colleague's faith in him is real. Three years of nagging is a character, not a costume.", "Everyone is very certain about what thieves would never do."],
+          "concede": ["'Streaming sport', eventually, about the VPN. I heard the pause. The pause was long."],
+          "final": ["Quietly: his story grew a drawer when it needed one. Stories that grow furniture lose me."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 0, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Wants the accused to unlock everything in front of the room; keeps flipping the burden.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "identity": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Exactly. His key, his PIN, his VPN, his passport, his bank. Five of his things, one story."],
+          "pushback": ["One point one million people's records. Someone pays for that."],
+          "burden_drift": ["Let him name one colleague who could know his PIN. One name, and I will listen.", "He should have to open that exchange account's history line by line for us."],
+          "concede": ["The Crown already opened it. Line by line. Fine."],
+          "burden_correct": ["Withdrawn — it was theirs to prove and, annoyingly for my speech, they proved it."],
+          "final": ["I kept demanding he disprove it. The exhibits had already outrun both of us."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "Undecided; keeps auditioning the frame-up theory against each exhibit.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "digital_forensics": 1, "procedure": 1 },
+        "lines": {
+          "agree": ["There — the frame-up needed his PIN, and the frame-up just died of it.", "Right: a framer with his key, PIN, VPN and passport is not a framer. It is him."],
+          "pushback": ["A good frame would look exactly this complete, though. That is what frames are.", "One more exhibit against the frame theory, please. I am close."],
+          "concede": ["The passport selfie. Frames do not smile for the camera. Done."],
+          "final": ["I auditioned the frame-up against five exhibits. It failed all five callbacks."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "procedure", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Angry at the company's negligence; determined it not become the verdict either way.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "U", "confidence": 45 },
+        "weights": { "procedure": 2, "burden": 1 },
+        "lines": {
+          "agree": ["Fair — the negligence widened the password pool and left the key pool at exactly one.", "And the direction stands: test the chain. I tested it angry, and it still held."],
+          "pushback": ["A million customers were failed twice: once by the drawer culture, once tonight if we get this wrong.", "The deferred logging fixes would have settled this in an afternoon. Remember that when you feel certain."],
+          "concede": ["My anger at MintVault kept trying to acquit him. The exhibits kept declining."],
+          "final": ["The company deserves a regulator. He deserves this verdict. Both things are true."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "procedure", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "pushback" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "yanniedog",
+    "batch_pr": "D7b-2"
+  }
+}

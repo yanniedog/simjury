@@ -1,0 +1,427 @@
+{
+  "id": "dd-0008",
+  "publish_date": "2026-08-09",
+  "label": "fiction",
+  "title": "The Middleman",
+  "setting": "an online marketplace storefront run from a rented garage, the present day",
+  "charge": "obtaining payment by deception",
+  "elements": [
+    "Buyers paid for goods that were never sent",
+    "The accused took the payments dishonestly, knowing the goods would not come"
+  ],
+  "hook": "Two hundred and sixty-nine people paid Aaron Voskuil for a games console that never came. He says he was robbed too — a middleman who trusted a bulk supplier that vanished, with eight months of desperate messages to prove it. Someone is lying about who that supplier was.",
+  "accused": {
+    "cast_id": "w3",
+    "human": "Aaron Voskuil, 24. Has been fixing consoles in his mother's garage since he was fifteen; his storefront had years of clean five-star history before the orders stopped shipping. His mother has sat behind him every day.",
+    "if_guilty": "prison for fraud, and every kindness his family swears to becomes part of the act"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Three hundred and ten consoles sold. Forty-one shipped. A hundred and eighty thousand dollars taken for goods that never existed, and — this is the part to hold onto — decoy parcels of socks posted out under real tracking numbers to make refunds look honoured. The defence will show you a heartbreaking supplier who robbed him. Ask one question as you listen: a man robbed by his supplier does not post socks to strangers to buy himself four more weeks of orders."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Aaron Voskuil built something real in his mother's garage — you will see the forty-one consoles he shipped at a loss, the years of clean history, the reviews. Then a bulk supplier called BulkHarbor took his money and vanished, and a young man who had scaled up too fast panicked and did some stupid things to buy time. Panic is not a plan. The detective herself will tell you middlemen burned by fake suppliers walk through her unit every month."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "BulkHarbor was created from his browser. Its apologies — 'stock delayed, customs, so sorry boss' — sat pre-written in his own notes app, days before the supplier 'sent' them. Its account-recovery number is his second phone. And not one dollar, on any date, ever flowed upstream to any supplier: it went to a car lease, a loan, an exchange account in his name. He was not robbed by BulkHarbor. He was BulkHarbor. He built a victim and cast himself in the role."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The Crown must make you sure he took your money knowing the consoles would never come — that this was a scheme, not a small business that drowned. A young man in over his head, doing foolish things to stall for the stock he believed was coming, is not the same as a thief. The notes app looks bad. He told you he summarised expected replies to stay organised. If that leaves you unsure — genuinely unsure — the law gives that doubt to him."
+      }
+    }
+  },
+  "epilogue": "The jury convicted; Aaron was sentenced to three years, and the socks — entered as Exhibit one — were the detail the foreperson said settled it. Restitution reached the buyers at nineteen cents on the dollar. His mother, Dora, still tells people it was the supplier, and testified to that in genuine belief; the forensics never reached her. The marketplace platform used the case to launch a seller-verification scheme it named after no one. Aaron has an electronics-repair certificate he earned inside, and a garage bench waiting for him.",
+  "cast": [
+    { "id": "judge", "name": "Judge Weyland", "role_label": "the judge", "side": "court" },
+    { "id": "pc", "name": "Helena Frost", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Ravi Sundaram", "role_label": "defence counsel", "side": "defence" },
+    { "id": "w1", "name": "Detective Cara Osei", "role_label": "fraud investigator", "side": "prosecution" },
+    { "id": "w2", "name": "Bree Tallis", "role_label": "buyer of two consoles that never arrived", "side": "prosecution" },
+    { "id": "w3", "name": "Aaron Voskuil", "role_label": "the accused — marketplace seller", "side": "defence" },
+    { "id": "w4", "name": "Dora Voskuil", "role_label": "the accused's mother", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "Over four months his storefront sold three hundred and ten refurbished games consoles. Forty-one were ever shipped. The rest — a hundred and eighty thousand dollars of paid orders — were never sent to anyone. Refund requests were answered first with apologies, then with tracking numbers that belonged to cheap parcels of socks and phone cases posted to random suburbs across the city.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The fake tracking numbers were the tell the room kept circling back to: a supplier failing you does not require you to post decoy socks.",
+      "tags": ["method", "digital_forensics"]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I ordered two consoles for my sons' birthdays. When nothing came, the shop replied with apologies, then a tracking number, then silence. The tracking said delivered — to a suburb I have never been to. I found a group chat of buyers like me. There were two hundred of us in a week.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "One buyer's story, multiplied by two hundred and sixty-nine. The pattern was the crime; she was one data point of it who could cry.",
+      "tags": ["method", "credibility"]
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit two, tendered by the defence: the accused's message history with 'BulkHarbor', his supposed supplier — eight months of orders, invoices, and increasingly desperate pleas. 'Where is my stock? You are ruining me.' The defence says he was a middleman drowning in the same scam as his buyers.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A convincing paper trail of victimhood — until the device forensics showed both sides of the conversation being typed on the same keyboard.",
+      "tags": ["credibility", "identity"]
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "The detective agreed the accused genuinely did ship the first forty-one consoles at a loss, that his storefront had years of clean history before this, and that middleman sellers burned by fake suppliers are common — her own unit sees several every month. 'It is a real pattern,' she said. 'It is also a great costume.'",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The early honest shipments were real — and standard. Exit scams buy their reviews first; the clean history was the runway, not the rebuttal.",
+      "tags": ["credibility", "method"]
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit four: forensic examination of the accused's laptop. The 'BulkHarbor' account was created from his browser. Draft messages from the supplier — including 'stock delayed, customs, so sorry boss' — sit in his own notes app, written days before BulkHarbor sent them. The supplier's email recovery number is his second phone.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "He was corresponding with himself and rehearsing the supplier's lines in advance. The middleman and the scammer shared a notes app.",
+      "tags": ["digital_forensics", "identity"]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit five: the money, traced end to end. Buyer payments left the storefront account within days — sixty-two thousand to a cryptocurrency exchange account under his own name, the rest to rent, a car lease, and repayments on a personal loan taken out the same month the storefront's sales exploded. No payment of any size, on any date, ever went to any supplier anywhere.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.75,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "A middleman's money flows through him to a supplier. This money flowed to a car lease. There was never anything upstream.",
+      "tags": ["method", "digital_forensics"]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I started the shop to flip consoles I refurbished myself in my mother's garage, and it worked — that is the forty-one. Then BulkHarbor offered bulk stock and I scaled up much too fast. When they went quiet I panicked. The fake tracking numbers were stupid — I was buying time, not stealing anything. I always meant to deliver every order.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "'Buying time' was the confession wearing a coat: time was the one thing every exit scam needs, and the decoy parcels bought exactly four more weeks of orders.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "'Why do the supplier's apologies sit drafted in your notes app, days early?' 'I — sometimes I summarise expected replies. To stay organised.' 'And BulkHarbor's account-recovery number. Whose phone is it?' A long silence. 'I cannot explain that one.' 'It is your second phone, Mr Voskuil.' 'Then someone must have used my details.'",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.6,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The third invisible stranger of the week: someone who used his details, on his phone, in his notes app, days ahead of schedule.",
+      "tags": ["credibility", "identity"]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "Aaron fixed consoles in my garage since he was fifteen. He is not a schemer — when the orders went wrong he stopped sleeping, he was sick over it. He told me the supplier had robbed him months before the police ever came. I watched my son fall apart over this. That is not acting.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Her grief was real and her evidence was secondhand: the distress she saw fits a scammer watching his exit close just as well as a victim watching his business die.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "Do not research this case, the storefront, or the buyers' group online. The prosecution must make you sure he took payments knowing the goods would not come — a failing business honestly run is not a crime, however badly it ends. Test his account against the records, and the records against his account.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction gave his defence its full width — a real middleman scam would have acquitted him. The notes app took that defence away.",
+      "tags": ["burden", "credibility"]
+    }
+  ],
+  "checkins": ["b3", "b5", "b8", "b9"],
+  "verdict_truth": "Guilty",
+  "twist": "The middleman defence was almost perfect — real early shipments, a clean history, eight months of desperate messages to a supplier who robbed him. Except he was the supplier: the BulkHarbor account came from his browser, its apologies sat pre-drafted in his own notes app, its recovery number was his second phone, and not one dollar ever flowed upstream. He didn't fall for an exit scam. He performed one, complete with a victim to play.",
+  "difficulty_target": 0.5,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "Has been burned by a dodgy supplier himself; aches to believe the middleman story.",
+        "register": "plain",
+        "arc": "vibes",
+        "initial": { "position": "NG", "confidence": 70 },
+        "weights": { "credibility": 2, "motive": 1 },
+        "lines": {
+          "agree": ["Exactly — I have lived that supplier nightmare. Every word of those messages rang true.", "He shipped forty-one at a loss. Scammers do not do loss-leaders for strangers."],
+          "pushback": ["Small sellers drown like this every day and nobody calls it fraud.", "You are sentencing a panic, not a plan."],
+          "concede": ["The drafts in his own notes app. There is no supplier-nightmare version of that."],
+          "final": ["I wanted him to be me. The notes app says he was the other guy."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Follows the money; 'nothing ever went upstream' ended her deliberation early.",
+        "register": "blunt",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 65 },
+        "weights": { "method": 2, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["A middleman has an upstream. His money had a car lease.", "Decoy parcels of socks. Honest panic does not buy postage."],
+          "pushback": ["Stop debating his tears and read the transfers.", "The loan taken out the month sales exploded — that is a plan with a date on it."],
+          "concede": ["The first forty-one were real. The runway usually is."],
+          "final": ["I followed the money in both directions. Only one direction existed."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; dishonesty at the moment of sale is a high bar and he keeps it high.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 70 },
+        "weights": { "burden": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["Quite — the question is what he knew when each payment landed, not how ugly the ending was."],
+          "pushback": ["A collapsing business and a fraud look identical from the buyers' side. That is why the burden exists.", "Panic explains fake tracking numbers almost as well as theft does. Almost."],
+          "concede": ["Pre-drafted apologies are not panic. Panic does not write next week's excuses."],
+          "holdout": ["Until the middleman story is excluded — not mocked, excluded — I hold.", "Sure means the innocent version cannot survive. Test it properly."],
+          "final": ["The innocent version needed a supplier to exist. It did not. Guilty."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Keeps the room honest: a failed business is not a crime, and a crime is not a failed business.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "burden": 2, "method": 1 },
+        "lines": {
+          "agree": ["Correct — and even at that standard, the exhibits carry it."],
+          "pushback": ["His mother's pain is real and proves nothing in either direction. Leave her out of the count.", "The judge was plain: a business honestly run into the ground acquits."],
+          "concede": ["If only the tracking numbers existed, I would call it desperation and vote to acquit."],
+          "burden_correct": ["He does not have to produce BulkHarbor. They had to prove BulkHarbor was him — and they did.", "Keep the standard where the judge put it. It is satisfied there."],
+          "final": ["Held to the proper bar, the notes app clears it alone."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; keeps the two hundred angry buyers out of the room's bloodstream.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "method": 1, "credibility": 1 },
+        "lines": {
+          "agree": ["Noted for the count — cleanly put.", "Good. That is voteable."],
+          "pushback": ["We convict on exhibits, not on the size of the group chat.", "One at a time. The mother is off limits as argument."],
+          "concede": ["Fair — the count moves."],
+          "final": ["Everyone has been heard twice. Hands."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Drifts between the sobbing mother and the notes app, hourly.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "G", "confidence": 45 },
+        "weights": { "digital_forensics": 1, "credibility": 1 },
+        "lines": {
+          "agree": ["Yes — that is the version that keeps standing when I poke it.", "Say the notes-app part again. It settles me."],
+          "pushback": ["But his mother watched him fall apart. You cannot rehearse that for months.", "Forty-one real shipments, though."],
+          "concede": ["You can fall apart over getting caught. I keep forgetting that."],
+          "final": ["I drifted between the garage and the laptop all day. The laptop won."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Bought the middleman story whole; the second phone number is taking it apart.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "NG", "confidence": 70 },
+        "weights": { "identity": 2, "digital_forensics": 2 },
+        "lines": {
+          "agree": ["The supplier's recovery number is his second phone. I have tried for an innocent reading. There is none.", "Both halves of the conversation, one keyboard. The scam was a puppet show."],
+          "pushback": ["I believed the messages because they were good. I am saying that plainly: they were written to be believed.", "The early shipments still niggle. He was a real refurbisher once."],
+          "concede": ["All right — 'real once' and 'honest now' came apart months before the arrest."],
+          "final": ["I walked in defending a drowning man. The exhibits showed me who owned the water."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "identity", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; suspicious of how neatly the prosecution's story clicks together.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 50 },
+        "weights": { "credibility": 2 },
+        "lines": {
+          "agree": ["Mm. 'Someone must have used my details' — the case's third unnamed stranger. I counted.", "That is the first exhibit that could not have been staged by either side."],
+          "pushback": ["Neat stories make me itch, and the prosecution's is very neat.", "The detective admitted real middleman victims exist. Several a month."],
+          "concede": ["Real victims do not pre-draft their scammer's apologies. The itch is gone."],
+          "final": ["Quietly: I doubted the neatness. Then he explained the phone number with silence."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 0, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Wants the accused to produce BulkHarbor in the flesh; keeps inverting the burden.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "identity": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Exactly — no supplier, no shipments, decoy socks. The shape of it is theft."],
+          "pushback": ["A hundred and eighty grand of other people's birthdays. Someone answers for that."],
+          "burden_drift": ["If BulkHarbor is real, let him produce one invoice that was ever paid. One.", "He should have to unlock that second phone in front of us."],
+          "concede": ["Yes, yes — it is theirs to prove. And the laptop proved it."],
+          "burden_correct": ["Withdrawn. The Crown carried it; he owed us nothing — not even the silence he gave us."],
+          "final": ["I demanded he prove a supplier existed. Turns out the prosecution proved one never did."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "Undecided; keeps weighing the garage teenager against the notes app.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "digital_forensics": 1, "motive": 1 },
+        "lines": {
+          "agree": ["There — that survives being said twice. I will hold it.", "Right: the drafts were written before the supplier 'sent' them. Time only runs one way."],
+          "pushback": ["And then I think of a kid fixing consoles in a garage and I wobble.", "Once more through the money, please. Slowly."],
+          "concede": ["Slowly was worse for him. Settled."],
+          "final": ["The garage kid was real. So is the man who wrote both sides of a conversation. Same person, different years."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "motive", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Sells online herself; knows both how suppliers burn you and how sellers vanish.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "U", "confidence": 45 },
+        "weights": { "method": 2, "burden": 1 },
+        "lines": {
+          "agree": ["Fair — I have chased a ghost supplier. I kept every invoice and every payment. Where are his payments?", "Decoy tracking is the one move with no honest twin. I have never once needed it."],
+          "pushback": ["Scaling too fast kills honest shops weekly. Do not criminalise bad inventory maths.", "The platform froze his account mid-collapse — that muddies the refund picture, to be fair."],
+          "concede": ["Nothing upstream, ever. My ghost supplier at least cashed my cheques."],
+          "final": ["I run the honest version of his story. It leaves receipts. His left drafts."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "yanniedog",
+    "batch_pr": "D7b-2"
+  }
+}

@@ -31,11 +31,20 @@ function loadQueue(): DocketCase[] {
 
 export const docketQueue: DocketCase[] = loadQueue()
 
+function localDateString(date: Date): string {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
 /** The docket case to play on [date], or null while the queue is empty. */
 export function docketCaseForDate(
   date: Date,
   queue: DocketCase[] = docketQueue,
 ): DocketCase | null {
-  if (queue.length === 0) return null
-  return queue[caseIndexForDate(date, queue.length)] ?? null
+  const today = localDateString(date)
+  const eligible = queue.filter((c) => c.publish_date <= today)
+  if (eligible.length === 0) return null
+  return eligible[caseIndexForDate(date, eligible.length)] ?? null
 }

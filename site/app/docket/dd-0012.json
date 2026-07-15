@@ -1,0 +1,427 @@
+{
+  "id": "dd-0012",
+  "publish_date": "2026-08-13",
+  "label": "fiction",
+  "title": "The Number",
+  "setting": "a drug line run through a hijacked phone number, two cities apart, the present day",
+  "charge": "supplying a controlled drug",
+  "elements": [
+    "The 'Dex' phone line was used to sell controlled drugs",
+    "The accused was the person operating the line"
+  ],
+  "hook": "The Dex drug line sold to three hundred people from a phone number registered to Theo Nakamura for nine years — his name, his direct debit, every month. During its best week, Theo was in a surgical ward having his appendix out. The line never even slowed down.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Theo Nakamura, 26. A third-year apprentice electrician who runs a weekend market stall selling salvaged tools; lives and works four hundred kilometres from the city where every Dex meet took place. He kept a diary of complaint numbers because no one would call him back.",
+    "if_guilty": "prison for supplying drugs, the end of his apprenticeship, and a stolen number that becomes his crime"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "For six weeks a drug line called Dex served over three hundred customers from a single number — the number the whole trade trusted because it never changed. That number has belonged to Theo Nakamura for nine years: his account, his name, his monthly bill. A customer met the dealer in person: about his height, dark hoodie. The defence will spin you a tale of hijacking. Start from the simplest fact — the phone that ran the line was, and had always been, his."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "A phone number is not a person, and this case is about to prove it in the most concrete way you will ever see. The carrier's own records show Theo's number ported to a new SIM in a city four hundred kilometres away, on a forged licence, while his real handset died mid-call. He spent five weeks and eleven reference numbers fighting to get it back. And during the line's busiest week, he was in hospital under anaesthetic. He didn't run Dex. Dex ran on the number stolen from him."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "I do not dispute the SIM-swap paperwork exists. Weigh it against nine years of ownership, a customer who met a man his height, a message showing he knew how these lines work, and cash deposits the defence explains with a market stall. The number is who the customers trusted, and it was his. When something is this consistent for this long, a scan of a forged licence is a thin thing to hang three hundred sales on."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The judge will tell you plainly: a number identifies an account, not a hand. The number left him in a shop he was never in, on an ID not his, while his phone went dark — and he reported it before Dex's first advert. Its best week ran while he lay in a surgical ward. No drugs, no cash, no scales, never once in that city. Numbers get stolen precisely because everyone assumes they can't be. Do not make that assumption a verdict."
+      }
+    }
+  },
+  "epilogue": "The jury acquitted; two members asked afterward how to protect their own numbers. Theo finished his apprenticeship a year late — the trial cost him a placement — and now carries a carrier PIN and a note in his wallet that reads 'the number is not me.' The real Dex operator was never identified; the forged-licence scan matched no one on file. The carrier settled a civil claim over the swap confidentially. Casey Drummond, the customer who 'met the dealer', later admitted he could not describe the face at all.",
+  "cast": [
+    { "id": "judge", "name": "Judge Calloway", "role_label": "the judge", "side": "court" },
+    { "id": "pc", "name": "Bram Halloway", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Ingrid Sollis", "role_label": "defence counsel", "side": "defence" },
+    { "id": "w1", "name": "Detective Marcus Ilori", "role_label": "drugs squad detective", "side": "prosecution" },
+    { "id": "w2", "name": "Casey Drummond", "role_label": "customer of the Dex line, testifying under caution", "side": "prosecution" },
+    { "id": "w3", "name": "Anouk Verhoeven", "role_label": "telecommunications fraud analyst", "side": "defence" },
+    { "id": "w4", "name": "Theo Nakamura", "role_label": "the accused — apprentice electrician", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "For six weeks a drug line traded under the name Dex — bulk texts advertising, meet spots, over three hundred customer contacts. The number behind it has been registered to the accused for nine years. It is his name on the account, his direct debit paying the bill, every month including the six in question.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.45,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "All true of the account. The trial turned on the difference between owning a number and holding the SIM it rings on.",
+      "tags": ["identity", "method"]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I bought from the Dex line four times that month. You text the number, you get a spot and a time. Once I met the man himself — about his height, dark hoodie, kept his head down. But the number never changed, that is the whole point of those lines. The number is who you trust.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "'The number is who you trust' — the case in one sentence, and the trap in the same one. He identified a phone number wearing a hoodie. He never saw a face.",
+      "tags": ["identity", "credibility"]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "The detective agreed the search of the accused's flat found no drugs, no cash, no scales, no second phone. He agreed every meet spot in the customer messages clusters in Merrow City, four hundred kilometres from where the accused lives and works, and that no travel records place him there — not once in the six weeks.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.45,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "A drug line with no drugs, no cash, and a dealer who was never in the city it sold in — unless the dealer wasn't him.",
+      "tags": ["method", "procedure"]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit three: messages recovered from the accused's old cloud backup, two years before the charge — a short exchange in which he buys a small amount of cannabis from an unrelated number. The prosecution says it shows a man familiar with how these lines work: the codes, the etiquette, the trade.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.15,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A two-year-old purchase, dredged up to give the number a personality. Knowing how to text a dealer is not evidence of being one — by that standard, the Crown's own witness ran the line.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "The carrier's records are unambiguous. Six weeks before the arrests, this number was ported to a new SIM at a phone shop in Merrow City, authorised with a forged licence — we hold the scan. At that same hour, the accused's genuine handset went dark and never reconnected. He reported the dead service within thirty hours. This is a textbook SIM-swap takeover.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The number changed hands in a shop four hundred kilometres away, against a forged ID, while his real phone died mid-afternoon — and he reported it before the Dex line had sent its first advert.",
+      "tags": ["digital_forensics", "identity", "timeline"]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit five: hospital records. In the third week of the Dex line's operation, the accused was an inpatient for four days — appendicitis, surgery, observed recovery, wristband and ward roster in evidence. Across those same four days the Dex line sent six hundred messages and served its usual meet spots in Merrow City, without pause.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.75,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The line's best sales week happened while its alleged operator was in a surgical ward with his appendix in a tray. Dex never even slowed down.",
+      "tags": ["alibi", "timeline"]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "My phone died in the middle of a call on a Tuesday afternoon. The shop told me the number had been ported — I thought it was a billing mess. I spent five weeks fighting the carrier's call centre; I have eleven complaint reference numbers and I read every one into my diary because nobody would call me back.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Eleven reference numbers, logged in real time, weeks before anyone was arrested — a paper trail no guilty man would think to build while running the very line he'd reported stolen.",
+      "tags": ["credibility", "procedure"]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "cross",
+      "text": "'That cannabis purchase, two years ago — yours?' 'Yes. One time. I'm not proud of it.' 'Then why would a hijacker want your number, of all numbers?' 'Ask the analyst, not me — she told you. Aged numbers pass the banks' fraud checks. Mine was nine years old and boring. That is apparently worth stealing now.'",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The cross landed one old bruise and one good question — and the good question had already been answered by the Crown's own discovery: aged numbers are currency.",
+      "tags": ["credibility", "identity"]
+    },
+    {
+      "id": "b9",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit six: the accused's bank statements for the period, showing three cash deposits totalling nine hundred dollars. The prosecution calls them unexplained income. The defence produced his weekend market-stall permit and the stall's takings book, entries matching each deposit within a few dollars, in his handwriting, dated before any arrest.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Nine hundred dollars of secondhand tools and cable reels, sold on folding tables — a drug line that size banks that before breakfast.",
+      "tags": ["method", "motive"]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "You must not research this case, SIM-swapping, or these phone lines anywhere online. Bear this steadily in mind throughout: a phone number identifies an account, not a hand holding a phone. The prosecution must make you sure the accused himself operated the line. If the number may genuinely have been taken from him, that question answers itself.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction gave the jury the case's one necessary idea: numbers are stolen exactly because everyone assumes they cannot be.",
+      "tags": ["burden", "identity"]
+    }
+  ],
+  "checkins": ["b3", "b5", "b8", "b9"],
+  "verdict_truth": "Not Guilty",
+  "twist": "Nine years of paying the bill made the number him — to the customers, to the detective, to half the jury room. But the carrier's own logs showed the number walking into a Merrow City phone shop on a forged licence while his real handset died mid-call, he burned five weeks and eleven complaint references trying to get it back, and the line's best week ran while he was in a surgical ward. The hijacker chose his number precisely because it was old, boring, and trusted. So did the prosecution.",
+  "difficulty_target": 0.65,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "Nine years, his name, his direct debit — the number is the man, simple as that.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": { "position": "G", "confidence": 80 },
+        "weights": { "identity": 2, "method": 1 },
+        "lines": {
+          "agree": ["His name, his bill, his number, three hundred customers. What else is there?", "Even the customer said it: the number is who you trust."],
+          "pushback": ["Everyone whose number does crimes says it was stolen. Everyone.", "You are asking me to believe in an invisible hijacker with a forged licence."],
+          "concede": ["Except the licence is in evidence. The invisible hijacker left his paperwork."],
+          "final": ["I said the number is the man. The carrier's logs say the number moved out."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Reads the carrier logs the way others read faces; the port-out record decided her.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "digital_forensics": 2, "timeline": 1 },
+        "lines": {
+          "agree": ["The port-out, the dead IMEI, the complaint inside thirty hours. Machines logged all three.", "The line texted six hundred times while he was under anaesthetic. Follow the timestamps."],
+          "pushback": ["Memories of a hoodie are not records.", "Show me one log that puts the SIM back in his hand. One."],
+          "concede": ["The account being his for nine years is real weight. It is just the wrong kind."],
+          "final": ["The logs say the number left him before Dex was born. I go with the logs."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; identification by phone number strikes him as the old lineup problem in new clothes.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 75 },
+        "weights": { "burden": 2, "identity": 1 },
+        "lines": {
+          "agree": ["Precisely — a number identifies an account, not a hand. The direction said it because it needed saying."],
+          "pushback": ["The Crown's identification witness never saw a face. He saw a contact card.", "A two-year-old cannabis text is character assassination with a timestamp."],
+          "concede": ["The nine-year account is the strongest true thing the prosecution owns."],
+          "holdout": ["Until someone puts the new SIM in his hand, the case is a bill with his name on it.", "I hold where the burden holds."],
+          "final": ["Not guilty — and the man deserves his number back, while we are at it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "identity", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Keeps the burden anchored; wants the hijack theory tested, not just admired.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "burden": 2, "timeline": 1 },
+        "lines": {
+          "agree": ["Tested properly, the hijack is not a theory — it is the carrier's own record."],
+          "pushback": ["Let us not romanticise him either; the old purchase is his, and he owned it.", "The hospital alibi covers four days of forty-two. Keep its size honest."],
+          "concede": ["Four days when the line never slowed — the size is small and the implication is not."],
+          "burden_correct": ["He does not have to explain why hijackers wanted his number. They must prove his hand on the line.", "The complaint references predate the arrests. That is the Crown's timeline problem, not his."],
+          "final": ["Held to the standard, the hand was never proven. The account was never in doubt. Different things."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; keeps the old cannabis text from doing more work than it can.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "G", "confidence": 50 },
+        "weights": { "identity": 1, "credibility": 1 },
+        "lines": {
+          "agree": ["Noted for the count. Say it that cleanly at the vote.", "Good — logs, dates, exhibits. That is the register we vote in."],
+          "pushback": ["The two-year-old text is rationed to exactly what it proves: once, he bought.", "One at a time — and nobody argues from hoodies."],
+          "concede": ["Fair. Counted."],
+          "final": ["We have kept it honest. Hands."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Drifts with the room; the direct debit paying the bill all along keeps snagging him.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "G", "confidence": 45 },
+        "weights": { "identity": 1, "timeline": 1 },
+        "lines": {
+          "agree": ["Yes — that version holds when I repeat it back.", "The appendix week. Right. Every time I wobble, there is the appendix week."],
+          "pushback": ["But he kept paying the bill for a number he says was stolen. Who does that?", "The hoodie man was about his height, though."],
+          "concede": ["He kept paying because he was fighting to get it back. Eleven reference numbers. Fine."],
+          "final": ["I snagged on the bill three times. The ward roster unsnagged me three times. It wins."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Came in sure — nine years of ownership felt conclusive; the port-out record is dismantling it.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "G", "confidence": 70 },
+        "weights": { "digital_forensics": 2, "alibi": 2 },
+        "lines": {
+          "agree": ["The number moved shops on a forged licence while his handset died mid-call. That is not a story; it is a log with a scan attached.", "Six hundred messages from a ward he never left. The line and the man have different bodies."],
+          "pushback": ["I convicted him on the account history before lunch on day one. I am telling you so you check yourselves too.", "The customer's certainty is real. It is also certainty about a contact card."],
+          "concede": ["All right — 'his number, therefore him' died in the carrier's records. I held it too long."],
+          "final": ["Nine years of ownership walked me in. Thirty hours of complaint logs walked me out."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; a witness testifying under caution earns her most careful listening.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 55 },
+        "weights": { "credibility": 2 },
+        "lines": {
+          "agree": ["Mm. The customer needs this identification to work almost as much as the Crown does.", "That is the first identification today that did not route through a phone contact."],
+          "pushback": ["'About his height, kept his head down' — that describes the whole city.", "Everyone keeps treating the saved contact like a witness. It is a label."],
+          "concede": ["The old purchase is his, and it stung him. It was still two years and one gram of a different case."],
+          "final": ["Quietly: they identified a number beyond doubt. The man, not at all."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 0, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Wants him to prove the hijack twice over; keeps handing him the Crown's homework.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "identity": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Exactly. His number sold drugs for six weeks. Start there and stay there."],
+          "pushback": ["Three hundred customers texted his number. That does not happen to innocent bystanders."],
+          "burden_drift": ["Let him name the hijacker, or at least the shop clerk who ported it. Someone saw a face.", "He should have to prove that market stall bag by bag."],
+          "concede": ["The takings book predates the arrest and matches to the dollar. All right."],
+          "burden_correct": ["Withdrawn — the Crown must put the SIM in his hand, and the carrier put it in someone else's."],
+          "final": ["I gave him homework all afternoon. The exhibits kept doing it for him."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "Undecided; keeps testing whether one man could be both patient and dealer.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "timeline": 1, "alibi": 1 },
+        "lines": {
+          "agree": ["There — the two-places-at-once problem again. It never resolves his way… I mean, it always resolves his way.", "Right: the line never paused. Not for surgery, not for anything. Because its operator was never him."],
+          "pushback": ["Could he have had a partner running it? I keep circling that.", "One more pass on the six weeks, start to finish."],
+          "concede": ["A partner theory needs evidence of a partner. There is none. Circled and closed."],
+          "final": ["I tried every version where it is him. Each one needed a second body. The Crown only charged one."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Had her own number ported by fraudsters once; fights to keep that memory from voting for her.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 50 },
+        "weights": { "digital_forensics": 1, "procedure": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Fair — and the thirty-hour complaint is the detail that convinced me despite myself. Victims report fast. I did.", "The direction is the whole case: an account is not a hand."],
+          "pushback": ["I declare my bias: this happened to me. Test everything I say against the exhibits, not my story.", "The call-centre wall he describes is real. Eleven references is not persistence; it is despair."],
+          "concede": ["My experience is anecdote. The carrier's logs are evidence. Happily, they agree."],
+          "final": ["I kept my own hijack out of the jury room as best I could. The exhibits did not need it anyway."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "procedure", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "yanniedog",
+    "batch_pr": "D7b-2"
+  }
+}
