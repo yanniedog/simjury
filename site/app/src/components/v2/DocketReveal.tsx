@@ -123,6 +123,15 @@ export function DocketReveal({
 
       <p className="text-sm leading-relaxed text-neutral-300">{trial.twist}</p>
 
+      <div className="rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
+        <p className="text-xs uppercase tracking-wider text-neutral-500">
+          What happened next
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-neutral-300">
+          {trial.epilogue}
+        </p>
+      </div>
+
       <div>
         <p className="mb-3 text-xs uppercase tracking-wider text-neutral-500">
           What each piece was really worth

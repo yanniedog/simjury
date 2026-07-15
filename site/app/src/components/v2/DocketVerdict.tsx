@@ -1,4 +1,7 @@
+import { useEffect } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
+import { narrationEnabled, speakAll, stopSpeech } from '../../lib/narration'
+import { StatementCard } from './OpeningStatements'
 
 export type Verdict = DocketCase['verdict_truth']
 
@@ -11,14 +14,34 @@ export function DocketVerdict({
   conviction: number
   onLock: (verdict: Verdict) => void
 }) {
+  const { prosecution, defence } = trial.statements.closing
+  const accused = trial.cast.find((m) => m.id === trial.accused.cast_id)
+
+  // Narrate both closings in their advocates' voices; stop on unmount.
+  useEffect(() => {
+    if (!narrationEnabled()) {
+      return stopSpeech
+    }
+    speakAll([
+      { text: prosecution.text, key: prosecution.speaker },
+      { text: defence.text, key: defence.speaker },
+    ])
+    return stopSpeech
+  }, [prosecution.text, prosecution.speaker, defence.text, defence.speaker])
+
   return (
     <div className="space-y-6">
       <div className="space-y-1 text-center">
         <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
-          The evidence is in
+          Closing arguments
         </p>
-        <h2 className="text-xl font-semibold text-neutral-50">Your verdict</h2>
+        <h2 className="text-xl font-semibold text-neutral-50">
+          The last word from each side
+        </h2>
       </div>
+
+      <StatementCard trial={trial} statement={prosecution} side="prosecution" />
+      <StatementCard trial={trial} statement={defence} side="defence" />
 
       <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4 text-center">
         <p className="text-sm text-neutral-400">You ended at</p>
@@ -31,10 +54,18 @@ export function DocketVerdict({
         </p>
       </div>
 
-      <p className="text-center text-sm text-neutral-500">
-        On the charge of {trial.charge}, how do you find? Locking is
-        permanent — the room deliberates only after you cannot be swayed.
-      </p>
+      <div className="space-y-2 text-center">
+        <p className="text-sm leading-relaxed text-neutral-300">
+          {accused?.name ?? 'The accused'} stands and turns to face you.
+        </p>
+        <p className="text-sm text-neutral-400">
+          If you convict: <span className="text-neutral-200">{trial.accused.if_guilty}</span>
+        </p>
+        <p className="text-sm text-neutral-500">
+          On the charge of {trial.charge}, how do you find? Locking is
+          permanent — the room deliberates only after you cannot be swayed.
+        </p>
+      </div>
 
       <div className="grid grid-cols-2 gap-3">
         <button

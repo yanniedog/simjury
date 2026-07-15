@@ -46,6 +46,20 @@ export const VERDICT_RUN_MAX = 3
 /** DAILY-PIVOT.md's 8-10 minute structure calls for 3-4 witnesses. */
 export const WITNESS_COUNT_MIN = 3
 export const WITNESS_COUNT_MAX = 4
+/** The cold open: long enough to be a scene, short enough to stay a hook. */
+export const HOOK_WORDS_MIN = 15
+export const HOOK_WORDS_MAX = 60
+/** Counsel statements: a story told in one breath, not a speech. */
+export const STATEMENT_WORDS_MIN = 40
+export const STATEMENT_WORDS_MAX = 90
+/** The aftermath shown at the reveal. */
+export const EPILOGUE_WORDS_MIN = 50
+export const EPILOGUE_WORDS_MAX = 130
+/**
+ * Everything narrated before the jury room (hook + openings + evidence +
+ * closings) must still fit the 8-10 minute loop; this caps the total.
+ */
+export const NARRATED_WORDS_MAX = 1250
 
 export function wordCount(text: string): number {
   const words = text.trim().split(/\s+/)
@@ -150,6 +164,59 @@ export function checkDocketCase(c: DocketCase): string[] {
     )
   }
 
+  // The engagement layer: the hook, the advocates' duel, the human on trial,
+  // and the aftermath. These are what make a player care about the people in
+  // the case, so they are budgeted and cast-checked like everything else.
+  const hookWords = wordCount(c.hook)
+  if (hookWords < HOOK_WORDS_MIN || hookWords > HOOK_WORDS_MAX) {
+    issues.push(
+      `hook has ${hookWords} words; the cold open needs ${HOOK_WORDS_MIN}-${HOOK_WORDS_MAX}`,
+    )
+  }
+  const statements = [
+    ['opening.prosecution', c.statements.opening.prosecution, 'prosecution'],
+    ['opening.defence', c.statements.opening.defence, 'defence'],
+    ['closing.prosecution', c.statements.closing.prosecution, 'prosecution'],
+    ['closing.defence', c.statements.closing.defence, 'defence'],
+  ] as const
+  let statementWords = 0
+  const castById = new Map(c.cast.map((m) => [m.id, m]))
+  for (const [label, statement, side] of statements) {
+    const words = wordCount(statement.text)
+    statementWords += words
+    if (words < STATEMENT_WORDS_MIN || words > STATEMENT_WORDS_MAX) {
+      issues.push(
+        `statement ${label} has ${words} words; needs ${STATEMENT_WORDS_MIN}-${STATEMENT_WORDS_MAX}`,
+      )
+    }
+    const speaker = castById.get(statement.speaker)
+    if (!speaker) {
+      issues.push(`statement ${label} speaker '${statement.speaker}' is not in the cast`)
+    } else if (speaker.side !== side) {
+      issues.push(
+        `statement ${label} must be spoken by ${side} counsel (got '${statement.speaker}', side '${speaker.side}')`,
+      )
+    }
+  }
+  const narratedWords = totalWords + hookWords + statementWords
+  if (narratedWords > NARRATED_WORDS_MAX) {
+    issues.push(
+      `hook + statements + evidence total ${narratedWords} narrated words; the 8-10 minute loop caps at ${NARRATED_WORDS_MAX}`,
+    )
+  }
+  const epilogueWords = wordCount(c.epilogue)
+  if (epilogueWords < EPILOGUE_WORDS_MIN || epilogueWords > EPILOGUE_WORDS_MAX) {
+    issues.push(
+      `epilogue has ${epilogueWords} words; the aftermath needs ${EPILOGUE_WORDS_MIN}-${EPILOGUE_WORDS_MAX}`,
+    )
+  }
+  const accused = castById.get(c.accused.cast_id)
+  if (!accused) {
+    issues.push(`accused cast_id '${c.accused.cast_id}' is not in the cast`)
+  } else if (accused.side !== 'defence') {
+    issues.push(`accused '${c.accused.cast_id}' must be a defence-side cast member`)
+  }
+
   // Courtroom structure. A duplicate cast/beat id would otherwise silently
   // shadow an earlier entry in these maps (the schema also rejects this — see
   // caseSchema.ts's superRefine — but the gate checks it independently since
@@ -163,7 +230,7 @@ export function checkDocketCase(c: DocketCase): string[] {
     issues.push('beat ids must be unique')
   }
 
-  const cast = new Map(c.cast.map((m) => [m.id, m]))
+  const cast = castById
   const beatIds = new Set(rawBeatIds)
   const witnessSpeakers = new Set<string>()
   for (const b of c.beats) {

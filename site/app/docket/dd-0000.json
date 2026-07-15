@@ -9,9 +9,39 @@
     "A transfer of company funds was authorised on false pretences",
     "The accused acted dishonestly, not merely carelessly"
   ],
+  "hook": "Dana Reyes was the last person in the office the night the money left. She has told the same story for eleven months: the chief executive called her on video, asked her to move the money, and thanked her by name. The chief executive was on a plane.",
+  "accused": {
+    "cast_id": "w5",
+    "human": "Dana Reyes, 41. Sixteen years at Vantrelle Freight, the last four running month-end close alone. Two grown kids; the eldest has sat in the gallery every day of this trial.",
+    "if_guilty": "up to seven years, and the sixteen years before it rewritten as a plan"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Members of the jury, this case is simpler than the defence needs it to be. Forty-eight thousand dollars left the company at 11:47 at night, approved by the one person still in the building — on her laptop, her passphrase, her security key — sent to an account wearing her own old username. She was angry, she was passed over, and she was owed. You will hear her explanation. Listen for what it cannot explain."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Dana Reyes is not a thief. She is the person the thieves chose. You will hear that the call that night was real — and that the man on it was not. A voice built from podcasts. A face three days old. A crew that dressed their getaway account in her leaked username eleven days before they dialled her. She believed her boss because it was her boss's face asking. When you know how the trick works, you will know why she is here: because she was easy to blame."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Strip away the theatre and three facts remain. She alone approved the payment. She alone skipped the callback that existed for exactly this moment. And the money ran to an account carrying her name. The defence asks you to believe in an invisible crew of puppeteers. I ask you to believe your own eyes: the person with the access, the anger, and the opportunity is sitting in that dock."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The prosecution promised you dishonesty. What did they prove? A skipped phone call. Every hard fact — the synthetic account, the residential proxy, the reenacted-media flag, eighteen months of clean devices — points away from Dana and towards a professional crew. Her account has never changed, from first interview to this courtroom. Careless, perhaps. The judge will tell you carelessness is not the charge. If she may have believed that call — and you have heard why she did — you must acquit."
+      }
+    }
+  },
+  "epilogue": "The real crew was arrested fourteen months later, mid-call, in a serviced office abroad — the same cloned voice, a different freight company. Vantrelle settled with Dana quietly; she never went back. She works for a smaller firm now, and still will not answer a video call without ringing back first. The chief executive whose voice was stolen wrote to her once: two lines, one of them an apology. The forty-eight thousand dollars was never recovered.",
   "cast": [
     { "id": "judge", "name": "Judge Corven", "role_label": "the judge", "side": "court" },
-    { "id": "clerk", "name": "the clerk", "role_label": "clerk of the court", "side": "court" },
+    { "id": "pc", "name": "Asha Verlaine", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Theo Marchetti", "role_label": "defence counsel", "side": "defence" },
     { "id": "w1", "name": "Marcus Webb", "role_label": "forensic accountant", "side": "prosecution" },
     { "id": "w3", "name": "Tom Grigson", "role_label": "accounts team colleague", "side": "prosecution" },
     { "id": "w4", "name": "Dr Lena Moss", "role_label": "audio forensics examiner", "side": "defence" },
@@ -21,7 +51,7 @@
     {
       "id": "b1",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "pc",
       "text": "Exhibit one: the payment record. At 11:47 on the night in question, a transfer of forty-eight thousand dollars left Vantrelle Freight's operating account for a beneficiary added that same evening. It was authorised from the accused's laptop, on the office network, using her credentials, her passphrase, and the hardware security key issued to her alone.",
       "surface_persuasion": 0.85,
       "true_weight": 0.15,
@@ -48,7 +78,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "Under cross-examination he agreed the handle appears in a breach dump published three years ago — the accused's old email and username, leaked alongside sixty million others. He agreed anyone could have registered the beneficiary under that name, and that nothing ties her devices to the wallets or to the cash-out service.",
+      "text": "'That handle — dreyes-ledger — where else does it appear?' 'In a breach dump published three years ago. Her old email, her username, alongside sixty million others.' 'So anyone alive could have registered that account in her name?' A pause. 'Anyone with an internet connection.' 'And nothing ties her devices to the wallets, or the cash-out service?' 'Nothing that we found.'",
       "surface_persuasion": 0.5,
       "true_weight": 0.55,
       "direction": "innocence",
@@ -85,7 +115,7 @@
     {
       "id": "b6",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit four: the conference platform's trust-and-safety report. A video call reached the accused's account at 11:31 that night from an account created three days earlier with a synthetic identity, connecting through a residential proxy. The platform's integrity system flagged the caller's video stream as reenacted media — its highest-confidence category.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
@@ -112,7 +142,7 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "She accepted that her detection toolchain reports a false-positive rate near seven per cent, and that she was retained and paid by the defence. She held her ground on the pattern: these artefacts could occur singly in a degraded genuine stream, but they do not occur at this density across an entire call.",
+      "text": "'Your toolchain's false-positive rate?' 'Near seven per cent.' 'And the defence is paying you to be here?' 'They are.' She let the silence sit, then leaned forward. 'One artefact can be noise in a degraded stream. I found them at phrase level, across the entire call, matching four separate episodes. That density does not occur in genuine audio.'",
       "surface_persuasion": 0.45,
       "true_weight": 0.2,
       "direction": "guilt",
@@ -136,7 +166,7 @@
     {
       "id": "b10",
       "kind": "exhibit",
-      "speaker": "clerk",
+      "speaker": "dc",
       "text": "Exhibit six: the forensic download of the accused's personal devices. No contact with the beneficiary account. No wallet applications, no searches touching any part of the scheme, no unexplained deposits across eighteen months of statements. The cash-out service's records tie the final wallet to a phishing-kit vendor already under investigation abroad.",
       "surface_persuasion": 0.5,
       "true_weight": 0.75,
@@ -403,7 +433,7 @@
   },
   "gen_meta": {
     "model": "claude-fable-5",
-    "prompt_version": "dd-fixture-v1",
+    "prompt_version": "dd-2026-v2",
     "reviewer": "yanniedog",
     "batch_pr": "D2b"
   }

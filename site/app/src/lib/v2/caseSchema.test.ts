@@ -58,6 +58,14 @@ describe('docketCaseSchema', () => {
     expect(docketCaseSchema.safeParse(c).success).toBe(false)
   })
 
+  it('requires the engagement layer: hook, accused, statements, epilogue', () => {
+    for (const field of ['hook', 'accused', 'statements', 'epilogue']) {
+      const c: Record<string, unknown> = { ...makeDocketCase() }
+      delete c[field]
+      expect(docketCaseSchema.safeParse(c).success).toBe(false)
+    }
+  })
+
   it('rejects a duplicate beat id', () => {
     const c = makeDocketCase()
     c.beats = c.beats.map((b, i) => (i === 3 ? { ...b, id: c.beats[0].id } : b))
