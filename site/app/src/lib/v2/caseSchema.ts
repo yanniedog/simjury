@@ -55,6 +55,17 @@ export const ARCS = [
   'foreperson',
 ] as const
 
+/**
+ * A counsel statement — opening or closing. `speaker` must resolve to a cast
+ * member on the matching side (the quality gate enforces it), so narration
+ * gives each advocate a consistent voice.
+ */
+export const statementSchema = z.object({
+  speaker: z.string().min(1),
+  text: z.string().min(1),
+})
+export type Statement = z.infer<typeof statementSchema>
+
 export const castMemberSchema = z.object({
   id: z.string().regex(/^[a-z][a-z0-9_]*$/, 'cast id must be a lowercase slug'),
   /** Invented name — never a real person, company, or brand. */
@@ -146,6 +157,38 @@ export const docketCaseSchema = z
     setting: z.string().min(1),
     charge: z.string().min(1),
     elements: z.array(z.string().min(1)).min(2).max(4),
+    /**
+     * The cold open — 1–3 present-tense sentences read before anything legal
+     * appears. Its job is to make the player care in the first ten seconds.
+     */
+    hook: z.string().min(1),
+    /**
+     * The human on trial. Shown at the intro and again at the verdict lock so
+     * the decision is about a person, never just a charge. `cast_id` must
+     * resolve to a defence-side cast member; `human` is life texture (who they
+     * are outside this room); `if_guilty` is the concrete cost of conviction.
+     */
+    accused: z.object({
+      cast_id: z.string().min(1),
+      human: z.string().min(1),
+      if_guilty: z.string().min(1),
+    }),
+    /** The duel: both advocates' openings and closings, narrated in voice. */
+    statements: z.object({
+      opening: z.object({
+        prosecution: statementSchema,
+        defence: statementSchema,
+      }),
+      closing: z.object({
+        prosecution: statementSchema,
+        defence: statementSchema,
+      }),
+    }),
+    /**
+     * What happened to these people after the verdict — shown at the reveal.
+     * Consequence is what makes the verdict feel heavy; never omit the humans.
+     */
+    epilogue: z.string().min(1),
     cast: z.array(castMemberSchema).min(3).max(9),
     beats: z.array(docketBeatSchema).min(10).max(14),
     /** Beat ids after which the conviction check-in appears (in beat order). */

@@ -166,6 +166,54 @@ describe('checkDocketCase', () => {
     expect(checkDocketCase(c).join()).toMatch(/voices both burden_drift and burden_correct/)
   })
 
+  it('flags a hook outside the cold-open budget', () => {
+    const c = makeDocketCase({ hook: prose(8) })
+    expect(checkDocketCase(c).join()).toMatch(/cold open/)
+  })
+
+  it('flags a statement outside the word budget', () => {
+    const c = makeDocketCase()
+    c.statements.opening.defence = { speaker: 'defc', text: prose(20) }
+    expect(checkDocketCase(c).join()).toMatch(/opening\.defence has 20 words/)
+  })
+
+  it('flags a statement spoken by the wrong side or by nobody', () => {
+    const c = makeDocketCase()
+    c.statements.opening.prosecution = { speaker: 'defc', text: prose(60) }
+    c.statements.closing.defence = { speaker: 'ghost', text: prose(60) }
+    const joined = checkDocketCase(c).join()
+    expect(joined).toMatch(/must be spoken by prosecution counsel/)
+    expect(joined).toMatch(/closing\.defence speaker 'ghost' is not in the cast/)
+  })
+
+  it('flags a case whose narrated total blows the 8-10 minute loop', () => {
+    const c = makeDocketCase()
+    // 11 beats x 100 words + 4 x 90-word statements + the hook lands well
+    // past the 1250-word narrated cap (the per-beat and evidence budgets trip
+    // too; this test greps the narrated-cap message specifically).
+    c.beats = c.beats.map((b) => ({ ...b, text: prose(100) }))
+    for (const phase of ['opening', 'closing'] as const) {
+      c.statements[phase].prosecution = { speaker: 'pros', text: prose(90) }
+      c.statements[phase].defence = { speaker: 'defc', text: prose(90) }
+    }
+    expect(checkDocketCase(c).join()).toMatch(/narrated words/)
+  })
+
+  it('flags an epilogue outside the aftermath budget', () => {
+    const c = makeDocketCase({ epilogue: prose(20) })
+    expect(checkDocketCase(c).join()).toMatch(/aftermath/)
+  })
+
+  it('flags an accused that does not resolve to a defence-side cast member', () => {
+    const missing = makeDocketCase()
+    missing.accused = { ...missing.accused, cast_id: 'ghost' }
+    expect(checkDocketCase(missing).join()).toMatch(/not in the cast/)
+
+    const wrongSide = makeDocketCase()
+    wrongSide.accused = { ...wrongSide.accused, cast_id: 'w1' }
+    expect(checkDocketCase(wrongSide).join()).toMatch(/defence-side cast member/)
+  })
+
   it('flags a burden beat that is not a court direction', () => {
     const c = makeDocketCase()
     c.beats = c.beats.map((b) =>

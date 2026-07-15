@@ -7,12 +7,13 @@ import { START_CONVICTION } from './lib/game'
 import { loadAllPlays, loadPlay, savePlay, type StoredPlay } from './lib/storage'
 import { computeStats, type DayResult, type Stats } from './lib/stats'
 import { DocketIntro } from './components/v2/DocketIntro'
+import { OpeningStatements } from './components/v2/OpeningStatements'
 import { DocketBeatView } from './components/v2/DocketBeatView'
 import { DocketVerdict, type Verdict } from './components/v2/DocketVerdict'
 import { JuryRoomView } from './components/v2/JuryRoomView'
 import { DocketReveal } from './components/v2/DocketReveal'
 
-type Phase = 'intro' | 'beats' | 'verdict' | 'juryroom' | 'reveal'
+type Phase = 'intro' | 'openings' | 'beats' | 'verdict' | 'juryroom' | 'reveal'
 
 function Shell({ children }: { children: ReactNode }) {
   return (
@@ -117,7 +118,7 @@ export default function App() {
     setBeatIndex(0)
     setCheckinValues([])
     setConviction(START_CONVICTION)
-    setPhase('beats')
+    setPhase('openings')
   }
 
   function nextBeat() {
@@ -179,6 +180,12 @@ export default function App() {
     <Shell>
       {phase === 'intro' && (
         <DocketIntro trial={activeTrial} dayNumber={dayNumber} onBegin={begin} />
+      )}
+      {phase === 'openings' && (
+        <OpeningStatements
+          trial={activeTrial}
+          onDone={() => setPhase('beats')}
+        />
       )}
       {phase === 'beats' && (
         <DocketBeatView

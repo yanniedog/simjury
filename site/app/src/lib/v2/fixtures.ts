@@ -24,6 +24,9 @@ export function makeCast(): CastMember[] {
   return [
     { id: 'judge', name: 'Judge Ellery', role_label: 'the judge', side: 'court' },
     { id: 'clerk', name: 'the clerk', role_label: 'clerk of the court', side: 'court' },
+    { id: 'pros', name: 'Counsel Verany', role_label: 'prosecuting counsel', side: 'prosecution' },
+    { id: 'defc', name: 'Counsel Maddox', role_label: 'defence counsel', side: 'defence' },
+    { id: 'acc', name: 'Corin Vale', role_label: 'the accused', side: 'defence' },
     { id: 'w1', name: 'Renn Halloway', role_label: 'investigating officer', side: 'prosecution' },
     { id: 'w2', name: 'Dr Sefa Iqbal', role_label: 'defence forensic examiner', side: 'defence' },
     { id: 'w3', name: 'Osei Mwangi', role_label: 'eyewitness', side: 'prosecution' },
@@ -162,6 +165,23 @@ export function makeDocketCase(overrides: Partial<DocketCase> = {}): DocketCase 
     setting: 'a mid-size logistics firm, the present day',
     charge: 'obtaining funds by deception',
     elements: ['funds were obtained', 'the accused acted dishonestly'],
+    hook: prose(20),
+    accused: {
+      cast_id: 'acc',
+      human: prose(20),
+      if_guilty: prose(10),
+    },
+    statements: {
+      opening: {
+        prosecution: { speaker: 'pros', text: prose(60) },
+        defence: { speaker: 'defc', text: prose(60) },
+      },
+      closing: {
+        prosecution: { speaker: 'pros', text: prose(60) },
+        defence: { speaker: 'defc', text: prose(60) },
+      },
+    },
+    epilogue: prose(60),
     cast: makeCast(),
     beats: makeBeats(),
     checkins: ['b3', 'b6', 'b9'],

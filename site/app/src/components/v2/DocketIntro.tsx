@@ -16,6 +16,7 @@ export function DocketIntro({
   onBegin: () => void
 }) {
   const [narration, setNarration] = useState(narrationEnabled())
+  const accused = trial.cast.find((m) => m.id === trial.accused.cast_id)
 
   function toggleNarration() {
     setNarrationEnabled(!narration)
@@ -32,6 +33,25 @@ export function DocketIntro({
           {trial.title}
         </h1>
         <p className="text-sm text-neutral-400">{trial.setting}</p>
+      </div>
+
+      <p className="border-l-2 border-neutral-600 pl-4 text-lg italic leading-relaxed text-neutral-200">
+        {trial.hook}
+      </p>
+
+      <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
+        <p className="text-xs uppercase tracking-wider text-neutral-500">
+          On trial
+        </p>
+        <p className="mt-1 font-semibold text-neutral-100">
+          {accused?.name ?? trial.accused.cast_id}
+        </p>
+        <p className="mt-1 text-sm leading-relaxed text-neutral-300">
+          {trial.accused.human}
+        </p>
+        <p className="mt-2 text-sm text-neutral-400">
+          If you convict: <span className="text-neutral-200">{trial.accused.if_guilty}</span>
+        </p>
       </div>
 
       <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
