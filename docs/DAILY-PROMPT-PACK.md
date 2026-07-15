@@ -29,21 +29,32 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 > feels-innocent-is-guilty | over-trusted-machine | under-trusted-human}** ·
 > difficulty_target **{0.3–0.8}** · scenario family **{from DAILY-CASES.md, 2026}**.
 >
+> **Top-level fields:** `"title"` (invented case title), `"setting"` (contemporary
+> 2026 setting sketch), `"elements"` (array of 2–4 short sentences defining the legal
+> elements of the charge), `"verdict_truth"` (set to the true verdict slot value), and
+> `"gen_meta"` (`{ model: "model-name", prompt_version: "dd-2026-v2", reviewer:
+> "reviewer-name", batch_pr: "pr-number" }`).
+>
 > **Cast:** 3–4 witnesses, a judge (`side: "court"`), and named prosecuting and
-> defence counsel (ids `pc`/`dc`; there is no clerk). The accused is one of the
-> defence-side witnesses. Exhibits are tendered by the counsel they help — a
-> guilt-pointing exhibit by the prosecution, an innocence-pointing one by the defence
-> — and exactly the judge speaks `direction` beats.
+> defence counsel (ids `pc`/`dc`; there is no clerk). The accused is a defence-side
+> cast member (`accused.cast_id`); only make them a witness-beat speaker when the
+> scenario calls for testimony — many cases leave the accused silent. Exhibits are
+> tendered by the counsel they help — a guilt-pointing exhibit by the prosecution, an
+> innocence-pointing one by the defence — and exactly the judge speaks `direction`
+> beats.
 >
 > **Engagement layer (all required):** these are what make a juror care about the
 > people, not just the puzzle — never skip them. `hook`: a 15–60 word present-tense
 > cold open, the first thing read, ending on the case's central tension. `accused`:
 > `{ cast_id` (the defence-side accused), `human` (who they are outside this room —
 > age, life, who waits in the gallery), `if_guilty` (the concrete human cost of
-> conviction) `}`. `statements`: `opening` and `closing`, each with a `prosecution`
-> and a `defence` speech (40–90 words, `speaker` = the matching counsel id) that tells
-> that side's *story* of the case, not a fact list. `epilogue`: 50–130 words of what
-> happened to these people after the verdict. Hook + all four statements + evidence
+> conviction) `}`. `statements`: `{ opening: { prosecution: { speaker, text },
+> defence: { speaker, text } }, closing: { prosecution: { speaker, text }, defence:
+> { speaker, text } } }` — each speech 40–90 words, `speaker` = the matching counsel
+> id, telling that side's *story* of the case (not a fact list). `epilogue`: 50–130
+> words of outcome-neutral aftermath — what became of these people in the months after
+> trial (avoid naming acquittal, conviction, or hung jury; the app shows one epilogue
+> regardless of the player's room outcome). Hook + all four statements + evidence
 > must total ≤ 1250 narrated words.
 >
 > **Evidence:** 10–14 beats, each 40–70 words, total 550–1050 words, set in the
@@ -80,8 +91,8 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 
 ## After drafting — the gates will check (do not fight them)
 
-schema v2 (incl. the engagement layer, counsel-tendered exhibits, and their word
-budgets) → design v2 (trap/signal/both-sides/solvable, pacing, courtroom structure,
+schema v2 (incl. the engagement layer and its word budgets) → design v2
+(trap/signal/both-sides/solvable, pacing, courtroom structure,
 check-ins, jury floors) → **deliberation dynamics** (the simulated room must be able
 to reach ≥2 outcomes for a fixed player verdict, and arguing the decisive evidence
 must beat silence toward the truth) → queue rules (uniqueness, verdict variety,
