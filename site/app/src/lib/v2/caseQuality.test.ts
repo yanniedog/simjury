@@ -64,6 +64,25 @@ describe('checkDocketCase', () => {
     expect(joined).toMatch(/does not match any beat/)
   })
 
+  it('flags a misleading beat after the final check-in', () => {
+    const c = makeDocketCase()
+    const lastCheckin = c.checkins[c.checkins.length - 1]
+    const lastAt = c.beats.findIndex((b) => b.id === lastCheckin)
+    c.beats[lastAt + 1] = {
+      ...c.beats[lastAt + 1],
+      reveal_stamp: 'misleading',
+      surface_persuasion: 0.9,
+      true_weight: 0.1,
+    }
+    expect(checkDocketCase(c).join()).toMatch(/after the final check-in/)
+  })
+
+  it('flags a real platform name in player-visible text', () => {
+    const c = makeDocketCase()
+    c.twist = 'the Uber receipt was forged'
+    expect(checkDocketCase(c).join()).toMatch(/banned token "uber"/)
+  })
+
   it('flags an uncontested jury', () => {
     const c = makeDocketCase()
     c.jury.jurors = c.jury.jurors.map((j) => ({
