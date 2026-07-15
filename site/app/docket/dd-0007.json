@@ -1,0 +1,429 @@
+{
+  "id": "dd-0007",
+  "publish_date": "2026-08-08",
+  "label": "fiction",
+  "title": "The Last Delivery",
+  "setting": "a night-time pedestrian crossing, a fleet of identical teal delivery riders, the present day",
+  "charge": "failing to stop after causing injury",
+  "elements": [
+    "A rider struck the pedestrian and rode away",
+    "The accused was that rider"
+  ],
+  "hook": "A man chased the rider who left Howard Belic bleeding on the crossing — two blocks, then lost him. Forty minutes later he saw the teal jacket, the square bag, the drop-bar bike outside a kebab shop and called the police. He was certain. He was also looking at the wrong courier.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Sefu Diallo, 31. Six years couriering, two of them on this same corner every Friday; sends most of what he earns to family overseas. Arrested in his work kit, three hundred metres from a crash he can prove he missed.",
+    "if_guilty": "prison for leaving an injured man, and a six-year clean record erased by a jacket"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Howard Belic was halfway across a crossing when a delivery rider knocked him down, paused, and rode away into the dark. A witness gave chase, and within the hour found the man: same teal kit, same square bag, same bike, three hundred metres away — who then pushed off and rode from the police. His bike bore a fresh scrape and a broken reflector. An honest witness pointed at him. Ask yourself why an innocent courier rides away."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The platform called VeloDrop dresses hundreds of riders in identical teal, on identical bikes, with identical bags. On the night in question, nine of them were working within five hundred metres of that crossing — and two rode straight through it. Sefu Diallo was not either of those two. At the exact minute of the collision he was four blocks away, photographing a customer's doormat, with a timestamp and a map to prove it. This is not identification. It is a uniform."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "I do not say the witnesses lied — I say they saw what they saw: the kit, the bag, the bike, a rider moving off from police. The defence points to other riders in other places. But the man who fled the officer, whose bike was scraped, who was there on that corner, is the man in the dock. The platform data is tidy; tidiness is not the same as being sure it exonerates him."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "At 9:47 and 31 seconds — the minute Howard Belic's watch stopped — Sefu's hand is in a photograph on a doorstep four blocks north, geotagged, timestamped, the customer confirming the knock. He cannot have been in two places. The 'flight' was earbuds and thirty metres; the scrape had a service ticket three weeks old. Nine identical uniforms, two through the crossing itself. 'The kit matched,' the witness said. The kit always matches. You must acquit."
+      }
+    }
+  },
+  "epilogue": "Sefu was acquitted in under two hours. Police reopened the case against the two riders whose routes crossed the scene; one was later cautioned, the collision never firmly pinned to either. Sefu went back to the same Friday-night corner — he needed the work — but keeps his delivery photos now long after the app deletes them. Howard Belic's hip healed by winter; he still crosses at that light and still cannot say which rider it was. VeloDrop added a rider-ID number to the back of every bag the following year.",
+  "cast": [
+    { "id": "judge", "name": "Judge Priya Ramanathan", "role_label": "the judge", "side": "court" },
+    { "id": "pc", "name": "Dominic Rourke", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Yasmin Adebayo", "role_label": "defence counsel", "side": "defence" },
+    { "id": "w1", "name": "Howard Belic", "role_label": "the injured pedestrian", "side": "prosecution" },
+    { "id": "w2", "name": "Tomas Reiner", "role_label": "witness who chased the rider", "side": "prosecution" },
+    { "id": "w3", "name": "Constable Ada Nwosu", "role_label": "attending officer", "side": "prosecution" },
+    { "id": "w4", "name": "Sefu Diallo", "role_label": "the accused — courier for the VeloDrop delivery platform", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I was halfway over the crossing when the bike came out of nowhere and put me on the ground. Teal jacket, one of those big square delivery bags on the back. The rider stopped for a second — I thought they were coming back to help me — and then they just rode off into the dark.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.35,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Everything he saw was true. Everything he saw was also a uniform — worn that night, within a kilometre, by nine different people.",
+      "tags": ["identity", "method"]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I chased the rider for two blocks before losing them — teal kit, square bag, drop handlebars, strong build. Later that night I saw the accused outside the kebab shop in exactly that kit, on exactly that bike, three hundred metres from the crossing. I rang the police on the spot. It was him.",
+      "surface_persuasion": 0.75,
+      "true_weight": 0.2,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "He identified a uniform with total honesty. The platform dresses hundreds of riders in that teal, on those bikes, with that bag — he found the first one visible after forty minutes and the certainty did the rest.",
+      "tags": ["identity", "credibility"]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "'How long did you lose sight of the rider?' 'Forty minutes. Maybe more.' 'Did you ever see the rider's face?' 'No — but the kit—' 'Half the couriers in this city ride drop-bar bikes, don't they?' 'A lot do.' 'The accused was simply the first teal rider you saw afterwards.' 'The kit matched,' he said again. 'The kit matched.'",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.45,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "'The kit matched' — the whole identification, said out loud. The kit always matches. That is what a uniform is for.",
+      "tags": ["identity", "credibility"]
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "The accused's bike had a fresh-looking scrape along the fork and a broken front reflector. And I will note this: when I first called out to him at the kebab shop, he pushed off and rode away from me. We stopped him at the corner. In my experience, people who ride away have a reason.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "A scrape, a broken reflector, and thirty metres of 'flight' — three facts that felt like a confession and turned out to be a bike rack, a three-week-old service ticket, and a pair of earbuds.",
+      "tags": ["method", "procedure"]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "'Was my client wearing earbuds?' 'He was.' 'And at the second, louder hail, he stopped?' 'Immediately.' 'Can you date the scrape on his fork?' 'No.' 'The defence has a service record noting that broken reflector three weeks earlier. You've seen it?' 'I have.' 'How far did he actually ride from you — two blocks?' 'Thirty metres,' she said. 'Not two blocks.'",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The flight lasted exactly as long as a podcast at full volume. The damning bike damage predated the collision on the prosecution's own paperwork.",
+      "tags": ["procedure", "credibility"]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit four: the VeloDrop platform's records. The victim's watch stopped at 9:47pm, matching the emergency call. From 9:45 to 9:49 the accused's device pinged continuously at a doorstep four blocks north. His 'handed to customer' photograph is timestamped 9:47 and 31 seconds, geotagged at that address, showing his gloved hand, the meal, and the customer's doormat.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "At the minute a rider was striking a pedestrian, the accused was photographing a doormat four blocks away — with a timestamp, a geotag, and a customer who confirmed the knock.",
+      "tags": ["alibi", "timeline", "digital_forensics"]
+    },
+    {
+      "id": "b7",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit five: the platform's rider-density map for that window, produced under subpoena. Between 9:40 and 9:55 that night, nine VeloDrop riders in identical kit were active within five hundred metres of the crossing. Two of them logged routes passing directly through it. Neither of those two was the accused.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Nine matching uniforms in a ten-minute window — including two whose routes crossed the exact spot. The chase witness had eight better candidates he never saw.",
+      "tags": ["identity", "digital_forensics"]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "I was working, like every Friday night — that corner is my patch and has been for two years. The earbuds are how I take my orders; I did not hear the officer the first time, I heard the second shout and stopped straight away. The scrape is from the loading rack at the depot. I have never hit anyone in six years of riding.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "An ordinary account of an ordinary shift — which is all it needed to be, once the doormat photograph existed.",
+      "tags": ["credibility", "alibi"]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "cross",
+      "text": "He agreed he could not account for any other rider's movements, and that the kebab shop where he was arrested stands three hundred metres from the crossing. 'You were near that crossing all night.' — 'It is my patch. Being near it is the job. Nine of us were near it.'",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Proximity all night — true of him, and of eight identically dressed colleagues, one of whom rode through the crossing itself.",
+      "tags": ["identity", "credibility"]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "You must not research this case or the platform online. Take particular care with the identification: an honest witness who matches clothing, a bag, and a bicycle may be identifying an outfit rather than a man. The prosecution must make you sure the accused was the rider. If the uniform may have misled the witness, you must acquit.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The oldest identification warning, refitted for the gig economy: the more identical the uniforms, the less a matching uniform proves.",
+      "tags": ["burden", "identity"]
+    }
+  ],
+  "checkins": ["b3", "b5", "b7", "b9"],
+  "verdict_truth": "Not Guilty",
+  "twist": "The chase witness told the truth all the way to the wrong man: the kit matched because the kit always matches — nine identical teal riders were inside five hundred metres, and two of them rode through that crossing. The 'flight' was earbuds, the scrape was a depot rack with a three-week-old service ticket, and at 9:47 and 31 seconds the accused was photographing a doormat four blocks away. The uniform did it. The man just wore one.",
+  "difficulty_target": 0.4,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "The chase settles it for him — a man ran the rider down with his own eyes.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": { "position": "G", "confidence": 75 },
+        "weights": { "identity": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["The man chased him two blocks and then found him. That is police work with legs.", "Same kit, same bike, same build, three hundred metres away. Come on."],
+          "pushback": ["You are all treating an eyewitness like a liar.", "He rode away from a police officer. Innocent men do not do that."],
+          "concede": ["If nine of them were dressed the same inside five hundred metres… then the chase caught a jacket, not a man."],
+          "final": ["I believed the chase. The map made the chase mean less than I thought."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "identity", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Trusts logged systems; a geotagged photograph outranks every memory in the room.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "alibi": 2, "digital_forensics": 1, "timeline": 1 },
+        "lines": {
+          "agree": ["A timestamp, a geotag, and a doormat. That is where he was at 9:47, full stop.", "The watch stopped at the same minute the app has him four blocks away. Systems that never met, agreeing."],
+          "pushback": ["Memories of teal at night are not records.", "Bring me a log that puts him at the crossing. There isn't one."],
+          "concede": ["The scrape bothered me until the service ticket. Records cut both ways and this one cut clean."],
+          "final": ["Two machines and a doormat say he was elsewhere. I believe the doormat."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; uniform identifications are her oldest professional grudge.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 80 },
+        "weights": { "burden": 2, "identity": 2 },
+        "lines": {
+          "agree": ["Precisely — the judge's caution names this exact trap: an outfit identified, not a man."],
+          "pushback": ["The entire case is one honest man's certainty about a jacket sold by the hundred.", "Suspicion of the nearest teal rider is not proof of this teal rider."],
+          "concede": ["The victim deserves a culprit. I concede everything except that it has been proven to be this one."],
+          "holdout": ["Nine matching uniforms, two through the crossing itself. I will not gamble a man on a colour.", "I hold until someone distinguishes him from eight colleagues. Nobody has."],
+          "final": ["Not guilty — and if the platform's map is right, the real rider is on it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "identity", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Keeps the burden pinned while giving the constable's instincts a fair hearing.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "burden": 2, "procedure": 1 },
+        "lines": {
+          "agree": ["That is the shape of it: they must place him at the crossing, and the app places him elsewhere."],
+          "pushback": ["The riding-away deserved examination, not eye-rolling. It was examined. It survived as earbuds.", "Let us not treat the constable as the villain for doing her job."],
+          "concede": ["The service record for the reflector ends the bike-damage point. Cleanly."],
+          "burden_correct": ["He does not have to name the real rider. That was never his job, and it is not ours to demand it.", "The judge was specific: if the uniform may have misled the witness, we acquit. 'May' is a low bar and it is met."],
+          "final": ["Held to the standard, the identification cannot carry the verdict."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "procedure", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -5, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; keeps the room's sympathy for the victim from becoming a verdict on its own.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "G", "confidence": 50 },
+        "weights": { "identity": 1, "method": 1 },
+        "lines": {
+          "agree": ["Noted, and agreed — bring exactly that to the vote.", "Good. Concrete, sourced, countable."],
+          "pushback": ["Someone did hit that man and ride off. Our anger about it does not pick the defendant.", "One at a time — and the question is who, not how bad."],
+          "concede": ["Fair. The count will show it."],
+          "final": ["We have been careful, which he was owed — both of them. Hands."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Drifts with the last strong image; the 'pause then ride off' haunts him.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "G", "confidence": 45 },
+        "weights": { "method": 2, "alibi": 2 },
+        "lines": {
+          "agree": ["Yes — when you lay it out like that, I am with you.", "The doormat photo. Every time I wander, someone shows me the doormat photo."],
+          "pushback": ["But the rider paused. Paused, looked, and left a man on the road. Somebody did that.", "The kebab shop is so close, though."],
+          "concede": ["Close for him and for eight others. All right.", "The doormat photo. I keep coming back to it because it keeps being true. I'm there."],
+          "final": ["I will land where the room's best evidence lands, and I think I know where that is."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Was sold by the chase on day one; the platform's own records are buying him back.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "G", "confidence": 70 },
+        "weights": { "alibi": 2, "digital_forensics": 2 },
+        "lines": {
+          "agree": ["9:47 on the victim's watch, 9:47:31 on the delivery photo, four blocks apart. A man cannot be a photograph and a collision at once.", "Two of the nine rode through the crossing itself. We had the wrong end of the teal thread."],
+          "pushback": ["I sat down sure. The chase felt like proof — I am telling you it was a story with momentum.", "The scrape pulled me back for a while. Then the service ticket un-pulled me."],
+          "concede": ["All right. 'Sure it was him' and the doormat photograph cannot live in the same verdict."],
+          "final": ["The chase convinced me in a minute. The records took an afternoon, and they were right."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "alibi", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; certainty that grows during a story worries her more than the story.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 55 },
+        "weights": { "credibility": 2 },
+        "lines": {
+          "agree": ["Mm. 'The kit matched.' He said the true part himself and did not hear it.", "That is the first identification fact today that was not a feeling."],
+          "pushback": ["The chaser is honest. Honest is not the same as right, and forty minutes is a long dark gap.", "Everyone keeps saying 'he was right there'. Nine people were right there."],
+          "concede": ["The pause-and-ride-off is genuinely awful. It just is not addressed to this defendant."],
+          "final": ["Quietly: an honest witness identified a uniform. Not guilty."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 0, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "The ride-away is his anchor; keeps demanding the accused explain himself out of it.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "procedure": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Exactly — scrape, broken reflector, rode off from a uniform. Stack it up."],
+          "pushback": ["Thirty metres or two blocks, he still rode away from a police officer."],
+          "burden_drift": ["Let him prove the earbuds story — produce the order he was listening to, the volume, something.", "He should walk us through his whole route before I move."],
+          "concede": ["The app already walked us through his route. Fine."],
+          "burden_correct": ["Withdrawn — it is theirs to place him at the crossing, and the map they subpoenaed places him at a doormat."],
+          "final": ["I anchored on thirty metres of riding. The case needed four blocks, and it never got there."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "procedure", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "Undecided; keeps trying to make the chase and the doormat photo fit in one story.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "timeline": 1, "identity": 1, "alibi": 2 },
+        "lines": {
+          "agree": ["There — the two stories only fit if there were two riders. And there were nine.", "Say the timestamps again. They are the only part that does not bend.", "The doormat photo settles the minute. He cannot be there and at the crossing at once."],
+          "pushback": ["And yet the chaser was so sure. People are not usually that sure for no reason.", "One more pass. I want the minutes in order once more."],
+          "concede": ["In order, they acquit him. Settled."],
+          "final": ["I tried all afternoon to make one rider do both things at 9:47. It takes two. He was the other one."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "identity", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Has done gig work; knows what a patch, a uniform, and an earbud shift actually mean.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 55 },
+        "weights": { "identity": 1, "alibi": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Fair — 'being near it is the job' is just true. The patch system puts the same riders on the same corners nightly.", "And the direction nailed it: the more identical the uniforms, the less a match proves."],
+          "pushback": ["Nobody who has worn the kit thinks teal narrows it to one man.", "The earbuds are not an excuse; they are the job's operating system."],
+          "concede": ["The pause before riding off — whoever did that should answer for it. Someone on that density map."],
+          "final": ["I have worn that uniform. It fits hundreds of us. The verdict has to fit one man, and it does not fit him."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "yanniedog",
+    "batch_pr": "D7b-1"
+  }
+}

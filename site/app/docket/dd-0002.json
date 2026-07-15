@@ -1,0 +1,452 @@
+{
+  "id": "dd-0002",
+  "publish_date": "2026-08-03",
+  "label": "fiction",
+  "title": "The Grandmother's Wallet",
+  "setting": "a suburban bank branch and a pensioner's kitchen table, the present day",
+  "charge": "dealing with the proceeds of crime",
+  "elements": [
+    "Money moved through the accused's account was the proceeds of fraud",
+    "The accused knew, or believed, the money was criminal when she moved it"
+  ],
+  "hook": "For fourteen months, Margaret Hale said goodnight to a man who never existed. She still keeps his photographs. The prosecution says that somewhere around month four, the widow being farmed became part of the farm.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Margaret Hale, 64. A retired school cook, widowed three years; sings alto in the church choir whose roof her four per cent helped repair. Her grandson thinks she has been unwell.",
+    "if_guilty": "a criminal record at 64, restitution she cannot pay, and the word 'launderer' beside her name"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "No one in this room will enjoy this case. Margaret Hale was robbed by a fiction called Franklin, and we say she then helped him rob eleven other people of two hundred and fourteen thousand dollars. She was warned by her bank, in writing, line by line. She kept a ledger of her four per cent in her own hand. And when her account 'got noticed', she offered her sister's. Compassion is owed to her. So is the truth about what she knew."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The men who built Franklin studied Margaret Hale for months before they spent a single kind word on her. Everything the prosecution will show you — the transfers, the ledger, even the message about her sister — happened inside a relationship engineered by professionals to feel more real than her empty house. She kept nothing. She bought nothing. She believed she was saving the man she loved. A victim who obeys her abuser is not his business partner."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Love explains the first nine thousand dollars — hers. It does not explain the margin of a ledger where a school cook worked out four per cent of other people's ruin, nineteen times. It does not explain searching 'money mule penalties first offence', or the sentence she typed herself: mine is getting noticed. You may leave this room heartbroken for Margaret Hale. The eleven people whose savings passed through her hands are owed your verdict anyway."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Sure. Not 'probably'. Not 'she must have realised'. Sure. The prosecution's own witnesses told you how this fraud holds a lonely person: sixty victims, four countries, professionals. The searches they call knowledge, she calls fear — and fear is exactly what those searches look like. The ledger kept 'things straight' for a man auditing her devotion. She is the poorest person in this story. Ask who profited — and who wept when they told her he wasn't real."
+      }
+    }
+  },
+  "epilogue": "Margaret received a suspended sentence — the judge called her 'an offender it is impossible to hate' — and a restitution order that takes forty dollars from her pension each fortnight. The syndicate behind Franklin has never been arrested. His photographs, it turned out, belonged to an engineer in another country who has spent years asking platforms to stop his face from breaking hearts. Margaret still writes to two of the eleven depositors. One writes back.",
+  "cast": [
+    { "id": "judge", "name": "Judge Okonkwo", "role_label": "the judge", "side": "court" },
+    { "id": "pc", "name": "Priya Vasan", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Colm Brady", "role_label": "defence counsel", "side": "defence" },
+    { "id": "w1", "name": "Detective Ines Ferrar", "role_label": "financial-crimes investigator", "side": "prosecution" },
+    { "id": "w2", "name": "Sam Uduike", "role_label": "branch banker, Harlow Mutual", "side": "prosecution" },
+    { "id": "w3", "name": "Dr Petra Nyland", "role_label": "counsellor specialising in romance-fraud victims", "side": "defence" },
+    { "id": "w4", "name": "Margaret Hale", "role_label": "the accused — retired school cook, 64", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "Over five months, nineteen deposits from eleven strangers landed in the accused's account — two hundred and fourteen thousand dollars in all. Each amount moved on within hours, converted to cryptocurrency at kiosks across three suburbs. Four per cent of every deposit stayed behind in her account.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.5,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The plumbing of a mule account, laid out plainly. It proved the money moved — the fight was over what she understood while moving it.",
+      "tags": ["method", "digital_forensics"]
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit two: the message history with 'Franklin', fourteen months, forty thousand messages. Good morning, my love. Photographs of an oil platform. Plans for a house with a garden. Early on, she sent him nine thousand dollars of her own savings. When officers told her Franklin was not real, she wept for an hour.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The love was real on her side — once. But being a victim first and a participant later are not exclusive, and forty thousand messages say nothing about what she understood by month four.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "'Before any stranger's money arrived, what happened to hers?' 'She sent nine thousand dollars of her own savings to Franklin.' 'Who do these recruiters choose, Detective?' 'They target the lonely. The recently widowed.' 'And her spending, across five months of alleged crime?' 'Unchanged. No holidays, no car. The same small flat.'",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.45,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "All true, and all about how it started. The prosecution's case was about how it continued.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "In month two we froze a deposit and called her in. I walked her through our mule-account warning sheet line by line — the strangers' deposits, the fast forwarding, the percentage kept. She signed the acknowledgment. She told me the transfers were donations for her church. Then the pattern continued.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The warning that removed 'nobody told me'. After that meeting, continuing required a story — and she supplied one.",
+      "tags": ["procedure", "credibility"]
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit four: from her own devices. Searches — can my bank see incoming transfers, money mule penalties first offence. A handwritten ledger of every deposit with its four per cent worked out in the margin. And a message to Franklin, in her words: we should use my sister's account next, mine is getting noticed.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Knowledge, in her own handwriting and her own words: the penalties searched, the cut accounted for, the heat on her account understood and managed.",
+      "tags": ["digital_forensics", "method"]
+    },
+    {
+      "id": "b6",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "Romance-fraud victims live inside a manufactured relationship that feels more real than their daily lives. Under that influence people rationalise extraordinary things. Compliance with the fraudster's requests — even administrative ones, even repeated ones — is a recognised feature of the victimisation, not proof it has ended.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "A fair account of how these frauds hold people — offered to a jury weighing a ledger the syndicate never asked her to keep.",
+      "tags": ["credibility", "method"]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "'Did she meet your clinical criteria for coercive control?' 'Not the formal criteria, no.' 'In your experience, when victims discover the truth, what do they do?' 'Usually they stop. Usually they report it.' 'And this account, in month four — did it slow down?' The counsellor looked at her notes for a moment. 'No. It sped up.'",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The defence's own expert marking where the pattern stopped looking like victimhood.",
+      "tags": ["credibility"]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "I was terrified of losing him. He said his business account was frozen unfairly and I was keeping his men paid. The searches — I was frightened, I wanted to know how much trouble he was putting me in. The message about my sister was his idea. He dictated it and I typed it.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The hardest evidence to sit with: genuine fear, genuine loneliness — wrapped around an explanation that conceded she knew there was trouble to measure.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "cross",
+      "text": "She agreed she read the bank's warning sheet, 'some of it'. She agreed the ledger was hers — 'to keep things straight'. Asked what 'mine is getting noticed' meant if she believed the money was honest, she said, after a long pause: 'I suppose I felt watched.'",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.7,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The pause the courtroom heard. Feeling watched is what knowledge feels like when it is asked a direct question.",
+      "tags": ["credibility", "digital_forensics"]
+    },
+    {
+      "id": "b10",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit seven: her finances at arrest. Three hundred and twelve dollars in the account. A part-pension, rent in arrears once that winter. Of the eight and a half thousand dollars her four per cent came to, bank records show most of it went to her church's roof appeal and her grandson's school fees.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Where the cut went is a story about her heart. That she took a cut at all — counted, in the margin, in her hand — is the story about her knowledge.",
+      "tags": ["motive", "method"]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit eight: the platform's takedown report on 'Franklin'. The profile was a syndicate persona operated against more than sixty victims in four countries. The deposits into the accused's account match the syndicate's standard mule schedule — including the pause whenever a receiving account drew a bank's attention.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The machine she was part of — and the machine's habit of pausing exactly when her account 'got noticed'.",
+      "tags": ["identity", "digital_forensics"]
+    },
+    {
+      "id": "b12",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "You must not research this case or these fraud schemes online. Sympathy cannot lower the standard of proof, and neither may distaste raise it. The prosecution must make you sure that when she moved the money, she knew or believed it was criminal. Her being deceived at the start does not answer that question either way.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction cut both ways on purpose: sympathy is not proof of innocence, and a sad ending is not proof of guilt. The ledger had to do the work — and it did.",
+      "tags": ["burden", "procedure"]
+    }
+  ],
+  "checkins": ["b4", "b7", "b10", "b12"],
+  "verdict_truth": "Guilty",
+  "twist": "Everything about her said victim — the forty thousand messages, the nine thousand she lost first, the empty account, the church roof. And she was one, at the start. But the ledger in her handwriting, the penalty searches, and 'mine is getting noticed' in her own words drew the line the law cares about: somewhere around month two, she stopped being deceived about the money and kept moving it anyway.",
+  "difficulty_target": 0.55,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "Sees his own mother at that kitchen table; the weeping is all he can hear.",
+        "register": "plain",
+        "arc": "vibes",
+        "initial": { "position": "NG", "confidence": 80 },
+        "weights": { "motive": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["Exactly — she cried for an hour when they told her. You cannot fake that.", "She gave the money to a church roof. What criminal does that?"],
+          "pushback": ["You are asking me to jail a pensioner for being lonely.", "The syndicate has sixty victims and we are prosecuting one of them."],
+          "concede": ["The ledger, though. My mother would not have kept the ledger."],
+          "final": ["I came in certain she was a victim. I am ending somewhere quieter than certain."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "motive", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Follows the paper; the margin arithmetic decided her on day one.",
+        "register": "blunt",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 65 },
+        "weights": { "digital_forensics": 2, "method": 1 },
+        "lines": {
+          "agree": ["Four per cent, worked out in the margin, nineteen times. That is bookkeeping, not romance.", "The searches say it plainer than any witness did."],
+          "pushback": ["Tears are not exhibits.", "We are not judging her heart. We are judging the ledger."],
+          "concede": ["I will grant the first nine thousand — she was hunted before she was hired."],
+          "final": ["The paper says she knew. I go with the paper."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; wants knowledge proven, not inferred from grief gone wrong.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 75 },
+        "weights": { "burden": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["That is the actual question — not what she did, but what she understood while doing it."],
+          "pushback": ["A frightened person also searches penalties. Fear of trouble is not knowledge of crime.", "The bank meeting proves she was warned. Warned and believing are different states."],
+          "concede": ["The sister message is the hardest sentence in the case. I concede that freely."],
+          "holdout": ["If manipulation can explain the ledger, then sure is not available to us.", "I will not convict a woman for surviving her own explanation badly."],
+          "final": ["I have held the line as long as the line held me. This is my verdict."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Keeps both directions of the judge's warning alive: no sympathy discount, no distaste surcharge.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "burden": 2, "procedure": 1 },
+        "lines": {
+          "agree": ["Held to the standard, yes — and the ledger survives the standard."],
+          "pushback": ["Careful: her poverty is not a verdict, in either direction.", "We convict on knowledge, not on how sad the ending is."],
+          "concede": ["The counsellor's point about rationalisation is fair as far as it goes."],
+          "burden_correct": ["Nobody here needs her to explain anything. The prosecution carries this alone, start to finish.", "The judge said it: being deceived at the start answers nothing. Neither does our sympathy."],
+          "final": ["On the standard, with the exhibits, I am sure."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "procedure", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; keeps the room off the syndicate and on the accused.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "NG", "confidence": 50 },
+        "weights": { "credibility": 1, "procedure": 1 },
+        "lines": {
+          "agree": ["Noted — and said plainly enough that the count should hear it.", "Good. That is the kind of point we can vote on."],
+          "pushback": ["The syndicate is not in the dock. She is. Keep to her.", "One at a time — the question is what she knew, not what Franklin was."],
+          "concede": ["Fair point, fairly made. It moves me somewhat."],
+          "final": ["We have given it a full hearing. Let us be counted."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Drifts with the room; the weeping moves him, then the margin arithmetic does.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "G", "confidence": 45 },
+        "weights": { "digital_forensics": 1, "motive": 1 },
+        "lines": {
+          "agree": ["Yes — that is where I keep landing too, when I land.", "Say it once more; it holds better each time."],
+          "pushback": ["But then I picture her signing that bank form and going home to keep typing.", "I do not know. An hour of crying is a long time to pretend."],
+          "concede": ["That settles one wobble at least. I will hold onto it."],
+          "final": ["I have gone around the table twice in my head. Here is where I stopped."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "motive", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Walked in ready to acquit a grandmother; the ledger has been working on her since.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "NG", "confidence": 70 },
+        "weights": { "digital_forensics": 2, "credibility": 2 },
+        "lines": {
+          "agree": ["'Mine is getting noticed.' I keep saying it out loud. There is no innocent voice for that sentence.", "The searches are what stopped me. You do not look up penalties for money you believe in."],
+          "pushback": ["The chats are fourteen months of a life. I am not ready to call all of it a costume.", "I wanted this to be simple sympathy. It has not stayed simple."],
+          "concede": ["All right. I cannot carry 'sure she didn't know' anymore. The margin arithmetic took it from me."],
+          "final": ["I changed my mind in this room, and I can point to the exhibit that did it."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter of neat stories — including the prosecution's neat one.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 55 },
+        "weights": { "credibility": 2 },
+        "lines": {
+          "agree": ["Mm. Both sides keep telling me a tidy story. Hers is at least the one with a witness.", "That is the first untidy fact today, which is why I believe it."],
+          "pushback": ["The banker remembers the meeting the way bankers remember meetings that later matter.", "Everyone is very sure about what a real victim would do."],
+          "concede": ["The pause before 'I felt watched' — I heard it too. I am carrying it."],
+          "final": ["Quietly: the pause, the margin, the sister. That is three. Three is enough."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Wants her to prove she believed Franklin; keeps flipping the burden.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 65 },
+        "weights": { "method": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Exactly. Warned in writing, kept going, kept score. That is the whole case."],
+          "pushback": ["Two hundred grand through a pensioner's account and I am meant to shrug?"],
+          "burden_drift": ["If she truly believed him, let her show us one message where she questions the money. One.", "She should have to explain the ledger line by line before I move an inch."],
+          "concede": ["Yes, yes — it is theirs to prove, not hers to disprove. The judge said so."],
+          "burden_correct": ["Withdrawn. The exhibits have to convict her; she does not have to acquit herself."],
+          "final": ["As it happens, the exhibits do the job without my shortcuts."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "Undecided; keeps weighing the woman against the paperwork out loud.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "digital_forensics": 1, "motive": 1 },
+        "lines": {
+          "agree": ["There — that is the version that survives being said twice.", "Right. The ledger does not weep and the chats do not count money."],
+          "pushback": ["And then I remember she paid a church roof with it, and I am adrift again.", "Ask me after the next point. I mean it kindly."],
+          "concede": ["That lands. One less thing to wobble on."],
+          "final": ["I weighed the woman against the paperwork all afternoon. The paperwork held still."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "motive", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Suspicious of the syndicate getting off free while its mule stands trial; suspicious, too, of letting that decide anything.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "U", "confidence": 45 },
+        "weights": { "identity": 1, "burden": 1, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["Fair — the takedown report shows the machine, and the ledger shows she read its manual.", "And the direction holds either way: prove knowledge or go home."],
+          "pushback": ["Sixty victims and the only person in a dock is the sixty-first. Sit with that a moment.", "I want us convicting her knowledge, not our frustration."],
+          "concede": ["The schedule pausing when her account 'got noticed' — that is the two exhibits shaking hands. I concede it."],
+          "final": ["The machine goes unpunished today either way. Her knowledge is the only question we can answer — and it has an answer."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "identity", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "yanniedog",
+    "batch_pr": "D7b-1"
+  }
+}

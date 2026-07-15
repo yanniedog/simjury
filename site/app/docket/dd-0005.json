@@ -1,0 +1,443 @@
+{
+  "id": "dd-0005",
+  "publish_date": "2026-08-06",
+  "label": "fiction",
+  "title": "The Tracker in the Lining",
+  "setting": "a city of coincidences — a gym, a cafe, a mother's new flat — and one tote bag, the present day",
+  "charge": "stalking",
+  "elements": [
+    "The accused engaged in a repeated course of conduct directed at the complainant",
+    "The conduct included keeping her under surveillance",
+    "He knew the conduct was likely to cause her fear or serious distress"
+  ],
+  "hook": "Noa Brandt's phone told her before anyone else believed her: unknown tracker travelling with you. She cut open the lining of her tote bag with nail scissors and found it — a coin-sized answer to three months of small worlds.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Julian Ashe, 33. An architect, engaged to be married in the spring; he helped Noa move her boxes out when it ended. Everyone who knows him calls him the reasonable one.",
+    "if_guilty": "a stalking conviction, a five-year restraining order, and a wedding that likely never happens"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "This is a case about a man who never raised his voice. He didn't need to. The prosecution will show you his tracker sewn into her bag, his account behind it, and his phone opening her live location two hundred and fourteen times — a third of them between midnight and four in the morning. Stalking is not rage. It is patience. Count the timestamps and you will see how patient he was."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Julian Ashe ended a long relationship kindly, got engaged to someone else, and helped his ex move out — and for that, he is on trial. The tag is his; he owned four and reported one lost. The bag was his gift. They shared a wardrobe for three years. The prosecution will show you a map and ask you to see a hand placing a tracker. Maps show tags. They have never once shown a hand."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The defence needs you to believe a chain of accidents: a tag lost in a wardrobe that stopped existing, into a bag bought two months after the breakup, awake and travelling three weeks after they parted, two days after he stood alone in her hallway. Accidents do not screenshot addresses at two in the morning. He checked. He filed the covering report the night after she went to the police. That is not grief. That is method."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Nobody in this trial says Julian threatened anyone — because he didn't. What is left? A tag anyone could have moved, an app that stays logged in on any unlocked phone, and a woman who — honestly, understandably — rereads every coincidence as menace once an alert tells her to. Suspicion has done its work here. The law demands you be sure. Sure of the hand, sure of the intent, sure of the fear. You cannot be."
+      }
+    }
+  },
+  "epilogue": "Julian received a suspended sentence, a five-year restraining order, and a course his lawyer called 'perspective work'. The wedding did not survive the trial; the screenshots were read aloud while his fiancée sat in the second row. Noa kept the tote bag — resewn, deliberately — and still checks her tracker alerts every Sunday night. Felix, the mutual friend, wrote to them both afterwards. Only one of them answered.",
+  "cast": [
+    { "id": "judge", "name": "Judge Halloran", "role_label": "the judge", "side": "court" },
+    { "id": "pc", "name": "Mara Okafor", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Rohan Datta", "role_label": "defence counsel", "side": "defence" },
+    { "id": "w1", "name": "Noa Brandt", "role_label": "the complainant", "side": "prosecution" },
+    { "id": "w2", "name": "Analyst Priya Chetty", "role_label": "police digital investigator", "side": "prosecution" },
+    { "id": "w3", "name": "Felix Marlowe", "role_label": "mutual friend of both parties", "side": "defence" },
+    { "id": "w4", "name": "Julian Ashe", "role_label": "the accused — the complainant's former partner", "side": "defence" }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "After we broke up he kept turning up. The cafe by my new office. My gym, opening week. Outside my mother's building — she had just moved. He would smile and say small world. Then my phone alerted: unknown tracker travelling with you. I cut open my tote bag and found it sewn into the lining.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.5,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The 'small world' kept shrinking to wherever she was next. The anti-stalking alert on her phone was the first witness in the case that had no feelings about anyone.",
+      "tags": ["method", "credibility"]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "She agreed the breakup had been civil, that he never once threatened her, and that the tote had been his gift originally. She agreed she had no memory of when the bag last left her flat. 'You never felt afraid of him before the alert?' — 'Before the alert, I thought I was going mad.'",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "No threats, a civil breakup, a gifted bag — all true, and all describing exactly how surveillance without threats is supposed to look.",
+      "tags": ["credibility"]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "The tag recovered from the bag lining is registered to the accused's account — his email, his device history. It last paired with his phone. Its hardware identifier matches one of four tags purchased on his card fourteen months ago. That is not in dispute between the parties.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Whose tag was never the question. The trial was fought over how his tag came to live inside the seam of her bag.",
+      "tags": ["identity", "digital_forensics"]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit two, tendered by the defence: a lost-property report the accused filed with the tag's manufacturer — 'keys with tracker attached, lost, please disable' — together with receipts showing he bought four tags for family use: his keys, his car, his dog's collar, one spare. The defence says the spare is the tag she found.",
+      "surface_persuasion": 0.75,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A tidy paper answer — filed at 9:14pm on the day after her first police statement. The report proved he knew how to report a tag lost. Its timestamp proved when it became useful to.",
+      "tags": ["credibility", "timeline"]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I know them both, and this is a misunderstanding that got lawyers. Julian is engaged now — he helped Noa move her boxes out, for heaven's sake. He wished her well in the group chat. A man rebuilding his life does not spend it wondering which gym his ex joined.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.15,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Sincere, and beside the point. Stalking is not longing — it is control. The engagement and the 2am location checks lived in the same phone without any difficulty at all.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit four: the tag's location history. It begins moving with the complainant three weeks after the breakup. It maps her new gym, her new office, her mother's new flat — none of which existed in her life while the couple were together. It settles into the tote two days after the accused visited to return her books.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.85,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The killer detail was chronological: a tag 'lost in an old shared wardrobe' cannot begin its journey three weeks after the wardrobe stopped being shared — two days after he was alone in her hallway with her bag.",
+      "tags": ["timeline", "method", "digital_forensics"]
+    },
+    {
+      "id": "b7",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit five: the accused's own phone. The tag application's activity cache shows her live location opened two hundred and fourteen times across five months — a third of them between midnight and four in the morning. The photo roll holds screenshots of the map: her dot, at named addresses, with timestamps.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.8,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Nobody accidentally screenshots a map of a person two hundred times. The phone did not describe an anxious friend. It described a habit.",
+      "tags": ["digital_forensics", "identity"]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "I loved her, we ended it like adults, and I moved on — I am getting married in the spring. That autumn she went quiet and stopped answering everyone, and yes, I looked at the app when I worried. The tag itself — we shared a wardrobe for three years. Things of mine ended up in her things constantly.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Warm, reasonable, fluent — an account in which two hundred and fourteen checks became 'I worried', and a sewn seam became a shared shelf.",
+      "tags": ["credibility", "motive"]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "cross",
+      "text": "Shown the receipt proving the tote was bought two months after the breakup, he paused and said, 'Then I do not know how it got there.' Asked about the small hours — 'insomnia'. Asked why a worried friend screenshots addresses, he said, quietly, that he could not remember taking those.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.5,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The wardrobe story died on a shop receipt. What replaced it was the sound a cover story makes when it runs out of rooms.",
+      "tags": ["credibility", "timeline"]
+    },
+    {
+      "id": "b10",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "The analyst agreed tracker tags can misreport in dense buildings, and that location histories show the tag, not a hand placing it. She agreed anyone with access to his unlocked phone could open the app. 'Two hundred and fourteen times, over five months, from his flat and his office?' — 'That access pattern belongs to the phone's owner.'",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Fair concessions at the edges of the technology — none of which put a different person behind five months of checking.",
+      "tags": ["digital_forensics", "credibility"]
+    },
+    {
+      "id": "b11",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "Do not research this case or these applications online. Stalking in law is a course of conduct: repeated surveillance can be enough, and the absence of threats is not a defence — nor is charm evidence of guilt. The prosecution must make you sure of the conduct and that he knew the fear it would cause.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction the verdict turned on: the question was never whether he seemed dangerous in the witness box. It was what he did, two hundred and fourteen times, in the dark.",
+      "tags": ["burden", "method"]
+    }
+  ],
+  "checkins": ["b2", "b5", "b7", "b9"],
+  "verdict_truth": "Guilty",
+  "twist": "He was the best witness in his own trial: engaged, gracious, heartbroken in the right places. But the tag began moving with her three weeks after the breakup, settled into a bag bought two months after it, two days after he stood alone in her hallway — and his own phone kept the receipts: two hundred and fourteen location checks, a third of them after midnight, screenshotted with addresses. No threats were ever made. None were needed. That is what the charge is for.",
+  "difficulty_target": 0.65,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "The 2am checks made her skin crawl on day one; everything since is detail.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": { "position": "G", "confidence": 75 },
+        "weights": { "method": 2, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["Two hundred and fourteen times. Say the number and then tell me about misunderstandings.", "He screenshotted her addresses. That is not worry, that is filing."],
+          "pushback": ["I do not care how nice he was in the box. Nice is the uniform.", "Sewn. Into. The lining. Bags do not do that to themselves."],
+          "concede": ["If the app really misreports indoors, some of those pings are noise, fine."],
+          "final": ["My skin decided early. Happily, the exhibits agree with my skin."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": -1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Chronology is her religion; the tote receipt ended the argument for her.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "timeline": 2, "digital_forensics": 1 },
+        "lines": {
+          "agree": ["The bag postdates the breakup. The tag's journey postdates the breakup. The wardrobe story predates both. Ordered, it is over.", "Dates do not perform for juries."],
+          "pushback": ["Stop arguing about his character and put the events in a line.", "The lost-property report has a timestamp. Read it aloud again."],
+          "concede": ["I accept the tag cannot say whose hand placed it. Only when, and where, and after what visit."],
+          "final": ["I lined the dates up on day one. Nothing since has moved a single one of them."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; frightened of convicting a man for being the obvious answer.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 70 },
+        "weights": { "burden": 2, "credibility": 1 },
+        "lines": {
+          "agree": ["That is the right question — conduct proven, not character preferred."],
+          "pushback": ["An unlocked phone, a shared past, a gifted bag. The defence only needs one open door.", "We are being asked to infer a hand from a map."],
+          "concede": ["The screenshots are his. I cannot assign those to an open door."],
+          "holdout": ["If the fiancée had his passcode, the checks have another candidate. Exclude her first.", "I hold until the alternative is closed, not merely unlikely."],
+          "final": ["Two hundred checks from his flat and his office. The alternative closed. So do I."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": -10, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Keeps the law's definition on the table: no threats required, no charm admissible.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "burden": 2, "method": 1 },
+        "lines": {
+          "agree": ["Yes — course of conduct, surveillance, knowledge of fear. Three boxes; the exhibits tick them."],
+          "pushback": ["'He never threatened her' answers a charge nobody brought.", "His engagement is not evidence. Neither is our fondness for him."],
+          "concede": ["The friend believes every word he said. Sincerity noted; relevance not established."],
+          "burden_correct": ["He does not have to explain the bag. They must prove the placing — and knowledge of the fear.", "Careful: distaste for the conduct cannot lower the standard either."],
+          "final": ["On the definition, with the phone and the timeline, I am sure."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; rations the word 'creepy' and demands exhibits instead.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": { "position": "G", "confidence": 55 },
+        "weights": { "digital_forensics": 1, "timeline": 1 },
+        "lines": {
+          "agree": ["Noted — and that one belongs in the count.", "Good. Say it exactly like that when hands go up."],
+          "pushback": ["'Creepy' is banned in this room. Bring me a timestamp.", "One at a time — and the fiancée is not on trial either."],
+          "concede": ["Fairly argued. It moves the count somewhat."],
+          "final": ["We have been thorough. Hands, please."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Swings with the room; the lost-property report keeps luring him back.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 45 },
+        "weights": { "credibility": 1, "timeline": 2 },
+        "lines": {
+          "agree": ["Yes — filed the night after her statement. When you say the date out loud it stops being paperwork and starts being a move.", "That is the piece I will hold onto this time."],
+          "pushback": ["But he did report a tag lost. That document exists.", "People do check exes' locations. Sad, common, not always criminal."],
+          "concede": ["Common at 2am, two hundred times, with screenshots? No. I withdraw that."],
+          "final": ["I swung all afternoon. The timestamps were the only thing that never swung back."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Liked him instantly and distrusts herself for it; the phone cache is winning.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": { "position": "NG", "confidence": 65 },
+        "weights": { "digital_forensics": 2, "timeline": 2 },
+        "lines": {
+          "agree": ["The cache is his diary, and the diary says five months of her dot on his screen.", "Three weeks after the breakup the tag starts moving with her. The story cannot climb over that fence."],
+          "pushback": ["I want to say it plainly: I believed him. He is exactly the person you would believe.", "The wardrobe explanation was at least possible — until the receipt."],
+          "concede": ["All right. The receipt, the visit, the seam. I am done defending my first impression."],
+          "final": ["He charmed me and the exhibits un-charmed me. I trust the second process more."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "innocence" }, "effect": { "delta": -1, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "concede" } }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; distrusts the group chat's version of anyone's private life.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 50 },
+        "weights": { "credibility": 2, "digital_forensics": 2 },
+        "lines": {
+          "agree": ["Mm. The friend testified about the man he knows at barbecues. The phone testified about the man at 2am.", "That is the first fact today that did not need anyone's good opinion."],
+          "pushback": ["Everyone is very sure they can spot a stalker. That is precisely the problem.", "Her memory of 'coincidences' grew after the alert. Memories do that."],
+          "concede": ["The screenshots do not care what I think of group chats. Noted.", "The phone cache is not a witness I can talk myself out of. I move."],
+          "final": ["Quietly: the public man and the phone disagree. I believe the phone."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 10, "line": "concede" } },
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 0, "confidence": -5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Wants the accused to explain the seam stitch by stitch; keeps shifting the burden.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": { "position": "G", "confidence": 60 },
+        "weights": { "method": 1, "burden": 1 },
+        "lines": {
+          "agree": ["Exactly. His tag, his app, her lining. The geometry only works one way."],
+          "pushback": ["Someone sewed it in. Tags do not come with needles."],
+          "burden_drift": ["Let him tell us where he was the afternoon the tag 'settled' into her bag. Minute by minute.", "If the fiancée could open his phone, let the defence produce her to say she did."],
+          "concede": ["Yes — the judge said it: theirs to prove, his to prove nothing."],
+          "burden_correct": ["Withdrawn. The Crown carries it — and with that phone cache, it can."],
+          "final": ["I kept demanding answers from the wrong table. The right table had already provided them."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -10, "line": "burden_correct" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "burden_drift" } }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "Undecided; keeps testing whether 'worried friend' survives each new exhibit.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": { "position": "U", "confidence": 40 },
+        "weights": { "digital_forensics": 1, "motive": 1 },
+        "lines": {
+          "agree": ["There — 'worried friend' just failed that test too.", "Right: worry rings a doorbell. It does not screenshot addresses."],
+          "pushback": ["And yet he genuinely is getting married. I keep snagging on that.", "One more exhibit and I will land, I promise."],
+          "concede": ["That settles the snag. Moving on."],
+          "final": ["I tested his story against every exhibit in turn. It failed the quiet ones worst."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "motive", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Wary of trial by tote bag; wants the technology held to the same standard as the man.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": { "position": "NG", "confidence": 50 },
+        "weights": { "digital_forensics": 2, "burden": 1, "timeline": 1 },
+        "lines": {
+          "agree": ["Fair — the tag's own network flagged him to her phone. The system worked exactly once in this story, and it worked against him.", "And the direction is clear: surveillance alone can be the crime."],
+          "pushback": ["Tags misreport. Apps stay logged in. I want the machine cross-examined as hard as the man.", "A seam is damning until you remember who gifted whom the bag."],
+          "concede": ["The receipt killed the gift point. I let it go.", "I cross-examined the machine as hard as the man. Two hundred and fourteen times, it answered the same. I'm satisfied."],
+          "final": ["I cross-examined the machine all day. It gave better answers than he did."]
+        },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 5, "line": "pushback" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 5, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "claude-fable-5",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "yanniedog",
+    "batch_pr": "D7b-1"
+  }
+}
