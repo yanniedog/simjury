@@ -23,7 +23,7 @@
       },
       "defence": {
         "speaker": "dc",
-        "text": "The platform called Dartly dresses hundreds of riders in identical teal, on identical bikes, with identical bags. On the night in question, nine of them were working within five hundred metres of that crossing — and two rode straight through it. Sefu Diallo was not either of those two. At the exact minute of the collision he was four blocks away, photographing a customer's doormat, with a timestamp and a map to prove it. This is not identification. It is a uniform."
+        "text": "The platform called VeloDrop dresses hundreds of riders in identical teal, on identical bikes, with identical bags. On the night in question, nine of them were working within five hundred metres of that crossing — and two rode straight through it. Sefu Diallo was not either of those two. At the exact minute of the collision he was four blocks away, photographing a customer's doormat, with a timestamp and a map to prove it. This is not identification. It is a uniform."
       }
     },
     "closing": {
@@ -37,7 +37,7 @@
       }
     }
   },
-  "epilogue": "Sefu was acquitted in under two hours. Police reopened the case against the two riders whose routes crossed the scene; one was later cautioned, the collision never firmly pinned to either. Sefu went back to the same Friday-night corner — he needed the work — but keeps his delivery photos now long after the app deletes them. Howard Belic's hip healed by winter; he still crosses at that light and still cannot say which rider it was. Dartly added a rider-ID number to the back of every bag the following year.",
+  "epilogue": "Sefu was acquitted in under two hours. Police reopened the case against the two riders whose routes crossed the scene; one was later cautioned, the collision never firmly pinned to either. Sefu went back to the same Friday-night corner — he needed the work — but keeps his delivery photos now long after the app deletes them. Howard Belic's hip healed by winter; he still crosses at that light and still cannot say which rider it was. VeloDrop added a rider-ID number to the back of every bag the following year.",
   "cast": [
     { "id": "judge", "name": "Judge Priya Ramanathan", "role_label": "the judge", "side": "court" },
     { "id": "pc", "name": "Dominic Rourke", "role_label": "prosecuting counsel", "side": "prosecution" },
@@ -45,7 +45,7 @@
     { "id": "w1", "name": "Howard Belic", "role_label": "the injured pedestrian", "side": "prosecution" },
     { "id": "w2", "name": "Tomas Reiner", "role_label": "witness who chased the rider", "side": "prosecution" },
     { "id": "w3", "name": "Constable Ada Nwosu", "role_label": "attending officer", "side": "prosecution" },
-    { "id": "w4", "name": "Sefu Diallo", "role_label": "the accused — courier for the Dartly delivery platform", "side": "defence" }
+    { "id": "w4", "name": "Sefu Diallo", "role_label": "the accused — courier for the VeloDrop delivery platform", "side": "defence" }
   ],
   "beats": [
     {
@@ -117,7 +117,7 @@
       "id": "b6",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit four: the Dartly platform's records. The victim's watch stopped at 9:47pm, matching the emergency call. From 9:45 to 9:49 the accused's device pinged continuously at a doorstep four blocks north. His 'handed to customer' photograph is timestamped 9:47 and 31 seconds, geotagged at that address, showing his gloved hand, the meal, and the customer's doormat.",
+      "text": "Exhibit four: the VeloDrop platform's records. The victim's watch stopped at 9:47pm, matching the emergency call. From 9:45 to 9:49 the accused's device pinged continuously at a doorstep four blocks north. His 'handed to customer' photograph is timestamped 9:47 and 31 seconds, geotagged at that address, showing his gloved hand, the meal, and the customer's doormat.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
       "direction": "innocence",
@@ -129,7 +129,7 @@
       "id": "b7",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit five: the platform's rider-density map for that window, produced under subpoena. Between 9:40 and 9:55 that night, nine Dartly riders in identical kit were active within five hundred metres of the crossing. Two of them logged routes passing directly through it. Neither of those two was the accused.",
+      "text": "Exhibit five: the platform's rider-density map for that window, produced under subpoena. Between 9:40 and 9:55 that night, nine VeloDrop riders in identical kit were active within five hundred metres of the crossing. Two of them logged routes passing directly through it. Neither of those two was the accused.",
       "surface_persuasion": 0.5,
       "true_weight": 0.5,
       "direction": "innocence",
