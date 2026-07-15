@@ -1,4 +1,5 @@
 import { checkCase, checkQueue, type QualityIssue } from '../caseQuality'
+import { scanDocketCaseTokens } from './bannedTokens'
 import {
   LINE_FUNCTIONS,
   type DocketCase,
@@ -230,6 +231,23 @@ export function checkDocketCase(c: DocketCase): string[] {
     prev = at
   }
 
+  // Every trap must be scoreable: analyzeDocketPlay can only mark a
+  // misleading beat as bait if a check-in closes its segment, so a trap
+  // after the final check-in would silently drop out of the reveal's
+  // trap counts. (A trap ON the final check-in beat is fine — the
+  // check-in closes its own segment.)
+  const lastCheckinAt =
+    c.checkins.length > 0
+      ? Math.max(...c.checkins.map((id) => order.get(id) ?? -1))
+      : -1
+  for (const [i, b] of c.beats.entries()) {
+    if (b.reveal_stamp === 'misleading' && i > lastCheckinAt) {
+      issues.push(
+        `misleading beat ${b.id} falls after the final check-in — it can never be scored as bait`,
+      )
+    }
+  }
+
   // The jury.
   const jurors = c.jury.jurors
   const ids = new Set(jurors.map((j) => j.id))
@@ -267,6 +285,8 @@ export function checkDocketCase(c: DocketCase): string[] {
   }
 
   for (const j of jurors) issues.push(...jurorIssues(j, themeDirections))
+
+  issues.push(...scanDocketCaseTokens(c))
 
   return issues
 }
