@@ -75,4 +75,18 @@ describe('docketCaseSchema', () => {
       expect(result.error.issues.some((i) => i.message.includes('duplicate beat id'))).toBe(true)
     }
   })
+
+  it('accepts weekly media and rejects media for an unknown beat', () => {
+    const asset = {
+      src: '/today/media/dd-0001/scene.webp',
+      alt: 'A fictional courtroom scene.',
+      caption: 'Court sketch',
+      kind: 'court_sketch' as const,
+    }
+    const c = makeDocketCase()
+    c.media = { cover: asset, accused: asset, beats: { b1: asset } }
+    expect(docketCaseSchema.safeParse(c).success).toBe(true)
+    c.media.beats.missing = asset
+    expect(docketCaseSchema.safeParse(c).success).toBe(false)
+  })
 })

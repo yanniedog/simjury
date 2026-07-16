@@ -1,4 +1,5 @@
 import type { DocketCase } from '../../lib/v2/caseSchema'
+import { CaseMedia, StoryText } from './CaseMedia'
 
 export function DocketIntro({
   trial,
@@ -23,11 +24,13 @@ export function DocketIntro({
         <p className="text-sm text-neutral-400">{trial.setting}</p>
       </div>
 
-      <p className="border-l-2 border-neutral-600 pl-4 text-lg italic leading-relaxed text-neutral-200">
-        {trial.hook}
-      </p>
+      {trial.media?.cover && <CaseMedia asset={trial.media.cover} priority />}
 
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
+      <StoryText text={trial.hook} className="border-l-2 border-amber-600 pl-4 text-lg italic leading-relaxed text-neutral-200" />
+
+      <div className="space-y-4 rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
+        {trial.media?.accused && <CaseMedia asset={trial.media.accused} />}
+        <div>
         <p className="text-xs uppercase tracking-wider text-neutral-500">
           On trial
         </p>
@@ -40,6 +43,7 @@ export function DocketIntro({
         <p className="mt-2 text-sm text-neutral-400">
           If you convict: <span className="text-neutral-200">{trial.accused.if_guilty}</span>
         </p>
+        </div>
       </div>
 
       <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">

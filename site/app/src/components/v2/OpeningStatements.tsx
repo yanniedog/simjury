@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import type { DocketCase, Statement } from '../../lib/v2/caseSchema'
 import { speakAll, stopSpeech } from '../../lib/narration'
+import { StoryText } from './CaseMedia'
 
 /**
  * A counsel statement card — the visual voice of one side of the duel.
@@ -30,7 +31,7 @@ export function StatementCard({
           · {counsel?.role_label ?? side}
         </span>
       </p>
-      <p className="mt-2 leading-relaxed text-neutral-100">{statement.text}</p>
+      <StoryText text={statement.text} className="mt-3 leading-relaxed text-neutral-100" />
     </div>
   )
 }

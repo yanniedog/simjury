@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import type { DocketBeat, DocketCase } from '../../lib/v2/caseSchema'
 import { speak, stopSpeech } from '../../lib/narration'
 import { ConvictionSlider } from '../ConvictionSlider'
+import { CaseMedia, StoryText } from './CaseMedia'
 
 const KIND_LABEL: Record<DocketBeat['kind'], string> = {
   witness: '🗣️ Witness',
@@ -33,6 +34,7 @@ export function DocketBeatView({
   const speaker = speakerOf(trial, beat)
   const isCheckin = trial.checkins.includes(beat.id)
   const isLast = beatIndex === total - 1
+  const media = trial.media?.beats[beat.id]
 
   // Narrate each beat in its speaker's voice; stop when it unmounts.
   useEffect(() => {
@@ -64,9 +66,8 @@ export function DocketBeatView({
             {subtitle && `· ${subtitle}`}
           </span>
         </h1>
-        <p className="mt-2 min-h-[6rem] text-lg leading-relaxed text-neutral-100">
-          {beat.text}
-        </p>
+        {media && <div className="mt-4"><CaseMedia asset={media} /></div>}
+        <StoryText text={beat.text} className="mt-4 min-h-[6rem] text-lg leading-relaxed text-neutral-100" />
       </div>
 
       {isCheckin && (

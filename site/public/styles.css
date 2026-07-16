@@ -414,7 +414,7 @@ html.ready .hero {
 .human-stakes > div:last-child { padding-top: 1.65rem; color: var(--mist); font-size: 1.08rem; }
 .human-stakes strong { color: var(--paper); }
 
-.paths { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.paths { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
 .paths article { padding: 1.4rem; border: 1px solid color-mix(in srgb, var(--mist) 22%, transparent); background: rgba(12, 16, 14, 0.22); }
 .paths h2 { font-size: 1.65rem; }
 .paths article > p:not(.eyebrow) { min-height: 6.6rem; color: var(--mist); }

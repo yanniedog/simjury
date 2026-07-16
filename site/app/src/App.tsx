@@ -39,13 +39,16 @@ function Shell({
   onToggleNarration: () => void
 }) {
   return (
-    <main className="min-h-screen bg-neutral-950 px-5 py-10 text-neutral-100">
+    <main className="docket-shell min-h-screen px-5 pb-12 text-neutral-100">
+      <a href="#phase-heading" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-black">
+        Skip to the case
+      </a>
       <div className="mx-auto w-full max-w-md">
-        <div className="mb-8 flex items-center justify-between text-xs uppercase tracking-wider text-neutral-500">
+        <div className="sticky top-0 z-20 -mx-2 mb-8 flex items-center justify-between border-b border-white/10 bg-neutral-950/85 px-2 py-4 text-xs uppercase tracking-wider text-neutral-400 backdrop-blur">
           <a href="/" className="font-semibold text-neutral-300 hover:text-white">SimJury</a>
           {narrationSupported() && (
-            <button type="button" onClick={onToggleNarration} className="rounded border border-neutral-800 px-3 py-2 hover:bg-neutral-900">
-              Narration {narration ? 'on' : 'off'}
+            <button type="button" aria-pressed={narration} onClick={onToggleNarration} className="rounded-full border border-amber-500/40 px-3 py-2 text-amber-100 hover:bg-amber-500/10">
+              Natural voice {narration ? 'on' : 'off'}
             </button>
           )}
         </div>

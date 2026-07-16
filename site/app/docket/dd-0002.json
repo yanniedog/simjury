@@ -15,6 +15,40 @@
     "human": "Margaret Hale, 64. A retired school cook, widowed three years; sings alto in the church choir whose roof her four per cent helped repair. Her grandson thinks she has been unwell.",
     "if_guilty": "a criminal record at 64, restitution she cannot pay, and the word 'launderer' beside her name"
   },
+  "media": {
+    "cover": {
+      "src": "/today/media/dd-0002/margaret-court.webp",
+      "alt": "Court sketch of Margaret Hale seated at the defence table, holding her reading glasses and looking toward the jury.",
+      "caption": "Fictional court sketch · Margaret Hale at the defence table",
+      "kind": "court_sketch"
+    },
+    "accused": {
+      "src": "/today/media/dd-0002/margaret-before.webp",
+      "alt": "Margaret Hale at her kitchen table at night, reading a message on her phone beside tea and oil-platform photographs.",
+      "caption": "Fictional character portrait · fourteen months of goodnight messages",
+      "kind": "portrait"
+    },
+    "beats": {
+      "b2": {
+        "src": "/today/media/dd-0002/message-history.webp",
+        "alt": "A phone with a long unreadable chat beside oil-platform photographs, reading glasses, tea and a marked calendar.",
+        "caption": "Fictional reconstruction · Exhibit 2, the message history",
+        "kind": "evidence"
+      },
+      "b5": {
+        "src": "/today/media/dd-0002/ledger-warning.webp",
+        "alt": "An overhead view of Margaret's blurred handwritten ledger, reading glasses, bank warning leaflet and phone search history.",
+        "caption": "Fictional reconstruction · Exhibit 4, the ledger and warning material",
+        "kind": "evidence"
+      },
+      "b8": {
+        "src": "/today/media/dd-0002/margaret-witness.webp",
+        "alt": "Court sketch of Margaret Hale giving evidence with one hand open as she explains herself.",
+        "caption": "Fictional court sketch · Margaret tells the jury why she kept going",
+        "kind": "court_sketch"
+      }
+    }
+  },
   "statements": {
     "opening": {
       "prosecution": {

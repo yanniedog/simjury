@@ -16,6 +16,40 @@
     "human": "Ade Bakare, 46. Drives nights so he can do the school pick-up; 4,900 trips and a 4.97 rating. His daughter found the video in her group chat before he had even been charged.",
     "if_guilty": "a conviction for violence, the end of every driving job, and the clip becomes true forever"
   },
+  "media": {
+    "cover": {
+      "src": "/today/media/dd-0001/ade-court.webp",
+      "alt": "Court sketch of Ade Bakare seated at the defence table, looking toward the jury with his hands clasped.",
+      "caption": "Fictional court sketch · Ade Bakare at the defence table",
+      "kind": "court_sketch"
+    },
+    "accused": {
+      "src": "/today/media/dd-0001/ade-before.webp",
+      "alt": "Ade Bakare waiting beside his car outside a school on a rainy afternoon, holding coffee and a folded jacket.",
+      "caption": "Fictional character portrait · waiting for school pick-up after a night shift",
+      "kind": "portrait"
+    },
+    "beats": {
+      "b1": {
+        "src": "/today/media/dd-0001/viral-clip.webp",
+        "alt": "A blurry night-time phone-video frame showing Ade pushing Callum away beside a parked car.",
+        "caption": "Fictional reconstruction · Exhibit 1, the eleven-second bystander clip",
+        "kind": "evidence"
+      },
+      "b2": {
+        "src": "/today/media/dd-0001/callum-witness.webp",
+        "alt": "Court sketch of Callum Voss giving evidence with his injured wrist supported.",
+        "caption": "Fictional court sketch · Callum Voss describes his fractured wrist",
+        "kind": "court_sketch"
+      },
+      "b8": {
+        "src": "/today/media/dd-0001/interior-camera.webp",
+        "alt": "Wide-angle in-car camera frame showing Callum leaning from the rear seat toward Ade with a raised hand.",
+        "caption": "Fictional reconstruction · Exhibit 5, the in-car camera",
+        "kind": "evidence"
+      }
+    }
+  },
   "statements": {
     "opening": {
       "prosecution": {
