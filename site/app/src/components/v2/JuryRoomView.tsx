@@ -151,6 +151,12 @@ export function JuryRoomView({
   // simply ignored; the re-render re-arms the buttons for the new round.
   const renderedPhase = state.phase
 
+  // Internal deliberation rounds do not change App's outer phase, so restore
+  // focus here as the round heading changes for keyboard and screen-reader users.
+  useEffect(() => {
+    document.getElementById('phase-heading')?.focus()
+  }, [state.phase])
+
   function act(action: PlayerAction) {
     if (!inOpenRound || state.phase !== renderedPhase) return
     const before = state.log.length
@@ -176,9 +182,9 @@ export function JuryRoomView({
   return (
     <div className="space-y-5">
       <div className="space-y-1 text-center">
-        <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
+        <h1 id="phase-heading" tabIndex={-1} className="text-xs uppercase tracking-[0.2em] text-neutral-500 focus:outline-none">
           The jury room · {ROUND_LABEL[state.phase] ?? 'The vote'}
-        </p>
+        </h1>
         <p className="text-sm text-neutral-400">
           Your verdict is sealed for this sitting. Now explain what persuaded you.
         </p>

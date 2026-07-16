@@ -1,10 +1,4 @@
 import type { DocketCase } from '../../lib/v2/caseSchema'
-import {
-  narrationEnabled,
-  narrationSupported,
-  setNarrationEnabled,
-} from '../../lib/narration'
-import { useState } from 'react'
 
 export function DocketIntro({
   trial,
@@ -15,13 +9,7 @@ export function DocketIntro({
   dayNumber: number
   onBegin: () => void
 }) {
-  const [narration, setNarration] = useState(narrationEnabled())
   const accused = trial.cast.find((m) => m.id === trial.accused.cast_id)
-
-  function toggleNarration() {
-    setNarrationEnabled(!narration)
-    setNarration(!narration)
-  }
 
   return (
     <div className="space-y-6">
@@ -29,7 +17,7 @@ export function DocketIntro({
         <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
           The Daily Docket · Case #{dayNumber}
         </p>
-        <h1 className="text-2xl font-semibold tracking-tight text-neutral-50">
+        <h1 id="phase-heading" tabIndex={-1} className="text-2xl font-semibold tracking-tight text-neutral-50 focus:outline-none">
           {trial.title}
         </h1>
         <p className="text-sm text-neutral-400">{trial.setting}</p>
@@ -86,16 +74,6 @@ export function DocketIntro({
         The other eleven jurors are fictional and follow seeded case rules—not
         live chat or AI. Your progress stays in this browser.
       </div>
-
-      {narrationSupported() && (
-        <button
-          type="button"
-          onClick={toggleNarration}
-          className="w-full rounded-lg border border-neutral-800 px-4 py-2 text-sm text-neutral-300 transition hover:bg-neutral-900"
-        >
-          {narration ? '🔊 Narration on — headphones recommended' : '🔇 Narration off'}
-        </button>
-      )}
 
       <button
         type="button"

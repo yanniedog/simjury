@@ -37,7 +37,19 @@ const storedPlaySchema = z.object({
 
 export type StoredPlay = z.infer<typeof storedPlaySchema>
 
+const storedProgressSchema = z.object({
+  day: z.number(),
+  caseId: z.string(),
+  phase: z.enum(['openings', 'beats', 'verdict']),
+  beatIndex: z.number().int().nonnegative(),
+  checkinValues: z.array(z.number().min(0).max(100)),
+  conviction: z.number().min(0).max(100),
+})
+
+export type StoredProgress = z.infer<typeof storedProgressSchema>
+
 const KEY_PREFIX = 'simjury-daily:v1:'
+const PROGRESS_PREFIX = 'simjury-progress:v1:'
 
 function storage(): Storage | null {
   try {
@@ -70,6 +82,39 @@ export function savePlay(play: StoredPlay): void {
     store.setItem(KEY_PREFIX + play.day, JSON.stringify(play))
   } catch {
     // Full/blocked storage is non-fatal; the play just won't persist.
+  }
+}
+
+export function loadProgress(day: number): StoredProgress | null {
+  const store = storage()
+  if (!store) return null
+  try {
+    const raw = store.getItem(PROGRESS_PREFIX + day)
+    if (!raw) return null
+    const parsed = storedProgressSchema.safeParse(JSON.parse(raw))
+    return parsed.success && parsed.data.day === day ? parsed.data : null
+  } catch {
+    return null
+  }
+}
+
+export function saveProgress(progress: StoredProgress): void {
+  const store = storage()
+  if (!store) return
+  try {
+    store.setItem(PROGRESS_PREFIX + progress.day, JSON.stringify(progress))
+  } catch {
+    // Blocked storage is non-fatal; the current sitting can still continue.
+  }
+}
+
+export function clearProgress(day: number): void {
+  const store = storage()
+  if (!store) return
+  try {
+    store.removeItem(PROGRESS_PREFIX + day)
+  } catch {
+    // Blocked storage is non-fatal.
   }
 }
 

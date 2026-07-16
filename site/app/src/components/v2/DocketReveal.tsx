@@ -94,9 +94,9 @@ export function DocketReveal({
   return (
     <div className="space-y-6">
       <div className="rounded-lg border border-amber-900/70 bg-amber-950/20 p-5 text-center">
-        <p className="text-2xl font-semibold text-neutral-50">
+        <h1 id="phase-heading" tabIndex={-1} className="text-2xl font-semibold text-neutral-50 focus:outline-none">
           Your judgment is on the record.
-        </p>
+        </h1>
         <p className="mt-2 text-sm text-neutral-300">
           Authored outcome: <strong>{trial.verdict_truth}</strong> · Your verdict:{' '}
           <strong>{verdict}</strong>
