@@ -1,8 +1,12 @@
 import { renderToStaticMarkup } from 'react-dom/server'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { DocketShell } from './DocketChrome'
 
 describe('DocketShell', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
   it('keeps the case skip link and a labelled narration control', () => {
     vi.stubGlobal('window', { speechSynthesis: {} })
     const markup = renderToStaticMarkup(
@@ -20,6 +24,5 @@ describe('DocketShell', () => {
     expect(markup).toContain('aria-label="Narration speed"')
     expect(markup).toContain('aria-pressed="false"')
     expect(markup).toContain('Case briefing')
-    vi.unstubAllGlobals()
   })
 })

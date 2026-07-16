@@ -1,5 +1,9 @@
-import { type ReactNode, useMemo } from 'react'
-import { narrationSupported, type NarrationRate } from '../../lib/narration'
+import type { ReactNode } from 'react'
+import {
+  narrationSupported,
+  normaliseNarrationRate,
+  type NarrationRate,
+} from '../../lib/narration'
 import { loadPlayForSitting, loadProgress } from '../../lib/storage'
 import type { DocketSitting } from '../../lib/v2/cases'
 
@@ -14,7 +18,7 @@ export function DocketShell({
   narration: boolean
   playbackRate: NarrationRate
   onToggleNarration: () => void
-  onRateChange: (rate: string) => void
+  onRateChange: (rate: NarrationRate) => void
 }) {
   return (
     <main className="docket-shell min-h-screen px-5 pb-12 text-neutral-100">
@@ -31,7 +35,7 @@ export function DocketShell({
                 <select
                   aria-label="Narration speed"
                   value={playbackRate}
-                  onChange={(event) => onRateChange(event.target.value)}
+                  onChange={(event) => onRateChange(normaliseNarrationRate(event.target.value))}
                   className="min-h-11 rounded-full border border-white/15 bg-neutral-950 px-2 py-2 text-[0.65rem] text-neutral-200"
                 >
                   <option value={0.85}>Relaxed</option>
@@ -72,7 +76,6 @@ export function DocketSittingChooser({
   sittings,
   selectedDay,
   todayDay,
-  statusVersion,
   onSelect,
 }: {
   sittings: DocketSitting[]
@@ -81,14 +84,10 @@ export function DocketSittingChooser({
   statusVersion: string
   onSelect: (day: number) => void
 }) {
-  const options = useMemo(
-    () => [...sittings].reverse().map((sitting) => ({
-      day: sitting.day,
-      statusVersion,
-      label: `${sitting.day === todayDay ? 'Today' : dateFormatter.format(sitting.date)} — ${sitting.trial.title} (${sittingStatus(sitting)})`,
-    })),
-    [sittings, statusVersion, todayDay],
-  )
+  const options = [...sittings].reverse().map((sitting) => ({
+    day: sitting.day,
+    label: `${sitting.day === todayDay ? 'Today' : dateFormatter.format(sitting.date)} — ${sitting.trial.title} (${sittingStatus(sitting)})`,
+  }))
 
   return (
     <nav aria-label="Daily Docket sittings" className="mb-6 rounded-lg border border-neutral-800 bg-neutral-900/40 p-3">
@@ -102,7 +101,7 @@ export function DocketSittingChooser({
         className="min-h-11 w-full rounded-md border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
       >
         {options.map((option) => (
-          <option key={`${option.day}:${option.statusVersion}`} value={option.day}>
+          <option key={option.day} value={option.day}>
             {option.label}
           </option>
         ))}

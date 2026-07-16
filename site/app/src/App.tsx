@@ -24,6 +24,7 @@ import {
   narrationRate,
   setNarrationEnabled,
   setNarrationRate,
+  type NarrationRate,
 } from './lib/narration'
 import { DocketIntro } from './components/v2/DocketIntro'
 import { OpeningStatements } from './components/v2/OpeningStatements'
@@ -165,7 +166,7 @@ function DocketApp({
     setNarration(next)
   }
 
-  function changeNarrationRate(rate: string) {
+  function changeNarrationRate(rate: NarrationRate) {
     setPlaybackRate(setNarrationRate(rate))
   }
 
