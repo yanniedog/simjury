@@ -3,6 +3,7 @@ import {
   clearProgress,
   loadAllPlays,
   loadPlay,
+  loadPlayForSitting,
   loadProgress,
   savePlay,
   saveProgress,
@@ -42,6 +43,24 @@ describe('storage', () => {
     vi.stubGlobal('localStorage', memoryStorage())
     savePlay({ day: 5, caseId: 'd-0001', convictions: [60], verdict: 'Guilty' })
     expect(loadPlay(6)).toBeNull()
+  })
+
+  it('keeps each sitting verdict under its own day', () => {
+    vi.stubGlobal('localStorage', memoryStorage())
+    savePlay({ day: 5, caseId: 'd-0001', convictions: [60], verdict: 'Guilty' })
+    savePlay({ day: 6, caseId: 'd-0002', convictions: [40], verdict: 'Not Guilty' })
+
+    expect(loadPlay(5)?.verdict).toBe('Guilty')
+    expect(loadPlay(6)?.verdict).toBe('Not Guilty')
+  })
+
+  it('only restores a verdict for its matching case and check-in trace', () => {
+    vi.stubGlobal('localStorage', memoryStorage())
+    savePlay({ day: 5, caseId: 'd-0001', convictions: [60], verdict: 'Guilty' })
+
+    expect(loadPlayForSitting(5, 'd-0001', 1)?.verdict).toBe('Guilty')
+    expect(loadPlayForSitting(5, 'd-0002', 1)).toBeNull()
+    expect(loadPlayForSitting(5, 'd-0001', 2)).toBeNull()
   })
 
   it('rejects corrupted JSON rather than throwing', () => {
@@ -116,6 +135,29 @@ describe('in-progress sitting', () => {
     expect(loadProgress(5)?.beatIndex).toBe(3)
     clearProgress(5)
     expect(loadProgress(5)).toBeNull()
+  })
+
+  it('clears pre-verdict progress without deleting the locked play', () => {
+    vi.stubGlobal('localStorage', memoryStorage())
+    saveProgress({
+      day: 5,
+      caseId: 'd-0001',
+      phase: 'verdict',
+      beatIndex: 9,
+      checkinValues: [35, 70],
+      conviction: 70,
+    })
+    savePlay({
+      day: 5,
+      caseId: 'd-0001',
+      convictions: [35, 70],
+      verdict: 'Guilty',
+    })
+
+    clearProgress(5)
+
+    expect(loadProgress(5)).toBeNull()
+    expect(loadPlay(5)?.verdict).toBe('Guilty')
   })
 
   it('rejects malformed progress', () => {
