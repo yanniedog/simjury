@@ -145,7 +145,14 @@ function DocketApp({
 
   if (!trial) {
     return (
-      <DocketShell narration={narration} playbackRate={playbackRate} onToggleNarration={toggleNarration} onRateChange={changeNarrationRate}>
+      <DocketShell
+        phase="intro"
+        caseTitle="The Daily Docket"
+        narration={narration}
+        playbackRate={playbackRate}
+        onToggleNarration={toggleNarration}
+        onRateChange={changeNarrationRate}
+      >
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-semibold">⚖️ SimJury — The Daily Docket</h1>
           <p className="text-neutral-400">
@@ -308,14 +315,24 @@ function DocketApp({
   }
 
   return (
-    <DocketShell narration={narration} playbackRate={playbackRate} onToggleNarration={toggleNarration} onRateChange={changeNarrationRate}>
-      <DocketSittingChooser
-        sittings={sittings}
-        selectedDay={selectedDay}
-        todayDay={todayDay}
-        statusVersion={`${day}:${phase}`}
-        onSelect={onSelect}
-      />
+    <DocketShell
+      phase={phase}
+      caseTitle={activeTrial.title}
+      dayNumber={dayNumber}
+      charge={activeTrial.charge}
+      narration={narration}
+      playbackRate={playbackRate}
+      onToggleNarration={toggleNarration}
+      onRateChange={changeNarrationRate}
+      sidebar={(
+        <DocketSittingChooser
+          sittings={sittings}
+          selectedDay={selectedDay}
+          todayDay={todayDay}
+          onSelect={onSelect}
+        />
+      )}
+    >
       {phase !== 'intro' && verdict === null && (
         <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-neutral-800 bg-neutral-900/40 p-3 text-sm">
           <span className="text-neutral-400">Restarting clears this sitting's check-ins.</span>
