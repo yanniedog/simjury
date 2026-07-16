@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SimJury — Juror #1 on a real historical trial</title>
-  <meta name="description" content="You're Juror #1 on a real trial from the age of gaslight. Every word of testimony is from the record; only the names are changed. Offline, free, no accounts." />
-  <meta property="og:title" content="SimJury" />
-  <meta property="og:description" content="Read the evidence. Lock your verdict. Earn the reveal. Offline Android jury simulation from a real historical trial." />
+  <title>SimJury — One fictional case. Your verdict. Every day.</title>
+  <meta name="description" content="Take Juror #1's seat in one fictional 2026 case a day, built from real trial patterns. Hear the evidence, lock your verdict, and face the jury room in about ten minutes." />
+  <meta property="og:title" content="SimJury — The Daily Docket" />
+  <meta property="og:description" content="One fictional 2026 case. One permanent verdict. One jury room that may not agree with you. About ten minutes, free and private." />
   <meta property="og:url" content="https://simjury.com/" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://simjury.com/art/og-card.webp" />
@@ -17,34 +17,62 @@
   <meta name="twitter:image" content="https://simjury.com/art/og-card.webp" />
   <link rel="canonical" href="https://simjury.com/" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
 </head>
-<body>
+<body class="landing">
+  <a class="skip-link" href="#main">Skip to the daily case</a>
   <div class="atmosphere" aria-hidden="true"></div>
 
+  <nav class="site-nav" aria-label="Primary">
+    <a class="wordmark" href="/">SimJury</a>
+    <span>The Daily Docket</span>
+    <div><a href="#how">How it works</a><a href="/install/">Android</a></div>
+  </nav>
+
+  <main id="main">
   <header class="hero" aria-label="Court sketch of the courtroom from the jury box">
     <img class="hero-art" src="/art/courtroom.webp" alt="Court sketch from Juror #1's perspective, looking across a full courtroom toward the judge, witness box, dock, counsel, and fellow jurors." />
-    <span class="sketch-bubble hero-bubble hero-bubble-judge right">Members of the jury, take your seats.</span>
-    <p class="brand">SimJury</p>
-    <h1>You're Juror&nbsp;#1 on a real trial from the age of gaslight.</h1>
-    <p class="lede">Every word of testimony is from the record; only the names are changed. Read the evidence, lock your verdict — it's permanent — then find out what really happened.</p>
-    <div class="cta">
-      <a class="btn primary" href="/today/">Today's case — play in ~10 minutes</a>
-      <a class="btn ghost" href="/play/">Or the deep case: a full historical trial</a>
+    <div class="hero-copy">
+      <p class="eyebrow">One fictional 2026 case. Every day.</p>
+      <h1>What would you decide before anyone else speaks?</h1>
+      <p class="lede">Take Juror #1's seat. Hear both sides, notice what changes your mind, lock a permanent verdict, then argue it out with eleven fictional jurors.</p>
+      <div class="cta">
+        <a class="btn primary" href="/today/">Take today's seat <span aria-hidden="true">→</span></a>
+        <a class="btn ghost" href="#how">See the ten-minute ritual</a>
+      </div>
+      <p class="trust-line">Free <span aria-hidden="true">·</span> No account <span aria-hidden="true">·</span> No tracking</p>
     </div>
+    <aside class="docket-slip" aria-label="About today's case">
+      <span>Today's docket</span><strong>One case. 8–10 minutes.</strong>
+      <p>Fiction, clearly labelled. Built from real trial patterns — never real people or events.</p>
+    </aside>
   </header>
 
-  <section class="one-job" aria-labelledby="why">
-    <h2 id="why">A new trial every day.</h2>
-    <p>The Daily Docket is one fresh, fictional 2026 case a day: hear the evidence, lock your verdict, then argue it out in a jury room that doesn't always agree with you. About ten minutes, start to verdict — no accounts, no network.</p>
-    <p>Prefer the long form? <a href="/play/">The deep case</a> puts you on a full historical trial from the age of gaslight, every word from the record.</p>
+  <section class="section" id="how" aria-labelledby="ritual-title">
+    <p class="eyebrow">The daily ritual</p>
+    <h2 id="ritual-title">Listen closely. Choose honestly. Say why.</h2>
+    <ol class="steps">
+      <li><span>01</span><strong>Hear the case</strong><p>Read or listen to a compact 2026 dispute and track the moments that move you.</p></li>
+      <li><span>02</span><strong>Lock your verdict</strong><p>Commit before anyone else speaks. No hints, rewinds, or answer-shopping.</p></li>
+      <li><span>03</span><strong>Face the room</strong><p>Choose the evidence you would argue. The seeded jury may agree, split, or hang.</p></li>
+    </ol>
   </section>
 
+  <section class="section human-stakes" aria-labelledby="stakes-title">
+    <div><p class="eyebrow">The human question</p><h2 id="stakes-title">Facts are rarely the only thing on trial.</h2></div>
+    <div><p>Memory. Motive. Fairness. Doubt. Each case is invented, but the judgment it asks of you is real: what did you notice, what did you assume, and could you explain your choice to a room of strangers?</p><p><strong>One case is enough.</strong> There is no feed to clear. When today's room closes, come back tomorrow if you want another seat.</p></div>
+  </section>
+
+  <section class="section paths" aria-label="Ways to use SimJury">
+    <article><p class="eyebrow">Private by design</p><h2>Your reasoning stays yours.</h2><p>SimJury is a static site with no account and no tracking. Daily play and progress are handled locally in your browser.</p><a class="text-link" href="/today/">Open today's case →</a></article>
+    <article><p class="eyebrow">Take it offline</p><h2>Android pilot</h2><p>Install once, then play the included pilot case offline. Optional update checks are its only network use.</p><a class="text-link" href="/install/">Android install guide →</a></article>
+    <article><p class="eyebrow">Parked research</p><h2>Historical preview</h2><p>The older deep-case experience remains a research preview while its historical material awaits human clearance. It is not today's docket.</p><a class="text-link" href="/play/">Open the research preview →</a></article>
+  </section>
+  </main>
+
   <footer>
-    <p><a href="/today/">Today's case</a> · <a href="/play/">The deep case</a> · <a href="https://github.com/yanniedog/simjury">GitHub</a></p>
+    <p><strong>SimJury</strong> · A small daily exercise in judgment.</p>
+    <p><a href="/today/">Today's case</a> · <a href="/install/">Android</a> · <a href="https://github.com/yanniedog/simjury">Source on GitHub</a></p>
   </footer>
 
   <script src="/ready.js"></script>
