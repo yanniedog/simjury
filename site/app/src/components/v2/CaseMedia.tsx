@@ -24,10 +24,11 @@ export function CaseMedia({
 }
 
 export function StoryText({ text, className = '' }: { text: string; className?: string }) {
+  if (!text.trim()) return null
   const sentences = text.match(/[^.!?]+[.!?]['”]?|[^.!?]+$/g) ?? [text]
   const paragraphs: string[] = []
   for (let i = 0; i < sentences.length; i += 2) {
-    paragraphs.push(sentences.slice(i, i + 2).join(' ').trim())
+    paragraphs.push(sentences.slice(i, i + 2).map((sentence) => sentence.trim()).join(' '))
   }
   return (
     <div className={`space-y-3 ${className}`}>

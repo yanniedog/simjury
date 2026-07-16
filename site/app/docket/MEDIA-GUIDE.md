@@ -44,8 +44,9 @@ physical context, or make a person memorable.
 
 - Landscape, crop-safe at phone width; 3:2 for people, 16:9 for evidence.
 - Export WebP at up to 1280 px on the long edge. Aim below 250 KB per asset.
-- Store in `public/media/<case-id>/` and declare the selected assets in the
-  case's `media` block. Media beat keys must resolve to real beat ids.
+- Store source assets in `site/app/public/media/<case-id>/`; Vite publishes
+  them at `/today/media/<case-id>/`. Declare that public URL in the case's
+  `media` block. Media beat keys must resolve to real beat ids.
 - Check the full case at 390 px before merge. A lazy-loaded image may need a
   moment in view before visual QA captures it.
 

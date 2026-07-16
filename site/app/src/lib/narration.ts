@@ -25,10 +25,10 @@ export function voiceParamsFor(key: string, voiceCount: number): VoiceParams {
   }
 }
 
-/** Prefer the device's human-quality voices without requiring a network service. */
+/** Prefer human-quality voices, using local availability as a modest tie-break. */
 export function voiceQualityScore(name: string, localService: boolean): number {
   const normalized = name.toLowerCase()
-  let score = localService ? 0 : 2
+  let score = localService ? 1 : 0
   if (/natural|neural/.test(normalized)) score += 10
   if (/premium|enhanced/.test(normalized)) score += 8
   if (/google|microsoft/.test(normalized)) score += 3

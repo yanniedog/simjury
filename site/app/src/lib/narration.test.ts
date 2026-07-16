@@ -31,4 +31,10 @@ describe('voiceParamsFor', () => {
       voiceQualityScore('Desktop English', true),
     )
   })
+
+  it('uses local availability as a tie-break between equally named voices', () => {
+    expect(voiceQualityScore('English Natural', true)).toBeGreaterThan(
+      voiceQualityScore('English Natural', false),
+    )
+  })
 })
