@@ -143,10 +143,16 @@ export function main(args = process.argv.slice(2)) {
   }
 
   const conflicts = run("git", ["diff", "--name-only", "--diff-filter=U"]);
-  if (conflicts.ok && conflicts.output === "") {
+  const unfinishedMerge = run("git", [
+    "rev-parse",
+    "--quiet",
+    "--verify",
+    "MERGE_HEAD",
+  ]);
+  if (conflicts.ok && conflicts.output === "" && !unfinishedMerge.ok) {
     pass("Merge state", "no unresolved files");
   } else {
-    fail("Merge state", "resolve unmerged files before continuing", conflicts.error);
+    fail("Merge state", "finish or abort the current merge before continuing", conflicts.error);
   }
 
   const origin = run("git", ["remote", "get-url", "origin"]);
