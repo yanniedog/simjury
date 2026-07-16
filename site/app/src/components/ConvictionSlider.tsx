@@ -6,10 +6,14 @@ const TONE = {
   'lean-guilty': { text: 'text-red-400', accent: 'accent-red-500' },
 } as const
 
-const POSITION = {
-  'lean-innocent': 'Not persuaded',
-  uncertain: 'Still uncertain',
-  'lean-guilty': 'Leaning toward proof',
+const CHECKIN_COPY = {
+  minimum: 'Not persuaded',
+  maximum: 'Beyond reasonable doubt',
+  position: {
+    'lean-innocent': 'Not persuaded',
+    uncertain: 'Still uncertain',
+    'lean-guilty': 'Leaning toward proof',
+  },
 } as const
 
 export function ConvictionSlider({
@@ -23,7 +27,7 @@ export function ConvictionSlider({
   const tone = TONE[band]
   return (
     <div className="conviction-checkin space-y-3">
-      <p className={`conviction-position ${tone.text}`}>{POSITION[band]}</p>
+      <p className={`conviction-position ${tone.text}`}>{CHECKIN_COPY.position[band]}</p>
       <input
         type="range"
         min={0}
@@ -31,12 +35,12 @@ export function ConvictionSlider({
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
         aria-label="How convinced are you of guilt?"
-        aria-valuetext={`${POSITION[band]}, ${value}% convinced`}
+        aria-valuetext={`${CHECKIN_COPY.position[band]}, ${value}% convinced`}
         className={`conviction-range w-full cursor-pointer ${tone.accent}`}
       />
       <div className="flex justify-between gap-6 text-xs uppercase tracking-wider text-neutral-500">
-        <span>Not persuaded</span>
-        <span className="text-right">Beyond reasonable doubt</span>
+        <span>{CHECKIN_COPY.minimum}</span>
+        <span className="text-right">{CHECKIN_COPY.maximum}</span>
       </div>
       <p className="conviction-value">
         Private check-in · {value}% conviction confidence
