@@ -22,10 +22,10 @@ function PhaseRail({ phase }: { phase: DocketPhase }) {
   const currentIndex = PHASES.findIndex((step) => step.id === phase)
   return (
     <nav className="phase-rail" aria-label="Sitting progress">
-      <p className="chrome-label">Today’s sitting</p>
+      <p className="chrome-label">Sitting progress</p>
       <ol>
         {PHASES.map((step, index) => (
-          <li key={step.id} className={index < currentIndex ? 'complete' : ''} aria-current={step.id === phase ? 'step' : undefined}>
+          <li key={step.id} className={index < currentIndex ? 'complete' : undefined} aria-current={step.id === phase ? 'step' : undefined}>
             <span>{step.short}</span><strong>{step.label}</strong>
           </li>
         ))}
@@ -57,20 +57,21 @@ export function DocketShell({
   onToggleNarration: () => void
   onRateChange: (rate: NarrationRate) => void
 }) {
-  const phaseLabel = PHASES.find((step) => step.id === phase)?.label ?? 'Briefing'
+  const currentPhaseIndex = PHASES.findIndex((step) => step.id === phase)
+  const phaseLabel = PHASES[currentPhaseIndex]?.label ?? 'Briefing'
   return (
     <main className="docket-shell min-h-screen text-neutral-100">
       <a href="#phase-heading" className="docket-skip">Skip to the case</a>
       <header className="docket-topbar">
         <a href="/" className="docket-brand" aria-label="SimJury home">Sim<span>Jury</span></a>
         <div className="docket-case-title"><span>{dayNumber ? `Docket ${String(dayNumber).padStart(4, '0')}` : 'Daily Docket'}</span><strong>{caseTitle}</strong></div>
-        <div className="docket-phase"><span>{phaseLabel}</span><i aria-hidden="true" style={{ width: `${((PHASES.findIndex((step) => step.id === phase) + 1) / PHASES.length) * 100}%` }} /></div>
+        <div className="docket-phase" role="progressbar" aria-valuenow={currentPhaseIndex + 1} aria-valuemin={1} aria-valuemax={PHASES.length} aria-valuetext={`${phaseLabel}, stage ${currentPhaseIndex + 1} of ${PHASES.length}`}><span>{phaseLabel}</span><i aria-hidden="true" style={{ width: `${((currentPhaseIndex + 1) / PHASES.length) * 100}%` }} /></div>
         {narrationSupported() && (
           <div className="narration-controls">
             <select aria-label="Narration speed" value={playbackRate} onChange={(event) => onRateChange(normaliseNarrationRate(event.target.value))}>
               <option value={0.85}>Relaxed</option><option value={1}>Standard</option><option value={1.15}>Brisk</option>
             </select>
-            <button type="button" aria-pressed={narration} onClick={onToggleNarration}><span aria-hidden="true">◉</span> Voice {narration ? 'on' : 'off'}</button>
+            <button type="button" aria-pressed={narration} aria-label="Toggle narration" onClick={onToggleNarration}><span aria-hidden="true">◉</span> Narration {narration ? 'on' : 'off'}</button>
           </div>
         )}
       </header>
@@ -82,7 +83,7 @@ export function DocketShell({
           {charge && <div className="docket-context"><p className="chrome-label">Charge before the court</p><p>{charge}</p></div>}
           <div className="docket-context"><p className="chrome-label">Legal threshold</p><p>Beyond reasonable doubt</p></div>
           {sidebar}
-          <p className="local-note"><span aria-hidden="true">◆</span> Progress saved on this device</p>
+          <p className="local-note"><span aria-hidden="true">◆</span> This sitting is handled on your device</p>
         </aside>
       </div>
     </main>
@@ -110,12 +111,14 @@ export function DocketSittingChooser({ sittings, selectedDay, todayDay, onSelect
     label: `${sitting.day === todayDay ? 'Today' : dateFormatter.format(sitting.date)} — ${sitting.trial.title} (${sittingStatus(sitting)})`,
   }))
   return (
-    <details className="docket-archive">
-      <summary>Docket archive <span aria-hidden="true">＋</span></summary>
-      <label htmlFor="docket-sitting">Choose another sitting</label>
-      <select id="docket-sitting" value={selectedDay} onChange={(event) => onSelect(Number(event.target.value))}>
-        {options.map((option) => <option key={option.day} value={option.day}>{option.label}</option>)}
-      </select>
-    </details>
+    <nav aria-label="Daily Docket sittings">
+      <details className="docket-archive">
+        <summary>Docket archive <span aria-hidden="true">＋</span></summary>
+        <label htmlFor="docket-sitting">Choose another sitting</label>
+        <select id="docket-sitting" value={selectedDay} onChange={(event) => onSelect(Number(event.target.value))}>
+          {options.map((option) => <option key={option.day} value={option.day}>{option.label}</option>)}
+        </select>
+      </details>
+    </nav>
   )
 }
