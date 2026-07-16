@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { DocketCase, Statement } from '../../lib/v2/caseSchema'
-import { speakAll, stopSpeech } from '../../lib/narration'
+import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { StoryText } from './CaseMedia'
+import { CourtroomStage } from './CourtroomStage'
 
 /**
  * A counsel statement card — the visual voice of one side of the duel.
@@ -44,25 +45,29 @@ export function StatementCard({
 export function OpeningStatements({
   trial,
   narration,
+  playbackRate,
   onDone,
 }: {
   trial: DocketCase
   narration: boolean
+  playbackRate: NarrationRate
   onDone: () => void
 }) {
   const { prosecution, defence } = trial.statements.opening
+  const [activeSpeaker, setActiveSpeaker] = useState<string | null>(null)
 
   // Narrate both openings in their advocates' voices; stop on unmount.
   useEffect(() => {
     if (!narration) {
+      setActiveSpeaker(null)
       return stopSpeech
     }
     speakAll([
       { text: prosecution.text, key: prosecution.speaker },
       { text: defence.text, key: defence.speaker },
-    ])
+    ], { rate: playbackRate, onLine: setActiveSpeaker })
     return stopSpeech
-  }, [prosecution.text, prosecution.speaker, defence.text, defence.speaker, narration])
+  }, [prosecution.text, prosecution.speaker, defence.text, defence.speaker, narration, playbackRate])
 
   return (
     <div className="space-y-6">
@@ -74,6 +79,8 @@ export function OpeningStatements({
           Two accounts. One burden of proof.
         </h1>
       </div>
+
+      <CourtroomStage trial={trial} activeSpeakerId={activeSpeaker} phaseLabel="Opening statements" />
 
       <StatementCard trial={trial} statement={prosecution} side="prosecution" />
       <StatementCard trial={trial} statement={defence} side="defence" />

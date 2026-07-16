@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
-import { speakAll, stopSpeech } from '../../lib/narration'
+import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { StatementCard } from './OpeningStatements'
+import { CourtroomStage } from './CourtroomStage'
 
 export type Verdict = DocketCase['verdict_truth']
 
@@ -9,27 +10,31 @@ export function DocketVerdict({
   trial,
   conviction,
   narration,
+  playbackRate,
   onLock,
 }: {
   trial: DocketCase
   conviction: number
   narration: boolean
+  playbackRate: NarrationRate
   onLock: (verdict: Verdict) => void
 }) {
   const { prosecution, defence } = trial.statements.closing
   const accused = trial.cast.find((m) => m.id === trial.accused.cast_id)
+  const [activeSpeaker, setActiveSpeaker] = useState<string | null>(null)
 
   // Narrate both closings in their advocates' voices; stop on unmount.
   useEffect(() => {
     if (!narration) {
+      setActiveSpeaker(null)
       return stopSpeech
     }
     speakAll([
       { text: prosecution.text, key: prosecution.speaker },
       { text: defence.text, key: defence.speaker },
-    ])
+    ], { rate: playbackRate, onLine: setActiveSpeaker })
     return stopSpeech
-  }, [prosecution.text, prosecution.speaker, defence.text, defence.speaker, narration])
+  }, [prosecution.text, prosecution.speaker, defence.text, defence.speaker, narration, playbackRate])
 
   return (
     <div className="space-y-6">
@@ -41,6 +46,8 @@ export function DocketVerdict({
           The last word from each side
         </h1>
       </div>
+
+      <CourtroomStage trial={trial} activeSpeakerId={activeSpeaker} phaseLabel="Closing arguments" />
 
       <StatementCard trial={trial} statement={prosecution} side="prosecution" />
       <StatementCard trial={trial} statement={defence} side="defence" />

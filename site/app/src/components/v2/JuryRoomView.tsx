@@ -27,9 +27,11 @@ function positionTone(position: number): string {
 function Bench({
   state,
   playerVerdict,
+  activeJurorId,
 }: {
   state: DeliberationState
   playerVerdict: Verdict
+  activeJurorId: string | null
 }) {
   const playerTone =
     playerVerdict === 'Guilty'
@@ -45,15 +47,20 @@ function Bench({
       </div>
       {[...state.jurors]
         .sort((a, b) => a.seat - b.seat)
-        .map((j) => (
-          <div
-            key={j.id}
-            className={`rounded border px-1 py-1.5 text-center text-[0.65rem] ${positionTone(j.position)}`}
-            title={j.label}
-          >
-            {j.seat}
-          </div>
-        ))}
+        .map((j) => {
+          const isActive = j.id === activeJurorId
+          return (
+            <div
+              key={j.id}
+              aria-current={isActive ? 'true' : undefined}
+              className={`rounded border px-1 py-1.5 text-center text-[0.65rem] ${positionTone(j.position)} ${isActive ? 'ring-2 ring-amber-300 ring-offset-1 ring-offset-neutral-950' : ''}`}
+              title={`${j.label}${isActive ? ' — speaking now' : ''}`}
+            >
+              {j.seat}
+              {isActive && <span className="sr-only">, speaking now</span>}
+            </div>
+          )
+        })}
     </div>
   )
 }
@@ -141,6 +148,7 @@ export function JuryRoomView({
   const [, setTick] = useState(0)
   const [selectedBeat, setSelectedBeat] = useState(trial.beats[0].id)
   const [outcome, setOutcome] = useState<Outcome | null>(null)
+  const [activeJurorId, setActiveJurorId] = useState<string | null>(null)
 
   const beat = trial.beats.find((b) => b.id === selectedBeat)!
   const inOpenRound = state.phase.startsWith('open')
@@ -166,7 +174,8 @@ export function JuryRoomView({
       .slice(before)
       .filter((e) => e.type === 'respond' && e.line)
       .map((e) => ({ text: e.line!, key: e.actor }))
-    speakAll(spoken)
+    setActiveJurorId(spoken[0]?.key ?? null)
+    speakAll(spoken, { onLine: setActiveJurorId })
     setTick((t) => t + 1)
   }
 
@@ -193,7 +202,12 @@ export function JuryRoomView({
         </p>
       </div>
 
-      <Bench state={state} playerVerdict={playerVerdict} />
+      <Bench state={state} playerVerdict={playerVerdict} activeJurorId={activeJurorId} />
+      <p aria-live="polite" className="min-h-4 text-center text-xs text-amber-200/80">
+        {activeJurorId
+          ? `${trial.jury.jurors.find((juror) => juror.id === activeJurorId)?.label ?? 'A juror'} has the floor`
+          : 'The foreperson opens deliberations'}
+      </p>
 
       <ul className="max-h-80 space-y-2 overflow-y-auto">
         {state.log.map((e, i) => (

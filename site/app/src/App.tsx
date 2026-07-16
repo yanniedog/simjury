@@ -17,8 +17,11 @@ import {
 import { computeStats, type DayResult, type Stats } from './lib/stats'
 import {
   narrationEnabled,
+  narrationRate,
   narrationSupported,
   setNarrationEnabled,
+  setNarrationRate,
+  type NarrationRate,
 } from './lib/narration'
 import { DocketIntro } from './components/v2/DocketIntro'
 import { OpeningStatements } from './components/v2/OpeningStatements'
@@ -32,11 +35,15 @@ type Phase = 'intro' | 'openings' | 'beats' | 'verdict' | 'juryroom' | 'reveal'
 function Shell({
   children,
   narration,
+  playbackRate,
   onToggleNarration,
+  onRateChange,
 }: {
   children: ReactNode
   narration: boolean
+  playbackRate: NarrationRate
   onToggleNarration: () => void
+  onRateChange: (rate: NarrationRate) => void
 }) {
   return (
     <main className="docket-shell min-h-screen px-5 pb-12 text-neutral-100">
@@ -44,12 +51,27 @@ function Shell({
         Skip to the case
       </a>
       <div className="mx-auto w-full max-w-md">
-        <div className="sticky top-0 z-20 -mx-2 mb-8 flex items-center justify-between border-b border-white/10 bg-neutral-950/85 px-2 py-4 text-xs uppercase tracking-wider text-neutral-400 backdrop-blur">
+        <div className="sticky top-0 z-20 -mx-2 mb-8 flex flex-wrap items-center justify-between gap-2 border-b border-white/10 bg-neutral-950/85 px-2 py-4 text-xs uppercase tracking-wider text-neutral-400 backdrop-blur">
           <a href="/" className="font-semibold text-neutral-300 hover:text-white">SimJury</a>
           {narrationSupported() && (
-            <button type="button" aria-pressed={narration} onClick={onToggleNarration} className="rounded-full border border-amber-500/40 px-3 py-2 text-amber-100 hover:bg-amber-500/10">
-              Natural voice {narration ? 'on' : 'off'}
-            </button>
+            <div className="flex items-center gap-2">
+              <label>
+                <span className="sr-only">Narration speed</span>
+                <select
+                  aria-label="Narration speed"
+                  value={playbackRate}
+                  onChange={(event) => onRateChange(Number(event.target.value) as NarrationRate)}
+                  className="rounded-full border border-white/15 bg-neutral-950 px-2 py-2 text-[0.65rem] text-neutral-200"
+                >
+                  <option value={0.85}>Relaxed</option>
+                  <option value={1}>Standard</option>
+                  <option value={1.15}>Brisk</option>
+                </select>
+              </label>
+              <button type="button" aria-pressed={narration} onClick={onToggleNarration} className="rounded-full border border-amber-500/40 px-3 py-2 text-amber-100 hover:bg-amber-500/10">
+                Voice {narration ? 'on' : 'off'}
+              </button>
+            </div>
           )}
         </div>
         {children}
@@ -71,6 +93,7 @@ function statsFromStorage(): Stats {
 
 export default function App() {
   const [narration, setNarration] = useState(narrationEnabled())
+  const [playbackRate, setPlaybackRate] = useState(narrationRate())
   const today = useMemo(() => new Date(), [])
   const day = useMemo(() => dayIndex(today), [today])
   const trial = useMemo(() => docketCaseForDate(today), [today])
@@ -156,7 +179,7 @@ export default function App() {
 
   if (!trial) {
     return (
-      <Shell narration={narration} onToggleNarration={toggleNarration}>
+      <Shell narration={narration} playbackRate={playbackRate} onToggleNarration={toggleNarration} onRateChange={changeNarrationRate}>
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-semibold">⚖️ SimJury — The Daily Docket</h1>
           <p className="text-neutral-400">
@@ -175,6 +198,10 @@ export default function App() {
     const next = !narration
     setNarrationEnabled(next)
     setNarration(next)
+  }
+
+  function changeNarrationRate(rate: NarrationRate) {
+    setPlaybackRate(setNarrationRate(rate))
   }
 
   function persistProgress(
@@ -283,7 +310,7 @@ export default function App() {
   }
 
   return (
-    <Shell narration={narration} onToggleNarration={toggleNarration}>
+    <Shell narration={narration} playbackRate={playbackRate} onToggleNarration={toggleNarration} onRateChange={changeNarrationRate}>
       {phase === 'intro' && (
         <DocketIntro trial={activeTrial} dayNumber={dayNumber} onBegin={begin} />
       )}
@@ -291,6 +318,7 @@ export default function App() {
         <OpeningStatements
           trial={activeTrial}
           narration={narration}
+          playbackRate={playbackRate}
           onDone={startEvidence}
         />
       )}
@@ -300,6 +328,7 @@ export default function App() {
           beatIndex={beatIndex}
           value={conviction}
           narration={narration}
+          playbackRate={playbackRate}
           onChange={updateConviction}
           onNext={nextBeat}
         />
@@ -309,6 +338,7 @@ export default function App() {
           trial={activeTrial}
           conviction={conviction}
           narration={narration}
+          playbackRate={playbackRate}
           onLock={lockVerdict}
         />
       )}

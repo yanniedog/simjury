@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
 import type { DocketBeat, DocketCase } from '../../lib/v2/caseSchema'
-import { speak, stopSpeech } from '../../lib/narration'
+import { speak, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { ConvictionSlider } from '../ConvictionSlider'
 import { CaseMedia, StoryText } from './CaseMedia'
+import { CourtroomStage } from './CourtroomStage'
 
 const KIND_LABEL: Record<DocketBeat['kind'], string> = {
   witness: '🗣️ Witness',
@@ -19,6 +20,7 @@ export function DocketBeatView({
   beatIndex,
   value,
   narration,
+  playbackRate,
   onChange,
   onNext,
 }: {
@@ -26,6 +28,7 @@ export function DocketBeatView({
   beatIndex: number
   value: number
   narration: boolean
+  playbackRate: NarrationRate
   onChange: (value: number) => void
   onNext: () => void
 }) {
@@ -38,9 +41,9 @@ export function DocketBeatView({
 
   // Narrate each beat in its speaker's voice; stop when it unmounts.
   useEffect(() => {
-    if (narration) speak(beat.text, beat.speaker)
+    if (narration) speak(beat.text, beat.speaker, undefined, playbackRate)
     return stopSpeech
-  }, [beat, narration])
+  }, [beat, narration, playbackRate])
 
   const modeLabel =
     beat.kind === 'witness'
@@ -58,6 +61,8 @@ export function DocketBeatView({
           {beatIndex + 1} / {total}
         </span>
       </div>
+
+      <CourtroomStage trial={trial} activeSpeakerId={beat.speaker} phaseLabel={modeLabel} />
 
       <div>
         <h1 id="phase-heading" tabIndex={-1} className="text-sm font-semibold text-neutral-200 focus:outline-none">

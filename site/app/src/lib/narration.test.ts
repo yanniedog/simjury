@@ -1,5 +1,15 @@
-import { describe, expect, it } from 'vitest'
-import { voiceParamsFor, voiceQualityScore } from './narration'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import {
+  narrationRate,
+  normaliseNarrationRate,
+  setNarrationRate,
+  voiceParamsFor,
+  voiceQualityScore,
+} from './narration'
+
+afterEach(() => {
+  vi.unstubAllGlobals()
+})
 
 describe('voiceParamsFor', () => {
   it('is deterministic per speaker key', () => {
@@ -36,5 +46,35 @@ describe('voiceParamsFor', () => {
     expect(voiceQualityScore('English Natural', true)).toBeGreaterThan(
       voiceQualityScore('Desktop English', true),
     )
+  })
+})
+
+describe('normaliseNarrationRate', () => {
+  it('accepts only the designed persisted rates', () => {
+    expect(normaliseNarrationRate('0.85')).toBe(0.85)
+    expect(normaliseNarrationRate(1.15)).toBe(1.15)
+    expect(normaliseNarrationRate('1.5')).toBe(1)
+    expect(normaliseNarrationRate('not-a-rate')).toBe(1)
+  })
+
+  it('persists safely when storage is available', () => {
+    const values = new Map<string, string>()
+    vi.stubGlobal('localStorage', {
+      getItem: (key: string) => values.get(key) ?? null,
+      setItem: (key: string, value: string) => values.set(key, value),
+    })
+
+    expect(setNarrationRate(0.85)).toBe(0.85)
+    expect(narrationRate()).toBe(0.85)
+  })
+
+  it('keeps a session fallback when storage is blocked', () => {
+    vi.stubGlobal('localStorage', {
+      getItem: () => { throw new Error('blocked') },
+      setItem: () => { throw new Error('blocked') },
+    })
+
+    expect(setNarrationRate(1.15)).toBe(1.15)
+    expect(narrationRate()).toBe(1.15)
   })
 })
