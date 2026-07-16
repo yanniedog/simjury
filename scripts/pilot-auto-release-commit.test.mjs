@@ -95,10 +95,10 @@ test('main workflow dispatches run every APK publication step', () => {
     join(repoRoot, 'pilot/scripts/pilot-auto-release-on-drain.mjs'),
     'utf8',
   );
-  const condition =
-    "if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')";
+  const conditionPattern =
+    /if:\s*github\.ref\s*==\s*['"]refs\/heads\/main['"]\s*&&\s*\(\s*github\.event_name\s*==\s*['"]push['"]\s*\|\|\s*github\.event_name\s*==\s*['"]workflow_dispatch['"]\s*\)/g;
 
-  assert.equal(workflow.split(condition).length - 1, 3);
+  assert.equal(workflow.match(conditionPattern)?.length ?? 0, 3);
   assert.match(workflow, /workflow_dispatch:/);
-  assert.ok(drainScript.includes("'--ref', 'main'"));
+  assert.match(drainScript, /--ref[\s,'"]+main/);
 });
