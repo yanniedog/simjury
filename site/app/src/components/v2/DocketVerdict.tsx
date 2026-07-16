@@ -35,9 +35,9 @@ export function DocketVerdict({
         <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
           Closing arguments
         </p>
-        <h2 className="text-xl font-semibold text-neutral-50">
+        <h1 id="phase-heading" tabIndex={-1} className="text-xl font-semibold text-neutral-50 focus:outline-none">
           The last word from each side
-        </h2>
+        </h1>
       </div>
 
       <StatementCard trial={trial} statement={prosecution} side="prosecution" />

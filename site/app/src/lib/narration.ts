@@ -58,13 +58,13 @@ export function narrationSupported(): boolean {
 // would default to false and setNarrationEnabled(true) could never
 // override it, silencing narration for the whole session even though
 // speechSynthesis itself is available.
-let memoryEnabled = true
+let memoryEnabled = false
 
 export function narrationEnabled(): boolean {
   if (!narrationSupported()) return false
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
-    return stored === null ? memoryEnabled : stored !== 'off'
+    return stored === null ? memoryEnabled : stored === 'on'
   } catch {
     return memoryEnabled
   }

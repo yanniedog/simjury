@@ -1,5 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { loadAllPlays, loadPlay, savePlay } from './storage'
+import {
+  clearProgress,
+  loadAllPlays,
+  loadPlay,
+  loadProgress,
+  savePlay,
+  saveProgress,
+} from './storage'
 
 function memoryStorage() {
   const m = new Map<string, string>()
@@ -92,5 +99,29 @@ describe('loadAllPlays', () => {
     const all = loadAllPlays()
     expect(all).toHaveLength(2)
     expect(all.map((p) => p.day).sort()).toEqual([1, 2])
+  })
+})
+
+describe('in-progress sitting', () => {
+  it('round-trips and clears same-day progress', () => {
+    vi.stubGlobal('localStorage', memoryStorage())
+    saveProgress({
+      day: 5,
+      caseId: 'd-0001',
+      phase: 'beats',
+      beatIndex: 3,
+      checkinValues: [65],
+      conviction: 65,
+    })
+    expect(loadProgress(5)?.beatIndex).toBe(3)
+    clearProgress(5)
+    expect(loadProgress(5)).toBeNull()
+  })
+
+  it('rejects malformed progress', () => {
+    const store = memoryStorage()
+    store.setItem('simjury-progress:v1:5', JSON.stringify({ day: 5, phase: 'beats' }))
+    vi.stubGlobal('localStorage', store)
+    expect(loadProgress(5)).toBeNull()
   })
 })
