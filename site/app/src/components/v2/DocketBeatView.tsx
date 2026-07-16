@@ -5,10 +5,10 @@ import { ConvictionSlider } from '../ConvictionSlider'
 import { CaseMedia, StoryText } from './CaseMedia'
 import { CourtroomStage } from './CourtroomStage'
 
-const KIND_LABEL: Record<DocketBeat['kind'], string> = {
-  witness: '🗣️ Witness',
-  exhibit: '📄 Exhibit',
-  direction: '⚖️ Judge’s direction',
+const KIND_META: Record<DocketBeat['kind'], { code: string; label: string }> = {
+  witness: { code: 'WIT', label: 'Witness testimony' },
+  exhibit: { code: 'EXH', label: 'Exhibit' },
+  direction: { code: 'DIR', label: 'Judge’s direction' },
 }
 
 function speakerOf(trial: DocketCase, beat: DocketBeat) {
@@ -50,15 +50,15 @@ export function DocketBeatView({
       ? beat.mode === 'cross'
         ? 'Cross-examination'
         : 'Examination'
-      : KIND_LABEL[beat.kind]
+      : KIND_META[beat.kind].label
   const subtitle = [speaker?.role_label, modeLabel].filter(Boolean).join(' · ')
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between text-xs uppercase tracking-wider text-neutral-500">
-        <span>{KIND_LABEL[beat.kind]}</span>
+    <div className={`phase-view evidence-view evidence-${beat.kind} space-y-6`}>
+      <div className="evidence-counter">
+        <span><b>{KIND_META[beat.kind].code}</b>{KIND_META[beat.kind].label}</span>
         <span>
-          {beatIndex + 1} / {total}
+          Evidence {beatIndex + 1} of {total}
         </span>
       </div>
 

@@ -13,12 +13,12 @@ export function DocketIntro({
   const accused = trial.cast.find((m) => m.id === trial.accused.cast_id)
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-1 text-center">
+    <div className="phase-view briefing-view space-y-6">
+      <div className="phase-heading space-y-1 text-center">
         <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
           The Daily Docket · Case #{dayNumber}
         </p>
-        <h1 id="phase-heading" tabIndex={-1} className="text-2xl font-semibold tracking-tight text-neutral-50 focus:outline-none">
+        <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">
           {trial.title}
         </h1>
         <p className="text-sm text-neutral-400">{trial.setting}</p>
@@ -28,7 +28,7 @@ export function DocketIntro({
 
       <StoryText text={trial.hook} className="border-l-2 border-amber-600 pl-4 text-lg italic leading-relaxed text-neutral-200" />
 
-      <div className="space-y-4 rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
+      <div className="briefing-person space-y-4 rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
         {trial.media?.accused && <CaseMedia asset={trial.media.accused} />}
         <div>
         <p className="text-xs uppercase tracking-wider text-neutral-500">
@@ -46,14 +46,14 @@ export function DocketIntro({
         </div>
       </div>
 
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
+      <div className="briefing-charge rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
         <p className="text-xs uppercase tracking-wider text-neutral-500">
           The charge
         </p>
         <p className="mt-1 text-neutral-200">{trial.charge}</p>
       </div>
 
-      <div>
+      <div className="proof-elements">
         <p className="text-xs uppercase tracking-wider text-neutral-500">
           To convict, the prosecution must prove
         </p>
