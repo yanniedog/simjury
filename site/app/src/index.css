@@ -137,6 +137,33 @@
   .conviction-range::-webkit-slider-thumb { width: 1.5rem; height: 1.5rem; }
   .conviction-range::-moz-range-thumb { width: 1.5rem; height: 1.5rem; }
   .conviction-value { margin: 0; color: var(--steel-500); font-size: .68rem; }
+
+  .verdict-threshold { border-color: rgb(214 185 121 / 22%); border-radius: 1rem; background: linear-gradient(145deg, rgb(214 185 121 / 9%), rgb(21 29 33 / 72%)); }
+  .verdict-choices button { min-height: 7.5rem; border-radius: 1rem; }
+  .verdict-dialog { width: min(30rem, calc(100% - 2rem)); padding: 1.5rem; border: 1px solid rgb(214 185 121 / 30%); border-radius: 1.25rem; color: var(--paper-50); background: var(--court-850); box-shadow: 0 2rem 8rem rgb(0 0 0 / 60%); }
+  .verdict-dialog::backdrop { background: rgb(3 5 6 / 78%); backdrop-filter: blur(5px); }
+  .verdict-dialog h2 { margin: .7rem 0; font-family: Georgia, serif; font-size: 2rem; font-weight: 400; }
+  .verdict-dialog > p:not(.chrome-label) { color: var(--steel-300); line-height: 1.6; }
+  .verdict-dialog > div { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1.5rem; }
+  .verdict-dialog button { min-height: 48px; border: 1px solid rgb(244 240 232 / 16%); border-radius: 999px; color: var(--paper-50); }
+  .verdict-dialog button:last-child { border-color: var(--paper-50); color: var(--court-950); background: var(--paper-50); font-weight: 700; }
+
+  .jury-table { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); gap: .55rem; padding: 1.4rem; border: 1px solid rgb(244 240 232 / 11%); border-radius: 45% / 35%; background: radial-gradient(ellipse, rgb(214 185 121 / 9%), rgb(21 29 33 / 80%) 66%); box-shadow: inset 0 0 0 .65rem rgb(8 11 13 / 45%), 0 1.25rem 4rem rgb(0 0 0 / 22%); }
+  .jury-seat { display: grid; place-items: center; min-height: 3rem; padding: .35rem; border: 1px solid rgb(244 240 232 / 13%); border-radius: .65rem; font-size: .68rem; }
+  .jury-seat small { display: block; margin-top: .1rem; font-size: .5rem; font-weight: 800; letter-spacing: .05em; }
+  .jury-seat.active { outline: 2px solid var(--brass-400); outline-offset: 2px; transform: translateY(-2px); }
+  .jury-seat.player { border-color: var(--brass-400); }
+  .speaker-focus { display: flex; justify-content: center; align-items: center; min-height: 2.5rem; padding: .55rem 1rem; border-radius: 999px; background: rgb(214 185 121 / 8%); }
+  .room-transcript { padding-right: .4rem; scrollbar-color: rgb(214 185 121 / 35%) transparent; }
+  .room-line { border-color: rgb(244 240 232 / 10%); border-radius: .8rem; background: rgb(21 29 33 / 66%); }
+  .deliberation-console { border-color: rgb(214 185 121 / 20%); border-radius: 1rem; background: rgb(21 29 33 / 84%); box-shadow: 0 1.25rem 3rem rgb(0 0 0 / 18%); }
+  .deliberation-console select { min-height: 48px; }
+  .deliberation-console button { min-height: 48px; }
+
+  .judgment-record { border-color: rgb(214 185 121 / 28%); border-radius: 1.25rem; background: linear-gradient(145deg, rgb(214 185 121 / 12%), rgb(21 29 33 / 72%)); }
+  .judgment-record h1 { font-family: Georgia, serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; }
+  .reveal-view details { border-color: rgb(244 240 232 / 12%); border-radius: 1rem; background: rgb(21 29 33 / 56%); }
+  .record-tools { display: grid; grid-template-columns: 1fr; gap: 1rem; padding-top: 1rem; border-top: 1px solid rgb(244 240 232 / 10%); }
 }
 
 @keyframes stage-enter { from { opacity: 0; transform: translateY(.5rem); } }
@@ -157,6 +184,8 @@
   .docket-progress { display: none; }
   .docket-stage { width: 100%; }
   .juror-docket { order: 2; width: 100%; }
+  .verdict-choices, .verdict-dialog > div { grid-template-columns: 1fr; }
+  .jury-table { grid-template-columns: repeat(4, 1fr); border-radius: 1.5rem; padding: 1rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

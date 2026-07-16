@@ -24,6 +24,12 @@ function positionTone(position: number): string {
   return 'border-amber-700 bg-amber-950/30 text-amber-300'
 }
 
+function positionLabel(position: number): string {
+  if (position > 0) return 'Guilty'
+  if (position < 0) return 'Not guilty'
+  return 'Undecided'
+}
+
 function Bench({
   state,
   playerVerdict,
@@ -38,12 +44,13 @@ function Bench({
       ? 'border-red-800 bg-red-950/40 text-red-300'
       : 'border-emerald-800 bg-emerald-950/40 text-emerald-300'
   return (
-    <div className="grid grid-cols-6 gap-1.5">
+    <div className="jury-table" role="list" aria-label="The twelve jury seats">
       <div
-        className={`rounded border px-1 py-1.5 text-center text-[0.65rem] font-semibold ${playerTone}`}
-        title={`You — ${playerVerdict}`}
+        role="listitem"
+        className={`jury-seat player ${playerTone}`}
       >
-        You
+        <span className="sr-only">{`Seat 1, you, ${playerVerdict}`}</span>
+        <span aria-hidden="true">You</span><small aria-hidden="true">{playerVerdict === 'Guilty' ? 'G' : 'NG'}</small>
       </div>
       {[...state.jurors]
         .sort((a, b) => a.seat - b.seat)
@@ -52,12 +59,12 @@ function Bench({
           return (
             <div
               key={j.id}
+              role="listitem"
               aria-current={isActive ? 'true' : undefined}
-              className={`rounded border px-1 py-1.5 text-center text-[0.65rem] ${positionTone(j.position)} ${isActive ? 'ring-2 ring-amber-300 ring-offset-1 ring-offset-neutral-950' : ''}`}
-              title={`${j.label}${isActive ? ' — speaking now' : ''}`}
+              className={`jury-seat ${positionTone(j.position)}${isActive ? ' active' : ''}`}
             >
-              {j.seat}
-              {isActive && <span className="sr-only">, speaking now</span>}
+              <span className="sr-only">{`Seat ${j.seat}, ${j.label}, ${positionLabel(j.position)}${isActive ? ', speaking now' : ''}`}</span>
+              <span aria-hidden="true">{j.seat}</span><small aria-hidden="true">{j.position > 0 ? 'G' : j.position < 0 ? 'NG' : '—'}</small>
             </div>
           )
         })}
@@ -69,7 +76,7 @@ function FeedLine({ e, trial }: { e: RoomEvent; trial: DocketCase }) {
   if (e.type === 'respond' && e.line) {
     const juror = trial.jury.jurors.find((j) => j.id === e.actor)
     return (
-      <li className="rounded-lg border border-neutral-800 bg-neutral-900/40 p-3">
+      <li className="room-line border p-3">
         <p className="text-xs font-semibold text-neutral-400">
           {juror?.label ?? e.actor}
           {e.delta !== undefined && e.delta !== 0 && (
@@ -203,8 +210,8 @@ export function JuryRoomView({
   }
 
   return (
-    <div className="space-y-5">
-      <div className="space-y-1 text-center">
+    <div className="phase-view jury-room-view space-y-5">
+      <div className="phase-heading space-y-1 text-center">
         <h1 id="phase-heading" tabIndex={-1} className="text-xs uppercase tracking-[0.2em] text-neutral-500 focus:outline-none">
           The jury room · {ROUND_LABEL[state.phase] ?? 'The vote'}
         </h1>
@@ -217,13 +224,13 @@ export function JuryRoomView({
       </div>
 
       <Bench state={state} playerVerdict={playerVerdict} activeJurorId={activeJurorId} />
-      <p aria-live="polite" className="min-h-4 text-center text-xs text-amber-200/80">
+      <p aria-live="polite" className="speaker-focus text-xs text-amber-200/80">
         {activeJurorId
           ? `${trial.jury.jurors.find((juror) => juror.id === activeJurorId)?.label ?? 'A juror'} has the floor`
           : 'The foreperson opens deliberations'}
       </p>
 
-      <ul className="max-h-80 space-y-2 overflow-y-auto">
+      <ul className="room-transcript max-h-80 space-y-2 overflow-y-auto">
         {state.log.map((e, i) => (
           <FeedLine key={i} e={e} trial={trial} />
         ))}
@@ -257,7 +264,7 @@ export function JuryRoomView({
           </button>
         </div>
       ) : inOpenRound ? (
-        <div className="space-y-3 rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
+        <div className="deliberation-console space-y-3 border p-4">
           <p className="text-xs uppercase tracking-wider text-neutral-500">
             Make your point
           </p>
