@@ -18,7 +18,7 @@ export function DocketIntro({
         <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
           The Daily Docket · Case #{dayNumber}
         </p>
-        <h1 id="phase-heading" tabIndex={-1} className="text-2xl font-semibold tracking-tight text-neutral-50 focus:outline-none">
+        <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">
           {trial.title}
         </h1>
         <p className="text-sm text-neutral-400">{trial.setting}</p>

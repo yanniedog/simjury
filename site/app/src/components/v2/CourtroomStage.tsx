@@ -62,7 +62,7 @@ export function CourtroomStage({
           )
         })}
       </div>
-      <div className="jury-edge" aria-label="Your position: Juror 01"><span>You are here</span><strong>Juror 01 · Jury box</strong></div>
+      <div className="jury-edge"><span>You are here</span><strong>Juror 01 · Jury box</strong></div>
       <p aria-live="polite" className="sr-only">
         {active ? `${active.name}, ${active.role_label}, is speaking.` : ''}
       </p>

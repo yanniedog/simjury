@@ -76,7 +76,7 @@ export function OpeningStatements({
         <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
           Opening statements
         </p>
-        <h1 id="phase-heading" tabIndex={-1} className="text-xl font-semibold text-neutral-50 focus:outline-none">
+        <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">
           Two accounts. One burden of proof.
         </h1>
       </div>
