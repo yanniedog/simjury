@@ -25,12 +25,12 @@ export function ConvictionSlider({
         aria-label="How convinced are you of guilt?"
         className={`w-full cursor-pointer ${tone.accent}`}
       />
-      <div className="flex items-baseline justify-between text-xs uppercase tracking-wider text-neutral-500">
-        <span>Innocent</span>
-        <span>Guilty</span>
+      <div className="flex justify-between gap-6 text-xs uppercase tracking-wider text-neutral-500">
+        <span>Not persuaded</span>
+        <span className="text-right">Beyond reasonable doubt</span>
       </div>
       <p className={`text-center text-sm font-semibold ${tone.text}`}>
-        {value}% convinced of guilt
+        {value}% convinced the prosecution proved the charge
       </p>
     </div>
   )

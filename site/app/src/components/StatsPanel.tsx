@@ -13,13 +13,18 @@ function Stat({ value, label }: { value: string; label: string }) {
 
 export function StatsPanel({ stats }: { stats: Stats }) {
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
-      <div className="grid grid-cols-4 gap-2">
-        <Stat value={String(stats.played)} label="Played" />
-        <Stat value={`${Math.round(stats.winRate * 100)}%`} label="Correct" />
-        <Stat value={`🔥 ${stats.currentStreak}`} label="Streak" />
-        <Stat value={String(stats.maxStreak)} label="Best" />
+    <div className="rounded-lg border border-neutral-800 bg-neutral-900/40 p-4" role="region" aria-label="Your private docket history">
+      <p className="mb-4 text-center text-xs uppercase tracking-wider text-neutral-500">
+        Your private docket history
+      </p>
+      <div className="grid grid-cols-3 gap-2">
+        <Stat value={String(stats.played)} label="Cases heard" />
+        <Stat value={String(stats.currentStreak)} label="Daily sittings" />
+        <Stat value={String(stats.maxStreak)} label="Longest run" />
       </div>
+      <p className="mt-4 text-center text-xs text-neutral-600">
+        Kept only in this browser. Every completed sitting counts.
+      </p>
     </div>
   )
 }

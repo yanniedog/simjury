@@ -10,7 +10,7 @@ import type { Verdict } from './DocketVerdict'
 const STAMP = {
   decisive: { label: 'Decisive', cls: 'border-emerald-700 text-emerald-300' },
   minor: { label: 'Minor', cls: 'border-neutral-700 text-neutral-400' },
-  misleading: { label: 'Misleading', cls: 'border-amber-700 text-amber-300' },
+  misleading: { label: 'Overstated', cls: 'border-amber-700 text-amber-300' },
 } as const
 
 function WeightBar({ label, value, tone }: { label: string; value: number; tone: string }) {
@@ -38,19 +38,19 @@ function BeatRevealCard({ reveal }: { reveal: BeatReveal }) {
           {stamp.label}
         </span>
         <span className={`text-xs ${pointsGuilt ? 'text-red-400' : 'text-emerald-400'}`}>
-          Points to {pointsGuilt ? 'guilt' : 'innocence'}
+          Supports {pointsGuilt ? 'convicting' : 'not convicting'}
         </span>
         {tookBait && (
           <span className="ml-auto text-xs font-medium text-amber-400">
-            This one swayed you
+            This shifted your view
           </span>
         )}
       </div>
       <p className="text-sm text-neutral-300">{beat.text}</p>
       <div className="space-y-2">
-        <WeightBar label="How convincing it felt" value={beat.surface_persuasion} tone="bg-neutral-500" />
+        <WeightBar label="How persuasive it may feel" value={beat.surface_persuasion} tone="bg-neutral-500" />
         <WeightBar
-          label="What it was actually worth"
+          label="Authored evidentiary weight"
           value={beat.true_weight}
           tone={pointsGuilt ? 'bg-red-500' : 'bg-emerald-500'}
         />
@@ -87,39 +87,32 @@ export function DocketReveal({
     convictions: analysis.segments
       .filter((s) => s.checkinId !== null)
       .map((s) => s.after),
-    correct: analysis.correct,
-    swayedByTraps: analysis.trapsSwayed,
-    totalTraps: analysis.totalTraps,
     currentStreak: stats.currentStreak,
     room: { kind: room.kind, g: room.g, ng: room.ng },
   })
 
   return (
     <div className="space-y-6">
-      <div
-        className={`rounded-lg border p-5 text-center ${
-          analysis.correct
-            ? 'border-emerald-800 bg-emerald-950/30'
-            : 'border-red-900 bg-red-950/30'
-        }`}
-      >
+      <div className="rounded-lg border border-amber-900/70 bg-amber-950/20 p-5 text-center">
         <p className="text-2xl font-semibold text-neutral-50">
-          {analysis.correct ? 'You read it right' : 'The evidence fooled you'}
+          Your judgment is on the record.
         </p>
         <p className="mt-2 text-sm text-neutral-300">
-          The truth: <strong>{trial.verdict_truth}</strong> · You said:{' '}
+          Authored outcome: <strong>{trial.verdict_truth}</strong> · Your verdict:{' '}
           <strong>{verdict}</strong>
         </p>
-        <p className="mt-1 text-sm text-neutral-400">Your jury room: {roomLabel}.</p>
-        {analysis.totalTraps > 0 && (
-          <p className="mt-1 text-sm text-neutral-400">
-            You resisted {analysis.totalTraps - analysis.trapsSwayed} of{' '}
-            {analysis.totalTraps} traps.
-          </p>
-        )}
+        <p className="mt-2 text-sm leading-relaxed text-neutral-400">
+          {analysis.correct
+            ? "You and the case's authored outcome reached the same legal conclusion."
+            : "You reached a different legal conclusion from the case's authored outcome."}
+          {' '}That is something to examine, not a score.
+        </p>
+        <p className="mt-2 text-sm text-neutral-400">Your fictional jury room: {roomLabel}.</p>
       </div>
 
       <StatsPanel stats={stats} />
+
+      <ShareCard text={shareText} />
 
       <p className="text-sm leading-relaxed text-neutral-300">{trial.twist}</p>
 
@@ -132,21 +125,23 @@ export function DocketReveal({
         </p>
       </div>
 
-      <div>
-        <p className="mb-3 text-xs uppercase tracking-wider text-neutral-500">
-          What each piece was really worth
+      <details className="group rounded-lg border border-neutral-800 bg-neutral-900/20 p-4">
+        <summary className="cursor-pointer font-semibold text-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">
+          Review how the evidence was authored
+        </summary>
+        <p className="mt-3 text-sm leading-relaxed text-neutral-500">
+          Compare what moved you with the weight assigned by the case authors.
         </p>
-        <ul className="space-y-3">
+        <ul className="mt-4 space-y-3">
           {analysis.reveals.map((reveal) => (
             <BeatRevealCard key={reveal.beat.id} reveal={reveal} />
           ))}
         </ul>
-      </div>
-
-      <ShareCard text={shareText} />
+      </details>
 
       <p className="text-center text-xs text-neutral-600">
-        Fiction, built from patterns real trials share. A new case tomorrow.
+        The authored outcome belongs to this fictional case; reasonable jurors
+        may still disagree. A new sitting opens tomorrow.
       </p>
     </div>
   )

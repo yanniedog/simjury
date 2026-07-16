@@ -63,7 +63,7 @@ export function DocketVerdict({
         </p>
         <p className="text-sm text-neutral-500">
           On the charge of {trial.charge}, how do you find? Locking is
-          permanent — the room deliberates only after you cannot be swayed.
+          final for today's sitting—the room responds only after you commit.
         </p>
       </div>
 
@@ -73,14 +73,16 @@ export function DocketVerdict({
           onClick={() => onLock('Not Guilty')}
           className="rounded-lg border border-emerald-700 bg-emerald-950/40 px-4 py-4 font-semibold text-emerald-300 transition hover:bg-emerald-900/40"
         >
-          Not Guilty
+          <span className="block">Not persuaded to convict</span>
+          <span className="mt-1 block text-xs font-normal">Verdict: Not guilty</span>
         </button>
         <button
           type="button"
           onClick={() => onLock('Guilty')}
           className="rounded-lg border border-red-800 bg-red-950/40 px-4 py-4 font-semibold text-red-300 transition hover:bg-red-900/40"
         >
-          Guilty
+          <span className="block">Persuaded beyond reasonable doubt</span>
+          <span className="mt-1 block text-xs font-normal">Verdict: Guilty</span>
         </button>
       </div>
     </div>
