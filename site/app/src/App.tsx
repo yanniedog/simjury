@@ -43,7 +43,7 @@ function Shell({
   narration: boolean
   playbackRate: NarrationRate
   onToggleNarration: () => void
-  onRateChange: (rate: NarrationRate) => void
+  onRateChange: (rate: string) => void
 }) {
   return (
     <main className="docket-shell min-h-screen px-5 pb-12 text-neutral-100">
@@ -60,7 +60,7 @@ function Shell({
                 <select
                   aria-label="Narration speed"
                   value={playbackRate}
-                  onChange={(event) => onRateChange(Number(event.target.value) as NarrationRate)}
+                  onChange={(event) => onRateChange(event.target.value)}
                   className="rounded-full border border-white/15 bg-neutral-950 px-2 py-2 text-[0.65rem] text-neutral-200"
                 >
                   <option value={0.85}>Relaxed</option>
@@ -200,7 +200,7 @@ export default function App() {
     setNarration(next)
   }
 
-  function changeNarrationRate(rate: NarrationRate) {
+  function changeNarrationRate(rate: string) {
     setPlaybackRate(setNarrationRate(rate))
   }
 
@@ -347,6 +347,8 @@ export default function App() {
           key={`${activeTrial.id}-${verdict}`}
           trial={activeTrial}
           playerVerdict={verdict}
+          narration={narration}
+          playbackRate={playbackRate}
           onDone={roomDone}
         />
       )}

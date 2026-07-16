@@ -9,7 +9,7 @@ import {
   type PlayerAction,
   type RoomEvent,
 } from '../../engine/deliberation'
-import { speakAll, stopSpeech } from '../../lib/narration'
+import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import type { Verdict } from './DocketVerdict'
 
 const ROUND_LABEL: Partial<Record<DeliberationState['phase'], string>> = {
@@ -129,16 +129,16 @@ function FeedLine({ e, trial }: { e: RoomEvent; trial: DocketCase }) {
 export function JuryRoomView({
   trial,
   playerVerdict,
+  narration,
+  playbackRate,
   onDone,
 }: {
   trial: DocketCase
   playerVerdict: Verdict
+  narration: boolean
+  playbackRate: NarrationRate
   onDone: (outcome: Outcome) => void
 }) {
-  // Stop any in-flight juror narration when the room unmounts (e.g. the
-  // player moves on to the reveal) so audio can't overlap the next screen.
-  useEffect(() => stopSpeech, [])
-
   const stateRef = useRef<DeliberationState | null>(null)
   stateRef.current ??= startDeliberation(
     trial,
@@ -149,6 +149,14 @@ export function JuryRoomView({
   const [selectedBeat, setSelectedBeat] = useState(trial.beats[0].id)
   const [outcome, setOutcome] = useState<Outcome | null>(null)
   const [activeJurorId, setActiveJurorId] = useState<string | null>(null)
+
+  // Rate/toggle changes cancel speech in App; clear its visual state here too.
+  // The cleanup also prevents narration overlapping the reveal on unmount.
+  useEffect(() => {
+    setActiveJurorId(null)
+    stopSpeech()
+    return stopSpeech
+  }, [narration, playbackRate])
 
   const beat = trial.beats.find((b) => b.id === selectedBeat)!
   const inOpenRound = state.phase.startsWith('open')
@@ -168,6 +176,7 @@ export function JuryRoomView({
   function act(action: PlayerAction) {
     if (!inOpenRound || state.phase !== renderedPhase) return
     const before = state.log.length
+    setActiveJurorId(null)
     stopSpeech()
     playRound(state, action)
     const spoken = state.log
@@ -178,6 +187,7 @@ export function JuryRoomView({
     speakAll(spoken, {
       onLine: setActiveJurorId,
       done: () => setActiveJurorId(null),
+      rate: playbackRate,
     })
     setTick((t) => t + 1)
   }
@@ -186,6 +196,7 @@ export function JuryRoomView({
     // Same double-click hazard as act(): finish() throws once the phase has
     // left final_vote, so a second click before re-render must be a no-op.
     if (state.phase !== 'final_vote') return
+    setActiveJurorId(null)
     stopSpeech()
     setOutcome(finish(state))
     setTick((t) => t + 1)
