@@ -10,15 +10,15 @@ export function CaseMedia({
 }) {
   const src = asset.src.replace(/^\/today\//, import.meta.env.BASE_URL)
   return (
-    <figure className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/60 shadow-2xl shadow-black/30">
+    <figure className={`case-media ${asset.kind}`}>
       <img
         src={src}
         alt={asset.alt}
         loading={priority ? 'eager' : 'lazy'}
         fetchPriority={priority ? 'high' : 'auto'}
-        className={`${asset.kind === 'evidence' ? 'aspect-video' : 'aspect-[3/2]'} w-full object-cover`}
+        className={asset.kind === 'evidence' ? 'aspect-video' : 'aspect-[3/2]'}
       />
-      <figcaption className="border-t border-neutral-800 px-4 py-3 text-xs leading-relaxed text-neutral-400">
+      <figcaption>
         {asset.caption}
       </figcaption>
     </figure>

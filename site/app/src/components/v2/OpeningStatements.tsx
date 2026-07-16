@@ -19,13 +19,10 @@ export function StatementCard({
   side: 'prosecution' | 'defence'
 }) {
   const counsel = trial.cast.find((m) => m.id === statement.speaker)
-  const tone =
-    side === 'prosecution'
-      ? 'border-red-900/60 bg-red-950/20'
-      : 'border-emerald-900/60 bg-emerald-950/20'
+  const tone = side === 'prosecution' ? 'prosecution' : 'defence'
   const nameTone = side === 'prosecution' ? 'text-red-300' : 'text-emerald-300'
   return (
-    <div className={`rounded-lg border p-4 ${tone}`}>
+    <article className={`statement-card ${tone}`}>
       <p className={`text-sm font-semibold ${nameTone}`}>
         {counsel?.name ?? statement.speaker}
         <span className="ml-2 font-normal text-neutral-500">
@@ -33,7 +30,7 @@ export function StatementCard({
         </span>
       </p>
       <StoryText text={statement.text} className="mt-3 leading-relaxed text-neutral-100" />
-    </div>
+    </article>
   )
 }
 
@@ -74,8 +71,8 @@ export function OpeningStatements({
   }, [prosecution.text, prosecution.speaker, defence.text, defence.speaker, narration, playbackRate])
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-1 text-center">
+    <div className="phase-view openings-view space-y-6">
+      <div className="phase-heading space-y-1 text-center">
         <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
           Opening statements
         </p>

@@ -6,9 +6,15 @@ import { CaseMedia, StoryText } from './CaseMedia'
 import { CourtroomStage } from './CourtroomStage'
 
 const KIND_LABEL: Record<DocketBeat['kind'], string> = {
-  witness: '🗣️ Witness',
-  exhibit: '📄 Exhibit',
-  direction: '⚖️ Judge’s direction',
+  witness: 'Witness testimony',
+  exhibit: 'Exhibit',
+  direction: 'Judge’s direction',
+}
+
+const KIND_CODE: Record<DocketBeat['kind'], string> = {
+  witness: 'WIT',
+  exhibit: 'EXH',
+  direction: 'DIR',
 }
 
 function speakerOf(trial: DocketCase, beat: DocketBeat) {
@@ -54,11 +60,11 @@ export function DocketBeatView({
   const subtitle = [speaker?.role_label, modeLabel].filter(Boolean).join(' · ')
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between text-xs uppercase tracking-wider text-neutral-500">
-        <span>{KIND_LABEL[beat.kind]}</span>
+    <div className={`phase-view evidence-view evidence-${beat.kind} space-y-6`}>
+      <div className="evidence-counter">
+        <span><b>{KIND_CODE[beat.kind]}</b>{KIND_LABEL[beat.kind]}</span>
         <span>
-          {beatIndex + 1} / {total}
+          Evidence {beatIndex + 1} of {total}
         </span>
       </div>
 
