@@ -48,7 +48,7 @@ export function ShareCard({ text }: { text: string }) {
         onClick={share}
         className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
       >
-        {isShareSupported ? "Share today's docket" : 'Copy your docket card'}
+        {isShareSupported ? 'Share this docket' : 'Copy your docket card'}
       </button>
       <p aria-live="polite" className="min-h-[1.25rem] text-center text-xs text-neutral-500">
         {status}

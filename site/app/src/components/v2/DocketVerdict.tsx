@@ -76,7 +76,7 @@ export function DocketVerdict({
         </p>
         <p className="text-sm text-neutral-500">
           On the charge of {trial.charge}, how do you find? Locking is
-          final for today's sitting—the room responds only after you commit.
+          final for this sitting—the room responds only after you commit.
         </p>
       </div>
 

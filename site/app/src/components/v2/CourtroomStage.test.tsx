@@ -19,4 +19,13 @@ describe('CourtroomStage', () => {
     expect(markup).toContain('Speaking now')
     expect(markup).toContain('is speaking.')
   })
+
+  it('does not mark an empty witness stand as active', () => {
+    const markup = renderToStaticMarkup(
+      <CourtroomStage trial={makeDocketCase()} phaseLabel="Opening statements" />,
+    )
+
+    expect(markup).not.toContain('aria-current="true"')
+    expect(markup).not.toContain('Speaking now')
+  })
 })

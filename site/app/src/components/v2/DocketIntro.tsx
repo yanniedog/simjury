@@ -68,7 +68,7 @@ export function DocketIntro({
       </div>
 
       <p className="text-sm leading-relaxed text-neutral-400">
-        You are Juror #1. Hear the evidence, commit your verdict for today's
+        You are Juror #1. Hear the evidence, commit your verdict for this
         sitting, then explain what persuaded you. About ten minutes, start to
         verdict.
       </p>
@@ -88,7 +88,7 @@ export function DocketIntro({
       </button>
 
       <p className="text-center text-xs text-neutral-600">
-        Today's case is fiction, built from patterns real trials share. No real
+        This case is fiction, built from patterns real trials share. No real
         people, no real companies.
       </p>
     </div>

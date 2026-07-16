@@ -141,7 +141,7 @@ export function DocketReveal({
 
       <p className="text-center text-xs text-neutral-600">
         The authored outcome belongs to this fictional case; reasonable jurors
-        may still disagree. A new sitting opens tomorrow.
+        may still disagree. Choose another sitting when you’re ready.
       </p>
     </div>
   )
