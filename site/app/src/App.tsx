@@ -11,7 +11,7 @@ import { START_CONVICTION } from './lib/game'
 import {
   clearProgress,
   loadAllPlays,
-  loadPlay,
+  loadPlayForSitting,
   loadProgress,
   savePlay,
   saveProgress,
@@ -80,9 +80,12 @@ const dateFormatter = new Intl.DateTimeFormat(undefined, {
 })
 
 function sittingStatus(sitting: DocketSitting): string {
-  const play = loadPlay(sitting.day)
-  if (play?.caseId === sitting.trial.id &&
-      play.convictions.length === sitting.trial.checkins.length) {
+  const play = loadPlayForSitting(
+    sitting.day,
+    sitting.trial.id,
+    sitting.trial.checkins.length,
+  )
+  if (play) {
     return play.room ? 'judgment recorded' : 'jury room in progress'
   }
   const progress = loadProgress(sitting.day)
@@ -93,13 +96,24 @@ function SittingChooser({
   sittings,
   selectedDay,
   todayDay,
+  statusVersion,
   onSelect,
 }: {
   sittings: DocketSitting[]
   selectedDay: number
   todayDay: number
+  statusVersion: string
   onSelect: (day: number) => void
 }) {
+  const options = useMemo(
+    () => [...sittings].reverse().map((sitting) => ({
+      day: sitting.day,
+      statusVersion,
+      label: `${sitting.day === todayDay ? 'Today' : dateFormatter.format(sitting.date)} — ${sitting.trial.title} (${sittingStatus(sitting)})`,
+    })),
+    [sittings, statusVersion, todayDay],
+  )
+
   return (
     <nav aria-label="Daily Docket sittings" className="mb-6 rounded-lg border border-neutral-800 bg-neutral-900/40 p-3">
       <label htmlFor="docket-sitting" className="mb-2 block text-xs font-semibold uppercase tracking-wider text-neutral-400">
@@ -111,10 +125,9 @@ function SittingChooser({
         onChange={(event) => onSelect(Number(event.target.value))}
         className="w-full rounded-md border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
       >
-        {[...sittings].reverse().map((sitting) => (
-          <option key={sitting.day} value={sitting.day}>
-            {sitting.day === todayDay ? 'Today' : dateFormatter.format(sitting.date)}
-            {' — '}{sitting.trial.title} ({sittingStatus(sitting)})
+        {options.map((option) => (
+          <option key={`${option.day}:${option.statusVersion}`} value={option.day}>
+            {option.label}
           </option>
         ))}
       </select>
@@ -138,7 +151,6 @@ function DocketApp({
   const [narration, setNarration] = useState(narrationEnabled())
   const day = sitting?.day ?? todayDay
   const trial = sitting?.trial ?? null
-  const stored = useMemo(() => loadPlay(day), [day])
   const progress = useMemo(() => loadProgress(day), [day])
 
   // Only restore a stored play that belongs to the case now assigned to this
@@ -148,12 +160,9 @@ function DocketApp({
   // before the jury room finished (restore at the room — the lock is
   // permanent, so a refresh must not allow a fresh verdict).
   const validStored = useMemo(() => {
-    if (!stored || !trial) return null
-    return stored.caseId === trial.id &&
-      stored.convictions.length === trial.checkins.length
-      ? stored
-      : null
-  }, [stored, trial])
+    if (!trial) return null
+    return loadPlayForSitting(day, trial.id, trial.checkins.length)
+  }, [day, trial])
 
   const validProgress = useMemo(() => {
     if (!progress || !trial || validStored) return null
@@ -320,9 +329,27 @@ function DocketApp({
   }
 
   function lockVerdict(chosen: Verdict) {
-    const locked = loadPlay(day)
-    if (verdict !== null || (locked?.caseId === activeTrial.id &&
-        locked.convictions.length === activeTrial.checkins.length)) return
+    const locked = loadPlayForSitting(
+      day,
+      activeTrial.id,
+      activeTrial.checkins.length,
+    )
+    if (verdict !== null) return
+    if (locked) {
+      // Another tab won the race to lock this sitting. Adopt its permanent
+      // record instead of leaving this tab stranded on the verdict screen.
+      clearProgress(day)
+      setCheckinValues(locked.convictions)
+      setVerdict(locked.verdict)
+      setRoom(locked.room ?? null)
+      if (locked.room) {
+        setRevealStats(statsFromStorage())
+        setPhase('reveal')
+      } else {
+        setPhase('juryroom')
+      }
+      return
+    }
     setVerdict(chosen)
     // Persist the lock before the jury room: the verdict is permanent, so a
     // refresh mid-room must resume at the room, not offer a fresh verdict.
@@ -366,6 +393,7 @@ function DocketApp({
         sittings={sittings}
         selectedDay={selectedDay}
         todayDay={todayDay}
+        statusVersion={`${day}:${phase}`}
         onSelect={onSelect}
       />
       {phase !== 'intro' && verdict === null && (
