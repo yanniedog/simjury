@@ -2,12 +2,15 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   narrationRate,
   normaliseNarrationRate,
+  setNarrationEnabled,
   setNarrationRate,
+  speakAll,
   voiceParamsFor,
   voiceQualityScore,
 } from './narration'
 
 afterEach(() => {
+  setNarrationEnabled(false)
   vi.unstubAllGlobals()
 })
 
@@ -76,5 +79,47 @@ describe('normaliseNarrationRate', () => {
 
     expect(setNarrationRate(1.15)).toBe(1.15)
     expect(narrationRate()).toBe(1.15)
+  })
+})
+
+describe('speakAll', () => {
+  it('tracks each line and signals when the sequence completes', () => {
+    class FakeUtterance {
+      voice?: SpeechSynthesisVoice
+      pitch = 1
+      rate = 1
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+
+      constructor(readonly text: string) {}
+    }
+    const utterances: FakeUtterance[] = []
+    const values = new Map<string, string>()
+    vi.stubGlobal('window', {
+      speechSynthesis: {
+        cancel: vi.fn(),
+        speak: (utterance: FakeUtterance) => utterances.push(utterance),
+      },
+    })
+    vi.stubGlobal('SpeechSynthesisUtterance', FakeUtterance)
+    vi.stubGlobal('localStorage', {
+      getItem: (key: string) => values.get(key) ?? null,
+      setItem: (key: string, value: string) => values.set(key, value),
+    })
+    setNarrationEnabled(true)
+    const onLine = vi.fn()
+    const done = vi.fn()
+
+    speakAll([
+      { text: 'First line', key: 'pros' },
+      { text: 'Second line', key: 'defc' },
+    ], { onLine, done })
+    expect(onLine).toHaveBeenLastCalledWith('pros')
+    expect(done).not.toHaveBeenCalled()
+
+    utterances[0].onend?.()
+    expect(onLine).toHaveBeenLastCalledWith('defc')
+    utterances[1].onend?.()
+    expect(done).toHaveBeenCalledOnce()
   })
 })

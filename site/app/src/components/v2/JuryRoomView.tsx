@@ -175,7 +175,10 @@ export function JuryRoomView({
       .filter((e) => e.type === 'respond' && e.line)
       .map((e) => ({ text: e.line!, key: e.actor }))
     setActiveJurorId(spoken[0]?.key ?? null)
-    speakAll(spoken, { onLine: setActiveJurorId })
+    speakAll(spoken, {
+      onLine: setActiveJurorId,
+      done: () => setActiveJurorId(null),
+    })
     setTick((t) => t + 1)
   }
 

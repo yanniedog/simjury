@@ -32,7 +32,11 @@ export function DocketVerdict({
     speakAll([
       { text: prosecution.text, key: prosecution.speaker },
       { text: defence.text, key: defence.speaker },
-    ], { rate: playbackRate, onLine: setActiveSpeaker })
+    ], {
+      rate: playbackRate,
+      onLine: setActiveSpeaker,
+      done: () => setActiveSpeaker(null),
+    })
     return stopSpeech
   }, [prosecution.text, prosecution.speaker, defence.text, defence.speaker, narration, playbackRate])
 
