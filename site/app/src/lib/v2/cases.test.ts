@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { docketCaseForDate, docketQueue } from './cases'
+import {
+  availableDocketSittings,
+  docketCaseForDate,
+  docketQueue,
+  selectDocketSitting,
+  SITTING_HISTORY_LIMIT,
+} from './cases'
 
 describe('docket queue', () => {
   it('bundles and validates every docket case', () => {
@@ -17,5 +23,27 @@ describe('docket queue', () => {
     const future = new Date(2026, 0, 1)
     const onlyFuture = docketQueue.filter((c) => c.publish_date > '2026-01-01')
     expect(docketCaseForDate(future, onlyFuture)).toBeNull()
+  })
+
+  it('lists each published sitting through the selected local date', () => {
+    const sittings = availableDocketSittings(new Date(2026, 6, 3), docketQueue)
+
+    expect(sittings.map(({ date }) => date.getDate())).toEqual([1, 2, 3])
+    expect(sittings.every(({ trial, date }) => trial.publish_date <=
+      `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`,
+    )).toBe(true)
+  })
+
+  it('returns no sittings before the first publication or for an empty queue', () => {
+    expect(availableDocketSittings(new Date(2026, 5, 30), docketQueue)).toEqual([])
+    expect(availableDocketSittings(new Date(2026, 6, 3), [])).toEqual([])
+  })
+
+  it('caps history and falls back to its newest sitting', () => {
+    const sittings = availableDocketSittings(new Date(2027, 0, 31), docketQueue)
+
+    expect(sittings).toHaveLength(SITTING_HISTORY_LIMIT)
+    expect(selectDocketSitting(sittings, -1)).toBe(sittings[sittings.length - 1])
+    expect(selectDocketSitting([], -1)).toBeNull()
   })
 })

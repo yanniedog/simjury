@@ -1,4 +1,4 @@
-import { caseIndexForDate } from '../daily'
+import { caseIndexForDate, DAILY_EPOCH, dayIndex } from '../daily'
 import { docketCaseSchema, type DocketCase } from './caseSchema'
 
 /**
@@ -31,6 +31,15 @@ function loadQueue(): DocketCase[] {
 
 export const docketQueue: DocketCase[] = loadQueue()
 
+export interface DocketSitting {
+  day: number
+  date: Date
+  trial: DocketCase
+}
+
+/** Keep the native date picker useful without growing it forever. */
+export const SITTING_HISTORY_LIMIT = 90
+
 function localDateString(date: Date): string {
   const y = date.getFullYear()
   const m = String(date.getMonth() + 1).padStart(2, '0')
@@ -47,4 +56,49 @@ export function docketCaseForDate(
   const eligible = queue.filter((c) => c.publish_date <= today)
   if (eligible.length === 0) return null
   return eligible[caseIndexForDate(date, eligible.length)] ?? null
+}
+
+function localDateFromIso(value: string): Date {
+  const [year, month, date] = value.split('-').map(Number)
+  return new Date(year, month - 1, date)
+}
+
+function dateFromDayIndex(day: number): Date {
+  return new Date(
+    DAILY_EPOCH.getFullYear(),
+    DAILY_EPOCH.getMonth(),
+    DAILY_EPOCH.getDate() + day,
+  )
+}
+
+/** The most recent published sittings through [date], oldest first. */
+export function availableDocketSittings(
+  date: Date,
+  queue: DocketCase[] = docketQueue,
+): DocketSitting[] {
+  if (queue.length === 0) return []
+  const firstPublished = queue.reduce(
+    (first, trial) => trial.publish_date < first ? trial.publish_date : first,
+    queue[0].publish_date,
+  )
+  const firstDay = dayIndex(localDateFromIso(firstPublished))
+  const lastDay = dayIndex(date)
+  const startDay = Math.max(firstDay, lastDay - SITTING_HISTORY_LIMIT + 1)
+  const sittings: DocketSitting[] = []
+
+  for (let day = startDay; day <= lastDay; day++) {
+    const sittingDate = dateFromDayIndex(day)
+    const trial = docketCaseForDate(sittingDate, queue)
+    if (trial) sittings.push({ day, date: sittingDate, trial })
+  }
+  return sittings
+}
+
+/** Exact sitting when available, otherwise the newest published fallback. */
+export function selectDocketSitting(
+  sittings: DocketSitting[],
+  day: number,
+): DocketSitting | null {
+  return sittings.find((sitting) => sitting.day === day) ??
+    sittings[sittings.length - 1] ?? null
 }

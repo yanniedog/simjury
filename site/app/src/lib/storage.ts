@@ -75,6 +75,18 @@ export function loadPlay(day: number): StoredPlay | null {
   }
 }
 
+/** A stored verdict only belongs to the sitting it was authored against. */
+export function loadPlayForSitting(
+  day: number,
+  caseId: string,
+  checkinCount: number,
+): StoredPlay | null {
+  const play = loadPlay(day)
+  return play?.caseId === caseId && play.convictions.length === checkinCount
+    ? play
+    : null
+}
+
 export function savePlay(play: StoredPlay): void {
   const store = storage()
   if (!store) return

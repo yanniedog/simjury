@@ -1,13 +1,17 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react'
 import type { Outcome } from './engine/deliberation'
 import { analyzeDocketPlay } from './lib/v2/analyze'
-import { docketCaseForDate } from './lib/v2/cases'
+import {
+  availableDocketSittings,
+  selectDocketSitting,
+  type DocketSitting,
+} from './lib/v2/cases'
 import { dayIndex } from './lib/daily'
 import { START_CONVICTION } from './lib/game'
 import {
   clearProgress,
   loadAllPlays,
-  loadPlay,
+  loadPlayForSitting,
   loadProgress,
   savePlay,
   saveProgress,
@@ -69,12 +73,84 @@ function statsFromStorage(): Stats {
   return computeStats(results)
 }
 
-export default function App() {
+const dateFormatter = new Intl.DateTimeFormat(undefined, {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+})
+
+function sittingStatus(sitting: DocketSitting): string {
+  const play = loadPlayForSitting(
+    sitting.day,
+    sitting.trial.id,
+    sitting.trial.checkins.length,
+  )
+  if (play) {
+    return play.room ? 'judgment recorded' : 'jury room in progress'
+  }
+  const progress = loadProgress(sitting.day)
+  return progress?.caseId === sitting.trial.id ? 'in progress' : 'not started'
+}
+
+function SittingChooser({
+  sittings,
+  selectedDay,
+  todayDay,
+  statusVersion,
+  onSelect,
+}: {
+  sittings: DocketSitting[]
+  selectedDay: number
+  todayDay: number
+  statusVersion: string
+  onSelect: (day: number) => void
+}) {
+  const options = useMemo(
+    () => [...sittings].reverse().map((sitting) => ({
+      day: sitting.day,
+      statusVersion,
+      label: `${sitting.day === todayDay ? 'Today' : dateFormatter.format(sitting.date)} — ${sitting.trial.title} (${sittingStatus(sitting)})`,
+    })),
+    [sittings, statusVersion, todayDay],
+  )
+
+  return (
+    <nav aria-label="Daily Docket sittings" className="mb-6 rounded-lg border border-neutral-800 bg-neutral-900/40 p-3">
+      <label htmlFor="docket-sitting" className="mb-2 block text-xs font-semibold uppercase tracking-wider text-neutral-400">
+        Choose a sitting
+      </label>
+      <select
+        id="docket-sitting"
+        value={selectedDay}
+        onChange={(event) => onSelect(Number(event.target.value))}
+        className="w-full rounded-md border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+      >
+        {options.map((option) => (
+          <option key={`${option.day}:${option.statusVersion}`} value={option.day}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </nav>
+  )
+}
+
+function DocketApp({
+  sitting,
+  sittings,
+  selectedDay,
+  todayDay,
+  onSelect,
+}: {
+  sitting: DocketSitting | null
+  sittings: DocketSitting[]
+  selectedDay: number
+  todayDay: number
+  onSelect: (day: number) => void
+}) {
   const [narration, setNarration] = useState(narrationEnabled())
-  const today = useMemo(() => new Date(), [])
-  const day = useMemo(() => dayIndex(today), [today])
-  const trial = useMemo(() => docketCaseForDate(today), [today])
-  const stored = useMemo(() => loadPlay(day), [day])
+  const day = sitting?.day ?? todayDay
+  const trial = sitting?.trial ?? null
   const progress = useMemo(() => loadProgress(day), [day])
 
   // Only restore a stored play that belongs to the case now assigned to this
@@ -84,12 +160,9 @@ export default function App() {
   // before the jury room finished (restore at the room — the lock is
   // permanent, so a refresh must not allow a fresh verdict).
   const validStored = useMemo(() => {
-    if (!stored || !trial) return null
-    return stored.caseId === trial.id &&
-      stored.convictions.length === trial.checkins.length
-      ? stored
-      : null
-  }, [stored, trial])
+    if (!trial) return null
+    return loadPlayForSitting(day, trial.id, trial.checkins.length)
+  }, [day, trial])
 
   const validProgress = useMemo(() => {
     if (!progress || !trial || validStored) return null
@@ -138,7 +211,7 @@ export default function App() {
   // backgrounded — and reload so the player always lands on today's case.
   useEffect(() => {
     function checkForRollover() {
-      if (dayIndex(new Date()) !== day) {
+      if (dayIndex(new Date()) !== todayDay) {
         window.location.reload()
       }
     }
@@ -148,7 +221,7 @@ export default function App() {
       window.clearInterval(id)
       document.removeEventListener('visibilitychange', checkForRollover)
     }
-  }, [day])
+  }, [todayDay])
 
   useEffect(() => {
     document.getElementById('phase-heading')?.focus()
@@ -194,6 +267,17 @@ export default function App() {
       checkinValues: [],
       conviction: START_CONVICTION,
     })
+  }
+
+  function rewind() {
+    if (verdict !== null) return
+    clearProgress(day)
+    setBeatIndex(0)
+    setCheckinValues([])
+    setConviction(START_CONVICTION)
+    setRoom(null)
+    setRevealStats(null)
+    setPhase('intro')
   }
 
   function startEvidence() {
@@ -245,6 +329,27 @@ export default function App() {
   }
 
   function lockVerdict(chosen: Verdict) {
+    const locked = loadPlayForSitting(
+      day,
+      activeTrial.id,
+      activeTrial.checkins.length,
+    )
+    if (verdict !== null) return
+    if (locked) {
+      // Another tab won the race to lock this sitting. Adopt its permanent
+      // record instead of leaving this tab stranded on the verdict screen.
+      clearProgress(day)
+      setCheckinValues(locked.convictions)
+      setVerdict(locked.verdict)
+      setRoom(locked.room ?? null)
+      if (locked.room) {
+        setRevealStats(statsFromStorage())
+        setPhase('reveal')
+      } else {
+        setPhase('juryroom')
+      }
+      return
+    }
     setVerdict(chosen)
     // Persist the lock before the jury room: the verdict is permanent, so a
     // refresh mid-room must resume at the room, not offer a fresh verdict.
@@ -284,6 +389,26 @@ export default function App() {
 
   return (
     <Shell narration={narration} onToggleNarration={toggleNarration}>
+      <SittingChooser
+        sittings={sittings}
+        selectedDay={selectedDay}
+        todayDay={todayDay}
+        statusVersion={`${day}:${phase}`}
+        onSelect={onSelect}
+      />
+      {phase !== 'intro' && verdict === null && (
+        <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-neutral-800 bg-neutral-900/40 p-3 text-sm">
+          <span className="text-neutral-400">Restarting clears this sitting's check-ins.</span>
+          <button
+            type="button"
+            aria-label={`Rewind ${activeTrial.title} to the beginning`}
+            onClick={rewind}
+            className="shrink-0 rounded-md border border-neutral-700 px-3 py-2 font-medium text-neutral-200 hover:bg-neutral-800"
+          >
+            Rewind to beginning
+          </button>
+        </div>
+      )}
       {phase === 'intro' && (
         <DocketIntro trial={activeTrial} dayNumber={dayNumber} onBegin={begin} />
       )}
@@ -331,5 +456,25 @@ export default function App() {
         />
       )}
     </Shell>
+  )
+}
+
+export default function App() {
+  const [today] = useState(() => new Date())
+  const todayDay = dayIndex(today)
+  const sittings = useMemo(() => availableDocketSittings(today), [today])
+  const [selectedDay, setSelectedDay] = useState(todayDay)
+  const selected = selectDocketSitting(sittings, selectedDay)
+  const activeDay = selected?.day ?? selectedDay
+
+  return (
+    <DocketApp
+      key={activeDay}
+      sitting={selected}
+      sittings={sittings}
+      selectedDay={activeDay}
+      todayDay={todayDay}
+      onSelect={setSelectedDay}
+    />
   )
 }
