@@ -14,7 +14,8 @@ Only these four repos use `pr-bot-presence-gate.yml`. Installing Codex on **All 
 ## Operator: install Codex GitHub App (all repos)
 
 1. Open https://github.com/apps/chatgpt-codex-connector/installations/new
-   (or **Settings → Applications → ChatGPT Codex Connector → Configure**)
+   (personal account: **Settings → Applications → Installed GitHub Apps**;
+   organization: **Organization settings → Installed GitHub Apps**)
 2. Choose **All repositories** for the `yanniedog` account (preferred), or select every active repo.
 3. Save.
 
