@@ -43,7 +43,7 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = 1
-        versionName = "0.1.31"
+        versionName = "0.1.32"
         buildConfigField("String", "APK_MANIFEST_URL", "\"$apkManifestUrl\"")
         buildConfigField("String", "PILOT_CASE_ID", "\"$pilotCaseId\"")
     }
