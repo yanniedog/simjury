@@ -6,6 +6,8 @@
     "node": ">=24"
   },
   "scripts": {
+    "cloud:bootstrap": "node scripts/cloud-bootstrap.mjs",
+    "cloud:bootstrap:verify": "node scripts/verify-cloud-bootstrap.mjs",
     "wait-for-bots": "node wait_for_bots.mjs",
     "pr:bot-feedback-check": "node scripts/pr-bot-feedback-check.mjs",
     "pr:gates:check": "node scripts/pr-gates-check.mjs",

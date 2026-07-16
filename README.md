@@ -14,6 +14,26 @@ cd pilot
 ./gradlew test --console=plain
 ```
 
+## Cloud checkout readiness
+
+Use Node 24 (pinned in `.node-version`) and run the read-only preflight from the
+repository root:
+
+```bash
+npm run cloud:bootstrap -- --check
+```
+
+On a fresh checkout, install both locked web dependency trees and recheck them:
+
+```bash
+npm run cloud:bootstrap -- --install
+```
+
+The bootstrap verifies a topic-branch Git checkout, a reachable `origin`, GitHub
+CLI installation and authentication, and the `site` plus `site/app` dependencies.
+Authenticate with `gh auth login` or inject `GH_TOKEN` as a cloud secret. Never put
+tokens in repository files, `.env`, command-line arguments, or Git configuration.
+
 ## Android preview APK
 
 After a PR merges to `main` and the **PR queue drains** (no other open PRs to `main`), **pilot-auto-release-on-queue-drain** bumps `versionName` in `pilot/app/build.gradle.kts` and **pilot-android-apk** publishes to GitHub Releases. This matches [AR-local](https://github.com/yanniedog/AR-local) `mobile-auto-release-on-queue-drain` behaviour: one release per drained merge batch, not per intermediate PR while others are still open.
