@@ -14,6 +14,15 @@ export interface VoiceParams {
   rate: number
 }
 
+export const NARRATION_RATES = [0.85, 1, 1.15] as const
+export type NarrationRate = (typeof NARRATION_RATES)[number]
+
+/** Keep persisted or caller-provided playback rates inside the designed set. */
+export function normaliseNarrationRate(value: unknown): NarrationRate {
+  const parsed = typeof value === 'number' ? value : Number(value)
+  return NARRATION_RATES.find((rate) => rate === parsed) ?? 1
+}
+
 /** Deterministic voice parameters per speaker key (pure; unit-tested). */
 export function voiceParamsFor(key: string, voiceCount: number): VoiceParams {
   let h = 0
@@ -36,6 +45,7 @@ export function voiceQualityScore(name: string, localService: boolean): number {
 }
 
 const STORAGE_KEY = 'simjury:narration'
+const RATE_STORAGE_KEY = 'simjury:narration-rate'
 
 function synth(): SpeechSynthesis | null {
   return typeof window !== 'undefined' && 'speechSynthesis' in window
@@ -73,6 +83,7 @@ export function narrationSupported(): boolean {
 // override it, silencing narration for the whole session even though
 // speechSynthesis itself is available.
 let memoryEnabled = false
+let memoryRate: NarrationRate = 1
 
 export function narrationEnabled(): boolean {
   if (!narrationSupported()) return false
@@ -95,6 +106,26 @@ export function setNarrationEnabled(on: boolean): void {
   if (!on) stopSpeech()
 }
 
+export function narrationRate(): NarrationRate {
+  try {
+    const stored = localStorage.getItem(RATE_STORAGE_KEY)
+    return stored === null ? memoryRate : normaliseNarrationRate(stored)
+  } catch {
+    return memoryRate
+  }
+}
+
+export function setNarrationRate(value: unknown): NarrationRate {
+  memoryRate = normaliseNarrationRate(value)
+  try {
+    localStorage.setItem(RATE_STORAGE_KEY, String(memoryRate))
+  } catch {
+    // Keep the selected rate for this session when storage is unavailable.
+  }
+  stopSpeech()
+  return memoryRate
+}
+
 // A transaction id (not a callback reference) tracks the active utterance:
 // two speak() calls can legitimately share the same `done` reference (e.g. a
 // caller re-using one callback across lines), so comparing by identity to
@@ -115,7 +146,12 @@ export function stopSpeech(): void {
  * speech error the engine stops without calling [done], so a failing voice
  * can never auto-advance the player through content unheard.
  */
-export function speak(text: string, key: string, done?: () => void): void {
+export function speak(
+  text: string,
+  key: string,
+  done?: () => void,
+  playbackRate: NarrationRate = narrationRate(),
+): void {
   const s = synth()
   if (!s || !narrationEnabled() || !text) {
     if (done) done()
@@ -127,7 +163,7 @@ export function speak(text: string, key: string, done?: () => void): void {
   const params = voiceParamsFor(key || 'narrator', voices.length)
   if (voices.length > 0) u.voice = voices[params.voiceIndex]
   u.pitch = params.pitch
-  u.rate = params.rate
+  u.rate = params.rate * playbackRate
   u.onend = () => {
     if (activeId === myId && done) done()
   }
@@ -141,18 +177,23 @@ export function speak(text: string, key: string, done?: () => void): void {
 /** Speak a sequence of lines in order, chaining on natural completion. */
 export function speakAll(
   lines: Array<{ text: string; key: string }>,
-  done?: () => void,
+  options: {
+    done?: () => void
+    onLine?: (key: string) => void
+    rate?: NarrationRate
+  } = {},
 ): void {
   if (!narrationEnabled()) {
-    if (done) done()
+    options.done?.()
     return
   }
   const next = (i: number): void => {
     if (i >= lines.length) {
-      if (done) done()
+      options.done?.()
       return
     }
-    speak(lines[i].text, lines[i].key, () => next(i + 1))
+    options.onLine?.(lines[i].key)
+    speak(lines[i].text, lines[i].key, () => next(i + 1), options.rate)
   }
   next(0)
 }
