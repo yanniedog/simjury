@@ -151,6 +151,12 @@ export function JuryRoomView({
   // simply ignored; the re-render re-arms the buttons for the new round.
   const renderedPhase = state.phase
 
+  // Internal deliberation rounds do not change App's outer phase, so restore
+  // focus here as the round heading changes for keyboard and screen-reader users.
+  useEffect(() => {
+    document.getElementById('phase-heading')?.focus()
+  }, [state.phase])
+
   function act(action: PlayerAction) {
     if (!inOpenRound || state.phase !== renderedPhase) return
     const before = state.log.length
