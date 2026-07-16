@@ -27,7 +27,7 @@ function Shell({ children }: { children: ReactNode }) {
 function statsFromStorage(): Stats {
   const results: DayResult[] = []
   for (const play of loadAllPlays()) {
-    if (play.correct !== undefined) {
+    if (play.room) {
       results.push({ day: play.day })
     }
   }

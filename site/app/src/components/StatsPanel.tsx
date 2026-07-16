@@ -13,7 +13,7 @@ function Stat({ value, label }: { value: string; label: string }) {
 
 export function StatsPanel({ stats }: { stats: Stats }) {
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900/40 p-4" aria-label="Your private docket history">
+    <div className="rounded-lg border border-neutral-800 bg-neutral-900/40 p-4" role="region" aria-label="Your private docket history">
       <p className="mb-4 text-center text-xs uppercase tracking-wider text-neutral-500">
         Your private docket history
       </p>

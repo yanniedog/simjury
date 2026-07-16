@@ -3,10 +3,9 @@ import { useEffect, useRef, useState } from 'react'
 export function ShareCard({ text }: { text: string }) {
   const [status, setStatus] = useState('')
   const resetTimeoutRef = useRef<number | null>(null)
-  const shareApi =
-    typeof navigator === 'undefined'
-      ? undefined
-      : (navigator as { share?: (data: ShareData) => Promise<void> }).share
+  const isShareSupported =
+    typeof navigator !== 'undefined' &&
+    typeof (navigator as { share?: unknown }).share === 'function'
 
   // Clear a pending "reset copied" timeout on unmount so it can't fire a state
   // update (and the React warning that comes with it) after the component is gone.
@@ -20,10 +19,10 @@ export function ShareCard({ text }: { text: string }) {
 
   async function share() {
     try {
-      if (shareApi) {
-        await shareApi.call(navigator, { text })
+      if (isShareSupported) {
+        await navigator.share({ text })
         setStatus('Share sheet opened.')
-      } else if (navigator.clipboard) {
+      } else if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(text)
         setStatus('Copied to clipboard.')
       } else {
@@ -34,7 +33,7 @@ export function ShareCard({ text }: { text: string }) {
       }
       resetTimeoutRef.current = window.setTimeout(() => setStatus(''), 3000)
     } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') return
+      if (error instanceof Error && error.name === 'AbortError') return
       setStatus('Sharing was blocked. Select the text above to copy it.')
     }
   }
@@ -49,9 +48,9 @@ export function ShareCard({ text }: { text: string }) {
         onClick={share}
         className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
       >
-        {shareApi ? "Share today's docket" : 'Copy your docket card'}
+        {isShareSupported ? "Share today's docket" : 'Copy your docket card'}
       </button>
-      <p aria-live="polite" className="min-h-5 text-center text-xs text-neutral-500">
+      <p aria-live="polite" className="min-h-[1.25rem] text-center text-xs text-neutral-500">
         {status}
       </p>
     </div>
