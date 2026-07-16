@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 
 import { pushHeadToMain, normalizePushRetries } from './pilot-auto-release-commit.mjs';
+
+const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 function result(status = 0, stdout = '', stderr = '') {
   return { status, stdout, stderr };
@@ -79,4 +84,21 @@ test('normalizePushRetries clamps invalid values to fallback', () => {
   assert.equal(normalizePushRetries('NaN'), 3);
   assert.equal(normalizePushRetries('2.9'), 2);
   assert.equal(normalizePushRetries('5'), 5);
+});
+
+test('main workflow dispatches run every APK publication step', () => {
+  const workflow = readFileSync(
+    join(repoRoot, '.github/workflows/pilot-android-apk.yml'),
+    'utf8',
+  );
+  const drainScript = readFileSync(
+    join(repoRoot, 'pilot/scripts/pilot-auto-release-on-drain.mjs'),
+    'utf8',
+  );
+  const condition =
+    "if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')";
+
+  assert.equal(workflow.split(condition).length - 1, 3);
+  assert.match(workflow, /workflow_dispatch:/);
+  assert.ok(drainScript.includes("'--ref', 'main'"));
 });
