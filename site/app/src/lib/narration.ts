@@ -25,10 +25,10 @@ export function voiceParamsFor(key: string, voiceCount: number): VoiceParams {
   }
 }
 
-/** Prefer human-quality voices, using local availability as a modest tie-break. */
+/** Prefer offline local voices, then human-quality variants within that tier. */
 export function voiceQualityScore(name: string, localService: boolean): number {
   const normalized = name.toLowerCase()
-  let score = localService ? 1 : 0
+  let score = localService ? 100 : 0
   if (/natural|neural/.test(normalized)) score += 10
   if (/premium|enhanced/.test(normalized)) score += 8
   if (/google|microsoft/.test(normalized)) score += 3
@@ -53,8 +53,7 @@ function refreshVoices(): void {
   const ranked = [...candidates].sort(
     (a, b) => voiceQualityScore(b.name, b.localService) - voiceQualityScore(a.name, a.localService),
   )
-  const natural = ranked.filter((voice) => voiceQualityScore(voice.name, voice.localService) >= 8)
-  voices = natural.length >= 2 ? natural : ranked.slice(0, 8)
+  voices = ranked.slice(0, 8)
 }
 {
   const s = synth()

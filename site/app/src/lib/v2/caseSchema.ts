@@ -78,7 +78,10 @@ export type CastMember = z.infer<typeof castMemberSchema>
 export const mediaAssetSchema = z.object({
   src: z.string().startsWith('/today/media/'),
   alt: z.string().min(1),
-  caption: z.string().min(1),
+  caption: z.string().regex(
+    /^Fictional (court sketch|character portrait|reconstruction)\b/,
+    'caption must begin with an approved fictional-media label',
+  ),
   kind: z.enum(['court_sketch', 'portrait', 'evidence']),
 })
 export type MediaAsset = z.infer<typeof mediaAssetSchema>

@@ -26,15 +26,15 @@ describe('voiceParamsFor', () => {
     expect(voiceParamsFor('anyone', 0).voiceIndex).toBe(0)
   })
 
-  it('prefers voices advertised as natural or neural', () => {
-    expect(voiceQualityScore('Microsoft Ava Natural', false)).toBeGreaterThan(
-      voiceQualityScore('Desktop English', true),
+  it('prefers an offline local voice to a remote natural voice', () => {
+    expect(voiceQualityScore('Desktop English', true)).toBeGreaterThan(
+      voiceQualityScore('Microsoft Ava Natural', false),
     )
   })
 
-  it('uses local availability as a tie-break between equally named voices', () => {
+  it('prefers natural variants within the local tier', () => {
     expect(voiceQualityScore('English Natural', true)).toBeGreaterThan(
-      voiceQualityScore('English Natural', false),
+      voiceQualityScore('Desktop English', true),
     )
   })
 })

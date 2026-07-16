@@ -1,4 +1,5 @@
 import type { MediaAsset } from '../../lib/v2/caseSchema'
+import { storyParagraphs } from '../../lib/storyText'
 
 export function CaseMedia({
   asset,
@@ -7,10 +8,11 @@ export function CaseMedia({
   asset: MediaAsset
   priority?: boolean
 }) {
+  const src = asset.src.replace(/^\/today\//, import.meta.env.BASE_URL)
   return (
     <figure className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/60 shadow-2xl shadow-black/30">
       <img
-        src={asset.src}
+        src={src}
         alt={asset.alt}
         loading={priority ? 'eager' : 'lazy'}
         fetchPriority={priority ? 'high' : 'auto'}
@@ -24,12 +26,8 @@ export function CaseMedia({
 }
 
 export function StoryText({ text, className = '' }: { text: string; className?: string }) {
-  if (!text.trim()) return null
-  const sentences = text.match(/[^.!?]+[.!?]['”]?|[^.!?]+$/g) ?? [text]
-  const paragraphs: string[] = []
-  for (let i = 0; i < sentences.length; i += 2) {
-    paragraphs.push(sentences.slice(i, i + 2).map((sentence) => sentence.trim()).join(' '))
-  }
+  const paragraphs = storyParagraphs(text)
+  if (paragraphs.length === 0) return null
   return (
     <div className={`space-y-3 ${className}`}>
       {paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
