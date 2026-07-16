@@ -75,6 +75,17 @@ export const castMemberSchema = z.object({
 })
 export type CastMember = z.infer<typeof castMemberSchema>
 
+export const mediaAssetSchema = z.object({
+  src: z.string().startsWith('/today/media/'),
+  alt: z.string().min(1),
+  caption: z.string().regex(
+    /^Fictional (court sketch|character portrait|reconstruction)\b/,
+    'caption must begin with an approved fictional-media label',
+  ),
+  kind: z.enum(['court_sketch', 'portrait', 'evidence']),
+})
+export type MediaAsset = z.infer<typeof mediaAssetSchema>
+
 /**
  * A v2 beat: the v1 hidden-weight beat plus who speaks it and which themes it
  * touches. `mode` distinguishes examination from cross for witness beats.
@@ -173,6 +184,14 @@ export const docketCaseSchema = z
       human: z.string().min(1),
       if_guilty: z.string().min(1),
     }),
+    /** Responsive weekly art: human context plus selected, clearly labelled evidence. */
+    media: z
+      .object({
+        cover: mediaAssetSchema,
+        accused: mediaAssetSchema,
+        beats: z.record(z.string(), mediaAssetSchema),
+      })
+      .optional(),
     /** The duel: both advocates' openings and closings, narrated in voice. */
     statements: z.object({
       opening: z.object({
@@ -233,5 +252,14 @@ export const docketCaseSchema = z
       }
       beatIds.add(b.id)
     })
+    for (const beatId of Object.keys(c.media?.beats ?? {})) {
+      if (!beatIds.has(beatId)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `media references unknown beat: ${beatId}`,
+          path: ['media', 'beats', beatId],
+        })
+      }
+    }
   })
 export type DocketCase = z.infer<typeof docketCaseSchema>

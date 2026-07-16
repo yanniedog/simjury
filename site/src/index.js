@@ -37,6 +37,12 @@ export default {
       return Response.redirect(url.toString(), 301);
     }
 
+    // The historical research prototype is intentionally off the public site.
+    if (url.pathname === '/play' || url.pathname.startsWith('/play/')) {
+      url.pathname = '/today/';
+      return Response.redirect(url.toString(), 302);
+    }
+
     const assetResponse = await env.ASSETS.fetch(request);
     const response = new Response(assetResponse.body, assetResponse);
     for (const [name, value] of Object.entries(SECURITY_HEADERS)) {

@@ -20,9 +20,19 @@ export function voiceParamsFor(key: string, voiceCount: number): VoiceParams {
   for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0
   return {
     voiceIndex: voiceCount > 0 ? h % voiceCount : 0,
-    pitch: key === 'narrator' ? 1 : 0.8 + (h % 45) / 100, // 0.80–1.24
-    rate: 0.97 + ((h >> 3) % 8) / 100, // 0.97–1.04
+    pitch: key === 'narrator' ? 1 : 0.94 + (h % 13) / 100,
+    rate: 0.94 + ((h >> 3) % 8) / 100,
   }
+}
+
+/** Prefer offline local voices, then human-quality variants within that tier. */
+export function voiceQualityScore(name: string, localService: boolean): number {
+  const normalized = name.toLowerCase()
+  let score = localService ? 100 : 0
+  if (/natural|neural/.test(normalized)) score += 10
+  if (/premium|enhanced/.test(normalized)) score += 8
+  if (/google|microsoft/.test(normalized)) score += 3
+  return score
 }
 
 const STORAGE_KEY = 'simjury:narration'
@@ -38,8 +48,12 @@ function refreshVoices(): void {
   const s = synth()
   if (!s) return
   const all = s.getVoices()
-  voices = all.filter((v) => /^en/i.test(v.lang))
-  if (voices.length === 0) voices = all
+  const english = all.filter((v) => /^en/i.test(v.lang))
+  const candidates = english.length > 0 ? english : all
+  const ranked = [...candidates].sort(
+    (a, b) => voiceQualityScore(b.name, b.localService) - voiceQualityScore(a.name, a.localService),
+  )
+  voices = ranked.slice(0, 8)
 }
 {
   const s = synth()
