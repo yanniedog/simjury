@@ -171,11 +171,11 @@ jobs:
           exit 1
 
       - name: Install publish dependencies
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         run: npm install --no-save qrcode@1.5.4
 
       - name: Publish preview APK manifest (GitHub release)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_SHA: ${{ github.sha }}
@@ -185,7 +185,7 @@ jobs:
             --repo "${{ github.repository }}"
 
       - name: Upload workflow artifact
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         uses: actions/upload-artifact@v4
         with:
           name: simjury-preview-apk
