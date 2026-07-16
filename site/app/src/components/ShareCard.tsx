@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 
 export function ShareCard({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false)
+  const [status, setStatus] = useState('')
   const resetTimeoutRef = useRef<number | null>(null)
+  const shareApi =
+    typeof navigator === 'undefined'
+      ? undefined
+      : (navigator as { share?: (data: ShareData) => Promise<void> }).share
 
   // Clear a pending "reset copied" timeout on unmount so it can't fire a state
   // update (and the React warning that comes with it) after the component is gone.
@@ -14,19 +18,24 @@ export function ShareCard({ text }: { text: string }) {
     }
   }, [])
 
-  async function copy() {
-    // Clipboard API is absent in insecure contexts / some older browsers;
-    // calling writeText on `undefined` would throw instead of failing gracefully.
-    if (!navigator.clipboard) return
+  async function share() {
     try {
-      await navigator.clipboard.writeText(text)
-      setCopied(true)
+      if (shareApi) {
+        await shareApi.call(navigator, { text })
+        setStatus('Share sheet opened.')
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(text)
+        setStatus('Copied to clipboard.')
+      } else {
+        setStatus('Sharing is unavailable in this browser. Select the text above to copy it.')
+      }
       if (resetTimeoutRef.current !== null) {
         window.clearTimeout(resetTimeoutRef.current)
       }
-      resetTimeoutRef.current = window.setTimeout(() => setCopied(false), 1800)
-    } catch {
-      // Clipboard can be blocked (insecure context / permissions); ignore.
+      resetTimeoutRef.current = window.setTimeout(() => setStatus(''), 3000)
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return
+      setStatus('Sharing was blocked. Select the text above to copy it.')
     }
   }
 
@@ -37,11 +46,14 @@ export function ShareCard({ text }: { text: string }) {
       </pre>
       <button
         type="button"
-        onClick={copy}
+        onClick={share}
         className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
       >
-        {copied ? 'Copied to clipboard' : 'Share your result'}
+        {shareApi ? "Share today's docket" : 'Copy your docket card'}
       </button>
+      <p aria-live="polite" className="min-h-5 text-center text-xs text-neutral-500">
+        {status}
+      </p>
     </div>
   )
 }

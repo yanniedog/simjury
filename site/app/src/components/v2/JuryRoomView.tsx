@@ -180,7 +180,10 @@ export function JuryRoomView({
           The jury room · {ROUND_LABEL[state.phase] ?? 'The vote'}
         </p>
         <p className="text-sm text-neutral-400">
-          Your verdict is sealed. Now argue it — the other eleven are listening.
+          Your verdict is sealed for this sitting. Now explain what persuaded you.
+        </p>
+        <p className="text-xs text-neutral-600">
+          This is a deterministic room of fictional jurors—not live people or AI.
         </p>
       </div>
 

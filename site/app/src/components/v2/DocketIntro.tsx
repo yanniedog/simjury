@@ -76,10 +76,16 @@ export function DocketIntro({
       </div>
 
       <p className="text-sm leading-relaxed text-neutral-400">
-        You are Juror #1. Hear the evidence, lock your verdict — it's permanent —
-        then argue your corner in the jury room and see where the other eleven
-        land. About ten minutes, start to verdict.
+        You are Juror #1. Hear the evidence, commit your verdict for today's
+        sitting, then explain what persuaded you. About ten minutes, start to
+        verdict.
       </p>
+
+      <div className="rounded-lg border border-neutral-800 bg-neutral-900/40 p-4 text-sm leading-relaxed text-neutral-400">
+        <strong className="text-neutral-200">A private simulation, not live people.</strong>{' '}
+        The other eleven jurors are fictional and follow seeded case rules—not
+        live chat or AI. Your progress stays in this browser.
+      </div>
 
       {narrationSupported() && (
         <button

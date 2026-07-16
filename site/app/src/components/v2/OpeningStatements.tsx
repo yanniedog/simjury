@@ -68,7 +68,7 @@ export function OpeningStatements({
           Opening statements
         </p>
         <h2 className="text-xl font-semibold text-neutral-50">
-          Two stories. One of them is true.
+          Two accounts. One burden of proof.
         </h2>
       </div>
 
