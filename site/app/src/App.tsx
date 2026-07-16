@@ -65,14 +65,14 @@ function Shell({
                   aria-label="Narration speed"
                   value={playbackRate}
                   onChange={(event) => onRateChange(event.target.value)}
-                  className="rounded-full border border-white/15 bg-neutral-950 px-2 py-2 text-[0.65rem] text-neutral-200"
+                  className="min-h-11 rounded-full border border-white/15 bg-neutral-950 px-2 py-2 text-[0.65rem] text-neutral-200"
                 >
                   <option value={0.85}>Relaxed</option>
                   <option value={1}>Standard</option>
                   <option value={1.15}>Brisk</option>
                 </select>
               </label>
-              <button type="button" aria-pressed={narration} onClick={onToggleNarration} className="rounded-full border border-amber-500/40 px-3 py-2 text-amber-100 hover:bg-amber-500/10">
+              <button type="button" aria-pressed={narration} onClick={onToggleNarration} className="min-h-11 rounded-full border border-amber-500/40 px-3 py-2 text-amber-100 hover:bg-amber-500/10">
                 Voice {narration ? 'on' : 'off'}
               </button>
             </div>
@@ -145,7 +145,7 @@ function SittingChooser({
         id="docket-sitting"
         value={selectedDay}
         onChange={(event) => onSelect(Number(event.target.value))}
-        className="w-full rounded-md border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+        className="min-h-11 w-full rounded-md border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
       >
         {options.map((option) => (
           <option key={`${option.day}:${option.statusVersion}`} value={option.day}>

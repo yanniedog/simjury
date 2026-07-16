@@ -43,7 +43,7 @@ export function CourtroomStage({
       </p>
       <div role="list" className="grid grid-cols-3 gap-2">
         {stations.map(({ label, member, place }) => {
-          const isActive = member?.id === active?.id
+          const isActive = Boolean(active && member && member.id === active.id)
           return (
             <div
               role="listitem"
