@@ -3,7 +3,7 @@
   "private": true,
   "description": "SimJury pilot — PR bot gates (parity with jcs2-mod / AR-local)",
   "engines": {
-    "node": ">=24"
+    "node": "24.x"
   },
   "scripts": {
     "cloud:bootstrap": "node scripts/cloud-bootstrap.mjs",

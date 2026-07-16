@@ -6,6 +6,7 @@ import { spawnSync } from "node:child_process";
 const SCRIPT_PATH = fileURLToPath(import.meta.url);
 const ROOT = resolve(dirname(SCRIPT_PATH), "..");
 const REQUIRED_NODE_MAJOR = 24;
+const SECRET_PATTERN = /\b(?:gh[oprsu]_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+)\b/g;
 
 export function commandFor(
   name,
@@ -30,6 +31,26 @@ export function isSupportedNode(version) {
   return major === REQUIRED_NODE_MAJOR;
 }
 
+export function redactSensitive(value, env = process.env) {
+  let redacted = String(value ?? "").replace(SECRET_PATTERN, "[redacted]");
+  for (const name of ["GH_TOKEN", "GITHUB_TOKEN", "NPM_TOKEN", "NODE_AUTH_TOKEN"]) {
+    const secret = env[name];
+    if (secret) redacted = redacted.replaceAll(secret, "[redacted]");
+  }
+  return redacted
+    .replace(/(https?:\/\/)[^\s/@]+:[^\s/@]+@/gi, "$1[redacted]@")
+    .replace(/(authorization:\s*(?:bearer|token)\s+)\S+/gi, "$1[redacted]")
+    .replace(/(_authToken=)[^\s]+/gi, "$1[redacted]")
+    .trim()
+    .slice(0, 1200);
+}
+
+export function dependencyFailureRemedy({ install, installFailed }) {
+  if (installFailed) return "npm ci was attempted but failed; fix the install error above";
+  if (install) return "npm ci completed but the installed dependency tree is invalid";
+  return "dependencies are missing or invalid; run npm run cloud:bootstrap -- --install";
+}
+
 export function parseOptions(args) {
   const allowed = new Set(["--check", "--install", "--help"]);
   const unknown = args.filter((arg) => !allowed.has(arg));
@@ -39,24 +60,28 @@ export function parseOptions(args) {
   if (args.includes("--check") && args.includes("--install")) {
     throw new Error("Choose either --check or --install, not both.");
   }
+  const help = args.includes("--help");
+  const install = args.includes("--install");
   return {
-    help: args.includes("--help"),
-    install: args.includes("--install"),
+    help,
+    check: !help && !install,
+    install,
   };
 }
 
-function run(name, args, { stdio = "pipe", timeout = 30_000 } = {}) {
+function run(name, args, { timeout = 30_000 } = {}) {
   const invocation = commandFor(name, args);
   const result = spawnSync(invocation.command, invocation.args, {
     cwd: ROOT,
     encoding: "utf8",
-    stdio,
     timeout,
     windowsHide: true,
+    maxBuffer: 5 * 1024 * 1024,
   });
   return {
     ok: result.status === 0 && !result.error,
     output: String(result.stdout ?? "").trim(),
+    error: redactSensitive(result.stderr || result.error?.message),
   };
 }
 
@@ -89,9 +114,10 @@ export function main(args = process.argv.slice(2)) {
   const pass = (label, detail = "") => {
     console.log(`[pass] ${label}${detail ? `: ${detail}` : ""}`);
   };
-  const fail = (label, remedy) => {
+  const fail = (label, remedy, detail = "") => {
     failures += 1;
     console.error(`[fail] ${label}: ${remedy}`);
+    if (detail) console.error(`       ${detail}`);
   };
 
   if (isSupportedNode(process.version)) {
@@ -104,12 +130,12 @@ export function main(args = process.argv.slice(2)) {
   if (checkout.ok && checkout.output === "true") {
     pass("Git checkout");
   } else {
-    fail("Git checkout", "run this command from a Git worktree");
+    fail("Git checkout", "run this command from a Git worktree", checkout.error);
   }
 
   const branch = run("git", ["symbolic-ref", "--quiet", "--short", "HEAD"]);
   if (!branch.ok) {
-    fail("Topic branch", "check out a named branch before making cloud changes");
+    fail("Topic branch", "check out a named branch before making cloud changes", branch.error);
   } else if (branch.output === "main") {
     fail("Topic branch", "create a feature branch; do not work directly on main");
   } else {
@@ -120,14 +146,14 @@ export function main(args = process.argv.slice(2)) {
   if (conflicts.ok && conflicts.output === "") {
     pass("Merge state", "no unresolved files");
   } else {
-    fail("Merge state", "resolve unmerged files before continuing");
+    fail("Merge state", "resolve unmerged files before continuing", conflicts.error);
   }
 
   const origin = run("git", ["remote", "get-url", "origin"]);
   if (origin.ok && origin.output !== "") {
     pass("Origin remote", "configured");
   } else {
-    fail("Origin remote", "configure the repository's origin remote");
+    fail("Origin remote", "configure the repository's origin remote", origin.error);
   }
 
   if (origin.ok) {
@@ -137,7 +163,30 @@ export function main(args = process.argv.slice(2)) {
     if (remote.ok) {
       pass("Origin reachability");
     } else {
-      fail("Origin reachability", "check network access and Git credentials");
+      fail("Origin reachability", "check network access and Git credentials", remote.error);
+    }
+  }
+
+  if (origin.ok && branch.ok && branch.output !== "main") {
+    const push = run(
+      "git",
+      [
+        "push",
+        "--dry-run",
+        "--porcelain",
+        "origin",
+        `HEAD:refs/heads/${branch.output}`,
+      ],
+      { timeout: 45_000 },
+    );
+    if (push.ok) {
+      pass("Origin push readiness", "dry-run accepted");
+    } else {
+      fail(
+        "Origin push readiness",
+        "confirm push permission and that the topic branch is fast-forwardable",
+        push.error,
+      );
     }
   }
 
@@ -148,10 +197,14 @@ export function main(args = process.argv.slice(2)) {
     if (auth.ok) {
       pass("GitHub authentication");
     } else {
-      fail("GitHub authentication", "run gh auth login or inject GH_TOKEN securely");
+      fail(
+        "GitHub authentication",
+        "run gh auth login or inject GH_TOKEN securely",
+        auth.error,
+      );
     }
   } else {
-    fail("GitHub CLI", "install gh and make it available on PATH");
+    fail("GitHub CLI", "install gh and make it available on PATH", gh.error);
   }
 
   const packages = [
@@ -172,15 +225,18 @@ export function main(args = process.argv.slice(2)) {
     return 1;
   }
 
+  const installFailures = new Set();
   if (options.install) {
     for (const item of packages) {
       console.log(`[run] npm --prefix ${item.prefix} ci`);
       const install = run("npm", ["--prefix", item.prefix, "ci"], {
-        stdio: "inherit",
         timeout: 240_000,
       });
       if (!install.ok) {
-        fail(`${item.label} install`, "npm ci failed; inspect the output above");
+        installFailures.add(item.prefix);
+        fail(`${item.label} install`, "npm ci failed", install.error);
+      } else {
+        pass(`${item.label} install`);
       }
     }
   }
@@ -188,7 +244,7 @@ export function main(args = process.argv.slice(2)) {
   for (const item of packages) {
     const dependencies = run(
       "npm",
-      ["--prefix", item.prefix, "ls", "--depth=0", "--silent"],
+      ["--prefix", item.prefix, "ls", "--all", "--silent"],
       { timeout: 60_000 },
     );
     if (dependencies.ok) {
@@ -196,7 +252,11 @@ export function main(args = process.argv.slice(2)) {
     } else {
       fail(
         `${item.label} dependencies`,
-        "run npm run cloud:bootstrap -- --install",
+        dependencyFailureRemedy({
+          install: options.install,
+          installFailed: installFailures?.has(item.prefix) ?? false,
+        }),
+        dependencies.error,
       );
     }
   }

@@ -29,8 +29,9 @@ On a fresh checkout, install both locked web dependency trees and recheck them:
 npm run cloud:bootstrap -- --install
 ```
 
-The bootstrap verifies a topic-branch Git checkout, a reachable `origin`, GitHub
-CLI installation and authentication, and the `site` plus `site/app` dependencies.
+The bootstrap verifies a topic-branch Git checkout, a reachable and dry-run-pushable
+`origin`, GitHub CLI installation and authentication, and the complete `site` plus
+`site/app` dependency trees.
 Authenticate with `gh auth login` or inject `GH_TOKEN` as a cloud secret. Never put
 tokens in repository files, `.env`, command-line arguments, or Git configuration.
 
