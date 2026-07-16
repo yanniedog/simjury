@@ -125,7 +125,7 @@
 .landing .juror-card > strong { display: block; margin: .5rem 0 2rem; font-family: var(--font-display); font-size: 5rem; font-weight: 400; line-height: 1; }
 .landing .juror-card dl { margin: 0; }
 .landing .juror-card dl div { display: flex; justify-content: space-between; gap: 1rem; padding: .8rem 0; border-top: 1px solid rgb(244 240 232 / 10%); }
-.landing .juror-card dt { color: var(--steel-500); }
+.landing .juror-card dt { color: var(--steel-300); }
 .landing .juror-card dd { margin: 0; text-align: right; }
 
 .landing .paths { gap: 1.25rem; }
@@ -135,7 +135,7 @@
 .landing .text-link { color: var(--brass-400); }
 .landing footer { color: var(--steel-500); border-color: rgb(244 240 232 / 10%); }
 
-@media (max-width: 56rem) {
+@media (max-width: 62rem) {
   .landing .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 3rem; }
   .landing .hero-copy { order: 2; }
   .landing .hero-scene { order: 1; min-height: min(58svh, 34rem); }
