@@ -42,7 +42,7 @@ const storedProgressSchema = z.object({
   caseId: z.string(),
   phase: z.enum(['openings', 'beats', 'verdict']),
   beatIndex: z.number().int().nonnegative(),
-  checkinValues: z.array(z.number()),
+  checkinValues: z.array(z.number().min(0).max(100)),
   conviction: z.number().min(0).max(100),
 })
 

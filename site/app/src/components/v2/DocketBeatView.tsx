@@ -17,12 +17,14 @@ export function DocketBeatView({
   trial,
   beatIndex,
   value,
+  narration,
   onChange,
   onNext,
 }: {
   trial: DocketCase
   beatIndex: number
   value: number
+  narration: boolean
   onChange: (value: number) => void
   onNext: () => void
 }) {
@@ -34,9 +36,9 @@ export function DocketBeatView({
 
   // Narrate each beat in its speaker's voice; stop when it unmounts.
   useEffect(() => {
-    speak(beat.text, beat.speaker)
+    if (narration) speak(beat.text, beat.speaker)
     return stopSpeech
-  }, [beat])
+  }, [beat, narration])
 
   const modeLabel =
     beat.kind === 'witness'

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
-import { narrationEnabled, speakAll, stopSpeech } from '../../lib/narration'
+import { speakAll, stopSpeech } from '../../lib/narration'
 import { StatementCard } from './OpeningStatements'
 
 export type Verdict = DocketCase['verdict_truth']
@@ -8,10 +8,12 @@ export type Verdict = DocketCase['verdict_truth']
 export function DocketVerdict({
   trial,
   conviction,
+  narration,
   onLock,
 }: {
   trial: DocketCase
   conviction: number
+  narration: boolean
   onLock: (verdict: Verdict) => void
 }) {
   const { prosecution, defence } = trial.statements.closing
@@ -19,7 +21,7 @@ export function DocketVerdict({
 
   // Narrate both closings in their advocates' voices; stop on unmount.
   useEffect(() => {
-    if (!narrationEnabled()) {
+    if (!narration) {
       return stopSpeech
     }
     speakAll([
@@ -27,7 +29,7 @@ export function DocketVerdict({
       { text: defence.text, key: defence.speaker },
     ])
     return stopSpeech
-  }, [prosecution.text, prosecution.speaker, defence.text, defence.speaker])
+  }, [prosecution.text, prosecution.speaker, defence.text, defence.speaker, narration])
 
   return (
     <div className="space-y-6">

@@ -11,6 +11,7 @@ import {
   loadProgress,
   savePlay,
   saveProgress,
+  type StoredProgress,
   type StoredPlay,
 } from './lib/storage'
 import { computeStats, type DayResult, type Stats } from './lib/stats'
@@ -28,22 +29,22 @@ import { DocketReveal } from './components/v2/DocketReveal'
 
 type Phase = 'intro' | 'openings' | 'beats' | 'verdict' | 'juryroom' | 'reveal'
 
-function Shell({ children }: { children: ReactNode }) {
-  const [narration, setNarration] = useState(narrationEnabled())
-
-  function toggleNarration() {
-    const next = !narration
-    setNarrationEnabled(next)
-    setNarration(next)
-  }
-
+function Shell({
+  children,
+  narration,
+  onToggleNarration,
+}: {
+  children: ReactNode
+  narration: boolean
+  onToggleNarration: () => void
+}) {
   return (
     <main className="min-h-screen bg-neutral-950 px-5 py-10 text-neutral-100">
       <div className="mx-auto w-full max-w-md">
         <div className="mb-8 flex items-center justify-between text-xs uppercase tracking-wider text-neutral-500">
           <a href="/" className="font-semibold text-neutral-300 hover:text-white">SimJury</a>
           {narrationSupported() && (
-            <button type="button" onClick={toggleNarration} className="rounded border border-neutral-800 px-3 py-2 hover:bg-neutral-900">
+            <button type="button" onClick={onToggleNarration} className="rounded border border-neutral-800 px-3 py-2 hover:bg-neutral-900">
               Narration {narration ? 'on' : 'off'}
             </button>
           )}
@@ -66,6 +67,7 @@ function statsFromStorage(): Stats {
 }
 
 export default function App() {
+  const [narration, setNarration] = useState(narrationEnabled())
   const today = useMemo(() => new Date(), [])
   const day = useMemo(() => dayIndex(today), [today])
   const trial = useMemo(() => docketCaseForDate(today), [today])
@@ -89,7 +91,12 @@ export default function App() {
   const validProgress = useMemo(() => {
     if (!progress || !trial || validStored) return null
     if (progress.caseId !== trial.id || progress.beatIndex >= trial.beats.length) return null
-    if (progress.checkinValues.length > trial.checkins.length) return null
+    const completedBeatCount =
+      progress.phase === 'verdict' ? progress.beatIndex + 1 : progress.beatIndex
+    const expectedCheckins = trial.beats
+      .slice(0, completedBeatCount)
+      .filter((beat) => trial.checkins.includes(beat.id)).length
+    if (progress.checkinValues.length !== expectedCheckins) return null
     return progress
   }, [progress, trial, validStored])
 
@@ -146,7 +153,7 @@ export default function App() {
 
   if (!trial) {
     return (
-      <Shell>
+      <Shell narration={narration} onToggleNarration={toggleNarration}>
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-semibold">⚖️ SimJury — The Daily Docket</h1>
           <p className="text-neutral-400">
@@ -161,14 +168,24 @@ export default function App() {
   const dayNumber = day + 1
   const beatCount = activeTrial.beats.length
 
+  function toggleNarration() {
+    const next = !narration
+    setNarrationEnabled(next)
+    setNarration(next)
+  }
+
+  function persistProgress(
+    update: Omit<StoredProgress, 'day' | 'caseId'>,
+  ) {
+    saveProgress({ day, caseId: activeTrial.id, ...update })
+  }
+
   function begin() {
     setBeatIndex(0)
     setCheckinValues([])
     setConviction(START_CONVICTION)
     setPhase('openings')
-    saveProgress({
-      day,
-      caseId: activeTrial.id,
+    persistProgress({
       phase: 'openings',
       beatIndex: 0,
       checkinValues: [],
@@ -178,9 +195,7 @@ export default function App() {
 
   function startEvidence() {
     setPhase('beats')
-    saveProgress({
-      day,
-      caseId: activeTrial.id,
+    persistProgress({
       phase: 'beats',
       beatIndex: 0,
       checkinValues: [],
@@ -190,9 +205,7 @@ export default function App() {
 
   function updateConviction(value: number) {
     setConviction(value)
-    saveProgress({
-      day,
-      caseId: activeTrial.id,
+    persistProgress({
       phase: 'beats',
       beatIndex,
       checkinValues,
@@ -220,9 +233,7 @@ export default function App() {
     const nextBeatIndex = atVerdict ? beatIndex : beatIndex + 1
     if (atVerdict) setPhase('verdict')
     else setBeatIndex(nextBeatIndex)
-    saveProgress({
-      day,
-      caseId: activeTrial.id,
+    persistProgress({
       phase: atVerdict ? 'verdict' : 'beats',
       beatIndex: nextBeatIndex,
       checkinValues: nextCheckins,
@@ -269,13 +280,14 @@ export default function App() {
   }
 
   return (
-    <Shell>
+    <Shell narration={narration} onToggleNarration={toggleNarration}>
       {phase === 'intro' && (
         <DocketIntro trial={activeTrial} dayNumber={dayNumber} onBegin={begin} />
       )}
       {phase === 'openings' && (
         <OpeningStatements
           trial={activeTrial}
+          narration={narration}
           onDone={startEvidence}
         />
       )}
@@ -284,6 +296,7 @@ export default function App() {
           trial={activeTrial}
           beatIndex={beatIndex}
           value={conviction}
+          narration={narration}
           onChange={updateConviction}
           onNext={nextBeat}
         />
@@ -292,6 +305,7 @@ export default function App() {
         <DocketVerdict
           trial={activeTrial}
           conviction={conviction}
+          narration={narration}
           onLock={lockVerdict}
         />
       )}

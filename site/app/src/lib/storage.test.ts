@@ -124,4 +124,21 @@ describe('in-progress sitting', () => {
     vi.stubGlobal('localStorage', store)
     expect(loadProgress(5)).toBeNull()
   })
+
+  it('rejects out-of-range conviction history', () => {
+    const store = memoryStorage()
+    store.setItem(
+      'simjury-progress:v1:5',
+      JSON.stringify({
+        day: 5,
+        caseId: 'd-0001',
+        phase: 'beats',
+        beatIndex: 3,
+        checkinValues: [120],
+        conviction: 50,
+      }),
+    )
+    vi.stubGlobal('localStorage', store)
+    expect(loadProgress(5)).toBeNull()
+  })
 })
