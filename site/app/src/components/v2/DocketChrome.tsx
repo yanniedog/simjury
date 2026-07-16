@@ -103,7 +103,6 @@ export function DocketSittingChooser({ sittings, selectedDay, todayDay, onSelect
   sittings: DocketSitting[]
   selectedDay: number
   todayDay: number
-  statusVersion: string
   onSelect: (day: number) => void
 }) {
   const options = [...sittings].reverse().map((sitting) => ({

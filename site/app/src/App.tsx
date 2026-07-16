@@ -329,7 +329,6 @@ function DocketApp({
           sittings={sittings}
           selectedDay={selectedDay}
           todayDay={todayDay}
-          statusVersion={`${day}:${phase}`}
           onSelect={onSelect}
         />
       )}
