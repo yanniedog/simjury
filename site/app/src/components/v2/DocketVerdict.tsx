@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
 import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { StatementCard } from './OpeningStatements'
@@ -22,6 +22,8 @@ export function DocketVerdict({
   const { prosecution, defence } = trial.statements.closing
   const accused = trial.cast.find((m) => m.id === trial.accused.cast_id)
   const [activeSpeaker, setActiveSpeaker] = useState<string | null>(null)
+  const [pendingVerdict, setPendingVerdict] = useState<Verdict | null>(null)
+  const confirmDialog = useRef<HTMLDialogElement>(null)
 
   // Narrate both closings in their advocates' voices; stop on unmount.
   useEffect(() => {
@@ -40,9 +42,13 @@ export function DocketVerdict({
     return stopSpeech
   }, [prosecution.text, prosecution.speaker, defence.text, defence.speaker, narration, playbackRate])
 
+  useEffect(() => {
+    if (pendingVerdict && !confirmDialog.current?.open) confirmDialog.current?.showModal()
+  }, [pendingVerdict])
+
   return (
-    <div className="space-y-6">
-      <div className="space-y-1 text-center">
+    <div className="phase-view verdict-view space-y-6">
+      <div className="phase-heading space-y-1 text-center">
         <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
           Closing arguments
         </p>
@@ -56,7 +62,7 @@ export function DocketVerdict({
       <StatementCard trial={trial} statement={prosecution} side="prosecution" />
       <StatementCard trial={trial} statement={defence} side="defence" />
 
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4 text-center">
+      <div className="verdict-threshold rounded-lg border border-neutral-800 bg-neutral-900/60 p-4 text-center">
         <p className="text-sm text-neutral-400">You ended at</p>
         <p className="text-2xl font-semibold text-neutral-100">
           {conviction}% convinced of guilt
@@ -80,10 +86,10 @@ export function DocketVerdict({
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="verdict-choices grid grid-cols-2 gap-3">
         <button
           type="button"
-          onClick={() => onLock('Not Guilty')}
+          onClick={() => setPendingVerdict('Not Guilty')}
           className="rounded-lg border border-emerald-700 bg-emerald-950/40 px-4 py-4 font-semibold text-emerald-300 transition hover:bg-emerald-900/40"
         >
           <span className="block">Not persuaded to convict</span>
@@ -91,13 +97,26 @@ export function DocketVerdict({
         </button>
         <button
           type="button"
-          onClick={() => onLock('Guilty')}
+          onClick={() => setPendingVerdict('Guilty')}
           className="rounded-lg border border-red-800 bg-red-950/40 px-4 py-4 font-semibold text-red-300 transition hover:bg-red-900/40"
         >
           <span className="block">Persuaded beyond reasonable doubt</span>
           <span className="mt-1 block text-xs font-normal">Verdict: Guilty</span>
         </button>
       </div>
+      <dialog ref={confirmDialog} onClose={() => setPendingVerdict(null)} className="verdict-dialog" aria-labelledby="verdict-confirm-title">
+        <p className="chrome-label">Seal the record</p>
+        <h2 id="verdict-confirm-title">Your verdict: {pendingVerdict}</h2>
+        <p>This decision is permanent for this sitting. The fictional jury room responds only after you commit.</p>
+        <div>
+          <button type="button" onClick={() => confirmDialog.current?.close()}>Review again</button>
+          <button type="button" onClick={() => {
+            if (!pendingVerdict) return
+            confirmDialog.current?.close()
+            onLock(pendingVerdict)
+          }}>Seal my verdict</button>
+        </div>
+      </dialog>
     </div>
   )
 }
