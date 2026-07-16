@@ -24,6 +24,7 @@ export function DocketVerdict({
   const [activeSpeaker, setActiveSpeaker] = useState<string | null>(null)
   const [pendingVerdict, setPendingVerdict] = useState<Verdict | null>(null)
   const confirmDialog = useRef<HTMLDialogElement>(null)
+  const sealButton = useRef<HTMLButtonElement>(null)
 
   // Narrate both closings in their advocates' voices; stop on unmount.
   useEffect(() => {
@@ -43,7 +44,14 @@ export function DocketVerdict({
   }, [prosecution.text, prosecution.speaker, defence.text, defence.speaker, narration, playbackRate])
 
   useEffect(() => {
-    if (pendingVerdict && !confirmDialog.current?.open) confirmDialog.current?.showModal()
+    const dialog = confirmDialog.current
+    if (!dialog) return
+    if (pendingVerdict) {
+      if (!dialog.open) dialog.showModal()
+      sealButton.current?.focus()
+    } else if (dialog.open) {
+      dialog.close()
+    }
   }, [pendingVerdict])
 
   return (
@@ -52,7 +60,7 @@ export function DocketVerdict({
         <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
           Closing arguments
         </p>
-        <h1 id="phase-heading" tabIndex={-1} className="text-xl font-semibold text-neutral-50 focus:outline-none">
+        <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">
           The last word from each side
         </h1>
       </div>
@@ -62,7 +70,7 @@ export function DocketVerdict({
       <StatementCard trial={trial} statement={prosecution} side="prosecution" />
       <StatementCard trial={trial} statement={defence} side="defence" />
 
-      <div className="verdict-threshold rounded-lg border border-neutral-800 bg-neutral-900/60 p-4 text-center">
+      <div className="verdict-threshold border p-4 text-center">
         <p className="text-sm text-neutral-400">You ended at</p>
         <p className="text-2xl font-semibold text-neutral-100">
           {conviction}% convinced of guilt
@@ -110,7 +118,7 @@ export function DocketVerdict({
         <p>This decision is permanent for this sitting. The fictional jury room responds only after you commit.</p>
         <div>
           <button type="button" onClick={() => confirmDialog.current?.close()}>Review again</button>
-          <button type="button" onClick={() => {
+          <button ref={sealButton} type="button" onClick={() => {
             if (!pendingVerdict) return
             confirmDialog.current?.close()
             onLock(pendingVerdict)

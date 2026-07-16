@@ -93,8 +93,8 @@ export function DocketReveal({
 
   return (
     <div className="phase-view reveal-view space-y-6">
-      <div className="judgment-record rounded-lg border border-amber-900/70 bg-amber-950/20 p-5 text-center">
-        <h1 id="phase-heading" tabIndex={-1} className="text-2xl font-semibold text-neutral-50 focus:outline-none">
+      <div className="judgment-record border p-5 text-center">
+        <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">
           Your judgment is on the record.
         </h1>
         <p className="mt-2 text-sm text-neutral-300">

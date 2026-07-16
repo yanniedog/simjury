@@ -47,10 +47,10 @@ function Bench({
     <div className="jury-table" role="list" aria-label="The twelve jury seats">
       <div
         role="listitem"
-        aria-label={`Seat 1, you, ${playerVerdict}`}
         className={`jury-seat player ${playerTone}`}
       >
-        <span>You</span><small>{playerVerdict === 'Guilty' ? 'G' : 'NG'}</small>
+        <span className="sr-only">{`Seat 1, you, ${playerVerdict}`}</span>
+        <span aria-hidden="true">You</span><small aria-hidden="true">{playerVerdict === 'Guilty' ? 'G' : 'NG'}</small>
       </div>
       {[...state.jurors]
         .sort((a, b) => a.seat - b.seat)
@@ -61,11 +61,10 @@ function Bench({
               key={j.id}
               role="listitem"
               aria-current={isActive ? 'true' : undefined}
-              aria-label={`Seat ${j.seat}, ${j.label}, ${positionLabel(j.position)}${isActive ? ', speaking now' : ''}`}
-              className={`jury-seat ${positionTone(j.position)} ${isActive ? 'active' : ''}`}
+              className={`jury-seat ${positionTone(j.position)}${isActive ? ' active' : ''}`}
             >
-              <span>{j.seat}</span><small>{j.position > 0 ? 'G' : j.position < 0 ? 'NG' : '—'}</small>
-              {isActive && <span className="sr-only">, speaking now</span>}
+              <span className="sr-only">{`Seat ${j.seat}, ${j.label}, ${positionLabel(j.position)}${isActive ? ', speaking now' : ''}`}</span>
+              <span aria-hidden="true">{j.seat}</span><small aria-hidden="true">{j.position > 0 ? 'G' : j.position < 0 ? 'NG' : '—'}</small>
             </div>
           )
         })}
@@ -77,7 +76,7 @@ function FeedLine({ e, trial }: { e: RoomEvent; trial: DocketCase }) {
   if (e.type === 'respond' && e.line) {
     const juror = trial.jury.jurors.find((j) => j.id === e.actor)
     return (
-      <li className="room-line rounded-lg border border-neutral-800 bg-neutral-900/40 p-3">
+      <li className="room-line border p-3">
         <p className="text-xs font-semibold text-neutral-400">
           {juror?.label ?? e.actor}
           {e.delta !== undefined && e.delta !== 0 && (
@@ -225,7 +224,7 @@ export function JuryRoomView({
       </div>
 
       <Bench state={state} playerVerdict={playerVerdict} activeJurorId={activeJurorId} />
-      <p aria-live="polite" className="speaker-focus min-h-4 text-center text-xs text-amber-200/80">
+      <p aria-live="polite" className="speaker-focus text-xs text-amber-200/80">
         {activeJurorId
           ? `${trial.jury.jurors.find((juror) => juror.id === activeJurorId)?.label ?? 'A juror'} has the floor`
           : 'The foreperson opens deliberations'}
@@ -265,7 +264,7 @@ export function JuryRoomView({
           </button>
         </div>
       ) : inOpenRound ? (
-        <div className="deliberation-console space-y-3 rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
+        <div className="deliberation-console space-y-3 border p-4">
           <p className="text-xs uppercase tracking-wider text-neutral-500">
             Make your point
           </p>
