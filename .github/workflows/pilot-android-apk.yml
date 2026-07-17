@@ -57,6 +57,16 @@ jobs:
       - name: Set up Android SDK (build-only)
         run: bash .github/scripts/setup-android-sdk.sh pilot/local.properties
 
+      - name: Enable KVM acceleration
+        run: |
+          set -euo pipefail
+          if [ ! -e /dev/kvm ]; then
+            echo "::error::KVM device is unavailable on this runner"
+            exit 1
+          fi
+          sudo chmod 666 /dev/kvm
+          test -r /dev/kvm && test -w /dev/kvm
+
       - name: Bump Android versionCode from rolling manifest
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
