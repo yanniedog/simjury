@@ -150,12 +150,12 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "Did you mention boost blend v2 to your contract blender? No. A note to myself. The powder you never used, seized from your home, was one point seven kilos short. Where did it go? ... How did the stimulant's residue get inside your kitchen blender, Mr Marsden? I... make a lot of things in that kitchen.",
+      "text": "Did you mention boost blend v2 to your contract blender? No. A note to myself. The powder you never used, seized from your home, was one point seven kilos short. Where did it go? (The witness did not answer.) How did the stimulant's residue get inside your kitchen blender, Mr Marsden? I... make a lot of things in that kitchen.",
       "turns": [
         { "speaker": "pc", "text": "Did you mention boost blend v2 to your contract blender?" },
         { "speaker": "w3", "text": "No. A note to myself." },
         { "speaker": "pc", "text": "The powder you never used, seized from your home, was one point seven kilos short. Where did it go?" },
-        { "speaker": "w3", "text": "..." },
+        { "speaker": "w3", "text": "(The witness did not answer.)" },
         { "speaker": "pc", "text": "How did the stimulant's residue get inside your kitchen blender, Mr Marsden?" },
         { "speaker": "w3", "text": "I... make a lot of things in that kitchen." }
       ],

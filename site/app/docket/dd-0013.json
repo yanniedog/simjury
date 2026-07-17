@@ -150,14 +150,14 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "Give the tribunal your repairman's surname. I — we only dealt in cash. First names. A phone number? Any way to reach a man you paid for ten years? No. Your reconstructed invoices are dated before the repairs they bill. Explain that. ... And this stain, in five different flats? Stains look alike. Carpet is carpet.",
+      "text": "Give the tribunal your repairman's surname. I — we only dealt in cash. First names. A phone number? Any way to reach a man you paid for ten years? No. Your reconstructed invoices are dated before the repairs they bill. Explain that. (The witness did not answer.) And this stain, in five different flats? Stains look alike. Carpet is carpet.",
       "turns": [
         { "speaker": "pc", "text": "Give the tribunal your repairman's surname." },
         { "speaker": "w3", "text": "I — we only dealt in cash. First names." },
         { "speaker": "pc", "text": "A phone number? Any way to reach a man you paid for ten years?" },
         { "speaker": "w3", "text": "No." },
         { "speaker": "pc", "text": "Your reconstructed invoices are dated before the repairs they bill. Explain that." },
-        { "speaker": "w3", "text": "..." },
+        { "speaker": "w3", "text": "(The witness did not answer.)" },
         { "speaker": "pc", "text": "And this stain, in five different flats?" },
         { "speaker": "w3", "text": "Stains look alike. Carpet is carpet." }
       ],
