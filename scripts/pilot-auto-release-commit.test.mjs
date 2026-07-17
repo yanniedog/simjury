@@ -6,6 +6,7 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import { pushHeadToMain, normalizePushRetries } from './pilot-auto-release-commit.mjs';
+import { ensureRelease } from '../pilot/scripts/lib/ensure-release.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -101,4 +102,37 @@ test('main workflow dispatches run every APK publication step', () => {
   assert.equal(workflow.match(conditionPattern)?.length ?? 0, 3);
   assert.match(workflow, /workflow_dispatch:/);
   assert.match(drainScript, /--ref[\s,'"]+main/);
+});
+
+test('release publication updates an existing release', () => {
+  const calls = [];
+  assert.equal(ensureRelease({
+    view: () => true,
+    create: () => calls.push('create'),
+    update: () => calls.push('update'),
+  }), 'updated');
+  assert.deepEqual(calls, ['update']);
+});
+
+test('release publication recovers when another run wins the create race', () => {
+  const calls = [];
+  let views = 0;
+  assert.equal(ensureRelease({
+    view: () => ++views > 1,
+    create: () => {
+      calls.push('create');
+      throw new Error('Release.tag_name already exists');
+    },
+    update: () => calls.push('update'),
+  }), 'updated');
+  assert.deepEqual(calls, ['create', 'update']);
+});
+
+test('release publication preserves a real create failure', () => {
+  const failure = new Error('permission denied');
+  assert.throws(() => ensureRelease({
+    view: () => false,
+    create: () => { throw failure; },
+    update: () => assert.fail('unexpected update'),
+  }), (error) => error === failure);
 });

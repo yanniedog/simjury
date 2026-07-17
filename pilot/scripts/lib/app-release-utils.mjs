@@ -17,6 +17,7 @@ import {
   qrReleaseUrl,
   zipDownloadUrl,
 } from './app-release-meta.mjs';
+import { ensureRelease } from './ensure-release.mjs';
 
 export * from './app-release-meta.mjs';
 
@@ -239,17 +240,21 @@ export function gh(ghToken, repo, args) {
  * @param {string} [targetRef]
  */
 export function ensureGitHubRelease(ghToken, repo, tag, title, notes, targetRef) {
-  const view = spawnSync('gh', ['release', 'view', tag, '--repo', repo], {
-    encoding: 'utf8',
-    env: { ...process.env, GH_TOKEN: ghToken },
-    timeout: 30_000,
+  const view = () => {
+    const result = spawnSync('gh', ['release', 'view', tag, '--repo', repo], {
+      encoding: 'utf8',
+      env: { ...process.env, GH_TOKEN: ghToken },
+      timeout: 30_000,
+    });
+    return result.status === 0;
+  };
+  return ensureRelease({
+    view,
+    create: () => {
+      const createArgs = ['release', 'create', tag, '--title', title, '--notes', notes, '--latest=false'];
+      if (targetRef?.trim()) createArgs.push('--target', targetRef.trim());
+      gh(ghToken, repo, createArgs);
+    },
+    update: () => gh(ghToken, repo, ['release', 'edit', tag, '--title', title, '--notes', notes]),
   });
-  if (view.status !== 0) {
-    const createArgs = ['release', 'create', tag, '--title', title, '--notes', notes, '--latest=false'];
-    if (targetRef?.trim()) createArgs.push('--target', targetRef.trim());
-    gh(ghToken, repo, createArgs);
-    return 'created';
-  }
-  gh(ghToken, repo, ['release', 'edit', tag, '--title', title, '--notes', notes]);
-  return 'updated';
 }
