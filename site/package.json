@@ -8,14 +8,16 @@
   "scripts": {
     "sync": "node scripts/sync-cases.mjs",
     "build:app": "npm --prefix app ci && npm --prefix app run build",
-    "prebuild:assets": "node scripts/sync-cases.mjs",
+    "narration:manifest": "node scripts/generate-narration-manifest.mjs",
+    "prebuild:assets": "node scripts/sync-cases.mjs && npm run narration:manifest",
     "build:assets": "npm run build:app",
     "predev": "npm run build:assets",
     "dev": "wrangler dev",
     "predeploy": "npm run build:assets",
     "deploy": "wrangler deploy",
     "precheck": "npm run build:assets",
-    "check": "wrangler deploy --dry-run"
+    "check": "wrangler deploy --dry-run",
+    "test:worker": "npm run narration:manifest && node --test src/index.test.js"
   },
   "devDependencies": {
     "wrangler": "^4.69.0"
