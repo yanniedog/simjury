@@ -125,14 +125,14 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "'These payroll controls — how would you describe them?' 'Poor. Poor for years.' 'Meaning what, concretely?' 'Shared terminals. Sessions left open over lunch. Passwords on sticky notes.' 'So in that office, a login name tells us what about who was actually typing?' The auditor hesitated. 'On its own — very little.'",
+      "text": "'These payroll controls — how would you describe them?' 'Poor. Poor for years.' 'Meaning what, concretely?' 'Shared terminals. Sessions left open over lunch. Passwords on sticky notes.' 'So in that office, a login name tells us what about who was actually typing?' '(The auditor hesitated.) On its own — very little.'",
       "turns": [
         { "speaker": "dc", "text": "These payroll controls — how would you describe them?" },
         { "speaker": "w1", "text": "Poor. Poor for years." },
         { "speaker": "dc", "text": "Meaning what, concretely?" },
         { "speaker": "w1", "text": "Shared terminals. Sessions left open over lunch. Passwords on sticky notes." },
         { "speaker": "dc", "text": "So in that office, a login name tells us what about who was actually typing?" },
-        { "speaker": "w1", "text": "On its own — very little." }
+        { "speaker": "w1", "text": "(The auditor hesitated.) On its own — very little." }
       ],
       "surface_persuasion": 0.45,
       "true_weight": 0.35,

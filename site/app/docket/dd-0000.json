@@ -78,12 +78,12 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "'That handle — dreyes-ledger — where else does it appear?' 'In a breach dump published three years ago. Her old email, her username, alongside sixty million others.' 'So anyone alive could have registered that account in her name?' A pause. 'Anyone with an internet connection.' 'And nothing ties her devices to the wallets, or the cash-out service?' 'Nothing that we found.'",
+      "text": "'That handle — dreyes-ledger — where else does it appear?' 'In a breach dump published three years ago. Her old email, her username, alongside sixty million others.' 'So anyone alive could have registered that account in her name?' '(After a pause.) Anyone with an internet connection.' 'And nothing ties her devices to the wallets, or the cash-out service?' 'Nothing that we found.'",
       "turns": [
         { "speaker": "dc", "text": "That handle — dreyes-ledger — where else does it appear?" },
         { "speaker": "w1", "text": "In a breach dump published three years ago. Her old email, her username, alongside sixty million others." },
         { "speaker": "dc", "text": "So anyone alive could have registered that account in her name?" },
-        { "speaker": "w1", "text": "Anyone with an internet connection." },
+        { "speaker": "w1", "text": "(After a pause.) Anyone with an internet connection." },
         { "speaker": "dc", "text": "And nothing ties her devices to the wallets, or the cash-out service?" },
         { "speaker": "w1", "text": "Nothing that we found." }
       ],
