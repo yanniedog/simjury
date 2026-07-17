@@ -101,4 +101,15 @@ describe('docketCaseSchema', () => {
     c.media = { cover: asset, accused: asset, beats: {} }
     expect(docketCaseSchema.safeParse(c).success).toBe(false)
   })
+
+  it('supports structured multi-speaker courtroom dialogue', () => {
+    const c = makeDocketCase()
+    c.beats[1].turns = [
+      { speaker: 'defc', text: 'Question from counsel.' },
+      { speaker: 'w1', text: 'Answer from the witness.' },
+    ]
+    expect(docketCaseSchema.safeParse(c).success).toBe(true)
+    c.beats[1].turns = c.beats[1].turns.slice(0, 1)
+    expect(docketCaseSchema.safeParse(c).success).toBe(false)
+  })
 })

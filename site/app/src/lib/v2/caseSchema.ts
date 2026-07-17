@@ -86,6 +86,11 @@ export const mediaAssetSchema = z.object({
 })
 export type MediaAsset = z.infer<typeof mediaAssetSchema>
 
+export const dialogueTurnSchema = z.object({
+  speaker: z.string().min(1),
+  text: z.string().min(1),
+})
+
 /**
  * A v2 beat: the v1 hidden-weight beat plus who speaks it and which themes it
  * touches. `mode` distinguishes examination from cross for witness beats.
@@ -93,6 +98,7 @@ export type MediaAsset = z.infer<typeof mediaAssetSchema>
 export const docketBeatSchema = beatSchema.extend({
   speaker: z.string().min(1),
   mode: z.enum(['examination', 'cross']).optional(),
+  turns: z.array(dialogueTurnSchema).min(2).optional(),
   tags: z.array(themeSchema).min(1).max(3),
 })
 export type DocketBeat = z.infer<typeof docketBeatSchema>

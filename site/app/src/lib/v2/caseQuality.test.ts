@@ -49,6 +49,49 @@ describe('checkDocketCase', () => {
     expect(checkDocketCase(c).join()).toMatch(/examination or cross/)
   })
 
+  it('requires structured dialogue to alternate two known speakers', () => {
+    const c = makeDocketCase()
+    c.beats[1].turns = [
+      { speaker: 'ghost', text: c.beats[1].text },
+      { speaker: 'ghost', text: c.beats[1].text },
+    ]
+    const joined = checkDocketCase(c).join()
+    expect(joined).toMatch(/at least two speakers/)
+    expect(joined).toMatch(/must alternate speakers/)
+    expect(joined).toMatch(/turn speaker 'ghost' is not in the cast/)
+    expect(joined).toMatch(/opposing counsel/)
+  })
+
+  it('requires dialogue turns to preserve the complete authored transcript', () => {
+    const c = makeDocketCase()
+    c.beats[1].turns = [
+      { speaker: 'defc', text: 'the witness described' },
+      { speaker: 'w1', text: 'what the record shows' },
+    ]
+    expect(checkDocketCase(c).join()).toMatch(/preserve the complete beat transcript/)
+  })
+
+  it('allows a same-side counsel objection when opposing counsel conducts the cross', () => {
+    const c = makeDocketCase()
+    const transcript = [
+      'Defence asks the question.',
+      'The witness answers it.',
+      'Prosecution objects.',
+      'Defence withdraws it.',
+    ]
+    c.beats[1] = {
+      ...c.beats[1],
+      text: `${transcript.join(' ')} ${prose(45)}`,
+      turns: [
+        { speaker: 'defc', text: transcript[0] },
+        { speaker: 'w1', text: transcript[1] },
+        { speaker: 'pros', text: transcript[2] },
+        { speaker: 'defc', text: transcript[3] },
+      ],
+    }
+    expect(checkDocketCase(c).join()).not.toMatch(/opposing counsel/)
+  })
+
   it('flags a missing burden beat', () => {
     const c = makeDocketCase()
     c.beats = c.beats.map((b) =>

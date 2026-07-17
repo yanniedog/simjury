@@ -114,12 +114,50 @@ describe('speakAll', () => {
       { text: 'First line', key: 'pros' },
       { text: 'Second line', key: 'defc' },
     ], { onLine, done })
-    expect(onLine).toHaveBeenLastCalledWith('pros')
+    expect(onLine).toHaveBeenLastCalledWith('pros', 0)
     expect(done).not.toHaveBeenCalled()
 
     utterances[0].onend?.()
-    expect(onLine).toHaveBeenLastCalledWith('defc')
+    expect(onLine).toHaveBeenLastCalledWith('defc', 1)
     utterances[1].onend?.()
     expect(done).toHaveBeenCalledOnce()
+  })
+
+  it('reports a sequence speech error without advancing unheard content', () => {
+    class FakeUtterance {
+      voice?: SpeechSynthesisVoice
+      pitch = 1
+      rate = 1
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+
+      constructor(readonly text: string) {}
+    }
+    const utterances: FakeUtterance[] = []
+    vi.stubGlobal('window', {
+      speechSynthesis: {
+        cancel: vi.fn(),
+        speak: (utterance: FakeUtterance) => utterances.push(utterance),
+      },
+    })
+    vi.stubGlobal('SpeechSynthesisUtterance', FakeUtterance)
+    vi.stubGlobal('localStorage', {
+      getItem: () => 'on',
+      setItem: vi.fn(),
+    })
+    const onLine = vi.fn()
+    const onError = vi.fn()
+    const done = vi.fn()
+
+    speakAll([
+      { text: 'First line', key: 'pros' },
+      { text: 'Second line', key: 'defc' },
+    ], { onLine, onError, done })
+    utterances[0].onerror?.()
+
+    expect(onError).toHaveBeenCalledOnce()
+    expect(onLine).toHaveBeenCalledOnce()
+    expect(done).not.toHaveBeenCalled()
+    expect(utterances).toHaveLength(1)
   })
 })

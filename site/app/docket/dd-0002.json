@@ -113,6 +113,14 @@
       "speaker": "w1",
       "mode": "cross",
       "text": "'Before any stranger's money arrived, what happened to hers?' 'She sent nine thousand dollars of her own savings to Franklin.' 'Who do these recruiters choose, Detective?' 'They target the lonely. The recently widowed.' 'And her spending, across five months of alleged crime?' 'Unchanged. No holidays, no car. The same small flat.'",
+      "turns": [
+        { "speaker": "dc", "text": "Before any stranger's money arrived, what happened to hers?" },
+        { "speaker": "w1", "text": "She sent nine thousand dollars of her own savings to Franklin." },
+        { "speaker": "dc", "text": "Who do these recruiters choose, Detective?" },
+        { "speaker": "w1", "text": "They target the lonely. The recently widowed." },
+        { "speaker": "dc", "text": "And her spending, across five months of alleged crime?" },
+        { "speaker": "w1", "text": "Unchanged. No holidays, no car. The same small flat." }
+      ],
       "surface_persuasion": 0.5,
       "true_weight": 0.45,
       "direction": "innocence",
@@ -163,7 +171,15 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "'Did she meet your clinical criteria for coercive control?' 'Not the formal criteria, no.' 'In your experience, when victims discover the truth, what do they do?' 'Usually they stop. Usually they report it.' 'And this account, in month four — did it slow down?' The counsellor looked at her notes for a moment. 'No. It sped up.'",
+      "text": "'Did she meet your clinical criteria for coercive control?' 'Not the formal criteria, no.' 'In your experience, when victims discover the truth, what do they do?' 'Usually they stop. Usually they report it.' 'And this account, in month four — did it slow down?' '(The counsellor looked at her notes for a moment.) No. It sped up.'",
+      "turns": [
+        { "speaker": "pc", "text": "Did she meet your clinical criteria for coercive control?" },
+        { "speaker": "w3", "text": "Not the formal criteria, no." },
+        { "speaker": "pc", "text": "In your experience, when victims discover the truth, what do they do?" },
+        { "speaker": "w3", "text": "Usually they stop. Usually they report it." },
+        { "speaker": "pc", "text": "And this account, in month four — did it slow down?" },
+        { "speaker": "w3", "text": "(The counsellor looked at her notes for a moment.) No. It sped up." }
+      ],
       "surface_persuasion": 0.45,
       "true_weight": 0.3,
       "direction": "guilt",
@@ -189,7 +205,15 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "She agreed she read the bank's warning sheet, 'some of it'. She agreed the ledger was hers — 'to keep things straight'. Asked what 'mine is getting noticed' meant if she believed the money was honest, she said, after a long pause: 'I suppose I felt watched.'",
+      "text": "'Did you read the bank's warning sheet?' 'Some of it.' 'Was the ledger yours?' 'It was — to keep things straight.' 'What did mine is getting noticed mean if you believed the money was honest?' '(After a long pause, she answered.) I suppose I felt watched.'",
+      "turns": [
+        { "speaker": "pc", "text": "Did you read the bank's warning sheet?" },
+        { "speaker": "w4", "text": "Some of it." },
+        { "speaker": "pc", "text": "Was the ledger yours?" },
+        { "speaker": "w4", "text": "It was — to keep things straight." },
+        { "speaker": "pc", "text": "What did mine is getting noticed mean if you believed the money was honest?" },
+        { "speaker": "w4", "text": "(After a long pause, she answered.) I suppose I felt watched." }
+      ],
       "surface_persuasion": 0.6,
       "true_weight": 0.7,
       "direction": "guilt",

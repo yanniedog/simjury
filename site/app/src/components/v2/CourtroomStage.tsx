@@ -10,12 +10,15 @@ export function CourtroomStage({
   trial,
   activeSpeakerId,
   phaseLabel,
+  speaking,
 }: {
   trial: DocketCase
   activeSpeakerId?: string | null
   phaseLabel: string
+  speaking?: boolean
 }) {
   const active = trial.cast.find((member) => member.id === activeSpeakerId)
+  const isSpeaking = speaking ?? Boolean(active)
   const judge = trial.cast.find((member) => /judge/i.test(member.role_label))
     ?? trial.cast.find((member) => member.side === 'court')
   const prosecution = counselFor(trial, 'prosecution')
@@ -41,7 +44,7 @@ export function CourtroomStage({
       <div className="stage-heading"><span>Live courtroom</span><strong>{phaseLabel}</strong></div>
       <div role="list" className="stage-map">
         {stations.map(({ label, member, place }) => {
-          const isActive = Boolean(active && member && member.id === active.id)
+          const isActive = Boolean(isSpeaking && active && member && member.id === active.id)
           return (
             <div
               role="listitem"
@@ -64,7 +67,7 @@ export function CourtroomStage({
       </div>
       <div className="jury-edge"><span>You are here</span><strong>Juror 01 · Jury box</strong></div>
       <p aria-live="polite" className="sr-only">
-        {active ? `${active.name}, ${active.role_label}, is speaking.` : ''}
+        {isSpeaking && active ? `${active.name}, ${active.role_label}, is speaking.` : ''}
       </p>
     </section>
   )

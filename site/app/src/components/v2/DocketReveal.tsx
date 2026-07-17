@@ -27,7 +27,7 @@ function WeightBar({ label, value, tone }: { label: string; value: number; tone:
   )
 }
 
-function BeatRevealCard({ reveal }: { reveal: BeatReveal }) {
+function BeatRevealCard({ reveal, trial }: { reveal: BeatReveal; trial: DocketCase }) {
   const { beat, tookBait } = reveal
   const stamp = STAMP[beat.reveal_stamp]
   const pointsGuilt = beat.direction === 'guilt'
@@ -46,7 +46,18 @@ function BeatRevealCard({ reveal }: { reveal: BeatReveal }) {
           </span>
         )}
       </div>
-      <p className="text-sm text-neutral-300">{beat.text}</p>
+      {beat.turns ? (
+        <ul className="space-y-1 text-sm text-neutral-300" aria-label="Attributed transcript recap">
+          {beat.turns.map((turn, index) => (
+            <li key={`${turn.speaker}-${index}`}>
+              <strong>{trial.cast.find((member) => member.id === turn.speaker)?.name ?? turn.speaker}:</strong>{' '}
+              {turn.text}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-neutral-300">{beat.text}</p>
+      )}
       <div className="space-y-2">
         <WeightBar label="How persuasive it may feel" value={beat.surface_persuasion} tone="bg-neutral-500" />
         <WeightBar
@@ -130,7 +141,7 @@ export function DocketReveal({
         </p>
         <ul className="mt-4 space-y-3">
           {analysis.reveals.map((reveal) => (
-            <BeatRevealCard key={reveal.beat.id} reveal={reveal} />
+            <BeatRevealCard key={reveal.beat.id} reveal={reveal} trial={trial} />
           ))}
         </ul>
       </details>
