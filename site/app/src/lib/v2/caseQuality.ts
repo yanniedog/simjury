@@ -252,8 +252,8 @@ export function checkDocketCase(c: DocketCase): string[] {
       }
       witnessSpeakers.add(b.speaker)
     }
-    if (b.mode === 'cross' && !b.turns) {
-      issues.push(`beat ${b.id} cross-examination must include alternating dialogue turns`)
+    if (b.mode === 'cross' && (!b.turns || b.turns.length === 0)) {
+      issues.push(`beat ${b.id} cross-examination must include structured dialogue turns`)
     }
     if (b.turns) {
       const speakers = new Set(b.turns.map((turn) => turn.speaker))

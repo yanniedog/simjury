@@ -97,7 +97,10 @@ describe('checkDocketCase', () => {
     const cross = c.beats.find((b) => b.mode === 'cross')
     expect(cross).toBeDefined()
     if (cross) cross.turns = undefined
-    expect(checkDocketCase(c).join()).toMatch(/must include alternating dialogue turns/)
+    expect(checkDocketCase(c).join()).toMatch(/must include structured dialogue turns/)
+
+    if (cross) cross.turns = []
+    expect(checkDocketCase(c).join()).toMatch(/must include structured dialogue turns/)
   })
 
   it('flags a missing burden beat', () => {
