@@ -62,6 +62,27 @@ describe('checkDocketCase', () => {
     expect(joined).toMatch(/opposing counsel/)
   })
 
+  it('allows a same-side counsel objection when opposing counsel conducts the cross', () => {
+    const c = makeDocketCase()
+    const transcript = [
+      'Defence asks the question.',
+      'The witness answers it.',
+      'Prosecution objects.',
+      'Defence withdraws it.',
+    ]
+    c.beats[1] = {
+      ...c.beats[1],
+      text: `${transcript.join(' ')} ${prose(45)}`,
+      turns: [
+        { speaker: 'defc', text: transcript[0] },
+        { speaker: 'w1', text: transcript[1] },
+        { speaker: 'pros', text: transcript[2] },
+        { speaker: 'defc', text: transcript[3] },
+      ],
+    }
+    expect(checkDocketCase(c).join()).not.toMatch(/opposing counsel/)
+  })
+
   it('flags a missing burden beat', () => {
     const c = makeDocketCase()
     c.beats = c.beats.map((b) =>
