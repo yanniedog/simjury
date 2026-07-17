@@ -91,7 +91,15 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "The detective agreed the accused genuinely did ship the first forty-one consoles at a loss, that his storefront had years of clean history before this, and that middleman sellers burned by fake suppliers are common — her own unit sees several every month. 'It is a real pattern,' she said. 'It is also a great costume.'",
+      "text": "Detective Osei, the accused genuinely did ship the first forty-one consoles at a loss? Yes. His storefront had years of clean history before this? Yes. Middleman sellers burned by fake suppliers are common — your own unit sees several every month? It is a real pattern. It is also a great costume.",
+      "turns": [
+        { "speaker": "dc", "text": "Detective Osei, the accused genuinely did ship the first forty-one consoles at a loss?" },
+        { "speaker": "w1", "text": "Yes." },
+        { "speaker": "dc", "text": "His storefront had years of clean history before this?" },
+        { "speaker": "w1", "text": "Yes." },
+        { "speaker": "dc", "text": "Middleman sellers burned by fake suppliers are common — your own unit sees several every month?" },
+        { "speaker": "w1", "text": "It is a real pattern. It is also a great costume." }
+      ],
       "surface_persuasion": 0.5,
       "true_weight": 0.35,
       "direction": "innocence",
@@ -141,7 +149,15 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "'Why do the supplier's apologies sit drafted in your notes app, days early?' 'I — sometimes I summarise expected replies. To stay organised.' 'And BulkHarbor's account-recovery number. Whose phone is it?' A long silence. 'I cannot explain that one.' 'It is your second phone, Mr Voskuil.' 'Then someone must have used my details.'",
+      "text": "Why do the supplier's apologies sit drafted in your notes app, days early? I — sometimes I summarise expected replies. To stay organised. And BulkHarbor's account-recovery number. Whose phone is it? I... cannot explain that one. It is your second phone, Mr Voskuil. Then someone must have used my details.",
+      "turns": [
+        { "speaker": "pc", "text": "Why do the supplier's apologies sit drafted in your notes app, days early?" },
+        { "speaker": "w3", "text": "I — sometimes I summarise expected replies. To stay organised." },
+        { "speaker": "pc", "text": "And BulkHarbor's account-recovery number. Whose phone is it?" },
+        { "speaker": "w3", "text": "I... cannot explain that one." },
+        { "speaker": "pc", "text": "It is your second phone, Mr Voskuil." },
+        { "speaker": "w3", "text": "Then someone must have used my details." }
+      ],
       "surface_persuasion": 0.6,
       "true_weight": 0.6,
       "direction": "guilt",

@@ -92,7 +92,15 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "The toxicologist agreed that contamination at third-party blending facilities is a documented industry problem, that several reputable brands have been burned by shared equipment, and that her analysis alone cannot say whose hand introduced the stimulant. 'Chemistry tells you what,' she said. 'It rarely tells you who.'",
+      "text": "Contamination at third-party blending facilities is a documented industry problem? It is. Several reputable brands have been burned by shared equipment? Yes. Your analysis alone cannot say whose hand introduced the stimulant? Chemistry tells you what. It rarely tells you who.",
+      "turns": [
+        { "speaker": "dc", "text": "Contamination at third-party blending facilities is a documented industry problem?" },
+        { "speaker": "w1", "text": "It is." },
+        { "speaker": "dc", "text": "Several reputable brands have been burned by shared equipment?" },
+        { "speaker": "w1", "text": "Yes." },
+        { "speaker": "dc", "text": "Your analysis alone cannot say whose hand introduced the stimulant?" },
+        { "speaker": "w1", "text": "Chemistry tells you what. It rarely tells you who." }
+      ],
       "surface_persuasion": 0.5,
       "true_weight": 0.4,
       "direction": "innocence",
@@ -142,7 +150,15 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "'Did you mention boost blend v2 to your contract blender?' 'No. A note to myself.' 'The powder you never used, seized from your home, was one point seven kilos short. Where did it go?' No answer. 'How did the stimulant's residue get inside your kitchen blender, Mr Marsden?' He looked at his hands a long moment. 'I make a lot of things in that kitchen.'",
+      "text": "Did you mention boost blend v2 to your contract blender? No. A note to myself. The powder you never used, seized from your home, was one point seven kilos short. Where did it go? (The witness did not answer.) How did the stimulant's residue get inside your kitchen blender, Mr Marsden? I... make a lot of things in that kitchen.",
+      "turns": [
+        { "speaker": "pc", "text": "Did you mention boost blend v2 to your contract blender?" },
+        { "speaker": "w3", "text": "No. A note to myself." },
+        { "speaker": "pc", "text": "The powder you never used, seized from your home, was one point seven kilos short. Where did it go?" },
+        { "speaker": "w3", "text": "(The witness did not answer.)" },
+        { "speaker": "pc", "text": "How did the stimulant's residue get inside your kitchen blender, Mr Marsden?" },
+        { "speaker": "w3", "text": "I... make a lot of things in that kitchen." }
+      ],
       "surface_persuasion": 0.6,
       "true_weight": 0.55,
       "direction": "guilt",
