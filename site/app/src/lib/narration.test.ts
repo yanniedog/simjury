@@ -114,11 +114,11 @@ describe('speakAll', () => {
       { text: 'First line', key: 'pros' },
       { text: 'Second line', key: 'defc' },
     ], { onLine, done })
-    expect(onLine).toHaveBeenLastCalledWith('pros')
+    expect(onLine).toHaveBeenLastCalledWith('pros', 0)
     expect(done).not.toHaveBeenCalled()
 
     utterances[0].onend?.()
-    expect(onLine).toHaveBeenLastCalledWith('defc')
+    expect(onLine).toHaveBeenLastCalledWith('defc', 1)
     utterances[1].onend?.()
     expect(done).toHaveBeenCalledOnce()
   })

@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { DocketBeat, DocketCase } from '../../lib/v2/caseSchema'
-import { speak, stopSpeech, type NarrationRate } from '../../lib/narration'
+import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { ConvictionSlider } from '../ConvictionSlider'
 import { CaseMedia, StoryText } from './CaseMedia'
 import { CourtroomStage } from './CourtroomStage'
@@ -11,8 +11,8 @@ const KIND_META: Record<DocketBeat['kind'], { code: string; label: string }> = {
   direction: { code: 'DIR', label: 'Judge’s direction' },
 }
 
-function speakerOf(trial: DocketCase, beat: DocketBeat) {
-  return trial.cast.find((m) => m.id === beat.speaker)
+function speakerOf(trial: DocketCase, id: string) {
+  return trial.cast.find((m) => m.id === id)
 }
 
 export function DocketBeatView({
@@ -33,15 +33,28 @@ export function DocketBeatView({
   onNext: () => void
 }) {
   const beat = trial.beats[beatIndex]
+  const turns = beat.turns ?? [{ speaker: beat.speaker, text: beat.text }]
+  const [activeTurn, setActiveTurn] = useState<number | null>(null)
+  const activeSpeakerId = activeTurn === null ? beat.speaker : turns[activeTurn]?.speaker ?? beat.speaker
+  const stageSpeakerId = beat.turns && activeTurn === null ? null : activeSpeakerId
   const total = trial.beats.length
-  const speaker = speakerOf(trial, beat)
+  const speaker = speakerOf(trial, activeSpeakerId)
   const isCheckin = trial.checkins.includes(beat.id)
   const isLast = beatIndex === total - 1
   const media = trial.media?.beats[beat.id]
 
-  // Narrate each beat in its speaker's voice; stop when it unmounts.
+  // Structured cross-examinations visibly and audibly alternate speakers.
   useEffect(() => {
-    if (narration) speak(beat.text, beat.speaker, undefined, playbackRate)
+    setActiveTurn(null)
+    if (narration && beat.turns) {
+      speakAll(beat.turns.map((turn) => ({ text: turn.text, key: turn.speaker })), {
+        rate: playbackRate,
+        onLine: (_key, index) => setActiveTurn(index),
+        done: () => setActiveTurn(null),
+      })
+    } else if (narration) {
+      speak(beat.text, beat.speaker, undefined, playbackRate)
+    }
     return stopSpeech
   }, [beat, narration, playbackRate])
 
@@ -62,7 +75,7 @@ export function DocketBeatView({
         </span>
       </div>
 
-      <CourtroomStage trial={trial} activeSpeakerId={beat.speaker} phaseLabel={modeLabel} />
+      <CourtroomStage trial={trial} activeSpeakerId={stageSpeakerId} phaseLabel={modeLabel} />
 
       <div>
         <h1 id="phase-heading" tabIndex={-1} className="text-sm font-semibold text-neutral-200 focus:outline-none">
@@ -72,7 +85,29 @@ export function DocketBeatView({
           </span>
         </h1>
         {media && <div className="mt-4"><CaseMedia asset={media} /></div>}
-        <StoryText text={beat.text} className="mt-4 min-h-[6rem] text-lg leading-relaxed text-neutral-100" />
+        {beat.turns ? (
+          <div aria-label="Cross-examination transcript" className="mt-4 grid gap-3">
+            {turns.map((turn, index) => {
+              const member = speakerOf(trial, turn.speaker)
+              const witness = turn.speaker === beat.speaker
+              return (
+                <article
+                  key={`${turn.speaker}-${index}`}
+                  aria-current={activeTurn === index ? 'true' : undefined}
+                  className={`rounded-lg border p-4 ${witness ? 'ml-6 border-emerald-900/60 bg-emerald-950/20' : 'mr-6 border-red-900/60 bg-red-950/20'} ${activeTurn === index ? 'ring-2 ring-amber-300/70' : ''}`}
+                >
+                  <p className="mb-2 flex items-center justify-between gap-3 text-sm font-semibold text-neutral-300">
+                    <span>{member?.name ?? turn.speaker} <span className="font-normal text-neutral-500">· {member?.role_label}</span></span>
+                    {activeTurn === index && <span className="text-xs uppercase tracking-wider text-amber-200">Speaking now</span>}
+                  </p>
+                  <StoryText text={turn.text} className="text-lg leading-relaxed text-neutral-100" />
+                </article>
+              )
+            })}
+          </div>
+        ) : (
+          <StoryText text={beat.text} className="mt-4 min-h-[6rem] text-lg leading-relaxed text-neutral-100" />
+        )}
       </div>
 
       {isCheckin && (

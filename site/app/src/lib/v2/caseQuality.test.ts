@@ -49,6 +49,19 @@ describe('checkDocketCase', () => {
     expect(checkDocketCase(c).join()).toMatch(/examination or cross/)
   })
 
+  it('requires structured dialogue to alternate two known speakers', () => {
+    const c = makeDocketCase()
+    c.beats[1].turns = [
+      { speaker: 'ghost', text: c.beats[1].text },
+      { speaker: 'ghost', text: c.beats[1].text },
+    ]
+    const joined = checkDocketCase(c).join()
+    expect(joined).toMatch(/at least two speakers/)
+    expect(joined).toMatch(/must alternate speakers/)
+    expect(joined).toMatch(/turn speaker 'ghost' is not in the cast/)
+    expect(joined).toMatch(/opposing counsel/)
+  })
+
   it('flags a missing burden beat', () => {
     const c = makeDocketCase()
     c.beats = c.beats.map((b) =>

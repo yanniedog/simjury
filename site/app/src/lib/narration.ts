@@ -179,7 +179,7 @@ export function speakAll(
   lines: Array<{ text: string; key: string }>,
   options: {
     done?: () => void
-    onLine?: (key: string) => void
+    onLine?: (key: string, index: number) => void
     rate?: NarrationRate
   } = {},
 ): void {
@@ -192,7 +192,7 @@ export function speakAll(
       options.done?.()
       return
     }
-    options.onLine?.(lines[i].key)
+    options.onLine?.(lines[i].key, i)
     speak(lines[i].text, lines[i].key, () => next(i + 1), options.rate)
   }
   next(0)

@@ -248,6 +248,26 @@ export function checkDocketCase(c: DocketCase): string[] {
       }
       witnessSpeakers.add(b.speaker)
     }
+    if (b.turns) {
+      const speakers = new Set(b.turns.map((turn) => turn.speaker))
+      if (speakers.size < 2) issues.push(`beat ${b.id} dialogue needs at least two speakers`)
+      b.turns.forEach((turn, i) => {
+        if (!cast.has(turn.speaker)) issues.push(`beat ${b.id} turn speaker '${turn.speaker}' is not in the cast`)
+        if (i > 0 && turn.speaker === b.turns?.[i - 1].speaker) {
+          issues.push(`beat ${b.id} dialogue must alternate speakers`)
+        }
+        if (!b.text.includes(turn.text)) issues.push(`beat ${b.id} dialogue text must come from the beat transcript`)
+      })
+      if (b.mode === 'cross') {
+        const witnessSide = cast.get(b.speaker)?.side
+        const opposingSide = witnessSide === 'prosecution' ? 'defence' : 'prosecution'
+        const otherSpeakers = [...speakers].filter((id) => id !== b.speaker)
+        const opposingCounsel = otherSpeakers.length === 1 && cast.get(otherSpeakers[0])
+        if (!opposingCounsel || opposingCounsel.side !== opposingSide || !/counsel/i.test(opposingCounsel.role_label)) {
+          issues.push(`beat ${b.id} cross dialogue must alternate the witness with opposing counsel`)
+        }
+      }
+    }
   }
   if (!c.beats.some((b) => b.kind === 'direction')) {
     issues.push('needs at least one direction beat (the judge must speak)')
