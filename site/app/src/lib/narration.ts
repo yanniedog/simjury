@@ -181,7 +181,11 @@ function speakFallback(
   u.onerror = () => {
     if (activeId === myId) onError?.()
   }
-  s.speak(u)
+  try {
+    s.speak(u)
+  } catch {
+    if (activeId === myId) onError?.()
+  }
 }
 
 /** Play neural audio first; fall back to device speech if loading/playback fails. */
@@ -216,6 +220,10 @@ export function speak(
     activeAudio = audio
     audio.preload = 'auto'
     audio.playbackRate = playbackRate
+    // iOS Safari can ignore or reset playbackRate until playback starts.
+    audio.onplay = () => {
+      audio.playbackRate = playbackRate
+    }
     audio.onended = () => {
       if (activeId === myId) {
         activeAudio = null
