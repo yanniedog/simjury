@@ -78,14 +78,14 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "The vendor's own manual describes the scores as investigative leads, not evidence of wrongdoing? It does. Nobody at the chain had ever audited what data feeds the model? No one had. In three months of watching, no one ever observed the accused take a single item or dollar? No one did.",
+      "text": "The vendor's own manual describes the scores as investigative leads, not evidence of wrongdoing? It does. Nobody at the chain had ever audited what data feeds the model? No one had. In three months of watching, no one ever observed the accused take a single item or dollar? No one did, throughout all three months of surveillance at the chain.",
       "turns": [
         { "speaker": "dc", "text": "The vendor's own manual describes the scores as investigative leads, not evidence of wrongdoing?" },
         { "speaker": "w1", "text": "It does." },
         { "speaker": "dc", "text": "Nobody at the chain had ever audited what data feeds the model?" },
         { "speaker": "w1", "text": "No one had." },
         { "speaker": "dc", "text": "In three months of watching, no one ever observed the accused take a single item or dollar?" },
-        { "speaker": "w1", "text": "No one did." }
+        { "speaker": "w1", "text": "No one did, throughout all three months of surveillance at the chain." }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.5,

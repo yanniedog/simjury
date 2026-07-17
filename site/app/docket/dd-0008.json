@@ -91,9 +91,9 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "The accused genuinely did ship the first forty-one consoles at a loss? Yes. His storefront had years of clean history before this? Yes. Middleman sellers burned by fake suppliers are common — your own unit sees several every month? It is a real pattern. It is also a great costume.",
+      "text": "Detective Osei, the accused genuinely did ship the first forty-one consoles at a loss? Yes. His storefront had years of clean history before this? Yes. Middleman sellers burned by fake suppliers are common — your own unit sees several every month? It is a real pattern. It is also a great costume.",
       "turns": [
-        { "speaker": "dc", "text": "The accused genuinely did ship the first forty-one consoles at a loss?" },
+        { "speaker": "dc", "text": "Detective Osei, the accused genuinely did ship the first forty-one consoles at a loss?" },
         { "speaker": "w1", "text": "Yes." },
         { "speaker": "dc", "text": "His storefront had years of clean history before this?" },
         { "speaker": "w1", "text": "Yes." },
