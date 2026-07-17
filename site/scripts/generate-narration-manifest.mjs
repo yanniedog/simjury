@@ -50,13 +50,17 @@ export function deepgramSpeakerFor(key) {
 function linesFor(c) {
   const lines = []
   for (const phase of ['opening', 'closing']) {
-    for (const side of ['prosecution', 'defence']) lines.push(c.statements[phase][side])
+    for (const side of ['prosecution', 'defence']) {
+      const statement = c.statements?.[phase]?.[side]
+      if (statement?.text && statement?.speaker) lines.push(statement)
+    }
   }
-  for (const beat of c.beats) {
+  for (const beat of c.beats ?? []) {
     lines.push(...(beat.turns ?? [{ speaker: beat.speaker, text: beat.text }]))
   }
-  for (const juror of c.jury.jurors) {
-    for (const texts of Object.values(juror.lines)) {
+  for (const juror of c.jury?.jurors ?? []) {
+    for (const texts of Object.values(juror.lines ?? {})) {
+      if (!Array.isArray(texts)) continue
       for (const text of texts) lines.push({ speaker: juror.id, text })
     }
   }

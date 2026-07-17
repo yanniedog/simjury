@@ -33,18 +33,30 @@ const SECURITY_HEADERS = {
 
 const NARRATION_PATH = /^\/api\/narration\/([a-z0-9-]+-[0-9a-f]{8})\.mp3$/;
 
+function withSecurityHeaders(headers = {}) {
+  return { ...SECURITY_HEADERS, ...headers };
+}
+
 export async function handleNarration(request, env, ctx, cache) {
   if (request.method !== 'GET') {
-    return new Response('Method not allowed', { status: 405, headers: { Allow: 'GET' } });
+    return new Response('Method not allowed', {
+      status: 405,
+      headers: withSecurityHeaders({ Allow: 'GET' }),
+    });
   }
   const url = new URL(request.url);
   const id = NARRATION_PATH.exec(url.pathname)?.[1];
   const line = id ? narrationManifest[id] : undefined;
-  if (!line) return new Response('Narration not found', { status: 404 });
+  if (!line) {
+    return new Response('Narration not found', {
+      status: 404,
+      headers: withSecurityHeaders({ 'Content-Type': 'text/plain; charset=utf-8' }),
+    });
+  }
 
   // Ignore query strings so cache-busting cannot force repeat inference spend.
   const cacheKey = new Request(`${url.origin}/api/narration/${id}.mp3`);
-  const cached = await cache.match(cacheKey).catch(() => null);
+  const cached = cache ? await cache.match(cacheKey).catch(() => null) : null;
   if (cached) return cached;
 
   let upstream;
@@ -55,18 +67,27 @@ export async function handleNarration(request, env, ctx, cache) {
       encoding: 'mp3',
     }, { returnRawResponse: true });
   } catch {
-    return new Response('Narration unavailable', { status: 502 });
+    return new Response('Narration unavailable', {
+      status: 502,
+      headers: withSecurityHeaders({ 'Content-Type': 'text/plain; charset=utf-8' }),
+    });
   }
-  if (!upstream.ok) return new Response('Narration unavailable', { status: 502 });
+  if (!upstream.ok) {
+    return new Response('Narration unavailable', {
+      status: 502,
+      headers: withSecurityHeaders({ 'Content-Type': 'text/plain; charset=utf-8' }),
+    });
+  }
 
   const response = new Response(upstream.body, {
-    headers: {
+    headers: withSecurityHeaders({
       'Content-Type': 'audio/mpeg',
       'Cache-Control': 'public, max-age=31536000, immutable',
-      'X-Content-Type-Options': 'nosniff',
-    },
+    }),
   });
-  ctx.waitUntil(cache.put(cacheKey, response.clone()).catch(() => undefined));
+  if (cache && ctx && typeof ctx.waitUntil === 'function') {
+    ctx.waitUntil(cache.put(cacheKey, response.clone()).catch(() => undefined));
+  }
   return response;
 }
 
@@ -86,7 +107,8 @@ export default {
     }
 
     if (url.pathname.startsWith('/api/narration/')) {
-      return handleNarration(request, env, ctx, caches.default);
+      const cache = typeof caches !== 'undefined' ? caches.default : undefined;
+      return handleNarration(request, env, ctx, cache);
     }
 
     const assetResponse = await env.ASSETS.fetch(request);

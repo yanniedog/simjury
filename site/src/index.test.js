@@ -49,6 +49,8 @@ test('narration accepts only corpus ids and edge-caches raw Aura audio', async (
   await Promise.all(waits);
   const second = await handleNarration(request, env, ctx, cache);
   assert.equal(first.headers.get('content-type'), 'audio/mpeg');
+  assert.equal(first.headers.get('content-security-policy')?.includes("default-src 'self'"), true);
+  assert.equal(first.headers.get('x-frame-options'), 'DENY');
   assert.equal(second.status, 200);
   assert.equal(calls.length, 1);
   assert.deepEqual(calls[0], [
@@ -69,4 +71,27 @@ test('narration fails closed when Workers AI is unavailable', async () => {
   );
   assert.equal(response.status, 502);
   assert.equal(await response.text(), 'Narration unavailable');
+});
+
+test('narration works when Cache API and waitUntil are unavailable', async () => {
+  const calls = [];
+  const [id, line] = Object.entries(narrationManifest)[0];
+  const env = {
+    AI: {
+      run: async (...args) => {
+        calls.push(args);
+        return new Response(new Uint8Array([0x49, 0x44, 0x33]));
+      },
+    },
+  };
+  const response = await handleNarration(
+    new Request(`https://simjury.com/api/narration/${id}.mp3`),
+    env,
+    {},
+    undefined,
+  );
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('content-type'), 'audio/mpeg');
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0][1].text, line.text);
 });
