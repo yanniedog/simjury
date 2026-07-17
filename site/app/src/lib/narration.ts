@@ -136,11 +136,14 @@ export function setNarrationRate(value: unknown): NarrationRate {
 
 let activeId = 0
 let activeAudio: HTMLAudioElement | null = null
+/** Active speakAll keys so fallback voice indexes use the voice list available at fallback time. */
+let fallbackSequence: { keys: string[]; index: number } | null = null
 
 function cancelCurrent(): void {
   if (activeAudio) {
     activeAudio.onended = null
     activeAudio.onerror = null
+    activeAudio.onplay = null
     activeAudio.pause()
     activeAudio.removeAttribute('src')
     activeAudio.load()
@@ -151,6 +154,7 @@ function cancelCurrent(): void {
 
 export function stopSpeech(): void {
   activeId++
+  fallbackSequence = null
   cancelCurrent()
 }
 
@@ -160,16 +164,19 @@ function speakFallback(
   myId: number,
   done: (() => void) | undefined,
   playbackRate: NarrationRate,
-  forcedVoiceIndex: number | undefined,
   onError: (() => void) | undefined,
 ): void {
+  if (activeId !== myId) return
   const s = synth()
-  if (!s || activeId !== myId) return
+  if (!s) {
+    onError?.()
+    return
+  }
   refreshVoices()
   const u = new SpeechSynthesisUtterance(text)
   const params = voiceParamsFor(key || 'narrator', voices.length)
-  const index = forcedVoiceIndex !== undefined && forcedVoiceIndex < voices.length
-    ? forcedVoiceIndex
+  const index = fallbackSequence && voices.length > 0
+    ? fallbackVoiceIndexes(fallbackSequence.keys, voices.length)[fallbackSequence.index]
     : params.voiceIndex
   if (voices.length > 0) u.voice = voices[index]
   u.pitch = params.pitch
@@ -194,7 +201,6 @@ export function speak(
   key: string,
   done?: () => void,
   playbackRate: NarrationRate = narrationRate(),
-  fallbackVoiceIndex?: number,
   onError?: () => void,
 ): void {
   if (!narrationEnabled() || !text) {
@@ -204,7 +210,7 @@ export function speak(
   cancelCurrent()
   const myId = ++activeId
   if (typeof Audio === 'undefined') {
-    speakFallback(text, key, myId, done, playbackRate, fallbackVoiceIndex, onError)
+    speakFallback(text, key, myId, done, playbackRate, onError)
     return
   }
 
@@ -213,7 +219,7 @@ export function speak(
     if (fellBack || activeId !== myId) return
     fellBack = true
     activeAudio = null
-    speakFallback(text, key, myId, done, playbackRate, fallbackVoiceIndex, onError)
+    speakFallback(text, key, myId, done, playbackRate, onError)
   }
   try {
     const audio = new Audio(`/api/narration/${narrationIdFor(text, key)}.mp3`)
@@ -250,15 +256,16 @@ export function speakAll(
     options.done?.()
     return
   }
-  refreshVoices()
-  const fallbackIndexes = fallbackVoiceIndexes(lines.map((line) => line.key), voices.length)
+  const keys = lines.map((line) => line.key)
   const next = (i: number): void => {
     if (i >= lines.length) {
+      fallbackSequence = null
       options.done?.()
       return
     }
+    fallbackSequence = { keys, index: i }
     options.onLine?.(lines[i].key, i)
-    speak(lines[i].text, lines[i].key, () => next(i + 1), options.rate, fallbackIndexes[i], options.onError)
+    speak(lines[i].text, lines[i].key, () => next(i + 1), options.rate, options.onError)
   }
   next(0)
 }
