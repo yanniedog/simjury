@@ -88,6 +88,9 @@
     },
     {
       "note": "Absolute years in trial text rendered as intervals (eighteen years earlier) per PS-5; reveal restores true dates."
+    },
+    {
+      "note": "Testimony blocks are rendered in the first person, as spoken from the witness box and the dock; wording remains summarised from the sources (fidelity: summarised), not verbatim transcript. Facts, order, and source locators are unchanged."
     }
   ]
 }
