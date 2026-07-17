@@ -79,6 +79,16 @@
       "speaker": "w1",
       "mode": "cross",
       "text": "'When did the clip appear on the neighbourhood app?' 'The evening before the photo board.' 'Posted with what, in the comments?' 'His name.' 'Does your identifying witness follow that app?' 'He does.' 'And forensically — fingerprint, fibre, tool mark, recovered property — what connects my client to that house?' 'Nothing of that kind was found.'",
+      "turns": [
+        { "speaker": "dc", "text": "When did the clip appear on the neighbourhood app?" },
+        { "speaker": "w1", "text": "The evening before the photo board." },
+        { "speaker": "dc", "text": "Posted with what, in the comments?" },
+        { "speaker": "w1", "text": "His name." },
+        { "speaker": "dc", "text": "Does your identifying witness follow that app?" },
+        { "speaker": "w1", "text": "He does." },
+        { "speaker": "dc", "text": "And forensically — fingerprint, fibre, tool mark, recovered property — what connects my client to that house?" },
+        { "speaker": "w1", "text": "Nothing of that kind was found." }
+      ],
       "surface_persuasion": 0.5,
       "true_weight": 0.55,
       "direction": "innocence",
@@ -105,6 +115,16 @@
       "speaker": "w2",
       "mode": "cross",
       "text": "'How far away was this man?' 'Forty metres, about.' 'Moving, at two in the morning, in view for how long?' 'A few seconds.' 'And before the police ever showed you a board, you had seen the app post — the clip, the still, the name?' 'Yes.' 'You commented under it, didn't you.' He looked at his shoes. 'I wrote caught.'",
+      "turns": [
+        { "speaker": "dc", "text": "How far away was this man?" },
+        { "speaker": "w2", "text": "Forty metres, about." },
+        { "speaker": "dc", "text": "Moving, at two in the morning, in view for how long?" },
+        { "speaker": "w2", "text": "A few seconds." },
+        { "speaker": "dc", "text": "And before the police ever showed you a board, you had seen the app post — the clip, the still, the name?" },
+        { "speaker": "w2", "text": "Yes." },
+        { "speaker": "dc", "text": "You commented under it, didn't you." },
+        { "speaker": "w2", "text": "I wrote caught." }
+      ],
       "surface_persuasion": 0.5,
       "true_weight": 0.4,
       "direction": "innocence",
@@ -130,7 +150,11 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "The professor accepted he was retained and paid by the defence, and that in daylight benchmark tests the system performs well. 'It is a good tool used outside its manual,' he said. 'I am not here to bury the machine. I am here to read you its instructions.'",
+      "text": "'You were retained and paid by the defence, and in daylight benchmark tests the system performs well?' 'Yes. It is a good tool used outside its manual. I am not here to bury the machine. I am here to read you its instructions.'",
+      "turns": [
+        { "speaker": "pc", "text": "You were retained and paid by the defence, and in daylight benchmark tests the system performs well?" },
+        { "speaker": "w3", "text": "Yes. It is a good tool used outside its manual. I am not here to bury the machine. I am here to read you its instructions." }
+      ],
       "surface_persuasion": 0.45,
       "true_weight": 0.25,
       "direction": "guilt",
@@ -168,7 +192,13 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "He accepted he has a theft conviction from eight years ago — the reason his face was in the database at all. He accepted a phone can be left in a locker, and that badge systems can be tricked if two workers cooperate. 'They can,' he said. 'Mine wasn't. Ask line three.'",
+      "text": "'You have a theft conviction from eight years ago — the reason your face was in the database at all?' 'Yes.' 'A phone can be left in a locker, and badge systems can be tricked if two workers cooperate?' 'They can. Mine wasn't. Ask line three.'",
+      "turns": [
+        { "speaker": "pc", "text": "You have a theft conviction from eight years ago — the reason your face was in the database at all?" },
+        { "speaker": "w4", "text": "Yes." },
+        { "speaker": "pc", "text": "A phone can be left in a locker, and badge systems can be tricked if two workers cooperate?" },
+        { "speaker": "w4", "text": "They can. Mine wasn't. Ask line three." }
+      ],
       "surface_persuasion": 0.5,
       "true_weight": 0.3,
       "direction": "guilt",
