@@ -34,7 +34,8 @@ export function DocketBeatView({
 }) {
   const beat = trial.beats[beatIndex]
   const turns = beat.turns ?? [{ speaker: beat.speaker, text: beat.text }]
-  const [activeTurn, setActiveTurn] = useState<number | null>(null)
+  const [activeDialogue, setActiveDialogue] = useState<{ beatId: string; index: number } | null>(null)
+  const activeTurn = activeDialogue?.beatId === beat.id ? activeDialogue.index : null
   const activeSpeakerId = activeTurn === null ? beat.speaker : turns[activeTurn]?.speaker ?? beat.speaker
   const stageSpeakerId = beat.turns && activeTurn === null ? null : activeSpeakerId
   const total = trial.beats.length
@@ -45,12 +46,12 @@ export function DocketBeatView({
 
   // Structured cross-examinations visibly and audibly alternate speakers.
   useEffect(() => {
-    setActiveTurn(null)
+    setActiveDialogue(null)
     if (narration && beat.turns) {
       speakAll(beat.turns.map((turn) => ({ text: turn.text, key: turn.speaker })), {
         rate: playbackRate,
-        onLine: (_key, index) => setActiveTurn(index),
-        done: () => setActiveTurn(null),
+        onLine: (_key, index) => setActiveDialogue({ beatId: beat.id, index }),
+        done: () => setActiveDialogue(null),
       })
     } else if (narration) {
       speak(beat.text, beat.speaker, undefined, playbackRate)
@@ -86,7 +87,7 @@ export function DocketBeatView({
         </h1>
         {media && <div className="mt-4"><CaseMedia asset={media} /></div>}
         {beat.turns ? (
-          <div aria-label="Cross-examination transcript" className="mt-4 grid gap-3">
+          <section aria-label="Cross-examination transcript" className="mt-4 grid gap-3">
             {turns.map((turn, index) => {
               const member = speakerOf(trial, turn.speaker)
               const witness = turn.speaker === beat.speaker
@@ -97,14 +98,19 @@ export function DocketBeatView({
                   className={`rounded-lg border p-4 ${witness ? 'ml-6 border-emerald-900/60 bg-emerald-950/20' : 'mr-6 border-red-900/60 bg-red-950/20'} ${activeTurn === index ? 'ring-2 ring-amber-300/70' : ''}`}
                 >
                   <p className="mb-2 flex items-center justify-between gap-3 text-sm font-semibold text-neutral-300">
-                    <span>{member?.name ?? turn.speaker} <span className="font-normal text-neutral-500">· {member?.role_label}</span></span>
+                    <span>
+                      {member?.name ?? turn.speaker}
+                      {member?.role_label && (
+                        <span className="font-normal text-neutral-500"> · {member.role_label}</span>
+                      )}
+                    </span>
                     {activeTurn === index && <span className="text-xs uppercase tracking-wider text-amber-200">Speaking now</span>}
                   </p>
                   <StoryText text={turn.text} className="text-lg leading-relaxed text-neutral-100" />
                 </article>
               )
             })}
-          </div>
+          </section>
         ) : (
           <StoryText text={beat.text} className="mt-4 min-h-[6rem] text-lg leading-relaxed text-neutral-100" />
         )}

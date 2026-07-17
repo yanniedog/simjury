@@ -262,7 +262,7 @@ export function checkDocketCase(c: DocketCase): string[] {
         const witnessSide = cast.get(b.speaker)?.side
         const opposingSide = witnessSide === 'prosecution' ? 'defence' : 'prosecution'
         const otherSpeakers = [...speakers].filter((id) => id !== b.speaker)
-        const opposingCounsel = otherSpeakers.length === 1 && cast.get(otherSpeakers[0])
+        const opposingCounsel = otherSpeakers.length === 1 ? cast.get(otherSpeakers[0]) : undefined
         if (!opposingCounsel || opposingCounsel.side !== opposingSide || !/counsel/i.test(opposingCounsel.role_label)) {
           issues.push(`beat ${b.id} cross dialogue must alternate the witness with opposing counsel`)
         }
