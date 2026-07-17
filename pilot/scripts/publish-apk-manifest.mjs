@@ -43,13 +43,6 @@ function sha256File(path) {
   return hash.digest('hex');
 }
 
-function ensureRollingReleaseExists() {
-  const title = 'SimJury pilot (rolling preview APK)';
-  const notes =
-    'Rolling preview APK for in-app self-update. Updated by **pilot-android-apk** on GitHub Actions.';
-  ensureGitHubRelease(ghToken, repo, ROLLING_TAG, title, notes);
-}
-
 async function publishVersionedRelease({ apkBuf, version, buildNumber, outDir }) {
   const tag = versionTag(version);
   const title = releaseTitle(version);
@@ -122,7 +115,6 @@ async function main() {
   );
 
   console.log(`Publishing ${ROLLING_TAG} to ${repo} (v${version} build ${buildNumber}, ${apkBuf.length} bytes)…`);
-  ensureRollingReleaseExists();
   const rollingNotes = [
   `Rolling preview APK — **v${version}** (build ${buildNumber}).`,
   '',
