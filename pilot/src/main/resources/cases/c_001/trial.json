@@ -659,7 +659,7 @@
           "id": "T-W06-007",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "You press me whether I could still be mistaken, allowing for disguised writing. The whole of the documents put to me are undoubtedly in the same handwriting; I am perfectly satisfied, and I can give my reasons if they are wanted.",
+          "text": "When pressed whether I could still be mistaken, allowing for disguised writing, I said the whole of the documents put to me were undoubtedly in the same handwriting. I was perfectly satisfied, and could give my reasons if they were wanted.",
           "source": {
             "source_id": "S-01",
             "locator": "Cd. 2315 pp. 116, 290; NBT p. 221, report extract"
@@ -755,7 +755,7 @@
           "id": "T-W08-002",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "I lived for years at the Covent Garden Hotel, and later at the Buckingham Hotel in the Strand, then in rooms in Victoria Street sub-let to me alone.",
+          "text": "He had lived for years at the Covent Garden Hotel and later at the Buckingham Hotel in the Strand, then in rooms in Victoria Street sub-let to him alone.",
           "source": {
             "source_id": "S-02",
             "locator": "NBT pp. 150–155, defence evidence; hotel witnesses"
@@ -765,7 +765,7 @@
           "id": "T-W08-003",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "I was engaged in mining business. I attended a solicitor's office in Cornhill almost daily, and I received substantial cheques for shares. I improved my dress as my affairs prospered — not from cheating women.",
+          "text": "He was engaged in mining business, attended a solicitor's office in Cornhill almost daily, received substantial cheques for shares, and improved his dress as his affairs prospered — not from cheating women.",
           "source": {
             "source_id": "S-02",
             "locator": "NBT pp. 151–153, Kistner and hotel evidence"
@@ -775,7 +775,7 @@
           "id": "T-W08-004",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "When I was arrested I told the police it was a great mistake; I had never seen these ladies before in my life. I am not the titled gentleman they describe.",
+          "text": "When arrested he told police it was a great mistake; he had never seen the ladies before in his life. He denied being the titled gentleman they described.",
           "source": {
             "source_id": "S-02",
             "locator": "NBT pp. 142–143, Watts arrest evidence"
@@ -785,7 +785,7 @@
           "id": "T-W08-005",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "In the autumn I sent my wardrobe to be cleaned, because I was going to Norway to survey mining property; my clothes had been shabby earlier in the year.",
+          "text": "In the autumn he sent his wardrobe to be cleaned because he was going to Norway to survey mining property; his clothes had been shabby earlier in the year.",
           "source": {
             "source_id": "S-02",
             "locator": "NBT pp. 150–151, Ellis tailor evidence"
@@ -795,7 +795,7 @@
           "id": "T-W08-006",
           "mode": "examination",
           "fidelity": "summarised",
-          "text": "Those who know me daily will tell you I write very badly and slowly, holding the pen in a peculiar way. My natural writing is laboured — not the rapid lists that have been described.",
+          "text": "Those who knew him daily said he wrote very badly and slowly, holding the pen in a peculiar way; his natural writing was laboured, not the rapid lists described.",
           "source": {
             "source_id": "S-02",
             "locator": "NBT pp. 151–152, chambermaid and clerk evidence"
@@ -805,7 +805,7 @@
           "id": "T-W08-007",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "I am asked about the foreign accent several complainants noticed. I am of Scandinavian origin, and I speak Spanish from years abroad. I asked to speak to the jury so that you might hear me directly.",
+          "text": "Cross-examined, he was asked about the foreign accent several complainants noticed. He spoke with a Scandinavian origin and Spanish from years abroad; he had asked to speak to the jury so they might hear him directly.",
           "source": {
             "source_id": "S-02",
             "locator": "NBT p. 178, permission to speak; complainant cross themes"
@@ -815,7 +815,7 @@
           "id": "T-W08-008",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "I am asked about white spats, waistcoats, and fine dress matching the descriptions. The hotel staff never saw me in white spats or a white waistcoat; my dress improved only in the summer, after payments from the mine.",
+          "text": "He was asked about white spats, waistcoats, and fine dress matching the descriptions. He said hotel staff never saw him in white spats or a white waistcoat; his dress improved only in the summer after mine payments.",
           "source": {
             "source_id": "S-02",
             "locator": "NBT pp. 150–153, defence hotel and tailor evidence"
@@ -825,7 +825,7 @@
           "id": "T-W08-009",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "As to the handwriting expert: disguised writing on cheques is not how I wrote my letters at the hotel. A clerk who saw me daily could not swear to my hand on the disputed documents.",
+          "text": "On the handwriting expert, he said disguised writing on cheques was not how he wrote letters at the hotel; a clerk who saw him daily could not swear to his hand on the disputed documents.",
           "source": {
             "source_id": "S-02",
             "locator": "NBT pp. 152–153, Kistner cross-examination"
@@ -835,7 +835,7 @@
           "id": "T-W08-010",
           "mode": "cross",
           "fidelity": "summarised",
-          "text": "I maintain my innocence. My case is that the man convicted long ago, and imprisoned for years, is the same person who carried out these frauds — and that I have been mistaken for that man.",
+          "text": "He maintained his innocence. His case was that the man convicted long ago and imprisoned for years was the same person who had carried out these frauds, and he had been mistaken for that man.",
           "source": {
             "source_id": "S-02",
             "locator": "NBT p. 178, defence application on prior indictments"
