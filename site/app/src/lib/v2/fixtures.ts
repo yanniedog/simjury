@@ -56,13 +56,25 @@ export function makeBeat(overrides: Partial<DocketBeat> = {}): DocketBeat {
  * Not Guilty.
  */
 export function makeBeats(): DocketBeat[] {
+  const dialogue = (speaker: string, counsel: string) => {
+    const first = prose(30)
+    const second = prose(30)
+    return {
+      text: `${first} ${second}`,
+      turns: [
+        { speaker: counsel, text: first },
+        { speaker, text: second },
+      ],
+    }
+  }
+
   return [
     makeBeat({ id: 'b1', reveal_stamp: 'misleading', surface_persuasion: 0.85, true_weight: 0.2 }),
-    makeBeat({ id: 'b2', mode: 'cross', direction: 'innocence', tags: ['credibility'] }),
+    makeBeat({ id: 'b2', mode: 'cross', direction: 'innocence', tags: ['credibility'], ...dialogue('w1', 'defc') }),
     makeBeat({ id: 'b3', tags: ['motive'] }),
     makeBeat({ id: 'b4', kind: 'exhibit', speaker: 'clerk', mode: undefined, direction: 'innocence', reveal_stamp: 'decisive', surface_persuasion: 0.5, true_weight: 0.85, tags: ['digital_forensics'] }),
     makeBeat({ id: 'b5', speaker: 'w2', direction: 'innocence', tags: ['digital_forensics', 'method'] }),
-    makeBeat({ id: 'b6', speaker: 'w2', mode: 'cross', tags: ['credibility'] }),
+    makeBeat({ id: 'b6', speaker: 'w2', mode: 'cross', tags: ['credibility'], ...dialogue('w2', 'pros') }),
     makeBeat({ id: 'b7', kind: 'exhibit', speaker: 'clerk', mode: undefined, direction: 'innocence', reveal_stamp: 'decisive', surface_persuasion: 0.4, true_weight: 0.7, tags: ['identity', 'digital_forensics'] }),
     makeBeat({ id: 'b7b', kind: 'exhibit', speaker: 'clerk', mode: undefined, direction: 'innocence', reveal_stamp: 'decisive', surface_persuasion: 0.3, true_weight: 0.9, tags: ['digital_forensics'] }),
     makeBeat({ id: 'b8', speaker: 'w3', tags: ['procedure'] }),

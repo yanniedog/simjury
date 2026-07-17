@@ -92,6 +92,17 @@ describe('checkDocketCase', () => {
     expect(checkDocketCase(c).join()).not.toMatch(/opposing counsel/)
   })
 
+  it('requires every cross-examination to provide structured dialogue', () => {
+    const c = makeDocketCase()
+    const cross = c.beats.find((b) => b.mode === 'cross')
+    expect(cross).toBeDefined()
+    if (cross) cross.turns = undefined
+    expect(checkDocketCase(c).join()).toMatch(/must include structured dialogue turns/)
+
+    if (cross) cross.turns = []
+    expect(checkDocketCase(c).join()).toMatch(/must include structured dialogue turns/)
+  })
+
   it('flags a missing burden beat', () => {
     const c = makeDocketCase()
     c.beats = c.beats.map((b) =>
