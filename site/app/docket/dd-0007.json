@@ -79,7 +79,7 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "cross",
-      "text": "'How long did you lose sight of the rider?' 'Forty minutes. Maybe more.' 'Did you ever see the rider's face?' 'No — but the kit—' 'Half the couriers in this city ride drop-bar bikes, don't they?' 'A lot do.' 'The accused was simply the first teal rider you saw afterwards.' 'The kit matched. The kit matched.' He said it again.",
+      "text": "'How long did you lose sight of the rider?' 'Forty minutes. Maybe more.' 'Did you ever see the rider's face?' 'No — but the kit—' 'Half the couriers in this city ride drop-bar bikes, don't they?' 'A lot do.' 'The accused was simply the first teal rider you saw afterwards.' 'The kit matched. The kit matched. (He said it again.)'",
       "turns": [
         { "speaker": "dc", "text": "How long did you lose sight of the rider?" },
         { "speaker": "w2", "text": "Forty minutes. Maybe more." },
@@ -88,7 +88,7 @@
         { "speaker": "dc", "text": "Half the couriers in this city ride drop-bar bikes, don't they?" },
         { "speaker": "w2", "text": "A lot do." },
         { "speaker": "dc", "text": "The accused was simply the first teal rider you saw afterwards." },
-        { "speaker": "w2", "text": "The kit matched. The kit matched." }
+        { "speaker": "w2", "text": "The kit matched. The kit matched. (He said it again.)" }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.45,
@@ -115,7 +115,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "'Was my client wearing earbuds?' 'He was.' 'And at the second, louder hail, he stopped?' 'Immediately.' 'Can you date the scrape on his fork?' 'No.' 'The defence has a service record noting that broken reflector three weeks earlier. You've seen it?' 'I have.' 'How far did he actually ride from you — two blocks?' 'Thirty metres. Not two blocks.' She said it.",
+      "text": "'Was my client wearing earbuds?' 'He was.' 'And at the second, louder hail, he stopped?' 'Immediately.' 'Can you date the scrape on his fork?' 'No.' 'The defence has a service record noting that broken reflector three weeks earlier. You've seen it?' 'I have.' 'How far did he actually ride from you — two blocks?' 'Thirty metres. Not two blocks. (She said it.)'",
       "turns": [
         { "speaker": "dc", "text": "Was my client wearing earbuds?" },
         { "speaker": "w3", "text": "He was." },
@@ -126,7 +126,7 @@
         { "speaker": "dc", "text": "The defence has a service record noting that broken reflector three weeks earlier. You've seen it?" },
         { "speaker": "w3", "text": "I have." },
         { "speaker": "dc", "text": "How far did he actually ride from you — two blocks?" },
-        { "speaker": "w3", "text": "Thirty metres. Not two blocks." }
+        { "speaker": "w3", "text": "Thirty metres. Not two blocks. (She said it.)" }
       ],
       "surface_persuasion": 0.45,
       "true_weight": 0.4,

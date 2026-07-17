@@ -79,7 +79,7 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "cross",
-      "text": "'The file you analysed — where did it come from?' 'The insurer's web portal.' 'Which re-encodes video on upload. Yes?' 'It does.' 'Did you ever examine the camera itself, or the original card?' 'No.' 'And your tool's false-positive rate on re-encoded night footage?' A beat. 'That is — not separately benchmarked.'",
+      "text": "'The file you analysed — where did it come from?' 'The insurer's web portal.' 'Which re-encodes video on upload. Yes?' 'It does.' 'Did you ever examine the camera itself, or the original card?' 'No.' 'And your tool's false-positive rate on re-encoded night footage?' '(After a beat.) That is — not separately benchmarked.'",
       "turns": [
         { "speaker": "dc", "text": "The file you analysed — where did it come from?" },
         { "speaker": "w2", "text": "The insurer's web portal." },
@@ -88,7 +88,7 @@
         { "speaker": "dc", "text": "Did you ever examine the camera itself, or the original card?" },
         { "speaker": "w2", "text": "No." },
         { "speaker": "dc", "text": "And your tool's false-positive rate on re-encoded night footage?" },
-        { "speaker": "w2", "text": "That is — not separately benchmarked." }
+        { "speaker": "w2", "text": "(After a beat.) That is — not separately benchmarked." }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.55,
