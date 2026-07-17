@@ -8,12 +8,14 @@ are unchanged; see `PILOT-SPEC.md`, `archive/simjury-build-spec-v3.md`.)
 ## D-WEB-1 — Audio narration (overrides v3 §25 LP-1 for web only)
 
 - **v3 LP-1** says the app ships zero sound and is a silent reading game.
-- **Web decision (owner-directed, 2026-07-11):** the web player is **listenable, like a
-  podcast**. Narration uses the browser **Web Speech API** (`speechSynthesis`) — fully
-  client-side, **$0**, no audio assets, no backend. Testimony auto-advances; the player can
-  play / pause / skip, or turn narration off and read.
-- Cost guarantee is preserved (no runtime/backend cost). Voice quality is device-dependent;
-  a future upgrade path is pre-generated neural audio (not chosen now).
+- **Web decision (owner-directed, updated 2026-07-17):** the web player is **listenable,
+  like a podcast**. Opt-in narration uses Cloudflare Workers AI's Deepgram Aura-2 model
+  through a same-origin endpoint. The endpoint accepts only build-generated IDs for authored
+  case lines, never free-form text, and caches immutable MP3 responses at the edge.
+- The browser Web Speech API remains a failure fallback. It prefers advertised Natural/Neural
+  voices and keeps adjacent speakers distinct when at least two device voices exist.
+- Case progress, notes, and verdicts remain local. When narration is enabled, the Worker sends
+  the selected authored case line to Workers AI; no player-authored text or identifier is sent.
 
 ## D-WEB-2 — Listenable "jury room" (lite) (overrides GROWTH.md G-B / M-5 for web only)
 
@@ -48,6 +50,7 @@ are unchanged; see `PILOT-SPEC.md`, `archive/simjury-build-spec-v3.md`.)
 
 - **No real names / no reveal content pre-verdict (F-4 / P-5).** Enforced for juror text by a
   build-time banned-token scan in `scripts/sync-cases.mjs`.
-- **Zero backend / no accounts / no tracking.** The player is static assets only.
+- **No accounts or tracking.** The only dynamic route is the corpus-whitelisted narration
+  endpoint; all game state remains client-side.
 - **The reveal is the twist** (GROWTH §8 spoiler policy) — public copy names no defendant,
   year, court, or outcome.
