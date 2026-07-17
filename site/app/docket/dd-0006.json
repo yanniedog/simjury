@@ -79,7 +79,17 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "cross",
-      "text": "'The file you analysed — where did it come from?' 'The insurer's web portal.' 'Which re-encodes video on upload. Yes?' 'It does.' 'Did you ever examine the camera itself, or the original card?' 'No.' 'And your tool's false-positive rate on re-encoded night footage?' A beat. 'That is — not separately benchmarked.'",
+      "text": "'The file you analysed — where did it come from?' 'The insurer's web portal.' 'Which re-encodes video on upload. Yes?' 'It does.' 'Did you ever examine the camera itself, or the original card?' 'No.' 'And your tool's false-positive rate on re-encoded night footage?' '(After a beat.) That is — not separately benchmarked.'",
+      "turns": [
+        { "speaker": "dc", "text": "The file you analysed — where did it come from?" },
+        { "speaker": "w2", "text": "The insurer's web portal." },
+        { "speaker": "dc", "text": "Which re-encodes video on upload. Yes?" },
+        { "speaker": "w2", "text": "It does." },
+        { "speaker": "dc", "text": "Did you ever examine the camera itself, or the original card?" },
+        { "speaker": "w2", "text": "No." },
+        { "speaker": "dc", "text": "And your tool's false-positive rate on re-encoded night footage?" },
+        { "speaker": "w2", "text": "(After a beat.) That is — not separately benchmarked." }
+      ],
       "surface_persuasion": 0.5,
       "true_weight": 0.55,
       "direction": "innocence",
@@ -143,6 +153,14 @@
       "speaker": "w5",
       "mode": "cross",
       "text": "'Your own speed overlay reads forty-seven in a forty zone.' 'Yes. Seven over.' 'Eleven hours into your shift. Your last delivery.' 'Yes.' 'You were tired and over the limit, Mr Chandra.' 'I was seven over, and awake enough to brake before I hit her. She had no lights on her bike, and my light was green.'",
+      "turns": [
+        { "speaker": "pc", "text": "Your own speed overlay reads forty-seven in a forty zone." },
+        { "speaker": "w5", "text": "Yes. Seven over." },
+        { "speaker": "pc", "text": "Eleven hours into your shift. Your last delivery." },
+        { "speaker": "w5", "text": "Yes." },
+        { "speaker": "pc", "text": "You were tired and over the limit, Mr Chandra." },
+        { "speaker": "w5", "text": "I was seven over, and awake enough to brake before I hit her. She had no lights on her bike, and my light was green." }
+      ],
       "surface_persuasion": 0.55,
       "true_weight": 0.35,
       "direction": "guilt",
