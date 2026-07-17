@@ -1,10 +1,12 @@
+import { narrationManifest } from './narration-manifest.generated.js';
+
 /**
  * SimJury site Worker — www → apex redirect, then static assets with security headers.
  * The Worker runs on every request (assets.run_worker_first), so setting headers here
  * guarantees they apply to every response. If the Worker is ever removed in favour of a
  * zone Redirect Rule + pure static assets, move these headers to a `public/_headers` file.
  * @param {Request} request
- * @param {{ ASSETS: { fetch: (request: Request) => Promise<Response> } }} env
+ * @param {{ ASSETS: { fetch: (request: Request) => Promise<Response> }, AI: { run: Function } }} env
  */
 const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',
@@ -20,6 +22,7 @@ const SECURITY_HEADERS = {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data:",
+    "media-src 'self'",
     "connect-src 'self'",
     "base-uri 'self'",
     "form-action 'self'",
@@ -28,8 +31,47 @@ const SECURITY_HEADERS = {
   ].join('; '),
 };
 
+const NARRATION_PATH = /^\/api\/narration\/([a-z0-9-]+-[0-9a-f]{8})\.mp3$/;
+
+export async function handleNarration(request, env, ctx, cache) {
+  if (request.method !== 'GET') {
+    return new Response('Method not allowed', { status: 405, headers: { Allow: 'GET' } });
+  }
+  const url = new URL(request.url);
+  const id = NARRATION_PATH.exec(url.pathname)?.[1];
+  const line = id ? narrationManifest[id] : undefined;
+  if (!line) return new Response('Narration not found', { status: 404 });
+
+  // Ignore query strings so cache-busting cannot force repeat inference spend.
+  const cacheKey = new Request(`${url.origin}/api/narration/${id}.mp3`);
+  const cached = await cache.match(cacheKey).catch(() => null);
+  if (cached) return cached;
+
+  let upstream;
+  try {
+    upstream = await env.AI.run('@cf/deepgram/aura-2-en', {
+      text: line.text,
+      speaker: line.speaker,
+      encoding: 'mp3',
+    }, { returnRawResponse: true });
+  } catch {
+    return new Response('Narration unavailable', { status: 502 });
+  }
+  if (!upstream.ok) return new Response('Narration unavailable', { status: 502 });
+
+  const response = new Response(upstream.body, {
+    headers: {
+      'Content-Type': 'audio/mpeg',
+      'Cache-Control': 'public, max-age=31536000, immutable',
+      'X-Content-Type-Options': 'nosniff',
+    },
+  });
+  ctx.waitUntil(cache.put(cacheKey, response.clone()).catch(() => undefined));
+  return response;
+}
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     if (url.hostname === 'www.simjury.com') {
@@ -41,6 +83,10 @@ export default {
     if (url.pathname === '/play' || url.pathname.startsWith('/play/')) {
       url.pathname = '/today/';
       return Response.redirect(url.toString(), 302);
+    }
+
+    if (url.pathname.startsWith('/api/narration/')) {
+      return handleNarration(request, env, ctx, caches.default);
     }
 
     const assetResponse = await env.ASSETS.fetch(request);
