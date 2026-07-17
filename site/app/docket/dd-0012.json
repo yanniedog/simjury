@@ -79,7 +79,15 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "The detective agreed the search of the accused's flat found no drugs, no cash, no scales, no second phone. He agreed every meet spot in the customer messages clusters in Merrow City, four hundred kilometres from where the accused lives and works, and that no travel records place him there — not once in the six weeks.",
+      "text": "The search of the accused's flat found no drugs, no cash, no scales, and no second phone? Correct. Every meet spot in the customer messages clusters in Merrow City, four hundred kilometres from where the accused lives and works? Yes. No travel records place him there — not once in the six weeks? None.",
+      "turns": [
+        { "speaker": "dc", "text": "The search of the accused's flat found no drugs, no cash, no scales, and no second phone?" },
+        { "speaker": "w1", "text": "Correct." },
+        { "speaker": "dc", "text": "Every meet spot in the customer messages clusters in Merrow City, four hundred kilometres from where the accused lives and works?" },
+        { "speaker": "w1", "text": "Yes." },
+        { "speaker": "dc", "text": "No travel records place him there — not once in the six weeks?" },
+        { "speaker": "w1", "text": "None." }
+      ],
       "surface_persuasion": 0.5,
       "true_weight": 0.45,
       "direction": "innocence",
@@ -142,7 +150,13 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "'That cannabis purchase, two years ago — yours?' 'Yes. One time. I'm not proud of it.' 'Then why would a hijacker want your number, of all numbers?' 'Ask the analyst, not me — she told you. Aged numbers pass the banks' fraud checks. Mine was nine years old and boring. That is apparently worth stealing now.'",
+      "text": "That cannabis purchase, two years ago — yours? Yes. One time. I'm not proud of it. Then why would a hijacker want your number, of all numbers? Ask the analyst, not me — she told you. Aged numbers pass the banks' fraud checks. Mine was nine years old and boring. That is apparently worth stealing now.",
+      "turns": [
+        { "speaker": "pc", "text": "That cannabis purchase, two years ago — yours?" },
+        { "speaker": "w4", "text": "Yes. One time. I'm not proud of it." },
+        { "speaker": "pc", "text": "Then why would a hijacker want your number, of all numbers?" },
+        { "speaker": "w4", "text": "Ask the analyst, not me — she told you. Aged numbers pass the banks' fraud checks. Mine was nine years old and boring. That is apparently worth stealing now." }
+      ],
       "surface_persuasion": 0.55,
       "true_weight": 0.3,
       "direction": "guilt",
