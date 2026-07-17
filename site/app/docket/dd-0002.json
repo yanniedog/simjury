@@ -171,14 +171,14 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "'Did she meet your clinical criteria for coercive control?' 'Not the formal criteria, no.' 'In your experience, when victims discover the truth, what do they do?' 'Usually they stop. Usually they report it.' 'And this account, in month four — did it slow down?' The counsellor looked at her notes for a moment. 'No. It sped up.'",
+      "text": "'Did she meet your clinical criteria for coercive control?' 'Not the formal criteria, no.' 'In your experience, when victims discover the truth, what do they do?' 'Usually they stop. Usually they report it.' 'And this account, in month four — did it slow down?' '(The counsellor looked at her notes for a moment.) No. It sped up.'",
       "turns": [
         { "speaker": "pc", "text": "Did she meet your clinical criteria for coercive control?" },
         { "speaker": "w3", "text": "Not the formal criteria, no." },
         { "speaker": "pc", "text": "In your experience, when victims discover the truth, what do they do?" },
         { "speaker": "w3", "text": "Usually they stop. Usually they report it." },
         { "speaker": "pc", "text": "And this account, in month four — did it slow down?" },
-        { "speaker": "w3", "text": "No. It sped up." }
+        { "speaker": "w3", "text": "(The counsellor looked at her notes for a moment.) No. It sped up." }
       ],
       "surface_persuasion": 0.45,
       "true_weight": 0.3,
@@ -205,14 +205,14 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "'Did you read the bank's warning sheet?' 'Some of it.' 'Was the ledger yours?' 'It was — to keep things straight.' 'What did mine is getting noticed mean if you believed the money was honest?' After a long pause, she answered: 'I suppose I felt watched.'",
+      "text": "'Did you read the bank's warning sheet?' 'Some of it.' 'Was the ledger yours?' 'It was — to keep things straight.' 'What did mine is getting noticed mean if you believed the money was honest?' '(After a long pause, she answered.) I suppose I felt watched.'",
       "turns": [
         { "speaker": "pc", "text": "Did you read the bank's warning sheet?" },
         { "speaker": "w4", "text": "Some of it." },
         { "speaker": "pc", "text": "Was the ledger yours?" },
         { "speaker": "w4", "text": "It was — to keep things straight." },
         { "speaker": "pc", "text": "What did mine is getting noticed mean if you believed the money was honest?" },
-        { "speaker": "w4", "text": "I suppose I felt watched." }
+        { "speaker": "w4", "text": "(After a long pause, she answered.) I suppose I felt watched." }
       ],
       "surface_persuasion": 0.6,
       "true_weight": 0.7,

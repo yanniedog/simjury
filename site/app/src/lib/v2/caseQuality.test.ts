@@ -62,6 +62,15 @@ describe('checkDocketCase', () => {
     expect(joined).toMatch(/opposing counsel/)
   })
 
+  it('requires dialogue turns to preserve the complete authored transcript', () => {
+    const c = makeDocketCase()
+    c.beats[1].turns = [
+      { speaker: 'defc', text: 'the witness described' },
+      { speaker: 'w1', text: 'what the record shows' },
+    ]
+    expect(checkDocketCase(c).join()).toMatch(/preserve the complete beat transcript/)
+  })
+
   it('allows a same-side counsel objection when opposing counsel conducts the cross', () => {
     const c = makeDocketCase()
     const transcript = [

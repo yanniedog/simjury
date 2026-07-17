@@ -37,7 +37,7 @@ export function DocketBeatView({
   const [activeDialogue, setActiveDialogue] = useState<{ beatId: string; index: number } | null>(null)
   const activeTurn = activeDialogue?.beatId === beat.id ? activeDialogue.index : null
   const activeSpeakerId = activeTurn === null ? beat.speaker : turns[activeTurn]?.speaker ?? beat.speaker
-  const stageSpeakerId = beat.turns && activeTurn === null ? null : activeSpeakerId
+  const stageSpeakerId = activeSpeakerId
   const total = trial.beats.length
   const speaker = speakerOf(trial, activeSpeakerId)
   const isCheckin = trial.checkins.includes(beat.id)
@@ -52,6 +52,7 @@ export function DocketBeatView({
         rate: playbackRate,
         onLine: (_key, index) => setActiveDialogue({ beatId: beat.id, index }),
         done: () => setActiveDialogue(null),
+        onError: () => setActiveDialogue(null),
       })
     } else if (narration) {
       speak(beat.text, beat.speaker, undefined, playbackRate)
@@ -76,7 +77,12 @@ export function DocketBeatView({
         </span>
       </div>
 
-      <CourtroomStage trial={trial} activeSpeakerId={stageSpeakerId} phaseLabel={modeLabel} />
+      <CourtroomStage
+        trial={trial}
+        activeSpeakerId={stageSpeakerId}
+        phaseLabel={modeLabel}
+        speaking={activeTurn !== null}
+      />
 
       <div>
         <h1 id="phase-heading" tabIndex={-1} className="text-sm font-semibold text-neutral-200 focus:outline-none">
@@ -87,7 +93,7 @@ export function DocketBeatView({
         </h1>
         {media && <div className="mt-4"><CaseMedia asset={media} /></div>}
         {beat.turns ? (
-          <section aria-label="Cross-examination transcript" className="mt-4 grid gap-3">
+          <section aria-label={`${modeLabel} transcript`} className="mt-4 grid gap-3">
             {turns.map((turn, index) => {
               const member = speakerOf(trial, turn.speaker)
               const witness = turn.speaker === beat.speaker

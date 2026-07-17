@@ -151,6 +151,7 @@ export function speak(
   key: string,
   done?: () => void,
   playbackRate: NarrationRate = narrationRate(),
+  onError?: () => void,
 ): void {
   const s = synth()
   if (!s || !narrationEnabled() || !text) {
@@ -168,8 +169,7 @@ export function speak(
     if (activeId === myId && done) done()
   }
   u.onerror = () => {
-    // No-op: do not call done on error, so a failing voice never
-    // auto-advances the player past content it never heard.
+    if (activeId === myId) onError?.()
   }
   s.speak(u)
 }
@@ -180,6 +180,7 @@ export function speakAll(
   options: {
     done?: () => void
     onLine?: (key: string, index: number) => void
+    onError?: () => void
     rate?: NarrationRate
   } = {},
 ): void {
@@ -193,7 +194,7 @@ export function speakAll(
       return
     }
     options.onLine?.(lines[i].key, i)
-    speak(lines[i].text, lines[i].key, () => next(i + 1), options.rate)
+    speak(lines[i].text, lines[i].key, () => next(i + 1), options.rate, options.onError)
   }
   next(0)
 }

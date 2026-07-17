@@ -36,6 +36,10 @@ export const BEAT_WORDS_MAX = 70
 /** Total evidence budget (all beat words) for the 4.5–5.5 min reading phase. */
 export const CASE_WORDS_MIN = 550
 export const CASE_WORDS_MAX = 1050
+
+function dialogueFingerprint(text: string): string {
+  return (text.toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []).join(' ')
+}
 /** A contested room: initial Guilty seats among the 11 jurors. */
 export const JURY_G_MIN = 3
 export const JURY_G_MAX = 8
@@ -258,6 +262,9 @@ export function checkDocketCase(c: DocketCase): string[] {
         }
         if (!b.text.includes(turn.text)) issues.push(`beat ${b.id} dialogue text must come from the beat transcript`)
       })
+      if (dialogueFingerprint(b.turns.map((turn) => turn.text).join(' ')) !== dialogueFingerprint(b.text)) {
+        issues.push(`beat ${b.id} dialogue turns must preserve the complete beat transcript`)
+      }
       if (b.mode === 'cross') {
         const witnessSide = cast.get(b.speaker)?.side
         const opposingSide = witnessSide === 'prosecution' ? 'defence' : 'prosecution'
