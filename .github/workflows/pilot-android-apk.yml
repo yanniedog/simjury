@@ -124,6 +124,7 @@ jobs:
       - name: Emulator smoke test (attempt 1)
         id: smoke_attempt_1
         continue-on-error: true
+        timeout-minutes: 25
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
@@ -144,6 +145,7 @@ jobs:
         id: smoke_attempt_2
         if: steps.smoke_attempt_1.outcome == 'failure'
         continue-on-error: true
+        timeout-minutes: 25
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
