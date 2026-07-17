@@ -1,13 +1,4 @@
-/**
- * Browser narration engine — the "listenable, like a podcast" layer
- * (site/DECISIONS.md D-WEB-1), extracted from the /play player as a
- * framework-agnostic module. Uses the free Web Speech API: fully client-side,
- * $0, no audio assets. Each speaker key maps deterministically to a voice,
- * pitch, and rate so a character sounds consistent for a given device.
- * Safe to import in tests and SSR: everything degrades to a no-op when
- * speechSynthesis is unavailable.
- */
-
+/** Neural narration with a same-origin, corpus-whitelisted Web Speech fallback. */
 export interface VoiceParams {
   voiceIndex: number
   pitch: number
@@ -16,31 +7,56 @@ export interface VoiceParams {
 
 export const NARRATION_RATES = [0.85, 1, 1.15] as const
 export type NarrationRate = (typeof NARRATION_RATES)[number]
+type SpokenLine = { text: string; key: string }
 
-/** Keep persisted or caller-provided playback rates inside the designed set. */
 export function normaliseNarrationRate(value: unknown): NarrationRate {
   const parsed = typeof value === 'number' ? value : Number(value)
   return NARRATION_RATES.find((rate) => rate === parsed) ?? 1
 }
 
-/** Deterministic voice parameters per speaker key (pure; unit-tested). */
+function hash(value: string): number {
+  let h = 0x811c9dc5
+  for (let i = 0; i < value.length; i++) h = Math.imul(h ^ value.charCodeAt(i), 0x01000193)
+  return h >>> 0
+}
+
+/** Must stay byte-for-byte compatible with generate-narration-manifest.mjs. */
+export function narrationIdFor(text: string, key: string): string {
+  const slug = key.toLowerCase().replace(/[^a-z0-9-]/g, '-')
+  return `${slug}-${hash(`${key}\0${text}`).toString(16).padStart(8, '0')}`
+}
+
 export function voiceParamsFor(key: string, voiceCount: number): VoiceParams {
-  let h = 0
-  for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0
+  const h = hash(key)
   return {
     voiceIndex: voiceCount > 0 ? h % voiceCount : 0,
     pitch: key === 'narrator' ? 1 : 0.94 + (h % 13) / 100,
-    rate: 0.94 + ((h >> 3) % 8) / 100,
+    rate: 0.94 + ((h >>> 3) % 8) / 100,
   }
 }
 
-/** Prefer offline local voices, then human-quality variants within that tier. */
+/** Reserve a different available voice whenever the visible speaker changes. */
+export function fallbackVoiceIndexes(keys: string[], voiceCount: number): number[] {
+  const indexes: number[] = []
+  for (const [i, key] of keys.entries()) {
+    let index = voiceParamsFor(key, voiceCount).voiceIndex
+    if (i > 0 && key === keys[i - 1]) {
+      index = indexes[i - 1]
+    } else if (voiceCount > 1 && i > 0 && index === indexes[i - 1]) {
+      index = (index + 1) % voiceCount
+    }
+    indexes.push(index)
+  }
+  return indexes
+}
+
+/** Prefer advertised neural/natural voices; locality is only a tie-break. */
 export function voiceQualityScore(name: string, localService: boolean): number {
   const normalized = name.toLowerCase()
-  let score = localService ? 100 : 0
-  if (/natural|neural/.test(normalized)) score += 10
-  if (/premium|enhanced/.test(normalized)) score += 8
-  if (/google|microsoft/.test(normalized)) score += 3
+  let score = localService ? 1 : 0
+  if (/natural|neural/.test(normalized)) score += 100
+  if (/premium|enhanced/.test(normalized)) score += 80
+  if (/google|microsoft/.test(normalized)) score += 10
   return score
 }
 
@@ -56,14 +72,12 @@ function synth(): SpeechSynthesis | null {
 let voices: SpeechSynthesisVoice[] = []
 function refreshVoices(): void {
   const s = synth()
-  if (!s) return
+  if (!s || typeof s.getVoices !== 'function') return
   const all = s.getVoices()
   const english = all.filter((v) => /^en/i.test(v.lang))
-  const candidates = english.length > 0 ? english : all
-  const ranked = [...candidates].sort(
-    (a, b) => voiceQualityScore(b.name, b.localService) - voiceQualityScore(a.name, a.localService),
-  )
-  voices = ranked.slice(0, 8)
+  voices = [...(english.length > 0 ? english : all)]
+    .sort((a, b) => voiceQualityScore(b.name, b.localService) - voiceQualityScore(a.name, a.localService))
+    .slice(0, 8)
 }
 {
   const s = synth()
@@ -74,14 +88,9 @@ function refreshVoices(): void {
 }
 
 export function narrationSupported(): boolean {
-  return synth() !== null
+  return typeof Audio !== 'undefined' || synth() !== null
 }
 
-// In-memory fallback for the on/off preference. Sandboxed/privacy contexts
-// can throw on every localStorage access; without this, narrationEnabled()
-// would default to false and setNarrationEnabled(true) could never
-// override it, silencing narration for the whole session even though
-// speechSynthesis itself is available.
 let memoryEnabled = false
 let memoryRate: NarrationRate = 1
 
@@ -100,8 +109,7 @@ export function setNarrationEnabled(on: boolean): void {
   try {
     localStorage.setItem(STORAGE_KEY, on ? 'on' : 'off')
   } catch {
-    // Storage can be blocked; the toggle won't persist across reloads, but
-    // the in-memory override above still takes effect for this session.
+    // The in-memory setting still works when storage is blocked.
   }
   if (!on) stopSpeech()
 }
@@ -120,63 +128,109 @@ export function setNarrationRate(value: unknown): NarrationRate {
   try {
     localStorage.setItem(RATE_STORAGE_KEY, String(memoryRate))
   } catch {
-    // Keep the selected rate for this session when storage is unavailable.
+    // Keep the selected rate for this session.
   }
   stopSpeech()
   return memoryRate
 }
 
-// A transaction id (not a callback reference) tracks the active utterance:
-// two speak() calls can legitimately share the same `done` reference (e.g. a
-// caller re-using one callback across lines), so comparing by identity to
-// the callback itself would let a late, cancelled utterance's onend/onerror
-// match a newer call and fire or clear state it doesn't own.
 let activeId = 0
+let activeAudio: HTMLAudioElement | null = null
 
-export function stopSpeech(): void {
-  const s = synth()
-  if (s) {
-    activeId++
-    s.cancel()
+function cancelCurrent(): void {
+  if (activeAudio) {
+    activeAudio.onended = null
+    activeAudio.onerror = null
+    activeAudio.pause()
+    activeAudio.removeAttribute('src')
+    activeAudio.load()
+    activeAudio = null
   }
+  synth()?.cancel()
 }
 
-/**
- * Speak [text] as [key]; call [done] when it finishes naturally. On a genuine
- * speech error the engine stops without calling [done], so a failing voice
- * can never auto-advance the player through content unheard.
- */
-export function speak(
+export function stopSpeech(): void {
+  activeId++
+  cancelCurrent()
+}
+
+function speakFallback(
   text: string,
   key: string,
-  done?: () => void,
-  playbackRate: NarrationRate = narrationRate(),
-  onError?: () => void,
+  myId: number,
+  done: (() => void) | undefined,
+  playbackRate: NarrationRate,
+  forcedVoiceIndex: number | undefined,
+  onError: (() => void) | undefined,
 ): void {
   const s = synth()
-  if (!s || !narrationEnabled() || !text) {
-    if (done) done()
-    return
-  }
-  s.cancel()
-  const myId = ++activeId
+  if (!s || activeId !== myId) return
+  refreshVoices()
   const u = new SpeechSynthesisUtterance(text)
   const params = voiceParamsFor(key || 'narrator', voices.length)
-  if (voices.length > 0) u.voice = voices[params.voiceIndex]
+  const index = forcedVoiceIndex !== undefined && forcedVoiceIndex < voices.length
+    ? forcedVoiceIndex
+    : params.voiceIndex
+  if (voices.length > 0) u.voice = voices[index]
   u.pitch = params.pitch
   u.rate = params.rate * playbackRate
   u.onend = () => {
-    if (activeId === myId && done) done()
+    if (activeId === myId) done?.()
   }
+  // Do not call done on error — a failing voice must not auto-advance unheard lines.
   u.onerror = () => {
     if (activeId === myId) onError?.()
   }
   s.speak(u)
 }
 
-/** Speak a sequence of lines in order, chaining on natural completion. */
+/** Play neural audio first; fall back to device speech if loading/playback fails. */
+export function speak(
+  text: string,
+  key: string,
+  done?: () => void,
+  playbackRate: NarrationRate = narrationRate(),
+  fallbackVoiceIndex?: number,
+  onError?: () => void,
+): void {
+  if (!narrationEnabled() || !text) {
+    done?.()
+    return
+  }
+  cancelCurrent()
+  const myId = ++activeId
+  if (typeof Audio === 'undefined') {
+    speakFallback(text, key, myId, done, playbackRate, fallbackVoiceIndex, onError)
+    return
+  }
+
+  let fellBack = false
+  const fallback = () => {
+    if (fellBack || activeId !== myId) return
+    fellBack = true
+    activeAudio = null
+    speakFallback(text, key, myId, done, playbackRate, fallbackVoiceIndex, onError)
+  }
+  try {
+    const audio = new Audio(`/api/narration/${narrationIdFor(text, key)}.mp3`)
+    activeAudio = audio
+    audio.preload = 'auto'
+    audio.playbackRate = playbackRate
+    audio.onended = () => {
+      if (activeId === myId) {
+        activeAudio = null
+        done?.()
+      }
+    }
+    audio.onerror = fallback
+    void audio.play().catch(fallback)
+  } catch {
+    fallback()
+  }
+}
+
 export function speakAll(
-  lines: Array<{ text: string; key: string }>,
+  lines: SpokenLine[],
   options: {
     done?: () => void
     onLine?: (key: string, index: number) => void
@@ -188,13 +242,15 @@ export function speakAll(
     options.done?.()
     return
   }
+  refreshVoices()
+  const fallbackIndexes = fallbackVoiceIndexes(lines.map((line) => line.key), voices.length)
   const next = (i: number): void => {
     if (i >= lines.length) {
       options.done?.()
       return
     }
     options.onLine?.(lines[i].key, i)
-    speak(lines[i].text, lines[i].key, () => next(i + 1), options.rate, options.onError)
+    speak(lines[i].text, lines[i].key, () => next(i + 1), options.rate, fallbackIndexes[i], options.onError)
   }
   next(0)
 }
