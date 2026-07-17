@@ -114,7 +114,7 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "cross",
-      "text": "'How far away was this man?' 'Forty metres, about.' 'Moving, at two in the morning, in view for how long?' 'A few seconds.' 'And before the police ever showed you a board, you had seen the app post — the clip, the still, the name?' 'Yes.' 'You commented under it, didn't you.' He looked at his shoes. 'I wrote caught.'",
+      "text": "'How far away was this man?' 'Forty metres, about.' 'Moving, at two in the morning, in view for how long?' 'A few seconds.' 'And before the police ever showed you a board, you had seen the app post — the clip, the still, the name?' 'Yes.' 'You commented under it, didn't you.' '(He looked at his shoes.) I wrote caught.'",
       "turns": [
         { "speaker": "dc", "text": "How far away was this man?" },
         { "speaker": "w2", "text": "Forty metres, about." },
@@ -123,7 +123,7 @@
         { "speaker": "dc", "text": "And before the police ever showed you a board, you had seen the app post — the clip, the still, the name?" },
         { "speaker": "w2", "text": "Yes." },
         { "speaker": "dc", "text": "You commented under it, didn't you." },
-        { "speaker": "w2", "text": "I wrote caught." }
+        { "speaker": "w2", "text": "(He looked at his shoes.) I wrote caught." }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.4,

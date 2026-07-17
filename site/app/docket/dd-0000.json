@@ -150,12 +150,12 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "'Your toolchain's false-positive rate?' 'Near seven per cent.' 'And the defence is paying you to be here?' She let the silence sit, then leaned forward. 'They are. One artefact can be noise in a degraded stream. I found them at phrase level, across the entire call, matching four separate episodes. That density does not occur in genuine audio.'",
+      "text": "'Your toolchain's false-positive rate?' 'Near seven per cent.' 'And the defence is paying you to be here?' '(She let the silence sit, then leaned forward.) They are. One artefact can be noise in a degraded stream. I found them at phrase level, across the entire call, matching four separate episodes. That density does not occur in genuine audio.'",
       "turns": [
         { "speaker": "pc", "text": "Your toolchain's false-positive rate?" },
         { "speaker": "w4", "text": "Near seven per cent." },
         { "speaker": "pc", "text": "And the defence is paying you to be here?" },
-        { "speaker": "w4", "text": "They are. One artefact can be noise in a degraded stream. I found them at phrase level, across the entire call, matching four separate episodes. That density does not occur in genuine audio." }
+        { "speaker": "w4", "text": "(She let the silence sit, then leaned forward.) They are. One artefact can be noise in a degraded stream. I found them at phrase level, across the entire call, matching four separate episodes. That density does not occur in genuine audio." }
       ],
       "surface_persuasion": 0.45,
       "true_weight": 0.2,

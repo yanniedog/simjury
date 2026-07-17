@@ -163,14 +163,14 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "'This receipt proves the tote was bought two months after the breakup?' He paused. 'Then I do not know how it got there.' 'Why were you active in the small hours?' 'Insomnia.' 'Why does a worried friend screenshot addresses?' Quietly, he answered, 'I cannot remember taking those.'",
+      "text": "'This receipt proves the tote was bought two months after the breakup?' '(He paused.) Then I do not know how it got there.' 'Why were you active in the small hours?' 'Insomnia.' 'Why does a worried friend screenshot addresses?' '(Quietly, he answered.) I cannot remember taking those.'",
       "turns": [
         { "speaker": "pc", "text": "This receipt proves the tote was bought two months after the breakup?" },
-        { "speaker": "w4", "text": "Then I do not know how it got there." },
+        { "speaker": "w4", "text": "(He paused.) Then I do not know how it got there." },
         { "speaker": "pc", "text": "Why were you active in the small hours?" },
         { "speaker": "w4", "text": "Insomnia." },
         { "speaker": "pc", "text": "Why does a worried friend screenshot addresses?" },
-        { "speaker": "w4", "text": "I cannot remember taking those." }
+        { "speaker": "w4", "text": "(Quietly, he answered.) I cannot remember taking those." }
       ],
       "surface_persuasion": 0.55,
       "true_weight": 0.5,

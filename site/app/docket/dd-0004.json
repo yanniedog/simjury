@@ -80,14 +80,14 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "cross",
-      "text": "'You have named the wrong month for when you first noticed?' 'Yes.' 'You applied for the office-manager role and lost it — to the accused?' 'Yes.' 'And the performance plan cited real invoice errors, yours?' 'Yes.' By the end, her hands were shaking.",
+      "text": "'You have named the wrong month for when you first noticed?' 'Yes.' 'You applied for the office-manager role and lost it — to the accused?' 'Yes.' 'And the performance plan cited real invoice errors, yours?' 'Yes. (By the end, her hands were shaking.)'",
       "turns": [
         { "speaker": "dc", "text": "You have named the wrong month for when you first noticed?" },
         { "speaker": "w2", "text": "Yes." },
         { "speaker": "dc", "text": "You applied for the office-manager role and lost it — to the accused?" },
         { "speaker": "w2", "text": "Yes." },
         { "speaker": "dc", "text": "And the performance plan cited real invoice errors, yours?" },
-        { "speaker": "w2", "text": "Yes." }
+        { "speaker": "w2", "text": "Yes. (By the end, her hands were shaking.)" }
       ],
       "surface_persuasion": 0.6,
       "true_weight": 0.2,
@@ -183,7 +183,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "'The lodger's surname?' 'I — we only ever used first names.' 'A forwarding address? One rent receipt?' 'Cash, mostly.' 'Your loyalty card bought the SIM.' 'Cards get scanned by mistake all the time.' 'And the ghosts' recovery email, sitting on your phone?' A long pause. 'An old account. Compromised, probably.' 'By whom, Mr Prentiss?' He said nothing.",
+      "text": "'The lodger's surname?' 'I — we only ever used first names.' 'A forwarding address? One rent receipt?' 'Cash, mostly.' 'Your loyalty card bought the SIM.' 'Cards get scanned by mistake all the time.' 'And the ghosts' recovery email, sitting on your phone?' '(A long pause.) An old account. Compromised, probably.' 'By whom, Mr Prentiss?' '(He said nothing.)'",
       "turns": [
         { "speaker": "pc", "text": "The lodger's surname?" },
         { "speaker": "w3", "text": "I — we only ever used first names." },
@@ -192,8 +192,9 @@
         { "speaker": "pc", "text": "Your loyalty card bought the SIM." },
         { "speaker": "w3", "text": "Cards get scanned by mistake all the time." },
         { "speaker": "pc", "text": "And the ghosts' recovery email, sitting on your phone?" },
-        { "speaker": "w3", "text": "An old account. Compromised, probably." },
-        { "speaker": "pc", "text": "By whom, Mr Prentiss?" }
+        { "speaker": "w3", "text": "(A long pause.) An old account. Compromised, probably." },
+        { "speaker": "pc", "text": "By whom, Mr Prentiss?" },
+        { "speaker": "w3", "text": "(He said nothing.)" }
       ],
       "surface_persuasion": 0.55,
       "true_weight": 0.5,

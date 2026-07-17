@@ -113,7 +113,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "'How many drinks that day, by your own count?' 'Nine. Maybe ten.' 'Where did the trip end?' 'My address.' 'And you stayed in his car ten more minutes.' 'I was getting my things.' 'When did you start filming, Mr Voss?' A silence. 'When we were on the street.' 'After the part you'd rather we never saw?' 'Objection—' Withdrawn.",
+      "text": "'How many drinks that day, by your own count?' 'Nine. Maybe ten.' 'Where did the trip end?' 'My address.' 'And you stayed in his car ten more minutes.' 'I was getting my things.' 'When did you start filming, Mr Voss?' '(A silence.) When we were on the street.' 'After the part you'd rather we never saw?' 'Objection—' 'Withdrawn.'",
       "turns": [
         { "speaker": "dc", "text": "How many drinks that day, by your own count?" },
         { "speaker": "w1", "text": "Nine. Maybe ten." },
@@ -122,8 +122,10 @@
         { "speaker": "dc", "text": "And you stayed in his car ten more minutes." },
         { "speaker": "w1", "text": "I was getting my things." },
         { "speaker": "dc", "text": "When did you start filming, Mr Voss?" },
-        { "speaker": "w1", "text": "When we were on the street." },
-        { "speaker": "dc", "text": "After the part you'd rather we never saw?" }
+        { "speaker": "w1", "text": "(A silence.) When we were on the street." },
+        { "speaker": "dc", "text": "After the part you'd rather we never saw?" },
+        { "speaker": "pc", "text": "Objection—" },
+        { "speaker": "dc", "text": "Withdrawn." }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.5,
