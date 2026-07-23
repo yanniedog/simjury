@@ -393,8 +393,8 @@
         },
         "lines": {
           "agree": [
-            "Juror 3: The recovered project matches Nima's file exactly, down to a compression error absent from earlier tutorials.",
-            "Juror 3: Evan's key authenticated the export while his badge remained inside. Those records support each other."
+            "Juror 3: That evidence is a concrete part of the prosecution's sequence, and I can test it against the other records.",
+            "Juror 3: This detail strengthens the prosecution's account without asking one piece of evidence to carry the whole case."
           ],
           "pushback": [
             "Juror 3: The cloned manager's voice adds emotion, not identity. The hidden layers and export are the useful evidence.",
@@ -732,12 +732,12 @@
         },
         "lines": {
           "agree": [
-            "Juror 8: Evan's key, laptop, badge, and tutorial layer now look like one connected course of conduct.",
-            "Juror 8: The exact file error persuaded me because it links the recovered project to the delivered threat."
+            "Juror 8: That record strengthens the prosecution's sequence and makes the competing access theory harder to sustain.",
+            "Juror 8: This is independently checkable evidence, not just the emotional force of the cloned voice."
           ],
           "pushback": [
-            "Juror 8: Shared workshop access weakens the identity claim, especially because the console had no camera.",
-            "Juror 8: If the key can be borrowed without a PIN, the certificate is not the same as a person."
+            "Juror 8: The access gap weakens one link, but it does not answer the matching project and physical-key record.",
+            "Juror 8: A borrowable key creates doubt, yet that possibility does not erase the rest of the identity evidence."
           ],
           "concede": [
             "Juror 8: I changed my view because the project match explains more than the cloned voice alone."
