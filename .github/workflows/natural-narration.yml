@@ -1,0 +1,107 @@
+name: natural-narration
+
+on:
+  workflow_dispatch:
+    inputs:
+      case_id:
+        description: "Docket id, comma-separated ids, or all"
+        required: true
+        default: "dd-0022"
+  push:
+    branches: [main]
+    paths:
+      - "site/app/docket/*.json"
+      - "site/app/src/lib/narration.ts"
+      - "site/narration-requirements.txt"
+      - "site/scripts/build-kokoro-jobs.mjs"
+      - "site/scripts/generate-kokoro-clips.py"
+      - ".github/workflows/natural-narration.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: natural-narration
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      cases: ${{ steps.cases.outputs.value }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - id: cases
+        shell: bash
+        env:
+          REQUESTED_CASES: ${{ inputs.case_id }}
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            requested="$REQUESTED_CASES"
+          else
+            changed="$(git diff --name-only HEAD^ HEAD)"
+            if grep -Eq '^(\.github/workflows/natural-narration\.yml|site/app/src/lib/narration\.ts|site/narration-requirements\.txt|site/scripts/(build-kokoro-jobs\.mjs|generate-kokoro-clips\.py))$' <<< "$changed"; then
+              requested="all"
+            else
+              requested="$(sed -nE 's#^site/app/docket/(dd-[0-9]{4})\.json$#\1#p' <<< "$changed" |
+                sort -u | paste -sd, -)"
+            fi
+          fi
+          test -n "$requested"
+          echo "value=$(node site/scripts/build-kokoro-jobs.mjs --case "$requested" --list)" >> "$GITHUB_OUTPUT"
+      - name: Create stable GitHub voice-pack releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for shard in $(seq 0 31); do
+            tag="narration-kokoro-$shard"
+            gh release view "$tag" >/dev/null 2>&1 ||
+              gh release create "$tag" --title "Kokoro natural narration — shard $shard" \
+                --notes "Apache-2.0 Kokoro-82M speech generated from GitHub-authored SimJury cases."
+          done
+
+  generate:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        case_id: ${{ fromJSON(needs.prepare.outputs.cases) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install open-source speech tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y espeak-ng ffmpeg
+          pip install -r site/narration-requirements.txt
+      - name: Generate this case
+        run: |
+          node site/scripts/build-kokoro-jobs.mjs \
+            --case "${{ matrix.case_id }}" --output .narration-jobs
+          python site/scripts/generate-kokoro-clips.py \
+            ".narration-jobs/${{ matrix.case_id }}.json" .narration-clips
+      - name: Publish clips to GitHub Releases
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          shopt -s nullglob
+          for shard in $(seq 0 31); do
+            files=(.narration-clips/"$shard"/*.mp3)
+            if (( ${#files[@]} )); then
+              gh release upload "narration-kokoro-$shard" "${files[@]}" --clobber
+            fi
+          done

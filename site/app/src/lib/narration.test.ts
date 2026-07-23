@@ -1,11 +1,15 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   fallbackVoiceIndexes,
+  NARRATION_SHARDS,
+  narrationIdFor,
   narrationRate,
+  naturalVoiceUrlFor,
   normaliseNarrationRate,
   selectLocalVoices,
   setNarrationEnabled,
   setNarrationRate,
+  speak,
   speakAll,
   voiceParamsFor,
   voiceQualityScore,
@@ -17,6 +21,16 @@ afterEach(() => {
 })
 
 describe('voiceParamsFor', () => {
+  it('maps text to an opaque, stable, sharded GitHub release asset', () => {
+    const id = narrationIdFor('The evidence is ready.', 'pc')
+    expect(id).toMatch(/^pc-[0-9a-f]{8}$/)
+    const url = naturalVoiceUrlFor('The evidence is ready.', 'pc')
+    const shard = url.match(/narration-kokoro-(\d+)/)?.[1]
+    expect(url).toMatch(new RegExp(`/narration-kokoro-\\d+/${id}\\.mp3$`))
+    expect(Number(shard)).toBeLessThan(NARRATION_SHARDS)
+    expect(url).not.toContain('evidence')
+  })
+
   it('is deterministic per speaker key', () => {
     expect(voiceParamsFor('J-07', 5)).toEqual(voiceParamsFor('J-07', 5))
   })
@@ -62,6 +76,44 @@ describe('voiceParamsFor', () => {
     expect(indexes[2]).not.toBe(indexes[3])
   })
 
+})
+
+describe('natural narration', () => {
+  it('plays the GitHub-hosted Kokoro clip before using device speech', async () => {
+    class FakeAudio {
+      static instances: FakeAudio[] = []
+      preload = ''
+      playbackRate = 1
+      onplay: (() => void) | null = null
+      onended: (() => void) | null = null
+      onerror: (() => void) | null = null
+      pause = vi.fn()
+      load = vi.fn()
+      removeAttribute = vi.fn()
+      play = vi.fn().mockResolvedValue(undefined)
+
+      constructor(readonly src: string) {
+        FakeAudio.instances.push(this)
+      }
+    }
+    const values = new Map<string, string>()
+    vi.stubGlobal('Audio', FakeAudio)
+    vi.stubGlobal('localStorage', {
+      getItem: (key: string) => values.get(key) ?? null,
+      setItem: (key: string, value: string) => values.set(key, value),
+    })
+    setNarrationEnabled(true)
+    const done = vi.fn()
+
+    speak('The evidence is ready.', 'pc', done, 1.15)
+    expect(FakeAudio.instances[0].src).toBe(
+      naturalVoiceUrlFor('The evidence is ready.', 'pc'),
+    )
+    expect(FakeAudio.instances[0].playbackRate).toBe(1.15)
+    await FakeAudio.instances[0].play()
+    FakeAudio.instances[0].onended?.()
+    expect(done).toHaveBeenCalledOnce()
+  })
 })
 
 describe('normaliseNarrationRate', () => {
