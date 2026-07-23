@@ -15,6 +15,7 @@ import { caseSchema, type TrialCase } from '../src/lib/caseSchema'
 import { checkQueue, type QualityIssue } from '../src/lib/caseQuality'
 import { docketCaseSchema, type DocketCase } from '../src/lib/v2/caseSchema'
 import { checkDocketQueue } from '../src/lib/v2/caseQuality'
+import { docketRunwayError } from '../src/lib/v2/runway'
 import { checkDynamics } from '../src/engine/dynamics'
 
 // Resolve relative to this script, not the process cwd, so it works the same
@@ -25,7 +26,7 @@ interface Queue<T> {
   name: string
   dir: string
   schema: ZodType<T>
-  gate: (cases: T[]) => QualityIssue[]
+  gate: (cases: T[]) => Pick<QualityIssue, 'caseId' | 'message'>[]
 }
 
 function validateQueue<T>(q: Queue<T>, errors: string[]): number {
@@ -94,16 +95,24 @@ function main(): void {
       schema: docketCaseSchema,
       // Design gate, then the deliberation-dynamics simulation: a docket case
       // only ships if its room is alive (see src/engine/dynamics.ts).
-      gate: (cases) => [
-        ...checkDocketQueue(cases),
-        ...cases.flatMap((c) =>
-          checkDynamics(c).map((message) => ({
-            caseId: c.id,
-            message,
-            kind: 'design' as const,
-          })),
-        ),
-      ],
+      gate: (cases) => {
+        const runwayError = docketRunwayError(
+          cases.map((c) => c.publish_date),
+        )
+        return [
+          ...checkDocketQueue(cases),
+          ...cases.flatMap((c) =>
+            checkDynamics(c).map((message) => ({
+              caseId: c.id,
+              message,
+              kind: 'design' as const,
+            })),
+          ),
+          ...(runwayError
+            ? [{ caseId: 'queue', message: runwayError }]
+            : []),
+        ]
+      },
     },
     errors,
   )
