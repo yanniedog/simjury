@@ -1,16 +1,29 @@
+import { useEffect } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
+import { speak, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { CaseMedia, StoryText } from './CaseMedia'
 
 export function DocketIntro({
   trial,
   dayNumber,
+  narration,
+  playbackRate,
   onBegin,
 }: {
   trial: DocketCase
   dayNumber: number
+  narration: boolean
+  playbackRate: NarrationRate
   onBegin: () => void
 }) {
   const accused = trial.cast.find((m) => m.id === trial.accused.cast_id)
+
+  useEffect(() => {
+    if (narration) {
+      speak(trial.hook, 'narrator', undefined, playbackRate)
+    }
+    return stopSpeech
+  }, [trial.hook, narration, playbackRate])
 
   return (
     <div className="phase-view briefing-view space-y-6">
