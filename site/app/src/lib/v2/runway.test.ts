@@ -22,6 +22,13 @@ describe('docketRunwayError', () => {
     )
   })
 
+  it('rejects an empty docket', () => {
+    expect(docketRunwayError([], today)).toBe(
+      'docket runway expired: latest publish_date is none; ' +
+        'requires at least 14 days through 2026-08-06 (today 2026-07-23, UTC)',
+    )
+  })
+
   it('uses the UTC calendar date regardless of the input offset', () => {
     const sameInstant = new Date('2026-07-23T00:30:00+10:00')
 

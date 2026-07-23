@@ -42,6 +42,11 @@ function validateQueue<T>(q: Queue<T>, errors: string[]): number {
 
   if (files.length === 0) {
     console.warn(`${q.name}/ has no .json cases yet — nothing to validate.`)
+    // Queue-level gates still matter for an empty live queue. The legacy v1
+    // gate permits its pre-content state; the docket runway gate rejects it.
+    for (const issue of q.gate([])) {
+      errors.push(`${q.name}/${issue.caseId}: ${issue.message}`)
+    }
     return 0
   }
 
