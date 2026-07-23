@@ -15,6 +15,8 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 `DAILY-PIVOT.md` for the decision record and `ROADMAP.md`'s Track D for the delivery ladder.
 
 ## Recent issues
+- [DONE] #0002 Worker development audit reports three high libvips CVEs through Wrangler Miniflare’s pinned sharp 0.34.5 [site/package.json] -> Worker development dependency chain is current and clean, with Sharp 0.35.3 overriding Miniflare’s vulnerable pin [site/package.json] (fixed)
+  - Partial attempt: Updated Wrangler to 4.113.0 and overrode Miniflare’s vulnerable Sharp pin with patched 0.35.3; lockfile audit is now clean [site/package.json]
 - [DONE] #0001 GitHub npm 11.16 rejects the upgraded app lockfile because @emnapi optional native packages are missing [site/app/package-lock.json] -> Toolchain lockfile is synchronized with GitHub’s npm 11.16 and passes the exact clean-install gate [site/app/package-lock.json] (fixed)
   - Partial attempt: Regenerated package-lock.json with GitHub CI’s npm 11.16.0; npm reported zero vulnerabilities [site/app/package-lock.json]
 
@@ -45,6 +47,10 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 - `11.16`
 - `package-lock.json`
 - `11.16.0`
+- `0.34.5`
+- `4.113.0`
+- `0.35.3`
+- `4.113`
 
 ## Open questions
 - None logged yet.

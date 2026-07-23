@@ -20,6 +20,9 @@
     "test:worker": "npm run narration:manifest && node --test src/index.test.js"
   },
   "devDependencies": {
-    "wrangler": "^4.69.0"
+    "wrangler": "4.113.0"
+  },
+  "overrides": {
+    "sharp": "0.35.3"
   }
 }
