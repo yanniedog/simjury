@@ -133,7 +133,10 @@ function stopSpeech() { if (synth) { onSpeechEnd = null; synth.cancel(); } pause
 
 // Speak text as `key`; call `done` when finished (naturally or skipped/disabled).
 function speak(text, key, done) {
-  if (!synth || !narrationOn || !text) { if (done) done(); return; }
+  // Missing speech support is a manual-reading mode, not a completed utterance.
+  // Calling `done` here would synchronously skip the whole trial.
+  if (!synth) return;
+  if (!narrationOn || !text) { if (done) done(); return; }
   synth.cancel();
   const u = new SpeechSynthesisUtterance(text);
   const { voice, pitch, rate } = voiceFor(key || 'narrator');
@@ -210,7 +213,12 @@ function loadSave() {
     // Only include keys that are present — never spread `undefined` over the S defaults
     // (otherwise the default diary object gets clobbered and renderVerdict throws).
     const out = { phase: s.phase, pos: s.pos | 0, verdict: s.verdict || null };
-    if (s.diary) out.diary = s.diary;
+    if (s.diary && typeof s.diary === 'object') {
+      out.diary = {
+        topReason: String(s.diary.topReason ?? ''),
+        strongestDoubt: String(s.diary.strongestDoubt ?? ''),
+      };
+    }
     return out;
   } catch { return {}; }
 }
@@ -363,6 +371,10 @@ function syncControls() {
 }
 
 /* ================================ Verdict ================================ */
+function diaryComplete() {
+  return Boolean(S.diary.topReason.trim() && S.diary.strongestDoubt.trim());
+}
+
 function renderVerdict() {
   stopSpeech();
   const d = S.diary;
@@ -375,16 +387,16 @@ function renderVerdict() {
       <button class="choice" data-verdict="guilty" aria-pressed="${S.verdict === 'guilty'}">Guilty</button>
       <button class="choice" data-verdict="not_guilty" aria-pressed="${S.verdict === 'not_guilty'}">Not guilty</button>
     </div>
-    <details class="diary"><summary>Add a private note (optional)</summary>
+    <details class="diary" open><summary>Record your private verdict diary</summary>
       <div class="field"><label>The reason that weighs most</label>
-        <input type="text" data-diary="topReason" value="${esc(d.topReason)}" /></div>
+        <input type="text" data-diary="topReason" value="${esc(d.topReason)}" required /></div>
       <div class="field"><label>Your strongest doubt</label>
-        <input type="text" data-diary="strongestDoubt" value="${esc(d.strongestDoubt)}" /></div>
+        <input type="text" data-diary="strongestDoubt" value="${esc(d.strongestDoubt)}" required /></div>
     </details>
     <p class="warn">Locking is permanent — that is the whole point.</p>
     <div class="nav-row">
       <button class="btn ghost" data-act="backtoread">← Keep listening</button>
-      <button class="btn primary" data-act="lock" ${S.verdict ? '' : 'disabled'}>Lock verdict</button>
+      <button class="btn primary" data-act="lock" ${S.verdict && diaryComplete() ? '' : 'disabled'}>Lock verdict</button>
     </div>`;
 }
 
@@ -472,14 +484,18 @@ function roomTally() {
   for (const p of Object.values(S.roomPositions)) t[p] = (t[p] || 0) + 1;
   return t;
 }
+function roomOutcome(t) {
+  if (t.G >= 10) return 'Guilty';
+  if (t.NG >= 10) return 'Not guilty';
+  return 'Deadlocked';
+}
 function renderRoomVerdict() {
   const t = roomTally();
-  const g = t.G, ng = t.NG + t.U; // undecided abstentions fall to the defence side for display
-  const verdict = g > ng ? 'Guilty' : (ng > g ? 'Not guilty' : 'Deadlocked');
-  const split = `${Math.max(g, ng)}–${Math.min(g, ng)}`;
+  const verdict = roomOutcome(t);
+  const split = `${t.G}–${t.NG}–${t.U}`;
   return `<div class="outcome room">
     <p class="eyebrow">The room returns</p>
-    <p class="big">${verdict}${verdict !== 'Deadlocked' ? ` · ${split}` : ''}</p>
+    <p class="big">${verdict} · ${split}</p>
     <p>${t.NG ? `${t.NG} would not convict.` : 'The room was of one mind.'}</p>
   </div>`;
 }
@@ -495,7 +511,7 @@ async function renderReveal() {
   const guilty = S.verdict === 'guilty';
   const yours = guilty ? 'Guilty' : 'Not guilty';
   const t = S.roomPositions ? roomTally() : null;
-  const roomVerdict = t ? (t.G > (t.NG + t.U) ? 'Guilty' : 'Not guilty') : null;
+  const roomVerdict = t ? roomOutcome(t) : null;
 
   let compare = '';
   if (pres.recordInnocent) {
@@ -586,7 +602,7 @@ app.addEventListener('click', (e) => {
     case 'narr': setNarration(!narrationOn); break;
     case 'toverdict': case 'verdict-jump': go('verdict'); break;
     case 'backtoread': go('reading'); break;
-    case 'lock': if (S.verdict) go('juryroom'); break;
+    case 'lock': if (S.verdict && diaryComplete()) go('juryroom'); break;
     case 'room-next': stopSpeech(); roomAdvance(); break;
     case 'room-skip': roomSkip(); break;
     case 'toreveal': go('reveal'); break;
@@ -600,7 +616,12 @@ app.addEventListener('click', (e) => {
 });
 app.addEventListener('input', (e) => {
   const k = e.target.dataset.diary;
-  if (k) { S.diary[k] = e.target.value; save(); }
+  if (k) {
+    S.diary[k] = e.target.value;
+    save();
+    const lock = app.querySelector('[data-act="lock"]');
+    if (lock) lock.disabled = !(S.verdict && diaryComplete());
+  }
 });
 document.addEventListener('keydown', (e) => {
   if (S?.phase === 'reading') {
