@@ -311,9 +311,9 @@
         }
       ],
       "surface_persuasion": 0.55,
-      "true_weight": 0.2,
+      "true_weight": 0.75,
       "direction": "guilt",
-      "reveal_stamp": "minor",
+      "reveal_stamp": "decisive",
       "reveal_note": "The intact pipe and manually opened valve supported staging, although the tool marks could not identify who turned it.",
       "tags": [
         "credibility",
@@ -1000,7 +1000,7 @@
           ],
           "pushback": [
             "Juror 11: Tessa’s service message came before the event, so the chirp cannot simply be labelled an excuse invented for trial.",
-            "Juror 11: The roof bill and expiring cover may explain pressure. They do not identify who used the valve."
+            "Juror 11: The technician authorised Tessa to isolate the chirping probe. That ordinary maintenance advice gives the removal an innocent explanation."
           ],
           "concede": [
             "Juror 11: I accept the photographs prove damage, not cause. The intact pipe and tool-opened valve provide the missing cause evidence."
