@@ -44,7 +44,7 @@ export function fallbackVoiceIndexes(keys: string[], voiceCount: number): number
   return indexes
 }
 
-/** Prefer advertised neural/natural voices; locality is only a tie-break. */
+/** Rank voices only after remote synthesis services have been excluded. */
 export function voiceQualityScore(name: string, localService: boolean): number {
   const normalized = name.toLowerCase()
   let score = localService ? 1 : 0
@@ -52,6 +52,14 @@ export function voiceQualityScore(name: string, localService: boolean): number {
   if (/premium|enhanced/.test(normalized)) score += 80
   if (/google|microsoft/.test(normalized)) score += 10
   return score
+}
+
+export function selectLocalVoices(all: SpeechSynthesisVoice[]): SpeechSynthesisVoice[] {
+  const local = all.filter((voice) => voice.localService)
+  const english = local.filter((voice) => /^en/i.test(voice.lang))
+  return [...(english.length > 0 ? english : local)]
+    .sort((a, b) => voiceQualityScore(b.name, true) - voiceQualityScore(a.name, true))
+    .slice(0, 8)
 }
 
 const STORAGE_KEY = 'simjury:narration'
@@ -67,11 +75,7 @@ let voices: SpeechSynthesisVoice[] = []
 function refreshVoices(): void {
   const s = synth()
   if (!s || typeof s.getVoices !== 'function') return
-  const all = s.getVoices()
-  const english = all.filter((v) => /^en/i.test(v.lang))
-  voices = [...(english.length > 0 ? english : all)]
-    .sort((a, b) => voiceQualityScore(b.name, b.localService) - voiceQualityScore(a.name, a.localService))
-    .slice(0, 8)
+  voices = selectLocalVoices(s.getVoices())
 }
 {
   const s = synth()
@@ -82,7 +86,8 @@ function refreshVoices(): void {
 }
 
 export function narrationSupported(): boolean {
-  return synth() !== null
+  refreshVoices()
+  return synth() !== null && voices.length > 0
 }
 
 let memoryEnabled = false
@@ -157,13 +162,17 @@ function speakFallback(
     return
   }
   refreshVoices()
+  if (voices.length === 0) {
+    onError?.()
+    return
+  }
   const u = new SpeechSynthesisUtterance(text)
   const params = voiceParamsFor(key || 'narrator', voices.length)
   // Compute indexes at fallback time so async voice loading is reflected.
   const index = sequence && voices.length > 0
     ? fallbackVoiceIndexes(sequence.keys, voices.length)[sequence.index]
     : params.voiceIndex
-  if (voices.length > 0) u.voice = voices[index]
+  u.voice = voices[index]
   u.pitch = params.pitch
   u.rate = params.rate * playbackRate
   u.onend = () => {

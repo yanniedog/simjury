@@ -195,7 +195,7 @@
       "tags": ["burden", "digital_forensics"]
     }
   ],
-  "checkins": ["b3", "b5", "b8", "b9"],
+  "checkins": ["b3", "b5", "b8", "b10"],
   "verdict_truth": "Guilty",
   "twist": "The phishing email was real, the click was real, the shared-drawer culture was real — a whole ecosystem of reasonable doubt, most of it documented by the accused himself. But the export was approved by a hardware key that needs his PIN and his touch, over a VPN he paid for, and the sale's proceeds retired into an exchange account verified with his own passport and face. He reported the phish nine days early because he knew he'd need it: it was not a defence, it was a prop.",
   "difficulty_target": 0.6,

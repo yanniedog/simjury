@@ -8,7 +8,13 @@ describe('DocketShell', () => {
   })
 
   it('keeps the case skip link and a labelled narration control', () => {
-    vi.stubGlobal('window', { speechSynthesis: {} })
+    vi.stubGlobal('window', {
+      speechSynthesis: {
+        getVoices: () => [
+          { name: 'Desktop English', lang: 'en-US', localService: true },
+        ],
+      },
+    })
     const markup = renderToStaticMarkup(
       <DocketShell
         phase="beats"
