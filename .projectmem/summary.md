@@ -15,6 +15,8 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 `DAILY-PIVOT.md` for the decision record and `ROADMAP.md`'s Track D for the delivery ladder.
 
 ## Recent issues
+- [DONE] #0003 Legacy /play room outcome requires ten of eleven votes, contradicting its authored 8-3 return, and can describe mixed tallies as one mind [site/public/play/play.js] -> Legacy /play now returns its authored majority verdict and never labels divided or undecided tallies as one mind [site/public/play/play.js] (fixed)
+  - Partial attempt: Replaced the 10-vote threshold with a strict majority of all eleven room positions and made verdict copy account for dissent and undecided votes [site/public/play/play.js]
 - [DONE] #0002 Android release CI lint model task reads generated case assets without depending on syncCaseAssets [pilot/app/build.gradle.kts] -> All Gradle lint-related tasks now depend on generated case assets, closing the Android release CI ordering failure [pilot/app/build.gradle.kts] (fixed)
   - Failed attempt: Reproduced the exact release lint-model task locally; sandbox blocked Gradle’s fileHashes lock before configuration [pilot/.gradle]
   - Failed attempt: Elevated Gradle retry reached configuration but PowerShell split the -D Java-home argument into a task path [pilot/app/build.gradle.kts]

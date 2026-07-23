@@ -485,9 +485,20 @@ function roomTally() {
   return t;
 }
 function roomOutcome(t) {
-  if (t.G >= 10) return 'Guilty';
-  if (t.NG >= 10) return 'Not guilty';
+  const majority = (t.G + t.NG + t.U) / 2;
+  if (t.G > majority) return 'Guilty';
+  if (t.NG > majority) return 'Not guilty';
   return 'Deadlocked';
+}
+function roomDescription(t, verdict) {
+  if (verdict === 'Deadlocked') return 'The room was divided.';
+  const nonZero = [t.G, t.NG, t.U].filter((count) => count > 0).length;
+  if (nonZero === 1) return 'The room was of one mind.';
+  const dissent = verdict === 'Guilty'
+    ? (t.NG ? `${t.NG} would not convict.` : '')
+    : (t.G ? `${t.G} would convict.` : '');
+  const undecided = t.U ? `${t.U} remained undecided.` : '';
+  return [dissent, undecided].filter(Boolean).join(' ');
 }
 function renderRoomVerdict() {
   const t = roomTally();
@@ -496,7 +507,7 @@ function renderRoomVerdict() {
   return `<div class="outcome room">
     <p class="eyebrow">The room returns</p>
     <p class="big">${verdict} · ${split}</p>
-    <p>${t.NG ? `${t.NG} would not convict.` : 'The room was of one mind.'}</p>
+    <p>${roomDescription(t, verdict)}</p>
   </div>`;
 }
 
