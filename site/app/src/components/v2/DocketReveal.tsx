@@ -78,6 +78,7 @@ export function DocketReveal({
   room,
   dayNumber,
   stats,
+  onChooseAnother,
 }: {
   trial: DocketCase
   analysis: DocketAnalysis
@@ -85,6 +86,7 @@ export function DocketReveal({
   room: NonNullable<StoredPlay['room']>
   dayNumber: number
   stats: Stats
+  onChooseAnother: () => void
 }) {
   const roomLabel =
     room.kind === 'hung'
@@ -150,6 +152,14 @@ export function DocketReveal({
         <StatsPanel stats={stats} />
         <ShareCard text={shareText} />
       </div>
+
+      <button
+        type="button"
+        onClick={onChooseAnother}
+        className="w-full rounded-lg border border-neutral-700 px-4 py-3 font-semibold text-neutral-200 transition hover:bg-neutral-800"
+      >
+        Choose another sitting
+      </button>
 
       <p className="text-center text-xs text-neutral-600">
         The authored outcome belongs to this fictional case; reasonable jurors
