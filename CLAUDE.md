@@ -38,8 +38,3 @@ npm run lint; npm run typecheck; npm test; npm run validate:cases; npm run build
 pilot\gradlew.bat -p pilot test        # build + all JVM tests (case-model + pilot)
 ```
 
-> **Note:** projectmem (the old MCP memory layer this file used to mandate) is **disabled**.
-> There is no `get_instructions()` / `get_summary()` / `precheck_file()` to call. For the
-> daily track, use `DAILY-PIVOT.md`'s delivery ladder (D0–D9) as project memory — keep it
-> and this file current as PRs land. `PHASE4-STATUS.md` is the **frozen** handoff for the
-> parked historical track only; do not update it as if it were live memory.
