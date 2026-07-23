@@ -42,13 +42,14 @@ describe('docket queue', () => {
     const queueWithGap = docketQueue.filter(
       (c) => c.publish_date !== '2026-07-04',
     )
+    const newest = docketQueue[docketQueue.length - 1]
+    const [year, month, day] = newest.publish_date.split('-').map(Number)
+    const afterQueueEnd = new Date(year, month - 1, day + 1)
 
     expect(docketCaseForDate(new Date(2026, 6, 4), queueWithGap)?.id).toBe(
       'dd-0002',
     )
-    expect(docketCaseForDate(new Date(2026, 6, 31), docketQueue)?.id).toBe(
-      'dd-0014',
-    )
+    expect(docketCaseForDate(afterQueueEnd, docketQueue)).toBe(newest)
   })
 
   it('keeps a past sitting stable when later cases are added', () => {
