@@ -92,7 +92,7 @@
       "true_weight": 0.18,
       "direction": "innocence",
       "reveal_stamp": "misleading",
-      "reveal_note": "the mechanically perfect administrator fingerprint appeared conclusive at first, but the full record showed that it could not establish responsibility by itself.",
+      "reveal_note": "the alteration log looked conclusive until its hidden assumption was tested.",
       "tags": [
         "identity",
         "identity"
@@ -106,9 +106,9 @@
       "text": "I approved a repair invoice after our system displayed the supplier's usual name and Seli's administrator signature. The bank line had changed, but an email in the same thread confirmed it. When the supplier reported nonpayment, both that confirmation and the security warning had vanished from my mailbox.",
       "surface_persuasion": 0.6,
       "true_weight": 0.32,
-      "direction": "innocence",
+      "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "reveal_note": "The limits surrounding approved a repair invoice after our system displayed the supplier's usual name and seli's administrator signature kept it from deciding the charge alone.",
       "tags": [
         "identity",
         "credibility"
@@ -150,7 +150,7 @@
       "true_weight": 0.55,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "reveal_note": "several contractors could export an administrator profile helped test a witness account while leaving the central issue open.",
       "tags": [
         "timeline",
         "credibility"
@@ -161,11 +161,11 @@
       "kind": "exhibit",
       "speaker": "dc",
       "text": "The defence tenders workshop photographs timestamped at 11:02 and 11:19. Seli appears teaching at both ends of a seventeen-minute window while the invoice changed at 11:11. The workshop was across town. The images strongly limit travel, but they do not show her continuously or exclude remote approval from a nearby device.",
-      "surface_persuasion": 0.62,
-      "true_weight": 0.38,
+      "surface_persuasion": 0.7899999999999999,
+      "true_weight": 0.22,
       "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Later evidence exposed what workshop photographs timestamped at 11:02 and 11:19 could not establish.",
       "tags": [
         "identity",
         "motive"
@@ -177,11 +177,11 @@
       "speaker": "w2",
       "mode": "examination",
       "text": "I reconstructed the mail account. A forwarding rule was created six days before the supplier invoice arrived, using Seli's hardware key and private recovery channel. It copied messages containing bank change or security warning to a concealed mailbox, then deleted them after reading. The rule awaited an invoice matching the exported supplier list.",
-      "surface_persuasion": 0.58,
-      "true_weight": 0.42,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.76,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "reconstructed the mail account fixed a disputed link through an independent record.",
       "tags": [
         "timeline",
         "identity"
@@ -192,11 +192,11 @@
       "kind": "exhibit",
       "speaker": "pc",
       "text": "Exhibit six records the payment approval at 11:11. A hardware-key challenge completed through Seli's workshop laptop, then her handset opened the concealed mailbox from the same local network. Ninety seconds later, that handset displayed the cash-out code. The sequence shows remote control without requiring travel back to the housing office.",
-      "surface_persuasion": 0.66,
-      "true_weight": 0.82,
+      "surface_persuasion": 0.7000000000000001,
+      "true_weight": 0.8300000000000001,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "the forwarding rule, hardware-key approval, and cash-out sequence supplied independent control, timing, and method evidence that resolved the central ambiguity.",
+      "reveal_note": "The corroboration behind exhibit six records the payment approval at 11:11 carried genuine weight on timing, control, or method.",
       "tags": [
         "timeline",
         "timeline"
@@ -235,10 +235,10 @@
         }
       ],
       "surface_persuasion": 0.62,
-      "true_weight": 0.72,
+      "true_weight": 0.55,
       "direction": "guilt",
-      "reveal_stamp": "decisive",
-      "reveal_note": "the forwarding rule, hardware-key approval, and cash-out sequence supplied independent control, timing, and method evidence that resolved the central ambiguity.",
+      "reveal_stamp": "minor",
+      "reveal_note": "a docked hardware key can be used by another person nearby helped test a witness account while leaving the central issue open.",
       "tags": [
         "timeline",
         "procedure"
@@ -252,9 +252,9 @@
       "text": "I coordinated the workshop and remember Seli teaching through most of the morning. People moved between benches, and her laptop sat near the projector. She stepped into the storage room briefly around eleven. I assumed she was finding parts. I never saw an invoice or heard her discuss housing payments.",
       "surface_persuasion": 0.56,
       "true_weight": 0.48,
-      "direction": "guilt",
+      "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "reveal_note": "The wider sequence qualified what coordinated the workshop and remember seli teaching through most of the morning could fairly support.",
       "tags": [
         "timeline",
         "credibility"
@@ -294,9 +294,9 @@
       ],
       "surface_persuasion": 0.52,
       "true_weight": 0.3,
-      "direction": "innocence",
+      "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "reveal_note": "the storage room had the only quiet network point added context without resolving identity or intent.",
       "tags": [
         "credibility",
         "identity"
@@ -311,7 +311,7 @@
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "reveal_note": "The limits surrounding the judge directs you that privileged access alone does not prove dishonest use, and seli need not identify another operator kept it from deciding the charge alone.",
       "tags": [
         "burden",
         "procedure"
@@ -322,11 +322,11 @@
       "kind": "exhibit",
       "speaker": "pc",
       "text": "Exhibit nine follows the cash-out. The concealed mailbox sent its code to Seli's handset, and a workshop locker camera shows her distinctive repaired tool case at the kiosk while her credential opened it. Minutes later she paid a personal debt with notes bearing the kiosk's recorded sequence. The separate records complete benefit and identity.",
-      "surface_persuasion": 0.72,
+      "surface_persuasion": 0.74,
       "true_weight": 0.9,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "the forwarding rule, hardware-key approval, and cash-out sequence supplied independent control, timing, and method evidence that resolved the central ambiguity.",
+      "reveal_note": "exhibit nine follows the cash-out survived cross-examination and connected evidence from separate sources.",
       "tags": [
         "timeline",
         "timeline",
@@ -336,8 +336,8 @@
   ],
   "checkins": [
     "b2",
-    "b4",
-    "b7",
+    "b5",
+    "b8",
     "b10"
   ],
   "verdict_truth": "Guilty",
@@ -349,32 +349,32 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A quick-pattern thinker initially captured by the mechanically perfect administrator fingerprint.",
-        "register": "blunt",
+        "persona": "A blunt sceptic who will not turn probability into certainty, especially when weighing copied settings versus independent authentication.",
+        "register": "formal",
         "arc": "vibes",
         "initial": {
-          "position": "G",
-          "confidence": 58
+          "position": "NG",
+          "confidence": 57
         },
         "weights": {
-          "timeline": 0,
-          "identity": 2,
+          "timeline": 2,
+          "identity": -1,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "For me, the anchor is the forwarding rule, private authentication, and cash-out trail; it answers the weakness that first divided this room.",
+            "In my notes at seat 2, the forwarding rule, private authentication, and cash-out trail agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I will not let the copied administrator profile and workshop photographs decide more than its source can support.",
+            "I need the chronology laid out before I choose between those accounts. Here that means copied settings against independent authentication."
           ],
           "concede": [
-            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+            "I admit the copied administrator profile and workshop photographs, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+            "My verdict rests on the forwarding rule, private authentication, and cash-out trail, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
@@ -386,7 +386,7 @@
             },
             "effect": {
               "delta": 2,
-              "confidence": 12,
+              "confidence": 10,
               "line": "agree"
             }
           },
@@ -397,8 +397,8 @@
               "direction": "innocence"
             },
             "effect": {
-              "delta": 2,
-              "confidence": 8,
+              "delta": 1,
+              "confidence": 6,
               "line": "concede"
             }
           },
@@ -419,38 +419,38 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A careful note-taker who keeps returning to chronology.",
-        "register": "plain",
-        "arc": "steady",
+        "persona": "A shift worker who notices breaks in chronology, especially when weighing copied settings versus independent authentication.",
+        "register": "hesitant",
+        "arc": "vibes",
         "initial": {
-          "position": "G",
-          "confidence": 58
+          "position": "NG",
+          "confidence": 47
         },
         "weights": {
-          "timeline": 0,
           "identity": 2,
+          "motive": 0,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "I move because the forwarding rule, private authentication, and cash-out trail; it answers the weakness that first divided this room.",
+            "In my notes at seat 3, the forwarding rule, private authentication, and cash-out trail agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I keep separating the copied administrator profile and workshop photographs decide more than its source can support.",
+            "Two records agreeing matters more to me than one record sounding certain. Here that means copied settings against independent authentication."
           ],
           "concede": [
-            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+            "I can see why the copied administrator profile and workshop photographs, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+            "I finish with the forwarding rule, private authentication, and cash-out trail, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "identity",
               "stance": "proves",
               "direction": "guilt"
             },
@@ -462,13 +462,13 @@
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "motive",
               "stance": "proves",
               "direction": "innocence"
             },
             "effect": {
               "delta": 2,
-              "confidence": 8,
+              "confidence": 7,
               "line": "concede"
             }
           },
@@ -489,35 +489,32 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A principled holdout who tests every claim against the burden.",
-        "register": "formal",
-        "arc": "principled_holdout",
+        "persona": "A bookkeeper who tests whether separate records truly reconcile, especially when weighing copied settings versus independent authentication.",
+        "register": "blunt",
+        "arc": "steady",
         "initial": {
-          "position": "NG",
-          "confidence": 52
+          "position": "G",
+          "confidence": 54
         },
         "weights": {
           "timeline": 2,
-          "identity": 0,
+          "identity": 1,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "The part I cannot explain away is the forwarding rule, private authentication, and cash-out trail; it answers the weakness that first divided this room.",
+            "In my notes at seat 4, the forwarding rule, private authentication, and cash-out trail agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "Before I rely on the copied administrator profile and workshop photographs decide more than its source can support.",
+            "I am testing which side can explain the missing link without assumption. Here that means copied settings against independent authentication."
           ],
           "concede": [
-            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+            "At first I gave too much weight to the copied administrator profile and workshop photographs, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
-          ],
-          "holdout": [
-            "I will hold until admitted evidence meets the burden, not until everyone repeats an assumption."
+            "The deciding chain for me is the forwarding rule, private authentication, and cash-out trail, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
@@ -529,7 +526,7 @@
             },
             "effect": {
               "delta": 2,
-              "confidence": 12,
+              "confidence": 14,
               "line": "agree"
             }
           },
@@ -540,8 +537,81 @@
               "direction": "innocence"
             },
             "effect": {
-              "delta": 2,
+              "delta": 1,
               "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "A caregiver who is alert to pressure and unequal power, especially when weighing copied settings versus independent authentication.",
+        "register": "plain",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "G",
+          "confidence": 44
+        },
+        "weights": {
+          "identity": 2,
+          "motive": -1,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I checked the sequence against the forwarding rule, private authentication, and cash-out trail; it answers the weakness that first divided this room.",
+            "In my notes at seat 5, the forwarding rule, private authentication, and cash-out trail agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I hear the force of the copied administrator profile and workshop photographs decide more than its source can support.",
+            "The burden makes me separate a possible story from a proved one. Here that means copied settings against independent authentication."
+          ],
+          "concede": [
+            "I concede the surface force of the copied administrator profile and workshop photographs, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I return at the end to the forwarding rule, private authentication, and cash-out trail, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on copied settings versus independent authentication until evidence, rather than consensus, answers it; from seat 5, I relate it to copied settings against independent authentication."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 6,
               "line": "concede"
             }
           },
@@ -559,111 +629,35 @@
         ]
       },
       {
-        "id": "J-04",
-        "seat": 5,
-        "label": "Juror 5",
-        "persona": "A practical juror who values independent corroboration.",
-        "register": "hesitant",
-        "arc": "burden_drifter",
-        "initial": {
-          "position": "G",
-          "confidence": 58
-        },
-        "weights": {
-          "timeline": 0,
-          "identity": 2,
-          "burden": 2
-        },
-        "lines": {
-          "agree": [
-            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
-          ],
-          "pushback": [
-            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
-          ],
-          "concede": [
-            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
-          ],
-          "final": [
-            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
-          ],
-          "burden_drift": [
-            "I still want the accused to explain what otherwise looks impossible."
-          ]
-        },
-        "reaction_rules": [
-          {
-            "when": {
-              "theme": "timeline",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 12,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "identity",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 8,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "burden_drift"
-            }
-          }
-        ]
-      },
-      {
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A cautious juror willing to change when the sequence becomes clear.",
+        "persona": "A technician who distrusts labels without source data, especially when weighing copied settings versus independent authentication.",
         "register": "formal",
-        "arc": "foreperson",
+        "arc": "mind_changer",
         "initial": {
-          "position": "NG",
-          "confidence": 52
+          "position": "G",
+          "confidence": 51
         },
         "weights": {
           "timeline": 2,
           "identity": 0,
-          "burden": 2
+          "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "What changes my vote is the forwarding rule, private authentication, and cash-out trail; it answers the weakness that first divided this room.",
+            "In my notes at seat 6, the forwarding rule, private authentication, and cash-out trail agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I am not treating the copied administrator profile and workshop photographs decide more than its source can support.",
+            "I want the source data before I accept the label attached to it. Here that means copied settings against independent authentication."
           ],
           "concede": [
-            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+            "I was initially moved by the copied administrator profile and workshop photographs, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
-          ],
-          "burden_correct": [
-            "I am correcting that: the prosecution carries the burden, and I will test its proof."
+            "My final vote follows the forwarding rule, private authentication, and cash-out trail, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
@@ -686,8 +680,8 @@
               "direction": "innocence"
             },
             "effect": {
-              "delta": 2,
-              "confidence": 8,
+              "delta": 1,
+              "confidence": 7,
               "line": "concede"
             }
           },
@@ -699,7 +693,7 @@
             "effect": {
               "delta": 0,
               "confidence": 0,
-              "line": "burden_correct"
+              "line": "pushback"
             }
           }
         ]
@@ -708,50 +702,50 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A confident speaker who challenges unsupported assumptions.",
-        "register": "blunt",
+        "persona": "A coach who asks whether conduct matches the claimed motive, especially when weighing copied settings versus independent authentication.",
+        "register": "hesitant",
         "arc": "drifter",
         "initial": {
           "position": "G",
           "confidence": 58
         },
         "weights": {
-          "timeline": 0,
           "identity": 2,
+          "motive": 1,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "I trust the forwarding rule, private authentication, and cash-out trail; it answers the weakness that first divided this room.",
+            "In my notes at seat 7, the forwarding rule, private authentication, and cash-out trail agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "My problem with the copied administrator profile and workshop photographs decide more than its source can support.",
+            "A vivid clue will not move me unless the later sequence supports it. Here that means copied settings against independent authentication."
           ],
           "concede": [
-            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+            "The opposing account fairly points to the copied administrator profile and workshop photographs, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+            "I resolve the doubt through the forwarding rule, private authentication, and cash-out trail, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "identity",
               "stance": "proves",
               "direction": "guilt"
             },
             "effect": {
               "delta": 2,
-              "confidence": 12,
+              "confidence": 14,
               "line": "agree"
             }
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "motive",
               "stance": "proves",
               "direction": "innocence"
             },
@@ -778,32 +772,38 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A hesitant juror who needs the advocates to connect method with identity.",
-        "register": "plain",
-        "arc": "mind_changer",
+        "persona": "A student who can be swept up by a vivid first impression, especially when weighing copied settings versus independent authentication.",
+        "register": "blunt",
+        "arc": "burden_drifter",
         "initial": {
-          "position": "NG",
-          "confidence": 52
+          "position": "G",
+          "confidence": 48
         },
         "weights": {
           "timeline": 2,
-          "identity": 0,
-          "burden": 0
+          "identity": -1,
+          "burden": 2
         },
         "lines": {
           "agree": [
-            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "The room should start with the forwarding rule, private authentication, and cash-out trail; it answers the weakness that first divided this room.",
+            "In my notes at seat 8, the forwarding rule, private authentication, and cash-out trail agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "We should test the copied administrator profile and workshop photographs decide more than its source can support.",
+            "I am asking whether the physical evidence and the testimony converge. Here that means copied settings against independent authentication."
           ],
           "concede": [
-            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+            "I cannot dismiss the copied administrator profile and workshop photographs, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+            "The complete record leaves me with the forwarding rule, private authentication, and cash-out trail, with the burden left where the judge placed it."
+          ],
+          "burden_drift": [
+            "I catch myself asking for an innocent explanation, even though that is not the accused's burden; from seat 8, I relate it to copied settings against independent authentication."
+          ],
+          "burden_correct": [
+            "I am correcting course: the prosecution must close the gap, not the accused; from seat 8, I relate it to copied settings against independent authentication."
           ]
         },
         "reaction_rules": [
@@ -815,7 +815,7 @@
             },
             "effect": {
               "delta": 2,
-              "confidence": 12,
+              "confidence": 10,
               "line": "agree"
             }
           },
@@ -826,9 +826,21 @@
               "direction": "innocence"
             },
             "effect": {
-              "delta": 2,
+              "delta": 1,
               "confidence": 8,
-              "line": "concede"
+              "line": "burden_drift"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "burden_correct"
             }
           },
           {
@@ -848,38 +860,38 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A foreperson focused on giving every disagreement a fair hearing.",
+        "persona": "A foreperson who restates disagreements before calling a vote, especially when weighing copied settings versus independent authentication.",
         "register": "plain",
-        "arc": "steady",
+        "arc": "foreperson",
         "initial": {
           "position": "G",
-          "confidence": 58
+          "confidence": 55
         },
         "weights": {
-          "timeline": 0,
           "identity": 2,
+          "motive": 0,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "I needed corroboration, and the forwarding rule, private authentication, and cash-out trail; it answers the weakness that first divided this room.",
+            "In my notes at seat 9, the forwarding rule, private authentication, and cash-out trail agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I still question the copied administrator profile and workshop photographs decide more than its source can support.",
+            "I need to know what this proves about intent, not only opportunity. Here that means copied settings against independent authentication."
           ],
           "concede": [
-            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+            "There is real persuasive force in the copied administrator profile and workshop photographs, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+            "I am voting from the forwarding rule, private authentication, and cash-out trail, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "identity",
               "stance": "proves",
               "direction": "guilt"
             },
@@ -891,13 +903,13 @@
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "motive",
               "stance": "proves",
               "direction": "innocence"
             },
             "effect": {
               "delta": 2,
-              "confidence": 8,
+              "confidence": 7,
               "line": "concede"
             }
           },
@@ -918,32 +930,32 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A detail-oriented juror alert to gaps in digital evidence.",
-        "register": "hesitant",
-        "arc": "drifter",
+        "persona": "A retiree who wants testimony anchored to something independent, especially when weighing copied settings versus independent authentication.",
+        "register": "formal",
+        "arc": "steady",
         "initial": {
-          "position": "NG",
-          "confidence": 52
+          "position": "G",
+          "confidence": 45
         },
         "weights": {
           "timeline": 2,
-          "identity": 0,
+          "identity": 1,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "The timing becomes coherent through the forwarding rule, private authentication, and cash-out trail; it answers the weakness that first divided this room.",
+            "In my notes at seat 10, the forwarding rule, private authentication, and cash-out trail agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I refuse to confuse the copied administrator profile and workshop photographs decide more than its source can support.",
+            "The custody trail matters only if it follows the same object throughout. Here that means copied settings against independent authentication."
           ],
           "concede": [
-            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+            "I understand the reliance on the copied administrator profile and workshop photographs, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+            "My conclusion turns on the forwarding rule, private authentication, and cash-out trail, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
@@ -955,7 +967,7 @@
             },
             "effect": {
               "delta": 2,
-              "confidence": 12,
+              "confidence": 14,
               "line": "agree"
             }
           },
@@ -966,7 +978,7 @@
               "direction": "innocence"
             },
             "effect": {
-              "delta": 2,
+              "delta": 1,
               "confidence": 8,
               "line": "concede"
             }
@@ -988,56 +1000,56 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A juror tempted to shift the burden when the story feels suspicious.",
-        "register": "formal",
-        "arc": "steady",
+        "persona": "A delivery worker who focuses on custody and physical sequence, especially when weighing copied settings versus independent authentication.",
+        "register": "hesitant",
+        "arc": "mind_changer",
         "initial": {
-          "position": "G",
-          "confidence": 58
+          "position": "NG",
+          "confidence": 52
         },
         "weights": {
-          "timeline": 0,
           "identity": 2,
+          "motive": -1,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "I am persuaded by the forwarding rule, private authentication, and cash-out trail; it answers the weakness that first divided this room.",
+            "In my notes at seat 11, the forwarding rule, private authentication, and cash-out trail agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I want a source check on the copied administrator profile and workshop photographs decide more than its source can support.",
+            "I am checking whether my doubt is evidential or merely speculative. Here that means copied settings against independent authentication."
           ],
           "concede": [
-            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+            "I began from the copied administrator profile and workshop photographs, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+            "After testing both stories, I rely on the forwarding rule, private authentication, and cash-out trail, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "identity",
               "stance": "proves",
               "direction": "guilt"
             },
             "effect": {
               "delta": 2,
-              "confidence": 12,
+              "confidence": 10,
               "line": "agree"
             }
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "motive",
               "stance": "proves",
               "direction": "innocence"
             },
             "effect": {
               "delta": 2,
-              "confidence": 8,
+              "confidence": 6,
               "line": "concede"
             }
           },
@@ -1058,12 +1070,12 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A blunt holdout who refuses to convert probability into certainty.",
+        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps, especially when weighing copied settings versus independent authentication.",
         "register": "blunt",
         "arc": "principled_holdout",
         "initial": {
           "position": "NG",
-          "confidence": 52
+          "confidence": 59
         },
         "weights": {
           "timeline": 2,
@@ -1072,21 +1084,21 @@
         },
         "lines": {
           "agree": [
-            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "My holdout ends with the forwarding rule, private authentication, and cash-out trail; it answers the weakness that first divided this room.",
+            "In my notes at seat 12, the forwarding rule, private authentication, and cash-out trail agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I am holding against the copied administrator profile and workshop photographs decide more than its source can support.",
+            "Consensus will not substitute for the independent record I still need. Here that means copied settings against independent authentication."
           ],
           "concede": [
-            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+            "I will grant the copied administrator profile and workshop photographs, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+            "I can now decide because of the forwarding rule, private authentication, and cash-out trail, with the burden left where the judge placed it."
           ],
           "holdout": [
-            "I will hold until admitted evidence meets the burden, not until everyone repeats an assumption."
+            "I will hold on copied settings versus independent authentication until evidence, rather than consensus, answers it; from seat 12, I relate it to copied settings against independent authentication."
           ]
         },
         "reaction_rules": [
@@ -1109,8 +1121,8 @@
               "direction": "innocence"
             },
             "effect": {
-              "delta": 2,
-              "confidence": 8,
+              "delta": 1,
+              "confidence": 7,
               "line": "concede"
             }
           },
@@ -1133,6 +1145,6 @@
     "model": "gpt-5.4",
     "prompt_version": "dd-2026-v2",
     "reviewer": "codex-content-curator",
-    "batch_pr": "runway-b-3"
+    "batch_pr": "runway-b-qa-fix"
   }
 }

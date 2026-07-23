@@ -29,15 +29,15 @@
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The camera timestamp was generated when the image uploaded, twelve minutes after capture. The handset record, hardware-key challenge, and pickup account instead agree to the second and all sit within Mira's control. She also searched the exact locker codes before collection. Shared premises explain opportunity for others; they do not explain three independent records following her devices and benefit."
+        "text": "Mira's account created the false appointments, she was the only clinician left inside, and the receptionist saw her aim a phone at the collection screen. The clinic's migration errors complicate the device labels but do not erase her access or her remark that the list was handled. The prosecution says those circumstances identify a deliberate scheme despite imperfect records."
       },
       "defence": {
         "speaker": "dc",
-        "text": "Clinic security was chaotic, the handset remained in a charging drawer during shifts, and staff sometimes handled alerts for one another. The prosecution asks you to treat system ownership as human identity. Even an inaccurate camera does not prove Mira touched the terminal, approved knowingly, or arranged resale. Those gaps remain on elements the prosecution must prove beyond reasonable doubt."
+        "text": "The audit screen fused three different times and mislabeled a shared recovery handset as Mira's private device. The original attestation proves her handset was offline, while the locker export identifies an agency courier and no payment to her. Account access and a suspicious photograph cannot repair that broken chain. The prosecution has not proved who approved, collected, or benefited."
       }
     }
   },
-  "epilogue": "The clinic cancelled the fraudulent prescriptions before further medicine left storage and notified every patient whose identity had been used. Mira's registration was suspended after sentence, while an independent trustee protected the rehabilitation payments she had been making. The clinic replaced shared sessions with individual hardware keys, separated medicine approval from patient intake, and began retaining original camera timestamps rather than upload times.",
+  "epilogue": "Mira returned to clinical work after the charge was dismissed, although the months without shifts exhausted the savings set aside for her sibling's rehabilitation. Investigators later referred the agency courier's locker activity for separate review without announcing a result. The clinic replaced migrated device labels, prohibited shared recovery handsets, and required a second clinician to verify every restricted prescription before collection.",
   "cast": [
     {
       "id": "judge",
@@ -86,15 +86,15 @@
     {
       "id": "b1",
       "kind": "exhibit",
-      "speaker": "dc",
-      "text": "Exhibit one is a corridor still stamped 20:14. Mira stands outside the treatment bay carrying two meal boxes while the first disputed prescription shows approval at 20:14. The image appears to make simultaneous use impossible and gives the defence a clean alibi, but the overlay does not identify whether it records capture or upload time.",
+      "speaker": "pc",
+      "text": "Exhibit one combines the prescribing audit with a corridor thumbnail. It places Mira's account, a handset labelled Mira private, and her silhouette beside the bay at 20:14. On one screen the sequence looks seamless: presence, approval, and access. The display does not reveal that its three timestamps came from different systems.",
       "surface_persuasion": 0.84,
       "true_weight": 0.18,
-      "direction": "innocence",
+      "direction": "guilt",
       "reveal_stamp": "misleading",
-      "reveal_note": "the corridor camera still appeared conclusive at first, but the full record showed that it could not establish responsibility by itself.",
+      "reveal_note": "exhibit one combines the prescribing audit with a corridor thumbnail was persuasive on the surface but weak on the fact it claimed to prove.",
       "tags": [
-        "identity",
+        "digital_forensics",
         "identity"
       ]
     },
@@ -103,14 +103,14 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "I supervised the clinic that night. I found empty appointment records matched to restricted prescriptions under Mira's account. Staff sometimes reused terminals, but only registered clinicians could approve medicine. I initially accepted the corridor still as proof that somebody had stolen her session until the original camera export was recovered.",
+      "text": "I supervised the clinic and found nineteen empty appointments linked to restricted prescriptions under Mira's account. She was the final clinician on duty, and our dashboard named her handset on every approval. I suspended her before requesting the original device and camera exports because the combined audit appeared conclusive.",
       "surface_persuasion": 0.6,
       "true_weight": 0.32,
-      "direction": "innocence",
+      "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "reveal_note": "The wider sequence qualified what supervised the clinic and found nineteen empty appointments linked to restricted prescriptions under mira's account could fairly support.",
       "tags": [
-        "identity",
+        "digital_forensics",
         "credibility"
       ]
     },
@@ -119,40 +119,40 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "You allowed staff to leave sessions open during meal breaks? I tolerated it when queues were long, although policy forbade it. The emergency handset sat in a shared charging drawer? Yes, but Mira's private handset received these challenges. You blamed her before checking the camera's upload setting? I suspended access first and requested the original export later.",
+      "text": "You called the recovery handset private before obtaining its device attestation? Yes. The migration table displayed Mira's name beside it. Several staff used that handset for urgent approvals? They did, despite policy requiring personal devices. And the 20:14 camera label was an upload time? The original export later showed capture at 20:02.",
       "turns": [
         {
           "speaker": "dc",
-          "text": "You allowed staff to leave sessions open during meal breaks?"
+          "text": "You called the recovery handset private before obtaining its device attestation?"
         },
         {
           "speaker": "w1",
-          "text": "I tolerated it when queues were long, although policy forbade it."
+          "text": "Yes. The migration table displayed Mira's name beside it."
         },
         {
           "speaker": "dc",
-          "text": "The emergency handset sat in a shared charging drawer?"
+          "text": "Several staff used that handset for urgent approvals?"
         },
         {
           "speaker": "w1",
-          "text": "Yes, but Mira's private handset received these challenges."
+          "text": "They did, despite policy requiring personal devices."
         },
         {
           "speaker": "dc",
-          "text": "You blamed her before checking the camera's upload setting?"
+          "text": "And the 20:14 camera label was an upload time?"
         },
         {
           "speaker": "w1",
-          "text": "I suspended access first and requested the original export later."
+          "text": "The original export later showed capture at 20:02."
         }
       ],
       "surface_persuasion": 0.55,
       "true_weight": 0.55,
-      "direction": "guilt",
+      "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "reveal_note": "you called the recovery handset private before obtaining its device attestation added context without resolving identity or intent.",
       "tags": [
-        "timeline",
+        "procedure",
         "credibility"
       ]
     },
@@ -165,9 +165,9 @@
       "true_weight": 0.38,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "reveal_note": "The limits surrounding the shift sheet kept it from deciding the charge alone.",
       "tags": [
-        "identity",
+        "digital_forensics",
         "motive"
       ]
     },
@@ -176,29 +176,29 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "I compared application events with the camera's original files. The visible 20:14 overlay was added when a weak connection finally uploaded an image captured at 20:02. At actual approval time, Mira had returned inside. The terminal request and private-handset response were separated by eleven seconds and used her registered hardware key.",
+      "text": "I compared the original camera file, handset attestation, and approval service. The image was captured twelve minutes before its overlay time. More importantly, the approving device was the clinic recovery handset, relabelled during migration with Mira's account name. Her actual handset remained offline in a sealed update cycle throughout the disputed approvals.",
       "surface_persuasion": 0.58,
       "true_weight": 0.42,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "reveal_note": "compared the original camera file, handset attestation, and approval service survived cross-examination and connected evidence from separate sources.",
       "tags": [
         "timeline",
-        "identity"
+        "digital_forensics"
       ]
     },
     {
       "id": "b6",
       "kind": "exhibit",
-      "speaker": "pc",
-      "text": "Exhibit six contains the authentication challenge. It was opened on Mira's private handset, approved after a biometric unlock, and paired with the hardware key she carried on her badge. Device logs show no reset, duplicate key, or remote recovery. Together those records connect the prescription approval to two items assigned to Mira.",
+      "speaker": "dc",
+      "text": "Exhibit six is the device-attestation export signed before the investigation began. Its hardware identifier belongs to the shared recovery handset, and the supposed biometric event was a staff access code rendered under the wrong label. Mira's personal handset has a different identifier and records no challenge, unlock, or connection during the prescription window.",
       "surface_persuasion": 0.66,
       "true_weight": 0.82,
-      "direction": "guilt",
+      "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "the handset challenge, hardware-key record, and locker access supplied independent control, timing, and method evidence that resolved the central ambiguity.",
+      "reveal_note": "Independent records confirmed what the device-attestation export signed before the investigation began contributed to the final reconstruction.",
       "tags": [
-        "timeline",
+        "procedure",
         "timeline"
       ]
     },
@@ -207,40 +207,40 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "cross",
-      "text": "A person nearby could lift a handset from the charging area? They could lift it, but a biometric unlock was still required. Biometrics can fail and fall back to a code? Yes, after two failures; neither failure appears in these logs. So your evidence identifies devices, not a face? It identifies uninterrupted possession and successful private authentication, which is strong but not visual identification.",
+      "text": "The dashboard label Mira private came from a migration table, not the handset? Correct. The underlying hardware identifier points to the clinic recovery device. Can the staff code identify which worker entered it? No. It proves local use of the shared handset only. Did Mira's personal device approve any disputed prescription? No. Its signed log shows no challenge or network session.",
       "turns": [
         {
           "speaker": "dc",
-          "text": "A person nearby could lift a handset from the charging area?"
+          "text": "The dashboard label Mira private came from a migration table, not the handset?"
         },
         {
           "speaker": "w2",
-          "text": "They could lift it, but a biometric unlock was still required."
+          "text": "Correct. The underlying hardware identifier points to the clinic recovery device."
         },
         {
           "speaker": "dc",
-          "text": "Biometrics can fail and fall back to a code?"
+          "text": "Can the staff code identify which worker entered it?"
         },
         {
           "speaker": "w2",
-          "text": "Yes, after two failures; neither failure appears in these logs."
+          "text": "No. It proves local use of the shared handset only."
         },
         {
           "speaker": "dc",
-          "text": "So your evidence identifies devices, not a face?"
+          "text": "Did Mira's personal device approve any disputed prescription?"
         },
         {
           "speaker": "w2",
-          "text": "It identifies uninterrupted possession and successful private authentication, which is strong but not visual identification."
+          "text": "No. Its signed log shows no challenge or network session."
         }
       ],
       "surface_persuasion": 0.62,
       "true_weight": 0.72,
-      "direction": "guilt",
+      "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "the handset challenge, hardware-key record, and locker access supplied independent control, timing, and method evidence that resolved the central ambiguity.",
+      "reveal_note": "the dashboard label mira private came from a migration table, not the handset added context without resolving identity or intent.",
       "tags": [
-        "timeline",
+        "procedure",
         "procedure"
       ]
     },
@@ -252,11 +252,11 @@
       "text": "I worked reception and saw Mira return from the corridor carrying food. Earlier she complained that the prescribing system slowed every shift. I sometimes moved the emergency handset between chargers, so other people could reach it. I never saw Mira type a false appointment or discuss selling medicine.",
       "surface_persuasion": 0.56,
       "true_weight": 0.48,
-      "direction": "guilt",
+      "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "reveal_note": "The limits surrounding worked reception and saw mira return from the corridor carrying food kept it from deciding the charge alone.",
       "tags": [
-        "timeline",
+        "procedure",
         "credibility"
       ]
     },
@@ -294,12 +294,12 @@
       ],
       "surface_persuasion": 0.52,
       "true_weight": 0.3,
-      "direction": "innocence",
+      "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "reveal_note": "mira asked you not to ring patients about the empty slots helped test a witness account while leaving the central issue open.",
       "tags": [
         "credibility",
-        "identity"
+        "digital_forensics"
       ]
     },
     {
@@ -311,7 +311,7 @@
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "reveal_note": "The wider sequence qualified what the judge directs you that weak workplace controls do not transfer the burden to mira could fairly support.",
       "tags": [
         "burden",
         "procedure"
@@ -320,15 +320,15 @@
     {
       "id": "b11",
       "kind": "exhibit",
-      "speaker": "pc",
-      "text": "Exhibit nine links the first collection message to a locker opened with Mira's travel credential forty minutes after closing. Her handset had searched that exact locker code three minutes after approval. The resale account then sent proceeds toward a debt payment she controlled. Those independent events complete the method, timing, and benefit.",
+      "speaker": "dc",
+      "text": "Exhibit nine is the locker operator's original export. The collection code was redeemed with an agency courier credential signed out before Mira's shift. The event attributed to her travel card was a balance check at a nearby fare gate, not locker access, and the resale proceeds returned to a bulk-order account with no payment toward Mira's debts.",
       "surface_persuasion": 0.72,
       "true_weight": 0.9,
-      "direction": "guilt",
+      "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "the handset challenge, hardware-key record, and locker access supplied independent control, timing, and method evidence that resolved the central ambiguity.",
+      "reveal_note": "the locker operator's original export fixed a disputed link through an independent record.",
       "tags": [
-        "timeline",
+        "procedure",
         "timeline",
         "identity"
       ]
@@ -336,12 +336,12 @@
   ],
   "checkins": [
     "b2",
-    "b4",
-    "b7",
+    "b5",
+    "b9",
     "b10"
   ],
-  "verdict_truth": "Guilty",
-  "twist": "The corridor camera still looked like a precise alibi because its overlay showed the approval minute. The original file revealed that the overlay marked delayed upload, while the handset challenge, hardware-key record, and locker access independently followed Mira through request, approval, and collection.",
+  "verdict_truth": "Not Guilty",
+  "twist": "The combined audit screen looked like a seamless record of Mira approving and collecting medicine. Original exports separated its layers: the camera overlay marked upload, the named handset was a shared recovery device, and the locker credential belonged to an agency courier. Three apparently matching identifiers had never identified one person.",
   "difficulty_target": 0.68,
   "jury": {
     "jurors": [
@@ -349,40 +349,40 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A quick-pattern thinker initially captured by the corridor camera still.",
+        "persona": "A delivery worker who focuses on custody and physical sequence, especially when weighing migrated labels versus original device identifiers.",
         "register": "blunt",
         "arc": "vibes",
         "initial": {
           "position": "G",
-          "confidence": 58
+          "confidence": 52
         },
         "weights": {
-          "timeline": 0,
-          "identity": 2,
+          "procedure": 2,
+          "digital_forensics": 0,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "For me, the anchor is the device attestation, migration table, and locker export; it answers the weakness that first divided this room.",
+            "In my notes at seat 2, the device attestation, migration table, and locker export agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I will not let the combined audit screen decide more than its source can support.",
+            "I need the chronology laid out before I choose between those accounts. Here that means migrated labels against original identifiers."
           ],
           "concede": [
-            "I concede that the corridor camera still supports the opposing account when I view it alone."
+            "I admit the combined audit screen, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+            "My verdict rests on the device attestation, migration table, and locker export, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "procedure",
               "stance": "proves",
-              "direction": "guilt"
+              "direction": "innocence"
             },
             "effect": {
               "delta": 2,
@@ -392,9 +392,9 @@
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "digital_forensics",
               "stance": "proves",
-              "direction": "innocence"
+              "direction": "guilt"
             },
             "effect": {
               "delta": 2,
@@ -419,40 +419,43 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A careful note-taker who keeps returning to chronology.",
+        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps, especially when weighing migrated labels versus original device identifiers.",
         "register": "plain",
         "arc": "steady",
         "initial": {
           "position": "G",
-          "confidence": 58
+          "confidence": 52
         },
         "weights": {
-          "timeline": 0,
-          "identity": 2,
+          "procedure": 2,
+          "digital_forensics": 0,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "I move because the device attestation, migration table, and locker export; it answers the weakness that first divided this room.",
+            "In my notes at seat 3, the device attestation, migration table, and locker export agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I keep separating the combined audit screen decide more than its source can support.",
+            "Two records agreeing matters more to me than one record sounding certain. Here that means migrated labels against original identifiers."
           ],
           "concede": [
-            "I concede that the corridor camera still supports the opposing account when I view it alone."
+            "I can see why the combined audit screen, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+            "I finish with the device attestation, migration table, and locker export, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on migrated labels versus original device identifiers until evidence, rather than consensus, answers it; from seat 3, I relate it to migrated labels against original identifiers."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "procedure",
               "stance": "proves",
-              "direction": "guilt"
+              "direction": "innocence"
             },
             "effect": {
               "delta": 2,
@@ -462,9 +465,9 @@
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "digital_forensics",
               "stance": "proves",
-              "direction": "innocence"
+              "direction": "guilt"
             },
             "effect": {
               "delta": 2,
@@ -489,43 +492,43 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A principled holdout who tests every claim against the burden.",
+        "persona": "A blunt sceptic who will not turn probability into certainty, especially when weighing migrated labels versus original device identifiers.",
         "register": "formal",
         "arc": "principled_holdout",
         "initial": {
           "position": "NG",
-          "confidence": 52
+          "confidence": 58
         },
         "weights": {
-          "timeline": 2,
-          "identity": 0,
+          "procedure": 0,
+          "digital_forensics": 2,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "The part I cannot explain away is the device attestation, migration table, and locker export; it answers the weakness that first divided this room.",
+            "In my notes at seat 4, the device attestation, migration table, and locker export agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "Before I rely on the combined audit screen decide more than its source can support.",
+            "I am testing which side can explain the missing link without assumption. Here that means migrated labels against original identifiers."
           ],
           "concede": [
-            "I concede that the corridor camera still supports the opposing account when I view it alone."
+            "At first I gave too much weight to the combined audit screen, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+            "The deciding chain for me is the device attestation, migration table, and locker export, with the burden left where the judge placed it."
           ],
           "holdout": [
-            "I will hold until admitted evidence meets the burden, not until everyone repeats an assumption."
+            "I will hold until the device attestation, migration table, and locker export is tested against the burden; from seat 4, I relate it to migrated labels against original identifiers."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "procedure",
               "stance": "proves",
-              "direction": "guilt"
+              "direction": "innocence"
             },
             "effect": {
               "delta": 2,
@@ -535,9 +538,9 @@
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "digital_forensics",
               "stance": "proves",
-              "direction": "innocence"
+              "direction": "guilt"
             },
             "effect": {
               "delta": 2,
@@ -562,43 +565,43 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A practical juror who values independent corroboration.",
+        "persona": "A shift worker who notices breaks in chronology, especially when weighing migrated labels versus original device identifiers.",
         "register": "hesitant",
         "arc": "burden_drifter",
         "initial": {
           "position": "G",
-          "confidence": 58
+          "confidence": 52
         },
         "weights": {
-          "timeline": 0,
-          "identity": 2,
+          "procedure": 2,
+          "digital_forensics": 0,
           "burden": 2
         },
         "lines": {
           "agree": [
-            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "I checked the sequence against the device attestation, migration table, and locker export; it answers the weakness that first divided this room.",
+            "In my notes at seat 5, the device attestation, migration table, and locker export agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I hear the force of the combined audit screen decide more than its source can support.",
+            "The burden makes me separate a possible story from a proved one. Here that means migrated labels against original identifiers."
           ],
           "concede": [
-            "I concede that the corridor camera still supports the opposing account when I view it alone."
+            "I concede the surface force of the combined audit screen, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+            "I return at the end to the device attestation, migration table, and locker export, with the burden left where the judge placed it."
           ],
           "burden_drift": [
-            "I still want the accused to explain what otherwise looks impossible."
+            "I catch myself demanding an explanation because the combined audit screen feels personal."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "procedure",
               "stance": "proves",
-              "direction": "guilt"
+              "direction": "innocence"
             },
             "effect": {
               "delta": 2,
@@ -608,9 +611,9 @@
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "digital_forensics",
               "stance": "proves",
-              "direction": "innocence"
+              "direction": "guilt"
             },
             "effect": {
               "delta": 2,
@@ -635,43 +638,43 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A cautious juror willing to change when the sequence becomes clear.",
-        "register": "formal",
+        "persona": "A bookkeeper who tests whether separate records truly reconcile, especially when weighing migrated labels versus original device identifiers.",
+        "register": "blunt",
         "arc": "foreperson",
         "initial": {
           "position": "NG",
-          "confidence": 52
+          "confidence": 58
         },
         "weights": {
-          "timeline": 2,
-          "identity": 0,
+          "procedure": 0,
+          "digital_forensics": 2,
           "burden": 2
         },
         "lines": {
           "agree": [
-            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "What changes my vote is the device attestation, migration table, and locker export; it answers the weakness that first divided this room.",
+            "In my notes at seat 6, the device attestation, migration table, and locker export agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I am not treating the combined audit screen decide more than its source can support.",
+            "I want the source data before I accept the label attached to it. Here that means migrated labels against original identifiers."
           ],
           "concede": [
-            "I concede that the corridor camera still supports the opposing account when I view it alone."
+            "I was initially moved by the combined audit screen, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+            "My final vote follows the device attestation, migration table, and locker export, with the burden left where the judge placed it."
           ],
           "burden_correct": [
-            "I am correcting that: the prosecution carries the burden, and I will test its proof."
+            "I correct that mistake: the combined audit screen does not move the burden from the prosecution."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "procedure",
               "stance": "proves",
-              "direction": "guilt"
+              "direction": "innocence"
             },
             "effect": {
               "delta": 2,
@@ -681,9 +684,9 @@
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "digital_forensics",
               "stance": "proves",
-              "direction": "innocence"
+              "direction": "guilt"
             },
             "effect": {
               "delta": 2,
@@ -708,40 +711,43 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A confident speaker who challenges unsupported assumptions.",
-        "register": "blunt",
+        "persona": "A caregiver who is alert to pressure and unequal power, especially when weighing migrated labels versus original device identifiers.",
+        "register": "plain",
         "arc": "drifter",
         "initial": {
           "position": "G",
-          "confidence": 58
+          "confidence": 52
         },
         "weights": {
-          "timeline": 0,
-          "identity": 2,
+          "procedure": 2,
+          "digital_forensics": 0,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "I trust the device attestation, migration table, and locker export; it answers the weakness that first divided this room.",
+            "In my notes at seat 7, the device attestation, migration table, and locker export agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "My problem with the combined audit screen decide more than its source can support.",
+            "A vivid clue will not move me unless the later sequence supports it. Here that means migrated labels against original identifiers."
           ],
           "concede": [
-            "I concede that the corridor camera still supports the opposing account when I view it alone."
+            "The opposing account fairly points to the combined audit screen, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+            "I resolve the doubt through the device attestation, migration table, and locker export, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on migrated labels versus original device identifiers until evidence, rather than consensus, answers it; from seat 7, I relate it to migrated labels against original identifiers."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "procedure",
               "stance": "proves",
-              "direction": "guilt"
+              "direction": "innocence"
             },
             "effect": {
               "delta": 2,
@@ -751,9 +757,9 @@
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "digital_forensics",
               "stance": "proves",
-              "direction": "innocence"
+              "direction": "guilt"
             },
             "effect": {
               "delta": 2,
@@ -778,40 +784,40 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A hesitant juror who needs the advocates to connect method with identity.",
-        "register": "plain",
+        "persona": "A technician who distrusts labels without source data, especially when weighing migrated labels versus original device identifiers.",
+        "register": "formal",
         "arc": "mind_changer",
         "initial": {
           "position": "NG",
-          "confidence": 52
+          "confidence": 58
         },
         "weights": {
-          "timeline": 2,
-          "identity": 0,
+          "procedure": 0,
+          "digital_forensics": 2,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "The room should start with the device attestation, migration table, and locker export; it answers the weakness that first divided this room.",
+            "In my notes at seat 8, the device attestation, migration table, and locker export agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "We should test the combined audit screen decide more than its source can support.",
+            "I am asking whether the physical evidence and the testimony converge. Here that means migrated labels against original identifiers."
           ],
           "concede": [
-            "I concede that the corridor camera still supports the opposing account when I view it alone."
+            "I cannot dismiss the combined audit screen, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+            "The complete record leaves me with the device attestation, migration table, and locker export, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "procedure",
               "stance": "proves",
-              "direction": "guilt"
+              "direction": "innocence"
             },
             "effect": {
               "delta": 2,
@@ -821,9 +827,9 @@
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "digital_forensics",
               "stance": "proves",
-              "direction": "innocence"
+              "direction": "guilt"
             },
             "effect": {
               "delta": 2,
@@ -848,40 +854,40 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A foreperson focused on giving every disagreement a fair hearing.",
-        "register": "plain",
+        "persona": "A coach who asks whether conduct matches the claimed motive, especially when weighing migrated labels versus original device identifiers.",
+        "register": "hesitant",
         "arc": "steady",
         "initial": {
           "position": "G",
-          "confidence": 58
+          "confidence": 52
         },
         "weights": {
-          "timeline": 0,
-          "identity": 2,
+          "procedure": 2,
+          "digital_forensics": 0,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "I needed corroboration, and the device attestation, migration table, and locker export; it answers the weakness that first divided this room.",
+            "In my notes at seat 9, the device attestation, migration table, and locker export agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I still question the combined audit screen decide more than its source can support.",
+            "I need to know what this proves about intent, not only opportunity. Here that means migrated labels against original identifiers."
           ],
           "concede": [
-            "I concede that the corridor camera still supports the opposing account when I view it alone."
+            "There is real persuasive force in the combined audit screen, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+            "I am voting from the device attestation, migration table, and locker export, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "procedure",
               "stance": "proves",
-              "direction": "guilt"
+              "direction": "innocence"
             },
             "effect": {
               "delta": 2,
@@ -891,9 +897,9 @@
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "digital_forensics",
               "stance": "proves",
-              "direction": "innocence"
+              "direction": "guilt"
             },
             "effect": {
               "delta": 2,
@@ -918,40 +924,46 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A detail-oriented juror alert to gaps in digital evidence.",
-        "register": "hesitant",
+        "persona": "A student who can be swept up by a vivid first impression, especially when weighing migrated labels versus original device identifiers.",
+        "register": "blunt",
         "arc": "drifter",
         "initial": {
           "position": "NG",
-          "confidence": 52
+          "confidence": 58
         },
         "weights": {
-          "timeline": 2,
-          "identity": 0,
+          "procedure": 0,
+          "digital_forensics": 2,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "The timing becomes coherent through the device attestation, migration table, and locker export; it answers the weakness that first divided this room.",
+            "In my notes at seat 10, the device attestation, migration table, and locker export agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I refuse to confuse the combined audit screen decide more than its source can support.",
+            "The custody trail matters only if it follows the same object throughout. Here that means migrated labels against original identifiers."
           ],
           "concede": [
-            "I concede that the corridor camera still supports the opposing account when I view it alone."
+            "I understand the reliance on the combined audit screen, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+            "My conclusion turns on the device attestation, migration table, and locker export, with the burden left where the judge placed it."
+          ],
+          "burden_drift": [
+            "I catch myself asking for an innocent explanation, even though that is not the accused's burden; from seat 10, I relate it to migrated labels against original identifiers."
+          ],
+          "burden_correct": [
+            "I am correcting course: the prosecution must close the gap, not the accused; from seat 10, I relate it to migrated labels against original identifiers."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "procedure",
               "stance": "proves",
-              "direction": "guilt"
+              "direction": "innocence"
             },
             "effect": {
               "delta": 2,
@@ -961,9 +973,9 @@
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "digital_forensics",
               "stance": "proves",
-              "direction": "innocence"
+              "direction": "guilt"
             },
             "effect": {
               "delta": 2,
@@ -988,40 +1000,40 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A juror tempted to shift the burden when the story feels suspicious.",
-        "register": "formal",
+        "persona": "A foreperson who restates disagreements before calling a vote, especially when weighing migrated labels versus original device identifiers.",
+        "register": "plain",
         "arc": "steady",
         "initial": {
           "position": "G",
-          "confidence": 58
+          "confidence": 52
         },
         "weights": {
-          "timeline": 0,
-          "identity": 2,
+          "procedure": 2,
+          "digital_forensics": 0,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "I am persuaded by the device attestation, migration table, and locker export; it answers the weakness that first divided this room.",
+            "In my notes at seat 11, the device attestation, migration table, and locker export agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I want a source check on the combined audit screen decide more than its source can support.",
+            "I am checking whether my doubt is evidential or merely speculative. Here that means migrated labels against original identifiers."
           ],
           "concede": [
-            "I concede that the corridor camera still supports the opposing account when I view it alone."
+            "I began from the combined audit screen, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+            "After testing both stories, I rely on the device attestation, migration table, and locker export, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "procedure",
               "stance": "proves",
-              "direction": "guilt"
+              "direction": "innocence"
             },
             "effect": {
               "delta": 2,
@@ -1031,9 +1043,9 @@
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "digital_forensics",
               "stance": "proves",
-              "direction": "innocence"
+              "direction": "guilt"
             },
             "effect": {
               "delta": 2,
@@ -1058,43 +1070,43 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A blunt holdout who refuses to convert probability into certainty.",
-        "register": "blunt",
+        "persona": "A retiree who wants testimony anchored to something independent, especially when weighing migrated labels versus original device identifiers.",
+        "register": "formal",
         "arc": "principled_holdout",
         "initial": {
           "position": "NG",
-          "confidence": 52
+          "confidence": 58
         },
         "weights": {
-          "timeline": 2,
-          "identity": 0,
+          "procedure": 0,
+          "digital_forensics": 2,
           "burden": 2
         },
         "lines": {
           "agree": [
-            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
-            "I can fit that evidence into the sequence without guessing about the missing parts."
+            "My holdout ends with the device attestation, migration table, and locker export; it answers the weakness that first divided this room.",
+            "In my notes at seat 12, the device attestation, migration table, and locker export agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
-            "I want the whole chain before I turn suspicion into a verdict."
+            "I am holding against the combined audit screen decide more than its source can support.",
+            "Consensus will not substitute for the independent record I still need. Here that means migrated labels against original identifiers."
           ],
           "concede": [
-            "I concede that the corridor camera still supports the opposing account when I view it alone."
+            "I will grant the combined audit screen, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+            "I can now decide because of the device attestation, migration table, and locker export, with the burden left where the judge placed it."
           ],
           "holdout": [
-            "I will hold until admitted evidence meets the burden, not until everyone repeats an assumption."
+            "I will hold until the device attestation, migration table, and locker export is tested against the burden; from seat 12, I relate it to migrated labels against original identifiers."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "procedure",
               "stance": "proves",
-              "direction": "guilt"
+              "direction": "innocence"
             },
             "effect": {
               "delta": 2,
@@ -1104,9 +1116,9 @@
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "digital_forensics",
               "stance": "proves",
-              "direction": "innocence"
+              "direction": "guilt"
             },
             "effect": {
               "delta": 2,
@@ -1133,6 +1145,6 @@
     "model": "gpt-5.4",
     "prompt_version": "dd-2026-v2",
     "reviewer": "codex-content-curator",
-    "batch_pr": "runway-b-3"
+    "batch_pr": "runway-b-qa-fix"
   }
 }

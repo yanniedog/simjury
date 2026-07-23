@@ -29,7 +29,7 @@
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The defence was right to challenge eleven ambiguous events. The case does not depend on eleven. It depends on one: the passenger camera shows Dara reading the reroute for four seconds as the red signal fills the windscreen. The brake begins only after impact is unavoidable. A broken route counter cannot erase a clear view of chosen inattention."
+        "text": "The recovered cabin film isolates the decisive act: Dara reads the reroute for four uninterrupted seconds while a red signal fills the windscreen. The mounted display position does not explain her thumb contacting it, and rain cannot alter the frame counter. Brake, signal, and camera clocks agree. That chosen inattention, not the unreliable dashboard total, proves the dangerous driving charged."
       },
       "defence": {
         "speaker": "dc",
@@ -79,7 +79,7 @@
       "id": "w3",
       "name": "Aya Fen",
       "role_label": "vehicle systems engineer",
-      "side": "defence"
+      "side": "prosecution"
     }
   ],
   "beats": [
@@ -92,7 +92,7 @@
       "true_weight": 0.18,
       "direction": "innocence",
       "reveal_stamp": "misleading",
-      "reveal_note": "The eleven dashboard interactions appeared personal and precise, but it could not establish who acted or why.",
+      "reveal_note": "the route dashboard looked conclusive until its hidden assumption was tested.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -103,12 +103,12 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "I reconstructed speed from the van controller and road marks. The vehicle entered at forty-six, below the limit, then braked less than one second before impact. The signal had been red for five seconds. Nothing in the controller identifies where the driver was looking during the missing four seconds. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "text": "I reconstructed speed from the van controller and road marks. The vehicle entered at forty-six, below the limit, then braked less than one second before impact. The signal had been red for five seconds. Nothing in the controller identifies where the driver was looking during the missing four seconds. The controller fixed reaction time but left the missing glance for other evidence.",
       "surface_persuasion": 0.6,
       "true_weight": 0.32,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This witness explained why suspicion formed, but the account depended on an inference later tested in cross-examination.",
+      "reveal_note": "The limits surrounding reconstructed speed from the van controller and road marks kept it from deciding the charge alone.",
       "tags": [
         "digital_forensics",
         "credibility"
@@ -150,7 +150,7 @@
       "true_weight": 0.55,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The live answers exposed the limit hidden by the opening narrative and returned the record to what it could actually prove.",
+      "reveal_note": "eleven interactions sounds precise, but it is not eleven screen taps helped test a witness account while leaving the central issue open.",
       "tags": [
         "timeline",
         "credibility"
@@ -160,12 +160,12 @@
       "id": "b4",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "The defence tenders maintenance tickets showing the route unit froze and restarted twice that week. Other drivers reported phantom interactions and delayed messages. Those faults make the raw count unreliable, and they explain why Dara had complained that the dashboard punished workers for inputs they never made. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
-      "surface_persuasion": 0.62,
-      "true_weight": 0.38,
+      "text": "The defence tenders maintenance tickets showing the route unit froze and restarted twice that week. Other drivers reported phantom interactions and delayed messages. Those faults make the raw count unreliable, and they explain why Dara had complained that the dashboard punished workers for inputs they never made. The tickets weakened the event count without explaining the recovered cabin images.",
+      "surface_persuasion": 0.7899999999999999,
+      "true_weight": 0.22,
       "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "The exhibit supported the opposing story, but alternative explanations prevented it from carrying decisive weight.",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Later evidence exposed what maintenance tickets showing the route unit froze and restarted twice that week could not establish.",
       "tags": [
         "digital_forensics",
         "motive"
@@ -181,7 +181,7 @@
       "true_weight": 0.42,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The testimony added context and motive, not a reliable identification of the criminal act.",
+      "reveal_note": "sent the reroute because a clinic requested an urgent package added context without resolving identity or intent.",
       "tags": [
         "timeline",
         "digital_forensics"
@@ -193,10 +193,10 @@
       "speaker": "pc",
       "text": "Exhibit six is the passenger camera, recovered after its memory card was found behind a loose panel. It shows Dara's face turn toward the mounted display for four continuous seconds. Her right thumb scrolls once. During the same sequence, the red signal grows brighter through the windscreen and the cyclist enters view.",
       "surface_persuasion": 0.66,
-      "true_weight": 0.82,
+      "true_weight": 0.76,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The four-second passenger-camera sequence independently fixed the mechanism and sequence that the louder clue obscured.",
+      "reveal_note": "The corroboration behind the passenger camera, recovered after its memory card was found behind a loose panel carried genuine weight on timing, control, or method.",
       "tags": [
         "timeline",
         "timeline"
@@ -235,10 +235,10 @@
         }
       ],
       "surface_persuasion": 0.62,
-      "true_weight": 0.72,
+      "true_weight": 0.55,
       "direction": "guilt",
-      "reveal_stamp": "decisive",
-      "reveal_note": "Cross-examination forced the witness to separate institutional assumptions from the fact that ultimately controlled the case.",
+      "reveal_stamp": "minor",
+      "reveal_note": "the display sits close to the left mirror, does it not helped test a witness account while leaving the central issue open.",
       "tags": [
         "timeline",
         "procedure"
@@ -250,11 +250,11 @@
       "speaker": "w3",
       "mode": "examination",
       "text": "I tested the camera against the van geometry. Mirror checks produce a short eye movement left; this recording shows a sustained downward fixation and a thumb movement on the display. Rain reduces exterior detail but does not alter cabin timing. The clip's frame counter matches the vehicle controller within two hundredths of a second.",
-      "surface_persuasion": 0.56,
-      "true_weight": 0.48,
+      "surface_persuasion": 0.7000000000000001,
+      "true_weight": 0.8300000000000001,
       "direction": "guilt",
-      "reveal_stamp": "minor",
-      "reveal_note": "The third witness supplied human and technical context consistent with the true account, while stopping short of deciding the charge alone.",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Independent records confirmed what tested the camera against the van geometry contributed to the final reconstruction.",
       "tags": [
         "timeline",
         "credibility"
@@ -265,38 +265,38 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "Could compression turn a half-second glance into four seconds? No. It may blur frames, not invent elapsed time. Could the thumb movement be steering correction? The hand leaves the wheel and contacts the display. Does the route fault change that image? No. The fault explains other events, not the recorded gesture.",
+      "text": "Rain and head movement can blur the exact direction of a glance? They can blur direction at the margins, but they cannot create four seconds. You cannot read the words Dara saw on the display? No. The screen content comes from the separate route log. And you cannot decide dangerousness from video alone? Correct. I establish timing and movement; the legal judgment belongs to the jury.",
       "turns": [
         {
-          "speaker": "pc",
-          "text": "Could compression turn a half-second glance into four seconds?"
+          "speaker": "dc",
+          "text": "Rain and head movement can blur the exact direction of a glance?"
         },
         {
           "speaker": "w3",
-          "text": "No. It may blur frames, not invent elapsed time."
+          "text": "They can blur direction at the margins, but they cannot create four seconds."
         },
         {
-          "speaker": "pc",
-          "text": "Could the thumb movement be steering correction?"
-        },
-        {
-          "speaker": "w3",
-          "text": "The hand leaves the wheel and contacts the display."
-        },
-        {
-          "speaker": "pc",
-          "text": "Does the route fault change that image?"
+          "speaker": "dc",
+          "text": "You cannot read the words Dara saw on the display?"
         },
         {
           "speaker": "w3",
-          "text": "No. The fault explains other events, not the recorded gesture."
+          "text": "No. The screen content comes from the separate route log."
+        },
+        {
+          "speaker": "dc",
+          "text": "And you cannot decide dangerousness from video alone?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Correct. I establish timing and movement; the legal judgment belongs to the jury."
         }
       ],
       "surface_persuasion": 0.52,
       "true_weight": 0.3,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The challenge revealed possible bias but did not displace the objective record supporting the witness's central point.",
+      "reveal_note": "rain and head movement can blur the exact direction of a glance added context without resolving identity or intent.",
       "tags": [
         "credibility",
         "digital_forensics"
@@ -306,12 +306,12 @@
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance. The prosecution must prove each element beyond reasonable doubt using evidence admitted here. Assess system outputs like any other exhibit, and do not research this case, its people, or its technology online.",
+      "text": "The judge directs you that Dara need not prove a dashboard fault caused the collision. The prosecution must establish legally dangerous driving and causation beyond reasonable doubt. Distinguish unreliable event counts from the separately recovered images, assess weather and workplace pressure only on admitted evidence, and do not research the route, vehicle, or people involved.",
       "surface_persuasion": 0.45,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The direction supplies the discipline the room needs: unanswered questions cannot reverse the burden of proof.",
+      "reveal_note": "The limits surrounding the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance kept it from deciding the charge alone.",
       "tags": [
         "burden",
         "procedure"
@@ -321,12 +321,12 @@
       "id": "b11",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit nine synchronises the passenger clip, signal controller, and brake data. Dara begins reading at 22:14:08, the light turns red one second later, and the cyclist enters at 22:14:11. Her eyes return forward at 22:14:12; braking begins immediately, but collision is then unavoidable. The clocks agree independently. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
-      "surface_persuasion": 0.72,
+      "text": "Exhibit nine synchronises the passenger clip, signal controller, and brake data. Dara begins reading at 22:14:08, the light turns red one second later, and the cyclist enters at 22:14:11. Her eyes return forward at 22:14:12; braking begins immediately, but collision is then unavoidable. The clocks agree independently. Agreement across three clocks removed the timing ambiguity left by every single source.",
+      "surface_persuasion": 0.74,
       "true_weight": 0.9,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The final record corroborated the four-second passenger-camera sequence through a separate source and resolved the central ambiguity.",
+      "reveal_note": "exhibit nine synchronises the passenger clip, signal controller, and brake data survived cross-examination and connected evidence from separate sources.",
       "tags": [
         "timeline",
         "timeline",
@@ -337,7 +337,7 @@
   "checkins": [
     "b2",
     "b4",
-    "b7",
+    "b8",
     "b10"
   ],
   "verdict_truth": "Guilty",
@@ -349,32 +349,35 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A quick-pattern thinker initially captured by the eleven dashboard interactions.",
-        "register": "blunt",
-        "arc": "vibes",
+        "persona": "A caregiver who is alert to pressure and unequal power, especially when weighing a noisy dashboard versus the recovered view.",
+        "register": "formal",
+        "arc": "principled_holdout",
         "initial": {
           "position": "G",
-          "confidence": 58
+          "confidence": 50
         },
         "weights": {
-          "timeline": 0,
-          "digital_forensics": 2,
-          "burden": 0
+          "timeline": 2,
+          "motive": -1,
+          "burden": 2
         },
         "lines": {
           "agree": [
-            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
-            "That evidence fits the sequence without asking us to guess."
+            "For me, the anchor is the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
+            "In my notes at seat 2, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
-            "I want the whole chain, not one impressive-looking clue."
+            "I will not let the dashboard interaction count decide more than its source can support.",
+            "I need the chronology laid out before I choose between those accounts. Here that means the dashboard against the recovered view."
           ],
           "concede": [
-            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+            "I admit the dashboard interaction count, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+            "My verdict rests on the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on a noisy dashboard versus the recovered view until evidence, rather than consensus, answers it; from seat 2, I relate it to the dashboard against the recovered view."
           ]
         },
         "reaction_rules": [
@@ -386,19 +389,19 @@
             },
             "effect": {
               "delta": 2,
-              "confidence": 12,
+              "confidence": 10,
               "line": "agree"
             }
           },
           {
             "when": {
-              "theme": "digital_forensics",
+              "theme": "motive",
               "stance": "proves",
               "direction": "innocence"
             },
             "effect": {
-              "delta": 2,
-              "confidence": 8,
+              "delta": 1,
+              "confidence": 6,
               "line": "concede"
             }
           },
@@ -410,7 +413,7 @@
             "effect": {
               "delta": 0,
               "confidence": 0,
-              "line": "pushback"
+              "line": "holdout"
             }
           }
         ]
@@ -419,38 +422,38 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A careful note-taker who keeps returning to chronology.",
-        "register": "plain",
-        "arc": "steady",
+        "persona": "A technician who distrusts labels without source data, especially when weighing a noisy dashboard versus the recovered view.",
+        "register": "hesitant",
+        "arc": "mind_changer",
         "initial": {
           "position": "G",
-          "confidence": 58
+          "confidence": 57
         },
         "weights": {
-          "timeline": 0,
-          "digital_forensics": 2,
+          "credibility": 2,
+          "digital_forensics": 0,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
-            "That evidence fits the sequence without asking us to guess."
+            "I move because the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
+            "In my notes at seat 3, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
-            "I want the whole chain, not one impressive-looking clue."
+            "I keep separating the dashboard interaction count decide more than its source can support.",
+            "Two records agreeing matters more to me than one record sounding certain. Here that means the dashboard against the recovered view."
           ],
           "concede": [
-            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+            "I can see why the dashboard interaction count, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+            "I finish with the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "credibility",
               "stance": "proves",
               "direction": "guilt"
             },
@@ -468,7 +471,7 @@
             },
             "effect": {
               "delta": 2,
-              "confidence": 8,
+              "confidence": 7,
               "line": "concede"
             }
           },
@@ -489,58 +492,54 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A principled holdout who tests every claim against the burden.",
-        "register": "formal",
-        "arc": "principled_holdout",
+        "persona": "A coach who asks whether conduct matches the claimed motive, especially when weighing a noisy dashboard versus the recovered view.",
+        "register": "blunt",
+        "arc": "drifter",
         "initial": {
           "position": "NG",
-          "confidence": 52
+          "confidence": 47
         },
         "weights": {
-          "timeline": 2,
-          "digital_forensics": 0,
+          "identity": 1,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
-            "That evidence fits the sequence without asking us to guess."
+            "The part I cannot explain away is the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
+            "In my notes at seat 4, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
-            "I want the whole chain, not one impressive-looking clue."
+            "Before I rely on the dashboard interaction count decide more than its source can support.",
+            "I am testing which side can explain the missing link without assumption. Here that means the dashboard against the recovered view."
           ],
           "concede": [
-            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+            "At first I gave too much weight to the dashboard interaction count, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the four-second passenger-camera sequence, not the first impression."
-          ],
-          "holdout": [
-            "I will hold until the burden is met by evidence, not repetition."
+            "The deciding chain for me is the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "identity",
               "stance": "proves",
               "direction": "guilt"
             },
             "effect": {
               "delta": 2,
-              "confidence": 12,
+              "confidence": 14,
               "line": "agree"
             }
           },
           {
             "when": {
-              "theme": "digital_forensics",
+              "theme": "identity",
               "stance": "proves",
               "direction": "innocence"
             },
             "effect": {
-              "delta": 2,
+              "delta": 1,
               "confidence": 8,
               "line": "concede"
             }
@@ -553,7 +552,7 @@
             "effect": {
               "delta": 0,
               "confidence": 0,
-              "line": "holdout"
+              "line": "pushback"
             }
           }
         ]
@@ -562,35 +561,38 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "An anxious juror tempted to make the accused explain the gaps.",
-        "register": "hesitant",
+        "persona": "A student who can be swept up by a vivid first impression, especially when weighing a noisy dashboard versus the recovered view.",
+        "register": "plain",
         "arc": "burden_drifter",
         "initial": {
-          "position": "G",
-          "confidence": 58
+          "position": "NG",
+          "confidence": 54
         },
         "weights": {
-          "timeline": 0,
-          "digital_forensics": 2,
+          "timeline": 2,
+          "motive": -1,
           "burden": 2
         },
         "lines": {
           "agree": [
-            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
-            "That evidence fits the sequence without asking us to guess."
+            "I checked the sequence against the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
+            "In my notes at seat 5, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
-            "I want the whole chain, not one impressive-looking clue."
+            "I hear the force of the dashboard interaction count decide more than its source can support.",
+            "The burden makes me separate a possible story from a proved one. Here that means the dashboard against the recovered view."
           ],
           "concede": [
-            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+            "I concede the surface force of the dashboard interaction count, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+            "I return at the end to the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
           ],
           "burden_drift": [
-            "If the defence cannot explain every gap, perhaps that is enough."
+            "I catch myself asking for an innocent explanation, even though that is not the accused's burden; from seat 5, I relate it to the dashboard against the recovered view."
+          ],
+          "burden_correct": [
+            "I am correcting course: the prosecution must close the gap, not the accused; from seat 5, I relate it to the dashboard against the recovered view."
           ]
         },
         "reaction_rules": [
@@ -602,20 +604,32 @@
             },
             "effect": {
               "delta": 2,
-              "confidence": 12,
+              "confidence": 10,
               "line": "agree"
             }
           },
           {
             "when": {
-              "theme": "digital_forensics",
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "burden_drift"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
               "stance": "proves",
               "direction": "innocence"
             },
             "effect": {
               "delta": 2,
-              "confidence": 8,
-              "line": "concede"
+              "confidence": 12,
+              "line": "burden_correct"
             }
           },
           {
@@ -626,7 +640,7 @@
             "effect": {
               "delta": 0,
               "confidence": 0,
-              "line": "burden_drift"
+              "line": "pushback"
             }
           }
         ]
@@ -635,41 +649,38 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "The foreperson, focused on separating proof from suspicion.",
+        "persona": "A foreperson who restates disagreements before calling a vote, especially when weighing a noisy dashboard versus the recovered view.",
         "register": "formal",
         "arc": "foreperson",
         "initial": {
           "position": "NG",
-          "confidence": 52
+          "confidence": 44
         },
         "weights": {
-          "timeline": 2,
+          "credibility": 2,
           "digital_forensics": 0,
-          "burden": 2
+          "burden": 0
         },
         "lines": {
           "agree": [
-            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
-            "That evidence fits the sequence without asking us to guess."
+            "What changes my vote is the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
+            "In my notes at seat 6, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
-            "I want the whole chain, not one impressive-looking clue."
+            "I am not treating the dashboard interaction count decide more than its source can support.",
+            "I want the source data before I accept the label attached to it. Here that means the dashboard against the recovered view."
           ],
           "concede": [
-            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+            "I was initially moved by the dashboard interaction count, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the four-second passenger-camera sequence, not the first impression."
-          ],
-          "burden_correct": [
-            "An unexplained gap is not proof. The charge still has to be proved."
+            "My final vote follows the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "credibility",
               "stance": "proves",
               "direction": "guilt"
             },
@@ -686,8 +697,8 @@
               "direction": "innocence"
             },
             "effect": {
-              "delta": 2,
-              "confidence": 8,
+              "delta": 1,
+              "confidence": 7,
               "line": "concede"
             }
           },
@@ -699,7 +710,7 @@
             "effect": {
               "delta": 0,
               "confidence": 0,
-              "line": "burden_correct"
+              "line": "pushback"
             }
           }
         ]
@@ -708,50 +719,49 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A practical juror who changes position when a mechanism is demonstrated.",
-        "register": "blunt",
-        "arc": "drifter",
+        "persona": "A retiree who wants testimony anchored to something independent, especially when weighing a noisy dashboard versus the recovered view.",
+        "register": "hesitant",
+        "arc": "steady",
         "initial": {
-          "position": "G",
-          "confidence": 58
+          "position": "NG",
+          "confidence": 51
         },
         "weights": {
-          "timeline": 0,
-          "digital_forensics": 2,
+          "identity": 1,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
-            "That evidence fits the sequence without asking us to guess."
+            "I trust the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
+            "In my notes at seat 7, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
-            "I want the whole chain, not one impressive-looking clue."
+            "My problem with the dashboard interaction count decide more than its source can support.",
+            "A vivid clue will not move me unless the later sequence supports it. Here that means the dashboard against the recovered view."
           ],
           "concede": [
-            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+            "The opposing account fairly points to the dashboard interaction count, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+            "I resolve the doubt through the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "identity",
               "stance": "proves",
               "direction": "guilt"
             },
             "effect": {
               "delta": 2,
-              "confidence": 12,
+              "confidence": 14,
               "line": "agree"
             }
           },
           {
             "when": {
-              "theme": "digital_forensics",
+              "theme": "identity",
               "stance": "proves",
               "direction": "innocence"
             },
@@ -778,32 +788,32 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A mind-changer especially alert to the four-second passenger-camera sequence.",
-        "register": "plain",
+        "persona": "A delivery worker who focuses on custody and physical sequence, especially when weighing a noisy dashboard versus the recovered view.",
+        "register": "blunt",
         "arc": "mind_changer",
         "initial": {
           "position": "NG",
-          "confidence": 52
+          "confidence": 58
         },
         "weights": {
           "timeline": 2,
-          "digital_forensics": 0,
+          "motive": -1,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
-            "That evidence fits the sequence without asking us to guess."
+            "The room should start with the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
+            "In my notes at seat 8, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
-            "I want the whole chain, not one impressive-looking clue."
+            "We should test the dashboard interaction count decide more than its source can support.",
+            "I am asking whether the physical evidence and the testimony converge. Here that means the dashboard against the recovered view."
           ],
           "concede": [
-            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+            "I cannot dismiss the dashboard interaction count, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+            "The complete record leaves me with the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
@@ -815,19 +825,19 @@
             },
             "effect": {
               "delta": 2,
-              "confidence": 12,
+              "confidence": 10,
               "line": "agree"
             }
           },
           {
             "when": {
-              "theme": "digital_forensics",
+              "theme": "motive",
               "stance": "proves",
               "direction": "innocence"
             },
             "effect": {
-              "delta": 2,
-              "confidence": 8,
+              "delta": 1,
+              "confidence": 6,
               "line": "concede"
             }
           },
@@ -848,38 +858,41 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A quiet sceptic who distrusts polished system outputs.",
+        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps, especially when weighing a noisy dashboard versus the recovered view.",
         "register": "plain",
-        "arc": "steady",
+        "arc": "principled_holdout",
         "initial": {
           "position": "G",
-          "confidence": 58
+          "confidence": 48
         },
         "weights": {
-          "timeline": 0,
-          "digital_forensics": 2,
-          "burden": 0
+          "credibility": 2,
+          "digital_forensics": 0,
+          "burden": 2
         },
         "lines": {
           "agree": [
-            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
-            "That evidence fits the sequence without asking us to guess."
+            "I needed corroboration, and the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
+            "In my notes at seat 9, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
-            "I want the whole chain, not one impressive-looking clue."
+            "I still question the dashboard interaction count decide more than its source can support.",
+            "I need to know what this proves about intent, not only opportunity. Here that means the dashboard against the recovered view."
           ],
           "concede": [
-            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+            "There is real persuasive force in the dashboard interaction count, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+            "I am voting from the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on a noisy dashboard versus the recovered view until evidence, rather than consensus, answers it; from seat 9, I relate it to the dashboard against the recovered view."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "credibility",
               "stance": "proves",
               "direction": "guilt"
             },
@@ -897,7 +910,7 @@
             },
             "effect": {
               "delta": 2,
-              "confidence": 8,
+              "confidence": 7,
               "line": "concede"
             }
           },
@@ -909,7 +922,7 @@
             "effect": {
               "delta": 0,
               "confidence": 0,
-              "line": "pushback"
+              "line": "holdout"
             }
           }
         ]
@@ -918,55 +931,54 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A hesitant juror pulled between human testimony and records.",
-        "register": "hesitant",
-        "arc": "drifter",
+        "persona": "A blunt sceptic who will not turn probability into certainty, especially when weighing a noisy dashboard versus the recovered view.",
+        "register": "formal",
+        "arc": "vibes",
         "initial": {
-          "position": "NG",
-          "confidence": 52
+          "position": "G",
+          "confidence": 55
         },
         "weights": {
-          "timeline": 2,
-          "digital_forensics": 0,
+          "identity": 1,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
-            "That evidence fits the sequence without asking us to guess."
+            "The timing becomes coherent through the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
+            "In my notes at seat 10, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
-            "I want the whole chain, not one impressive-looking clue."
+            "I refuse to confuse the dashboard interaction count decide more than its source can support.",
+            "The custody trail matters only if it follows the same object throughout. Here that means the dashboard against the recovered view."
           ],
           "concede": [
-            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+            "I understand the reliance on the dashboard interaction count, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+            "My conclusion turns on the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "identity",
               "stance": "proves",
               "direction": "guilt"
             },
             "effect": {
               "delta": 2,
-              "confidence": 12,
+              "confidence": 14,
               "line": "agree"
             }
           },
           {
             "when": {
-              "theme": "digital_forensics",
+              "theme": "identity",
               "stance": "proves",
               "direction": "innocence"
             },
             "effect": {
-              "delta": 2,
+              "delta": 1,
               "confidence": 8,
               "line": "concede"
             }
@@ -988,32 +1000,32 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A methodical juror who maps each claim to a time and source.",
-        "register": "formal",
-        "arc": "steady",
+        "persona": "A shift worker who notices breaks in chronology, especially when weighing a noisy dashboard versus the recovered view.",
+        "register": "hesitant",
+        "arc": "vibes",
         "initial": {
           "position": "G",
-          "confidence": 58
+          "confidence": 45
         },
         "weights": {
-          "timeline": 0,
-          "digital_forensics": 2,
+          "timeline": 2,
+          "motive": -1,
           "burden": 0
         },
         "lines": {
           "agree": [
-            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
-            "That evidence fits the sequence without asking us to guess."
+            "I am persuaded by the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
+            "In my notes at seat 11, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
-            "I want the whole chain, not one impressive-looking clue."
+            "I want a source check on the dashboard interaction count decide more than its source can support.",
+            "I am checking whether my doubt is evidential or merely speculative. Here that means the dashboard against the recovered view."
           ],
           "concede": [
-            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+            "I began from the dashboard interaction count, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+            "After testing both stories, I rely on the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
@@ -1025,19 +1037,19 @@
             },
             "effect": {
               "delta": 2,
-              "confidence": 12,
+              "confidence": 10,
               "line": "agree"
             }
           },
           {
             "when": {
-              "theme": "digital_forensics",
+              "theme": "motive",
               "stance": "proves",
               "direction": "innocence"
             },
             "effect": {
               "delta": 2,
-              "confidence": 8,
+              "confidence": 6,
               "line": "concede"
             }
           },
@@ -1058,41 +1070,38 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A blunt holdout who refuses to convert probability into certainty.",
+        "persona": "A bookkeeper who tests whether separate records truly reconcile, especially when weighing a noisy dashboard versus the recovered view.",
         "register": "blunt",
-        "arc": "principled_holdout",
+        "arc": "steady",
         "initial": {
-          "position": "NG",
+          "position": "G",
           "confidence": 52
         },
         "weights": {
-          "timeline": 2,
+          "credibility": 2,
           "digital_forensics": 0,
-          "burden": 2
+          "burden": 0
         },
         "lines": {
           "agree": [
-            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
-            "That evidence fits the sequence without asking us to guess."
+            "My holdout ends with the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
+            "In my notes at seat 12, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
           ],
           "pushback": [
-            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
-            "I want the whole chain, not one impressive-looking clue."
+            "I am holding against the dashboard interaction count decide more than its source can support.",
+            "Consensus will not substitute for the independent record I still need. Here that means the dashboard against the recovered view."
           ],
           "concede": [
-            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+            "I will grant the dashboard interaction count, especially before the underlying record is opened."
           ],
           "final": [
-            "My final view turns on the four-second passenger-camera sequence, not the first impression."
-          ],
-          "holdout": [
-            "I will hold until the burden is met by evidence, not repetition."
+            "I can now decide because of the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "timeline",
+              "theme": "credibility",
               "stance": "proves",
               "direction": "guilt"
             },
@@ -1109,8 +1118,8 @@
               "direction": "innocence"
             },
             "effect": {
-              "delta": 2,
-              "confidence": 8,
+              "delta": 1,
+              "confidence": 7,
               "line": "concede"
             }
           },
@@ -1122,7 +1131,7 @@
             "effect": {
               "delta": 0,
               "confidence": 0,
-              "line": "holdout"
+              "line": "pushback"
             }
           }
         ]
@@ -1133,6 +1142,6 @@
     "model": "gpt-5.4",
     "prompt_version": "dd-2026-v2",
     "reviewer": "codex-content-curator",
-    "batch_pr": "runway-b-1"
+    "batch_pr": "runway-b-qa-fix"
   }
 }
