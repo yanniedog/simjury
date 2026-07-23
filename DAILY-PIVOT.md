@@ -23,9 +23,9 @@ Owner decisions, recorded verbatim:
 2. **Deliberation is an interactive room** — a deterministic, seeded, client-side engine
    (TypeScript port of `archive/simjury-build-spec-v3.md` §7.7 + §9 at daily scale):
    11 fictional jurors with personas, theme weights, and ordered reaction rules; the
-   player argues evidence after locking their own verdict; the room's verdict is earned,
-   not scripted. Deliberation uses no runtime AI and stores no player state on a backend;
-   optional corpus-whitelisted narration is the sole dynamic service exception.
+    player argues evidence after locking their own verdict; the room's verdict is earned,
+    not scripted. Deliberation and narration use no runtime AI and store no player state
+    on a backend.
 3. **Case supply is LLM-drafted batches behind hardened CI gates, with human
    spot-checks.** This deliberately relaxes simjury-daily's "a human reads every case"
    rule (owner decision, 2026-07-13). The gates — schema, design-quality, jury floors,
@@ -38,12 +38,11 @@ Owner decisions, recorded verbatim:
 
 ## What carries over unchanged (binding on the daily track)
 
-- **Static-first hosting** — Cloudflare Worker + static assets, no accounts and no
-  tracking. The sole dynamic route is the corpus-whitelisted narration endpoint described
-  by `site/DECISIONS.md`; game state remains entirely client-side.
-- **No generative runtime AI** — all player-facing text is pre-authored JSON and case
-  generation happens in PRs. Optional narration may synthesize only build-whitelisted
-  authored lines; it never accepts free-form player text.
+- **Static-only hosting** — GitHub-authored assets deploy through Cloudflare Static Assets
+  with no Worker script, dynamic route, account, or tracking. Game state and Web Speech
+  narration remain entirely on the player's device.
+- **No generative runtime AI** — all player-facing text is pre-authored JSON, case
+  generation happens in PRs, and narration uses the device's browser voices.
 - **Fiction, and it says so** — every daily case carries the pinned `label: "fiction"`
   (the simjury-daily safety invariant). Daily cases are built from real trial *patterns*,
   never from real events. Real historical cases ship only through `CASE_HARNESS.md`.

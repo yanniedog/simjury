@@ -191,7 +191,7 @@
       "tags": ["burden", "credibility"]
     }
   ],
-  "checkins": ["b3", "b5", "b8", "b9"],
+  "checkins": ["b3", "b5", "b8", "b10"],
   "verdict_truth": "Guilty",
   "twist": "The middleman defence was almost perfect — real early shipments, a clean history, eight months of desperate messages to a supplier who robbed him. Except he was the supplier: the BulkHarbor account came from his browser, its apologies sat pre-drafted in his own notes app, its recovery number was his second phone, and not one dollar ever flowed upstream. He didn't fall for an exit scam. He performed one, complete with a victim to play.",
   "difficulty_target": 0.5,

@@ -83,7 +83,7 @@ export function DocketShell({
           {charge && <div className="docket-context"><p className="chrome-label">Charge before the court</p><p>{charge}</p></div>}
           <div className="docket-context"><p className="chrome-label">Legal threshold</p><p>Beyond reasonable doubt</p></div>
           {sidebar}
-          <p className="local-note"><span aria-hidden="true">◆</span> Your progress stays on this device. Narration streams approved case lines via Cloudflare Workers AI; your notes and verdict are never sent.</p>
+          <p className="local-note"><span aria-hidden="true">◆</span> Your progress and narration stay on this device. Your verdict and case text are never sent to a backend.</p>
         </aside>
       </div>
     </main>

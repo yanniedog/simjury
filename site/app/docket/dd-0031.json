@@ -72,7 +72,7 @@
     {
       "id": "w2",
       "name": "Elia Kress",
-      "role_label": "parcel owner",
+      "role_label": "depot loading clerk",
       "side": "prosecution"
     },
     {
@@ -303,21 +303,6 @@
       ]
     },
     {
-      "id": "b10",
-      "kind": "direction",
-      "speaker": "judge",
-      "text": "The judge directs you that Nessa need not prove which person switched the parcel or printed the duplicate label. The prosecution must establish her dishonest taking beyond reasonable doubt. Decide whether barcode custody follows the physical box, test the weight and gate records together, and do not research the depot, jewellery, accounts, or people outside this courtroom.",
-      "surface_persuasion": 0.45,
-      "true_weight": 0.5,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance added context without resolving identity or intent.",
-      "tags": [
-        "burden",
-        "procedure"
-      ]
-    },
-    {
       "id": "b11",
       "kind": "exhibit",
       "speaker": "dc",
@@ -332,6 +317,21 @@
         "timeline",
         "identity"
       ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that Nessa need not prove which person switched the parcel or printed the duplicate label. The prosecution must establish her dishonest taking beyond reasonable doubt. Decide whether barcode custody follows the physical box, test the weight and gate records together, and do not research the depot, jewellery, accounts, or people outside this courtroom.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance added context without resolving identity or intent.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
     }
   ],
   "checkins": [
@@ -341,7 +341,7 @@
     "b10"
   ],
   "verdict_truth": "Not Guilty",
-  "twist": "The last-handler scanner event looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter weight and duplicate-label sequence supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "twist": "The scanner never tracked jewellery; it tracked a barcode that had been printed twice. Belt weights showed the genuine parcel leaving under a recycling cage before Nessa arrived, while her device faithfully followed the light decoy. Even the supposed sudden cash had cleared before the theft. The chain was complete only because it had followed the wrong box.",
   "difficulty_target": 0.55,
   "jury": {
     "jurors": [
