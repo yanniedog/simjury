@@ -303,21 +303,6 @@
       ]
     },
     {
-      "id": "b10",
-      "kind": "direction",
-      "speaker": "judge",
-      "text": "The judge directs you that Daro does not have to prove self-defence. The prosecution must exclude lawful self-defence beyond reasonable doubt while proving intentional or reckless unlawful force and causation. Consider the whole sequence, the immediacy of any threat, proportionality, and the limits of each recording without punishing the accused for missing footage.",
-      "surface_persuasion": 0.45,
-      "true_weight": 0.5,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "the judge directs you that daro does not have to prove self-defence added context without resolving identity or intent.",
-      "tags": [
-        "burden",
-        "procedure"
-      ]
-    },
-    {
       "id": "b11",
       "kind": "exhibit",
       "speaker": "dc",
@@ -331,6 +316,21 @@
         "procedure",
         "timeline",
         "identity"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that Daro does not have to prove self-defence. The prosecution must exclude lawful self-defence beyond reasonable doubt while proving intentional or reckless unlawful force and causation. Consider the whole sequence, the immediacy of any threat, proportionality, and the limits of each recording without punishing the accused for missing footage.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "the judge directs you that daro does not have to prove self-defence added context without resolving identity or intent.",
+      "tags": [
+        "burden",
+        "procedure"
       ]
     }
   ],
