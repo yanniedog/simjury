@@ -1,6 +1,5 @@
 import argparse
 import json
-import os
 import re
 import subprocess
 import tempfile
@@ -38,7 +37,7 @@ def main() -> None:
         try:
             sf.write(wav, audio, job["sampleRate"], subtype="PCM_16")
             subprocess.run(
-                [os.environ.get("FFMPEG", "ffmpeg"), "-v", "error", "-y", "-i", str(wav), "-codec:a", "libmp3lame",
+                ["ffmpeg", "-v", "error", "-y", "-i", str(wav), "-codec:a", "libmp3lame",
                  "-q:a", "3", str(target)],
                 check=True,
             )

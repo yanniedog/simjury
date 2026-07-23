@@ -5,7 +5,10 @@ import { fileURLToPath } from 'node:url'
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 const docketDir = join(siteRoot, 'app', 'docket')
 const args = process.argv.slice(2)
-const valueAfter = (flag) => args[args.indexOf(flag) + 1]
+const valueAfter = (flag) => {
+  const index = args.indexOf(flag)
+  return index === -1 ? undefined : args[index + 1]
+}
 const requested = valueAfter('--case') ?? 'all'
 const outputDir = resolve(valueAfter('--output') ?? join(siteRoot, '.narration-jobs'))
 const limit = Number.parseInt(valueAfter('--limit') ?? '', 10)
