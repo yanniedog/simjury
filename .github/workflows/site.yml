@@ -9,11 +9,13 @@ on:
   pull_request:
     paths:
       - "site/**"
+      - "pilot/src/main/resources/cases/c_001/**"
       - ".github/workflows/site.yml"
   push:
     branches: [main]
     paths:
       - "site/**"
+      - "pilot/src/main/resources/cases/c_001/**"
       - ".github/workflows/site.yml"
 
 permissions:
