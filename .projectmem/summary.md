@@ -1,4 +1,4 @@
-# projectmem - simjury-deps
+# projectmem - simjury-repo-hygiene
 
 _Last updated: 2026-07-23_
 
@@ -15,10 +15,15 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 `DAILY-PIVOT.md` for the decision record and `ROADMAP.md`'s Track D for the delivery ladder.
 
 ## Recent issues
-- [DONE] #0002 Worker development audit reports three high libvips CVEs through Wrangler Miniflare’s pinned sharp 0.34.5 [site/package.json] -> Worker development dependency chain is current and clean, with Sharp 0.35.3 overriding Miniflare’s vulnerable pin [site/package.json] (fixed)
-  - Partial attempt: Updated Wrangler to 4.113.0 and overrode Miniflare’s vulnerable Sharp pin with patched 0.35.3; lockfile audit is now clean [site/package.json]
-- [DONE] #0001 GitHub npm 11.16 rejects the upgraded app lockfile because @emnapi optional native packages are missing [site/app/package-lock.json] -> Toolchain lockfile is synchronized with GitHub’s npm 11.16 and passes the exact clean-install gate [site/app/package-lock.json] (fixed)
-  - Partial attempt: Regenerated package-lock.json with GitHub CI’s npm 11.16.0; npm reported zero vulnerabilities [site/app/package-lock.json]
+- [DONE] #0003 Legacy /play room outcome requires ten of eleven votes, contradicting its authored 8-3 return, and can describe mixed tallies as one mind [site/public/play/play.js] -> Legacy /play now returns its authored majority verdict and never labels divided or undecided tallies as one mind [site/public/play/play.js] (fixed)
+  - Partial attempt: Replaced the 10-vote threshold with a strict majority of all eleven room positions and made verdict copy account for dissent and undecided votes [site/public/play/play.js]
+- [DONE] #0002 Android release CI lint model task reads generated case assets without depending on syncCaseAssets [pilot/app/build.gradle.kts] -> All Gradle lint-related tasks now depend on generated case assets, closing the Android release CI ordering failure [pilot/app/build.gradle.kts] (fixed)
+  - Failed attempt: Reproduced the exact release lint-model task locally; sandbox blocked Gradle’s fileHashes lock before configuration [pilot/.gradle]
+  - Failed attempt: Elevated Gradle retry reached configuration but PowerShell split the -D Java-home argument into a task path [pilot/app/build.gradle.kts]
+  - Failed attempt: Correctly quoted Gradle retry reached task dependency resolution; the clean worktree lacked Android SDK configuration [pilot/app/build.gradle.kts]
+- [DONE] #0001 Site deployment workflow omits Worker tests, so narration/API regressions can reach deployment after only a Wrangler dry run [.github/workflows/site.yml] -> Deployment workflow now runs the Worker test suite before Wrangler validation and deployment [.github/workflows/site.yml] (fixed)
+  - Partial attempt: Added the existing Worker routing and narration suite to the deployment workflow’s required check job [.github/workflows/site.yml]
+  - Failed attempt: Ran the Worker suite from the hygiene worktree; manifest generation hit the same sandbox EPERM on its tracked output [site/src/narration-manifest.generated.js]
 
 ## Decisions
 - Pilot phase: PILOT-SPEC.md supersedes v3 for all work until Phase 4 [PILOT-SPEC.md]
@@ -44,13 +49,6 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 - `CLAUDE.md`
 - `kotlinx.serialization`
 - `simjury.com`
-- `11.16`
-- `package-lock.json`
-- `11.16.0`
-- `0.34.5`
-- `4.113.0`
-- `0.35.3`
-- `4.113`
 
 ## Open questions
 - None logged yet.
