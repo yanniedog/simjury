@@ -4,13 +4,13 @@
   "label": "fiction",
   "title": "The Purple Label",
   "setting": "A meal-preparation contamination trial in 2026, where a personal grudge competes with a packaging printer that reused yesterday’s allergen label.",
-  "charge": "Intentionally contaminating prepared food and causing serious injury",
+  "charge": "Intentionally supplying a falsely labelled allergen meal and causing serious injury",
   "elements": [
-    "The accused performed or participated in the alleged act.",
-    "The act was deliberate or dishonest rather than accidental.",
-    "The prosecution has proved every required fact beyond reasonable doubt."
+    "The meal supplied to Orin Kale as allergen-free contained ground nut paste and caused his serious injury.",
+    "Rina Dovel deliberately added the nut paste or knowingly caused the false allergen-free label to be applied.",
+    "Rina intended to cause serious injury or knew that serious injury was a probable consequence."
   ],
-  "hook": "The purple label promises safety. Inside the sealed meal is the one ingredient the customer cannot survive.",
+  "hook": "A purple label promises an allergen-safe meal. Inside is ground nut paste—and the supervisor signed the shift after threatening the customer.",
   "accused": {
     "cast_id": "w4",
     "human": "Rina Dovel runs free weekend cooking classes and supports a child with severe allergies at home.",
@@ -20,25 +20,25 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution says the accused threatened a former friend, selected the dangerous ingredient, and signed the batch that sent the meal out. The apparent centre of the case is an angry message sent by the accused, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+        "text": "Rina Dovel knew Orin Kale’s severe nut allergy. The night before his delivery, she told him he would regret humiliating her. She supervised the kitchen, moved ingredient tubs beside the packing line and signed the dispatch sheet for the meal that nearly killed him. The prosecution says the purple safety label was not an accident; it was how Rina concealed a deliberate attack."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence says the threat was private anger while a documented printer fault placed a safe label on the wrong meal during a rushed shift. Suspicion gathered around a person before investigators tested the limits of an angry message sent by the accused; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+        "text": "Rina’s message was cruel, but it said nothing about food or allergies. At 11:42, the label printer disconnected and resumed an old queue. Four meals packed in the next minute carried the wrong labels, including ordinary meals marked safe and a safe meal marked as containing nuts. The defence says a documented equipment failure—not an attempted poisoning—put the purple label on Orin’s tray."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution began with Rina’s angry message and shift signature, but it does not ask you to convict on that clue alone. Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
+        "text": "The printer fault does not erase Rina’s motive or access. She knew Orin’s allergy, threatened him hours before production, moved the nut paste beside the line and signed the dispatch. The camera has blind spots, and a general batch error could give cover to one deliberate substitution. If the surrounding mismatches do not reasonably explain Orin’s particular tray, the connected evidence identifies Rina and proves intent."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence accepts that Rina’s angry message and shift signature created suspicion, but suspicion is not the test. The disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. That evidence goes to the heart of the case because anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
+        "text": "The prosecution asks you to isolate Orin’s meal from the three other errors produced beside it. The printer log supplies the exact failure, time and mechanism. The surviving trays show labels switched in both directions, which makes no sense as a targeted attack. No camera shows Rina touching Orin’s sealed tray, and her signature covered six production lines. Anger creates suspicion; it cannot exclude the documented accident. The lawful verdict is not guilty."
       }
     }
   },
-  "epilogue": "The injured customer recovered slowly and accepted Rina’s apology for the message, not for a crime. The kitchen introduced scan-to-pack checks, and Rina returned only after completing additional safety training beside the worker who found the printer fault. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "epilogue": "Orin recovered slowly and accepted Rina’s apology for the message, not for poisoning him. The kitchen replaced the printer, introduced scan-to-pack checks and recalled every meal from the affected batch. Rina returned after additional safety training and later helped Orin campaign for mandatory label verification in commercial kitchens. The incident remained painful for both.",
   "cast": [
     {
       "id": "judge",
@@ -73,7 +73,7 @@
     {
       "id": "w3",
       "name": "Sava Denn",
-      "role_label": "packaging systems technician",
+      "role_label": "packaging-line technician",
       "side": "defence"
     },
     {
@@ -86,14 +86,15 @@
   "beats": [
     {
       "id": "b1",
-      "kind": "exhibit",
-      "speaker": "pc",
-      "text": "The sealed meal contained ground nut paste while its purple label declared the batch free from that ingredient. Rina signed the shift sheet covering packing and dispatch. At this first point, the exhibit’s stated limit is that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately, so it must be weighed with the rest of the sequence.",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I’m Bela Neris, the food-safety investigator. Laboratory testing found ground nut paste throughout Orin’s sealed meal, although its purple label identified the tray as allergen-free. Rina signed the shift sheet covering packing and dispatch across six production lines. Her signature made her responsible for the batch, but it did not record who prepared or labelled this individual tray.",
       "surface_persuasion": 0.8,
       "true_weight": 0.15,
       "direction": "guilt",
       "reveal_stamp": "misleading",
-      "reveal_note": "The first impression came from Rina’s angry message and shift signature; its value depended on whether the later evidence could overcome this limit: anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately.",
+      "reveal_note": "The contamination and supervisory signature look incriminating, but the shift sheet does not identify who handled Orin’s tray.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -104,12 +105,12 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "Rina and I had ended a friendship badly. She messaged that I would regret humiliating her, then my throat closed after three bites of a meal carrying the safe label. This was the second fact I recorded in the initial The Purple Label inquiry, before investigators settled on Rina Dovel. The timing was noted before the The Purple Label inquiry settled on Rina Dovel as its suspect.",
+      "text": "I’m Orin Kale. Rina and I had been close friends until an argument about her cooking classes. The night before my delivery, she messaged that I would regret humiliating her. The next day, I checked the purple allergen-safe label and ate three bites. My throat closed, I lost consciousness and spent four days in hospital. I believed the message and meal were connected.",
       "surface_persuasion": 0.6,
       "true_weight": 0.3,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "This witness fixed the practical setting before suspicion centred on Rina Dovel, giving the room context for the records that followed.",
+      "reveal_note": "Orin establishes the serious injury and a possible motive, while making clear that his identification of Rina is an inference.",
       "tags": [
         "credibility",
         "procedure"
@@ -120,30 +121,30 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "You initially called the wrong label deliberate? Yes, before the other three meals were found. Those meals showed both kinds of mismatch? They did, which was not consistent with targeting one customer. The three additional mismatches turned a targeted-looking label into evidence of a wider system fault.",
+      "text": "Your first report described Orin’s label as deliberate? Yes. That was before we found the other three meals. Those trays had labels wrong in both directions? Yes. Two ordinary meals were marked allergen-free, and one safe meal was marked as containing nuts. That pattern was not consistent with targeting Orin alone, so I withdrew my conclusion that his tray had been deliberately relabelled.",
       "turns": [
         {
           "speaker": "dc",
-          "text": "You initially called the wrong label deliberate?"
+          "text": "Your first report described Orin’s label as deliberate?"
         },
         {
           "speaker": "w1",
-          "text": "Yes, before the other three meals were found."
+          "text": "Yes. That was before we found the other three meals."
         },
         {
           "speaker": "dc",
-          "text": "Those meals showed both kinds of mismatch?"
+          "text": "Those trays had labels wrong in both directions?"
         },
         {
           "speaker": "w1",
-          "text": "They did, which was not consistent with targeting one customer. The three additional mismatches turned a targeted-looking label into evidence of a wider system fault."
+          "text": "Yes. Two ordinary meals were marked allergen-free, and one safe meal was marked as containing nuts. That pattern was not consistent with targeting Orin alone, so I withdrew my conclusion that his tray had been deliberately relabelled."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The challenged record mattered because it exposed the gap between appearance and proof: anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately.",
+      "reveal_note": "The investigator’s revised conclusion places Orin’s tray inside a wider two-way labelling failure.",
       "tags": [
         "digital_forensics",
         "procedure"
@@ -153,12 +154,12 @@
       "id": "b4",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The kitchen camera shows Rina placing ingredient tubs near the line. It does not show her opening this meal or changing a label after the tray was sealed. At this fourth point, the exhibit’s stated limit is that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately, so it must be weighed with the rest of the sequence.",
+      "text": "The kitchen camera shows Rina moving sealed ingredient tubs to the preparation bench at 11:35. Ground nut paste was among them because ordinary meals using it were scheduled next. The footage covers the bench and dispatch table but has a blind corner beside the printer. It never shows Rina opening Orin’s tray or applying a label.",
       "surface_persuasion": 0.55,
       "true_weight": 0.35,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "Cross-examination narrowed the early clue without erasing it, forcing the room to decide how much independent support remained.",
+      "reveal_note": "The footage confirms access to the ingredient and packing area, while providing no direct image of tampering.",
       "tags": [
         "method",
         "digital_forensics"
@@ -168,12 +169,12 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "The printer lost its network connection at 11:42. When that model reconnects, it can repeat the last cached label unless the operator clears the local queue. At this fifth point, the exhibit’s stated limit is that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately, so it must be weighed with the rest of the sequence.",
+      "text": "The printer log records a network loss at 11:42 and reconnection forty-one seconds later. Its local queue then resumed at job 804 in the previous day’s label sequence instead of the current server sequence. Orin’s tray and three surviving meals were labelled between 11:43:02 and 11:43:49, before the central server corrected the queue.",
       "surface_persuasion": 0.5,
       "true_weight": 0.85,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "This was the decisive innocence evidence: The printer lost its network connection at 11:42. When that model reconnects, it can repeat the last cached label unless the operator clears the local queue. It turned the alternative explanation into a checkable account the prosecution could not exclude beyond reasonable doubt.",
+      "reveal_note": "The printer log gives an exact mechanism and time window for the wrong label on Orin’s meal.",
       "tags": [
         "timeline",
         "digital_forensics"
@@ -184,12 +185,12 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "examination",
-      "text": "Three surviving meals packed within the same minute had wrong labels: two ordinary meals marked safe and one safe meal marked as containing the ingredient. This was the sixth fact I recorded in the initial The Purple Label inquiry, before investigators settled on Rina Dovel. In the The Purple Label inquiry, I separated what I personally observed from what investigators later asked me to infer.",
+      "text": "I’m Sava Denn, the technician operating the packaging station that day. I inspected three surviving meals from the same minute. Two ordinary meals containing nut paste carried purple allergen-free labels, while one genuinely safe meal carried a nut warning. The tray codes match the order in the resumed printer queue. I found no sign that any label had been peeled off or replaced by hand.",
       "surface_persuasion": 0.55,
       "true_weight": 0.75,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "The competing account was concrete rather than speculative: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels.",
+      "reveal_note": "The surviving meals reproduce the printer fault in both directions and show no physical evidence of hand relabelling.",
       "tags": [
         "method",
         "procedure"
@@ -200,12 +201,12 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "examination",
-      "text": "I signed the shift sheet because I supervised six lines. I sent an ugly message after an argument, but I did not touch Orin’s tray or try to hurt anyone. This was the seventh fact I recorded in the initial The Purple Label inquiry, before investigators settled on Rina Dovel. That The Purple Label detail can be checked against the contemporaneous record rather than accepted as a later reconstruction.",
+      "text": "I’m Rina Dovel. I signed the sheet because I supervised six production lines. I moved the sealed ingredient tubs when the preparation team asked for the next recipe, then returned to the cooking area. I never opened Orin’s tray or used the label printer. My message was angry and shameful, but I did not mention food, his allergy or any plan to hurt him.",
       "surface_persuasion": 0.55,
       "true_weight": 0.35,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This testimony tested whether the system record described a person’s conduct or only an event produced around them.",
+      "reveal_note": "Rina admits the threat and her access while denying the specific acts required for intentional contamination.",
       "tags": [
         "credibility",
         "procedure"
@@ -216,11 +217,11 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "cross",
-      "text": "You believed the message referred to this meal? I did because it arrived the night before. Rina never mentioned food or an allergy? No. She said I would regret humiliating her. The message was ugly and relevant to motive, but it never referred to food, labels, or an allergy.",
+      "text": "You believed Rina’s message referred to the meal? I did because it arrived the night before. She never mentioned food, labels or your allergy? No. She said I would regret humiliating her. Had she ever ignored your allergy when cooking for you? Never. She had always been extremely careful with food around me.",
       "turns": [
         {
           "speaker": "dc",
-          "text": "You believed the message referred to this meal?"
+          "text": "You believed Rina’s message referred to the meal?"
         },
         {
           "speaker": "w2",
@@ -228,18 +229,26 @@
         },
         {
           "speaker": "dc",
-          "text": "Rina never mentioned food or an allergy?"
+          "text": "She never mentioned food, labels or your allergy?"
         },
         {
           "speaker": "w2",
-          "text": "No. She said I would regret humiliating her. The message was ugly and relevant to motive, but it never referred to food, labels, or an allergy."
+          "text": "No. She said I would regret humiliating her."
+        },
+        {
+          "speaker": "dc",
+          "text": "Had she ever ignored your allergy when cooking for you?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Never. She had always been extremely careful with food around me."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.25,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The second cross put the decisive inference under pressure and showed exactly which part of the account could still be disputed.",
+      "reveal_note": "Cross-examination limits the threat to evidence of anger and contrasts it with Rina’s history of allergy care.",
       "tags": [
         "motive",
         "credibility"
@@ -250,30 +259,30 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "You knew the printer had dropped offline? I saw the warning but thought it had recovered. You did not clear the local queue? No. The manual did not tell operators to do that after reconnection. The operator saw a warning, yet the manual did not explain that yesterday’s queue could resume after reconnection.",
+      "text": "You saw the printer disconnect? Yes. The panel returned to green after forty-one seconds. You did not clear its local queue? No. The operating manual said a green connection meant the central queue had resumed. It did not warn that an old local job could restart. I followed the normal restart procedure, and nothing on the panel showed that yesterday’s labels were printing.",
       "turns": [
         {
           "speaker": "pc",
-          "text": "You knew the printer had dropped offline?"
+          "text": "You saw the printer disconnect?"
         },
         {
           "speaker": "w3",
-          "text": "I saw the warning but thought it had recovered."
+          "text": "Yes. The panel returned to green after forty-one seconds."
         },
         {
           "speaker": "pc",
-          "text": "You did not clear the local queue?"
+          "text": "You did not clear its local queue?"
         },
         {
           "speaker": "w3",
-          "text": "No. The manual did not tell operators to do that after reconnection. The operator saw a warning, yet the manual did not explain that yesterday’s queue could resume after reconnection."
+          "text": "No. The operating manual said a green connection meant the central queue had resumed. It did not warn that an old local job could restart. I followed the normal restart procedure, and nothing on the panel showed that yesterday’s labels were printing."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.4,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The final witness supplied a separate check on the timeline, reducing the risk that one attractive clue would decide the case alone.",
+      "reveal_note": "Sava’s cross confirms that the warning was seen but the approved restart procedure concealed the stale queue.",
       "tags": [
         "procedure",
         "credibility"
@@ -283,12 +292,12 @@
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person.",
+      "text": "To convict, you must be sure that Rina deliberately added the nut paste or knowingly applied the false label, intending serious harm or knowing it was probable. Her anger, access and supervisory signature may support that inference, but none proves the act alone. Consider whether the printer log and other mismatched meals provide a reasonable accidental explanation. Rina does not have to prove exactly how the error occurred.",
       "surface_persuasion": 0.406,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The direction kept the burden where it belonged: anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately, and no gap in the defence could substitute for proof of every element.",
+      "reveal_note": "The final direction separates motive and opportunity from proof of deliberate tampering and intent to harm.",
       "tags": [
         "burden",
         "digital_forensics"
@@ -299,10 +308,10 @@
     "b3",
     "b5",
     "b8",
-    "b9"
+    "b10"
   ],
   "verdict_truth": "Not Guilty",
-  "twist": "Rina’s message was cruel but did not describe food. The label printer had reissued yesterday’s safe template after losing connection, and three other meals from the same minute carried mismatched ingredient labels.",
+  "twist": "The purple label was not unique to Orin’s tray. After a forty-one-second network loss, the printer resumed yesterday’s queue and mislabelled four meals in both directions. Rina’s threat explained suspicion, but the surviving trays explained the injury.",
   "difficulty_target": 0.42,
   "jury": {
     "jurors": [
@@ -310,7 +319,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Purple Label, this juror keeps returning to Rina’s angry message and shift signature.",
+      "persona": "A blunt juror who challenges convenient memory from witnesses on both sides.",
         "register": "blunt",
         "arc": "vibes",
         "initial": {
@@ -323,18 +332,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 2: Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal. I can explain that conclusion without borrowing a fact that is not in evidence.",
-            "Juror 2: Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal. That point earns weight because it can be checked independently."
+          "Juror 2: Rina’s message was vicious, and she had access. That makes her suspicious; it does not put her hand on the tray.",
+          "Juror 2: Her signature covered six lines. Stop describing it as if she personally signed Orin’s label."
           ],
           "pushback": [
-            "Juror 2: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. That is persuasive only if we first resolve Rina’s angry message and shift signature.",
-            "Juror 2: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. The gap between those two facts is where my doubt sits."
+          "Juror 2: If this was targeted, explain the other three wrong meals. They do not disappear because the message sounds bad.",
+          "Juror 2: Bela withdrew the deliberate-label conclusion. I am not going to rely on a finding the investigator no longer supports."
           ],
           "concede": [
-            "Juror 2: I accept now that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately. That point earns weight because it can be checked independently."
+          "Juror 2: I accept that the printer failure is documented, not an excuse invented by Rina after the fact."
           ],
           "final": [
-            "Juror 2: My verdict in The Purple Label turns on whether the jury can reconcile Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal with this competing account: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. I am changing my view because the explanation fits more of the evidence."
+          "Juror 2: The threat proves anger. The printer log and surviving trays explain the label. I cannot convict Rina of an intentional attack."
           ]
         },
         "reaction_rules": [
@@ -379,7 +388,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Purple Label, this juror keeps returning to Rina’s angry message and shift signature.",
+      "persona": "A cautious holdout who wants the decisive record stated without exaggeration.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -392,18 +401,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 3: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. The question is not which story is neater; it is which elements are proved.",
-            "Juror 3: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. That gives me a reason, but not yet a complete chain."
+          "Juror 3: The log proves the network drop and stale job. It does not itself prove which label landed on Orin’s tray.",
+          "Juror 3: The surviving tray codes match the resumed queue. That is the independent check I needed before relying on the technician."
           ],
           "pushback": [
-            "Juror 3: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. That gives me a reason, but not yet a complete chain.",
-            "Juror 3: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. The question is not which story is neater; it is which elements are proved."
+          "Juror 3: I am not dismissing motive. Rina made the threat hours before a meal containing the one ingredient Orin feared.",
+          "Juror 3: Four errors in one minute strongly suggest a fault, but could one deliberate substitution be hidden among them?"
           ],
           "concede": [
-            "Juror 3: I accept now that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately. That detail matters to my vote because it comes from outside either side’s story."
+          "Juror 3: I gave the shift signature too much weight. It establishes Rina’s role, not who handled this tray."
           ],
           "final": [
-            "Juror 3: My verdict in The Purple Label turns on whether the jury can reconcile Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal with this competing account: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. I am not counting the same assumption twice as two pieces of evidence."
+          "Juror 3: The prosecution theory is possible, but the verified printer sequence is reasonably possible too. That means not guilty."
           ]
         },
         "reaction_rules": [
@@ -448,7 +457,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Purple Label, this juror keeps returning to Rina’s angry message and shift signature.",
+      "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof.",
         "register": "formal",
         "arc": "principled_holdout",
         "initial": {
@@ -461,21 +470,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 4: Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal. The gap between those two facts is where my doubt sits."
+          "Juror 4: Orin trusted that purple label and nearly died. His injury is certain, even if responsibility is not."
           ],
           "pushback": [
-            "Juror 4: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. That is where the competing account becomes concrete for me.",
-            "Juror 4: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. The evidence about Rina’s angry message and shift signature is what keeps me from treating that as conclusive."
+          "Juror 4: I believe Orin when he says the message frightened him. His belief about what Rina intended is still not direct evidence.",
+          "Juror 4: Rina’s apology for the message does not amount to an apology for poisoning him."
           ],
           "concede": [
-            "Juror 4: I accept now that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately. That is persuasive only if we first resolve Rina’s angry message and shift signature."
+          "Juror 4: The other unsafe labels could have hurt more people. They make this look like a catastrophic system failure, not a personal attack."
           ],
           "holdout": [
-            "Juror 4: I am holding my position until the room deals directly with Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal. The sequence matters more to me than how suspicious one moment sounds.",
-            "Juror 4: I am holding my position until the room deals directly with Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal. I am ready to put less weight on the first impression."
+          "Juror 4: I am holding until we separate our anger at Rina’s message from proof that she touched the meal.",
+          "Juror 4: Orin deserves an answer, but a guilty verdict is not compensation for an industrial accident."
           ],
           "final": [
-            "Juror 4: My verdict in The Purple Label turns on whether the jury can reconcile Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal with this competing account: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. Before I move, I need Rina’s angry message and shift signature placed on the same timeline."
+          "Juror 4: The evidence proves why Orin suspected Rina and why he was injured. It does not prove she intended either result."
           ]
         },
         "reaction_rules": [
@@ -520,7 +529,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Purple Label, this juror keeps returning to Rina’s angry message and shift signature.",
+      "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation.",
         "register": "formal",
         "arc": "steady",
         "initial": {
@@ -533,21 +542,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 5: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. That is where the competing account becomes concrete for me."
+          "Juror 5: The system log, tray codes and physical labels agree. Three separate data points reproduce the stale-queue failure."
           ],
           "pushback": [
-            "Juror 5: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. The practical question is whether those events can both be true.",
-            "Juror 5: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. I can state the inference now, and I can also state what it depends on."
+          "Juror 5: Could someone manually trigger an old job to disguise tampering? The log should distinguish a reconnection from an operator command.",
+          "Juror 5: The absence of peel marks matters. A hand-applied replacement usually disturbs the original adhesive."
           ],
           "concede": [
-            "Juror 5: I accept now that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately. I am asking whether the exhibit proves the act or merely resembles it."
+          "Juror 5: I accept the printer did exactly what the defence describes at 11:42. That mechanism accounts for all four mismatches."
           ],
           "burden_correct": [
-            "Juror 5: In The Purple Label, unanswered questions do not move the burden; the prosecution must still prove every element. That moves one piece, not the burden the Crown carries.",
-            "Juror 5: In The Purple Label, unanswered questions do not move the burden; the prosecution must still prove every element. I am treating the timing as evidence, not as a verdict."
+          "Juror 5: Rina does not have to demonstrate every packet through the machine. The prosecution must exclude the documented fault.",
+          "Juror 5: A theory that Rina exploited the outage is possible, but possibility does not prove a deliberate act."
           ],
           "final": [
-            "Juror 5: My verdict in The Purple Label turns on whether the jury can reconcile Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal with this competing account: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. I can give that weight only after we account for Rina’s angry message and shift signature."
+          "Juror 5: The fault is timestamped, repeatable and visible in three other trays. The prosecution has not connected Rina to intentional relabelling."
           ]
         },
         "reaction_rules": [
@@ -592,7 +601,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Purple Label, this juror keeps returning to Rina’s angry message and shift signature.",
+      "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained.",
         "register": "plain",
         "arc": "foreperson",
         "initial": {
@@ -605,18 +614,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 6: Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal. The room should decide whether that contradiction is material or merely awkward.",
-            "Juror 6: Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal. I would rather name the gap than pretend it is not there."
+          "Juror 6: If Rina planned this, how did she know the printer would disconnect at exactly the right moment?",
+          "Juror 6: If she applied the label by hand, why are there no peel marks and why do the tray codes follow the stale queue?"
           ],
           "pushback": [
-            "Juror 6: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. I am not counting the same assumption twice as two pieces of evidence.",
-            "Juror 6: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. I want the actual record compared with the story built around it."
+          "Juror 6: The camera has a blind corner. Could Rina have handled the tray there without leaving a trace?",
+          "Juror 6: Why did the contaminated meal reach Orin rather than another customer? Was his name visible before the label was applied?"
           ],
           "concede": [
-            "Juror 6: I accept now that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately. The alternative has to be reasonably possible, not perfect."
+          "Juror 6: The three surviving errors answer my main question: Orin’s label was part of a sequence, not an isolated substitution."
           ],
           "final": [
-            "Juror 6: My verdict in The Purple Label turns on whether the jury can reconcile Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal with this competing account: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. If we remove the dramatic label, that is the fact left underneath."
+          "Juror 6: The prosecution cannot explain the wider pattern under its targeted-attack theory. That unanswered question is reasonable doubt."
           ]
         },
         "reaction_rules": [
@@ -649,7 +658,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Purple Label, this juror keeps returning to Rina’s angry message and shift signature.",
+      "persona": "A steady foreperson who makes the room distinguish suspicion from proof.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -662,19 +671,19 @@
         },
         "lines": {
           "agree": [
-            "Juror 7: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. That is one fact; the room still has to test the prosecution has proved every required fact beyond reasonable doubt.",
-            "Juror 7: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. I need the witness account and the recorded evidence to agree before I rely on either."
+          "Juror 7: We agree on the injury, the threat and the printer failure. The disputed questions are deliberate action and intent.",
+          "Juror 7: Let us test the prosecution theory against all four meals, not discuss Orin’s tray as though it was the only error."
           ],
           "pushback": [
-            "Juror 7: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. The gap between those two facts is where my doubt sits.",
-            "Juror 7: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. That is persuasive only if we first resolve Rina’s angry message and shift signature."
+          "Juror 7: Motive and opportunity are supporting facts. What evidence proves the act itself?",
+          "Juror 7: We should not use Rina’s ugly words to fill the camera’s blind corner with an event nobody saw."
           ],
           "concede": [
-            "Juror 7: I accept now that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately. That gives me a reason, but not yet a complete chain.",
-            "Juror 7: I accept now that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately. The question is not which story is neater; it is which elements are proved."
+          "Juror 7: I accept that Rina’s shift signature was routine supervision across six lines, not a personal certification of Orin’s meal.",
+          "Juror 7: The printer evidence gives us more than a vague alternative. It gives us a complete accidental mechanism."
           ],
           "final": [
-            "Juror 7: My verdict in The Purple Label turns on whether the jury can reconcile Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal with this competing account: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. That is one fact; the room still has to test the prosecution has proved every required fact beyond reasonable doubt."
+          "Juror 7: Suspicion is strong, but the deliberate act is not proved beyond reasonable doubt. My verdict is not guilty."
           ]
         },
         "reaction_rules": [
@@ -731,7 +740,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Purple Label, this juror keeps returning to Rina’s angry message and shift signature.",
+      "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity.",
         "register": "plain",
         "arc": "mind_changer",
         "initial": {
@@ -744,18 +753,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 8: Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal. I want the actual record compared with the story built around it.",
-            "Juror 8: Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal. I am not counting the same assumption twice as two pieces of evidence."
+          "Juror 8: In my notes, the message supports motive and the signature supports opportunity. Neither identifies an act of tampering.",
+          "Juror 8: The camera shows Rina moving sealed tubs at 11:35, seven minutes before the printer fault. It does not show contact with Orin’s tray."
           ],
           "pushback": [
-            "Juror 8: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. For me, the unanswered part is still the accused performed or participated in the alleged act.",
-            "Juror 8: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. I am changing my view because the explanation fits more of the evidence."
+          "Juror 8: I need evidence beside each element: false meal, deliberate act and intent. We have a blank beside the second.",
+          "Juror 8: Am I counting the threat twice—once as motive and again as proof that she handled the label?"
           ],
           "concede": [
-            "Juror 8: I accept now that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately. I am separating what the record proves from what we are inferring."
+          "Juror 8: I have moved the shift sheet out of the identity column. It proves responsibility for the batch, not criminal conduct."
           ],
           "final": [
-            "Juror 8: My verdict in The Purple Label turns on whether the jury can reconcile Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal with this competing account: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. I need the witness account and the recorded evidence to agree before I rely on either."
+          "Juror 8: My notes support an accidental label failure more strongly than a deliberate substitution. The required act and intent are not proved."
           ]
         },
         "reaction_rules": [
@@ -812,7 +821,7 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Purple Label, this juror keeps returning to Rina’s angry message and shift signature.",
+      "persona": "A practical juror who tests digital records against ordinary workplace habits.",
         "register": "hesitant",
         "arc": "steady",
         "initial": {
@@ -824,18 +833,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 9: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. I am weighing that beside Rina’s angry message and shift signature, not on its own.",
-            "Juror 9: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. I am asking whether the exhibit proves the act or merely resembles it."
+          "Juror 9: A green panel normally tells a worker the machine recovered. Sava followed the manual and had no reason to clear a hidden queue.",
+          "Juror 9: Supervisors move ingredients and sign batch sheets. Those ordinary tasks should not become evidence of poisoning just because an accident followed."
           ],
           "pushback": [
-            "Juror 9: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. The evidence about Rina’s angry message and shift signature is what keeps me from treating that as conclusive.",
-            "Juror 9: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. That is where the competing account becomes concrete for me."
+          "Juror 9: Did anyone at the kitchen know this printer could restart yesterday’s queue? If Rina knew, the warning might matter differently.",
+          "Juror 9: The kitchen’s procedures failed Orin badly. We still have to decide whether Rina committed a crime rather than a workplace error."
           ],
           "concede": [
-            "Juror 9: I accept now that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately. That answer makes sense only if the rest of the chronology holds."
+          "Juror 9: The operating manual confirms Sava’s account. The staff were not trained to detect this fault after the panel returned to green."
           ],
           "final": [
-            "Juror 9: My verdict in The Purple Label turns on whether the jury can reconcile Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal with this competing account: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. I would rather name the gap than pretend it is not there."
+          "Juror 9: This was a preventable workplace disaster, but the evidence does not show Rina caused it deliberately."
           ]
         },
         "reaction_rules": [
@@ -880,7 +889,7 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Purple Label, this juror keeps returning to Rina’s angry message and shift signature.",
+      "persona": "A sceptic who distrusts polished system evidence until its collection method is clear.",
         "register": "blunt",
         "arc": "burden_drifter",
         "initial": {
@@ -893,23 +902,23 @@
         },
         "lines": {
           "agree": [
-            "Juror 10: Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal. I can explain that conclusion without borrowing a fact that is not in evidence."
+          "Juror 10: The prosecution facts are simple and human: threat, access, ingredient and injury. The technical account needs careful testing."
           ],
           "pushback": [
-            "Juror 10: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. That is persuasive only if we first resolve Rina’s angry message and shift signature."
+          "Juror 10: Who preserved the printer log, and could anyone alter a queue record after Orin became ill?"
           ],
           "burden_drift": [
-            "Juror 10: In The Purple Label, there are unanswered questions around Rina’s angry message and shift signature, and I keep wanting Rina Dovel to explain them. I do not think confidence can repair a missing link.",
-            "Juror 10: In The Purple Label, there are unanswered questions around Rina’s angry message and shift signature, and I keep wanting Rina Dovel to explain them. I am separating what the record proves from what we are inferring."
+          "Juror 10: Rina sent the threat. I keep wanting her to prove it had nothing to do with the meal.",
+          "Juror 10: Rina was the supervisor, so part of me expects her to explain every gap in the packing process."
           ],
           "concede": [
-            "Juror 10: I accept now that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately. I can give that weight only after we account for Rina’s angry message and shift signature."
+          "Juror 10: The tray codes independently match the queue record, and the labels show no hand replacement. I accept the technical evidence."
           ],
           "burden_correct": [
-            "Juror 10: In The Purple Label, unanswered questions do not move the burden; the prosecution must still prove every element. The burden does not shift just because the accused’s explanation is untidy."
+          "Juror 10: Rina does not have to prove her anger was harmless. The prosecution has to prove that she acted on it through this meal."
           ],
           "final": [
-            "Juror 10: My verdict in The Purple Label turns on whether the jury can reconcile Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal with this competing account: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. I am changing my view because the explanation fits more of the evidence."
+          "Juror 10: Once I stop making Rina disprove the accusation, the documented printer fault leaves a reasonable doubt."
           ]
         },
         "reaction_rules": [
@@ -954,7 +963,7 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Purple Label, this juror keeps returning to Rina’s angry message and shift signature.",
+      "persona": "A rule-focused juror who brings the room back to the prosecution burden.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -967,18 +976,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 11: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. The gap between those two facts is where my doubt sits.",
-            "Juror 11: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. That is persuasive only if we first resolve Rina’s angry message and shift signature."
+          "Juror 11: The printer fault does not have to be certain. If it is reasonably possible, the prosecution has not proved a deliberate act.",
+          "Juror 11: We must be sure Rina knowingly caused the false label and intended serious harm. Negligent supervision would not satisfy this charge."
           ],
           "pushback": [
-            "Juror 11: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. The burden does not shift just because the accused’s explanation is untidy.",
-            "Juror 11: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. That answer makes sense only if the rest of the chronology holds."
+          "Juror 11: The message may support intent only after the prosecution proves Rina handled the tray. We cannot reverse that order.",
+          "Juror 11: Rina’s access creates opportunity, not a presumption that she used it criminally."
           ],
           "concede": [
-            "Juror 11: I accept now that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately. That is one fact; the room still has to test the accused performed or participated in the alleged act."
+          "Juror 11: I accept that the other three mismatches make the accidental explanation reasonable. Rina need prove no more."
           ],
           "final": [
-            "Juror 11: My verdict in The Purple Label turns on whether the jury can reconcile Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal with this competing account: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. Before I move, I need Rina’s angry message and shift signature placed on the same timeline."
+          "Juror 11: The prosecution has not proved the deliberate act or intent beyond reasonable doubt. My verdict is not guilty."
           ]
         },
         "reaction_rules": [
@@ -1023,7 +1032,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Purple Label, this juror keeps returning to Rina’s angry message and shift signature.",
+      "persona": "A patient listener who changes position when a timeline finally accounts for every event.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -1037,18 +1046,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 12: Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal. I am separating what the record proves from what we are inferring.",
-            "Juror 12: Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal. I do not think confidence can repair a missing link."
+          "Juror 12: The message came the night before, Rina moved ingredients at 11:35, and the printer failed at 11:42. Timing keeps the prosecution theory possible.",
+          "Juror 12: Orin’s tray was labelled between 11:43:02 and 11:43:49, inside the same window as three confirmed printer errors."
           ],
           "pushback": [
-            "Juror 12: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. I do not think confidence can repair a missing link.",
-            "Juror 12: I am not ready to let Rina’s angry message and shift signature decide The Purple Label. I am separating what the record proves from what we are inferring."
+          "Juror 12: When did Rina leave the packing area? I want her movements placed beside the label timestamps.",
+          "Juror 12: The camera blind spot matters only if Rina was near it during the forty-seven-second printing window."
           ],
           "concede": [
-            "Juror 12: I accept now that anger and supervisory responsibility do not prove that Rina relabelled this tray deliberately. I am ready to put less weight on the first impression."
+          "Juror 12: Once all four trays are placed in order, the stale queue accounts for each label without requiring deliberate intervention."
           ],
           "final": [
-            "Juror 12: My verdict in The Purple Label turns on whether the jury can reconcile Rina supervised the line, handled ingredient tubs near the packing area, and sent a threat shortly before Orin received the dangerous meal with this competing account: the disconnected printer reused an old safe-label template, and three other meals packed in the same minute carried mismatched labels. I am separating what the record proves from what we are inferring."
+          "Juror 12: The complete timeline supports an automatic labelling failure. The prosecution has not placed Rina at the tray when the label was applied."
           ]
         },
         "reaction_rules": [
@@ -1095,6 +1104,6 @@
     "model": "openai-codex",
     "prompt_version": "dd-2026-v2",
     "reviewer": "Codex Content Curator; independent QA rewrite and dynamics verification",
-    "batch_pr": "codex/docket-runway-a"
+    "batch_pr": "cursor/case-dd0021-coherence"
   }
 }
