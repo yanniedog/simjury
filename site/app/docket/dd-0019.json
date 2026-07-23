@@ -177,12 +177,12 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The prosecution tenders the marketplace approval audit and router log. Six changes redirected customer refunds to one wallet. Every change was signed by Milo’s hardware key and paired tablet. Milo reported the tablet missing on Monday; on Tuesday it approved two more changes, then joined his home router for twenty-three minutes and installed an automatic system update.",
+      "text": "The prosecution tenders the marketplace approval audit, exchange record, and router log. Six changes redirected customer refunds to one wallet. The exchange verified that wallet in Milo’s name and paid its balance to his personal bank account. Every change was signed by Milo’s hardware key and paired tablet. After he reported the tablet missing, it approved two more changes and joined his home router.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The private approval devices authorised every diversion, and their use from Milo’s home after the reported loss strongly tied him to the scheme.",
+      "reveal_note": "The destination wallet and withdrawal belonged to Milo, while his private approval devices authorised every diversion and reappeared on his home network after the reported loss.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -225,7 +225,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "You reported the tablet missing before Tuesday’s approvals? Yes. Yet it connected to your home router that night? The record says so. Who else knew the password for that router? No contractor did. And there was no sign of a break-in? No. I cannot explain how the tablet returned, but I did not use it.",
+      "text": "You reported the tablet missing before Tuesday’s approvals? Yes. Had that tablet ever joined your home router before it went missing? No. I kept it at the workshop, and the router history shows Tuesday was its first connection. So it could not have reconnected with a saved home credential? No. No contractor knew the password. And you cannot explain how it returned? No. I did not use it.",
       "turns": [
         {
           "speaker": "pc",
@@ -237,27 +237,27 @@
         },
         {
           "speaker": "pc",
-          "text": "Yet it connected to your home router that night?"
+          "text": "Had that tablet ever joined your home router before it went missing?"
         },
         {
           "speaker": "w3",
-          "text": "The record says so."
+          "text": "No. I kept it at the workshop, and the router history shows Tuesday was its first connection."
         },
         {
           "speaker": "pc",
-          "text": "Who else knew the password for that router?"
+          "text": "So it could not have reconnected with a saved home credential?"
         },
         {
           "speaker": "w3",
-          "text": "No contractor did."
+          "text": "No. No contractor knew the password."
         },
         {
           "speaker": "pc",
-          "text": "And there was no sign of a break-in?"
+          "text": "And you cannot explain how it returned?"
         },
         {
           "speaker": "w3",
-          "text": "No. I cannot explain how the tablet returned, but I did not use it."
+          "text": "No. I did not use it."
         }
       ],
       "surface_persuasion": 0.6,
