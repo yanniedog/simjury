@@ -9,6 +9,41 @@ import {
 
 type Direction = 'guilt' | 'innocence'
 
+const ORDINAL =
+  String.raw`(?:\d+(?:st|nd|rd|th)|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth)`
+
+const SCAFFOLD_PHRASES: ReadonlyArray<{
+  label: string
+  pattern: RegExp
+}> = [
+  {
+    label: 'At this nth point',
+    pattern: new RegExp(String.raw`\bat this ${ORDINAL} point\b`, 'i'),
+  },
+  {
+    label: 'This was the nth fact',
+    pattern: new RegExp(String.raw`\bthis was the ${ORDINAL} fact\b`, 'i'),
+  },
+  {
+    label: 'before investigators settled on',
+    pattern: /\bbefore investigators settled on\b/i,
+  },
+  {
+    label: 'against every charged element',
+    pattern: /\bagainst every charged element\b/i,
+  },
+  {
+    label: 'people kept living after the courtroom emptied',
+    pattern:
+      /\bthe people involved kept living with the consequences after the courtroom emptied\b/i,
+  },
+  {
+    label: 'case changed rules but could not return the accused months',
+    pattern:
+      /\bthe case changed workplace rules, but it could not return the months spent under accusation\b/i,
+  },
+]
+
 function opposite(direction: Direction): Direction {
   return direction === 'guilt' ? 'innocence' : 'guilt'
 }
@@ -68,6 +103,98 @@ export const NARRATED_WORDS_MAX = 1250
 export function wordCount(text: string): number {
   const words = text.trim().split(/\s+/)
   return words[0] === '' ? 0 : words.length
+}
+
+function scaffoldIssues(c: DocketCase): string[] {
+  const surfaces: Array<{ field: string; text: string }> = [
+    { field: 'title', text: c.title },
+    { field: 'setting', text: c.setting },
+    { field: 'charge', text: c.charge },
+    ...c.elements.map((text, index) => ({
+      field: `elements[${index}]`,
+      text,
+    })),
+    { field: 'hook', text: c.hook },
+    { field: 'accused.human', text: c.accused.human },
+    { field: 'accused.if_guilty', text: c.accused.if_guilty },
+    {
+      field: 'statement opening.prosecution.text',
+      text: c.statements.opening.prosecution.text,
+    },
+    {
+      field: 'statement opening.defence.text',
+      text: c.statements.opening.defence.text,
+    },
+    {
+      field: 'statement closing.prosecution.text',
+      text: c.statements.closing.prosecution.text,
+    },
+    {
+      field: 'statement closing.defence.text',
+      text: c.statements.closing.defence.text,
+    },
+    { field: 'epilogue', text: c.epilogue },
+    { field: 'twist', text: c.twist },
+  ]
+
+  for (const member of c.cast) {
+    surfaces.push(
+      { field: `cast ${member.id}.name`, text: member.name },
+      { field: `cast ${member.id}.role_label`, text: member.role_label },
+    )
+  }
+  if (c.media) {
+    surfaces.push(
+      { field: 'media.cover.alt', text: c.media.cover.alt },
+      { field: 'media.cover.caption', text: c.media.cover.caption },
+      { field: 'media.accused.alt', text: c.media.accused.alt },
+      { field: 'media.accused.caption', text: c.media.accused.caption },
+    )
+    for (const [beatId, media] of Object.entries(c.media.beats)) {
+      surfaces.push(
+        { field: `media.beats.${beatId}.alt`, text: media.alt },
+        { field: `media.beats.${beatId}.caption`, text: media.caption },
+      )
+    }
+  }
+  for (const beat of c.beats) {
+    surfaces.push(
+      { field: `beat ${beat.id}.text`, text: beat.text },
+      { field: `beat ${beat.id}.reveal_note`, text: beat.reveal_note },
+    )
+    beat.turns?.forEach((turn, index) => {
+      surfaces.push({
+        field: `beat ${beat.id}.turns[${index}].text`,
+        text: turn.text,
+      })
+    })
+  }
+  for (const juror of c.jury.jurors) {
+    surfaces.push(
+      { field: `juror ${juror.id}.label`, text: juror.label },
+      { field: `juror ${juror.id}.persona`, text: juror.persona },
+    )
+    for (const [lineFunction, lines] of Object.entries(juror.lines)) {
+      lines?.forEach((text, index) => {
+        surfaces.push({
+          field: `juror ${juror.id} lines.${lineFunction}[${index}]`,
+          text,
+        })
+      })
+    }
+  }
+
+  const issues: string[] = []
+  for (const surface of surfaces) {
+    for (const phrase of SCAFFOLD_PHRASES) {
+      if (phrase.pattern.test(surface.text)) {
+        issues.push(
+          `${c.id} ${surface.field} contains generated scaffold phrase '${phrase.label}'`,
+        )
+      }
+    }
+  }
+  return issues
 }
 
 function jurorIssues(
@@ -243,8 +370,11 @@ export function checkDocketCase(c: DocketCase): string[] {
       issues.push(`beat ${b.id} speaker '${b.speaker}' is not in the cast`)
       continue
     }
-    if (b.kind === 'direction' && speaker.side !== 'court') {
-      issues.push(`direction beat ${b.id} must be spoken by the court`)
+    if (
+      b.kind === 'direction' &&
+      (speaker.side !== 'court' || !/\bjudge\b/i.test(speaker.role_label))
+    ) {
+      issues.push(`direction beat ${b.id} must be spoken by the judge`)
     }
     if (b.kind === 'witness') {
       if (!b.mode) {
@@ -281,8 +411,17 @@ export function checkDocketCase(c: DocketCase): string[] {
       }
     }
   }
-  if (!c.beats.some((b) => b.kind === 'direction')) {
-    issues.push('needs at least one direction beat (the judge must speak)')
+  const directionBeats = c.beats.filter((b) => b.kind === 'direction')
+  if (directionBeats.length !== 1) {
+    issues.push(
+      `${c.id} beats must contain exactly one judge direction (found ${directionBeats.length})`,
+    )
+  }
+  const finalBeat = c.beats[c.beats.length - 1]
+  if (finalBeat?.kind !== 'direction') {
+    issues.push(
+      `${c.id} final beat '${finalBeat?.id ?? 'none'}' must be the sole judge direction`,
+    )
   }
   if (
     witnessSpeakers.size < WITNESS_COUNT_MIN ||
@@ -328,6 +467,12 @@ export function checkDocketCase(c: DocketCase): string[] {
     const at = order.get(id) ?? -1
     if (at <= prev) issues.push(`check-in '${id}' is out of beat order`)
     prev = at
+  }
+  const finalCheckin = c.checkins[c.checkins.length - 1]
+  if (finalBeat && finalCheckin !== finalBeat.id) {
+    issues.push(
+      `${c.id} final check-in must reference final beat '${finalBeat.id}' (got '${finalCheckin ?? 'none'}')`,
+    )
   }
 
   // Every trap must be scoreable: analyzeDocketPlay can only mark a
@@ -385,6 +530,7 @@ export function checkDocketCase(c: DocketCase): string[] {
 
   for (const j of jurors) issues.push(...jurorIssues(j, themeDirections))
 
+  issues.push(...scaffoldIssues(c))
   issues.push(...scanDocketCaseTokens(c))
 
   return issues
