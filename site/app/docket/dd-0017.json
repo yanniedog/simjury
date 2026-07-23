@@ -4,13 +4,13 @@
   "label": "fiction",
   "title": "The Falling Parcel",
   "setting": "A delivery-drone injury trial in 2026, with an operator blamed for a route change made by a silent overnight map update.",
-  "charge": "Dangerously operating an autonomous delivery aircraft and causing serious injury",
+  "charge": "Dangerous operation of an autonomous delivery aircraft causing serious injury",
   "elements": [
-    "The accused performed or participated in the alleged act.",
-    "The act was deliberate or dishonest rather than accidental.",
-    "The prosecution has proved every required fact beyond reasonable doubt."
+    "Pavel Senn was operating or supervising the delivery aircraft when it launched.",
+    "Pavel’s decision to launch or continue the flight fell far below the care expected of a reasonable fleet operator and created an obvious risk of serious injury.",
+    "That dangerous operation caused Jonel Park’s serious injury."
   ],
-  "hook": "A medicine parcel drops through a glass shelter. The control screen says the operator approved the path; his hands say he never saw it.",
+  "hook": "A medicine parcel crashes through a glass shelter. The flight log puts the operator’s name on the route, but his preserved screen shows a different path.",
   "accused": {
     "cast_id": "w4",
     "human": "Pavel Senn trains rescue volunteers and took the fleet job after a factory closure.",
@@ -20,25 +20,25 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution says the accused approved a low route through a crowded street and ignored two weather alerts to protect delivery targets. The apparent centre of the case is an approval bearing the accused’s operator ID, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+        "text": "Pavel Senn was responsible for the aircraft that struck a crowded shelter and seriously injured Jonel Park. His operator ID appears beside the route approval. Two wind alerts were on his dashboard, and he had the power to ground the flight. The prosecution says a careful operator would have stopped the aircraft rather than send it through a busy street."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence says the interface carried forward an old approval while a map update moved the route beneath a wind channel the operator could not see. Suspicion gathered around a person before investigators tested the limits of an approval bearing the accused’s operator ID; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+        "text": "Pavel approved a safe route the day before the accident. Overnight, the map service moved that route eighteen metres east, but his screen kept the old green approval badge and showed no warning that anything had changed. The defence says Pavel checked the information the system gave him and had no reason to know the aircraft would enter the wind channel beside the shelter."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution began with the approval badge bearing Pavel’s operator ID, but it does not ask you to convict on that clue alone. Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
+        "text": "The overnight update does not erase Pavel’s responsibility. He was supervising the flight, he saw two district wind alerts, and he alone in this courtroom could have grounded the aircraft. The route badge may not prove that he approved the changed coordinates, but it does prove he was on duty and trusted an automated display despite worsening weather. If you are sure that choice created an obvious and serious risk, the charge is proved."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence accepts that the approval badge bearing Pavel’s operator ID created suspicion, but suspicion is not the test. An overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That evidence goes to the heart of the case because an inherited interface badge is not proof that the operator approved the updated geometry. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
+        "text": "The prosecution has proved a terrible injury, not dangerous conduct by Pavel. Neither district alert required grounding, and the screen showed the route as approved. The preserved system data confirms that the aircraft received new coordinates while Pavel still saw yesterday’s safe path. If a reasonable operator could rely on the very display designed to warn him, you cannot be sure his conduct fell far below the required standard. That is reasonable doubt."
       }
     }
   },
-  "epilogue": "The injured commuter completed rehabilitation and met Pavel after trial. The operator returned to training work, and the fleet grounded automatic map updates until every changed route required a fresh human acknowledgement. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "epilogue": "Jonel completed months of rehabilitation and returned to work with limited movement in one shoulder. The fleet suspended automatic route updates and now requires a fresh operator acknowledgement whenever coordinates change. Pavel returned to training work after the trial. He later met Jonel through the company’s restorative program; neither of them described the meeting as easy.",
   "cast": [
     {
       "id": "judge",
@@ -88,12 +88,12 @@
       "id": "b1",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The control record displays Pavel’s operator ID beside an approved route. The first report assumed that badge meant he reviewed the same geometry flown on the accident morning. At this first point, the exhibit’s stated limit is that an inherited interface badge is not proof that the operator approved the updated geometry, so it must be weighed with the rest of the sequence.",
+      "text": "The flight record shows Pavel’s operator ID beside a green approval badge for Route 14. The aircraft left the depot at 8:12, entered the street below the approved altitude, struck the shelter and released its parcel. Investigators initially read the record as proof that Pavel had approved the route flown that morning.",
       "surface_persuasion": 0.8,
       "true_weight": 0.15,
       "direction": "guilt",
       "reveal_stamp": "misleading",
-      "reveal_note": "The first impression came from the approval badge bearing Pavel’s operator ID; its value depended on whether the later evidence could overcome this limit: an inherited interface badge is not proof that the operator approved the updated geometry.",
+      "reveal_note": "The operator ID makes the route look personally approved, but the badge does not reveal which version of the route Pavel actually saw.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -104,12 +104,12 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "I was waiting under the shelter when the aircraft tilted, struck the frame, and released the parcel. I never saw the operator, only the machine approaching lower than usual. This was the second fact I recorded in the initial The Falling Parcel inquiry, before investigators settled on Pavel Senn. The timing was noted before the The Falling Parcel inquiry settled on Pavel Senn as its suspect.",
+      "text": "I’m Jonel Park. I was waiting beneath the glass shelter for the 8:15 tram. The aircraft came along the street lower than the delivery drones usually fly. It tilted hard, clipped the shelter frame and dropped the parcel through the roof. Glass cut my face, and the impact dislocated my shoulder. I spent four months in rehabilitation. I never saw whoever was controlling it.",
       "surface_persuasion": 0.6,
       "true_weight": 0.3,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "This witness fixed the practical setting before suspicion centred on Pavel Senn, giving the room context for the records that followed.",
+      "reveal_note": "Jonel proves the flight’s dangerous path and the resulting injury, but cannot say what the operator knew before launch.",
       "tags": [
         "credibility",
         "procedure"
@@ -119,31 +119,13 @@
       "id": "b3",
       "kind": "witness",
       "speaker": "w1",
-      "mode": "cross",
-      "text": "Your first report treated the approval badge as a fresh click? Yes, because that was how the interface was documented. You later learned the badge could survive a map update? Yes. The documentation did not describe that behaviour. The first report reasonably read the badge as current, but the undocumented carry-over behaviour weakened that inference.",
-      "turns": [
-        {
-          "speaker": "dc",
-          "text": "Your first report treated the approval badge as a fresh click?"
-        },
-        {
-          "speaker": "w1",
-          "text": "Yes, because that was how the interface was documented."
-        },
-        {
-          "speaker": "dc",
-          "text": "You later learned the badge could survive a map update?"
-        },
-        {
-          "speaker": "w1",
-          "text": "Yes. The documentation did not describe that behaviour. The first report reasonably read the badge as current, but the undocumented carry-over behaviour weakened that inference."
-        }
-      ],
+      "mode": "examination",
+      "text": "I’m Eris Dain, the fleet safety manager. I led the accident review. Our first report treated Pavel’s green badge as a fresh approval because the manual said a changed route would clear it. Testing showed the badge could survive an overnight map update. That behaviour was not documented, so I withdrew the report’s conclusion that Pavel had approved the coordinates flown that morning.",
       "surface_persuasion": 0.5,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The challenged record mattered because it exposed the gap between appearance and proof: an inherited interface badge is not proof that the operator approved the updated geometry.",
+      "reveal_note": "The prosecution’s own safety manager explains why the original report no longer proves that Pavel approved the changed route.",
       "tags": [
         "digital_forensics",
         "procedure"
@@ -153,12 +135,12 @@
       "id": "b4",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Two wind alerts reached the fleet dashboard. They covered the wider district, not this corridor, and neither alert required an automatic grounding under company policy. At this fourth point, the exhibit’s stated limit is that an inherited interface badge is not proof that the operator approved the updated geometry, so it must be weighed with the rest of the sequence.",
+      "text": "The dashboard log records two district wind alerts at 7:42 and 7:58. Pavel opened the weather panel after the second alert. Both notices warned operators to review local conditions, but neither named Route 14, exceeded the company’s grounding threshold or triggered the red stop-flight banner.",
       "surface_persuasion": 0.55,
       "true_weight": 0.35,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "Cross-examination narrowed the early clue without erasing it, forcing the room to decide how much independent support remained.",
+      "reveal_note": "The alerts gave Pavel a reason to pay attention, although company policy did not require him to stop this flight.",
       "tags": [
         "method",
         "digital_forensics"
@@ -168,12 +150,12 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "The map service updated at 3:06 and moved the route eighteen metres east. The interface retained yesterday’s approval badge and did not show the operator a changed-route banner. At this fifth point, the exhibit’s stated limit is that an inherited interface badge is not proof that the operator approved the updated geometry, so it must be weighed with the rest of the sequence.",
+      "text": "The map-service audit shows that Route 14 was recalculated at 3:06 a.m. and shifted eighteen metres east, into the wind channel between the towers. The operator interface received the new route but retained the green badge from Pavel’s approval the previous afternoon. The event log contains no changed-route banner or request for a fresh acknowledgement.",
       "surface_persuasion": 0.5,
       "true_weight": 0.85,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "This was the decisive innocence evidence: The map service updated at 3:06 and moved the route eighteen metres east. The interface retained yesterday’s approval badge and did not show the operator a changed-route banner. It turned the alternative explanation into a checkable account the prosecution could not exclude beyond reasonable doubt.",
+      "reveal_note": "The audit ties the dangerous geometry to an automatic update and shows that the warning Pavel was trained to expect never appeared.",
       "tags": [
         "timeline",
         "digital_forensics"
@@ -184,12 +166,12 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "examination",
-      "text": "I replayed the operator screen from preserved event data. It showed a green approved path, while the aircraft received different coordinates from the updated map service. This was the sixth fact I recorded in the initial The Falling Parcel inquiry, before investigators settled on Pavel Senn.",
+      "text": "I’m Toma Vey, an interface reliability engineer. I rebuilt Pavel’s screen from preserved display events and compared it with the aircraft commands. At 8:12, his display showed the green path approved the previous afternoon. At the same moment, the aircraft received the route shifted east by the map service. There was no visual or audible indication that the coordinates had changed.",
       "surface_persuasion": 0.55,
       "true_weight": 0.75,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "The competing account was concrete rather than speculative: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning.",
+      "reveal_note": "The reconstruction shows that Pavel’s display and the aircraft’s actual coordinates did not match at launch.",
       "tags": [
         "method",
         "procedure"
@@ -198,14 +180,32 @@
     {
       "id": "b7",
       "kind": "witness",
-      "speaker": "w4",
-      "mode": "examination",
-      "text": "I checked the weather panel and saw no mandatory stop. I believed the route had already passed review, and nothing on my screen asked me to approve a new path. This was the seventh fact I recorded in the initial The Falling Parcel inquiry, before investigators settled on Pavel Senn. That The Falling Parcel detail can be checked against the contemporaneous record rather than accepted as a later reconstruction.",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "You did not watch Pavel’s screen that morning, did you? No. I reconstructed it from the display-event record stored by the system. And Pavel still had authority to ground the aircraft? Yes. But the record captures every warning and screen change, with no gap before launch. It shows no changed-route notice and no unsafe-flight warning for him to act on.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "You did not watch Pavel’s screen that morning, did you?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No. I reconstructed it from the display-event record stored by the system."
+        },
+        {
+          "speaker": "pc",
+          "text": "And Pavel still had authority to ground the aircraft?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes. But the record captures every warning and screen change, with no gap before launch. It shows no changed-route notice and no unsafe-flight warning for him to act on."
+        }
+      ],
       "surface_persuasion": 0.55,
       "true_weight": 0.35,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This testimony tested whether the system record described a person’s conduct or only an event produced around them.",
+      "reveal_note": "Cross-examination tests the reconstruction’s limits without identifying any warning or screen event omitted from it.",
       "tags": [
         "credibility",
         "procedure"
@@ -214,32 +214,14 @@
     {
       "id": "b8",
       "kind": "witness",
-      "speaker": "w2",
-      "mode": "cross",
-      "text": "You suffered a serious shoulder injury? Yes, and months of rehabilitation. But you cannot identify who approved a route? No. I can describe the aircraft and what happened beneath it. The injury proves the seriousness of the event, not what Pavel’s interface displayed before launch.",
-      "turns": [
-        {
-          "speaker": "dc",
-          "text": "You suffered a serious shoulder injury?"
-        },
-        {
-          "speaker": "w2",
-          "text": "Yes, and months of rehabilitation."
-        },
-        {
-          "speaker": "dc",
-          "text": "But you cannot identify who approved a route?"
-        },
-        {
-          "speaker": "w2",
-          "text": "No. I can describe the aircraft and what happened beneath it. The injury proves the seriousness of the event, not what Pavel’s interface displayed before launch."
-        }
-      ],
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "I’m Pavel Senn. I supervised six medicine flights that morning. After the second district alert, I opened the weather panel. Route 14 was green, the wind reading for its corridor was below the stop threshold, and there was no instruction to approve a change. I was authorised to ground the aircraft, but I believed I was sending it along the route I had checked the previous afternoon.",
       "surface_persuasion": 0.5,
       "true_weight": 0.25,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The second cross put the decisive inference under pressure and showed exactly which part of the account could still be disputed.",
+      "reveal_note": "Pavel admits he had control of the flight and saw the alerts, leaving the jury to decide whether relying on the green route was dangerously careless.",
       "tags": [
         "motive",
         "credibility"
@@ -250,30 +232,30 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "You had authority to ground the fleet anyway? I did, if the screen showed unsafe conditions. You never opened the raw coordinates? No operator normally did; the approved route display was meant to summarise them. Operators were entitled to rely on the approved-path summary unless the system exposed a reason to inspect raw coordinates.",
+      "text": "Your team was behind target, and you could ground the aircraft? Yes. Delivery times were monitored, but safety stops were not penalised. You did not open the raw coordinates after two wind alerts? No. We were trained to review the mapped route and corridor reading. Both were green. Raw coordinates were in a maintenance panel and would not have shown me the wind channel without specialist software.",
       "turns": [
         {
           "speaker": "pc",
-          "text": "You had authority to ground the fleet anyway?"
+          "text": "Your team was behind target, and you could ground the aircraft?"
         },
         {
           "speaker": "w4",
-          "text": "I did, if the screen showed unsafe conditions."
+          "text": "Yes. Delivery times were monitored, but safety stops were not penalised."
         },
         {
           "speaker": "pc",
-          "text": "You never opened the raw coordinates?"
+          "text": "You did not open the raw coordinates after two wind alerts?"
         },
         {
           "speaker": "w4",
-          "text": "No operator normally did; the approved route display was meant to summarise them. Operators were entitled to rely on the approved-path summary unless the system exposed a reason to inspect raw coordinates."
+          "text": "No. We were trained to review the mapped route and corridor reading. Both were green. Raw coordinates were in a maintenance panel and would not have shown me the wind channel without specialist software."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.4,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The final witness supplied a separate check on the timeline, reducing the risk that one attractive clue would decide the case alone.",
+      "reveal_note": "Pavel’s explanation is consistent with the interface records, although the jury must still assess whether a careful operator should have stopped after the district alerts.",
       "tags": [
         "procedure",
         "credibility"
@@ -283,12 +265,12 @@
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person.",
+      "text": "To convict, you must be sure that Pavel’s decision fell far below reasonable care, created an obvious risk of serious injury and caused Jonel’s injury. Consider whether a reasonable operator could rely on the green route after the wind alerts. The prosecution must exclude the reasonable possibility that Pavel’s screen showed a safe approved path with no warning of changed coordinates. Jonel’s injury cannot replace proof of Pavel’s dangerous conduct.",
       "surface_persuasion": 0.404,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The direction kept the burden where it belonged: an inherited interface badge is not proof that the operator approved the updated geometry, and no gap in the defence could substitute for proof of every element.",
+      "reveal_note": "The final direction separates the undisputed harm from the disputed question of whether Pavel’s conduct was criminally dangerous.",
       "tags": [
         "burden",
         "digital_forensics"
@@ -299,10 +281,10 @@
     "b3",
     "b5",
     "b8",
-    "b9"
+    "b10"
   ],
   "verdict_truth": "Not Guilty",
-  "twist": "Pavel’s ID did appear beside the dangerous route, but the approval belonged to the previous day. An overnight map update shifted the corridor while preserving the old approval badge and suppressing the normal changed-route warning.",
+  "twist": "Pavel’s green approval was genuine—but it was attached to yesterday’s route. At 3:06 a.m., the map service moved the aircraft’s path into the wind channel while leaving Pavel’s display looking unchanged.",
   "difficulty_target": 0.58,
   "jury": {
     "jurors": [
@@ -310,7 +292,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+      "persona": "A rule-focused juror who brings the room back to the prosecution burden.",
         "register": "blunt",
         "arc": "vibes",
         "initial": {
@@ -323,18 +305,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 2: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. I hear the point; now I want the source of it tested.",
-            "Juror 2: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. If we remove the dramatic label, that is the fact left underneath."
+          "Juror 2: Pavel was the operator on duty, saw the alerts and could stop the flight. That is evidence against him, even if the route badge was stale.",
+          "Juror 2: The automatic update explains the route change. It does not answer whether a reasonable operator would have launched after two wind alerts."
           ],
           "pushback": [
-            "Juror 2: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I am changing my view because the explanation fits more of the evidence.",
-            "Juror 2: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. For me, the unanswered part is still the act was deliberate or dishonest rather than accidental."
+          "Juror 2: Slow down. Are we saying the badge proves Pavel saw the changed route, or only that his name stayed attached to it?",
+          "Juror 2: The injury is not in dispute. The question is whether Pavel’s decision fell far below reasonable care."
           ],
           "concede": [
-            "Juror 2: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. It changes how I read the approval badge bearing Pavel’s operator ID, but it does not end the inquiry."
+          "Juror 2: I accept that Pavel did not approve the shifted coordinates. I still want to test what the weather alerts required of him."
           ],
           "final": [
-            "Juror 2: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That point earns weight because it can be checked independently."
+          "Juror 2: I am not satisfied beyond reasonable doubt that a careful operator had to ground a green route after district alerts that stayed below the company threshold."
           ]
         },
         "reaction_rules": [
@@ -379,7 +361,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+      "persona": "A patient listener who changes position when a timeline finally accounts for every event.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -392,18 +374,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 3: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I do not think confidence can repair a missing link.",
-            "Juror 3: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I am separating what the record proves from what we are inferring."
+          "Juror 3: The timing fits. Pavel approved the old route, the system changed it at 3:06, and the aircraft received the new coordinates while his screen still showed the old path.",
+          "Juror 3: Eris changed her conclusion after the interface test. That makes more sense of the records than assuming Pavel secretly approved a route no screen ever showed him."
           ],
           "pushback": [
-            "Juror 3: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I am weighing that beside the approval badge bearing Pavel’s operator ID, not on its own.",
-            "Juror 3: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I am asking whether the exhibit proves the act or merely resembles it."
+          "Juror 3: Where in the timeline do we place Pavel’s alleged approval of the changed route? I cannot find that event.",
+          "Juror 3: The green badge looks bad until we ask when it was created. The date matters."
           ],
           "concede": [
-            "Juror 3: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. I am not counting the same assumption twice as two pieces of evidence."
+          "Juror 3: I had treated the operator ID and the route approval as two facts. They are one stale record, so I need to reduce the weight I gave it."
           ],
           "final": [
-            "Juror 3: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That moves one piece, not the burden the Crown carries."
+          "Juror 3: The complete timeline leaves Pavel looking at an unchanged safe route. I cannot call his decision criminally dangerous on that evidence."
           ]
         },
         "reaction_rules": [
@@ -448,7 +430,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+      "persona": "A blunt juror who challenges convenient memory from witnesses on both sides.",
         "register": "formal",
         "arc": "principled_holdout",
         "initial": {
@@ -460,22 +442,22 @@
           "digital_forensics": 1
         },
         "lines": {
-          "agree": [
-            "Juror 4: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. The sequence matters more to me than how suspicious one moment sounds."
+        "agree": [
+          "Juror 4: Pavel’s screen stayed green and gave no changed-route warning. That directly weakens the claim that he saw an obvious risk."
           ],
           "pushback": [
-            "Juror 4: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I need the witness account and the recorded evidence to agree before I rely on either.",
-            "Juror 4: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. That is one fact; the room still has to test the accused performed or participated in the alleged act."
+          "Juror 4: Do not tell me what the screen probably showed. Point me to the preserved record.",
+          "Juror 4: Pavel’s memory helps him. The event log helps him too, and that is much harder to dismiss."
           ],
           "concede": [
-            "Juror 4: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. Before I move, I need the approval badge bearing Pavel’s operator ID placed on the same timeline."
+          "Juror 4: Eris admitted the original report was wrong about the badge. I will not rely on a conclusion its own author withdrew."
           ],
           "holdout": [
-            "Juror 4: I am holding my position until the room deals directly with Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. That moves one piece, not the burden the Crown carries.",
-            "Juror 4: I am holding my position until the room deals directly with Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. I am treating the timing as evidence, not as a verdict."
+          "Juror 4: I am not moving until someone shows me the obvious risk Pavel was supposed to see on a green screen.",
+          "Juror 4: The weather alerts deserve discussion. They do not become a stop order just because an accident happened later."
           ],
           "final": [
-            "Juror 4: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. The sequence matters more to me than how suspicious one moment sounds."
+          "Juror 4: The records support Pavel on the only disputed point: what he could see. I vote not guilty."
           ]
         },
         "reaction_rules": [
@@ -520,7 +502,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+      "persona": "A cautious holdout who wants the decisive record stated without exaggeration.",
         "register": "formal",
         "arc": "steady",
         "initial": {
@@ -533,21 +515,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 5: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. The evidence about the approval badge bearing Pavel’s operator ID is what keeps me from treating that as conclusive."
+          "Juror 5: The audit proves the route moved and the badge remained. It does not prove Pavel checked every local wind condition as carefully as he should have."
           ],
           "pushback": [
-            "Juror 5: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. That is one fact; the room still has to test the accused performed or participated in the alleged act.",
-            "Juror 5: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I need the witness account and the recorded evidence to agree before I rely on either."
+          "Juror 5: We agree the badge was stale. We still have to decide what the two alerts meant for a reasonable operator.",
+          "Juror 5: Toma proved what the screen displayed, not what Pavel actually noticed. Let us keep those questions separate."
           ],
           "concede": [
-            "Juror 5: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. I can give that weight only after we account for the approval badge bearing Pavel’s operator ID."
+          "Juror 5: I can no longer treat Pavel’s ID as proof that he approved the dangerous path. The system carried it forward without asking him."
           ],
           "burden_correct": [
-            "Juror 5: In The Falling Parcel, unanswered questions do not move the burden; the prosecution must still prove every element. That point earns weight because it can be checked independently.",
-            "Juror 5: In The Falling Parcel, unanswered questions do not move the burden; the prosecution must still prove every element. I can explain that conclusion without borrowing a fact that is not in evidence."
+          "Juror 5: Pavel does not have to prove he was careful. The prosecution has to make us sure his conduct was dangerously below the standard.",
+          "Juror 5: If we cannot decide what a reasonable operator should have done with those non-mandatory alerts, that uncertainty belongs to the prosecution."
           ],
           "final": [
-            "Juror 5: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I am asking whether the exhibit proves the act or merely resembles it."
+          "Juror 5: The changed route and missing warning create reasonable doubt about dangerous conduct. My verdict is not guilty."
           ]
         },
         "reaction_rules": [
@@ -592,7 +574,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+      "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof.",
         "register": "plain",
         "arc": "foreperson",
         "initial": {
@@ -605,18 +587,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 6: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. I am weighing that beside the approval badge bearing Pavel’s operator ID, not on its own.",
-            "Juror 6: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. I am asking whether the exhibit proves the act or merely resembles it."
+          "Juror 6: Jonel’s injury was awful, and Pavel was responsible for the flight. We still need proof that his decision was dangerously careless.",
+          "Juror 6: The weather panel gave Pavel information and authority. I want to know whether ignoring the district alerts was unreasonable even with a green route."
           ],
           "pushback": [
-            "Juror 6: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. That answer makes sense only if the rest of the chronology holds.",
-            "Juror 6: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. The burden does not shift just because the accused’s explanation is untidy."
+          "Juror 6: We cannot turn Jonel’s pain into proof of what Pavel saw before launch.",
+          "Juror 6: I believe Jonel completely. His evidence tells us what happened under the shelter, not whether Pavel saw an obvious risk."
           ],
           "concede": [
-            "Juror 6: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. If we remove the dramatic label, that is the fact left underneath."
+          "Juror 6: The old badge made me think Pavel chose this exact path. Now I understand that the system made that choice without telling him."
           ],
           "final": [
-            "Juror 6: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I am weighing that beside the approval badge bearing Pavel’s operator ID, not on its own."
+          "Juror 6: Jonel deserves accountability, but this charge requires proof of Pavel’s dangerous conduct. I am not sure of it, so I vote not guilty."
           ]
         },
         "reaction_rules": [
@@ -649,7 +631,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+      "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -662,19 +644,19 @@
         },
         "lines": {
           "agree": [
-            "Juror 7: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I need the witness account and the recorded evidence to agree before I rely on either.",
-            "Juror 7: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That is one fact; the room still has to test the accused performed or participated in the alleged act."
+          "Juror 7: The aircraft and the operator screen were using different route states. That is a concrete system failure, not just Pavel’s excuse.",
+          "Juror 7: Toma’s reconstruction comes from the application’s event data. Unless that record has a gap, it is our best evidence of what the interface displayed."
           ],
           "pushback": [
-            "Juror 7: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I hear the point; now I want the source of it tested.",
-            "Juror 7: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. If we remove the dramatic label, that is the fact left underneath."
+          "Juror 7: A green badge can be wrong, but Pavel still knew automation can fail. How much independent checking did his job require?",
+          "Juror 7: I want the raw event log, not a coloured diagram prepared for court. Which one supports Toma’s conclusion?"
           ],
           "concede": [
-            "Juror 7: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. That is stronger than suspicion, but I am checking it against the approval badge bearing Pavel’s operator ID.",
-            "Juror 7: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. That detail matters to my vote because it comes from outside either side’s story."
+          "Juror 7: The audit timestamp and display events agree. I accept that the stale badge came from the software, not from a second approval by Pavel.",
+          "Juror 7: The system recorded no changed-route banner. That matters because the interface was designed to make operators rely on that warning."
           ],
           "final": [
-            "Juror 7: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That leaves me asking who had the opportunity the records actually show."
+          "Juror 7: The failure occurred between the map service and the operator display. The prosecution has not shown that Pavel could detect it through the normal controls."
           ]
         },
         "reaction_rules": [
@@ -731,7 +713,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+      "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained.",
         "register": "plain",
         "arc": "mind_changer",
         "initial": {
@@ -744,18 +726,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 8: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. I am not counting the same assumption twice as two pieces of evidence.",
-            "Juror 8: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. I want the actual record compared with the story built around it."
+          "Juror 8: Pavel had the last human chance to stop the flight. Is that enough to make his decision dangerous when the route and corridor reading were green?",
+          "Juror 8: The alerts did not name Route 14, but Pavel opened them. Why would a careful operator check the panel and still miss a serious local risk?"
           ],
           "pushback": [
-            "Juror 8: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. That leaves me asking who had the opportunity the records actually show.",
-            "Juror 8: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I am not filling the missing step with instinct."
+          "Juror 8: What evidence shows Pavel could see that the route had moved east?",
+          "Juror 8: If the company expected operators to inspect raw coordinates, why did no witness identify that rule or practice?"
           ],
           "concede": [
-            "Juror 8: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. That moves one piece, not the burden the Crown carries."
+          "Juror 8: The strongest guilty fact was Pavel’s approval. Once we learn it belonged to yesterday’s route, the prosecution needs another way to prove the obvious risk."
           ],
           "final": [
-            "Juror 8: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That is the part of the Crown case I can test rather than guess."
+          "Juror 8: I cannot answer how Pavel was meant to discover the changed path. That unanswered question is reasonable doubt."
           ]
         },
         "reaction_rules": [
@@ -812,7 +794,7 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+      "persona": "A steady foreperson who makes the room distinguish suspicion from proof.",
         "register": "hesitant",
         "arc": "steady",
         "initial": {
@@ -824,18 +806,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 9: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. The practical question is whether those events can both be true.",
-            "Juror 9: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I can state the inference now, and I can also state what it depends on."
+          "Juror 9: We can agree on three facts: Pavel supervised the launch, the map service changed the route, and his screen gave no warning. The dispute is what reasonable care required after the alerts.",
+          "Juror 9: Let us put the injury to one side for a moment and test the conduct element on its own."
           ],
           "pushback": [
-            "Juror 9: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. That is the part of the Crown case I can test rather than guess.",
-            "Juror 9: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. Before I move, I need the approval badge bearing Pavel’s operator ID placed on the same timeline."
+          "Juror 9: We are using ‘responsible’ in two different ways. Pavel managed the flight, but the charge requires dangerous operation.",
+          "Juror 9: Can anyone point to evidence that the district alerts made this green corridor obviously unsafe?"
           ],
           "concede": [
-            "Juror 9: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. For me, the unanswered part is still the act was deliberate or dishonest rather than accidental."
+          "Juror 9: The approval badge establishes Pavel’s role, not his knowledge of the route change. I agree those are different facts."
           ],
           "final": [
-            "Juror 9: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I can explain that conclusion without borrowing a fact that is not in evidence."
+          "Juror 9: We do not have to decide whether Pavel was perfect. We have to decide whether the prosecution proved criminally dangerous conduct, and I do not think it did."
           ]
         },
         "reaction_rules": [
@@ -880,7 +862,7 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+      "persona": "A careful note-taker who separates a striking clue from the chain needed to prove dangerous conduct.",
         "register": "blunt",
         "arc": "burden_drifter",
         "initial": {
@@ -892,24 +874,22 @@
           "burden": 1
         },
         "lines": {
-          "agree": [
-            "Juror 10: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. That point earns weight because it can be checked independently."
-          ],
-          "pushback": [
-            "Juror 10: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. The practical question is whether those events can both be true."
-          ],
-          "burden_drift": [
-            "Juror 10: In The Falling Parcel, there are unanswered questions around the approval badge bearing Pavel’s operator ID, and I keep wanting Pavel Senn to explain them. I can give that weight only after we account for the approval badge bearing Pavel’s operator ID.",
-            "Juror 10: In The Falling Parcel, there are unanswered questions around the approval badge bearing Pavel’s operator ID, and I keep wanting Pavel Senn to explain them. I am holding it against the judge’s direction on the accused performed or participated in the alleged act."
+        "pushback": [
+          "Juror 10: The green badge does not settle this. The question is what Pavel should have done with the information he actually received."
+        ],
+        "burden_drift": [
+          "Juror 10: My notes show Pavel opened the weather panel and chose not to ground the aircraft. I still think he should explain why that was reasonable.",
+          "Juror 10: Pavel was in charge. If he cannot satisfy us that launching was safe, I am inclined to hold that against him.",
+          "Juror 10: I keep asking Pavel to prove that he checked enough. I know the judge said the prosecution carries that burden, but his answer still feels incomplete."
           ],
           "concede": [
-            "Juror 10: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. It changes how I read the approval badge bearing Pavel’s operator ID, but it does not end the inquiry."
+          "Juror 10: I have crossed out ‘approved changed route’ in my notes. The badge proves only that Pavel approved the earlier route."
           ],
           "burden_correct": [
-            "Juror 10: In The Falling Parcel, unanswered questions do not move the burden; the prosecution must still prove every element. I need the witness account and the recorded evidence to agree before I rely on either."
+          "Juror 10: I was making Pavel prove he acted reasonably. That is backwards. The prosecution must make us sure his conduct fell far below reasonable care."
           ],
           "final": [
-            "Juror 10: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That point earns weight because it can be checked independently."
+          "Juror 10: Once I apply the burden correctly, the missing warning and non-mandatory alerts leave me with reasonable doubt."
           ]
         },
         "reaction_rules": [
@@ -922,7 +902,7 @@
             "effect": {
               "delta": 1,
               "confidence": 10,
-              "line": "agree"
+              "line": "burden_drift"
             }
           },
           {
@@ -954,7 +934,7 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+      "persona": "A practical juror who tests digital records against ordinary workplace habits.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -967,18 +947,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 11: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I am separating what the record proves from what we are inferring.",
-            "Juror 11: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I do not think confidence can repair a missing link."
+          "Juror 11: In most workplaces, staff use the dashboard they are given. If the company wanted a coordinate check after every alert, it needed a rule and a usable tool for that.",
+          "Juror 11: Pavel did what the training described: he opened the panel, checked the corridor and looked for a stop warning. All three records support him."
           ],
           "pushback": [
-            "Juror 11: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I do not think confidence can repair a missing link.",
-            "Juror 11: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I am separating what the record proves from what we are inferring."
+          "Juror 11: Are we sure operators never used the maintenance panel, or are we just taking Pavel’s word for that?",
+          "Juror 11: A company threshold is a minimum, not a promise of safety. A careful operator can still stop below it."
           ],
           "concede": [
-            "Juror 11: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. That detail matters to my vote because it comes from outside either side’s story."
+          "Juror 11: Eris confirmed that the manual told operators the badge would clear after a route change. Pavel’s reliance on it was ordinary, not invented after the accident."
           ],
           "final": [
-            "Juror 11: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I am not counting the same assumption twice as two pieces of evidence."
+          "Juror 11: I might want a better safety system, but I cannot convict a worker for following the system and training his employer provided."
           ]
         },
         "reaction_rules": [
@@ -1023,7 +1003,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+      "persona": "A sceptic who distrusts polished system evidence until its collection method is clear.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -1037,18 +1017,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 12: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. I am ready to put less weight on the first impression.",
-            "Juror 12: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. The sequence matters more to me than how suspicious one moment sounds."
+          "Juror 12: The operator ID is original system data. It proves Pavel was responsible for the launch, even though it does not prove he saw the shifted route.",
+          "Juror 12: Pavel’s account matches the defence engineer’s reconstruction, but those two sources are not independent of each other."
           ],
           "pushback": [
-            "Juror 12: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. The burden does not shift just because the accused’s explanation is untidy.",
-            "Juror 12: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. That answer makes sense only if the rest of the chronology holds."
+          "Juror 12: Before I trust the reconstruction, I need to know whether the event data had any missing interval or could be edited after the accident.",
+          "Juror 12: The coloured replay is an interpretation. What do the underlying timestamps and route commands show?"
           ],
           "concede": [
-            "Juror 12: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. I am treating the timing as evidence, not as a verdict."
+          "Juror 12: Toma answered the collection question: the display log was preserved automatically and has no gap before launch. I can rely on it."
           ],
           "final": [
-            "Juror 12: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I do not think confidence can repair a missing link."
+          "Juror 12: The underlying records, not just the courtroom replay, show two route states. That creates reasonable doubt about what risk Pavel could see."
           ]
         },
         "reaction_rules": [
@@ -1095,6 +1075,6 @@
     "model": "openai-codex",
     "prompt_version": "dd-2026-v2",
     "reviewer": "Codex Content Curator; independent QA rewrite and dynamics verification",
-    "batch_pr": "codex/docket-runway-a"
+    "batch_pr": "cursor/case-dd0017-coherence"
   }
 }
