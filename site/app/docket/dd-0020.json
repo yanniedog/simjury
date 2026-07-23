@@ -3,12 +3,12 @@
   "publish_date": "2026-07-21",
   "label": "fiction",
   "title": "The Borrowed Voice",
-  "setting": "A workplace extortion trial in 2026, testing whether a synthetic recording was fabricated by outsiders or assembled on the accused’s own laptop.",
+  "setting": "A post-production studio, a cloned manager's voice, and a late-night audio export in 2026.",
   "charge": "Using synthetic audio to extort money from a colleague",
   "elements": [
-    "The accused performed or participated in the alleged act.",
-    "The act was deliberate or dishonest rather than accidental.",
-    "The prosecution has proved every required fact beyond reasonable doubt."
+    "Evan made or participated in making and sending the synthetic audio to Nima.",
+    "The message demanded money and threatened harm to Nima's employment if the demand was refused or reported.",
+    "Evan acted deliberately and dishonestly, intending to obtain the money."
   ],
   "hook": "The voice on the call belongs to a manager. The fear in it belongs to a colleague. The breaths belong to someone else.",
   "accused": {
@@ -20,25 +20,25 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution says the accused built a cloned voice, inserted his own whispered prompts, and demanded payment using private workplace details. The apparent centre of the case is a polished synthetic recording resembling the manager, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+        "text": "The manager's voice was synthetic, but the prosecution does not ask you to identify its maker by sound alone. Beneath that voice were Evan's breath track and whispered count. On Evan's laptop, temporary files preserve those layers in order, and his hardware key authenticated the late-night export. The prosecution says that connected record proves a deliberate extortion."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence says an audio worker was framed with common tools and copied samples after criticising weak security around shared production files. Suspicion gathered around a person before investigators tested the limits of a polished synthetic recording resembling the manager; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+        "text": "Public interviews supplied the manager's voice, while students and contractors used the same microphones, laptop, and sample drives during Evan's workshops. A hardware-key record identifies a device, not the hand holding it. The defence says the studio's loose access allowed someone else to assemble familiar material and leave Evan carrying the suspicion."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution began with the synthetic recording that resembled the manager, but it does not ask you to convict on that clue alone. The hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
+        "text": "Anyone could copy the manager's public voice. The harder question is who arranged the hidden layers and exported them. Temporary files on Evan's laptop contain his breath track, the cloned speech, and the masking tone in sequence. His hardware key opened that session and exported it while his badge remained inside. The prosecution says those independent records prove authorship and intent."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence accepts that the synthetic recording that resembled the manager created suspicion, but suspicion is not the test. Public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. That evidence goes to the heart of the case because a convincing cloned voice identifies a source library, not necessarily its maker. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
+        "text": "The records prove that Evan's equipment and key were used, not that Evan used them. Contractors had copied workshop files, temporary badges remained active, and the console bay had no camera. Evan does not have to identify another user or explain how every file arrived. If the prosecution has not excluded that practical access, identity remains unproved and your verdict must be not guilty."
       }
     }
   },
-  "epilogue": "The colleague received counselling and returned to work on a different team. Evan’s workshop continued under new leadership, while the studio adopted consent records and access logs for every voice model built from a performer. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "epilogue": "Nima received counselling and returned on a different production team. Evan's workshops stopped during the investigation, and several young performers lost their free recording sessions. The studio later required personal key PINs, added a camera to the console bay, and logged every copied voice sample. It also removed Nima's review notes from shared handover files.",
   "cast": [
     {
       "id": "judge",
@@ -89,7 +89,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "The caller used my manager’s voice and quoted a private mistake from my review. It demanded money, then played a recording suggesting my job would disappear if I reported it. This was the first fact I recorded in the initial The Borrowed Voice inquiry, before investigators settled on Evan Rusk. The timing was noted before the The Borrowed Voice inquiry settled on Evan Rusk as its suspect.",
+      "text": "The message used my manager's voice and repeated a mistake from my performance review. It demanded twelve thousand dollars within two days. If I reported it, the voice said my job would disappear and the review would be sent to future employers. I saved the audio and payment instructions before speaking to anyone at the studio.",
       "surface_persuasion": 0.65,
       "true_weight": 0.55,
       "direction": "guilt",
@@ -105,7 +105,7 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "The voice model was built from public interviews. That source material was widely available, so the synthetic voice itself does not identify who assembled the call. This was the second fact I recorded in the initial The Borrowed Voice inquiry, before investigators settled on Evan Rusk.",
+      "text": "I examined the recording and the studio devices. The manager's speech was generated from public interviews, so that voice does not identify its maker. Beneath it were four breaths and a whispered count. Their microphone signature and room reflection matched an unedited tutorial recorded on Evan's laptop earlier that evening.",
       "surface_persuasion": 0.6,
       "true_weight": 0.4,
       "direction": "guilt",
@@ -119,8 +119,8 @@
     {
       "id": "b3",
       "kind": "exhibit",
-      "speaker": "w2",
-      "text": "I isolated four breaths and a whispered count beneath the generated speech. Their microphone profile and room reflection match a tutorial recorded on Evan’s laptop that evening. At this third point, the exhibit’s stated limit is that a convincing cloned voice identifies a source library, not necessarily its maker, so it must be weighed with the rest of the sequence.",
+      "speaker": "dc",
+      "text": "Exhibit three is the voice-source report. Every phrase spoken in the manager's cloned voice came from six public interviews. The software used to assemble it is freely available, and no hidden marker identifies a particular user. The report therefore links the recording to a public source library, not to Evan or any other individual.",
       "surface_persuasion": 0.8,
       "true_weight": 0.2,
       "direction": "innocence",
@@ -136,23 +136,23 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "A cloned voice can be built from public material? Yes. The manager’s public interviews were enough. So the voice does not identify Evan? Not by itself; the underlying source layers are the stronger evidence. The manager’s public interviews could supply the voice, so the underlying room and export layers carry the identification issue.",
+      "text": "The manager discussed that review mistake at a team meeting? Only the mistake, not the written rating. Five production staff were present. The manager's interviews were public, so neither the voice nor the mistake was known only to Evan? Correct. The interviews were on the company channel, and several people knew about the mistake.",
       "turns": [
         {
           "speaker": "dc",
-          "text": "A cloned voice can be built from public material?"
+          "text": "The manager discussed that review mistake at a team meeting?"
         },
         {
           "speaker": "w1",
-          "text": "Yes. The manager’s public interviews were enough."
+          "text": "Only the mistake, not the written rating. Five production staff were present."
         },
         {
           "speaker": "dc",
-          "text": "So the voice does not identify Evan?"
+          "text": "The manager's interviews were public, so neither the voice nor the mistake was known only to Evan?"
         },
         {
           "speaker": "w1",
-          "text": "Not by itself; the underlying source layers are the stronger evidence. The manager’s public interviews could supply the voice, so the underlying room and export layers carry the identification issue."
+          "text": "Correct. The interviews were on the company channel, and several people knew about the mistake."
         }
       ],
       "surface_persuasion": 0.5,
@@ -169,7 +169,7 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The project folder was deleted, but temporary render files preserve the order of layers: cloned voice, Evan’s breath track, then a tone masking the edit points. At this fifth point, the exhibit’s stated limit is that a convincing cloned voice identifies a source library, not necessarily its maker, so it must be weighed with the rest of the sequence.",
+      "text": "Exhibit five is the recovered render history from Evan's laptop. Although the project folder was deleted, temporary files preserve its layer order: cloned speech, the matching breath-and-count track, then a tone masking each edit. Evan's physical key authenticated the final export. It matches Nima's file exactly, including a compression error absent from every earlier workshop recording.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
       "direction": "guilt",
@@ -182,9 +182,10 @@
     },
     {
       "id": "b6",
-      "kind": "exhibit",
+      "kind": "witness",
       "speaker": "w3",
-      "text": "I recorded tutorials for dozens of people and shared equipment. A matching microphone profile proves a room and device, not that I made this threatening call. At this sixth point, the exhibit’s stated limit is that a convincing cloned voice identifies a source library, not necessarily its maker, so it must be weighed with the rest of the sequence.",
+      "mode": "examination",
+      "text": "I did not make or send that message. My laptop and microphone were used in free workshops by students and contractors, and finished tutorials sat on open sample drives. During supervised sessions, my hardware key sometimes remained in the console. A matching room, device, or tutorial proves where material came from; it does not prove who assembled it.",
       "surface_persuasion": 0.5,
       "true_weight": 0.5,
       "direction": "innocence",
@@ -200,7 +201,7 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "examination",
-      "text": "The laptop security log shows Evan’s hardware key unlocking the session. The key was used again to export the final audio minutes before the extortion message. This was the seventh fact I recorded in the initial The Borrowed Voice inquiry, before investigators settled on Evan Rusk. That The Borrowed Voice detail can be checked against the contemporaneous record rather than accepted as a later reconstruction.",
+      "text": "I manage the studio's computers and access system. Three contractor badges remained active until midnight, and the console bay had no camera. Sample drives containing voices, room tones, and tutorials sat in open bays. Hardware keys did not require a PIN. Our log records a key's certificate, but it cannot show which authorised person was holding that key.",
       "surface_persuasion": 0.6,
       "true_weight": 0.3,
       "direction": "innocence",
@@ -216,23 +217,23 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "Your microphone was used for many tutorials? Yes, by students and contractors. Your hardware key was sometimes left in the console? During supervised sessions, but not overnight when this export occurred. Shared daytime equipment does not explain an overnight export authenticated with Evan’s hardware key.",
+      "text": "The recovered project was on your laptop, with breaths and a whispered count from your tutorial? Yes. That is what the examination found. Your key opened, exported, and then deleted that project while your badge was still inside. Can you identify anyone else using the laptop then? No. I was packing equipment in another room and saw nobody at the console.",
       "turns": [
         {
           "speaker": "pc",
-          "text": "Your microphone was used for many tutorials?"
+          "text": "The recovered project was on your laptop, with breaths and a whispered count from your tutorial?"
         },
         {
           "speaker": "w3",
-          "text": "Yes, by students and contractors."
+          "text": "Yes. That is what the examination found."
         },
         {
           "speaker": "pc",
-          "text": "Your hardware key was sometimes left in the console?"
+          "text": "Your key opened, exported, and then deleted that project while your badge was still inside. Can you identify anyone else using the laptop then?"
         },
         {
           "speaker": "w3",
-          "text": "During supervised sessions, but not overnight when this export occurred. Shared daytime equipment does not explain an overnight export authenticated with Evan’s hardware key."
+          "text": "No. I was packing equipment in another room and saw nobody at the console."
         }
       ],
       "surface_persuasion": 0.6,
@@ -249,8 +250,26 @@
       "id": "b9",
       "kind": "witness",
       "speaker": "w4",
-      "mode": "examination",
-      "text": "Our studio left sample drives in open bays. Contractors could copy voices, room tones, and old tutorials without creating a central access record. This was the ninth fact I recorded in the initial The Borrowed Voice inquiry, before investigators settled on Evan Rusk.",
+      "mode": "cross",
+      "text": "Only Evan's key authenticated the export while his badge was still inside? Yes. Three contractor badges also remained active, the console bay had no camera, and someone could copy workshop files without another access record. So the key log cannot tell this jury who held the key? Correct to each point. It records no face, fingerprint, or PIN.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "Only Evan's key authenticated the export while his badge was still inside?"
+        },
+        {
+          "speaker": "w4",
+          "text": "Yes."
+        },
+        {
+          "speaker": "pc",
+          "text": "Three contractor badges also remained active, the console bay had no camera, and someone could copy workshop files without another access record. So the key log cannot tell this jury who held the key?"
+        },
+        {
+          "speaker": "w4",
+          "text": "Correct to each point. It records no face, fingerprint, or PIN."
+        }
+      ],
       "surface_persuasion": 0.55,
       "true_weight": 0.2,
       "direction": "innocence",
@@ -265,7 +284,7 @@
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person. In the The Borrowed Voice inquiry, I separated what I personally observed from what investigators later asked me to infer.",
+      "text": "Do not research voice cloning, the studio, or anyone involved. The prosecution must make you sure Evan participated in making and sending the message, knowingly demanded money through a threat to Nima's employment, and intended to obtain that money dishonestly. A device record is not automatically a person. Evan does not have to identify another user or explain every suspicious file.",
       "surface_persuasion": 0.40700000000000003,
       "true_weight": 0.5,
       "direction": "innocence",
@@ -281,10 +300,10 @@
     "b3",
     "b5",
     "b8",
-    "b9"
+    "b10"
   ],
   "verdict_truth": "Guilty",
-  "twist": "The cloned voice could have been made by many people with access to public recordings. Beneath it were four breaths and a whispered count captured by Evan’s microphone, carrying the same room resonance as a tutorial he recorded alone that evening.",
+  "twist": "The manager's cloned voice was the loudest clue and the least identifying: every phrase came from public interviews. The more specific trail was hidden underneath. Evan's breath-and-count track sat inside a recovered project on his laptop, followed by the final export and deletion authenticated with his physical key while his badge remained inside.",
   "difficulty_target": 0.5,
   "jury": {
     "jurors": [
@@ -305,18 +324,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 2: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. That is the part of the Crown case I can test rather than guess.",
-            "Juror 2: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. Before I move, I need the synthetic recording that resembled the manager placed on the same timeline."
+            "Juror 2: The open drives, active contractor badges, and camera gap make another user more than an abstract possibility.",
+            "Juror 2: A key certificate identifies a device. It does not resolve who was holding it."
           ],
           "pushback": [
-            "Juror 2: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. That gives me a reason, but not yet a complete chain.",
-            "Juror 2: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. The question is not which story is neater; it is which elements are proved."
+            "Juror 2: The cloned voice sounds personal, but public interviews and a shared review story explain its raw material.",
+            "Juror 2: I want us to separate proof about Evan's equipment from proof about Evan himself."
           ],
           "concede": [
-            "Juror 2: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. I am ready to put less weight on the first impression."
+            "Juror 2: Evan's key, laptop, hidden breath track, and badge timing do form a specific chain."
           ],
           "final": [
-            "Juror 2: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. I am not filling the missing step with instinct."
+            "Juror 2: My vote turns on whether the access gap remains reasonable after the laptop and key records are combined."
           ]
         },
         "reaction_rules": [
@@ -374,18 +393,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 3: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. If we remove the dramatic label, that is the fact left underneath.",
-            "Juror 3: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. I hear the point; now I want the source of it tested."
+            "Juror 3: The recovered project matches Nima's file exactly, down to a compression error absent from earlier tutorials.",
+            "Juror 3: Evan's key authenticated the export while his badge remained inside. Those records support each other."
           ],
           "pushback": [
-            "Juror 3: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. That is one fact; the room still has to test the act was deliberate or dishonest rather than accidental.",
-            "Juror 3: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I need the witness account and the recorded evidence to agree before I rely on either."
+            "Juror 3: The cloned manager's voice adds emotion, not identity. The hidden layers and export are the useful evidence.",
+            "Juror 3: Another person could hold Evan's key, but that person also needed his laptop and workshop material."
           ],
           "concede": [
-            "Juror 3: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. That point earns weight because it can be checked independently."
+            "Juror 3: I accept that the console bay had weak security and no camera."
           ],
           "final": [
-            "Juror 3: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. It changes how I read the synthetic recording that resembled the manager, but it does not end the inquiry."
+            "Juror 3: I am deciding whether shared access reasonably explains every Evan-specific record arriving in the same project."
           ]
         },
         "reaction_rules": [
@@ -443,21 +462,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 4: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. The alternative has to be reasonably possible, not perfect."
+            "Juror 4: Evan need not identify the other user. The prosecution must prove he made and sent the threat."
           ],
           "pushback": [
-            "Juror 4: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I am holding it against the judge’s direction on the prosecution has proved every required fact beyond reasonable doubt.",
-            "Juror 4: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I can give that weight only after we account for the synthetic recording that resembled the manager."
+            "Juror 4: The log has no face, fingerprint, or PIN. We cannot silently add a person to it.",
+            "Juror 4: Public voice samples are not identity evidence, however convincing the finished recording sounds."
           ],
           "concede": [
-            "Juror 4: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. That answer makes sense only if the rest of the chronology holds."
+            "Juror 4: The exact project match and Evan's badge timing make the key record harder to dismiss."
           ],
           "holdout": [
-            "Juror 4: I am holding my position until the room deals directly with the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. It changes how I read the synthetic recording that resembled the manager, but it does not end the inquiry.",
-            "Juror 4: I am holding my position until the room deals directly with the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. The alternative has to be reasonably possible, not perfect."
+            "Juror 4: I am holding until we test whether an active contractor could realistically reach the laptop and key.",
+            "Juror 4: Evan's silence about another user cannot repair any gap in the prosecution case."
           ],
           "final": [
-            "Juror 4: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. For me, the unanswered part is still the prosecution has proved every required fact beyond reasonable doubt."
+            "Juror 4: Identity must be proved from the records, not from Evan's inability to name someone else."
           ]
         },
         "reaction_rules": [
@@ -515,21 +534,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 5: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. That gives me a reason, but not yet a complete chain."
+            "Juror 5: Layering the breath track, cloned speech, and masking tone shows deliberate construction, not an accidental export."
           ],
           "pushback": [
-            "Juror 5: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. The alternative has to be reasonably possible, not perfect.",
-            "Juror 5: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. It changes how I read the synthetic recording that resembled the manager, but it does not end the inquiry."
+            "Juror 5: The method is clear. The harder question is whether Evan or another authorised person carried it out.",
+            "Juror 5: I give the public voice no identifying weight; the temporary files deserve much more."
           ],
           "concede": [
-            "Juror 5: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. I am not counting the same assumption twice as two pieces of evidence."
+            "Juror 5: Weak studio security is real, even though it does not explain the full project history."
           ],
           "burden_correct": [
-            "Juror 5: In The Borrowed Voice, unanswered questions do not move the burden; the prosecution must still prove every element. I am not filling the missing step with instinct.",
-            "Juror 5: In The Borrowed Voice, unanswered questions do not move the burden; the prosecution must still prove every element. That leaves me asking who had the opportunity the records actually show."
+            "Juror 5: Evan does not have to prove who borrowed the key. The prosecution must prove it was him.",
+            "Juror 5: An unexplained file may be evidence, but it does not move the burden onto Evan."
           ],
           "final": [
-            "Juror 5: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. I am ready to put less weight on the first impression."
+            "Juror 5: I am applying the burden separately to authorship, the threat, and the dishonest demand."
           ]
         },
         "reaction_rules": [
@@ -587,18 +606,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 6: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. I am treating the timing as evidence, not as a verdict.",
-            "Juror 6: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. That moves one piece, not the burden the Crown carries."
+            "Juror 6: The project history shows the threatening file being assembled and exported in one controlled sequence.",
+            "Juror 6: The matching compression error connects Evan's recovered render to the file Nima actually received."
           ],
           "pushback": [
-            "Juror 6: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. That detail matters to my vote because it comes from outside either side’s story.",
-            "Juror 6: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. That is stronger than suspicion, but I am checking it against the synthetic recording that resembled the manager."
+            "Juror 6: Let's place the badge, key, render, deletion, and delivery in order before arguing about identity.",
+            "Juror 6: The room should acknowledge the open console without letting that one weakness erase every other record."
           ],
           "concede": [
-            "Juror 6: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. That leaves me asking who had the opportunity the records actually show."
+            "Juror 6: I agree that the manager's synthetic voice could have been created by many people."
           ],
           "final": [
-            "Juror 6: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. That is persuasive only if we first resolve the synthetic recording that resembled the manager."
+            "Juror 6: Our verdict should follow the connected timeline, with no single dramatic clue carrying the case."
           ]
         },
         "reaction_rules": [
@@ -644,18 +663,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 7: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. I am changing my view because the explanation fits more of the evidence.",
-            "Juror 7: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. For me, the unanswered part is still the accused performed or participated in the alleged act."
+            "Juror 7: The temporary files and exact compression error independently connect Evan's laptop to Nima's message.",
+            "Juror 7: The key export and badge timing make the digital sequence more persuasive than the cloned voice."
           ],
           "pushback": [
-            "Juror 7: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I am not counting the same assumption twice as two pieces of evidence.",
-            "Juror 7: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I want the actual record compared with the story built around it."
+            "Juror 7: The key log still identifies an object, and the unobserved console leaves room for another user.",
+            "Juror 7: I am moving between the project history and the studio's loose access because both are concrete."
           ],
           "concede": [
-            "Juror 7: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. For me, the unanswered part is still the prosecution has proved every required fact beyond reasonable doubt."
+            "Juror 7: I accept that public interviews explain the voice without identifying its maker."
           ],
           "final": [
-            "Juror 7: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. If we remove the dramatic label, that is the fact left underneath."
+            "Juror 7: The answer depends on whether the digital sequence overcomes the real access gap."
           ]
         },
         "reaction_rules": [
@@ -713,18 +732,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 8: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. That point earns weight because it can be checked independently.",
-            "Juror 8: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. I can explain that conclusion without borrowing a fact that is not in evidence."
+            "Juror 8: Evan's key, laptop, badge, and tutorial layer now look like one connected course of conduct.",
+            "Juror 8: The exact file error persuaded me because it links the recovered project to the delivered threat."
           ],
           "pushback": [
-            "Juror 8: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. The room should decide whether that contradiction is material or merely awkward.",
-            "Juror 8: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I would rather name the gap than pretend it is not there."
+            "Juror 8: Shared workshop access weakens the identity claim, especially because the console had no camera.",
+            "Juror 8: If the key can be borrowed without a PIN, the certificate is not the same as a person."
           ],
           "concede": [
-            "Juror 8: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. I am changing my view because the explanation fits more of the evidence."
+            "Juror 8: I changed my view because the project match explains more than the cloned voice alone."
           ],
           "final": [
-            "Juror 8: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. That point earns weight because it can be checked independently."
+            "Juror 8: I can explain my vote from the records without assuming the synthetic voice identifies anyone."
           ]
         },
         "reaction_rules": [
@@ -793,18 +812,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 9: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. I am ready to put less weight on the first impression.",
-            "Juror 9: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. The sequence matters more to me than how suspicious one moment sounds."
+            "Juror 9: Evan's account leaves the overnight export and deletion unexplained, which weakens his denial.",
+            "Juror 9: His workshop explanation covers source material, but not the exact threatening project recovered from his laptop."
           ],
           "pushback": [
-            "Juror 9: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I can give that weight only after we account for the synthetic recording that resembled the manager.",
-            "Juror 9: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I am holding it against the judge’s direction on the prosecution has proved every required fact beyond reasonable doubt."
+            "Juror 9: Evan sounded direct, but I must compare his denial with the access records and recovered files.",
+            "Juror 9: Credibility helps me weigh his evidence; it cannot substitute for testing the digital record."
           ],
           "concede": [
-            "Juror 9: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. The sequence matters more to me than how suspicious one moment sounds."
+            "Juror 9: A sincere witness can still be mistaken about who used equipment left in a shared studio."
           ],
           "final": [
-            "Juror 9: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. Before I move, I need the synthetic recording that resembled the manager placed on the same timeline."
+            "Juror 9: I am weighing Evan's denial against the records without treating either as automatically decisive."
           ]
         },
         "reaction_rules": [
@@ -862,23 +881,23 @@
         },
         "lines": {
           "agree": [
-            "Juror 10: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. I am not counting the same assumption twice as two pieces of evidence."
+            "Juror 10: Evan's key and badge appear alongside a project unique to the delivered threat. That strongly supports identity."
           ],
           "pushback": [
-            "Juror 10: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I do not think confidence can repair a missing link."
+            "Juror 10: The public voice and shared review story add context, but neither identifies the maker."
           ],
           "burden_drift": [
-            "Juror 10: In The Borrowed Voice, there are unanswered questions around the synthetic recording that resembled the manager, and I keep wanting Evan Rusk to explain them. That is one fact; the room still has to test the prosecution has proved every required fact beyond reasonable doubt.",
-            "Juror 10: In The Borrowed Voice, there are unanswered questions around the synthetic recording that resembled the manager, and I keep wanting Evan Rusk to explain them. I need the witness account and the recorded evidence to agree before I rely on either."
+            "Juror 10: If Evan says another person used his key and laptop, I keep wanting him to say who.",
+            "Juror 10: Evan's inability to explain the deleted project troubles me, even though I know the Crown carries the burden."
           ],
           "concede": [
-            "Juror 10: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. The gap between those two facts is where my doubt sits."
+            "Juror 10: The lack of a camera leaves an access gap that the key certificate cannot close by itself."
           ],
           "burden_correct": [
-            "Juror 10: In The Borrowed Voice, unanswered questions do not move the burden; the prosecution must still prove every element. The evidence about the synthetic recording that resembled the manager is what keeps me from treating that as conclusive."
+            "Juror 10: Evan does not have to name another user. The prosecution must prove he made and sent the threat."
           ],
           "final": [
-            "Juror 10: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. That is the part of the Crown case I can test rather than guess."
+            "Juror 10: My vote must rest on the prosecution's proof, not on answers Evan could not provide."
           ]
         },
         "reaction_rules": [
@@ -936,18 +955,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 11: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. The alternative has to be reasonably possible, not perfect.",
-            "Juror 11: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. It changes how I read the synthetic recording that resembled the manager, but it does not end the inquiry."
+            "Juror 11: The matching project, export key, and badge timing create a timeline I can test rather than guess.",
+            "Juror 11: The digital trail becomes persuasive when each independent record points to the same late-night session."
           ],
           "pushback": [
-            "Juror 11: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. The evidence about the synthetic recording that resembled the manager is what keeps me from treating that as conclusive.",
-            "Juror 11: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. That is where the competing account becomes concrete for me."
+            "Juror 11: Shared files explain the ingredients, but I am still asking who assembled and exported this exact project.",
+            "Juror 11: Active contractor badges make another user possible; the full timeline decides whether that possibility is reasonable."
           ],
           "concede": [
-            "Juror 11: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. The evidence about the synthetic recording that resembled the manager is what keeps me from treating that as conclusive."
+            "Juror 11: I accept that the cloned voice itself proves nothing about authorship."
           ],
           "final": [
-            "Juror 11: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. For me, the unanswered part is still the accused performed or participated in the alleged act."
+            "Juror 11: I followed the sequence from source material to project, export, deletion, and delivery."
           ]
         },
         "reaction_rules": [
@@ -1005,18 +1024,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 12: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. If we remove the dramatic label, that is the fact left underneath.",
-            "Juror 12: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. I hear the point; now I want the source of it tested."
+            "Juror 12: The recovered project shows a deliberate method, but the Crown still must prove Evan was its author.",
+            "Juror 12: The key and badge support identity; the public voice does not. We should keep those propositions separate."
           ],
           "pushback": [
-            "Juror 12: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. That is persuasive only if we first resolve the synthetic recording that resembled the manager.",
-            "Juror 12: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. The gap between those two facts is where my doubt sits."
+            "Juror 12: A realistic synthetic voice is impressive technology, not proof of who operated it.",
+            "Juror 12: Put the key certificate beside the camera gap before deciding what either one proves."
           ],
           "concede": [
-            "Juror 12: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. I hear the point; now I want the source of it tested."
+            "Juror 12: The compression error makes the recovered render much more specific than a shared tutorial file."
           ],
           "final": [
-            "Juror 12: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. The room should decide whether that contradiction is material or merely awkward."
+            "Juror 12: My vote follows the records that identify conduct, with the burden staying on the prosecution."
           ]
         },
         "reaction_rules": [
