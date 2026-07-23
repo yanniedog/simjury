@@ -96,8 +96,8 @@
       "reveal_stamp": "minor",
       "reveal_note": "Nora establishes dangerous riding, serious injury and the rider’s decision to leave, but cannot identify a face.",
       "tags": [
-        "method",
-        "digital_forensics"
+        "credibility",
+        "procedure"
       ]
     },
     {
@@ -278,12 +278,12 @@
       "text": "The uncured fork adhesive contained blue synthetic fibres with the same dye and weave as Nora’s coat. The damaged area aligns with the point where the video shows the fork striking her. The fibre type is commercially common, however, and laboratory testing cannot establish exactly when or where transfer occurred. The result supports contact but cannot prove it by itself.",
       "surface_persuasion": 0.55,
       "true_weight": 0.2,
-      "direction": "innocence",
+      "direction": "guilt",
       "reveal_stamp": "minor",
       "reveal_note": "The fibre evidence connects Kian’s repaired fork to Nora while retaining a genuine limitation about uniqueness and timing.",
       "tags": [
-        "credibility",
-        "motive"
+        "method",
+        "digital_forensics"
       ]
     },
     {
@@ -398,9 +398,9 @@
           "digital_forensics": 1
         },
         "lines": {
-          "agree": [
+        "agree": [
           "Juror 3: I have separate notes for the battery, controller and courier account. All three remain connected to Kian during the same journey.",
-          "Juror 3: The fibre result is supportive, not unique. Its value comes from the matching damage location and repair timing."
+          "Juror 3: The independent records use different methods. Their value comes from where they converge, not from treating any single result as unique."
           ],
           "pushback": [
           "Juror 3: My identity column cannot include Nora’s photograph choice. The prior message makes it unreliable.",
@@ -467,8 +467,8 @@
           "credibility": 1
         },
         "lines": {
-          "agree": [
-          "Juror 4: Couriers borrow gear, but borrowing a whole bike while using the owner’s active account is a much bigger claim than swapping a battery."
+        "agree": [
+          "Juror 4: Kian does not have to prove who borrowed the bike. The prosecution must make that possibility unreasonable through its own evidence."
           ],
           "pushback": [
           "Juror 4: The cooperative’s poor handover practice makes a borrower possible. We should not pretend a missing log proves Kian rode.",
