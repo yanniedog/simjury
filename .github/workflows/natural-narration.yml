@@ -18,6 +18,7 @@ on:
       - ".github/workflows/natural-narration.yml"
 
 permissions:
+  actions: read
   contents: write
 
 concurrency:
@@ -71,7 +72,7 @@ jobs:
     timeout-minutes: 120
     strategy:
       fail-fast: false
-      max-parallel: 8
+      max-parallel: 4
       matrix:
         case_id: ${{ fromJSON(needs.prepare.outputs.cases) }}
     steps:
@@ -82,26 +83,55 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: pip
+          cache-dependency-path: site/narration-requirements.txt
       - name: Install open-source speech tooling
         run: |
           sudo apt-get update
           sudo apt-get install -y espeak-ng ffmpeg
+          pip install --index-url https://download.pytorch.org/whl/cpu torch==2.9.1
           pip install -r site/narration-requirements.txt
       - name: Generate this case
         run: |
           node site/scripts/build-kokoro-jobs.mjs \
             --case "${{ matrix.case_id }}" --output .narration-jobs
           python site/scripts/generate-kokoro-clips.py \
-            ".narration-jobs/${{ matrix.case_id }}.json" .narration-clips
-      - name: Publish clips to GitHub Releases
+            ".narration-jobs/${{ matrix.case_id }}.json" narration-clips
+      - name: Stage clips for one rate-limited publication job
+        uses: actions/upload-artifact@v4
+        with:
+          name: narration-${{ matrix.case_id }}
+          path: narration-clips/
+          retention-days: 1
+
+  publish:
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Collect generated case packs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: narration-*
+          path: narration-clips
+          merge-multiple: true
+      - name: Publish clips sequentially to GitHub Releases
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           shopt -s nullglob
           for shard in $(seq 0 31); do
-            files=(.narration-clips/"$shard"/*.mp3)
+            files=(narration-clips/"$shard"/*.mp3)
             if (( ${#files[@]} )); then
-              gh release upload "narration-kokoro-$shard" "${files[@]}" --clobber
+              for attempt in 1 2 3 4 5; do
+                if gh release upload "narration-kokoro-$shard" "${files[@]}" --clobber; then
+                  break
+                fi
+                if (( attempt == 5 )); then
+                  echo "Upload failed after $attempt attempts for shard $shard" >&2
+                  exit 1
+                fi
+                sleep $((attempt * 30))
+              done
             fi
           done
