@@ -37,4 +37,3 @@ npm run lint; npm run typecheck; npm test; npm run validate:cases; npm run build
 # pilot (parked JVM/Android track — see "Start here" above)
 pilot\gradlew.bat -p pilot test        # build + all JVM tests (case-model + pilot)
 ```
-
