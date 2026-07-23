@@ -1,0 +1,1148 @@
+{
+  "id": "dd-0032",
+  "publish_date": "2026-08-02",
+  "label": "fiction",
+  "title": "The Quiet Alarm",
+  "setting": "a communal apartment building, a coin-sized tracking tag, and months of silent location alerts in the present day",
+  "charge": "stalking by electronic monitoring",
+  "elements": [
+    "The accused repeatedly monitored or followed the complainant",
+    "The conduct was intentional and caused reasonable fear"
+  ],
+  "hook": "A tracking tag travels beneath Sera Noll's bicycle seat for eighty-three days. The purchase account is shared, the fingerprints are partial, and the accused says anyone could have planted it. The battery remembers who returned.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Oris Vale, 38, repairs musical instruments and shares custody of a teenage son. Former friends sit on both sides of the aisle.",
+    "if_guilty": "imprisonment, a protection order affecting family contact, and the end of a small repair business run from home"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "For eighty-three days, Oris Vale knew where Sera Noll slept, worked, and met friends because a tag beneath her bicycle reported every move. It was purchased through his household, renamed on his tablet, and opened for a battery change while his repair-room camera recorded the bicycle outside. He did not merely possess a shared account; he maintained the surveillance."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The household account served four relatives and the building workshop. The tag carries mixed fingerprints, and anyone with the common stairwell code could reach the bicycle. Oris and Sera still exchanged property after separating. The prosecution has assembled ordinary contact and shared technology into intent. It cannot identify who planted the tag or who viewed most alerts."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Planting and viewing leave different traces, and both converge. Oris renamed the tag Quiet Alarm, dismissed repeated safety warnings, opened its history after Sera changed routes, and replaced the battery on the only night the bicycle stood outside his repair room. The shared account creates noise around the edges; the maintenance sequence identifies deliberate control."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "A device history can show an account, not a human mind. The caretaker moved bicycles, relatives used the tablet, and Sera visited the repair room voluntarily to collect property. The camera never shows Oris touching the tag. If mixed access and an unseen battery change leave room for another operator, the burden prevents conviction."
+      }
+    }
+  },
+  "epilogue": "The building created locked bicycle storage and stopped sharing workshop credentials among residents. Sera changed her commuting routine again, this time by choice, and joined a support group for technology-assisted abuse. Oris moved the repair business to a commercial unit while family arrangements were reviewed separately. The device manufacturer simplified unwanted-tracking alerts and preserved warning acknowledgements for longer after advocacy groups examined the case.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Nera Quist",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Sol Marr",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Oris Vale",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Sera Noll",
+      "role_label": "complainant and bicycle owner",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Hale Rinn",
+      "role_label": "digital investigations officer",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Pia Dorne",
+      "role_label": "building caretaker",
+      "side": "prosecution"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The defence tenders the purchase account. Four family members and two workshop devices used it during the year, and the tracking tag was bought with pooled household credit. No receipt names Oris. That shared ownership makes the first attribution look uncertain and offers several people who could have activated the device.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "the purchase account looked conclusive until its hidden assumption was tested.",
+      "tags": [
+        "identity",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I found the tag after my bicycle warned me through a borrowed detector. For months Oris had appeared near a new gym, a friend's building, and a weekend market I never mentioned. He always had a reason. Once the tag was removed, the coincidences stopped completely, which changed how I understood every encounter.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.32,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The limits surrounding found the tag after my bicycle warned me through a borrowed detector kept it from deciding the charge alone.",
+      "tags": [
+        "identity",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "You and Oris still exchanged belongings during those months? Yes, through the caretaker when possible. You visited the repair room once with your bicycle? I left it outside while collecting boxes. You never saw Oris attach a tracking device? No. I saw the pattern of appearances before I knew why.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "You and Oris still exchanged belongings during those months?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes, through the caretaker when possible."
+        },
+        {
+          "speaker": "dc",
+          "text": "You visited the repair room once with your bicycle?"
+        },
+        {
+          "speaker": "w1",
+          "text": "I left it outside while collecting boxes."
+        },
+        {
+          "speaker": "dc",
+          "text": "You never saw Oris attach a tracking device?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No. I saw the pattern of appearances before I knew why."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "you and oris still exchanged belongings during those months helped test a witness account while leaving the central issue open.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit four is a partial print report. Two usable areas contain mixed ridge detail, one consistent with Oris and one unidentified. The tag passed through a household drawer and a communal workshop before recovery. The prosecution says the print supports handling; the defence says it proves only ordinary prior contact.",
+      "surface_persuasion": 0.7899999999999999,
+      "true_weight": 0.22,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Later evidence exposed what a partial print report could not establish.",
+      "tags": [
+        "identity",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "The account logged 312 location checks. Most came from a shared tablet, but seventeen were opened remotely after Sera deviated from her usual route. Safety warnings appeared six times and were dismissed. The user then renamed the device Quiet Alarm, language not required by the system and visible only inside settings.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "the account logged 312 location checks added context without resolving identity or intent.",
+      "tags": [
+        "timeline",
+        "identity"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit six synchronises the battery compartment log with the repair-room camera. At 19:42, the tag records power loss. At 19:44, Sera's bicycle is wheeled beside Oris's private workbench. At 19:51, the tag restarts with a fresh battery. Oris's access code is the only workshop entry during that interval. Shared purchasing explained ownership ambiguity, not the later maintenance and viewing history.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.76,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The corroboration behind exhibit six synchronises the battery compartment log with the repair-room camera carried genuine weight on timing, control, or method.",
+      "tags": [
+        "timeline",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "The camera does not show the underside of the bicycle seat? No. The workbench blocks that view. A caretaker also knew the room's emergency code? Yes, but that code was not used. Could a device restart after an accidental battery movement? Not with a new battery serial and a completed compartment test.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "The camera does not show the underside of the bicycle seat?"
+        },
+        {
+          "speaker": "w2",
+          "text": "No. The workbench blocks that view."
+        },
+        {
+          "speaker": "dc",
+          "text": "A caretaker also knew the room's emergency code?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Yes, but that code was not used."
+        },
+        {
+          "speaker": "dc",
+          "text": "Could a device restart after an accidental battery movement?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Not with a new battery serial and a completed compartment test."
+        }
+      ],
+      "surface_persuasion": 0.62,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "the camera does not show the underside of the bicycle seat helped test a witness account while leaving the central issue open.",
+      "tags": [
+        "timeline",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I moved the bicycle into the repair room because the corridor was being cleaned. Oris was inside alone and asked me to leave it near his bench. I returned ten minutes later; he said he had adjusted the loose seat without being asked. I did not see a tag, but nobody else entered during that period.",
+      "surface_persuasion": 0.7000000000000001,
+      "true_weight": 0.8300000000000001,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Independent records confirmed what moved the bicycle into the repair room because the corridor was being cleaned contributed to the final reconstruction.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "Your access log shows an occupied room, not what Oris did at the bench? Correct. I did not see the tag or the battery replacement itself. The bicycle was out of your sight for ten minutes? Yes, although the log shows nobody else entered during that interval. So your identification depends on access records rather than an eyewitness view? Yes. My evidence fixes opportunity and exclusivity, not the hidden act.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "Your access log shows an occupied room, not what Oris did at the bench?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Correct. I did not see the tag or the battery replacement itself."
+        },
+        {
+          "speaker": "dc",
+          "text": "The bicycle was out of your sight for ten minutes?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes, although the log shows nobody else entered during that interval."
+        },
+        {
+          "speaker": "dc",
+          "text": "So your identification depends on access records rather than an eyewitness view?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes. My evidence fixes opportunity and exclusivity, not the hidden act."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "your access log shows an occupied room, not what oris did at the bench added context without resolving identity or intent.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that Oris need not show who else could access the purchase account or repair room. The prosecution must prove knowing installation and use of the tracker beyond reasonable doubt. Assess ownership, maintenance, viewing history, and opportunity as separate questions, and do not search for the device, residence, routes, or people outside the admitted evidence.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The limits surrounding the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance kept it from deciding the charge alone.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit nine is a deleted note recovered from Oris's personal tablet. It lists Sera's new gym hours beside the tag's private identifier and the words battery due Sunday. The note was created after the fifth safety warning and edited three minutes after a remote location check, using a profile unavailable to other household members.",
+      "surface_persuasion": 0.74,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "a deleted note recovered from oris's personal tablet survived cross-examination and connected evidence from separate sources.",
+      "tags": [
+        "timeline",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b2",
+    "b4",
+    "b8",
+    "b10"
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The shared purchase account looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter battery-change and alert history supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "difficulty_target": 0.68,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A foreperson who restates disagreements before calling a vote, especially when weighing shared ownership versus private maintenance history.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "G",
+          "confidence": 45
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "For me, the anchor is the battery serial, repair-room interval, and private note; it answers the weakness that first divided this room.",
+            "In my notes at seat 2, the battery serial, repair-room interval, and private note agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I will not let the shared purchase account and partial print decide more than its source can support.",
+            "I need the chronology laid out before I choose between those accounts. Here that means shared ownership against private maintenance."
+          ],
+          "concede": [
+            "I admit the shared purchase account and partial print, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My verdict rests on the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A retiree who wants testimony anchored to something independent, especially when weighing shared ownership versus private maintenance history.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "credibility": 2,
+          "motive": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I move because the battery serial, repair-room interval, and private note; it answers the weakness that first divided this room.",
+            "In my notes at seat 3, the battery serial, repair-room interval, and private note agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I keep separating the shared purchase account and partial print decide more than its source can support.",
+            "Two records agreeing matters more to me than one record sounding certain. Here that means shared ownership against private maintenance."
+          ],
+          "concede": [
+            "I can see why the shared purchase account and partial print, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I finish with the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A delivery worker who focuses on custody and physical sequence, especially when weighing shared ownership versus private maintenance history.",
+        "register": "blunt",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "G",
+          "confidence": 59
+        },
+        "weights": {
+          "identity": 1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The part I cannot explain away is the battery serial, repair-room interval, and private note; it answers the weakness that first divided this room.",
+            "In my notes at seat 4, the battery serial, repair-room interval, and private note agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "Before I rely on the shared purchase account and partial print decide more than its source can support.",
+            "I am testing which side can explain the missing link without assumption. Here that means shared ownership against private maintenance."
+          ],
+          "concede": [
+            "At first I gave too much weight to the shared purchase account and partial print, especially before the underlying record is opened."
+          ],
+          "final": [
+            "The deciding chain for me is the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps, especially when weighing shared ownership versus private maintenance history.",
+        "register": "plain",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "G",
+          "confidence": 49
+        },
+        "weights": {
+          "timeline": 2,
+          "motive": -1,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I checked the sequence against the battery serial, repair-room interval, and private note; it answers the weakness that first divided this room.",
+            "In my notes at seat 5, the battery serial, repair-room interval, and private note agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I hear the force of the shared purchase account and partial print decide more than its source can support.",
+            "The burden makes me separate a possible story from a proved one. Here that means shared ownership against private maintenance."
+          ],
+          "concede": [
+            "I concede the surface force of the shared purchase account and partial print, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I return at the end to the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on shared ownership versus private maintenance history until evidence, rather than consensus, answers it; from seat 5, I relate it to shared ownership against private maintenance."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "A blunt sceptic who will not turn probability into certainty, especially when weighing shared ownership versus private maintenance history.",
+        "register": "formal",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 56
+        },
+        "weights": {
+          "credibility": 2,
+          "identity": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "What changes my vote is the battery serial, repair-room interval, and private note; it answers the weakness that first divided this room.",
+            "In my notes at seat 6, the battery serial, repair-room interval, and private note agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I am not treating the shared purchase account and partial print decide more than its source can support.",
+            "I want the source data before I accept the label attached to it. Here that means shared ownership against private maintenance."
+          ],
+          "concede": [
+            "I was initially moved by the shared purchase account and partial print, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My final vote follows the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A shift worker who notices breaks in chronology, especially when weighing shared ownership versus private maintenance history.",
+        "register": "hesitant",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 46
+        },
+        "weights": {
+          "identity": 2,
+          "motive": 1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I trust the battery serial, repair-room interval, and private note; it answers the weakness that first divided this room.",
+            "In my notes at seat 7, the battery serial, repair-room interval, and private note agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "My problem with the shared purchase account and partial print decide more than its source can support.",
+            "A vivid clue will not move me unless the later sequence supports it. Here that means shared ownership against private maintenance."
+          ],
+          "concede": [
+            "The opposing account fairly points to the shared purchase account and partial print, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I resolve the doubt through the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A bookkeeper who tests whether separate records truly reconcile, especially when weighing shared ownership versus private maintenance history.",
+        "register": "blunt",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 53
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The room should start with the battery serial, repair-room interval, and private note; it answers the weakness that first divided this room.",
+            "In my notes at seat 8, the battery serial, repair-room interval, and private note agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "We should test the shared purchase account and partial print decide more than its source can support.",
+            "I am asking whether the physical evidence and the testimony converge. Here that means shared ownership against private maintenance."
+          ],
+          "concede": [
+            "I cannot dismiss the shared purchase account and partial print, especially before the underlying record is opened."
+          ],
+          "final": [
+            "The complete record leaves me with the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A caregiver who is alert to pressure and unequal power, especially when weighing shared ownership versus private maintenance history.",
+        "register": "plain",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 60
+        },
+        "weights": {
+          "credibility": 2,
+          "motive": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I needed corroboration, and the battery serial, repair-room interval, and private note; it answers the weakness that first divided this room.",
+            "In my notes at seat 9, the battery serial, repair-room interval, and private note agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I still question the shared purchase account and partial print decide more than its source can support.",
+            "I need to know what this proves about intent, not only opportunity. Here that means shared ownership against private maintenance."
+          ],
+          "concede": [
+            "There is real persuasive force in the shared purchase account and partial print, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I am voting from the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on shared ownership versus private maintenance history until evidence, rather than consensus, answers it; from seat 9, I relate it to shared ownership against private maintenance."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A technician who distrusts labels without source data, especially when weighing shared ownership versus private maintenance history.",
+        "register": "formal",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 50
+        },
+        "weights": {
+          "identity": 1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The timing becomes coherent through the battery serial, repair-room interval, and private note; it answers the weakness that first divided this room.",
+            "In my notes at seat 10, the battery serial, repair-room interval, and private note agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I refuse to confuse the shared purchase account and partial print decide more than its source can support.",
+            "The custody trail matters only if it follows the same object throughout. Here that means shared ownership against private maintenance."
+          ],
+          "concede": [
+            "I understand the reliance on the shared purchase account and partial print, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My conclusion turns on the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A coach who asks whether conduct matches the claimed motive, especially when weighing shared ownership versus private maintenance history.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 57
+        },
+        "weights": {
+          "timeline": 2,
+          "motive": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I am persuaded by the battery serial, repair-room interval, and private note; it answers the weakness that first divided this room.",
+            "In my notes at seat 11, the battery serial, repair-room interval, and private note agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I want a source check on the shared purchase account and partial print decide more than its source can support.",
+            "I am checking whether my doubt is evidential or merely speculative. Here that means shared ownership against private maintenance."
+          ],
+          "concede": [
+            "I began from the shared purchase account and partial print, especially before the underlying record is opened."
+          ],
+          "final": [
+            "After testing both stories, I rely on the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A student who can be swept up by a vivid first impression, especially when weighing shared ownership versus private maintenance history.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 47
+        },
+        "weights": {
+          "credibility": 2,
+          "identity": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "My holdout ends with the battery serial, repair-room interval, and private note; it answers the weakness that first divided this room.",
+            "In my notes at seat 12, the battery serial, repair-room interval, and private note agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I am holding against the shared purchase account and partial print decide more than its source can support.",
+            "Consensus will not substitute for the independent record I still need. Here that means shared ownership against private maintenance."
+          ],
+          "concede": [
+            "I will grant the shared purchase account and partial print, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I can now decide because of the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
+          ],
+          "burden_drift": [
+            "I catch myself asking for an innocent explanation, even though that is not the accused's burden; from seat 12, I relate it to shared ownership against private maintenance."
+          ],
+          "burden_correct": [
+            "I am correcting course: the prosecution must close the gap, not the accused; from seat 12, I relate it to shared ownership against private maintenance."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "burden_drift"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-qa-fix"
+  }
+}

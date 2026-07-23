@@ -1,4 +1,4 @@
-import { caseIndexForDate, DAILY_EPOCH, dayIndex } from '../daily'
+import { DAILY_EPOCH, dayIndex } from '../daily'
 import { docketCaseSchema, type DocketCase } from './caseSchema'
 
 /**
@@ -47,15 +47,21 @@ function localDateString(date: Date): string {
   return `${y}-${m}-${d}`
 }
 
-/** The docket case to play on [date], or null while the queue is empty. */
+/**
+ * The case published for [date], falling back to the newest earlier case when
+ * the queue has a gap or has ended. Publication dates are canonical: adding a
+ * later case can never remap a past sitting.
+ */
 export function docketCaseForDate(
   date: Date,
   queue: DocketCase[] = docketQueue,
 ): DocketCase | null {
   const today = localDateString(date)
-  const eligible = queue.filter((c) => c.publish_date <= today)
-  if (eligible.length === 0) return null
-  return eligible[caseIndexForDate(date, eligible.length)] ?? null
+  return queue.reduce<DocketCase | null>((latest, trial) => {
+    if (trial.publish_date > today) return latest
+    if (latest === null || trial.publish_date > latest.publish_date) return trial
+    return latest
+  }, null)
 }
 
 function localDateFromIso(value: string): Date {

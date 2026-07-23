@@ -1,0 +1,1068 @@
+{
+  "id": "dd-0015",
+  "publish_date": "2026-07-16",
+  "label": "fiction",
+  "title": "The Midnight Override",
+  "setting": "A small battery-research warehouse trial in 2026, where access logs and an old friendship point in opposite directions.",
+  "charge": "Dishonestly using restricted access credentials to steal prototype battery cells",
+  "elements": [
+    "The accused performed or participated in the alleged act.",
+    "The act was deliberate or dishonest rather than accidental.",
+    "The prosecution has proved every required fact beyond reasonable doubt."
+  ],
+  "hook": "At 2:14 in the morning, a locked cage opens for ninety seconds. By sunrise, four prototype cells and one trusted technician are gone.",
+  "accused": {
+    "cast_id": "w3",
+    "human": "Nico Verran fixes appliances for neighbours and supports a younger brother through trade school.",
+    "if_guilty": "A conviction means prison, the loss of his licence, and the end of the only stable work his family has."
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The prosecution says the accused borrowed a supervisor code, disabled one camera, and carried the missing cells through a service corridor he alone had recalibrated. The apparent centre of the case is a supervisor code recorded at the cage, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The defence says the code was shared during emergencies and the company blamed the easiest night worker after its own security shortcuts failed. Suspicion gathered around a person before investigators tested the limits of a supervisor code recorded at the cage; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The prosecution began with the shared supervisor code, but it does not ask you to convict on that clue alone. Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The defence accepts that the shared supervisor code created suspicion, but suspicion is not the test. Several workers knew the code, and the workshop drawer holding the key showed no forced entry. That evidence goes to the heart of the case because a shared code narrows opportunity but does not identify the person at the cage. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
+      }
+    }
+  },
+  "epilogue": "Nico’s brother left trade school for a term and found work. The warehouse replaced shared emergency codes and added two-person access, while the recovered cells were destroyed because their chain of custody could no longer be trusted. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Aven",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Mara Venn",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Oren Pike",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Sela Morren",
+      "role_label": "warehouse security lead",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Tarin Voss",
+      "role_label": "cell-program supervisor",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Nico Verran",
+      "role_label": "the accused — night maintenance technician",
+      "side": "defence"
+    },
+    {
+      "id": "w4",
+      "name": "Mira Verran",
+      "role_label": "the accused’s former shift partner",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "The cage log shows a supervisor code accepted at 2:14, followed by a ninety-second opening. I issued that code to one supervisor, but emergency practice meant several night workers had seen it used. This was the first fact I recorded in the initial The Midnight Override inquiry, before investigators settled on Nico Verran. The timing was noted before the The Midnight Override inquiry settled on Nico Verran as its suspect.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The first impression came from the shared supervisor code; its value depended on whether the later evidence could overcome this limit: a shared code narrows opportunity but does not identify the person at the cage.",
+      "tags": [
+        "method",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I counted four missing prototype cells at dawn. Their foam slots were empty, and the inventory terminal showed no authorised movement, disposal request, or engineering test scheduled for that night. This was the second fact I recorded in the initial The Midnight Override inquiry, before investigators settled on Nico Verran.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "This witness fixed the practical setting before suspicion centred on Nico Verran, giving the room context for the records that followed.",
+      "tags": [
+        "method",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The corridor camera lost power for eleven minutes. Its breaker sits inside the maintenance cupboard, and post-alarm inspection found no damaged lock or forced panel. At this third point, the exhibit’s stated limit is that a shared code narrows opportunity but does not identify the person at the cage, so it must be weighed with the rest of the sequence.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The challenged record mattered because it exposed the gap between appearance and proof: a shared code narrows opportunity but does not identify the person at the cage.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "That supervisor code was not secret, was it? No. Several workers had seen it during drills. So the code alone cannot identify Nico? No, the code alone cannot identify any one person. The shared code narrows access only to the night team; it does not place any one worker at the cage.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "That supervisor code was not secret, was it?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No. Several workers had seen it during drills."
+        },
+        {
+          "speaker": "dc",
+          "text": "So the code alone cannot identify Nico?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No, the code alone cannot identify any one person. The shared code narrows access only to the night team; it does not place any one worker at the cage."
+        }
+      ],
+      "surface_persuasion": 0.5,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Cross-examination narrowed the early clue without erasing it, forcing the room to decide how much independent support remained.",
+      "tags": [
+        "credibility",
+        "method"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "The service-door sensor had been recalibrated eight hours earlier to ignore a cart weighing forty-six kilograms. That setting matched Nico’s loaded tool cart within one kilogram and bypassed the normal weight alarm. At this fifth point, the exhibit’s stated limit is that a shared code narrows opportunity but does not identify the person at the cage, so it must be weighed with the rest of the sequence.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The strongest prosecution point was this: Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "w1",
+      "text": "I shared the emergency code aloud during two spill drills. Anyone on the night roster could have remembered it, and management never required us to rotate it after either exercise. At this sixth point, the exhibit’s stated limit is that a shared code narrows opportunity but does not identify the person at the cage, so it must be weighed with the rest of the sequence.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The competing account was concrete rather than speculative: several workers knew the code, and the workshop drawer holding the key showed no forced entry.",
+      "tags": [
+        "method",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "Nico’s terminal restored the sensor threshold at 2:31. I examined the local audit trail, which records a physical security key, not merely a username entered from somewhere else. This was the seventh fact I recorded in the initial The Midnight Override inquiry, before investigators settled on Nico Verran.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This testimony tested whether the system record described a person’s conduct or only an event produced around them.",
+      "tags": [
+        "credibility",
+        "motive"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "Your key was recorded restoring the sensor? Yes, but I had left it in my locked workshop drawer. Only you knew that drawer code? I did, and the drawer showed no sign of damage. The locked drawer leaves a real question, but the key record must still be weighed with the terminal and cart calibration evidence.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "Your key was recorded restoring the sensor?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes, but I had left it in my locked workshop drawer."
+        },
+        {
+          "speaker": "pc",
+          "text": "Only you knew that drawer code?"
+        },
+        {
+          "speaker": "w3",
+          "text": "I did, and the drawer showed no sign of damage. The locked drawer leaves a real question, but the key record must still be weighed with the terminal and cart calibration evidence."
+        }
+      ],
+      "surface_persuasion": 0.6,
+      "true_weight": 0.6,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The second cross put the decisive inference under pressure and showed exactly which part of the account could still be disputed.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I was repairing a coolant pump across the warehouse. I used my terminal before the shift, but I did not return at 2:31 and I never moved a single prototype cell. This was the ninth fact I recorded in the initial The Midnight Override inquiry, before investigators settled on Nico Verran.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The final witness supplied a separate check on the timeline, reducing the risk that one attractive clue would decide the case alone.",
+      "tags": [
+        "credibility",
+        "motive"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person.",
+      "surface_persuasion": 0.401,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction kept the burden where it belonged: a shared code narrows opportunity but does not identify the person at the cage, and no gap in the defence could substitute for proof of every element.",
+      "tags": [
+        "burden",
+        "credibility"
+      ]
+    }
+  ],
+  "checkins": [
+    "b3",
+    "b5",
+    "b8",
+    "b9"
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The access code was weak evidence because six workers knew it. The decisive fact was the door-sensor calibration: it had been changed to ignore the exact weight of the accused’s tool cart, then restored from his terminal after the theft.",
+  "difficulty_target": 0.66,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "register": "plain",
+        "arc": "vibes",
+        "initial": {
+          "position": "NG",
+          "confidence": 70
+        },
+        "weights": {
+          "credibility": 2,
+          "motive": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 2: Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed. The question is not which story is neater; it is which elements are proved.",
+            "Juror 2: Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed. That gives me a reason, but not yet a complete chain."
+          ],
+          "pushback": [
+            "Juror 2: I am not ready to let the shared supervisor code decide The Midnight Override. That leaves me asking who had the opportunity the records actually show.",
+            "Juror 2: I am not ready to let the shared supervisor code decide The Midnight Override. I am not filling the missing step with instinct."
+          ],
+          "concede": [
+            "Juror 2: I accept now that a shared code narrows opportunity but does not identify the person at the cage. I need the witness account and the recorded evidence to agree before I rely on either."
+          ],
+          "final": [
+            "Juror 2: My verdict in The Midnight Override turns on whether the jury can reconcile Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed with this competing account: several workers knew the code, and the workshop drawer holding the key showed no forced entry. The question is not which story is neater; it is which elements are proved."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "register": "blunt",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 65
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 3: several workers knew the code, and the workshop drawer holding the key showed no forced entry. That answer makes sense only if the rest of the chronology holds.",
+            "Juror 3: several workers knew the code, and the workshop drawer holding the key showed no forced entry. The burden does not shift just because the accused’s explanation is untidy."
+          ],
+          "pushback": [
+            "Juror 3: I am not ready to let the shared supervisor code decide The Midnight Override. That is one fact; the room still has to test the act was deliberate or dishonest rather than accidental.",
+            "Juror 3: I am not ready to let the shared supervisor code decide The Midnight Override. I need the witness account and the recorded evidence to agree before I rely on either."
+          ],
+          "concede": [
+            "Juror 3: I accept now that a shared code narrows opportunity but does not identify the person at the cage. I hear the point; now I want the source of it tested."
+          ],
+          "final": [
+            "Juror 3: My verdict in The Midnight Override turns on whether the jury can reconcile Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed with this competing account: several workers knew the code, and the workshop drawer holding the key showed no forced entry. The room should decide whether that contradiction is material or merely awkward."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 70
+        },
+        "weights": {
+          "burden": 2,
+          "credibility": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 4: Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed. I am weighing that beside the shared supervisor code, not on its own."
+          ],
+          "pushback": [
+            "Juror 4: I am not ready to let the shared supervisor code decide The Midnight Override. If we remove the dramatic label, that is the fact left underneath.",
+            "Juror 4: I am not ready to let the shared supervisor code decide The Midnight Override. I hear the point; now I want the source of it tested."
+          ],
+          "concede": [
+            "Juror 4: I accept now that a shared code narrows opportunity but does not identify the person at the cage. The evidence about the shared supervisor code is what keeps me from treating that as conclusive."
+          ],
+          "holdout": [
+            "Juror 4: I am holding my position until the room deals directly with Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed. The practical question is whether those events can both be true.",
+            "Juror 4: I am holding my position until the room deals directly with Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed. I can state the inference now, and I can also state what it depends on."
+          ],
+          "final": [
+            "Juror 4: My verdict in The Midnight Override turns on whether the jury can reconcile Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed with this competing account: several workers knew the code, and the workshop drawer holding the key showed no forced entry. The alternative has to be reasonably possible, not perfect."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 55
+        },
+        "weights": {
+          "burden": 2,
+          "method": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 5: several workers knew the code, and the workshop drawer holding the key showed no forced entry. Before I move, I need the shared supervisor code placed on the same timeline."
+          ],
+          "pushback": [
+            "Juror 5: I am not ready to let the shared supervisor code decide The Midnight Override. For me, the unanswered part is still the accused performed or participated in the alleged act.",
+            "Juror 5: I am not ready to let the shared supervisor code decide The Midnight Override. I am changing my view because the explanation fits more of the evidence."
+          ],
+          "concede": [
+            "Juror 5: I accept now that a shared code narrows opportunity but does not identify the person at the cage. I am not counting the same assumption twice as two pieces of evidence."
+          ],
+          "burden_correct": [
+            "Juror 5: In The Midnight Override, unanswered questions do not move the burden; the prosecution must still prove every element. I am separating what the record proves from what we are inferring.",
+            "Juror 5: In The Midnight Override, unanswered questions do not move the burden; the prosecution must still prove every element. I do not think confidence can repair a missing link."
+          ],
+          "final": [
+            "Juror 5: My verdict in The Midnight Override turns on whether the jury can reconcile Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed with this competing account: several workers knew the code, and the workshop drawer holding the key showed no forced entry. I need the witness account and the recorded evidence to agree before I rely on either."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": {
+          "position": "NG",
+          "confidence": 45
+        },
+        "weights": {
+          "method": 1,
+          "credibility": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 6: Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed. That is persuasive only if we first resolve the shared supervisor code.",
+            "Juror 6: Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed. The gap between those two facts is where my doubt sits."
+          ],
+          "pushback": [
+            "Juror 6: I am not ready to let the shared supervisor code decide The Midnight Override. I am ready to put less weight on the first impression.",
+            "Juror 6: I am not ready to let the shared supervisor code decide The Midnight Override. The sequence matters more to me than how suspicious one moment sounds."
+          ],
+          "concede": [
+            "Juror 6: I accept now that a shared code narrows opportunity but does not identify the person at the cage. That gives me a reason, but not yet a complete chain."
+          ],
+          "final": [
+            "Juror 6: My verdict in The Midnight Override turns on whether the jury can reconcile Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed with this competing account: several workers knew the code, and the workshop drawer holding the key showed no forced entry. That is stronger than suspicion, but I am checking it against the shared supervisor code."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 45
+        },
+        "weights": {
+          "digital_forensics": 1,
+          "credibility": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 7: several workers knew the code, and the workshop drawer holding the key showed no forced entry. It changes how I read the shared supervisor code, but it does not end the inquiry.",
+            "Juror 7: several workers knew the code, and the workshop drawer holding the key showed no forced entry. The alternative has to be reasonably possible, not perfect."
+          ],
+          "pushback": [
+            "Juror 7: I am not ready to let the shared supervisor code decide The Midnight Override. I am separating what the record proves from what we are inferring.",
+            "Juror 7: I am not ready to let the shared supervisor code decide The Midnight Override. I do not think confidence can repair a missing link."
+          ],
+          "concede": [
+            "Juror 7: I accept now that a shared code narrows opportunity but does not identify the person at the cage. I would rather name the gap than pretend it is not there."
+          ],
+          "final": [
+            "Juror 7: My verdict in The Midnight Override turns on whether the jury can reconcile Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed with this competing account: several workers knew the code, and the workshop drawer holding the key showed no forced entry. I can explain that conclusion without borrowing a fact that is not in evidence."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 70
+        },
+        "weights": {
+          "identity": 2,
+          "digital_forensics": 2
+        },
+        "lines": {
+          "agree": [
+            "Juror 8: Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed. That point earns weight because it can be checked independently.",
+            "Juror 8: Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed. I can explain that conclusion without borrowing a fact that is not in evidence."
+          ],
+          "pushback": [
+            "Juror 8: I am not ready to let the shared supervisor code decide The Midnight Override. I am asking whether the exhibit proves the act or merely resembles it.",
+            "Juror 8: I am not ready to let the shared supervisor code decide The Midnight Override. I am weighing that beside the shared supervisor code, not on its own."
+          ],
+          "concede": [
+            "Juror 8: I accept now that a shared code narrows opportunity but does not identify the person at the cage. The room should decide whether that contradiction is material or merely awkward."
+          ],
+          "final": [
+            "Juror 8: My verdict in The Midnight Override turns on whether the jury can reconcile Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed with this competing account: several workers knew the code, and the workshop drawer holding the key showed no forced entry. I hear the point; now I want the source of it tested."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 15,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": -1,
+              "confidence": -5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "concede"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 50
+        },
+        "weights": {
+          "credibility": 2
+        },
+        "lines": {
+          "agree": [
+            "Juror 9: several workers knew the code, and the workshop drawer holding the key showed no forced entry. I need the witness account and the recorded evidence to agree before I rely on either.",
+            "Juror 9: several workers knew the code, and the workshop drawer holding the key showed no forced entry. That is one fact; the room still has to test the prosecution has proved every required fact beyond reasonable doubt."
+          ],
+          "pushback": [
+            "Juror 9: I am not ready to let the shared supervisor code decide The Midnight Override. I can give that weight only after we account for the shared supervisor code.",
+            "Juror 9: I am not ready to let the shared supervisor code decide The Midnight Override. I am holding it against the judge’s direction on the prosecution has proved every required fact beyond reasonable doubt."
+          ],
+          "concede": [
+            "Juror 9: I accept now that a shared code narrows opportunity but does not identify the person at the cage. That is one fact; the room still has to test the act was deliberate or dishonest rather than accidental."
+          ],
+          "final": [
+            "Juror 9: My verdict in The Midnight Override turns on whether the jury can reconcile Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed with this competing account: several workers knew the code, and the workshop drawer holding the key showed no forced entry. That leaves me asking who had the opportunity the records actually show."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": -5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "unreliable",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 60
+        },
+        "weights": {
+          "identity": 1,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 10: Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed. That is the part of the Crown case I can test rather than guess."
+          ],
+          "pushback": [
+            "Juror 10: I am not ready to let the shared supervisor code decide The Midnight Override. Before I move, I need the shared supervisor code placed on the same timeline."
+          ],
+          "burden_drift": [
+            "Juror 10: In The Midnight Override, there are unanswered questions around the shared supervisor code, and I keep wanting Nico Verran to explain them. I am treating the timing as evidence, not as a verdict.",
+            "Juror 10: In The Midnight Override, there are unanswered questions around the shared supervisor code, and I keep wanting Nico Verran to explain them. That moves one piece, not the burden the Crown carries."
+          ],
+          "concede": [
+            "Juror 10: I accept now that a shared code narrows opportunity but does not identify the person at the cage. That moves one piece, not the burden the Crown carries."
+          ],
+          "burden_correct": [
+            "Juror 10: In The Midnight Override, unanswered questions do not move the burden; the prosecution must still prove every element. If we remove the dramatic label, that is the fact left underneath."
+          ],
+          "final": [
+            "Juror 10: My verdict in The Midnight Override turns on whether the jury can reconcile Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed with this competing account: several workers knew the code, and the workshop drawer holding the key showed no forced entry. That is the part of the Crown case I can test rather than guess."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "U",
+          "confidence": 40
+        },
+        "weights": {
+          "digital_forensics": 1,
+          "motive": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 11: several workers knew the code, and the workshop drawer holding the key showed no forced entry. I would rather name the gap than pretend it is not there.",
+            "Juror 11: several workers knew the code, and the workshop drawer holding the key showed no forced entry. The room should decide whether that contradiction is material or merely awkward."
+          ],
+          "pushback": [
+            "Juror 11: I am not ready to let the shared supervisor code decide The Midnight Override. If we remove the dramatic label, that is the fact left underneath.",
+            "Juror 11: I am not ready to let the shared supervisor code decide The Midnight Override. I hear the point; now I want the source of it tested."
+          ],
+          "concede": [
+            "Juror 11: I accept now that a shared code narrows opportunity but does not identify the person at the cage. That answer makes sense only if the rest of the chronology holds."
+          ],
+          "final": [
+            "Juror 11: My verdict in The Midnight Override turns on whether the jury can reconcile Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed with this competing account: several workers knew the code, and the workshop drawer holding the key showed no forced entry. For me, the unanswered part is still the accused performed or participated in the alleged act."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "U",
+          "confidence": 45
+        },
+        "weights": {
+          "method": 2,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 12: Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed. If we remove the dramatic label, that is the fact left underneath.",
+            "Juror 12: Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed. I hear the point; now I want the source of it tested."
+          ],
+          "pushback": [
+            "Juror 12: I am not ready to let the shared supervisor code decide The Midnight Override. That is one fact; the room still has to test the act was deliberate or dishonest rather than accidental.",
+            "Juror 12: I am not ready to let the shared supervisor code decide The Midnight Override. I need the witness account and the recorded evidence to agree before I rely on either."
+          ],
+          "concede": [
+            "Juror 12: I accept now that a shared code narrows opportunity but does not identify the person at the cage. That point earns weight because it can be checked independently."
+          ],
+          "final": [
+            "Juror 12: My verdict in The Midnight Override turns on whether the jury can reconcile Nico’s security key restored the threshold from his terminal after a cart-matched calibration let the missing cells pass unnoticed with this competing account: several workers knew the code, and the workshop drawer holding the key showed no forced entry. I am asking whether the exhibit proves the act or merely resembles it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "openai-codex",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "Codex Content Curator; independent QA rewrite and dynamics verification",
+    "batch_pr": "codex/docket-runway-a"
+  }
+}

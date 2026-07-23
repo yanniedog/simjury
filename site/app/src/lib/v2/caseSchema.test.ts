@@ -17,6 +17,25 @@ describe('docketCaseSchema', () => {
     expect(docketCaseSchema.safeParse(c).success).toBe(false)
   })
 
+  it('accepts leap day and rejects impossible calendar dates', () => {
+    expect(
+      docketCaseSchema.safeParse(makeDocketCase({ publish_date: '2028-02-29' }))
+        .success,
+    ).toBe(true)
+
+    for (const publish_date of [
+      '2026-02-29',
+      '2026-04-31',
+      '2026-00-10',
+      '2026-13-01',
+      '2026-01-00',
+    ]) {
+      expect(
+        docketCaseSchema.safeParse(makeDocketCase({ publish_date })).success,
+      ).toBe(false)
+    }
+  })
+
   it('rejects fewer than 10 beats', () => {
     const c = makeDocketCase()
     c.beats = c.beats.slice(0, 9)

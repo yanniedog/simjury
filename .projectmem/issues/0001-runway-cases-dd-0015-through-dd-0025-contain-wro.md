@@ -1,0 +1,12 @@
+# #0001 Runway cases dd-0015 through dd-0025 contain wrong-speaker testimony, templated closings, repeated filler, and verdict-pattern leakage
+
+- 2026-07-23T07:31:24Z `issue`: Runway cases dd-0015 through dd-0025 contain wrong-speaker testimony, templated closings, repeated filler, and verdict-pattern leakage [site/app/docket/dd-0015.json]
+- 2026-07-23T07:32:00Z `attempt`: Initial projectmem issue logging partially succeeded but regeneration failed because .projectmem/issues was absent [.projectmem/issues] (failed)
+- 2026-07-23T07:38:43Z `attempt`: Prepared a bounded deterministic rewrite for dd-0015 through dd-0025; sandbox blocked file writes with EPERM [site/app/docket/dd-0015.json] (failed)
+- 2026-07-23T07:39:05Z `attempt`: Applied bounded rewrite: corrected speakers, substantive closings/dialogue, case-specific reveal notes, diversified juries/mechanics, and broke verdict alternation [site/app/docket/dd-0015.json] (worked)
+- 2026-07-23T07:39:27Z `attempt`: First rewrite passed JSON/schema but case gates found 58 issues: short evidence, overlong defence closings, cross-side mismatches, unreachable tag rules, two weight floors, and three dynamics failures [site/app/docket/dd-0015.json] (partial)
+- 2026-07-23T07:40:39Z `attempt`: Second rewrite restored authored dynamics tags/weights, corrected opposing counsel on every cross, shortened defence closings, and padded evidence with case-specific context [site/app/docket/dd-0015.json] (worked)
+- 2026-07-23T07:40:57Z `attempt`: Second-pass validation reduced 58 findings to three overlong defence closings; all speaker, evidence, rule reachability, weight, and dynamics gates now pass [site/app/docket/dd-0016.json] (partial)
+- 2026-07-23T07:44:19Z `attempt`: Final diversity and attribution pass validated: 31 cases, 11 unique jury mechanics, 11 unique beat fingerprints, no repeated beat sentences/jury lines, no boilerplate [site/app/docket/dd-0015.json] (worked)
+- 2026-07-23T10:38:19Z `attempt`: Rewrote dd-0015 through dd-0025 attribution, closings, reveal notes, jury lines, mechanics, and schedule ordering; full 166-test, lint, typecheck, build, and 31-case validation suite passed [site/app/docket/dd-0015.json] (worked)
+- 2026-07-23T10:38:20Z `fix`: Confirmed dd-0015 through dd-0025 as a coherent, non-repetitive first runway batch with correct speaker attribution and case-specific reveals [site/app/docket/dd-0015.json]

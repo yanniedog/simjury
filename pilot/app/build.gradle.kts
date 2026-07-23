@@ -43,7 +43,7 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = 1
-        versionName = "0.1.40"
+        versionName = "0.1.41"
         buildConfigField("String", "APK_MANIFEST_URL", "\"$apkManifestUrl\"")
         buildConfigField("String", "PILOT_CASE_ID", "\"$pilotCaseId\"")
     }
@@ -115,7 +115,7 @@ afterEvaluate {
     tasks.matching { it.name.contains("merge") && it.name.contains("Assets") }.configureEach {
         dependsOn(syncCaseAssets)
     }
-    tasks.matching { it.name.contains("Lint", ignoreCase = true) }.configureEach {
+    tasks.matching { it.name.contains("lint", ignoreCase = true) }.configureEach {
         dependsOn(syncCaseAssets)
     }
 }

@@ -30,5 +30,6 @@ The current `cases/` queue (`d-0001…d-0005`) is the imported v1 seed content u
 tests; it is superseded by the 2026 docket (`dd-*`, schema v2) as the ladder lands.
 The full v1 Victorian docket is archived at [`archive/daily-v1/`](../../archive/daily-v1/).
 
-Deployment is **not** wired from here — the site deploys as static assets via `site/`
-(`.github/workflows/site.yml`); the D8 cutover connects this app's build output.
+Deployment is wired through `site/`: the app builds into `site/public/today/`, and
+`.github/workflows/site.yml` deploys those static assets with the Cloudflare Worker.
+The standalone `site-app-ci.yml` workflow remains the fast app-specific quality gate.

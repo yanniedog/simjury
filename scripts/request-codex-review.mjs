@@ -13,14 +13,22 @@ import { gateExemptReason } from './lib/pr-gate-exempt.mjs';
 import { ghJson } from './lib/gh-pr-review-threads.mjs';
 
 const CODEX_TRIGGER = '@codex review';
+const CODEX_TRIGGER_PATTERN = new RegExp(
+  CODEX_TRIGGER.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+  'i',
+);
 
 function parseArgs(argv) {
-  const out = { pr: null, dryRun: false, help: false };
+  const out = { pr: null, prError: null, dryRun: false, help: false };
   for (let i = 2; i < argv.length; i += 1) {
     const a = argv[i];
     if (a === '--help' || a === '-h') out.help = true;
     else if (a === '--dry-run') out.dryRun = true;
-    else if (a === '--pr' && argv[i + 1]) out.pr = argv[++i];
+    else if (a === '--pr') {
+      const value = argv[i + 1];
+      if (!value || value.startsWith('--')) out.prError = '--pr requires a value';
+      else out.pr = argv[++i];
+    }
   }
   return out;
 }
@@ -41,7 +49,7 @@ function codexSeenOnPr(prNumber) {
 function triggerAlreadyPosted(prNumber) {
   const view = ghJson(['pr', 'view', String(prNumber), '--json', 'comments']);
   const comments = view?.comments || [];
-  return comments.some((c) => /@codex review/i.test(String(c.body || '')));
+  return comments.some((c) => CODEX_TRIGGER_PATTERN.test(String(c.body || '')));
 }
 
 function postCodexTrigger(prNumber, dryRun) {
@@ -62,6 +70,10 @@ function postCodexTrigger(prNumber, dryRun) {
 
 function main() {
   const args = parseArgs(process.argv);
+  if (args.prError) {
+    console.error(`request-codex-review: ${args.prError}`);
+    process.exit(1);
+  }
   if (args.help || !args.pr) {
     console.log(`Usage: node scripts/request-codex-review.mjs --pr <n> [--dry-run]`);
     process.exit(args.help ? 0 : 1);

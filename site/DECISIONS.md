@@ -1,9 +1,11 @@
 # Web player decisions (simjury.com)
 
-The web player at **simjury.com/play** is a **separate surface** from the Android pilot.
-Some pilot/v3 decisions were written for the Android reading-game and do **not** bind the
-web. This file records where the web deliberately diverges, and why. (Android/pilot rules
-are unchanged; see `PILOT-SPEC.md`, `archive/simjury-build-spec-v3.md`.)
+The active web player is **simjury.com/today**. The historical `/play` research prototype
+remains in the repository but, by later owner direction recorded in PR #76, public
+`/play` requests redirect to the Daily Docket. Some pilot/v3 decisions were written for
+the Android reading-game and do **not** bind the active web surface. This file records
+where the web deliberately diverges, and why. (Android/pilot rules are unchanged; see
+`PILOT-SPEC.md`, `archive/simjury-build-spec-v3.md`.)
 
 ## D-WEB-1 — Audio narration (overrides v3 §25 LP-1 for web only)
 

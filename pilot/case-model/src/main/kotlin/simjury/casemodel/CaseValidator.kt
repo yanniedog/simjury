@@ -365,7 +365,7 @@ object CaseValidator {
         val banned = buildSet {
             addAll(staticBannedTokens)
             loaded.pseudonyms.entries.forEach { entry ->
-                add(entry.realName.lowercase())
+                add(entry.realName.trim().lowercase())
             }
         }
         val playReachable = collectPlayReachableText(loaded)
