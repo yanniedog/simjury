@@ -303,21 +303,6 @@
       ]
     },
     {
-      "id": "b10",
-      "kind": "direction",
-      "speaker": "judge",
-      "text": "The judge directs you that Lio need not identify the person who assembled or operated the false face. The prosecution must prove his knowing participation and dishonest intent beyond reasonable doubt. Separate resemblance, account benefit, device control, and simultaneous activity, relying only on admitted records rather than outside searches about synthetic media or the household.",
-      "surface_persuasion": 0.45,
-      "true_weight": 0.5,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance helped test a witness account while leaving the central issue open.",
-      "tags": [
-        "burden",
-        "procedure"
-      ]
-    },
-    {
       "id": "b11",
       "kind": "exhibit",
       "speaker": "dc",
@@ -332,6 +317,21 @@
         "timeline",
         "identity"
       ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that Lio need not identify the person who assembled or operated the false face. The prosecution must prove his knowing participation and dishonest intent beyond reasonable doubt. Separate resemblance, account benefit, device control, and simultaneous activity, relying only on admitted records rather than outside searches about synthetic media or the household.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance helped test a witness account while leaving the central issue open.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
     }
   ],
   "checkins": [
@@ -341,7 +341,7 @@
     "b10"
   ],
   "verdict_truth": "Not Guilty",
-  "twist": "The successful live-face checks looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter repeated blink and device separation supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "twist": "The live checks passed because the same manufactured face could turn, speak, and even blink on command. One blink repeating pixel for pixel exposed the trick; simultaneous apprenticeship records showed Lio working elsewhere while his face worked from the flat. The wages touched his rent, but the cousin's handset controlled the alerts, holding account, and withdrawals.",
   "difficulty_target": 0.7,
   "jury": {
     "jurors": [
