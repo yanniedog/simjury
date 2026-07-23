@@ -1,0 +1,1146 @@
+{
+  "id": "dd-0029",
+  "publish_date": "2026-07-30",
+  "label": "fiction",
+  "title": "The Borrowed Face",
+  "setting": "a remote payroll contractor, synthetic interview footage, and a rented flat in the present day",
+  "charge": "obtaining wages by deception",
+  "elements": [
+    "A false identity or representation was used to obtain wages",
+    "The accused knowingly participated intending financial gain"
+  ],
+  "hook": "A contractor works ninety paid hours under Lio Sarin's face. The interviews pass live movement checks, the wages reach his account, and every session comes from his flat. Then one blink appears twice.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Lio Sarin, 24, is an apprentice sound editor who shared a cramped flat with an older cousin and sent most wages home to a parent recovering from surgery.",
+    "if_guilty": "a fraud conviction, removal from his apprenticeship, and debt for wages he says he never earned"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "A false worker used Lio Sarin's face, identity papers, bank account, and home connection. The system challenged the worker to turn, blink, and speak random phrases; each challenge passed. Ninety hours of wages then landed in Lio's account and paid his rent. The simplest explanation is participation, not an invisible impersonator operating inside his home."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The face was synthetic, the identity file came from a stolen tenancy application, and the account was controlled through a forwarding rule Lio never created. His cousin had the flat, the router, and the voice recordings needed to build the worker. A copied face passing a copied test proves the test failed. It does not prove the person copied agreed."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Lio benefited directly. Rent arrears disappeared, wages entered his account, and sessions originated metres from his bedroom. He waited six weeks before reporting anything. The defence points to one duplicated blink, but a manipulated clip can still be commissioned by its subject. Access, benefit, and silence form a pattern too convenient to dismiss."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The repeated blink is not decoration; it is proof the live interview was assembled. Device logs place Lio at his apprenticeship during key sessions, while the cousin used a hidden virtual camera and redirected every bank alert. Rent was paid to stop eviction of them both, then the rest moved away. Suspicion attaches to the face. Control attaches elsewhere."
+      }
+    }
+  },
+  "epilogue": "The contractor replaced its movement challenge with supervised identity checks and compensated workers whose files had been exposed. Lio completed the apprenticeship after a long suspension and moved to a studio with separate network access. The former flatmate entered a repayment arrangement in related proceedings. Lio's parent sold a small vehicle to cover legal debt, then later received support from an industry hardship fund.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Cora Vale",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Imri Pell",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Lio Sarin",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Jessa Tor",
+      "role_label": "contractor compliance manager",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Nolan Vey",
+      "role_label": "digital-image examiner",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Mina Sarin",
+      "role_label": "former flatmate",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit one combines six live-check certificates. Each says the worker turned on command, blinked at random prompts, and repeated a changing phrase while a face match exceeded ninety-four per cent. The compliance manager treated those certificates as proof Lio personally attended every session, because the system advertised resistance to recordings and masks.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The successful live-face checks appeared personal and precise, but it could not establish who acted or why.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "The identity package was unusually complete: licence image, tenancy statement, tax number, and a voice sample from the onboarding call. Wages went to an account in Lio's name and several sessions used his household connection. Nothing in our ordinary review suggested a second person until the defence requested the raw frames.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.32,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "This witness explained why suspicion formed, but the account depended on an inference later tested in cross-examination.",
+      "tags": [
+        "digital_forensics",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "Your system certified every session as live? Yes, all six formal checks passed. Yet the same eyelid movement appears in two different checks? That is what the later examination found. So the certificate proves your test accepted something? Yes. It does not now prove the source was genuinely live. And that limit matters when deciding who acted? Yes. The record narrows the possibilities, but it cannot replace proof.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "Your system certified every session as live?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes, all six formal checks passed."
+        },
+        {
+          "speaker": "dc",
+          "text": "Yet the same eyelid movement appears in two different checks?"
+        },
+        {
+          "speaker": "w1",
+          "text": "That is what the later examination found."
+        },
+        {
+          "speaker": "dc",
+          "text": "So the certificate proves your test accepted something?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes. It does not now prove the source was genuinely live."
+        },
+        {
+          "speaker": "dc",
+          "text": "And that limit matters when deciding who acted?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes. The record narrows the possibilities, but it cannot replace proof."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The live answers exposed the limit hidden by the opening narrative and returned the record to what it could actually prove.",
+      "tags": [
+        "identity",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "The prosecution tenders Lio's bank statement. Contractor wages entered his account and paid four weeks of overdue rent. He did not report the deposits for forty-two days. Those facts suggest benefit and silence, although the statement also shows every remaining payment forwarded within minutes to an unfamiliar holding account. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.62,
+      "true_weight": 0.38,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The exhibit supported the opposing story, but alternative explanations prevented it from carrying decisive weight.",
+      "tags": [
+        "digital_forensics",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I compared the onboarding videos frame by frame. In two sessions weeks apart, a blink contains the same compression blocks and identical strand movement above the left eyebrow. Natural movements do not repeat pixel for pixel. A virtual-camera driver also appears in the session logs, disguised as an ordinary webcam.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The testimony added context and motive, not a reliable identification of the criminal act.",
+      "tags": [
+        "timeline",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit six is the device-location schedule. During seven billed shifts, Lio's apprenticeship terminal recorded badge entry, editing activity, and supervised audio sessions across the day. The false contractor account worked simultaneously from the flat. The overlap totals thirty-one hours and includes two live challenges that display his face. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.82,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The repeated blink and device separation independently fixed the mechanism and sequence that the louder clue obscured.",
+      "tags": [
+        "identity",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "A synthetic face could be prepared from material Lio never supplied for this scheme? Yes. Existing recordings and stolen files could be enough. Your pixel finding cannot identify who operated it? Correct. It identifies compositing, not the operator. So the compositing alone cannot prove Lio participated? Correct. The independent device and account evidence must answer participation.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "A synthetic face could be prepared from material Lio never supplied for this scheme?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Yes. Existing recordings and stolen files could be enough."
+        },
+        {
+          "speaker": "dc",
+          "text": "Your pixel finding cannot identify who operated it?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Correct. It identifies compositing, not the operator."
+        },
+        {
+          "speaker": "dc",
+          "text": "So the compositing alone cannot prove Lio participated?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Correct. The independent device and account evidence must answer participation."
+        }
+      ],
+      "surface_persuasion": 0.62,
+      "true_weight": 0.72,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Cross-examination forced the witness to separate institutional assumptions from the fact that ultimately controlled the case.",
+      "tags": [
+        "identity",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I shared the flat and managed the router. Lio left tenancy scans and voice reels on a backup drive we both used. I knew his account was behind on rent. His cousin slept in the living room for two months and used a curtained desk overnight, saying the noise was freelance translation work.",
+      "surface_persuasion": 0.56,
+      "true_weight": 0.48,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The third witness supplied human and technical context consistent with the true account, while stopping short of deciding the charge alone.",
+      "tags": [
+        "identity",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "You disliked the cousin and blamed them only after police arrived? I was frightened and did not understand the software. You never saw the false worker on screen? No, the desk faced away behind a curtain. Then your evidence is suspicion from household habits? And the router account showing their device configured the virtual camera.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "You disliked the cousin and blamed them only after police arrived?"
+        },
+        {
+          "speaker": "w3",
+          "text": "I was frightened and did not understand the software."
+        },
+        {
+          "speaker": "pc",
+          "text": "You never saw the false worker on screen?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No, the desk faced away behind a curtain."
+        },
+        {
+          "speaker": "pc",
+          "text": "Then your evidence is suspicion from household habits?"
+        },
+        {
+          "speaker": "w3",
+          "text": "And the router account showing their device configured the virtual camera."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The challenge revealed possible bias but did not displace the objective record supporting the witness's central point.",
+      "tags": [
+        "credibility",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance. The prosecution must prove each element beyond reasonable doubt using evidence admitted here. Assess system outputs like any other exhibit, and do not research this case, its people, or its technology online.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction supplies the discipline the room needs: unanswered questions cannot reverse the burden of proof.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit nine is the bank-alert audit. A new forwarding rule sent all deposit notices to an address controlled from the cousin's handset. The same handset authenticated the holding account and withdrew funds after rent was paid. Lio's own phone never opened the contractor portal, and its security log records two rejected attempts from the flat.",
+      "surface_persuasion": 0.72,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The final record corroborated the repeated blink and device separation through a separate source and resolved the central ambiguity.",
+      "tags": [
+        "identity",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b2",
+    "b4",
+    "b7",
+    "b10"
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The successful live-face checks looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter repeated blink and device separation supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "difficulty_target": 0.7,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quick-pattern thinker initially captured by the successful live-face checks.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "identity": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The repeated blink and device separation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The successful live-face checks is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the successful live-face checks looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the repeated blink and device separation, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A careful note-taker who keeps returning to chronology.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "identity": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The repeated blink and device separation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The successful live-face checks is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the successful live-face checks looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the repeated blink and device separation, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A principled holdout who tests every claim against the burden.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "identity": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The repeated blink and device separation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The successful live-face checks is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the successful live-face checks looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the repeated blink and device separation, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "An anxious juror tempted to make the accused explain the gaps.",
+        "register": "hesitant",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "identity": 2,
+          "digital_forensics": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The repeated blink and device separation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The successful live-face checks is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the successful live-face checks looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the repeated blink and device separation, not the first impression."
+          ],
+          "burden_drift": [
+            "If the defence cannot explain every gap, perhaps that is enough."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "The foreperson, focused on separating proof from suspicion.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "identity": 0,
+          "digital_forensics": 2,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The repeated blink and device separation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The successful live-face checks is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the successful live-face checks looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the repeated blink and device separation, not the first impression."
+          ],
+          "burden_correct": [
+            "An unexplained gap is not proof. The charge still has to be proved."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_correct"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A practical juror who changes position when a mechanism is demonstrated.",
+        "register": "blunt",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "identity": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The repeated blink and device separation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The successful live-face checks is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the successful live-face checks looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the repeated blink and device separation, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A mind-changer especially alert to the repeated blink and device separation.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "identity": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The repeated blink and device separation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The successful live-face checks is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the successful live-face checks looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the repeated blink and device separation, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A quiet sceptic who distrusts polished system outputs.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "identity": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The repeated blink and device separation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The successful live-face checks is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the successful live-face checks looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the repeated blink and device separation, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A hesitant juror pulled between human testimony and records.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "identity": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The repeated blink and device separation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The successful live-face checks is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the successful live-face checks looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the repeated blink and device separation, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A methodical juror who maps each claim to a time and source.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "identity": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The repeated blink and device separation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The successful live-face checks is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the successful live-face checks looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the repeated blink and device separation, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A blunt holdout who refuses to convert probability into certainty.",
+        "register": "blunt",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "identity": 0,
+          "digital_forensics": 2,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The repeated blink and device separation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The successful live-face checks is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the successful live-face checks looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the repeated blink and device separation, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-1"
+  }
+}

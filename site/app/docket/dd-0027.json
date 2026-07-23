@@ -1,0 +1,1146 @@
+{
+  "id": "dd-0027",
+  "publish_date": "2026-07-28",
+  "label": "fiction",
+  "title": "The Courtesy Transfer",
+  "setting": "a neighbourhood care cooperative, a voice-controlled banking service, and a chain of tiny transfers in the present day",
+  "charge": "fraud by dishonest electronic transfers",
+  "elements": [
+    "Money was transferred by deception or abuse of authority",
+    "The accused acted dishonestly intending gain or loss"
+  ],
+  "hook": "An older client calls every payment a gift. The care worker calls every login assistance. Between them sit forty-three transfers small enough to escape an alert, all approved by a voice that sounds grateful.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Ilan Sorre, 29, is a home-care worker who supports a younger sibling and has no savings. Former clients fill one side of the gallery; the complainant's family fills the other.",
+    "if_guilty": "imprisonment, permanent exclusion from care work, and the collapse of the household that depends on his wage"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Ilan Sorre learned the complainant's phrases, passcode habits, and quiet generosity. Over four months, forty-three transfers moved to accounts he controlled, each below the service's warning threshold. The approvals came from his handset while he was alone in the house. He did not steal with one dramatic instruction; he built a staircase from amounts designed not to be noticed."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The complainant repeatedly says the money was gifted. She was lonely, independent, and angry that her niece tried to control every purchase. Ilan helped with the banking service because tremor made the screen difficult. The prosecution turns assistance into access and family disagreement into incapacity. Small transfers may reflect caution, not concealment, and gratitude is not fraud."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Consent is not a word spoken after trust has been exploited; it must attach to each transfer. The handset logs show Ilan created new payees, muted confirmations, and tested the warning threshold before the first payment. The complainant remembers gifts but cannot name amounts or accounts. His private note called the process drip feeding. That is not care. It is method."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The niece disliked Ilan before she opened a statement. The specialist accepted the complainant could make ordinary gifts, and every transfer carried a spoken approval. A private phrase can sound ugly without being criminal. If uncertainty remains about what she intended, the prosecution cannot replace her voice with a relative's suspicion and call the difference proof."
+      }
+    }
+  },
+  "epilogue": "The cooperative introduced dual approval for workers who assist with banking and banned personal payees from care devices. The complainant moved into supported housing but kept choosing her own weekly spending. Her niece attended mediation about control and dignity. Ilan's sibling received emergency housing help from the cooperative, separating that need from the trial. The disputed money was frozen while a civil administrator reconstructed each transfer.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Tessa Wren",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Malik Orra",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Ilan Sorre",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Galen Pryce",
+      "role_label": "financial investigator",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Ruth Dallow",
+      "role_label": "the complainant's niece",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Dr Sen Arlen",
+      "role_label": "geriatric communication specialist",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The defence plays three voice approvals recorded by the banking service. In each, the complainant says, I want Ilan to have it, and sounds calm. She later told investigators the payments were gifts. Hearing her own words makes the case appear to be a family dispute about generosity rather than fraud.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The spoken gift approvals appeared personal and precise, but it could not establish who acted or why.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "The transfers were forty to four hundred credits, never more. Each sat below the automatic call-back threshold. They moved through three new payees and eventually reached accounts linked to Ilan. At first I treated the voice approvals as consent, until device records showed how each approval screen was prepared. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.32,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This witness explained why suspicion formed, but the account depended on an inference later tested in cross-examination.",
+      "tags": [
+        "credibility",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "The complainant personally spoke every approval phrase? A voice matching hers did, according to the service. No synthetic-audio warning appeared on any recording? No warning appeared. And she still describes the payments as gifts? Yes, but she cannot identify the payees, amounts, or timing. And that limit matters when deciding who acted? Yes. The record narrows the possibilities, but it cannot replace proof.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "The complainant personally spoke every approval phrase?"
+        },
+        {
+          "speaker": "w1",
+          "text": "A voice matching hers did, according to the service."
+        },
+        {
+          "speaker": "dc",
+          "text": "No synthetic-audio warning appeared on any recording?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No warning appeared."
+        },
+        {
+          "speaker": "dc",
+          "text": "And she still describes the payments as gifts?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes, but she cannot identify the payees, amounts, or timing."
+        },
+        {
+          "speaker": "dc",
+          "text": "And that limit matters when deciding who acted?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes. The record narrows the possibilities, but it cannot replace proof."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The live answers exposed the limit hidden by the opening narrative and returned the record to what it could actually prove.",
+      "tags": [
+        "digital_forensics",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The niece reported the transfers after seeing a low balance. She had argued with the complainant about spending and had asked the cooperative to replace Ilan twice. The defence says her complaint began with control, not evidence, and that her hostility coloured every later interview with the family. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.62,
+      "true_weight": 0.38,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The exhibit supported the opposing story, but alternative explanations prevented it from carrying decisive weight.",
+      "tags": [
+        "credibility",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "My aunt can choose gifts. What she cannot do is explain why one went to a freight account or why another was split into nine payments. She calls every helper Ilan some days. He knew that. When I asked about the missing balance, she thought it had paid for a new garden that did not exist.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The testimony added context and motive, not a reliable identification of the criminal act.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit six is the handset audit. Ilan's personal device created all three payees, disabled payment confirmations, and searched the service's warning thresholds minutes before the first transfer. A note stored locally listed amounts under the heading drip feeding, followed by dates that match the forty-three payments exactly. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.82,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The payee and threshold audit independently fixed the mechanism and sequence that the louder clue obscured.",
+      "tags": [
+        "digital_forensics",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "A worker may create a payee while helping a client, correct? With the client's instruction, yes. Your aunt often accused you of restricting her money? She did, and sometimes I was too protective. So she could have hidden gifts from you deliberately? She could hide a gift. She could not invent the missing garden she believed she bought.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "A worker may create a payee while helping a client, correct?"
+        },
+        {
+          "speaker": "w2",
+          "text": "With the client's instruction, yes."
+        },
+        {
+          "speaker": "dc",
+          "text": "Your aunt often accused you of restricting her money?"
+        },
+        {
+          "speaker": "w2",
+          "text": "She did, and sometimes I was too protective."
+        },
+        {
+          "speaker": "dc",
+          "text": "So she could have hidden gifts from you deliberately?"
+        },
+        {
+          "speaker": "w2",
+          "text": "She could hide a gift. She could not invent the missing garden she believed she bought."
+        }
+      ],
+      "surface_persuasion": 0.62,
+      "true_weight": 0.72,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Cross-examination forced the witness to separate institutional assumptions from the fact that ultimately controlled the case.",
+      "tags": [
+        "digital_forensics",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "The complainant retained capacity for simple purchases and familiar gifts. But the recordings use nearly identical phrasing, while her spontaneous explanation shifts between a garden, a holiday, and wages already paid by the cooperative. That pattern suggests prompted assent without an understanding of destination, amount, or cumulative loss. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.56,
+      "true_weight": 0.48,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The third witness supplied human and technical context consistent with the true account, while stopping short of deciding the charge alone.",
+      "tags": [
+        "digital_forensics",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "Can a person sound certain yet misunderstand a transaction? Yes. Confidence and comprehension are different abilities. Would repeating a short approval phrase establish informed consent? No, not without checking amount, recipient, and purpose. Did these interviews show that understanding? They did not. Her account changed whenever the suggested purpose changed.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "Can a person sound certain yet misunderstand a transaction?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes. Confidence and comprehension are different abilities."
+        },
+        {
+          "speaker": "pc",
+          "text": "Would repeating a short approval phrase establish informed consent?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No, not without checking amount, recipient, and purpose."
+        },
+        {
+          "speaker": "pc",
+          "text": "Did these interviews show that understanding?"
+        },
+        {
+          "speaker": "w3",
+          "text": "They did not. Her account changed whenever the suggested purpose changed."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The challenge revealed possible bias but did not displace the objective record supporting the witness's central point.",
+      "tags": [
+        "credibility",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance. The prosecution must prove each element beyond reasonable doubt using evidence admitted here. Assess system outputs like any other exhibit, and do not research this case, its people, or its technology online.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction supplies the discipline the room needs: unanswered questions cannot reverse the burden of proof.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit nine compares transfer times with visit logs. Thirty-nine payments occurred while Ilan was the only worker present; the remaining four followed his remote access within minutes. On the final day he moved the accumulated balance from all three payees into one personal savings account, then deleted the local note.",
+      "surface_persuasion": 0.72,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The final record corroborated the payee and threshold audit through a separate source and resolved the central ambiguity.",
+      "tags": [
+        "digital_forensics",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b2",
+    "b4",
+    "b7",
+    "b10"
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The spoken gift approvals looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter payee and threshold audit supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "difficulty_target": 0.66,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quick-pattern thinker initially captured by the spoken gift approvals.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "digital_forensics": 0,
+          "credibility": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The payee and threshold audit is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The spoken gift approvals is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the spoken gift approvals looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the payee and threshold audit, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A careful note-taker who keeps returning to chronology.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "digital_forensics": 0,
+          "credibility": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The payee and threshold audit is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The spoken gift approvals is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the spoken gift approvals looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the payee and threshold audit, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A principled holdout who tests every claim against the burden.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "digital_forensics": 2,
+          "credibility": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The payee and threshold audit is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The spoken gift approvals is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the spoken gift approvals looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the payee and threshold audit, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "An anxious juror tempted to make the accused explain the gaps.",
+        "register": "hesitant",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "digital_forensics": 0,
+          "credibility": 2,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The payee and threshold audit is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The spoken gift approvals is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the spoken gift approvals looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the payee and threshold audit, not the first impression."
+          ],
+          "burden_drift": [
+            "If the defence cannot explain every gap, perhaps that is enough."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "The foreperson, focused on separating proof from suspicion.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "digital_forensics": 2,
+          "credibility": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The payee and threshold audit is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The spoken gift approvals is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the spoken gift approvals looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the payee and threshold audit, not the first impression."
+          ],
+          "burden_correct": [
+            "An unexplained gap is not proof. The charge still has to be proved."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_correct"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A practical juror who changes position when a mechanism is demonstrated.",
+        "register": "blunt",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "digital_forensics": 0,
+          "credibility": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The payee and threshold audit is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The spoken gift approvals is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the spoken gift approvals looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the payee and threshold audit, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A mind-changer especially alert to the payee and threshold audit.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "digital_forensics": 2,
+          "credibility": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The payee and threshold audit is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The spoken gift approvals is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the spoken gift approvals looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the payee and threshold audit, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A quiet sceptic who distrusts polished system outputs.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "digital_forensics": 0,
+          "credibility": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The payee and threshold audit is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The spoken gift approvals is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the spoken gift approvals looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the payee and threshold audit, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A hesitant juror pulled between human testimony and records.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "digital_forensics": 2,
+          "credibility": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The payee and threshold audit is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The spoken gift approvals is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the spoken gift approvals looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the payee and threshold audit, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A methodical juror who maps each claim to a time and source.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "digital_forensics": 0,
+          "credibility": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The payee and threshold audit is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The spoken gift approvals is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the spoken gift approvals looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the payee and threshold audit, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A blunt holdout who refuses to convert probability into certainty.",
+        "register": "blunt",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "digital_forensics": 2,
+          "credibility": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The payee and threshold audit is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The spoken gift approvals is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the spoken gift approvals looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the payee and threshold audit, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-1"
+  }
+}

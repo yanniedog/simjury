@@ -1,0 +1,1138 @@
+{
+  "id": "dd-0026",
+  "publish_date": "2026-07-27",
+  "label": "fiction",
+  "title": "The Thermal Window",
+  "setting": "a shared fabrication workshop, its rooftop battery room, and a disputed heat alert in the present day",
+  "charge": "arson of a commercial workshop",
+  "elements": [
+    "A fire was deliberately started",
+    "The accused intentionally started it without lawful excuse"
+  ],
+  "hook": "A rooftop battery overheats at 2:13 a.m. Twelve minutes later, a workshop burns and a former tenant's access token appears beside the alarm. The token looks personal; the heat does not.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Mara Venn, 36, repairs mobility aids and rents a bench wherever she can afford one. Her father and two apprentices wait behind her in court.",
+    "if_guilty": "years in custody, the loss of her repair licence, and a workshop community convinced she burned their livelihoods"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Mara Venn left the workshop angry after her lease ended. Her old access token opened the rear stairwell minutes before flame appeared, and a camera caught a hooded figure carrying the same narrow tool case she used every day. The fire began beside the bench she had been ordered to clear. Digital access, motive, opportunity, and ignition sit in one short window."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The token record is real, but it does not say Mara held it. The manager copied old credentials into a contractor list and never disabled them. More importantly, the rooftop battery logged rising heat before any door opened. A maintenance warning was cleared without inspection, and the fire travelled down a cable chase. Suspicion follows Mara; combustion follows the battery."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The defence offers maintenance faults because machines cannot be cross-examined. Yet Mara threatened to make the workshop regret evicting her, her token opened the stairwell, and the figure carried her kind of case. Coincidence must eventually stop being coincidence. The fire reached her old bench because she knew the building and chose the one route cameras barely covered."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Every accusation begins after the system printed Mara's name. Before that, the battery was already heating. The copied contractor list explains the token, the case is sold by every repair supplier, and the fire investigator found no accelerant at her bench. A cleared warning, a failed cooling fan, and a cable chase explain the blaze without inventing an unseen arsonist."
+      }
+    }
+  },
+  "epilogue": "The workshop reopened in a smaller unit eight months later. Its members replaced the rooftop system and began requiring two people to clear safety alerts. Mara rebuilt her repair bench in a converted storeroom and kept both apprentices. The manager apologised for treating an access report as a photograph, though their friendship did not recover. The insurer funded independent fire training for every tenant.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Oren Vale",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Sela Marr",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Mara Venn",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Tobin Quill",
+      "role_label": "workshop manager",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Nia Calder",
+      "role_label": "fire investigator",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Evan Rusk",
+      "role_label": "battery maintenance technician",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit one is the access report. At 2:21 a.m., a credential still labelled Mara Venn opened the rear stairwell. The manager says no one else should have possessed it, and the eight-minute gap before smoke appeared makes the record look like a digital signature placed at the scene. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The access-token record appeared personal and precise, but it could not establish who acted or why.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I ended Mara's lease after repeated arguments over fees. That afternoon she said we would regret treating skilled people like disposable parts. She always carried a narrow black tool case, and the figure on the loading camera had one. When the access report named her, the threat suddenly sounded literal.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.32,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "This witness explained why suspicion formed, but the account depended on an inference later tested in cross-examination.",
+      "tags": [
+        "digital_forensics",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "You copied old tenant credentials into a contractor list? Yes, so visiting technicians could enter after hours. Mara's identifier remained attached to that copied credential? It did, although I assumed her token was disabled. You never tested which physical token opened the door? No. The report showed a label, not the token's serial number.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "You copied old tenant credentials into a contractor list?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes, so visiting technicians could enter after hours."
+        },
+        {
+          "speaker": "dc",
+          "text": "Mara's identifier remained attached to that copied credential?"
+        },
+        {
+          "speaker": "w1",
+          "text": "It did, although I assumed her token was disabled."
+        },
+        {
+          "speaker": "dc",
+          "text": "You never tested which physical token opened the door?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No. The report showed a label, not the token's serial number."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The live answers exposed the limit hidden by the opening narrative and returned the record to what it could actually prove.",
+      "tags": [
+        "method",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit three is a still from the loading camera. A hooded person crosses the yard carrying a narrow black case. The face is hidden, height cannot be measured, and the case is sold by several repair suppliers. The prosecution nevertheless says the outline matches Mara's familiar work kit. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.62,
+      "true_weight": 0.38,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The exhibit supported the opposing story, but alternative explanations prevented it from carrying decisive weight.",
+      "tags": [
+        "digital_forensics",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I found the deepest damage around the cable chase above Mara's former bench. At first that suggested someone ignited material below and let heat rise. No accelerant was recovered, but deliberate fires do not always use one. The access record made an intentional origin seem more likely during my first inspection.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The testimony added context and motive, not a reliable identification of the criminal act.",
+      "tags": [
+        "timeline",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit five is the rooftop battery log recovered by an independent engineer. Cell temperature began climbing at 2:13 a.m., eight minutes before the stairwell opened. Cooling-fan current dropped to zero at 2:15, then internal alarms escalated steadily until smoke entered the cable chase. The sequence begins before any alleged intruder arrived.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.82,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The battery heat sequence independently fixed the mechanism and sequence that the louder clue obscured.",
+      "tags": [
+        "method",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "Your first report said the fire began below the roof? Yes, based on visible damage and the access record. After seeing the battery telemetry, you revised that opinion? I did. Heat travelled downward inside the cable chase. Did you find any deliberate ignition at Mara's bench? No. I found electrical arcing and no accelerant residue.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "Your first report said the fire began below the roof?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Yes, based on visible damage and the access record."
+        },
+        {
+          "speaker": "dc",
+          "text": "After seeing the battery telemetry, you revised that opinion?"
+        },
+        {
+          "speaker": "w2",
+          "text": "I did. Heat travelled downward inside the cable chase."
+        },
+        {
+          "speaker": "dc",
+          "text": "Did you find any deliberate ignition at Mara's bench?"
+        },
+        {
+          "speaker": "w2",
+          "text": "No. I found electrical arcing and no accelerant residue."
+        }
+      ],
+      "surface_persuasion": 0.62,
+      "true_weight": 0.72,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Cross-examination forced the witness to separate institutional assumptions from the fact that ultimately controlled the case.",
+      "tags": [
+        "method",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I serviced that battery bank six weeks earlier. The cooling fan rattled and failed an airflow test, so I entered a replacement request. The workshop delayed the part. On the night of the fire, someone remotely cleared the first heat warning from the manager console, but nobody went upstairs to inspect it.",
+      "surface_persuasion": 0.56,
+      "true_weight": 0.48,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The third witness supplied human and technical context consistent with the true account, while stopping short of deciding the charge alone.",
+      "tags": [
+        "method",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "A failed fan does not prove the battery started this fire, does it? Not alone. The temperature sequence and arcing do. You were criticised for not replacing it yourself? I lacked authority to approve the part. So blaming the battery also protects your work? It exposes my warning, including the date and the workshop's refusal.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "A failed fan does not prove the battery started this fire, does it?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Not alone. The temperature sequence and arcing do."
+        },
+        {
+          "speaker": "pc",
+          "text": "You were criticised for not replacing it yourself?"
+        },
+        {
+          "speaker": "w3",
+          "text": "I lacked authority to approve the part."
+        },
+        {
+          "speaker": "pc",
+          "text": "So blaming the battery also protects your work?"
+        },
+        {
+          "speaker": "w3",
+          "text": "It exposes my warning, including the date and the workshop's refusal."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The challenge revealed possible bias but did not displace the objective record supporting the witness's central point.",
+      "tags": [
+        "credibility",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance. The prosecution must prove each element beyond reasonable doubt using evidence admitted here. Assess system outputs like any other exhibit, and do not research this case, its people, or its technology online.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction supplies the discipline the room needs: unanswered questions cannot reverse the burden of proof.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit eight is the alarm audit. The manager account cleared the rooftop warning at 2:17 a.m. from a home terminal, four minutes before the copied credential opened the stairwell. A contracted guard then entered using that shared credential to investigate. His incident note records smoke already descending from the battery room.",
+      "surface_persuasion": 0.72,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The final record corroborated the battery heat sequence through a separate source and resolved the central ambiguity.",
+      "tags": [
+        "method",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b2",
+    "b4",
+    "b7",
+    "b10"
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The access-token record looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter battery heat sequence supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "difficulty_target": 0.58,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quick-pattern thinker initially captured by the access-token record.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery heat sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The access-token record is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the access-token record looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery heat sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A careful note-taker who keeps returning to chronology.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery heat sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The access-token record is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the access-token record looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery heat sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A principled holdout who tests every claim against the burden.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "method": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery heat sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The access-token record is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the access-token record looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery heat sequence, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "An anxious juror tempted to make the accused explain the gaps.",
+        "register": "hesitant",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The battery heat sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The access-token record is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the access-token record looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery heat sequence, not the first impression."
+          ],
+          "burden_drift": [
+            "If the defence cannot explain every gap, perhaps that is enough."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "The foreperson, focused on separating proof from suspicion.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "method": 0,
+          "digital_forensics": 2,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The battery heat sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The access-token record is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the access-token record looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery heat sequence, not the first impression."
+          ],
+          "burden_correct": [
+            "An unexplained gap is not proof. The charge still has to be proved."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_correct"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A practical juror who changes position when a mechanism is demonstrated.",
+        "register": "blunt",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery heat sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The access-token record is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the access-token record looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery heat sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A mind-changer especially alert to the battery heat sequence.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "method": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery heat sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The access-token record is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the access-token record looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery heat sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A quiet sceptic who distrusts polished system outputs.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery heat sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The access-token record is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the access-token record looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery heat sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A hesitant juror pulled between human testimony and records.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "method": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery heat sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The access-token record is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the access-token record looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery heat sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A methodical juror who maps each claim to a time and source.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery heat sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The access-token record is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the access-token record looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery heat sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A blunt holdout who refuses to convert probability into certainty.",
+        "register": "blunt",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "method": 0,
+          "digital_forensics": 2,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The battery heat sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The access-token record is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the access-token record looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery heat sequence, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-1"
+  }
+}

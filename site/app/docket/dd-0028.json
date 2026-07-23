@@ -1,0 +1,1138 @@
+{
+  "id": "dd-0028",
+  "publish_date": "2026-07-29",
+  "label": "fiction",
+  "title": "The Silent Passenger",
+  "setting": "a delivery van, an automated route dashboard, and a rain-dark junction in the present day",
+  "charge": "dangerous driving causing serious injury",
+  "elements": [
+    "The accused drove a vehicle dangerously",
+    "That dangerous driving caused serious injury"
+  ],
+  "hook": "The route dashboard says the driver's phone was touched eleven times. The defence says every touch came from a mounted scanner. One silent passenger camera sees what neither side expected.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Dara Kelm, 41, delivers medical supplies on overnight routes and coaches a junior futsal team. Her partner and several drivers sit behind her.",
+    "if_guilty": "a custodial sentence, loss of the licence that supports her household, and permanent blame for a cyclist's injuries"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The van crossed a red signal and struck a cyclist because Dara Kelm was reading a route message. Her dashboard records eleven interactions, her supervisor sent an urgent reroute, and she told police the light was green. The passenger camera later shows her eyes and hand moving together toward the screen. This was not a momentary mistake; it was attention deliberately taken from the road."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The dashboard cannot distinguish a driver's touch from the mounted scanner's automatic inputs. Rain obscured the signal, the cyclist entered late, and the route system had been malfunctioning for weeks. Dara braked before impact and immediately called for help. The prosecution has converted noisy telemetry into a moral story, but dangerous driving requires proof of what she actually did."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The defence was right to challenge eleven ambiguous events. The case does not depend on eleven. It depends on one: the passenger camera shows Dara reading the reroute for four seconds as the red signal fills the windscreen. The brake begins only after impact is unavoidable. A broken route counter cannot erase a clear view of chosen inattention."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "A cabin camera compresses time and flattens gaze. The engineer accepted Dara may have checked the mirror and the mounted display sits beside it. The signal reflection is distorted by rain, while the cyclist crossed outside the marked lane. If you cannot separate an unsafe system, bad weather, and a tragic mistake from legally dangerous driving, you cannot convict."
+      }
+    }
+  },
+  "epilogue": "The cyclist spent months in rehabilitation and later returned to part-time teaching. The delivery firm moved route updates behind an automatic pull-over requirement and removed penalties for late arrival during severe weather. Dara stopped overnight driving and volunteered with a road-injury support group while the licensing process continued. Drivers used the case to negotiate independent access to cabin footage rather than summaries produced by the route vendor.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Vero Linn",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Pavel Sorn",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Dara Kelm",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Kira Moss",
+      "role_label": "collision analyst",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Bram Toller",
+      "role_label": "route supervisor",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Aya Fen",
+      "role_label": "vehicle systems engineer",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit one is the route dashboard. It lists eleven phone interactions in the fifteen minutes before impact, including one at the junction. The prosecution presents the count as repeated distraction. Because the scanner and route display share one device identifier, however, the dashboard cannot say whether a hand, barcode, or automatic prompt caused each event.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The eleven dashboard interactions appeared personal and precise, but it could not establish who acted or why.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I reconstructed speed from the van controller and road marks. The vehicle entered at forty-six, below the limit, then braked less than one second before impact. The signal had been red for five seconds. Nothing in the controller identifies where the driver was looking during the missing four seconds. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.32,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This witness explained why suspicion formed, but the account depended on an inference later tested in cross-examination.",
+      "tags": [
+        "digital_forensics",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "Eleven interactions sounds precise, but it is not eleven screen taps? Correct. It is eleven logged events from several functions. Some were barcode scans triggered in the cargo area? At least six appear to be. So the dashboard alone cannot prove distraction at the junction? Not alone. It establishes timing, not the driver's action.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "Eleven interactions sounds precise, but it is not eleven screen taps?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Correct. It is eleven logged events from several functions."
+        },
+        {
+          "speaker": "dc",
+          "text": "Some were barcode scans triggered in the cargo area?"
+        },
+        {
+          "speaker": "w1",
+          "text": "At least six appear to be."
+        },
+        {
+          "speaker": "dc",
+          "text": "So the dashboard alone cannot prove distraction at the junction?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Not alone. It establishes timing, not the driver's action."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The live answers exposed the limit hidden by the opening narrative and returned the record to what it could actually prove.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The defence tenders maintenance tickets showing the route unit froze and restarted twice that week. Other drivers reported phantom interactions and delayed messages. Those faults make the raw count unreliable, and they explain why Dara had complained that the dashboard punished workers for inputs they never made. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.62,
+      "true_weight": 0.38,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The exhibit supported the opposing story, but alternative explanations prevented it from carrying decisive weight.",
+      "tags": [
+        "digital_forensics",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I sent the reroute because a clinic requested an urgent package. The message was marked read six seconds before the crash. Drivers are trained to pull over, but the schedule software also scores late arrivals. Dara had already lost two preferred shifts after a delay, so the system gave her a reason to read while moving.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The testimony added context and motive, not a reliable identification of the criminal act.",
+      "tags": [
+        "timeline",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit six is the passenger camera, recovered after its memory card was found behind a loose panel. It shows Dara's face turn toward the mounted display for four continuous seconds. Her right thumb scrolls once. During the same sequence, the red signal grows brighter through the windscreen and the cyclist enters view.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.82,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The four-second passenger-camera sequence independently fixed the mechanism and sequence that the louder clue obscured.",
+      "tags": [
+        "timeline",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "The display sits close to the left mirror, does it not? Yes, close enough that a brief glance can look similar. Your scoring system penalised drivers who stopped for reroutes? It penalised delay, whatever caused it. So company design encouraged exactly this risk? It created pressure, but training still required drivers to stop.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "The display sits close to the left mirror, does it not?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Yes, close enough that a brief glance can look similar."
+        },
+        {
+          "speaker": "dc",
+          "text": "Your scoring system penalised drivers who stopped for reroutes?"
+        },
+        {
+          "speaker": "w2",
+          "text": "It penalised delay, whatever caused it."
+        },
+        {
+          "speaker": "dc",
+          "text": "So company design encouraged exactly this risk?"
+        },
+        {
+          "speaker": "w2",
+          "text": "It created pressure, but training still required drivers to stop."
+        }
+      ],
+      "surface_persuasion": 0.62,
+      "true_weight": 0.72,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Cross-examination forced the witness to separate institutional assumptions from the fact that ultimately controlled the case.",
+      "tags": [
+        "timeline",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I tested the camera against the van geometry. Mirror checks produce a short eye movement left; this recording shows a sustained downward fixation and a thumb movement on the display. Rain reduces exterior detail but does not alter cabin timing. The clip's frame counter matches the vehicle controller within two hundredths of a second.",
+      "surface_persuasion": 0.56,
+      "true_weight": 0.48,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The third witness supplied human and technical context consistent with the true account, while stopping short of deciding the charge alone.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "Could compression turn a half-second glance into four seconds? No. It may blur frames, not invent elapsed time. Could the thumb movement be steering correction? The hand leaves the wheel and contacts the display. Does the route fault change that image? No. The fault explains other events, not the recorded gesture.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "Could compression turn a half-second glance into four seconds?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No. It may blur frames, not invent elapsed time."
+        },
+        {
+          "speaker": "pc",
+          "text": "Could the thumb movement be steering correction?"
+        },
+        {
+          "speaker": "w3",
+          "text": "The hand leaves the wheel and contacts the display."
+        },
+        {
+          "speaker": "pc",
+          "text": "Does the route fault change that image?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No. The fault explains other events, not the recorded gesture."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The challenge revealed possible bias but did not displace the objective record supporting the witness's central point.",
+      "tags": [
+        "credibility",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance. The prosecution must prove each element beyond reasonable doubt using evidence admitted here. Assess system outputs like any other exhibit, and do not research this case, its people, or its technology online.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction supplies the discipline the room needs: unanswered questions cannot reverse the burden of proof.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit nine synchronises the passenger clip, signal controller, and brake data. Dara begins reading at 22:14:08, the light turns red one second later, and the cyclist enters at 22:14:11. Her eyes return forward at 22:14:12; braking begins immediately, but collision is then unavoidable. The clocks agree independently. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.72,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The final record corroborated the four-second passenger-camera sequence through a separate source and resolved the central ambiguity.",
+      "tags": [
+        "timeline",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b2",
+    "b4",
+    "b7",
+    "b10"
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The eleven dashboard interactions looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter four-second passenger-camera sequence supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "difficulty_target": 0.62,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quick-pattern thinker initially captured by the eleven dashboard interactions.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A careful note-taker who keeps returning to chronology.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A principled holdout who tests every claim against the burden.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "An anxious juror tempted to make the accused explain the gaps.",
+        "register": "hesitant",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "digital_forensics": 2,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+          ],
+          "burden_drift": [
+            "If the defence cannot explain every gap, perhaps that is enough."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "The foreperson, focused on separating proof from suspicion.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "digital_forensics": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+          ],
+          "burden_correct": [
+            "An unexplained gap is not proof. The charge still has to be proved."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_correct"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A practical juror who changes position when a mechanism is demonstrated.",
+        "register": "blunt",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A mind-changer especially alert to the four-second passenger-camera sequence.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A quiet sceptic who distrusts polished system outputs.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A hesitant juror pulled between human testimony and records.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A methodical juror who maps each claim to a time and source.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A blunt holdout who refuses to convert probability into certainty.",
+        "register": "blunt",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "digital_forensics": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The four-second passenger-camera sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The eleven dashboard interactions is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the eleven dashboard interactions looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the four-second passenger-camera sequence, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-1"
+  }
+}
