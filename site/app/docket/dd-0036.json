@@ -29,11 +29,11 @@
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The attacker needed Seli's hardware key, her private mailbox recovery, the supplier list she alone exported, and the cash-out code opened on her handset. After the transfer, the hidden rule deleted warnings and her workshop laptop searched how long payment logs remain. Each record has limits alone; together they map preparation, execution, concealment, and benefit to one person."
+        "text": "The attacker needed Seli's hardware key, her private mailbox recovery, the supplier list she alone exported, and the cash-out code opened on her handset. After the transfer, the hidden rule deleted warnings while she stepped into the workshop's only quiet network room with that handset. Each record has limits alone; together they map preparation, execution, concealment, and benefit to one person."
       },
       "defence": {
         "speaker": "dc",
-        "text": "A shared office, a public workshop network, and reusable administrator templates created countless opportunities to imitate Seli. The cash account used a false name, no camera clearly shows her face, and the laptop search could relate to routine retention work. The prosecution's chain remains a chain of devices. It must prove Seli's dishonest intention, not merely privileged access."
+        "text": "A shared office, a public workshop network, and reusable administrator templates created countless opportunities to imitate Seli. The cash account used a false name, no camera clearly shows her face, and the network records cannot identify who operated the laptop or handset. Entering the storage room proves only that Seli carried her phone. The prosecution must prove her dishonest intention, not merely privileged access."
       }
     }
   },
@@ -303,21 +303,6 @@
       ]
     },
     {
-      "id": "b10",
-      "kind": "direction",
-      "speaker": "judge",
-      "text": "The judge directs you that privileged access alone does not prove dishonest use, and Seli need not identify another operator. The prosecution must prove alteration or dishonest use and the required intent beyond reasonable doubt. Assess whether independent records establish human control, preparation, and benefit, while allowing for shared equipment and reasonable alternative access.",
-      "surface_persuasion": 0.45,
-      "true_weight": 0.5,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "The limits surrounding the judge directs you that privileged access alone does not prove dishonest use, and seli need not identify another operator kept it from deciding the charge alone.",
-      "tags": [
-        "burden",
-        "procedure"
-      ]
-    },
-    {
       "id": "b11",
       "kind": "exhibit",
       "speaker": "pc",
@@ -331,6 +316,21 @@
         "timeline",
         "timeline",
         "identity"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that privileged access alone does not prove dishonest use, and Seli need not identify another operator. The prosecution must prove alteration or dishonest use and the required intent beyond reasonable doubt. Assess whether independent records establish human control, preparation, and benefit, while allowing for shared equipment and reasonable alternative access.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The limits surrounding the judge directs you that privileged access alone does not prove dishonest use, and seli need not identify another operator kept it from deciding the charge alone.",
+      "tags": [
+        "burden",
+        "procedure"
       ]
     }
   ],

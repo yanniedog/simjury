@@ -1,6 +1,6 @@
 name: site
 
-# simjury.com (Cloudflare Worker) CI/CD.
+# simjury.com (Cloudflare Static Assets) CI/CD.
 #   - On PRs touching site/**: build + F-4 spoiler scan + wrangler dry-run (no deploy).
 #   - On push to main (i.e. AFTER a PR merges through the bot gates): deploy.
 # Deploys never run from a PR — only from a merged change on main.
@@ -37,9 +37,9 @@ jobs:
       - name: Install
         working-directory: site
         run: npm ci
-      - name: Test Worker (routing + narration)
+      - name: Enforce assets-only Cloudflare guardrails
         working-directory: site
-        run: npm run test:worker
+        run: npm run guard:cloudflare
       - name: Validate (case sync + F-4 spoiler scan + wrangler dry-run)
         working-directory: site
         run: npm run check
@@ -57,7 +57,7 @@ jobs:
       - name: Install
         working-directory: site
         run: npm ci
-      - name: Deploy to Cloudflare Workers
+      - name: Deploy static assets to Cloudflare
         working-directory: site
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

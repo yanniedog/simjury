@@ -303,21 +303,6 @@
       ]
     },
     {
-      "id": "b10",
-      "kind": "direction",
-      "speaker": "judge",
-      "text": "The judge directs you that Leni need not prove the software acted automatically or explain why review missed the gap. The prosecution must establish knowing fabrication and intent to mislead beyond reasonable doubt. Distinguish a processing event from conscious adoption of an altered record, and do not investigate the inquiry, software, employer, or witnesses beyond the exhibits admitted here.",
-      "surface_persuasion": 0.45,
-      "true_weight": 0.5,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance helped test a witness account while leaving the central issue open.",
-      "tags": [
-        "burden",
-        "procedure"
-      ]
-    },
-    {
       "id": "b11",
       "kind": "exhibit",
       "speaker": "dc",
@@ -332,6 +317,21 @@
         "timeline",
         "identity"
       ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that Leni need not prove the software acted automatically or explain why review missed the gap. The prosecution must establish knowing fabrication and intent to mislead beyond reasonable doubt. Distinguish a processing event from conscious adoption of an altered record, and do not investigate the inquiry, software, employer, or witnesses beyond the exhibits admitted here.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance helped test a witness account while leaving the central issue open.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
     }
   ],
   "checkins": [
@@ -341,7 +341,7 @@
     "b10"
   ],
   "verdict_truth": "Not Guilty",
-  "twist": "The edit history bearing Leni's initials looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter untouched recorder card and automatic-job log supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "twist": "Leni's initials were real, but the deletion was not hers: the software stamped her active profile onto an automatic silence-removal job. Reversed microphone phase had made a spoken answer look like silence, and the interface then closed the gap. The untouched card she locked before processing preserved the very minute an intentional fabricator would have needed to destroy.",
   "difficulty_target": 0.72,
   "jury": {
     "jurors": [

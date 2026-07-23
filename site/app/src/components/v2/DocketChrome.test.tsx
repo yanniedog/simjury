@@ -8,7 +8,13 @@ describe('DocketShell', () => {
   })
 
   it('keeps the case skip link and a labelled narration control', () => {
-    vi.stubGlobal('window', { speechSynthesis: {} })
+    vi.stubGlobal('window', {
+      speechSynthesis: {
+        getVoices: () => [
+          { name: 'Desktop English', lang: 'en-US', localService: true },
+        ],
+      },
+    })
     const markup = renderToStaticMarkup(
       <DocketShell
         phase="beats"
@@ -29,6 +35,6 @@ describe('DocketShell', () => {
     expect(markup).toContain('Case briefing')
     expect(markup).toContain('aria-current="step"')
     expect(markup).toContain('Juror')
-    expect(markup).toContain('Narration streams approved case lines via Cloudflare Workers AI')
+    expect(markup).toContain('Your progress and narration stay on this device')
   })
 })

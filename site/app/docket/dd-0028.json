@@ -33,7 +33,7 @@
       },
       "defence": {
         "speaker": "dc",
-        "text": "A cabin camera compresses time and flattens gaze. The engineer accepted Dara may have checked the mirror and the mounted display sits beside it. The signal reflection is distorted by rain, while the cyclist crossed outside the marked lane. If you cannot separate an unsafe system, bad weather, and a tragic mistake from legally dangerous driving, you cannot convict."
+        "text": "A cabin camera compresses time and flattens gaze. The engineer accepted Dara may have checked the mirror and the mounted display sits beside it. Rain distorted the view, while the company's scoring system punished delay even when drivers should pull over. If you cannot separate an unsafe system, bad weather, and a tragic mistake from legally dangerous driving, you cannot convict."
       }
     }
   },
@@ -303,21 +303,6 @@
       ]
     },
     {
-      "id": "b10",
-      "kind": "direction",
-      "speaker": "judge",
-      "text": "The judge directs you that Dara need not prove a dashboard fault caused the collision. The prosecution must establish legally dangerous driving and causation beyond reasonable doubt. Distinguish unreliable event counts from the separately recovered images, assess weather and workplace pressure only on admitted evidence, and do not research the route, vehicle, or people involved.",
-      "surface_persuasion": 0.45,
-      "true_weight": 0.5,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "The limits surrounding the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance kept it from deciding the charge alone.",
-      "tags": [
-        "burden",
-        "procedure"
-      ]
-    },
-    {
       "id": "b11",
       "kind": "exhibit",
       "speaker": "pc",
@@ -332,6 +317,21 @@
         "timeline",
         "identity"
       ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that Dara need not prove a dashboard fault caused the collision. The prosecution must establish legally dangerous driving and causation beyond reasonable doubt. Distinguish unreliable event counts from the separately recovered images, assess weather and workplace pressure only on admitted evidence, and do not research the route, vehicle, or people involved.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The limits surrounding the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance kept it from deciding the charge alone.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
     }
   ],
   "checkins": [
@@ -341,7 +341,7 @@
     "b10"
   ],
   "verdict_truth": "Guilty",
-  "twist": "The eleven dashboard interactions looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter four-second passenger-camera sequence supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "twist": "The dashboard's eleven interactions were mostly scanner noise, and they nearly let Dara dismiss the whole case as bad telemetry. The recovered passenger camera was different: four continuous seconds looking down, one thumb scroll, then braking only when the cyclist was already in front of the van. Three independent clocks turned a noisy accusation into one clear, chosen lapse.",
   "difficulty_target": 0.62,
   "jury": {
     "jurors": [
