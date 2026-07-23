@@ -246,7 +246,7 @@
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.25,
-      "direction": "guilt",
+      "direction": "innocence",
       "reveal_stamp": "minor",
       "reveal_note": "Cross-examination limits the threat to evidence of anger and contrasts it with Rina’s history of allergy care.",
       "tags": [
@@ -331,9 +331,9 @@
           "identity": 1
         },
         "lines": {
-          "agree": [
-          "Juror 2: Rina’s message was vicious, and she had access. That makes her suspicious; it does not put her hand on the tray.",
-          "Juror 2: Her signature covered six lines. Stop describing it as if she personally signed Orin’s label."
+        "agree": [
+          "Juror 2: Rina’s shift signature and access put her in control of the batch in which Orin’s meal was packed.",
+          "Juror 2: The camera confirms Rina moved the nut paste beside the line, and its blind corner does not exclude deliberate relabelling."
           ],
           "pushback": [
           "Juror 2: If this was targeted, explain the other three wrong meals. They do not disappear because the message sounds bad.",
@@ -670,9 +670,9 @@
           "method": 2
         },
         "lines": {
-          "agree": [
-          "Juror 7: We agree on the injury, the threat and the printer failure. The disputed questions are deliberate action and intent.",
-          "Juror 7: Let us test the prosecution theory against all four meals, not discuss Orin’s tray as though it was the only error."
+        "agree": [
+          "Juror 7: Orin’s account fixes Rina’s threat the night before and his serious reaction after relying on the safe label.",
+          "Juror 7: Orin had no reason to invent the timing of Rina’s message or the meal, and that sequence supports the prosecution’s motive case."
           ],
           "pushback": [
           "Juror 7: Motive and opportunity are supporting facts. What evidence proves the act itself?",
