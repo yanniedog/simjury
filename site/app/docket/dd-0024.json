@@ -1,0 +1,1100 @@
+{
+  "id": "dd-0024",
+  "publish_date": "2026-07-25",
+  "label": "fiction",
+  "title": "The Helpful Transfer",
+  "setting": "A vulnerable-adult financial abuse trial in 2026, where repeated transfers reflect disputed instructions rather than a hidden theft.",
+  "charge": "Dishonestly obtaining money from a vulnerable adult by abusing a position of trust",
+  "elements": [
+    "The accused performed or participated in the alleged act.",
+    "The act was deliberate or dishonest rather than accidental.",
+    "The prosecution has proved every required fact beyond reasonable doubt."
+  ],
+  "hook": "Every Thursday, money moves from an older man’s account to the neighbour who brings his groceries. The question is whether he asked.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Amra Niven delivers groceries, reads mail aloud, and has supported an isolated neighbour through two winters.",
+    "if_guilty": "A conviction means prison, separation from her own children, and public condemnation of care that many witnesses believed was genuine."
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The prosecution says the accused controlled banking access, increased payments, and isolated a vulnerable man from relatives who challenged her. The apparent centre of the case is regular transfers to the accused, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The defence says the payments reimbursed groceries and care chosen by a competent man who recorded instructions because his hands could not manage the banking screen. Suspicion gathered around a person before investigators tested the limits of regular transfers to the accused; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The prosecution began with the regular transfers and Amra’s control of the banking tablet, but it does not ask you to convict on that clue alone. Payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The defence accepts that the regular transfers and Amra’s control of the banking tablet created suspicion, but suspicion is not the test. Contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. That evidence goes to the heart of the case because a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
+      }
+    }
+  },
+  "epilogue": "Amra resumed visiting only with a community worker present. The account holder moved to supported housing by his own choice, and his family adopted a shared expense ledger instead of excluding the neighbour he still regarded as a friend. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Aven",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Mara Venn",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Oren Pike",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Vela Norr",
+      "role_label": "adult child of the account holder",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Senn Arlo",
+      "role_label": "bank safeguarding analyst",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Kari Mett",
+      "role_label": "community capacity assessor",
+      "side": "defence"
+    },
+    {
+      "id": "w4",
+      "name": "Amra Niven",
+      "role_label": "the accused — neighbour and informal helper",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "w1",
+      "text": "I found weekly transfers to Amra after my father missed a family birthday. She had his banking tablet and answered the door whenever we tried to discuss money. At this first point, the exhibit’s stated limit is that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation, so it must be weighed with the rest of the sequence.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.15,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The first impression came from the regular transfers and Amra’s control of the banking tablet; its value depended on whether the later evidence could overcome this limit: a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "The payments rose from small grocery amounts to several hundred. Our alert system flagged the pattern because the recipient was unrelated and frequently logged in from the account holder’s home. This was the second fact I recorded in the initial The Helpful Transfer inquiry, before investigators settled on Amra Niven. The timing was noted before the The Helpful Transfer inquiry settled on Amra Niven as its suspect.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "This witness fixed the practical setting before suspicion centred on Amra Niven, giving the room context for the records that followed.",
+      "tags": [
+        "credibility",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "You did not hear your father authorise a transfer? No. I saw statements and believed the pattern spoke for itself. You knew he made voice notes for appointments? I knew he recorded reminders, not that he recorded payments. The family saw a troubling pattern, but they did not hear the instructions later recovered from the tablet.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "You did not hear your father authorise a transfer?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No. I saw statements and believed the pattern spoke for itself."
+        },
+        {
+          "speaker": "dc",
+          "text": "You knew he made voice notes for appointments?"
+        },
+        {
+          "speaker": "w1",
+          "text": "I knew he recorded reminders, not that he recorded payments. The family saw a troubling pattern, but they did not hear the instructions later recovered from the tablet."
+        }
+      ],
+      "surface_persuasion": 0.5,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The challenged record mattered because it exposed the gap between appearance and proof: a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation.",
+      "tags": [
+        "digital_forensics",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "w3",
+      "text": "I assessed him twice. He understood his income, the transfers, and the difference between paying expenses and giving a gift, although fatigue made screens difficult. At this fourth point, the exhibit’s stated limit is that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation, so it must be weighed with the rest of the sequence.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.35,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Cross-examination narrowed the early clue without erasing it, forcing the room to decide how much independent support remained.",
+      "tags": [
+        "method",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "An old tablet contained voice notes made before each transfer. He states the amount, purpose, and date, then asks Amra to enter it while he listens. At this fifth point, the exhibit’s stated limit is that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation, so it must be weighed with the rest of the sequence.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.85,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "This was the decisive innocence evidence: An old tablet contained voice notes made before each transfer. He states the amount, purpose, and date, then asks Amra to enter it while he listens. It turned the alternative explanation into a checkable account the prosecution could not exclude beyond reasonable doubt.",
+      "tags": [
+        "timeline",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "Two notes record him correcting Amra downward. In one, he refuses an extra payment and she accepts the refusal without argument or another transfer. This was the sixth fact I recorded in the initial The Helpful Transfer inquiry, before investigators settled on Amra Niven. In the The Helpful Transfer inquiry, I separated what I personally observed from what investigators later asked me to infer.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.75,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The competing account was concrete rather than speculative: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request.",
+      "tags": [
+        "method",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "I kept the banking tablet because he dropped it twice. I entered only what he told me, kept receipts, and stopped family visits only when he asked for quiet after arguments. This was the seventh fact I recorded in the initial The Helpful Transfer inquiry, before investigators settled on Amra Niven. That The Helpful Transfer detail can be checked against the contemporaneous record rather than accepted as a later reconstruction.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This testimony tested whether the system record described a person’s conduct or only an event produced around them.",
+      "tags": [
+        "credibility",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "A safeguarding alert proves risk, not theft? Correct. It identifies patterns for investigation. The system did not contain the voice notes? No. They were stored locally on another tablet. The bank alert was a proper warning signal; it did not contain the voice notes that explained the payments.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "A safeguarding alert proves risk, not theft?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Correct. It identifies patterns for investigation."
+        },
+        {
+          "speaker": "dc",
+          "text": "The system did not contain the voice notes?"
+        },
+        {
+          "speaker": "w2",
+          "text": "No. They were stored locally on another tablet. The bank alert was a proper warning signal; it did not contain the voice notes that explained the payments."
+        }
+      ],
+      "surface_persuasion": 0.5,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The second cross put the decisive inference under pressure and showed exactly which part of the account could still be disputed.",
+      "tags": [
+        "motive",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "cross",
+      "text": "You sometimes asked for extra money? Once, for fuel after repeated hospital trips. He refused and no extra transfer followed? That is correct; I accepted his answer. The refused request matters because Amra accepted the answer and no unauthorised extra transfer followed.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "You sometimes asked for extra money?"
+        },
+        {
+          "speaker": "w4",
+          "text": "Once, for fuel after repeated hospital trips."
+        },
+        {
+          "speaker": "pc",
+          "text": "He refused and no extra transfer followed?"
+        },
+        {
+          "speaker": "w4",
+          "text": "That is correct; I accepted his answer. The refused request matters because Amra accepted the answer and no unauthorised extra transfer followed."
+        }
+      ],
+      "surface_persuasion": 0.5,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The final witness supplied a separate check on the timeline, reducing the risk that one attractive clue would decide the case alone.",
+      "tags": [
+        "procedure",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person.",
+      "surface_persuasion": 0.41000000000000003,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction kept the burden where it belonged: a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation, and no gap in the defence could substitute for proof of every element.",
+      "tags": [
+        "burden",
+        "digital_forensics"
+      ]
+    }
+  ],
+  "checkins": [
+    "b3",
+    "b5",
+    "b8",
+    "b9"
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The transfer pattern looked exploitative until voice notes were recovered from an old tablet. Each payment matched a dated instruction from the account holder, including corrections where he reduced amounts and refused Amra’s request for extra money.",
+  "difficulty_target": 0.42,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Helpful Transfer, this juror keeps returning to the regular transfers and Amra’s control of the banking tablet.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 80
+        },
+        "weights": {
+          "digital_forensics": 2,
+          "identity": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 2: payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder. That is stronger than suspicion, but I am checking it against the regular transfers and Amra’s control of the banking tablet.",
+            "Juror 2: payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder. That detail matters to my vote because it comes from outside either side’s story."
+          ],
+          "pushback": [
+            "Juror 2: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. I need the witness account and the recorded evidence to agree before I rely on either.",
+            "Juror 2: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. That is one fact; the room still has to test the act was deliberate or dishonest rather than accidental."
+          ],
+          "concede": [
+            "Juror 2: I accept now that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation. That leaves me asking who had the opportunity the records actually show."
+          ],
+          "final": [
+            "Juror 2: My verdict in The Helpful Transfer turns on whether the jury can reconcile payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder with this competing account: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. The sequence matters more to me than how suspicious one moment sounds."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Helpful Transfer, this juror keeps returning to the regular transfers and Amra’s control of the banking tablet.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 60
+        },
+        "weights": {
+          "digital_forensics": 2,
+          "timeline": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 3: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. I am asking whether the exhibit proves the act or merely resembles it.",
+            "Juror 3: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. I am weighing that beside the regular transfers and Amra’s control of the banking tablet, not on its own."
+          ],
+          "pushback": [
+            "Juror 3: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. I am not filling the missing step with instinct.",
+            "Juror 3: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. That leaves me asking who had the opportunity the records actually show."
+          ],
+          "concede": [
+            "Juror 3: I accept now that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation. I would rather name the gap than pretend it is not there."
+          ],
+          "final": [
+            "Juror 3: My verdict in The Helpful Transfer turns on whether the jury can reconcile payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder with this competing account: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. That answer makes sense only if the rest of the chronology holds."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Helpful Transfer, this juror keeps returning to the regular transfers and Amra’s control of the banking tablet.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 80
+        },
+        "weights": {
+          "burden": 2,
+          "digital_forensics": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 4: payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder. That point earns weight because it can be checked independently."
+          ],
+          "pushback": [
+            "Juror 4: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. I am asking whether the exhibit proves the act or merely resembles it.",
+            "Juror 4: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. I am weighing that beside the regular transfers and Amra’s control of the banking tablet, not on its own."
+          ],
+          "concede": [
+            "Juror 4: I accept now that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation. I am changing my view because the explanation fits more of the evidence."
+          ],
+          "holdout": [
+            "Juror 4: I am holding my position until the room deals directly with payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder. If we remove the dramatic label, that is the fact left underneath.",
+            "Juror 4: I am holding my position until the room deals directly with payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder. I hear the point; now I want the source of it tested."
+          ],
+          "final": [
+            "Juror 4: My verdict in The Helpful Transfer turns on whether the jury can reconcile payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder with this competing account: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. That point earns weight because it can be checked independently."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Helpful Transfer, this juror keeps returning to the regular transfers and Amra’s control of the banking tablet.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 55
+        },
+        "weights": {
+          "burden": 2,
+          "method": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 5: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. I need the witness account and the recorded evidence to agree before I rely on either."
+          ],
+          "pushback": [
+            "Juror 5: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. That is where the competing account becomes concrete for me.",
+            "Juror 5: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. The evidence about the regular transfers and Amra’s control of the banking tablet is what keeps me from treating that as conclusive."
+          ],
+          "concede": [
+            "Juror 5: I accept now that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation. The sequence matters more to me than how suspicious one moment sounds."
+          ],
+          "burden_correct": [
+            "Juror 5: In The Helpful Transfer, unanswered questions do not move the burden; the prosecution must still prove every element. I am treating the timing as evidence, not as a verdict.",
+            "Juror 5: In The Helpful Transfer, unanswered questions do not move the burden; the prosecution must still prove every element. That moves one piece, not the burden the Crown carries."
+          ],
+          "final": [
+            "Juror 5: My verdict in The Helpful Transfer turns on whether the jury can reconcile payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder with this competing account: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. I do not think confidence can repair a missing link."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Helpful Transfer, this juror keeps returning to the regular transfers and Amra’s control of the banking tablet.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": {
+          "position": "G",
+          "confidence": 50
+        },
+        "weights": {
+          "procedure": 1,
+          "digital_forensics": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 6: payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder. I am not counting the same assumption twice as two pieces of evidence.",
+            "Juror 6: payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder. I want the actual record compared with the story built around it."
+          ],
+          "pushback": [
+            "Juror 6: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. I do not think confidence can repair a missing link.",
+            "Juror 6: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. I am separating what the record proves from what we are inferring."
+          ],
+          "concede": [
+            "Juror 6: I accept now that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation. That detail matters to my vote because it comes from outside either side’s story."
+          ],
+          "final": [
+            "Juror 6: My verdict in The Helpful Transfer turns on whether the jury can reconcile payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder with this competing account: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. I am not counting the same assumption twice as two pieces of evidence."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Helpful Transfer, this juror keeps returning to the regular transfers and Amra’s control of the banking tablet.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 45
+        },
+        "weights": {
+          "credibility": 1,
+          "method": 2
+        },
+        "lines": {
+          "agree": [
+            "Juror 7: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. I am holding it against the judge’s direction on the prosecution has proved every required fact beyond reasonable doubt.",
+            "Juror 7: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. I can give that weight only after we account for the regular transfers and Amra’s control of the banking tablet."
+          ],
+          "pushback": [
+            "Juror 7: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. That is one fact; the room still has to test the prosecution has proved every required fact beyond reasonable doubt.",
+            "Juror 7: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. I need the witness account and the recorded evidence to agree before I rely on either."
+          ],
+          "concede": [
+            "Juror 7: I accept now that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation. The burden does not shift just because the accused’s explanation is untidy.",
+            "Juror 7: I accept now that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation. That answer makes sense only if the rest of the chronology holds."
+          ],
+          "final": [
+            "Juror 7: My verdict in The Helpful Transfer turns on whether the jury can reconcile payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder with this competing account: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. I am asking whether the exhibit proves the act or merely resembles it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Helpful Transfer, this juror keeps returning to the regular transfers and Amra’s control of the banking tablet.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "G",
+          "confidence": 70
+        },
+        "weights": {
+          "timeline": 2,
+          "method": 2
+        },
+        "lines": {
+          "agree": [
+            "Juror 8: payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder. The alternative has to be reasonably possible, not perfect.",
+            "Juror 8: payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder. It changes how I read the regular transfers and Amra’s control of the banking tablet, but it does not end the inquiry."
+          ],
+          "pushback": [
+            "Juror 8: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. The evidence about the regular transfers and Amra’s control of the banking tablet is what keeps me from treating that as conclusive.",
+            "Juror 8: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. That is where the competing account becomes concrete for me."
+          ],
+          "concede": [
+            "Juror 8: I accept now that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation. That answer makes sense only if the rest of the chronology holds."
+          ],
+          "final": [
+            "Juror 8: My verdict in The Helpful Transfer turns on whether the jury can reconcile payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder with this competing account: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. For me, the unanswered part is still the accused performed or participated in the alleged act."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "unreliable",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": -1,
+              "confidence": -5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 15,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "concede"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Helpful Transfer, this juror keeps returning to the regular transfers and Amra’s control of the banking tablet.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 60
+        },
+        "weights": {
+          "procedure": 2
+        },
+        "lines": {
+          "agree": [
+            "Juror 9: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. That leaves me asking who had the opportunity the records actually show.",
+            "Juror 9: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. I am not filling the missing step with instinct."
+          ],
+          "pushback": [
+            "Juror 9: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. The alternative has to be reasonably possible, not perfect.",
+            "Juror 9: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. It changes how I read the regular transfers and Amra’s control of the banking tablet, but it does not end the inquiry."
+          ],
+          "concede": [
+            "Juror 9: I accept now that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation. I am not counting the same assumption twice as two pieces of evidence."
+          ],
+          "final": [
+            "Juror 9: My verdict in The Helpful Transfer turns on whether the jury can reconcile payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder with this competing account: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. That detail matters to my vote because it comes from outside either side’s story."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Helpful Transfer, this juror keeps returning to the regular transfers and Amra’s control of the banking tablet.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 60
+        },
+        "weights": {
+          "method": 1,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 10: payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder. That is stronger than suspicion, but I am checking it against the regular transfers and Amra’s control of the banking tablet."
+          ],
+          "pushback": [
+            "Juror 10: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. That moves one piece, not the burden the Crown carries."
+          ],
+          "burden_drift": [
+            "Juror 10: In The Helpful Transfer, there are unanswered questions around the regular transfers and Amra’s control of the banking tablet, and I keep wanting Amra Niven to explain them. I am not counting the same assumption twice as two pieces of evidence.",
+            "Juror 10: In The Helpful Transfer, there are unanswered questions around the regular transfers and Amra’s control of the banking tablet, and I keep wanting Amra Niven to explain them. I want the actual record compared with the story built around it."
+          ],
+          "concede": [
+            "Juror 10: I accept now that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation. That gives me a reason, but not yet a complete chain."
+          ],
+          "burden_correct": [
+            "Juror 10: In The Helpful Transfer, unanswered questions do not move the burden; the prosecution must still prove every element. I am changing my view because the explanation fits more of the evidence."
+          ],
+          "final": [
+            "Juror 10: My verdict in The Helpful Transfer turns on whether the jury can reconcile payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder with this competing account: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. That is one fact; the room still has to test the prosecution has proved every required fact beyond reasonable doubt."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Helpful Transfer, this juror keeps returning to the regular transfers and Amra’s control of the banking tablet.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "U",
+          "confidence": 40
+        },
+        "weights": {
+          "digital_forensics": 1,
+          "timeline": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 11: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. I can give that weight only after we account for the regular transfers and Amra’s control of the banking tablet.",
+            "Juror 11: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. I am holding it against the judge’s direction on the act was deliberate or dishonest rather than accidental."
+          ],
+          "pushback": [
+            "Juror 11: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. I am asking whether the exhibit proves the act or merely resembles it.",
+            "Juror 11: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. I am weighing that beside the regular transfers and Amra’s control of the banking tablet, not on its own."
+          ],
+          "concede": [
+            "Juror 11: I accept now that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation. The room should decide whether that contradiction is material or merely awkward."
+          ],
+          "final": [
+            "Juror 11: My verdict in The Helpful Transfer turns on whether the jury can reconcile payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder with this competing account: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. The burden does not shift just because the accused’s explanation is untidy."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Helpful Transfer, this juror keeps returning to the regular transfers and Amra’s control of the banking tablet.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 60
+        },
+        "weights": {
+          "method": 1,
+          "credibility": 1,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 12: payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder. It changes how I read the regular transfers and Amra’s control of the banking tablet, but it does not end the inquiry.",
+            "Juror 12: payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder. The alternative has to be reasonably possible, not perfect."
+          ],
+          "pushback": [
+            "Juror 12: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. The question is not which story is neater; it is which elements are proved.",
+            "Juror 12: I am not ready to let the regular transfers and Amra’s control of the banking tablet decide The Helpful Transfer. That gives me a reason, but not yet a complete chain."
+          ],
+          "concede": [
+            "Juror 12: I accept now that a safeguarding alert identifies risk for investigation but does not prove dishonest appropriation. I am weighing that beside the regular transfers and Amra’s control of the banking tablet, not on its own."
+          ],
+          "final": [
+            "Juror 12: My verdict in The Helpful Transfer turns on whether the jury can reconcile payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder with this competing account: contemporaneous voice notes record the account holder choosing each amount, correcting Amra downward, and refusing an extra request. I am holding it against the judge’s direction on the act was deliberate or dishonest rather than accidental."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "openai-codex",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "Codex Content Curator; independent QA rewrite and dynamics verification",
+    "batch_pr": "codex/docket-runway-a"
+  }
+}

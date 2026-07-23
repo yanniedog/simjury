@@ -1,0 +1,1149 @@
+{
+  "id": "dd-0030",
+  "publish_date": "2026-07-31",
+  "label": "fiction",
+  "title": "The Night Shift Key",
+  "setting": "a cooperative robotics laboratory, a biometric access vestibule, and a missing navigation prototype in the present day",
+  "charge": "burglary and theft of a commercial prototype",
+  "elements": [
+    "The laboratory was entered without authority",
+    "The accused entered intending to steal and took the prototype"
+  ],
+  "hook": "A palm scan opens the laboratory at 3:04 a.m. The accused insists the scan was cloned, and the perfect access trail almost proves it. A stripe of assembly dust is less perfect.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Kes Brann, 33, is a contract fabricator raising a six-year-old and hoping to convert a temporary laboratory placement into permanent work.",
+    "if_guilty": "imprisonment, separation from a young child, and exclusion from the only technical trade in which Kes has qualifications"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Kes Brann's palm template opened the laboratory after midnight, the disabled camera followed, and a navigation prototype vanished. Kes had asked about its resale value and owed a private lender. The defence calls the access trail too perfect, but the prototype's assembly dust was later found inside Kes's locked tool chest. That is possession tied to entry."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Biometric templates are files, not hands. The laboratory exported Kes's template during a vendor test, and an administrator could replay it. The camera failure began remotely, while Kes's phone remained at home. Trace dust moves through a workshop where every contractor shares benches and tools. The prosecution has a compromised system and a contaminated chest, not a burglar."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The replay possibility explains how entry could be faked; it does not explain the dust sealed beneath Kes's private chest liner, the marketplace draft describing the prototype, or the deleted message arranging collection before dawn. Those facts come from separate sources. The access record is not the case's foundation. It is the doorway into a plan Kes had already made."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The laboratory failed to preserve administrator logs and let prototypes shed distinctive dust across communal benches. The marketplace draft never named the device, and the message could concern ordinary tools. A copied palm template gives someone else both access and a way to frame Kes. Unless the prosecution excludes that live possibility beyond reasonable doubt, suspicion remains only suspicion."
+      }
+    }
+  },
+  "epilogue": "The cooperative replaced replayable templates with hardware-bound credentials and created a sign-out rule for contaminated tools. Kes's child stayed with relatives during the proceedings, and the laboratory funded counselling without waiting for a verdict. The stolen prototype was recovered unopened from a storage locker. Engineers rebuilt the delayed navigation trial using an earlier design, while contractors negotiated private lockers and independent audit access.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Tarin Oss",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Lena Varr",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Kes Brann",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Miro Senk",
+      "role_label": "laboratory security lead",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Pella Gorn",
+      "role_label": "prototype engineer",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Dr Orin Fale",
+      "role_label": "biometric systems examiner",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit one is the access record. A palm template assigned only to Kes Brann passed a live-presence check at 3:04 a.m.; the door opened once, and no other credential entered. The precision seems conclusive, yet the laboratory had exported that template during testing and kept it on an administrator server.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "the access record was persuasive on the surface but weak on the fact it claimed to prove.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I trusted the system because it required pulse variation and pressure, not just a picture. After the theft, I learned a vendor test mode could replay stored responses if an administrator token was active. We never found the token used that night because administrator logs rolled over before police collected them.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.32,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The wider sequence qualified what trusted the system because it required pulse variation and pressure, not just a picture could fairly support.",
+      "tags": [
+        "digital_forensics",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "So a stored template could pass the so-called live check? In vendor test mode, yes. And the administrator audit was lost on your watch? Yes. We preserved door events but not the server log. Without the server audit, you cannot identify who invoked test mode that night? No. The surviving door record carries a name, not the administrator action behind it.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "So a stored template could pass the so-called live check?"
+        },
+        {
+          "speaker": "w1",
+          "text": "In vendor test mode, yes."
+        },
+        {
+          "speaker": "dc",
+          "text": "And the administrator audit was lost on your watch?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes. We preserved door events but not the server log."
+        },
+        {
+          "speaker": "dc",
+          "text": "Without the server audit, you cannot identify who invoked test mode that night?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No. The surviving door record carries a name, not the administrator action behind it."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "so a stored template could pass the so-called live check added context without resolving identity or intent.",
+      "tags": [
+        "method",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The defence tenders Kes's phone-location record, showing the handset connected to a home charger throughout the night. A neighbour's entry camera also shows no departure, although a rear walkway is outside its view. The material supports an alibi but cannot establish that Kes remained inside continuously. The phone remained home, but that fact said nothing about the unreturned access token or prototype.",
+      "surface_persuasion": 0.7899999999999999,
+      "true_weight": 0.22,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The apparent shortcut in kes's phone-location record, showing the handset connected to a home charger throughout the night collapsed when the original source was compared.",
+      "tags": [
+        "digital_forensics",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "The missing unit used a silver ceramic powder during assembly. The powder settles on sleeves, benches, and shared clamps. I had seen Kes using the same clamp station that afternoon. Finding ordinary surface dust on a contractor would mean little; finding a concentrated stripe protected under a private chest liner is different.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "the missing unit used a silver ceramic powder during assembly helped test a witness account while leaving the central issue open.",
+      "tags": [
+        "timeline",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit six is the tool chest liner. Beneath its sealed rear edge, investigators found a dense stripe of the prototype's silver ceramic powder mixed with fresh adhesive from its transit cradle. The liner had been lifted and pressed back down, preserving the mixture where routine workshop contamination could not reach.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.76,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Independent records confirmed what the tool chest liner contributed to the final reconstruction.",
+      "tags": [
+        "method",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "Ceramic powder was present across the shared workshop? Light background traces were widespread. What makes the chest stripe different? Its concentration and fresh cradle adhesive, sealed beneath a liner installed months earlier. Your powder comparison cannot date the protected stripe to the exact night of the theft? Not to an exact hour. The fresh adhesive and sealed location narrow the contact, but do not timestamp it.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "Ceramic powder was present across the shared workshop?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Light background traces were widespread."
+        },
+        {
+          "speaker": "dc",
+          "text": "What makes the chest stripe different?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Its concentration and fresh cradle adhesive, sealed beneath a liner installed months earlier."
+        },
+        {
+          "speaker": "dc",
+          "text": "Your powder comparison cannot date the protected stripe to the exact night of the theft?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Not to an exact hour. The fresh adhesive and sealed location narrow the contact, but do not timestamp it."
+        }
+      ],
+      "surface_persuasion": 0.7000000000000001,
+      "true_weight": 0.8300000000000001,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "ceramic powder was present across the shared workshop fixed a disputed link through an independent record.",
+      "tags": [
+        "method",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I examined the access system and reproduced a template replay in the laboratory. That confirms another administrator could have opened the door under Kes's name. It does not explain who scheduled the camera shutdown or handled the prototype afterward. Biometric uncertainty removes one shortcut; it does not erase independent physical evidence.",
+      "surface_persuasion": 0.56,
+      "true_weight": 0.48,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The limits surrounding examined the access system and reproduced a template replay in the laboratory kept it from deciding the charge alone.",
+      "tags": [
+        "method",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "Your replay required an administrator token? Yes, physical possession or its secret key. Could you prove Kes still held it? No. The assignment record proves issue, not possession that night. Your replay experiment says nothing about the chest residue or the sale draft? Correct. My work addresses access uncertainty only, not possession of the prototype or later conduct.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "Your replay required an administrator token?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes, physical possession or its secret key."
+        },
+        {
+          "speaker": "pc",
+          "text": "Could you prove Kes still held it?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No. The assignment record proves issue, not possession that night."
+        },
+        {
+          "speaker": "pc",
+          "text": "Your replay experiment says nothing about the chest residue or the sale draft?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Correct. My work addresses access uncertainty only, not possession of the prototype or later conduct."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "your replay required an administrator token helped test a witness account while leaving the central issue open.",
+      "tags": [
+        "credibility",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that Kes need not explain every trace or prove who replayed the access template. The prosecution must establish the taking and dishonest intent beyond reasonable doubt. Weigh shared workshop contamination against protected residue and later sale preparation, and do not investigate the laboratory, marketplace, devices, or any person beyond the evidence heard here.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The wider sequence qualified what the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance could fairly support.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit nine combines a deleted marketplace draft and a message recovered from Kes's tablet. The draft describes a palm-sized navigation core with the prototype's unpublished battery life. At 2:41 a.m., Kes wrote, locker ready before first shift. The storage locker containing the missing unit was rented using the same tablet minutes later.",
+      "surface_persuasion": 0.74,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "exhibit nine combines a deleted marketplace draft and a message recovered from kes's tablet fixed a disputed link through an independent record.",
+      "tags": [
+        "method",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b2",
+    "b5",
+    "b7",
+    "b10"
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The perfect palm-scan trail looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter sealed dust and sale preparation supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "difficulty_target": 0.64,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A coach who asks whether conduct matches the claimed motive, especially when weighing replayed access versus concealed physical residue.",
+        "register": "blunt",
+        "arc": "drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 56
+        },
+        "weights": {
+          "method": 2,
+          "identity": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "For me, the anchor is the sealed powder stripe, chest liner, and sale preparation; it answers the weakness that first divided this room.",
+            "In my notes at seat 2, the sealed powder stripe, chest liner, and sale preparation agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I will not let the palm-scan trail decide more than its source can support.",
+            "I need the chronology laid out before I choose between those accounts. Here that means replayed access against concealed residue."
+          ],
+          "concede": [
+            "I admit the palm-scan trail, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My verdict rests on the sealed powder stripe, chest liner, and sale preparation, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A student who can be swept up by a vivid first impression, especially when weighing replayed access versus concealed physical residue.",
+        "register": "plain",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 46
+        },
+        "weights": {
+          "timeline": 2,
+          "motive": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I move because the sealed powder stripe, chest liner, and sale preparation; it answers the weakness that first divided this room.",
+            "In my notes at seat 3, the sealed powder stripe, chest liner, and sale preparation agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I keep separating the palm-scan trail decide more than its source can support.",
+            "Two records agreeing matters more to me than one record sounding certain. Here that means replayed access against concealed residue."
+          ],
+          "concede": [
+            "I can see why the palm-scan trail, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I finish with the sealed powder stripe, chest liner, and sale preparation, with the burden left where the judge placed it."
+          ],
+          "burden_drift": [
+            "I catch myself asking for an innocent explanation, even though that is not the accused's burden; from seat 3, I relate it to replayed access against concealed residue."
+          ],
+          "burden_correct": [
+            "I am correcting course: the prosecution must close the gap, not the accused; from seat 3, I relate it to replayed access against concealed residue."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "burden_drift"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A foreperson who restates disagreements before calling a vote, especially when weighing replayed access versus concealed physical residue.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "NG",
+          "confidence": 53
+        },
+        "weights": {
+          "procedure": 2,
+          "digital_forensics": 1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The part I cannot explain away is the sealed powder stripe, chest liner, and sale preparation; it answers the weakness that first divided this room.",
+            "In my notes at seat 4, the sealed powder stripe, chest liner, and sale preparation agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "Before I rely on the palm-scan trail decide more than its source can support.",
+            "I am testing which side can explain the missing link without assumption. Here that means replayed access against concealed residue."
+          ],
+          "concede": [
+            "At first I gave too much weight to the palm-scan trail, especially before the underlying record is opened."
+          ],
+          "final": [
+            "The deciding chain for me is the sealed powder stripe, chest liner, and sale preparation, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "A retiree who wants testimony anchored to something independent, especially when weighing replayed access versus concealed physical residue.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 60
+        },
+        "weights": {
+          "identity": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I checked the sequence against the sealed powder stripe, chest liner, and sale preparation; it answers the weakness that first divided this room.",
+            "In my notes at seat 5, the sealed powder stripe, chest liner, and sale preparation agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I hear the force of the palm-scan trail decide more than its source can support.",
+            "The burden makes me separate a possible story from a proved one. Here that means replayed access against concealed residue."
+          ],
+          "concede": [
+            "I concede the surface force of the palm-scan trail, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I return at the end to the sealed powder stripe, chest liner, and sale preparation, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "A delivery worker who focuses on custody and physical sequence, especially when weighing replayed access versus concealed physical residue.",
+        "register": "blunt",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "G",
+          "confidence": 50
+        },
+        "weights": {
+          "method": 2,
+          "motive": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "What changes my vote is the sealed powder stripe, chest liner, and sale preparation; it answers the weakness that first divided this room.",
+            "In my notes at seat 6, the sealed powder stripe, chest liner, and sale preparation agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I am not treating the palm-scan trail decide more than its source can support.",
+            "I want the source data before I accept the label attached to it. Here that means replayed access against concealed residue."
+          ],
+          "concede": [
+            "I was initially moved by the palm-scan trail, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My final vote follows the sealed powder stripe, chest liner, and sale preparation, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps, especially when weighing replayed access versus concealed physical residue.",
+        "register": "plain",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "G",
+          "confidence": 57
+        },
+        "weights": {
+          "timeline": 2,
+          "digital_forensics": 1,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I trust the sealed powder stripe, chest liner, and sale preparation; it answers the weakness that first divided this room.",
+            "In my notes at seat 7, the sealed powder stripe, chest liner, and sale preparation agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "My problem with the palm-scan trail decide more than its source can support.",
+            "A vivid clue will not move me unless the later sequence supports it. Here that means replayed access against concealed residue."
+          ],
+          "concede": [
+            "The opposing account fairly points to the palm-scan trail, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I resolve the doubt through the sealed powder stripe, chest liner, and sale preparation, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on replayed access versus concealed physical residue until evidence, rather than consensus, answers it; from seat 7, I relate it to replayed access against concealed residue."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A blunt sceptic who will not turn probability into certainty, especially when weighing replayed access versus concealed physical residue.",
+        "register": "formal",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 47
+        },
+        "weights": {
+          "procedure": 2,
+          "identity": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The room should start with the sealed powder stripe, chest liner, and sale preparation; it answers the weakness that first divided this room.",
+            "In my notes at seat 8, the sealed powder stripe, chest liner, and sale preparation agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "We should test the palm-scan trail decide more than its source can support.",
+            "I am asking whether the physical evidence and the testimony converge. Here that means replayed access against concealed residue."
+          ],
+          "concede": [
+            "I cannot dismiss the palm-scan trail, especially before the underlying record is opened."
+          ],
+          "final": [
+            "The complete record leaves me with the sealed powder stripe, chest liner, and sale preparation, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A shift worker who notices breaks in chronology, especially when weighing replayed access versus concealed physical residue.",
+        "register": "hesitant",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 54
+        },
+        "weights": {
+          "identity": 2,
+          "motive": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I needed corroboration, and the sealed powder stripe, chest liner, and sale preparation; it answers the weakness that first divided this room.",
+            "In my notes at seat 9, the sealed powder stripe, chest liner, and sale preparation agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I still question the palm-scan trail decide more than its source can support.",
+            "I need to know what this proves about intent, not only opportunity. Here that means replayed access against concealed residue."
+          ],
+          "concede": [
+            "There is real persuasive force in the palm-scan trail, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I am voting from the sealed powder stripe, chest liner, and sale preparation, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A bookkeeper who tests whether separate records truly reconcile, especially when weighing replayed access versus concealed physical residue.",
+        "register": "blunt",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 44
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The timing becomes coherent through the sealed powder stripe, chest liner, and sale preparation; it answers the weakness that first divided this room.",
+            "In my notes at seat 10, the sealed powder stripe, chest liner, and sale preparation agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I refuse to confuse the palm-scan trail decide more than its source can support.",
+            "The custody trail matters only if it follows the same object throughout. Here that means replayed access against concealed residue."
+          ],
+          "concede": [
+            "I understand the reliance on the palm-scan trail, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My conclusion turns on the sealed powder stripe, chest liner, and sale preparation, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A caregiver who is alert to pressure and unequal power, especially when weighing replayed access versus concealed physical residue.",
+        "register": "plain",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "G",
+          "confidence": 51
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": -1,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I am persuaded by the sealed powder stripe, chest liner, and sale preparation; it answers the weakness that first divided this room.",
+            "In my notes at seat 11, the sealed powder stripe, chest liner, and sale preparation agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I want a source check on the palm-scan trail decide more than its source can support.",
+            "I am checking whether my doubt is evidential or merely speculative. Here that means replayed access against concealed residue."
+          ],
+          "concede": [
+            "I began from the palm-scan trail, especially before the underlying record is opened."
+          ],
+          "final": [
+            "After testing both stories, I rely on the sealed powder stripe, chest liner, and sale preparation, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on replayed access versus concealed physical residue until evidence, rather than consensus, answers it; from seat 11, I relate it to replayed access against concealed residue."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A technician who distrusts labels without source data, especially when weighing replayed access versus concealed physical residue.",
+        "register": "formal",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "procedure": 2,
+          "motive": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "My holdout ends with the sealed powder stripe, chest liner, and sale preparation; it answers the weakness that first divided this room.",
+            "In my notes at seat 12, the sealed powder stripe, chest liner, and sale preparation agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I am holding against the palm-scan trail decide more than its source can support.",
+            "Consensus will not substitute for the independent record I still need. Here that means replayed access against concealed residue."
+          ],
+          "concede": [
+            "I will grant the palm-scan trail, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I can now decide because of the sealed powder stripe, chest liner, and sale preparation, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-qa-fix"
+  }
+}
