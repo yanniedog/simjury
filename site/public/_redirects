@@ -1,0 +1,2 @@
+/play /today/ 302
+/play/* /today/ 302
