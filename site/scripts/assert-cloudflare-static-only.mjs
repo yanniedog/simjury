@@ -37,6 +37,7 @@ if (config.observability?.enabled !== false) failures.push('observability must s
 if (!config.assets?.directory) failures.push('static assets directory is required')
 if ('binding' in (config.assets ?? {})) failures.push('assets binding is forbidden')
 if ('run_worker_first' in (config.assets ?? {})) failures.push('run_worker_first is forbidden')
+if (existsSync(join(siteRoot, 'src', 'index.js'))) failures.push('Worker source must not exist')
 for (const file of ['_headers', '_redirects']) {
   if (!existsSync(join(siteRoot, 'public', file))) failures.push(`public/${file} is required`)
 }
