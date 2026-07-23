@@ -89,7 +89,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "I’m Olia Brand, the care agency’s compliance manager. Three clients reported cash or jewellery missing within a day of Devra’s scheduled visit. Our biometric system confirms her arrival at each home. The scan verifies a face at the door, not what happens inside or during a later return. Devra’s dressing and laundry duties gave her knowledge of the clients’ rooms and routines.",
+      "text": "I’m Olia Brand, the care agency’s compliance manager. Three clients signed incident reports: an engraved bracelet, three hundred dollars in pension cash and a gold wedding locket were missing without permission. Each item was present before Devra’s scheduled visit and discovered missing before the next family visit. Our biometric system confirms Devra’s arrival, but not what happened inside or during a later return.",
       "surface_persuasion": 0.65,
       "true_weight": 0.55,
       "direction": "guilt",
@@ -320,9 +320,9 @@
           "motive": 1
         },
         "lines": {
-          "agree": [
-          "Juror 2: The deleted cache came from Devra’s assigned phone, and the examiner found no fault that could invent three matching sync sequences. I can rely on that.",
-          "Juror 2: A route point alone would be weak. Syncing off before every home and back on after every departure looks deliberate."
+        "agree": [
+          "Juror 2: The scheduled scans prove lawful care visits, not theft. Family keys and overlapping visits leave more than one possible entrant.",
+          "Juror 2: Devra’s access explains suspicion, but it does not identify her as the thief without reliable evidence from the later returns."
           ],
           "pushback": [
           "Juror 2: Where was this cache stored, and how do we know it was not reconstructed from unreliable location estimates?",
@@ -732,9 +732,9 @@
           "Juror 8: An automated location can be wrong. A manual sync setting changing in the same way around three accurate stops is much harder to dismiss.",
           "Juror 8: Deleting the cache did not erase its data. The recovery shows both the hidden journeys and an effort to keep them off the live system."
           ],
-          "pushback": [
-          "Juror 8: Could low reception switch syncing automatically? The examiner said the changes were manual, so show me how that was established.",
-          "Juror 8: Was the work phone ever shared between carers? Assignment records matter if we are using it to identify Devra."
+        "pushback": [
+          "Juror 8: The examiner established that these were manual changes, so low reception does not explain the repeated off-and-on sequence.",
+          "Juror 8: The phone was assigned to Devra and remained signed into her account. An abstract possibility of sharing does not make this identity record unreliable."
           ],
           "concede": [
           "Juror 8: The biometric system did not duplicate these returns. They came from a separate offline cache on Devra’s assigned device."
