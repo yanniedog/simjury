@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { analyzeDocketPlay } from './analyze'
 import { makeDocketCase } from './fixtures'
 
-// The factory case: checkins at b3, b6, b9; trap b1 (guilt) sits in the first
+// The factory case: check-ins at b3, b6, b10; trap b1 (guilt) sits in the first
 // segment; decisive innocence beats b4/b7 in the second and third.
 
 describe('analyzeDocketPlay', () => {
@@ -12,8 +12,8 @@ describe('analyzeDocketPlay', () => {
     expect(a.correct).toBe(true)
     expect(a.totalTraps).toBe(1)
     expect(a.trapsSwayed).toBe(0)
-    expect(a.segments).toHaveLength(4) // three check-ins + the trailing tail
-    expect(a.segments[3].checkinId).toBeNull()
+    expect(a.segments).toHaveLength(3)
+    expect(a.segments[2].checkinId).toBe('b10')
   })
 
   it('catches the juror the trap pulled', () => {
@@ -40,6 +40,9 @@ describe('analyzeDocketPlay', () => {
 
   it('beats after the last check-in can never be bait', () => {
     const c = makeDocketCase()
+    // analyzeDocketPlay remains defensive for historical/invalid cases even
+    // though the quality gate now requires the last check-in on the final beat.
+    c.checkins = ['b3', 'b6', 'b9']
     // Make the final (post-check-in) beat a trap; there is no window to sway.
     c.beats[9] = {
       ...c.beats[9],
