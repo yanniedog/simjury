@@ -6,11 +6,11 @@
   "setting": "An electric-bike hit-and-run trial in 2026, combining rider telemetry with a hurried repair and an unreliable street identification.",
   "charge": "Dangerous riding causing serious injury and leaving the scene without assisting",
   "elements": [
-    "The accused performed or participated in the alleged act.",
-    "The act was deliberate or dishonest rather than accidental.",
-    "The prosecution has proved every required fact beyond reasonable doubt."
+    "Kian Orrel was the rider who struck Nora Vel.",
+    "Kian rode dangerously and that dangerous riding caused Nora’s serious injury.",
+    "Knowing that he had collided with Nora and that she might be injured, Kian deliberately left without taking reasonable steps to assist or report the collision."
   ],
-  "hook": "The rider stops for four seconds, looks back, and leaves. By morning, the damaged fork has fresh adhesive and a different colour.",
+  "hook": "The rider stops for four seconds, looks back and leaves. By morning, Kian’s damaged fork has fresh adhesive—and fibres from the injured pedestrian’s coat.",
   "accused": {
     "cast_id": "w3",
     "human": "Kian Orrel works nights to fund nursing study and sends part of every week’s pay to family.",
@@ -20,25 +20,25 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution says the accused struck a pedestrian while riding above the assisted-speed limit, paused, then repaired the distinctive fork before his next shift. The apparent centre of the case is a witness identification from a blurred street video, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+        "text": "The blurred video cannot identify a face, and the prosecution does not ask you to rely on it. Kian’s paired battery and bike controller travelled through the crossing above the assisted-speed limit, stopped for four seconds, then continued his delivery route. His courier account was active before and after the impact. By morning, his fork had been repaired with adhesive containing fibres from Nora’s coat."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence says many riders used identical bikes and the witness learned the accused’s name from a group message before making an identification. Suspicion gathered around a person before investigators tested the limits of a witness identification from a blurred street video; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+        "text": "Nora saw a common delivery bike, not the rider’s face, and learned Kian’s name before police showed her photographs. Couriers borrowed bikes and batteries without a handover log. Telemetry identifies hardware, not hands. Kian says another rider used his bike while his account remained open, and the fork was damaged later against a depot rail. The defence says the records do not prove who was riding."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution began with the contaminated eyewitness identification, but it does not ask you to convict on that clue alone. Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
+        "text": "Set Nora’s identification aside. Kian’s battery remained paired to his controller throughout the journey. His courier account accepted a job nine minutes before the impact and completed it twelve minutes after. He named no borrower. Hours later, he filed an unwitnessed repair report and covered fork damage with adhesive that trapped fibres from Nora’s coat. Those independent facts identify Kian as the rider who struck Nora, paused and chose to leave."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence accepts that the contaminated eyewitness identification created suspicion, but suspicion is not the test. Couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. That evidence goes to the heart of the case because a blurred image and prior group message make the visual identification unsafe on its own. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
+        "text": "The prosecution’s chain still identifies a bike rather than a rider. The cooperative allowed informal borrowing and did not require riders to log out of the delivery app. Kian reported a depot collision that could explain his fork repair, and the common blue fibres cannot establish when or where contact occurred. Kian does not have to identify the borrower. If someone else could reasonably have used the bike and account, you must find him not guilty."
       }
     }
   },
-  "epilogue": "The injured pedestrian returned to part-time work after rehabilitation. Kian’s nursing place was withdrawn during sentence, and the delivery cooperative introduced automatic crash alerts that contact emergency services even when a rider leaves. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "epilogue": "Nora returned to part-time work after rehabilitation but continued using a walking aid. Kian’s nursing place was withdrawn during his custodial sentence, and his family reorganised around the lost income. The delivery cooperative introduced automatic crash alerts, mandatory bike handovers and emergency-service notifications whenever a rider leaves an impact site.",
   "cast": [
     {
       "id": "judge",
@@ -89,15 +89,15 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "I saw a dark delivery jacket and a pale stripe on the bike. Later a riders’ group message named Kian, and that name was in my mind before police showed photographs. This was the first fact I recorded in the initial The Repaired Fork inquiry, before investigators settled on Kian Orrel. The timing was noted before the The Repaired Fork inquiry settled on Kian Orrel as its suspect.",
+      "text": "I’m Nora Vel. I stepped into the marked crossing and saw a delivery bike coming too fast. It struck my left side and threw me onto the road. The rider stopped, looked back and left. I saw a dark jacket and a pale stripe on the bike, not the rider’s face. I spent three weeks in hospital with a fractured pelvis and wrist.",
       "surface_persuasion": 0.65,
       "true_weight": 0.55,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The first impression came from the contaminated eyewitness identification; its value depended on whether the later evidence could overcome this limit: a blurred image and prior group message make the visual identification unsafe on its own.",
+      "reveal_note": "Nora establishes dangerous riding, serious injury and the rider’s decision to leave, but cannot identify a face.",
       "tags": [
-        "method",
-        "digital_forensics"
+        "credibility",
+        "procedure"
       ]
     },
     {
@@ -105,12 +105,12 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "The street video is blurred but shows a rider entering the crossing quickly, striking Nora, stopping for four seconds, then leaving without approaching or calling for help. This was the second fact I recorded in the initial The Repaired Fork inquiry, before investigators settled on Kian Orrel.",
+      "text": "I’m Piers Kelm, the collision investigator. The street video is blurred, but timing markers show the bike entering the crossing at thirty-eight kilometres per hour, above the assisted limit. It strikes Nora, stops for four seconds and continues. The rider looks back but never approaches her or calls for help. The bike has a pale replacement stripe used by the courier cooperative.",
       "surface_persuasion": 0.6,
       "true_weight": 0.4,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "This witness fixed the practical setting before suspicion centred on Kian Orrel, giving the room context for the records that followed.",
+      "reveal_note": "The video proves the manner of riding and failure to assist while identifying only a common cooperative bike.",
       "tags": [
         "method",
         "credibility"
@@ -120,12 +120,12 @@
       "id": "b3",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Kian’s bike had fresh adhesive around a replaced fork cover. The adhesive was still curing when police examined it the next morning after his scheduled shift. At this third point, the exhibit’s stated limit is that a blurred image and prior group message make the visual identification unsafe on its own, so it must be weighed with the rest of the sequence.",
+      "text": "The defence tenders Kian’s maintenance report, filed at 1:12 a.m. It says he struck a loading rail at the depot and repaired the cracked fork cover with adhesive before his next shift. The rail stands outside the depot camera’s view, and no witness signed the report. The adhesive was still curing when police examined the bike that morning.",
       "surface_persuasion": 0.8,
       "true_weight": 0.2,
       "direction": "innocence",
       "reveal_stamp": "misleading",
-      "reveal_note": "The challenged record mattered because it exposed the gap between appearance and proof: a blurred image and prior group message make the visual identification unsafe on its own.",
+      "reveal_note": "Kian documented an innocent cause for the repair, although he filed the unwitnessed report hours after the collision.",
       "tags": [
         "credibility",
         "identity"
@@ -136,7 +136,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "You saw Kian’s name before the photo procedure? Yes. The riders’ group message named him first. So your later choice may reflect that message? It may. I am certain about the bike shape, not the rider’s face. Nora remained certain about the bike shape, but the earlier group message contaminated any identification of the rider.",
+      "text": "You saw Kian’s name before the photo procedure? Yes. A riders’ group message named him first. So your later choice may reflect that message? It may. I am certain about the bike, not the rider’s face. Could you identify Kian here from what you saw at the crossing? No. I can identify the bike, not Kian.",
       "turns": [
         {
           "speaker": "dc",
@@ -144,7 +144,7 @@
         },
         {
           "speaker": "w1",
-          "text": "Yes. The riders’ group message named him first."
+          "text": "Yes. A riders’ group message named him first."
         },
         {
           "speaker": "dc",
@@ -152,14 +152,22 @@
         },
         {
           "speaker": "w1",
-          "text": "It may. I am certain about the bike shape, not the rider’s face. Nora remained certain about the bike shape, but the earlier group message contaminated any identification of the rider."
+          "text": "It may. I am certain about the bike, not the rider’s face."
+        },
+        {
+          "speaker": "dc",
+          "text": "Could you identify Kian here from what you saw at the crossing?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No. I can identify the bike, not Kian."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.35,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "Cross-examination narrowed the early clue without erasing it, forcing the room to decide how much independent support remained.",
+      "reveal_note": "Nora candidly withdraws any personal identification of Kian, removing the most emotionally persuasive shortcut.",
       "tags": [
         "credibility",
         "method"
@@ -169,12 +177,12 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The paired battery records speed, motor load, and location for maintenance. Kian’s pack travelled through the impact point at a speed above the assisted limit, then stopped for four seconds. At this fifth point, the exhibit’s stated limit is that a blurred image and prior group message make the visual identification unsafe on its own, so it must be weighed with the rest of the sequence.",
+      "text": "The bike record shows Kian’s battery remained paired to his controller throughout the journey. It passed the crossing at thirty-eight kilometres per hour and stopped for four seconds at the impact point. Kian’s courier account accepted an order nine minutes earlier and marked that delivery complete twelve minutes later. The route between those jobs passes through the crossing.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The strongest prosecution point was this: Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat.",
+      "reveal_note": "Hardware telemetry and Kian’s active courier account independently place his bike and working route at the collision.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -182,14 +190,15 @@
     },
     {
       "id": "b6",
-      "kind": "exhibit",
-      "speaker": "pc",
-      "text": "Riders swap batteries during busy shifts. A pack identifies the battery, not automatically the person holding the handlebars, and the cooperative kept no formal handover log. At this sixth point, the exhibit’s stated limit is that a blurred image and prior group message make the visual identification unsafe on its own, so it must be weighed with the rest of the sequence.",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "I’m Demi Sar, a battery telemetry engineer. The data reliably identifies Kian’s battery and controller, speed and location. It cannot identify the rider. Couriers sometimes borrowed a whole bike or left an account signed in during busy shifts, and the cooperative kept no handover log. A borrower could therefore generate this exact hardware and account record without being Kian.",
       "surface_persuasion": 0.5,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The competing account was concrete rather than speculative: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure.",
+      "reveal_note": "Demi establishes a real limitation: the electronic record identifies Kian’s equipment and account, not his body.",
       "tags": [
         "method",
         "digital_forensics"
@@ -200,12 +209,12 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "examination",
-      "text": "I lent my spare battery earlier and repaired the fork after hitting a loading rail. I was not at the crossing, did not hit Nora, and did not leave anyone injured. This was the seventh fact I recorded in the initial The Repaired Fork inquiry, before investigators settled on Kian Orrel. That The Repaired Fork detail can be checked against the contemporaneous record rather than accepted as a later reconstruction.",
+      "text": "I’m Kian Orrel. Riders borrowed each other’s bikes when a machine was charging or being serviced. Someone used mine that evening while my courier account remained open. I cannot remember who took it. After I got it back, I struck a loading rail at the depot and repaired the cracked fork cover. I was not at the crossing and did not hit Nora.",
       "surface_persuasion": 0.6,
       "true_weight": 0.3,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This testimony tested whether the system record described a person’s conduct or only an event produced around them.",
+      "reveal_note": "Kian relies on an informal borrowing practice and a later depot collision to explain both electronic and physical evidence.",
       "tags": [
         "credibility",
         "motive"
@@ -216,30 +225,46 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "A battery can be swapped between riders? Yes, and the hardware record follows the battery. You cannot identify hands from telemetry? No, but this pack remained paired to Kian’s bike controller throughout the journey. Battery swapping is possible, yet the pack remained paired with Kian’s controller throughout the recorded journey.",
+      "text": "You cannot name the person who borrowed your bike? No. Yet your account accepted and completed jobs around the collision? Yes, but riders sometimes shared accounts. You filed the rail report after midnight, with no witness? Yes. And you repaired the fork before police could inspect the damage? I needed the bike for work.",
       "turns": [
         {
           "speaker": "pc",
-          "text": "A battery can be swapped between riders?"
+          "text": "You cannot name the person who borrowed your bike?"
         },
         {
           "speaker": "w3",
-          "text": "Yes, and the hardware record follows the battery."
+          "text": "No."
         },
         {
           "speaker": "pc",
-          "text": "You cannot identify hands from telemetry?"
+          "text": "Yet your account accepted and completed jobs around the collision?"
         },
         {
           "speaker": "w3",
-          "text": "No, but this pack remained paired to Kian’s bike controller throughout the journey. Battery swapping is possible, yet the pack remained paired with Kian’s controller throughout the recorded journey."
+          "text": "Yes, but riders sometimes shared accounts."
+        },
+        {
+          "speaker": "pc",
+          "text": "You filed the rail report after midnight, with no witness?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes."
+        },
+        {
+          "speaker": "pc",
+          "text": "And you repaired the fork before police could inspect the damage?"
+        },
+        {
+          "speaker": "w3",
+          "text": "I needed the bike for work."
         }
       ],
       "surface_persuasion": 0.6,
       "true_weight": 0.6,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The second cross put the decisive inference under pressure and showed exactly which part of the account could still be disputed.",
+      "reveal_note": "Cross-examination exposes that no record or named witness supports either part of Kian’s alternative account.",
       "tags": [
         "credibility",
         "identity"
@@ -250,27 +275,27 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "The fork adhesive contained blue synthetic fibres. Their dye and weave match Nora’s coat, although the fibres cannot establish exactly when or where contact occurred. This was the ninth fact I recorded in the initial The Repaired Fork inquiry, before investigators settled on Kian Orrel.",
+      "text": "The uncured fork adhesive contained blue synthetic fibres with the same dye and weave as Nora’s coat. The damaged area aligns with the point where the video shows the fork striking her. The fibre type is commercially common, however, and laboratory testing cannot establish exactly when or where transfer occurred. The result supports contact but cannot prove it by itself.",
       "surface_persuasion": 0.55,
       "true_weight": 0.2,
-      "direction": "innocence",
+      "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The final witness supplied a separate check on the timeline, reducing the risk that one attractive clue would decide the case alone.",
+      "reveal_note": "The fibre evidence connects Kian’s repaired fork to Nora while retaining a genuine limitation about uniqueness and timing.",
       "tags": [
-        "credibility",
-        "motive"
+        "method",
+        "digital_forensics"
       ]
     },
     {
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person.",
+      "text": "To convict, you must be sure Kian was the rider, that his dangerous riding caused Nora’s injury, and that he knowingly left without reasonable assistance or a report. Nora’s visual identification is unsafe and must not identify him. Decide whether the independent telemetry, active courier account, repair timing and fibre evidence together prove identity, while remembering that Kian does not have to identify another rider.",
       "surface_persuasion": 0.41100000000000003,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The direction kept the burden where it belonged: a blurred image and prior group message make the visual identification unsafe on its own, and no gap in the defence could substitute for proof of every element.",
+      "reveal_note": "The final direction removes the contaminated identification and focuses the jury on whether the independent evidence proves every element.",
       "tags": [
         "burden",
         "credibility"
@@ -281,10 +306,10 @@
     "b3",
     "b5",
     "b8",
-    "b9"
+    "b10"
   ],
   "verdict_truth": "Guilty",
-  "twist": "The eyewitness identification was contaminated by a group message and deserved little weight. Independent battery telemetry placed Kian’s paired pack at the impact, while uncured adhesive on his fork contained fabric fibres matching the pedestrian’s coat.",
+  "twist": "Nora could not safely identify Kian. The case turned instead on independent records: his controller and active courier account bracketed the collision, while fibres from Nora’s coat were trapped in the fresh adhesive he applied to the damaged fork hours later.",
   "difficulty_target": 0.5,
   "jury": {
     "jurors": [
@@ -292,7 +317,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Repaired Fork, this juror keeps returning to the contaminated eyewitness identification.",
+      "persona": "A steady foreperson who makes the room distinguish suspicion from proof.",
         "register": "plain",
         "arc": "vibes",
         "initial": {
@@ -305,18 +330,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 2: Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat. The room should decide whether that contradiction is material or merely awkward.",
-            "Juror 2: Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat. I would rather name the gap than pretend it is not there."
+          "Juror 2: We agree Nora cannot identify Kian. The question is whether the hardware, account, repair and fibres identify him without her.",
+          "Juror 2: Let us test each element separately: rider, dangerous collision, injury, knowledge and leaving."
           ],
           "pushback": [
-            "Juror 2: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. I am separating what the record proves from what we are inferring.",
-            "Juror 2: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. I do not think confidence can repair a missing link."
+          "Juror 2: Put Nora’s photograph choice aside. It was contaminated before police began the procedure.",
+          "Juror 2: An unnamed borrower is possible in the abstract. Is it reasonable against the whole record?"
           ],
           "concede": [
-            "Juror 2: I accept now that a blurred image and prior group message make the visual identification unsafe on its own. For me, the unanswered part is still the accused performed or participated in the alleged act."
+          "Juror 2: I accept that Nora identifies only a cooperative bike. I will not use her confidence to identify Kian."
           ],
           "final": [
-            "Juror 2: My verdict in The Repaired Fork turns on whether the jury can reconcile Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat with this competing account: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. The evidence about the contaminated eyewitness identification is what keeps me from treating that as conclusive."
+          "Juror 2: Independent evidence places Kian’s bike and working account at the impact and links the repaired fork to Nora. I am sure he was the rider."
           ]
         },
         "reaction_rules": [
@@ -361,7 +386,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Repaired Fork, this juror keeps returning to the contaminated eyewitness identification.",
+      "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity.",
         "register": "blunt",
         "arc": "steady",
         "initial": {
@@ -373,19 +398,19 @@
           "digital_forensics": 1
         },
         "lines": {
-          "agree": [
-            "Juror 3: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. That is stronger than suspicion, but I am checking it against the contaminated eyewitness identification.",
-            "Juror 3: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. That detail matters to my vote because it comes from outside either side’s story."
+        "agree": [
+          "Juror 3: I have separate notes for the battery, controller and courier account. All three remain connected to Kian during the same journey.",
+          "Juror 3: The independent records use different methods. Their value comes from where they converge, not from treating any single result as unique."
           ],
           "pushback": [
-            "Juror 3: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. That moves one piece, not the burden the Crown carries.",
-            "Juror 3: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. I am treating the timing as evidence, not as a verdict."
+          "Juror 3: My identity column cannot include Nora’s photograph choice. The prior message makes it unreliable.",
+          "Juror 3: We have proof that Kian’s equipment was there. I still need the step from his equipment to him."
           ],
           "concede": [
-            "Juror 3: I accept now that a blurred image and prior group message make the visual identification unsafe on its own. That leaves me asking who had the opportunity the records actually show."
+          "Juror 3: I have crossed out the eyewitness identification. The remaining chain is still substantial."
           ],
           "final": [
-            "Juror 3: My verdict in The Repaired Fork turns on whether the jury can reconcile Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat with this competing account: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. I am treating the timing as evidence, not as a verdict."
+          "Juror 3: Every independent record fits Kian riding and repairing the collision damage. His unnamed-borrower account has no supporting entry or witness."
           ]
         },
         "reaction_rules": [
@@ -430,7 +455,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Repaired Fork, this juror keeps returning to the contaminated eyewitness identification.",
+      "persona": "A practical juror who tests digital records against ordinary workplace habits.",
         "register": "formal",
         "arc": "principled_holdout",
         "initial": {
@@ -442,22 +467,22 @@
           "credibility": 1
         },
         "lines": {
-          "agree": [
-            "Juror 4: Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat. I want the actual record compared with the story built around it."
+        "agree": [
+          "Juror 4: Kian does not have to prove who borrowed the bike. The prosecution must make that possibility unreasonable through its own evidence."
           ],
           "pushback": [
-            "Juror 4: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. For me, the unanswered part is still the prosecution has proved every required fact beyond reasonable doubt.",
-            "Juror 4: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. I am changing my view because the explanation fits more of the evidence."
+          "Juror 4: The cooperative’s poor handover practice makes a borrower possible. We should not pretend a missing log proves Kian rode.",
+          "Juror 4: Filing a late maintenance report is not automatically concealment. Night workers complete paperwork after their routes."
           ],
           "concede": [
-            "Juror 4: I accept now that a blurred image and prior group message make the visual identification unsafe on its own. I am separating what the record proves from what we are inferring."
+          "Juror 4: I agree Nora’s identification is unusable. The bike stripe is common across the fleet as well."
           ],
           "holdout": [
-            "Juror 4: I am holding my position until the room deals directly with Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat. That is the part of the Crown case I can test rather than guess.",
-            "Juror 4: I am holding my position until the room deals directly with Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat. Before I move, I need the contaminated eyewitness identification placed on the same timeline."
+          "Juror 4: I am holding until we decide whether account sharing actually happened that evening or is merely something couriers sometimes did.",
+          "Juror 4: I want the repair report placed beside the collision, route completion and police inspection times."
           ],
           "final": [
-            "Juror 4: My verdict in The Repaired Fork turns on whether the jury can reconcile Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat with this competing account: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. That detail matters to my vote because it comes from outside either side’s story."
+          "Juror 4: The borrowing practice does not reasonably explain this combined hardware, account and repair record. I vote guilty."
           ]
         },
         "reaction_rules": [
@@ -502,7 +527,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Repaired Fork, this juror keeps returning to the contaminated eyewitness identification.",
+      "persona": "A sceptic who distrusts polished system evidence until its collection method is clear.",
         "register": "formal",
         "arc": "steady",
         "initial": {
@@ -515,21 +540,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 5: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. I would rather name the gap than pretend it is not there."
+          "Juror 5: Telemetry can place hardware precisely while saying nothing about the human rider. That limitation is real."
           ],
           "pushback": [
-            "Juror 5: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. The evidence about the contaminated eyewitness identification is what keeps me from treating that as conclusive.",
-            "Juror 5: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. That is where the competing account becomes concrete for me."
+          "Juror 5: How was the route location calculated, and does its error range actually place the bike inside the crossing?",
+          "Juror 5: The courier app and controller should have independent clocks. Do their timestamps align with the video?"
           ],
           "concede": [
-            "Juror 5: I accept now that a blurred image and prior group message make the visual identification unsafe on its own. I am holding it against the judge’s direction on the accused performed or participated in the alleged act."
+          "Juror 5: I accept that Nora’s identification was contaminated. It contributes nothing to my decision."
           ],
           "burden_correct": [
-            "Juror 5: In The Repaired Fork, unanswered questions do not move the burden; the prosecution must still prove every element. I want the actual record compared with the story built around it.",
-            "Juror 5: In The Repaired Fork, unanswered questions do not move the burden; the prosecution must still prove every element. I am not counting the same assumption twice as two pieces of evidence."
+          "Juror 5: Kian need not prove a borrower existed. The prosecution’s independent records must make that possibility unreasonable.",
+          "Juror 5: We cannot turn Kian’s inability to name someone into proof that he was riding."
           ],
           "final": [
-            "Juror 5: My verdict in The Repaired Fork turns on whether the jury can reconcile Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat with this competing account: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. I would rather name the gap than pretend it is not there."
+          "Juror 5: The independent timestamps align and the physical repair supports them. I am satisfied the records identify Kian beyond reasonable doubt."
           ]
         },
         "reaction_rules": [
@@ -574,7 +599,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Repaired Fork, this juror keeps returning to the contaminated eyewitness identification.",
+      "persona": "A rule-focused juror who brings the room back to the prosecution burden.",
         "register": "plain",
         "arc": "foreperson",
         "initial": {
@@ -587,18 +612,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 6: Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat. If we remove the dramatic label, that is the fact left underneath.",
-            "Juror 6: Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat. I hear the point; now I want the source of it tested."
+          "Juror 6: Identity can be proved circumstantially. We do not need a reliable face if the independent chain leaves us sure.",
+          "Juror 6: The four-second stop and backward look prove the rider knew a collision occurred. Leaving without help satisfies the final element."
           ],
           "pushback": [
-            "Juror 6: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. That is stronger than suspicion, but I am checking it against the contaminated eyewitness identification.",
-            "Juror 6: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. That detail matters to my vote because it comes from outside either side’s story."
+          "Juror 6: We must disregard Nora’s identification, not merely give it reduced weight.",
+          "Juror 6: An unsupported defence account does not reverse the burden. The prosecution must still prove Kian was riding."
           ],
           "concede": [
-            "Juror 6: I accept now that a blurred image and prior group message make the visual identification unsafe on its own. That is where the competing account becomes concrete for me."
+          "Juror 6: I accept that the group message made Nora’s photograph choice unsafe. I am relying only on the remaining evidence."
           ],
           "final": [
-            "Juror 6: My verdict in The Repaired Fork turns on whether the jury can reconcile Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat with this competing account: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. The room should decide whether that contradiction is material or merely awkward."
+          "Juror 6: The prosecution has proved identity through independent electronic and physical evidence, then proved dangerous riding and deliberate departure on video."
           ]
         },
         "reaction_rules": [
@@ -631,7 +656,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Repaired Fork, this juror keeps returning to the contaminated eyewitness identification.",
+      "persona": "A patient listener who changes position when a timeline finally accounts for every event.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -644,18 +669,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 7: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. I am not counting the same assumption twice as two pieces of evidence.",
-            "Juror 7: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. I want the actual record compared with the story built around it."
+          "Juror 7: The route begins with Kian’s accepted order, reaches the crossing, pauses four seconds and ends with his completed delivery.",
+          "Juror 7: The fork was repaired after that route and before police inspection. The fibres sit inside uncured adhesive, not on an exposed surface."
           ],
           "pushback": [
-            "Juror 7: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. I do not think confidence can repair a missing link.",
-            "Juror 7: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. I am separating what the record proves from what we are inferring."
+          "Juror 7: When did Kian say the borrower returned the bike? His account needs to fit before the alleged rail collision.",
+          "Juror 7: The maintenance report came after midnight. I want to know whether that timing supports a routine end-of-shift report or a cover story."
           ],
           "concede": [
-            "Juror 7: I accept now that a blurred image and prior group message make the visual identification unsafe on its own. The gap between those two facts is where my doubt sits."
+          "Juror 7: I accept Nora cannot identify the rider. The route timeline does not depend on her identification."
           ],
           "final": [
-            "Juror 7: My verdict in The Repaired Fork turns on whether the jury can reconcile Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat with this competing account: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. I am not counting the same assumption twice as two pieces of evidence."
+          "Juror 7: The full timeline fits one collision and one hurried repair. Kian’s second-collision account has no witness or contemporaneous support."
           ]
         },
         "reaction_rules": [
@@ -700,7 +725,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Repaired Fork, this juror keeps returning to the contaminated eyewitness identification.",
+      "persona": "A blunt juror who challenges convenient memory from witnesses on both sides.",
         "register": "plain",
         "arc": "mind_changer",
         "initial": {
@@ -713,18 +738,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 8: Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat. The gap between those two facts is where my doubt sits.",
-            "Juror 8: Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat. That is persuasive only if we first resolve the contaminated eyewitness identification."
+          "Juror 8: Kian remembers lending the bike but not who borrowed it. That convenient blank deserves scrutiny, even though it does not prove guilt.",
+          "Juror 8: He also says a second collision damaged the same fork hours later, where no camera or witness can confirm it."
           ],
           "pushback": [
-            "Juror 8: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. That is where the competing account becomes concrete for me.",
-            "Juror 8: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. The evidence about the contaminated eyewitness identification is what keeps me from treating that as conclusive."
+          "Juror 8: Nora was honest: she saw the bike, not Kian. Do not put words in her mouth.",
+          "Juror 8: The fibre is common blue synthetic material. Calling it ‘Nora’s fibre’ overstates the laboratory result."
           ],
           "concede": [
-            "Juror 8: I accept now that a blurred image and prior group message make the visual identification unsafe on its own. That is stronger than suspicion, but I am checking it against the contaminated eyewitness identification."
+          "Juror 8: The photograph choice is out. The prosecution still has a bike, account, route and repaired collision point."
           ],
           "final": [
-            "Juror 8: My verdict in The Repaired Fork turns on whether the jury can reconcile Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat with this competing account: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. That leaves me asking who had the opportunity the records actually show."
+          "Juror 8: I do not believe Kian’s borrowing and rail stories, but the records—not my disbelief—are what prove he was riding."
           ]
         },
         "reaction_rules": [
@@ -781,7 +806,7 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Repaired Fork, this juror keeps returning to the contaminated eyewitness identification.",
+      "persona": "A cautious holdout who wants the decisive record stated without exaggeration.",
         "register": "hesitant",
         "arc": "steady",
         "initial": {
@@ -793,18 +818,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 9: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. That point earns weight because it can be checked independently.",
-            "Juror 9: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. I can explain that conclusion without borrowing a fact that is not in evidence."
+          "Juror 9: The telemetry proves Kian’s equipment was there. The account record adds evidence about who was working, but account sharing limits it.",
+          "Juror 9: The fibres match dye and weave, not a unique garment. I will treat that as support rather than conclusive identification."
           ],
           "pushback": [
-            "Juror 9: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. I am asking whether the exhibit proves the act or merely resembles it.",
-            "Juror 9: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. I am weighing that beside the contaminated eyewitness identification, not on its own."
+          "Juror 9: We should not turn three limited records into three certainties. State each limitation before combining them.",
+          "Juror 9: Kian’s repair report is late and unwitnessed, but it is still a contemporaneous record rather than trial testimony."
           ],
           "concede": [
-            "Juror 9: I accept now that a blurred image and prior group message make the visual identification unsafe on its own. The room should decide whether that contradiction is material or merely awkward."
+          "Juror 9: I accept the visual identification adds nothing. That makes careful treatment of the hardware evidence even more important."
           ],
           "final": [
-            "Juror 9: My verdict in The Repaired Fork turns on whether the jury can reconcile Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat with this competing account: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. That is where the competing account becomes concrete for me."
+          "Juror 9: After accounting for every limitation, the records still converge on Kian. The borrowing explanation is not reasonably supported."
           ]
         },
         "reaction_rules": [
@@ -849,7 +874,7 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Repaired Fork, this juror keeps returning to the contaminated eyewitness identification.",
+      "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof.",
         "register": "blunt",
         "arc": "burden_drifter",
         "initial": {
@@ -862,23 +887,23 @@
         },
         "lines": {
           "agree": [
-            "Juror 10: Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat. I am changing my view because the explanation fits more of the evidence."
+          "Juror 10: Nora’s injuries are devastating, and the four-second pause shows the rider knew something serious had happened."
           ],
           "pushback": [
-            "Juror 10: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. I am separating what the record proves from what we are inferring."
+          "Juror 10: Sympathy for Nora cannot identify Kian. We need to reach that conclusion through evidence she could not see."
           ],
           "burden_drift": [
-            "Juror 10: In The Repaired Fork, there are unanswered questions around the contaminated eyewitness identification, and I keep wanting Kian Orrel to explain them. I am ready to put less weight on the first impression.",
-            "Juror 10: In The Repaired Fork, there are unanswered questions around the contaminated eyewitness identification, and I keep wanting Kian Orrel to explain them. The sequence matters more to me than how suspicious one moment sounds."
+          "Juror 10: Kian could end this uncertainty by naming the borrower. I keep holding his failure to do that against him.",
+          "Juror 10: The rail collision sounds unlikely, and I find myself making Kian prove it happened."
           ],
           "concede": [
-            "Juror 10: I accept now that a blurred image and prior group message make the visual identification unsafe on its own. I can state the inference now, and I can also state what it depends on."
+          "Juror 10: Nora’s certainty came after she saw Kian’s name. I accept that her identification cannot carry any weight."
           ],
           "burden_correct": [
-            "Juror 10: In The Repaired Fork, unanswered questions do not move the burden; the prosecution must still prove every element. I would rather name the gap than pretend it is not there."
+          "Juror 10: Kian does not have to prove the borrower or rail collision. The prosecution must make those possibilities unreasonable with its own evidence."
           ],
           "final": [
-            "Juror 10: My verdict in The Repaired Fork turns on whether the jury can reconcile Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat with this competing account: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. That answer makes sense only if the rest of the chronology holds."
+          "Juror 10: Applying the burden correctly, the independent chain still makes me sure Kian struck Nora and knowingly left her."
           ]
         },
         "reaction_rules": [
@@ -923,7 +948,7 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Repaired Fork, this juror keeps returning to the contaminated eyewitness identification.",
+      "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -936,18 +961,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 11: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. I do not think confidence can repair a missing link.",
-            "Juror 11: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. I am separating what the record proves from what we are inferring."
+          "Juror 11: A battery swap would break the usual pack-controller pairing. This record shows Kian’s pack stayed paired to Kian’s controller.",
+          "Juror 11: Whole-bike borrowing remains technically possible. The courier account makes it less likely but does not make the hardware identify a body."
           ],
           "pushback": [
-            "Juror 11: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. I would rather name the gap than pretend it is not there.",
-            "Juror 11: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. The room should decide whether that contradiction is material or merely awkward."
+          "Juror 11: Were the telemetry, app and video clocks synchronised? A time offset could create a false match.",
+          "Juror 11: Could uncured adhesive pick up fibres from a shared courier locker after the repair? Transfer timing matters."
           ],
           "concede": [
-            "Juror 11: I accept now that a blurred image and prior group message make the visual identification unsafe on its own. I am not counting the same assumption twice as two pieces of evidence."
+          "Juror 11: The electronic sources are independent and time-aligned. I accept that their agreement is not one record counted twice."
           ],
           "final": [
-            "Juror 11: My verdict in The Repaired Fork turns on whether the jury can reconcile Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat with this competing account: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. The gap between those two facts is where my doubt sits."
+          "Juror 11: The hardware does not name Kian alone, but hardware, account and repair evidence together leave no reasonable borrower scenario."
           ]
         },
         "reaction_rules": [
@@ -992,7 +1017,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Repaired Fork, this juror keeps returning to the contaminated eyewitness identification.",
+      "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -1005,18 +1030,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 12: Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat. That is persuasive only if we first resolve the contaminated eyewitness identification.",
-            "Juror 12: Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat. The gap between those two facts is where my doubt sits."
+          "Juror 12: Who borrowed the bike, why did that person use Kian’s account, and why did Kian repair the collision point hours later?",
+          "Juror 12: If the rail caused the fork damage, how did fibres matching Nora’s coat become trapped inside the fresh adhesive?"
           ],
           "pushback": [
-            "Juror 12: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. The gap between those two facts is where my doubt sits.",
-            "Juror 12: I am not ready to let the contaminated eyewitness identification decide The Repaired Fork. That is persuasive only if we first resolve the contaminated eyewitness identification."
+          "Juror 12: Is the blue fibre common enough that depot contact remains a reasonable source?",
+          "Juror 12: Did the video show the rider looking at Nora, or are we inferring knowledge from the four-second stop?"
           ],
           "concede": [
-            "Juror 12: I accept now that a blurred image and prior group message make the visual identification unsafe on its own. That leaves me asking who had the opportunity the records actually show."
+          "Juror 12: Nora cannot answer who was riding. The hardware and account records can answer who had the documented opportunity."
           ],
           "final": [
-            "Juror 12: My verdict in The Repaired Fork turns on whether the jury can reconcile Kian’s paired battery travelled through the impact point, stopped for four seconds, and his fresh fork repair contained fibres matching Nora’s coat with this competing account: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure. I am treating the timing as evidence, not as a verdict."
+          "Juror 12: The defence possibilities do not explain the complete sequence. The independent records make me sure Kian was the rider."
           ]
         },
         "reaction_rules": [
@@ -1063,6 +1088,6 @@
     "model": "openai-codex",
     "prompt_version": "dd-2026-v2",
     "reviewer": "Codex Content Curator; independent QA rewrite and dynamics verification",
-    "batch_pr": "codex/docket-runway-a"
+    "batch_pr": "cursor/case-dd0025-coherence"
   }
 }
