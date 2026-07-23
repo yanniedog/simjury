@@ -118,6 +118,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           shopt -s nullglob
           for shard in $(seq 0 31); do
