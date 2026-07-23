@@ -1,6 +1,6 @@
-# projectmem - simjury-dailypivot-wt
+# projectmem - simjury-deps
 
-_Last updated: 2026-07-13_
+_Last updated: 2026-07-23_
 
 ## Project purpose
 SimJury is an offline jury simulation game on simjury.com. **Owner pivot 2026-07-13
@@ -15,7 +15,8 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 `DAILY-PIVOT.md` for the decision record and `ROADMAP.md`'s Track D for the delivery ladder.
 
 ## Recent issues
-- No issues logged yet.
+- [DONE] #0001 GitHub npm 11.16 rejects the upgraded app lockfile because @emnapi optional native packages are missing [site/app/package-lock.json] -> Toolchain lockfile is synchronized with GitHub’s npm 11.16 and passes the exact clean-install gate [site/app/package-lock.json] (fixed)
+  - Partial attempt: Regenerated package-lock.json with GitHub CI’s npm 11.16.0; npm reported zero vulnerabilities [site/app/package-lock.json]
 
 ## Decisions
 - Pilot phase: PILOT-SPEC.md supersedes v3 for all work until Phase 4 [PILOT-SPEC.md]
@@ -41,6 +42,9 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 - `CLAUDE.md`
 - `kotlinx.serialization`
 - `simjury.com`
+- `11.16`
+- `package-lock.json`
+- `11.16.0`
 
 ## Open questions
 - None logged yet.
