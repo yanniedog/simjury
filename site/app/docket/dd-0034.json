@@ -1,0 +1,1138 @@
+{
+  "id": "dd-0034",
+  "publish_date": "2026-08-04",
+  "label": "fiction",
+  "title": "The Empty Clinic Slot",
+  "setting": "an after-hours telehealth clinic, remote prescribing terminals, and a disputed two-factor approval in the present day",
+  "charge": "obtaining restricted medicine by fraudulent prescription",
+  "elements": [
+    "Restricted prescriptions were created or used dishonestly",
+    "The accused intended to obtain medicine or a financial benefit by deception"
+  ],
+  "hook": "Nineteen prescriptions appear during appointments that never happened. Nurse Mira Dain's account approved every one, yet a clinic camera seems to place her away from the terminal at the crucial minute.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Mira Dain, 34, is an after-hours nurse who organises free health checks and is paying down the cost of a sibling's rehabilitation.",
+    "if_guilty": "imprisonment, cancellation of her nursing registration, and the loss of the income supporting rehabilitation at home"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Nineteen invented consultations became nineteen restricted prescriptions, all issued through Mira Dain's clinician account. Each approval reached the private handset she registered, and the collected medicine was resold through coded pickup messages. The defence will point to a camera image showing Mira outside the bay, but the system records when approval arrived, not when the terminal request began."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The clinic reused workstations, shared emergency access, and ran a camera system known to upload late. Mira was carrying food outside the bay when the crucial approval supposedly occurred. Another worker knew the rota, could reach the terminal, and could exploit Mira's unlocked session. Suspicion about poor security is not proof that she created or benefited from these prescriptions."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The camera timestamp was generated when the image uploaded, twelve minutes after capture. The handset record, hardware-key challenge, and pickup account instead agree to the second and all sit within Mira's control. She also searched the exact locker codes before collection. Shared premises explain opportunity for others; they do not explain three independent records following her devices and benefit."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Clinic security was chaotic, the handset remained in a charging drawer during shifts, and staff sometimes handled alerts for one another. The prosecution asks you to treat system ownership as human identity. Even an inaccurate camera does not prove Mira touched the terminal, approved knowingly, or arranged resale. Those gaps remain on elements the prosecution must prove beyond reasonable doubt."
+      }
+    }
+  },
+  "epilogue": "The clinic cancelled the fraudulent prescriptions before further medicine left storage and notified every patient whose identity had been used. Mira's registration was suspended after sentence, while an independent trustee protected the rehabilitation payments she had been making. The clinic replaced shared sessions with individual hardware keys, separated medicine approval from patient intake, and began retaining original camera timestamps rather than upload times.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Jaro Pell",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Nemi Sarr",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Mira Dain",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Oren Taal",
+      "role_label": "clinic operations manager",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Siva Noll",
+      "role_label": "authentication examiner",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Pera Venn",
+      "role_label": "night reception worker",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit one is a corridor still stamped 20:14. Mira stands outside the treatment bay carrying two meal boxes while the first disputed prescription shows approval at 20:14. The image appears to make simultaneous use impossible and gives the defence a clean alibi, but the overlay does not identify whether it records capture or upload time.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "the corridor camera still appeared conclusive at first, but the full record showed that it could not establish responsibility by itself.",
+      "tags": [
+        "identity",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I supervised the clinic that night. I found empty appointment records matched to restricted prescriptions under Mira's account. Staff sometimes reused terminals, but only registered clinicians could approve medicine. I initially accepted the corridor still as proof that somebody had stolen her session until the original camera export was recovered.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.32,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "tags": [
+        "identity",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "You allowed staff to leave sessions open during meal breaks? I tolerated it when queues were long, although policy forbade it. The emergency handset sat in a shared charging drawer? Yes, but Mira's private handset received these challenges. You blamed her before checking the camera's upload setting? I suspended access first and requested the original export later.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "You allowed staff to leave sessions open during meal breaks?"
+        },
+        {
+          "speaker": "w1",
+          "text": "I tolerated it when queues were long, although policy forbade it."
+        },
+        {
+          "speaker": "dc",
+          "text": "The emergency handset sat in a shared charging drawer?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes, but Mira's private handset received these challenges."
+        },
+        {
+          "speaker": "dc",
+          "text": "You blamed her before checking the camera's upload setting?"
+        },
+        {
+          "speaker": "w1",
+          "text": "I suspended access first and requested the original export later."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The defence tenders the shift sheet. It places five employees near the shared terminal and records two emergency session handovers. That history makes another operator possible and exposes serious clinic failures. It does not show who completed the private second-factor challenge or who later used the coded collection details.",
+      "surface_persuasion": 0.62,
+      "true_weight": 0.38,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "tags": [
+        "identity",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I compared application events with the camera's original files. The visible 20:14 overlay was added when a weak connection finally uploaded an image captured at 20:02. At actual approval time, Mira had returned inside. The terminal request and private-handset response were separated by eleven seconds and used her registered hardware key.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "tags": [
+        "timeline",
+        "identity"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit six contains the authentication challenge. It was opened on Mira's private handset, approved after a biometric unlock, and paired with the hardware key she carried on her badge. Device logs show no reset, duplicate key, or remote recovery. Together those records connect the prescription approval to two items assigned to Mira.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.82,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "the handset challenge, hardware-key record, and locker access supplied independent control, timing, and method evidence that resolved the central ambiguity.",
+      "tags": [
+        "timeline",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "A person nearby could lift a handset from the charging area? They could lift it, but a biometric unlock was still required. Biometrics can fail and fall back to a code? Yes, after two failures; neither failure appears in these logs. So your evidence identifies devices, not a face? It identifies uninterrupted possession and successful private authentication, which is strong but not visual identification.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "A person nearby could lift a handset from the charging area?"
+        },
+        {
+          "speaker": "w2",
+          "text": "They could lift it, but a biometric unlock was still required."
+        },
+        {
+          "speaker": "dc",
+          "text": "Biometrics can fail and fall back to a code?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Yes, after two failures; neither failure appears in these logs."
+        },
+        {
+          "speaker": "dc",
+          "text": "So your evidence identifies devices, not a face?"
+        },
+        {
+          "speaker": "w2",
+          "text": "It identifies uninterrupted possession and successful private authentication, which is strong but not visual identification."
+        }
+      ],
+      "surface_persuasion": 0.62,
+      "true_weight": 0.72,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "the handset challenge, hardware-key record, and locker access supplied independent control, timing, and method evidence that resolved the central ambiguity.",
+      "tags": [
+        "timeline",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I worked reception and saw Mira return from the corridor carrying food. Earlier she complained that the prescribing system slowed every shift. I sometimes moved the emergency handset between chargers, so other people could reach it. I never saw Mira type a false appointment or discuss selling medicine.",
+      "surface_persuasion": 0.56,
+      "true_weight": 0.48,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "Mira asked you not to ring patients about the empty slots? She said the late list had already been handled. She then photographed the collection-code screen? I saw her hold a phone toward it, but I could not read the display. And no other clinician remained after closing? No. Mira and I were the last staff inside.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "Mira asked you not to ring patients about the empty slots?"
+        },
+        {
+          "speaker": "w3",
+          "text": "She said the late list had already been handled."
+        },
+        {
+          "speaker": "pc",
+          "text": "She then photographed the collection-code screen?"
+        },
+        {
+          "speaker": "w3",
+          "text": "I saw her hold a phone toward it, but I could not read the display."
+        },
+        {
+          "speaker": "pc",
+          "text": "And no other clinician remained after closing?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No. Mira and I were the last staff inside."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that weak workplace controls do not transfer the burden to Mira. The prosecution must prove dishonest creation or use and the required intent beyond reasonable doubt. Device ownership may support identity, but you must assess continuity, alternative access, and every admitted record without assuming the accused must explain suspicious events.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit nine links the first collection message to a locker opened with Mira's travel credential forty minutes after closing. Her handset had searched that exact locker code three minutes after approval. The resale account then sent proceeds toward a debt payment she controlled. Those independent events complete the method, timing, and benefit.",
+      "surface_persuasion": 0.72,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "the handset challenge, hardware-key record, and locker access supplied independent control, timing, and method evidence that resolved the central ambiguity.",
+      "tags": [
+        "timeline",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b2",
+    "b4",
+    "b7",
+    "b10"
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The corridor camera still looked like a precise alibi because its overlay showed the approval minute. The original file revealed that the overlay marked delayed upload, while the handset challenge, hardware-key record, and locker access independently followed Mira through request, approval, and collection.",
+  "difficulty_target": 0.68,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quick-pattern thinker initially captured by the corridor camera still.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the corridor camera still supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A careful note-taker who keeps returning to chronology.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the corridor camera still supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A principled holdout who tests every claim against the burden.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the corridor camera still supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+          ],
+          "holdout": [
+            "I will hold until admitted evidence meets the burden, not until everyone repeats an assumption."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "A practical juror who values independent corroboration.",
+        "register": "hesitant",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the corridor camera still supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+          ],
+          "burden_drift": [
+            "I still want the accused to explain what otherwise looks impossible."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "A cautious juror willing to change when the sequence becomes clear.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the corridor camera still supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+          ],
+          "burden_correct": [
+            "I am correcting that: the prosecution carries the burden, and I will test its proof."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_correct"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A confident speaker who challenges unsupported assumptions.",
+        "register": "blunt",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the corridor camera still supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A hesitant juror who needs the advocates to connect method with identity.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the corridor camera still supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A foreperson focused on giving every disagreement a fair hearing.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the corridor camera still supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A detail-oriented juror alert to gaps in digital evidence.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the corridor camera still supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A juror tempted to shift the burden when the story feels suspicious.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the corridor camera still supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A blunt holdout who refuses to convert probability into certainty.",
+        "register": "blunt",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the handset challenge, hardware-key record, and locker access; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the corridor camera still feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the corridor camera still supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the handset challenge, hardware-key record, and locker access, not my first impression."
+          ],
+          "holdout": [
+            "I will hold until admitted evidence meets the burden, not until everyone repeats an assumption."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-3"
+  }
+}

@@ -1,0 +1,1138 @@
+{
+  "id": "dd-0036",
+  "publish_date": "2026-08-06",
+  "label": "fiction",
+  "title": "The Ghost Invoice",
+  "setting": "a community housing office, altered supplier invoices, and a hidden email-forwarding rule in the present day",
+  "charge": "dishonestly redirecting electronic payments",
+  "elements": [
+    "Payment instructions were altered or used dishonestly",
+    "The accused intended to obtain a financial advantage or cause financial loss"
+  ],
+  "hook": "A housing repair payment vanishes after one bank line changes on an invoice. Contractor Seli Orm's exact administrator fingerprint made the alteration, perhaps too exact to be real.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Seli Orm, 29, maintains payment systems on short contracts and volunteers at a weekend workshop that repairs household appliances.",
+    "if_guilty": "imprisonment, exclusion from trusted systems work, and the collapse of the workshop program that relies on her technical supervision"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "One altered invoice redirected a housing repair payment into an account controlled through Seli Orm's recovery address. The change used her administrator session, her hardware key, and a forwarding rule hidden in her mailbox. A perfect fingerprint is not evidence of planting when the same private access then follows the money through cash-out and deletion attempts."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The fingerprint is suspicious because it is mechanically perfect. Seli was teaching at a crowded workshop while an office terminal reproduced her usual settings and copied her signature block. Administrators can clone profiles, keys can remain docked, and recovery addresses can be substituted. The prosecution has traced systems, not the human who operated them or intended the loss."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The attacker needed Seli's hardware key, her private mailbox recovery, the supplier list she alone exported, and the cash-out code opened on her handset. After the transfer, the hidden rule deleted warnings and her workshop laptop searched how long payment logs remain. Each record has limits alone; together they map preparation, execution, concealment, and benefit to one person."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "A shared office, a public workshop network, and reusable administrator templates created countless opportunities to imitate Seli. The cash account used a false name, no camera clearly shows her face, and the laptop search could relate to routine retention work. The prosecution's chain remains a chain of devices. It must prove Seli's dishonest intention, not merely privileged access."
+      }
+    }
+  },
+  "epilogue": "The diverted repair money was recovered before tenants lost heating service, although the supplier waited several weeks for payment. Seli's contract ended and the workshop appointed two new supervisors so participants could continue without her. The housing office required dual approval for bank-detail changes, blocked silent forwarding rules, and gave suppliers a separate verification channel. Affected tenants received direct progress notices during the delayed repairs.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Jaro Pell",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Nemi Sarr",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Seli Orm",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Aven Rusk",
+      "role_label": "housing finance manager",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Davi Pellor",
+      "role_label": "email and access examiner",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Nora Kett",
+      "role_label": "workshop coordinator",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit one is the alteration log. Every setting matches Seli's normal administrator profile, including window size, shortcut order, and signature spacing. The imitation is so exact that it appears copied rather than naturally produced, supporting the defence claim that someone planted her digital fingerprint on the invoice change.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "the mechanically perfect administrator fingerprint appeared conclusive at first, but the full record showed that it could not establish responsibility by itself.",
+      "tags": [
+        "identity",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I approved a repair invoice after our system displayed the supplier's usual name and Seli's administrator signature. The bank line had changed, but an email in the same thread confirmed it. When the supplier reported nonpayment, both that confirmation and the security warning had vanished from my mailbox.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.32,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "tags": [
+        "identity",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "Several contractors could export an administrator profile? Two senior contractors could, and office terminals stored templates. Seli was recorded at a workshop during the alteration? She appeared in group photographs before and after it. You relied on the signature instead of calling the supplier? Yes. I approved the payment without separate verification.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "Several contractors could export an administrator profile?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Two senior contractors could, and office terminals stored templates."
+        },
+        {
+          "speaker": "dc",
+          "text": "Seli was recorded at a workshop during the alteration?"
+        },
+        {
+          "speaker": "w1",
+          "text": "She appeared in group photographs before and after it."
+        },
+        {
+          "speaker": "dc",
+          "text": "You relied on the signature instead of calling the supplier?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes. I approved the payment without separate verification."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The defence tenders workshop photographs timestamped at 11:02 and 11:19. Seli appears teaching at both ends of a seventeen-minute window while the invoice changed at 11:11. The workshop was across town. The images strongly limit travel, but they do not show her continuously or exclude remote approval from a nearby device.",
+      "surface_persuasion": 0.62,
+      "true_weight": 0.38,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "tags": [
+        "identity",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I reconstructed the mail account. A forwarding rule was created six days before the supplier invoice arrived, using Seli's hardware key and private recovery channel. It copied messages containing bank change or security warning to a concealed mailbox, then deleted them after reading. The rule awaited an invoice matching the exported supplier list.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "tags": [
+        "timeline",
+        "identity"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit six records the payment approval at 11:11. A hardware-key challenge completed through Seli's workshop laptop, then her handset opened the concealed mailbox from the same local network. Ninety seconds later, that handset displayed the cash-out code. The sequence shows remote control without requiring travel back to the housing office.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.82,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "the forwarding rule, hardware-key approval, and cash-out sequence supplied independent control, timing, and method evidence that resolved the central ambiguity.",
+      "tags": [
+        "timeline",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "A docked hardware key can be used by another person nearby? Yes, if that person can also unlock the laptop session. Workshop participants sometimes used Seli's laptop for demonstrations? They used a guest account; this event resumed her sealed administrator session. You still cannot identify a face from network traffic? No. I identify continuous private authentication across the laptop, handset, and mailbox.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "A docked hardware key can be used by another person nearby?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Yes, if that person can also unlock the laptop session."
+        },
+        {
+          "speaker": "dc",
+          "text": "Workshop participants sometimes used Seli's laptop for demonstrations?"
+        },
+        {
+          "speaker": "w2",
+          "text": "They used a guest account; this event resumed her sealed administrator session."
+        },
+        {
+          "speaker": "dc",
+          "text": "You still cannot identify a face from network traffic?"
+        },
+        {
+          "speaker": "w2",
+          "text": "No. I identify continuous private authentication across the laptop, handset, and mailbox."
+        }
+      ],
+      "surface_persuasion": 0.62,
+      "true_weight": 0.72,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "the forwarding rule, hardware-key approval, and cash-out sequence supplied independent control, timing, and method evidence that resolved the central ambiguity.",
+      "tags": [
+        "timeline",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I coordinated the workshop and remember Seli teaching through most of the morning. People moved between benches, and her laptop sat near the projector. She stepped into the storage room briefly around eleven. I assumed she was finding parts. I never saw an invoice or heard her discuss housing payments.",
+      "surface_persuasion": 0.56,
+      "true_weight": 0.48,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "The storage room had the only quiet network point? Yes, and the router was mounted inside it. Seli carried her handset when she entered? Yes. She checked it as she closed the door. She returned after roughly four minutes? About that. The class continued working while she was away.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "The storage room had the only quiet network point?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes, and the router was mounted inside it."
+        },
+        {
+          "speaker": "pc",
+          "text": "Seli carried her handset when she entered?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes. She checked it as she closed the door."
+        },
+        {
+          "speaker": "pc",
+          "text": "She returned after roughly four minutes?"
+        },
+        {
+          "speaker": "w3",
+          "text": "About that. The class continued working while she was away."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that privileged access alone does not prove dishonest use, and Seli need not identify another operator. The prosecution must prove alteration or dishonest use and the required intent beyond reasonable doubt. Assess whether independent records establish human control, preparation, and benefit, while allowing for shared equipment and reasonable alternative access.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This evidence changed the context without carrying enough independent weight to decide the charge alone.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit nine follows the cash-out. The concealed mailbox sent its code to Seli's handset, and a workshop locker camera shows her distinctive repaired tool case at the kiosk while her credential opened it. Minutes later she paid a personal debt with notes bearing the kiosk's recorded sequence. The separate records complete benefit and identity.",
+      "surface_persuasion": 0.72,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "the forwarding rule, hardware-key approval, and cash-out sequence supplied independent control, timing, and method evidence that resolved the central ambiguity.",
+      "tags": [
+        "timeline",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b2",
+    "b4",
+    "b7",
+    "b10"
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The mechanically perfect administrator fingerprint looked planted because it copied Seli's routine settings without variation. The forwarding rule, hardware-key approval, and cash-out sequence came from separate systems and revealed preparation before the invoice arrived, private control during payment, and benefit afterward.",
+  "difficulty_target": 0.68,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quick-pattern thinker initially captured by the mechanically perfect administrator fingerprint.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A careful note-taker who keeps returning to chronology.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A principled holdout who tests every claim against the burden.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+          ],
+          "holdout": [
+            "I will hold until admitted evidence meets the burden, not until everyone repeats an assumption."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "A practical juror who values independent corroboration.",
+        "register": "hesitant",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+          ],
+          "burden_drift": [
+            "I still want the accused to explain what otherwise looks impossible."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "A cautious juror willing to change when the sequence becomes clear.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+          ],
+          "burden_correct": [
+            "I am correcting that: the prosecution carries the burden, and I will test its proof."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_correct"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A confident speaker who challenges unsupported assumptions.",
+        "register": "blunt",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A hesitant juror who needs the advocates to connect method with identity.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A foreperson focused on giving every disagreement a fair hearing.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A detail-oriented juror alert to gaps in digital evidence.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A juror tempted to shift the burden when the story feels suspicious.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A blunt holdout who refuses to convert probability into certainty.",
+        "register": "blunt",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I keep returning to the forwarding rule, hardware-key approval, and cash-out sequence; it survives the challenges made in this room.",
+            "I can fit that evidence into the sequence without guessing about the missing parts."
+          ],
+          "pushback": [
+            "I understand why the mechanically perfect administrator fingerprint feels decisive, but I do not think volume equals reliability.",
+            "I want the whole chain before I turn suspicion into a verdict."
+          ],
+          "concede": [
+            "I concede that the mechanically perfect administrator fingerprint supports the opposing account when I view it alone."
+          ],
+          "final": [
+            "My final view turns on the forwarding rule, hardware-key approval, and cash-out sequence, not my first impression."
+          ],
+          "holdout": [
+            "I will hold until admitted evidence meets the burden, not until everyone repeats an assumption."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-3"
+  }
+}
