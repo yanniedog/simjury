@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 //
 // The Daily Docket ships as static assets served by the site Worker at
-// `/today/` (see site/package.json `build:app` and wrangler.jsonc). Two build
+// `/today/` (see site/package.json `build:app` and wrangler.json). Two build
 // choices keep it inside the site's strict Content-Security-Policy
 // (`script-src 'self'`, no `unsafe-inline` for scripts):
 //   - `modulePreload.polyfill: false` drops Vite's inline preload-polyfill

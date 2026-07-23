@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
-const config = JSON.parse(readFileSync(join(siteRoot, 'wrangler.jsonc'), 'utf8'))
+const config = JSON.parse(readFileSync(join(siteRoot, 'wrangler.json'), 'utf8'))
 const forbiddenBindings = [
   'ai',
   'analytics_engine_datasets',
