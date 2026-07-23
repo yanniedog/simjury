@@ -1,0 +1,1162 @@
+{
+  "id": "dd-0030",
+  "publish_date": "2026-07-31",
+  "label": "fiction",
+  "title": "The Night Shift Key",
+  "setting": "a cooperative robotics laboratory, a biometric access vestibule, and a missing navigation prototype in the present day",
+  "charge": "burglary and theft of a commercial prototype",
+  "elements": [
+    "The laboratory was entered without authority",
+    "The accused entered intending to steal and took the prototype"
+  ],
+  "hook": "A palm scan opens the laboratory at 3:04 a.m. The accused insists the scan was cloned, and the perfect access trail almost proves it. A stripe of assembly dust is less perfect.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Kes Brann, 33, is a contract fabricator raising a six-year-old and hoping to convert a temporary laboratory placement into permanent work.",
+    "if_guilty": "imprisonment, separation from a young child, and exclusion from the only technical trade in which Kes has qualifications"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Kes Brann's palm template opened the laboratory after midnight, the disabled camera followed, and a navigation prototype vanished. Kes had asked about its resale value and owed a private lender. The defence calls the access trail too perfect, but the prototype's assembly dust was later found inside Kes's locked tool chest. That is possession tied to entry."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Biometric templates are files, not hands. The laboratory exported Kes's template during a vendor test, and an administrator could replay it. The camera failure began remotely, while Kes's phone remained at home. Trace dust moves through a workshop where every contractor shares benches and tools. The prosecution has a compromised system and a contaminated chest, not a burglar."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The replay possibility explains how entry could be faked; it does not explain the dust sealed beneath Kes's private chest liner, the marketplace draft describing the prototype, or the deleted message arranging collection before dawn. Those facts come from separate sources. The access record is not the case's foundation. It is the doorway into a plan Kes had already made."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The laboratory failed to preserve administrator logs and let prototypes shed distinctive dust across communal benches. The marketplace draft never named the device, and the message could concern ordinary tools. A copied palm template gives someone else both access and a way to frame Kes. Unless the prosecution excludes that live possibility beyond reasonable doubt, suspicion remains only suspicion."
+      }
+    }
+  },
+  "epilogue": "The cooperative replaced replayable templates with hardware-bound credentials and created a sign-out rule for contaminated tools. Kes's child stayed with relatives during the proceedings, and the laboratory funded counselling without waiting for a verdict. The stolen prototype was recovered unopened from a storage locker. Engineers rebuilt the delayed navigation trial using an earlier design, while contractors negotiated private lockers and independent audit access.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Tarin Oss",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Lena Varr",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Kes Brann",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Miro Senk",
+      "role_label": "laboratory security lead",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Pella Gorn",
+      "role_label": "prototype engineer",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Dr Orin Fale",
+      "role_label": "biometric systems examiner",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit one is the access record. A palm template assigned only to Kes Brann passed a live-presence check at 3:04 a.m.; the door opened once, and no other credential entered. The precision seems conclusive, yet the laboratory had exported that template during testing and kept it on an administrator server.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The perfect palm-scan trail appeared personal and precise, but it could not establish who acted or why.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I trusted the system because it required pulse variation and pressure, not just a picture. After the theft, I learned a vendor test mode could replay stored responses if an administrator token was active. We never found the token used that night because administrator logs rolled over before police collected them.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.32,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This witness explained why suspicion formed, but the account depended on an inference later tested in cross-examination.",
+      "tags": [
+        "digital_forensics",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "So a stored template could pass the so-called live check? In vendor test mode, yes. The laboratory exported Kes's template two weeks earlier? It did, along with five others. And the administrator audit was lost on your watch? Yes. We preserved door events but not the server log. And that limit matters when deciding who acted? Yes. The record narrows the possibilities, but it cannot replace proof.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "So a stored template could pass the so-called live check?"
+        },
+        {
+          "speaker": "w1",
+          "text": "In vendor test mode, yes."
+        },
+        {
+          "speaker": "dc",
+          "text": "The laboratory exported Kes's template two weeks earlier?"
+        },
+        {
+          "speaker": "w1",
+          "text": "It did, along with five others."
+        },
+        {
+          "speaker": "dc",
+          "text": "And the administrator audit was lost on your watch?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes. We preserved door events but not the server log."
+        },
+        {
+          "speaker": "dc",
+          "text": "And that limit matters when deciding who acted?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes. The record narrows the possibilities, but it cannot replace proof."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The live answers exposed the limit hidden by the opening narrative and returned the record to what it could actually prove.",
+      "tags": [
+        "method",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The defence tenders Kes's phone-location record, showing the handset connected to a home charger throughout the night. A neighbour's entry camera also shows no departure, although a rear walkway is outside its view. The material supports an alibi but cannot establish that Kes remained inside continuously. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.62,
+      "true_weight": 0.38,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The exhibit supported the opposing story, but alternative explanations prevented it from carrying decisive weight.",
+      "tags": [
+        "digital_forensics",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "The missing unit used a silver ceramic powder during assembly. The powder settles on sleeves, benches, and shared clamps. I had seen Kes using the same clamp station that afternoon. Finding ordinary surface dust on a contractor would mean little; finding a concentrated stripe protected under a private chest liner is different.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The testimony added context and motive, not a reliable identification of the criminal act.",
+      "tags": [
+        "timeline",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit six is the tool chest liner. Beneath its sealed rear edge, investigators found a dense stripe of the prototype's silver ceramic powder mixed with fresh adhesive from its transit cradle. The liner had been lifted and pressed back down, preserving the mixture where routine workshop contamination could not reach.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.82,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The sealed dust and sale preparation independently fixed the mechanism and sequence that the louder clue obscured.",
+      "tags": [
+        "method",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "Ceramic powder was present across the shared workshop? Light background traces were widespread. Kes worked at the same clamp station that day? Yes, so surface traces would be expected. What makes the chest stripe different? Its concentration and fresh cradle adhesive, sealed beneath a liner installed months earlier. And that limit matters when deciding who acted? Yes. The record narrows the possibilities, but it cannot replace proof.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "Ceramic powder was present across the shared workshop?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Light background traces were widespread."
+        },
+        {
+          "speaker": "dc",
+          "text": "Kes worked at the same clamp station that day?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Yes, so surface traces would be expected."
+        },
+        {
+          "speaker": "dc",
+          "text": "What makes the chest stripe different?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Its concentration and fresh cradle adhesive, sealed beneath a liner installed months earlier."
+        },
+        {
+          "speaker": "dc",
+          "text": "And that limit matters when deciding who acted?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Yes. The record narrows the possibilities, but it cannot replace proof."
+        }
+      ],
+      "surface_persuasion": 0.62,
+      "true_weight": 0.72,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Cross-examination forced the witness to separate institutional assumptions from the fact that ultimately controlled the case.",
+      "tags": [
+        "method",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I examined the access system and reproduced a template replay in the laboratory. That confirms another administrator could have opened the door under Kes's name. It does not explain who scheduled the camera shutdown or handled the prototype afterward. Biometric uncertainty removes one shortcut; it does not erase independent physical evidence.",
+      "surface_persuasion": 0.56,
+      "true_weight": 0.48,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The third witness supplied human and technical context consistent with the true account, while stopping short of deciding the charge alone.",
+      "tags": [
+        "method",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "Your replay required an administrator token? Yes, physical possession or its secret key. Was such a token assigned to Kes for overnight maintenance? One temporary token was, and it was never returned. Could you prove Kes still held it? No. The assignment record proves issue, not possession that night. And that limit matters when deciding who acted? Yes. The record narrows the possibilities, but it cannot replace proof.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "Your replay required an administrator token?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes, physical possession or its secret key."
+        },
+        {
+          "speaker": "pc",
+          "text": "Was such a token assigned to Kes for overnight maintenance?"
+        },
+        {
+          "speaker": "w3",
+          "text": "One temporary token was, and it was never returned."
+        },
+        {
+          "speaker": "pc",
+          "text": "Could you prove Kes still held it?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No. The assignment record proves issue, not possession that night."
+        },
+        {
+          "speaker": "pc",
+          "text": "And that limit matters when deciding who acted?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes. The record narrows the possibilities, but it cannot replace proof."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The challenge revealed possible bias but did not displace the objective record supporting the witness's central point.",
+      "tags": [
+        "credibility",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance. The prosecution must prove each element beyond reasonable doubt using evidence admitted here. Assess system outputs like any other exhibit, and do not research this case, its people, or its technology online.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction supplies the discipline the room needs: unanswered questions cannot reverse the burden of proof.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit nine combines a deleted marketplace draft and a message recovered from Kes's tablet. The draft describes a palm-sized navigation core with the prototype's unpublished battery life. At 2:41 a.m., Kes wrote, locker ready before first shift. The storage locker containing the missing unit was rented using the same tablet minutes later.",
+      "surface_persuasion": 0.72,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The final record corroborated the sealed dust and sale preparation through a separate source and resolved the central ambiguity.",
+      "tags": [
+        "method",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b2",
+    "b4",
+    "b7",
+    "b10"
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The perfect palm-scan trail looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter sealed dust and sale preparation supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "difficulty_target": 0.64,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quick-pattern thinker initially captured by the perfect palm-scan trail.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "method": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The sealed dust and sale preparation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The perfect palm-scan trail is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the perfect palm-scan trail looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the sealed dust and sale preparation, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A careful note-taker who keeps returning to chronology.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "method": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The sealed dust and sale preparation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The perfect palm-scan trail is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the perfect palm-scan trail looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the sealed dust and sale preparation, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A principled holdout who tests every claim against the burden.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The sealed dust and sale preparation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The perfect palm-scan trail is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the perfect palm-scan trail looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the sealed dust and sale preparation, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "An anxious juror tempted to make the accused explain the gaps.",
+        "register": "hesitant",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "method": 0,
+          "digital_forensics": 2,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The sealed dust and sale preparation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The perfect palm-scan trail is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the perfect palm-scan trail looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the sealed dust and sale preparation, not the first impression."
+          ],
+          "burden_drift": [
+            "If the defence cannot explain every gap, perhaps that is enough."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "The foreperson, focused on separating proof from suspicion.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The sealed dust and sale preparation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The perfect palm-scan trail is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the perfect palm-scan trail looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the sealed dust and sale preparation, not the first impression."
+          ],
+          "burden_correct": [
+            "An unexplained gap is not proof. The charge still has to be proved."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_correct"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A practical juror who changes position when a mechanism is demonstrated.",
+        "register": "blunt",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "method": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The sealed dust and sale preparation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The perfect palm-scan trail is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the perfect palm-scan trail looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the sealed dust and sale preparation, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A mind-changer especially alert to the sealed dust and sale preparation.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The sealed dust and sale preparation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The perfect palm-scan trail is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the perfect palm-scan trail looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the sealed dust and sale preparation, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A quiet sceptic who distrusts polished system outputs.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "method": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The sealed dust and sale preparation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The perfect palm-scan trail is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the perfect palm-scan trail looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the sealed dust and sale preparation, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A hesitant juror pulled between human testimony and records.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The sealed dust and sale preparation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The perfect palm-scan trail is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the perfect palm-scan trail looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the sealed dust and sale preparation, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A methodical juror who maps each claim to a time and source.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "method": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The sealed dust and sale preparation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The perfect palm-scan trail is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the perfect palm-scan trail looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the sealed dust and sale preparation, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A blunt holdout who refuses to convert probability into certainty.",
+        "register": "blunt",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The sealed dust and sale preparation is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The perfect palm-scan trail is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the perfect palm-scan trail looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the sealed dust and sale preparation, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-2"
+  }
+}

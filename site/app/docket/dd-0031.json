@@ -1,0 +1,1138 @@
+{
+  "id": "dd-0031",
+  "publish_date": "2026-08-01",
+  "label": "fiction",
+  "title": "The Vanishing Parcel",
+  "setting": "a regional parcel depot, handheld route scanners, and a duplicated return label in the present day",
+  "charge": "theft of jewellery from an entrusted parcel",
+  "elements": [
+    "Jewellery was dishonestly taken from the parcel",
+    "The accused was the person who took it intending permanent deprivation"
+  ],
+  "hook": "The scanner says courier Nessa Lorn was the last person to touch the parcel. The empty box reaches its owner with her route number attached. A second box carries the same identity.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Nessa Lorn, 48, has driven the same rural delivery loop for eleven years and cares for a partner recovering from a stroke.",
+    "if_guilty": "a prison sentence, immediate loss of the route and home, and a reputation for stealing from neighbours who knew her by name"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "A jewellery return entered Nessa Lorn's van sealed and left it empty. Her scanner recorded the last custody event, her route label appeared on the box, and she bought a used mobility chair with cash days later. Parcels do not empty themselves. The chain narrows to the courier who controlled the van and signed the final scan."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The chain narrows only if the label is unique. It was not. Someone printed a second return label at the depot, attached it to an empty replacement box, and sent that decoy through Nessa's route. The genuine parcel left by an unmonitored side gate before her shift. Her cash came from a documented vehicle sale. The scanner followed a sticker, not jewellery."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The duplicate-label theory requires an insider, an unlogged gate movement, and perfect timing. Nessa had the van and the final scan. Her explanation for cash appeared after investigators asked. The defence can make the depot look untidy, but ordinary disorder does not account for a valuable parcel disappearing while one courier held recorded custody."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The genuine parcel weighed 1.8 kilograms; Nessa's scanned box weighed 420 grams before it ever reached her van. A camera shows the heavier box leaving by the side gate under another cage, and the print server records a duplicate label from a supervisor terminal. Her scan proves she delivered the decoy. It cannot prove she made it."
+      }
+    }
+  },
+  "epilogue": "The depot installed scales at every custody handoff and disabled label reprints without dual approval. Nessa returned to a shorter route while caring responsibilities continued, but several regular customers had already moved their deliveries elsewhere. The parcel owner received insurance payment and later recovered some pieces through a dealer's voluntary return. Staff formed a safety committee after learning how easily one sticker could overwrite an entire chain of custody.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Arlo Penn",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Mira Tesk",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Nessa Lorn",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Joren Pike",
+      "role_label": "depot investigations manager",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Elia Kress",
+      "role_label": "parcel owner",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Sumi Darr",
+      "role_label": "barcode and logistics auditor",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit one is the custody report. Nessa Lorn's device logged the parcel as loaded, attempted, and returned; no later employee scan appears before the owner opened an empty box. The report calls her the last handler, a phrase that sounds physical even though every event follows the barcode printed on the package.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The last-handler scanner event appeared personal and precise, but it could not establish who acted or why.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I reviewed the chain and found no missing scans. Nessa controlled the van for nine hours, then returned the box after recording that nobody answered. She had complained about fuel costs and bought a mobility chair with cash that week. With the digital chain intact, those circumstances looked like motive and opportunity.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.32,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "This witness explained why suspicion formed, but the account depended on an inference later tested in cross-examination.",
+      "tags": [
+        "digital_forensics",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "Your intact chain follows a barcode, not a unique physical box? That is correct. The system allowed labels to be reprinted without approval? At the time, a supervisor terminal could do so. You never compared package weights before accusing Nessa? No. Weight data sat in a separate system we did not initially query.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "Your intact chain follows a barcode, not a unique physical box?"
+        },
+        {
+          "speaker": "w1",
+          "text": "That is correct."
+        },
+        {
+          "speaker": "dc",
+          "text": "The system allowed labels to be reprinted without approval?"
+        },
+        {
+          "speaker": "w1",
+          "text": "At the time, a supervisor terminal could do so."
+        },
+        {
+          "speaker": "dc",
+          "text": "You never compared package weights before accusing Nessa?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No. Weight data sat in a separate system we did not initially query."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The live answers exposed the limit hidden by the opening narrative and returned the record to what it could actually prove.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "The owner says the return contained family jewellery wrapped in a green case and weighed almost two kilograms. The box delivered by Nessa contained packing paper and a metal washer. Because both bore the same printed return number, staff assumed the lighter box was the original after contents had been removed.",
+      "surface_persuasion": 0.62,
+      "true_weight": 0.38,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The exhibit supported the opposing story, but alternative explanations prevented it from carrying decisive weight.",
+      "tags": [
+        "digital_forensics",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I watched Nessa scan the box into her van. It was already light enough to lift with one hand. I did not know the expected weight then. The side gate camera was considered unreliable, so nobody checked it until weeks later. We built the case around the report because the report was easy to read.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The testimony added context and motive, not a reliable identification of the criminal act.",
+      "tags": [
+        "timeline",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit six compares automated belt weights. The genuine return weighed 1.81 kilograms at 06:12. A second object carrying the same barcode weighed 420 grams at 06:26, fourteen minutes before Nessa arrived. Both records remained stored, but the custody screen displayed only the later duplicate as if it were one parcel.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.82,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The weight and duplicate-label sequence independently fixed the mechanism and sequence that the louder clue obscured.",
+      "tags": [
+        "timeline",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "The box Nessa received was light before she touched it? Yes. The belt measured it at 420 grams. Your first statement called her scan the final secure link? It did, because I had not seen the separate weight table. Does that scan identify who printed the duplicate? No. It shows who handled the replacement after the switch.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "The box Nessa received was light before she touched it?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Yes. The belt measured it at 420 grams."
+        },
+        {
+          "speaker": "dc",
+          "text": "Your first statement called her scan the final secure link?"
+        },
+        {
+          "speaker": "w2",
+          "text": "It did, because I had not seen the separate weight table."
+        },
+        {
+          "speaker": "dc",
+          "text": "Does that scan identify who printed the duplicate?"
+        },
+        {
+          "speaker": "w2",
+          "text": "No. It shows who handled the replacement after the switch."
+        }
+      ],
+      "surface_persuasion": 0.62,
+      "true_weight": 0.72,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Cross-examination forced the witness to separate institutional assumptions from the fact that ultimately controlled the case.",
+      "tags": [
+        "timeline",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I audited the print server. The label was reissued from a supervisor terminal at 06:21, then an empty box entered the belt manually. The original crossed the side gate under a recycling cage at 06:29. Nessa's login had no reprint permission, and her route tablet was still syncing in the staff room.",
+      "surface_persuasion": 0.56,
+      "true_weight": 0.48,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The third witness supplied human and technical context consistent with the true account, while stopping short of deciding the charge alone.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "A colleague could have used Nessa's route knowledge with her help? That is possible in the abstract. The audit cannot prove she knew nothing? No audit proves a person's thoughts. So the duplicate does not itself clear her? It proves the theft sequence was complete before she received the decoy.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "A colleague could have used Nessa's route knowledge with her help?"
+        },
+        {
+          "speaker": "w3",
+          "text": "That is possible in the abstract."
+        },
+        {
+          "speaker": "pc",
+          "text": "The audit cannot prove she knew nothing?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No audit proves a person's thoughts."
+        },
+        {
+          "speaker": "pc",
+          "text": "So the duplicate does not itself clear her?"
+        },
+        {
+          "speaker": "w3",
+          "text": "It proves the theft sequence was complete before she received the decoy."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The challenge revealed possible bias but did not displace the objective record supporting the witness's central point.",
+      "tags": [
+        "credibility",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance. The prosecution must prove each element beyond reasonable doubt using evidence admitted here. Assess system outputs like any other exhibit, and do not research this case, its people, or its technology online.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction supplies the discipline the room needs: unanswered questions cannot reverse the burden of proof.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit nine records Nessa's cash source. A dated sale receipt, buyer transfer, and vehicle registration change document the amount used for the mobility chair. The payment cleared two days before the parcel entered the depot. The supposed sudden wealth therefore predates the alleged theft and matches an independently verified sale.",
+      "surface_persuasion": 0.72,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The final record corroborated the weight and duplicate-label sequence through a separate source and resolved the central ambiguity.",
+      "tags": [
+        "timeline",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b2",
+    "b4",
+    "b7",
+    "b10"
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The last-handler scanner event looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter weight and duplicate-label sequence supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "difficulty_target": 0.55,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quick-pattern thinker initially captured by the last-handler scanner event.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The weight and duplicate-label sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The last-handler scanner event is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the last-handler scanner event looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the weight and duplicate-label sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A careful note-taker who keeps returning to chronology.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The weight and duplicate-label sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The last-handler scanner event is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the last-handler scanner event looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the weight and duplicate-label sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A principled holdout who tests every claim against the burden.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The weight and duplicate-label sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The last-handler scanner event is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the last-handler scanner event looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the weight and duplicate-label sequence, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "An anxious juror tempted to make the accused explain the gaps.",
+        "register": "hesitant",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "digital_forensics": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The weight and duplicate-label sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The last-handler scanner event is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the last-handler scanner event looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the weight and duplicate-label sequence, not the first impression."
+          ],
+          "burden_drift": [
+            "If the defence cannot explain every gap, perhaps that is enough."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "The foreperson, focused on separating proof from suspicion.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "digital_forensics": 2,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The weight and duplicate-label sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The last-handler scanner event is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the last-handler scanner event looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the weight and duplicate-label sequence, not the first impression."
+          ],
+          "burden_correct": [
+            "An unexplained gap is not proof. The charge still has to be proved."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_correct"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A practical juror who changes position when a mechanism is demonstrated.",
+        "register": "blunt",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The weight and duplicate-label sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The last-handler scanner event is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the last-handler scanner event looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the weight and duplicate-label sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A mind-changer especially alert to the weight and duplicate-label sequence.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The weight and duplicate-label sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The last-handler scanner event is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the last-handler scanner event looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the weight and duplicate-label sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A quiet sceptic who distrusts polished system outputs.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The weight and duplicate-label sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The last-handler scanner event is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the last-handler scanner event looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the weight and duplicate-label sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A hesitant juror pulled between human testimony and records.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The weight and duplicate-label sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The last-handler scanner event is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the last-handler scanner event looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the weight and duplicate-label sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A methodical juror who maps each claim to a time and source.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The weight and duplicate-label sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The last-handler scanner event is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the last-handler scanner event looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the weight and duplicate-label sequence, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A blunt holdout who refuses to convert probability into certainty.",
+        "register": "blunt",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "digital_forensics": 2,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The weight and duplicate-label sequence is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The last-handler scanner event is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the last-handler scanner event looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the weight and duplicate-label sequence, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-2"
+  }
+}

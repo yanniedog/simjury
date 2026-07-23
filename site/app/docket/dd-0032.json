@@ -1,0 +1,1146 @@
+{
+  "id": "dd-0032",
+  "publish_date": "2026-08-02",
+  "label": "fiction",
+  "title": "The Quiet Alarm",
+  "setting": "a communal apartment building, a coin-sized tracking tag, and months of silent location alerts in the present day",
+  "charge": "stalking by electronic monitoring",
+  "elements": [
+    "The accused repeatedly monitored or followed the complainant",
+    "The conduct was intentional and caused reasonable fear"
+  ],
+  "hook": "A tracking tag travels beneath Sera Noll's bicycle seat for eighty-three days. The purchase account is shared, the fingerprints are partial, and the accused says anyone could have planted it. The battery remembers who returned.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Oris Vale, 38, repairs musical instruments and shares custody of a teenage son. Former friends sit on both sides of the aisle.",
+    "if_guilty": "imprisonment, a protection order affecting family contact, and the end of a small repair business run from home"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "For eighty-three days, Oris Vale knew where Sera Noll slept, worked, and met friends because a tag beneath her bicycle reported every move. It was purchased through his household, renamed on his tablet, and opened for a battery change while his repair-room camera recorded the bicycle outside. He did not merely possess a shared account; he maintained the surveillance."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The household account served four relatives and the building workshop. The tag carries mixed fingerprints, and anyone with the common stairwell code could reach the bicycle. Oris and Sera still exchanged property after separating. The prosecution has assembled ordinary contact and shared technology into intent. It cannot identify who planted the tag or who viewed most alerts."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Planting and viewing leave different traces, and both converge. Oris renamed the tag Quiet Alarm, dismissed repeated safety warnings, opened its history after Sera changed routes, and replaced the battery on the only night the bicycle stood outside his repair room. The shared account creates noise around the edges; the maintenance sequence identifies deliberate control."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "A device history can show an account, not a human mind. The caretaker moved bicycles, relatives used the tablet, and Sera visited the repair room voluntarily to collect property. The camera never shows Oris touching the tag. If mixed access and an unseen battery change leave room for another operator, the burden prevents conviction."
+      }
+    }
+  },
+  "epilogue": "The building created locked bicycle storage and stopped sharing workshop credentials among residents. Sera changed her commuting routine again, this time by choice, and joined a support group for technology-assisted abuse. Oris moved the repair business to a commercial unit while family arrangements were reviewed separately. The device manufacturer simplified unwanted-tracking alerts and preserved warning acknowledgements for longer after advocacy groups examined the case.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Nera Quist",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Sol Marr",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Oris Vale",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Sera Noll",
+      "role_label": "complainant and bicycle owner",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Hale Rinn",
+      "role_label": "digital investigations officer",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Pia Dorne",
+      "role_label": "building caretaker",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The defence tenders the purchase account. Four family members and two workshop devices used it during the year, and the tracking tag was bought with pooled household credit. No receipt names Oris. That shared ownership makes the first attribution look uncertain and offers several people who could have activated the device.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The shared purchase account appeared personal and precise, but it could not establish who acted or why.",
+      "tags": [
+        "identity",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I found the tag after my bicycle warned me through a borrowed detector. For months Oris had appeared near a new gym, a friend's building, and a weekend market I never mentioned. He always had a reason. Once the tag was removed, the coincidences stopped completely, which changed how I understood every encounter.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.32,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "This witness explained why suspicion formed, but the account depended on an inference later tested in cross-examination.",
+      "tags": [
+        "identity",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "You and Oris still exchanged belongings during those months? Yes, through the caretaker when possible. You visited the repair room once with your bicycle? I left it outside while collecting boxes. You never saw Oris attach a tracking device? No. I saw the pattern of appearances before I knew why.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "You and Oris still exchanged belongings during those months?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes, through the caretaker when possible."
+        },
+        {
+          "speaker": "dc",
+          "text": "You visited the repair room once with your bicycle?"
+        },
+        {
+          "speaker": "w1",
+          "text": "I left it outside while collecting boxes."
+        },
+        {
+          "speaker": "dc",
+          "text": "You never saw Oris attach a tracking device?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No. I saw the pattern of appearances before I knew why."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The live answers exposed the limit hidden by the opening narrative and returned the record to what it could actually prove.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit four is a partial print report. Two usable areas contain mixed ridge detail, one consistent with Oris and one unidentified. The tag passed through a household drawer and a communal workshop before recovery. The prosecution says the print supports handling; the defence says it proves only ordinary prior contact.",
+      "surface_persuasion": 0.62,
+      "true_weight": 0.38,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The exhibit supported the opposing story, but alternative explanations prevented it from carrying decisive weight.",
+      "tags": [
+        "identity",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "The account logged 312 location checks. Most came from a shared tablet, but seventeen were opened remotely after Sera deviated from her usual route. Safety warnings appeared six times and were dismissed. The user then renamed the device Quiet Alarm, language not required by the system and visible only inside settings.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The testimony added context and motive, not a reliable identification of the criminal act.",
+      "tags": [
+        "timeline",
+        "identity"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit six synchronises the battery compartment log with the repair-room camera. At 19:42, the tag records power loss. At 19:44, Sera's bicycle is wheeled beside Oris's private workbench. At 19:51, the tag restarts with a fresh battery. Oris's access code is the only workshop entry during that interval. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.82,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The battery-change and alert history independently fixed the mechanism and sequence that the louder clue obscured.",
+      "tags": [
+        "timeline",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "The camera does not show the underside of the bicycle seat? No. The workbench blocks that view. A caretaker also knew the room's emergency code? Yes, but that code was not used. Could a device restart after an accidental battery movement? Not with a new battery serial and a completed compartment test.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "The camera does not show the underside of the bicycle seat?"
+        },
+        {
+          "speaker": "w2",
+          "text": "No. The workbench blocks that view."
+        },
+        {
+          "speaker": "dc",
+          "text": "A caretaker also knew the room's emergency code?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Yes, but that code was not used."
+        },
+        {
+          "speaker": "dc",
+          "text": "Could a device restart after an accidental battery movement?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Not with a new battery serial and a completed compartment test."
+        }
+      ],
+      "surface_persuasion": 0.62,
+      "true_weight": 0.72,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Cross-examination forced the witness to separate institutional assumptions from the fact that ultimately controlled the case.",
+      "tags": [
+        "timeline",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I moved the bicycle into the repair room because the corridor was being cleaned. Oris was inside alone and asked me to leave it near his bench. I returned ten minutes later; he said he had adjusted the loose seat without being asked. I did not see a tag, but nobody else entered during that period.",
+      "surface_persuasion": 0.56,
+      "true_weight": 0.48,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The third witness supplied human and technical context consistent with the true account, while stopping short of deciding the charge alone.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "You have argued with Oris over workshop noise? Many residents have, including me. Could that dispute affect your memory? It could affect my opinion, not the access log. Did you actually watch him replace a battery? No. I placed the bicycle, left, and recorded the only occupied room. And that limit matters when deciding who acted? Yes. The record narrows the possibilities, but it cannot replace proof.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "You have argued with Oris over workshop noise?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Many residents have, including me."
+        },
+        {
+          "speaker": "pc",
+          "text": "Could that dispute affect your memory?"
+        },
+        {
+          "speaker": "w3",
+          "text": "It could affect my opinion, not the access log."
+        },
+        {
+          "speaker": "pc",
+          "text": "Did you actually watch him replace a battery?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No. I placed the bicycle, left, and recorded the only occupied room."
+        },
+        {
+          "speaker": "pc",
+          "text": "And that limit matters when deciding who acted?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes. The record narrows the possibilities, but it cannot replace proof."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The challenge revealed possible bias but did not displace the objective record supporting the witness's central point.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance. The prosecution must prove each element beyond reasonable doubt using evidence admitted here. Assess system outputs like any other exhibit, and do not research this case, its people, or its technology online.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction supplies the discipline the room needs: unanswered questions cannot reverse the burden of proof.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit nine is a deleted note recovered from Oris's personal tablet. It lists Sera's new gym hours beside the tag's private identifier and the words battery due Sunday. The note was created after the fifth safety warning and edited three minutes after a remote location check, using a profile unavailable to other household members.",
+      "surface_persuasion": 0.72,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The final record corroborated the battery-change and alert history through a separate source and resolved the central ambiguity.",
+      "tags": [
+        "timeline",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b2",
+    "b4",
+    "b7",
+    "b10"
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The shared purchase account looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter battery-change and alert history supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "difficulty_target": 0.68,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quick-pattern thinker initially captured by the shared purchase account.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery-change and alert history is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The shared purchase account is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the shared purchase account looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery-change and alert history, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A careful note-taker who keeps returning to chronology.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery-change and alert history is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The shared purchase account is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the shared purchase account looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery-change and alert history, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A principled holdout who tests every claim against the burden.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery-change and alert history is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The shared purchase account is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the shared purchase account looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery-change and alert history, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "An anxious juror tempted to make the accused explain the gaps.",
+        "register": "hesitant",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The battery-change and alert history is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The shared purchase account is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the shared purchase account looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery-change and alert history, not the first impression."
+          ],
+          "burden_drift": [
+            "If the defence cannot explain every gap, perhaps that is enough."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "The foreperson, focused on separating proof from suspicion.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The battery-change and alert history is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The shared purchase account is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the shared purchase account looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery-change and alert history, not the first impression."
+          ],
+          "burden_correct": [
+            "An unexplained gap is not proof. The charge still has to be proved."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_correct"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A practical juror who changes position when a mechanism is demonstrated.",
+        "register": "blunt",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery-change and alert history is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The shared purchase account is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the shared purchase account looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery-change and alert history, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A mind-changer especially alert to the battery-change and alert history.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery-change and alert history is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The shared purchase account is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the shared purchase account looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery-change and alert history, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A quiet sceptic who distrusts polished system outputs.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery-change and alert history is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The shared purchase account is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the shared purchase account looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery-change and alert history, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A hesitant juror pulled between human testimony and records.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery-change and alert history is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The shared purchase account is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the shared purchase account looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery-change and alert history, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A methodical juror who maps each claim to a time and source.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "timeline": 0,
+          "identity": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The battery-change and alert history is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The shared purchase account is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the shared purchase account looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery-change and alert history, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A blunt holdout who refuses to convert probability into certainty.",
+        "register": "blunt",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The battery-change and alert history is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The shared purchase account is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the shared purchase account looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the battery-change and alert history, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-2"
+  }
+}

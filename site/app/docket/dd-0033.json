@@ -1,0 +1,1154 @@
+{
+  "id": "dd-0033",
+  "publish_date": "2026-08-03",
+  "label": "fiction",
+  "title": "The Edited Minute",
+  "setting": "a workplace safety inquiry, an automated transcription suite, and a disputed sixty-second audio gap in the present day",
+  "charge": "fabricating evidence for an official inquiry",
+  "elements": [
+    "Evidence was knowingly altered or fabricated",
+    "The accused intended the false material to mislead the inquiry"
+  ],
+  "hook": "A safety interview loses sixty seconds, and the edit history carries recorder Leni Vos's initials. The missing minute protected management. The raw waveform says nobody deleted it.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Leni Vos, 31, records workplace safety interviews while studying part-time and supports a grandparent with declining mobility.",
+    "if_guilty": "imprisonment, disqualification from public-record work, and the loss of income that funds care at home"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "A damaging answer disappeared from the official transcript, the edit history bears Leni Vos's initials, and management praised the clean version before promotion decisions. Leni controlled the recording and delivered the final file. The defence will blame automation, but software does not choose which minute protects the people who approve your contract."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The audio was never deleted. A silence-removal model collapsed a low-volume answer because two microphones were out of phase, and the suite wrote Leni's initials to every automatic cleanup under her session. The untouched recorder card still contains the full minute. A bad default created a misleading transcript; intent requires a human decision the logs do not show."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Leni heard the interview live, reviewed the transcript, and marked it ready. Even if the model first collapsed the minute, she had a duty to catch the missing answer. Her message that the rough section was handled shows awareness. Delivering altered evidence after review is not excused because software performed the first cut."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Negligence is not fabrication. Handled referred to noise markers across the file, and the review screen showed continuous time because the suite renumbered automatically. The raw card, preserved by Leni herself, contains the answer and exposes the defect. A person intending concealment does not archive the unedited proof beside the final file."
+      }
+    }
+  },
+  "epilogue": "The inquiry reissued its transcript with the missing answer restored and reviewed several earlier interviews processed by the same setting. Leni moved into a records role that required paired review rather than solo certification. The witness received a written apology for initially being treated as inconsistent. The employer disabled automatic silence removal and funded independent storage for recorder originals, while the grandparent's care continued through a temporary assistance grant.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Jaro Pell",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Nemi Sarr",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Leni Vos",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Tova Brill",
+      "role_label": "inquiry director",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Cade Vossan",
+      "role_label": "audio-forensics examiner",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Rina Kell",
+      "role_label": "interview witness",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit one is the edit history. At 16:08, an entry under initials LV removes sixty-two seconds labelled low-confidence speech. Leni's initials appear beside every manual edit she made that afternoon. The missing answer criticised management, so the record looks like a precise, self-authored deletion with an obvious beneficiary. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The edit history bearing Leni's initials appeared personal and precise, but it could not establish who acted or why.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I commissioned the interview and later discovered the transcript jumped from a question to the next topic. Leni had sole responsibility for review and wrote rough section handled in a message. Management had complained about the witness before. When I saw her initials on the deletion, I believed the omission was intentional.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.32,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "This witness explained why suspicion formed, but the account depended on an inference later tested in cross-examination.",
+      "tags": [
+        "digital_forensics",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "The same initials appear beside automatic punctuation changes? Yes, because the suite used the active operator profile. You did not inspect the recorder card before accusing Leni? No. I relied on the project history. And rough section could refer to noise markers elsewhere? It could. I read it as the missing passage after discovering the gap.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "The same initials appear beside automatic punctuation changes?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes, because the suite used the active operator profile."
+        },
+        {
+          "speaker": "dc",
+          "text": "You did not inspect the recorder card before accusing Leni?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No. I relied on the project history."
+        },
+        {
+          "speaker": "dc",
+          "text": "And rough section could refer to noise markers elsewhere?"
+        },
+        {
+          "speaker": "w1",
+          "text": "It could. I read it as the missing passage after discovering the gap."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The live answers exposed the limit hidden by the opening narrative and returned the record to what it could actually prove.",
+      "tags": [
+        "procedure",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "The prosecution tenders Leni's ready-for-release marker. She clicked it twenty-three minutes after processing ended, and the interface displayed a continuous numbered transcript with no blank page. The act shows responsibility for delivery, but not necessarily awareness that the software compressed original time and hid a missing interval. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.62,
+      "true_weight": 0.38,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The exhibit supported the opposing story, but alternative explanations prevented it from carrying decisive weight.",
+      "tags": [
+        "digital_forensics",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I examined the exported transcript and the untouched recorder card. The card contains the entire answer. On the processed track, two microphones carry the same voice with reversed phase, making speech energy appear close to silence. The suite's cleanup model then collapsed that section and renumbered every following timestamp. The jury must decide whether that detail identifies the accused or merely sharpens suspicion.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The testimony added context and motive, not a reliable identification of the criminal act.",
+      "tags": [
+        "timeline",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit six is the automatic-job log stored outside the project history. It shows silence-removal model SR-4 created the sixty-two-second cut at 16:08 without a user command. The job inherited Leni's profile initials because she launched the batch, while the action field explicitly reads automated threshold event rather than manual range deletion.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.82,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The untouched recorder card and automatic-job log independently fixed the mechanism and sequence that the louder clue obscured.",
+      "tags": [
+        "procedure",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "The software concealed the time gap on the transcript screen? Yes. It renumbered every line as though nothing were missing. The automatic-job log records no manual delete command? Correct. It records an automated threshold event. So human error may remain, but your evidence shows no deliberate edit? That is my opinion. And that limit matters when deciding who acted? Yes. The record narrows the possibilities, but it cannot replace proof.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "The software concealed the time gap on the transcript screen?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Yes. It renumbered every line as though nothing were missing."
+        },
+        {
+          "speaker": "dc",
+          "text": "The automatic-job log records no manual delete command?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Correct. It records an automated threshold event."
+        },
+        {
+          "speaker": "dc",
+          "text": "So human error may remain, but your evidence shows no deliberate edit?"
+        },
+        {
+          "speaker": "w2",
+          "text": "That is my opinion."
+        },
+        {
+          "speaker": "dc",
+          "text": "And that limit matters when deciding who acted?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Yes. The record narrows the possibilities, but it cannot replace proof."
+        }
+      ],
+      "surface_persuasion": 0.62,
+      "true_weight": 0.72,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Cross-examination forced the witness to separate institutional assumptions from the fact that ultimately controlled the case.",
+      "tags": [
+        "procedure",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I gave the missing answer and assumed it had been removed because management disliked it. During the interview, Leni asked me to repeat part of that answer when a trolley passed. She also told me the recorder card would be preserved untouched. Those actions seemed inconsistent with someone planning to erase the topic.",
+      "surface_persuasion": 0.56,
+      "true_weight": 0.48,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The third witness supplied human and technical context consistent with the true account, while stopping short of deciding the charge alone.",
+      "tags": [
+        "procedure",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "Leni later sent you only the shortened transcript? Yes, through the inquiry portal. You complained immediately that your answer was missing? Two days later, after reading the full document. Leni did not correct it before your complaint? No. She said she had not realised the section was gone. And that limit matters when deciding who acted? Yes. The record narrows the possibilities, but it cannot replace proof.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "Leni later sent you only the shortened transcript?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes, through the inquiry portal."
+        },
+        {
+          "speaker": "pc",
+          "text": "You complained immediately that your answer was missing?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Two days later, after reading the full document."
+        },
+        {
+          "speaker": "pc",
+          "text": "Leni did not correct it before your complaint?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No. She said she had not realised the section was gone."
+        },
+        {
+          "speaker": "pc",
+          "text": "And that limit matters when deciding who acted?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes. The record narrows the possibilities, but it cannot replace proof."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The challenge revealed possible bias but did not displace the objective record supporting the witness's central point.",
+      "tags": [
+        "credibility",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance. The prosecution must prove each element beyond reasonable doubt using evidence admitted here. Assess system outputs like any other exhibit, and do not research this case, its people, or its technology online.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction supplies the discipline the room needs: unanswered questions cannot reverse the burden of proof.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit nine is the evidence archive created before processing began. Leni copied the recorder card, generated a checksum, and locked it against changes under the inquiry's retention rule. The checksum still matches. That preserved original made the missing answer recoverable and would inevitably expose any deliberate attempt to conceal it.",
+      "surface_persuasion": 0.72,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The final record corroborated the untouched recorder card and automatic-job log through a separate source and resolved the central ambiguity.",
+      "tags": [
+        "procedure",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b2",
+    "b4",
+    "b7",
+    "b10"
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The edit history bearing Leni's initials looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter untouched recorder card and automatic-job log supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "difficulty_target": 0.72,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quick-pattern thinker initially captured by the edit history bearing Leni's initials.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "procedure": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The untouched recorder card and automatic-job log is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The edit history bearing Leni's initials is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the edit history bearing Leni's initials looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the untouched recorder card and automatic-job log, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A careful note-taker who keeps returning to chronology.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "procedure": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The untouched recorder card and automatic-job log is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The edit history bearing Leni's initials is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the edit history bearing Leni's initials looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the untouched recorder card and automatic-job log, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A principled holdout who tests every claim against the burden.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "procedure": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The untouched recorder card and automatic-job log is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The edit history bearing Leni's initials is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the edit history bearing Leni's initials looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the untouched recorder card and automatic-job log, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "An anxious juror tempted to make the accused explain the gaps.",
+        "register": "hesitant",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "procedure": 2,
+          "digital_forensics": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The untouched recorder card and automatic-job log is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The edit history bearing Leni's initials is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the edit history bearing Leni's initials looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the untouched recorder card and automatic-job log, not the first impression."
+          ],
+          "burden_drift": [
+            "If the defence cannot explain every gap, perhaps that is enough."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "The foreperson, focused on separating proof from suspicion.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "procedure": 0,
+          "digital_forensics": 2,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The untouched recorder card and automatic-job log is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The edit history bearing Leni's initials is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the edit history bearing Leni's initials looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the untouched recorder card and automatic-job log, not the first impression."
+          ],
+          "burden_correct": [
+            "An unexplained gap is not proof. The charge still has to be proved."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_correct"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A practical juror who changes position when a mechanism is demonstrated.",
+        "register": "blunt",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "procedure": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The untouched recorder card and automatic-job log is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The edit history bearing Leni's initials is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the edit history bearing Leni's initials looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the untouched recorder card and automatic-job log, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A mind-changer especially alert to the untouched recorder card and automatic-job log.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "procedure": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The untouched recorder card and automatic-job log is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The edit history bearing Leni's initials is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the edit history bearing Leni's initials looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the untouched recorder card and automatic-job log, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A quiet sceptic who distrusts polished system outputs.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "procedure": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The untouched recorder card and automatic-job log is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The edit history bearing Leni's initials is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the edit history bearing Leni's initials looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the untouched recorder card and automatic-job log, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A hesitant juror pulled between human testimony and records.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "procedure": 0,
+          "digital_forensics": 2,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The untouched recorder card and automatic-job log is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The edit history bearing Leni's initials is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the edit history bearing Leni's initials looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the untouched recorder card and automatic-job log, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A methodical juror who maps each claim to a time and source.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 52
+        },
+        "weights": {
+          "procedure": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The untouched recorder card and automatic-job log is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The edit history bearing Leni's initials is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the edit history bearing Leni's initials looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the untouched recorder card and automatic-job log, not the first impression."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A blunt holdout who refuses to convert probability into certainty.",
+        "register": "blunt",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 58
+        },
+        "weights": {
+          "procedure": 0,
+          "digital_forensics": 2,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The untouched recorder card and automatic-job log is the first fact here that survives every challenge.",
+            "That evidence fits the sequence without asking us to guess."
+          ],
+          "pushback": [
+            "The edit history bearing Leni's initials is loud, but loud is not the same as reliable.",
+            "I want the whole chain, not one impressive-looking clue."
+          ],
+          "concede": [
+            "I concede the edit history bearing Leni's initials looks damaging when viewed alone."
+          ],
+          "final": [
+            "My final view turns on the untouched recorder card and automatic-job log, not the first impression."
+          ],
+          "holdout": [
+            "I will hold until the burden is met by evidence, not repetition."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-2"
+  }
+}
