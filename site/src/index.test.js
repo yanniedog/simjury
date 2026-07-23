@@ -2,7 +2,11 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { narrationManifest } from './narration-manifest.generated.js';
 import { handleNarration } from './index.js';
-import { deepgramSpeakerFor } from '../scripts/generate-narration-manifest.mjs';
+import {
+  buildManifest,
+  deepgramSpeakerFor,
+  narrationIdFor,
+} from '../scripts/generate-narration-manifest.mjs';
 
 class MemoryCache {
   entries = new Map();
@@ -22,6 +26,17 @@ test('known speaker roles never share a neural voice', () => {
       assert.notEqual(deepgramSpeakerFor(advocate), deepgramSpeakerFor(witness));
     }
   }
+});
+
+test('daily docket hooks are included as narrated corpus entries', () => {
+  const hook = 'A courier, a locked cage, and one disputed scan.';
+  const id = narrationIdFor(hook, 'narrator');
+  const manifest = buildManifest([{ hook }]);
+
+  assert.deepEqual(manifest[id], {
+    text: hook,
+    speaker: deepgramSpeakerFor('narrator'),
+  });
 });
 
 test('narration accepts only corpus ids and edge-caches raw Aura audio', async () => {

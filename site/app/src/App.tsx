@@ -347,7 +347,13 @@ function DocketApp({
         </div>
       )}
       {phase === 'intro' && (
-        <DocketIntro trial={activeTrial} dayNumber={dayNumber} onBegin={begin} />
+        <DocketIntro
+          trial={activeTrial}
+          dayNumber={dayNumber}
+          narration={narration}
+          playbackRate={playbackRate}
+          onBegin={begin}
+        />
       )}
       {phase === 'openings' && (
         <OpeningStatements

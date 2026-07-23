@@ -115,8 +115,8 @@ planted") are 2026's versions of the Victorian handwriting expert.
   gates green, **owner spot-check** (per `DAILY-PIVOT.md` — the gates are the primary
   defence; a human samples rather than reads every case). `gen_meta` records model,
   `prompt_version`, reviewer, and batch PR — provenance is queryable forever.
-- Runway: keep `max(publish_date)` ≥ 14 days ahead of today once the site is live
-  (a CI runway gate lands with the D8 cutover, when the epoch is baselined).
+- Runway: keep `max(publish_date)` ≥ 14 days ahead of today once the site is live;
+  `validate:cases` enforces this against the UTC calendar date.
 
 ## Banned content scan (the daily F-4)
 
