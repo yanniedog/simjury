@@ -48,7 +48,7 @@ export function deepgramSpeakerFor(key) {
 }
 
 function linesFor(c) {
-  const lines = []
+  const lines = c.hook ? [{ speaker: 'narrator', text: c.hook }] : []
   for (const phase of ['opening', 'closing']) {
     for (const side of ['prosecution', 'defence']) {
       const statement = c.statements?.[phase]?.[side]

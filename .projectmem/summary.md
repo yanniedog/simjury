@@ -1,6 +1,6 @@
-# projectmem - simjury-dailypivot-wt
+# projectmem - simjury-completion-ops
 
-_Last updated: 2026-07-13_
+_Last updated: 2026-07-23_
 
 ## Project purpose
 SimJury is an offline jury simulation game on simjury.com. **Owner pivot 2026-07-13
@@ -15,7 +15,9 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 `DAILY-PIVOT.md` for the decision record and `ROADMAP.md`'s Track D for the delivery ladder.
 
 ## Recent issues
-- No issues logged yet.
+- [DONE] #0001 Narrated docket hooks are absent from the generated neural narration manifest, so every hook clip returns 404 and falls back to device speech [site/scripts/generate-narration-manifest.mjs] -> Hook lines are now generated into the neural narration manifest and covered by a Worker regression test [site/scripts/generate-narration-manifest.mjs] (fixed)
+  - Partial attempt: Added narrator hook lines to the generated neural corpus and a manifest regression test [site/scripts/generate-narration-manifest.mjs]
+  - Failed attempt: Ran Worker regression suite after adding hook manifest entry; generation was blocked by EPERM on narration-manifest.generated.js [site/src/narration-manifest.generated.js]
 
 ## Decisions
 - Pilot phase: PILOT-SPEC.md supersedes v3 for all work until Phase 4 [PILOT-SPEC.md]
@@ -41,6 +43,7 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 - `CLAUDE.md`
 - `kotlinx.serialization`
 - `simjury.com`
+- `narration-manifest.generated.js`
 
 ## Open questions
 - None logged yet.
