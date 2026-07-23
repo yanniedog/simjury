@@ -1,0 +1,1068 @@
+{
+  "id": "dd-0025",
+  "publish_date": "2026-07-26",
+  "label": "fiction",
+  "title": "The Repaired Fork",
+  "setting": "An electric-bike hit-and-run trial in 2026, combining rider telemetry with a hurried repair and an unreliable street identification.",
+  "charge": "Dangerous riding causing serious injury and leaving the scene without assisting",
+  "elements": [
+    "The accused performed or participated in the alleged act.",
+    "The act was deliberate or dishonest rather than accidental.",
+    "The prosecution has proved every required fact beyond reasonable doubt."
+  ],
+  "hook": "The rider stops for four seconds, looks back, and leaves. By morning, the damaged fork has fresh adhesive and a different colour.",
+  "accused": {
+    "cast_id": "w3",
+    "human": "Kian Orrel works nights to fund nursing study and sends part of every week’s pay to family.",
+    "if_guilty": "A conviction means prison, the end of his course, and losing the income his family has organised its life around."
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The prosecution says the accused struck a pedestrian while riding above the assisted-speed limit, paused, then repaired the distinctive fork before his next shift. The apparent centre of the case is a witness identification from a blurred street video, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The defence says many riders used identical bikes and the witness learned the accused’s name from a group message before making an identification. Suspicion gathered around a person before investigators tested the limits of a witness identification from a blurred street video; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The separate records now meet at the same point. battery telemetry paired with a same-night fork repair does not depend on rumour or hindsight, and it fits the conduct before and after the event. Taken together, the prosecution says the elements are proved beyond reasonable doubt."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The prosecution still asks you to bridge uncertainty with suspicion. a witness identification from a blurred street video looked powerful at first, yet every witness accepted limits around it. If the remaining record supports a reasonable innocent account, your duty is to return not guilty."
+      }
+    }
+  },
+  "epilogue": "The injured pedestrian returned to part-time work after rehabilitation. Kian’s nursing place was withdrawn during sentence, and the delivery cooperative introduced automatic crash alerts that contact emergency services even when a rider leaves. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Aven",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Mara Venn",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Oren Pike",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Nora Vel",
+      "role_label": "injured pedestrian",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Piers Kelm",
+      "role_label": "collision investigator",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Kian Orrel",
+      "role_label": "the accused — courier rider",
+      "side": "defence"
+    },
+    {
+      "id": "w4",
+      "name": "Demi Sar",
+      "role_label": "battery telemetry engineer",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I saw a dark delivery jacket and a pale stripe on the bike. Later a riders’ group message named Kian, and that name was in my mind before police showed photographs. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The fake tracking numbers were the tell the room kept circling back to: a supplier failing you does not require you to post decoy socks.",
+      "tags": [
+        "method",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "The street video is blurred but shows a rider entering the crossing quickly, striking Nora, stopping for four seconds, then leaving without approaching or calling for help. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account. That is what I personally saw, heard, or did; I cannot take it further.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "One buyer's story, multiplied by two hundred and sixty-nine. The pattern was the crime; she was one data point of it who could cry.",
+      "tags": [
+        "method",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Kian’s bike had fresh adhesive around a replaced fork cover. The adhesive was still curing when police examined it the next morning after his scheduled shift. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result. Nothing in that account depends on a later reconstruction of events.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A convincing paper trail of victimhood — until the device forensics showed both sides of the conversation being typed on the same keyboard.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "You saw Kian’s name before the photo procedure? Yes. The riders’ group message named him first. So your later choice may reflect that message? It may. I am certain about the bike shape, not the rider’s face. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "You saw Kian’s name before the photo procedure?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes. The riders’ group message named him first."
+        },
+        {
+          "speaker": "dc",
+          "text": "So your later choice may reflect that message?"
+        },
+        {
+          "speaker": "w1",
+          "text": "It may. I am certain about the bike shape, not the rider’s face. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+        }
+      ],
+      "surface_persuasion": 0.5,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The early honest shipments were real — and standard. Exit scams buy their reviews first; the clean history was the runway, not the rebuttal.",
+      "tags": [
+        "credibility",
+        "method"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "The paired battery records speed, motor load, and location for maintenance. Kian’s pack travelled through the impact point at a speed above the assisted limit, then stopped for four seconds. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "He was corresponding with himself and rehearsing the supplier's lines in advance. The middleman and the scammer shared a notes app.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Riders swap batteries during busy shifts. A pack identifies the battery, not automatically the person holding the handlebars, and the cooperative kept no formal handover log. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result. Nothing in that account depends on a later reconstruction of events.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.75,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "A middleman's money flows through him to a supplier. This money flowed to a car lease. There was never anything upstream.",
+      "tags": [
+        "method",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I lent my spare battery earlier and repaired the fork after hitting a loading rail. I was not at the crossing, did not hit Nora, and did not leave anyone injured. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "'Buying time' was the confession wearing a coat: time was the one thing every exit scam needs, and the decoy parcels bought exactly four more weeks of orders.",
+      "tags": [
+        "credibility",
+        "motive"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "A battery can be swapped between riders? Yes, and the hardware record follows the battery. You cannot identify hands from telemetry? No, but this pack remained paired to Kian’s bike controller throughout the journey. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "A battery can be swapped between riders?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes, and the hardware record follows the battery."
+        },
+        {
+          "speaker": "pc",
+          "text": "You cannot identify hands from telemetry?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No, but this pack remained paired to Kian’s bike controller throughout the journey. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+        }
+      ],
+      "surface_persuasion": 0.6,
+      "true_weight": 0.6,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The third invisible stranger of the week: someone who used his details, on his phone, in his notes app, days ahead of schedule.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "The fork adhesive contained blue synthetic fibres. Their dye and weave match Nora’s coat, although the fibres cannot establish exactly when or where contact occurred. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account. That is what I personally saw, heard, or did; I cannot take it further.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Her grief was real and her evidence was secondhand: the distress she saw fits a scammer watching his exit close just as well as a victim watching his business die.",
+      "tags": [
+        "credibility",
+        "motive"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person. The record was created at the time and its origin is not disputed.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction gave his defence its full width — a real middleman scam would have acquitted him. The notes app took that defence away.",
+      "tags": [
+        "burden",
+        "credibility"
+      ]
+    }
+  ],
+  "checkins": [
+    "b3",
+    "b5",
+    "b8",
+    "b9"
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The eyewitness identification was contaminated by a group message and deserved little weight. Independent battery telemetry placed Kian’s paired pack at the impact, while uncured adhesive on his fork contained fabric fibres matching the pedestrian’s coat.",
+  "difficulty_target": 0.5,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quick first impression matters to this juror, but a concrete contradiction can still move them.",
+        "register": "plain",
+        "arc": "vibes",
+        "initial": {
+          "position": "NG",
+          "confidence": 70
+        },
+        "weights": {
+          "credibility": 2,
+          "motive": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a witness identification from a blurred street video; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether battery telemetry paired with a same-night fork repair survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A methodical note-taker who wants each claim tied to a record created at the time.",
+        "register": "blunt",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 65
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a witness identification from a blurred street video; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether battery telemetry paired with a same-night fork repair survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A sceptic of polished digital evidence who listens closely to ordinary human detail.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 70
+        },
+        "weights": {
+          "burden": 2,
+          "credibility": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a witness identification from a blurred street video; it is less complete than it first appeared."
+          ],
+          "holdout": [
+            "I am holding my position until someone deals directly with battery telemetry paired with a same-night fork repair, not just the surrounding suspicion.",
+            "I am holding my position until someone deals directly with battery telemetry paired with a same-night fork repair, not just the surrounding suspicion. I want the room to test that point once more."
+          ],
+          "final": [
+            "My verdict turns on whether battery telemetry paired with a same-night fork repair survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "A rule-focused juror who returns the room to the prosecution burden when discussion drifts.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 55
+        },
+        "weights": {
+          "burden": 2,
+          "method": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a witness identification from a blurred street video; it is less complete than it first appeared."
+          ],
+          "burden_correct": [
+            "Unanswered questions do not reverse the burden. The prosecution must connect battery telemetry paired with a same-night fork repair to every element.",
+            "Unanswered questions do not reverse the burden. The prosecution must connect battery telemetry paired with a same-night fork repair to every element. I want the room to test that point once more."
+          ],
+          "final": [
+            "My verdict turns on whether battery telemetry paired with a same-night fork repair survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "A practical juror who begins undecided and changes position when one fact explains the timeline.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": {
+          "position": "G",
+          "confidence": 55
+        },
+        "weights": {
+          "method": 1,
+          "credibility": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a witness identification from a blurred street video; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether battery telemetry paired with a same-night fork repair survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A blunt juror who distrusts convenient memory from either side.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 45
+        },
+        "weights": {
+          "digital_forensics": 1,
+          "credibility": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a witness identification from a blurred street video; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether battery telemetry paired with a same-night fork repair survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A cautious holdout who needs the decisive evidence stated without exaggeration.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 70
+        },
+        "weights": {
+          "identity": 2,
+          "digital_forensics": 2
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a witness identification from a blurred street video; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether battery telemetry paired with a same-night fork repair survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 15,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": -1,
+              "confidence": -5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "concede"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A warm juror who notices the human cost but will not let sympathy replace proof.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 50
+        },
+        "weights": {
+          "credibility": 2
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a witness identification from a blurred street video; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether battery telemetry paired with a same-night fork repair survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "unreliable",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": -5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 45
+        },
+        "weights": {
+          "identity": 1,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits."
+          ],
+          "burden_drift": [
+            "There are too many unanswered questions around a witness identification from a blurred street video; I want the accused to explain them.",
+            "There are too many unanswered questions around a witness identification from a blurred street video; I want the accused to explain them. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a witness identification from a blurred street video; it is less complete than it first appeared."
+          ],
+          "burden_correct": [
+            "Unanswered questions do not reverse the burden. The prosecution must connect battery telemetry paired with a same-night fork repair to every element."
+          ],
+          "final": [
+            "My verdict turns on whether battery telemetry paired with a same-night fork repair survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A hesitant speaker who tests the strongest argument by asking what it leaves unexplained.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "U",
+          "confidence": 40
+        },
+        "weights": {
+          "digital_forensics": 1,
+          "motive": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a witness identification from a blurred street video; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether battery telemetry paired with a same-night fork repair survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A steady foreperson who makes the room separate suspicion from proof beyond reasonable doubt.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "U",
+          "confidence": 45
+        },
+        "weights": {
+          "method": 2,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Repaired Fork; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a witness identification from a blurred street video; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether battery telemetry paired with a same-night fork repair survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "openai-codex",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "Codex Content Curator; owner spot-check pending",
+    "batch_pr": "codex/docket-runway-a"
+  }
+}

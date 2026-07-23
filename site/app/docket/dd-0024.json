@@ -1,0 +1,1100 @@
+{
+  "id": "dd-0024",
+  "publish_date": "2026-07-25",
+  "label": "fiction",
+  "title": "The Helpful Transfer",
+  "setting": "A vulnerable-adult financial abuse trial in 2026, where repeated transfers reflect disputed instructions rather than a hidden theft.",
+  "charge": "Dishonestly obtaining money from a vulnerable adult by abusing a position of trust",
+  "elements": [
+    "The accused performed or participated in the alleged act.",
+    "The act was deliberate or dishonest rather than accidental.",
+    "The prosecution has proved every required fact beyond reasonable doubt."
+  ],
+  "hook": "Every Thursday, money moves from an older man’s account to the neighbour who brings his groceries. The question is whether he asked.",
+  "accused": {
+    "cast_id": "w4",
+    "human": "Amra Niven delivers groceries, reads mail aloud, and has supported an isolated neighbour through two winters.",
+    "if_guilty": "A conviction means prison, separation from her own children, and public condemnation of care that many witnesses believed was genuine."
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The prosecution says the accused controlled banking access, increased payments, and isolated a vulnerable man from relatives who challenged her. The apparent centre of the case is regular transfers to the accused, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The defence says the payments reimbursed groceries and care chosen by a competent man who recorded instructions because his hands could not manage the banking screen. Suspicion gathered around a person before investigators tested the limits of regular transfers to the accused; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The separate records now meet at the same point. contemporaneous voice notes recording each instruction does not depend on rumour or hindsight, and it fits the conduct before and after the event. Taken together, the prosecution says the elements are proved beyond reasonable doubt."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The prosecution still asks you to bridge uncertainty with suspicion. regular transfers to the accused looked powerful at first, yet every witness accepted limits around it. If the remaining record supports a reasonable innocent account, your duty is to return not guilty. Listen for what was recorded before suspicion settled on one person."
+      }
+    }
+  },
+  "epilogue": "Amra resumed visiting only with a community worker present. The account holder moved to supported housing by his own choice, and his family adopted a shared expense ledger instead of excluding the neighbour he still regarded as a friend. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Aven",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Mara Venn",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Oren Pike",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Vela Norr",
+      "role_label": "adult child of the account holder",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Senn Arlo",
+      "role_label": "bank safeguarding analyst",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Kari Mett",
+      "role_label": "community capacity assessor",
+      "side": "defence"
+    },
+    {
+      "id": "w4",
+      "name": "Amra Niven",
+      "role_label": "the accused — neighbour and informal helper",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "I found weekly transfers to Amra after my father missed a family birthday. She had his banking tablet and answered the door whenever we tried to discuss money. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result. Nothing in that account depends on a later reconstruction of events.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.15,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The model scored correlation and everyone downstream read causation. She worked the busiest shifts at the registers where shrinkage happens — so, therefore, did the shrinkage. Eighty-seven measured her roster, not her honesty.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "The payments rose from small grocery amounts to several hundred. Our alert system flagged the pattern because the recipient was unrelated and frequently logged in from the account holder’s home. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "He watched a service-desk supervisor doing a service-desk job — hovering, voiding, assisting — with a number that said thief propped beside the screen. The score wrote the story; the footage just illustrated it.",
+      "tags": [
+        "credibility",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "You did not hear your father authorise a transfer? No. I saw statements and believed the pattern spoke for itself. You knew he made voice notes for appointments? I knew he recorded reminders, not that he recorded payments. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "You did not hear your father authorise a transfer?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No. I saw statements and believed the pattern spoke for itself."
+        },
+        {
+          "speaker": "dc",
+          "text": "You knew he made voice notes for appointments?"
+        },
+        {
+          "speaker": "w1",
+          "text": "I knew he recorded reminders, not that he recorded payments. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+        }
+      ],
+      "surface_persuasion": 0.5,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "A quarter of surveillance produced no theft, no pocketed note, no bag check failure — only a number, restated with increasing confidence.",
+      "tags": [
+        "digital_forensics",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "I assessed him twice. He understood his income, the transfers, and the difference between paying expenses and giving a gift, although fatigue made screens difficult. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result. Nothing in that account depends on a later reconstruction of events.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.35,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Service-desk staff process the whole store's refunds — the void count was her job description rendered as statistics. The no-sales were locker change and trolley coins, required by the same head office now prosecuting them.",
+      "tags": [
+        "method",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "An old tablet contained voice notes made before each transfer. He states the amount, purpose, and date, then asks Amra to enter it while he listens. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result. Nothing in that account depends on a later reconstruction of events.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.85,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The experiment the dashboard never thought to run: remove the suspect, watch the number. The number went up. Whatever was leaking, it was not her.",
+      "tags": [
+        "timeline",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "Two notes record him correcting Amra downward. In one, he refuses an extra payment and she accepts the refusal without argument or another transfer. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account. That is what I personally saw, heard, or did; I cannot take it further.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.75,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "A light scale and a double-counted dock: two boring faults that manufactured a crime wave, and a model happy to pin it on whoever worked the most Saturdays.",
+      "tags": [
+        "method",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "I kept the banking tablet because he dropped it twice. I entered only what he told me, kept receipts, and stopped family visits only when he asked for quiet after arguments. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "She reported the actual cause of the shrinkage twice, months before the model blamed her for it. Both tickets were closed without anyone testing the scale.",
+      "tags": [
+        "credibility",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "cross",
+      "text": "A safeguarding alert proves risk, not theft? Correct. It identifies patterns for investigation. The system did not contain the voice notes? No. They were stored locally on another tablet. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "A safeguarding alert proves risk, not theft?"
+        },
+        {
+          "speaker": "w4",
+          "text": "Correct. It identifies patterns for investigation."
+        },
+        {
+          "speaker": "pc",
+          "text": "The system did not contain the voice notes?"
+        },
+        {
+          "speaker": "w4",
+          "text": "No. They were stored locally on another tablet. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+        }
+      ],
+      "surface_persuasion": 0.5,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "A tight budget shared with half the workforce, and an impossible memory test no honest cashier could pass — the cross-examination proved she was ordinary, not guilty.",
+      "tags": [
+        "motive",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "You sometimes asked for extra money? Once, for fuel after repeated hospital trips. He refused and no extra transfer followed? That is correct; I accepted his answer. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "You sometimes asked for extra money?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Once, for fuel after repeated hospital trips."
+        },
+        {
+          "speaker": "dc",
+          "text": "He refused and no extra transfer followed?"
+        },
+        {
+          "speaker": "w2",
+          "text": "That is correct; I accepted his answer. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+        }
+      ],
+      "surface_persuasion": 0.5,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "It took three employees to replace the workload that the dashboard had scored as one woman's crime spree.",
+      "tags": [
+        "procedure",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person. The record was created at the time and its origin is not disputed.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction the era needed: a score cannot take the oath. Somewhere between the scale and the dock, the actual facts had been waiting the whole time.",
+      "tags": [
+        "burden",
+        "digital_forensics"
+      ]
+    }
+  ],
+  "checkins": [
+    "b3",
+    "b5",
+    "b8",
+    "b9"
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The transfer pattern looked exploitative until voice notes were recovered from an old tablet. Each payment matched a dated instruction from the account holder, including corrections where he reduced amounts and refused Amra’s request for extra money.",
+  "difficulty_target": 0.42,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quick first impression matters to this juror, but a concrete contradiction can still move them.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 80
+        },
+        "weights": {
+          "digital_forensics": 2,
+          "identity": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand regular transfers to the accused; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether contemporaneous voice notes recording each instruction survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A methodical note-taker who wants each claim tied to a record created at the time.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 60
+        },
+        "weights": {
+          "digital_forensics": 2,
+          "timeline": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand regular transfers to the accused; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether contemporaneous voice notes recording each instruction survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A sceptic of polished digital evidence who listens closely to ordinary human detail.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 80
+        },
+        "weights": {
+          "burden": 2,
+          "digital_forensics": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand regular transfers to the accused; it is less complete than it first appeared."
+          ],
+          "holdout": [
+            "I am holding my position until someone deals directly with contemporaneous voice notes recording each instruction, not just the surrounding suspicion.",
+            "I am holding my position until someone deals directly with contemporaneous voice notes recording each instruction, not just the surrounding suspicion. I want the room to test that point once more."
+          ],
+          "final": [
+            "My verdict turns on whether contemporaneous voice notes recording each instruction survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "A rule-focused juror who returns the room to the prosecution burden when discussion drifts.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 55
+        },
+        "weights": {
+          "burden": 2,
+          "method": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand regular transfers to the accused; it is less complete than it first appeared."
+          ],
+          "burden_correct": [
+            "Unanswered questions do not reverse the burden. The prosecution must connect contemporaneous voice notes recording each instruction to every element.",
+            "Unanswered questions do not reverse the burden. The prosecution must connect contemporaneous voice notes recording each instruction to every element. I want the room to test that point once more."
+          ],
+          "final": [
+            "My verdict turns on whether contemporaneous voice notes recording each instruction survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "A practical juror who begins undecided and changes position when one fact explains the timeline.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": {
+          "position": "G",
+          "confidence": 50
+        },
+        "weights": {
+          "procedure": 1,
+          "digital_forensics": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand regular transfers to the accused; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether contemporaneous voice notes recording each instruction survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A blunt juror who distrusts convenient memory from either side.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 45
+        },
+        "weights": {
+          "credibility": 1,
+          "method": 2
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand regular transfers to the accused; it is less complete than it first appeared.",
+            "That changes how I understand regular transfers to the accused; it is less complete than it first appeared. I want the room to test that point once more."
+          ],
+          "final": [
+            "My verdict turns on whether contemporaneous voice notes recording each instruction survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A cautious holdout who needs the decisive evidence stated without exaggeration.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "G",
+          "confidence": 70
+        },
+        "weights": {
+          "timeline": 2,
+          "method": 2
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand regular transfers to the accused; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether contemporaneous voice notes recording each instruction survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 15,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "unreliable",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": -1,
+              "confidence": -5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "concede"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A warm juror who notices the human cost but will not let sympathy replace proof.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 55
+        },
+        "weights": {
+          "procedure": 2
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand regular transfers to the accused; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether contemporaneous voice notes recording each instruction survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 60
+        },
+        "weights": {
+          "method": 1,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits."
+          ],
+          "burden_drift": [
+            "There are too many unanswered questions around regular transfers to the accused; I want the accused to explain them.",
+            "There are too many unanswered questions around regular transfers to the accused; I want the accused to explain them. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand regular transfers to the accused; it is less complete than it first appeared."
+          ],
+          "burden_correct": [
+            "Unanswered questions do not reverse the burden. The prosecution must connect contemporaneous voice notes recording each instruction to every element."
+          ],
+          "final": [
+            "My verdict turns on whether contemporaneous voice notes recording each instruction survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A hesitant speaker who tests the strongest argument by asking what it leaves unexplained.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "U",
+          "confidence": 40
+        },
+        "weights": {
+          "digital_forensics": 1,
+          "timeline": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand regular transfers to the accused; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether contemporaneous voice notes recording each instruction survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A steady foreperson who makes the room separate suspicion from proof beyond reasonable doubt.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 55
+        },
+        "weights": {
+          "method": 1,
+          "credibility": 1,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Helpful Transfer; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand regular transfers to the accused; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether contemporaneous voice notes recording each instruction survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "openai-codex",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "Codex Content Curator; owner spot-check pending",
+    "batch_pr": "codex/docket-runway-a"
+  }
+}

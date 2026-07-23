@@ -1,0 +1,1068 @@
+{
+  "id": "dd-0023",
+  "publish_date": "2026-07-24",
+  "label": "fiction",
+  "title": "The Dry Wall",
+  "setting": "A rental-insurance fraud trial in 2026, where moisture sensors, repair invoices, and a staged leak converge.",
+  "charge": "Dishonestly making an insurance claim for deliberately caused water damage",
+  "elements": [
+    "The accused performed or participated in the alleged act.",
+    "The act was deliberate or dishonest rather than accidental.",
+    "The prosecution has proved every required fact beyond reasonable doubt."
+  ],
+  "hook": "The ceiling collapses under a flood that sensors never felt. Three repair invoices say it happened anyway.",
+  "accused": {
+    "cast_id": "w3",
+    "human": "Tessa Varo manages four ageing flats and is the sole carer for an adult sibling.",
+    "if_guilty": "A conviction means prison, forced sale of the flats, and disruption of the care arrangement keeping her sibling at home."
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The prosecution says the accused removed a moisture sensor, flooded an empty flat, and submitted invented repair invoices to cover mounting debts. The apparent centre of the case is photographs of extensive water damage, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The defence says cheap sensors failed during a real pipe burst and informal contractors reconstructed invoices only after emergency work was finished. Suspicion gathered around a person before investigators tested the limits of photographs of extensive water damage; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The separate records now meet at the same point. a dry-wall sensor removed before the staged flood does not depend on rumour or hindsight, and it fits the conduct before and after the event. Taken together, the prosecution says the elements are proved beyond reasonable doubt."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The prosecution still asks you to bridge uncertainty with suspicion. photographs of extensive water damage looked powerful at first, yet every witness accepted limits around it. If the remaining record supports a reasonable innocent account, your duty is to return not guilty. Listen for what was recorded before suspicion settled on one person."
+      }
+    }
+  },
+  "epilogue": "The insurer repaired the occupied flat below and recovered part of the payment. Tessa’s sibling moved temporarily into supported housing, and the remaining tenants received independent management during the sale of the properties. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Aven",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Mara Venn",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Oren Pike",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Romi Kest",
+      "role_label": "insurance investigator",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Daren Pohl",
+      "role_label": "downstairs tenant",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Tessa Varo",
+      "role_label": "the accused — small property manager",
+      "side": "defence"
+    },
+    {
+      "id": "w4",
+      "name": "Yani Bell",
+      "role_label": "building sensor technician",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "The claim photographs show soaked walls and collapsed plaster. Three invoices describe emergency drying, but two listed contractors denied issuing them and one address did not exist. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account. That is what I personally saw, heard, or did; I cannot take it further.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The fake tracking numbers were the tell the room kept circling back to: a supplier failing you does not require you to post decoy socks.",
+      "tags": [
+        "method",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "Water came through my ceiling shortly after midnight. Tessa arrived quickly with towels and seemed genuinely panicked, although the flat above had been empty for weeks. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account. That is what I personally saw, heard, or did; I cannot take it further.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "One buyer's story, multiplied by two hundred and sixty-nine. The pattern was the crime; she was one data point of it who could cry.",
+      "tags": [
+        "method",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The dry-wall sensor reported normal humidity throughout the alleged pipe burst. Its dashboard later showed a gap that the first claim printout did not disclose. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result. Nothing in that account depends on a later reconstruction of events.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A convincing paper trail of victimhood — until the device forensics showed both sides of the conversation being typed on the same keyboard.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "Photographs cannot tell you who caused water damage? No. They prove condition, not intention or identity. And informal repairs can produce poor invoices? They can, though these invoices contained invented business details. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "Photographs cannot tell you who caused water damage?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No. They prove condition, not intention or identity."
+        },
+        {
+          "speaker": "dc",
+          "text": "And informal repairs can produce poor invoices?"
+        },
+        {
+          "speaker": "w1",
+          "text": "They can, though these invoices contained invented business details. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+        }
+      ],
+      "surface_persuasion": 0.5,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The early honest shipments were real — and standard. Exit scams buy their reviews first; the clean history was the runway, not the rebuttal.",
+      "tags": [
+        "credibility",
+        "method"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "The sensor keeps a local maintenance log. It records physical removal at 11:17, reconnection after midnight, and no power failure or network outage during that interval. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result. Nothing in that account depends on a later reconstruction of events.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "He was corresponding with himself and rehearsing the supplier's lines in advance. The middleman and the scammer shared a notes app.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "I removed the probe earlier because it was chirping and tenants complained. When the pipe failed, I dealt with water first and paperwork later; the invoices were reconstructed from cash payments. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.75,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "A middleman's money flows through him to a supplier. This money flowed to a car lease. There was never anything upstream.",
+      "tags": [
+        "method",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "A valve photograph shows tool marks made recently. The valve was open when responders arrived, although normal maintenance requires it closed in an empty flat. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account. That is what I personally saw, heard, or did; I cannot take it further.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "'Buying time' was the confession wearing a coat: time was the one thing every exit scam needs, and the decoy parcels bought exactly four more weeks of orders.",
+      "tags": [
+        "credibility",
+        "motive"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "You removed the sensor before the leak? I removed a chirping device during routine checks. Why reinstall it before calling the insurer? I wanted the monitoring restored once the immediate water had stopped. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "You removed the sensor before the leak?"
+        },
+        {
+          "speaker": "w3",
+          "text": "I removed a chirping device during routine checks."
+        },
+        {
+          "speaker": "pc",
+          "text": "Why reinstall it before calling the insurer?"
+        },
+        {
+          "speaker": "w3",
+          "text": "I wanted the monitoring restored once the immediate water had stopped. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+        }
+      ],
+      "surface_persuasion": 0.6,
+      "true_weight": 0.6,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The third invisible stranger of the week: someone who used his details, on his phone, in his notes app, days ahead of schedule.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "The insurer had warned that vacancy cover would lapse the next week. Tessa also faced a large roof bill, but financial pressure alone cannot establish who opened a valve. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Her grief was real and her evidence was secondhand: the distress she saw fits a scammer watching his exit close just as well as a victim watching his business die.",
+      "tags": [
+        "credibility",
+        "motive"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person. The record was created at the time and its origin is not disputed.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction gave his defence its full width — a real middleman scam would have acquitted him. The notes app took that defence away.",
+      "tags": [
+        "burden",
+        "credibility"
+      ]
+    }
+  ],
+  "checkins": [
+    "b3",
+    "b5",
+    "b8",
+    "b9"
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The dramatic photographs proved damage, not cause. A sensor maintenance log showed Tessa removed the dry-wall probe forty minutes before the flood, then reinstalled it after photographing the rooms; the device retained both physical disconnect events.",
+  "difficulty_target": 0.66,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quick first impression matters to this juror, but a concrete contradiction can still move them.",
+        "register": "plain",
+        "arc": "vibes",
+        "initial": {
+          "position": "NG",
+          "confidence": 70
+        },
+        "weights": {
+          "credibility": 2,
+          "motive": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand photographs of extensive water damage; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether a dry-wall sensor removed before the staged flood survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A methodical note-taker who wants each claim tied to a record created at the time.",
+        "register": "blunt",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 65
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand photographs of extensive water damage; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether a dry-wall sensor removed before the staged flood survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A sceptic of polished digital evidence who listens closely to ordinary human detail.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 70
+        },
+        "weights": {
+          "burden": 2,
+          "credibility": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand photographs of extensive water damage; it is less complete than it first appeared."
+          ],
+          "holdout": [
+            "I am holding my position until someone deals directly with a dry-wall sensor removed before the staged flood, not just the surrounding suspicion.",
+            "I am holding my position until someone deals directly with a dry-wall sensor removed before the staged flood, not just the surrounding suspicion. I want the room to test that point once more."
+          ],
+          "final": [
+            "My verdict turns on whether a dry-wall sensor removed before the staged flood survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "A rule-focused juror who returns the room to the prosecution burden when discussion drifts.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 55
+        },
+        "weights": {
+          "burden": 2,
+          "method": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand photographs of extensive water damage; it is less complete than it first appeared."
+          ],
+          "burden_correct": [
+            "Unanswered questions do not reverse the burden. The prosecution must connect a dry-wall sensor removed before the staged flood to every element.",
+            "Unanswered questions do not reverse the burden. The prosecution must connect a dry-wall sensor removed before the staged flood to every element. I want the room to test that point once more."
+          ],
+          "final": [
+            "My verdict turns on whether a dry-wall sensor removed before the staged flood survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "A practical juror who begins undecided and changes position when one fact explains the timeline.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": {
+          "position": "G",
+          "confidence": 55
+        },
+        "weights": {
+          "method": 1,
+          "credibility": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand photographs of extensive water damage; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether a dry-wall sensor removed before the staged flood survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A blunt juror who distrusts convenient memory from either side.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 45
+        },
+        "weights": {
+          "digital_forensics": 1,
+          "credibility": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand photographs of extensive water damage; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether a dry-wall sensor removed before the staged flood survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A cautious holdout who needs the decisive evidence stated without exaggeration.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 70
+        },
+        "weights": {
+          "identity": 2,
+          "digital_forensics": 2
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand photographs of extensive water damage; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether a dry-wall sensor removed before the staged flood survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 15,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": -1,
+              "confidence": -5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "concede"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A warm juror who notices the human cost but will not let sympathy replace proof.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 50
+        },
+        "weights": {
+          "credibility": 2
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand photographs of extensive water damage; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether a dry-wall sensor removed before the staged flood survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "unreliable",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": -5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 60
+        },
+        "weights": {
+          "identity": 1,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits."
+          ],
+          "burden_drift": [
+            "There are too many unanswered questions around photographs of extensive water damage; I want the accused to explain them.",
+            "There are too many unanswered questions around photographs of extensive water damage; I want the accused to explain them. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand photographs of extensive water damage; it is less complete than it first appeared."
+          ],
+          "burden_correct": [
+            "Unanswered questions do not reverse the burden. The prosecution must connect a dry-wall sensor removed before the staged flood to every element."
+          ],
+          "final": [
+            "My verdict turns on whether a dry-wall sensor removed before the staged flood survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A hesitant speaker who tests the strongest argument by asking what it leaves unexplained.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "U",
+          "confidence": 40
+        },
+        "weights": {
+          "digital_forensics": 1,
+          "motive": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand photographs of extensive water damage; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether a dry-wall sensor removed before the staged flood survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A steady foreperson who makes the room separate suspicion from proof beyond reasonable doubt.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "U",
+          "confidence": 45
+        },
+        "weights": {
+          "method": 2,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Dry Wall; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand photographs of extensive water damage; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether a dry-wall sensor removed before the staged flood survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "openai-codex",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "Codex Content Curator; owner spot-check pending",
+    "batch_pr": "codex/docket-runway-a"
+  }
+}
