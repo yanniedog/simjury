@@ -3,12 +3,12 @@
   "publish_date": "2026-07-23",
   "label": "fiction",
   "title": "Locker Seventy-Two",
-  "setting": "A parcel-locker possession trial in 2026, where a recycled phone number directs police to the wrong subscriber.",
-  "charge": "Knowingly possessing stolen prescription medicine for sale",
+  "setting": "A parcel-locker possession trial in 2026, where one phone number, two neighbouring lockers, and a blocked camera angle leave identity disputed.",
+  "charge": "Knowingly possessing stolen prescription medicine with intent to sell",
   "elements": [
-    "The accused performed or participated in the alleged act.",
-    "The act was deliberate or dishonest rather than accidental.",
-    "The prosecution has proved every required fact beyond reasonable doubt."
+    "Ilya possessed or controlled the stolen medicine found in locker seventy-two.",
+    "He knew the medicine was stolen.",
+    "He intended to sell or distribute it."
   ],
   "hook": "A locker opens from a text message. Police find stolen medicine inside. The phone number has belonged to two people in one month.",
   "accused": {
@@ -20,25 +20,25 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution says the accused received the collection code, approached the locker, and lied about why he was standing nearby. The apparent centre of the case is a locker code sent to the accused’s number, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+        "text": "Stolen medicine was recovered from locker seventy-two. Its collection code reached the phone number Ilya controlled, a camera placed him at the locker bank when the door moved, and he later acknowledged seeing a related message. The prosecution says those facts show he came to collect stock he knew was stolen and meant to sell."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence says the locker booking belonged to the number’s previous subscriber and the accused was collecting an unrelated parcel from the next bank. Suspicion gathered around a person before investigators tested the limits of a locker code sent to the accused’s number; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+        "text": "Ilya was there to collect work boots from locker seventy-three. The defence says the service matched an older booking to whoever held the phone number weeks later, while a pillar hid which door he opened. Carrier dates and his own collection record will test whether a code and a crowded camera view identify a person beyond reasonable doubt."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution began with the locker code associated with Ilya’s current phone number, but it does not ask you to convict on that clue alone. Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
+        "text": "The code reached Ilya’s phone number, he stood beside locker seventy-two when its door moved, and he later found a message carrying the collection code. His work-boots explanation does not erase those facts. Ask whether the carrier and camera records truly break the connection, or whether the evidence together proves he controlled the stolen medicine and intended to collect it for sale."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence accepts that the locker code associated with Ilya’s current phone number created suspicion, but suspicion is not the test. The number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That evidence goes to the heart of the case because a current-subscriber search cannot identify who held the number when the locker was booked. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
+        "text": "Put every event in order. Locker seventy-two was booked before the carrier assigned its phone number to Ilya. His boots order opened locker seventy-three while the camera’s pillar hid his hands. The only related message he saw arrived after police contacted him. The prosecution must prove possession, knowledge, and intent to sell; Ilya does not have to identify whoever made the earlier booking."
       }
     }
   },
-  "epilogue": "Ilya returned to work after the employer reviewed the acquittal. The locker operator began storing subscriber assignment dates with warrants, and investigators identified the prior number holder through an older delivery account. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "epilogue": "During the months before trial, Ilya lost the housing attached to his job and neighbours divided the translation work he had handled. The locker operator changed its warrant process to preserve the subscriber date attached to each booking, not just the person holding a number when police searched. Investigators reopened the older delivery account linked to locker seventy-two. Ilya’s family kept the work-boots receipt with the court papers.",
   "cast": [
     {
       "id": "judge",
@@ -88,12 +88,12 @@
       "id": "b1",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Police recovered sealed stolen medicine from locker seventy-two. The collection code had been sent to the mobile number investigators then associated with Ilya. At this first point, the exhibit’s stated limit is that a current-subscriber search cannot identify who held the number when the locker was booked, so it must be weighed with the rest of the sequence.",
+      "text": "Exhibit one is the sealed medicine recovered from locker seventy-two and the service record for its collection code. The record lists a mobile number, not a customer name. When police searched that number, the carrier’s current-subscriber return named Ilya. The locker service had not stored who held the number when the compartment was booked or who read the earlier reminders.",
       "surface_persuasion": 0.8,
       "true_weight": 0.15,
       "direction": "guilt",
       "reveal_stamp": "misleading",
-      "reveal_note": "The first impression came from the locker code associated with Ilya’s current phone number; its value depended on whether the later evidence could overcome this limit: a current-subscriber search cannot identify who held the number when the locker was booked.",
+      "reveal_note": "The code looked personal because police searched the number after finding the medicine. The record itself contained no subscriber name or assignment date.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -104,12 +104,12 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "Camera footage shows Ilya entering the locker hall at 6:18. A pillar blocks his hands, and the original report assumed he opened seventy-two because that door moved soon afterwards. This was the second fact I recorded in the initial Locker Seventy-Two inquiry, before investigators settled on Ilya Morn. The timing was noted before the Locker Seventy-Two inquiry settled on Ilya Morn as its suspect.",
+      "text": "I reviewed the hall camera. Ilya enters at 6:18 and walks toward lockers seventy-two and seventy-three. A pillar hides his hands for twelve seconds. Locker seventy-two’s door moves just afterwards, but the footage does not show who opened it. My first report linked the movement to Ilya because he was the clearest person in frame; no other face could be identified.",
       "surface_persuasion": 0.6,
       "true_weight": 0.3,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "This witness fixed the practical setting before suspicion centred on Ilya Morn, giving the room context for the records that followed.",
+      "reveal_note": "The timing placed Ilya near the compartment, but the blocked view could not establish which door he touched.",
       "tags": [
         "credibility",
         "procedure"
@@ -120,30 +120,30 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "You did not obtain carrier assignment dates before arrest? No. We relied on the current subscriber return. That return said nothing about who held the number at booking? It did not include historical assignment dates. The arrest relied on a current-subscriber return that contained no historical assignment date.",
+      "text": "When you arrested Ilya, had you obtained the number’s assignment history? No. We had a current-subscriber return. Did it identify the subscriber when locker seventy-two was booked? No. It showed only who held the number when we made the request. We obtained the historical dates after the arrest.",
       "turns": [
         {
           "speaker": "dc",
-          "text": "You did not obtain carrier assignment dates before arrest?"
+          "text": "When you arrested Ilya, had you obtained the number’s assignment history?"
         },
         {
           "speaker": "w1",
-          "text": "No. We relied on the current subscriber return."
+          "text": "No. We had a current-subscriber return."
         },
         {
           "speaker": "dc",
-          "text": "That return said nothing about who held the number at booking?"
+          "text": "Did it identify the subscriber when locker seventy-two was booked?"
         },
         {
           "speaker": "w1",
-          "text": "It did not include historical assignment dates. The arrest relied on a current-subscriber return that contained no historical assignment date."
+          "text": "No. It showed only who held the number when we made the request. We obtained the historical dates after the arrest."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The challenged record mattered because it exposed the gap between appearance and proof: a current-subscriber search cannot identify who held the number when the locker was booked.",
+      "reveal_note": "Police had identified the subscriber on the search date, not on the earlier booking date.",
       "tags": [
         "digital_forensics",
         "procedure"
@@ -153,12 +153,12 @@
       "id": "b4",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The locker service stored the phone number but not the subscriber name. A later customer search returned Ilya because he held the number when investigators asked. At this fourth point, the exhibit’s stated limit is that a current-subscriber search cannot identify who held the number when the locker was booked, so it must be weighed with the rest of the sequence.",
+      "text": "Exhibit four is the final reminder for locker seventy-two. It was sent after Ilya had taken over the phone number, and his handset marked it delivered. The message did not name the medicine or the person who booked the compartment, but it carried the same collection code as the earlier reminders. Police say it gave Ilya the means to open the door.",
       "surface_persuasion": 0.55,
       "true_weight": 0.35,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "Cross-examination narrowed the early clue without erasing it, forcing the room to decide how much independent support remained.",
+      "reveal_note": "The final reminder gave Ilya access to the code, but it did not show that he made the booking or ever used it.",
       "tags": [
         "method",
         "digital_forensics"
@@ -166,14 +166,15 @@
     },
     {
       "id": "b5",
-      "kind": "exhibit",
-      "speaker": "dc",
-      "text": "Carrier assignment records show the number moved to Ilya six days after locker seventy-two was booked and two days after its first collection reminder. At this fifth point, the exhibit’s stated limit is that a current-subscriber search cannot identify who held the number when the locker was booked, so it must be weighed with the rest of the sequence.",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I certified the carrier’s assignment history. It shows the locker number moving to Ilya six days after locker seventy-two was booked and two days after the first collection reminder. The earlier subscriber’s name is withheld, but the dates come from our billing system, were recorded before this investigation began, and were not edited by police.",
       "surface_persuasion": 0.5,
       "true_weight": 0.85,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "This was the decisive innocence evidence: Carrier assignment records show the number moved to Ilya six days after locker seventy-two was booked and two days after its first collection reminder. It turned the alternative explanation into a checkable account the prosecution could not exclude beyond reasonable doubt.",
+      "reveal_note": "The certified dates showed that Ilya did not hold the number when the medicine compartment was booked or first announced.",
       "tags": [
         "timeline",
         "digital_forensics"
@@ -182,14 +183,14 @@
     {
       "id": "b6",
       "kind": "witness",
-      "speaker": "w3",
+      "speaker": "w2",
       "mode": "examination",
-      "text": "A second camera shows Ilya carrying a parcel whose label matches locker seventy-three. Its legitimate collection record opens within the same minute using his email address. This was the sixth fact I recorded in the initial Locker Seventy-Two inquiry, before investigators settled on Ilya Morn. In the Locker Seventy-Two inquiry, I separated what I personally observed from what investigators later asked me to infer.",
+      "text": "I checked the second camera and the neighbouring compartment log. The parcel in Ilya’s hands carries the order number assigned to locker seventy-three. That door opened at 6:18 using a code sent to his email address. The records cannot show every movement behind the pillar, but they confirm he had a separate parcel to collect there.",
       "surface_persuasion": 0.55,
       "true_weight": 0.75,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "The competing account was concrete rather than speculative: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order.",
+      "reveal_note": "The second camera and order log independently supported Ilya’s stated reason for being at the locker bank.",
       "tags": [
         "method",
         "procedure"
@@ -200,12 +201,12 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "examination",
-      "text": "I said I was collecting work boots because that is what I ordered. I did not know medicine was beside me, and I never received the earlier locker reminders. This was the seventh fact I recorded in the initial Locker Seventy-Two inquiry, before investigators settled on Ilya Morn. That Locker Seventy-Two detail can be checked against the contemporaneous record rather than accepted as a later reconstruction.",
+      "text": "I ordered work boots for my next shift. The email told me to use locker seventy-three, and that is the door I opened. I did not know medicine was in the next compartment. The first locker-seventy-two message I saw was already in my phone after police contacted me and asked me to search for it.",
       "surface_persuasion": 0.55,
       "true_weight": 0.35,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This testimony tested whether the system record described a person’s conduct or only an event produced around them.",
+      "reveal_note": "Ilya’s account matched his email receipt and the neighbouring locker record, although his testimony still required the jury’s assessment.",
       "tags": [
         "credibility",
         "procedure"
@@ -216,33 +217,33 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "cross",
-      "text": "Your system recycled a customer search? It searched the number as it existed when police asked. So it attached a later subscriber to an earlier booking? Yes. That is what happened in this case. The service attached a later subscriber to an earlier booking; that database join created the apparent identification.",
+      "text": "The police search used the number as it existed that day? Yes. It returned the current subscriber. So the result joined Ilya to an earlier booking, without warning police about the date mismatch? Yes. It displayed one current customer result with no historical warning.",
       "turns": [
         {
           "speaker": "dc",
-          "text": "Your system recycled a customer search?"
+          "text": "The police search used the number as it existed that day?"
         },
         {
           "speaker": "w2",
-          "text": "It searched the number as it existed when police asked."
+          "text": "Yes. It returned the current subscriber."
         },
         {
           "speaker": "dc",
-          "text": "So it attached a later subscriber to an earlier booking?"
+          "text": "So the result joined Ilya to an earlier booking, without warning police about the date mismatch?"
         },
         {
           "speaker": "w2",
-          "text": "Yes. That is what happened in this case. The service attached a later subscriber to an earlier booking; that database join created the apparent identification."
+          "text": "Yes. It displayed one current customer result with no historical warning."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.25,
-      "direction": "guilt",
+      "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The second cross put the decisive inference under pressure and showed exactly which part of the account could still be disputed.",
+      "reveal_note": "The search interface presented a current subscriber as though that person belonged to the earlier booking.",
       "tags": [
-        "motive",
-        "credibility"
+        "digital_forensics",
+        "identity"
       ]
     },
     {
@@ -250,30 +251,30 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "You received one final code? I saw a code after police had already contacted me. You never tried it at locker seventy-two? No. I had my own code and opened locker seventy-three. A late message seen after police contact does not show that Ilya received or used the original collection code.",
+      "text": "You did receive the collection code on your phone? I found one message after police contacted me and asked me to search. You never tried that code at locker seventy-two? No. I had already used my email code at locker seventy-three. I did not open the medicine compartment or know what was inside it.",
       "turns": [
         {
           "speaker": "pc",
-          "text": "You received one final code?"
+          "text": "You did receive the collection code on your phone?"
         },
         {
           "speaker": "w4",
-          "text": "I saw a code after police had already contacted me."
+          "text": "I found one message after police contacted me and asked me to search."
         },
         {
           "speaker": "pc",
-          "text": "You never tried it at locker seventy-two?"
+          "text": "You never tried that code at locker seventy-two?"
         },
         {
           "speaker": "w4",
-          "text": "No. I had my own code and opened locker seventy-three. A late message seen after police contact does not show that Ilya received or used the original collection code."
+          "text": "No. I had already used my email code at locker seventy-three. I did not open the medicine compartment or know what was inside it."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.4,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The final witness supplied a separate check on the timeline, reducing the risk that one attractive clue would decide the case alone.",
+      "reveal_note": "The late reminder showed that Ilya eventually received the code, but not that he possessed the medicine or knew why the locker existed.",
       "tags": [
         "procedure",
         "credibility"
@@ -283,12 +284,12 @@
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person.",
+      "text": "Do not research this case or the locker service. The prosecution must make you sure Ilya controlled the medicine, knew it was stolen, and intended to sell or distribute it. His presence or receipt of a late code is not enough if the records leave a reasonable possibility that the earlier booking belonged to someone else.",
       "surface_persuasion": 0.40800000000000003,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The direction kept the burden where it belonged: a current-subscriber search cannot identify who held the number when the locker was booked, and no gap in the defence could substitute for proof of every element.",
+      "reveal_note": "The legal test required proof of possession, knowledge, and intent to sell; Ilya did not have to identify the earlier subscriber.",
       "tags": [
         "burden",
         "digital_forensics"
@@ -299,10 +300,10 @@
     "b3",
     "b5",
     "b8",
-    "b9"
+    "b10"
   ],
   "verdict_truth": "Not Guilty",
-  "twist": "The locker service searched by current subscriber and made Ilya look like the recipient. Carrier records showed the number was assigned to him six days after the medicine locker was booked, while camera timing placed him opening a different compartment.",
+  "twist": "The number on the locker record did belong to Ilya by the time police searched it. It did not belong to him when the compartment was booked. A second camera and the collection log placed him at locker seventy-three for his own parcel, turning a seemingly personal code into a database timing error.",
   "difficulty_target": 0.58,
   "jury": {
     "jurors": [
@@ -323,18 +324,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 2: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. The burden does not shift just because the accused’s explanation is untidy.",
-            "Juror 2: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. That answer makes sense only if the rest of the chronology holds."
+            "Juror 2: The delivered code and Ilya’s presence still need an explanation. I am not dismissing them.",
+            "Juror 2: A code on his phone matters, but only if the dates connect him to the booking."
           ],
           "pushback": [
-            "Juror 2: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. It changes how I read the locker code associated with Ilya’s current phone number, but it does not end the inquiry.",
-            "Juror 2: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. The alternative has to be reasonably possible, not perfect."
+            "Juror 2: I want the booking date, the subscriber date, and the door movement kept separate.",
+            "Juror 2: Ilya’s explanation need only be reasonably possible. It does not have to be perfect."
           ],
           "concede": [
-            "Juror 2: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. The room should decide whether that contradiction is material or merely awkward."
+            "Juror 2: The number changed hands after the booking. That weakens the clue I trusted first."
           ],
           "final": [
-            "Juror 2: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That point earns weight because it can be checked independently."
+            "Juror 2: I am weighing his presence and late code against the earlier booking and the locker-seventy-three record."
           ]
         },
         "reaction_rules": [
@@ -392,18 +393,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 3: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. Before I move, I need the locker code associated with Ilya’s current phone number placed on the same timeline.",
-            "Juror 3: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That is the part of the Crown case I can test rather than guess."
+            "Juror 3: The carrier dates and locker-seventy-three log are independent records. Together they support Ilya’s account.",
+            "Juror 3: His boots receipt can be tested against the camera and door log. It is not just his word."
           ],
           "pushback": [
-            "Juror 3: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. For me, the unanswered part is still the act was deliberate or dishonest rather than accidental.",
-            "Juror 3: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I am changing my view because the explanation fits more of the evidence."
+            "Juror 3: Which record proves Ilya controlled the medicine, rather than merely standing beside it?",
+            "Juror 3: I am following the timestamps, not choosing the tidier story."
           ],
           "concede": [
-            "Juror 3: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. The question is not which story is neater; it is which elements are proved."
+            "Juror 3: The current-subscriber result cannot answer who held the number on the booking date."
           ],
           "final": [
-            "Juror 3: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I need the witness account and the recorded evidence to agree before I rely on either."
+            "Juror 3: I need the booking, phone assignment, and door records to form one chronology before I convict."
           ]
         },
         "reaction_rules": [
@@ -461,21 +462,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 4: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I am treating the timing as evidence, not as a verdict."
+            "Juror 4: The timing is evidence, but it does not replace proof of possession, knowledge, and intent."
           ],
           "pushback": [
-            "Juror 4: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That moves one piece, not the burden the Crown carries.",
-            "Juror 4: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I am treating the timing as evidence, not as a verdict."
+            "Juror 4: A code received later does not by itself prove who made the earlier booking.",
+            "Juror 4: I will not turn Ilya’s presence beside two lockers into control of both."
           ],
           "concede": [
-            "Juror 4: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I want the actual record compared with the story built around it."
+            "Juror 4: The assignment history exposes a real gap in the prosecution’s identification."
           ],
           "holdout": [
-            "Juror 4: I am holding my position until the room deals directly with Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. That moves one piece, not the burden the Crown carries.",
-            "Juror 4: I am holding my position until the room deals directly with Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I am treating the timing as evidence, not as a verdict."
+            "Juror 4: Show me evidence that Ilya controlled locker seventy-two, not evidence that he stood nearby.",
+            "Juror 4: The prosecution carries the burden on every element. Ilya carries none."
           ],
           "final": [
-            "Juror 4: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That is one fact; the room still has to test the prosecution has proved every required fact beyond reasonable doubt."
+            "Juror 4: My verdict turns on whether the prosecution proved control of the medicine, not mere opportunity."
           ]
         },
         "reaction_rules": [
@@ -533,21 +534,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 5: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I am holding it against the judge’s direction on the accused performed or participated in the alleged act."
+            "Juror 5: The boots order, second camera, and carrier history give the defence account a factual foundation."
           ],
           "pushback": [
-            "Juror 5: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That is one fact; the room still has to test the accused performed or participated in the alleged act.",
-            "Juror 5: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I need the witness account and the recorded evidence to agree before I rely on either."
+            "Juror 5: I am separating access to a late code from knowing control of stolen medicine.",
+            "Juror 5: I need the witness account and the records to agree before I rely on either."
           ],
           "concede": [
-            "Juror 5: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. That point earns weight because it can be checked independently."
+            "Juror 5: The assignment date is independently recorded. That is more than a convenient explanation."
           ],
           "burden_correct": [
-            "Juror 5: In Locker Seventy-Two, unanswered questions do not move the burden; the prosecution must still prove every element. That point earns weight because it can be checked independently.",
-            "Juror 5: In Locker Seventy-Two, unanswered questions do not move the burden; the prosecution must still prove every element. I can explain that conclusion without borrowing a fact that is not in evidence."
+            "Juror 5: Unanswered questions do not shift the burden. The prosecution must prove every element.",
+            "Juror 5: Ilya does not have to identify the earlier subscriber for reasonable doubt to exist."
           ],
           "final": [
-            "Juror 5: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I am asking whether the exhibit proves the act or merely resembles it."
+            "Juror 5: The question is whether the evidence proves possession and knowledge, not whether Ilya can solve the case."
           ]
         },
         "reaction_rules": [
@@ -605,18 +606,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 6: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. For me, the unanswered part is still the act was deliberate or dishonest rather than accidental.",
-            "Juror 6: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I am changing my view because the explanation fits more of the evidence."
+            "Juror 6: The late code and Ilya’s presence are suspicious, but the booking date may change their meaning.",
+            "Juror 6: The boots record explains why he was there. We still have to test whether it explains everything."
           ],
           "pushback": [
-            "Juror 6: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I can explain that conclusion without borrowing a fact that is not in evidence.",
-            "Juror 6: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That point earns weight because it can be checked independently."
+            "Juror 6: Let us identify which door the evidence actually shows Ilya opening.",
+            "Juror 6: We should not count the phone lookup and locker code twice when both depend on one number."
           ],
           "concede": [
-            "Juror 6: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. That answer makes sense only if the rest of the chronology holds."
+            "Juror 6: Once the dates are aligned, the current-subscriber search loses much of its force."
           ],
           "final": [
-            "Juror 6: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. The alternative has to be reasonably possible, not perfect."
+            "Juror 6: The defence account need only remain reasonably possible, not answer every loose end."
           ]
         },
         "reaction_rules": [
@@ -662,19 +663,19 @@
         },
         "lines": {
           "agree": [
-            "Juror 7: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That moves one piece, not the burden the Crown carries.",
-            "Juror 7: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I am treating the timing as evidence, not as a verdict."
+            "Juror 7: Ilya’s own account still has to explain the collection code that reached his phone.",
+            "Juror 7: If his testimony conflicts with the delivery records, that would move me toward guilt."
           ],
           "pushback": [
-            "Juror 7: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I can give that weight only after we account for the locker code associated with Ilya’s current phone number.",
-            "Juror 7: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I am holding it against the judge’s direction on the accused performed or participated in the alleged act."
+            "Juror 7: I keep coming back to the code on Ilya’s phone. How much does its late arrival matter?",
+            "Juror 7: The blocked camera still leaves room for either account. I am not ready to settle."
           ],
           "concede": [
-            "Juror 7: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I am treating the timing as evidence, not as a verdict.",
-            "Juror 7: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. That moves one piece, not the burden the Crown carries."
+            "Juror 7: The locker system joined two different moments. I had treated them as one.",
+            "Juror 7: I accept that standing beside locker seventy-two is not the same as opening it."
           ],
           "final": [
-            "Juror 7: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I do not think confidence can repair a missing link."
+            "Juror 7: Confidence cannot repair the missing link between Ilya and the original booking."
           ]
         },
         "reaction_rules": [
@@ -744,18 +745,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 8: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I am not counting the same assumption twice as two pieces of evidence.",
-            "Juror 8: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I want the actual record compared with the story built around it."
+            "Juror 8: The booking predates Ilya’s number assignment, and locker seventy-three opened for his real order.",
+            "Juror 8: Those two independent timestamps move me more than the current-customer label."
           ],
           "pushback": [
-            "Juror 8: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I want the actual record compared with the story built around it.",
-            "Juror 8: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I am not counting the same assumption twice as two pieces of evidence."
+            "Juror 8: The code feels decisive because it is personal. The assignment history says it may not be.",
+            "Juror 8: I will not count one database join as both identity and possession."
           ],
           "concede": [
-            "Juror 8: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. The gap between those two facts is where my doubt sits."
+            "Juror 8: The timeline changes how much weight I give the code, but I am still testing it."
           ],
           "final": [
-            "Juror 8: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I am not counting the same assumption twice as two pieces of evidence."
+            "Juror 8: The dated records changed my mind; they explain both the phone number and Ilya’s presence."
           ]
         },
         "reaction_rules": [
@@ -824,18 +825,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 9: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I am asking whether the exhibit proves the act or merely resembles it.",
-            "Juror 9: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I am weighing that beside the locker code associated with Ilya’s current phone number, not on its own."
+            "Juror 9: The carrier history and neighbouring-locker log expose how the first identification was made.",
+            "Juror 9: I am weighing the dated records beside the late code, not pretending either stands alone."
           ],
           "pushback": [
-            "Juror 9: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I am not filling the missing step with instinct.",
-            "Juror 9: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That leaves me asking who had the opportunity the records actually show."
+            "Juror 9: The police search was a reasonable lead, but a lead is not proof.",
+            "Juror 9: I am not filling the missing step between nearby and in control with instinct."
           ],
           "concede": [
-            "Juror 9: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I would rather name the gap than pretend it is not there."
+            "Juror 9: I would rather name the gap in the subscriber record than pretend it is not there."
           ],
           "final": [
-            "Juror 9: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That answer makes sense only if the rest of the chronology holds."
+            "Juror 9: The chronology must show possession, knowledge, and intent. At present it shows suspicion."
           ]
         },
         "reaction_rules": [
@@ -893,23 +894,23 @@
         },
         "lines": {
           "agree": [
-            "Juror 10: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. That is where the competing account becomes concrete for me."
+            "Juror 10: The late code and blocked camera still leave questions I want answered."
           ],
           "pushback": [
-            "Juror 10: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. The room should decide whether that contradiction is material or merely awkward."
+            "Juror 10: The subscriber mismatch may be material, but I am not sure it explains every message."
           ],
           "burden_drift": [
-            "Juror 10: In Locker Seventy-Two, there are unanswered questions around the locker code associated with Ilya’s current phone number, and I keep wanting Ilya Morn to explain them. That point earns weight because it can be checked independently.",
-            "Juror 10: In Locker Seventy-Two, there are unanswered questions around the locker code associated with Ilya’s current phone number, and I keep wanting Ilya Morn to explain them. I can explain that conclusion without borrowing a fact that is not in evidence."
+            "Juror 10: I keep wanting Ilya to tell us who booked locker seventy-two.",
+            "Juror 10: If Ilya cannot explain the earlier subscriber, part of me wants to hold that against him."
           ],
           "concede": [
-            "Juror 10: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I am changing my view because the explanation fits more of the evidence."
+            "Juror 10: The dated records explain more of the sequence than the current-customer label does."
           ],
           "burden_correct": [
-            "Juror 10: In Locker Seventy-Two, unanswered questions do not move the burden; the prosecution must still prove every element. That detail matters to my vote because it comes from outside either side’s story."
+            "Juror 10: Ilya does not have to identify the earlier subscriber. The prosecution keeps the burden."
           ],
           "final": [
-            "Juror 10: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That is where the competing account becomes concrete for me."
+            "Juror 10: My unanswered questions cannot substitute for proof of possession, knowledge, and intent."
           ]
         },
         "reaction_rules": [
@@ -967,18 +968,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 11: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That is the part of the Crown case I can test rather than guess.",
-            "Juror 11: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. Before I move, I need the locker code associated with Ilya’s current phone number placed on the same timeline."
+            "Juror 11: The carrier and locker records are the facts I can test rather than guess.",
+            "Juror 11: Put the code on the same timeline as the booking and assignment dates. Then its limits are clear."
           ],
           "pushback": [
-            "Juror 11: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. Before I move, I need the locker code associated with Ilya’s current phone number placed on the same timeline.",
-            "Juror 11: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That is the part of the Crown case I can test rather than guess."
+            "Juror 11: I have not decided what the late code proves about Ilya’s intentions.",
+            "Juror 11: The camera shows proximity. I still need evidence of control."
           ],
           "concede": [
-            "Juror 11: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I am ready to put less weight on the first impression."
+            "Juror 11: I am ready to put less weight on the current-subscriber result."
           ],
           "final": [
-            "Juror 11: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. The question is not which story is neater; it is which elements are proved."
+            "Juror 11: The dated records create reasonable doubt about who booked and controlled locker seventy-two."
           ]
         },
         "reaction_rules": [
@@ -1037,18 +1038,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 12: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. That moves one piece, not the burden the Crown carries.",
-            "Juror 12: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I am treating the timing as evidence, not as a verdict."
+            "Juror 12: The boots record explains Ilya’s presence without requiring us to invent another fact.",
+            "Juror 12: The assignment history changes the code from an identity record into a timing question."
           ],
           "pushback": [
-            "Juror 12: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I hear the point; now I want the source of it tested.",
-            "Juror 12: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. If we remove the dramatic label, that is the fact left underneath."
+            "Juror 12: I hear the point about the code. Now I want its source and timing tested.",
+            "Juror 12: Strip away the customer label. What fact connects Ilya to the original booking?"
           ],
           "concede": [
-            "Juror 12: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. That is persuasive only if we first resolve the locker code associated with Ilya’s current phone number."
+            "Juror 12: The current-subscriber result cannot carry the identification by itself."
           ],
           "final": [
-            "Juror 12: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That gives me a reason, but not yet a complete chain."
+            "Juror 12: The defence has a supported account, while the prosecution’s chain still lacks control and knowledge."
           ]
         },
         "reaction_rules": [
