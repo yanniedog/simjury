@@ -37,6 +37,9 @@ jobs:
       - name: Install
         working-directory: site
         run: npm ci
+      - name: Test Worker (routing + narration)
+        working-directory: site
+        run: npm run test:worker
       - name: Validate (case sync + F-4 spoiler scan + wrangler dry-run)
         working-directory: site
         run: npm run check

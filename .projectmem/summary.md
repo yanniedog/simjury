@@ -1,6 +1,6 @@
-# projectmem - simjury-dailypivot-wt
+# projectmem - simjury-repo-hygiene
 
-_Last updated: 2026-07-13_
+_Last updated: 2026-07-23_
 
 ## Project purpose
 SimJury is an offline jury simulation game on simjury.com. **Owner pivot 2026-07-13
@@ -15,7 +15,9 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 `DAILY-PIVOT.md` for the decision record and `ROADMAP.md`'s Track D for the delivery ladder.
 
 ## Recent issues
-- No issues logged yet.
+- [DONE] #0001 Site deployment workflow omits Worker tests, so narration/API regressions can reach deployment after only a Wrangler dry run [.github/workflows/site.yml] -> Deployment workflow now runs the Worker test suite before Wrangler validation and deployment [.github/workflows/site.yml] (fixed)
+  - Partial attempt: Added the existing Worker routing and narration suite to the deployment workflow’s required check job [.github/workflows/site.yml]
+  - Failed attempt: Ran the Worker suite from the hygiene worktree; manifest generation hit the same sandbox EPERM on its tracked output [site/src/narration-manifest.generated.js]
 
 ## Decisions
 - Pilot phase: PILOT-SPEC.md supersedes v3 for all work until Phase 4 [PILOT-SPEC.md]
