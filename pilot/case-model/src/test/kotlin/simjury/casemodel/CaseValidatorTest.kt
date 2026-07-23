@@ -157,6 +157,33 @@ class CaseValidatorTest {
     }
 
     @Test
+    fun `trims pseudonym real names before scanning play reachable text`() {
+        val base = historicalValidCase(episodeCount = 3)
+        val realName = base.pseudonyms.entries.first().realName
+        val paddedPseudonym = base.pseudonyms.entries.first().copy(realName = "  $realName  ")
+        val badWitness = base.trial.witnesses.first().copy(
+            blocks = base.trial.witnesses.first().blocks.mapIndexed { index, block ->
+                if (index == 0) block.copy(text = "$realName appeared in court.") else block
+            },
+        )
+        val loaded = base.copy(
+            pseudonyms = base.pseudonyms.copy(
+                entries = listOf(paddedPseudonym) + base.pseudonyms.entries.drop(1),
+            ),
+            trial = base.trial.copy(
+                witnesses = listOf(badWitness) + base.trial.witnesses.drop(1),
+            ),
+        )
+
+        val ex = assertFailsWith<CaseValidationException> { CaseValidator.validate(loaded) }
+        assertTrue(
+            ex.errors.any {
+                it.contains("F-4 banned token") && it.contains(realName, ignoreCase = true)
+            },
+        )
+    }
+
+    @Test
     fun `accepts play reachable text with substring of banned token`() {
         val trial = historicalValidCase(episodeCount = 3).trial
         val safeWitness = trial.witnesses[0].copy(

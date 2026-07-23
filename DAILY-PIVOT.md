@@ -24,7 +24,8 @@ Owner decisions, recorded verbatim:
    (TypeScript port of `archive/simjury-build-spec-v3.md` §7.7 + §9 at daily scale):
    11 fictional jurors with personas, theme weights, and ordered reaction rules; the
    player argues evidence after locking their own verdict; the room's verdict is earned,
-   not scripted. No runtime AI, no backend.
+   not scripted. Deliberation uses no runtime AI and stores no player state on a backend;
+   optional corpus-whitelisted narration is the sole dynamic service exception.
 3. **Case supply is LLM-drafted batches behind hardened CI gates, with human
    spot-checks.** This deliberately relaxes simjury-daily's "a human reads every case"
    rule (owner decision, 2026-07-13). The gates — schema, design-quality, jury floors,
@@ -37,10 +38,12 @@ Owner decisions, recorded verbatim:
 
 ## What carries over unchanged (binding on the daily track)
 
-- **Static hosting only** — Cloudflare Worker + static assets, zero backend, zero
-  runtime cost, no accounts, no tracking beyond what `site/DECISIONS.md` already allows.
-- **No runtime AI** — all player-facing text is pre-authored JSON; generation happens at
-  authoring time, in PRs.
+- **Static-first hosting** — Cloudflare Worker + static assets, no accounts and no
+  tracking. The sole dynamic route is the corpus-whitelisted narration endpoint described
+  by `site/DECISIONS.md`; game state remains entirely client-side.
+- **No generative runtime AI** — all player-facing text is pre-authored JSON and case
+  generation happens in PRs. Optional narration may synthesize only build-whitelisted
+  authored lines; it never accepts free-form player text.
 - **Fiction, and it says so** — every daily case carries the pinned `label: "fiction"`
   (the simjury-daily safety invariant). Daily cases are built from real trial *patterns*,
   never from real events. Real historical cases ship only through `CASE_HARNESS.md`.

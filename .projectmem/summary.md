@@ -1,4 +1,4 @@
-# projectmem - simjury-runway-a
+# projectmem - simjury-repo-hygiene
 
 _Last updated: 2026-07-23_
 
@@ -15,17 +15,15 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 `DAILY-PIVOT.md` for the decision record and `ROADMAP.md`'s Track D for the delivery ladder.
 
 ## Recent issues
-- [DONE] #0003 Runway A retains wrong-speaker exhibit phrasing, contradictory decisive innocence notes, and five exculpatory b6 beats marked as guilt [site/app/docket/dd-0015.json] -> PR #102’s wrong-speaker, decisive-reveal, exculpatory-direction, and deliberation-variance defects are corrected [site/app/docket/dd-0015.json] (fixed)
-  - Partial attempt: Neutralized eight counsel-as-expert exhibit lines, rewrote five decisive innocence reveal notes, and corrected five exculpatory b6 metadata directions [site/app/docket/dd-0015.json]
-  - Partial attempt: Reduced corrected exculpatory b6 weights to the schema’s minor range after the first validator rejected decisive-strength minor beats [site/app/docket/dd-0015.json]
-  - Partial attempt: Changed dd-0020’s low-confidence drifter to an initially sceptical position so corrected exculpatory metadata still permits hung and majority outcomes [site/app/docket/dd-0020.json]
-- [DONE] #0002 Runway A juror dialogue retains three cloned suffixes, nine verdicts still alternate, and 14 closings start sentences lowercase [site/app/docket/dd-0015.json] -> Runway A juror dialogue, closing sentence case, and publication-order verdict variety are independently release-approved [site/app/docket/dd-0015.json] (fixed)
-  - Partial attempt: Replaced three cloned juror suffixes with case-specific evidence reasoning, sentence-cased closings, and reordered two complete cases to break the live verdict pattern [site/app/docket/dd-0015.json]
-  - Failed attempt: Ran full web suite after editorial polish; lint and typecheck passed, while Vitest and Vite build were blocked by EPERM creating temporary config bundles [site/app/vite.config.ts]
-- [DONE] #0001 Runway cases dd-0015 through dd-0025 contain wrong-speaker testimony, templated closings, repeated filler, and verdict-pattern leakage [site/app/docket/dd-0015.json] -> Confirmed dd-0015 through dd-0025 as a coherent, non-repetitive first runway batch with correct speaker attribution and case-specific reveals [site/app/docket/dd-0015.json] (fixed)
-  - Failed attempt: Prepared a bounded deterministic rewrite for dd-0015 through dd-0025; sandbox blocked file writes with EPERM [site/app/docket/dd-0015.json]
-  - Partial attempt: First rewrite passed JSON/schema but case gates found 58 issues: short evidence, overlong defence closings, cross-side mismatches, unreachable tag rules, two weight floors, and three dynamics failures [site/app/docket/dd-0015.json]
-  - Partial attempt: Second-pass validation reduced 58 findings to three overlong defence closings; all speaker, evidence, rule reachability, weight, and dynamics gates now pass [site/app/docket/dd-0016.json]
+- [DONE] #0003 Legacy /play room outcome requires ten of eleven votes, contradicting its authored 8-3 return, and can describe mixed tallies as one mind [site/public/play/play.js] -> Legacy /play now returns its authored majority verdict and never labels divided or undecided tallies as one mind [site/public/play/play.js] (fixed)
+  - Partial attempt: Replaced the 10-vote threshold with a strict majority of all eleven room positions and made verdict copy account for dissent and undecided votes [site/public/play/play.js]
+- [DONE] #0002 Android release CI lint model task reads generated case assets without depending on syncCaseAssets [pilot/app/build.gradle.kts] -> All Gradle lint-related tasks now depend on generated case assets, closing the Android release CI ordering failure [pilot/app/build.gradle.kts] (fixed)
+  - Failed attempt: Reproduced the exact release lint-model task locally; sandbox blocked Gradle’s fileHashes lock before configuration [pilot/.gradle]
+  - Failed attempt: Elevated Gradle retry reached configuration but PowerShell split the -D Java-home argument into a task path [pilot/app/build.gradle.kts]
+  - Failed attempt: Correctly quoted Gradle retry reached task dependency resolution; the clean worktree lacked Android SDK configuration [pilot/app/build.gradle.kts]
+- [DONE] #0001 Site deployment workflow omits Worker tests, so narration/API regressions can reach deployment after only a Wrangler dry run [.github/workflows/site.yml] -> Deployment workflow now runs the Worker test suite before Wrangler validation and deployment [.github/workflows/site.yml] (fixed)
+  - Partial attempt: Added the existing Worker routing and narration suite to the deployment workflow’s required check job [.github/workflows/site.yml]
+  - Failed attempt: Ran the Worker suite from the hygiene worktree; manifest generation hit the same sandbox EPERM on its tracked output [site/src/narration-manifest.generated.js]
 
 ## Decisions
 - Pilot phase: PILOT-SPEC.md supersedes v3 for all work until Phase 4 [PILOT-SPEC.md]

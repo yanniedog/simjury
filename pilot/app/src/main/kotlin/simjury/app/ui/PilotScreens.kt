@@ -485,7 +485,9 @@ private fun DiaryBody(
     var leaning by rememberSaveable { mutableStateOf("G") }
     var reason by rememberSaveable { mutableStateOf("") }
     var doubt by rememberSaveable { mutableStateOf("") }
-    val canCommit = reason.length >= DIARY_MIN_CHARS && doubt.length >= DIARY_MIN_CHARS
+    val normalizedReason = reason.trim()
+    val normalizedDoubt = doubt.trim()
+    val canCommit = normalizedReason.length >= DIARY_MIN_CHARS && normalizedDoubt.length >= DIARY_MIN_CHARS
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -516,7 +518,9 @@ private fun DiaryBody(
             value = reason,
             onValueChange = { reason = it },
             label = { Text(stringResource(R.string.diary_reason_label, DIARY_MIN_CHARS)) },
-            supportingText = { Text(stringResource(R.string.diary_char_count, reason.length, DIARY_MIN_CHARS)) },
+            supportingText = {
+                Text(stringResource(R.string.diary_char_count, normalizedReason.length, DIARY_MIN_CHARS))
+            },
             modifier = Modifier.fillMaxWidth(),
             minLines = 3,
             shape = MaterialTheme.shapes.medium,
@@ -525,13 +529,15 @@ private fun DiaryBody(
             value = doubt,
             onValueChange = { doubt = it },
             label = { Text(stringResource(R.string.diary_doubt_label, DIARY_MIN_CHARS)) },
-            supportingText = { Text(stringResource(R.string.diary_char_count, doubt.length, DIARY_MIN_CHARS)) },
+            supportingText = {
+                Text(stringResource(R.string.diary_char_count, normalizedDoubt.length, DIARY_MIN_CHARS))
+            },
             modifier = Modifier.fillMaxWidth(),
             minLines = 3,
             shape = MaterialTheme.shapes.medium,
         )
         Button(
-            onClick = { onCommit(leaning, reason, doubt) },
+            onClick = { onCommit(leaning, normalizedReason, normalizedDoubt) },
             enabled = canCommit,
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.medium,
