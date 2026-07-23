@@ -34,7 +34,7 @@
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence accepts that the locker code associated with Ilya’s current phone number created suspicion, but suspicion is not the test. the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That evidence goes to the heart of the case because a current-subscriber search cannot identify who held the number when the locker was booked. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
+        "text": "The defence accepts that the locker code associated with Ilya’s current phone number created suspicion, but suspicion is not the test. The number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That evidence goes to the heart of the case because a current-subscriber search cannot identify who held the number when the locker was booked. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
       }
     }
   },
@@ -323,18 +323,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 2: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I want that tested against the full timeline.",
-            "Juror 2: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. That point changes the weight I give the earlier clue."
+            "Juror 2: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. The burden does not shift just because the accused’s explanation is untidy.",
+            "Juror 2: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. That answer makes sense only if the rest of the chronology holds."
           ],
           "pushback": [
-            "Juror 2: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I want that tested against the full timeline.",
-            "Juror 2: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That point changes the weight I give the earlier clue."
+            "Juror 2: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. It changes how I read the locker code associated with Ilya’s current phone number, but it does not end the inquiry.",
+            "Juror 2: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. The alternative has to be reasonably possible, not perfect."
           ],
           "concede": [
-            "Juror 2: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I want that tested against the full timeline."
+            "Juror 2: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. The room should decide whether that contradiction is material or merely awkward."
           ],
           "final": [
-            "Juror 2: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I want that tested against the full timeline."
+            "Juror 2: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That point earns weight because it can be checked independently."
           ]
         },
         "reaction_rules": [
@@ -392,18 +392,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 3: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That point changes the weight I give the earlier clue.",
-            "Juror 3: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. It matters, but it cannot carry the verdict by itself."
+            "Juror 3: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. Before I move, I need the locker code associated with Ilya’s current phone number placed on the same timeline.",
+            "Juror 3: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That is the part of the Crown case I can test rather than guess."
           ],
           "pushback": [
-            "Juror 3: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That point changes the weight I give the earlier clue.",
-            "Juror 3: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. It matters, but it cannot carry the verdict by itself."
+            "Juror 3: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. For me, the unanswered part is still the act was deliberate or dishonest rather than accidental.",
+            "Juror 3: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I am changing my view because the explanation fits more of the evidence."
           ],
           "concede": [
-            "Juror 3: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. That point changes the weight I give the earlier clue."
+            "Juror 3: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. The question is not which story is neater; it is which elements are proved."
           ],
           "final": [
-            "Juror 3: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That point changes the weight I give the earlier clue."
+            "Juror 3: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I need the witness account and the recorded evidence to agree before I rely on either."
           ]
         },
         "reaction_rules": [
@@ -461,21 +461,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 4: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. It matters, but it cannot carry the verdict by itself."
+            "Juror 4: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I am treating the timing as evidence, not as a verdict."
           ],
           "pushback": [
-            "Juror 4: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. It matters, but it cannot carry the verdict by itself.",
-            "Juror 4: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I want that tested against the full timeline."
+            "Juror 4: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That moves one piece, not the burden the Crown carries.",
+            "Juror 4: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I am treating the timing as evidence, not as a verdict."
           ],
           "concede": [
-            "Juror 4: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. It matters, but it cannot carry the verdict by itself."
+            "Juror 4: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I want the actual record compared with the story built around it."
           ],
           "holdout": [
-            "Juror 4: I am holding my position until the room deals directly with Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. It matters, but it cannot carry the verdict by itself.",
-            "Juror 4: I am holding my position until the room deals directly with Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I want that tested against the full timeline."
+            "Juror 4: I am holding my position until the room deals directly with Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. That moves one piece, not the burden the Crown carries.",
+            "Juror 4: I am holding my position until the room deals directly with Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I am treating the timing as evidence, not as a verdict."
           ],
           "final": [
-            "Juror 4: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. It matters, but it cannot carry the verdict by itself."
+            "Juror 4: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That is one fact; the room still has to test the prosecution has proved every required fact beyond reasonable doubt."
           ]
         },
         "reaction_rules": [
@@ -533,21 +533,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 5: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I want that tested against the full timeline."
+            "Juror 5: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I am holding it against the judge’s direction on the accused performed or participated in the alleged act."
           ],
           "pushback": [
-            "Juror 5: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I want that tested against the full timeline.",
-            "Juror 5: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That point changes the weight I give the earlier clue."
+            "Juror 5: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That is one fact; the room still has to test the accused performed or participated in the alleged act.",
+            "Juror 5: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I need the witness account and the recorded evidence to agree before I rely on either."
           ],
           "concede": [
-            "Juror 5: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I want that tested against the full timeline."
+            "Juror 5: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. That point earns weight because it can be checked independently."
           ],
           "burden_correct": [
-            "Juror 5: In Locker Seventy-Two, unanswered questions do not move the burden; the prosecution must still prove every element. I want that tested against the full timeline.",
-            "Juror 5: In Locker Seventy-Two, unanswered questions do not move the burden; the prosecution must still prove every element. That point changes the weight I give the earlier clue."
+            "Juror 5: In Locker Seventy-Two, unanswered questions do not move the burden; the prosecution must still prove every element. That point earns weight because it can be checked independently.",
+            "Juror 5: In Locker Seventy-Two, unanswered questions do not move the burden; the prosecution must still prove every element. I can explain that conclusion without borrowing a fact that is not in evidence."
           ],
           "final": [
-            "Juror 5: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I want that tested against the full timeline."
+            "Juror 5: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I am asking whether the exhibit proves the act or merely resembles it."
           ]
         },
         "reaction_rules": [
@@ -605,18 +605,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 6: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. That point changes the weight I give the earlier clue.",
-            "Juror 6: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. It matters, but it cannot carry the verdict by itself."
+            "Juror 6: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. For me, the unanswered part is still the act was deliberate or dishonest rather than accidental.",
+            "Juror 6: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I am changing my view because the explanation fits more of the evidence."
           ],
           "pushback": [
-            "Juror 6: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That point changes the weight I give the earlier clue.",
-            "Juror 6: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. It matters, but it cannot carry the verdict by itself."
+            "Juror 6: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I can explain that conclusion without borrowing a fact that is not in evidence.",
+            "Juror 6: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That point earns weight because it can be checked independently."
           ],
           "concede": [
-            "Juror 6: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. That point changes the weight I give the earlier clue."
+            "Juror 6: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. That answer makes sense only if the rest of the chronology holds."
           ],
           "final": [
-            "Juror 6: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That point changes the weight I give the earlier clue."
+            "Juror 6: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. The alternative has to be reasonably possible, not perfect."
           ]
         },
         "reaction_rules": [
@@ -662,19 +662,19 @@
         },
         "lines": {
           "agree": [
-            "Juror 7: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. It matters, but it cannot carry the verdict by itself.",
-            "Juror 7: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I want that tested against the full timeline."
+            "Juror 7: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That moves one piece, not the burden the Crown carries.",
+            "Juror 7: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I am treating the timing as evidence, not as a verdict."
           ],
           "pushback": [
-            "Juror 7: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. It matters, but it cannot carry the verdict by itself.",
-            "Juror 7: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I want that tested against the full timeline."
+            "Juror 7: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I can give that weight only after we account for the locker code associated with Ilya’s current phone number.",
+            "Juror 7: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I am holding it against the judge’s direction on the accused performed or participated in the alleged act."
           ],
           "concede": [
-            "Juror 7: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. It matters, but it cannot carry the verdict by itself.",
-            "Juror 7: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I want that tested against the full timeline."
+            "Juror 7: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I am treating the timing as evidence, not as a verdict.",
+            "Juror 7: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. That moves one piece, not the burden the Crown carries."
           ],
           "final": [
-            "Juror 7: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. It matters, but it cannot carry the verdict by itself."
+            "Juror 7: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I do not think confidence can repair a missing link."
           ]
         },
         "reaction_rules": [
@@ -744,18 +744,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 8: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I want that tested against the full timeline.",
-            "Juror 8: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. That point changes the weight I give the earlier clue."
+            "Juror 8: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I am not counting the same assumption twice as two pieces of evidence.",
+            "Juror 8: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I want the actual record compared with the story built around it."
           ],
           "pushback": [
-            "Juror 8: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I want that tested against the full timeline.",
-            "Juror 8: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That point changes the weight I give the earlier clue."
+            "Juror 8: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I want the actual record compared with the story built around it.",
+            "Juror 8: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I am not counting the same assumption twice as two pieces of evidence."
           ],
           "concede": [
-            "Juror 8: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I want that tested against the full timeline."
+            "Juror 8: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. The gap between those two facts is where my doubt sits."
           ],
           "final": [
-            "Juror 8: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I want that tested against the full timeline."
+            "Juror 8: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I am not counting the same assumption twice as two pieces of evidence."
           ]
         },
         "reaction_rules": [
@@ -824,18 +824,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 9: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That point changes the weight I give the earlier clue.",
-            "Juror 9: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. It matters, but it cannot carry the verdict by itself."
+            "Juror 9: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I am asking whether the exhibit proves the act or merely resembles it.",
+            "Juror 9: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I am weighing that beside the locker code associated with Ilya’s current phone number, not on its own."
           ],
           "pushback": [
-            "Juror 9: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That point changes the weight I give the earlier clue.",
-            "Juror 9: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. It matters, but it cannot carry the verdict by itself."
+            "Juror 9: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I am not filling the missing step with instinct.",
+            "Juror 9: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That leaves me asking who had the opportunity the records actually show."
           ],
           "concede": [
-            "Juror 9: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. That point changes the weight I give the earlier clue."
+            "Juror 9: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I would rather name the gap than pretend it is not there."
           ],
           "final": [
-            "Juror 9: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That point changes the weight I give the earlier clue."
+            "Juror 9: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That answer makes sense only if the rest of the chronology holds."
           ]
         },
         "reaction_rules": [
@@ -893,23 +893,23 @@
         },
         "lines": {
           "agree": [
-            "Juror 10: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. It matters, but it cannot carry the verdict by itself."
+            "Juror 10: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. That is where the competing account becomes concrete for me."
           ],
           "pushback": [
-            "Juror 10: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. It matters, but it cannot carry the verdict by itself."
+            "Juror 10: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. The room should decide whether that contradiction is material or merely awkward."
           ],
           "burden_drift": [
-            "Juror 10: In Locker Seventy-Two, there are unanswered questions around the locker code associated with Ilya’s current phone number, and I keep wanting Ilya Morn to explain them. It matters, but it cannot carry the verdict by itself.",
-            "Juror 10: In Locker Seventy-Two, there are unanswered questions around the locker code associated with Ilya’s current phone number, and I keep wanting Ilya Morn to explain them. I want that tested against the full timeline."
+            "Juror 10: In Locker Seventy-Two, there are unanswered questions around the locker code associated with Ilya’s current phone number, and I keep wanting Ilya Morn to explain them. That point earns weight because it can be checked independently.",
+            "Juror 10: In Locker Seventy-Two, there are unanswered questions around the locker code associated with Ilya’s current phone number, and I keep wanting Ilya Morn to explain them. I can explain that conclusion without borrowing a fact that is not in evidence."
           ],
           "concede": [
-            "Juror 10: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. It matters, but it cannot carry the verdict by itself."
+            "Juror 10: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I am changing my view because the explanation fits more of the evidence."
           ],
           "burden_correct": [
-            "Juror 10: In Locker Seventy-Two, unanswered questions do not move the burden; the prosecution must still prove every element. It matters, but it cannot carry the verdict by itself."
+            "Juror 10: In Locker Seventy-Two, unanswered questions do not move the burden; the prosecution must still prove every element. That detail matters to my vote because it comes from outside either side’s story."
           ],
           "final": [
-            "Juror 10: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. It matters, but it cannot carry the verdict by itself."
+            "Juror 10: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That is where the competing account becomes concrete for me."
           ]
         },
         "reaction_rules": [
@@ -967,18 +967,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 11: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I want that tested against the full timeline.",
-            "Juror 11: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That point changes the weight I give the earlier clue."
+            "Juror 11: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That is the part of the Crown case I can test rather than guess.",
+            "Juror 11: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. Before I move, I need the locker code associated with Ilya’s current phone number placed on the same timeline."
           ],
           "pushback": [
-            "Juror 11: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I want that tested against the full timeline.",
-            "Juror 11: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That point changes the weight I give the earlier clue."
+            "Juror 11: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. Before I move, I need the locker code associated with Ilya’s current phone number placed on the same timeline.",
+            "Juror 11: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That is the part of the Crown case I can test rather than guess."
           ],
           "concede": [
-            "Juror 11: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I want that tested against the full timeline."
+            "Juror 11: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. I am ready to put less weight on the first impression."
           ],
           "final": [
-            "Juror 11: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. I want that tested against the full timeline."
+            "Juror 11: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. The question is not which story is neater; it is which elements are proved."
           ]
         },
         "reaction_rules": [
@@ -1037,18 +1037,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 12: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. That point changes the weight I give the earlier clue.",
-            "Juror 12: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. It matters, but it cannot carry the verdict by itself."
+            "Juror 12: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. That moves one piece, not the burden the Crown carries.",
+            "Juror 12: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment. I am treating the timing as evidence, not as a verdict."
           ],
           "pushback": [
-            "Juror 12: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. That point changes the weight I give the earlier clue.",
-            "Juror 12: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. It matters, but it cannot carry the verdict by itself."
+            "Juror 12: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. I hear the point; now I want the source of it tested.",
+            "Juror 12: I am not ready to let the locker code associated with Ilya’s current phone number decide Locker Seventy-Two. If we remove the dramatic label, that is the fact left underneath."
           ],
           "concede": [
-            "Juror 12: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. That point changes the weight I give the earlier clue."
+            "Juror 12: I accept now that a current-subscriber search cannot identify who held the number when the locker was booked. That is persuasive only if we first resolve the locker code associated with Ilya’s current phone number."
           ],
           "final": [
-            "Juror 12: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That point changes the weight I give the earlier clue."
+            "Juror 12: My verdict in Locker Seventy-Two turns on whether the jury can reconcile Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment with this competing account: the number was assigned to Ilya six days after booking, and camera records show him opening locker seventy-three with his own order. That gives me a reason, but not yet a complete chain."
           ]
         },
         "reaction_rules": [

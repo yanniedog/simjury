@@ -30,11 +30,11 @@
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution began with the shared marketplace account, but it does not ask you to convict on that clue alone. every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
+        "text": "The prosecution began with the shared marketplace account, but it does not ask you to convict on that clue alone. Every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence accepts that the shared marketplace account created suspicion, but suspicion is not the test. four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That evidence goes to the heart of the case because a shared login cannot identify who created a false listing. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
+        "text": "The defence accepts that the shared marketplace account created suspicion, but suspicion is not the test. Four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That evidence goes to the heart of the case because a shared login cannot identify who created a false listing. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
       }
     }
   },
@@ -305,18 +305,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 2: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I want that tested against the full timeline.",
-            "Juror 2: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. That point changes the weight I give the earlier clue."
+            "Juror 2: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. That is one fact; the room still has to test the accused performed or participated in the alleged act.",
+            "Juror 2: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I need the witness account and the recorded evidence to agree before I rely on either."
           ],
           "pushback": [
-            "Juror 2: I am not ready to let the shared marketplace account decide The Refund Window. I want that tested against the full timeline.",
-            "Juror 2: I am not ready to let the shared marketplace account decide The Refund Window. That point changes the weight I give the earlier clue."
+            "Juror 2: I am not ready to let the shared marketplace account decide The Refund Window. I am ready to put less weight on the first impression.",
+            "Juror 2: I am not ready to let the shared marketplace account decide The Refund Window. The sequence matters more to me than how suspicious one moment sounds."
           ],
           "concede": [
-            "Juror 2: I accept now that a shared login cannot identify who created a false listing. I want that tested against the full timeline."
+            "Juror 2: I accept now that a shared login cannot identify who created a false listing. I do not think confidence can repair a missing link."
           ],
           "final": [
-            "Juror 2: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I want that tested against the full timeline."
+            "Juror 2: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That is persuasive only if we first resolve the shared marketplace account."
           ]
         },
         "reaction_rules": [
@@ -374,18 +374,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 3: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That point changes the weight I give the earlier clue.",
-            "Juror 3: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. It matters, but it cannot carry the verdict by itself."
+            "Juror 3: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. It changes how I read the shared marketplace account, but it does not end the inquiry.",
+            "Juror 3: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. The alternative has to be reasonably possible, not perfect."
           ],
           "pushback": [
-            "Juror 3: I am not ready to let the shared marketplace account decide The Refund Window. That point changes the weight I give the earlier clue.",
-            "Juror 3: I am not ready to let the shared marketplace account decide The Refund Window. It matters, but it cannot carry the verdict by itself."
+            "Juror 3: I am not ready to let the shared marketplace account decide The Refund Window. The question is not which story is neater; it is which elements are proved.",
+            "Juror 3: I am not ready to let the shared marketplace account decide The Refund Window. That gives me a reason, but not yet a complete chain."
           ],
           "concede": [
-            "Juror 3: I accept now that a shared login cannot identify who created a false listing. That point changes the weight I give the earlier clue."
+            "Juror 3: I accept now that a shared login cannot identify who created a false listing. I can state the inference now, and I can also state what it depends on."
           ],
           "final": [
-            "Juror 3: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That point changes the weight I give the earlier clue."
+            "Juror 3: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. If we remove the dramatic label, that is the fact left underneath."
           ]
         },
         "reaction_rules": [
@@ -443,21 +443,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 4: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. It matters, but it cannot carry the verdict by itself."
+            "Juror 4: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I hear the point; now I want the source of it tested."
           ],
           "pushback": [
-            "Juror 4: I am not ready to let the shared marketplace account decide The Refund Window. It matters, but it cannot carry the verdict by itself.",
-            "Juror 4: I am not ready to let the shared marketplace account decide The Refund Window. I want that tested against the full timeline."
+            "Juror 4: I am not ready to let the shared marketplace account decide The Refund Window. I am changing my view because the explanation fits more of the evidence.",
+            "Juror 4: I am not ready to let the shared marketplace account decide The Refund Window. For me, the unanswered part is still the accused performed or participated in the alleged act."
           ],
           "concede": [
-            "Juror 4: I accept now that a shared login cannot identify who created a false listing. It matters, but it cannot carry the verdict by itself."
+            "Juror 4: I accept now that a shared login cannot identify who created a false listing. I am changing my view because the explanation fits more of the evidence."
           ],
           "holdout": [
-            "Juror 4: I am holding my position until the room deals directly with every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. It matters, but it cannot carry the verdict by itself.",
-            "Juror 4: I am holding my position until the room deals directly with every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I want that tested against the full timeline."
+            "Juror 4: I am holding my position until the room deals directly with every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. If we remove the dramatic label, that is the fact left underneath.",
+            "Juror 4: I am holding my position until the room deals directly with every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I hear the point; now I want the source of it tested."
           ],
           "final": [
-            "Juror 4: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. It matters, but it cannot carry the verdict by itself."
+            "Juror 4: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I hear the point; now I want the source of it tested."
           ]
         },
         "reaction_rules": [
@@ -515,21 +515,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 5: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I want that tested against the full timeline."
+            "Juror 5: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. The gap between those two facts is where my doubt sits."
           ],
           "pushback": [
-            "Juror 5: I am not ready to let the shared marketplace account decide The Refund Window. I want that tested against the full timeline.",
-            "Juror 5: I am not ready to let the shared marketplace account decide The Refund Window. That point changes the weight I give the earlier clue."
+            "Juror 5: I am not ready to let the shared marketplace account decide The Refund Window. That is where the competing account becomes concrete for me.",
+            "Juror 5: I am not ready to let the shared marketplace account decide The Refund Window. The evidence about the shared marketplace account is what keeps me from treating that as conclusive."
           ],
           "concede": [
-            "Juror 5: I accept now that a shared login cannot identify who created a false listing. I want that tested against the full timeline."
+            "Juror 5: I accept now that a shared login cannot identify who created a false listing. That is one fact; the room still has to test the accused performed or participated in the alleged act."
           ],
           "burden_correct": [
-            "Juror 5: In The Refund Window, unanswered questions do not move the burden; the prosecution must still prove every element. I want that tested against the full timeline.",
-            "Juror 5: In The Refund Window, unanswered questions do not move the burden; the prosecution must still prove every element. That point changes the weight I give the earlier clue."
+            "Juror 5: In The Refund Window, unanswered questions do not move the burden; the prosecution must still prove every element. That is persuasive only if we first resolve the shared marketplace account.",
+            "Juror 5: In The Refund Window, unanswered questions do not move the burden; the prosecution must still prove every element. The gap between those two facts is where my doubt sits."
           ],
           "final": [
-            "Juror 5: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I want that tested against the full timeline."
+            "Juror 5: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. Before I move, I need the shared marketplace account placed on the same timeline."
           ]
         },
         "reaction_rules": [
@@ -587,18 +587,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 6: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. That point changes the weight I give the earlier clue.",
-            "Juror 6: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. It matters, but it cannot carry the verdict by itself."
+            "Juror 6: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I am separating what the record proves from what we are inferring.",
+            "Juror 6: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I do not think confidence can repair a missing link."
           ],
           "pushback": [
-            "Juror 6: I am not ready to let the shared marketplace account decide The Refund Window. That point changes the weight I give the earlier clue.",
-            "Juror 6: I am not ready to let the shared marketplace account decide The Refund Window. It matters, but it cannot carry the verdict by itself."
+            "Juror 6: I am not ready to let the shared marketplace account decide The Refund Window. That leaves me asking who had the opportunity the records actually show.",
+            "Juror 6: I am not ready to let the shared marketplace account decide The Refund Window. I am not filling the missing step with instinct."
           ],
           "concede": [
-            "Juror 6: I accept now that a shared login cannot identify who created a false listing. That point changes the weight I give the earlier clue."
+            "Juror 6: I accept now that a shared login cannot identify who created a false listing. That detail matters to my vote because it comes from outside either side’s story."
           ],
           "final": [
-            "Juror 6: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That point changes the weight I give the earlier clue."
+            "Juror 6: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. The question is not which story is neater; it is which elements are proved."
           ]
         },
         "reaction_rules": [
@@ -644,18 +644,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 7: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. It matters, but it cannot carry the verdict by itself.",
-            "Juror 7: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I want that tested against the full timeline."
+            "Juror 7: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That answer makes sense only if the rest of the chronology holds.",
+            "Juror 7: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. The burden does not shift just because the accused’s explanation is untidy."
           ],
           "pushback": [
-            "Juror 7: I am not ready to let the shared marketplace account decide The Refund Window. It matters, but it cannot carry the verdict by itself.",
-            "Juror 7: I am not ready to let the shared marketplace account decide The Refund Window. I want that tested against the full timeline."
+            "Juror 7: I am not ready to let the shared marketplace account decide The Refund Window. The sequence matters more to me than how suspicious one moment sounds.",
+            "Juror 7: I am not ready to let the shared marketplace account decide The Refund Window. I am ready to put less weight on the first impression."
           ],
           "concede": [
-            "Juror 7: I accept now that a shared login cannot identify who created a false listing. It matters, but it cannot carry the verdict by itself."
+            "Juror 7: I accept now that a shared login cannot identify who created a false listing. I hear the point; now I want the source of it tested."
           ],
           "final": [
-            "Juror 7: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. It matters, but it cannot carry the verdict by itself."
+            "Juror 7: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. The room should decide whether that contradiction is material or merely awkward."
           ]
         },
         "reaction_rules": [
@@ -713,18 +713,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 8: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I want that tested against the full timeline.",
-            "Juror 8: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. That point changes the weight I give the earlier clue."
+            "Juror 8: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. For me, the unanswered part is still the accused performed or participated in the alleged act.",
+            "Juror 8: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I am changing my view because the explanation fits more of the evidence."
           ],
           "pushback": [
-            "Juror 8: I am not ready to let the shared marketplace account decide The Refund Window. I want that tested against the full timeline.",
-            "Juror 8: I am not ready to let the shared marketplace account decide The Refund Window. That point changes the weight I give the earlier clue."
+            "Juror 8: I am not ready to let the shared marketplace account decide The Refund Window. That answer makes sense only if the rest of the chronology holds.",
+            "Juror 8: I am not ready to let the shared marketplace account decide The Refund Window. The burden does not shift just because the accused’s explanation is untidy."
           ],
           "concede": [
-            "Juror 8: I accept now that a shared login cannot identify who created a false listing. I want that tested against the full timeline."
+            "Juror 8: I accept now that a shared login cannot identify who created a false listing. I can explain that conclusion without borrowing a fact that is not in evidence."
           ],
           "final": [
-            "Juror 8: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I want that tested against the full timeline."
+            "Juror 8: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I am weighing that beside the shared marketplace account, not on its own."
           ]
         },
         "reaction_rules": [
@@ -793,18 +793,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 9: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That point changes the weight I give the earlier clue.",
-            "Juror 9: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. It matters, but it cannot carry the verdict by itself."
+            "Juror 9: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That gives me a reason, but not yet a complete chain.",
+            "Juror 9: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. The question is not which story is neater; it is which elements are proved."
           ],
           "pushback": [
-            "Juror 9: I am not ready to let the shared marketplace account decide The Refund Window. That point changes the weight I give the earlier clue.",
-            "Juror 9: I am not ready to let the shared marketplace account decide The Refund Window. It matters, but it cannot carry the verdict by itself."
+            "Juror 9: I am not ready to let the shared marketplace account decide The Refund Window. I would rather name the gap than pretend it is not there.",
+            "Juror 9: I am not ready to let the shared marketplace account decide The Refund Window. The room should decide whether that contradiction is material or merely awkward."
           ],
           "concede": [
-            "Juror 9: I accept now that a shared login cannot identify who created a false listing. That point changes the weight I give the earlier clue."
+            "Juror 9: I accept now that a shared login cannot identify who created a false listing. I am not filling the missing step with instinct."
           ],
           "final": [
-            "Juror 9: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That point changes the weight I give the earlier clue."
+            "Juror 9: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That detail matters to my vote because it comes from outside either side’s story."
           ]
         },
         "reaction_rules": [
@@ -862,23 +862,23 @@
         },
         "lines": {
           "agree": [
-            "Juror 10: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. It matters, but it cannot carry the verdict by itself."
+            "Juror 10: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. That is stronger than suspicion, but I am checking it against the shared marketplace account."
           ],
           "pushback": [
-            "Juror 10: I am not ready to let the shared marketplace account decide The Refund Window. It matters, but it cannot carry the verdict by itself."
+            "Juror 10: I am not ready to let the shared marketplace account decide The Refund Window. I am ready to put less weight on the first impression."
           ],
           "burden_drift": [
-            "Juror 10: In The Refund Window, there are unanswered questions around the shared marketplace account, and I keep wanting Milo Quade to explain them. It matters, but it cannot carry the verdict by itself.",
-            "Juror 10: In The Refund Window, there are unanswered questions around the shared marketplace account, and I keep wanting Milo Quade to explain them. I want that tested against the full timeline."
+            "Juror 10: In The Refund Window, there are unanswered questions around the shared marketplace account, and I keep wanting Milo Quade to explain them. I am separating what the record proves from what we are inferring.",
+            "Juror 10: In The Refund Window, there are unanswered questions around the shared marketplace account, and I keep wanting Milo Quade to explain them. I do not think confidence can repair a missing link."
           ],
           "concede": [
-            "Juror 10: I accept now that a shared login cannot identify who created a false listing. It matters, but it cannot carry the verdict by itself."
+            "Juror 10: I accept now that a shared login cannot identify who created a false listing. I do not think confidence can repair a missing link."
           ],
           "burden_correct": [
-            "Juror 10: In The Refund Window, unanswered questions do not move the burden; the prosecution must still prove every element. It matters, but it cannot carry the verdict by itself."
+            "Juror 10: In The Refund Window, unanswered questions do not move the burden; the prosecution must still prove every element. I am asking whether the exhibit proves the act or merely resembles it."
           ],
           "final": [
-            "Juror 10: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. It matters, but it cannot carry the verdict by itself."
+            "Juror 10: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That is stronger than suspicion, but I am checking it against the shared marketplace account."
           ]
         },
         "reaction_rules": [
@@ -936,18 +936,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 11: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I want that tested against the full timeline.",
-            "Juror 11: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That point changes the weight I give the earlier clue."
+            "Juror 11: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I can give that weight only after we account for the shared marketplace account.",
+            "Juror 11: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I am holding it against the judge’s direction on the act was deliberate or dishonest rather than accidental."
           ],
           "pushback": [
-            "Juror 11: I am not ready to let the shared marketplace account decide The Refund Window. I want that tested against the full timeline.",
-            "Juror 11: I am not ready to let the shared marketplace account decide The Refund Window. That point changes the weight I give the earlier clue."
+            "Juror 11: I am not ready to let the shared marketplace account decide The Refund Window. The room should decide whether that contradiction is material or merely awkward.",
+            "Juror 11: I am not ready to let the shared marketplace account decide The Refund Window. I would rather name the gap than pretend it is not there."
           ],
           "concede": [
-            "Juror 11: I accept now that a shared login cannot identify who created a false listing. I want that tested against the full timeline."
+            "Juror 11: I accept now that a shared login cannot identify who created a false listing. It changes how I read the shared marketplace account, but it does not end the inquiry."
           ],
           "final": [
-            "Juror 11: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I want that tested against the full timeline."
+            "Juror 11: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I can give that weight only after we account for the shared marketplace account."
           ]
         },
         "reaction_rules": [
@@ -1005,18 +1005,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 12: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. That point changes the weight I give the earlier clue.",
-            "Juror 12: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. It matters, but it cannot carry the verdict by itself."
+            "Juror 12: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. The practical question is whether those events can both be true.",
+            "Juror 12: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I can state the inference now, and I can also state what it depends on."
           ],
           "pushback": [
-            "Juror 12: I am not ready to let the shared marketplace account decide The Refund Window. That point changes the weight I give the earlier clue.",
-            "Juror 12: I am not ready to let the shared marketplace account decide The Refund Window. It matters, but it cannot carry the verdict by itself."
+            "Juror 12: I am not ready to let the shared marketplace account decide The Refund Window. The question is not which story is neater; it is which elements are proved.",
+            "Juror 12: I am not ready to let the shared marketplace account decide The Refund Window. That gives me a reason, but not yet a complete chain."
           ],
           "concede": [
-            "Juror 12: I accept now that a shared login cannot identify who created a false listing. That point changes the weight I give the earlier clue."
+            "Juror 12: I accept now that a shared login cannot identify who created a false listing. The alternative has to be reasonably possible, not perfect."
           ],
           "final": [
-            "Juror 12: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That point changes the weight I give the earlier clue."
+            "Juror 12: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That answer makes sense only if the rest of the chronology holds."
           ]
         },
         "reaction_rules": [

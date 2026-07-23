@@ -15,6 +15,9 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 `DAILY-PIVOT.md` for the decision record and `ROADMAP.md`'s Track D for the delivery ladder.
 
 ## Recent issues
+- [DONE] #0002 Runway A juror dialogue retains three cloned suffixes, nine verdicts still alternate, and 14 closings start sentences lowercase [site/app/docket/dd-0015.json] -> Runway A juror dialogue, closing sentence case, and publication-order verdict variety are independently release-approved [site/app/docket/dd-0015.json] (fixed)
+  - Partial attempt: Replaced three cloned juror suffixes with case-specific evidence reasoning, sentence-cased closings, and reordered two complete cases to break the live verdict pattern [site/app/docket/dd-0015.json]
+  - Failed attempt: Ran full web suite after editorial polish; lint and typecheck passed, while Vitest and Vite build were blocked by EPERM creating temporary config bundles [site/app/vite.config.ts]
 - [DONE] #0001 Runway cases dd-0015 through dd-0025 contain wrong-speaker testimony, templated closings, repeated filler, and verdict-pattern leakage [site/app/docket/dd-0015.json] -> Confirmed dd-0015 through dd-0025 as a coherent, non-repetitive first runway batch with correct speaker attribution and case-specific reveals [site/app/docket/dd-0015.json] (fixed)
   - Failed attempt: Prepared a bounded deterministic rewrite for dd-0015 through dd-0025; sandbox blocked file writes with EPERM [site/app/docket/dd-0015.json]
   - Partial attempt: First rewrite passed JSON/schema but case gates found 58 issues: short evidence, overlong defence closings, cross-side mismatches, unreachable tag rules, two weight floors, and three dynamics failures [site/app/docket/dd-0015.json]
