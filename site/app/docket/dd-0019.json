@@ -6,9 +6,9 @@
   "setting": "A digital-ticket marketplace fraud trial in 2026, where shared office logins obscure the one device that collected every refund.",
   "charge": "Dishonestly obtaining customer payments for event tickets that did not exist",
   "elements": [
-    "The accused performed or participated in the alleged act.",
-    "The act was deliberate or dishonest rather than accidental.",
-    "The prosecution has proved every required fact beyond reasonable doubt."
+    "Milo created the false ticket listings or knowingly participated in the scheme.",
+    "He dishonestly diverted the buyers’ money to a refund wallet he controlled.",
+    "The prosecution has proved both matters beyond reasonable doubt; if another worker could reasonably have used Milo’s access devices without his knowledge, the verdict must be not guilty."
   ],
   "hook": "The tickets look real until the gate rejects them. The refunds look generous until every one returns to the seller.",
   "accused": {
@@ -20,25 +20,25 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution says the accused listed invented seats, delayed buyers with false transfer notices, and redirected refunds to a wallet controlled from his personal device. The apparent centre of the case is a shared office account used for false listings, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+        "text": "Forty-two tickets offered through Milo Quade’s business did not exist. Buyers received polished transfer notices, then discovered their orders had been marked refunded to a wallet they did not control. The office password was shared, but each refund change required Milo’s hardware key and paired tablet. The prosecution says those private approvals reveal who ran the fraud."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence says three contractors shared the marketplace login and one of them exploited a chaotic office while the accused was caring for family. Suspicion gathered around a person before investigators tested the limits of a shared office account used for false listings; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+        "text": "Milo’s small office had poor security. Three contractors used the same seller password, his hardware key sat in an unlocked desk, and his paired tablet disappeared while he cared for his mother. A former contractor had written the transfer templates and left after a pay dispute. The defence says those gaps prevent the digital records from identifying Milo beyond reasonable doubt."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution began with the shared marketplace account, but it does not ask you to convict on that clue alone. Every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
+        "text": "The shared password cannot identify who typed a listing, and we do not ask you to pretend otherwise. Follow the money instead. Every diverted refund was approved with Milo’s hardware key and paired tablet. After he reported the tablet missing, it approved two more changes and connected to his home router. His alternative suspect had already left and never knew that network. Those facts prove Milo controlled the scheme."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence accepts that the shared marketplace account created suspicion, but suspicion is not the test. Four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That evidence goes to the heart of the case because a shared login cannot identify who created a false listing. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
+        "text": "The prosecution cannot identify who created the false inventory. Four people used the account, Sori wrote the delay templates, and Milo’s key was left where contractors could take it. A home-router connection identifies a place, not the person holding a tablet. Milo’s explanation may be untidy, but he need not prove who else committed the fraud. If unauthorised use remains reasonably possible, acquit him."
       }
     }
   },
-  "epilogue": "Buyers recovered most losses through the marketplace guarantee. Milo’s mother moved in with relatives during his sentence, and the platform replaced shared seller accounts with named approvals for every refund destination change. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "epilogue": "The marketplace guarantee eventually repaid the buyers, though some missed events they had planned for years. Milo’s business entered liquidation after his conviction, and his mother moved in with relatives while he served his sentence. The platform ended shared seller passwords and began showing the named approver, device identifier, and destination wallet on every refund change. Sori found other contract work but stopped using shared office accounts.",
   "cast": [
     {
       "id": "judge",
@@ -89,12 +89,12 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "The seller account listed forty-two seats that the venues never issued. Three contractors knew its password, so the listing history alone cannot identify who entered the false inventory. This was the first fact I recorded in the initial The Refund Window inquiry, before investigators settled on Milo Quade. The timing was noted before the The Refund Window inquiry settled on Milo Quade as its suspect.",
+      "text": "I investigate seller abuse for the ticket marketplace. Milo’s business listed forty-two seats that the venues had never issued. The account then sent buyers transfer notices and marked their complaints as refunded, but the money went to a newly added wallet instead of the buyers. Four people used the seller password, so the listing log alone cannot identify who entered the false inventory.",
       "surface_persuasion": 0.65,
       "true_weight": 0.55,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The first impression came from the shared marketplace account; its value depended on whether the later evidence could overcome this limit: a shared login cannot identify who created a false listing.",
+      "reveal_note": "The seller account carried out the fraud, but its shared password could not identify which office worker entered the false tickets.",
       "tags": [
         "method",
         "digital_forensics"
@@ -105,12 +105,12 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "I bought two seats and received convincing transfer notices. At the gate the codes failed, and support told me the order had already been marked refunded to another destination. This was the second fact I recorded in the initial The Refund Window inquiry, before investigators settled on Milo Quade.",
+      "text": "I bought two seats for my sister’s graduation trip. The transfer email looked genuine, but both codes failed at the gate. When I contacted support, the seller account had already marked the order refunded. Nothing reached my card. The receipt showed a digital wallet I had never seen, and support froze the account after finding other buyers with the same problem.",
       "surface_persuasion": 0.6,
       "true_weight": 0.4,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "This witness fixed the practical setting before suspicion centred on Milo Quade, giving the room context for the records that followed.",
+      "reveal_note": "The buyer’s records showed a real loss and a false refund trail, although they did not identify who operated the seller account.",
       "tags": [
         "method",
         "credibility"
@@ -120,12 +120,12 @@
       "id": "b3",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "The refund destination changed six times. Each change required a hardware approval, and all six approvals came from a key paired to Milo’s personal tablet. At this third point, the exhibit’s stated limit is that a shared login cannot identify who created a false listing, so it must be weighed with the rest of the sequence.",
+      "text": "The defence tenders the office access register and seller-account audit. Milo and three contractors worked from the same room, used the same password, and created legitimate listings from the same network. The false seats appeared among that ordinary work. The audit records the account, time, and office address, but no named operator or individual device for the listing entries.",
       "surface_persuasion": 0.8,
       "true_weight": 0.2,
       "direction": "innocence",
       "reveal_stamp": "misleading",
-      "reveal_note": "The challenged record mattered because it exposed the gap between appearance and proof: a shared login cannot identify who created a false listing.",
+      "reveal_note": "The shared office records made several people possible listing authors, but they said nothing about who later approved the diverted refunds.",
       "tags": [
         "credibility",
         "identity"
@@ -136,30 +136,38 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "A password was shared by four people? Yes. The listing login cannot identify one author. And your first accusation relied on that login? It did, before we obtained the hardware approval records. The listing login was weak identification evidence; the later hardware approvals must stand or fall separately.",
+      "text": "Four people used the seller password? Yes. So the listing log cannot identify one author? Correct. Your first report nevertheless named Milo? It did, because he owned the account. That was before we obtained the refund-approval records. I now treat the listings and the approvals as separate evidence.",
       "turns": [
         {
           "speaker": "dc",
-          "text": "A password was shared by four people?"
+          "text": "Four people used the seller password?"
         },
         {
           "speaker": "w1",
-          "text": "Yes. The listing login cannot identify one author."
+          "text": "Yes."
         },
         {
           "speaker": "dc",
-          "text": "And your first accusation relied on that login?"
+          "text": "So the listing log cannot identify one author?"
         },
         {
           "speaker": "w1",
-          "text": "It did, before we obtained the hardware approval records. The listing login was weak identification evidence; the later hardware approvals must stand or fall separately."
+          "text": "Correct."
+        },
+        {
+          "speaker": "dc",
+          "text": "Your first report nevertheless named Milo?"
+        },
+        {
+          "speaker": "w1",
+          "text": "It did, because he owned the account. That was before we obtained the refund-approval records. I now treat the listings and the approvals as separate evidence."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.35,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "Cross-examination narrowed the early clue without erasing it, forcing the room to decide how much independent support remained.",
+      "reveal_note": "The analyst accepted that ownership of the shared account was not enough; the case against Milo depended on the later approval records.",
       "tags": [
         "credibility",
         "method"
@@ -169,12 +177,12 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Milo reported that tablet lost on Monday. Two refund changes were approved on Tuesday, yet the device later connected to his home router and installed a routine system update. At this fifth point, the exhibit’s stated limit is that a shared login cannot identify who created a false listing, so it must be weighed with the rest of the sequence.",
+      "text": "The prosecution tenders the marketplace approval audit, exchange record, and router log. Six changes redirected customer refunds to one wallet. The exchange verified that wallet in Milo’s name and paid its balance to his personal bank account. Every change was signed by Milo’s hardware key and paired tablet. After he reported the tablet missing, it approved two more changes and joined his home router.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The strongest prosecution point was this: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost.",
+      "reveal_note": "The destination wallet and withdrawal belonged to Milo, while his private approval devices authorised every diversion and reappeared on his home network after the reported loss.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -182,14 +190,15 @@
     },
     {
       "id": "b6",
-      "kind": "exhibit",
+      "kind": "witness",
       "speaker": "w3",
-      "text": "I shared the listing password because weekend contractors needed to work. I never shared my hardware key, but I kept it in an unlocked desk when the office was busy. At this sixth point, the exhibit’s stated limit is that a shared login cannot identify who created a false listing, so it must be weighed with the rest of the sequence.",
+      "mode": "examination",
+      "text": "I shared the seller password because contractors covered weekends. I never authorised false tickets. The hardware key usually stayed in my unlocked desk, and the paired tablet disappeared while I was sleeping at my mother’s flat. I reported it missing on Monday morning. I did not approve the Tuesday refunds or bring the tablet back to my house.",
       "surface_persuasion": 0.5,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The competing account was concrete rather than speculative: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured.",
+      "reveal_note": "Milo described a possible route to unauthorised use, but his account depended on someone taking both private devices and later bringing the tablet to his home.",
       "tags": [
         "method",
         "digital_forensics"
@@ -198,14 +207,14 @@
     {
       "id": "b7",
       "kind": "witness",
-      "speaker": "w3",
+      "speaker": "w4",
       "mode": "examination",
-      "text": "The transfer notices used phrases from Sori’s saved templates. She had argued about pay and left suddenly, which gave her both access and a reason to damage the business. This was the seventh fact I recorded in the initial The Refund Window inquiry, before investigators settled on Milo Quade. That The Refund Window detail can be checked against the contemporaneous record rather than accepted as a later reconstruction.",
+      "text": "I was one of Milo’s listing contractors. We all knew the seller password, and I wrote templates for genuine transfer delays. I left after an argument about unpaid hours. I knew Milo kept the hardware key in his desk, but I never took it, entered his home, or knew the destination wallet. My contract ended before the final two refund changes.",
       "surface_persuasion": 0.6,
       "true_weight": 0.3,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This testimony tested whether the system record described a person’s conduct or only an event produced around them.",
+      "reveal_note": "Sori had access, knowledge, and a grievance, but denied possessing the approval devices or entering Milo’s home.",
       "tags": [
         "credibility",
         "motive"
@@ -216,30 +225,46 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "Your tablet was missing when approvals continued? That is what I reported. Yet it connected to your home network the next night? The record says that; I cannot explain who brought it there. A lost tablet could be misused, but its return to Milo’s home network is a fact the defence cannot simply ignore.",
+      "text": "You reported the tablet missing before Tuesday’s approvals? Yes. Had that tablet ever joined your home router before it went missing? No. I kept it at the workshop, and the router history shows Tuesday was its first connection. So it could not have reconnected with a saved home credential? No. No contractor knew the password. And you cannot explain how it returned? No. I did not use it.",
       "turns": [
         {
           "speaker": "pc",
-          "text": "Your tablet was missing when approvals continued?"
+          "text": "You reported the tablet missing before Tuesday’s approvals?"
         },
         {
           "speaker": "w3",
-          "text": "That is what I reported."
+          "text": "Yes."
         },
         {
           "speaker": "pc",
-          "text": "Yet it connected to your home network the next night?"
+          "text": "Had that tablet ever joined your home router before it went missing?"
         },
         {
           "speaker": "w3",
-          "text": "The record says that; I cannot explain who brought it there. A lost tablet could be misused, but its return to Milo’s home network is a fact the defence cannot simply ignore."
+          "text": "No. I kept it at the workshop, and the router history shows Tuesday was its first connection."
+        },
+        {
+          "speaker": "pc",
+          "text": "So it could not have reconnected with a saved home credential?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No. No contractor knew the password."
+        },
+        {
+          "speaker": "pc",
+          "text": "And you cannot explain how it returned?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No. I did not use it."
         }
       ],
       "surface_persuasion": 0.6,
       "true_weight": 0.6,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The second cross put the decisive inference under pressure and showed exactly which part of the account could still be disputed.",
+      "reveal_note": "Milo could not explain how both private approval devices were used and the tablet returned to his password-protected home network.",
       "tags": [
         "credibility",
         "identity"
@@ -249,13 +274,47 @@
       "id": "b9",
       "kind": "witness",
       "speaker": "w4",
-      "mode": "examination",
-      "text": "I wrote those templates for legitimate delays. I never held Milo’s hardware key, entered his home, or knew the refund wallet until investigators showed it to me. This was the ninth fact I recorded in the initial The Refund Window inquiry, before investigators settled on Milo Quade.",
+      "mode": "cross",
+      "text": "You left after an argument about money? Yes. You knew where Milo kept the hardware key? I had seen it in the desk. You also wrote the language used in the false notices? I wrote the standard templates, not those sales. But you did not know Milo’s home-router password or the refund wallet? No. Investigators first showed me the wallet address.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "You left after an argument about money?"
+        },
+        {
+          "speaker": "w4",
+          "text": "Yes."
+        },
+        {
+          "speaker": "pc",
+          "text": "You knew where Milo kept the hardware key?"
+        },
+        {
+          "speaker": "w4",
+          "text": "I had seen it in the desk."
+        },
+        {
+          "speaker": "pc",
+          "text": "You also wrote the language used in the false notices?"
+        },
+        {
+          "speaker": "w4",
+          "text": "I wrote the standard templates, not those sales."
+        },
+        {
+          "speaker": "pc",
+          "text": "But you did not know Milo’s home-router password or the refund wallet?"
+        },
+        {
+          "speaker": "w4",
+          "text": "No. Investigators first showed me the wallet address."
+        }
+      ],
       "surface_persuasion": 0.55,
       "true_weight": 0.2,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The final witness supplied a separate check on the timeline, reducing the risk that one attractive clue would decide the case alone.",
+      "reveal_note": "Sori remained a plausible listing author, but the evidence did not connect her to Milo’s home network or the wallet that received the money.",
       "tags": [
         "credibility",
         "motive"
@@ -265,12 +324,12 @@
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person. In the The Refund Window inquiry, I separated what I personally observed from what investigators later asked me to infer.",
+      "text": "Do not research the marketplace or anyone in this case. The prosecution must make you sure that Milo knowingly participated in the false-ticket scheme and dishonestly diverted the buyers’ money. A shared seller password does not prove identity by itself. Consider separately the hardware-key approvals, tablet and router records, and wallet destination. Milo need not prove that Sori or another worker committed the fraud.",
       "surface_persuasion": 0.405,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The direction kept the burden where it belonged: a shared login cannot identify who created a false listing, and no gap in the defence could substitute for proof of every element.",
+      "reveal_note": "The legal test required proof of Milo’s knowing participation and dishonest diversion; the shared account alone could not meet it.",
       "tags": [
         "burden",
         "credibility"
@@ -281,10 +340,10 @@
     "b3",
     "b5",
     "b8",
-    "b9"
+    "b10"
   ],
   "verdict_truth": "Guilty",
-  "twist": "The shared listing account could not identify who created the false tickets. Every diverted refund, however, was approved by a hardware key paired only with Milo’s personal tablet, including two approvals made after he claimed the tablet was lost.",
+  "twist": "The shared seller account could not identify who created the false tickets. The refund trail was different: every diversion required Milo’s hardware key and paired tablet. After he reported the tablet missing, it approved two more changes and then connected to his password-protected home network.",
   "difficulty_target": 0.66,
   "jury": {
     "jurors": [
@@ -292,7 +351,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Refund Window, this juror keeps returning to the shared marketplace account.",
+        "persona": "A patient office manager who waits for the people, devices, and money to fit one continuous timeline.",
         "register": "plain",
         "arc": "vibes",
         "initial": {
@@ -305,18 +364,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 2: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. That is one fact; the room still has to test the accused performed or participated in the alleged act.",
-            "Juror 2: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I need the witness account and the recorded evidence to agree before I rely on either."
+            "Juror 2: Sori knew the password, the templates, and where the key was kept. That is a genuine weakness in the prosecution’s case.",
+            "Juror 2: Milo’s report of a missing tablet was made before the final approvals. We should not dismiss that just because his explanation is messy."
           ],
           "pushback": [
-            "Juror 2: I am not ready to let the shared marketplace account decide The Refund Window. I am ready to put less weight on the first impression.",
-            "Juror 2: I am not ready to let the shared marketplace account decide The Refund Window. The sequence matters more to me than how suspicious one moment sounds."
+            "Juror 2: The seller login identifies the business, not the person at the keyboard. I need more than that.",
+            "Juror 2: If we think Sori used both devices, we still have to explain how the tablet reached Milo’s home without her knowing the router password."
           ],
           "concede": [
-            "Juror 2: I accept now that a shared login cannot identify who created a false listing. I do not think confidence can repair a missing link."
+            "Juror 2: I concede the private approvals close much of the identification gap. The home connection is difficult to square with an unknown contractor."
           ],
           "final": [
-            "Juror 2: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That is persuasive only if we first resolve the shared marketplace account."
+            "Juror 2: I began at not guilty because the office was chaotic. Following the devices from the desk to Milo’s home, and the money to one wallet, leaves me sure he controlled the scheme."
           ]
         },
         "reaction_rules": [
@@ -361,7 +420,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Refund Window, this juror keeps returning to the shared marketplace account.",
+        "persona": "A blunt fraud-prevention officer who asks which controls were bypassed and who could complete every step.",
         "register": "blunt",
         "arc": "steady",
         "initial": {
@@ -374,18 +433,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 3: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. It changes how I read the shared marketplace account, but it does not end the inquiry.",
-            "Juror 3: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. The alternative has to be reasonably possible, not perfect."
+            "Juror 3: Anyone could type a false listing. Only someone with Milo’s key and tablet could redirect the money.",
+            "Juror 3: Six approvals went to the same wallet. That is a repeated controlled action, not an accidental click."
           ],
           "pushback": [
-            "Juror 3: I am not ready to let the shared marketplace account decide The Refund Window. The question is not which story is neater; it is which elements are proved.",
-            "Juror 3: I am not ready to let the shared marketplace account decide The Refund Window. That gives me a reason, but not yet a complete chain."
+            "Juror 3: Forget the owner name on the seller account. The shared password makes that evidence weak.",
+            "Juror 3: Leaving a hardware key in a desk is foolish, but theft of the key does not explain the tablet on Milo’s home router."
           ],
           "concede": [
-            "Juror 3: I accept now that a shared login cannot identify who created a false listing. I can state the inference now, and I can also state what it depends on."
+            "Juror 3: I accept that Sori had access and a grievance. I do not accept that those facts connect her to the wallet or Milo’s house."
           ],
           "final": [
-            "Juror 3: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. If we remove the dramatic label, that is the fact left underneath."
+            "Juror 3: The account log proves the fraud; the approval audit proves control of the proceeds. Milo’s own devices and network complete the chain for me."
           ]
         },
         "reaction_rules": [
@@ -430,7 +489,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Refund Window, this juror keeps returning to the shared marketplace account.",
+        "persona": "A cautious librarian who resists assumptions and wants each digital record stated without exaggeration.",
         "register": "formal",
         "arc": "principled_holdout",
         "initial": {
@@ -443,21 +502,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 4: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I hear the point; now I want the source of it tested."
+            "Juror 4: The six approval records are independent of the shared login. I accept that they deserve substantial weight."
           ],
           "pushback": [
-            "Juror 4: I am not ready to let the shared marketplace account decide The Refund Window. I am changing my view because the explanation fits more of the evidence.",
-            "Juror 4: I am not ready to let the shared marketplace account decide The Refund Window. For me, the unanswered part is still the accused performed or participated in the alleged act."
+            "Juror 4: A router log establishes that the tablet was in Milo’s home, not that Milo held it. We must be precise.",
+            "Juror 4: Sori had the password, knew the key’s location, and wrote the templates. Her possible involvement cannot be dismissed as fantasy."
           ],
           "concede": [
-            "Juror 4: I accept now that a shared login cannot identify who created a false listing. I am changing my view because the explanation fits more of the evidence."
+            "Juror 4: I concede Milo’s account leaves an extraordinary coincidence: the stolen devices returned to the one private network tied to him."
           ],
           "holdout": [
-            "Juror 4: I am holding my position until the room deals directly with every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. If we remove the dramatic label, that is the fact left underneath.",
-            "Juror 4: I am holding my position until the room deals directly with every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I hear the point; now I want the source of it tested."
+            "Juror 4: I am holding at not guilty until we separate proof that Milo owned the devices from proof that he used them.",
+            "Juror 4: Do not tell me his story sounds unlikely. Show me why the approval audit and home connection make the alternative unreasonable."
           ],
           "final": [
-            "Juror 4: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I hear the point; now I want the source of it tested."
+            "Juror 4: The shared login leaves doubt about who typed the listings. The private approvals and home-network return ultimately persuade me that Milo knowingly controlled the diversion."
           ]
         },
         "reaction_rules": [
@@ -502,7 +561,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Refund Window, this juror keeps returning to the shared marketplace account.",
+        "persona": "An empathetic events worker who recognises the buyers’ loss but refuses to let anger replace proof.",
         "register": "formal",
         "arc": "steady",
         "initial": {
@@ -515,21 +574,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 5: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. The gap between those two facts is where my doubt sits."
+            "Juror 5: The buyers were deceived, but their experience does not identify Milo. The device evidence is what moves me toward guilt."
           ],
           "pushback": [
-            "Juror 5: I am not ready to let the shared marketplace account decide The Refund Window. That is where the competing account becomes concrete for me.",
-            "Juror 5: I am not ready to let the shared marketplace account decide The Refund Window. The evidence about the shared marketplace account is what keeps me from treating that as conclusive."
+            "Juror 5: I will not convict Milo because Aven missed a graduation event. The prosecution still has to prove who caused that loss.",
+            "Juror 5: Sori’s pay dispute gives her a possible motive, but no record places the refund money or the home connection with her."
           ],
           "concede": [
-            "Juror 5: I accept now that a shared login cannot identify who created a false listing. That is one fact; the room still has to test the accused performed or participated in the alleged act."
+            "Juror 5: I accept that poor office security makes unauthorised use possible. The question is whether it remains reasonable after Tuesday night."
           ],
           "burden_correct": [
-            "Juror 5: In The Refund Window, unanswered questions do not move the burden; the prosecution must still prove every element. That is persuasive only if we first resolve the shared marketplace account.",
-            "Juror 5: In The Refund Window, unanswered questions do not move the burden; the prosecution must still prove every element. The gap between those two facts is where my doubt sits."
+            "Juror 5: Milo does not have to prove Sori did it. The prosecution must make us sure he knowingly joined the scheme.",
+            "Juror 5: We cannot use Milo’s silence about the missing tablet as evidence. We can use the audit and router records the prosecution proved."
           ],
           "final": [
-            "Juror 5: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. Before I move, I need the shared marketplace account placed on the same timeline."
+            "Juror 5: I can respect the burden and still convict. The private devices approved every diversion, and Milo’s explanation does not leave a reasonable account of their return home."
           ]
         },
         "reaction_rules": [
@@ -574,7 +633,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Refund Window, this juror keeps returning to the shared marketplace account.",
+        "persona": "A systems engineer alert to both automation errors and deliberate misuse of weak security controls.",
         "register": "plain",
         "arc": "foreperson",
         "initial": {
@@ -587,18 +646,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 6: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I am separating what the record proves from what we are inferring.",
-            "Juror 6: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I do not think confidence can repair a missing link."
+            "Juror 6: The login audit is non-attributable. The cryptographic approvals are tied to a specific key-and-tablet pair.",
+            "Juror 6: A stolen device can authenticate falsely. Its later presence on the owner’s private network is the additional fact that matters."
           ],
           "pushback": [
-            "Juror 6: I am not ready to let the shared marketplace account decide The Refund Window. That leaves me asking who had the opportunity the records actually show.",
-            "Juror 6: I am not ready to let the shared marketplace account decide The Refund Window. I am not filling the missing step with instinct."
+            "Juror 6: We should not treat every event from Milo’s business account as an event performed by Milo.",
+            "Juror 6: The automatic update proves the tablet was connected long enough to join the router. It does not depend on a witness remembering the time."
           ],
           "concede": [
-            "Juror 6: I accept now that a shared login cannot identify who created a false listing. That detail matters to my vote because it comes from outside either side’s story."
+            "Juror 6: I accept the contractors could access the first stage. I see no credible route from that office access to Milo’s protected home network."
           ],
           "final": [
-            "Juror 6: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. The question is not which story is neater; it is which elements are proved."
+            "Juror 6: Let’s keep the chain simple: false listings, diverted refunds, Milo’s approval pair, Milo’s home network, one destination wallet. Together those records prove knowing control."
           ]
         },
         "reaction_rules": [
@@ -631,7 +690,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Refund Window, this juror keeps returning to the shared marketplace account.",
+        "persona": "A quiet graduate student who tests what each side’s strongest theory still leaves unexplained.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -644,18 +703,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 7: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That answer makes sense only if the rest of the chronology holds.",
-            "Juror 7: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. The burden does not shift just because the accused’s explanation is untidy."
+            "Juror 7: The defence account explains access to the listings and perhaps the key. It does not yet explain access to Milo’s tablet and house.",
+            "Juror 7: Sori’s contract ended before the last approvals. That does not clear her, but it weakens the suggestion that she completed the whole scheme."
           ],
           "pushback": [
-            "Juror 7: I am not ready to let the shared marketplace account decide The Refund Window. The sequence matters more to me than how suspicious one moment sounds.",
-            "Juror 7: I am not ready to let the shared marketplace account decide The Refund Window. I am ready to put less weight on the first impression."
+            "Juror 7: Could another contractor have taken the devices? Yes. What evidence connects any contractor to the wallet?",
+            "Juror 7: Milo owned every system involved, but ownership is still an inference about use. I want the chain stated carefully."
           ],
           "concede": [
-            "Juror 7: I accept now that a shared login cannot identify who created a false listing. I hear the point; now I want the source of it tested."
+            "Juror 7: I accept the shared login creates doubt about the listings. The repeated private approvals make that doubt less important to who obtained the money."
           ],
           "final": [
-            "Juror 7: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. The room should decide whether that contradiction is material or merely awkward."
+            "Juror 7: The home connection is the fact the defence cannot reasonably explain. I am persuaded Milo controlled the tablet and dishonest refund destination."
           ]
         },
         "reaction_rules": [
@@ -700,7 +759,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Refund Window, this juror keeps returning to the shared marketplace account.",
+        "persona": "A decisive logistics coordinator who changes position when separate records close an identification gap.",
         "register": "plain",
         "arc": "mind_changer",
         "initial": {
@@ -713,18 +772,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 8: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. For me, the unanswered part is still the accused performed or participated in the alleged act.",
-            "Juror 8: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I am changing my view because the explanation fits more of the evidence."
+            "Juror 8: The seller account alone did not move me. The hardware approvals identify a much narrower group with every diversion.",
+            "Juror 8: The tablet’s return to Milo’s home after he reported it missing changes my vote. His alternative no longer fits the full route."
           ],
           "pushback": [
-            "Juror 8: I am not ready to let the shared marketplace account decide The Refund Window. That answer makes sense only if the rest of the chronology holds.",
-            "Juror 8: I am not ready to let the shared marketplace account decide The Refund Window. The burden does not shift just because the accused’s explanation is untidy."
+            "Juror 8: At the start, the shared password left too many possible operators. I needed evidence independent of that account.",
+            "Juror 8: The key could be taken from the desk. The tablet and router records are why the stolen-key theory stops short."
           ],
           "concede": [
-            "Juror 8: I accept now that a shared login cannot identify who created a false listing. I can explain that conclusion without borrowing a fact that is not in evidence."
+            "Juror 8: I accept Milo did not have exclusive access to the office. He did have exclusive knowledge of the home-network password."
           ],
           "final": [
-            "Juror 8: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I am weighing that beside the shared marketplace account, not on its own."
+            "Juror 8: I moved from not guilty because the approval devices and home connection provide the identification the listing log lacked. My final vote is guilty."
           ]
         },
         "reaction_rules": [
@@ -781,7 +840,7 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Refund Window, this juror keeps returning to the shared marketplace account.",
+        "persona": "A careful note-taker who tests witness claims against records made before anyone was accused.",
         "register": "hesitant",
         "arc": "steady",
         "initial": {
@@ -793,18 +852,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 9: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That gives me a reason, but not yet a complete chain.",
-            "Juror 9: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. The question is not which story is neater; it is which elements are proved."
+            "Juror 9: Milo reported the tablet missing before Tuesday. That timing supports him until we consider where the tablet appeared that night.",
+            "Juror 9: Sori admitted access and resentment without trying to hide either. I find that part of her evidence credible."
           ],
           "pushback": [
-            "Juror 9: I am not ready to let the shared marketplace account decide The Refund Window. I would rather name the gap than pretend it is not there.",
-            "Juror 9: I am not ready to let the shared marketplace account decide The Refund Window. The room should decide whether that contradiction is material or merely awkward."
+            "Juror 9: The analyst’s first report named Milo because he owned the account. That early conclusion deserves little weight.",
+            "Juror 9: Milo says the devices were taken, but no witness or record places them with Sori after she left."
           ],
           "concede": [
-            "Juror 9: I accept now that a shared login cannot identify who created a false listing. I am not filling the missing step with instinct."
+            "Juror 9: I accept Sori might have written the false notices. That possibility does not explain Milo’s devices approving the money transfer."
           ],
           "final": [
-            "Juror 9: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That detail matters to my vote because it comes from outside either side’s story."
+            "Juror 9: The contemporaneous router and approval records outweigh the competing memories. They make me sure Milo knowingly controlled the diverted refunds."
           ]
         },
         "reaction_rules": [
@@ -849,7 +908,7 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Refund Window, this juror keeps returning to the shared marketplace account.",
+        "persona": "A practical warehouse lead who initially expects Milo to explain the poor security choices made in his business.",
         "register": "blunt",
         "arc": "burden_drifter",
         "initial": {
@@ -862,23 +921,23 @@
         },
         "lines": {
           "agree": [
-            "Juror 10: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. That is stronger than suspicion, but I am checking it against the shared marketplace account."
+            "Juror 10: Six signed approvals and a home-router connection are far stronger than the shared seller login. They point to Milo."
           ],
           "pushback": [
-            "Juror 10: I am not ready to let the shared marketplace account decide The Refund Window. I am ready to put less weight on the first impression."
+            "Juror 10: I do not care whose name headed the account. Show me who could move the refunds."
           ],
           "burden_drift": [
-            "Juror 10: In The Refund Window, there are unanswered questions around the shared marketplace account, and I keep wanting Milo Quade to explain them. I am separating what the record proves from what we are inferring.",
-            "Juror 10: In The Refund Window, there are unanswered questions around the shared marketplace account, and I keep wanting Milo Quade to explain them. I do not think confidence can repair a missing link."
+            "Juror 10: Milo ran the office, left the key unlocked, and lost the tablet. Part of me wants him to prove who took advantage of that mess.",
+            "Juror 10: If Milo cannot explain how his tablet got home, I keep treating the gap as his problem instead of the prosecution’s."
           ],
           "concede": [
-            "Juror 10: I accept now that a shared login cannot identify who created a false listing. I do not think confidence can repair a missing link."
+            "Juror 10: I accept the password proves nothing about the individual operator. The private approval pair is a separate and stronger link."
           ],
           "burden_correct": [
-            "Juror 10: In The Refund Window, unanswered questions do not move the burden; the prosecution must still prove every element. I am asking whether the exhibit proves the act or merely resembles it."
+            "Juror 10: Milo does not have to solve the device mystery. I must decide whether the audit, router, and wallet records themselves make me sure."
           ],
           "final": [
-            "Juror 10: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That is stronger than suspicion, but I am checking it against the shared marketplace account."
+            "Juror 10: Keeping the burden on the prosecution does not erase its proof. The devices returned to Milo’s home after moving every refund, so I vote guilty."
           ]
         },
         "reaction_rules": [
@@ -923,7 +982,7 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Refund Window, this juror keeps returning to the shared marketplace account.",
+        "persona": "A sceptical app developer who distrusts polished audit screens until the underlying events and device links are clear.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -936,18 +995,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 11: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I can give that weight only after we account for the shared marketplace account.",
-            "Juror 11: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I am holding it against the judge’s direction on the act was deliberate or dishonest rather than accidental."
+            "Juror 11: Shared credentials destroy attribution for the listing entries. I give those logs almost no weight on identity.",
+            "Juror 11: Hardware signatures are different. The same paired devices approved all six changes, so the events form one deliberate pattern."
           ],
           "pushback": [
-            "Juror 11: I am not ready to let the shared marketplace account decide The Refund Window. The room should decide whether that contradiction is material or merely awkward.",
-            "Juror 11: I am not ready to let the shared marketplace account decide The Refund Window. I would rather name the gap than pretend it is not there."
+            "Juror 11: I want to know whether the router record could come from a copied device identifier. The analyst said it recorded the tablet completing a real update.",
+            "Juror 11: Sori knew the templates, but reused phrasing is not a reliable fingerprint when the files were shared."
           ],
           "concede": [
-            "Juror 11: I accept now that a shared login cannot identify who created a false listing. It changes how I read the shared marketplace account, but it does not end the inquiry."
+            "Juror 11: I accept the key may have been taken. I cannot make the stolen-device theory fit the later home connection."
           ],
           "final": [
-            "Juror 11: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. I can give that weight only after we account for the shared marketplace account."
+            "Juror 11: Once I separate the weak login log from the stronger device events, the record is coherent. Milo’s approval pair controlled every diversion and returned home."
           ]
         },
         "reaction_rules": [
@@ -992,7 +1051,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Refund Window, this juror keeps returning to the shared marketplace account.",
+        "persona": "A rule-focused public servant who separates each legal element and keeps the prosecution burden in view.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -1005,18 +1064,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 12: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. The practical question is whether those events can both be true.",
-            "Juror 12: every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost. I can state the inference now, and I can also state what it depends on."
+            "Juror 12: The false listings and buyer losses prove a dishonest scheme. The approval audit and wallet address connect Milo to its proceeds.",
+            "Juror 12: We do not need to prove Milo personally typed all forty-two listings if he knowingly approved the diversions and participated in the scheme."
           ],
           "pushback": [
-            "Juror 12: I am not ready to let the shared marketplace account decide The Refund Window. The question is not which story is neater; it is which elements are proved.",
-            "Juror 12: I am not ready to let the shared marketplace account decide The Refund Window. That gives me a reason, but not yet a complete chain."
+            "Juror 12: Ownership of the business cannot substitute for proof of participation. The shared password makes that shortcut unsafe.",
+            "Juror 12: The prosecution must exclude a reasonable unauthorised user, not every imaginable way someone might steal a device."
           ],
           "concede": [
-            "Juror 12: I accept now that a shared login cannot identify who created a false listing. The alternative has to be reasonably possible, not perfect."
+            "Juror 12: I accept another worker could have accessed the first stage. The evidence does not reasonably place that worker at Milo’s home or in control of the wallet."
           ],
           "final": [
-            "Juror 12: My verdict in The Refund Window turns on whether the jury can reconcile every diverted refund required Milo’s hardware key, including approvals from his home network after he said the paired tablet was lost with this competing account: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured. That answer makes sense only if the rest of the chronology holds."
+            "Juror 12: I find both elements proved: Milo knowingly participated and dishonestly diverted the buyers’ money. My conclusion rests on the private approvals, not the shared login."
           ]
         },
         "reaction_rules": [
