@@ -5,6 +5,7 @@ import {
   type NarrationRate,
 } from '../../lib/narration'
 import { loadPlayForSitting, loadProgress } from '../../lib/storage'
+import { caseStorageId } from '../../lib/v2/caseRevision'
 import type { DocketSitting } from '../../lib/v2/cases'
 
 export type DocketPhase = 'intro' | 'openings' | 'beats' | 'verdict' | 'juryroom' | 'reveal'
@@ -93,10 +94,14 @@ export function DocketShell({
 const dateFormatter = new Intl.DateTimeFormat(undefined, { weekday: 'short', day: 'numeric', month: 'short' })
 
 function sittingStatus(sitting: DocketSitting): string {
-  const play = loadPlayForSitting(sitting.day, sitting.trial.id, sitting.trial.checkins.length)
+  const play = loadPlayForSitting(
+    sitting.day,
+    caseStorageId(sitting.trial),
+    sitting.trial.checkins.length,
+  )
   if (play) return play.room ? 'judgment recorded' : 'jury room in progress'
   const progress = loadProgress(sitting.day)
-  return progress?.caseId === sitting.trial.id ? 'in progress' : 'not started'
+  return progress?.caseId === caseStorageId(sitting.trial) ? 'in progress' : 'not started'
 }
 
 export function DocketSittingChooser({ sittings, selectedDay, todayDay, onSelect }: {
