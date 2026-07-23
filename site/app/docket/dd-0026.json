@@ -1,0 +1,1148 @@
+{
+  "id": "dd-0026",
+  "publish_date": "2026-07-27",
+  "label": "fiction",
+  "title": "The Thermal Window",
+  "setting": "a shared fabrication workshop, its rooftop battery room, and a disputed heat alert in the present day",
+  "charge": "arson of a commercial workshop",
+  "elements": [
+    "A fire was deliberately started",
+    "The accused intentionally started it without lawful excuse"
+  ],
+  "hook": "A rooftop battery overheats at 2:13 a.m. Twelve minutes later, a workshop burns and a former tenant's access token appears beside the alarm. The token looks personal; the heat does not.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Mara Venn, 36, repairs mobility aids and rents a bench wherever she can afford one. Her father and two apprentices wait behind her in court.",
+    "if_guilty": "years in custody, the loss of her repair licence, and a workshop community convinced she burned their livelihoods"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Mara Venn left the workshop angry after her lease ended. Her old access token opened the rear stairwell minutes before flame appeared, and a camera caught a hooded figure carrying the same narrow tool case she used every day. The fire began beside the bench she had been ordered to clear. Digital access, motive, opportunity, and ignition sit in one short window."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The token record is real, but it does not say Mara held it. The manager copied old credentials into a contractor list and never disabled them. More importantly, the rooftop battery logged rising heat before any door opened. A maintenance warning was cleared without inspection, and the fire travelled down a cable chase. Suspicion follows Mara; combustion follows the battery."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The defence offers maintenance faults because machines cannot be cross-examined. Yet Mara threatened to make the workshop regret evicting her, her token opened the stairwell, and the figure carried her kind of case. Coincidence must eventually stop being coincidence. The fire reached her old bench because she knew the building and chose the one route cameras barely covered."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Every accusation begins after the system printed Mara's name. Before that, the battery was already heating. The copied contractor list explains the token, the case is sold by every repair supplier, and the fire investigator found no accelerant at her bench. A cleared warning, a failed cooling fan, and a cable chase explain the blaze without inventing an unseen arsonist."
+      }
+    }
+  },
+  "epilogue": "The workshop reopened in a smaller unit eight months later. Its members replaced the rooftop system and began requiring two people to clear safety alerts. Mara rebuilt her repair bench in a converted storeroom and kept both apprentices. The manager apologised for treating an access report as a photograph, though their friendship did not recover. The insurer funded independent fire training for every tenant.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Oren Vale",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Sela Marr",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Mara Venn",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Tobin Quill",
+      "role_label": "workshop manager",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Nia Calder",
+      "role_label": "fire investigator",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Evan Rusk",
+      "role_label": "battery maintenance technician",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit one is the access report. At 2:21 a.m., a credential still labelled Mara Venn opened the rear stairwell. The manager says no one else should have possessed it, and the eight-minute gap before smoke appeared makes the record look like a digital signature placed at the scene. The label tied Mara to the door, but the report still could not identify the physical token.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "the access report was persuasive on the surface but weak on the fact it claimed to prove.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I ended Mara's lease after repeated arguments over fees. That afternoon she said we would regret treating skilled people like disposable parts. She always carried a narrow black tool case, and the figure on the loading camera had one. When the access report named her, the threat suddenly sounded literal.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.32,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The wider sequence qualified what ended mara's lease after repeated arguments over fees could fairly support.",
+      "tags": [
+        "digital_forensics",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "You copied old tenant credentials into a contractor list? Yes, so visiting technicians could enter after hours. Mara's identifier remained attached to that copied credential? It did, although I assumed her token was disabled. You never tested which physical token opened the door? No. The report showed a label, not the token's serial number.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "You copied old tenant credentials into a contractor list?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes, so visiting technicians could enter after hours."
+        },
+        {
+          "speaker": "dc",
+          "text": "Mara's identifier remained attached to that copied credential?"
+        },
+        {
+          "speaker": "w1",
+          "text": "It did, although I assumed her token was disabled."
+        },
+        {
+          "speaker": "dc",
+          "text": "You never tested which physical token opened the door?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No. The report showed a label, not the token's serial number."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "you copied old tenant credentials into a contractor list added context without resolving identity or intent.",
+      "tags": [
+        "method",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit three is a still from the loading camera. A hooded person crosses the yard carrying a narrow black case. The face is hidden, height cannot be measured, and the case is sold by several repair suppliers. The prosecution nevertheless says the outline matches Mara's familiar work kit. The silhouette supplied resemblance without a measurable face, height, or unique tool.",
+      "surface_persuasion": 0.62,
+      "true_weight": 0.38,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The limits surrounding a still from the loading camera kept it from deciding the charge alone.",
+      "tags": [
+        "digital_forensics",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I found the deepest damage around the cable chase above Mara's former bench. At first that suggested someone ignited material below and let heat rise. No accelerant was recovered, but deliberate fires do not always use one. The access record made an intentional origin seem more likely during my first inspection.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "found the deepest damage around the cable chase above mara's former bench helped test a witness account while leaving the central issue open.",
+      "tags": [
+        "timeline",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit five is the rooftop battery log recovered by an independent engineer. Cell temperature began climbing at 2:13 a.m., eight minutes before the stairwell opened. Cooling-fan current dropped to zero at 2:15, then internal alarms escalated steadily until smoke entered the cable chase. The sequence begins before any alleged intruder arrived.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.76,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Independent records confirmed what the rooftop battery log recovered by an independent engineer contributed to the final reconstruction.",
+      "tags": [
+        "method",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "Your first report said the fire began below the roof? Yes, based on visible damage and the access record. After seeing the battery telemetry, you revised that opinion? I did. Heat travelled downward inside the cable chase. Did you find any deliberate ignition at Mara's bench? No. I found electrical arcing and no accelerant residue.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "Your first report said the fire began below the roof?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Yes, based on visible damage and the access record."
+        },
+        {
+          "speaker": "dc",
+          "text": "After seeing the battery telemetry, you revised that opinion?"
+        },
+        {
+          "speaker": "w2",
+          "text": "I did. Heat travelled downward inside the cable chase."
+        },
+        {
+          "speaker": "dc",
+          "text": "Did you find any deliberate ignition at Mara's bench?"
+        },
+        {
+          "speaker": "w2",
+          "text": "No. I found electrical arcing and no accelerant residue."
+        }
+      ],
+      "surface_persuasion": 0.62,
+      "true_weight": 0.55,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "your first report said the fire began below the roof added context without resolving identity or intent.",
+      "tags": [
+        "method",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I serviced that battery bank six weeks earlier. The cooling fan rattled and failed an airflow test, so I entered a replacement request. The workshop delayed the part. On the night of the fire, someone remotely cleared the first heat warning from the manager console, but nobody went upstairs to inspect it.",
+      "surface_persuasion": 0.7000000000000001,
+      "true_weight": 0.8300000000000001,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The corroboration behind serviced that battery bank six weeks earlier carried genuine weight on timing, control, or method.",
+      "tags": [
+        "method",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "A failed fan does not prove the battery started this fire, does it? Not alone. The temperature sequence and arcing do. You were criticised for not replacing it yourself? I lacked authority to approve the part. So blaming the battery also protects your work? It exposes my warning, including the date and the workshop's refusal.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "A failed fan does not prove the battery started this fire, does it?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Not alone. The temperature sequence and arcing do."
+        },
+        {
+          "speaker": "pc",
+          "text": "You were criticised for not replacing it yourself?"
+        },
+        {
+          "speaker": "w3",
+          "text": "I lacked authority to approve the part."
+        },
+        {
+          "speaker": "pc",
+          "text": "So blaming the battery also protects your work?"
+        },
+        {
+          "speaker": "w3",
+          "text": "It exposes my warning, including the date and the workshop's refusal."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "a failed fan does not prove the battery started this fire, does it helped test a witness account while leaving the central issue open.",
+      "tags": [
+        "credibility",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that Mara does not have to identify another token holder or prove an electrical cause. The prosecution must establish deliberate ignition and identity beyond reasonable doubt. Compare the labelled access event with the physical fire evidence, use only the exhibits admitted here, and do not investigate the workshop, its systems, or its people elsewhere.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The wider sequence qualified what the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance could fairly support.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit eight is the alarm audit. The manager account cleared the rooftop warning at 2:17 a.m. from a home terminal, four minutes before the copied credential opened the stairwell. A contracted guard then entered using that shared credential to investigate. His incident note records smoke already descending from the battery room.",
+      "surface_persuasion": 0.74,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "the alarm audit fixed a disputed link through an independent record.",
+      "tags": [
+        "method",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b2",
+    "b5",
+    "b8",
+    "b10"
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The access-token record looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter battery heat sequence supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "difficulty_target": 0.58,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A shift worker who notices breaks in chronology, especially when weighing access records versus the fire's physical origin.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 44
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "For me, the anchor is the battery telemetry, service warning, and alarm audit; it answers the weakness that first divided this room.",
+            "In my notes at seat 2, the battery telemetry, service warning, and alarm audit agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I will not let the access-token label decide more than its source can support.",
+            "I need the chronology laid out before I choose between those accounts. Here that means access records against the fire's physical origin."
+          ],
+          "concede": [
+            "I admit the access-token label, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My verdict rests on the battery telemetry, service warning, and alarm audit, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A bookkeeper who tests whether separate records truly reconcile, especially when weighing access records versus the fire's physical origin.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 51
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I move because the battery telemetry, service warning, and alarm audit; it answers the weakness that first divided this room.",
+            "In my notes at seat 3, the battery telemetry, service warning, and alarm audit agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I keep separating the access-token label decide more than its source can support.",
+            "Two records agreeing matters more to me than one record sounding certain. Here that means access records against the fire's physical origin."
+          ],
+          "concede": [
+            "I can see why the access-token label, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I finish with the battery telemetry, service warning, and alarm audit, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A caregiver who is alert to pressure and unequal power, especially when weighing access records versus the fire's physical origin.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "credibility": 2,
+          "digital_forensics": 1,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The part I cannot explain away is the battery telemetry, service warning, and alarm audit; it answers the weakness that first divided this room.",
+            "In my notes at seat 4, the battery telemetry, service warning, and alarm audit agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "Before I rely on the access-token label decide more than its source can support.",
+            "I am testing which side can explain the missing link without assumption. Here that means access records against the fire's physical origin."
+          ],
+          "concede": [
+            "At first I gave too much weight to the access-token label, especially before the underlying record is opened."
+          ],
+          "final": [
+            "The deciding chain for me is the battery telemetry, service warning, and alarm audit, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on access records versus the fire's physical origin until evidence, rather than consensus, answers it; from seat 4, I relate it to access records against the fire's physical origin."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "A technician who distrusts labels without source data, especially when weighing access records versus the fire's physical origin.",
+        "register": "hesitant",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "G",
+          "confidence": 48
+        },
+        "weights": {
+          "identity": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I checked the sequence against the battery telemetry, service warning, and alarm audit; it answers the weakness that first divided this room.",
+            "In my notes at seat 5, the battery telemetry, service warning, and alarm audit agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I hear the force of the access-token label decide more than its source can support.",
+            "The burden makes me separate a possible story from a proved one. Here that means access records against the fire's physical origin."
+          ],
+          "concede": [
+            "I concede the surface force of the access-token label, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I return at the end to the battery telemetry, service warning, and alarm audit, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "A coach who asks whether conduct matches the claimed motive, especially when weighing access records versus the fire's physical origin.",
+        "register": "blunt",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 55
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "What changes my vote is the battery telemetry, service warning, and alarm audit; it answers the weakness that first divided this room.",
+            "In my notes at seat 6, the battery telemetry, service warning, and alarm audit agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I am not treating the access-token label decide more than its source can support.",
+            "I want the source data before I accept the label attached to it. Here that means access records against the fire's physical origin."
+          ],
+          "concede": [
+            "I was initially moved by the access-token label, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My final vote follows the battery telemetry, service warning, and alarm audit, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A student who can be swept up by a vivid first impression, especially when weighing access records versus the fire's physical origin.",
+        "register": "plain",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 45
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": 1,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I trust the battery telemetry, service warning, and alarm audit; it answers the weakness that first divided this room.",
+            "In my notes at seat 7, the battery telemetry, service warning, and alarm audit agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "My problem with the access-token label decide more than its source can support.",
+            "A vivid clue will not move me unless the later sequence supports it. Here that means access records against the fire's physical origin."
+          ],
+          "concede": [
+            "The opposing account fairly points to the access-token label, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I resolve the doubt through the battery telemetry, service warning, and alarm audit, with the burden left where the judge placed it."
+          ],
+          "burden_drift": [
+            "I catch myself asking for an innocent explanation, even though that is not the accused's burden; from seat 7, I relate it to access records against the fire's physical origin."
+          ],
+          "burden_correct": [
+            "I am correcting course: the prosecution must close the gap, not the accused; from seat 7, I relate it to access records against the fire's physical origin."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "burden_drift"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A foreperson who restates disagreements before calling a vote, especially when weighing access records versus the fire's physical origin.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "credibility": 2,
+          "digital_forensics": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The room should start with the battery telemetry, service warning, and alarm audit; it answers the weakness that first divided this room.",
+            "In my notes at seat 8, the battery telemetry, service warning, and alarm audit agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "We should test the access-token label decide more than its source can support.",
+            "I am asking whether the physical evidence and the testimony converge. Here that means access records against the fire's physical origin."
+          ],
+          "concede": [
+            "I cannot dismiss the access-token label, especially before the underlying record is opened."
+          ],
+          "final": [
+            "The complete record leaves me with the battery telemetry, service warning, and alarm audit, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A retiree who wants testimony anchored to something independent, especially when weighing access records versus the fire's physical origin.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 59
+        },
+        "weights": {
+          "identity": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I needed corroboration, and the battery telemetry, service warning, and alarm audit; it answers the weakness that first divided this room.",
+            "In my notes at seat 9, the battery telemetry, service warning, and alarm audit agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I still question the access-token label decide more than its source can support.",
+            "I need to know what this proves about intent, not only opportunity. Here that means access records against the fire's physical origin."
+          ],
+          "concede": [
+            "There is real persuasive force in the access-token label, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I am voting from the battery telemetry, service warning, and alarm audit, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A delivery worker who focuses on custody and physical sequence, especially when weighing access records versus the fire's physical origin.",
+        "register": "blunt",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 49
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The timing becomes coherent through the battery telemetry, service warning, and alarm audit; it answers the weakness that first divided this room.",
+            "In my notes at seat 10, the battery telemetry, service warning, and alarm audit agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I refuse to confuse the access-token label decide more than its source can support.",
+            "The custody trail matters only if it follows the same object throughout. Here that means access records against the fire's physical origin."
+          ],
+          "concede": [
+            "I understand the reliance on the access-token label, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My conclusion turns on the battery telemetry, service warning, and alarm audit, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps, especially when weighing access records versus the fire's physical origin.",
+        "register": "plain",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 56
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": -1,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I am persuaded by the battery telemetry, service warning, and alarm audit; it answers the weakness that first divided this room.",
+            "In my notes at seat 11, the battery telemetry, service warning, and alarm audit agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I want a source check on the access-token label decide more than its source can support.",
+            "I am checking whether my doubt is evidential or merely speculative. Here that means access records against the fire's physical origin."
+          ],
+          "concede": [
+            "I began from the access-token label, especially before the underlying record is opened."
+          ],
+          "final": [
+            "After testing both stories, I rely on the battery telemetry, service warning, and alarm audit, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on access records versus the fire's physical origin until evidence, rather than consensus, answers it; from seat 11, I relate it to access records against the fire's physical origin."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A blunt sceptic who will not turn probability into certainty, especially when weighing access records versus the fire's physical origin.",
+        "register": "formal",
+        "arc": "vibes",
+        "initial": {
+          "position": "NG",
+          "confidence": 46
+        },
+        "weights": {
+          "credibility": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "My holdout ends with the battery telemetry, service warning, and alarm audit; it answers the weakness that first divided this room.",
+            "In my notes at seat 12, the battery telemetry, service warning, and alarm audit agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I am holding against the access-token label decide more than its source can support.",
+            "Consensus will not substitute for the independent record I still need. Here that means access records against the fire's physical origin."
+          ],
+          "concede": [
+            "I will grant the access-token label, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I can now decide because of the battery telemetry, service warning, and alarm audit, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-qa-fix"
+  }
+}

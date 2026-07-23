@@ -1,0 +1,1148 @@
+{
+  "id": "dd-0027",
+  "publish_date": "2026-07-28",
+  "label": "fiction",
+  "title": "The Courtesy Transfer",
+  "setting": "a neighbourhood care cooperative, a voice-controlled banking service, and a chain of tiny transfers in the present day",
+  "charge": "fraud by dishonest electronic transfers",
+  "elements": [
+    "Money was transferred by deception or abuse of authority",
+    "The accused acted dishonestly intending gain or loss"
+  ],
+  "hook": "An older client calls every payment a gift. The care worker calls every login assistance. Between them sit forty-three transfers small enough to escape an alert, all approved by a voice that sounds grateful.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Ilan Sorre, 29, is a home-care worker who supports a younger sibling and has no savings. Former clients fill one side of the gallery; the complainant's family fills the other.",
+    "if_guilty": "imprisonment, permanent exclusion from care work, and the collapse of the household that depends on his wage"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Ilan Sorre learned the complainant's phrases, passcode habits, and quiet generosity. Over four months, forty-three transfers moved to accounts he controlled, each below the service's warning threshold. The approvals came from his handset while he was alone in the house. He did not steal with one dramatic instruction; he built a staircase from amounts designed not to be noticed."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The complainant repeatedly says the money was gifted. She was lonely, independent, and angry that her niece tried to control every purchase. Ilan helped with the banking service because tremor made the screen difficult. The prosecution turns assistance into access and family disagreement into incapacity. Small transfers may reflect caution, not concealment, and gratitude is not fraud."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Consent is not a word spoken after trust has been exploited; it must attach to each transfer. The handset logs show Ilan created new payees, muted confirmations, and tested the warning threshold before the first payment. The complainant remembers gifts but cannot name amounts or accounts. His private note called the process drip feeding. That is not care. It is method."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The niece disliked Ilan before she opened a statement. The specialist accepted the complainant could make ordinary gifts, and every transfer carried a spoken approval. A private phrase can sound ugly without being criminal. If uncertainty remains about what she intended, the prosecution cannot replace her voice with a relative's suspicion and call the difference proof."
+      }
+    }
+  },
+  "epilogue": "The cooperative introduced dual approval for workers who assist with banking and banned personal payees from care devices. The complainant moved into supported housing but kept choosing her own weekly spending. Her niece attended mediation about control and dignity. Ilan's sibling received emergency housing help from the cooperative, separating that need from the trial. The disputed money was frozen while a civil administrator reconstructed each transfer.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Tessa Wren",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Malik Orra",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Ilan Sorre",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Galen Pryce",
+      "role_label": "financial investigator",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Ruth Dallow",
+      "role_label": "the complainant's niece",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Dr Sen Arlen",
+      "role_label": "geriatric communication specialist",
+      "side": "prosecution"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The defence plays three voice approvals recorded by the banking service. In each, the complainant says, I want Ilan to have it, and sounds calm. She later told investigators the payments were gifts. Hearing her own words makes the case appear to be a family dispute about generosity rather than fraud.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Later evidence exposed what the defence plays three voice approvals recorded by the banking service could not establish.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "The transfers were forty to four hundred credits, never more. Each sat below the automatic call-back threshold. They moved through three new payees and eventually reached accounts linked to Ilan. At first I treated the voice approvals as consent, until device records showed how each approval screen was prepared. The pattern showed design, but the account trail still had to identify its author.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.32,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "the transfers were forty to four hundred credits, never more added context without resolving identity or intent.",
+      "tags": [
+        "credibility",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "The complainant personally spoke every approval phrase? A voice matching hers did, according to the service. And she still describes the payments as gifts? Yes, but she cannot identify the payees, amounts, or timing. Those gaps stop the recordings from proving informed consent, do they not? Yes. A voice match establishes the speaker, not her understanding of destination, amount, or purpose.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "The complainant personally spoke every approval phrase?"
+        },
+        {
+          "speaker": "w1",
+          "text": "A voice matching hers did, according to the service."
+        },
+        {
+          "speaker": "dc",
+          "text": "And she still describes the payments as gifts?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes, but she cannot identify the payees, amounts, or timing."
+        },
+        {
+          "speaker": "dc",
+          "text": "Those gaps stop the recordings from proving informed consent, do they not?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes. A voice match establishes the speaker, not her understanding of destination, amount, or purpose."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The limits surrounding the complainant personally spoke every approval phrase kept it from deciding the charge alone.",
+      "tags": [
+        "digital_forensics",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The niece reported the transfers after seeing a low balance. She had argued with the complainant about spending and had asked the cooperative to replace Ilan twice. The defence says her complaint began with control, not evidence, and that her hostility coloured every later interview with the family. Her history explained urgency while giving the defence a concrete reason to test her bias.",
+      "surface_persuasion": 0.7899999999999999,
+      "true_weight": 0.22,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "the niece reported the transfers after seeing a low balance was persuasive on the surface but weak on the fact it claimed to prove.",
+      "tags": [
+        "credibility",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "My aunt can choose gifts. What she cannot do is explain why one went to a freight account or why another was split into nine payments. She calls every helper Ilan some days. He knew that. When I asked about the missing balance, she thought it had paid for a new garden that did not exist.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The wider sequence qualified what my aunt can choose gifts could fairly support.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit six is the handset audit. Ilan's personal device created all three payees, disabled payment confirmations, and searched the service's warning thresholds minutes before the first transfer. A note stored locally listed amounts under the heading drip feeding, followed by dates that match the forty-three payments exactly. Unlike the approvals, this record captured preparation before anyone requested a gift.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.76,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "the handset audit fixed a disputed link through an independent record.",
+      "tags": [
+        "digital_forensics",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "A worker may create a payee while helping a client, correct? With the client's instruction, yes. Your aunt often accused you of restricting her money? She did, and sometimes I was too protective. So she could have hidden gifts from you deliberately? She could hide a gift. She could not invent the missing garden she believed she bought.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "A worker may create a payee while helping a client, correct?"
+        },
+        {
+          "speaker": "w2",
+          "text": "With the client's instruction, yes."
+        },
+        {
+          "speaker": "dc",
+          "text": "Your aunt often accused you of restricting her money?"
+        },
+        {
+          "speaker": "w2",
+          "text": "She did, and sometimes I was too protective."
+        },
+        {
+          "speaker": "dc",
+          "text": "So she could have hidden gifts from you deliberately?"
+        },
+        {
+          "speaker": "w2",
+          "text": "She could hide a gift. She could not invent the missing garden she believed she bought."
+        }
+      ],
+      "surface_persuasion": 0.62,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The limits surrounding a worker may create a payee while helping a client, correct kept it from deciding the charge alone.",
+      "tags": [
+        "digital_forensics",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "The complainant retained capacity for simple purchases and familiar gifts. But the recordings use nearly identical phrasing, while her spontaneous explanation shifts between a garden, a holiday, and wages already paid by the cooperative. That pattern suggests prompted assent without an understanding of destination, amount, or cumulative loss. The inconsistency mattered because prompted words can sound confident without informed choice.",
+      "surface_persuasion": 0.7000000000000001,
+      "true_weight": 0.8300000000000001,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "the complainant retained capacity for simple purchases and familiar gifts survived cross-examination and connected evidence from separate sources.",
+      "tags": [
+        "digital_forensics",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "You assessed her four months after the disputed transfers? Yes, using interviews and the recordings made at the time. She could still understand an ordinary gift when details were explained? Yes. My concern is that these recordings never supplied those details. So the clips are too short to prove either full consent or incapacity alone? Correct. Their repeated prompts become meaningful beside the payee and visit records.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "You assessed her four months after the disputed transfers?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes, using interviews and the recordings made at the time."
+        },
+        {
+          "speaker": "dc",
+          "text": "She could still understand an ordinary gift when details were explained?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Yes. My concern is that these recordings never supplied those details."
+        },
+        {
+          "speaker": "dc",
+          "text": "So the clips are too short to prove either full consent or incapacity alone?"
+        },
+        {
+          "speaker": "w3",
+          "text": "Correct. Their repeated prompts become meaningful beside the payee and visit records."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The wider sequence qualified what you assessed her four months after the disputed transfers could fairly support.",
+      "tags": [
+        "credibility",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that spoken approval is evidence to assess, not a rule that automatically establishes informed consent. The prosecution must prove dishonest taking and intent beyond reasonable doubt. Keep the burden on the prosecution while comparing capacity, prompting, payee creation, and destination, and do not seek outside information about the family or payment service.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance added context without resolving identity or intent.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit nine compares transfer times with visit logs. Thirty-nine payments occurred while Ilan was the only worker present; the remaining four followed his remote access within minutes. On the final day he moved the accumulated balance from all three payees into one personal savings account, then deleted the local note.",
+      "surface_persuasion": 0.74,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The corroboration behind exhibit nine compares transfer times with visit logs carried genuine weight on timing, control, or method.",
+      "tags": [
+        "digital_forensics",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b3",
+    "b5",
+    "b8",
+    "b10"
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The spoken gift approvals looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter payee and threshold audit supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "difficulty_target": 0.66,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A bookkeeper who tests whether separate records truly reconcile, especially when weighing spoken assent versus informed consent.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 47
+        },
+        "weights": {
+          "digital_forensics": 2,
+          "identity": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "For me, the anchor is the payee setup, comprehension evidence, and visit timeline; it answers the weakness that first divided this room.",
+            "In my notes at seat 2, the payee setup, comprehension evidence, and visit timeline agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I will not let the recorded gift approvals decide more than its source can support.",
+            "I need the chronology laid out before I choose between those accounts. Here that means spoken assent against informed consent."
+          ],
+          "concede": [
+            "I admit the recorded gift approvals, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My verdict rests on the payee setup, comprehension evidence, and visit timeline, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A caregiver who is alert to pressure and unequal power, especially when weighing spoken assent versus informed consent.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "G",
+          "confidence": 54
+        },
+        "weights": {
+          "timeline": 2,
+          "motive": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "I move because the payee setup, comprehension evidence, and visit timeline; it answers the weakness that first divided this room.",
+            "In my notes at seat 3, the payee setup, comprehension evidence, and visit timeline agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I keep separating the recorded gift approvals decide more than its source can support.",
+            "Two records agreeing matters more to me than one record sounding certain. Here that means spoken assent against informed consent."
+          ],
+          "concede": [
+            "I can see why the recorded gift approvals, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I finish with the payee setup, comprehension evidence, and visit timeline, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on spoken assent versus informed consent until evidence, rather than consensus, answers it; from seat 3, I relate it to spoken assent against informed consent."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A technician who distrusts labels without source data, especially when weighing spoken assent versus informed consent.",
+        "register": "hesitant",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "G",
+          "confidence": 44
+        },
+        "weights": {
+          "credibility": 1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The part I cannot explain away is the payee setup, comprehension evidence, and visit timeline; it answers the weakness that first divided this room.",
+            "In my notes at seat 4, the payee setup, comprehension evidence, and visit timeline agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "Before I rely on the recorded gift approvals decide more than its source can support.",
+            "I am testing which side can explain the missing link without assumption. Here that means spoken assent against informed consent."
+          ],
+          "concede": [
+            "At first I gave too much weight to the recorded gift approvals, especially before the underlying record is opened."
+          ],
+          "final": [
+            "The deciding chain for me is the payee setup, comprehension evidence, and visit timeline, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "A coach who asks whether conduct matches the claimed motive, especially when weighing spoken assent versus informed consent.",
+        "register": "blunt",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 51
+        },
+        "weights": {
+          "identity": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I checked the sequence against the payee setup, comprehension evidence, and visit timeline; it answers the weakness that first divided this room.",
+            "In my notes at seat 5, the payee setup, comprehension evidence, and visit timeline agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I hear the force of the recorded gift approvals decide more than its source can support.",
+            "The burden makes me separate a possible story from a proved one. Here that means spoken assent against informed consent."
+          ],
+          "concede": [
+            "I concede the surface force of the recorded gift approvals, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I return at the end to the payee setup, comprehension evidence, and visit timeline, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "A student who can be swept up by a vivid first impression, especially when weighing spoken assent versus informed consent.",
+        "register": "plain",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 58
+        },
+        "weights": {
+          "digital_forensics": 2,
+          "motive": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "What changes my vote is the payee setup, comprehension evidence, and visit timeline; it answers the weakness that first divided this room.",
+            "In my notes at seat 6, the payee setup, comprehension evidence, and visit timeline agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I am not treating the recorded gift approvals decide more than its source can support.",
+            "I want the source data before I accept the label attached to it. Here that means spoken assent against informed consent."
+          ],
+          "concede": [
+            "I was initially moved by the recorded gift approvals, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My final vote follows the payee setup, comprehension evidence, and visit timeline, with the burden left where the judge placed it."
+          ],
+          "burden_drift": [
+            "I catch myself asking for an innocent explanation, even though that is not the accused's burden; from seat 6, I relate it to spoken assent against informed consent."
+          ],
+          "burden_correct": [
+            "I am correcting course: the prosecution must close the gap, not the accused; from seat 6, I relate it to spoken assent against informed consent."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "burden_drift"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A foreperson who restates disagreements before calling a vote, especially when weighing spoken assent versus informed consent.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "NG",
+          "confidence": 48
+        },
+        "weights": {
+          "timeline": 2,
+          "credibility": 1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I trust the payee setup, comprehension evidence, and visit timeline; it answers the weakness that first divided this room.",
+            "In my notes at seat 7, the payee setup, comprehension evidence, and visit timeline agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "My problem with the recorded gift approvals decide more than its source can support.",
+            "A vivid clue will not move me unless the later sequence supports it. Here that means spoken assent against informed consent."
+          ],
+          "concede": [
+            "The opposing account fairly points to the recorded gift approvals, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I resolve the doubt through the payee setup, comprehension evidence, and visit timeline, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A retiree who wants testimony anchored to something independent, especially when weighing spoken assent versus informed consent.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 55
+        },
+        "weights": {
+          "credibility": 2,
+          "identity": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The room should start with the payee setup, comprehension evidence, and visit timeline; it answers the weakness that first divided this room.",
+            "In my notes at seat 8, the payee setup, comprehension evidence, and visit timeline agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "We should test the recorded gift approvals decide more than its source can support.",
+            "I am asking whether the physical evidence and the testimony converge. Here that means spoken assent against informed consent."
+          ],
+          "concede": [
+            "I cannot dismiss the recorded gift approvals, especially before the underlying record is opened."
+          ],
+          "final": [
+            "The complete record leaves me with the payee setup, comprehension evidence, and visit timeline, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A delivery worker who focuses on custody and physical sequence, especially when weighing spoken assent versus informed consent.",
+        "register": "blunt",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 45
+        },
+        "weights": {
+          "identity": 2,
+          "motive": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I needed corroboration, and the payee setup, comprehension evidence, and visit timeline; it answers the weakness that first divided this room.",
+            "In my notes at seat 9, the payee setup, comprehension evidence, and visit timeline agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I still question the recorded gift approvals decide more than its source can support.",
+            "I need to know what this proves about intent, not only opportunity. Here that means spoken assent against informed consent."
+          ],
+          "concede": [
+            "There is real persuasive force in the recorded gift approvals, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I am voting from the payee setup, comprehension evidence, and visit timeline, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps, especially when weighing spoken assent versus informed consent.",
+        "register": "plain",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 52
+        },
+        "weights": {
+          "digital_forensics": 2,
+          "credibility": 1,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The timing becomes coherent through the payee setup, comprehension evidence, and visit timeline; it answers the weakness that first divided this room.",
+            "In my notes at seat 10, the payee setup, comprehension evidence, and visit timeline agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I refuse to confuse the recorded gift approvals decide more than its source can support.",
+            "The custody trail matters only if it follows the same object throughout. Here that means spoken assent against informed consent."
+          ],
+          "concede": [
+            "I understand the reliance on the recorded gift approvals, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My conclusion turns on the payee setup, comprehension evidence, and visit timeline, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on spoken assent versus informed consent until evidence, rather than consensus, answers it; from seat 10, I relate it to spoken assent against informed consent."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A blunt sceptic who will not turn probability into certainty, especially when weighing spoken assent versus informed consent.",
+        "register": "formal",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 59
+        },
+        "weights": {
+          "timeline": 2,
+          "identity": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I am persuaded by the payee setup, comprehension evidence, and visit timeline; it answers the weakness that first divided this room.",
+            "In my notes at seat 11, the payee setup, comprehension evidence, and visit timeline agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I want a source check on the recorded gift approvals decide more than its source can support.",
+            "I am checking whether my doubt is evidential or merely speculative. Here that means spoken assent against informed consent."
+          ],
+          "concede": [
+            "I began from the recorded gift approvals, especially before the underlying record is opened."
+          ],
+          "final": [
+            "After testing both stories, I rely on the payee setup, comprehension evidence, and visit timeline, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A shift worker who notices breaks in chronology, especially when weighing spoken assent versus informed consent.",
+        "register": "hesitant",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 49
+        },
+        "weights": {
+          "credibility": 2,
+          "motive": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "My holdout ends with the payee setup, comprehension evidence, and visit timeline; it answers the weakness that first divided this room.",
+            "In my notes at seat 12, the payee setup, comprehension evidence, and visit timeline agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I am holding against the recorded gift approvals decide more than its source can support.",
+            "Consensus will not substitute for the independent record I still need. Here that means spoken assent against informed consent."
+          ],
+          "concede": [
+            "I will grant the recorded gift approvals, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I can now decide because of the payee setup, comprehension evidence, and visit timeline, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-qa-fix"
+  }
+}
