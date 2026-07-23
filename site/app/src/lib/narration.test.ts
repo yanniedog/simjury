@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   fallbackVoiceIndexes,
-  narrationIdFor,
   narrationRate,
   normaliseNarrationRate,
+  selectLocalVoices,
   setNarrationEnabled,
   setNarrationRate,
   speakAll,
@@ -41,10 +41,12 @@ describe('voiceParamsFor', () => {
     expect(voiceParamsFor('anyone', 0).voiceIndex).toBe(0)
   })
 
-  it('prefers a natural voice to a legacy local voice', () => {
-    expect(voiceQualityScore('Microsoft Ava Natural', false)).toBeGreaterThan(
-      voiceQualityScore('Desktop English', true),
-    )
+  it('excludes remote synthesis voices even when they advertise higher quality', () => {
+    const selected = selectLocalVoices([
+      { name: 'Desktop English', lang: 'en-US', localService: true },
+      { name: 'Cloud Neural', lang: 'en-US', localService: false },
+    ] as SpeechSynthesisVoice[])
+    expect(selected.map((voice) => voice.name)).toEqual(['Desktop English'])
   })
 
   it('prefers natural variants within the local tier', () => {
@@ -60,10 +62,6 @@ describe('voiceParamsFor', () => {
     expect(indexes[2]).not.toBe(indexes[3])
   })
 
-  it('creates strict stable corpus ids without exposing text', () => {
-    expect(narrationIdFor('The evidence is ready.', 'pc')).toMatch(/^pc-[0-9a-f]{8}$/)
-    expect(narrationIdFor('The evidence is ready.', 'pc')).not.toContain('evidence')
-  })
 })
 
 describe('normaliseNarrationRate', () => {
@@ -97,46 +95,7 @@ describe('normaliseNarrationRate', () => {
 })
 
 describe('speakAll', () => {
-  it('uses same-origin neural clips in order and tracks the active speaker', () => {
-    class FakeAudio {
-      static instances: FakeAudio[] = []
-      onended: (() => void) | null = null
-      onerror: (() => void) | null = null
-      preload = ''
-      playbackRate = 1
-      constructor(readonly src: string) { FakeAudio.instances.push(this) }
-      play = vi.fn(async () => undefined)
-      pause = vi.fn()
-      removeAttribute = vi.fn()
-      load = vi.fn()
-    }
-    FakeAudio.instances = []
-    const values = new Map<string, string>()
-    vi.stubGlobal('Audio', FakeAudio)
-    vi.stubGlobal('localStorage', {
-      getItem: (key: string) => values.get(key) ?? null,
-      setItem: (key: string, value: string) => values.set(key, value),
-    })
-    setNarrationEnabled(true)
-    const onLine = vi.fn()
-    const done = vi.fn()
-
-    speakAll([
-      { text: 'Question', key: 'dc' },
-      { text: 'Answer', key: 'w1' },
-    ], { onLine, done, rate: 1.15 })
-    expect(onLine.mock.calls).toEqual([['dc', 0]])
-    expect(FakeAudio.instances[0].src).toMatch(/^\/api\/narration\/dc-[0-9a-f]{8}\.mp3$/)
-    expect(FakeAudio.instances[0].playbackRate).toBe(1.15)
-
-    FakeAudio.instances[0].onended?.()
-    expect(onLine.mock.calls).toEqual([['dc', 0], ['w1', 1]])
-    expect(FakeAudio.instances[1].src).toMatch(/^\/api\/narration\/w1-[0-9a-f]{8}\.mp3$/)
-    FakeAudio.instances[1].onended?.()
-    expect(done).toHaveBeenCalledOnce()
-  })
-
-  it('keeps device fallback voices distinct without advancing on speech error', () => {
+  it('keeps device voices distinct without advancing on speech error', () => {
     class FakeUtterance {
       voice?: SpeechSynthesisVoice
       pitch = 1
@@ -149,11 +108,10 @@ describe('speakAll', () => {
     const utterances: FakeUtterance[] = []
     const deviceVoices = [
       { name: 'Desktop English', lang: 'en-US', localService: true },
-      { name: 'Microsoft Ava Natural', lang: 'en-US', localService: false },
+      { name: 'Microsoft Ava Natural', lang: 'en-US', localService: true },
+      { name: 'Cloud Neural', lang: 'en-US', localService: false },
     ] as SpeechSynthesisVoice[]
     const values = new Map<string, string>()
-    // Force the device-speech path: neural Audio is unavailable in this harness.
-    vi.stubGlobal('Audio', undefined)
     vi.stubGlobal('window', {
       speechSynthesis: {
         cancel: vi.fn(),
@@ -193,6 +151,7 @@ describe('speakAll', () => {
       { text: 'Second line', key: 'dc' },
     ], { onLine, done })
     const firstVoice = utterances[0].voice
+    expect(firstVoice?.localService).toBe(true)
     utterances[0].onend?.()
     expect(onLine).toHaveBeenLastCalledWith('dc', 1)
     expect(utterances[1].voice).not.toBe(firstVoice)
@@ -200,101 +159,7 @@ describe('speakAll', () => {
     expect(done).toHaveBeenCalledOnce()
   })
 
-  it('reports onError when neural audio fails and device speech is unavailable', async () => {
-    class FakeAudio {
-      static instances: FakeAudio[] = []
-      onended: (() => void) | null = null
-      onerror: (() => void) | null = null
-      onplay: (() => void) | null = null
-      preload = ''
-      playbackRate = 1
-      constructor(readonly src: string) { FakeAudio.instances.push(this) }
-      play = vi.fn(async () => { throw new Error('autoplay blocked') })
-      pause = vi.fn()
-      removeAttribute = vi.fn()
-      load = vi.fn()
-    }
-    FakeAudio.instances = []
-    vi.stubGlobal('Audio', FakeAudio)
-    vi.stubGlobal('window', {})
-    vi.stubGlobal('localStorage', {
-      getItem: () => 'on',
-      setItem: vi.fn(),
-    })
-    const onError = vi.fn()
-    const done = vi.fn()
-    setNarrationEnabled(true)
-
-    speakAll([{ text: 'Line', key: 'pc' }], { onError, done })
-    await Promise.resolve()
-    expect(onError).toHaveBeenCalledOnce()
-    expect(done).not.toHaveBeenCalled()
-  })
-
-  it('assigns distinct fallback voices using voices available at fallback time', async () => {
-    class FakeAudio {
-      static instances: FakeAudio[] = []
-      onended: (() => void) | null = null
-      onerror: (() => void) | null = null
-      onplay: (() => void) | null = null
-      preload = ''
-      playbackRate = 1
-      rejectPlay: ((error: Error) => void) | null = null
-      constructor(readonly src: string) { FakeAudio.instances.push(this) }
-      play = vi.fn(() => new Promise<void>((_resolve, reject) => {
-        this.rejectPlay = reject
-      }))
-      pause = vi.fn()
-      removeAttribute = vi.fn()
-      load = vi.fn()
-    }
-    class FakeUtterance {
-      voice?: SpeechSynthesisVoice
-      pitch = 1
-      rate = 1
-      onend: (() => void) | null = null
-      onerror: (() => void) | null = null
-      constructor(readonly text: string) {}
-    }
-    FakeAudio.instances = []
-    const utterances: FakeUtterance[] = []
-    let deviceVoices: SpeechSynthesisVoice[] = []
-    vi.stubGlobal('Audio', FakeAudio)
-    vi.stubGlobal('window', {
-      speechSynthesis: {
-        cancel: vi.fn(),
-        getVoices: () => deviceVoices,
-        speak: (utterance: FakeUtterance) => utterances.push(utterance),
-      },
-    })
-    vi.stubGlobal('SpeechSynthesisUtterance', FakeUtterance)
-    vi.stubGlobal('localStorage', {
-      getItem: () => 'on',
-      setItem: vi.fn(),
-    })
-    setNarrationEnabled(true)
-
-    speakAll([
-      { text: 'First line', key: 'pc' },
-      { text: 'Second line', key: 'dc' },
-    ], { done: vi.fn() })
-    // Voices load only after the neural attempt has begun.
-    deviceVoices = [
-      { name: 'Desktop English', lang: 'en-US', localService: true },
-      { name: 'Microsoft Ava Natural', lang: 'en-US', localService: false },
-    ] as SpeechSynthesisVoice[]
-    FakeAudio.instances[0].rejectPlay?.(new Error('autoplay blocked'))
-    await Promise.resolve()
-    expect(utterances).toHaveLength(1)
-    const firstVoice = utterances[0].voice
-    utterances[0].onend?.()
-    FakeAudio.instances[1].rejectPlay?.(new Error('autoplay blocked'))
-    await Promise.resolve()
-    expect(utterances).toHaveLength(2)
-    expect(utterances[1].voice).not.toBe(firstVoice)
-  })
-
-  it('reports a sequence speech error without advancing unheard content', () => {
+  it('does not send text to a remote voice when no local voice is available', () => {
     class FakeUtterance {
       voice?: SpeechSynthesisVoice
       pitch = 1
@@ -305,11 +170,12 @@ describe('speakAll', () => {
       constructor(readonly text: string) {}
     }
     const utterances: FakeUtterance[] = []
-    vi.stubGlobal('Audio', undefined)
     vi.stubGlobal('window', {
       speechSynthesis: {
         cancel: vi.fn(),
-        getVoices: () => [],
+        getVoices: () => [
+          { name: 'Cloud Neural', lang: 'en-US', localService: false },
+        ],
         speak: (utterance: FakeUtterance) => utterances.push(utterance),
       },
     })
@@ -326,11 +192,9 @@ describe('speakAll', () => {
       { text: 'First line', key: 'pros' },
       { text: 'Second line', key: 'defc' },
     ], { onLine, onError, done })
-    utterances[0].onerror?.()
-
-    expect(onError).toHaveBeenCalledOnce()
-    expect(onLine).toHaveBeenCalledOnce()
-    expect(done).not.toHaveBeenCalled()
-    expect(utterances).toHaveLength(1)
+    expect(onError).not.toHaveBeenCalled()
+    expect(onLine).not.toHaveBeenCalled()
+    expect(done).toHaveBeenCalledOnce()
+    expect(utterances).toHaveLength(0)
   })
 })
