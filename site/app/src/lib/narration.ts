@@ -1,4 +1,4 @@
-/** Free, device-local narration through the browser Web Speech API. */
+/** Open-source Kokoro clips from GitHub Releases, with device-local speech fallback. */
 export interface VoiceParams {
   voiceIndex: number
   pitch: number
@@ -18,6 +18,17 @@ function hash(value: string): number {
   let h = 0x811c9dc5
   for (let i = 0; i < value.length; i++) h = Math.imul(h ^ value.charCodeAt(i), 0x01000193)
   return h >>> 0
+}
+
+export function narrationIdFor(text: string, key: string): string {
+  const slug = key.toLowerCase().replace(/[^a-z0-9-]/g, '-')
+  return `${slug}-${hash(`${key}\0${text}`).toString(16).padStart(8, '0')}`
+}
+
+export function naturalVoiceUrlFor(text: string, key: string): string {
+  const id = narrationIdFor(text, key)
+  const shard = Number.parseInt(id.slice(-8, -7), 16) % 4
+  return `https://github.com/yanniedog/simjury/releases/download/narration-kokoro-${shard}/${id}.mp3`
 }
 
 export function voiceParamsFor(key: string, voiceCount: number): VoiceParams {
@@ -87,7 +98,7 @@ function refreshVoices(): void {
 
 export function narrationSupported(): boolean {
   refreshVoices()
-  return synth() !== null && voices.length > 0
+  return typeof Audio !== 'undefined' || (synth() !== null && voices.length > 0)
 }
 
 let memoryEnabled = false
@@ -134,10 +145,20 @@ export function setNarrationRate(value: unknown): NarrationRate {
 }
 
 let activeId = 0
+let activeAudio: HTMLAudioElement | null = null
 
 type FallbackSequence = { keys: string[]; index: number }
 
 function cancelCurrent(): void {
+  if (activeAudio) {
+    activeAudio.onended = null
+    activeAudio.onerror = null
+    activeAudio.onplay = null
+    activeAudio.pause()
+    activeAudio.removeAttribute('src')
+    activeAudio.load()
+    activeAudio = null
+  }
   synth()?.cancel()
 }
 
@@ -189,7 +210,7 @@ function speakFallback(
   }
 }
 
-/** Speak authored text locally; no case text or player data leaves the device. */
+/** Play an opaque-id Kokoro clip from GitHub; fall back locally if it is unavailable. */
 export function speak(
   text: string,
   key: string,
@@ -204,7 +225,37 @@ export function speak(
   }
   cancelCurrent()
   const myId = ++activeId
-  speakFallback(text, key, myId, done, playbackRate, onError, sequence)
+  if (typeof Audio === 'undefined') {
+    speakFallback(text, key, myId, done, playbackRate, onError, sequence)
+    return
+  }
+
+  let fellBack = false
+  const fallback = () => {
+    if (fellBack || activeId !== myId) return
+    fellBack = true
+    activeAudio = null
+    speakFallback(text, key, myId, done, playbackRate, onError, sequence)
+  }
+  try {
+    const audio = new Audio(naturalVoiceUrlFor(text, key))
+    activeAudio = audio
+    audio.preload = 'auto'
+    audio.playbackRate = playbackRate
+    audio.onplay = () => {
+      audio.playbackRate = playbackRate
+    }
+    audio.onended = () => {
+      if (activeId === myId) {
+        activeAudio = null
+        done?.()
+      }
+    }
+    audio.onerror = fallback
+    void audio.play().catch(fallback)
+  } catch {
+    fallback()
+  }
 }
 
 export function speakAll(

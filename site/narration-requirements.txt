@@ -1,0 +1,4 @@
+kokoro==0.9.4
+soundfile==0.13.1
+torch==2.9.1
+transformers==5.14.1
