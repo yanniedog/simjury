@@ -8,6 +8,7 @@ import {
 } from './lib/v2/cases'
 import { dayIndex } from './lib/daily'
 import { START_CONVICTION } from './lib/game'
+import { caseStorageId } from './lib/v2/caseRevision'
 import {
   clearProgress,
   loadAllPlays,
@@ -67,6 +68,7 @@ function DocketApp({
   const [playbackRate, setPlaybackRate] = useState(narrationRate())
   const day = sitting?.day ?? todayDay
   const trial = sitting?.trial ?? null
+  const storageCaseId = trial ? caseStorageId(trial) : null
   const progress = useMemo(() => loadProgress(day), [day])
 
   // Only restore a stored play that belongs to the case now assigned to this
@@ -77,12 +79,12 @@ function DocketApp({
   // permanent, so a refresh must not allow a fresh verdict).
   const validStored = useMemo(() => {
     if (!trial) return null
-    return loadPlayForSitting(day, trial.id, trial.checkins.length)
-  }, [day, trial])
+    return loadPlayForSitting(day, storageCaseId!, trial.checkins.length)
+  }, [day, storageCaseId, trial])
 
   const validProgress = useMemo(() => {
     if (!progress || !trial || validStored) return null
-    if (progress.caseId !== trial.id || progress.beatIndex >= trial.beats.length) return null
+    if (progress.caseId !== storageCaseId || progress.beatIndex >= trial.beats.length) return null
     const completedBeatCount =
       progress.phase === 'verdict' ? progress.beatIndex + 1 : progress.beatIndex
     const expectedCheckins = trial.beats
@@ -90,7 +92,7 @@ function DocketApp({
       .filter((beat) => trial.checkins.includes(beat.id)).length
     if (progress.checkinValues.length !== expectedCheckins) return null
     return progress
-  }, [progress, trial, validStored])
+  }, [progress, storageCaseId, trial, validStored])
 
   const [phase, setPhase] = useState<Phase>(
     validStored
@@ -180,7 +182,7 @@ function DocketApp({
   function persistProgress(
     update: Omit<StoredProgress, 'day' | 'caseId'>,
   ) {
-    saveProgress({ day, caseId: activeTrial.id, ...update })
+    saveProgress({ day, caseId: caseStorageId(activeTrial), ...update })
   }
 
   function begin() {
@@ -258,7 +260,7 @@ function DocketApp({
   function lockVerdict(chosen: Verdict) {
     const locked = loadPlayForSitting(
       day,
-      activeTrial.id,
+      caseStorageId(activeTrial),
       activeTrial.checkins.length,
     )
     if (verdict !== null) return
@@ -282,7 +284,7 @@ function DocketApp({
     // refresh mid-room must resume at the room, not offer a fresh verdict.
     savePlay({
       day,
-      caseId: activeTrial.id,
+      caseId: caseStorageId(activeTrial),
       convictions: checkinValues,
       verdict: chosen,
     })
@@ -302,7 +304,7 @@ function DocketApp({
     setRoom(roomRecord)
     savePlay({
       day,
-      caseId: activeTrial.id,
+      caseId: caseStorageId(activeTrial),
       convictions: checkinValues,
       verdict,
       correct: done.correct,
