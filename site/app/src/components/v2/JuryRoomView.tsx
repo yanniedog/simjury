@@ -91,15 +91,20 @@ function FeedLine({ e, trial }: { e: RoomEvent; trial: DocketCase }) {
   }
   if (e.type === 'argue' || e.type === 'cite') {
     const beat = trial.beats.find((b) => b.id === e.beatId)
+    const beatNumber = trial.beats.findIndex((b) => b.id === e.beatId) + 1
     const speaker = trial.cast.find((m) => m.id === beat?.speaker)
-    const what = e.type === 'cite' ? 'You cite the direction from' : 'You point back to'
-    const how =
-      e.type === 'cite' ? '' : e.stance === 'proves' ? ' — “this proves it.”' : ' — “this can’t be trusted.”'
+    const stance =
+      e.type === 'cite'
+        ? 'You rely on the judge’s legal direction.'
+        : e.stance === 'proves'
+          ? `You argue that it supports ${beat?.direction === 'guilt' ? 'conviction' : 'acquittal'}.`
+          : 'You challenge its reliability.'
     return (
       <li className="rounded-lg border border-neutral-700 bg-neutral-800/60 p-3">
         <p className="text-xs font-semibold text-neutral-300">You</p>
-        <p className="mt-1 text-sm text-neutral-200">
-          {what} {speaker?.name ?? 'the record'}{how}
+        <p className="mt-1 text-sm text-neutral-200">{stance}</p>
+        <p className="mt-2 border-l border-neutral-600 pl-3 text-xs leading-relaxed text-neutral-400">
+          Evidence {beatNumber} · {speaker?.name ?? 'The record'}: “{beat?.text ?? 'The selected evidence'}”
         </p>
       </li>
     )
@@ -156,6 +161,8 @@ export function JuryRoomView({
   const [selectedBeat, setSelectedBeat] = useState(trial.beats[0].id)
   const [outcome, setOutcome] = useState<Outcome | null>(null)
   const [activeJurorId, setActiveJurorId] = useState<string | null>(null)
+  const transcriptRef = useRef<HTMLUListElement>(null)
+  const followTranscriptRef = useRef(true)
 
   // Rate/toggle changes cancel speech in App; clear its visual state here too.
   // The cleanup also prevents narration overlapping the reveal on unmount.
@@ -179,6 +186,14 @@ export function JuryRoomView({
   useEffect(() => {
     document.getElementById('phase-heading')?.focus()
   }, [state.phase])
+
+  const logLength = state.log.length
+  useEffect(() => {
+    const transcript = transcriptRef.current
+    if (transcript && followTranscriptRef.current) {
+      transcript.scrollTop = transcript.scrollHeight
+    }
+  }, [logLength])
 
   function act(action: PlayerAction) {
     if (!inOpenRound || state.phase !== renderedPhase) return
@@ -230,7 +245,17 @@ export function JuryRoomView({
           : 'The foreperson opens deliberations'}
       </p>
 
-      <ul className="room-transcript max-h-80 space-y-2 overflow-y-auto">
+      <ul
+        ref={transcriptRef}
+        aria-label="Jury room transcript"
+        aria-live="polite"
+        onScroll={(event) => {
+          const transcript = event.currentTarget
+          followTranscriptRef.current =
+            transcript.scrollTop + transcript.clientHeight >= transcript.scrollHeight - 40
+        }}
+        className="room-transcript max-h-80 space-y-2 overflow-y-auto"
+      >
         {state.log.map((e, i) => (
           <FeedLine key={i} e={e} trial={trial} />
         ))}
@@ -260,7 +285,7 @@ export function JuryRoomView({
             onClick={() => onDone(outcome)}
             className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
           >
-            See what really happened →
+            Open the authored case record →
           </button>
         </div>
       ) : inOpenRound ? (
@@ -283,6 +308,13 @@ export function JuryRoomView({
               )
             })}
           </select>
+          <div className="rounded-lg border border-neutral-800 bg-neutral-950/70 p-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+              Evidence {trial.beats.findIndex((item) => item.id === beat.id) + 1} ·{' '}
+              {trial.cast.find((member) => member.id === beat.speaker)?.name ?? 'The record'}
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-neutral-300">{beat.text}</p>
+          </div>
           {beat.kind === 'direction' ? (
             <button
               type="button"
@@ -298,14 +330,14 @@ export function JuryRoomView({
                 onClick={() => act({ type: 'argue', beatId: beat.id, stance: 'proves' })}
                 className="rounded-lg bg-neutral-100 px-3 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
               >
-                This proves it
+                Argue this supports {beat.direction === 'guilt' ? 'conviction' : 'acquittal'}
               </button>
               <button
                 type="button"
                 onClick={() => act({ type: 'argue', beatId: beat.id, stance: 'unreliable' })}
                 className="rounded-lg border border-neutral-600 px-3 py-2.5 text-sm font-semibold text-neutral-200 transition hover:bg-neutral-800"
               >
-                Can’t be trusted
+                Challenge its reliability
               </button>
             </div>
           )}
