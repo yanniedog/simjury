@@ -10,7 +10,7 @@
     "She intended to damage the bakery in order to obtain an insurance payment.",
     "The prosecution has proved both matters beyond reasonable doubt; if an accidental electrical fire remains reasonably possible, the verdict must be not guilty."
   ],
-  "hook": "The meter says the ovens surged after the owner locked up. The owner says she was already across town when the walls began to glow.",
+  "hook": "The meter records an unexplained power surge after the owner locked up. The owner says she was already across town when the walls began to glow.",
   "accused": {
     "cast_id": "w4",
     "human": "Lena Orsik opens before dawn, employs six apprentices, and cares for her father above the bakery.",
@@ -349,7 +349,7 @@
         "lines": {
           "agree": [
             "Juror 2: The alarm was set and then the meter showed a big load. At first glance, that looks bad for Lena.",
-            "Juror 2: She knew the fridge was playing up and left it running. We cannot just wave that away because the repair was booked."
+            "Juror 2: On the original export, the surge appears after the alarm. If that timestamp is sound, it looks like equipment was powered inside an empty bakery."
           ],
           "pushback": [
             "Juror 2: A meter reading is only as good as its clock. Show me the synchronisation record before we build a timeline from it.",
@@ -630,8 +630,8 @@
         },
         "lines": {
           "agree": [
-            "Juror 6: Lena had debt, higher cover, and a refrigerator she knew was noisy. Those are real facts, not nothing.",
-            "Juror 6: Her service call was recorded that afternoon. If we say she delayed repair, we need evidence beyond the prosecutor’s wording."
+            "Juror 6: The investigator could place the fire near the refrigerator, but not tell whether a cable failed first. That uncertainty matters.",
+            "Juror 6: With no accelerant and the deepest damage around electrical equipment, the scene evidence does not exclude an accidental fault."
           ],
           "pushback": [
             "Juror 6: Let’s stop calling it an after-hours surge. Once the clock is corrected, it happened before lock-up.",
@@ -687,8 +687,8 @@
         },
         "lines": {
           "agree": [
-            "Juror 7: A forty-per-cent policy increase is significant. I understand why investigators looked closely at Lena.",
-            "Juror 7: The compressor trace supports the defence, but the technician said “consistent with,” not “proved.” I want us to keep that distinction."
+            "Juror 7: The investigator attended before the debris was moved and placed the fire’s origin at the refrigeration cabinet. I give that firsthand work weight.",
+            "Juror 7: The copper conductors were badly damaged at the likely point of origin. That direct observation supports the prosecution even if the first fault is uncertain."
           ],
           "pushback": [
             "Juror 7: Businesses raise cover when rebuilding costs rise. The broker’s recommendation makes the timing less sinister.",
@@ -769,8 +769,8 @@
         },
         "lines": {
           "agree": [
-            "Juror 8: The bakery’s losses were serious, and Lena would benefit from the claim. I initially thought that explained too much to be chance.",
-            "Juror 8: The apprentices heard the problem while Lena was still there. Their presence makes the corrected time feel real, not invented for trial."
+            "Juror 8: Correcting the clock puts the surge before the alarm, and the trace then fits a compressor struggling during closing.",
+            "Juror 8: The bench test and load pattern give one checkable explanation: a failing compressor drew power while staff were still there."
           ],
           "pushback": [
             "Juror 8: We should not decide this because we feel sorry for Lena or angry about the destroyed shops. The records still have to prove intent.",
