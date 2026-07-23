@@ -30,7 +30,7 @@
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The voice notes were found on a device Amra controlled, not in the bank's records. They cannot change the financial pattern: transfers rose to hundreds of dollars, exceeded documented expenses, and reached the helper who operated the account. The prosecution says Amra's control, benefit, and restricted family contact show that these were not Elias's free, informed choices."
+        "text": "The voice notes came from Elias's separate reminder tablet and were never part of the bank's records. They cannot change the financial pattern: transfers rose to hundreds of dollars, exceeded documented expenses, and reached the helper who operated the account. The prosecution says Amra's control, benefit, and restricted family contact show these were not Elias's free, informed choices."
       },
       "defence": {
         "speaker": "dc",
@@ -169,12 +169,12 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit five contains fourteen voice notes recovered from Elias's old reminder tablet. Each was created before a transfer and states the date, exact amount, and purpose. Grocery payments match receipts. The larger sums are described as agreed weekly care payments and a winter gift. The bank timestamps match every instruction, including two amounts Elias reduced before payment.",
+      "text": "Exhibit five contains fourteen payment notes and a separate fuel-request recording recovered from Elias's old reminder tablet. Each payment note was created before its transfer and states the date, exact amount, and purpose. Grocery payments match receipts. Larger sums are described as care payments and a winter gift. Two payment notes record Elias reducing the amount.",
       "surface_persuasion": 0.5,
       "true_weight": 0.85,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "Fourteen notes created before fourteen matching payments recorded Elias choosing each amount and purpose, including care and a gift.",
+      "reveal_note": "Fourteen notes created before fourteen matching payments record Elias choosing each amount and purpose; a separate fifteenth recording preserves his refusal of fuel money.",
       "tags": [
         "timeline",
         "digital_forensics"
@@ -217,7 +217,7 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "cross",
-      "text": "The alert did not contain Elias's local voice notes? No. The bank saw transfers and device activity, not recordings on another tablet. The bank cannot authenticate who made those notes, although their creation times can be examined. So the alert remains evidence of risk, not proof of a dishonest transfer? Correct. The notes are not bank records, and the alert cannot prove theft.",
+      "text": "The alert did not contain Elias's local voice notes? No. The bank saw transfers and device activity, not files on another tablet. So the alert cannot prove theft? An alert alone never proves a crime. But the notes were not bank-authenticated, and our records still showed increasing payments to the person operating the account. That pattern remained consistent with financial abuse.",
       "turns": [
         {
           "speaker": "dc",
@@ -225,22 +225,22 @@
         },
         {
           "speaker": "w2",
-          "text": "No. The bank saw transfers and device activity, not recordings on another tablet."
+          "text": "No. The bank saw transfers and device activity, not files on another tablet."
         },
         {
           "speaker": "dc",
-          "text": "The bank cannot authenticate who made those notes, although their creation times can be examined. So the alert remains evidence of risk, not proof of a dishonest transfer?"
+          "text": "So the alert cannot prove theft?"
         },
         {
           "speaker": "w2",
-          "text": "Correct. The notes are not bank records, and the alert cannot prove theft."
+          "text": "An alert alone never proves a crime. But the notes were not bank-authenticated, and our records still showed increasing payments to the person operating the account. That pattern remained consistent with financial abuse."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.25,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The bank properly identified risk, but its system could neither see nor authenticate the local instruction notes.",
+      "reveal_note": "The bank could not authenticate the local notes, while its own records continued to show increasing payments to the person operating Elias's account.",
       "tags": [
         "motive",
         "credibility"
@@ -303,7 +303,7 @@
     "b10"
   ],
   "verdict_truth": "Not Guilty",
-  "twist": "The bank could see a troubling transfer pattern but not the reminder tablet beside Elias's chair. Its fourteen timestamped notes match every payment and explain the apparent receipt gap as agreed care and a winter gift. Most importantly, they preserve Elias correcting Amra downward and refusing fuel money while she still had the means to request a transfer.",
+  "twist": "The bank could see a troubling transfer pattern but not the reminder tablet beside Elias's chair. Fourteen timestamped payment notes match every transfer and explain the apparent receipt gap as agreed care and a winter gift. A separate fifteenth recording preserves Elias refusing fuel money while Amra still had the means to request a transfer.",
   "difficulty_target": 0.42,
   "jury": {
     "jurors": [
@@ -332,7 +332,7 @@
             "Juror 2: I want the transfer records and voice notes placed on one timeline before changing my vote."
           ],
           "concede": [
-            "Juror 2: Fourteen notes created before fourteen matching transfers are difficult to explain as a later cover story."
+            "Juror 2: Fourteen payment notes created before fourteen matching transfers are difficult to explain as a later cover story."
           ],
           "final": [
             "Juror 2: My vote turns on whether the voice-note sequence proves Elias's informed choice despite the suspicious pattern."
@@ -745,12 +745,12 @@
         },
         "lines": {
           "agree": [
-            "Juror 8: Fourteen matched instructions, two downward corrections, and one refusal now explain the entire transfer timeline.",
+            "Juror 8: Fourteen matched payment instructions, two downward corrections, and a separate refusal explain the full timeline.",
             "Juror 8: The confirmation code stayed with Elias, which gave him practical control over each payment."
           ],
           "pushback": [
-            "Juror 8: If the note timeline were unreliable, the suspicious bank pattern would carry much more weight.",
-            "Juror 8: I changed my position because the later records explain facts the bank could not see."
+            "Juror 8: The matching timestamps and exact amounts make the payment-note timeline difficult to dismiss as unreliable.",
+            "Juror 8: The bank's incomplete view does not make the recovered instruction timeline unreliable."
           ],
           "concede": [
             "Juror 8: The family was right to raise the alarm when payments rose and contact reduced."
