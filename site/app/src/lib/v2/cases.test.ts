@@ -13,16 +13,52 @@ describe('docket queue', () => {
     expect(docketQueue.some((c) => c.id === 'dd-0000')).toBe(true)
   })
 
-  it('serves the same case for the same date and null for an empty queue', () => {
+  it('serves each launch case on its canonical publish date', () => {
+    for (const trial of docketQueue) {
+      const [year, month, day] = trial.publish_date.split('-').map(Number)
+      expect(docketCaseForDate(new Date(year, month - 1, day))).toBe(trial)
+    }
+  })
+
+  it('returns null for an empty queue', () => {
     const date = new Date(2026, 7, 15)
-    expect(docketCaseForDate(date)).toBe(docketCaseForDate(date))
     expect(docketCaseForDate(date, [])).toBeNull()
   })
 
-  it('only serves cases whose publish_date is on or before the play date', () => {
+  it('never leaks a future case', () => {
     const future = new Date(2026, 0, 1)
     const onlyFuture = docketQueue.filter((c) => c.publish_date > '2026-01-01')
     expect(docketCaseForDate(future, onlyFuture)).toBeNull()
+
+    const queueWithGap = docketQueue.filter(
+      (c) => c.publish_date === '2026-07-03' || c.publish_date === '2026-07-05',
+    )
+    expect(docketCaseForDate(new Date(2026, 6, 4), queueWithGap)?.id).toBe(
+      'dd-0002',
+    )
+  })
+
+  it('uses the newest earlier case for gaps and after the queue ends', () => {
+    const queueWithGap = docketQueue.filter(
+      (c) => c.publish_date !== '2026-07-04',
+    )
+
+    expect(docketCaseForDate(new Date(2026, 6, 4), queueWithGap)?.id).toBe(
+      'dd-0002',
+    )
+    expect(docketCaseForDate(new Date(2026, 6, 31), docketQueue)?.id).toBe(
+      'dd-0014',
+    )
+  })
+
+  it('keeps a past sitting stable when later cases are added', () => {
+    const playDate = new Date(2026, 6, 3)
+    const queueAsOfDate = docketQueue.filter(
+      (c) => c.publish_date <= '2026-07-03',
+    )
+
+    expect(docketCaseForDate(playDate, queueAsOfDate)?.id).toBe('dd-0002')
+    expect(docketCaseForDate(playDate, docketQueue)?.id).toBe('dd-0002')
   })
 
   it('lists each published sitting through the selected local date', () => {
