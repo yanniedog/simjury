@@ -169,6 +169,7 @@ export function makeJurors(): Juror[] {
 }
 
 export function makeDocketCase(overrides: Partial<DocketCase> = {}): DocketCase {
+  const beats = overrides.beats ?? makeBeats()
   return {
     id: 'dd-0001',
     publish_date: '2026-08-01',
@@ -195,8 +196,8 @@ export function makeDocketCase(overrides: Partial<DocketCase> = {}): DocketCase 
     },
     epilogue: prose(60),
     cast: makeCast(),
-    beats: makeBeats(),
-    checkins: ['b3', 'b6', 'b10'],
+    beats,
+    checkins: ['b3', 'b6', beats[beats.length - 1].id],
     verdict_truth: 'Not Guilty',
     twist: 'the loud evidence was hollow; the quiet exhibit was the answer',
     difficulty_target: 0.5,
