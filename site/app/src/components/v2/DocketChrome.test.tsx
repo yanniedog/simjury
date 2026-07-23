@@ -29,6 +29,6 @@ describe('DocketShell', () => {
     expect(markup).toContain('Case briefing')
     expect(markup).toContain('aria-current="step"')
     expect(markup).toContain('Juror')
-    expect(markup).toContain('Narration streams approved case lines via Cloudflare Workers AI')
+    expect(markup).toContain('Your progress and narration stay on this device')
   })
 })

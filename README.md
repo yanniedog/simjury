@@ -6,7 +6,22 @@ day with a deterministic interactive jury room, playable at
 historical Case 001 track remain in the repository but are parked; see
 [`DAILY-PIVOT.md`](DAILY-PIVOT.md).
 
-**Public site:** [simjury.com](https://simjury.com) (Cloudflare Worker `simjury-web` in `site/`).
+**Public site:** [simjury.com](https://simjury.com) (Cloudflare Static Assets project
+`simjury-web` in `site/`).
+
+## Static hosting and cost boundary
+
+Case JSON, art and application code are authored in this GitHub repository and bundled
+by GitHub Actions. Player progress and narration stay in browser storage/Web Speech.
+The Cloudflare deployment is assets-only: no Worker script, Workers AI, D1, KV, R2,
+Durable Objects, Queues, Analytics Engine, public `workers.dev` host, preview URLs, or
+observability. `site/scripts/assert-cloudflare-static-only.mjs` blocks those services
+from being added accidentally.
+
+Cloudflare Static Assets cannot perform a domain-level redirect. An account owner must
+keep a zone Redirect Rule from `www.simjury.com/*` to the same path and query on
+`https://simjury.com`. Until that rule is confirmed, both custom domains serve the same
+static site so `www` does not fail.
 
 ## Daily Docket quick start
 

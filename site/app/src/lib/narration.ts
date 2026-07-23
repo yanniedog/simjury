@@ -1,4 +1,4 @@
-/** Neural narration with a same-origin, corpus-whitelisted Web Speech fallback. */
+/** Free, device-local narration through the browser Web Speech API. */
 export interface VoiceParams {
   voiceIndex: number
   pitch: number
@@ -18,12 +18,6 @@ function hash(value: string): number {
   let h = 0x811c9dc5
   for (let i = 0; i < value.length; i++) h = Math.imul(h ^ value.charCodeAt(i), 0x01000193)
   return h >>> 0
-}
-
-/** Must stay byte-for-byte compatible with generate-narration-manifest.mjs. */
-export function narrationIdFor(text: string, key: string): string {
-  const slug = key.toLowerCase().replace(/[^a-z0-9-]/g, '-')
-  return `${slug}-${hash(`${key}\0${text}`).toString(16).padStart(8, '0')}`
 }
 
 export function voiceParamsFor(key: string, voiceCount: number): VoiceParams {
@@ -88,7 +82,7 @@ function refreshVoices(): void {
 }
 
 export function narrationSupported(): boolean {
-  return typeof Audio !== 'undefined' || synth() !== null
+  return synth() !== null
 }
 
 let memoryEnabled = false
@@ -135,20 +129,10 @@ export function setNarrationRate(value: unknown): NarrationRate {
 }
 
 let activeId = 0
-let activeAudio: HTMLAudioElement | null = null
 
 type FallbackSequence = { keys: string[]; index: number }
 
 function cancelCurrent(): void {
-  if (activeAudio) {
-    activeAudio.onended = null
-    activeAudio.onerror = null
-    activeAudio.onplay = null
-    activeAudio.pause()
-    activeAudio.removeAttribute('src')
-    activeAudio.load()
-    activeAudio = null
-  }
   synth()?.cancel()
 }
 
@@ -196,7 +180,7 @@ function speakFallback(
   }
 }
 
-/** Play neural audio first; fall back to device speech if loading/playback fails. */
+/** Speak authored text locally; no case text or player data leaves the device. */
 export function speak(
   text: string,
   key: string,
@@ -211,38 +195,7 @@ export function speak(
   }
   cancelCurrent()
   const myId = ++activeId
-  if (typeof Audio === 'undefined') {
-    speakFallback(text, key, myId, done, playbackRate, onError, sequence)
-    return
-  }
-
-  let fellBack = false
-  const fallback = () => {
-    if (fellBack || activeId !== myId) return
-    fellBack = true
-    activeAudio = null
-    speakFallback(text, key, myId, done, playbackRate, onError, sequence)
-  }
-  try {
-    const audio = new Audio(`/api/narration/${narrationIdFor(text, key)}.mp3`)
-    activeAudio = audio
-    audio.preload = 'auto'
-    audio.playbackRate = playbackRate
-    // iOS Safari can ignore or reset playbackRate until playback starts.
-    audio.onplay = () => {
-      audio.playbackRate = playbackRate
-    }
-    audio.onended = () => {
-      if (activeId === myId) {
-        activeAudio = null
-        done?.()
-      }
-    }
-    audio.onerror = fallback
-    void audio.play().catch(fallback)
-  } catch {
-    fallback()
-  }
+  speakFallback(text, key, myId, done, playbackRate, onError, sequence)
 }
 
 export function speakAll(
