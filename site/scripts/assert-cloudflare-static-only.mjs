@@ -28,6 +28,9 @@ const forbiddenBindings = [
 const failures = []
 
 if ('main' in config) failures.push('Worker main script is forbidden')
+if ('route' in config || 'routes' in config) {
+  failures.push('Deploy-time route mutation is forbidden; custom domains are operator-owned')
+}
 for (const key of forbiddenBindings) {
   if (key in config) failures.push(`Cloudflare binding is forbidden: ${key}`)
 }

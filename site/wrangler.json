@@ -9,10 +9,6 @@
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   },
-  "routes": [
-    { "pattern": "simjury.com", "custom_domain": true },
-    { "pattern": "www.simjury.com", "custom_domain": true }
-  ],
   "observability": {
     "enabled": false
   }
