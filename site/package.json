@@ -13,7 +13,7 @@
     "narration:manifest": "node scripts/generate-narration-manifest.mjs",
     "prebuild:assets": "node scripts/sync-cases.mjs && npm run narration:manifest",
     "build:assets": "npm run build:app",
-    "predev": "npm run build:assets",
+    "predev": "npm run install:app && npm run build:assets",
     "dev": "wrangler dev",
     "predeploy": "npm run install:app && npm run build:assets",
     "deploy": "wrangler deploy",
