@@ -314,6 +314,16 @@ function DocketApp({
     setPhase('reveal')
   }
 
+  function chooseAnotherSitting() {
+    const archive = document.querySelector<HTMLDetailsElement>('.docket-archive')
+    if (!archive) return
+    archive.open = true
+    requestAnimationFrame(() => {
+      document.getElementById('docket-sitting')?.focus()
+      archive.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
+  }
+
   return (
     <DocketShell
       phase={phase}
@@ -401,6 +411,7 @@ function DocketApp({
           room={room}
           dayNumber={dayNumber}
           stats={revealStats}
+          onChooseAnother={chooseAnotherSitting}
         />
       )}
     </DocketShell>
