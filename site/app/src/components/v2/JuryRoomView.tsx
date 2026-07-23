@@ -162,6 +162,7 @@ export function JuryRoomView({
   const [outcome, setOutcome] = useState<Outcome | null>(null)
   const [activeJurorId, setActiveJurorId] = useState<string | null>(null)
   const transcriptRef = useRef<HTMLUListElement>(null)
+  const followTranscriptRef = useRef(true)
 
   // Rate/toggle changes cancel speech in App; clear its visual state here too.
   // The cleanup also prevents narration overlapping the reveal on unmount.
@@ -189,7 +190,9 @@ export function JuryRoomView({
   const logLength = state.log.length
   useEffect(() => {
     const transcript = transcriptRef.current
-    if (transcript) transcript.scrollTop = transcript.scrollHeight
+    if (transcript && followTranscriptRef.current) {
+      transcript.scrollTop = transcript.scrollHeight
+    }
   }, [logLength])
 
   function act(action: PlayerAction) {
@@ -246,6 +249,11 @@ export function JuryRoomView({
         ref={transcriptRef}
         aria-label="Jury room transcript"
         aria-live="polite"
+        onScroll={(event) => {
+          const transcript = event.currentTarget
+          followTranscriptRef.current =
+            transcript.scrollTop + transcript.clientHeight >= transcript.scrollHeight - 40
+        }}
         className="room-transcript max-h-80 space-y-2 overflow-y-auto"
       >
         {state.log.map((e, i) => (
