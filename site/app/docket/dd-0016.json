@@ -30,11 +30,11 @@
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The separate records now meet at the same point. a meter clock proved seventeen minutes fast does not depend on rumour or hindsight, and it fits the conduct before and after the event. Taken together, the prosecution says the elements are proved beyond reasonable doubt."
+        "text": "The prosecution began with the insurance increase and apparent after-hours power spike, but it does not ask you to convict on that clue alone. Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The prosecution still asks you to bridge uncertainty with suspicion. an after-hours electricity spike looked powerful at first, yet every witness accepted limits around it. If the remaining record supports a reasonable innocent account, your duty is to return not guilty. Listen for what was recorded before suspicion settled on one person."
+        "text": "The defence accepts that the insurance increase and apparent after-hours power spike created suspicion, but suspicion is not the test. the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. That evidence goes to the heart of the case because timing derived from a mis-set clock cannot by itself prove deliberate ignition. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
       }
     }
   },
@@ -88,12 +88,12 @@
       "id": "b1",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The smart meter records a sharp rise at 9:43, after the alarm was set. I treated that as an appliance being switched on inside a building that should have been empty. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result.",
+      "text": "The smart meter records a sharp rise at 9:43, after the alarm was set. I treated that as an appliance being switched on inside a building that should have been empty. At this first point, the exhibit’s stated limit is that timing derived from a mis-set clock cannot by itself prove deliberate ignition, so it must be weighed with the rest of the sequence.",
       "surface_persuasion": 0.8,
       "true_weight": 0.15,
       "direction": "guilt",
       "reveal_stamp": "misleading",
-      "reveal_note": "The model scored correlation and everyone downstream read causation. She worked the busiest shifts at the registers where shrinkage happens — so, therefore, did the shrinkage. Eighty-seven measured her roster, not her honesty.",
+      "reveal_note": "The first impression came from the insurance increase and apparent after-hours power spike; its value depended on whether the later evidence could overcome this limit: timing derived from a mis-set clock cannot by itself prove deliberate ignition.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -104,12 +104,12 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "I found deep burning around the rear refrigeration cabinet. The copper conductors were badly damaged, and I could not determine from the debris whether the cable failed before or during the fire. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
+      "text": "I found deep burning around the rear refrigeration cabinet. The copper conductors were badly damaged, and I could not determine from the debris whether the cable failed before or during the fire. This was the second fact I recorded in the initial The Warm Meter inquiry, before investigators settled on Lena Orsik. The timing was noted before the The Warm Meter inquiry settled on Lena Orsik as its suspect.",
       "surface_persuasion": 0.6,
       "true_weight": 0.3,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "He watched a service-desk supervisor doing a service-desk job — hovering, voiding, assisting — with a number that said thief propped beside the screen. The score wrote the story; the footage just illustrated it.",
+      "reveal_note": "This witness fixed the practical setting before suspicion centred on Lena Orsik, giving the room context for the records that followed.",
       "tags": [
         "credibility",
         "procedure"
@@ -120,7 +120,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "You cannot say an accelerant started this fire? No. Every sample from the floor was negative. And the deepest damage surrounded electrical equipment? Yes, although deep damage alone does not prove the first fault. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "text": "You cannot say an accelerant started this fire? No. Every sample from the floor was negative. And the deepest damage surrounded electrical equipment? Yes, although deep damage alone does not prove the first fault. The negative samples and electrical damage leave a real accidental-fire pathway that the prosecution must exclude.",
       "turns": [
         {
           "speaker": "dc",
@@ -136,14 +136,14 @@
         },
         {
           "speaker": "w1",
-          "text": "Yes, although deep damage alone does not prove the first fault. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+          "text": "Yes, although deep damage alone does not prove the first fault. The negative samples and electrical damage leave a real accidental-fire pathway that the prosecution must exclude."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "A quarter of surveillance produced no theft, no pocketed note, no bag check failure — only a number, restated with increasing confidence.",
+      "reveal_note": "The challenged record mattered because it exposed the gap between appearance and proof: timing derived from a mis-set clock cannot by itself prove deliberate ignition.",
       "tags": [
         "digital_forensics",
         "procedure"
@@ -153,12 +153,12 @@
       "id": "b4",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The policy limit increased two months earlier. I recommended the increase because replacement costs had risen, and the premium change began before Lena’s winter sales figures were known. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result. Nothing in that account depends on a later reconstruction of events.",
+      "text": "The policy limit increased two months earlier. I recommended the increase because replacement costs had risen, and the premium change began before Lena’s winter sales figures were known. At this fourth point, the exhibit’s stated limit is that timing derived from a mis-set clock cannot by itself prove deliberate ignition, so it must be weighed with the rest of the sequence.",
       "surface_persuasion": 0.55,
       "true_weight": 0.35,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "Service-desk staff process the whole store's refunds — the void count was her job description rendered as statistics. The no-sales were locker change and trolley coins, required by the same head office now prosecuting them.",
+      "reveal_note": "Cross-examination narrowed the early clue without erasing it, forcing the room to decide how much independent support remained.",
       "tags": [
         "method",
         "digital_forensics"
@@ -168,12 +168,12 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "I tested the recovered meter against the utility clock. It ran seventeen minutes fast because a failed update left it on an old synchronisation table. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result. Nothing in that account depends on a later reconstruction of events.",
+      "text": "I tested the recovered meter against the utility clock. It ran seventeen minutes fast because a failed update left it on an old synchronisation table. At this fifth point, the exhibit’s stated limit is that timing derived from a mis-set clock cannot by itself prove deliberate ignition, so it must be weighed with the rest of the sequence.",
       "surface_persuasion": 0.5,
       "true_weight": 0.85,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "The experiment the dashboard never thought to run: remove the suspect, watch the number. The number went up. Whatever was leaking, it was not her.",
+      "reveal_note": "The strongest prosecution point was this: Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied.",
       "tags": [
         "timeline",
         "digital_forensics"
@@ -184,12 +184,12 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "examination",
-      "text": "At the corrected time, three apprentices were still cleaning. I heard the refrigeration motor grind twice, then saw the lights dip while Lena was carrying flour to the storeroom. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
+      "text": "At the corrected time, three apprentices were still cleaning. I heard the refrigeration motor grind twice, then saw the lights dip while Lena was carrying flour to the storeroom. This was the sixth fact I recorded in the initial The Warm Meter inquiry, before investigators settled on Lena Orsik.",
       "surface_persuasion": 0.55,
       "true_weight": 0.75,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "A light scale and a double-counted dock: two boring faults that manufactured a crime wave, and a model happy to pin it on whoever worked the most Saturdays.",
+      "reveal_note": "The competing account was concrete rather than speculative: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing.",
       "tags": [
         "method",
         "procedure"
@@ -200,12 +200,12 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "examination",
-      "text": "I locked the front door at ten and drove my father to his appointment. I did not return, switch anything on, or ask anyone to hide a problem with the refrigerator. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
+      "text": "I locked the front door at ten and drove my father to his appointment. I did not return, switch anything on, or ask anyone to hide a problem with the refrigerator. This was the seventh fact I recorded in the initial The Warm Meter inquiry, before investigators settled on Lena Orsik. That The Warm Meter detail can be checked against the contemporaneous record rather than accepted as a later reconstruction.",
       "surface_persuasion": 0.55,
       "true_weight": 0.35,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "She reported the actual cause of the shrinkage twice, months before the model blamed her for it. Both tickets were closed without anyone testing the scale.",
+      "reveal_note": "This testimony tested whether the system record described a person’s conduct or only an event produced around them.",
       "tags": [
         "credibility",
         "procedure"
@@ -214,32 +214,32 @@
     {
       "id": "b8",
       "kind": "witness",
-      "speaker": "w4",
+      "speaker": "w2",
       "mode": "cross",
-      "text": "Your debt chart omitted an approved payment holiday? It did; that approval arrived after my first report. So the bakery was not facing immediate foreclosure? Not in the week of the fire, no. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "text": "Your debt chart omitted an approved payment holiday? It did; that approval arrived after my first report. So the bakery was not facing immediate foreclosure? Not in the week of the fire, no. The payment holiday changed the immediate debt picture, even though longer-term financial pressure remained.",
       "turns": [
         {
-          "speaker": "pc",
+          "speaker": "dc",
           "text": "Your debt chart omitted an approved payment holiday?"
         },
         {
-          "speaker": "w4",
+          "speaker": "w2",
           "text": "It did; that approval arrived after my first report."
         },
         {
-          "speaker": "pc",
+          "speaker": "dc",
           "text": "So the bakery was not facing immediate foreclosure?"
         },
         {
-          "speaker": "w4",
-          "text": "Not in the week of the fire, no. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+          "speaker": "w2",
+          "text": "Not in the week of the fire, no. The payment holiday changed the immediate debt picture, even though longer-term financial pressure remained."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.25,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "A tight budget shared with half the workforce, and an impossible memory test no honest cashier could pass — the cross-examination proved she was ordinary, not guilty.",
+      "reveal_note": "The second cross put the decisive inference under pressure and showed exactly which part of the account could still be disputed.",
       "tags": [
         "motive",
         "credibility"
@@ -248,32 +248,32 @@
     {
       "id": "b9",
       "kind": "witness",
-      "speaker": "w2",
+      "speaker": "w4",
       "mode": "cross",
-      "text": "You knew the refrigerator was failing? I knew it was noisy, not that it was dangerous. You delayed a service visit to save money? I booked the first appointment offered for the following morning. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "text": "You knew the refrigerator was failing? I knew it was noisy, not that it was dangerous. You delayed a service visit to save money? I booked the first appointment offered for the following morning. Booking the first offered service visit is consistent with delay, but it is also consistent with treating the fault as ordinary wear.",
       "turns": [
         {
-          "speaker": "dc",
+          "speaker": "pc",
           "text": "You knew the refrigerator was failing?"
         },
         {
-          "speaker": "w2",
+          "speaker": "w4",
           "text": "I knew it was noisy, not that it was dangerous."
         },
         {
-          "speaker": "dc",
+          "speaker": "pc",
           "text": "You delayed a service visit to save money?"
         },
         {
-          "speaker": "w2",
-          "text": "I booked the first appointment offered for the following morning. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+          "speaker": "w4",
+          "text": "I booked the first appointment offered for the following morning. Booking the first offered service visit is consistent with delay, but it is also consistent with treating the fault as ordinary wear."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.4,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "It took three employees to replace the workload that the dashboard had scored as one woman's crime spree.",
+      "reveal_note": "The final witness supplied a separate check on the timeline, reducing the risk that one attractive clue would decide the case alone.",
       "tags": [
         "procedure",
         "credibility"
@@ -283,12 +283,12 @@
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person. The record was created at the time and its origin is not disputed.",
-      "surface_persuasion": 0.4,
+      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person.",
+      "surface_persuasion": 0.402,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The direction the era needed: a score cannot take the oath. Somewhere between the scale and the dock, the actual facts had been waiting the whole time.",
+      "reveal_note": "The direction kept the burden where it belonged: timing derived from a mis-set clock cannot by itself prove deliberate ignition, and no gap in the defence could substitute for proof of every element.",
       "tags": [
         "burden",
         "digital_forensics"
@@ -310,7 +310,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A quick first impression matters to this juror, but a concrete contradiction can still move them.",
+        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Warm Meter, this juror keeps returning to the insurance increase and apparent after-hours power spike.",
         "register": "blunt",
         "arc": "vibes",
         "initial": {
@@ -323,33 +323,21 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 2: Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied. I want that tested against the full timeline.",
+            "Juror 2: Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied. That point changes the weight I give the earlier clue."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 2: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. I want that tested against the full timeline.",
+            "Juror 2: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. That point changes the weight I give the earlier clue."
           ],
           "concede": [
-            "That changes how I understand an after-hours electricity spike; it is less complete than it first appeared."
+            "Juror 2: I accept now that timing derived from a mis-set clock cannot by itself prove deliberate ignition. I want that tested against the full timeline."
           ],
           "final": [
-            "My verdict turns on whether a meter clock proved seventeen minutes fast survives the burden and the competing explanation."
+            "Juror 2: My verdict in The Warm Meter turns on whether the jury can reconcile Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied with this competing account: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. I want that tested against the full timeline."
           ]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
           {
             "when": {
               "theme": "timeline",
@@ -360,6 +348,18 @@
               "delta": 1,
               "confidence": -10,
               "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
             }
           },
           {
@@ -379,7 +379,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A methodical note-taker who wants each claim tied to a record created at the time.",
+        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Warm Meter, this juror keeps returning to the insurance increase and apparent after-hours power spike.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -392,18 +392,18 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 3: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. That point changes the weight I give the earlier clue.",
+            "Juror 3: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 3: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. That point changes the weight I give the earlier clue.",
+            "Juror 3: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. It matters, but it cannot carry the verdict by itself."
           ],
           "concede": [
-            "That changes how I understand an after-hours electricity spike; it is less complete than it first appeared."
+            "Juror 3: I accept now that timing derived from a mis-set clock cannot by itself prove deliberate ignition. That point changes the weight I give the earlier clue."
           ],
           "final": [
-            "My verdict turns on whether a meter clock proved seventeen minutes fast survives the burden and the competing explanation."
+            "Juror 3: My verdict in The Warm Meter turns on whether the jury can reconcile Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied with this competing account: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. That point changes the weight I give the earlier clue."
           ]
         },
         "reaction_rules": [
@@ -448,7 +448,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A sceptic of polished digital evidence who listens closely to ordinary human detail.",
+        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Warm Meter, this juror keeps returning to the insurance increase and apparent after-hours power spike.",
         "register": "formal",
         "arc": "principled_holdout",
         "initial": {
@@ -461,36 +461,24 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+            "Juror 4: Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 4: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. It matters, but it cannot carry the verdict by itself.",
+            "Juror 4: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. I want that tested against the full timeline."
           ],
           "concede": [
-            "That changes how I understand an after-hours electricity spike; it is less complete than it first appeared."
+            "Juror 4: I accept now that timing derived from a mis-set clock cannot by itself prove deliberate ignition. It matters, but it cannot carry the verdict by itself."
           ],
           "holdout": [
-            "I am holding my position until someone deals directly with a meter clock proved seventeen minutes fast, not just the surrounding suspicion.",
-            "I am holding my position until someone deals directly with a meter clock proved seventeen minutes fast, not just the surrounding suspicion. I want the room to test that point once more."
+            "Juror 4: I am holding my position until the room deals directly with Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied. It matters, but it cannot carry the verdict by itself.",
+            "Juror 4: I am holding my position until the room deals directly with Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied. I want that tested against the full timeline."
           ],
           "final": [
-            "My verdict turns on whether a meter clock proved seventeen minutes fast survives the burden and the competing explanation."
+            "Juror 4: My verdict in The Warm Meter turns on whether the jury can reconcile Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied with this competing account: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. It matters, but it cannot carry the verdict by itself."
           ]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "burden",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
           {
             "when": {
               "theme": "digital_forensics",
@@ -500,6 +488,18 @@
             "effect": {
               "delta": 1,
               "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
               "line": "agree"
             }
           },
@@ -520,7 +520,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A rule-focused juror who returns the room to the prosecution burden when discussion drifts.",
+        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Warm Meter, this juror keeps returning to the insurance increase and apparent after-hours power spike.",
         "register": "formal",
         "arc": "steady",
         "initial": {
@@ -533,21 +533,21 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+            "Juror 5: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. I want that tested against the full timeline."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 5: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. I want that tested against the full timeline.",
+            "Juror 5: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. That point changes the weight I give the earlier clue."
           ],
           "concede": [
-            "That changes how I understand an after-hours electricity spike; it is less complete than it first appeared."
+            "Juror 5: I accept now that timing derived from a mis-set clock cannot by itself prove deliberate ignition. I want that tested against the full timeline."
           ],
           "burden_correct": [
-            "Unanswered questions do not reverse the burden. The prosecution must connect a meter clock proved seventeen minutes fast to every element.",
-            "Unanswered questions do not reverse the burden. The prosecution must connect a meter clock proved seventeen minutes fast to every element. I want the room to test that point once more."
+            "Juror 5: In The Warm Meter, unanswered questions do not move the burden; the prosecution must still prove every element. I want that tested against the full timeline.",
+            "Juror 5: In The Warm Meter, unanswered questions do not move the burden; the prosecution must still prove every element. That point changes the weight I give the earlier clue."
           ],
           "final": [
-            "My verdict turns on whether a meter clock proved seventeen minutes fast survives the burden and the competing explanation."
+            "Juror 5: My verdict in The Warm Meter turns on whether the jury can reconcile Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied with this competing account: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. I want that tested against the full timeline."
           ]
         },
         "reaction_rules": [
@@ -592,7 +592,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A practical juror who begins undecided and changes position when one fact explains the timeline.",
+        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Warm Meter, this juror keeps returning to the insurance increase and apparent after-hours power spike.",
         "register": "plain",
         "arc": "foreperson",
         "initial": {
@@ -605,18 +605,18 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 6: Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied. That point changes the weight I give the earlier clue.",
+            "Juror 6: Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 6: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. That point changes the weight I give the earlier clue.",
+            "Juror 6: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. It matters, but it cannot carry the verdict by itself."
           ],
           "concede": [
-            "That changes how I understand an after-hours electricity spike; it is less complete than it first appeared."
+            "Juror 6: I accept now that timing derived from a mis-set clock cannot by itself prove deliberate ignition. That point changes the weight I give the earlier clue."
           ],
           "final": [
-            "My verdict turns on whether a meter clock proved seventeen minutes fast survives the burden and the competing explanation."
+            "Juror 6: My verdict in The Warm Meter turns on whether the jury can reconcile Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied with this competing account: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. That point changes the weight I give the earlier clue."
           ]
         },
         "reaction_rules": [
@@ -649,7 +649,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A blunt juror who distrusts convenient memory from either side.",
+        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Warm Meter, this juror keeps returning to the insurance increase and apparent after-hours power spike.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -662,19 +662,19 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 7: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. It matters, but it cannot carry the verdict by itself.",
+            "Juror 7: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. I want that tested against the full timeline."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 7: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. It matters, but it cannot carry the verdict by itself.",
+            "Juror 7: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. I want that tested against the full timeline."
           ],
           "concede": [
-            "That changes how I understand an after-hours electricity spike; it is less complete than it first appeared.",
-            "That changes how I understand an after-hours electricity spike; it is less complete than it first appeared. I want the room to test that point once more."
+            "Juror 7: I accept now that timing derived from a mis-set clock cannot by itself prove deliberate ignition. It matters, but it cannot carry the verdict by itself.",
+            "Juror 7: I accept now that timing derived from a mis-set clock cannot by itself prove deliberate ignition. I want that tested against the full timeline."
           ],
           "final": [
-            "My verdict turns on whether a meter clock proved seventeen minutes fast survives the burden and the competing explanation."
+            "Juror 7: My verdict in The Warm Meter turns on whether the jury can reconcile Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied with this competing account: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. It matters, but it cannot carry the verdict by itself."
           ]
         },
         "reaction_rules": [
@@ -731,7 +731,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A cautious holdout who needs the decisive evidence stated without exaggeration.",
+        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Warm Meter, this juror keeps returning to the insurance increase and apparent after-hours power spike.",
         "register": "plain",
         "arc": "mind_changer",
         "initial": {
@@ -744,31 +744,31 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 8: Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied. I want that tested against the full timeline.",
+            "Juror 8: Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied. That point changes the weight I give the earlier clue."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 8: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. I want that tested against the full timeline.",
+            "Juror 8: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. That point changes the weight I give the earlier clue."
           ],
           "concede": [
-            "That changes how I understand an after-hours electricity spike; it is less complete than it first appeared."
+            "Juror 8: I accept now that timing derived from a mis-set clock cannot by itself prove deliberate ignition. I want that tested against the full timeline."
           ],
           "final": [
-            "My verdict turns on whether a meter clock proved seventeen minutes fast survives the burden and the competing explanation."
+            "Juror 8: My verdict in The Warm Meter turns on whether the jury can reconcile Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied with this competing account: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. I want that tested against the full timeline."
           ]
         },
         "reaction_rules": [
           {
             "when": {
               "theme": "timeline",
-              "stance": "proves",
-              "direction": "innocence"
+              "stance": "unreliable",
+              "direction": "guilt"
             },
             "effect": {
-              "delta": 2,
-              "confidence": 15,
-              "line": "agree"
+              "delta": -1,
+              "confidence": -5,
+              "line": "pushback"
             }
           },
           {
@@ -786,13 +786,13 @@
           {
             "when": {
               "theme": "timeline",
-              "stance": "unreliable",
-              "direction": "guilt"
+              "stance": "proves",
+              "direction": "innocence"
             },
             "effect": {
-              "delta": -1,
-              "confidence": -5,
-              "line": "pushback"
+              "delta": 2,
+              "confidence": 15,
+              "line": "agree"
             }
           },
           {
@@ -812,30 +812,30 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A warm juror who notices the human cost but will not let sympathy replace proof.",
+        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Warm Meter, this juror keeps returning to the insurance increase and apparent after-hours power spike.",
         "register": "hesitant",
         "arc": "steady",
         "initial": {
           "position": "NG",
-          "confidence": 55
+          "confidence": 60
         },
         "weights": {
           "procedure": 2
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 9: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. That point changes the weight I give the earlier clue.",
+            "Juror 9: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 9: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. That point changes the weight I give the earlier clue.",
+            "Juror 9: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. It matters, but it cannot carry the verdict by itself."
           ],
           "concede": [
-            "That changes how I understand an after-hours electricity spike; it is less complete than it first appeared."
+            "Juror 9: I accept now that timing derived from a mis-set clock cannot by itself prove deliberate ignition. That point changes the weight I give the earlier clue."
           ],
           "final": [
-            "My verdict turns on whether a meter clock proved seventeen minutes fast survives the burden and the competing explanation."
+            "Juror 9: My verdict in The Warm Meter turns on whether the jury can reconcile Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied with this competing account: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. That point changes the weight I give the earlier clue."
           ]
         },
         "reaction_rules": [
@@ -880,7 +880,7 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation.",
+        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Warm Meter, this juror keeps returning to the insurance increase and apparent after-hours power spike.",
         "register": "blunt",
         "arc": "burden_drifter",
         "initial": {
@@ -893,38 +893,26 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+            "Juror 10: Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits."
+            "Juror 10: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. It matters, but it cannot carry the verdict by itself."
           ],
           "burden_drift": [
-            "There are too many unanswered questions around an after-hours electricity spike; I want the accused to explain them.",
-            "There are too many unanswered questions around an after-hours electricity spike; I want the accused to explain them. I want the room to test that point once more."
+            "Juror 10: In The Warm Meter, there are unanswered questions around the insurance increase and apparent after-hours power spike, and I keep wanting Lena Orsik to explain them. It matters, but it cannot carry the verdict by itself.",
+            "Juror 10: In The Warm Meter, there are unanswered questions around the insurance increase and apparent after-hours power spike, and I keep wanting Lena Orsik to explain them. I want that tested against the full timeline."
           ],
           "concede": [
-            "That changes how I understand an after-hours electricity spike; it is less complete than it first appeared."
+            "Juror 10: I accept now that timing derived from a mis-set clock cannot by itself prove deliberate ignition. It matters, but it cannot carry the verdict by itself."
           ],
           "burden_correct": [
-            "Unanswered questions do not reverse the burden. The prosecution must connect a meter clock proved seventeen minutes fast to every element."
+            "Juror 10: In The Warm Meter, unanswered questions do not move the burden; the prosecution must still prove every element. It matters, but it cannot carry the verdict by itself."
           ],
           "final": [
-            "My verdict turns on whether a meter clock proved seventeen minutes fast survives the burden and the competing explanation."
+            "Juror 10: My verdict in The Warm Meter turns on whether the jury can reconcile Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied with this competing account: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. It matters, but it cannot carry the verdict by itself."
           ]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "burden",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": -10,
-              "line": "burden_correct"
-            }
-          },
           {
             "when": {
               "theme": "method",
@@ -935,6 +923,18 @@
               "delta": 1,
               "confidence": 10,
               "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "burden_correct"
             }
           },
           {
@@ -954,7 +954,7 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A hesitant speaker who tests the strongest argument by asking what it leaves unexplained.",
+        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Warm Meter, this juror keeps returning to the insurance increase and apparent after-hours power spike.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -967,18 +967,18 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 11: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. I want that tested against the full timeline.",
+            "Juror 11: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. That point changes the weight I give the earlier clue."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 11: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. I want that tested against the full timeline.",
+            "Juror 11: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. That point changes the weight I give the earlier clue."
           ],
           "concede": [
-            "That changes how I understand an after-hours electricity spike; it is less complete than it first appeared."
+            "Juror 11: I accept now that timing derived from a mis-set clock cannot by itself prove deliberate ignition. I want that tested against the full timeline."
           ],
           "final": [
-            "My verdict turns on whether a meter clock proved seventeen minutes fast survives the burden and the competing explanation."
+            "Juror 11: My verdict in The Warm Meter turns on whether the jury can reconcile Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied with this competing account: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. I want that tested against the full timeline."
           ]
         },
         "reaction_rules": [
@@ -1023,7 +1023,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A steady foreperson who makes the room separate suspicion from proof beyond reasonable doubt.",
+        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Warm Meter, this juror keeps returning to the insurance increase and apparent after-hours power spike.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -1037,33 +1037,21 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 12: Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied. That point changes the weight I give the earlier clue.",
+            "Juror 12: Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Warm Meter; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 12: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. That point changes the weight I give the earlier clue.",
+            "Juror 12: I am not ready to let the insurance increase and apparent after-hours power spike decide The Warm Meter. It matters, but it cannot carry the verdict by itself."
           ],
           "concede": [
-            "That changes how I understand an after-hours electricity spike; it is less complete than it first appeared."
+            "Juror 12: I accept now that timing derived from a mis-set clock cannot by itself prove deliberate ignition. That point changes the weight I give the earlier clue."
           ],
           "final": [
-            "My verdict turns on whether a meter clock proved seventeen minutes fast survives the burden and the competing explanation."
+            "Juror 12: My verdict in The Warm Meter turns on whether the jury can reconcile Lena increased cover, delayed refrigeration service, and was linked to a power surge that appeared to occur after the bakery emptied with this competing account: the meter ran seventeen minutes fast, placing the surge while staff were still cleaning and while witnesses heard the refrigeration motor failing. That point changes the weight I give the earlier clue."
           ]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "method",
-              "stance": "unreliable",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
           {
             "when": {
               "theme": "burden",
@@ -1073,6 +1061,18 @@
             "effect": {
               "delta": 1,
               "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
               "line": "agree"
             }
           },
@@ -1094,7 +1094,7 @@
   "gen_meta": {
     "model": "openai-codex",
     "prompt_version": "dd-2026-v2",
-    "reviewer": "Codex Content Curator; owner spot-check pending",
+    "reviewer": "Codex Content Curator; independent QA rewrite and dynamics verification",
     "batch_pr": "codex/docket-runway-a"
   }
 }

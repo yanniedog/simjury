@@ -2,43 +2,43 @@
   "id": "dd-0017",
   "publish_date": "2026-07-18",
   "label": "fiction",
-  "title": "The Quiet Visit",
-  "setting": "A home-care theft trial in 2026, where biometric visit records seem impersonal until a deleted route cache restores the missing minutes.",
-  "charge": "Stealing cash and jewellery from people receiving home care",
+  "title": "The Falling Parcel",
+  "setting": "A delivery-drone injury trial in 2026, with an operator blamed for a route change made by a silent overnight map update.",
+  "charge": "Dangerously operating an autonomous delivery aircraft and causing serious injury",
   "elements": [
     "The accused performed or participated in the alleged act.",
     "The act was deliberate or dishonest rather than accidental.",
     "The prosecution has proved every required fact beyond reasonable doubt."
   ],
-  "hook": "Six clients remember kindness. Three also remember money vanishing after the same calm voice said goodnight.",
+  "hook": "A medicine parcel drops through a glass shelter. The control screen says the operator approved the path; his hands say he never saw it.",
   "accused": {
-    "cast_id": "w3",
-    "human": "Devra Noll is a patient carer who raised two children while working split shifts across the district.",
-    "if_guilty": "A conviction means prison, professional disqualification, and losing the vocation on which her identity and family rely."
+    "cast_id": "w4",
+    "human": "Pavel Senn trains rescue volunteers and took the fleet job after a factory closure.",
+    "if_guilty": "A conviction means prison, permanent loss of aviation work, and the collapse of the retraining plan supporting his household."
   },
   "statements": {
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution says the accused returned alone after scheduled care visits, used knowledge of hiding places, and sold distinctive jewellery through a cash broker. The apparent centre of the case is biometric visit records placing the accused inside, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+        "text": "The prosecution says the accused approved a low route through a crowded street and ignored two weather alerts to protect delivery targets. The apparent centre of the case is an approval bearing the accused’s operator ID, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence says the care system duplicated visits, relatives had access, and an overworked carer’s route data was treated as proof of theft. Suspicion gathered around a person before investigators tested the limits of biometric visit records placing the accused inside; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+        "text": "The defence says the interface carried forward an old approval while a map update moved the route beneath a wind channel the operator could not see. Suspicion gathered around a person before investigators tested the limits of an approval bearing the accused’s operator ID; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The separate records now meet at the same point. a deleted route cache showing unscheduled return visits does not depend on rumour or hindsight, and it fits the conduct before and after the event. Taken together, the prosecution says the elements are proved beyond reasonable doubt."
+        "text": "The prosecution began with the approval badge bearing Pavel’s operator ID, but it does not ask you to convict on that clue alone. Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The prosecution still asks you to bridge uncertainty with suspicion. biometric visit records placing the accused inside looked powerful at first, yet every witness accepted limits around it. If the remaining record supports a reasonable innocent account, your duty is to return not guilty."
+        "text": "The defence accepts that the approval badge bearing Pavel’s operator ID created suspicion, but suspicion is not the test. an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That evidence goes to the heart of the case because an inherited interface badge is not proof that the operator approved the updated geometry. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
       }
     }
   },
-  "epilogue": "The clients received compensation from the care agency and chose new workers together. Devra’s children attended sentencing and continued visiting her, while the agency stopped letting one worker make unlogged return visits without a second approval. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "epilogue": "The injured commuter completed rehabilitation and met Pavel after trial. The operator returned to training work, and the fleet grounded automatic map updates until every changed route required a fresh human acknowledgement. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
   "cast": [
     {
       "id": "judge",
@@ -60,44 +60,43 @@
     },
     {
       "id": "w1",
-      "name": "Olia Brand",
-      "role_label": "care-agency compliance manager",
+      "name": "Eris Dain",
+      "role_label": "fleet safety manager",
       "side": "prosecution"
     },
     {
       "id": "w2",
-      "name": "Perrin Shaw",
-      "role_label": "client’s adult child",
+      "name": "Jonel Park",
+      "role_label": "injured commuter",
       "side": "prosecution"
     },
     {
       "id": "w3",
-      "name": "Kest Marr",
-      "role_label": "mobile-device examiner",
+      "name": "Toma Vey",
+      "role_label": "interface reliability engineer",
       "side": "defence"
     },
     {
       "id": "w4",
-      "name": "Devra Noll",
-      "role_label": "the accused — community care worker",
+      "name": "Pavel Senn",
+      "role_label": "the accused — remote fleet operator",
       "side": "defence"
     }
   ],
   "beats": [
     {
       "id": "b1",
-      "kind": "witness",
-      "speaker": "w1",
-      "mode": "examination",
-      "text": "Our biometric system shows Devra completed each scheduled visit. It verifies a face at arrival, but it does not record what happens in the home or prevent a worker returning later. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
-      "surface_persuasion": 0.65,
-      "true_weight": 0.55,
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "The control record displays Pavel’s operator ID beside an approved route. Our first report assumed that badge meant he reviewed the same geometry flown on the accident morning. At this first point, the exhibit’s stated limit is that an inherited interface badge is not proof that the operator approved the updated geometry, so it must be weighed with the rest of the sequence.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.15,
       "direction": "guilt",
-      "reveal_stamp": "minor",
-      "reveal_note": "The fake tracking numbers were the tell the room kept circling back to: a supplier failing you does not require you to post decoy socks.",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The first impression came from the approval badge bearing Pavel’s operator ID; its value depended on whether the later evidence could overcome this limit: an inherited interface badge is not proof that the operator approved the updated geometry.",
       "tags": [
-        "method",
-        "digital_forensics"
+        "digital_forensics",
+        "identity"
       ]
     },
     {
@@ -105,175 +104,194 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "My mother kept an engraved bracelet behind folded towels. Devra helped her dress and knew the drawer, but my brother and I also had keys and visited that week. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
+      "text": "I was waiting under the shelter when the aircraft tilted, struck the frame, and released the parcel. I never saw the operator, only the machine approaching lower than usual. This was the second fact I recorded in the initial The Falling Parcel inquiry, before investigators settled on Pavel Senn. The timing was noted before the The Falling Parcel inquiry settled on Pavel Senn as its suspect.",
       "surface_persuasion": 0.6,
-      "true_weight": 0.4,
+      "true_weight": 0.3,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "One buyer's story, multiplied by two hundred and sixty-nine. The pattern was the crime; she was one data point of it who could cry.",
+      "reveal_note": "This witness fixed the practical setting before suspicion centred on Pavel Senn, giving the room context for the records that followed.",
       "tags": [
-        "method",
-        "credibility"
+        "credibility",
+        "procedure"
       ]
     },
     {
       "id": "b3",
-      "kind": "exhibit",
-      "speaker": "dc",
-      "text": "The work phone held an offline route cache marked for deletion. It recorded three extra stops at the clients’ homes after the official visits had already been closed. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result. Nothing in that account depends on a later reconstruction of events.",
-      "surface_persuasion": 0.8,
-      "true_weight": 0.2,
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "Your first report treated the approval badge as a fresh click? Yes, because that was how the interface was documented. You later learned the badge could survive a map update? Yes. The documentation did not describe that behaviour. The first report reasonably read the badge as current, but the undocumented carry-over behaviour weakened that inference.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "Your first report treated the approval badge as a fresh click?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes, because that was how the interface was documented."
+        },
+        {
+          "speaker": "dc",
+          "text": "You later learned the badge could survive a map update?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes. The documentation did not describe that behaviour. The first report reasonably read the badge as current, but the undocumented carry-over behaviour weakened that inference."
+        }
+      ],
+      "surface_persuasion": 0.5,
+      "true_weight": 0.5,
       "direction": "innocence",
-      "reveal_stamp": "misleading",
-      "reveal_note": "A convincing paper trail of victimhood — until the device forensics showed both sides of the conversation being typed on the same keyboard.",
+      "reveal_stamp": "minor",
+      "reveal_note": "The challenged record mattered because it exposed the gap between appearance and proof: an inherited interface badge is not proof that the operator approved the updated geometry.",
       "tags": [
-        "credibility",
-        "identity"
+        "digital_forensics",
+        "procedure"
       ]
     },
     {
       "id": "b4",
-      "kind": "witness",
-      "speaker": "w1",
-      "mode": "cross",
-      "text": "The face scan proves only the scheduled arrival? Yes. It does not prove a theft or even a later return. Relatives could enter each home? Yes, and each household had at least one family key. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
-      "turns": [
-        {
-          "speaker": "dc",
-          "text": "The face scan proves only the scheduled arrival?"
-        },
-        {
-          "speaker": "w1",
-          "text": "Yes. It does not prove a theft or even a later return."
-        },
-        {
-          "speaker": "dc",
-          "text": "Relatives could enter each home?"
-        },
-        {
-          "speaker": "w1",
-          "text": "Yes, and each household had at least one family key. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
-        }
-      ],
-      "surface_persuasion": 0.5,
-      "true_weight": 0.35,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "The early honest shipments were real — and standard. Exit scams buy their reviews first; the clean history was the runway, not the rebuttal.",
-      "tags": [
-        "credibility",
-        "method"
-      ]
-    },
-    {
-      "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The cache also records live syncing disabled before each return and enabled afterwards. I found no system fault that would invent those manual setting changes in the same sequence. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result.",
+      "text": "Two wind alerts reached the fleet dashboard. They covered the wider district, not this corridor, and neither alert required an automatic grounding under company policy. At this fourth point, the exhibit’s stated limit is that an inherited interface badge is not proof that the operator approved the updated geometry, so it must be weighed with the rest of the sequence.",
       "surface_persuasion": 0.55,
-      "true_weight": 0.9,
+      "true_weight": 0.35,
       "direction": "guilt",
-      "reveal_stamp": "decisive",
-      "reveal_note": "He was corresponding with himself and rehearsing the supplier's lines in advance. The middleman and the scammer shared a notes app.",
-      "tags": [
-        "digital_forensics",
-        "identity"
-      ]
-    },
-    {
-      "id": "b6",
-      "kind": "exhibit",
-      "speaker": "pc",
-      "text": "A cash broker’s intake photograph shows the engraved bracelet. The seller used Devra’s licence number, although the defence says a copied number does not identify the person at the counter. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result.",
-      "surface_persuasion": 0.5,
-      "true_weight": 0.75,
-      "direction": "guilt",
-      "reveal_stamp": "decisive",
-      "reveal_note": "A middleman's money flows through him to a supplier. This money flowed to a car lease. There was never anything upstream.",
+      "reveal_stamp": "minor",
+      "reveal_note": "Cross-examination narrowed the early clue without erasing it, forcing the room to decide how much independent support remained.",
       "tags": [
         "method",
         "digital_forensics"
       ]
     },
     {
-      "id": "b7",
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The map service updated at 3:06 and moved the route eighteen metres east. The interface retained yesterday’s approval badge and did not show the operator a changed-route banner. At this fifth point, the exhibit’s stated limit is that an inherited interface badge is not proof that the operator approved the updated geometry, so it must be weighed with the rest of the sequence.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.85,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The strongest prosecution point was this: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard.",
+      "tags": [
+        "timeline",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b6",
       "kind": "witness",
       "speaker": "w3",
       "mode": "examination",
-      "text": "I returned when clients called about missed tablets or doors. The schedule app punished extra time, so I sometimes went back without reopening a visit, but I stole nothing. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
-      "surface_persuasion": 0.6,
-      "true_weight": 0.3,
+      "text": "I replayed the operator screen from preserved event data. It showed a green approved path, while the aircraft received different coordinates from the updated map service. This was the sixth fact I recorded in the initial The Falling Parcel inquiry, before investigators settled on Pavel Senn.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.75,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The competing account was concrete rather than speculative: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning.",
+      "tags": [
+        "method",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "I checked the weather panel and saw no mandatory stop. I believed the route had already passed review, and nothing on my screen asked me to approve a new path. This was the seventh fact I recorded in the initial The Falling Parcel inquiry, before investigators settled on Pavel Senn. That The Falling Parcel detail can be checked against the contemporaneous record rather than accepted as a later reconstruction.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.35,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "'Buying time' was the confession wearing a coat: time was the one thing every exit scam needs, and the decoy parcels bought exactly four more weeks of orders.",
+      "reveal_note": "This testimony tested whether the system record described a person’s conduct or only an event produced around them.",
       "tags": [
         "credibility",
-        "motive"
+        "procedure"
       ]
     },
     {
       "id": "b8",
       "kind": "witness",
-      "speaker": "w3",
+      "speaker": "w2",
       "mode": "cross",
-      "text": "You disabled syncing before every disputed return? I disabled it when reception failed or the battery drained. And enabled it after leaving each street? That is what the recovered settings show, though I do not remember doing it. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "text": "You suffered a serious shoulder injury? Yes, and months of rehabilitation. But you cannot identify who approved a route? No. I can describe the aircraft and what happened beneath it. The injury proves the seriousness of the event, not what Pavel’s interface displayed before launch.",
       "turns": [
         {
-          "speaker": "pc",
-          "text": "You disabled syncing before every disputed return?"
+          "speaker": "dc",
+          "text": "You suffered a serious shoulder injury?"
         },
         {
-          "speaker": "w3",
-          "text": "I disabled it when reception failed or the battery drained."
+          "speaker": "w2",
+          "text": "Yes, and months of rehabilitation."
         },
         {
-          "speaker": "pc",
-          "text": "And enabled it after leaving each street?"
+          "speaker": "dc",
+          "text": "But you cannot identify who approved a route?"
         },
         {
-          "speaker": "w3",
-          "text": "That is what the recovered settings show, though I do not remember doing it. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+          "speaker": "w2",
+          "text": "No. I can describe the aircraft and what happened beneath it. The injury proves the seriousness of the event, not what Pavel’s interface displayed before launch."
         }
       ],
-      "surface_persuasion": 0.6,
-      "true_weight": 0.6,
+      "surface_persuasion": 0.5,
+      "true_weight": 0.25,
       "direction": "guilt",
-      "reveal_stamp": "decisive",
-      "reveal_note": "The third invisible stranger of the week: someone who used his details, on his phone, in his notes app, days ahead of schedule.",
+      "reveal_stamp": "minor",
+      "reveal_note": "The second cross put the decisive inference under pressure and showed exactly which part of the account could still be disputed.",
       "tags": [
-        "credibility",
-        "identity"
+        "motive",
+        "credibility"
       ]
     },
     {
       "id": "b9",
       "kind": "witness",
       "speaker": "w4",
-      "mode": "examination",
-      "text": "The broker’s camera was overwritten before police asked for it. I can prove the licence number and photograph of the bracelet, but not the face of whoever completed the sale. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
-      "surface_persuasion": 0.55,
-      "true_weight": 0.2,
+      "mode": "cross",
+      "text": "You had authority to ground the fleet anyway? I did, if the screen showed unsafe conditions. You never opened the raw coordinates? No operator normally did; the approved route display was meant to summarise them. Operators were entitled to rely on the approved-path summary unless the system exposed a reason to inspect raw coordinates.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "You had authority to ground the fleet anyway?"
+        },
+        {
+          "speaker": "w4",
+          "text": "I did, if the screen showed unsafe conditions."
+        },
+        {
+          "speaker": "pc",
+          "text": "You never opened the raw coordinates?"
+        },
+        {
+          "speaker": "w4",
+          "text": "No operator normally did; the approved route display was meant to summarise them. Operators were entitled to rely on the approved-path summary unless the system exposed a reason to inspect raw coordinates."
+        }
+      ],
+      "surface_persuasion": 0.5,
+      "true_weight": 0.4,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "Her grief was real and her evidence was secondhand: the distress she saw fits a scammer watching his exit close just as well as a victim watching his business die.",
+      "reveal_note": "The final witness supplied a separate check on the timeline, reducing the risk that one attractive clue would decide the case alone.",
       "tags": [
-        "credibility",
-        "motive"
+        "procedure",
+        "credibility"
       ]
     },
     {
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person. The record was created at the time and its origin is not disputed.",
-      "surface_persuasion": 0.4,
+      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person.",
+      "surface_persuasion": 0.404,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The direction gave his defence its full width — a real middleman scam would have acquitted him. The notes app took that defence away.",
+      "reveal_note": "The direction kept the burden where it belonged: an inherited interface badge is not proof that the operator approved the updated geometry, and no gap in the defence could substitute for proof of every element.",
       "tags": [
         "burden",
-        "credibility"
+        "digital_forensics"
       ]
     }
   ],
@@ -283,65 +301,65 @@
     "b8",
     "b9"
   ],
-  "verdict_truth": "Guilty",
-  "twist": "The ordinary biometric logs could have been duplicated by the care system. The recovered offline route cache showed three unscheduled return visits, each beginning after Devra had disabled live syncing and ending minutes before the losses were first noticed.",
-  "difficulty_target": 0.5,
+  "verdict_truth": "Not Guilty",
+  "twist": "Pavel’s ID did appear beside the dangerous route, but the approval belonged to the previous day. An overnight map update shifted the corridor while preserving the old approval badge and suppressing the normal changed-route warning.",
+  "difficulty_target": 0.58,
   "jury": {
     "jurors": [
       {
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A quick first impression matters to this juror, but a concrete contradiction can still move them.",
-        "register": "plain",
+        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+        "register": "blunt",
         "arc": "vibes",
         "initial": {
-          "position": "NG",
-          "confidence": 70
+          "position": "G",
+          "confidence": 80
         },
         "weights": {
-          "credibility": 2,
-          "motive": 1
+          "digital_forensics": 2,
+          "identity": 1
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 2: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. I want that tested against the full timeline.",
+            "Juror 2: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. That point changes the weight I give the earlier clue."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 2: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I want that tested against the full timeline.",
+            "Juror 2: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. That point changes the weight I give the earlier clue."
           ],
           "concede": [
-            "That changes how I understand biometric visit records placing the accused inside; it is less complete than it first appeared."
+            "Juror 2: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. I want that tested against the full timeline."
           ],
           "final": [
-            "My verdict turns on whether a deleted route cache showing unscheduled return visits survives the burden and the competing explanation."
+            "Juror 2: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I want that tested against the full timeline."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "credibility",
+              "theme": "timeline",
               "stance": "proves",
               "direction": "innocence"
             },
             "effect": {
               "delta": 1,
-              "confidence": 10,
-              "line": "agree"
+              "confidence": -10,
+              "line": "concede"
             }
           },
           {
             "when": {
-              "theme": "identity",
+              "theme": "digital_forensics",
               "stance": "proves",
               "direction": "guilt"
             },
             "effect": {
               "delta": 1,
-              "confidence": -10,
-              "line": "concede"
+              "confidence": 10,
+              "line": "agree"
             }
           },
           {
@@ -361,42 +379,42 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A methodical note-taker who wants each claim tied to a record created at the time.",
-        "register": "blunt",
+        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+        "register": "plain",
         "arc": "steady",
         "initial": {
-          "position": "G",
-          "confidence": 65
+          "position": "NG",
+          "confidence": 60
         },
         "weights": {
-          "method": 2,
-          "digital_forensics": 1
+          "digital_forensics": 2,
+          "timeline": 1
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 3: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That point changes the weight I give the earlier clue.",
+            "Juror 3: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 3: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. That point changes the weight I give the earlier clue.",
+            "Juror 3: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. It matters, but it cannot carry the verdict by itself."
           ],
           "concede": [
-            "That changes how I understand biometric visit records placing the accused inside; it is less complete than it first appeared."
+            "Juror 3: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. That point changes the weight I give the earlier clue."
           ],
           "final": [
-            "My verdict turns on whether a deleted route cache showing unscheduled return visits survives the burden and the competing explanation."
+            "Juror 3: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That point changes the weight I give the earlier clue."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "method",
+              "theme": "timeline",
               "stance": "proves",
-              "direction": "guilt"
+              "direction": "innocence"
             },
             "effect": {
-              "delta": 1,
+              "delta": 2,
               "confidence": 10,
               "line": "agree"
             }
@@ -404,8 +422,8 @@
           {
             "when": {
               "theme": "digital_forensics",
-              "stance": "proves",
-              "direction": "guilt"
+              "stance": "unreliable",
+              "direction": "innocence"
             },
             "effect": {
               "delta": 1,
@@ -430,37 +448,49 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A sceptic of polished digital evidence who listens closely to ordinary human detail.",
+        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
         "register": "formal",
         "arc": "principled_holdout",
         "initial": {
           "position": "NG",
-          "confidence": 70
+          "confidence": 80
         },
         "weights": {
           "burden": 2,
-          "credibility": 1
+          "digital_forensics": 1
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+            "Juror 4: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 4: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. It matters, but it cannot carry the verdict by itself.",
+            "Juror 4: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I want that tested against the full timeline."
           ],
           "concede": [
-            "That changes how I understand biometric visit records placing the accused inside; it is less complete than it first appeared."
+            "Juror 4: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. It matters, but it cannot carry the verdict by itself."
           ],
           "holdout": [
-            "I am holding my position until someone deals directly with a deleted route cache showing unscheduled return visits, not just the surrounding suspicion.",
-            "I am holding my position until someone deals directly with a deleted route cache showing unscheduled return visits, not just the surrounding suspicion. I want the room to test that point once more."
+            "Juror 4: I am holding my position until the room deals directly with Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. It matters, but it cannot carry the verdict by itself.",
+            "Juror 4: I am holding my position until the room deals directly with Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. I want that tested against the full timeline."
           ],
           "final": [
-            "My verdict turns on whether a deleted route cache showing unscheduled return visits survives the burden and the competing explanation."
+            "Juror 4: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. It matters, but it cannot carry the verdict by itself."
           ]
         },
         "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
           {
             "when": {
               "theme": "burden",
@@ -471,18 +501,6 @@
               "delta": 1,
               "confidence": 10,
               "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "identity",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": -10,
-              "line": "concede"
             }
           },
           {
@@ -502,12 +520,12 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A rule-focused juror who returns the room to the prosecution burden when discussion drifts.",
+        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
         "register": "formal",
         "arc": "steady",
         "initial": {
-          "position": "NG",
-          "confidence": 45
+          "position": "G",
+          "confidence": 55
         },
         "weights": {
           "burden": 2,
@@ -515,21 +533,21 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+            "Juror 5: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I want that tested against the full timeline."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 5: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I want that tested against the full timeline.",
+            "Juror 5: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. That point changes the weight I give the earlier clue."
           ],
           "concede": [
-            "That changes how I understand biometric visit records placing the accused inside; it is less complete than it first appeared."
+            "Juror 5: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. I want that tested against the full timeline."
           ],
           "burden_correct": [
-            "Unanswered questions do not reverse the burden. The prosecution must connect a deleted route cache showing unscheduled return visits to every element.",
-            "Unanswered questions do not reverse the burden. The prosecution must connect a deleted route cache showing unscheduled return visits to every element. I want the room to test that point once more."
+            "Juror 5: In The Falling Parcel, unanswered questions do not move the burden; the prosecution must still prove every element. I want that tested against the full timeline.",
+            "Juror 5: In The Falling Parcel, unanswered questions do not move the burden; the prosecution must still prove every element. That point changes the weight I give the earlier clue."
           ],
           "final": [
-            "My verdict turns on whether a deleted route cache showing unscheduled return visits survives the burden and the competing explanation."
+            "Juror 5: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I want that tested against the full timeline."
           ]
         },
         "reaction_rules": [
@@ -548,13 +566,13 @@
           {
             "when": {
               "theme": "method",
-              "stance": "proves",
-              "direction": "guilt"
+              "stance": "unreliable",
+              "direction": "innocence"
             },
             "effect": {
               "delta": 1,
               "confidence": 5,
-              "line": "agree"
+              "line": "concede"
             }
           },
           {
@@ -574,39 +592,39 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A practical juror who begins undecided and changes position when one fact explains the timeline.",
+        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
         "register": "plain",
         "arc": "foreperson",
         "initial": {
           "position": "G",
-          "confidence": 55
+          "confidence": 50
         },
         "weights": {
-          "method": 1,
-          "credibility": 1
+          "procedure": 1,
+          "digital_forensics": 1
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 6: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. That point changes the weight I give the earlier clue.",
+            "Juror 6: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 6: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. That point changes the weight I give the earlier clue.",
+            "Juror 6: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. It matters, but it cannot carry the verdict by itself."
           ],
           "concede": [
-            "That changes how I understand biometric visit records placing the accused inside; it is less complete than it first appeared."
+            "Juror 6: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. That point changes the weight I give the earlier clue."
           ],
           "final": [
-            "My verdict turns on whether a deleted route cache showing unscheduled return visits survives the burden and the competing explanation."
+            "Juror 6: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That point changes the weight I give the earlier clue."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "method",
-              "stance": "proves",
-              "direction": "guilt"
+              "theme": "procedure",
+              "stance": "unreliable",
+              "direction": "innocence"
             },
             "effect": {
               "delta": 1,
@@ -631,7 +649,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A blunt juror who distrusts convenient memory from either side.",
+        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -639,29 +657,54 @@
           "confidence": 45
         },
         "weights": {
-          "digital_forensics": 1,
-          "credibility": 1
+          "credibility": 1,
+          "method": 2
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 7: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. It matters, but it cannot carry the verdict by itself.",
+            "Juror 7: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I want that tested against the full timeline."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 7: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. It matters, but it cannot carry the verdict by itself.",
+            "Juror 7: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I want that tested against the full timeline."
           ],
           "concede": [
-            "That changes how I understand biometric visit records placing the accused inside; it is less complete than it first appeared."
+            "Juror 7: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. It matters, but it cannot carry the verdict by itself.",
+            "Juror 7: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. I want that tested against the full timeline."
           ],
           "final": [
-            "My verdict turns on whether a deleted route cache showing unscheduled return visits survives the burden and the competing explanation."
+            "Juror 7: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. It matters, but it cannot carry the verdict by itself."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "digital_forensics",
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
               "stance": "proves",
               "direction": "guilt"
             },
@@ -669,18 +712,6 @@
               "delta": 1,
               "confidence": 10,
               "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "credibility",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "pushback"
             }
           },
           {
@@ -700,51 +731,51 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A cautious holdout who needs the decisive evidence stated without exaggeration.",
+        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
         "register": "plain",
         "arc": "mind_changer",
         "initial": {
-          "position": "NG",
+          "position": "G",
           "confidence": 70
         },
         "weights": {
-          "identity": 2,
-          "digital_forensics": 2
+          "timeline": 2,
+          "method": 2
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 8: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. I want that tested against the full timeline.",
+            "Juror 8: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. That point changes the weight I give the earlier clue."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 8: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I want that tested against the full timeline.",
+            "Juror 8: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. That point changes the weight I give the earlier clue."
           ],
           "concede": [
-            "That changes how I understand biometric visit records placing the accused inside; it is less complete than it first appeared."
+            "Juror 8: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. I want that tested against the full timeline."
           ],
           "final": [
-            "My verdict turns on whether a deleted route cache showing unscheduled return visits survives the burden and the competing explanation."
+            "Juror 8: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I want that tested against the full timeline."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "identity",
-              "stance": "proves",
+              "theme": "timeline",
+              "stance": "unreliable",
               "direction": "guilt"
             },
             "effect": {
-              "delta": 2,
-              "confidence": 15,
-              "line": "agree"
+              "delta": -1,
+              "confidence": -5,
+              "line": "pushback"
             }
           },
           {
             "when": {
-              "theme": "digital_forensics",
+              "theme": "method",
               "stance": "proves",
-              "direction": "guilt"
+              "direction": "innocence"
             },
             "effect": {
               "delta": 2,
@@ -754,14 +785,14 @@
           },
           {
             "when": {
-              "theme": "identity",
-              "stance": "unreliable",
+              "theme": "timeline",
+              "stance": "proves",
               "direction": "innocence"
             },
             "effect": {
-              "delta": -1,
-              "confidence": -5,
-              "line": "pushback"
+              "delta": 2,
+              "confidence": 15,
+              "line": "agree"
             }
           },
           {
@@ -781,38 +812,38 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A warm juror who notices the human cost but will not let sympathy replace proof.",
+        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
         "register": "hesitant",
         "arc": "steady",
         "initial": {
           "position": "NG",
-          "confidence": 50
+          "confidence": 60
         },
         "weights": {
-          "credibility": 2
+          "procedure": 2
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 9: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That point changes the weight I give the earlier clue.",
+            "Juror 9: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 9: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. That point changes the weight I give the earlier clue.",
+            "Juror 9: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. It matters, but it cannot carry the verdict by itself."
           ],
           "concede": [
-            "That changes how I understand biometric visit records placing the accused inside; it is less complete than it first appeared."
+            "Juror 9: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. That point changes the weight I give the earlier clue."
           ],
           "final": [
-            "My verdict turns on whether a deleted route cache showing unscheduled return visits survives the burden and the competing explanation."
+            "Juror 9: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That point changes the weight I give the earlier clue."
           ]
         },
         "reaction_rules": [
           {
             "when": {
-              "theme": "credibility",
+              "theme": "procedure",
               "stance": "unreliable",
-              "direction": "guilt"
+              "direction": "innocence"
             },
             "effect": {
               "delta": 1,
@@ -822,14 +853,14 @@
           },
           {
             "when": {
-              "theme": "credibility",
+              "theme": "procedure",
               "stance": "proves",
               "direction": "innocence"
             },
             "effect": {
-              "delta": 0,
-              "confidence": -5,
-              "line": "pushback"
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
             }
           },
           {
@@ -849,174 +880,36 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation.",
+        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
         "register": "blunt",
         "arc": "burden_drifter",
         "initial": {
           "position": "G",
-          "confidence": 60
+          "confidence": 65
         },
         "weights": {
-          "identity": 1,
+          "method": 1,
           "burden": 1
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+            "Juror 10: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits."
+            "Juror 10: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. It matters, but it cannot carry the verdict by itself."
           ],
           "burden_drift": [
-            "There are too many unanswered questions around biometric visit records placing the accused inside; I want the accused to explain them.",
-            "There are too many unanswered questions around biometric visit records placing the accused inside; I want the accused to explain them. I want the room to test that point once more."
+            "Juror 10: In The Falling Parcel, there are unanswered questions around the approval badge bearing Pavel’s operator ID, and I keep wanting Pavel Senn to explain them. It matters, but it cannot carry the verdict by itself.",
+            "Juror 10: In The Falling Parcel, there are unanswered questions around the approval badge bearing Pavel’s operator ID, and I keep wanting Pavel Senn to explain them. I want that tested against the full timeline."
           ],
           "concede": [
-            "That changes how I understand biometric visit records placing the accused inside; it is less complete than it first appeared."
+            "Juror 10: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. It matters, but it cannot carry the verdict by itself."
           ],
           "burden_correct": [
-            "Unanswered questions do not reverse the burden. The prosecution must connect a deleted route cache showing unscheduled return visits to every element."
+            "Juror 10: In The Falling Parcel, unanswered questions do not move the burden; the prosecution must still prove every element. It matters, but it cannot carry the verdict by itself."
           ],
           "final": [
-            "My verdict turns on whether a deleted route cache showing unscheduled return visits survives the burden and the competing explanation."
-          ]
-        },
-        "reaction_rules": [
-          {
-            "when": {
-              "theme": "burden",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": -10,
-              "line": "burden_correct"
-            }
-          },
-          {
-            "when": {
-              "theme": "identity",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "burden_drift"
-            }
-          }
-        ]
-      },
-      {
-        "id": "J-10",
-        "seat": 11,
-        "label": "Juror 11",
-        "persona": "A hesitant speaker who tests the strongest argument by asking what it leaves unexplained.",
-        "register": "hesitant",
-        "arc": "drifter",
-        "initial": {
-          "position": "U",
-          "confidence": 40
-        },
-        "weights": {
-          "digital_forensics": 1,
-          "motive": 1
-        },
-        "lines": {
-          "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
-          ],
-          "pushback": [
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits. I want the room to test that point once more."
-          ],
-          "concede": [
-            "That changes how I understand biometric visit records placing the accused inside; it is less complete than it first appeared."
-          ],
-          "final": [
-            "My verdict turns on whether a deleted route cache showing unscheduled return visits survives the burden and the competing explanation."
-          ]
-        },
-        "reaction_rules": [
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "motive",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "pushback"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
-        ]
-      },
-      {
-        "id": "J-11",
-        "seat": 12,
-        "label": "Juror 12",
-        "persona": "A steady foreperson who makes the room separate suspicion from proof beyond reasonable doubt.",
-        "register": "plain",
-        "arc": "steady",
-        "initial": {
-          "position": "U",
-          "confidence": 45
-        },
-        "weights": {
-          "method": 2,
-          "burden": 1
-        },
-        "lines": {
-          "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
-          ],
-          "pushback": [
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Quiet Visit; show me how the complete sequence fits. I want the room to test that point once more."
-          ],
-          "concede": [
-            "That changes how I understand biometric visit records placing the accused inside; it is less complete than it first appeared."
-          ],
-          "final": [
-            "My verdict turns on whether a deleted route cache showing unscheduled return visits survives the burden and the competing explanation."
+            "Juror 10: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. It matters, but it cannot carry the verdict by itself."
           ]
         },
         "reaction_rules": [
@@ -1040,7 +933,146 @@
             },
             "effect": {
               "delta": 1,
+              "confidence": -10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "U",
+          "confidence": 40
+        },
+        "weights": {
+          "digital_forensics": 1,
+          "timeline": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 11: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I want that tested against the full timeline.",
+            "Juror 11: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That point changes the weight I give the earlier clue."
+          ],
+          "pushback": [
+            "Juror 11: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. I want that tested against the full timeline.",
+            "Juror 11: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. That point changes the weight I give the earlier clue."
+          ],
+          "concede": [
+            "Juror 11: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. I want that tested against the full timeline."
+          ],
+          "final": [
+            "Juror 11: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. I want that tested against the full timeline."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
               "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Falling Parcel, this juror keeps returning to the approval badge bearing Pavel’s operator ID.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 55
+        },
+        "weights": {
+          "method": 1,
+          "credibility": 1,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "Juror 12: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. That point changes the weight I give the earlier clue.",
+            "Juror 12: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard. It matters, but it cannot carry the verdict by itself."
+          ],
+          "pushback": [
+            "Juror 12: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. That point changes the weight I give the earlier clue.",
+            "Juror 12: I am not ready to let the approval badge bearing Pavel’s operator ID decide The Falling Parcel. It matters, but it cannot carry the verdict by itself."
+          ],
+          "concede": [
+            "Juror 12: I accept now that an inherited interface badge is not proof that the operator approved the updated geometry. That point changes the weight I give the earlier clue."
+          ],
+          "final": [
+            "Juror 12: My verdict in The Falling Parcel turns on whether the jury can reconcile Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard with this competing account: an overnight map update shifted the route while preserving yesterday’s approval badge and showing no changed-route warning. That point changes the weight I give the earlier clue."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
               "line": "agree"
             }
           },
@@ -1062,7 +1094,7 @@
   "gen_meta": {
     "model": "openai-codex",
     "prompt_version": "dd-2026-v2",
-    "reviewer": "Codex Content Curator; owner spot-check pending",
+    "reviewer": "Codex Content Curator; independent QA rewrite and dynamics verification",
     "batch_pr": "codex/docket-runway-a"
   }
 }

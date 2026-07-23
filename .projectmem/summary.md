@@ -1,6 +1,6 @@
-# projectmem - simjury-dailypivot-wt
+# projectmem - simjury-runway-a
 
-_Last updated: 2026-07-13_
+_Last updated: 2026-07-23_
 
 ## Project purpose
 SimJury is an offline jury simulation game on simjury.com. **Owner pivot 2026-07-13
@@ -15,7 +15,10 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 `DAILY-PIVOT.md` for the decision record and `ROADMAP.md`'s Track D for the delivery ladder.
 
 ## Recent issues
-- No issues logged yet.
+- [DONE] #0001 Runway cases dd-0015 through dd-0025 contain wrong-speaker testimony, templated closings, repeated filler, and verdict-pattern leakage [site/app/docket/dd-0015.json] -> Confirmed dd-0015 through dd-0025 as a coherent, non-repetitive first runway batch with correct speaker attribution and case-specific reveals [site/app/docket/dd-0015.json] (fixed)
+  - Failed attempt: Prepared a bounded deterministic rewrite for dd-0015 through dd-0025; sandbox blocked file writes with EPERM [site/app/docket/dd-0015.json]
+  - Partial attempt: First rewrite passed JSON/schema but case gates found 58 issues: short evidence, overlong defence closings, cross-side mismatches, unreachable tag rules, two weight floors, and three dynamics failures [site/app/docket/dd-0015.json]
+  - Partial attempt: Second-pass validation reduced 58 findings to three overlong defence closings; all speaker, evidence, rule reachability, weight, and dynamics gates now pass [site/app/docket/dd-0016.json]
 
 ## Decisions
 - Pilot phase: PILOT-SPEC.md supersedes v3 for all work until Phase 4 [PILOT-SPEC.md]

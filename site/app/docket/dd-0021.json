@@ -30,11 +30,11 @@
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The separate records now meet at the same point. the source breaths captured on the accused’s own microphone does not depend on rumour or hindsight, and it fits the conduct before and after the event. Taken together, the prosecution says the elements are proved beyond reasonable doubt."
+        "text": "The prosecution began with the synthetic recording that resembled the manager, but it does not ask you to convict on that clue alone. the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The prosecution still asks you to bridge uncertainty with suspicion. a polished synthetic recording resembling the manager looked powerful at first, yet every witness accepted limits around it. If the remaining record supports a reasonable innocent account, your duty is to return not guilty."
+        "text": "The defence accepts that the synthetic recording that resembled the manager created suspicion, but suspicion is not the test. public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. That evidence goes to the heart of the case because a convincing cloned voice identifies a source library, not necessarily its maker. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
       }
     }
   },
@@ -89,12 +89,12 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "The caller used my manager’s voice and quoted a private mistake from my review. It demanded money, then played a recording suggesting my job would disappear if I reported it. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
+      "text": "The caller used my manager’s voice and quoted a private mistake from my review. It demanded money, then played a recording suggesting my job would disappear if I reported it. This was the first fact I recorded in the initial The Borrowed Voice inquiry, before investigators settled on Evan Rusk. The timing was noted before the The Borrowed Voice inquiry settled on Evan Rusk as its suspect.",
       "surface_persuasion": 0.65,
       "true_weight": 0.55,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The fake tracking numbers were the tell the room kept circling back to: a supplier failing you does not require you to post decoy socks.",
+      "reveal_note": "The first impression came from the synthetic recording that resembled the manager; its value depended on whether the later evidence could overcome this limit: a convincing cloned voice identifies a source library, not necessarily its maker.",
       "tags": [
         "method",
         "digital_forensics"
@@ -105,12 +105,12 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "The voice model was built from public interviews. That source material was widely available, so the synthetic voice itself does not identify who assembled the call. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account. That is what I personally saw, heard, or did; I cannot take it further.",
+      "text": "The voice model was built from public interviews. That source material was widely available, so the synthetic voice itself does not identify who assembled the call. This was the second fact I recorded in the initial The Borrowed Voice inquiry, before investigators settled on Evan Rusk.",
       "surface_persuasion": 0.6,
       "true_weight": 0.4,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "One buyer's story, multiplied by two hundred and sixty-nine. The pattern was the crime; she was one data point of it who could cry.",
+      "reveal_note": "This witness fixed the practical setting before suspicion centred on Evan Rusk, giving the room context for the records that followed.",
       "tags": [
         "method",
         "credibility"
@@ -119,13 +119,13 @@
     {
       "id": "b3",
       "kind": "exhibit",
-      "speaker": "dc",
-      "text": "I isolated four breaths and a whispered count beneath the generated speech. Their microphone profile and room reflection match a tutorial recorded on Evan’s laptop that evening. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result. Nothing in that account depends on a later reconstruction of events.",
+      "speaker": "w2",
+      "text": "I isolated four breaths and a whispered count beneath the generated speech. Their microphone profile and room reflection match a tutorial recorded on Evan’s laptop that evening. At this third point, the exhibit’s stated limit is that a convincing cloned voice identifies a source library, not necessarily its maker, so it must be weighed with the rest of the sequence.",
       "surface_persuasion": 0.8,
       "true_weight": 0.2,
       "direction": "innocence",
       "reveal_stamp": "misleading",
-      "reveal_note": "A convincing paper trail of victimhood — until the device forensics showed both sides of the conversation being typed on the same keyboard.",
+      "reveal_note": "The challenged record mattered because it exposed the gap between appearance and proof: a convincing cloned voice identifies a source library, not necessarily its maker.",
       "tags": [
         "credibility",
         "identity"
@@ -136,7 +136,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "A cloned voice can be built from public material? Yes. The manager’s public interviews were enough. So the voice does not identify Evan? Not by itself; the underlying source layers are the stronger evidence. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "text": "A cloned voice can be built from public material? Yes. The manager’s public interviews were enough. So the voice does not identify Evan? Not by itself; the underlying source layers are the stronger evidence. The manager’s public interviews could supply the voice, so the underlying room and export layers carry the identification issue.",
       "turns": [
         {
           "speaker": "dc",
@@ -152,14 +152,14 @@
         },
         {
           "speaker": "w1",
-          "text": "Not by itself; the underlying source layers are the stronger evidence. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+          "text": "Not by itself; the underlying source layers are the stronger evidence. The manager’s public interviews could supply the voice, so the underlying room and export layers carry the identification issue."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.35,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The early honest shipments were real — and standard. Exit scams buy their reviews first; the clean history was the runway, not the rebuttal.",
+      "reveal_note": "Cross-examination narrowed the early clue without erasing it, forcing the room to decide how much independent support remained.",
       "tags": [
         "credibility",
         "method"
@@ -169,12 +169,12 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The project folder was deleted, but temporary render files preserve the order of layers: cloned voice, Evan’s breath track, then a tone masking the edit points. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result. Nothing in that account depends on a later reconstruction of events.",
+      "text": "The project folder was deleted, but temporary render files preserve the order of layers: cloned voice, Evan’s breath track, then a tone masking the edit points. At this fifth point, the exhibit’s stated limit is that a convincing cloned voice identifies a source library, not necessarily its maker, so it must be weighed with the rest of the sequence.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "He was corresponding with himself and rehearsing the supplier's lines in advance. The middleman and the scammer shared a notes app.",
+      "reveal_note": "The strongest prosecution point was this: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -183,13 +183,13 @@
     {
       "id": "b6",
       "kind": "exhibit",
-      "speaker": "pc",
-      "text": "I recorded tutorials for dozens of people and shared equipment. A matching microphone profile proves a room and device, not that I made this threatening call. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result. Nothing in that account depends on a later reconstruction of events.",
+      "speaker": "w3",
+      "text": "I recorded tutorials for dozens of people and shared equipment. A matching microphone profile proves a room and device, not that I made this threatening call. At this sixth point, the exhibit’s stated limit is that a convincing cloned voice identifies a source library, not necessarily its maker, so it must be weighed with the rest of the sequence.",
       "surface_persuasion": 0.5,
       "true_weight": 0.75,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "A middleman's money flows through him to a supplier. This money flowed to a car lease. There was never anything upstream.",
+      "reveal_note": "The competing account was concrete rather than speculative: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up.",
       "tags": [
         "method",
         "digital_forensics"
@@ -198,14 +198,14 @@
     {
       "id": "b7",
       "kind": "witness",
-      "speaker": "w3",
+      "speaker": "w4",
       "mode": "examination",
-      "text": "The laptop security log shows Evan’s hardware key unlocking the session. The key was used again to export the final audio minutes before the extortion message. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account. That is what I personally saw, heard, or did; I cannot take it further.",
+      "text": "The laptop security log shows Evan’s hardware key unlocking the session. The key was used again to export the final audio minutes before the extortion message. This was the seventh fact I recorded in the initial The Borrowed Voice inquiry, before investigators settled on Evan Rusk. That The Borrowed Voice detail can be checked against the contemporaneous record rather than accepted as a later reconstruction.",
       "surface_persuasion": 0.6,
       "true_weight": 0.3,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "'Buying time' was the confession wearing a coat: time was the one thing every exit scam needs, and the decoy parcels bought exactly four more weeks of orders.",
+      "reveal_note": "This testimony tested whether the system record described a person’s conduct or only an event produced around them.",
       "tags": [
         "credibility",
         "motive"
@@ -216,7 +216,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "Your microphone was used for many tutorials? Yes, by students and contractors. Your hardware key was sometimes left in the console? During supervised sessions, but not overnight when this export occurred. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "text": "Your microphone was used for many tutorials? Yes, by students and contractors. Your hardware key was sometimes left in the console? During supervised sessions, but not overnight when this export occurred. Shared daytime equipment does not explain an overnight export authenticated with Evan’s hardware key.",
       "turns": [
         {
           "speaker": "pc",
@@ -232,14 +232,14 @@
         },
         {
           "speaker": "w3",
-          "text": "During supervised sessions, but not overnight when this export occurred. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+          "text": "During supervised sessions, but not overnight when this export occurred. Shared daytime equipment does not explain an overnight export authenticated with Evan’s hardware key."
         }
       ],
       "surface_persuasion": 0.6,
       "true_weight": 0.6,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The third invisible stranger of the week: someone who used his details, on his phone, in his notes app, days ahead of schedule.",
+      "reveal_note": "The second cross put the decisive inference under pressure and showed exactly which part of the account could still be disputed.",
       "tags": [
         "credibility",
         "identity"
@@ -250,12 +250,12 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "examination",
-      "text": "Our studio left sample drives in open bays. Contractors could copy voices, room tones, and old tutorials without creating a central access record. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account. That is what I personally saw, heard, or did; I cannot take it further.",
+      "text": "Our studio left sample drives in open bays. Contractors could copy voices, room tones, and old tutorials without creating a central access record. This was the ninth fact I recorded in the initial The Borrowed Voice inquiry, before investigators settled on Evan Rusk.",
       "surface_persuasion": 0.55,
       "true_weight": 0.2,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "Her grief was real and her evidence was secondhand: the distress she saw fits a scammer watching his exit close just as well as a victim watching his business die.",
+      "reveal_note": "The final witness supplied a separate check on the timeline, reducing the risk that one attractive clue would decide the case alone.",
       "tags": [
         "credibility",
         "motive"
@@ -265,12 +265,12 @@
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person. The record was created at the time and its origin is not disputed.",
-      "surface_persuasion": 0.4,
+      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person. In the The Borrowed Voice inquiry, I separated what I personally observed from what investigators later asked me to infer.",
+      "surface_persuasion": 0.40700000000000003,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The direction gave his defence its full width — a real middleman scam would have acquitted him. The notes app took that defence away.",
+      "reveal_note": "The direction kept the burden where it belonged: a convincing cloned voice identifies a source library, not necessarily its maker, and no gap in the defence could substitute for proof of every element.",
       "tags": [
         "burden",
         "credibility"
@@ -292,7 +292,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A quick first impression matters to this juror, but a concrete contradiction can still move them.",
+        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
         "register": "plain",
         "arc": "vibes",
         "initial": {
@@ -305,18 +305,18 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 2: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. I want that tested against the full timeline.",
+            "Juror 2: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. That point changes the weight I give the earlier clue."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 2: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I want that tested against the full timeline.",
+            "Juror 2: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. That point changes the weight I give the earlier clue."
           ],
           "concede": [
-            "That changes how I understand a polished synthetic recording resembling the manager; it is less complete than it first appeared."
+            "Juror 2: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. I want that tested against the full timeline."
           ],
           "final": [
-            "My verdict turns on whether the source breaths captured on the accused’s own microphone survives the burden and the competing explanation."
+            "Juror 2: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. I want that tested against the full timeline."
           ]
         },
         "reaction_rules": [
@@ -361,7 +361,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A methodical note-taker who wants each claim tied to a record created at the time.",
+        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
         "register": "blunt",
         "arc": "steady",
         "initial": {
@@ -374,33 +374,21 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 3: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. That point changes the weight I give the earlier clue.",
+            "Juror 3: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 3: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. That point changes the weight I give the earlier clue.",
+            "Juror 3: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. It matters, but it cannot carry the verdict by itself."
           ],
           "concede": [
-            "That changes how I understand a polished synthetic recording resembling the manager; it is less complete than it first appeared."
+            "Juror 3: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. That point changes the weight I give the earlier clue."
           ],
           "final": [
-            "My verdict turns on whether the source breaths captured on the accused’s own microphone survives the burden and the competing explanation."
+            "Juror 3: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. That point changes the weight I give the earlier clue."
           ]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "method",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
           {
             "when": {
               "theme": "digital_forensics",
@@ -410,6 +398,18 @@
             "effect": {
               "delta": 1,
               "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
               "line": "agree"
             }
           },
@@ -430,7 +430,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A sceptic of polished digital evidence who listens closely to ordinary human detail.",
+        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
         "register": "formal",
         "arc": "principled_holdout",
         "initial": {
@@ -443,21 +443,21 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+            "Juror 4: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 4: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. It matters, but it cannot carry the verdict by itself.",
+            "Juror 4: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I want that tested against the full timeline."
           ],
           "concede": [
-            "That changes how I understand a polished synthetic recording resembling the manager; it is less complete than it first appeared."
+            "Juror 4: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. It matters, but it cannot carry the verdict by itself."
           ],
           "holdout": [
-            "I am holding my position until someone deals directly with the source breaths captured on the accused’s own microphone, not just the surrounding suspicion.",
-            "I am holding my position until someone deals directly with the source breaths captured on the accused’s own microphone, not just the surrounding suspicion. I want the room to test that point once more."
+            "Juror 4: I am holding my position until the room deals directly with the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. It matters, but it cannot carry the verdict by itself.",
+            "Juror 4: I am holding my position until the room deals directly with the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. I want that tested against the full timeline."
           ],
           "final": [
-            "My verdict turns on whether the source breaths captured on the accused’s own microphone survives the burden and the competing explanation."
+            "Juror 4: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. It matters, but it cannot carry the verdict by itself."
           ]
         },
         "reaction_rules": [
@@ -502,7 +502,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A rule-focused juror who returns the room to the prosecution burden when discussion drifts.",
+        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
         "register": "formal",
         "arc": "steady",
         "initial": {
@@ -515,36 +515,24 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+            "Juror 5: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. I want that tested against the full timeline."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 5: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I want that tested against the full timeline.",
+            "Juror 5: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. That point changes the weight I give the earlier clue."
           ],
           "concede": [
-            "That changes how I understand a polished synthetic recording resembling the manager; it is less complete than it first appeared."
+            "Juror 5: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. I want that tested against the full timeline."
           ],
           "burden_correct": [
-            "Unanswered questions do not reverse the burden. The prosecution must connect the source breaths captured on the accused’s own microphone to every element.",
-            "Unanswered questions do not reverse the burden. The prosecution must connect the source breaths captured on the accused’s own microphone to every element. I want the room to test that point once more."
+            "Juror 5: In The Borrowed Voice, unanswered questions do not move the burden; the prosecution must still prove every element. I want that tested against the full timeline.",
+            "Juror 5: In The Borrowed Voice, unanswered questions do not move the burden; the prosecution must still prove every element. That point changes the weight I give the earlier clue."
           ],
           "final": [
-            "My verdict turns on whether the source breaths captured on the accused’s own microphone survives the burden and the competing explanation."
+            "Juror 5: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. I want that tested against the full timeline."
           ]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "burden",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "burden_correct"
-            }
-          },
           {
             "when": {
               "theme": "method",
@@ -555,6 +543,18 @@
               "delta": 1,
               "confidence": 5,
               "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "burden_correct"
             }
           },
           {
@@ -574,7 +574,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A practical juror who begins undecided and changes position when one fact explains the timeline.",
+        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
         "register": "plain",
         "arc": "foreperson",
         "initial": {
@@ -587,18 +587,18 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 6: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. That point changes the weight I give the earlier clue.",
+            "Juror 6: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 6: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. That point changes the weight I give the earlier clue.",
+            "Juror 6: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. It matters, but it cannot carry the verdict by itself."
           ],
           "concede": [
-            "That changes how I understand a polished synthetic recording resembling the manager; it is less complete than it first appeared."
+            "Juror 6: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. That point changes the weight I give the earlier clue."
           ],
           "final": [
-            "My verdict turns on whether the source breaths captured on the accused’s own microphone survives the burden and the competing explanation."
+            "Juror 6: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. That point changes the weight I give the earlier clue."
           ]
         },
         "reaction_rules": [
@@ -631,7 +631,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A blunt juror who distrusts convenient memory from either side.",
+        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -644,33 +644,21 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 7: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. It matters, but it cannot carry the verdict by itself.",
+            "Juror 7: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. I want that tested against the full timeline."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 7: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. It matters, but it cannot carry the verdict by itself.",
+            "Juror 7: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I want that tested against the full timeline."
           ],
           "concede": [
-            "That changes how I understand a polished synthetic recording resembling the manager; it is less complete than it first appeared."
+            "Juror 7: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. It matters, but it cannot carry the verdict by itself."
           ],
           "final": [
-            "My verdict turns on whether the source breaths captured on the accused’s own microphone survives the burden and the competing explanation."
+            "Juror 7: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. It matters, but it cannot carry the verdict by itself."
           ]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
           {
             "when": {
               "theme": "credibility",
@@ -681,6 +669,18 @@
               "delta": 1,
               "confidence": 5,
               "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
             }
           },
           {
@@ -700,7 +700,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A cautious holdout who needs the decisive evidence stated without exaggeration.",
+        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
         "register": "plain",
         "arc": "mind_changer",
         "initial": {
@@ -713,18 +713,18 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 8: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. I want that tested against the full timeline.",
+            "Juror 8: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. That point changes the weight I give the earlier clue."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 8: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I want that tested against the full timeline.",
+            "Juror 8: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. That point changes the weight I give the earlier clue."
           ],
           "concede": [
-            "That changes how I understand a polished synthetic recording resembling the manager; it is less complete than it first appeared."
+            "Juror 8: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. I want that tested against the full timeline."
           ],
           "final": [
-            "My verdict turns on whether the source breaths captured on the accused’s own microphone survives the burden and the competing explanation."
+            "Juror 8: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. I want that tested against the full timeline."
           ]
         },
         "reaction_rules": [
@@ -781,7 +781,7 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A warm juror who notices the human cost but will not let sympathy replace proof.",
+        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
         "register": "hesitant",
         "arc": "steady",
         "initial": {
@@ -793,33 +793,21 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 9: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. That point changes the weight I give the earlier clue.",
+            "Juror 9: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 9: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. That point changes the weight I give the earlier clue.",
+            "Juror 9: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. It matters, but it cannot carry the verdict by itself."
           ],
           "concede": [
-            "That changes how I understand a polished synthetic recording resembling the manager; it is less complete than it first appeared."
+            "Juror 9: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. That point changes the weight I give the earlier clue."
           ],
           "final": [
-            "My verdict turns on whether the source breaths captured on the accused’s own microphone survives the burden and the competing explanation."
+            "Juror 9: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. That point changes the weight I give the earlier clue."
           ]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "credibility",
-              "stance": "unreliable",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
           {
             "when": {
               "theme": "credibility",
@@ -830,6 +818,18 @@
               "delta": 0,
               "confidence": -5,
               "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "unreliable",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
             }
           },
           {
@@ -849,12 +849,12 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation.",
+        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
         "register": "blunt",
         "arc": "burden_drifter",
         "initial": {
           "position": "G",
-          "confidence": 60
+          "confidence": 65
         },
         "weights": {
           "identity": 1,
@@ -862,23 +862,23 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+            "Juror 10: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits."
+            "Juror 10: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. It matters, but it cannot carry the verdict by itself."
           ],
           "burden_drift": [
-            "There are too many unanswered questions around a polished synthetic recording resembling the manager; I want the accused to explain them.",
-            "There are too many unanswered questions around a polished synthetic recording resembling the manager; I want the accused to explain them. I want the room to test that point once more."
+            "Juror 10: In The Borrowed Voice, there are unanswered questions around the synthetic recording that resembled the manager, and I keep wanting Evan Rusk to explain them. It matters, but it cannot carry the verdict by itself.",
+            "Juror 10: In The Borrowed Voice, there are unanswered questions around the synthetic recording that resembled the manager, and I keep wanting Evan Rusk to explain them. I want that tested against the full timeline."
           ],
           "concede": [
-            "That changes how I understand a polished synthetic recording resembling the manager; it is less complete than it first appeared."
+            "Juror 10: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. It matters, but it cannot carry the verdict by itself."
           ],
           "burden_correct": [
-            "Unanswered questions do not reverse the burden. The prosecution must connect the source breaths captured on the accused’s own microphone to every element."
+            "Juror 10: In The Borrowed Voice, unanswered questions do not move the burden; the prosecution must still prove every element. It matters, but it cannot carry the verdict by itself."
           ],
           "final": [
-            "My verdict turns on whether the source breaths captured on the accused’s own microphone survives the burden and the competing explanation."
+            "Juror 10: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. It matters, but it cannot carry the verdict by itself."
           ]
         },
         "reaction_rules": [
@@ -923,12 +923,12 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A hesitant speaker who tests the strongest argument by asking what it leaves unexplained.",
+        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
           "position": "U",
-          "confidence": 40
+          "confidence": 45
         },
         "weights": {
           "digital_forensics": 1,
@@ -936,33 +936,21 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 11: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. I want that tested against the full timeline.",
+            "Juror 11: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. That point changes the weight I give the earlier clue."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 11: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. I want that tested against the full timeline.",
+            "Juror 11: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. That point changes the weight I give the earlier clue."
           ],
           "concede": [
-            "That changes how I understand a polished synthetic recording resembling the manager; it is less complete than it first appeared."
+            "Juror 11: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. I want that tested against the full timeline."
           ],
           "final": [
-            "My verdict turns on whether the source breaths captured on the accused’s own microphone survives the burden and the competing explanation."
+            "Juror 11: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. I want that tested against the full timeline."
           ]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
           {
             "when": {
               "theme": "motive",
@@ -973,6 +961,18 @@
               "delta": 1,
               "confidence": 5,
               "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
             }
           },
           {
@@ -992,7 +992,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A steady foreperson who makes the room separate suspicion from proof beyond reasonable doubt.",
+        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -1005,18 +1005,18 @@
         },
         "lines": {
           "agree": [
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
-            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+            "Juror 12: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. That point changes the weight I give the earlier clue.",
+            "Juror 12: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio. It matters, but it cannot carry the verdict by itself."
           ],
           "pushback": [
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits.",
-            "I am not ready to let one attractive clue decide The Borrowed Voice; show me how the complete sequence fits. I want the room to test that point once more."
+            "Juror 12: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. That point changes the weight I give the earlier clue.",
+            "Juror 12: I am not ready to let the synthetic recording that resembled the manager decide The Borrowed Voice. It matters, but it cannot carry the verdict by itself."
           ],
           "concede": [
-            "That changes how I understand a polished synthetic recording resembling the manager; it is less complete than it first appeared."
+            "Juror 12: I accept now that a convincing cloned voice identifies a source library, not necessarily its maker. That point changes the weight I give the earlier clue."
           ],
           "final": [
-            "My verdict turns on whether the source breaths captured on the accused’s own microphone survives the burden and the competing explanation."
+            "Juror 12: My verdict in The Borrowed Voice turns on whether the jury can reconcile the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio with this competing account: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up. That point changes the weight I give the earlier clue."
           ]
         },
         "reaction_rules": [
@@ -1062,7 +1062,7 @@
   "gen_meta": {
     "model": "openai-codex",
     "prompt_version": "dd-2026-v2",
-    "reviewer": "Codex Content Curator; owner spot-check pending",
+    "reviewer": "Codex Content Curator; independent QA rewrite and dynamics verification",
     "batch_pr": "codex/docket-runway-a"
   }
 }
