@@ -7,5 +7,3 @@ dist/
 public/cases/
 # Built from site/app (Vite) by `build:app` — see site/package.json
 public/today/
-# Build-generated whitelist imported by the Worker.
-src/narration-manifest.generated.js
