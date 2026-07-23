@@ -303,21 +303,6 @@
       ]
     },
     {
-      "id": "b10",
-      "kind": "direction",
-      "speaker": "judge",
-      "text": "The judge directs you that Mara does not have to identify another token holder or prove an electrical cause. The prosecution must establish deliberate ignition and identity beyond reasonable doubt. Compare the labelled access event with the physical fire evidence, use only the exhibits admitted here, and do not investigate the workshop, its systems, or its people elsewhere.",
-      "surface_persuasion": 0.45,
-      "true_weight": 0.5,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "The wider sequence qualified what the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance could fairly support.",
-      "tags": [
-        "burden",
-        "procedure"
-      ]
-    },
-    {
       "id": "b11",
       "kind": "exhibit",
       "speaker": "dc",
@@ -332,6 +317,21 @@
         "timeline",
         "identity"
       ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that Mara does not have to identify another token holder or prove an electrical cause. The prosecution must establish deliberate ignition and identity beyond reasonable doubt. Compare the labelled access event with the physical fire evidence, use only the exhibits admitted here, and do not investigate the workshop, its systems, or its people elsewhere.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The wider sequence qualified what the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance could fairly support.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
     }
   ],
   "checkins": [
@@ -341,7 +341,7 @@
     "b10"
   ],
   "verdict_truth": "Not Guilty",
-  "twist": "The access-token record looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter battery heat sequence supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "twist": "The access report printed Mara's name, but the battery was already overheating eight minutes before the stairwell opened. A failed fan, a cleared rooftop warning, and the guard's incident note put smoke in the cable chase before the copied credential was used. The system named her only after the fire had begun.",
   "difficulty_target": 0.58,
   "jury": {
     "jurors": [
