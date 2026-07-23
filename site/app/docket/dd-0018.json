@@ -4,13 +4,13 @@
   "label": "fiction",
   "title": "The Quiet Visit",
   "setting": "A home-care theft trial in 2026, where biometric visit records seem impersonal until a deleted route cache restores the missing minutes.",
-  "charge": "Stealing cash and jewellery from people receiving home care",
+  "charge": "Stealing cash and jewellery from three home-care clients",
   "elements": [
-    "The accused performed or participated in the alleged act.",
-    "The act was deliberate or dishonest rather than accidental.",
-    "The prosecution has proved every required fact beyond reasonable doubt."
+    "Cash and jewellery belonging to the three clients were taken without their consent.",
+    "Devra Noll was the person who took that property.",
+    "When she took it, Devra acted dishonestly and intended to keep or dispose of it permanently."
   ],
-  "hook": "Six clients remember kindness. Three also remember money vanishing after the same calm voice said goodnight.",
+  "hook": "Three clients trusted the same carer. After each visit, valuables disappeared—and a deleted phone cache revealed that someone came back.",
   "accused": {
     "cast_id": "w4",
     "human": "Devra Noll is a patient carer who raised two children while working split shifts across the district.",
@@ -20,25 +20,25 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution says the accused returned alone after scheduled care visits, used knowledge of hiding places, and sold distinctive jewellery through a cash broker. The apparent centre of the case is biometric visit records placing the accused inside, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+        "text": "Devra Noll’s scheduled visits gave her legitimate access to three clients and knowledge of where they kept valuables. The thefts happened after those visits. Her work phone records an unlogged return to each home, with live syncing switched off before arrival and restored after departure. One missing bracelet was then sold under Devra’s licence number. The prosecution says that repeated sequence is not coincidence."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence says the care system duplicated visits, relatives had access, and an overworked carer’s route data was treated as proof of theft. Suspicion gathered around a person before investigators tested the limits of biometric visit records placing the accused inside; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+        "text": "The biometric scans prove only that Devra attended her rostered visits. Every home had family members with keys, the route cache cannot show who carried the phone, and the broker camera cannot identify the seller. Devra sometimes returned to help clients without reopening a timed visit. The defence says imperfect workplace records and a copied licence number do not prove that a trusted carer became a thief."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution began with the scheduled biometric visit records, but it does not ask you to convict on that clue alone. Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
+        "text": "The rostered scans are not the thefts; they explain how Devra learned each home. The deleted cache supplies the missing visits. Three times, her work phone returned after the scheduled care was complete. Three times, syncing was disabled before arrival and restored after departure. No client call or care note explains those returns. The engraved bracelet then appeared at a broker under Devra’s licence. Taken together, those facts prove a deliberate course of theft."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence accepts that the scheduled biometric visit records created suspicion, but suspicion is not the test. Family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. That evidence goes to the heart of the case because a face scan proves arrival for care, not theft during or after the visit. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
+        "text": "No witness saw Devra take anything. The phone cache records a device, not a person, and relatives with keys could enter every home. The broker kept a licence number but lost the only video that might identify the seller. Devra’s unlogged returns breached agency procedure, yet poor record-keeping is not theft. Unless the prosecution has excluded innocent care visits, a borrowed phone and misuse of copied details, the required verdict is not guilty."
       }
     }
   },
-  "epilogue": "The clients received compensation from the care agency and chose new workers together. Devra’s children attended sentencing and continued visiting her, while the agency stopped letting one worker make unlogged return visits without a second approval. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "epilogue": "The three clients received compensation from the care agency and chose replacement workers with their families. Devra was disqualified from care work and began a custodial sentence; her children continued visiting her. The agency now requires a second staff approval for return visits and alerts supervisors whenever a worker disables live syncing.",
   "cast": [
     {
       "id": "judge",
@@ -89,12 +89,12 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "Our biometric system shows Devra completed each scheduled visit. It verifies a face at arrival, but it does not record what happens in the home or prevent a worker returning later. This was the first fact I recorded in the initial The Quiet Visit inquiry, before investigators settled on Devra Noll. The timing was noted before the The Quiet Visit inquiry settled on Devra Noll as its suspect.",
+      "text": "I’m Olia Brand, the care agency’s compliance manager. Three clients reported cash or jewellery missing within a day of Devra’s scheduled visit. Our biometric system confirms her arrival at each home. The scan verifies a face at the door, not what happens inside or during a later return. Devra’s dressing and laundry duties gave her knowledge of the clients’ rooms and routines.",
       "surface_persuasion": 0.65,
       "true_weight": 0.55,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The first impression came from the scheduled biometric visit records; its value depended on whether the later evidence could overcome this limit: a face scan proves arrival for care, not theft during or after the visit.",
+      "reveal_note": "The scheduled scans establish Devra’s access and familiarity with the homes, but do not show a theft.",
       "tags": [
         "method",
         "digital_forensics"
@@ -105,12 +105,12 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "My mother kept an engraved bracelet behind folded towels. Devra helped her dress and knew the drawer, but my brother and I also had keys and visited that week. This was the second fact I recorded in the initial The Quiet Visit inquiry, before investigators settled on Devra Noll.",
+      "text": "I’m Perrin Shaw. My mother kept an engraved silver bracelet behind folded towels in her bedroom drawer. Devra helped her dress and often put the clean towels away. The bracelet was there on Monday evening and missing on Wednesday morning. Devra visited on Tuesday, but my brother and I also had keys and both came to the house that week.",
       "surface_persuasion": 0.6,
       "true_weight": 0.4,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "This witness fixed the practical setting before suspicion centred on Devra Noll, giving the room context for the records that followed.",
+      "reveal_note": "Perrin explains Devra’s knowledge of the bracelet while acknowledging that two relatives also had access.",
       "tags": [
         "method",
         "credibility"
@@ -120,12 +120,12 @@
       "id": "b3",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "The work phone held an offline route cache marked for deletion. It recorded three extra stops at the clients’ homes after the official visits had already been closed. At this third point, the exhibit’s stated limit is that a face scan proves arrival for care, not theft during or after the visit, so it must be weighed with the rest of the sequence.",
+      "text": "The defence tenders the agency access sheets. Each household had at least one relative with a key, and family visits overlapped the week of the losses. The official care log shows only Devra’s scheduled daytime appointments; no biometric scan records her entering any home again after those visits.",
       "surface_persuasion": 0.8,
       "true_weight": 0.2,
       "direction": "innocence",
       "reveal_stamp": "misleading",
-      "reveal_note": "The challenged record mattered because it exposed the gap between appearance and proof: a face scan proves arrival for care, not theft during or after the visit.",
+      "reveal_note": "The access sheets offer several possible entrants, but they do not account for the later route data recovered from Devra’s work phone.",
       "tags": [
         "credibility",
         "identity"
@@ -136,7 +136,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "The face scan proves only the scheduled arrival? Yes. It does not prove a theft or even a later return. Relatives could enter each home? Yes, and each household had at least one family key. The scheduled scans prove attendance, while the theft allegation depends on what happened outside those scans.",
+      "text": "The face scan proves only the scheduled arrival? Yes. It does not prove a theft or a later return. Relatives could enter each home? Yes. Every household had at least one family key. So the official visit log cannot identify the thief? Not by itself. It establishes Devra’s access, but the theft allegation depends on evidence outside the scheduled scans.",
       "turns": [
         {
           "speaker": "dc",
@@ -144,7 +144,7 @@
         },
         {
           "speaker": "w1",
-          "text": "Yes. It does not prove a theft or even a later return."
+          "text": "Yes. It does not prove a theft or a later return."
         },
         {
           "speaker": "dc",
@@ -152,14 +152,22 @@
         },
         {
           "speaker": "w1",
-          "text": "Yes, and each household had at least one family key. The scheduled scans prove attendance, while the theft allegation depends on what happened outside those scans."
+          "text": "Yes. Every household had at least one family key."
+        },
+        {
+          "speaker": "dc",
+          "text": "So the official visit log cannot identify the thief?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Not by itself. It establishes Devra’s access, but the theft allegation depends on evidence outside the scheduled scans."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.35,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "Cross-examination narrowed the early clue without erasing it, forcing the room to decide how much independent support remained.",
+      "reveal_note": "Olia accepts that the scheduled scans prove opportunity rather than theft, directing attention to the unscheduled returns.",
       "tags": [
         "credibility",
         "method"
@@ -169,12 +177,12 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The cache also records live syncing disabled before each return and enabled afterwards. The forensic examination found no system fault that would invent those manual setting changes in the same sequence. At this fifth point, the exhibit’s stated limit is that a face scan proves arrival for care, not theft during or after the visit, so it must be weighed with the rest of the sequence.",
+      "text": "A deleted offline cache recovered from Devra’s assigned work phone records three later stops—one at each client’s home after the scheduled visit had closed. Before every return, live syncing was manually disabled; after every departure, it was restored. The phone remained signed into Devra’s account, and forensic testing found no fault that could create the repeated sequence.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The strongest prosecution point was this: Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold.",
+      "reveal_note": "The recovered cache links Devra’s assigned phone to all three homes and records the same deliberate concealment pattern each time.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -184,12 +192,12 @@
       "id": "b6",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "A cash broker’s intake photograph shows the engraved bracelet. The seller used Devra’s licence number, although the defence says a copied number does not identify the person at the counter. At this sixth point, the exhibit’s stated limit is that a face scan proves arrival for care, not theft during or after the visit, so it must be weighed with the rest of the sequence.",
+      "text": "A cash broker’s intake photograph taken two days after the loss shows Perrin’s mother’s engraved bracelet. The sale form carries Devra’s full licence number and her current address. The broker paid cash. Its camera footage had already been overwritten when police requested it, so the transaction records do not show the seller’s face.",
       "surface_persuasion": 0.5,
       "true_weight": 0.75,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The competing account was concrete rather than speculative: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller.",
+      "reveal_note": "The sale connects the missing bracelet to Devra’s identity details, although the lost video leaves room to argue that someone else used them.",
       "tags": [
         "method",
         "digital_forensics"
@@ -200,12 +208,12 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "examination",
-      "text": "I returned when clients called about missed tablets or doors. The schedule app punished extra time, so I sometimes went back without reopening a visit, but I stole nothing. This was the seventh fact I recorded in the initial The Quiet Visit inquiry, before investigators settled on Devra Noll. That The Quiet Visit detail can be checked against the contemporaneous record rather than accepted as a later reconstruction.",
+      "text": "I’m Devra Noll. Clients sometimes rang me directly about a missed tablet or an unlocked door. The scheduling app counted every extra minute against our targets, so I occasionally went back without reopening a visit. I switched off syncing when reception stalled or the battery was low. I never took their property, and I did not sell the bracelet.",
       "surface_persuasion": 0.6,
       "true_weight": 0.3,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This testimony tested whether the system record described a person’s conduct or only an event produced around them.",
+      "reveal_note": "Devra gives an innocent reason for unlogged returns, but her account must be tested against the repeated phone pattern.",
       "tags": [
         "credibility",
         "motive"
@@ -216,30 +224,38 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "You disabled syncing before every disputed return? I disabled it when reception failed or the battery drained. And enabled it after leaving each street? That is what the recovered settings show, though I do not remember doing it. Reception and battery trouble could explain isolated syncing, but the repeated off-then-on sequence still requires careful scrutiny.",
+      "text": "No client call appears before any of these returns? Not on the work phone. Clients sometimes used my personal number. You made no care note after any return? No. I was trying to help without adding chargeable time. Yet syncing went off before each home and came back on after you left? That is what the cache says. I cannot explain why it happened three times.",
       "turns": [
         {
           "speaker": "pc",
-          "text": "You disabled syncing before every disputed return?"
+          "text": "No client call appears before any of these returns?"
         },
         {
           "speaker": "w4",
-          "text": "I disabled it when reception failed or the battery drained."
+          "text": "Not on the work phone. Clients sometimes used my personal number."
         },
         {
           "speaker": "pc",
-          "text": "And enabled it after leaving each street?"
+          "text": "You made no care note after any return?"
         },
         {
           "speaker": "w4",
-          "text": "That is what the recovered settings show, though I do not remember doing it. Reception and battery trouble could explain isolated syncing, but the repeated off-then-on sequence still requires careful scrutiny."
+          "text": "No. I was trying to help without adding chargeable time."
+        },
+        {
+          "speaker": "pc",
+          "text": "Yet syncing went off before each home and came back on after you left?"
+        },
+        {
+          "speaker": "w4",
+          "text": "That is what the cache says. I cannot explain why it happened three times."
         }
       ],
       "surface_persuasion": 0.6,
       "true_weight": 0.6,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The second cross put the decisive inference under pressure and showed exactly which part of the account could still be disputed.",
+      "reveal_note": "Devra cannot support the alleged care calls or explain why the same concealment pattern surrounded all three returns.",
       "tags": [
         "credibility",
         "identity"
@@ -250,12 +266,12 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "examination",
-      "text": "The broker’s camera was overwritten before police asked for it. I can prove the licence number and photograph of the bracelet, but not the face of whoever completed the sale. This was the ninth fact I recorded in the initial The Quiet Visit inquiry, before investigators settled on Devra Noll.",
+      "text": "I’m Kest Marr, a mobile-device examiner. The broker’s video was overwritten before police requested it. The intake file proves that someone supplied Devra’s licence number and current address when selling the bracelet, but it cannot identify that person. A licence number can be copied. I also cannot prove who was carrying Devra’s work phone during the three returns.",
       "surface_persuasion": 0.55,
       "true_weight": 0.2,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The final witness supplied a separate check on the timeline, reducing the risk that one attractive clue would decide the case alone.",
+      "reveal_note": "Kest identifies the limits of both digital records, leaving identity to be decided from their combined pattern rather than either record alone.",
       "tags": [
         "credibility",
         "motive"
@@ -265,12 +281,12 @@
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person.",
+      "text": "You must be sure that Devra took the clients’ property and intended to keep or dispose of it dishonestly. Opportunity alone is not enough. Consider whether the three unlogged returns, repeated sync changes and bracelet sale form a reliable combined pattern identifying Devra, or whether relatives, an innocent care explanation, a borrowed phone or copied licence details remain reasonably possible. Devra does not have to prove who else was responsible.",
       "surface_persuasion": 0.403,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The direction kept the burden where it belonged: a face scan proves arrival for care, not theft during or after the visit, and no gap in the defence could substitute for proof of every element.",
+      "reveal_note": "The final direction requires the jury to test the records as a connected identity case without shifting the burden to Devra.",
       "tags": [
         "burden",
         "credibility"
@@ -281,10 +297,10 @@
     "b3",
     "b5",
     "b8",
-    "b9"
+    "b10"
   ],
   "verdict_truth": "Guilty",
-  "twist": "The ordinary biometric logs could have been duplicated by the care system. The recovered offline route cache showed three unscheduled return visits, each beginning after Devra had disabled live syncing and ending minutes before the losses were first noticed.",
+  "twist": "The official scans were never the crucial evidence. A cache Devra had deleted from her work phone preserved three unlogged returns, each bracketed by the same manual sync-off and sync-on sequence. Two days later, the engraved bracelet was sold for cash using her licence details.",
   "difficulty_target": 0.5,
   "jury": {
     "jurors": [
@@ -292,7 +308,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Quiet Visit, this juror keeps returning to the scheduled biometric visit records.",
+      "persona": "A sceptic who distrusts polished system evidence until its collection method is clear.",
         "register": "plain",
         "arc": "vibes",
         "initial": {
@@ -305,18 +321,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 2: Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold. It changes how I read the scheduled biometric visit records, but it does not end the inquiry.",
-            "Juror 2: Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold. The alternative has to be reasonably possible, not perfect."
+          "Juror 2: The deleted cache came from Devra’s assigned phone, and the examiner found no fault that could invent three matching sync sequences. I can rely on that.",
+          "Juror 2: A route point alone would be weak. Syncing off before every home and back on after every departure looks deliberate."
           ],
           "pushback": [
-            "Juror 2: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. That is the part of the Crown case I can test rather than guess.",
-            "Juror 2: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. Before I move, I need the scheduled biometric visit records placed on the same timeline."
+          "Juror 2: Where was this cache stored, and how do we know it was not reconstructed from unreliable location estimates?",
+          "Juror 2: The broker file contains Devra’s details, but without the video it does not tell us who stood at the counter."
           ],
           "concede": [
-            "Juror 2: I accept now that a face scan proves arrival for care, not theft during or after the visit. I can state the inference now, and I can also state what it depends on."
+          "Juror 2: I accept the face scans prove only legitimate visits. The later cache is different evidence and needs to stand on its own."
           ],
           "final": [
-            "Juror 2: My verdict in The Quiet Visit turns on whether the jury can reconcile Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold with this competing account: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. I am holding it against the judge’s direction on the accused performed or participated in the alleged act."
+          "Juror 2: The phone pattern and bracelet sale come from separate systems, yet both point to Devra. Their agreement makes me sure the thefts were hers."
           ]
         },
         "reaction_rules": [
@@ -361,7 +377,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Quiet Visit, this juror keeps returning to the scheduled biometric visit records.",
+      "persona": "A rule-focused juror who brings the room back to the prosecution burden.",
         "register": "blunt",
         "arc": "steady",
         "initial": {
@@ -374,18 +390,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 3: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. I am treating the timing as evidence, not as a verdict.",
-            "Juror 3: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. That moves one piece, not the burden the Crown carries."
+          "Juror 3: Family access is possible, but the prosecution does not have to eliminate fantasies. Is there a reasonable account tying a relative to all three homes and Devra’s licence?",
+          "Juror 3: We can infer identity from circumstances, but only if the combined records leave us sure. No single exhibit carries the burden."
           ],
           "pushback": [
-            "Juror 3: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. I need the witness account and the recorded evidence to agree before I rely on either.",
-            "Juror 3: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. That is one fact; the room still has to test the prosecution has proved every required fact beyond reasonable doubt."
+          "Juror 3: Devra does not have to prove who borrowed a phone or copied a licence. The prosecution must make those possibilities unreasonable.",
+          "Juror 3: An unexplained return is suspicious, not automatically dishonest. We still need intent to steal."
           ],
           "concede": [
-            "Juror 3: I accept now that a face scan proves arrival for care, not theft during or after the visit. I want the actual record compared with the story built around it."
+          "Juror 3: I agree that the official visits show opportunity only. The prosecution’s case succeeds or fails on the later returns and the sale."
           ],
           "final": [
-            "Juror 3: My verdict in The Quiet Visit turns on whether the jury can reconcile Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold with this competing account: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. I am treating the timing as evidence, not as a verdict."
+          "Juror 3: The same concealed return happened at three unrelated homes, and Devra could not support one care call. Together with the bracelet sale, that proves guilt beyond reasonable doubt."
           ]
         },
         "reaction_rules": [
@@ -430,7 +446,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Quiet Visit, this juror keeps returning to the scheduled biometric visit records.",
+      "persona": "A patient listener who changes position when a timeline finally accounts for every event.",
         "register": "formal",
         "arc": "principled_holdout",
         "initial": {
@@ -443,21 +459,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 4: Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold. That gives me a reason, but not yet a complete chain."
+          "Juror 4: The sequence repeats: scheduled care, an unlogged return with syncing off, a reported loss. The bracelet sale then follows two days later."
           ],
           "pushback": [
-            "Juror 4: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. I am weighing that beside the scheduled biometric visit records, not on its own.",
-            "Juror 4: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. I am asking whether the exhibit proves the act or merely resembles it."
+          "Juror 4: When exactly did each relative visit, and does any family timeline overlap the unlogged returns?",
+          "Juror 4: The bracelet was missing by Wednesday, but I need the route stop and broker sale placed on that same timeline."
           ],
           "concede": [
-            "Juror 4: I accept now that a face scan proves arrival for care, not theft during or after the visit. I am not filling the missing step with instinct."
+          "Juror 4: I started with the official scans, but they do not explain the losses. The deleted cache fills the missing hours."
           ],
           "holdout": [
-            "Juror 4: I am holding my position until the room deals directly with Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold. I am separating what the record proves from what we are inferring.",
-            "Juror 4: I am holding my position until the room deals directly with Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold. I do not think confidence can repair a missing link."
+          "Juror 4: I am holding until we account for the gap between a phone arriving and Devra entering the home.",
+          "Juror 4: I need one timeline for all three homes, not three suspicious fragments described as a pattern."
           ],
           "final": [
-            "Juror 4: My verdict in The Quiet Visit turns on whether the jury can reconcile Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold with this competing account: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. That detail matters to my vote because it comes from outside either side’s story."
+          "Juror 4: Once the returns, sync changes and sale are ordered, Devra’s innocent explanation no longer fits the timeline. I vote guilty."
           ]
         },
         "reaction_rules": [
@@ -502,7 +518,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Quiet Visit, this juror keeps returning to the scheduled biometric visit records.",
+      "persona": "A blunt juror who challenges convenient memory from witnesses on both sides.",
         "register": "formal",
         "arc": "steady",
         "initial": {
@@ -515,21 +531,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 5: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. I would rather name the gap than pretend it is not there."
+          "Juror 5: Relatives had keys. Fine. Which relative visited all three clients, carried Devra’s phone and knew her current licence details?"
           ],
           "pushback": [
-            "Juror 5: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. I am holding it against the judge’s direction on the accused performed or participated in the alleged act.",
-            "Juror 5: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. I can give that weight only after we account for the scheduled biometric visit records."
+          "Juror 5: Devra remembers innocent calls but cannot point to one call record or care note. That convenient gap damages her credibility.",
+          "Juror 5: Kest was honest about the limits. A phone is not a person and a licence number is not a face."
           ],
           "concede": [
-            "Juror 5: I accept now that a face scan proves arrival for care, not theft during or after the visit. I can explain that conclusion without borrowing a fact that is not in evidence."
+          "Juror 5: I agree the biometric scans do not prove theft. Stop leaning on them and deal with the deleted cache."
           ],
           "burden_correct": [
-            "Juror 5: In The Quiet Visit, unanswered questions do not move the burden; the prosecution must still prove every element. I do not think confidence can repair a missing link.",
-            "Juror 5: In The Quiet Visit, unanswered questions do not move the burden; the prosecution must still prove every element. I am separating what the record proves from what we are inferring."
+          "Juror 5: Devra’s poor explanation cannot fill a hole in the prosecution case. The records themselves must prove identity.",
+          "Juror 5: We are allowed to draw a reasonable inference, but we are not allowed to make Devra disprove every possibility."
           ],
           "final": [
-            "Juror 5: My verdict in The Quiet Visit turns on whether the jury can reconcile Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold with this competing account: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. I would rather name the gap than pretend it is not there."
+          "Juror 5: The defence names several gaps, but none explains the repeated concealment or the bracelet sale. I am sure Devra stole it."
           ]
         },
         "reaction_rules": [
@@ -574,7 +590,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Quiet Visit, this juror keeps returning to the scheduled biometric visit records.",
+      "persona": "A cautious holdout who wants the decisive record stated without exaggeration.",
         "register": "plain",
         "arc": "foreperson",
         "initial": {
@@ -587,18 +603,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 6: Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold. If we remove the dramatic label, that is the fact left underneath.",
-            "Juror 6: Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold. I hear the point; now I want the source of it tested."
+          "Juror 6: The phone was assigned to Devra and signed into her account. That supports identity, but it is not the same as seeing her at the door.",
+          "Juror 6: The licence number and current address are specific details. I need to know how readily another person could obtain both."
           ],
           "pushback": [
-            "Juror 6: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. That is one fact; the room still has to test the act was deliberate or dishonest rather than accidental.",
-            "Juror 6: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. I need the witness account and the recorded evidence to agree before I rely on either."
+          "Juror 6: Let us not call every unlogged return a theft. Devra says she sometimes helped outside the schedule.",
+          "Juror 6: Three repetitions make the innocent explanation less likely, but I want each return proved before treating them as one pattern."
           ],
           "concede": [
-            "Juror 6: I accept now that a face scan proves arrival for care, not theft during or after the visit. I hear the point; now I want the source of it tested."
+          "Juror 6: I accept that the face scans are background only. The decisive record is the deleted cache and its manual sync changes."
           ],
           "final": [
-            "Juror 6: My verdict in The Quiet Visit turns on whether the jury can reconcile Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold with this competing account: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. The room should decide whether that contradiction is material or merely awkward."
+          "Juror 6: I have tested each record separately and then together. The repeated returns and sale details leave no reasonable innocent explanation."
           ]
         },
         "reaction_rules": [
@@ -631,7 +647,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Quiet Visit, this juror keeps returning to the scheduled biometric visit records.",
+      "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -644,18 +660,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 7: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. I am separating what the record proves from what we are inferring.",
-            "Juror 7: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. I do not think confidence can repair a missing link."
+          "Juror 7: These clients depended on Devra, but betrayal is not something we can assume from their vulnerability. We need the records.",
+          "Juror 7: Perrin’s mother trusted Devra with her bedroom routine. That explains opportunity and why the bracelet could be found without searching."
           ],
           "pushback": [
-            "Juror 7: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. That leaves me asking who had the opportunity the records actually show.",
-            "Juror 7: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. I am not filling the missing step with instinct."
+          "Juror 7: I feel for the clients, but their losses do not tell us who took the property.",
+          "Juror 7: Devra’s years of caring work do not make her innocent any more than the accusation makes her guilty."
           ],
           "concede": [
-            "Juror 7: I accept now that a face scan proves arrival for care, not theft during or after the visit. I am ready to put less weight on the first impression."
+          "Juror 7: The legitimate visits should not count against Devra. The concealed returns are what changed my view."
           ],
           "final": [
-            "Juror 7: My verdict in The Quiet Visit turns on whether the jury can reconcile Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold with this competing account: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. The question is not which story is neater; it is which elements are proved."
+          "Juror 7: It is painful either way, but the evidence shows Devra used her trusted access to return unseen and dispose of the bracelet. I vote guilty."
           ]
         },
         "reaction_rules": [
@@ -700,7 +716,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Quiet Visit, this juror keeps returning to the scheduled biometric visit records.",
+      "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation.",
         "register": "plain",
         "arc": "mind_changer",
         "initial": {
@@ -713,18 +729,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 8: Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold. I am ready to put less weight on the first impression.",
-            "Juror 8: Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold. The sequence matters more to me than how suspicious one moment sounds."
+          "Juror 8: An automated location can be wrong. A manual sync setting changing in the same way around three accurate stops is much harder to dismiss.",
+          "Juror 8: Deleting the cache did not erase its data. The recovery shows both the hidden journeys and an effort to keep them off the live system."
           ],
           "pushback": [
-            "Juror 8: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. I hear the point; now I want the source of it tested.",
-            "Juror 8: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. If we remove the dramatic label, that is the fact left underneath."
+          "Juror 8: Could low reception switch syncing automatically? The examiner said the changes were manual, so show me how that was established.",
+          "Juror 8: Was the work phone ever shared between carers? Assignment records matter if we are using it to identify Devra."
           ],
           "concede": [
-            "Juror 8: I accept now that a face scan proves arrival for care, not theft during or after the visit. I am treating the timing as evidence, not as a verdict."
+          "Juror 8: The biometric system did not duplicate these returns. They came from a separate offline cache on Devra’s assigned device."
           ],
           "final": [
-            "Juror 8: My verdict in The Quiet Visit turns on whether the jury can reconcile Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold with this competing account: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. I want the actual record compared with the story built around it."
+          "Juror 8: The system evidence has limits, but its independent parts line up: device, account, locations, manual settings and sale details. That is enough for guilt."
           ]
         },
         "reaction_rules": [
@@ -781,7 +797,7 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Quiet Visit, this juror keeps returning to the scheduled biometric visit records.",
+      "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained.",
         "register": "hesitant",
         "arc": "steady",
         "initial": {
@@ -793,18 +809,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 9: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. That is where the competing account becomes concrete for me.",
-            "Juror 9: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. The evidence about the scheduled biometric visit records is what keeps me from treating that as conclusive."
+          "Juror 9: If the returns were innocent, why is there no call or care note for any of them?",
+          "Juror 9: If someone copied Devra’s licence, how did that person also obtain the bracelet from a home visited by Devra’s phone?"
           ],
           "pushback": [
-            "Juror 9: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. The practical question is whether those events can both be true.",
-            "Juror 9: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. I can state the inference now, and I can also state what it depends on."
+          "Juror 9: Who besides Devra had access to all three homes? The family-key evidence names different people in each household.",
+          "Juror 9: Could a colleague have borrowed the work phone? I have not heard evidence about where it was kept between visits."
           ],
           "concede": [
-            "Juror 9: I accept now that a face scan proves arrival for care, not theft during or after the visit. I am changing my view because the explanation fits more of the evidence."
+          "Juror 9: The face scans answer none of my questions. The repeated later visits and sale details do."
           ],
           "final": [
-            "Juror 9: My verdict in The Quiet Visit turns on whether the jury can reconcile Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold with this competing account: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. That is where the competing account becomes concrete for me."
+          "Juror 9: The defence possibilities each explain one piece, but no reasonable account explains the whole chain. I am sure Devra was responsible."
           ]
         },
         "reaction_rules": [
@@ -849,7 +865,7 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Quiet Visit, this juror keeps returning to the scheduled biometric visit records.",
+      "persona": "A steady foreperson who makes the room distinguish suspicion from proof.",
         "register": "blunt",
         "arc": "burden_drifter",
         "initial": {
@@ -862,23 +878,23 @@
         },
         "lines": {
           "agree": [
-            "Juror 10: Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold. I am changing my view because the explanation fits more of the evidence."
+          "Juror 10: Let us separate opportunity from identity. The scheduled visits show opportunity; the later phone pattern and bracelet sale may prove identity."
           ],
           "pushback": [
-            "Juror 10: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. The question is not which story is neater; it is which elements are proved."
+          "Juror 10: Before voting, each of us should say whether the combined pattern excludes an innocent return and misuse of Devra’s details."
           ],
           "burden_drift": [
-            "Juror 10: In The Quiet Visit, there are unanswered questions around the scheduled biometric visit records, and I keep wanting Devra Noll to explain them. That detail matters to my vote because it comes from outside either side’s story.",
-            "Juror 10: In The Quiet Visit, there are unanswered questions around the scheduled biometric visit records, and I keep wanting Devra Noll to explain them. That is stronger than suspicion, but I am checking it against the scheduled biometric visit records."
+          "Juror 10: Devra cannot explain the three sync changes, so I keep thinking she must prove someone else used the phone.",
+          "Juror 10: If the returns were innocent, Devra should be able to show us the calls. I know that risks putting the burden on her."
           ],
           "concede": [
-            "Juror 10: I accept now that a face scan proves arrival for care, not theft during or after the visit. I would rather name the gap than pretend it is not there."
+          "Juror 10: We agree the face scans prove no theft. The question is whether the later records close that gap."
           ],
           "burden_correct": [
-            "Juror 10: In The Quiet Visit, unanswered questions do not move the burden; the prosecution must still prove every element. I can state the inference now, and I can also state what it depends on."
+          "Juror 10: Devra’s silence on a detail cannot convict her. The prosecution still has to prove the dishonest taking from its own evidence."
           ],
           "final": [
-            "Juror 10: My verdict in The Quiet Visit turns on whether the jury can reconcile Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold with this competing account: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. If we remove the dramatic label, that is the fact left underneath."
+          "Juror 10: Applying the burden correctly, the independent phone and broker records still make me sure Devra took and sold the property."
           ]
         },
         "reaction_rules": [
@@ -923,7 +939,7 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Quiet Visit, this juror keeps returning to the scheduled biometric visit records.",
+      "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -936,18 +952,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 11: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. That gives me a reason, but not yet a complete chain.",
-            "Juror 11: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. The question is not which story is neater; it is which elements are proved."
+          "Juror 11: I have three columns: access, unlogged return and loss. Devra is the only person appearing in all three.",
+          "Juror 11: The broker record adds disposal and dishonest intent. Without it, I would be less sure the returns involved theft."
           ],
           "pushback": [
-            "Juror 11: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. The alternative has to be reasonably possible, not perfect.",
-            "Juror 11: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. It changes how I read the scheduled biometric visit records, but it does not end the inquiry."
+          "Juror 11: My note beside the face scans says ‘lawful access only.’ They cannot do more work than that.",
+          "Juror 11: We have no video of Devra entering on the returns or selling the bracelet. Those are two inferential steps."
           ],
           "concede": [
-            "Juror 11: I accept now that a face scan proves arrival for care, not theft during or after the visit. That is the part of the Crown case I can test rather than guess."
+          "Juror 11: I accept the biometric visits are not incriminating by themselves. The matching later records are the chain I needed."
           ],
           "final": [
-            "Juror 11: My verdict in The Quiet Visit turns on whether the jury can reconcile Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold with this competing account: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. The gap between those two facts is where my doubt sits."
+          "Juror 11: Every element now has supporting evidence in my notes: taking, identity and dishonest disposal. I vote guilty."
           ]
         },
         "reaction_rules": [
@@ -992,7 +1008,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Quiet Visit, this juror keeps returning to the scheduled biometric visit records.",
+      "persona": "A practical juror who tests digital records against ordinary workplace habits.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -1005,18 +1021,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 12: Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold. I am treating the timing as evidence, not as a verdict.",
-            "Juror 12: Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold. That moves one piece, not the burden the Crown carries."
+          "Juror 12: Carers do make quick unpaid return visits. What is not ordinary is hiding all three from the live system and writing no care note.",
+          "Juror 12: A bad scheduling culture explains why Devra might avoid logging time. It does not explain a missing bracelet sold under her details."
           ],
           "pushback": [
-            "Juror 12: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. That detail matters to my vote because it comes from outside either side’s story.",
-            "Juror 12: I am not ready to let the scheduled biometric visit records decide The Quiet Visit. That is stronger than suspicion, but I am checking it against the scheduled biometric visit records."
+          "Juror 12: Was disabling sync a common workaround in this agency? If other carers did it, the setting change may not show concealment.",
+          "Juror 12: The agency punished extra time. That gives Devra a believable reason not to reopen a legitimate visit."
           ],
           "concede": [
-            "Juror 12: I accept now that a face scan proves arrival for care, not theft during or after the visit. That leaves me asking who had the opportunity the records actually show."
+          "Juror 12: I agree the normal visit records tell us very little. The deleted cache records conduct outside normal practice."
           ],
           "final": [
-            "Juror 12: My verdict in The Quiet Visit turns on whether the jury can reconcile Devra’s phone recorded three unscheduled returns with syncing disabled, and her licence number was used when the missing bracelet was sold with this competing account: family members held keys, return visits had innocent care explanations, and the broker camera could not identify the seller. That is one fact; the room still has to test the act was deliberate or dishonest rather than accidental."
+          "Juror 12: Workplace pressure may explain one shortcut. It does not reasonably explain three concealed returns followed by a cash sale. I vote guilty."
           ]
         },
         "reaction_rules": [
@@ -1063,6 +1079,6 @@
     "model": "openai-codex",
     "prompt_version": "dd-2026-v2",
     "reviewer": "Codex Content Curator; independent QA rewrite and dynamics verification",
-    "batch_pr": "codex/docket-runway-a"
+    "batch_pr": "cursor/case-dd0018-coherence"
   }
 }
