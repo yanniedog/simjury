@@ -28,7 +28,9 @@ as local by the browser; Cloudflare never synthesizes or stores narration.
 Cloudflare Static Assets cannot perform a domain-level redirect. An account owner must
 keep a zone Redirect Rule from `www.simjury.com/*` to the same path and query on
 `https://simjury.com`. Until that rule is confirmed, both custom domains serve the same
-static site so `www` does not fail.
+static site so `www` does not fail. Custom-domain attachment is also operator-owned
+account state: `wrangler.json` deliberately contains no `route`/`routes`, so routine
+deploys cannot mutate zone routing and need only the narrow static-assets permission.
 
 ## Daily Docket quick start
 
