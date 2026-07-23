@@ -1,6 +1,6 @@
 # Agent Team Structure
 
-Hierarchical development team for SimJury. Every agent session declares its **role** in the PR description and logs work to projectmem.
+Hierarchical development team for SimJury. Every agent session declares its **role** in the PR description.
 
 ---
 
@@ -12,7 +12,6 @@ Orchestrator (Lead)
 ├── Content Curator
 ├── Engineer
 ├── QA
-└── Memory Steward (projectmem)
 ```
 
 ### Orchestrator (Lead Agent)
@@ -27,7 +26,7 @@ Orchestrator (Lead)
 - Schema, module boundaries, `PILOT-SPEC.md` / `ROADMAP.md` alignment
 - Reviews cross-module impact before Engineer merges
 - **Reports to:** Orchestrator
-- **Deliverables:** ADRs via `pjm decision`, schema changes in small PRs
+- **Deliverables:** ADRs and schema changes in small PRs
 
 ### Content Curator
 
@@ -46,17 +45,9 @@ Orchestrator (Lead)
 ### QA
 
 - Runs `./gradlew test`, manual pilot run, reveal-gate verification
-- Files issues via `pjm log`; confirms fixes via `pjm fix`
+- Files issues and confirms fixes through tests
 - **Reports to:** Orchestrator
 - **Deliverables:** test additions, CI fixes, gate sign-off in PR
-
-### Memory Steward
-
-- Ensures projectmem compliance every session
-- Session start: `get_summary()`, `get_project_map()`, `get_instructions()`
-- Session end: all decisions/attempts logged
-- **Reports to:** Orchestrator
-- **Deliverables:** updated `.projectmem/`, no direct `summary.md` edits
 
 ---
 
@@ -64,10 +55,9 @@ Orchestrator (Lead)
 
 ### Start
 
-1. Read `CLAUDE.md` (projectmem bridge)
-2. Call projectmem MCP tools OR `pjm brief`
-3. Read `PILOT-SPEC.md` + current phase in `ROADMAP.md`
-4. Declare role and task in first commit/PR message
+1. Read `CLAUDE.md`
+2. Read `PILOT-SPEC.md` + current phase in `ROADMAP.md`
+3. Declare role and task in first commit/PR message
 
 ### PR automation (mandatory — no user prompt)
 
@@ -101,17 +91,12 @@ When landing on `main` with no open PR, run `.github/scripts/audit-bot-feedback.
 
 | Event | Action |
 |-------|--------|
-| Before editing file | `precheck_file(path)` |
-| Design choice | `pjm decision "…"` |
-| Bug found | `pjm log "…" --at file:line` |
-| Fix attempt | `pjm attempt "…" --failed\|--worked` |
 | Case content change | Follow `CASE_HARNESS.md` checklist |
 
 ### End
 
-1. `pjm show` — verify memory reflects session
-2. Push branch; open/update PR
-3. Respond to CI and review bots until all checks pass
+1. Push branch; open/update PR
+2. Respond to CI and review bots until all checks pass
 
 ---
 
@@ -140,16 +125,14 @@ No squash merge to `main` unless:
 5. `npm run pr:gates:check -- --pr <n>` exits 0
 6. `assert-pr-mergeable.sh <pr>` passes
 7. Case content PRs include harness checklist (if applicable)
-8. projectmem decision logged for scope-affecting changes
-9. PR size ≤ ~400 lines (split if larger)
+8. PR size ≤ ~400 lines (split if larger)
 
 ---
 
 ## Anti-patterns (do not)
 
-- Re-read entire `archive/simjury-build-spec-v3.md` each session — use projectmem + `PILOT-SPEC.md`
+- Re-read entire `archive/simjury-build-spec-v3.md` each session — use `PILOT-SPEC.md`
 - Implement Phase 4+ features during Phase 1
-- Edit `.projectmem/summary.md` directly
 - Push directly to `main`
 - Large multi-concern PRs
 - Merge with unresolved bot review threads
