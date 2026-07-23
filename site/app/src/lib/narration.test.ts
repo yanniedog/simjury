@@ -3,6 +3,7 @@ import {
   fallbackVoiceIndexes,
   narrationRate,
   normaliseNarrationRate,
+  selectLocalVoices,
   setNarrationEnabled,
   setNarrationRate,
   speakAll,
@@ -40,10 +41,12 @@ describe('voiceParamsFor', () => {
     expect(voiceParamsFor('anyone', 0).voiceIndex).toBe(0)
   })
 
-  it('prefers a natural voice to a legacy local voice', () => {
-    expect(voiceQualityScore('Microsoft Ava Natural', false)).toBeGreaterThan(
-      voiceQualityScore('Desktop English', true),
-    )
+  it('excludes remote synthesis voices even when they advertise higher quality', () => {
+    const selected = selectLocalVoices([
+      { name: 'Desktop English', lang: 'en-US', localService: true },
+      { name: 'Cloud Neural', lang: 'en-US', localService: false },
+    ] as SpeechSynthesisVoice[])
+    expect(selected.map((voice) => voice.name)).toEqual(['Desktop English'])
   })
 
   it('prefers natural variants within the local tier', () => {
@@ -105,7 +108,8 @@ describe('speakAll', () => {
     const utterances: FakeUtterance[] = []
     const deviceVoices = [
       { name: 'Desktop English', lang: 'en-US', localService: true },
-      { name: 'Microsoft Ava Natural', lang: 'en-US', localService: false },
+      { name: 'Microsoft Ava Natural', lang: 'en-US', localService: true },
+      { name: 'Cloud Neural', lang: 'en-US', localService: false },
     ] as SpeechSynthesisVoice[]
     const values = new Map<string, string>()
     vi.stubGlobal('window', {
@@ -147,6 +151,7 @@ describe('speakAll', () => {
       { text: 'Second line', key: 'dc' },
     ], { onLine, done })
     const firstVoice = utterances[0].voice
+    expect(firstVoice?.localService).toBe(true)
     utterances[0].onend?.()
     expect(onLine).toHaveBeenLastCalledWith('dc', 1)
     expect(utterances[1].voice).not.toBe(firstVoice)
@@ -154,7 +159,7 @@ describe('speakAll', () => {
     expect(done).toHaveBeenCalledOnce()
   })
 
-  it('reports a sequence speech error without advancing unheard content', () => {
+  it('does not send text to a remote voice when no local voice is available', () => {
     class FakeUtterance {
       voice?: SpeechSynthesisVoice
       pitch = 1
@@ -168,7 +173,9 @@ describe('speakAll', () => {
     vi.stubGlobal('window', {
       speechSynthesis: {
         cancel: vi.fn(),
-        getVoices: () => [],
+        getVoices: () => [
+          { name: 'Cloud Neural', lang: 'en-US', localService: false },
+        ],
         speak: (utterance: FakeUtterance) => utterances.push(utterance),
       },
     })
@@ -185,11 +192,9 @@ describe('speakAll', () => {
       { text: 'First line', key: 'pros' },
       { text: 'Second line', key: 'defc' },
     ], { onLine, onError, done })
-    utterances[0].onerror?.()
-
-    expect(onError).toHaveBeenCalledOnce()
-    expect(onLine).toHaveBeenCalledOnce()
-    expect(done).not.toHaveBeenCalled()
-    expect(utterances).toHaveLength(1)
+    expect(onError).not.toHaveBeenCalled()
+    expect(onLine).not.toHaveBeenCalled()
+    expect(done).toHaveBeenCalledOnce()
+    expect(utterances).toHaveLength(0)
   })
 })
