@@ -17,8 +17,9 @@ where the web deliberately diverges, and why. (Android/pilot rules are unchanged
   keeps adjacent speakers distinct when at least two device voices exist.
 - Case text, progress and verdicts remain on the device. Narration URLs contain a
   deterministic opaque clip id rather than player state or case text, although GitHub can
-  observe the request and map it to a line in the public corpus. There is no Cloudflare
-  narration endpoint, runtime AI, or backend player state.
+  observe the request. The authored text and deterministic mapping algorithm are public
+  in this repository, so anyone can reconstruct which public corpus line an id represents.
+  There is no Cloudflare narration endpoint, runtime AI, or backend player state.
 
 ## D-WEB-2 — Listenable "jury room" (lite) (overrides GROWTH.md G-B / M-5 for web only)
 

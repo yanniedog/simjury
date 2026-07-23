@@ -41,7 +41,8 @@ Owner decisions, recorded verbatim:
 - **Static-only hosting** — GitHub-authored assets deploy through Cloudflare Static Assets
   with no Worker script, dynamic route, account, or tracking. Game state remains entirely
   on the player's device; pre-generated narration is served from GitHub Releases and
-  falls back to a device-local browser voice.
+  falls back to an English voice advertised as local by the browser, keeping adjacent
+  speakers distinct when at least two voices exist.
 - **No generative runtime AI** — all player-facing text is pre-authored JSON, case
   generation happens in PRs, and Apache-2.0 Kokoro narration is generated in GitHub
   Actions rather than synthesized during play.
