@@ -34,11 +34,11 @@
       },
       "defence": {
         "speaker": "dc",
-        "text": "Put every event in order. Locker seventy-two was booked before the carrier assigned its phone number to Ilya. His boots order opened locker seventy-three while the camera’s pillar hid his hands. The only related message he saw arrived after police contacted him. The prosecution must prove possession, knowledge, and intent to sell; Ilya does not have to identify whoever made the earlier booking."
+        "text": "Put every event in order. Locker seventy-two was booked before the carrier assigned its phone number to Ilya. His boots order opened locker seventy-three while the camera’s pillar hid his hands. The final reminder reached him only after the earlier booking and first reminder, once the number was his. The prosecution must prove possession, knowledge, and intent to sell; Ilya does not have to identify whoever made the earlier booking."
       }
     }
   },
-  "epilogue": "During the months before trial, Ilya lost the housing attached to his job and neighbours divided the translation work he had handled. The locker operator changed its warrant process to preserve the subscriber date attached to each booking, not just the person holding a number when police searched. Investigators reopened the older delivery account linked to locker seventy-two. Ilya’s family kept the work-boots receipt with the court papers.",
+  "epilogue": "After the acquittal, Ilya returned to his rotating shifts and kept the housing attached to the job. The locker operator changed its warrant process to preserve the subscriber date attached to each booking, not just the person holding a number when police searched. Investigators reopened the older delivery account linked to locker seventy-two. Ilya’s family kept the work-boots receipt with the court papers.",
   "cast": [
     {
       "id": "judge",
@@ -169,7 +169,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "examination",
-      "text": "I certified the carrier’s assignment history. It shows the locker number moving to Ilya six days after locker seventy-two was booked and two days after the first collection reminder. The earlier subscriber’s name is withheld, but the dates come from our billing system, were recorded before this investigation began, and were not edited by police.",
+      "text": "I certified the carrier’s assignment history. It shows the phone number moving to Ilya six days after locker seventy-two was booked and two days after the first collection reminder. The earlier subscriber’s name is withheld, but the dates come from our billing system, were recorded before this investigation began, and were not edited by police.",
       "surface_persuasion": 0.5,
       "true_weight": 0.85,
       "direction": "innocence",
