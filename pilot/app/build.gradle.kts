@@ -115,7 +115,7 @@ afterEvaluate {
     tasks.matching { it.name.contains("merge") && it.name.contains("Assets") }.configureEach {
         dependsOn(syncCaseAssets)
     }
-    tasks.matching { it.name.startsWith("lint", ignoreCase = true) }.configureEach {
+    tasks.matching { it.name.contains("lint", ignoreCase = true) }.configureEach {
         dependsOn(syncCaseAssets)
     }
 }

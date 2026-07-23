@@ -15,6 +15,10 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 `DAILY-PIVOT.md` for the decision record and `ROADMAP.md`'s Track D for the delivery ladder.
 
 ## Recent issues
+- [DONE] #0002 Android release CI lint model task reads generated case assets without depending on syncCaseAssets [pilot/app/build.gradle.kts] -> All Gradle lint-related tasks now depend on generated case assets, closing the Android release CI ordering failure [pilot/app/build.gradle.kts] (fixed)
+  - Failed attempt: Reproduced the exact release lint-model task locally; sandbox blocked Gradle’s fileHashes lock before configuration [pilot/.gradle]
+  - Failed attempt: Elevated Gradle retry reached configuration but PowerShell split the -D Java-home argument into a task path [pilot/app/build.gradle.kts]
+  - Failed attempt: Correctly quoted Gradle retry reached task dependency resolution; the clean worktree lacked Android SDK configuration [pilot/app/build.gradle.kts]
 - [DONE] #0001 Site deployment workflow omits Worker tests, so narration/API regressions can reach deployment after only a Wrangler dry run [.github/workflows/site.yml] -> Deployment workflow now runs the Worker test suite before Wrangler validation and deployment [.github/workflows/site.yml] (fixed)
   - Partial attempt: Added the existing Worker routing and narration suite to the deployment workflow’s required check job [.github/workflows/site.yml]
   - Failed attempt: Ran the Worker suite from the hygiene worktree; manifest generation hit the same sandbox EPERM on its tracked output [site/src/narration-manifest.generated.js]
