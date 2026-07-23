@@ -15,6 +15,7 @@ import { caseSchema, type TrialCase } from '../src/lib/caseSchema'
 import { checkQueue, type QualityIssue } from '../src/lib/caseQuality'
 import { docketCaseSchema, type DocketCase } from '../src/lib/v2/caseSchema'
 import { checkDocketQueue } from '../src/lib/v2/caseQuality'
+import { docketRunwayError } from '../src/lib/v2/runway'
 import { checkDynamics } from '../src/engine/dynamics'
 
 // Resolve relative to this script, not the process cwd, so it works the same
@@ -25,7 +26,7 @@ interface Queue<T> {
   name: string
   dir: string
   schema: ZodType<T>
-  gate: (cases: T[]) => QualityIssue[]
+  gate: (cases: T[]) => Pick<QualityIssue, 'caseId' | 'message'>[]
 }
 
 function validateQueue<T>(q: Queue<T>, errors: string[]): number {
@@ -41,6 +42,11 @@ function validateQueue<T>(q: Queue<T>, errors: string[]): number {
 
   if (files.length === 0) {
     console.warn(`${q.name}/ has no .json cases yet — nothing to validate.`)
+    // Queue-level gates still matter for an empty live queue. The legacy v1
+    // gate permits its pre-content state; the docket runway gate rejects it.
+    for (const issue of q.gate([])) {
+      errors.push(`${q.name}/${issue.caseId}: ${issue.message}`)
+    }
     return 0
   }
 
@@ -94,16 +100,24 @@ function main(): void {
       schema: docketCaseSchema,
       // Design gate, then the deliberation-dynamics simulation: a docket case
       // only ships if its room is alive (see src/engine/dynamics.ts).
-      gate: (cases) => [
-        ...checkDocketQueue(cases),
-        ...cases.flatMap((c) =>
-          checkDynamics(c).map((message) => ({
-            caseId: c.id,
-            message,
-            kind: 'design' as const,
-          })),
-        ),
-      ],
+      gate: (cases) => {
+        const runwayError = docketRunwayError(
+          cases.map((c) => c.publish_date),
+        )
+        return [
+          ...checkDocketQueue(cases),
+          ...cases.flatMap((c) =>
+            checkDynamics(c).map((message) => ({
+              caseId: c.id,
+              message,
+              kind: 'design' as const,
+            })),
+          ),
+          ...(runwayError
+            ? [{ caseId: 'queue', message: runwayError }]
+            : []),
+        ]
+      },
     },
     errors,
   )
