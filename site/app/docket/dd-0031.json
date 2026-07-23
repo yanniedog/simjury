@@ -1,0 +1,1147 @@
+{
+  "id": "dd-0031",
+  "publish_date": "2026-08-01",
+  "label": "fiction",
+  "title": "The Vanishing Parcel",
+  "setting": "a regional parcel depot, handheld route scanners, and a duplicated return label in the present day",
+  "charge": "theft of jewellery from an entrusted parcel",
+  "elements": [
+    "Jewellery was dishonestly taken from the parcel",
+    "The accused was the person who took it intending permanent deprivation"
+  ],
+  "hook": "The scanner says courier Nessa Lorn was the last person to touch the parcel. The empty box reaches its owner with her route number attached. A second box carries the same identity.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Nessa Lorn, 48, has driven the same rural delivery loop for eleven years and cares for a partner recovering from a stroke.",
+    "if_guilty": "a prison sentence, immediate loss of the route and home, and a reputation for stealing from neighbours who knew her by name"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "A jewellery return entered Nessa Lorn's van sealed and left it empty. Her scanner recorded the last custody event, her route label appeared on the box, and she bought a used mobility chair with cash days later. Parcels do not empty themselves. The chain narrows to the courier who controlled the van and signed the final scan."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The chain narrows only if the label is unique. It was not. Someone printed a second return label at the depot, attached it to an empty replacement box, and sent that decoy through Nessa's route. The genuine parcel left by an unmonitored side gate before her shift. Her cash came from a documented vehicle sale. The scanner followed a sticker, not jewellery."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The duplicate-label theory requires an insider, an unlogged gate movement, and perfect timing. Nessa had the van and the final scan. Her explanation for cash appeared after investigators asked. The defence can make the depot look untidy, but ordinary disorder does not account for a valuable parcel disappearing while one courier held recorded custody."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The genuine parcel weighed 1.8 kilograms; Nessa's scanned box weighed 420 grams before it ever reached her van. A camera shows the heavier box leaving by the side gate under another cage, and the print server records a duplicate label from a supervisor terminal. Her scan proves she delivered the decoy. It cannot prove she made it."
+      }
+    }
+  },
+  "epilogue": "The depot installed scales at every custody handoff and disabled label reprints without dual approval. Nessa returned to a shorter route while caring responsibilities continued, but several regular customers had already moved their deliveries elsewhere. The parcel owner received insurance payment and later recovered some pieces through a dealer's voluntary return. Staff formed a safety committee after learning how easily one sticker could overwrite an entire chain of custody.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Iven Saye",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Arlo Penn",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Mira Tesk",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Nessa Lorn",
+      "role_label": "the accused",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Joren Pike",
+      "role_label": "depot investigations manager",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Elia Kress",
+      "role_label": "parcel owner",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Sumi Darr",
+      "role_label": "barcode and logistics auditor",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit one is the custody report. Nessa Lorn's device logged the parcel as loaded, attempted, and returned; no later employee scan appears before the owner opened an empty box. The report calls her the last handler, a phrase that sounds physical even though every event follows the barcode printed on the package.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.18,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "Later evidence exposed what the custody report could not establish.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I reviewed the chain and found no missing scans. Nessa controlled the van for nine hours, then returned the box after recording that nobody answered. She had complained about fuel costs and bought a mobility chair with cash that week. With the digital chain intact, those circumstances looked like motive and opportunity.",
+      "surface_persuasion": 0.7899999999999999,
+      "true_weight": 0.22,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "reviewed the chain and found no missing scans looked conclusive until its hidden assumption was tested.",
+      "tags": [
+        "digital_forensics",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "Your intact chain follows a barcode, not a unique physical box? That is correct. The system allowed labels to be reprinted without approval? At the time, a supervisor terminal could do so. You never compared package weights before accusing Nessa? No. Weight data sat in a separate system we did not initially query.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "Your intact chain follows a barcode, not a unique physical box?"
+        },
+        {
+          "speaker": "w1",
+          "text": "That is correct."
+        },
+        {
+          "speaker": "dc",
+          "text": "The system allowed labels to be reprinted without approval?"
+        },
+        {
+          "speaker": "w1",
+          "text": "At the time, a supervisor terminal could do so."
+        },
+        {
+          "speaker": "dc",
+          "text": "You never compared package weights before accusing Nessa?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No. Weight data sat in a separate system we did not initially query."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.55,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The limits surrounding your intact chain follows a barcode, not a unique physical box kept it from deciding the charge alone.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "The owner says the return contained family jewellery wrapped in a green case and weighed almost two kilograms. The box delivered by Nessa contained packing paper and a metal washer. Because both bore the same printed return number, staff assumed the lighter box was the original after contents had been removed.",
+      "surface_persuasion": 0.62,
+      "true_weight": 0.38,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "the owner says the return contained family jewellery wrapped in a green case and weighed almost two kilograms helped test a witness account while leaving the central issue open.",
+      "tags": [
+        "digital_forensics",
+        "motive"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I watched Nessa scan the box into her van. It was already light enough to lift with one hand. I did not know the expected weight then. The side gate camera was considered unreliable, so nobody checked it until weeks later. We built the case around the report because the report was easy to read.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.42,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The wider sequence qualified what watched nessa scan the box into her van could fairly support.",
+      "tags": [
+        "timeline",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit six compares automated belt weights. The genuine return weighed 1.81 kilograms at 06:12. A second object carrying the same barcode weighed 420 grams at 06:26, fourteen minutes before Nessa arrived. Both records remained stored, but the custody screen displayed only the later duplicate as if it were one parcel.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.76,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "exhibit six compares automated belt weights fixed a disputed link through an independent record.",
+      "tags": [
+        "timeline",
+        "timeline"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "The box Nessa received was light before she touched it? Yes. The belt measured it at 420 grams. Your first statement called her scan the final secure link? It did, because I had not seen the separate weight table. Does that scan identify who printed the duplicate? No. It shows who handled the replacement after the switch.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "The box Nessa received was light before she touched it?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Yes. The belt measured it at 420 grams."
+        },
+        {
+          "speaker": "dc",
+          "text": "Your first statement called her scan the final secure link?"
+        },
+        {
+          "speaker": "w2",
+          "text": "It did, because I had not seen the separate weight table."
+        },
+        {
+          "speaker": "dc",
+          "text": "Does that scan identify who printed the duplicate?"
+        },
+        {
+          "speaker": "w2",
+          "text": "No. It shows who handled the replacement after the switch."
+        }
+      ],
+      "surface_persuasion": 0.62,
+      "true_weight": 0.55,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The limits surrounding the box nessa received was light before she touched it kept it from deciding the charge alone.",
+      "tags": [
+        "timeline",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "I audited the print server. The label was reissued from a supervisor terminal at 06:21, then an empty box entered the belt manually. The original crossed the side gate under a recycling cage at 06:29. Nessa's login had no reprint permission, and her route tablet was still syncing in the staff room.",
+      "surface_persuasion": 0.7000000000000001,
+      "true_weight": 0.8300000000000001,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "audited the print server survived cross-examination and connected evidence from separate sources.",
+      "tags": [
+        "timeline",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "A colleague could have used Nessa's route knowledge with her help? That is possible in the abstract. The audit cannot prove she knew nothing? No audit proves a person's thoughts. So the duplicate does not itself clear her? It proves the theft sequence was complete before she received the decoy.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "A colleague could have used Nessa's route knowledge with her help?"
+        },
+        {
+          "speaker": "w3",
+          "text": "That is possible in the abstract."
+        },
+        {
+          "speaker": "pc",
+          "text": "The audit cannot prove she knew nothing?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No audit proves a person's thoughts."
+        },
+        {
+          "speaker": "pc",
+          "text": "So the duplicate does not itself clear her?"
+        },
+        {
+          "speaker": "w3",
+          "text": "It proves the theft sequence was complete before she received the decoy."
+        }
+      ],
+      "surface_persuasion": 0.52,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The wider sequence qualified what a colleague could have used nessa's route knowledge with her help could fairly support.",
+      "tags": [
+        "credibility",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that Nessa need not prove which person switched the parcel or printed the duplicate label. The prosecution must establish her dishonest taking beyond reasonable doubt. Decide whether barcode custody follows the physical box, test the weight and gate records together, and do not research the depot, jewellery, accounts, or people outside this courtroom.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance added context without resolving identity or intent.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit nine records Nessa's cash source. A dated sale receipt, buyer transfer, and vehicle registration change document the amount used for the mobility chair. The payment cleared two days before the parcel entered the depot. The supposed sudden wealth therefore predates the alleged theft and matches an independently verified sale.",
+      "surface_persuasion": 0.74,
+      "true_weight": 0.9,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The corroboration behind exhibit nine records nessa's cash source carried genuine weight on timing, control, or method.",
+      "tags": [
+        "timeline",
+        "timeline",
+        "identity"
+      ]
+    }
+  ],
+  "checkins": [
+    "b3",
+    "b6",
+    "b8",
+    "b10"
+  ],
+  "verdict_truth": "Not Guilty",
+  "twist": "The last-handler scanner event looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter weight and duplicate-label sequence supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "difficulty_target": 0.55,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A student who can be swept up by a vivid first impression, especially when weighing barcode custody versus the identity of the box.",
+        "register": "plain",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 59
+        },
+        "weights": {
+          "timeline": 2,
+          "credibility": -1,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "For me, the anchor is the belt weights, duplicate label, and independent cash source; it answers the weakness that first divided this room.",
+            "In my notes at seat 2, the belt weights, duplicate label, and independent cash source agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I will not let the unbroken barcode custody report decide more than its source can support.",
+            "I need the chronology laid out before I choose between those accounts. Here that means barcode custody against the physical box."
+          ],
+          "concede": [
+            "I admit the unbroken barcode custody report, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My verdict rests on the belt weights, duplicate label, and independent cash source, with the burden left where the judge placed it."
+          ],
+          "burden_drift": [
+            "I catch myself asking for an innocent explanation, even though that is not the accused's burden; from seat 2, I relate it to barcode custody against the physical box."
+          ],
+          "burden_correct": [
+            "I am correcting course: the prosecution must close the gap, not the accused; from seat 2, I relate it to barcode custody against the physical box."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "burden_drift"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A foreperson who restates disagreements before calling a vote, especially when weighing barcode custody versus the identity of the box.",
+        "register": "formal",
+        "arc": "foreperson",
+        "initial": {
+          "position": "G",
+          "confidence": 49
+        },
+        "weights": {
+          "credibility": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I move because the belt weights, duplicate label, and independent cash source; it answers the weakness that first divided this room.",
+            "In my notes at seat 3, the belt weights, duplicate label, and independent cash source agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I keep separating the unbroken barcode custody report decide more than its source can support.",
+            "Two records agreeing matters more to me than one record sounding certain. Here that means barcode custody against the physical box."
+          ],
+          "concede": [
+            "I can see why the unbroken barcode custody report, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I finish with the belt weights, duplicate label, and independent cash source, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A retiree who wants testimony anchored to something independent, especially when weighing barcode custody versus the identity of the box.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 56
+        },
+        "weights": {
+          "identity": 1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The part I cannot explain away is the belt weights, duplicate label, and independent cash source; it answers the weakness that first divided this room.",
+            "In my notes at seat 4, the belt weights, duplicate label, and independent cash source agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "Before I rely on the unbroken barcode custody report decide more than its source can support.",
+            "I am testing which side can explain the missing link without assumption. Here that means barcode custody against the physical box."
+          ],
+          "concede": [
+            "At first I gave too much weight to the unbroken barcode custody report, especially before the underlying record is opened."
+          ],
+          "final": [
+            "The deciding chain for me is the belt weights, duplicate label, and independent cash source, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "A delivery worker who focuses on custody and physical sequence, especially when weighing barcode custody versus the identity of the box.",
+        "register": "blunt",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "G",
+          "confidence": 46
+        },
+        "weights": {
+          "timeline": 2,
+          "credibility": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I checked the sequence against the belt weights, duplicate label, and independent cash source; it answers the weakness that first divided this room.",
+            "In my notes at seat 5, the belt weights, duplicate label, and independent cash source agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I hear the force of the unbroken barcode custody report decide more than its source can support.",
+            "The burden makes me separate a possible story from a proved one. Here that means barcode custody against the physical box."
+          ],
+          "concede": [
+            "I concede the surface force of the unbroken barcode custody report, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I return at the end to the belt weights, duplicate label, and independent cash source, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps, especially when weighing barcode custody versus the identity of the box.",
+        "register": "plain",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "G",
+          "confidence": 53
+        },
+        "weights": {
+          "credibility": 2,
+          "digital_forensics": 0,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "What changes my vote is the belt weights, duplicate label, and independent cash source; it answers the weakness that first divided this room.",
+            "In my notes at seat 6, the belt weights, duplicate label, and independent cash source agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I am not treating the unbroken barcode custody report decide more than its source can support.",
+            "I want the source data before I accept the label attached to it. Here that means barcode custody against the physical box."
+          ],
+          "concede": [
+            "I was initially moved by the unbroken barcode custody report, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My final vote follows the belt weights, duplicate label, and independent cash source, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on barcode custody versus the identity of the box until evidence, rather than consensus, answers it; from seat 6, I relate it to barcode custody against the physical box."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A blunt sceptic who will not turn probability into certainty, especially when weighing barcode custody versus the identity of the box.",
+        "register": "formal",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 60
+        },
+        "weights": {
+          "identity": 1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I trust the belt weights, duplicate label, and independent cash source; it answers the weakness that first divided this room.",
+            "In my notes at seat 7, the belt weights, duplicate label, and independent cash source agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "My problem with the unbroken barcode custody report decide more than its source can support.",
+            "A vivid clue will not move me unless the later sequence supports it. Here that means barcode custody against the physical box."
+          ],
+          "concede": [
+            "The opposing account fairly points to the unbroken barcode custody report, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I resolve the doubt through the belt weights, duplicate label, and independent cash source, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A shift worker who notices breaks in chronology, especially when weighing barcode custody versus the identity of the box.",
+        "register": "hesitant",
+        "arc": "vibes",
+        "initial": {
+          "position": "NG",
+          "confidence": 50
+        },
+        "weights": {
+          "timeline": 2,
+          "credibility": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "The room should start with the belt weights, duplicate label, and independent cash source; it answers the weakness that first divided this room.",
+            "In my notes at seat 8, the belt weights, duplicate label, and independent cash source agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "We should test the unbroken barcode custody report decide more than its source can support.",
+            "I am asking whether the physical evidence and the testimony converge. Here that means barcode custody against the physical box."
+          ],
+          "concede": [
+            "I cannot dismiss the unbroken barcode custody report, especially before the underlying record is opened."
+          ],
+          "final": [
+            "The complete record leaves me with the belt weights, duplicate label, and independent cash source, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A bookkeeper who tests whether separate records truly reconcile, especially when weighing barcode custody versus the identity of the box.",
+        "register": "blunt",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 57
+        },
+        "weights": {
+          "credibility": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I needed corroboration, and the belt weights, duplicate label, and independent cash source; it answers the weakness that first divided this room.",
+            "In my notes at seat 9, the belt weights, duplicate label, and independent cash source agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I still question the unbroken barcode custody report decide more than its source can support.",
+            "I need to know what this proves about intent, not only opportunity. Here that means barcode custody against the physical box."
+          ],
+          "concede": [
+            "There is real persuasive force in the unbroken barcode custody report, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I am voting from the belt weights, duplicate label, and independent cash source, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A caregiver who is alert to pressure and unequal power, especially when weighing barcode custody versus the identity of the box.",
+        "register": "plain",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 47
+        },
+        "weights": {
+          "identity": 1,
+          "burden": 2
+        },
+        "lines": {
+          "agree": [
+            "The timing becomes coherent through the belt weights, duplicate label, and independent cash source; it answers the weakness that first divided this room.",
+            "In my notes at seat 10, the belt weights, duplicate label, and independent cash source agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I refuse to confuse the unbroken barcode custody report decide more than its source can support.",
+            "The custody trail matters only if it follows the same object throughout. Here that means barcode custody against the physical box."
+          ],
+          "concede": [
+            "I understand the reliance on the unbroken barcode custody report, especially before the underlying record is opened."
+          ],
+          "final": [
+            "My conclusion turns on the belt weights, duplicate label, and independent cash source, with the burden left where the judge placed it."
+          ],
+          "holdout": [
+            "I will hold on barcode custody versus the identity of the box until evidence, rather than consensus, answers it; from seat 10, I relate it to barcode custody against the physical box."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 14,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 8,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A technician who distrusts labels without source data, especially when weighing barcode custody versus the identity of the box.",
+        "register": "formal",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 54
+        },
+        "weights": {
+          "timeline": 2,
+          "credibility": -1,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "I am persuaded by the belt weights, duplicate label, and independent cash source; it answers the weakness that first divided this room.",
+            "In my notes at seat 11, the belt weights, duplicate label, and independent cash source agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I want a source check on the unbroken barcode custody report decide more than its source can support.",
+            "I am checking whether my doubt is evidential or merely speculative. Here that means barcode custody against the physical box."
+          ],
+          "concede": [
+            "I began from the unbroken barcode custody report, especially before the underlying record is opened."
+          ],
+          "final": [
+            "After testing both stories, I rely on the belt weights, duplicate label, and independent cash source, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "timeline",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 6,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A coach who asks whether conduct matches the claimed motive, especially when weighing barcode custody versus the identity of the box.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "NG",
+          "confidence": 44
+        },
+        "weights": {
+          "credibility": 2,
+          "digital_forensics": 0,
+          "burden": 0
+        },
+        "lines": {
+          "agree": [
+            "My holdout ends with the belt weights, duplicate label, and independent cash source; it answers the weakness that first divided this room.",
+            "In my notes at seat 12, the belt weights, duplicate label, and independent cash source agrees across sources that did not depend on one another."
+          ],
+          "pushback": [
+            "I am holding against the unbroken barcode custody report decide more than its source can support.",
+            "Consensus will not substitute for the independent record I still need. Here that means barcode custody against the physical box."
+          ],
+          "concede": [
+            "I will grant the unbroken barcode custody report, especially before the underlying record is opened."
+          ],
+          "final": [
+            "I can now decide because of the belt weights, duplicate label, and independent cash source, with the burden left where the judge placed it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 12,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 7,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.4",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "codex-content-curator",
+    "batch_pr": "runway-b-qa-fix"
+  }
+}
