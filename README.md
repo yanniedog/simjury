@@ -1,18 +1,29 @@
-# SimJury Pilot
+# SimJury — The Daily Docket
 
-A dramatically simplified pilot for **SimJury** — a single-player, offline jury simulation built from real historical cases.
-
-This repository is in **pilot phase**. The full v3 specification (`archive/simjury-build-spec-v3.md`) remains the long-term target; the pilot proves the core loop on a tiny case before scaling up.
+SimJury's primary product is **The Daily Docket**: one fictional, contemporary case per
+day with a deterministic interactive jury room, playable at
+[simjury.com/today](https://simjury.com/today/). The older JVM/Android pilot and
+historical Case 001 track remain in the repository but are parked; see
+[`DAILY-PIVOT.md`](DAILY-PIVOT.md).
 
 **Public site:** [simjury.com](https://simjury.com) (Cloudflare Worker `simjury-web` in `site/`).
 
-## Quick start
+## Daily Docket quick start
 
 ```bash
-cd pilot
-./gradlew run --console=plain
-./gradlew test --console=plain
+cd site/app
+npm ci
+npm run dev
+npm run lint
+npm run typecheck
+npm test
+npm run validate:cases
+npm run build
 ```
+
+The Cloudflare site wrapper is verified from the repository root with
+`npm run site:check`. Parked pilot tests remain available via
+`pilot/gradlew.bat -p pilot test` on Windows.
 
 ## Cloud checkout readiness
 
@@ -55,26 +66,28 @@ Manual recovery: **Actions → pilot-auto-release-on-queue-drain → Run workflo
 
 | Area | Location | Phase |
 |------|----------|-------|
-| Pilot spec (authoritative for now) | `PILOT-SPEC.md` | 0 |
-| Phased rollout | `ROADMAP.md` | 0 |
-| Case selection & authoring harness | `CASE_HARNESS.md` | 0 |
-| Growth & cold-start playbook | `GROWTH.md` | 4+ |
+| Daily Docket decision record | `DAILY-PIVOT.md` | Active |
+| Daily case authoring system | `docs/DAILY-CASES.md` | Active |
+| Daily web app | `site/app/` | Active |
+| Phased rollout | `ROADMAP.md` | Active + parked tracks |
+| Historical case harness | `CASE_HARNESS.md` | Parked |
+| Growth & cold-start playbook | `GROWTH.md` | Future |
 | Agent roles & supervision | `AGENTS.md` | 0 |
-| Project memory (projectmem) | `.projectmem/`, `CLAUDE.md` | 0 |
-| JVM pilot app | `pilot/` | 1 |
-| Full future spec (deferred) | `archive/simjury-build-spec-v3.md` | 4+ |
+| JVM/Android pilot | `pilot/` | Parked |
+| Full future spec | `archive/simjury-build-spec-v3.md` | Deferred |
 
 ## Development workflow
 
-1. **Branch** from `main` using `cursor/<descriptive-name>-61f6`.
+1. **Branch** from `main` using `codex/<descriptive-name>`.
 2. **Open a small PR** — one concern per PR (docs, harness, app feature, CI).
 3. **Resolve all CI checks** before merge; squash merge only.
-4. **Use projectmem** — read `CLAUDE.md` at session start; log decisions and attempts via `pjm` or MCP tools.
-5. **Follow the agent harness** in `AGENTS.md` and `CASE_HARNESS.md` when authoring or adapting cases.
+4. **Read `CLAUDE.md` first** for the current authority hierarchy and track status.
+5. **Follow the relevant harness**: `docs/DAILY-CASES.md` for fictional daily cases;
+   `CASE_HARNESS.md` only for the parked historical track.
 
 ## Branch protection
 
-`main` is protected. All changes require:
+`main` must be protected. Repository operators should enforce:
 
 - Pull request (no direct pushes)
 - Passing CI (`validate` + **`bot-presence-gate`** + **`bot-feedback-gate`** — see `WORKFLOW.md`)

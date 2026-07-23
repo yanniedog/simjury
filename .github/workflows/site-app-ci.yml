@@ -1,6 +1,6 @@
 # The Daily Docket app (site/app) CI: lint · typecheck · test · validate:cases · build.
-# Build/test only — the app's output is connected to the site deploy at the D8 cutover
-# (see DAILY-PIVOT.md); until then site.yml remains the only deploying workflow.
+# Fast build/test gate. The app's output is deployed by site.yml through
+# site/public/today/; this workflow does not deploy on its own.
 name: site-app
 
 on:
