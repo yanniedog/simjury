@@ -105,7 +105,7 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "I supervise the cell program. At dawn, four prototype cells were missing from their numbered foam slots. The inventory terminal showed no authorised movement, disposal request, or overnight test. Each cell weighed just under eleven kilograms in its transport sleeve, so all four would fit on one maintenance cart without looking unusual from a distance.",
+      "text": "I supervise the cell program. At dawn, four prototype cells were missing from their numbered foam slots. The inventory terminal showed no authorised movement, disposal request, or overnight test. Each sleeved cell weighed 10.9 kilograms, so the four missing cells weighed 43.6 kilograms and would fit together on one maintenance cart.",
       "surface_persuasion": 0.6,
       "true_weight": 0.4,
       "direction": "guilt",
@@ -169,14 +169,29 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit five combines the service-door audit and cart inspection. At 6:06 that evening, Nico’s hardware key changed the alarm threshold to forty-six kilograms. His loaded tool cart weighed 45.4 kilograms. At 2:31, the same key restored the default setting from his maintenance terminal. The audit stores the key certificate, not merely a typed username.",
-      "surface_persuasion": 0.55,
-      "true_weight": 0.9,
+      "text": "Exhibit five combines the service-door threshold record and cart inspection. At 6:06 that evening, Nico’s hardware key changed the alarm threshold to forty-six kilograms. His assigned transport cart weighed 1.8 kilograms empty; with the four sleeved cells, it would weigh 45.4 kilograms. That setting allowed the loaded cart through without triggering a weight alarm.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.6,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "One physical key prepared the door for Nico’s loaded cart and restored the setting after the theft window.",
+      "reveal_note": "Nico’s physical key set the door just above the measured 45.4-kilogram weight of his cart carrying all four cells.",
       "tags": [
         "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b5a",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit five-A is the later security audit. At 2:31, after the cage opening and camera blackout, Nico’s physical key restored the default alarm threshold from his maintenance terminal. The system records the hardware-key certificate and terminal rather than a typed username, although it cannot identify the hand that inserted the key.",
+      "surface_persuasion": 0.3,
+      "true_weight": 0.6,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The same physical key that prepared the door restored its default setting from Nico’s terminal after the theft window.",
+      "tags": [
+        "credibility",
         "identity"
       ]
     },
@@ -251,30 +266,30 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "Your key changed the threshold before and after the theft? Only you knew the drawer combination? That is what the audit says, and yes, only I knew the combination. The drawer and key were back by dawn. Can you name anyone who took them or explain the exact cart-weight setting? No. I can only tell you it was not me.",
+      "text": "Your physical key changed the threshold and later restored it? That is what the audit says. You normally locked the drawer, and only you knew its combination, but Mira cannot say it was locked that night. Did you authorise anyone to use the key? I normally locked it, and only I knew the combination. Correct. No. I left it in the drawer and made neither change.",
       "turns": [
         {
           "speaker": "pc",
-          "text": "Your key changed the threshold before and after the theft? Only you knew the drawer combination?"
+          "text": "Your physical key changed the threshold and later restored it?"
         },
         {
           "speaker": "w3",
-          "text": "That is what the audit says, and yes, only I knew the combination."
+          "text": "That is what the audit says."
         },
         {
           "speaker": "pc",
-          "text": "The drawer and key were back by dawn. Can you name anyone who took them or explain the exact cart-weight setting?"
+          "text": "You normally locked the drawer, and only you knew its combination, but Mira cannot say it was locked that night. Did you authorise anyone to use the key?"
         },
         {
           "speaker": "w3",
-          "text": "No. I can only tell you it was not me."
+          "text": "I normally locked it, and only I knew the combination. Correct. No. I left it in the drawer and made neither change."
         }
       ],
-      "surface_persuasion": 0.6,
-      "true_weight": 0.6,
+      "surface_persuasion": 0.45,
+      "true_weight": 0.3,
       "direction": "guilt",
-      "reveal_stamp": "decisive",
-      "reveal_note": "Nico could not explain how his key completed two security changes tailored to his cart, but he did not carry the burden of explanation.",
+      "reveal_stamp": "minor",
+      "reveal_note": "Nico confirmed his usual drawer controls and the key record, while accepting that nobody knew whether the drawer was locked that night.",
       "tags": [
         "credibility",
         "identity"
@@ -398,7 +413,7 @@
           ],
           "pushback": [
             "Juror 3: A shared cage code creates noise, but it does not explain the precise sensor change.",
-            "Juror 3: If someone borrowed the key, they also knew Nico's drawer combination and returned everything unnoticed."
+            "Juror 3: If someone borrowed the key, they had to find it, use it twice, and return it unnoticed during the shift."
           ],
           "concede": [
             "Juror 3: I accept that nobody saw Nico do it. I am relying on the records, not an eyewitness."
