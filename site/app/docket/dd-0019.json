@@ -1,0 +1,1068 @@
+{
+  "id": "dd-0019",
+  "publish_date": "2026-07-20",
+  "label": "fiction",
+  "title": "The Refund Window",
+  "setting": "A digital-ticket marketplace fraud trial in 2026, where shared office logins obscure the one device that collected every refund.",
+  "charge": "Dishonestly obtaining customer payments for event tickets that did not exist",
+  "elements": [
+    "The accused performed or participated in the alleged act.",
+    "The act was deliberate or dishonest rather than accidental.",
+    "The prosecution has proved every required fact beyond reasonable doubt."
+  ],
+  "hook": "The tickets look real until the gate rejects them. The refunds look generous until every one returns to the seller.",
+  "accused": {
+    "cast_id": "w3",
+    "human": "Milo Quade built a small resale desk after caring work made regular employment difficult.",
+    "if_guilty": "A conviction means prison, bankruptcy, and losing the flexible business that lets him care for his mother."
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The prosecution says the accused listed invented seats, delayed buyers with false transfer notices, and redirected refunds to a wallet controlled from his personal device. The apparent centre of the case is a shared office account used for false listings, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The defence says three contractors shared the marketplace login and one of them exploited a chaotic office while the accused was caring for family. Suspicion gathered around a person before investigators tested the limits of a shared office account used for false listings; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The separate records now meet at the same point. one payout device approving every diverted refund does not depend on rumour or hindsight, and it fits the conduct before and after the event. Taken together, the prosecution says the elements are proved beyond reasonable doubt."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The prosecution still asks you to bridge uncertainty with suspicion. a shared office account used for false listings looked powerful at first, yet every witness accepted limits around it. If the remaining record supports a reasonable innocent account, your duty is to return not guilty."
+      }
+    }
+  },
+  "epilogue": "Buyers recovered most losses through the marketplace guarantee. Milo’s mother moved in with relatives during his sentence, and the platform replaced shared seller accounts with named approvals for every refund destination change. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Aven",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Mara Venn",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Oren Pike",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Cera Lunt",
+      "role_label": "marketplace trust analyst",
+      "side": "prosecution"
+    },
+    {
+      "id": "w2",
+      "name": "Aven Ro",
+      "role_label": "ticket buyer",
+      "side": "prosecution"
+    },
+    {
+      "id": "w3",
+      "name": "Milo Quade",
+      "role_label": "the accused — independent ticket reseller",
+      "side": "defence"
+    },
+    {
+      "id": "w4",
+      "name": "Sori Pell",
+      "role_label": "former listing contractor",
+      "side": "defence"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "The seller account listed forty-two seats that the venues never issued. Three contractors knew its password, so the listing history alone cannot identify who entered the false inventory. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account. That is what I personally saw, heard, or did; I cannot take it further.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.55,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The fake tracking numbers were the tell the room kept circling back to: a supplier failing you does not require you to post decoy socks.",
+      "tags": [
+        "method",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I bought two seats and received convincing transfer notices. At the gate the codes failed, and support told me the order had already been marked refunded to another destination. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "One buyer's story, multiplied by two hundred and sixty-nine. The pattern was the crime; she was one data point of it who could cry.",
+      "tags": [
+        "method",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "The refund destination changed six times. Each change required a hardware approval, and all six approvals came from a key paired to Milo’s personal tablet. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result. Nothing in that account depends on a later reconstruction of events.",
+      "surface_persuasion": 0.8,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "A convincing paper trail of victimhood — until the device forensics showed both sides of the conversation being typed on the same keyboard.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "A password was shared by four people? Yes. The listing login cannot identify one author. And your first accusation relied on that login? It did, before we obtained the hardware approval records. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "A password was shared by four people?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Yes. The listing login cannot identify one author."
+        },
+        {
+          "speaker": "dc",
+          "text": "And your first accusation relied on that login?"
+        },
+        {
+          "speaker": "w1",
+          "text": "It did, before we obtained the hardware approval records. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+        }
+      ],
+      "surface_persuasion": 0.5,
+      "true_weight": 0.35,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The early honest shipments were real — and standard. Exit scams buy their reviews first; the clean history was the runway, not the rebuttal.",
+      "tags": [
+        "credibility",
+        "method"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Milo reported that tablet lost on Monday. Two refund changes were approved on Tuesday, yet the device later connected to his home router and installed a routine system update. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "He was corresponding with himself and rehearsing the supplier's lines in advance. The middleman and the scammer shared a notes app.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "I shared the listing password because weekend contractors needed to work. I never shared my hardware key, but I kept it in an unlocked desk when the office was busy. The record was created at the time and its origin is not disputed. The jury saw the complete item, including the limits written beside the result.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.75,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "A middleman's money flows through him to a supplier. This money flowed to a car lease. There was never anything upstream.",
+      "tags": [
+        "method",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "text": "The transfer notices used phrases from Sori’s saved templates. She had argued about pay and left suddenly, which gave her both access and a reason to damage the business. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account.",
+      "surface_persuasion": 0.6,
+      "true_weight": 0.3,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "'Buying time' was the confession wearing a coat: time was the one thing every exit scam needs, and the decoy parcels bought exactly four more weeks of orders.",
+      "tags": [
+        "credibility",
+        "motive"
+      ]
+    },
+    {
+      "id": "b8",
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "cross",
+      "text": "Your tablet was missing when approvals continued? That is what I reported. Yet it connected to your home network the next night? The record says that; I cannot explain who brought it there. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "Your tablet was missing when approvals continued?"
+        },
+        {
+          "speaker": "w3",
+          "text": "That is what I reported."
+        },
+        {
+          "speaker": "pc",
+          "text": "Yet it connected to your home network the next night?"
+        },
+        {
+          "speaker": "w3",
+          "text": "The record says that; I cannot explain who brought it there. I gave that answer in my first statement and it remains my evidence today. I gave that answer in my first statement and it remains my evidence today."
+        }
+      ],
+      "surface_persuasion": 0.6,
+      "true_weight": 0.6,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The third invisible stranger of the week: someone who used his details, on his phone, in his notes app, days ahead of schedule.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b9",
+      "kind": "witness",
+      "speaker": "w4",
+      "mode": "examination",
+      "text": "I wrote those templates for legitimate delays. I never held Milo’s hardware key, entered his home, or knew the refund wallet until investigators showed it to me. I recorded that detail before anyone suggested what my evidence should mean. I remember it because it was unusual, and I have not changed my account. That is what I personally saw, heard, or did; I cannot take it further.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Her grief was real and her evidence was secondhand: the distress she saw fits a scammer watching his exit close just as well as a victim watching his business die.",
+      "tags": [
+        "credibility",
+        "motive"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person. The record was created at the time and its origin is not disputed.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The direction gave his defence its full width — a real middleman scam would have acquitted him. The notes app took that defence away.",
+      "tags": [
+        "burden",
+        "credibility"
+      ]
+    }
+  ],
+  "checkins": [
+    "b3",
+    "b5",
+    "b8",
+    "b9"
+  ],
+  "verdict_truth": "Guilty",
+  "twist": "The shared listing account could not identify who created the false tickets. Every diverted refund, however, was approved by a hardware key paired only with Milo’s personal tablet, including two approvals made after he claimed the tablet was lost.",
+  "difficulty_target": 0.66,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "A quick first impression matters to this juror, but a concrete contradiction can still move them.",
+        "register": "plain",
+        "arc": "vibes",
+        "initial": {
+          "position": "NG",
+          "confidence": 70
+        },
+        "weights": {
+          "credibility": 2,
+          "motive": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a shared office account used for false listings; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether one payout device approving every diverted refund survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "A methodical note-taker who wants each claim tied to a record created at the time.",
+        "register": "blunt",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 65
+        },
+        "weights": {
+          "method": 2,
+          "digital_forensics": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a shared office account used for false listings; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether one payout device approving every diverted refund survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "A sceptic of polished digital evidence who listens closely to ordinary human detail.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 70
+        },
+        "weights": {
+          "burden": 2,
+          "credibility": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a shared office account used for false listings; it is less complete than it first appeared."
+          ],
+          "holdout": [
+            "I am holding my position until someone deals directly with one payout device approving every diverted refund, not just the surrounding suspicion.",
+            "I am holding my position until someone deals directly with one payout device approving every diverted refund, not just the surrounding suspicion. I want the room to test that point once more."
+          ],
+          "final": [
+            "My verdict turns on whether one payout device approving every diverted refund survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "A rule-focused juror who returns the room to the prosecution burden when discussion drifts.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 55
+        },
+        "weights": {
+          "burden": 2,
+          "method": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a shared office account used for false listings; it is less complete than it first appeared."
+          ],
+          "burden_correct": [
+            "Unanswered questions do not reverse the burden. The prosecution must connect one payout device approving every diverted refund to every element.",
+            "Unanswered questions do not reverse the burden. The prosecution must connect one payout device approving every diverted refund to every element. I want the room to test that point once more."
+          ],
+          "final": [
+            "My verdict turns on whether one payout device approving every diverted refund survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "A practical juror who begins undecided and changes position when one fact explains the timeline.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": {
+          "position": "G",
+          "confidence": 55
+        },
+        "weights": {
+          "method": 1,
+          "credibility": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a shared office account used for false listings; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether one payout device approving every diverted refund survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "A blunt juror who distrusts convenient memory from either side.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 45
+        },
+        "weights": {
+          "digital_forensics": 1,
+          "credibility": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a shared office account used for false listings; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether one payout device approving every diverted refund survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "A cautious holdout who needs the decisive evidence stated without exaggeration.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "NG",
+          "confidence": 70
+        },
+        "weights": {
+          "identity": 2,
+          "digital_forensics": 2
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a shared office account used for false listings; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether one payout device approving every diverted refund survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 15,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": -1,
+              "confidence": -5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "concede"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "A warm juror who notices the human cost but will not let sympathy replace proof.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 50
+        },
+        "weights": {
+          "credibility": 2
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a shared office account used for false listings; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether one payout device approving every diverted refund survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "unreliable",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": -5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 60
+        },
+        "weights": {
+          "identity": 1,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits."
+          ],
+          "burden_drift": [
+            "There are too many unanswered questions around a shared office account used for false listings; I want the accused to explain them.",
+            "There are too many unanswered questions around a shared office account used for false listings; I want the accused to explain them. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a shared office account used for false listings; it is less complete than it first appeared."
+          ],
+          "burden_correct": [
+            "Unanswered questions do not reverse the burden. The prosecution must connect one payout device approving every diverted refund to every element."
+          ],
+          "final": [
+            "My verdict turns on whether one payout device approving every diverted refund survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "A hesitant speaker who tests the strongest argument by asking what it leaves unexplained.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "U",
+          "confidence": 40
+        },
+        "weights": {
+          "digital_forensics": 1,
+          "motive": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a shared office account used for false listings; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether one payout device approving every diverted refund survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "A steady foreperson who makes the room separate suspicion from proof beyond reasonable doubt.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "U",
+          "confidence": 45
+        },
+        "weights": {
+          "method": 2,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible.",
+            "That argument fits a recorded part of this case, and I give it real weight without treating it as infallible. I want the room to test that point once more."
+          ],
+          "pushback": [
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits.",
+            "I am not ready to let one attractive clue decide The Refund Window; show me how the complete sequence fits. I want the room to test that point once more."
+          ],
+          "concede": [
+            "That changes how I understand a shared office account used for false listings; it is less complete than it first appeared."
+          ],
+          "final": [
+            "My verdict turns on whether one payout device approving every diverted refund survives the burden and the competing explanation."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "openai-codex",
+    "prompt_version": "dd-2026-v2",
+    "reviewer": "Codex Content Curator; owner spot-check pending",
+    "batch_pr": "codex/docket-runway-a"
+  }
+}
