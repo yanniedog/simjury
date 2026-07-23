@@ -303,21 +303,6 @@
       ]
     },
     {
-      "id": "b10",
-      "kind": "direction",
-      "speaker": "judge",
-      "text": "The judge directs you that spoken approval is evidence to assess, not a rule that automatically establishes informed consent. The prosecution must prove dishonest taking and intent beyond reasonable doubt. Keep the burden on the prosecution while comparing capacity, prompting, payee creation, and destination, and do not seek outside information about the family or payment service.",
-      "surface_persuasion": 0.45,
-      "true_weight": 0.5,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance added context without resolving identity or intent.",
-      "tags": [
-        "burden",
-        "procedure"
-      ]
-    },
-    {
       "id": "b11",
       "kind": "exhibit",
       "speaker": "pc",
@@ -332,6 +317,21 @@
         "timeline",
         "identity"
       ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that spoken approval is evidence to assess, not a rule that automatically establishes informed consent. The prosecution must prove dishonest taking and intent beyond reasonable doubt. Keep the burden on the prosecution while comparing capacity, prompting, payee creation, and destination, and do not seek outside information about the family or payment service.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance added context without resolving identity or intent.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
     }
   ],
   "checkins": [
@@ -341,7 +341,7 @@
     "b10"
   ],
   "verdict_truth": "Guilty",
-  "twist": "The spoken gift approvals looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter payee and threshold audit supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "twist": "Her calm voice made each payment sound like a gift. But Ilan's handset created the payees, muted confirmations, searched the alert threshold, and kept a schedule titled drip feeding before the first transfer. Her words supplied trust; his records showed how he converted that trust into forty-three payments she could not explain.",
   "difficulty_target": 0.66,
   "jury": {
     "jurors": [
