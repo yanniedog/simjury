@@ -442,8 +442,8 @@
           "digital_forensics": 1
         },
         "lines": {
-          "agree": [
-          "Juror 4: Pavel admits he had the power to stop the aircraft and did not use it. We should not soften that just because the software failed."
+        "agree": [
+          "Juror 4: Pavel’s screen stayed green and gave no changed-route warning. That directly weakens the claim that he saw an obvious risk."
           ],
           "pushback": [
           "Juror 4: Do not tell me what the screen probably showed. Point me to the preserved record.",
@@ -874,13 +874,11 @@
           "burden": 1
         },
         "lines": {
-          "agree": [
-          "Juror 10: My notes show Pavel opened the weather panel and chose not to ground the aircraft. I still think he should explain why that was reasonable."
-          ],
-          "pushback": [
+        "pushback": [
           "Juror 10: The green badge does not settle this. The question is what Pavel should have done with the information he actually received."
-          ],
-          "burden_drift": [
+        ],
+        "burden_drift": [
+          "Juror 10: My notes show Pavel opened the weather panel and chose not to ground the aircraft. I still think he should explain why that was reasonable.",
           "Juror 10: Pavel was in charge. If he cannot satisfy us that launching was safe, I am inclined to hold that against him.",
           "Juror 10: I keep asking Pavel to prove that he checked enough. I know the judge said the prosecution carries that burden, but his answer still feels incomplete."
           ],
@@ -904,7 +902,7 @@
             "effect": {
               "delta": 1,
               "confidence": 10,
-              "line": "agree"
+              "line": "burden_drift"
             }
           },
           {
