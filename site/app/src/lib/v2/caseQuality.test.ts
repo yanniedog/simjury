@@ -43,6 +43,32 @@ describe('checkDocketCase', () => {
     expect(checkDocketCase(c).join()).toMatch(/spoken by the court/)
   })
 
+  it('requires exactly one judge direction and makes it the final beat', () => {
+    const duplicate = makeDocketCase()
+    duplicate.beats.push({
+      ...duplicate.beats[duplicate.beats.length - 1],
+      id: 'b11',
+    })
+    expect(checkDocketCase(duplicate).join()).toMatch(
+      /dd-0001 beats must contain exactly one judge direction \(found 2\)/,
+    )
+
+    const early = makeDocketCase()
+    const direction = early.beats.pop()
+    expect(direction?.kind).toBe('direction')
+    if (direction) early.beats.splice(early.beats.length - 1, 0, direction)
+    expect(checkDocketCase(early).join()).toMatch(
+      /dd-0001 final beat 'b9' must be the sole judge direction/,
+    )
+  })
+
+  it('requires the final check-in on the final direction beat', () => {
+    const c = makeDocketCase({ checkins: ['b3', 'b6', 'b9'] })
+    expect(checkDocketCase(c).join()).toMatch(
+      /dd-0001 final check-in must reference final beat 'b10' \(got 'b9'\)/,
+    )
+  })
+
   it('flags a witness beat without examination/cross', () => {
     const c = makeDocketCase()
     c.beats[0] = { ...c.beats[0], mode: undefined }
@@ -120,8 +146,8 @@ describe('checkDocketCase', () => {
 
   it('flags a misleading beat after the final check-in', () => {
     const c = makeDocketCase()
-    const lastCheckin = c.checkins[c.checkins.length - 1]
-    const lastAt = c.beats.findIndex((b) => b.id === lastCheckin)
+    c.checkins = ['b3', 'b6', 'b9']
+    const lastAt = c.beats.findIndex((b) => b.id === 'b9')
     c.beats[lastAt + 1] = {
       ...c.beats[lastAt + 1],
       reveal_stamp: 'misleading',
@@ -129,6 +155,63 @@ describe('checkDocketCase', () => {
       true_weight: 0.1,
     }
     expect(checkDocketCase(c).join()).toMatch(/after the final check-in/)
+  })
+
+  it('flags only known scaffold phrases with case and field locations', () => {
+    const c = makeDocketCase()
+    c.statements.opening.prosecution.text =
+      `${prose(54)} At this third point, the record changed.`
+    c.beats[0].text =
+      `${prose(45)} This was the 7th fact before investigators settled on the accused.`
+    c.beats[1].reveal_note =
+      'The room must test this against every charged element.'
+    const agreeLines = c.jury.jurors[0].lines.agree
+    expect(agreeLines).toBeDefined()
+    if (agreeLines) {
+      agreeLines[0] = 'This was the second fact the room considered.'
+    }
+    c.epilogue =
+      `${prose(50)} The people involved kept living with the consequences after the courtroom emptied. ` +
+      'The case changed workplace rules, but it could not return the months spent under accusation.'
+
+    const joined = checkDocketCase(c).join('\n')
+    expect(joined).toMatch(
+      /dd-0001 statement opening\.prosecution\.text contains generated scaffold phrase 'At this nth point'/,
+    )
+    expect(joined).toMatch(
+      /dd-0001 beat b1\.text contains generated scaffold phrase 'This was the nth fact'/,
+    )
+    expect(joined).toMatch(
+      /dd-0001 beat b1\.text contains generated scaffold phrase 'before investigators settled on'/,
+    )
+    expect(joined).toMatch(
+      /dd-0001 beat b2\.reveal_note contains generated scaffold phrase 'against every charged element'/,
+    )
+    expect(joined).toMatch(
+      /dd-0001 juror J-01 lines\.agree\[0\] contains generated scaffold phrase 'This was the nth fact'/,
+    )
+    expect(joined).toMatch(
+      /dd-0001 epilogue contains generated scaffold phrase 'people kept living after the courtroom emptied'/,
+    )
+    expect(joined).toMatch(
+      /dd-0001 epilogue contains generated scaffold phrase 'case changed rules but could not return the accused months'/,
+    )
+  })
+
+  it('allows natural prose near the explicit scaffold phrases', () => {
+    const c = makeDocketCase()
+    c.statements.opening.prosecution.text =
+      `${prose(54)} At this point, counsel turned to the device record.`
+    c.beats[0].text =
+      `${prose(45)} This was a fact the witness could verify independently.`
+    c.epilogue =
+      `${prose(52)} The proceedings ended, but recovery took several months.`
+
+    expect(
+      checkDocketCase(c).filter((issue) =>
+        issue.includes('generated scaffold phrase'),
+      ),
+    ).toEqual([])
   })
 
   it('flags a real platform name in player-visible text', () => {

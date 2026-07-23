@@ -196,7 +196,7 @@ export function makeDocketCase(overrides: Partial<DocketCase> = {}): DocketCase 
     epilogue: prose(60),
     cast: makeCast(),
     beats: makeBeats(),
-    checkins: ['b3', 'b6', 'b9'],
+    checkins: ['b3', 'b6', 'b10'],
     verdict_truth: 'Not Guilty',
     twist: 'the loud evidence was hollow; the quiet exhibit was the answer',
     difficulty_target: 0.5,
