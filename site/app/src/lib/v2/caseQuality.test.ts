@@ -35,12 +35,18 @@ describe('checkDocketCase', () => {
     expect(checkDocketCase(c).join()).toMatch(/not in the cast/)
   })
 
-  it('flags a direction not spoken by the court', () => {
+  it('flags a direction not spoken by the judge', () => {
     const c = makeDocketCase()
     c.beats = c.beats.map((b) =>
       b.kind === 'direction' ? { ...b, speaker: 'w1' } : b,
     )
-    expect(checkDocketCase(c).join()).toMatch(/spoken by the court/)
+    expect(checkDocketCase(c).join()).toMatch(/spoken by the judge/)
+
+    const clerkDirection = makeDocketCase()
+    clerkDirection.beats = clerkDirection.beats.map((b) =>
+      b.kind === 'direction' ? { ...b, speaker: 'clerk' } : b,
+    )
+    expect(checkDocketCase(clerkDirection).join()).toMatch(/spoken by the judge/)
   })
 
   it('requires exactly one judge direction and makes it the final beat', () => {
@@ -161,6 +167,8 @@ describe('checkDocketCase', () => {
     const c = makeDocketCase()
     c.statements.opening.prosecution.text =
       `${prose(54)} At this third point, the record changed.`
+    c.hook = 'At this third point, the record changed.'
+    c.twist = 'This was the second fact the room considered.'
     c.beats[0].text =
       `${prose(45)} This was the 7th fact before investigators settled on the accused.`
     c.beats[1].reveal_note =
@@ -177,6 +185,12 @@ describe('checkDocketCase', () => {
     const joined = checkDocketCase(c).join('\n')
     expect(joined).toMatch(
       /dd-0001 statement opening\.prosecution\.text contains generated scaffold phrase 'At this nth point'/,
+    )
+    expect(joined).toMatch(
+      /dd-0001 hook contains generated scaffold phrase 'At this nth point'/,
+    )
+    expect(joined).toMatch(
+      /dd-0001 twist contains generated scaffold phrase 'This was the nth fact'/,
     )
     expect(joined).toMatch(
       /dd-0001 beat b1\.text contains generated scaffold phrase 'This was the nth fact'/,

@@ -107,6 +107,16 @@ export function wordCount(text: string): number {
 
 function scaffoldIssues(c: DocketCase): string[] {
   const surfaces: Array<{ field: string; text: string }> = [
+    { field: 'title', text: c.title },
+    { field: 'setting', text: c.setting },
+    { field: 'charge', text: c.charge },
+    ...c.elements.map((text, index) => ({
+      field: `elements[${index}]`,
+      text,
+    })),
+    { field: 'hook', text: c.hook },
+    { field: 'accused.human', text: c.accused.human },
+    { field: 'accused.if_guilty', text: c.accused.if_guilty },
     {
       field: 'statement opening.prosecution.text',
       text: c.statements.opening.prosecution.text,
@@ -124,15 +134,46 @@ function scaffoldIssues(c: DocketCase): string[] {
       text: c.statements.closing.defence.text,
     },
     { field: 'epilogue', text: c.epilogue },
+    { field: 'twist', text: c.twist },
   ]
 
+  for (const member of c.cast) {
+    surfaces.push(
+      { field: `cast ${member.id}.name`, text: member.name },
+      { field: `cast ${member.id}.role_label`, text: member.role_label },
+    )
+  }
+  if (c.media) {
+    surfaces.push(
+      { field: 'media.cover.alt', text: c.media.cover.alt },
+      { field: 'media.cover.caption', text: c.media.cover.caption },
+      { field: 'media.accused.alt', text: c.media.accused.alt },
+      { field: 'media.accused.caption', text: c.media.accused.caption },
+    )
+    for (const [beatId, media] of Object.entries(c.media.beats)) {
+      surfaces.push(
+        { field: `media.beats.${beatId}.alt`, text: media.alt },
+        { field: `media.beats.${beatId}.caption`, text: media.caption },
+      )
+    }
+  }
   for (const beat of c.beats) {
     surfaces.push(
       { field: `beat ${beat.id}.text`, text: beat.text },
       { field: `beat ${beat.id}.reveal_note`, text: beat.reveal_note },
     )
+    beat.turns?.forEach((turn, index) => {
+      surfaces.push({
+        field: `beat ${beat.id}.turns[${index}].text`,
+        text: turn.text,
+      })
+    })
   }
   for (const juror of c.jury.jurors) {
+    surfaces.push(
+      { field: `juror ${juror.id}.label`, text: juror.label },
+      { field: `juror ${juror.id}.persona`, text: juror.persona },
+    )
     for (const [lineFunction, lines] of Object.entries(juror.lines)) {
       lines?.forEach((text, index) => {
         surfaces.push({
@@ -329,8 +370,11 @@ export function checkDocketCase(c: DocketCase): string[] {
       issues.push(`beat ${b.id} speaker '${b.speaker}' is not in the cast`)
       continue
     }
-    if (b.kind === 'direction' && speaker.side !== 'court') {
-      issues.push(`direction beat ${b.id} must be spoken by the court`)
+    if (
+      b.kind === 'direction' &&
+      (speaker.side !== 'court' || !/\bjudge\b/i.test(speaker.role_label))
+    ) {
+      issues.push(`direction beat ${b.id} must be spoken by the judge`)
     }
     if (b.kind === 'witness') {
       if (!b.mode) {
