@@ -193,7 +193,7 @@
       "tags": ["burden", "digital_forensics"]
     }
   ],
-  "checkins": ["b3", "b5", "b8", "b9"],
+  "checkins": ["b3", "b5", "b8", "b10"],
   "verdict_truth": "Not Guilty",
   "twist": "The word 'deepfake' nearly convicted a man whose camera had signed its own footage the moment it recorded. The prosecution expert diagnosed inpainting from a re-encoded copy without ever touching the card; the compression scars she flagged appear on every unit of that camera filming a blinking LED at night. The signature was unbroken, the city's own signal telemetry agreed frame for frame, and the 'motive' was a four-dollar bonus. He was seven over the limit and bone tired — but the light was his, and the crash was not the crime charged.",
   "difficulty_target": 0.7,

@@ -303,21 +303,6 @@
       ]
     },
     {
-      "id": "b10",
-      "kind": "direction",
-      "speaker": "judge",
-      "text": "The judge directs you that Oris need not show who else could access the purchase account or repair room. The prosecution must prove knowing installation and use of the tracker beyond reasonable doubt. Assess ownership, maintenance, viewing history, and opportunity as separate questions, and do not search for the device, residence, routes, or people outside the admitted evidence.",
-      "surface_persuasion": 0.45,
-      "true_weight": 0.5,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "The limits surrounding the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance kept it from deciding the charge alone.",
-      "tags": [
-        "burden",
-        "procedure"
-      ]
-    },
-    {
       "id": "b11",
       "kind": "exhibit",
       "speaker": "pc",
@@ -332,6 +317,21 @@
         "timeline",
         "identity"
       ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that Oris need not show who else could access the purchase account or repair room. The prosecution must prove knowing installation and use of the tracker beyond reasonable doubt. Assess ownership, maintenance, viewing history, and opportunity as separate questions, and do not search for the device, residence, routes, or people outside the admitted evidence.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The limits surrounding the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance kept it from deciding the charge alone.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
     }
   ],
   "checkins": [
@@ -341,7 +341,7 @@
     "b10"
   ],
   "verdict_truth": "Guilty",
-  "twist": "The shared purchase account looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter battery-change and alert history supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "twist": "The shared account could not say who bought or first handled the tag. The battery did: it died while Sera's bicycle stood beside Oris's private bench, restarted seven minutes later, and was paired with a note on his tablet naming her gym hours and its next replacement date. The surveillance lasted because he returned to maintain it.",
   "difficulty_target": 0.68,
   "jury": {
     "jurors": [
