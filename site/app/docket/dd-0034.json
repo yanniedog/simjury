@@ -303,21 +303,6 @@
       ]
     },
     {
-      "id": "b10",
-      "kind": "direction",
-      "speaker": "judge",
-      "text": "The judge directs you that weak workplace controls do not transfer the burden to Mira. The prosecution must prove dishonest creation or use and the required intent beyond reasonable doubt. Device ownership may support identity, but you must assess continuity, alternative access, and every admitted record without assuming the accused must explain suspicious events.",
-      "surface_persuasion": 0.45,
-      "true_weight": 0.5,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "The wider sequence qualified what the judge directs you that weak workplace controls do not transfer the burden to mira could fairly support.",
-      "tags": [
-        "burden",
-        "procedure"
-      ]
-    },
-    {
       "id": "b11",
       "kind": "exhibit",
       "speaker": "dc",
@@ -331,6 +316,21 @@
         "procedure",
         "timeline",
         "identity"
+      ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that weak workplace controls do not transfer the burden to Mira. The prosecution must prove dishonest creation or use and the required intent beyond reasonable doubt. Device ownership may support identity, but you must assess continuity, alternative access, and every admitted record without assuming the accused must explain suspicious events.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The wider sequence qualified what the judge directs you that weak workplace controls do not transfer the burden to mira could fairly support.",
+      "tags": [
+        "burden",
+        "procedure"
       ]
     }
   ],

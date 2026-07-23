@@ -160,7 +160,7 @@
       "id": "b4",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "The defence tenders Kes's phone-location record, showing the handset connected to a home charger throughout the night. A neighbour's entry camera also shows no departure, although a rear walkway is outside its view. The material supports an alibi but cannot establish that Kes remained inside continuously. The phone remained home, but that fact said nothing about the unreturned access token or prototype.",
+      "text": "The defence tenders Kes's phone-location record, showing the handset connected to a home charger throughout the night. A neighbour's entry camera also shows no departure, although a rear walkway is outside its view. The material supports an alibi but cannot establish that Kes remained inside continuously. The phone remained home, but that fact did not identify who replayed the palm template or handled the prototype.",
       "surface_persuasion": 0.7899999999999999,
       "true_weight": 0.22,
       "direction": "innocence",
@@ -303,21 +303,6 @@
       ]
     },
     {
-      "id": "b10",
-      "kind": "direction",
-      "speaker": "judge",
-      "text": "The judge directs you that Kes need not explain every trace or prove who replayed the access template. The prosecution must establish the taking and dishonest intent beyond reasonable doubt. Weigh shared workshop contamination against protected residue and later sale preparation, and do not investigate the laboratory, marketplace, devices, or any person beyond the evidence heard here.",
-      "surface_persuasion": 0.45,
-      "true_weight": 0.5,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "The wider sequence qualified what the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance could fairly support.",
-      "tags": [
-        "burden",
-        "procedure"
-      ]
-    },
-    {
       "id": "b11",
       "kind": "exhibit",
       "speaker": "pc",
@@ -332,6 +317,21 @@
         "timeline",
         "identity"
       ]
+    },
+    {
+      "id": "b10",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "The judge directs you that Kes need not explain every trace or prove who replayed the access template. The prosecution must establish the taking and dishonest intent beyond reasonable doubt. Weigh shared workshop contamination against protected residue and later sale preparation, and do not investigate the laboratory, marketplace, devices, or any person beyond the evidence heard here.",
+      "surface_persuasion": 0.45,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The wider sequence qualified what the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance could fairly support.",
+      "tags": [
+        "burden",
+        "procedure"
+      ]
     }
   ],
   "checkins": [
@@ -341,7 +341,7 @@
     "b10"
   ],
   "verdict_truth": "Guilty",
-  "twist": "The perfect palm-scan trail looked like the shortest route to a verdict, but it measured suspicion rather than responsibility. The quieter sealed dust and sale preparation supplied the independent mechanism, timing, and control needed to resolve the charge.",
+  "twist": "The palm scan was almost too perfect: the laboratory itself proved a stored template could replay a living hand. What the replay could not manufacture was prototype dust and fresh cradle adhesive sealed beneath Kes's private chest liner, or a deleted sale draft describing unpublished battery life. The compromised doorway created doubt; the protected residue and storage message closed it.",
   "difficulty_target": 0.64,
   "jury": {
     "jurors": [
