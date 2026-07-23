@@ -88,7 +88,7 @@
       "id": "b1",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "We recovered sealed stolen medicine from locker seventy-two. The collection code had been sent to the mobile number police then associated with Ilya. At this first point, the exhibit’s stated limit is that a current-subscriber search cannot identify who held the number when the locker was booked, so it must be weighed with the rest of the sequence.",
+      "text": "Police recovered sealed stolen medicine from locker seventy-two. The collection code had been sent to the mobile number investigators then associated with Ilya. At this first point, the exhibit’s stated limit is that a current-subscriber search cannot identify who held the number when the locker was booked, so it must be weighed with the rest of the sequence.",
       "surface_persuasion": 0.8,
       "true_weight": 0.15,
       "direction": "guilt",
@@ -153,7 +153,7 @@
       "id": "b4",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Our service stored the phone number but not the subscriber name. A later customer search returned Ilya because he held the number when investigators asked. At this fourth point, the exhibit’s stated limit is that a current-subscriber search cannot identify who held the number when the locker was booked, so it must be weighed with the rest of the sequence.",
+      "text": "The locker service stored the phone number but not the subscriber name. A later customer search returned Ilya because he held the number when investigators asked. At this fourth point, the exhibit’s stated limit is that a current-subscriber search cannot identify who held the number when the locker was booked, so it must be weighed with the rest of the sequence.",
       "surface_persuasion": 0.55,
       "true_weight": 0.35,
       "direction": "guilt",
@@ -173,7 +173,7 @@
       "true_weight": 0.85,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "The strongest prosecution point was this: Ilya stood at the locker bank and later saw a message connected with the stolen medicine compartment.",
+      "reveal_note": "This was the decisive innocence evidence: Carrier assignment records show the number moved to Ilya six days after locker seventy-two was booked and two days after its first collection reminder. It turned the alternative explanation into a checkable account the prosecution could not exclude beyond reasonable doubt.",
       "tags": [
         "timeline",
         "digital_forensics"

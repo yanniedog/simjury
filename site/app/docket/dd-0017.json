@@ -88,7 +88,7 @@
       "id": "b1",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The control record displays Pavel’s operator ID beside an approved route. Our first report assumed that badge meant he reviewed the same geometry flown on the accident morning. At this first point, the exhibit’s stated limit is that an inherited interface badge is not proof that the operator approved the updated geometry, so it must be weighed with the rest of the sequence.",
+      "text": "The control record displays Pavel’s operator ID beside an approved route. The first report assumed that badge meant he reviewed the same geometry flown on the accident morning. At this first point, the exhibit’s stated limit is that an inherited interface badge is not proof that the operator approved the updated geometry, so it must be weighed with the rest of the sequence.",
       "surface_persuasion": 0.8,
       "true_weight": 0.15,
       "direction": "guilt",
@@ -173,7 +173,7 @@
       "true_weight": 0.85,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "The strongest prosecution point was this: Pavel’s ID remained on the route and he had authority to stop flights after district weather alerts reached the fleet dashboard.",
+      "reveal_note": "This was the decisive innocence evidence: The map service updated at 3:06 and moved the route eighteen metres east. The interface retained yesterday’s approval badge and did not show the operator a changed-route banner. It turned the alternative explanation into a checkable account the prosecution could not exclude beyond reasonable doubt.",
       "tags": [
         "timeline",
         "digital_forensics"

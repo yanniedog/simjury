@@ -173,7 +173,7 @@
       "true_weight": 0.85,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "The strongest prosecution point was this: payments increased while Amra controlled access, received the money, and limited family contact with a vulnerable account holder.",
+      "reveal_note": "This was the decisive innocence evidence: An old tablet contained voice notes made before each transfer. He states the amount, purpose, and date, then asks Amra to enter it while he listens. It turned the alternative explanation into a checkable account the prosecution could not exclude beyond reasonable doubt.",
       "tags": [
         "timeline",
         "digital_forensics"

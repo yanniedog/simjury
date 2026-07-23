@@ -186,9 +186,9 @@
       "speaker": "pc",
       "text": "Riders swap batteries during busy shifts. A pack identifies the battery, not automatically the person holding the handlebars, and the cooperative kept no formal handover log. At this sixth point, the exhibit’s stated limit is that a blurred image and prior group message make the visual identification unsafe on its own, so it must be weighed with the rest of the sequence.",
       "surface_persuasion": 0.5,
-      "true_weight": 0.75,
-      "direction": "guilt",
-      "reveal_stamp": "decisive",
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
       "reveal_note": "The competing account was concrete rather than speculative: couriers swapped batteries, the video could not show a face, and Nora learned Kian’s name before the identification procedure.",
       "tags": [
         "method",

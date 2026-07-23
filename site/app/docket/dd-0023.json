@@ -186,9 +186,9 @@
       "speaker": "w3",
       "text": "I removed the probe earlier because it was chirping and tenants complained. When the pipe failed, I dealt with water first and paperwork later; the invoices were reconstructed from cash payments. At this sixth point, the exhibit’s stated limit is that damage proves a flood occurred but does not prove deliberate staging, so it must be weighed with the rest of the sequence.",
       "surface_persuasion": 0.5,
-      "true_weight": 0.75,
-      "direction": "guilt",
-      "reveal_stamp": "decisive",
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
       "reveal_note": "The competing account was concrete rather than speculative: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve.",
       "tags": [
         "method",

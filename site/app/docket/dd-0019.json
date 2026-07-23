@@ -186,9 +186,9 @@
       "speaker": "w3",
       "text": "I shared the listing password because weekend contractors needed to work. I never shared my hardware key, but I kept it in an unlocked desk when the office was busy. At this sixth point, the exhibit’s stated limit is that a shared login cannot identify who created a false listing, so it must be weighed with the rest of the sequence.",
       "surface_persuasion": 0.5,
-      "true_weight": 0.75,
-      "direction": "guilt",
-      "reveal_stamp": "decisive",
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
       "reveal_note": "The competing account was concrete rather than speculative: four workers shared listing access, a former contractor wrote the delay templates, and the physical key was sometimes left unsecured.",
       "tags": [
         "method",

@@ -15,6 +15,10 @@ no further pilot/Android effort is scheduled while the daily track is built. See
 `DAILY-PIVOT.md` for the decision record and `ROADMAP.md`'s Track D for the delivery ladder.
 
 ## Recent issues
+- [DONE] #0003 Runway A retains wrong-speaker exhibit phrasing, contradictory decisive innocence notes, and five exculpatory b6 beats marked as guilt [site/app/docket/dd-0015.json] -> PR #102’s wrong-speaker, decisive-reveal, exculpatory-direction, and deliberation-variance defects are corrected [site/app/docket/dd-0015.json] (fixed)
+  - Partial attempt: Neutralized eight counsel-as-expert exhibit lines, rewrote five decisive innocence reveal notes, and corrected five exculpatory b6 metadata directions [site/app/docket/dd-0015.json]
+  - Partial attempt: Reduced corrected exculpatory b6 weights to the schema’s minor range after the first validator rejected decisive-strength minor beats [site/app/docket/dd-0015.json]
+  - Partial attempt: Changed dd-0020’s low-confidence drifter to an initially sceptical position so corrected exculpatory metadata still permits hung and majority outcomes [site/app/docket/dd-0020.json]
 - [DONE] #0002 Runway A juror dialogue retains three cloned suffixes, nine verdicts still alternate, and 14 closings start sentences lowercase [site/app/docket/dd-0015.json] -> Runway A juror dialogue, closing sentence case, and publication-order verdict variety are independently release-approved [site/app/docket/dd-0015.json] (fixed)
   - Partial attempt: Replaced three cloned juror suffixes with case-specific evidence reasoning, sentence-cased closings, and reordered two complete cases to break the live verdict pattern [site/app/docket/dd-0015.json]
   - Failed attempt: Ran full web suite after editorial polish; lint and typecheck passed, while Vitest and Vite build were blocked by EPERM creating temporary config bundles [site/app/vite.config.ts]

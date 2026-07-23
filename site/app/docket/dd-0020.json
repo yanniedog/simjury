@@ -186,9 +186,9 @@
       "speaker": "w3",
       "text": "I recorded tutorials for dozens of people and shared equipment. A matching microphone profile proves a room and device, not that I made this threatening call. At this sixth point, the exhibit’s stated limit is that a convincing cloned voice identifies a source library, not necessarily its maker, so it must be weighed with the rest of the sequence.",
       "surface_persuasion": 0.5,
-      "true_weight": 0.75,
-      "direction": "guilt",
-      "reveal_stamp": "decisive",
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
       "reveal_note": "The competing account was concrete rather than speculative: public samples, shared equipment, and open studio drives gave contractors access to the voices and room tones needed for a frame-up.",
       "tags": [
         "method",
@@ -635,7 +635,7 @@
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
-          "position": "G",
+          "position": "NG",
           "confidence": 45
         },
         "weights": {
