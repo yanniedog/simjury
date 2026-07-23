@@ -39,10 +39,12 @@ Owner decisions, recorded verbatim:
 ## What carries over unchanged (binding on the daily track)
 
 - **Static-only hosting** — GitHub-authored assets deploy through Cloudflare Static Assets
-  with no Worker script, dynamic route, account, or tracking. Game state and Web Speech
-  narration remain entirely on the player's device.
+  with no Worker script, dynamic route, account, or tracking. Game state remains entirely
+  on the player's device; pre-generated narration is served from GitHub Releases and
+  falls back to a device-local browser voice.
 - **No generative runtime AI** — all player-facing text is pre-authored JSON, case
-  generation happens in PRs, and narration uses the device's browser voices.
+  generation happens in PRs, and Apache-2.0 Kokoro narration is generated in GitHub
+  Actions rather than synthesized during play.
 - **Fiction, and it says so** — every daily case carries the pinned `label: "fiction"`
   (the simjury-daily safety invariant). Daily cases are built from real trial *patterns*,
   never from real events. Real historical cases ship only through `CASE_HARNESS.md`.
