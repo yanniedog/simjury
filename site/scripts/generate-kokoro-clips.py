@@ -9,6 +9,8 @@ import numpy as np
 import soundfile as sf
 from kokoro import KPipeline
 
+NARRATION_SHARDS = 32
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate sharded Kokoro MP3 clips")
@@ -22,7 +24,7 @@ def main() -> None:
         clip_id = clip["id"]
         if not re.fullmatch(r"[a-z0-9-]+-[0-9a-f]{8}", clip_id):
             raise ValueError(f"Unsafe clip id: {clip_id}")
-        shard = str(int(clip_id[-8], 16) % 4)
+        shard = str(int(clip_id[-8:-6], 16) % NARRATION_SHARDS)
         target = options.output / shard / f"{clip_id}.mp3"
         target.parent.mkdir(parents=True, exist_ok=True)
         chunks = [

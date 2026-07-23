@@ -11,6 +11,11 @@ on:
     branches: [main]
     paths:
       - "site/app/docket/*.json"
+      - "site/app/src/lib/narration.ts"
+      - "site/narration-requirements.txt"
+      - "site/scripts/build-kokoro-jobs.mjs"
+      - "site/scripts/generate-kokoro-clips.py"
+      - ".github/workflows/natural-narration.yml"
 
 permissions:
   contents: write
@@ -39,9 +44,13 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             requested="$REQUESTED_CASES"
           else
-            requested="$(git diff --name-only HEAD^ HEAD |
-              sed -nE 's#^site/app/docket/(dd-[0-9]{4})\.json$#\1#p' |
-              sort -u | paste -sd, -)"
+            changed="$(git diff --name-only HEAD^ HEAD)"
+            if grep -Eq '^(\.github/workflows/natural-narration\.yml|site/app/src/lib/narration\.ts|site/narration-requirements\.txt|site/scripts/(build-kokoro-jobs\.mjs|generate-kokoro-clips\.py))$' <<< "$changed"; then
+              requested="all"
+            else
+              requested="$(sed -nE 's#^site/app/docket/(dd-[0-9]{4})\.json$#\1#p' <<< "$changed" |
+                sort -u | paste -sd, -)"
+            fi
           fi
           test -n "$requested"
           echo "value=$(node site/scripts/build-kokoro-jobs.mjs --case "$requested" --list)" >> "$GITHUB_OUTPUT"
@@ -49,7 +58,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          for shard in 0 1 2 3; do
+          for shard in $(seq 0 31); do
             tag="narration-kokoro-$shard"
             gh release view "$tag" >/dev/null 2>&1 ||
               gh release create "$tag" --title "Kokoro natural narration — shard $shard" \
@@ -90,7 +99,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           shopt -s nullglob
-          for shard in 0 1 2 3; do
+          for shard in $(seq 0 31); do
             files=(.narration-clips/"$shard"/*.mp3)
             if (( ${#files[@]} )); then
               gh release upload "narration-kokoro-$shard" "${files[@]}" --clobber

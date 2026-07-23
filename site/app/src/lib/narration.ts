@@ -7,6 +7,7 @@ export interface VoiceParams {
 
 export const NARRATION_RATES = [0.85, 1, 1.15] as const
 export type NarrationRate = (typeof NARRATION_RATES)[number]
+export const NARRATION_SHARDS = 32
 type SpokenLine = { text: string; key: string }
 
 export function normaliseNarrationRate(value: unknown): NarrationRate {
@@ -27,7 +28,7 @@ export function narrationIdFor(text: string, key: string): string {
 
 export function naturalVoiceUrlFor(text: string, key: string): string {
   const id = narrationIdFor(text, key)
-  const shard = Number.parseInt(id.slice(-8, -7), 16) % 4
+  const shard = Number.parseInt(id.slice(-8, -6), 16) % NARRATION_SHARDS
   return `https://github.com/yanniedog/simjury/releases/download/narration-kokoro-${shard}/${id}.mp3`
 }
 

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   fallbackVoiceIndexes,
+  NARRATION_SHARDS,
   narrationIdFor,
   narrationRate,
   naturalVoiceUrlFor,
@@ -23,10 +24,11 @@ describe('voiceParamsFor', () => {
   it('maps text to an opaque, stable, sharded GitHub release asset', () => {
     const id = narrationIdFor('The evidence is ready.', 'pc')
     expect(id).toMatch(/^pc-[0-9a-f]{8}$/)
-    expect(naturalVoiceUrlFor('The evidence is ready.', 'pc')).toMatch(
-      new RegExp(`/narration-kokoro-[0-3]/${id}\\.mp3$`),
-    )
-    expect(naturalVoiceUrlFor('The evidence is ready.', 'pc')).not.toContain('evidence')
+    const url = naturalVoiceUrlFor('The evidence is ready.', 'pc')
+    const shard = url.match(/narration-kokoro-(\d+)/)?.[1]
+    expect(url).toMatch(new RegExp(`/narration-kokoro-\\d+/${id}\\.mp3$`))
+    expect(Number(shard)).toBeLessThan(NARRATION_SHARDS)
+    expect(url).not.toContain('evidence')
   })
 
   it('is deterministic per speaker key', () => {
