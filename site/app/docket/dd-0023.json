@@ -6,9 +6,9 @@
   "setting": "A rental-insurance fraud trial in 2026, where moisture sensors, repair invoices, and a staged leak converge.",
   "charge": "Dishonestly making an insurance claim for deliberately caused water damage",
   "elements": [
-    "The accused performed or participated in the alleged act.",
-    "The act was deliberate or dishonest rather than accidental.",
-    "The prosecution has proved every required fact beyond reasonable doubt."
+    "Tessa deliberately caused or arranged the water damage in the empty flat.",
+    "She dishonestly claimed insurance money for that staged damage.",
+    "The prosecution has proved both matters beyond reasonable doubt; if a genuine pipe failure and honest emergency repairs remain reasonably possible, the verdict must be not guilty."
   ],
   "hook": "The ceiling collapses under a flood that sensors never felt. Three repair invoices say it happened anyway.",
   "accused": {
@@ -20,25 +20,25 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution says the accused removed a moisture sensor, flooded an empty flat, and submitted invented repair invoices to cover mounting debts. The apparent centre of the case is photographs of extensive water damage, but the evidence must be followed through the complete sequence rather than treated as a single dramatic clue."
+        "text": "Tessa Varo claimed that a pipe burst in her empty flat and caused severe water damage. Forty minutes before the flood, she removed the moisture probe; after photographing the damage, she reconnected it. No pipe had burst, the maintenance valve had been opened with a tool, and her claim relied on invoices bearing invented contractor details. The prosecution says the flood was staged."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence says cheap sensors failed during a real pipe burst and informal contractors reconstructed invoices only after emergency work was finished. Suspicion gathered around a person before investigators tested the limits of photographs of extensive water damage; those limits matter because a criminal verdict cannot rest on an attractive shortcut."
+        "text": "The probe had been chirping, and Tessa reported the problem hours before any water appeared. When an old plumbing system failed after midnight, she paid whoever could help and reconstructed receipts later. Photographs prove a flood, not who opened a valve, and irregular invoices do not turn urgent repairs into fraud. The defence says an accident remains reasonably possible."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution began with the dramatic damage photographs and irregular invoices, but it does not ask you to convict on that clue alone. Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors. The defence has exposed real limits in the first impression; those limits deserve weight, not automatic control of the verdict. Consider the records together, apply the judge’s direction to every element, and return guilty only if this connected evidence leaves you sure beyond reasonable doubt."
+        "text": "The photographs alone prove only damage. The sequence proves fraud. Tessa removed a working probe at 11:17, the manually opened valve released water, she photographed the rooms, and only then reconnected the probe. There was no ruptured pipe and no stored sensor fault. She supported the claim with invented contractors just before vacancy cover expired. Those independent facts make deliberate staging the only reasonable conclusion."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence accepts that the dramatic damage photographs and irregular invoices created suspicion, but suspicion is not the test. The probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. That evidence goes to the heart of the case because damage proves a flood occurred but does not prove deliberate staging. The accused need not identify another offender. If this competing account remains reasonably possible, the only lawful verdict is not guilty."
+        "text": "Tessa’s earlier service call supports her explanation for removing the probe. The technician cannot date the valve marks to a minute or identify who used the tool. In an emergency, cash work and reconstructed invoices can be poor records without being dishonest. Tessa need not prove the exact plumbing failure or another culprit. If the prosecution has not excluded a genuine accident, your verdict must be not guilty."
       }
     }
   },
-  "epilogue": "The insurer repaired the occupied flat below and recovered part of the payment. Tessa’s sibling moved temporarily into supported housing, and the remaining tenants received independent management during the sale of the properties. The people involved kept living with the consequences after the courtroom emptied. The case changed workplace rules, but it could not return the months spent under accusation.",
+  "epilogue": "After Tessa’s conviction, the insurer recovered part of the payment and funded repairs to Daren’s occupied flat below. The court-appointed manager sold two properties; Tessa’s sibling moved into supported housing while she served her sentence. The insurer began requiring original payment records and device-maintenance histories for water-damage claims. Daren returned home four months later, but kept a moisture alarm beside the repaired ceiling.",
   "cast": [
     {
       "id": "judge",
@@ -89,12 +89,12 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "The claim photographs show soaked walls and collapsed plaster. Three invoices describe emergency drying, but two listed contractors denied issuing them and one address did not exist. This was the first fact I recorded in the initial The Dry Wall inquiry, before investigators settled on Tessa Varo. The timing was noted before the The Dry Wall inquiry settled on Tessa Varo as its suspect.",
+      "text": "I investigated Tessa’s insurance claim. Her photographs show soaked walls and collapsed plaster in the empty flat. She submitted three invoices for emergency drying and repairs. Two named contractors denied issuing them, and the third business address was a vacant lot. Bank records showed cash withdrawals, but not payments to any person or business named on the invoices.",
       "surface_persuasion": 0.65,
       "true_weight": 0.55,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The first impression came from the dramatic damage photographs and irregular invoices; its value depended on whether the later evidence could overcome this limit: damage proves a flood occurred but does not prove deliberate staging.",
+      "reveal_note": "The photographs proved serious damage and the invoices contained invented details, but neither fact alone identified who caused the flood.",
       "tags": [
         "method",
         "digital_forensics"
@@ -105,12 +105,12 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "Water came through my ceiling shortly after midnight. Tessa arrived quickly with towels and seemed genuinely panicked, although the flat above had been empty for weeks. This was the second fact I recorded in the initial The Dry Wall inquiry, before investigators settled on Tessa Varo.",
+      "text": "I live below the empty flat. Just after midnight, water spread across my ceiling and brought plaster down onto the kitchen table. I called Tessa at 12:04. She arrived about six minutes later with towels and went straight upstairs. She seemed panicked, but she also knew the flat’s maintenance valve was behind a removable laundry panel.",
       "surface_persuasion": 0.6,
       "true_weight": 0.4,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "This witness fixed the practical setting before suspicion centred on Tessa Varo, giving the room context for the records that followed.",
+      "reveal_note": "Daren confirmed the timing and Tessa’s rapid arrival, although panic and knowledge of the plumbing were consistent with either emergency response or staging.",
       "tags": [
         "method",
         "credibility"
@@ -120,12 +120,12 @@
       "id": "b3",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "The dry-wall sensor reported normal humidity throughout the alleged pipe burst. Its dashboard later showed a gap that the first claim printout did not disclose. At this third point, the exhibit’s stated limit is that damage proves a flood occurred but does not prove deliberate staging, so it must be weighed with the rest of the sequence.",
+      "text": "The defence tenders Tessa’s 6:18 p.m. service message and the sensor dashboard. She reported that the probe was chirping and asked for a technician. The dashboard displayed normal humidity until 11:17, then no readings until after midnight. It did not show whether the gap came from a fault, a flat battery, or physical removal.",
       "surface_persuasion": 0.8,
       "true_weight": 0.2,
       "direction": "innocence",
       "reveal_stamp": "misleading",
-      "reveal_note": "The challenged record mattered because it exposed the gap between appearance and proof: damage proves a flood occurred but does not prove deliberate staging.",
+      "reveal_note": "The early service message supported a genuine sensor complaint, while the dashboard could not explain why the later readings stopped.",
       "tags": [
         "credibility",
         "identity"
@@ -136,30 +136,38 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "Photographs cannot tell you who caused water damage? No. They prove condition, not intention or identity. And informal repairs can produce poor invoices? They can, though these invoices contained invented business details. The photographs establish condition, while intention depends on the sensor log, valve marks, and invoice evidence.",
+      "text": "The photographs cannot tell you who caused the flood? No. They show condition, not identity or intention. And people doing urgent cash work sometimes provide poor receipts? They do. You found withdrawals matching the claimed total? Approximately, yes. My concern is that the invoices named contractors who did not perform the work.",
       "turns": [
         {
           "speaker": "dc",
-          "text": "Photographs cannot tell you who caused water damage?"
+          "text": "The photographs cannot tell you who caused the flood?"
         },
         {
           "speaker": "w1",
-          "text": "No. They prove condition, not intention or identity."
+          "text": "No. They show condition, not identity or intention."
         },
         {
           "speaker": "dc",
-          "text": "And informal repairs can produce poor invoices?"
+          "text": "And people doing urgent cash work sometimes provide poor receipts?"
         },
         {
           "speaker": "w1",
-          "text": "They can, though these invoices contained invented business details. The photographs establish condition, while intention depends on the sensor log, valve marks, and invoice evidence."
+          "text": "They do."
+        },
+        {
+          "speaker": "dc",
+          "text": "You found withdrawals matching the claimed total?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Approximately, yes. My concern is that the invoices named contractors who did not perform the work."
         }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.35,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "Cross-examination narrowed the early clue without erasing it, forcing the room to decide how much independent support remained.",
+      "reveal_note": "The photographs and cash withdrawals were compatible with real emergency work, leaving the prosecution dependent on the device and plumbing evidence.",
       "tags": [
         "credibility",
         "method"
@@ -169,12 +177,12 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The sensor keeps a local maintenance log. It records physical removal at 11:17, reconnection after midnight, and no power failure or network outage during that interval. At this fifth point, the exhibit’s stated limit is that damage proves a flood occurred but does not prove deliberate staging, so it must be weighed with the rest of the sequence.",
+      "text": "The prosecution tenders the probe’s local maintenance log and Tessa’s time-stamped claim photographs. The probe records physical removal at 11:17, with no preceding fault or low-battery code. The photographs begin at 12:16. Reconnection occurs at 12:28, before Tessa called the insurer. Power and network records show no outage during that interval.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The strongest prosecution point was this: Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors.",
+      "reveal_note": "The local log showed deliberate removal before the flood and reconnection only after Tessa photographed the damage, contradicting the dashboard’s appearance of a possible sensor failure.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -182,14 +190,15 @@
     },
     {
       "id": "b6",
-      "kind": "exhibit",
+      "kind": "witness",
       "speaker": "w3",
-      "text": "I removed the probe earlier because it was chirping and tenants complained. When the pipe failed, I dealt with water first and paperwork later; the invoices were reconstructed from cash payments. At this sixth point, the exhibit’s stated limit is that damage proves a flood occurred but does not prove deliberate staging, so it must be weighed with the rest of the sequence.",
+      "mode": "examination",
+      "text": "I removed the probe because it was chirping and the technician could not attend that evening. When Daren called, I found water pouring from the laundry panel and shut the maintenance valve. I photographed the rooms for the insurer, reconnected the probe, and paid two emergency workers in cash. I reconstructed the invoices later from names they gave me.",
       "surface_persuasion": 0.5,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The competing account was concrete rather than speculative: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve.",
+      "reveal_note": "Tessa offered an innocent sequence for the sensor and invoices, though it required the jury to accept that several suspicious records arose from one emergency.",
       "tags": [
         "method",
         "digital_forensics"
@@ -200,12 +209,12 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "examination",
-      "text": "A valve photograph shows tool marks made recently. The valve was open when responders arrived, although normal maintenance requires it closed in an empty flat. This was the seventh fact I recorded in the initial The Dry Wall inquiry, before investigators settled on Tessa Varo. That The Dry Wall detail can be checked against the contemporaneous record rather than accepted as a later reconstruction.",
+      "text": "Tessa messaged me at 6:18 about a chirping probe. I could not attend until morning and said she could isolate it if the noise continued. Some probes chirp after a brief voltage drop without storing a fault. When I inspected the flat, the device operated normally. I also saw recent tool marks on the laundry maintenance valve.",
       "surface_persuasion": 0.6,
       "true_weight": 0.3,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This testimony tested whether the system record described a person’s conduct or only an event produced around them.",
+      "reveal_note": "The technician confirmed Tessa’s earlier complaint and a possible harmless chirp, but found the probe working normally after the flood.",
       "tags": [
         "credibility",
         "motive"
@@ -216,30 +225,46 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "You removed the sensor before the leak? I removed a chirping device during routine checks. Why reinstall it before calling the insurer? I wanted the monitoring restored once the immediate water had stopped. Removing a faulty probe has an innocent explanation, but reinstalling it before the claim gives the sequence added significance.",
+      "text": "You removed the probe at 11:17? Yes. The first photograph was taken at 12:16, before you reconnected it? Yes. You knew vacancy cover expired the following week? I knew renewal was due. And the three invoices named businesses that did not do the work? I used the names the workers gave me. I did not invent the damage.",
       "turns": [
         {
           "speaker": "pc",
-          "text": "You removed the sensor before the leak?"
+          "text": "You removed the probe at 11:17?"
         },
         {
           "speaker": "w3",
-          "text": "I removed a chirping device during routine checks."
+          "text": "Yes."
         },
         {
           "speaker": "pc",
-          "text": "Why reinstall it before calling the insurer?"
+          "text": "The first photograph was taken at 12:16, before you reconnected it?"
         },
         {
           "speaker": "w3",
-          "text": "I wanted the monitoring restored once the immediate water had stopped. Removing a faulty probe has an innocent explanation, but reinstalling it before the claim gives the sequence added significance."
+          "text": "Yes."
+        },
+        {
+          "speaker": "pc",
+          "text": "You knew vacancy cover expired the following week?"
+        },
+        {
+          "speaker": "w3",
+          "text": "I knew renewal was due."
+        },
+        {
+          "speaker": "pc",
+          "text": "And the three invoices named businesses that did not do the work?"
+        },
+        {
+          "speaker": "w3",
+          "text": "I used the names the workers gave me. I did not invent the damage."
         }
       ],
       "surface_persuasion": 0.6,
       "true_weight": 0.6,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The second cross put the decisive inference under pressure and showed exactly which part of the account could still be disputed.",
+      "reveal_note": "Tessa accepted the removal, photograph, reconnection, and cover-expiry sequence but denied staging the damage or inventing the contractors.",
       "tags": [
         "credibility",
         "identity"
@@ -248,29 +273,63 @@
     {
       "id": "b9",
       "kind": "witness",
-      "speaker": "w1",
-      "mode": "examination",
-      "text": "The insurer had warned that vacancy cover would lapse the next week. Tessa also faced a large roof bill, but financial pressure alone cannot establish who opened a valve. This was the ninth fact I recorded in the initial The Dry Wall inquiry, before investigators settled on Tessa Varo.",
+      "speaker": "w4",
+      "mode": "cross",
+      "text": "You found no split pipe? Correct; the supply line was intact. The water most likely came through the maintenance valve? Yes. Could that valve open by itself? Not in normal operation; a tool must turn it. Can you identify who made the marks or the exact time? No. They were recent, but the marks themselves do not identify a person.",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "You found no split pipe?"
+        },
+        {
+          "speaker": "w4",
+          "text": "Correct; the supply line was intact."
+        },
+        {
+          "speaker": "pc",
+          "text": "The water most likely came through the maintenance valve?"
+        },
+        {
+          "speaker": "w4",
+          "text": "Yes."
+        },
+        {
+          "speaker": "pc",
+          "text": "Could that valve open by itself?"
+        },
+        {
+          "speaker": "w4",
+          "text": "Not in normal operation; a tool must turn it."
+        },
+        {
+          "speaker": "pc",
+          "text": "Can you identify who made the marks or the exact time?"
+        },
+        {
+          "speaker": "w4",
+          "text": "No. They were recent, but the marks themselves do not identify a person."
+        }
+      ],
       "surface_persuasion": 0.55,
       "true_weight": 0.2,
-      "direction": "innocence",
+      "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The final witness supplied a separate check on the timeline, reducing the risk that one attractive clue would decide the case alone.",
+      "reveal_note": "The intact pipe and manually opened valve supported staging, although the tool marks could not identify who turned it.",
       "tags": [
         "credibility",
-        "motive"
+        "method"
       ]
     },
     {
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The prosecution must prove every element beyond reasonable doubt. The accused does not have to prove an alternative account, explain every suspicious detail, or show who else was responsible. Treat digital records like any other evidence: examine their origin, limits, and connection to a person. In the The Dry Wall inquiry, I separated what I personally observed from what investigators later asked me to infer.",
+      "text": "Do not research this case, the building, or its devices. The prosecution must make you sure that Tessa deliberately caused or arranged the water damage and then dishonestly claimed for it. Damage and poor invoices are not enough by themselves. Consider the probe’s local log, the manually opened valve, Tessa’s timing, and the contractor evidence together. Tessa need not prove the precise innocent cause.",
       "surface_persuasion": 0.40900000000000003,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The direction kept the burden where it belonged: damage proves a flood occurred but does not prove deliberate staging, and no gap in the defence could substitute for proof of every element.",
+      "reveal_note": "The legal test required proof of deliberate staging and a dishonest claim; Tessa did not have to prove exactly how an accidental leak occurred.",
       "tags": [
         "burden",
         "credibility"
@@ -281,10 +340,10 @@
     "b3",
     "b5",
     "b8",
-    "b9"
+    "b10"
   ],
   "verdict_truth": "Guilty",
-  "twist": "The dramatic photographs proved damage, not cause. A sensor maintenance log showed Tessa removed the dry-wall probe forty minutes before the flood, then reinstalled it after photographing the rooms; the device retained both physical disconnect events.",
+  "twist": "The dramatic photographs proved damage, but not how it began. The probe’s local log showed Tessa physically removed it forty minutes before the flood and reconnected it only after photographing the rooms. The supposed burst pipe was intact; water had come through a maintenance valve opened with a tool.",
   "difficulty_target": 0.66,
   "jury": {
     "jurors": [
@@ -292,7 +351,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Dry Wall, this juror keeps returning to the dramatic damage photographs and irregular invoices.",
+        "persona": "A systems-minded facilities coordinator who tests device records against the people who maintained them.",
         "register": "plain",
         "arc": "vibes",
         "initial": {
@@ -305,18 +364,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 2: Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors. The gap between those two facts is where my doubt sits.",
-            "Juror 2: Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors. That is persuasive only if we first resolve the dramatic damage photographs and irregular invoices."
+            "Juror 2: Tessa reported the chirping probe hours before the flood. That message was not created after she became a suspect.",
+            "Juror 2: The technician allowed her to isolate the probe. Removing it was not automatically dishonest."
           ],
           "pushback": [
-            "Juror 2: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. I hear the point; now I want the source of it tested.",
-            "Juror 2: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. If we remove the dramatic label, that is the fact left underneath."
+            "Juror 2: Wet plaster and bad receipts make the claim suspicious, but neither tells us who opened the valve.",
+            "Juror 2: The dashboard only showed missing readings. The local maintenance log is what distinguishes a fault from physical removal."
           ],
           "concede": [
-            "Juror 2: I accept now that damage proves a flood occurred but does not prove deliberate staging. That is persuasive only if we first resolve the dramatic damage photographs and irregular invoices."
+            "Juror 2: I concede the timing looks purposeful: probe out, valve opened, photographs taken, probe back in, then the claim."
           ],
           "final": [
-            "Juror 2: My verdict in The Dry Wall turns on whether the jury can reconcile Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors with this competing account: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. That gives me a reason, but not yet a complete chain."
+            "Juror 2: I began at not guilty because the sensor complaint was real. The intact pipe, manually opened valve, and controlled device sequence leave me sure the damage was staged."
           ]
         },
         "reaction_rules": [
@@ -361,7 +420,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Dry Wall, this juror keeps returning to the dramatic damage photographs and irregular invoices.",
+        "persona": "A blunt maintenance supervisor who wants to know what physically failed before accepting an accident story.",
         "register": "blunt",
         "arc": "steady",
         "initial": {
@@ -374,18 +433,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 3: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. I can state the inference now, and I can also state what it depends on.",
-            "Juror 3: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. The practical question is whether those events can both be true."
+            "Juror 3: No pipe split. The water came through a valve that had to be turned with a tool. That is not a spontaneous burst.",
+            "Juror 3: The probe logged physical removal and no fault code. The dashboard’s blank period was created by someone taking it off."
           ],
           "pushback": [
-            "Juror 3: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. If we remove the dramatic label, that is the fact left underneath.",
-            "Juror 3: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. I hear the point; now I want the source of it tested."
+            "Juror 3: People can get terrible paperwork after emergency cash repairs. I would not convict on the invoices alone.",
+            "Juror 3: The chirping complaint explains why Tessa touched the probe. It does not explain why she reconnected it only after taking claim photographs."
           ],
           "concede": [
-            "Juror 3: I accept now that damage proves a flood occurred but does not prove deliberate staging. I am holding it against the judge’s direction on the act was deliberate or dishonest rather than accidental."
+            "Juror 3: I accept the photographs prove only the condition of the rooms. The valve and device logs prove how that condition was created."
           ],
           "final": [
-            "Juror 3: My verdict in The Dry Wall turns on whether the jury can reconcile Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors with this competing account: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. I can state the inference now, and I can also state what it depends on."
+            "Juror 3: The physical evidence does not support a failed pipe. Together with Tessa’s timing and false contractor details, it proves deliberate staging to me."
           ]
         },
         "reaction_rules": [
@@ -430,7 +489,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Dry Wall, this juror keeps returning to the dramatic damage photographs and irregular invoices.",
+        "persona": "A retired court registrar who insists on separating suspicious conduct from proof of both charged elements.",
         "register": "formal",
         "arc": "principled_holdout",
         "initial": {
@@ -443,21 +502,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 4: Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors. The evidence about the dramatic damage photographs and irregular invoices is what keeps me from treating that as conclusive."
+            "Juror 4: The prosecution must prove both deliberate damage and a dishonest claim. The evidence must support each conclusion."
           ],
           "pushback": [
-            "Juror 4: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. That is stronger than suspicion, but I am checking it against the dramatic damage photographs and irregular invoices.",
-            "Juror 4: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. That detail matters to my vote because it comes from outside either side’s story."
+            "Juror 4: Tessa’s quick arrival and knowledge of the valve are equally consistent with responsible property management.",
+            "Juror 4: Invented business details are serious, but the approximate cash withdrawals keep open the possibility that some work was actually paid for."
           ],
           "concede": [
-            "Juror 4: I accept now that damage proves a flood occurred but does not prove deliberate staging. I hear the point; now I want the source of it tested."
+            "Juror 4: I concede the local log and manually opened valve provide evidence of staging that the photographs never could."
           ],
           "holdout": [
-            "Juror 4: I am holding my position until the room deals directly with Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors. The burden does not shift just because the accused’s explanation is untidy.",
-            "Juror 4: I am holding my position until the room deals directly with Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors. That answer makes sense only if the rest of the chronology holds."
+            "Juror 4: I am holding at not guilty until the room identifies evidence that Tessa deliberately caused the water, not merely handled the emergency badly.",
+            "Juror 4: Tessa need not explain every contractor or tool mark. The prosecution must exclude a reasonable plumbing accident."
           ],
           "final": [
-            "Juror 4: My verdict in The Dry Wall turns on whether the jury can reconcile Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors with this competing account: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. The practical question is whether those events can both be true."
+            "Juror 4: The intact pipe and tool-operated valve exclude the accident Tessa described. The timed sensor removal and false invoices then prove the dishonest claim."
           ]
         },
         "reaction_rules": [
@@ -502,7 +561,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Dry Wall, this juror keeps returning to the dramatic damage photographs and irregular invoices.",
+        "persona": "A careful claims clerk who puts every maintenance event and insurance step on one timeline.",
         "register": "formal",
         "arc": "steady",
         "initial": {
@@ -515,21 +574,21 @@
         },
         "lines": {
           "agree": [
-            "Juror 5: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. That is one fact; the room still has to test the accused performed or participated in the alleged act."
+            "Juror 5: At 11:17 the probe came off, at 12:04 Daren called, at 12:16 the photographs began, and at 12:28 the probe returned. That order matters."
           ],
           "pushback": [
-            "Juror 5: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. I need the witness account and the recorded evidence to agree before I rely on either.",
-            "Juror 5: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. That is one fact; the room still has to test the act was deliberate or dishonest rather than accidental."
+            "Juror 5: The service message makes the removal less suspicious. It does not account for the valve or false business names.",
+            "Juror 5: A recent tool mark cannot identify Tessa. Her admitted access and the rest of the sequence provide that connection."
           ],
           "concede": [
-            "Juror 5: I accept now that damage proves a flood occurred but does not prove deliberate staging. I want the actual record compared with the story built around it."
+            "Juror 5: I accept that real cash repairs could produce weak receipts. Three invented contractors go beyond weak paperwork."
           ],
           "burden_correct": [
-            "Juror 5: In The Dry Wall, unanswered questions do not move the burden; the prosecution must still prove every element. The room should decide whether that contradiction is material or merely awkward.",
-            "Juror 5: In The Dry Wall, unanswered questions do not move the burden; the prosecution must still prove every element. I would rather name the gap than pretend it is not there."
+            "Juror 5: Tessa does not have to name whoever opened the valve. The prosecution must prove she caused or arranged it.",
+            "Juror 5: We should not convict because her explanation is untidy. We can convict only if the proved records make accident unreasonable."
           ],
           "final": [
-            "Juror 5: My verdict in The Dry Wall turns on whether the jury can reconcile Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors with this competing account: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. That is stronger than suspicion, but I am checking it against the dramatic damage photographs and irregular invoices."
+            "Juror 5: The timeline joins deliberate sensor removal, a manually opened valve, and a dishonest claim. I find both elements proved beyond reasonable doubt."
           ]
         },
         "reaction_rules": [
@@ -574,7 +633,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Dry Wall, this juror keeps returning to the dramatic damage photographs and irregular invoices.",
+        "persona": "A practical building manager who compares Tessa’s choices with ordinary emergency maintenance.",
         "register": "plain",
         "arc": "foreperson",
         "initial": {
@@ -587,18 +646,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 6: Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors. Before I move, I need the dramatic damage photographs and irregular invoices placed on the same timeline.",
-            "Juror 6: Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors. That is the part of the Crown case I can test rather than guess."
+            "Juror 6: Isolating a noisy probe before a service visit can be ordinary. Reconnecting it after photographing a flood is not ordinary documentation.",
+            "Juror 6: You do not get water from an intact supply line unless it leaves somewhere. The opened maintenance valve explains the flood."
           ],
           "pushback": [
-            "Juror 6: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. I would rather name the gap than pretend it is not there.",
-            "Juror 6: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. The room should decide whether that contradiction is material or merely awkward."
+            "Juror 6: The technician cannot say who used the tool. We need the timeline and Tessa’s access, not the mark alone.",
+            "Juror 6: Cash repair work happens at night. What troubles me is inventing established contractors instead of recording who actually came."
           ],
           "concede": [
-            "Juror 6: I accept now that damage proves a flood occurred but does not prove deliberate staging. I am separating what the record proves from what we are inferring."
+            "Juror 6: I accept the early chirp could be genuine. The probe passed inspection and stored no fault, so it does not support a failed device during the flood."
           ],
           "final": [
-            "Juror 6: My verdict in The Dry Wall turns on whether the jury can reconcile Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors with this competing account: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. The gap between those two facts is where my doubt sits."
+            "Juror 6: The physical system shows a working probe removed and an intact pipe bypassed by a valve. Tessa’s claim story does not fit those facts."
           ]
         },
         "reaction_rules": [
@@ -631,7 +690,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Dry Wall, this juror keeps returning to the dramatic damage photographs and irregular invoices.",
+        "persona": "A sceptical electronics technician who distrusts dashboard summaries until the local device log is examined.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -644,18 +703,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 7: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. I can give that weight only after we account for the dramatic damage photographs and irregular invoices.",
-            "Juror 7: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. I am holding it against the judge’s direction on the accused performed or participated in the alleged act."
+            "Juror 7: The local log distinguishes physical removal from a network gap. That is a stronger record than the dashboard.",
+            "Juror 7: No fault or low-battery code appeared before removal. The chirp might still be real, but it did not come from a recorded sensor failure."
           ],
           "pushback": [
-            "Juror 7: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. I am changing my view because the explanation fits more of the evidence.",
-            "Juror 7: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. For me, the unanswered part is still the accused performed or participated in the alleged act."
+            "Juror 7: The technician gave Tessa permission to isolate the device. That keeps the removal from proving guilt by itself.",
+            "Juror 7: We know someone turned the valve, but the tool marks have no name or exact time attached."
           ],
           "concede": [
-            "Juror 7: I accept now that damage proves a flood occurred but does not prove deliberate staging. It changes how I read the dramatic damage photographs and irregular invoices, but it does not end the inquiry."
+            "Juror 7: I accept that the sensor complaint was not invented after the event. The later reconnection sequence is what shifts me."
           ],
           "final": [
-            "Juror 7: My verdict in The Dry Wall turns on whether the jury can reconcile Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors with this competing account: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. I can give that weight only after we account for the dramatic damage photographs and irregular invoices."
+            "Juror 7: The local log, intact pipe, and timed photographs reinforce one another. I no longer see a reasonable accidental sequence."
           ]
         },
         "reaction_rules": [
@@ -700,7 +759,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Dry Wall, this juror keeps returning to the dramatic damage photographs and irregular invoices.",
+        "persona": "A decisive safety officer who changes position when separate physical and digital records identify one planned sequence.",
         "register": "plain",
         "arc": "mind_changer",
         "initial": {
@@ -713,18 +772,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 8: Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors. The room should decide whether that contradiction is material or merely awkward.",
-            "Juror 8: Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors. I would rather name the gap than pretend it is not there."
+            "Juror 8: The local log identifies Tessa’s admitted removal, and her photographs fix the probe’s return after the damage was documented.",
+            "Juror 8: An intact pipe and tool-opened valve changed my view. The flood was caused, not simply discovered."
           ],
           "pushback": [
-            "Juror 8: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. The question is not which story is neater; it is which elements are proved.",
-            "Juror 8: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. That gives me a reason, but not yet a complete chain."
+            "Juror 8: At first, the photographs and invoices looked suspicious but did not identify an act by Tessa.",
+            "Juror 8: A tool mark alone could belong to old maintenance. The technician says these marks were recent, which narrows that possibility."
           ],
           "concede": [
-            "Juror 8: I accept now that damage proves a flood occurred but does not prove deliberate staging. I am weighing that beside the dramatic damage photographs and irregular invoices, not on its own."
+            "Juror 8: I accept the chirp was reported in advance. That honest detail does not make the manually opened valve accidental."
           ],
           "final": [
-            "Juror 8: My verdict in The Dry Wall turns on whether the jury can reconcile Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors with this competing account: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. The evidence about the dramatic damage photographs and irregular invoices is what keeps me from treating that as conclusive."
+            "Juror 8: I moved from not guilty because the device, plumbing, and claim records tell the same story. Tessa staged the loss and claimed on it."
           ]
         },
         "reaction_rules": [
@@ -781,7 +840,7 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Dry Wall, this juror keeps returning to the dramatic damage photographs and irregular invoices.",
+        "persona": "A patient tenant advocate who listens closely to witnesses but checks their accounts against contemporaneous records.",
         "register": "hesitant",
         "arc": "steady",
         "initial": {
@@ -793,18 +852,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 9: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. I am not filling the missing step with instinct.",
-            "Juror 9: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. That leaves me asking who had the opportunity the records actually show."
+            "Juror 9: Tessa sounded panicked when Daren called, and the earlier service message supports part of her story.",
+            "Juror 9: The technician was careful: a chirp can occur without a stored fault, and the tool marks cannot identify a person."
           ],
           "pushback": [
-            "Juror 9: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. That leaves me asking who had the opportunity the records actually show.",
-            "Juror 9: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. I am not filling the missing step with instinct."
+            "Juror 9: Daren’s impression of panic cannot tell us whether Tessa had expected the flood.",
+            "Juror 9: Tessa says emergency workers supplied the false names, but no worker, message, or payment recipient supports that account."
           ],
           "concede": [
-            "Juror 9: I accept now that damage proves a flood occurred but does not prove deliberate staging. I need the witness account and the recorded evidence to agree before I rely on either."
+            "Juror 9: I accept the photographs do not prove cause. The witness evidence becomes persuasive only when it matches the probe and valve records."
           ],
           "final": [
-            "Juror 9: My verdict in The Dry Wall turns on whether the jury can reconcile Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors with this competing account: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. I am separating what the record proves from what we are inferring."
+            "Juror 9: The innocent details do not explain the intact pipe, opened valve, or invented contractors. I am satisfied Tessa staged and claimed the damage."
           ]
         },
         "reaction_rules": [
@@ -849,7 +908,7 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Dry Wall, this juror keeps returning to the dramatic damage photographs and irregular invoices.",
+        "persona": "A blunt bookkeeper who initially expects Tessa to account for every false name and unexplained choice.",
         "register": "blunt",
         "arc": "burden_drifter",
         "initial": {
@@ -862,23 +921,23 @@
         },
         "lines": {
           "agree": [
-            "Juror 10: Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors. I need the witness account and the recorded evidence to agree before I rely on either."
+            "Juror 10: The probe removal and reconnection are Tessa’s admitted actions. The timestamps make the sequence difficult to dismiss."
           ],
           "pushback": [
-            "Juror 10: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. I hear the point; now I want the source of it tested."
+            "Juror 10: The cash withdrawals roughly match the claim. I want to know whether real workers existed before calling every dollar dishonest."
           ],
           "burden_drift": [
-            "Juror 10: In The Dry Wall, there are unanswered questions around the dramatic damage photographs and irregular invoices, and I keep wanting Tessa Varo to explain them. The room should decide whether that contradiction is material or merely awkward.",
-            "Juror 10: In The Dry Wall, there are unanswered questions around the dramatic damage photographs and irregular invoices, and I keep wanting Tessa Varo to explain them. I would rather name the gap than pretend it is not there."
+            "Juror 10: Tessa used three false contractor identities, and I keep wanting her to prove who she says actually did the work.",
+            "Juror 10: She was the manager with access to the flat. Part of me wants her to explain who else could have opened the valve."
           ],
           "concede": [
-            "Juror 10: I accept now that damage proves a flood occurred but does not prove deliberate staging. I am treating the timing as evidence, not as a verdict."
+            "Juror 10: I accept that access alone is not identity. Her admitted sensor actions and the claim chronology provide more than access."
           ],
           "burden_correct": [
-            "Juror 10: In The Dry Wall, unanswered questions do not move the burden; the prosecution must still prove every element. That is persuasive only if we first resolve the dramatic damage photographs and irregular invoices."
+            "Juror 10: Tessa does not have to produce the workers or identify another person. The prosecution must prove its staging case from its own evidence."
           ],
           "final": [
-            "Juror 10: My verdict in The Dry Wall turns on whether the jury can reconcile Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors with this competing account: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. I do not think confidence can repair a missing link."
+            "Juror 10: Keeping the burden on the prosecution, I still find the local log, valve evidence, and false invoices prove deliberate staging beyond reasonable doubt."
           ]
         },
         "reaction_rules": [
@@ -923,7 +982,7 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Dry Wall, this juror keeps returning to the dramatic damage photographs and irregular invoices.",
+        "persona": "An undecided insurance assessor who distinguishes a plausible claim motive from proof of a deliberately caused loss.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -936,18 +995,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 11: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. It changes how I read the dramatic damage photographs and irregular invoices, but it does not end the inquiry.",
-            "Juror 11: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. The alternative has to be reasonably possible, not perfect."
+            "Juror 11: The local maintenance log is much stronger than the claim dashboard. It records physical removal, not just missing data.",
+            "Juror 11: Vacancy cover expiring soon creates a motive, but motive only matters if the physical sequence is deliberate."
           ],
           "pushback": [
-            "Juror 11: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. That is the part of the Crown case I can test rather than guess.",
-            "Juror 11: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. Before I move, I need the dramatic damage photographs and irregular invoices placed on the same timeline."
+            "Juror 11: Tessa’s service message came before the event, so the chirp cannot simply be labelled an excuse invented for trial.",
+            "Juror 11: The roof bill and expiring cover may explain pressure. They do not identify who used the valve."
           ],
           "concede": [
-            "Juror 11: I accept now that damage proves a flood occurred but does not prove deliberate staging. I would rather name the gap than pretend it is not there."
+            "Juror 11: I accept the photographs prove damage, not cause. The intact pipe and tool-opened valve provide the missing cause evidence."
           ],
           "final": [
-            "Juror 11: My verdict in The Dry Wall turns on whether the jury can reconcile Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors with this competing account: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. If we remove the dramatic label, that is the fact left underneath."
+            "Juror 11: The service complaint gave me pause, but the complete chronology makes a genuine burst unreasonable. My final vote is guilty."
           ]
         },
         "reaction_rules": [
@@ -992,7 +1051,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Dry Wall, this juror keeps returning to the dramatic damage photographs and irregular invoices.",
+        "persona": "An empathetic carer who notices the consequences for both households but refuses to let sympathy replace proof.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -1005,18 +1064,18 @@
         },
         "lines": {
           "agree": [
-            "Juror 12: Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors. That point earns weight because it can be checked independently.",
-            "Juror 12: Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors. I can explain that conclusion without borrowing a fact that is not in evidence."
+            "Juror 12: The physical method is proved: a working probe was removed and an intact system released water through a tool-operated valve.",
+            "Juror 12: The dishonest claim is separately supported by the false contractor details and the order in which Tessa photographed and reconnected the probe."
           ],
           "pushback": [
-            "Juror 12: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. I am asking whether the exhibit proves the act or merely resembles it.",
-            "Juror 12: I am not ready to let the dramatic damage photographs and irregular invoices decide The Dry Wall. I am weighing that beside the dramatic damage photographs and irregular invoices, not on its own."
+            "Juror 12: Daren’s ruined home and Tessa’s caring duties should not decide the verdict in either direction.",
+            "Juror 12: The claim records may look ugly, but we must still connect them to deliberate damage rather than mere panic."
           ],
           "concede": [
-            "Juror 12: I accept now that damage proves a flood occurred but does not prove deliberate staging. The room should decide whether that contradiction is material or merely awkward."
+            "Juror 12: I accept some emergency work may have occurred. That does not make the claimed contractor identities honest."
           ],
           "final": [
-            "Juror 12: My verdict in The Dry Wall turns on whether the jury can reconcile Tessa removed the humidity probe before the flood, reinstalled it after midnight, and claimed on invoices tied to invented contractors with this competing account: the probe had been chirping, a real pipe failure required urgent cash repairs, and photographs cannot establish who opened a valve. I hear the point; now I want the source of it tested."
+            "Juror 12: I find the staging and dishonest claim proved by independent records. Sympathy does not create reasonable doubt, so I vote guilty."
           ]
         },
         "reaction_rules": [
