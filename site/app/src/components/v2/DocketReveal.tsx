@@ -69,7 +69,7 @@ export function DocketReveal({
 
   const mattered = analysis.whatMattered.length > 0
     ? analysis.whatMattered
-    : analysis.reveals.filter((r) => r.beat.reveal_stamp !== 'misleading').slice(0, 3)
+    : analysis.reveals.filter((r) => r.beat.reveal_stamp === 'decisive').slice(0, 3)
 
   return (
     <div className="phase-view reveal-view space-y-6">
