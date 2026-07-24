@@ -202,7 +202,6 @@ function DocketApp({
 
 
   function nextBeat() {
-    const beat = activeTrial.beats[beatIndex]
     const atVerdict = beatIndex + 1 >= beatCount
     const nextBeatIndex = atVerdict ? beatIndex : beatIndex + 1
     if (atVerdict) setPhase('verdict')
@@ -217,7 +216,6 @@ function DocketApp({
     const locked = loadPlayForSitting(
       day,
       caseStorageId(activeTrial),
-      activeTrial.checkins.length,
     )
     if (verdict !== null) return
     if (locked) {
@@ -263,8 +261,6 @@ function DocketApp({
       convictions: [],
       verdict,
       correct: done.correct,
-      swayedByTraps: done.trapsSwayed,
-      totalTraps: done.totalTraps,
       room: roomRecord,
     })
     setRevealStats(statsFromStorage())
