@@ -36,6 +36,6 @@ describe('DocketShell', () => {
     expect(markup).toContain('aria-current="step"')
     expect(markup).toContain('Juror')
     expect(markup).toContain('Your progress and verdict stay on this device')
-    expect(markup).toContain('Natural narration requests public, opaque clip IDs from GitHub')
+    expect(markup).not.toContain('GitHub')
   })
 })

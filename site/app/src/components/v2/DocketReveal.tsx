@@ -111,16 +111,16 @@ export function DocketReveal({
           Your judgment is on the record.
         </h1>
         <p className="mt-2 text-sm text-neutral-300">
-          Authored outcome: <strong>{trial.verdict_truth}</strong> · Your verdict:{' '}
+          Case outcome: <strong>{trial.verdict_truth}</strong> · Your verdict:{' '}
           <strong>{verdict}</strong>
         </p>
         <p className="mt-2 text-sm leading-relaxed text-neutral-400">
           {analysis.correct
-            ? "You and the case's authored outcome reached the same legal conclusion."
-            : "You reached a different legal conclusion from the case's authored outcome."}
+            ? "You and the case outcome reached the same legal conclusion."
+            : "You reached a different legal conclusion from the case outcome."}
           {' '}That is something to examine, not a score.
         </p>
-        <p className="mt-2 text-sm text-neutral-400">Your fictional jury room: {roomLabel}.</p>
+        <p className="mt-2 text-sm text-neutral-400">Jury room: {roomLabel}.</p>
       </div>
 
       <p className="text-sm leading-relaxed text-neutral-300">{trial.twist}</p>
@@ -160,11 +160,6 @@ export function DocketReveal({
       >
         Choose another sitting
       </button>
-
-      <p className="text-center text-xs text-neutral-600">
-        The authored outcome belongs to this fictional case; reasonable jurors
-        may still disagree. Choose another sitting when you’re ready.
-      </p>
-    </div>
+</div>
   )
 }

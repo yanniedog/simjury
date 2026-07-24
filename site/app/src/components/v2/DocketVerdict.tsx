@@ -115,7 +115,7 @@ export function DocketVerdict({
       <dialog ref={confirmDialog} onClose={() => setPendingVerdict(null)} className="verdict-dialog" aria-labelledby="verdict-confirm-title">
         <p className="chrome-label">Seal the record</p>
         <h2 id="verdict-confirm-title">Your verdict: {pendingVerdict}</h2>
-        <p>This decision is permanent for this sitting. The fictional jury room responds only after you commit.</p>
+        <p>This decision is permanent for this sitting. The jury room responds only after you commit.</p>
         <div>
           <button type="button" onClick={() => confirmDialog.current?.close()}>Review again</button>
           <button ref={sealButton} type="button" onClick={() => {

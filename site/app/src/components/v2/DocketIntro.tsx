@@ -83,14 +83,8 @@ export function DocketIntro({
       <p className="text-sm leading-relaxed text-neutral-400">
         You are Juror #1. Hear the evidence, commit your verdict for this
         sitting, then explain what persuaded you. About ten minutes, start to
-        verdict.
+        verdict. Your progress stays in this browser.
       </p>
-
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900/40 p-4 text-sm leading-relaxed text-neutral-400">
-        <strong className="text-neutral-200">A private simulation, not live people.</strong>{' '}
-        The other eleven jurors are fictional and follow seeded case rules—not
-        live chat or AI. Your progress stays in this browser.
-      </div>
 
       <button
         type="button"
@@ -99,11 +93,6 @@ export function DocketIntro({
       >
         Take your seat
       </button>
-
-      <p className="text-center text-xs text-neutral-600">
-        This case is fiction, built from patterns real trials share. No real
-        people, no real companies.
-      </p>
     </div>
   )
 }

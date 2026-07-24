@@ -84,7 +84,7 @@ export function DocketShell({
           {charge && <div className="docket-context"><p className="chrome-label">Charge before the court</p><p>{charge}</p></div>}
           <div className="docket-context"><p className="chrome-label">Legal threshold</p><p>Beyond reasonable doubt</p></div>
           {sidebar}
-          <p className="local-note"><span aria-hidden="true">◆</span> Your progress and verdict stay on this device. Natural narration requests public, opaque clip IDs from GitHub; case text is not placed in the request.</p>
+          <p className="local-note"><span aria-hidden="true">◆</span> Your progress and verdict stay on this device.</p>
         </aside>
       </div>
     </main>
