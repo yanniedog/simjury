@@ -5,7 +5,9 @@ import type { Stats } from '../../lib/stats'
 import { buildShareText } from '../../lib/share'
 import { ShareCard } from '../ShareCard'
 import { StatsPanel } from '../StatsPanel'
+import { phaseNarratorCue } from '../../lib/narratorCues'
 import type { Verdict } from './DocketVerdict'
+import { NarratorCue } from './NarratorCue'
 
 function WhatMatteredCard({ reveal, trial }: { reveal: BeatReveal; trial: DocketCase }) {
   const { beat } = reveal
@@ -73,6 +75,7 @@ export function DocketReveal({
 
   return (
     <div className="phase-view reveal-view space-y-6">
+      <NarratorCue text={phaseNarratorCue('reveal')} />
 
       <div className="judgment-record border p-5 text-center">
         <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">
