@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
-import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
+import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
+import { phaseNarratorCue } from '../../lib/narratorCues'
 import { StatementCard } from './OpeningStatements'
+import { NarratorCue } from './NarratorCue'
 
 export type Verdict = DocketCase['verdict_truth']
 
@@ -18,27 +20,29 @@ export function DocketVerdict({
 }) {
   const { prosecution, defence } = trial.statements.closing
   const accused = trial.cast.find((m) => m.id === trial.accused.cast_id)
+  const phaseCue = phaseNarratorCue('verdict')
   const [activeSpeaker, setActiveSpeaker] = useState<string | null>(null)
   const [pendingVerdict, setPendingVerdict] = useState<Verdict | null>(null)
   const confirmDialog = useRef<HTMLDialogElement>(null)
   const sealButton = useRef<HTMLButtonElement>(null)
 
-  // Narrate both closings in their advocates' voices; stop on unmount.
   useEffect(() => {
     if (!narration) {
       setActiveSpeaker(null)
       return stopSpeech
     }
-    speakAll([
-      { text: prosecution.text, key: prosecution.speaker },
-      { text: defence.text, key: defence.speaker },
-    ], {
-      rate: playbackRate,
-      onLine: setActiveSpeaker,
-      done: () => setActiveSpeaker(null),
-    })
+    speak(phaseCue, 'narrator', () => {
+      speakAll([
+        { text: prosecution.text, key: prosecution.speaker },
+        { text: defence.text, key: defence.speaker },
+      ], {
+        rate: playbackRate,
+        onLine: setActiveSpeaker,
+        done: () => setActiveSpeaker(null),
+      })
+    }, playbackRate)
     return stopSpeech
-  }, [prosecution.text, prosecution.speaker, defence.text, defence.speaker, narration, playbackRate])
+  }, [phaseCue, prosecution.text, prosecution.speaker, defence.text, defence.speaker, narration, playbackRate])
 
   useEffect(() => {
     const dialog = confirmDialog.current
@@ -61,6 +65,8 @@ export function DocketVerdict({
           The last word from each side
         </h1>
       </div>
+
+      <NarratorCue text={phaseCue} />
 
       {activeSpeaker && (
         <p className="speaker-focus text-xs text-amber-200/80" aria-live="polite">

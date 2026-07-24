@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
-import { speak, stopSpeech, type NarrationRate } from '../../lib/narration'
+import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
+import { phaseNarratorCue } from '../../lib/narratorCues'
 import { CaseMedia, StoryText } from './CaseMedia'
+import { NarratorCue } from './NarratorCue'
 
 export function DocketIntro({
   trial,
@@ -17,25 +19,33 @@ export function DocketIntro({
   onBegin: () => void
 }) {
   const accused = trial.cast.find((m) => m.id === trial.accused.cast_id)
+  const phaseCue = phaseNarratorCue('intro')
 
   useEffect(() => {
-    if (narration) {
-      speak(trial.hook, 'narrator', undefined, playbackRate)
-    }
+    if (!narration) return stopSpeech
+    speakAll(
+      [
+        { text: phaseCue, key: 'narrator' },
+        { text: trial.hook, key: 'narrator' },
+      ],
+      { rate: playbackRate },
+    )
     return stopSpeech
-  }, [trial.hook, narration, playbackRate])
+  }, [phaseCue, trial.hook, narration, playbackRate])
 
   return (
     <div className="phase-view briefing-view space-y-6">
       <div className="phase-heading space-y-1 text-center">
         <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
-          The Daily Docket · Case #{dayNumber}
+          {dayNumber > 0 ? `The Daily Docket · Case #${dayNumber}` : 'Guided intro'}
         </p>
         <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">
           {trial.title}
         </h1>
         <p className="text-sm text-neutral-400">{trial.setting}</p>
       </div>
+
+      <NarratorCue text={phaseCue} />
 
       {trial.media?.cover && <CaseMedia asset={trial.media.cover} priority />}
 

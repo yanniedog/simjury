@@ -10,7 +10,9 @@ import {
   type RoomEvent,
 } from '../../engine/deliberation'
 import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
+import { phaseNarratorCue } from '../../lib/narratorCues'
 import type { Verdict } from './DocketVerdict'
+import { NarratorCue } from './NarratorCue'
 
 const ROUND_LABEL: Partial<Record<DeliberationState['phase'], string>> = {
   open_1: 'Round 1 of 3',
@@ -234,6 +236,8 @@ export function JuryRoomView({
           Your verdict is sealed for this sitting. Now explain what persuaded you.
         </p>
       </div>
+
+      <NarratorCue text={phaseNarratorCue('juryroom')} />
 
       <Bench state={state} playerVerdict={playerVerdict} activeJurorId={activeJurorId} />
       <p aria-live="polite" className="speaker-focus text-xs text-amber-200/80">

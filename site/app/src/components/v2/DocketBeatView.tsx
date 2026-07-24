@@ -1,7 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { DocketBeat, DocketCase } from '../../lib/v2/caseSchema'
 import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
+import { phaseNarratorCue, speakerNarratorCue } from '../../lib/narratorCues'
 import { CaseMedia, StoryText } from './CaseMedia'
+import { NarratorCue } from './NarratorCue'
+
+function speakerOf(trial: DocketCase, id: string) {
+  return trial.cast.find((m) => m.id === id)
+}
 
 function modeLabelFor(beat: DocketBeat): string {
   if (beat.kind === 'witness') {
@@ -9,10 +15,6 @@ function modeLabelFor(beat: DocketBeat): string {
   }
   if (beat.kind === 'exhibit') return 'Exhibit'
   return 'Judge’s direction'
-}
-
-function speakerOf(trial: DocketCase, id: string) {
-  return trial.cast.find((m) => m.id === id)
 }
 
 export function DocketBeatView({
@@ -37,22 +39,49 @@ export function DocketBeatView({
   const speaker = speakerOf(trial, activeSpeakerId)
   const isLast = beatIndex === total - 1
   const media = trial.media?.beats[beat.id]
+  const previousSpeaker = useRef<string | null>(null)
+  const phaseCueShown = useRef(false)
 
-  // Structured cross-examinations visibly and audibly alternate speakers.
+  const showPhaseCue = beatIndex === 0
+  const speakerChanged = previousSpeaker.current !== beat.speaker
+  const speakerCue = speakerChanged ? speakerNarratorCue(trial, beat) : null
+  const cueText = showPhaseCue && !phaseCueShown.current
+    ? phaseNarratorCue('beats')
+    : speakerCue
+
+  useEffect(() => {
+    previousSpeaker.current = beat.speaker
+    if (beatIndex === 0) phaseCueShown.current = true
+  }, [beat.speaker, beatIndex])
+
   useEffect(() => {
     setActiveDialogue(null)
-    if (narration && beat.turns) {
-      speakAll(beat.turns.map((turn) => ({ text: turn.text, key: turn.speaker })), {
+    if (!narration) return stopSpeech
+
+    const lines: Array<{ text: string; key: string }> = []
+    if (cueText) lines.push({ text: cueText, key: 'narrator' })
+    if (beat.turns) {
+      lines.push(...beat.turns.map((turn) => ({ text: turn.text, key: turn.speaker })))
+    } else {
+      lines.push({ text: beat.text, key: beat.speaker })
+    }
+
+    if (lines.length === 1) {
+      speak(lines[0].text, lines[0].key, undefined, playbackRate)
+    } else {
+      speakAll(lines, {
         rate: playbackRate,
-        onLine: (_key, index) => setActiveDialogue({ beatId: beat.id, index }),
+        onLine: (key, index) => {
+          if (key === 'narrator') return
+          const dialogueIndex = cueText ? index - 1 : index
+          if (dialogueIndex >= 0) setActiveDialogue({ beatId: beat.id, index: dialogueIndex })
+        },
         done: () => setActiveDialogue(null),
         onError: () => setActiveDialogue(null),
       })
-    } else if (narration) {
-      speak(beat.text, beat.speaker, undefined, playbackRate)
     }
     return stopSpeech
-  }, [beat, narration, playbackRate])
+  }, [beat, cueText, narration, playbackRate])
 
   const modeLabel = modeLabelFor(beat)
   const subtitle = [speaker?.role_label, modeLabel].filter(Boolean).join(' · ')
@@ -63,11 +92,7 @@ export function DocketBeatView({
         Evidence {beatIndex + 1} of {total} · {modeLabel}
       </p>
 
-      {activeTurn !== null && (
-        <p className="speaker-focus text-xs text-amber-200/80" aria-live="polite">
-          {(speakerOf(trial, activeSpeakerId)?.name ?? 'Speaker')} is speaking
-        </p>
-      )}
+      {cueText && <NarratorCue text={cueText} />}
 
       <div>
         <h1 id="phase-heading" tabIndex={-1} className="text-sm font-semibold text-neutral-200 focus:outline-none">
@@ -106,7 +131,6 @@ export function DocketBeatView({
           <StoryText text={beat.text} className="mt-4 min-h-[6rem] text-lg leading-relaxed text-neutral-100" />
         )}
       </div>
-
 
       <button
         type="button"
