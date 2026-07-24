@@ -14,7 +14,7 @@ import type { ZodType } from 'zod'
 import { caseSchema, type TrialCase } from '../src/lib/caseSchema'
 import { checkQueue, type QualityIssue } from '../src/lib/caseQuality'
 import { docketCaseSchema, type DocketCase } from '../src/lib/v2/caseSchema'
-import { checkDocketQueue } from '../src/lib/v2/caseQuality'
+import { checkDocketCase, checkDocketQueue } from '../src/lib/v2/caseQuality'
 import { docketRunwayError } from '../src/lib/v2/runway'
 import { checkDynamics } from '../src/engine/dynamics'
 
@@ -101,11 +101,22 @@ function main(): void {
       // Design gate, then the deliberation-dynamics simulation: a docket case
       // only ships if its room is alive (see src/engine/dynamics.ts).
       gate: (cases) => {
+        // dd-intro is schema-validated with the folder but excluded from daily
+        // queue/runway gates (runtime also keeps it off the publish queue).
+        const dailyCases = cases.filter((c) => c.id !== 'dd-intro')
+        const introCases = cases.filter((c) => c.id === 'dd-intro')
         const runwayError = docketRunwayError(
-          cases.map((c) => c.publish_date),
+          dailyCases.map((c) => c.publish_date),
         )
         return [
-          ...checkDocketQueue(cases),
+          ...checkDocketQueue(dailyCases),
+          ...introCases.flatMap((c) =>
+            checkDocketCase(c).map((message) => ({
+              caseId: c.id,
+              message,
+              kind: 'design' as const,
+            })),
+          ),
           ...cases.flatMap((c) =>
             checkDynamics(c).map((message) => ({
               caseId: c.id,

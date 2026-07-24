@@ -95,32 +95,47 @@ export function resolvePrNumber(prArg) {
   return { pr: view, branch };
 }
 
+function preferLatestCheck(checks) {
+  /** @type {Map<string, any>} */
+  const byName = new Map();
+  for (const c of checks) {
+    const name = c.name || '';
+    const prev = byName.get(name);
+    if (!prev) {
+      byName.set(name, c);
+      continue;
+    }
+    const prevMs = Date.parse(prev.completedAt || '') || 0;
+    const nextMs = Date.parse(c.completedAt || '') || 0;
+    if (nextMs >= prevMs) byName.set(name, c);
+  }
+  return [...byName.values()];
+}
 export function fetchRequiredCi(prNumber) {
   const r = spawnSync(
     'gh',
-    ['pr', 'checks', String(prNumber), '--required', '--json', 'name,bucket,state'],
+    ['pr', 'checks', String(prNumber), '--required', '--json', 'name,bucket,state,completedAt'],
     { encoding: 'utf8' },
   );
   const stdout = (r.stdout || '').trim();
   if (stdout) {
     try {
-      const checks = JSON.parse(stdout);
+      const raw = JSON.parse(stdout);
+      const checks = Array.isArray(raw) ? preferLatestCheck(raw) : [];
       let pending = false;
       let failed = false;
       const failedNames = [];
-      if (Array.isArray(checks)) {
-        for (const c of checks) {
-          if (c.bucket === 'pending') pending = true;
-          if (
-            c.bucket === 'fail' ||
-            c.bucket === 'cancel' ||
-            c.state === 'FAILURE' ||
-            c.state === 'ERROR' ||
-            c.state === 'CANCELLED'
-          ) {
-            failed = true;
-            failedNames.push(c.name);
-          }
+      for (const c of checks) {
+        if (c.bucket === 'pending') pending = true;
+        if (
+          c.bucket === 'fail' ||
+          c.bucket === 'cancel' ||
+          c.state === 'FAILURE' ||
+          c.state === 'ERROR' ||
+          c.state === 'CANCELLED'
+        ) {
+          failed = true;
+          failedNames.push(c.name);
         }
       }
       return { ok: true, pending, failed, failedNames, checks };
@@ -154,7 +169,8 @@ export function fetchNamedChecks(prNumber, names) {
       const want = new Set(names.map((n) => n.toLowerCase()));
       const found = {};
       if (Array.isArray(all)) {
-        for (const c of all) {
+        const latest = preferLatestCheck(all);
+        for (const c of latest) {
           const lower = (c.name || '').toLowerCase();
           const tail = lower.includes('/') ? lower.slice(lower.lastIndexOf('/') + 1) : lower;
           for (const key of want) {

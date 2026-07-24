@@ -240,7 +240,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "Takes the access logs at face value — her key, her laptop, her passphrase.",
+        "persona": "Takes the camera badge at face value - her on the feed, parcel gone.",
         "register": "blunt",
         "arc": "vibes",
         "initial": {
@@ -253,18 +253,18 @@
         },
         "lines": {
           "agree": [
-            "That is what I have been saying — her key signed it, end of story.",
-            "See, even the machines agree with me."
+            "That is what I have been saying - her badge, her hands on the parcel.",
+            "See, even the camera agrees with me."
           ],
           "pushback": [
-            "You can spin the details however you like; the transfer still came from her chair.",
-            "Nobody walked in and borrowed her hands."
+            "You can talk about shelves all you like; she still carried it off the desk.",
+            "Nobody else was standing there when it left."
           ],
           "concede": [
-            "Fine — if the caller was a fake, the login proves less than I thought."
+            "Fine - if that badge was already retired, the feed proves less than I thought."
           ],
           "final": [
-            "I go with what the logs say."
+            "I go with what the camera shows."
           ]
         },
         "reaction_rules": [
@@ -309,7 +309,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "Practical; trusts what was written down and what was found.",
+        "persona": "Practical; trusts the night-shift note about the safe shelf.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -322,18 +322,18 @@
         },
         "lines": {
           "agree": [
-            "The records line up; I will follow the records.",
-            "That report is the most solid thing we have heard."
+            "The written night rule matters - late drops go to the safe shelf.",
+            "If she followed the note, that is not theft."
           ],
           "pushback": [
-            "We keep talking feelings. Show me a document.",
-            "The policy existed and she skipped it — that is on paper too."
+            "A note on a wall does not erase a missing parcel.",
+            "People invent policies after they get caught."
           ],
           "concede": [
-            "The device download is a document as well. I have to weigh it."
+            "All right - the shelf rule was real, and she named it before anyone else did."
           ],
           "final": [
-            "On the papers alone, I can live with either answer — but sure is a high bar."
+            "I follow what was written down for the night staff."
           ]
         },
         "reaction_rules": [
@@ -376,7 +376,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "The principled holdout; keeps repeating what 'sure' is supposed to mean.",
+        "persona": "The principled holdout; keeps repeating what sure is supposed to mean.",
         "register": "formal",
         "arc": "principled_holdout",
         "initial": {
@@ -389,17 +389,17 @@
         },
         "lines": {
           "agree": [
-            "Precisely. The standard is sure — not suspicious, not probably."
+            "Precisely. The standard is sure - not suspicious, not probably."
           ],
           "pushback": [
-            "You are asking her to explain the crime. That is not her job, it is the prosecution's.",
-            "Anger at an employer is evidence of nothing but employment."
+            "You are asking her to explain the missing parcel. That is not her job, it is the prosecution's.",
+            "Being a trainee on nights is evidence of employment, not of theft."
           ],
           "concede": [
-            "I accept the transfer itself is beyond dispute."
+            "I accept she carried the parcel away from the desk."
           ],
           "holdout": [
-            "If a manufactured call is even reasonably possible, then sure is out of reach, and so is guilty.",
+            "If a retired badge on the feed is even reasonably possible, then sure is out of reach, and so is guilty.",
             "I would rather be the last vote in the room than the first to guess."
           ],
           "final": [
@@ -448,7 +448,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "Keeps the room honest about who has to prove what.",
+        "persona": "Keeps the room honest about who has to prove dishonesty.",
         "register": "formal",
         "arc": "steady",
         "initial": {
@@ -465,14 +465,14 @@
           ],
           "pushback": [
             "Careless and dishonest are different accusations. Only one of them is charged.",
-            "We cannot convict her for being alone in the office."
+            "We cannot convict her for being alone at the desk."
           ],
           "concede": [
             "I lean guilty on the whole picture, but I will not pretend the burden moved."
           ],
           "burden_correct": [
-            "Stop. She does not have to show where the money went. They have to show she sent it dishonestly.",
-            "The judge said it plainly: if she may genuinely have believed the caller, we acquit."
+            "Stop. She does not have to show where the parcel went. They have to show she took it dishonestly.",
+            "The judge said it plainly: if she may genuinely have been moving it to the safe shelf, we acquit."
           ],
           "final": [
             "Held to the proper standard, I know which way this goes."
@@ -519,7 +519,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "Foreperson; keeps order, counts hands, leans to convict.",
+        "persona": "Foreperson; keeps order, counts hands, leans to convict on the guard sighting.",
         "register": "plain",
         "arc": "foreperson",
         "initial": {
@@ -532,18 +532,18 @@
         },
         "lines": {
           "agree": [
-            "Noted — and for what it is worth, I agree with that.",
-            "Good. That is the kind of point a verdict can stand on."
+            "Noted - and for what it is worth, I agree with that.",
+            "The guard put her at the desk with the parcel in her hands."
           ],
           "pushback": [
-            "One at a time. The question is dishonesty, not tidiness.",
-            "We are going in circles; someone bring us back to the evidence."
+            "We still have to decide as a room, not as twelve solo votes.",
+            "An expired badge story can wait until we finish the guard evidence."
           ],
           "concede": [
-            "All right. That point stands, and the count should reflect it."
+            "If the pass was already dead, that changes how I read the camera."
           ],
           "final": [
-            "We have argued it properly. Let us be counted."
+            "I am still with guilty unless the badge doubt hardens."
           ]
         },
         "reaction_rules": [
@@ -575,7 +575,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "Impressed by the username trail; drifts with whoever spoke last.",
+        "persona": "Impressed by the camera timestamp; drifts with whoever spoke last.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -588,18 +588,18 @@
         },
         "lines": {
           "agree": [
-            "Yes — that is the bit I keep coming back to as well.",
-            "When you put it like that, it does seem clear."
+            "Yes - that timestamp is the bit I keep coming back to.",
+            "The feed puts her there when the parcel leaves the desk."
           ],
           "pushback": [
-            "But the account had her name on it. Her actual old name.",
-            "Eleven days of planning sounds like somebody who works there."
+            "Timestamps do not invent a thief by themselves.",
+            "I need someone to explain the dead badge before I move."
           ],
           "concede": [
-            "Although… if the name came from a leak, anyone could have worn it. I had not thought of it as a costume."
+            "A retired pass on the same frame does make me hesitate."
           ],
           "final": [
-            "I think… I will go with how it sounded once everything was said."
+            "I am still leaning guilty, but the badge is bothering me."
           ]
         },
         "reaction_rules": [
@@ -643,7 +643,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "Came in certain; the platform report is working on him.",
+        "persona": "Came in certain; the retired-badge detail is working on him.",
         "register": "plain",
         "arc": "mind_changer",
         "initial": {
@@ -656,18 +656,18 @@
         },
         "lines": {
           "agree": [
-            "I keep rereading that trust-and-safety line. A three-day-old synthetic account is not an accident.",
-            "If a crew ran that call live, then everything I was sure about happens exactly the same whether she is guilty or innocent."
+            "I keep rereading that ghost-label point. A dead badge on the feed is not an accident.",
+            "If the pass was retired, someone else could have worn that look."
           ],
           "pushback": [
-            "The seven per cent bothers me less than you want it to.",
-            "I was certain when I sat down. I am telling you what certainty was built on: the login. Just the login."
+            "Or she used a pass that should have been cut up - that still looks bad.",
+            "Do not turn a paperwork failure into an alibi."
           ],
           "concede": [
-            "All right — I cannot call it sure anymore. Not with that report on the table."
+            "All right - a contractor with that lanyard later is hard to ignore."
           ],
           "final": [
-            "I changed my mind in this room, and I can tell you the exact exhibit that did it."
+            "The dead badge moved me off sure guilty."
           ]
         },
         "reaction_rules": [
@@ -737,17 +737,17 @@
         "lines": {
           "agree": [
             "Mm. The louder the witness, the less I tend to believe.",
-            "That is the first thing said today that sounded like evidence."
+            "The guard is sure - that alone makes me careful."
           ],
           "pushback": [
-            "The colleague heard a complaint, not a confession.",
-            "Everyone here keeps saying 'obviously'. Nothing about this is obvious."
+            "I still need a clean account of where the parcel went after the shelf.",
+            "Doubt is not the same as believing every defence line."
           ],
           "concede": [
-            "The expert took money from the defence; I hold that against her a little."
+            "He did see her hands on it; I cannot pretend otherwise."
           ],
           "final": [
-            "Quietly, then: not sure. So not guilty."
+            "I stay not guilty while the shelf story holds."
           ]
         },
         "reaction_rules": [
@@ -803,17 +803,17 @@
         },
         "lines": {
           "agree": [
-            "Exactly. Money gone, story ready — too neat by half."
+            "Exactly. Parcel gone, story ready - too neat by half."
           ],
           "pushback": [
-            "Then where did the money go? Someone in this room tell me that."
+            "Then where did the parcel go? Someone in this room tell me that."
           ],
           "burden_drift": [
-            "If she is innocent, let her show us the caller was fake. She was the only one on that call.",
-            "An honest person rings the boss back. She never explained why she did not."
+            "If she is innocent, let her show us the shelf still held it. She was the only one seen with it.",
+            "An honest trainee rings the supervisor. She never explained why she did not."
           ],
           "concede": [
-            "All right, all right — the judge did say it is not hers to prove."
+            "All right, all right - the judge did say it is not hers to prove."
           ],
           "burden_correct": [
             "I withdraw it. They have to make us sure; she owes us nothing."
@@ -877,18 +877,18 @@
         },
         "lines": {
           "agree": [
-            "Yes — say that part again, that is the part that moves me.",
-            "Right, right — the wallets. The wallets are hard to argue with."
+            "Yes - say that part again, that is the part that moves me.",
+            "Safe shelf first, then someone else with the dead badge - that sequence fits."
           ],
           "pushback": [
-            "But then I flip it around and it reads the other way entirely.",
-            "Five minutes ago I was where you are; give me five more."
+            "Or she walked it out and the badge talk is a distraction.",
+            "I keep flipping; someone pin the timeline down."
           ],
           "concede": [
-            "That one lands. I will stop wobbling on it."
+            "The guard sighting still pulls me the other way."
           ],
           "final": [
-            "I have talked myself around the table twice. This is where I stopped."
+            "I land on not guilty if the shelf step stays possible."
           ]
         },
         "reaction_rules": [
@@ -931,7 +931,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "Uneasy about convicting on screens; uneasy about acquitting on them too.",
+        "persona": "Uneasy about convicting on a camera alone; uneasy about acquitting the only person seen with the parcel.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -944,18 +944,18 @@
         },
         "lines": {
           "agree": [
-            "That is fair. The wallets lead somewhere, and it is not to her.",
-            "And the direction backs that reading — sure means sure."
+            "That is fair. The camera leads somewhere, and the dead badge may not lead to her.",
+            "A retired pass on the feed is a real problem for sure guilt."
           ],
           "pushback": [
-            "A machine flagged the video and a machine logged her key. I refuse to worship one machine and ignore the other.",
-            "Both sides keep handing me printouts and calling them proof."
+            "Still - she is the only person the guard names with the parcel.",
+            "Screens can lie, but empty shelves do not invent themselves."
           ],
           "concede": [
-            "The device download cuts through it, I admit. You cannot fake an absence that thorough."
+            "I cannot ignore that she carried it away from the desk."
           ],
           "final": [
-            "Between two stacks of screens, I take the one the judge's direction points at."
+            "I stay not guilty while the badge doubt stands."
           ]
         },
         "reaction_rules": [

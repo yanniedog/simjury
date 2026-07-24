@@ -52,7 +52,8 @@ type Phase = 'intro' | 'openings' | 'beats' | 'verdict' | 'juryroom' | 'reveal'
 function statsFromStorage(): Stats {
   const results: DayResult[] = []
   for (const play of loadAllPlays()) {
-    if (play.room) {
+    // Guided intro uses a synthetic day and must not inflate daily streak stats.
+    if (play.room && play.day !== INTRO_SITTING_DAY && play.caseId !== INTRO_CASE_ID) {
       results.push({ day: play.day })
     }
   }
@@ -419,6 +420,7 @@ function DocketApp({
           dayNumber={dayNumber}
           stats={revealStats}
           onChooseAnother={chooseAnotherSitting}
+          isIntro={isIntro}
         />
       )}
     </DocketShell>
