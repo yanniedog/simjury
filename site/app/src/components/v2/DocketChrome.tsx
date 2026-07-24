@@ -19,21 +19,6 @@ const PHASES: Array<{ id: DocketPhase; label: string; short: string }> = [
   { id: 'reveal', label: 'Record', short: '06' },
 ]
 
-function PhaseRail({ phase }: { phase: DocketPhase }) {
-  const currentIndex = PHASES.findIndex((step) => step.id === phase)
-  return (
-    <nav className="phase-rail" aria-label="Sitting progress">
-      <p className="chrome-label">Sitting progress</p>
-      <ol>
-        {PHASES.map((step, index) => (
-          <li key={step.id} className={index < currentIndex ? 'complete' : undefined} aria-current={step.id === phase ? 'step' : undefined}>
-            <span>{step.short}</span><strong>{step.label}</strong>
-          </li>
-        ))}
-      </ol>
-    </nav>
-  )
-}
 
 export function DocketShell({
   children,
@@ -77,12 +62,9 @@ export function DocketShell({
         )}
       </header>
       <div className="docket-workspace">
-        <aside className="docket-progress"><PhaseRail phase={phase} /></aside>
         <section className="docket-stage" aria-label={`${phaseLabel}: ${caseTitle}`}>{children}</section>
         <aside className="juror-docket" aria-label="Juror docket">
-          <div className="juror-identity"><span>JUROR</span><strong>01</strong><p>Your private seat</p></div>
           {charge && <div className="docket-context"><p className="chrome-label">Charge before the court</p><p>{charge}</p></div>}
-          <div className="docket-context"><p className="chrome-label">Legal threshold</p><p>Beyond reasonable doubt</p></div>
           {sidebar}
           <p className="local-note"><span aria-hidden="true">◆</span> Your progress and verdict stay on this device.</p>
         </aside>

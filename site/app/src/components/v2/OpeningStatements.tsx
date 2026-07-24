@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import type { DocketCase, Statement } from '../../lib/v2/caseSchema'
 import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { StoryText } from './CaseMedia'
-import { CourtroomStage } from './CourtroomStage'
 
 /**
  * A counsel statement card — the visual voice of one side of the duel.
@@ -81,7 +80,11 @@ export function OpeningStatements({
         </h1>
       </div>
 
-      <CourtroomStage trial={trial} activeSpeakerId={activeSpeaker} phaseLabel="Opening statements" />
+      {activeSpeaker && (
+        <p className="speaker-focus text-xs text-amber-200/80" aria-live="polite">
+          {(trial.cast.find((m) => m.id === activeSpeaker)?.name ?? 'Counsel')} is speaking
+        </p>
+      )}
 
       <StatementCard trial={trial} statement={prosecution} side="prosecution" />
       <StatementCard trial={trial} statement={defence} side="defence" />
