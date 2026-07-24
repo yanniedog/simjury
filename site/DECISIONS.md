@@ -59,10 +59,10 @@ where the web deliberately diverges, and why. (Android/pilot rules are unchanged
   and in-app chrome must not surface fiction / simulation / deterministic / GitHub disclaimer
   language.
 - **Data-layer safety is unchanged:** schema `label: "fiction"`, banned-token scan, and
-  fictional media caption rules remain mandatory. They are authoring/CI invariants, never
-  player chrome.
+  fictional media caption rules remain mandatory authoring/CI invariants. The player strips
+  the leading fiction label before rendering captions (`playerMediaCaption`).
 - Android / Install links stay unlinked from the landing product path (pilot remains parked
-  at `/install/` for engineers who know the URL).
+  at `/install/` for engineers who know the URL) and are omitted from `sitemap.xml`.
 
 ## Unchanged, still binding on the web
 
