@@ -150,17 +150,9 @@ describe('checkDocketCase', () => {
     expect(joined).toMatch(/does not match any beat/)
   })
 
-  it('flags a misleading beat after the final check-in', () => {
-    const c = makeDocketCase()
-    c.checkins = ['b3', 'b6', 'b9']
-    const lastAt = c.beats.findIndex((b) => b.id === 'b9')
-    c.beats[lastAt + 1] = {
-      ...c.beats[lastAt + 1],
-      reveal_stamp: 'misleading',
-      surface_persuasion: 0.9,
-      true_weight: 0.1,
-    }
-    expect(checkDocketCase(c).join()).toMatch(/after the final check-in/)
+  it('allows empty check-ins without requiring a final check-in beat', () => {
+    const c = makeDocketCase({ checkins: [] })
+    expect(checkDocketCase(c).join()).not.toMatch(/final check-in/)
   })
 
   it('flags only known scaffold phrases with case and field locations', () => {

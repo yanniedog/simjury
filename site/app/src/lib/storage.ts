@@ -5,21 +5,18 @@ import { z } from 'zod'
  * day) shows the result instead of letting the juror re-run the case — the
  * one-verdict-a-day rule that makes it a daily.
  *
- * `correct` and the trap counts are recorded so cross-day stats (streaks, win
- * rate) can be computed without re-deriving them from each day's case. They are
- * optional for backward compatibility with plays saved before stats existed.
+ * `correct` is recorded so cross-day stats can be computed without re-deriving
+ * from each day's case. Optional for backward compatibility.
  *
- * `caseId` pins the play to the specific case it was scored against. Without
- * it, a queue edit (reorder, replace, resize) that shifts which case falls on
- * a day index could make a stored play "valid" (right length) but actually
- * belong to a different case than the one now showing for that day — silently
- * revealing/scoring the wrong trial. A schema mismatch (e.g. an older stored
- * play with no `caseId`) just fails to restore, same as any other corrupt entry.
+ * `caseId` pins the play to the specific case it was scored against.
+ *
+ * `convictions` remains optional/empty for backward compatibility with older
+ * plays that recorded mid-trial check-ins; new plays omit the journey series.
  */
 const storedPlaySchema = z.object({
   day: z.number(),
   caseId: z.string(),
-  convictions: z.array(z.number()),
+  convictions: z.array(z.number()).default([]),
   verdict: z.enum(['Guilty', 'Not Guilty']),
   correct: z.boolean().optional(),
   swayedByTraps: z.number().optional(),
@@ -42,15 +39,12 @@ const storedProgressSchema = z.object({
   caseId: z.string(),
   phase: z.enum(['openings', 'beats', 'verdict']),
   beatIndex: z.number().int().nonnegative(),
-  checkinValues: z.array(z.number().min(0).max(100)),
-  conviction: z.number().min(0).max(100),
 })
 
 export type StoredProgress = z.infer<typeof storedProgressSchema>
 
 const KEY_PREFIX = 'simjury-daily:v1:'
 const PROGRESS_PREFIX = 'simjury-progress:v1:'
-
 function storage(): Storage | null {
   try {
     return typeof localStorage === 'undefined' ? null : localStorage
@@ -79,12 +73,9 @@ export function loadPlay(day: number): StoredPlay | null {
 export function loadPlayForSitting(
   day: number,
   caseId: string,
-  checkinCount: number,
 ): StoredPlay | null {
   const play = loadPlay(day)
-  return play?.caseId === caseId && play.convictions.length === checkinCount
-    ? play
-    : null
+  return play?.caseId === caseId ? play : null
 }
 
 export function savePlay(play: StoredPlay): void {

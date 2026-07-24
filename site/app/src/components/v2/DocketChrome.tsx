@@ -97,7 +97,6 @@ function sittingStatus(sitting: DocketSitting): string {
   const play = loadPlayForSitting(
     sitting.day,
     caseStorageId(sitting.trial),
-    sitting.trial.checkins.length,
   )
   if (play) return play.room ? 'judgment recorded' : 'jury room in progress'
   const progress = loadProgress(sitting.day)
