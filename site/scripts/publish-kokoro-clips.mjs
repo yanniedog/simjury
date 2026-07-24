@@ -5,7 +5,7 @@
  *
  * Strategy:
  *  - Content-addressed clip ids mean an existing asset name is already correct;
- *    never blind --clobber every MP3.
+ *    never blind --clobber every MP3 (unless --clobber-mp3s for synthesis regen).
  *  - Upload only missing individual MP3s so <audio> playback keeps working
  *    (Release assets lack CORS; CSP connect-src is 'self', so browser zip
  *    fetch is not viable on the static host).
@@ -34,6 +34,7 @@ const valueAfter = (flag) => {
   return index === -1 ? undefined : args[index + 1]
 }
 const clipsRoot = resolve(valueAfter('--clips') ?? 'narration-clips')
+const clobberMp3s = args.includes('--clobber-mp3s')
 const repo = process.env.GH_REPO || process.env.GITHUB_REPOSITORY
 if (!repo) {
   console.error('publish-kokoro-clips: GH_REPO or GITHUB_REPOSITORY is required')
@@ -43,20 +44,6 @@ if (!process.env.GH_TOKEN && !process.env.GITHUB_TOKEN) {
   console.error('publish-kokoro-clips: GH_TOKEN or GITHUB_TOKEN is required')
   process.exit(1)
 }
-
-function requireBin(name) {
-  const probe = run(name, ['-h'], { stdio: 'ignore' })
-  // zip/unzip print help to stderr and may use non-zero; existence is ENOENT.
-  if (probe.error && probe.error.code === 'ENOENT') {
-    console.error(
-      `publish-kokoro-clips: required binary '${name}' not found on PATH (CI ubuntu-latest provides zip/unzip; install them for local runs)`,
-    )
-    process.exit(1)
-  }
-}
-
-requireBin('zip')
-requireBin('unzip')
 
 function sleep(ms) {
   const seconds = Math.max(1, Math.ceil(ms / 1000))
@@ -77,6 +64,20 @@ function run(command, commandArgs, options = {}) {
   })
   return result
 }
+
+function requireBin(name) {
+  const probe = run(name, ['-h'], { stdio: 'ignore' })
+  // zip/unzip print help to stderr and may use non-zero; existence is ENOENT.
+  if (probe.error && probe.error.code === 'ENOENT') {
+    console.error(
+      `publish-kokoro-clips: required binary '${name}' not found on PATH (CI ubuntu-latest provides zip/unzip; install them for local runs)`,
+    )
+    process.exit(1)
+  }
+}
+
+requireBin('zip')
+requireBin('unzip')
 
 function rateLimitResetMs(stderr = '', stdout = '') {
   const blob = `${stderr}\n${stdout}`
@@ -122,34 +123,50 @@ function gh(ghArgs, options = {}) {
   }
 }
 
-function listAssetNames(tag) {
+function listAssets(tag) {
   const result = gh([
     'api',
     `repos/${repo}/releases/tags/${tag}`,
     '--jq',
-    '.assets[].name',
+    '[.assets[] | {name, state, size, id}]',
   ])
-  return new Set(
-    result.stdout
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter(Boolean),
-  )
+  const assets = JSON.parse(result.stdout.trim() || '[]')
+  const complete = new Set()
+  const broken = []
+  for (const asset of assets) {
+    if (asset.state === 'uploaded' && Number(asset.size) > 0) {
+      complete.add(asset.name)
+    } else {
+      broken.push(asset)
+    }
+  }
+  return { complete, broken }
+}
+
+function deleteBrokenAssets(tag, broken) {
+  for (const asset of broken) {
+    console.warn(
+      `publish-kokoro-clips: deleting incomplete asset ${tag}/${asset.name} (state=${asset.state} size=${asset.size})`,
+    )
+    gh(['api', '-X', 'DELETE', `repos/${repo}/releases/assets/${asset.id}`])
+  }
 }
 
 function downloadAsset(tag, name, dest) {
-  const result = gh(
+  return gh(
     ['release', 'download', tag, '--repo', repo, '--pattern', name, '--dir', dest, '--clobber'],
     { stdio: 'pipe' },
   )
-  return result
 }
 
 function uploadFiles(tag, files, { clobber = false } = {}) {
   if (files.length === 0) return
-  const args = ['release', 'upload', tag, ...files, '--repo', repo]
-  if (clobber) args.push('--clobber')
-  gh(args, { stdio: 'inherit' })
+  const uploadArgs = ['release', 'upload', tag, ...files, '--repo', repo]
+  if (clobber) uploadArgs.push('--clobber')
+  // Capture stdio so rate-limit classification can read 403 / reset headers.
+  const result = gh(uploadArgs, { stdio: 'pipe' })
+  if (result.stdout) process.stdout.write(result.stdout)
+  if (result.stderr) process.stderr.write(result.stderr)
 }
 
 function zipDir(sourceDir, zipPath) {
@@ -170,6 +187,10 @@ function unzipTo(zipPath, destDir) {
   }
 }
 
+if (clobberMp3s) {
+  console.log('publish-kokoro-clips: --clobber-mp3s enabled (synthesis/tooling regen)')
+}
+
 let uploadedMp3 = 0
 let skippedMp3 = 0
 let zipsUpdated = 0
@@ -184,8 +205,11 @@ for (let shard = 0; shard < NARRATION_SHARDS; shard++) {
   if (newMp3s.length === 0) continue
 
   const tag = `narration-kokoro-${shard}`
-  const existing = listAssetNames(tag)
-  const missing = newMp3s.filter((path) => !existing.has(basename(path)))
+  const { complete: existing, broken } = listAssets(tag)
+  if (broken.length) deleteBrokenAssets(tag, broken)
+  const missing = clobberMp3s
+    ? newMp3s
+    : newMp3s.filter((path) => !existing.has(basename(path)))
   skippedMp3 += newMp3s.length - missing.length
 
   const work = mkdtempSync(join(tmpdir(), `kokoro-shard-${shard}-`))
@@ -216,7 +240,7 @@ for (let shard = 0; shard < NARRATION_SHARDS; shard++) {
       const batchSize = 25
       for (let i = 0; i < missing.length; i += batchSize) {
         const batch = missing.slice(i, i + batchSize)
-        uploadFiles(tag, batch, { clobber: false })
+        uploadFiles(tag, batch, { clobber: clobberMp3s })
         uploadedMp3 += batch.length
         console.log(
           `shard ${shard}: uploaded ${batch.length} new MP3s (${i + batch.length}/${missing.length})`,

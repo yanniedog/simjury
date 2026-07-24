@@ -33,6 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       cases: ${{ steps.cases.outputs.value }}
+      clobber_mp3s: ${{ steps.cases.outputs.clobber_mp3s }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -59,11 +60,18 @@ jobs:
                 sort -u | paste -sd, -)"
             fi
           fi
+          clobber="false"
+          if [[ "$requested" == "all" && "${{ github.event_name }}" != "workflow_dispatch" ]]; then
+            # Push-driven synthesis/tooling regen must overwrite content-addressed MP3s.
+            clobber="true"
+          fi
           if [[ -z "$requested" ]]; then
             echo "No narration corpus changes; skipping generation."
             echo "value=[]" >> "$GITHUB_OUTPUT"
+            echo "clobber_mp3s=false" >> "$GITHUB_OUTPUT"
           else
             echo "value=$(node site/scripts/build-kokoro-jobs.mjs --case "$requested" --list)" >> "$GITHUB_OUTPUT"
+            echo "clobber_mp3s=$clobber" >> "$GITHUB_OUTPUT"
           fi
       - name: Create stable GitHub voice-pack releases
         env:
@@ -136,4 +144,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-        run: node site/scripts/publish-kokoro-clips.mjs --clips narration-clips
+          CLOBBER_MP3S: ${{ needs.prepare.outputs.clobber_mp3s }}
+        run: |
+          extra=""
+          if [[ "$CLOBBER_MP3S" == "true" ]]; then
+            extra="--clobber-mp3s"
+          fi
+          node site/scripts/publish-kokoro-clips.mjs --clips narration-clips $extra
