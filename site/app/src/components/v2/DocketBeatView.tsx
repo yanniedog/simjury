@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { DocketBeat, DocketCase } from '../../lib/v2/caseSchema'
 import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
-import { ConvictionSlider } from '../ConvictionSlider'
 import { CaseMedia, StoryText } from './CaseMedia'
 import { CourtroomStage } from './CourtroomStage'
 
@@ -18,18 +17,14 @@ function speakerOf(trial: DocketCase, id: string) {
 export function DocketBeatView({
   trial,
   beatIndex,
-  value,
   narration,
   playbackRate,
-  onChange,
   onNext,
 }: {
   trial: DocketCase
   beatIndex: number
-  value: number
   narration: boolean
   playbackRate: NarrationRate
-  onChange: (value: number) => void
   onNext: () => void
 }) {
   const beat = trial.beats[beatIndex]
@@ -40,7 +35,6 @@ export function DocketBeatView({
   const stageSpeakerId = activeSpeakerId
   const total = trial.beats.length
   const speaker = speakerOf(trial, activeSpeakerId)
-  const isCheckin = trial.checkins.includes(beat.id)
   const isLast = beatIndex === total - 1
   const media = trial.media?.beats[beat.id]
 
@@ -122,14 +116,6 @@ export function DocketBeatView({
         )}
       </div>
 
-      {isCheckin && (
-        <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
-          <p className="mb-4 text-center text-xs uppercase tracking-wider text-neutral-500">
-            Check-in: where does this leave you?
-          </p>
-          <ConvictionSlider value={value} onChange={onChange} />
-        </div>
-      )}
 
       <button
         type="button"

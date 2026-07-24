@@ -72,6 +72,10 @@ export const BEAT_WORDS_MAX = 70
 export const CASE_WORDS_MIN = 550
 export const CASE_WORDS_MAX = 1050
 
+function isIntroCase(c: DocketCase): boolean {
+  return c.id === 'dd-intro'
+}
+
 function dialogueFingerprint(text: string): string {
   return (text.toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []).join(' ')
 }
@@ -277,21 +281,30 @@ function jurorIssues(
 export function checkDocketCase(c: DocketCase): string[] {
   // The v1 puzzle-design core applies unchanged to v2 beats.
   const issues: string[] = [...checkCase(c)]
+  const intro = isIntroCase(c)
+  const beatWordsMin = intro ? 25 : BEAT_WORDS_MIN
+  const beatWordsMax = intro ? 80 : BEAT_WORDS_MAX
+  const caseWordsMin = intro ? 200 : CASE_WORDS_MIN
+  const caseWordsMax = CASE_WORDS_MAX
+  const statementWordsMin = intro ? 25 : STATEMENT_WORDS_MIN
+  const statementWordsMax = STATEMENT_WORDS_MAX
+  const witnessMin = intro ? 1 : WITNESS_COUNT_MIN
+  const witnessMax = WITNESS_COUNT_MAX
 
   // Pacing.
   let totalWords = 0
   for (const b of c.beats) {
     const words = wordCount(b.text)
     totalWords += words
-    if (words < BEAT_WORDS_MIN || words > BEAT_WORDS_MAX) {
+    if (words < beatWordsMin || words > beatWordsMax) {
       issues.push(
-        `beat ${b.id} has ${words} words; narration pacing needs ${BEAT_WORDS_MIN}-${BEAT_WORDS_MAX}`,
+        `beat ${b.id} has ${words} words; narration pacing needs ${beatWordsMin}-${beatWordsMax}`,
       )
     }
   }
-  if (totalWords < CASE_WORDS_MIN || totalWords > CASE_WORDS_MAX) {
+  if (totalWords < caseWordsMin || totalWords > caseWordsMax) {
     issues.push(
-      `evidence totals ${totalWords} words; the reading phase needs ${CASE_WORDS_MIN}-${CASE_WORDS_MAX}`,
+      `evidence totals ${totalWords} words; the reading phase needs ${caseWordsMin}-${caseWordsMax}`,
     )
   }
 
@@ -315,9 +328,9 @@ export function checkDocketCase(c: DocketCase): string[] {
   for (const [label, statement, side] of statements) {
     const words = wordCount(statement.text)
     statementWords += words
-    if (words < STATEMENT_WORDS_MIN || words > STATEMENT_WORDS_MAX) {
+    if (words < statementWordsMin || words > statementWordsMax) {
       issues.push(
-        `statement ${label} has ${words} words; needs ${STATEMENT_WORDS_MIN}-${STATEMENT_WORDS_MAX}`,
+        `statement ${label} has ${words} words; needs ${statementWordsMin}-${statementWordsMax}`,
       )
     }
     const speaker = castById.get(statement.speaker)
@@ -423,12 +436,9 @@ export function checkDocketCase(c: DocketCase): string[] {
       `${c.id} final beat '${finalBeat?.id ?? 'none'}' must be the sole judge direction`,
     )
   }
-  if (
-    witnessSpeakers.size < WITNESS_COUNT_MIN ||
-    witnessSpeakers.size > WITNESS_COUNT_MAX
-  ) {
+  if (witnessSpeakers.size < witnessMin || witnessSpeakers.size > witnessMax) {
     issues.push(
-      `case must have ${WITNESS_COUNT_MIN}-${WITNESS_COUNT_MAX} witnesses (has ${witnessSpeakers.size})`,
+      `case must have ${witnessMin}-${witnessMax} witnesses (has ${witnessSpeakers.size})`,
     )
   }
 
@@ -468,26 +478,14 @@ export function checkDocketCase(c: DocketCase): string[] {
     if (at <= prev) issues.push(`check-in '${id}' is out of beat order`)
     prev = at
   }
-  const finalCheckin = c.checkins[c.checkins.length - 1]
-  if (finalBeat && finalCheckin !== finalBeat.id) {
-    issues.push(
-      `${c.id} final check-in must reference final beat '${finalBeat.id}' (got '${finalCheckin ?? 'none'}')`,
-    )
-  }
-
-  // Every trap must be scoreable: analyzeDocketPlay can only mark a
-  // misleading beat as bait if a check-in closes its segment, so a trap
-  // after the final check-in would silently drop out of the reveal's
-  // trap counts. (A trap ON the final check-in beat is fine — the
-  // check-in closes its own segment.)
-  const lastCheckinAt =
-    c.checkins.length > 0
-      ? Math.max(...c.checkins.map((id) => order.get(id) ?? -1))
-      : -1
-  for (const [i, b] of c.beats.entries()) {
-    if (b.reveal_stamp === 'misleading' && i > lastCheckinAt) {
+  // Check-ins are optional (player UI no longer records progressive conviction).
+  // When present, the final check-in should still close on the last beat for
+  // legacy authored cases that keep the field populated.
+  if (c.checkins.length > 0) {
+    const finalCheckin = c.checkins[c.checkins.length - 1]
+    if (finalBeat && finalCheckin !== finalBeat.id) {
       issues.push(
-        `misleading beat ${b.id} falls after the final check-in — it can never be scored as bait`,
+        `${c.id} final check-in must reference final beat '${finalBeat.id}' (got '${finalCheckin ?? 'none'}')`,
       )
     }
   }

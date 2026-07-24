@@ -30,37 +30,36 @@ afterEach(() => vi.unstubAllGlobals())
 describe('storage', () => {
   it('round-trips a valid play', () => {
     vi.stubGlobal('localStorage', memoryStorage())
-    savePlay({ day: 5, caseId: 'd-0001', convictions: [60, 40], verdict: 'Not Guilty' })
+    savePlay({ day: 5, caseId: 'd-0001', convictions: [], verdict: 'Not Guilty' })
     expect(loadPlay(5)).toEqual({
       day: 5,
       caseId: 'd-0001',
-      convictions: [60, 40],
+      convictions: [],
       verdict: 'Not Guilty',
     })
   })
 
   it('returns null when there is no play for that day', () => {
     vi.stubGlobal('localStorage', memoryStorage())
-    savePlay({ day: 5, caseId: 'd-0001', convictions: [60], verdict: 'Guilty' })
+    savePlay({ day: 5, caseId: 'd-0001', convictions: [], verdict: 'Guilty' })
     expect(loadPlay(6)).toBeNull()
   })
 
   it('keeps each sitting verdict under its own day', () => {
     vi.stubGlobal('localStorage', memoryStorage())
-    savePlay({ day: 5, caseId: 'd-0001', convictions: [60], verdict: 'Guilty' })
-    savePlay({ day: 6, caseId: 'd-0002', convictions: [40], verdict: 'Not Guilty' })
+    savePlay({ day: 5, caseId: 'd-0001', convictions: [], verdict: 'Guilty' })
+    savePlay({ day: 6, caseId: 'd-0002', convictions: [], verdict: 'Not Guilty' })
 
     expect(loadPlay(5)?.verdict).toBe('Guilty')
     expect(loadPlay(6)?.verdict).toBe('Not Guilty')
   })
 
-  it('only restores a verdict for its matching case and check-in trace', () => {
+  it('only restores a verdict for its matching case', () => {
     vi.stubGlobal('localStorage', memoryStorage())
-    savePlay({ day: 5, caseId: 'd-0001', convictions: [60], verdict: 'Guilty' })
+    savePlay({ day: 5, caseId: 'd-0001', convictions: [], verdict: 'Guilty' })
 
-    expect(loadPlayForSitting(5, 'd-0001', 1)?.verdict).toBe('Guilty')
-    expect(loadPlayForSitting(5, 'd-0002', 1)).toBeNull()
-    expect(loadPlayForSitting(5, 'd-0001', 2)).toBeNull()
+    expect(loadPlayForSitting(5, 'd-0001')?.verdict).toBe('Guilty')
+    expect(loadPlayForSitting(5, 'd-0002')).toBeNull()
   })
 
   it('rejects corrupted JSON rather than throwing', () => {
@@ -80,26 +79,23 @@ describe('storage', () => {
     expect(loadPlay(5)).toBeNull()
   })
 
-  it('round-trips the correctness and trap fields', () => {
+  it('round-trips the correctness field', () => {
     vi.stubGlobal('localStorage', memoryStorage())
     savePlay({
       day: 5,
       caseId: 'd-0001',
-      convictions: [70],
+      convictions: [],
       verdict: 'Guilty',
       correct: true,
-      swayedByTraps: 1,
-      totalTraps: 2,
     })
     expect(loadPlay(5)?.correct).toBe(true)
-    expect(loadPlay(5)?.swayedByTraps).toBe(1)
   })
 
   it('rejects a play saved without a caseId (pre-caseId schema)', () => {
     const store = memoryStorage()
     store.setItem(
       KEY,
-      JSON.stringify({ day: 5, convictions: [60], verdict: 'Guilty' }),
+      JSON.stringify({ day: 5, convictions: [], verdict: 'Guilty' }),
     )
     vi.stubGlobal('localStorage', store)
     expect(loadPlay(5)).toBeNull()
@@ -110,8 +106,8 @@ describe('loadAllPlays', () => {
   it('returns every valid play and skips corrupt entries', () => {
     const store = memoryStorage()
     vi.stubGlobal('localStorage', store)
-    savePlay({ day: 1, caseId: 'd-0001', convictions: [50], verdict: 'Guilty', correct: true })
-    savePlay({ day: 2, caseId: 'd-0002', convictions: [40], verdict: 'Not Guilty', correct: false })
+    savePlay({ day: 1, caseId: 'd-0001', convictions: [], verdict: 'Guilty', correct: true })
+    savePlay({ day: 2, caseId: 'd-0002', convictions: [], verdict: 'Not Guilty', correct: false })
     store.setItem('simjury-daily:v1:3', '{ corrupt')
     store.setItem('unrelated-key', 'ignored')
 
@@ -129,8 +125,6 @@ describe('in-progress sitting', () => {
       caseId: 'd-0001',
       phase: 'beats',
       beatIndex: 3,
-      checkinValues: [65],
-      conviction: 65,
     })
     expect(loadProgress(5)?.beatIndex).toBe(3)
     clearProgress(5)
@@ -144,13 +138,11 @@ describe('in-progress sitting', () => {
       caseId: 'd-0001',
       phase: 'verdict',
       beatIndex: 9,
-      checkinValues: [35, 70],
-      conviction: 70,
     })
     savePlay({
       day: 5,
       caseId: 'd-0001',
-      convictions: [35, 70],
+      convictions: [],
       verdict: 'Guilty',
     })
 
@@ -167,7 +159,7 @@ describe('in-progress sitting', () => {
     expect(loadProgress(5)).toBeNull()
   })
 
-  it('rejects out-of-range conviction history', () => {
+  it('rejects legacy progress that still carries check-in fields without a beat index', () => {
     const store = memoryStorage()
     store.setItem(
       'simjury-progress:v1:5',
@@ -175,9 +167,6 @@ describe('in-progress sitting', () => {
         day: 5,
         caseId: 'd-0001',
         phase: 'beats',
-        beatIndex: 3,
-        checkinValues: [120],
-        conviction: 50,
       }),
     )
     vi.stubGlobal('localStorage', store)

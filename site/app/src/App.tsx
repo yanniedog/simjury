@@ -7,7 +7,6 @@ import {
   type DocketSitting,
 } from './lib/v2/cases'
 import { dayIndex } from './lib/daily'
-import { START_CONVICTION } from './lib/game'
 import { caseStorageId } from './lib/v2/caseRevision'
 import {
   clearProgress,
@@ -79,18 +78,14 @@ function DocketApp({
   // permanent, so a refresh must not allow a fresh verdict).
   const validStored = useMemo(() => {
     if (!trial) return null
-    return loadPlayForSitting(day, storageCaseId!, trial.checkins.length)
+    return loadPlayForSitting(day, storageCaseId!)
   }, [day, storageCaseId, trial])
 
   const validProgress = useMemo(() => {
     if (!progress || !trial || validStored) return null
-    if (progress.caseId !== storageCaseId || progress.beatIndex >= trial.beats.length) return null
-    const completedBeatCount =
-      progress.phase === 'verdict' ? progress.beatIndex + 1 : progress.beatIndex
-    const expectedCheckins = trial.beats
-      .slice(0, completedBeatCount)
-      .filter((beat) => trial.checkins.includes(beat.id)).length
-    if (progress.checkinValues.length !== expectedCheckins) return null
+    if (progress.caseId !== storageCaseId || progress.beatIndex >= trial.beats.length) {
+      return null
+    }
     return progress
   }, [progress, storageCaseId, trial, validStored])
 
@@ -100,12 +95,6 @@ function DocketApp({
       : (validProgress?.phase ?? 'intro'),
   )
   const [beatIndex, setBeatIndex] = useState(validProgress?.beatIndex ?? 0)
-  const [checkinValues, setCheckinValues] = useState<number[]>(
-    validStored?.convictions ?? validProgress?.checkinValues ?? [],
-  )
-  const [conviction, setConviction] = useState(
-    validProgress?.conviction ?? START_CONVICTION,
-  )
   const [verdict, setVerdict] = useState<Verdict | null>(
     validStored?.verdict ?? null,
   )
@@ -118,8 +107,8 @@ function DocketApp({
 
   const analysis = useMemo(
     () =>
-      trial && verdict ? analyzeDocketPlay(trial, checkinValues, verdict) : null,
-    [trial, checkinValues, verdict],
+      trial && verdict ? analyzeDocketPlay(trial, verdict) : null,
+    [trial, verdict],
   )
 
   // A tab left open across local midnight would otherwise keep showing (and
@@ -187,14 +176,10 @@ function DocketApp({
 
   function begin() {
     setBeatIndex(0)
-    setCheckinValues([])
-    setConviction(START_CONVICTION)
     setPhase('openings')
     persistProgress({
       phase: 'openings',
       beatIndex: 0,
-      checkinValues: [],
-      conviction: START_CONVICTION,
     })
   }
 
@@ -202,8 +187,6 @@ function DocketApp({
     if (verdict !== null) return
     clearProgress(day)
     setBeatIndex(0)
-    setCheckinValues([])
-    setConviction(START_CONVICTION)
     setRoom(null)
     setRevealStats(null)
     setPhase('intro')
@@ -214,37 +197,11 @@ function DocketApp({
     persistProgress({
       phase: 'beats',
       beatIndex: 0,
-      checkinValues: [],
-      conviction: START_CONVICTION,
     })
   }
 
-  function updateConviction(value: number) {
-    setConviction(value)
-    persistProgress({
-      phase: 'beats',
-      beatIndex,
-      checkinValues,
-      conviction: value,
-    })
-  }
 
   function nextBeat() {
-    const beat = activeTrial.beats[beatIndex]
-    let nextCheckins = checkinValues
-    if (activeTrial.checkins.includes(beat.id)) {
-      // Guarded append: a double-fire can't record the same check-in twice.
-      // The cap is the number of check-ins up to and including this beat, not
-      // the case total — two queued functional updates in one render cycle
-      // would both pass a total-length check.
-      const checkinsUpToCurrent = activeTrial.beats
-        .slice(0, beatIndex + 1)
-        .filter((b) => activeTrial.checkins.includes(b.id)).length
-      if (checkinValues.length < checkinsUpToCurrent) {
-        nextCheckins = [...checkinValues, conviction]
-        setCheckinValues(nextCheckins)
-      }
-    }
     const atVerdict = beatIndex + 1 >= beatCount
     const nextBeatIndex = atVerdict ? beatIndex : beatIndex + 1
     if (atVerdict) setPhase('verdict')
@@ -252,8 +209,6 @@ function DocketApp({
     persistProgress({
       phase: atVerdict ? 'verdict' : 'beats',
       beatIndex: nextBeatIndex,
-      checkinValues: nextCheckins,
-      conviction,
     })
   }
 
@@ -261,14 +216,12 @@ function DocketApp({
     const locked = loadPlayForSitting(
       day,
       caseStorageId(activeTrial),
-      activeTrial.checkins.length,
     )
     if (verdict !== null) return
     if (locked) {
       // Another tab won the race to lock this sitting. Adopt its permanent
       // record instead of leaving this tab stranded on the verdict screen.
       clearProgress(day)
-      setCheckinValues(locked.convictions)
       setVerdict(locked.verdict)
       setRoom(locked.room ?? null)
       if (locked.room) {
@@ -285,7 +238,7 @@ function DocketApp({
     savePlay({
       day,
       caseId: caseStorageId(activeTrial),
-      convictions: checkinValues,
+      convictions: [],
       verdict: chosen,
     })
     clearProgress(day)
@@ -294,7 +247,7 @@ function DocketApp({
 
   function roomDone(outcome: Outcome) {
     if (!verdict) return
-    const done = analyzeDocketPlay(activeTrial, checkinValues, verdict)
+    const done = analyzeDocketPlay(activeTrial, verdict)
     const roomRecord: NonNullable<StoredPlay['room']> = {
       kind: outcome.kind,
       verdict: outcome.verdict,
@@ -305,11 +258,9 @@ function DocketApp({
     savePlay({
       day,
       caseId: caseStorageId(activeTrial),
-      convictions: checkinValues,
+      convictions: [],
       verdict,
       correct: done.correct,
-      swayedByTraps: done.trapsSwayed,
-      totalTraps: done.totalTraps,
       room: roomRecord,
     })
     setRevealStats(statsFromStorage())
@@ -379,17 +330,14 @@ function DocketApp({
         <DocketBeatView
           trial={activeTrial}
           beatIndex={beatIndex}
-          value={conviction}
           narration={narration}
           playbackRate={playbackRate}
-          onChange={updateConviction}
           onNext={nextBeat}
         />
       )}
       {phase === 'verdict' && (
         <DocketVerdict
           trial={activeTrial}
-          conviction={conviction}
           narration={narration}
           playbackRate={playbackRate}
           onLock={lockVerdict}

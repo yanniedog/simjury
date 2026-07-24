@@ -190,7 +190,9 @@ export type Juror = z.infer<typeof jurorSchema>
 
 export const docketCaseSchema = z
   .object({
-    id: z.string().regex(/^dd-\d{4}$/, 'id must look like dd-0001'),
+    id: z
+      .string()
+      .regex(/^(dd-\d{4}|dd-intro)$/, 'id must look like dd-0001 or dd-intro'),
     publish_date: z
       .string()
       .regex(/^\d{4}-\d{2}-\d{2}$/, 'publish_date must be YYYY-MM-DD')
@@ -242,9 +244,13 @@ export const docketCaseSchema = z
      */
     epilogue: z.string().min(1),
     cast: z.array(castMemberSchema).min(3).max(9),
-    beats: z.array(docketBeatSchema).min(10).max(14),
-    /** Beat ids after which the conviction check-in appears (in beat order). */
-    checkins: z.array(z.string().min(1)).min(3).max(5),
+    /** Featured cases keep 10–14; the guided intro may be as short as 6. */
+    beats: z.array(docketBeatSchema).min(6).max(14),
+    /**
+     * Legacy mid-trial check-in beat ids. Optional/empty for new cases — the
+     * player UI no longer records progressive conviction.
+     */
+    checkins: z.array(z.string().min(1)).max(5),
     verdict_truth: z.enum(['Guilty', 'Not Guilty']),
     twist: z.string().min(1),
     difficulty_target: z.number().min(0).max(1),
@@ -285,6 +291,15 @@ export const docketCaseSchema = z
       }
       beatIds.add(b.id)
     })
+    // Floor is 6 for dd-intro only; featured launch cases stay on the
+    // DAILY-PIVOT 10-14 narrated-beat budget.
+    if (c.id !== 'dd-intro' && c.beats.length < 10) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `featured cases need 10-14 beats (got ${c.beats.length}); only dd-intro may be shorter`,
+        path: ['beats'],
+      })
+    }
     for (const beatId of Object.keys(c.media?.beats ?? {})) {
       if (!beatIds.has(beatId)) {
         ctx.addIssue({

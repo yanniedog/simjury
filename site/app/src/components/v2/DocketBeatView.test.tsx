@@ -14,10 +14,8 @@ describe('DocketBeatView dialogue', () => {
       <DocketBeatView
         trial={trial}
         beatIndex={1}
-        value={50}
         narration={false}
         playbackRate={1}
-        onChange={() => undefined}
         onNext={() => undefined}
       />,
     )

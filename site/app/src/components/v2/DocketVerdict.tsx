@@ -8,13 +8,11 @@ export type Verdict = DocketCase['verdict_truth']
 
 export function DocketVerdict({
   trial,
-  conviction,
   narration,
   playbackRate,
   onLock,
 }: {
   trial: DocketCase
-  conviction: number
   narration: boolean
   playbackRate: NarrationRate
   onLock: (verdict: Verdict) => void
@@ -71,11 +69,7 @@ export function DocketVerdict({
       <StatementCard trial={trial} statement={defence} side="defence" />
 
       <div className="verdict-threshold border p-4 text-center">
-        <p className="text-sm text-neutral-400">You ended at</p>
-        <p className="text-2xl font-semibold text-neutral-100">
-          {conviction}% convinced of guilt
-        </p>
-        <p className="mt-3 text-sm leading-relaxed text-neutral-400">
+        <p className="mt-1 text-sm leading-relaxed text-neutral-400">
           To convict, you must be sure <em>beyond reasonable doubt</em>. Doubt
           alone is enough to acquit.
         </p>
