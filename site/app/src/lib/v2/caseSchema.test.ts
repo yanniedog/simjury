@@ -42,6 +42,18 @@ describe('docketCaseSchema', () => {
     expect(docketCaseSchema.safeParse(c).success).toBe(false)
   })
 
+  it('keeps non-intro cases at 10+ beats', () => {
+    const c = makeDocketCase()
+    c.beats = c.beats.slice(0, 8)
+    expect(docketCaseSchema.safeParse(c).success).toBe(false)
+  })
+
+  it('allows the guided intro to use 6-9 beats', () => {
+    const c = makeDocketCase({ id: 'dd-intro', checkins: [] })
+    c.beats = c.beats.slice(0, 6)
+    expect(docketCaseSchema.safeParse(c).success).toBe(true)
+  })
+
   it('rejects a jury that is not exactly 11', () => {
     const c = makeDocketCase()
     c.jury = { jurors: c.jury.jurors.slice(0, 10) }

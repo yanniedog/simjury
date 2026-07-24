@@ -291,6 +291,15 @@ export const docketCaseSchema = z
       }
       beatIds.add(b.id)
     })
+    // Floor is 6 for dd-intro only; featured launch cases stay on the
+    // DAILY-PIVOT 10-14 narrated-beat budget.
+    if (c.id !== 'dd-intro' && c.beats.length < 10) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `featured cases need 10-14 beats (got ${c.beats.length}); only dd-intro may be shorter`,
+        path: ['beats'],
+      })
+    }
     for (const beatId of Object.keys(c.media?.beats ?? {})) {
       if (!beatIds.has(beatId)) {
         ctx.addIssue({
