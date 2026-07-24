@@ -9,7 +9,7 @@ import {
   type PlayerAction,
   type RoomEvent,
 } from '../../engine/deliberation'
-import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
+import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { phaseNarratorCue } from '../../lib/narratorCues'
 import type { Verdict } from './DocketVerdict'
 import { NarratorCue } from './NarratorCue'
@@ -167,10 +167,13 @@ export function JuryRoomView({
   const followTranscriptRef = useRef(true)
 
   // Rate/toggle changes cancel speech in App; clear its visual state here too.
+  // When narration is on, speak the jury-room phase cue once (same pattern as intro/openings).
   // The cleanup also prevents narration overlapping the reveal on unmount.
   useEffect(() => {
     setActiveJurorId(null)
     stopSpeech()
+    if (!narration) return stopSpeech
+    speak(phaseNarratorCue('juryroom'), 'narrator', undefined, playbackRate)
     return stopSpeech
   }, [narration, playbackRate])
 

@@ -49,7 +49,7 @@ export function speakerNarratorCue(
   }
 
   if (beat.kind === 'exhibit') {
-    return `This is an exhibit, introduced by ${name}. Look at what it shows — and what it does not prove by itself.`
+    return `This is an exhibit, presented by ${name}. Look at what it shows — and what it does not prove by itself.`
   }
 
   if (beat.mode === 'cross') {
