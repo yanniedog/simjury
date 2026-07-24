@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
 import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { StatementCard } from './OpeningStatements'
-import { CourtroomStage } from './CourtroomStage'
 
 export type Verdict = DocketCase['verdict_truth']
 
@@ -63,7 +62,11 @@ export function DocketVerdict({
         </h1>
       </div>
 
-      <CourtroomStage trial={trial} activeSpeakerId={activeSpeaker} phaseLabel="Closing arguments" />
+      {activeSpeaker && (
+        <p className="speaker-focus text-xs text-amber-200/80" aria-live="polite">
+          {(trial.cast.find((m) => m.id === activeSpeaker)?.name ?? 'Counsel')} is speaking
+        </p>
+      )}
 
       <StatementCard trial={trial} statement={prosecution} side="prosecution" />
       <StatementCard trial={trial} statement={defence} side="defence" />

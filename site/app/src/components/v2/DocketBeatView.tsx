@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import type { DocketBeat, DocketCase } from '../../lib/v2/caseSchema'
 import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { CaseMedia, StoryText } from './CaseMedia'
-import { CourtroomStage } from './CourtroomStage'
 
-const KIND_META: Record<DocketBeat['kind'], { code: string; label: string }> = {
-  witness: { code: 'WIT', label: 'Witness testimony' },
-  exhibit: { code: 'EXH', label: 'Exhibit' },
-  direction: { code: 'DIR', label: 'Judge’s direction' },
+function modeLabelFor(beat: DocketBeat): string {
+  if (beat.kind === 'witness') {
+    return beat.mode === 'cross' ? 'Cross-examination' : 'Examination'
+  }
+  if (beat.kind === 'exhibit') return 'Exhibit'
+  return 'Judge’s direction'
 }
 
 function speakerOf(trial: DocketCase, id: string) {
@@ -32,7 +33,6 @@ export function DocketBeatView({
   const [activeDialogue, setActiveDialogue] = useState<{ beatId: string; index: number } | null>(null)
   const activeTurn = activeDialogue?.beatId === beat.id ? activeDialogue.index : null
   const activeSpeakerId = activeTurn === null ? beat.speaker : turns[activeTurn]?.speaker ?? beat.speaker
-  const stageSpeakerId = activeSpeakerId
   const total = trial.beats.length
   const speaker = speakerOf(trial, activeSpeakerId)
   const isLast = beatIndex === total - 1
@@ -54,29 +54,20 @@ export function DocketBeatView({
     return stopSpeech
   }, [beat, narration, playbackRate])
 
-  const modeLabel =
-    beat.kind === 'witness'
-      ? beat.mode === 'cross'
-        ? 'Cross-examination'
-        : 'Examination'
-      : KIND_META[beat.kind].label
+  const modeLabel = modeLabelFor(beat)
   const subtitle = [speaker?.role_label, modeLabel].filter(Boolean).join(' · ')
 
   return (
     <div className={`phase-view evidence-view evidence-${beat.kind} space-y-6`}>
-      <div className="evidence-counter">
-        <span><b>{KIND_META[beat.kind].code}</b>{KIND_META[beat.kind].label}</span>
-        <span>
-          Evidence {beatIndex + 1} of {total}
-        </span>
-      </div>
+      <p className="text-xs uppercase tracking-[0.15em] text-neutral-500">
+        Evidence {beatIndex + 1} of {total} · {modeLabel}
+      </p>
 
-      <CourtroomStage
-        trial={trial}
-        activeSpeakerId={stageSpeakerId}
-        phaseLabel={modeLabel}
-        speaking={activeTurn !== null}
-      />
+      {activeTurn !== null && (
+        <p className="speaker-focus text-xs text-amber-200/80" aria-live="polite">
+          {(speakerOf(trial, activeSpeakerId)?.name ?? 'Speaker')} is speaking
+        </p>
+      )}
 
       <div>
         <h1 id="phase-heading" tabIndex={-1} className="text-sm font-semibold text-neutral-200 focus:outline-none">
