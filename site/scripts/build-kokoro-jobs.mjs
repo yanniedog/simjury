@@ -33,8 +33,45 @@ const namedVoices = {
 const voices = ['af_heart', 'af_bella', 'bf_emma', 'af_nicole', 'am_fenrir', 'am_michael']
 const voiceFor = (key) => namedVoices[key] ?? voices[hash(key) % voices.length]
 
+const cueCopy = JSON.parse(
+  readFileSync(join(siteRoot, 'app', 'src', 'lib', 'narratorCueCopy.json'), 'utf8'),
+)
+const PHASE_CUES = cueCopy.phaseCues
+
+function fillSpeakerTemplate(template, member) {
+  return template.split('{name}').join(member.name).split('{role}').join(member.role_label)
+}
+
+
+function speakerOf(docket, id) {
+  return (docket.cast ?? []).find((m) => m.id === id)
+}
+
+/** Templates shared with site/app/src/lib/narratorCues.ts via narratorCueCopy.json. */
+function speakerNarratorCue(docket, beat) {
+  const member = speakerOf(docket, beat.speaker)
+  if (!member) return null
+  const templates = cueCopy.speaker
+  if (beat.kind === 'direction') return fillSpeakerTemplate(templates.direction, member)
+  if (beat.kind === 'exhibit') return fillSpeakerTemplate(templates.exhibit, member)
+  if (beat.mode === 'cross') return fillSpeakerTemplate(templates.cross, member)
+  if (member.side === 'prosecution') return fillSpeakerTemplate(templates.prosecution, member)
+  if (member.side === 'defence') return fillSpeakerTemplate(templates.defence, member)
+  return fillSpeakerTemplate(templates.fallback, member)
+}
+
+function narratorCueLines(docket) {
+  const lines = Object.values(PHASE_CUES).map((text) => ({ speaker: 'narrator', text }))
+  for (const beat of docket.beats ?? []) {
+    const text = speakerNarratorCue(docket, beat)
+    if (text) lines.push({ speaker: 'narrator', text })
+  }
+  return lines
+}
+
 function spokenLines(c) {
-  const lines = c.hook ? [{ speaker: 'narrator', text: c.hook }] : []
+  const lines = [...narratorCueLines(c)]
+  if (c.hook) lines.push({ speaker: 'narrator', text: c.hook })
   for (const phase of ['opening', 'closing']) {
     for (const side of ['prosecution', 'defence']) {
       const statement = c.statements?.[phase]?.[side]

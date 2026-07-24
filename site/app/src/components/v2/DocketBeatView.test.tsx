@@ -25,4 +25,20 @@ describe('DocketBeatView dialogue', () => {
     expect(markup).toContain('Renn Halloway')
     expect(markup).not.toContain('Speaking now')
   })
+
+  it('shows a cross-examination cue after direct of the same witness', () => {
+    const trial = makeDocketCase()
+    // beat 0 examination of w1, beat 1 cross of w1 in fixture
+    const markup = renderToStaticMarkup(
+      <DocketBeatView
+        trial={trial}
+        beatIndex={1}
+        narration={false}
+        playbackRate={1}
+        onNext={() => undefined}
+      />,
+    )
+    expect(markup).toMatch(/cross-examination of/i)
+  })
+
 })
