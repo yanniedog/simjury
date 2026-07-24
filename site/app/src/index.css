@@ -60,27 +60,16 @@
   .narration-controls button[aria-pressed="true"] { border-color: rgb(214 185 121 / 45%); color: var(--paper-50); background: rgb(214 185 121 / 10%); }
 
   .docket-workspace {
-    display: grid; grid-template-columns: 10.5rem minmax(0, 42rem) 15.5rem;
-    width: min(78rem, calc(100% - 3rem)); margin: 0 auto; padding: clamp(2rem, 5vw, 4.5rem) 0 6rem; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start;
+    display: grid; grid-template-columns: minmax(0, 42rem) 14rem;
+    width: min(62rem, calc(100% - 3rem)); margin: 0 auto; padding: clamp(2rem, 5vw, 4.5rem) 0 6rem; gap: clamp(1.5rem, 4vw, 3rem); align-items: start;
   }
-  .docket-progress, .juror-docket { position: sticky; top: 6.5rem; }
-  .phase-rail ol { margin: 1.5rem 0 0; padding: 0; list-style: none; }
-  .phase-rail li { position: relative; display: grid; grid-template-columns: 2rem 1fr; min-height: 3.25rem; color: var(--steel-500); }
-  .phase-rail li::before { content: ""; position: absolute; top: 1.15rem; bottom: -.15rem; left: .55rem; width: 1px; background: rgb(244 240 232 / 12%); }
-  .phase-rail li:last-child::before { display: none; }
-  .phase-rail li span { position: relative; z-index: 1; width: 1.2rem; height: 1.2rem; display: grid; place-items: center; border: 1px solid rgb(244 240 232 / 16%); border-radius: 50%; background: var(--court-950); font-size: .48rem; }
-  .phase-rail li strong { padding-top: .05rem; font-size: .72rem; font-weight: 600; }
-  .phase-rail li.complete span { border-color: rgb(214 185 121 / 45%); color: var(--brass-400); }
-  .phase-rail li[aria-current="step"] { color: var(--paper-50); }
-  .phase-rail li[aria-current="step"] span { border-color: var(--brass-400); color: var(--court-950); background: var(--brass-400); box-shadow: 0 0 0 .3rem rgb(214 185 121 / 8%); }
+  .juror-docket { position: sticky; top: 6.5rem; }
 
   .docket-stage { min-width: 0; animation: stage-enter 360ms cubic-bezier(.22, 1, .36, 1) both; }
   .juror-docket { padding: 1.1rem; border: 1px solid rgb(244 240 232 / 11%); border-radius: 1rem; background: rgb(21 29 33 / 68%); box-shadow: 0 1.25rem 4rem rgb(0 0 0 / 18%); }
-  .juror-identity { display: grid; grid-template-columns: 1fr auto; padding-bottom: 1rem; border-bottom: 1px solid rgb(244 240 232 / 10%); }
-  .juror-identity span { color: var(--brass-400); font-size: .58rem; font-weight: 800; letter-spacing: .2em; }
-  .juror-identity strong { grid-row: span 2; font-family: Georgia, serif; font-size: 2.6rem; font-weight: 400; line-height: .9; }
-  .juror-identity p { margin: .15rem 0 0; color: var(--steel-500); font-size: .68rem; }
   .docket-context { padding: 1rem 0; border-bottom: 1px solid rgb(244 240 232 / 9%); }
+  .narrator-cue { padding: 1rem 1.1rem; border: 1px solid rgb(214 185 121 / 22%); border-radius: 1rem; background: rgb(214 185 121 / 8%); }
+  .narrator-cue > p:last-child { margin: .45rem 0 0; color: var(--steel-300); font-size: .9rem; line-height: 1.55; }
   .docket-context > p:last-child { margin: .45rem 0 0; color: var(--steel-300); font-size: .78rem; line-height: 1.45; }
   .docket-archive { padding: .6rem 0; border-bottom: 1px solid rgb(244 240 232 / 9%); }
   .docket-archive summary { display: flex; justify-content: space-between; align-items: center; color: var(--steel-300); cursor: pointer; font-size: .75rem; list-style: none; }
@@ -108,35 +97,9 @@
   .proof-elements { padding: 1.25rem; border: 1px solid rgb(244 240 232 / 10%); border-radius: 1rem; }
   .proof-elements li > span:first-child { color: var(--brass-400); font-family: ui-monospace, monospace; }
 
-  .courtroom-stage { position: relative; overflow: hidden; padding: 1rem; border: 1px solid rgb(214 185 121 / 20%); border-radius: 1.25rem; background: radial-gradient(circle at 50% 0, rgb(214 185 121 / 12%), transparent 55%), rgb(16 22 25 / 78%); box-shadow: 0 1.25rem 4rem rgb(0 0 0 / 20%); }
-  .stage-heading { display: flex; justify-content: space-between; align-items: center; padding-bottom: .8rem; border-bottom: 1px solid rgb(244 240 232 / 10%); }
-  .stage-heading span { color: var(--brass-400); font-size: .58rem; font-weight: 750; letter-spacing: .16em; text-transform: uppercase; }
-  .stage-heading strong { color: var(--steel-300); font-size: .7rem; font-weight: 600; }
-  .stage-map { display: grid; grid-template-columns: repeat(3, 1fr); gap: .7rem; padding: 1.6rem 0 1.2rem; }
-  .stage-station { min-width: 0; padding: .75rem .45rem; border: 1px solid rgb(244 240 232 / 9%); border-radius: .7rem; color: var(--steel-500); background: rgb(8 11 13 / 28%); text-align: center; transition: transform 220ms cubic-bezier(.22, 1, .36, 1), border-color 220ms, background 220ms; }
-  .stage-station.active { transform: translateY(-3px); border-color: var(--brass-400); color: var(--paper-50); background: rgb(214 185 121 / 11%); box-shadow: 0 .7rem 2rem rgb(0 0 0 / 22%); }
-  .station-label, .station-name, .station-live { display: block; }
-  .station-label { font-size: .5rem; letter-spacing: .12em; text-transform: uppercase; }
-  .station-name { overflow: hidden; margin-top: .3rem; font-size: .68rem; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
-  .station-live { margin-top: .3rem; color: var(--brass-400); font-size: .48rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
-  .jury-edge { display: flex; justify-content: space-between; align-items: center; margin: 0 -.25rem -.25rem; padding: .7rem .8rem; border: 1px solid rgb(214 185 121 / 22%); border-radius: .65rem; background: linear-gradient(90deg, rgb(214 185 121 / 10%), rgb(244 240 232 / 3%)); }
-  .jury-edge span { color: var(--brass-400); font-size: .52rem; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
-  .jury-edge strong { font-size: .68rem; }
-
   .statement-card { padding: 1.15rem; border: 1px solid rgb(244 240 232 / 11%); border-radius: 1rem; background: rgb(21 29 33 / 70%); }
   .statement-card.prosecution { border-left: 3px solid #f08b7d; }
   .statement-card.defence { border-left: 3px solid #72c7aa; }
-  .evidence-counter { display: flex; justify-content: space-between; align-items: center; color: var(--steel-500); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; }
-  .evidence-counter span:first-child { display: flex; align-items: center; gap: .6rem; }
-  .evidence-counter b { padding: .28rem .42rem; border: 1px solid rgb(214 185 121 / 28%); border-radius: .35rem; color: var(--brass-400); font-size: .55rem; }
-  .evidence-direction .evidence-counter b { border-color: rgb(130 175 198 / 38%); color: #82afc6; }
-
-  .conviction-checkin { text-align: center; }
-  .conviction-position { margin: 0; font-family: Georgia, serif; font-size: 1.35rem; }
-  .conviction-range { min-height: 2.75rem; }
-  .conviction-range::-webkit-slider-thumb { width: 1.5rem; height: 1.5rem; }
-  .conviction-range::-moz-range-thumb { width: 1.5rem; height: 1.5rem; }
-  .conviction-value { margin: 0; color: var(--steel-500); font-size: .68rem; }
 
   .verdict-threshold { border-color: rgb(214 185 121 / 22%); border-radius: 1rem; background: linear-gradient(145deg, rgb(214 185 121 / 9%), rgb(21 29 33 / 72%)); }
   .verdict-choices button { min-height: 7.5rem; border-radius: 1rem; }
@@ -171,9 +134,9 @@
 @media (max-width: 68rem) {
   .docket-topbar { grid-template-columns: auto minmax(10rem, 1fr) auto; }
   .docket-phase { display: none; }
-  .docket-workspace { grid-template-columns: 9rem minmax(0, 42rem); justify-content: center; }
-  .juror-docket { position: static; grid-column: 2; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 1rem; }
-  .juror-identity, .local-note { grid-column: 1 / -1; }
+  .docket-workspace { grid-template-columns: minmax(0, 42rem); justify-content: center; }
+  .juror-docket { position: static; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 1rem; }
+  .local-note { grid-column: 1 / -1; }
 }
 
 @media (max-width: 46rem) {
@@ -181,7 +144,6 @@
   .docket-case-title { padding-left: .75rem; }
   .narration-controls { grid-column: 1 / -1; justify-content: flex-end; padding-top: .5rem; border-top: 1px solid rgb(244 240 232 / 8%); }
   .docket-workspace { display: flex; flex-direction: column; width: min(100% - 2rem, 42rem); padding-top: 1.5rem; }
-  .docket-progress { display: none; }
   .docket-stage { width: 100%; }
   .juror-docket { order: 2; width: 100%; }
   .verdict-choices, .verdict-dialog > div { grid-template-columns: 1fr; }
