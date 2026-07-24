@@ -36,9 +36,9 @@ describe('docketCaseSchema', () => {
     }
   })
 
-  it('rejects fewer than 10 beats', () => {
+  it('rejects fewer than 6 beats', () => {
     const c = makeDocketCase()
-    c.beats = c.beats.slice(0, 9)
+    c.beats = c.beats.slice(0, 5)
     expect(docketCaseSchema.safeParse(c).success).toBe(false)
   })
 
@@ -72,9 +72,14 @@ describe('docketCaseSchema', () => {
     }
   })
 
-  it('rejects fewer than 3 check-ins', () => {
-    const c = makeDocketCase({ checkins: ['b3', 'b6'] })
-    expect(docketCaseSchema.safeParse(c).success).toBe(false)
+  it('allows empty check-ins (progressive conviction removed)', () => {
+    const c = makeDocketCase({ checkins: [] })
+    expect(docketCaseSchema.safeParse(c).success).toBe(true)
+  })
+
+  it('accepts the guided intro id', () => {
+    const c = makeDocketCase({ id: 'dd-intro', checkins: [] })
+    expect(docketCaseSchema.safeParse(c).success).toBe(true)
   })
 
   it('requires the engagement layer: hook, accused, statements, epilogue', () => {

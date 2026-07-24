@@ -1,26 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import { buildShareText, convictionTile } from './share'
-
-describe('convictionTile', () => {
-  it('maps conviction bands to colour tiles', () => {
-    expect(convictionTile(10)).toBe('🟩')
-    expect(convictionTile(50)).toBe('🟨')
-    expect(convictionTile(90)).toBe('🟥')
-  })
-})
+import { buildShareText } from './share'
 
 describe('buildShareText', () => {
   const base = {
     dayNumber: 42,
-    convictions: [70, 40, 20],
   }
 
-  it('renders the day number, trajectory, invitation, and url', () => {
+  it('renders the day number, invitation, and url', () => {
     const text = buildShareText(base, 'https://example.test')
     expect(text).toBe(
       [
         '⚖️ SimJury Daily #42',
-        '🟥🟨🟩',
         'What would you decide? https://example.test',
       ].join('\n'),
     )

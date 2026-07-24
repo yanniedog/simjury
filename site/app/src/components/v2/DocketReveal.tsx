@@ -28,7 +28,7 @@ function WeightBar({ label, value, tone }: { label: string; value: number; tone:
 }
 
 function BeatRevealCard({ reveal, trial }: { reveal: BeatReveal; trial: DocketCase }) {
-  const { beat, tookBait } = reveal
+  const { beat } = reveal
   const stamp = STAMP[beat.reveal_stamp]
   const pointsGuilt = beat.direction === 'guilt'
   return (
@@ -40,11 +40,6 @@ function BeatRevealCard({ reveal, trial }: { reveal: BeatReveal; trial: DocketCa
         <span className={`text-xs ${pointsGuilt ? 'text-red-400' : 'text-emerald-400'}`}>
           Supports {pointsGuilt ? 'convicting' : 'not convicting'}
         </span>
-        {tookBait && (
-          <span className="ml-auto text-xs font-medium text-amber-400">
-            This shifted your view
-          </span>
-        )}
       </div>
       {beat.turns ? (
         <ul className="space-y-1 text-sm text-neutral-300" aria-label="Attributed transcript recap">
@@ -97,9 +92,6 @@ export function DocketReveal({
 
   const shareText = buildShareText({
     dayNumber,
-    convictions: analysis.segments
-      .filter((s) => s.checkinId !== null)
-      .map((s) => s.after),
     currentStreak: stats.currentStreak,
     room: { kind: room.kind, g: room.g, ng: room.ng },
   })
