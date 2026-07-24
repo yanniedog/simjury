@@ -7,13 +7,21 @@ import { docketCaseSchema, type DocketCase } from './caseSchema'
  * queue. Belt-and-suspenders: CI blocks a malformed case from merging, but if
  * one ever slips through we fail loudly at load rather than rendering a broken
  * trial to a player.
+ *
+ * The guided intro (`dd-intro`) lives in the same folder for schema validation
+ * but is excluded from the daily publish queue — it is offered on first visit
+ * and via the archive chooser, never as "today's" featured case.
  */
 const modules = import.meta.glob('/docket/*.json', {
   eager: true,
   import: 'default',
 })
 
-function loadQueue(): DocketCase[] {
+export const INTRO_CASE_ID = 'dd-intro'
+/** Synthetic day index for the intro sitting (never a real calendar day). */
+export const INTRO_SITTING_DAY = -1
+
+function loadAllCases(): DocketCase[] {
   const cases: DocketCase[] = []
   for (const [path, raw] of Object.entries(modules)) {
     const parsed = docketCaseSchema.safeParse(raw)
@@ -29,7 +37,14 @@ function loadQueue(): DocketCase[] {
   )
 }
 
-export const docketQueue: DocketCase[] = loadQueue()
+const allCases = loadAllCases()
+
+export const introCase: DocketCase | null =
+  allCases.find((c) => c.id === INTRO_CASE_ID) ?? null
+
+export const docketQueue: DocketCase[] = allCases.filter(
+  (c) => c.id !== INTRO_CASE_ID,
+)
 
 export interface DocketSitting {
   day: number
@@ -107,4 +122,13 @@ export function selectDocketSitting(
 ): DocketSitting | null {
   return sittings.find((sitting) => sitting.day === day) ??
     sittings[sittings.length - 1] ?? null
+}
+
+export function introSitting(): DocketSitting | null {
+  if (!introCase) return null
+  return {
+    day: INTRO_SITTING_DAY,
+    date: localDateFromIso(introCase.publish_date),
+    trial: introCase,
+  }
 }
