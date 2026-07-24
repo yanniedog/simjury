@@ -3,6 +3,9 @@ import type { Outcome } from './engine/deliberation'
 import { analyzeDocketPlay } from './lib/v2/analyze'
 import {
   availableDocketSittings,
+  INTRO_CASE_ID,
+  INTRO_SITTING_DAY,
+  introSitting,
   selectDocketSitting,
   type DocketSitting,
 } from './lib/v2/cases'
@@ -10,9 +13,11 @@ import { dayIndex } from './lib/daily'
 import { caseStorageId } from './lib/v2/caseRevision'
 import {
   clearProgress,
+  isIntroComplete,
   loadAllPlays,
   loadPlayForSitting,
   loadProgress,
+  markIntroComplete,
   savePlay,
   saveProgress,
   type StoredProgress,
@@ -24,8 +29,11 @@ import {
   narrationRate,
   setNarrationEnabled,
   setNarrationRate,
+  speak,
+  stopSpeech,
   type NarrationRate,
 } from './lib/narration'
+import { phaseNarratorCue } from './lib/narratorCues'
 import { DocketIntro } from './components/v2/DocketIntro'
 import { OpeningStatements } from './components/v2/OpeningStatements'
 import { DocketBeatView } from './components/v2/DocketBeatView'
@@ -36,6 +44,7 @@ import {
   DocketShell,
   DocketSittingChooser,
 } from './components/v2/DocketChrome'
+import { NarratorCue } from './components/v2/NarratorCue'
 
 type Phase = 'intro' | 'openings' | 'beats' | 'verdict' | 'juryroom' | 'reveal'
 
@@ -43,11 +52,65 @@ type Phase = 'intro' | 'openings' | 'beats' | 'verdict' | 'juryroom' | 'reveal'
 function statsFromStorage(): Stats {
   const results: DayResult[] = []
   for (const play of loadAllPlays()) {
-    if (play.room) {
+    // Guided intro uses a synthetic day and must not inflate daily streak stats.
+    if (play.room && play.day !== INTRO_SITTING_DAY && play.caseId !== INTRO_CASE_ID) {
       results.push({ day: play.day })
     }
   }
   return computeStats(results)
+}
+
+function IntroGate({
+  onStartIntro,
+  onSkip,
+  narration,
+  playbackRate,
+}: {
+  onStartIntro: () => void
+  onSkip: () => void
+  narration: boolean
+  playbackRate: NarrationRate
+}) {
+  const cue =
+    'Welcome to SimJury. Before today’s case, a short guided sitting teaches how a trial works here — briefing, openings, evidence, your verdict, then the jury room.'
+
+  useEffect(() => {
+    if (narration) speak(cue, 'narrator', undefined, playbackRate)
+    return stopSpeech
+  }, [cue, narration, playbackRate])
+
+  return (
+    <div className="phase-view space-y-6 text-center">
+      <div className="phase-heading space-y-2">
+        <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
+          The Daily Docket
+        </p>
+        <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">
+          Start with a guided intro?
+        </h1>
+      </div>
+      <NarratorCue text={cue} />
+      <p className="text-sm leading-relaxed text-neutral-400">
+        About five minutes. You can reopen it later from the docket archive.
+      </p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <button
+          type="button"
+          onClick={onStartIntro}
+          className="rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
+        >
+          Take the guided intro
+        </button>
+        <button
+          type="button"
+          onClick={onSkip}
+          className="rounded-lg border border-neutral-700 px-4 py-3 font-semibold text-neutral-200 transition hover:bg-neutral-800"
+        >
+          Skip to today’s case
+        </button>
+      </div>
+    </div>
+  )
 }
 
 function DocketApp({
@@ -56,12 +119,14 @@ function DocketApp({
   selectedDay,
   todayDay,
   onSelect,
+  intro,
 }: {
   sitting: DocketSitting | null
   sittings: DocketSitting[]
   selectedDay: number
   todayDay: number
   onSelect: (day: number) => void
+  intro: DocketSitting | null
 }) {
   const [narration, setNarration] = useState(narrationEnabled())
   const [playbackRate, setPlaybackRate] = useState(narrationRate())
@@ -69,13 +134,8 @@ function DocketApp({
   const trial = sitting?.trial ?? null
   const storageCaseId = trial ? caseStorageId(trial) : null
   const progress = useMemo(() => loadProgress(day), [day])
+  const isIntro = trial?.id === INTRO_CASE_ID
 
-  // Only restore a stored play that belongs to the case now assigned to this
-  // day (a queue edit can shift which case falls on a day index) and whose
-  // check-in trace matches it; anything else starts fresh. A play with a room
-  // result is complete (restore at reveal); one without is a verdict locked
-  // before the jury room finished (restore at the room — the lock is
-  // permanent, so a refresh must not allow a fresh verdict).
   const validStored = useMemo(() => {
     if (!trial) return null
     return loadPlayForSitting(day, storageCaseId!)
@@ -106,16 +166,10 @@ function DocketApp({
   )
 
   const analysis = useMemo(
-    () =>
-      trial && verdict ? analyzeDocketPlay(trial, verdict) : null,
+    () => (trial && verdict ? analyzeDocketPlay(trial, verdict) : null),
     [trial, verdict],
   )
 
-  // A tab left open across local midnight would otherwise keep showing (and
-  // let the player finish) yesterday's case forever, since `today` is only
-  // ever computed once at mount. Poll for a day rollover — and check again
-  // whenever the tab regains focus, in case the interval was throttled while
-  // backgrounded — and reload so the player always lands on today's case.
   useEffect(() => {
     function checkForRollover() {
       if (dayIndex(new Date()) !== todayDay) {
@@ -134,6 +188,16 @@ function DocketApp({
     document.getElementById('phase-heading')?.focus()
   }, [phase, beatIndex])
 
+  useEffect(() => {
+    if (!narration) return stopSpeech
+    if (phase === 'juryroom') {
+      speak(phaseNarratorCue('juryroom'), 'narrator', undefined, playbackRate)
+    } else if (phase === 'reveal') {
+      speak(phaseNarratorCue('reveal'), 'narrator', undefined, playbackRate)
+    }
+    return stopSpeech
+  }, [phase, narration, playbackRate])
+
   if (!trial) {
     return (
       <DocketShell
@@ -145,7 +209,7 @@ function DocketApp({
         onRateChange={changeNarrationRate}
       >
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold">⚖️ SimJury — The Daily Docket</h1>
+          <h1 className="text-2xl font-semibold">SimJury — The Daily Docket</h1>
           <p className="text-neutral-400">
             No case is queued for today. Check back soon.
           </p>
@@ -155,7 +219,7 @@ function DocketApp({
   }
 
   const activeTrial = trial
-  const dayNumber = day + 1
+  const dayNumber = isIntro ? 0 : day + 1
   const beatCount = activeTrial.beats.length
 
   function toggleNarration() {
@@ -200,7 +264,6 @@ function DocketApp({
     })
   }
 
-
   function nextBeat() {
     const atVerdict = beatIndex + 1 >= beatCount
     const nextBeatIndex = atVerdict ? beatIndex : beatIndex + 1
@@ -213,14 +276,9 @@ function DocketApp({
   }
 
   function lockVerdict(chosen: Verdict) {
-    const locked = loadPlayForSitting(
-      day,
-      caseStorageId(activeTrial),
-    )
+    const locked = loadPlayForSitting(day, caseStorageId(activeTrial))
     if (verdict !== null) return
     if (locked) {
-      // Another tab won the race to lock this sitting. Adopt its permanent
-      // record instead of leaving this tab stranded on the verdict screen.
       clearProgress(day)
       setVerdict(locked.verdict)
       setRoom(locked.room ?? null)
@@ -233,8 +291,6 @@ function DocketApp({
       return
     }
     setVerdict(chosen)
-    // Persist the lock before the jury room: the verdict is permanent, so a
-    // refresh mid-room must resume at the room, not offer a fresh verdict.
     savePlay({
       day,
       caseId: caseStorageId(activeTrial),
@@ -263,6 +319,7 @@ function DocketApp({
       correct: done.correct,
       room: roomRecord,
     })
+    if (isIntro) markIntroComplete()
     setRevealStats(statsFromStorage())
     setPhase('reveal')
   }
@@ -281,7 +338,7 @@ function DocketApp({
     <DocketShell
       phase={phase}
       caseTitle={activeTrial.title}
-      dayNumber={dayNumber}
+      dayNumber={isIntro ? undefined : dayNumber}
       charge={activeTrial.charge}
       narration={narration}
       playbackRate={playbackRate}
@@ -293,12 +350,13 @@ function DocketApp({
           selectedDay={selectedDay}
           todayDay={todayDay}
           onSelect={onSelect}
+          introSitting={intro}
         />
       )}
     >
       {phase !== 'intro' && verdict === null && (
         <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-neutral-800 bg-neutral-900/40 p-3 text-sm">
-          <span className="text-neutral-400">Restarting clears this sitting's check-ins.</span>
+          <span className="text-neutral-400">Restarting clears this sitting’s progress.</span>
           <button
             type="button"
             aria-label={`Rewind ${activeTrial.title} to the beginning`}
@@ -362,6 +420,7 @@ function DocketApp({
           dayNumber={dayNumber}
           stats={revealStats}
           onChooseAnother={chooseAnotherSitting}
+          isIntro={isIntro}
         />
       )}
     </DocketShell>
@@ -372,9 +431,50 @@ export default function App() {
   const [today] = useState(() => new Date())
   const todayDay = dayIndex(today)
   const sittings = useMemo(() => availableDocketSittings(today), [today])
+  const intro = useMemo(() => introSitting(), [])
   const [selectedDay, setSelectedDay] = useState(todayDay)
-  const selected = selectDocketSitting(sittings, selectedDay)
+  const [offerIntro, setOfferIntro] = useState(
+    () => Boolean(intro) && !isIntroComplete(),
+  )
+  const [narration, setNarration] = useState(narrationEnabled())
+  const [playbackRate, setPlaybackRate] = useState(narrationRate())
+
+  const selected =
+    selectedDay === INTRO_SITTING_DAY
+      ? intro
+      : selectDocketSitting(sittings, selectedDay)
   const activeDay = selected?.day ?? selectedDay
+
+  if (offerIntro && intro) {
+    return (
+      <DocketShell
+        phase="intro"
+        caseTitle="Guided intro"
+        narration={narration}
+        playbackRate={playbackRate}
+        onToggleNarration={() => {
+          const next = !narration
+          setNarrationEnabled(next)
+          setNarration(next)
+        }}
+        onRateChange={(rate) => setPlaybackRate(setNarrationRate(rate))}
+      >
+        <IntroGate
+          narration={narration}
+          playbackRate={playbackRate}
+          onStartIntro={() => {
+            setOfferIntro(false)
+            setSelectedDay(INTRO_SITTING_DAY)
+          }}
+          onSkip={() => {
+            markIntroComplete()
+            setOfferIntro(false)
+            setSelectedDay(todayDay)
+          }}
+        />
+      </DocketShell>
+    )
+  }
 
   return (
     <DocketApp
@@ -384,6 +484,7 @@ export default function App() {
       selectedDay={activeDay}
       todayDay={todayDay}
       onSelect={setSelectedDay}
+      intro={intro}
     />
   )
 }

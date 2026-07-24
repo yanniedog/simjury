@@ -7,6 +7,7 @@ import {
 import { loadPlayForSitting, loadProgress } from '../../lib/storage'
 import { caseStorageId } from '../../lib/v2/caseRevision'
 import type { DocketSitting } from '../../lib/v2/cases'
+import { INTRO_CASE_ID } from '../../lib/v2/cases'
 
 export type DocketPhase = 'intro' | 'openings' | 'beats' | 'verdict' | 'juryroom' | 'reveal'
 
@@ -18,7 +19,6 @@ const PHASES: Array<{ id: DocketPhase; label: string; short: string }> = [
   { id: 'juryroom', label: 'Jury room', short: '05' },
   { id: 'reveal', label: 'Record', short: '06' },
 ]
-
 
 export function DocketShell({
   children,
@@ -76,24 +76,34 @@ export function DocketShell({
 const dateFormatter = new Intl.DateTimeFormat(undefined, { weekday: 'short', day: 'numeric', month: 'short' })
 
 function sittingStatus(sitting: DocketSitting): string {
-  const play = loadPlayForSitting(
-    sitting.day,
-    caseStorageId(sitting.trial),
-  )
+  if (sitting.trial.id === INTRO_CASE_ID) {
+    const play = loadPlayForSitting(sitting.day, caseStorageId(sitting.trial))
+    if (play) return play.room ? 'intro complete' : 'jury room in progress'
+    const progress = loadProgress(sitting.day)
+    return progress?.caseId === caseStorageId(sitting.trial) ? 'in progress' : 'guided intro'
+  }
+  const play = loadPlayForSitting(sitting.day, caseStorageId(sitting.trial))
   if (play) return play.room ? 'judgment recorded' : 'jury room in progress'
   const progress = loadProgress(sitting.day)
   return progress?.caseId === caseStorageId(sitting.trial) ? 'in progress' : 'not started'
 }
 
-export function DocketSittingChooser({ sittings, selectedDay, todayDay, onSelect }: {
+export function DocketSittingChooser({ sittings, selectedDay, todayDay, onSelect, introSitting }: {
   sittings: DocketSitting[]
   selectedDay: number
   todayDay: number
   onSelect: (day: number) => void
+  /** Synthetic sitting for the guided intro; day may be negative. */
+  introSitting?: DocketSitting | null
 }) {
-  const options = [...sittings].reverse().map((sitting) => ({
+  const all = introSitting
+    ? [introSitting, ...sittings.filter((s) => s.trial.id !== INTRO_CASE_ID)]
+    : sittings
+  const options = [...all].reverse().map((sitting) => ({
     day: sitting.day,
-    label: `${sitting.day === todayDay ? 'Today' : dateFormatter.format(sitting.date)} — ${sitting.trial.title} (${sittingStatus(sitting)})`,
+    label: sitting.trial.id === INTRO_CASE_ID
+      ? `Guided intro — ${sitting.trial.title} (${sittingStatus(sitting)})`
+      : `${sitting.day === todayDay ? 'Today' : dateFormatter.format(sitting.date)} — ${sitting.trial.title} (${sittingStatus(sitting)})`,
   }))
   return (
     <nav aria-label="Daily Docket sittings">

@@ -1,0 +1,1007 @@
+{
+  "id": "dd-intro",
+  "publish_date": "2026-01-01",
+  "label": "fiction",
+  "title": "The Borrowed Badge",
+  "setting": "a small warehouse reception desk, the present day",
+  "charge": "theft of a delivery parcel",
+  "elements": [
+    "A parcel left the warehouse without authority",
+    "The accused took it dishonestly, knowing it was not theirs"
+  ],
+  "hook": "A late parcel vanished from a quiet reception desk. The night guard says he saw the trainee take it. The trainee says he only moved it to the safe shelf — and that the badge on the camera was already out of date.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Nia Cole, 24. Three months into the night shift. Lives with her brother; this job pays the rent.",
+    "if_guilty": "a criminal record that ends the warehouse job and most others like it"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Members of the jury, this is a short case about a missing parcel and a badge on camera. You will see the trainee at the desk when the parcel disappears. You will hear that she had no authority to take it. That is enough to convict if you are sure she took it dishonestly."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Nia Cole moved a parcel to the safe shelf, as she had been told to do with late drops. The badge on the camera feed was expired. The person who truly left with the parcel used that dead badge. If you are not sure it was her, you must acquit."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The camera places her at the desk. The parcel is gone. The night guard saw her carry it away. Do not let a story about an expired badge erase what your eyes and ears have already heard."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Place and time are not the whole charge. Dishonesty is. The expired badge and the safe-shelf policy leave real doubt. If she may have been doing her job, you must find her not guilty."
+      }
+    }
+  },
+  "epilogue": "Two weeks later a contractor was caught selling warehouse parcels from a van two towns over. His lanyard still held the expired badge from the camera. Nia kept her job. The warehouse changed how it retires old passes — and how it trains new night staff on the safe shelf.",
+  "cast": [
+    {
+      "id": "judge",
+      "name": "Judge Harlow",
+      "role_label": "the judge",
+      "side": "court"
+    },
+    {
+      "id": "pc",
+      "name": "Priya Sen",
+      "role_label": "prosecuting counsel",
+      "side": "prosecution"
+    },
+    {
+      "id": "dc",
+      "name": "Marcus Bell",
+      "role_label": "defence counsel",
+      "side": "defence"
+    },
+    {
+      "id": "acc",
+      "name": "Nia Cole",
+      "role_label": "the accused — night trainee",
+      "side": "defence"
+    },
+    {
+      "id": "w1",
+      "name": "Owen Drake",
+      "role_label": "night security guard",
+      "side": "prosecution"
+    },
+    {
+      "id": "clerk",
+      "name": "the clerk",
+      "role_label": "clerk of the court",
+      "side": "court"
+    }
+  ],
+  "beats": [
+    {
+      "id": "b1",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "Exhibit one is the reception camera. At 1:12 in the morning a figure in a trainee jacket lifts a brown parcel from the desk and walks toward the side door. The on-screen name badge reads Nia Cole. The time stamp matches the missing-parcel log.",
+      "surface_persuasion": 0.85,
+      "true_weight": 0.25,
+      "direction": "guilt",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The jacket and desk time looked damning, but the badge overlay was stale system text — not proof of who wore the pass that night.",
+      "tags": [
+        "identity",
+        "digital_forensics"
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "text": "I was on the mezzanine. I saw the trainee take the parcel off the desk and head for the side door. Nobody else was in reception. Late parcels stay on that desk until morning unless a supervisor signs them out.",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.3,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Honest observation of movement — not of motive. He did not see the safe shelf or the door camera outside.",
+      "tags": [
+        "opportunity",
+        "credibility"
+      ]
+    },
+    {
+      "id": "b3",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "cross",
+      "text": "'How far were you from the desk?' 'Maybe twenty metres, looking down.' 'Could you read the badge with your own eyes?' 'No — I used the camera name on the monitor.' 'And you did not see the safe shelf by the side door?' 'Not from where I stood.'",
+      "turns": [
+        {
+          "speaker": "dc",
+          "text": "How far were you from the desk?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Maybe twenty metres, looking down."
+        },
+        {
+          "speaker": "dc",
+          "text": "Could you read the badge with your own eyes?"
+        },
+        {
+          "speaker": "w1",
+          "text": "No — I used the camera name on the monitor."
+        },
+        {
+          "speaker": "dc",
+          "text": "And you did not see the safe shelf by the side door?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Not from where I stood."
+        }
+      ],
+      "surface_persuasion": 0.45,
+      "true_weight": 0.55,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "He admitted the badge ID came from the monitor, not from seeing her face up close.",
+      "tags": [
+        "credibility",
+        "identity"
+      ]
+    },
+    {
+      "id": "b4",
+      "kind": "exhibit",
+      "speaker": "clerk",
+      "text": "Exhibit two is the access log. The badge number printed on the camera overlay was retired three weeks earlier. The same number opens the side door at 1:14 — but the live staff system shows that number was already marked lost, not issued to the trainee.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.85,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The decisive record: the badge on screen was dead inventory. Someone else used a retired pass while the camera still painted her name.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "acc",
+      "mode": "examination",
+      "text": "My supervisor told me late drops go on the safe shelf by the side door, not the open desk. I moved that parcel there. I did not take it outside. I still had my own live badge on my lanyard when they searched me.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.6,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Her account matched the safe-shelf policy and the live badge still on her — consistent with the access log.",
+      "tags": [
+        "credibility",
+        "method"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "witness",
+      "speaker": "acc",
+      "mode": "cross",
+      "text": "'Why not call your supervisor before moving it?' 'Night trainees were told not to wake them for ordinary late drops.' 'So you chose to move it alone?' 'Yes — to the shelf I was shown on day one.'",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "Why not call your supervisor before moving it?"
+        },
+        {
+          "speaker": "acc",
+          "text": "Night trainees were told not to wake them for ordinary late drops."
+        },
+        {
+          "speaker": "pc",
+          "text": "So you chose to move it alone?"
+        },
+        {
+          "speaker": "acc",
+          "text": "Yes — to the shelf I was shown on day one."
+        }
+      ],
+      "surface_persuasion": 0.55,
+      "true_weight": 0.35,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Acting alone sounds suspicious until you hear the written night-shift rule she followed.",
+      "tags": [
+        "motive",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b7",
+      "kind": "direction",
+      "speaker": "judge",
+      "text": "Members of the jury, the prosecution must prove each element beyond reasonable doubt. Suspicion is not enough. If you find yourselves unsure whether she took the parcel dishonestly, you must return a verdict of not guilty.",
+      "surface_persuasion": 0.4,
+      "true_weight": 0.5,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The legal threshold — doubt about dishonesty means acquittal.",
+      "tags": [
+        "burden"
+      ]
+    }
+  ],
+  "checkins": [],
+  "verdict_truth": "Not Guilty",
+  "twist": "The camera badge was a ghost label from a retired pass. The trainee moved the parcel to the safe shelf; a contractor with the dead badge took it from there.",
+  "difficulty_target": 0.35,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01",
+        "seat": 2,
+        "label": "Juror 2",
+        "persona": "Takes the camera badge at face value - her on the feed, parcel gone.",
+        "register": "blunt",
+        "arc": "vibes",
+        "initial": {
+          "position": "G",
+          "confidence": 80
+        },
+        "weights": {
+          "identity": 2,
+          "digital_forensics": 1
+        },
+        "lines": {
+          "agree": [
+            "That is what I have been saying - her badge, her hands on the parcel.",
+            "See, even the camera agrees with me."
+          ],
+          "pushback": [
+            "You can talk about shelves all you like; she still carried it off the desk.",
+            "Nobody else was standing there when it left."
+          ],
+          "concede": [
+            "Fine - if that badge was already retired, the feed proves less than I thought."
+          ],
+          "final": [
+            "I go with what the camera shows."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "any",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-02",
+        "seat": 3,
+        "label": "Juror 3",
+        "persona": "Practical; trusts the night-shift note about the safe shelf.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 65
+        },
+        "weights": {
+          "digital_forensics": 1,
+          "procedure": 1
+        },
+        "lines": {
+          "agree": [
+            "The written night rule matters - late drops go to the safe shelf.",
+            "If she followed the note, that is not theft."
+          ],
+          "pushback": [
+            "A note on a wall does not erase a missing parcel.",
+            "People invent policies after they get caught."
+          ],
+          "concede": [
+            "All right - the shelf rule was real, and she named it before anyone else did."
+          ],
+          "final": [
+            "I follow what was written down for the night staff."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "proves"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-03",
+        "seat": 4,
+        "label": "Juror 4",
+        "persona": "The principled holdout; keeps repeating what sure is supposed to mean.",
+        "register": "formal",
+        "arc": "principled_holdout",
+        "initial": {
+          "position": "NG",
+          "confidence": 75
+        },
+        "weights": {
+          "burden": 2,
+          "credibility": 1
+        },
+        "lines": {
+          "agree": [
+            "Precisely. The standard is sure - not suspicious, not probably."
+          ],
+          "pushback": [
+            "You are asking her to explain the missing parcel. That is not her job, it is the prosecution's.",
+            "Being a trainee on nights is evidence of employment, not of theft."
+          ],
+          "concede": [
+            "I accept she carried the parcel away from the desk."
+          ],
+          "holdout": [
+            "If a retired badge on the feed is even reasonably possible, then sure is out of reach, and so is guilty.",
+            "I would rather be the last vote in the room than the first to guess."
+          ],
+          "final": [
+            "Not guilty. That is what the doubt is for."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "holdout"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-04",
+        "seat": 5,
+        "label": "Juror 5",
+        "persona": "Keeps the room honest about who has to prove dishonesty.",
+        "register": "formal",
+        "arc": "steady",
+        "initial": {
+          "position": "G",
+          "confidence": 55
+        },
+        "weights": {
+          "burden": 2,
+          "procedure": 1
+        },
+        "lines": {
+          "agree": [
+            "That is the right way round: they prove it, she proves nothing."
+          ],
+          "pushback": [
+            "Careless and dishonest are different accusations. Only one of them is charged.",
+            "We cannot convict her for being alone at the desk."
+          ],
+          "concede": [
+            "I lean guilty on the whole picture, but I will not pretend the burden moved."
+          ],
+          "burden_correct": [
+            "Stop. She does not have to show where the parcel went. They have to show she took it dishonestly.",
+            "The judge said it plainly: if she may genuinely have been moving it to the safe shelf, we acquit."
+          ],
+          "final": [
+            "Held to the proper standard, I know which way this goes."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "procedure",
+              "stance": "unreliable"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": -5,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-05",
+        "seat": 6,
+        "label": "Juror 6",
+        "persona": "Foreperson; keeps order, counts hands, leans to convict on the guard sighting.",
+        "register": "plain",
+        "arc": "foreperson",
+        "initial": {
+          "position": "G",
+          "confidence": 60
+        },
+        "weights": {
+          "identity": 1,
+          "procedure": 1
+        },
+        "lines": {
+          "agree": [
+            "Noted - and for what it is worth, I agree with that.",
+            "The guard put her at the desk with the parcel in her hands."
+          ],
+          "pushback": [
+            "We still have to decide as a room, not as twelve solo votes.",
+            "An expired badge story can wait until we finish the guard evidence."
+          ],
+          "concede": [
+            "If the pass was already dead, that changes how I read the camera."
+          ],
+          "final": [
+            "I am still with guilty unless the badge doubt hardens."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-06",
+        "seat": 7,
+        "label": "Juror 7",
+        "persona": "Impressed by the camera timestamp; drifts with whoever spoke last.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 45
+        },
+        "weights": {
+          "identity": 2,
+          "credibility": 1
+        },
+        "lines": {
+          "agree": [
+            "Yes - that timestamp is the bit I keep coming back to.",
+            "The feed puts her there when the parcel leaves the desk."
+          ],
+          "pushback": [
+            "Timestamps do not invent a thief by themselves.",
+            "I need someone to explain the dead badge before I move."
+          ],
+          "concede": [
+            "A retired pass on the same frame does make me hesitate."
+          ],
+          "final": [
+            "I am still leaning guilty, but the badge is bothering me."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "unreliable",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "concede"
+            }
+          },
+          {
+            "when": {
+              "theme": "identity",
+              "stance": "proves"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-07",
+        "seat": 8,
+        "label": "Juror 8",
+        "persona": "Came in certain; the retired-badge detail is working on him.",
+        "register": "plain",
+        "arc": "mind_changer",
+        "initial": {
+          "position": "G",
+          "confidence": 70
+        },
+        "weights": {
+          "digital_forensics": 2,
+          "method": 1
+        },
+        "lines": {
+          "agree": [
+            "I keep rereading that ghost-label point. A dead badge on the feed is not an accident.",
+            "If the pass was retired, someone else could have worn that look."
+          ],
+          "pushback": [
+            "Or she used a pass that should have been cut up - that still looks bad.",
+            "Do not turn a paperwork failure into an alibi."
+          ],
+          "concede": [
+            "All right - a contractor with that lanyard later is hard to ignore."
+          ],
+          "final": [
+            "The dead badge moved me off sure guilty."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 2,
+              "confidence": 15,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "method",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "unreliable",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": -1,
+              "confidence": -5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "concede"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-08",
+        "seat": 9,
+        "label": "Juror 9",
+        "persona": "Quiet doubter; distrusts certainty offered too easily, from either side.",
+        "register": "hesitant",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 60
+        },
+        "weights": {
+          "credibility": 2
+        },
+        "lines": {
+          "agree": [
+            "Mm. The louder the witness, the less I tend to believe.",
+            "The guard is sure - that alone makes me careful."
+          ],
+          "pushback": [
+            "I still need a clean account of where the parcel went after the shelf.",
+            "Doubt is not the same as believing every defence line."
+          ],
+          "concede": [
+            "He did see her hands on it; I cannot pretend otherwise."
+          ],
+          "final": [
+            "I stay not guilty while the shelf story holds."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "credibility",
+              "stance": "unreliable"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": -5,
+              "line": "pushback"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-09",
+        "seat": 10,
+        "label": "Juror 10",
+        "persona": "Wants the accused to account for herself; keeps reversing the burden.",
+        "register": "blunt",
+        "arc": "burden_drifter",
+        "initial": {
+          "position": "G",
+          "confidence": 65
+        },
+        "weights": {
+          "motive": 1,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "Exactly. Parcel gone, story ready - too neat by half."
+          ],
+          "pushback": [
+            "Then where did the parcel go? Someone in this room tell me that."
+          ],
+          "burden_drift": [
+            "If she is innocent, let her show us the shelf still held it. She was the only one seen with it.",
+            "An honest trainee rings the supervisor. She never explained why she did not."
+          ],
+          "concede": [
+            "All right, all right - the judge did say it is not hers to prove."
+          ],
+          "burden_correct": [
+            "I withdraw it. They have to make us sure; she owes us nothing."
+          ],
+          "final": [
+            "I want to say guilty. Wanting is not the standard, though, is it."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": -10,
+              "line": "burden_correct"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves",
+              "direction": "guilt"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "burden_drift"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-10",
+        "seat": 11,
+        "label": "Juror 11",
+        "persona": "The undecided one; argues both sides out loud until one sticks.",
+        "register": "hesitant",
+        "arc": "drifter",
+        "initial": {
+          "position": "U",
+          "confidence": 40
+        },
+        "weights": {
+          "motive": 1,
+          "digital_forensics": 1
+        },
+        "lines": {
+          "agree": [
+            "Yes - say that part again, that is the part that moves me.",
+            "Safe shelf first, then someone else with the dead badge - that sequence fits."
+          ],
+          "pushback": [
+            "Or she walked it out and the badge talk is a distraction.",
+            "I keep flipping; someone pin the timeline down."
+          ],
+          "concede": [
+            "The guard sighting still pulls me the other way."
+          ],
+          "final": [
+            "I land on not guilty if the shelf step stays possible."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "motive",
+              "stance": "proves"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      },
+      {
+        "id": "J-11",
+        "seat": 12,
+        "label": "Juror 12",
+        "persona": "Uneasy about convicting on a camera alone; uneasy about acquitting the only person seen with the parcel.",
+        "register": "plain",
+        "arc": "steady",
+        "initial": {
+          "position": "NG",
+          "confidence": 50
+        },
+        "weights": {
+          "digital_forensics": 1,
+          "burden": 1
+        },
+        "lines": {
+          "agree": [
+            "That is fair. The camera leads somewhere, and the dead badge may not lead to her.",
+            "A retired pass on the feed is a real problem for sure guilt."
+          ],
+          "pushback": [
+            "Still - she is the only person the guard names with the parcel.",
+            "Screens can lie, but empty shelves do not invent themselves."
+          ],
+          "concede": [
+            "I cannot ignore that she carried it away from the desk."
+          ],
+          "final": [
+            "I stay not guilty while the badge doubt stands."
+          ]
+        },
+        "reaction_rules": [
+          {
+            "when": {
+              "theme": "digital_forensics",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 5,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "burden",
+              "stance": "proves",
+              "direction": "innocence"
+            },
+            "effect": {
+              "delta": 1,
+              "confidence": 10,
+              "line": "agree"
+            }
+          },
+          {
+            "when": {
+              "theme": "any",
+              "stance": "any"
+            },
+            "effect": {
+              "delta": 0,
+              "confidence": 0,
+              "line": "pushback"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "manual",
+    "prompt_version": "dd-intro-2026-07",
+    "reviewer": "simplify-plan",
+    "batch_pr": "simplify-jury"
+  }
+}

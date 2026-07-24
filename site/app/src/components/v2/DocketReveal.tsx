@@ -47,6 +47,7 @@ export function DocketReveal({
   dayNumber,
   stats,
   onChooseAnother,
+  isIntro = false,
 }: {
   trial: DocketCase
   analysis: DocketAnalysis
@@ -55,6 +56,8 @@ export function DocketReveal({
   dayNumber: number
   stats: Stats
   onChooseAnother: () => void
+  /** Guided intro is outside the daily queue - no Daily #N share card. */
+  isIntro?: boolean
 }) {
   const roomLabel =
     room.kind === 'hung'
@@ -63,11 +66,13 @@ export function DocketReveal({
           room.kind === 'unanimous' ? ' unanimous' : ' by majority'
         }`
 
-  const shareText = buildShareText({
-    dayNumber,
-    currentStreak: stats.currentStreak,
-    room: { kind: room.kind, g: room.g, ng: room.ng },
-  })
+  const shareText = isIntro
+    ? null
+    : buildShareText({
+        dayNumber,
+        currentStreak: stats.currentStreak,
+        room: { kind: room.kind, g: room.g, ng: room.ng },
+      })
 
   const mattered = analysis.whatMattered.length > 0
     ? analysis.whatMattered
@@ -118,8 +123,16 @@ export function DocketReveal({
       </div>
 
       <div className="record-tools">
-        <StatsPanel stats={stats} />
-        <ShareCard text={shareText} />
+        {isIntro ? (
+          <p className="text-sm text-neutral-500">
+            Guided intro complete. Daily streak and share cards stay with the featured sittings.
+          </p>
+        ) : (
+          <>
+            <StatsPanel stats={stats} />
+            {shareText ? <ShareCard text={shareText} /> : null}
+          </>
+        )}
       </div>
 
       <button

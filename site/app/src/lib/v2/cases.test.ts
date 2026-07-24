@@ -3,13 +3,17 @@ import {
   availableDocketSittings,
   docketCaseForDate,
   docketQueue,
+  INTRO_CASE_ID,
+  introCase,
   selectDocketSitting,
   SITTING_HISTORY_LIMIT,
 } from './cases'
 
 describe('docket queue', () => {
-  it('bundles and validates every docket case', () => {
+  it('bundles and validates every docket case and keeps the intro separate', () => {
     expect(docketQueue.length).toBeGreaterThan(0)
+    expect(docketQueue.every((c) => c.id !== INTRO_CASE_ID)).toBe(true)
+    expect(introCase?.id).toBe(INTRO_CASE_ID)
     expect(docketQueue.some((c) => c.id === 'dd-0000')).toBe(true)
   })
 
