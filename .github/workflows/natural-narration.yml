@@ -13,6 +13,7 @@ on:
       - "site/app/docket/*.json"
       - "site/app/src/lib/narration.ts"
       - "site/app/src/lib/narratorCues.ts"
+      - "site/app/src/lib/narratorCueCopy.json"
       - "site/narration-requirements.txt"
       - "site/scripts/build-kokoro-jobs.mjs"
       - "site/scripts/generate-kokoro-clips.py"
@@ -47,7 +48,7 @@ jobs:
             requested="$REQUESTED_CASES"
           else
             changed="$(git diff --name-only HEAD^ HEAD)"
-            if grep -Eq '^(\.github/workflows/natural-narration\.yml|site/app/src/lib/(narration|narratorCues)\.ts|site/narration-requirements\.txt|site/scripts/(build-kokoro-jobs\.mjs|generate-kokoro-clips\.py))$' <<< "$changed"; then
+            if grep -Eq '^(\.github/workflows/natural-narration\.yml|site/app/src/lib/(narration|narratorCues)\.ts|site/app/src/lib/narratorCueCopy\.json|site/narration-requirements\.txt|site/scripts/(build-kokoro-jobs\.mjs|generate-kokoro-clips\.py))$' <<< "$changed"; then
               requested="all"
             else
               requested="$(sed -nE 's#^site/app/docket/(dd-[0-9]{4})\.json$#\1#p' <<< "$changed" |
