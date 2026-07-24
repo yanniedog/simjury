@@ -2,7 +2,7 @@
  * CI gate for the case queues. Validates every JSON file in cases/ (v1 daily)
  * and docket/ (v2 Daily Docket) against its schema, then runs the matching
  * design-quality gate over each whole queue (traps, real signals, solvability,
- * uniqueness, verdict variety — plus, for v2, pacing, courtroom structure, and
+ * uniqueness, verdict variety ÔÇö plus, for v2, pacing, courtroom structure, and
  * jury dynamics). Exits non-zero on any problem so a badly formed *or* badly
  * designed case can never reach a queue. An empty-but-present directory is a
  * legitimate pre-content state; a missing directory is a broken checkout.
@@ -41,7 +41,7 @@ function validateQueue<T>(q: Queue<T>, errors: string[]): number {
   }
 
   if (files.length === 0) {
-    console.warn(`${q.name}/ has no .json cases yet — nothing to validate.`)
+    console.warn(`${q.name}/ has no .json cases yet ÔÇö nothing to validate.`)
     // Queue-level gates still matter for an empty live queue. The legacy v1
     // gate permits its pre-content state; the docket runway gate rejects it.
     for (const issue of q.gate([])) {

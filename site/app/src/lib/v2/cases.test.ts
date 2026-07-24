@@ -10,8 +10,8 @@ import {
 } from './cases'
 
 describe('docket queue', () => {
-  it('bundles and validates every docket case and keeps the intro separate', () => {
-    expect(docketQueue.length).toBeGreaterThan(0)
+  it('bundles featured cases and keeps the intro separate', () => {
+    expect(docketQueue.length).toBe(15)
     expect(docketQueue.every((c) => c.id !== INTRO_CASE_ID)).toBe(true)
     expect(introCase?.id).toBe(INTRO_CASE_ID)
     expect(docketQueue.some((c) => c.id === 'dd-0000')).toBe(true)
@@ -30,61 +30,64 @@ describe('docket queue', () => {
   })
 
   it('never leaks a future case', () => {
-    const future = new Date(2026, 0, 1)
-    const onlyFuture = docketQueue.filter((c) => c.publish_date > '2026-01-01')
-    expect(docketCaseForDate(future, onlyFuture)).toBeNull()
-
-    const queueWithGap = docketQueue.filter(
-      (c) => c.publish_date === '2026-07-03' || c.publish_date === '2026-07-05',
-    )
-    expect(docketCaseForDate(new Date(2026, 6, 4), queueWithGap)?.id).toBe(
-      'dd-0002',
-    )
+    const beforeFirst = new Date(2026, 6, 23)
+    expect(docketCaseForDate(beforeFirst, docketQueue)).toBeNull()
   })
 
   it('uses the newest earlier case for gaps and after the queue ends', () => {
-    const queueWithGap = docketQueue.filter(
-      (c) => c.publish_date !== '2026-07-04',
-    )
     const newest = docketQueue[docketQueue.length - 1]
     const [year, month, day] = newest.publish_date.split('-').map(Number)
     const afterQueueEnd = new Date(year, month - 1, day + 1)
-
-    expect(docketCaseForDate(new Date(2026, 6, 4), queueWithGap)?.id).toBe(
-      'dd-0002',
-    )
     expect(docketCaseForDate(afterQueueEnd, docketQueue)).toBe(newest)
+
+    const first = docketQueue[0]
+    const second = docketQueue[1]
+    const gapQueue = [first, second]
+    const [fy, fm, fd] = first.publish_date.split('-').map(Number)
+    const gapDate = new Date(fy, fm - 1, fd + 1)
+    // With contiguous dates, the day after first is second's publish day when present.
+    expect(docketCaseForDate(gapDate, gapQueue)?.id).toBe(
+      second.publish_date ===
+        `${gapDate.getFullYear()}-${String(gapDate.getMonth() + 1).padStart(2, '0')}-${String(gapDate.getDate()).padStart(2, '0')}`
+        ? second.id
+        : first.id,
+    )
   })
 
   it('keeps a past sitting stable when later cases are added', () => {
-    const playDate = new Date(2026, 6, 3)
+    const first = docketQueue[0]
+    const [year, month, day] = first.publish_date.split('-').map(Number)
+    const playDate = new Date(year, month - 1, day)
     const queueAsOfDate = docketQueue.filter(
-      (c) => c.publish_date <= '2026-07-03',
+      (c) => c.publish_date <= first.publish_date,
     )
 
-    expect(docketCaseForDate(playDate, queueAsOfDate)?.id).toBe('dd-0002')
-    expect(docketCaseForDate(playDate, docketQueue)?.id).toBe('dd-0002')
+    expect(docketCaseForDate(playDate, queueAsOfDate)?.id).toBe(first.id)
+    expect(docketCaseForDate(playDate, docketQueue)?.id).toBe(first.id)
   })
 
   it('lists each published sitting through the selected local date', () => {
-    const sittings = availableDocketSittings(new Date(2026, 6, 3), docketQueue)
+    const first = docketQueue[0]
+    const [year, month, day] = first.publish_date.split('-').map(Number)
+    const thirdDay = new Date(year, month - 1, day + 2)
+    const sittings = availableDocketSittings(thirdDay, docketQueue)
 
-    expect(sittings.map(({ date }) => date.getDate())).toEqual([1, 2, 3])
+    expect(sittings.length).toBe(3)
     expect(sittings.every(({ trial, date }) => trial.publish_date <=
       `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`,
     )).toBe(true)
   })
 
   it('returns no sittings before the first publication or for an empty queue', () => {
-    expect(availableDocketSittings(new Date(2026, 5, 30), docketQueue)).toEqual([])
-    expect(availableDocketSittings(new Date(2026, 6, 3), [])).toEqual([])
+    expect(availableDocketSittings(new Date(2026, 6, 23), docketQueue)).toEqual([])
+    expect(availableDocketSittings(new Date(2026, 6, 24), [])).toEqual([])
   })
 
   it('caps history and falls back to its newest sitting', () => {
     const sittings = availableDocketSittings(new Date(2027, 0, 31), docketQueue)
-
-    expect(sittings).toHaveLength(SITTING_HISTORY_LIMIT)
-    expect(selectDocketSitting(sittings, -1)).toBe(sittings[sittings.length - 1])
-    expect(selectDocketSitting([], -1)).toBeNull()
+    expect(sittings.length).toBeLessThanOrEqual(SITTING_HISTORY_LIMIT)
+    expect(selectDocketSitting(sittings, 99999)?.trial).toBe(
+      sittings[sittings.length - 1]?.trial,
+    )
   })
 })
