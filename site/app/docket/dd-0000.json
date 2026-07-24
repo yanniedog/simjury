@@ -13,27 +13,27 @@
   "accused": {
     "cast_id": "w5",
     "human": "Dana Reyes, 41. Sixteen years at Vantrelle Freight, the last four running month-end close alone. Two grown kids; the eldest has sat in the gallery every day of this trial.",
-    "if_guilty": "up to seven years, and the sixteen years before it rewritten as a plan"
+    "if_guilty": "up to seven years — and sixteen years of loyalty rewritten as a long plan"
   },
   "statements": {
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Members of the jury, this case is simpler than the defence needs it to be. Forty-eight thousand dollars left the company at 11:47 at night, approved by the one person still in the building — on her laptop, her passphrase, her security key — sent to an account wearing her own old username. She was angry, she was passed over, and she was owed. You will hear her explanation. Listen for what it cannot explain."
+        "text": "Members of the jury, this case is simpler than the defence needs it to be. Forty-eight thousand dollars left the company at 11:47 at night, approved by the one person still in the building — on her laptop, her passphrase, her security key — sent to an account wearing her own old username. She was angry, she had been passed over, and she believed the company owed her. You will hear her explanation. Listen for what it cannot explain."
       },
       "defence": {
         "speaker": "dc",
-        "text": "Dana Reyes is not a thief. She is the person the thieves chose. You will hear that the call that night was real — and that the man on it was not. A voice built from podcasts. A face three days old. A crew that dressed their getaway account in her leaked username eleven days before they dialled her. She believed her boss because it was her boss's face asking. When you know how the trick works, you will know why she is here: because she was easy to blame."
+        "text": "Dana Reyes is not a thief. She is the person the thieves chose. You will hear that the call that night was real — and that the man on it was not. A voice built from podcasts. A video account three days old. A crew that dressed their getaway account in her leaked username eleven days before they dialled her. She believed her boss because it was his face asking. When you know how the trick works, you will know why she is here: because she was easy to blame."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Strip away the theatre and three facts remain. She alone approved the payment. She alone skipped the callback that existed for exactly this moment. And the money ran to an account carrying her name. The defence asks you to believe in an invisible crew of puppeteers. I ask you to believe your own eyes: the person with the access, the anger, and the opportunity is sitting in that dock."
+        "text": "Strip away the theatre and three facts remain. She alone approved the payment. She alone skipped the callback that existed for exactly this moment. And the money ran to an account carrying her name. The defence asks you to believe in an invisible crew of puppeteers. I ask you to believe your own eyes: the person with the access, the anger, and the opportunity is sitting there as the accused."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The prosecution promised you dishonesty. What did they prove? A skipped phone call. Every hard fact — the synthetic account, the residential proxy, the reenacted-media flag, eighteen months of clean devices — points away from Dana and towards a professional crew. Her account has never changed, from first interview to this courtroom. Careless, perhaps. The judge will tell you carelessness is not the charge. If she may have believed that call — and you have heard why she did — you must acquit."
+        "text": "The prosecution promised you dishonesty. What did they prove? A skipped call. Every hard fact — the made-up video account, the caller hiding behind someone else's home internet, the flag that the face was assembled not live, eighteen months of clean devices — points away from Dana toward a crew. Her story has never changed, from first interview to this courtroom. Careless, perhaps. The judge will tell you carelessness is not the charge. If she may have believed that call — and you have heard why — you must acquit."
       }
     }
   },
@@ -52,7 +52,7 @@
       "id": "b1",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit one: the payment record. At 11:47 on the night in question, a transfer of forty-eight thousand dollars left Vantrelle Freight's operating account for a beneficiary added that same evening. It was authorised from the accused's laptop, on the office network, using her credentials, her passphrase, and the hardware security key issued to her alone.",
+      "text": "Exhibit one: the payment record. At 11:47 on the night in question, a transfer of forty-eight thousand dollars left Vantrelle Freight's operating account for a beneficiary added that same evening. It was authorised from the accused's laptop, on the office network, using her credentials, her passphrase, and the hardware security key issued only to her — a physical token that has to be plugged in before the system will pay.",
       "surface_persuasion": 0.85,
       "true_weight": 0.15,
       "direction": "guilt",
@@ -65,12 +65,12 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "The beneficiary account was registered eleven days earlier under the handle dreyes-ledger — the same username the accused used for years on an old bookkeeping forum. Once the money landed it moved out within forty minutes, split through three intermediate wallets, and finished at an overseas cash-out service we could not reach.",
+      "text": "The beneficiary account was registered eleven days earlier under the handle dreyes-ledger — the same username the accused used for years on an old bookkeeping forum. Once the money landed it moved out within forty minutes, split through three temporary digital wallets, then cashed out overseas through a service that trades crypto for cash — we could not get those records.",
       "surface_persuasion": 0.75,
       "true_weight": 0.2,
       "direction": "guilt",
       "reveal_stamp": "misleading",
-      "reveal_note": "The handle came from a public breach dump. Whoever built the scam dressed the beneficiary in her name — a fall guy stitched into the scheme eleven days before the call was ever placed.",
+      "reveal_note": "The handle came from a public leak of stolen logins. Whoever built the scam dressed the beneficiary in her name — a fall guy stitched into the scheme eleven days before the call was ever placed.",
       "tags": ["identity", "digital_forensics"]
     },
     {
@@ -78,12 +78,12 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "'That handle — dreyes-ledger — where else does it appear?' 'In a breach dump published three years ago. Her old email, her username, alongside sixty million others.' 'So anyone alive could have registered that account in her name?' '(After a pause.) Anyone with an internet connection.' 'And nothing ties her devices to the wallets, or the cash-out service?' 'Nothing that we found.'",
+      "text": "'That handle — dreyes-ledger — where else does it appear?' 'In a leaked database of stolen logins published three years ago — her old email and username dumped with about sixty million others.' 'So anyone alive could have registered that account in her name?' 'Anyone with an internet connection.' 'And nothing ties her devices to the wallets, or the cash-out service?' 'Nothing that we found.'",
       "turns": [
         { "speaker": "dc", "text": "That handle — dreyes-ledger — where else does it appear?" },
-        { "speaker": "w1", "text": "In a breach dump published three years ago. Her old email, her username, alongside sixty million others." },
+        { "speaker": "w1", "text": "In a leaked database of stolen logins published three years ago — her old email and username dumped with about sixty million others." },
         { "speaker": "dc", "text": "So anyone alive could have registered that account in her name?" },
-        { "speaker": "w1", "text": "(After a pause.) Anyone with an internet connection." },
+        { "speaker": "w1", "text": "Anyone with an internet connection." },
         { "speaker": "dc", "text": "And nothing ties her devices to the wallets, or the cash-out service?" },
         { "speaker": "w1", "text": "Nothing that we found." }
       ],
@@ -124,12 +124,12 @@
       "id": "b6",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit four: the conference platform's trust-and-safety report. A video call reached the accused's account at 11:31 that night from an account created three days earlier with a synthetic identity, connecting through a residential proxy. The platform's integrity system flagged the caller's video stream as reenacted media — its highest-confidence category.",
+      "text": "Exhibit two: the conference platform's safety report. A video call reached her at 11:31 from an account created three days earlier under a made-up identity, connecting through someone else's home internet to hide the caller's real location. The safety team flagged the video as reenacted media — a face that looked live but was assembled, not a real person's camera.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "The buried annexe that decided the case: the call was real, and the caller was manufactured. Three days old, synthetic papers, hiding its route home.",
+      "reveal_note": "The buried appendix that decided the case: the call was real, and the caller was manufactured. Three days old, made-up papers, hiding its route home.",
       "tags": ["digital_forensics", "identity"]
     },
     {
@@ -137,7 +137,7 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "examination",
-      "text": "The caller's voice was assembled from the chief executive's podcast appearances — I found phrase-level artefacts matching four separate episodes. The response latency rises and falls with the conversation itself. That is a live operator puppeteering a cloned voice in real time. A recording cannot answer questions; this caller answered hers.",
+      "text": "The voice was built from the chief executive's podcasts — I matched short phrases to four different episodes. When Dana asked something unexpected, the pause before the answer stretched and shrank like a real conversation. A recording cannot do that. Someone was driving a cloned voice live.",
       "surface_persuasion": 0.6,
       "true_weight": 0.7,
       "direction": "innocence",
@@ -150,18 +150,18 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "'Your toolchain's false-positive rate?' 'Near seven per cent.' 'And the defence is paying you to be here?' '(She let the silence sit, then leaned forward.) They are. One artefact can be noise in a degraded stream. I found them at phrase level, across the entire call, matching four separate episodes. That density does not occur in genuine audio.'",
+      "text": "'How often does your software wrongly say audio is fake?' 'About seven times in a hundred.' 'And the defence is paying you to be here?' 'They are. One short phrase can be noise in a degraded stream. I found matches across the entire call, from four separate episodes. That density does not occur in genuine audio.'",
       "turns": [
-        { "speaker": "pc", "text": "Your toolchain's false-positive rate?" },
-        { "speaker": "w4", "text": "Near seven per cent." },
+        { "speaker": "pc", "text": "How often does your software wrongly say audio is fake?" },
+        { "speaker": "w4", "text": "About seven times in a hundred." },
         { "speaker": "pc", "text": "And the defence is paying you to be here?" },
-        { "speaker": "w4", "text": "(She let the silence sit, then leaned forward.) They are. One artefact can be noise in a degraded stream. I found them at phrase level, across the entire call, matching four separate episodes. That density does not occur in genuine audio." }
+        { "speaker": "w4", "text": "They are. One short phrase can be noise in a degraded stream. I found matches across the entire call, from four separate episodes. That density does not occur in genuine audio." }
       ],
       "surface_persuasion": 0.45,
       "true_weight": 0.2,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "A fair jab at any expert. Seven per cent of doubt about the audio still leaves the synthetic account, the proxy, and the wallets unexplained.",
+      "reveal_note": "A fair jab at any expert. Seven times in a hundred of doubt about the audio still leaves the made-up account, the hidden connection, and the wallets unexplained.",
       "tags": ["credibility"]
     },
     {
@@ -169,19 +169,19 @@
       "kind": "witness",
       "speaker": "w5",
       "mode": "examination",
-      "text": "He used our internal shipment codes and quoted the morning's operations meeting back to me. It was his face. It was his voice, his impatience, the way he cuts you off. He said the acquisition would leak if I looped anyone in. I have replayed that call every night since. I believed him.",
+      "text": "He used our internal shipment codes and quoted the morning's operations meeting back to me. It was his face. It was his voice, his impatience, the way he cuts you off. He said there was a confidential company deal that would leak if I looped anyone in. I have replayed that call every night since. I believed him.",
       "surface_persuasion": 0.6,
       "true_weight": 0.4,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "Her account never changed from the first police interview — and every checkable detail in it checked out.",
+      "reveal_note": "Her story never changed from the first police interview — and every checkable detail in it checked out.",
       "tags": ["credibility", "method"]
     },
     {
       "id": "b10",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit six: the forensic download of the accused's personal devices. No contact with the beneficiary account. No wallet applications, no searches touching any part of the scheme, no unexplained deposits across eighteen months of statements. The cash-out service's records tie the final wallet to a phishing-kit vendor already under investigation abroad.",
+      "text": "Exhibit three: the forensic download of the accused's personal devices. No contact with the beneficiary account. No wallet applications, no searches touching any part of the scheme, no unexplained deposits across eighteen months of statements. The cash-out records tie the final wallet to a vendor already under investigation for selling phishing kits — ready-made tools used by fraud crews to steal logins and run scams.",
       "surface_persuasion": 0.5,
       "true_weight": 0.75,
       "direction": "innocence",
@@ -204,7 +204,7 @@
   ],
   "checkins": ["b3", "b5", "b8", "b11"],
   "verdict_truth": "Not Guilty",
-  "twist": "Her login, her machine, her grudge — every loud fact pointed at the easiest person to see. The quiet annexe said the call was real and the caller was manufactured: a three-day-old synthetic account running a live voice clone built from podcasts, cashing out through a phishing crew that had dressed the money in her old username. The callback she skipped made her negligent. It never made her a thief.",
+  "twist": "Her login, her machine, her grudge — every loud fact pointed at the easiest person to see. The quiet appendix said the call was real and the caller was manufactured: a three-day-old made-up account running a live voice clone built from podcasts, cashing out through a phishing crew that had dressed the money in her old username. The callback she skipped made her negligent. It never made her a thief.",
   "difficulty_target": 0.6,
   "jury": {
     "jurors": [
@@ -345,8 +345,8 @@
         "initial": { "position": "G", "confidence": 70 },
         "weights": { "digital_forensics": 2, "method": 1 },
         "lines": {
-          "agree": ["I keep rereading that trust-and-safety line. A three-day-old synthetic account is not an accident.", "If a crew ran that call live, then everything I was sure about happens exactly the same whether she is guilty or innocent."],
-          "pushback": ["The seven per cent bothers me less than you want it to.", "I was certain when I sat down. I am telling you what certainty was built on: the login. Just the login."],
+          "agree": ["I keep rereading that safety-report line. A three-day-old made-up account is not an accident.", "If a crew ran that call live, then everything I was sure about happens exactly the same whether she is guilty or innocent."],
+          "pushback": ["Seven times in a hundred bothers me less than you want it to.", "I was certain when I sat down. I am telling you what certainty was built on: the login. Just the login."],
           "concede": ["All right — I cannot call it sure anymore. Not with that report on the table."],
           "final": ["I changed my mind in this room, and I can tell you the exact exhibit that did it."]
         },

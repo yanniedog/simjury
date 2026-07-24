@@ -3,14 +3,14 @@
   "publish_date": "2026-07-31",
   "label": "fiction",
   "title": "The Midnight Override",
-  "setting": "A battery-research warehouse, a shared emergency code, and an eleven-minute camera blackout in 2026.",
+  "setting": "A battery-research warehouse, a shared emergency cage code, and an eleven-minute camera blackout in 2026.",
   "charge": "Dishonestly using restricted access credentials to steal prototype battery cells",
   "elements": [
     "Nico used or caused the use of restricted credentials to enter the prototype cage or alter its security controls.",
     "He took or participated in taking the four prototype cells without authority.",
     "He acted dishonestly, intending to keep the cells or permanently deprive the warehouse of them."
   ],
-  "hook": "At 2:14 in the morning, a locked cage opens for ninety seconds. By sunrise, four prototype cells and one trusted technician are gone.",
+  "hook": "At 2:14 in the morning, a locked cage opens for ninety seconds. By sunrise, four prototype cells are missing — and suspicion settles on one trusted night technician.",
   "accused": {
     "cast_id": "w3",
     "human": "Nico Verran fixes appliances for neighbours and supports a younger brother through trade school.",
@@ -20,25 +20,25 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The emergency code was widely known, but the theft required more than a code. Hours before the cage opened, Nico’s hardware key changed a door sensor to ignore the weight of his loaded tool cart. Minutes after the cells vanished, the same key restored the setting from his terminal. The prosecution says that sequence shows preparation, removal, and concealment."
+        "text": "The emergency cage code was widely known, but the theft required more than a code. Hours before the cage opened, Nico's hardware key changed a door sensor to ignore the weight of his loaded maintenance cart. Minutes after the cells vanished, the same key restored the setting from his terminal. The prosecution says that sequence shows preparation, removal, and concealment."
       },
       "defence": {
         "speaker": "dc",
-        "text": "Six night workers knew the emergency code, the corridor camera went dark, and a security log records a key rather than the hand holding it. Nico says his key stayed in a workshop drawer while he repaired a coolant pump across the warehouse. The defence asks whether weak security and a familiar cart are enough to prove who entered the cage."
+        "text": "Six night workers knew the emergency cage code, the corridor camera went dark, and a security log records a key rather than the hand holding it. Nico says his key stayed in a workshop drawer while he repaired a coolant pump across the warehouse. The defence asks whether weak security and a familiar cart are enough to prove who entered the cage."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Set the shared code aside. Nico serviced this sensor, knew the cart weights, and was the only person assigned the key that changed the threshold to forty-six kilograms. The cage then opened, a loaded cart could pass without alarm, and his key restored the default setting at 2:31. Separate records describe one planned route through the warehouse. That is proof, not coincidence."
+        "text": "Set the shared code aside. Nico serviced this sensor, knew the cart weights, and was the only person assigned the key that changed the threshold to forty-six kilograms. The cage then opened, a loaded cart could pass without alarm, and his key restored the default setting at 2:31. The same key prepared the door before the theft window and restored it afterwards. That is preparation and concealment, not coincidence."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The audit identifies Nico’s key, not Nico. It was left in a workshop drawer during a camera blackout, while six workers knew the cage code and several could enter the maintenance cupboard. No witness saw Nico at the cage or pushing the cart. If the prosecution cannot exclude another worker using those shared weaknesses, the law requires a not-guilty verdict."
+        "text": "The audit identifies Nico's key, not Nico. It was left in a workshop drawer during a camera blackout, while six workers knew the emergency cage code and several could enter the maintenance cupboard. No witness saw Nico at the cage or pushing the cart. If you are not sure it was Nico rather than another worker using those shared weaknesses, you must find him not guilty."
       }
     }
   },
-  "epilogue": "During the months before trial, Nico’s maintenance licence was suspended and his younger brother left trade school for a term to cover rent. The warehouse recovered the cells but destroyed them because their research history could no longer be trusted. It replaced shared emergency codes, required two people at the prototype cage, and issued keys that could not be left active in workshop drawers. Mira moved to day shift and stopped covering security drills.",
+  "epilogue": "During the months before trial, Nico's maintenance licence was suspended and his younger brother left trade school for a term to cover rent. The warehouse recovered the cells but destroyed them because their research history could no longer be trusted. It replaced shared emergency cage codes, required two people at the prototype cage, and issued keys that could not be left active in workshop drawers. Mira moved to day shift and stopped covering security drills.",
   "cast": [
     {
       "id": "judge",
@@ -78,8 +78,8 @@
     },
     {
       "id": "w4",
-      "name": "Mira Verran",
-      "role_label": "the accused’s former shift partner",
+      "name": "Mira Kellen",
+      "role_label": "the accused's former shift partner — no relation",
       "side": "defence"
     }
   ],
@@ -89,7 +89,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "I oversee warehouse security. At 2:14, a supervisor code opened the prototype cage for ninety seconds. The corridor camera had lost power three minutes earlier and returned eight minutes later. Its breaker sits inside the maintenance cupboard. No door alarm or forced entry was recorded, and six night workers were inside the building.",
+      "text": "I oversee warehouse security. At 2:14, the emergency cage code — the shared emergency code used for spills — opened the prototype cage for ninety seconds. The corridor camera had lost power three minutes earlier and returned eight minutes later. Its breaker sits inside the maintenance cupboard. No door alarm or forced entry was recorded, and six night workers were inside the building.",
       "surface_persuasion": 0.65,
       "true_weight": 0.55,
       "direction": "guilt",
@@ -105,7 +105,7 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "I supervise the cell program. At dawn, four prototype cells were missing from their numbered foam slots. The inventory terminal showed no authorised movement, disposal request, or overnight test. Each sleeved cell weighed 10.9 kilograms, so the four missing cells weighed 43.6 kilograms and would fit together on one maintenance cart.",
+      "text": "I supervise the cell program. At dawn, four prototype cells were missing from their numbered foam slots. The inventory terminal showed no authorised movement, disposal request, or overnight test. Each cell, in its protective sleeve, weighed 10.9 kilograms, so the four missing cells weighed 43.6 kilograms and would fit together on one maintenance cart.",
       "surface_persuasion": 0.6,
       "true_weight": 0.4,
       "direction": "guilt",
@@ -136,11 +136,11 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "You spoke the supervisor code aloud during spill drills? Yes, twice. How many night workers could have remembered it? Management did not rotate it afterwards? Six were present at one or both drills, and we did not rotate it. The code identifies someone who knew our emergency practice, not Nico by itself.",
+      "text": "You spoke the emergency cage code aloud during spill drills? Yes, twice. How many night workers could have remembered it? Six were present at one or both drills. Management did not rotate it afterwards? We did not. The code identifies someone who knew our emergency practice, not Nico by itself.",
       "turns": [
         {
           "speaker": "dc",
-          "text": "You spoke the supervisor code aloud during spill drills?"
+          "text": "You spoke the emergency cage code aloud during spill drills?"
         },
         {
           "speaker": "w1",
@@ -148,11 +148,19 @@
         },
         {
           "speaker": "dc",
-          "text": "How many night workers could have remembered it? Management did not rotate it afterwards?"
+          "text": "How many night workers could have remembered it?"
         },
         {
           "speaker": "w1",
-          "text": "Six were present at one or both drills, and we did not rotate it. The code identifies someone who knew our emergency practice, not Nico by itself."
+          "text": "Six were present at one or both drills."
+        },
+        {
+          "speaker": "dc",
+          "text": "Management did not rotate it afterwards?"
+        },
+        {
+          "speaker": "w1",
+          "text": "We did not. The code identifies someone who knew our emergency practice, not Nico by itself."
         }
       ],
       "surface_persuasion": 0.5,
@@ -169,12 +177,12 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit five combines the service-door threshold record and cart inspection. At 6:06 that evening, Nico’s hardware key changed the alarm threshold to forty-six kilograms. His assigned transport cart weighed 1.8 kilograms empty; with the four sleeved cells, it would weigh 45.4 kilograms. That setting allowed the loaded cart through without triggering a weight alarm.",
+      "text": "Exhibit five is the record for the service-door weight alarm (the sensor that should sound if a heavy load passes). At 6:06 that evening, Nico's hardware key changed the alarm threshold to forty-six kilograms. His assigned maintenance cart weighed 1.8 kilograms empty; with the four cells in protective sleeves, it would weigh 45.4 kilograms. That setting allowed the loaded cart through without triggering a weight alarm.",
       "surface_persuasion": 0.4,
       "true_weight": 0.6,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "Nico’s physical key set the door just above the measured 45.4-kilogram weight of his cart carrying all four cells.",
+      "reveal_note": "Nico's physical key set the door just above the measured 45.4-kilogram weight of his cart carrying all four cells.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -184,12 +192,12 @@
       "id": "b5a",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit five-A is the later security audit. At 2:31, after the cage opening and camera blackout, Nico’s physical key restored the default alarm threshold from his maintenance terminal. The system records the hardware-key certificate and terminal rather than a typed username, although it cannot identify the hand that inserted the key.",
+      "text": "Exhibit five-A is the later security audit. At 2:31, after the cage opening and camera blackout, Nico's physical key restored the default alarm threshold from his maintenance terminal. The system records which physical key was plugged in, and which terminal was used — not a typed name or password — so it shows Nico's key was used, not whose hand held it.",
       "surface_persuasion": 0.3,
       "true_weight": 0.6,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The same physical key that prepared the door restored its default setting from Nico’s terminal after the theft window.",
+      "reveal_note": "The same physical key that prepared the door restored its default setting from Nico's terminal after the theft window.",
       "tags": [
         "credibility",
         "identity"
@@ -200,7 +208,7 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "examination",
-      "text": "I worked the night shift with Nico for three years. Hardware keys were supposed to stay in locked drawers when not in use, but the workshop was busy and drawers were sometimes left unlatched. I once found Nico’s drawer open after a tool change. I never knew his combination and never saw him lend the key.",
+      "text": "I worked the night shift with Nico for three years. Hardware keys were supposed to stay in locked drawers when not in use, but the workshop was busy and drawers were sometimes left unlatched. I once found Nico's drawer open after a tool change. I never knew his combination and never saw him lend the key.",
       "surface_persuasion": 0.5,
       "true_weight": 0.5,
       "direction": "innocence",
@@ -216,7 +224,7 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "You cannot say Nico's drawer was locked during the theft, can you? No. I saw it open after an earlier tool change, and drawers were sometimes left unlatched. Every maintenance technician knew the loaded-cart weights? And you did not see Nico use his key, terminal, or the cage that night? Correct on both points. I saw none of those things.",
+      "text": "You cannot say Nico's drawer was locked during the theft, can you? No. I saw it open after an earlier tool change, and drawers were sometimes left unlatched. Every maintenance technician knew the loaded-cart weights? Yes. And you did not see Nico use his key, terminal, or the cage that night? No. I saw none of those things.",
       "turns": [
         {
           "speaker": "pc",
@@ -228,11 +236,19 @@
         },
         {
           "speaker": "pc",
-          "text": "Every maintenance technician knew the loaded-cart weights? And you did not see Nico use his key, terminal, or the cage that night?"
+          "text": "Every maintenance technician knew the loaded-cart weights?"
         },
         {
           "speaker": "w4",
-          "text": "Correct on both points. I saw none of those things."
+          "text": "Yes."
+        },
+        {
+          "speaker": "pc",
+          "text": "And you did not see Nico use his key, terminal, or the cage that night?"
+        },
+        {
+          "speaker": "w4",
+          "text": "No. I saw none of those things."
         }
       ],
       "surface_persuasion": 0.6,
@@ -266,7 +282,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "Your physical key changed the threshold and later restored it? That is what the audit says. You normally locked the drawer, and only you knew its combination, but Mira cannot say it was locked that night. Did you authorise anyone to use the key? I normally locked it, and only I knew the combination. Correct. No. I left it in the drawer and made neither change.",
+      "text": "Your physical key changed the threshold and later restored it? That is what the audit says. Only you knew the combination? Yes. I normally locked it. Did you authorise anyone to use the key? No. I left it locked in the drawer and made neither change. Mira cannot say it was locked that night.",
       "turns": [
         {
           "speaker": "pc",
@@ -278,11 +294,19 @@
         },
         {
           "speaker": "pc",
-          "text": "You normally locked the drawer, and only you knew its combination, but Mira cannot say it was locked that night. Did you authorise anyone to use the key?"
+          "text": "Only you knew the combination?"
         },
         {
           "speaker": "w3",
-          "text": "I normally locked it, and only I knew the combination. Correct. No. I left it in the drawer and made neither change."
+          "text": "Yes. I normally locked it."
+        },
+        {
+          "speaker": "pc",
+          "text": "Did you authorise anyone to use the key?"
+        },
+        {
+          "speaker": "w3",
+          "text": "No. I left it locked in the drawer and made neither change. Mira cannot say it was locked that night."
         }
       ],
       "surface_persuasion": 0.45,
@@ -304,7 +328,7 @@
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The Crown retained the burden on identity, taking, and dishonesty; Nico’s inability to identify another user was not evidence of guilt.",
+      "reveal_note": "The prosecution retained the burden on identity, taking, and dishonesty; Nico's inability to identify another user was not evidence of guilt.",
       "tags": [
         "burden",
         "credibility"
@@ -318,7 +342,7 @@
     "b10"
   ],
   "verdict_truth": "Guilty",
-  "twist": "The shared cage code and camera blackout made the theft look like a general night-shift security failure. The harder-to-copy trail sat in the service-door audit: Nico’s physical key set the threshold to his cart’s loaded weight, then restored it after the cage opened. Preparation and concealment appeared in separate records.",
+  "twist": "The shared emergency cage code and camera blackout made the theft look like a general night-shift security failure. The harder-to-copy trail sat in the service-door audit: Nico's physical key set the threshold to his cart's loaded weight, then restored it after the cage opened. Preparation and concealment appeared in separate records.",
   "difficulty_target": 0.66,
   "jury": {
     "jurors": [
@@ -326,7 +350,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Midnight Override, this juror keeps returning to whether the key record proves Nico or only his drawer.",
         "register": "plain",
         "arc": "vibes",
         "initial": {
@@ -395,7 +419,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Midnight Override, this juror keeps returning to the cart-weight match against the sensor setting.",
         "register": "blunt",
         "arc": "steady",
         "initial": {
@@ -412,7 +436,7 @@
             "Juror 3: Setting the threshold just above his loaded cart looks tailored to the way these cells could be moved."
           ],
           "pushback": [
-            "Juror 3: A shared cage code creates noise, but it does not explain the precise sensor change.",
+            "Juror 3: A shared emergency cage code creates noise, but it does not explain the precise sensor change.",
             "Juror 3: If someone borrowed the key, they had to find it, use it twice, and return it unnoticed during the shift."
           ],
           "concede": [
@@ -464,7 +488,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Midnight Override, this juror keeps returning to the prosecution burden on identity.",
         "register": "formal",
         "arc": "principled_holdout",
         "initial": {
@@ -477,7 +501,7 @@
         },
         "lines": {
           "agree": [
-            "Juror 4: Nico does not have to solve the theft. The Crown must prove he was the person using that key."
+            "Juror 4: Nico does not have to solve the theft. The prosecution must prove he was the person using that key."
           ],
           "pushback": [
             "Juror 4: Suspicion is understandable, but the camera was deliberately disabled where four workers held cupboard keys.",
@@ -536,7 +560,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Midnight Override, this juror keeps returning to who could reach the camera cupboard.",
         "register": "formal",
         "arc": "steady",
         "initial": {
@@ -553,13 +577,13 @@
           ],
           "pushback": [
             "Juror 5: I see the preparation, but we still have to decide who possessed the hardware key at 2:31.",
-            "Juror 5: The common cage code weakens identity; it does not erase the tailored sensor setting."
+            "Juror 5: The common emergency cage code weakens identity; it does not erase the tailored sensor setting."
           ],
           "concede": [
             "Juror 5: Nico's account is possible, although nobody confirms he was at the coolant pump."
           ],
           "burden_correct": [
-            "Juror 5: Nico's inability to identify another user is not evidence of guilt. The Crown still carries every element.",
+            "Juror 5: Nico's inability to identify another user is not evidence of guilt. The prosecution still carries every element.",
             "Juror 5: We cannot turn an unexplained audit into a duty for Nico to prove where he was."
           ],
           "final": [
@@ -608,7 +632,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Midnight Override, this juror keeps returning to preparation before the theft and reset afterwards.",
         "register": "plain",
         "arc": "foreperson",
         "initial": {
@@ -629,7 +653,7 @@
             "Juror 6: I keep moving between the key audit and the workshop's loose security. Both facts matter."
           ],
           "concede": [
-            "Juror 6: I accept that the cage code alone proves very little about identity."
+            "Juror 6: I accept that the emergency cage code alone proves very little about identity."
           ],
           "final": [
             "Juror 6: I come back to whether someone could realistically take, use, and return Nico's key unseen."
@@ -665,7 +689,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Midnight Override, this juror keeps returning to loose workshop key storage.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -683,7 +707,7 @@
           ],
           "pushback": [
             "Juror 7: If the audit proves only which key was used, the open drawer remains a real weakness.",
-            "Juror 7: The Crown cannot call possession proved until we deal fairly with the workshop's loose key storage."
+            "Juror 7: The prosecution cannot call possession proved until we deal fairly with the workshop's loose key storage."
           ],
           "concede": [
             "Juror 7: I can change my view, but only because the records connect preparation, timing, and concealment."
@@ -734,7 +758,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Midnight Override, this juror keeps returning to Nico's denial without independent corroboration.",
         "register": "plain",
         "arc": "mind_changer",
         "initial": {
@@ -815,7 +839,7 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Midnight Override, this juror keeps returning to whether an unseen borrower remains reasonably possible.",
         "register": "hesitant",
         "arc": "steady",
         "initial": {
@@ -883,7 +907,7 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Midnight Override, this juror keeps returning to the two uses of Nico's physical key.",
         "register": "blunt",
         "arc": "burden_drifter",
         "initial": {
@@ -903,16 +927,16 @@
           ],
           "burden_drift": [
             "Juror 10: If Nico says someone borrowed his key, I keep thinking he should tell us who.",
-            "Juror 10: I know the Crown carries the burden, but Nico's inability to explain the audit troubles me."
+            "Juror 10: I know the prosecution carries the burden, but Nico's inability to explain the audit troubles me."
           ],
           "concede": [
-            "Juror 10: The cage code widens the field. The hardware-key evidence narrows it again."
+            "Juror 10: The emergency cage code widens the field. The hardware-key evidence narrows it again."
           ],
           "burden_correct": [
             "Juror 10: Nico does not have to identify another thief. The prosecution must still prove he possessed and used the key."
           ],
           "final": [
-            "Juror 10: I have to base my vote on what the Crown proved, not on answers Nico could not provide."
+            "Juror 10: I have to base my vote on what the prosecution proved, not on answers Nico could not provide."
           ]
         },
         "reaction_rules": [
@@ -957,7 +981,7 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Midnight Override, this juror keeps returning to the shared emergency cage code as noise, not identity.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -971,7 +995,7 @@
         "lines": {
           "agree": [
             "Juror 11: The threshold change was tailored to the maintenance cart and restored after the cells disappeared.",
-            "Juror 11: That sequence supports guilt, though the Crown still must connect Nico personally to his key."
+            "Juror 11: That sequence supports guilt, though the prosecution still must connect Nico personally to his key."
           ],
           "pushback": [
             "Juror 11: The shared code gives several people cage access. The key audit is where identity must be proved.",
@@ -1026,7 +1050,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Midnight Override, this juror keeps returning to the shared supervisor code.",
+        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Midnight Override, this juror keeps returning to one coherent timeline of breaker, cage, cart, and key.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -1039,7 +1063,7 @@
         },
         "lines": {
           "agree": [
-            "Juror 12: The weight-matched threshold is persuasive, but the Crown still bears the burden on who set it.",
+            "Juror 12: The weight-matched threshold is persuasive, but the prosecution still bears the burden on who set it.",
             "Juror 12: The key events fit a deliberate method. We must still decide whether Nico or a borrower carried it out."
           ],
           "pushback": [

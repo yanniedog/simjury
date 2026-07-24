@@ -6,11 +6,11 @@
   "setting": "A post-production studio, a cloned manager's voice, and a late-night audio export in 2026.",
   "charge": "Using synthetic audio to extort money from a colleague",
   "elements": [
-    "Evan made or participated in making and sending the synthetic audio to Nima.",
+    "Evan made or participated in making the synthetic audio and causing it to be delivered to Nima.",
     "The message demanded money and threatened harm to Nima's employment if the demand was refused or reported.",
     "Evan acted deliberately and dishonestly, intending to obtain the money."
   ],
-  "hook": "The voice on the call belongs to a manager. The fear in it belongs to a colleague. The breaths belong to someone else.",
+  "hook": "The voice in the message belongs to a manager. The fear in it belongs to a colleague. The breaths belong to someone else.",
   "accused": {
     "cast_id": "w3",
     "human": "Evan Rusk records local theatre and has spent years teaching free sound workshops to young performers.",
@@ -20,17 +20,17 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The manager's voice was synthetic, but the prosecution does not ask you to identify its maker by sound alone. Beneath that voice were Evan's breath track and whispered count. On Evan's laptop, temporary files preserve those layers in order, and his hardware key authenticated the late-night export. The prosecution says that connected record proves a deliberate extortion."
+        "text": "The manager's voice was synthetic, but the prosecution does not ask you to identify its maker by sound alone. Beneath that voice were Evan's breath track and whispered count. On Evan's laptop, temporary files left by the editing software preserve those layers in order — cloned speech on top, Evan's breath-and-count underneath, masking tone last — and his physical USB security key unlocked the late-night export. The prosecution says that connected record proves a deliberate extortion."
       },
       "defence": {
         "speaker": "dc",
-        "text": "Public interviews supplied the manager's voice, while students and contractors used the same microphones, laptop, and sample drives during Evan's workshops. A hardware-key record identifies a device, not the hand holding it. The defence says the studio's loose access allowed someone else to assemble familiar material and leave Evan carrying the suspicion."
+        "text": "Public interviews supplied the manager's voice, while students and contractors used the same microphones, laptop, and sample drives during Evan's workshops. A hardware-key record identifies a device — logged as a device ID, not a face or fingerprint — not the hand holding it. The defence says the studio's loose access allowed someone else to assemble familiar material and leave Evan carrying the suspicion."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Anyone could copy the manager's public voice. The harder question is who arranged the hidden layers and exported them. Temporary files on Evan's laptop contain his breath track, the cloned speech, and the masking tone in sequence. His hardware key opened that session and exported it while his badge remained inside. The prosecution says those independent records prove authorship and intent."
+        "text": "Anyone could copy the manager's public voice. The harder question is who arranged the hidden layers and exported them. Temporary files on Evan's laptop contain the cloned speech, his breath-and-count track, and the masking tone — a short beep covering each cut — in that sequence. His hardware key unlocked the session that exported the file while his staff badge still showed him as inside the studio. The prosecution says those independent records prove authorship and intent."
       },
       "defence": {
         "speaker": "dc",
@@ -61,7 +61,7 @@
     {
       "id": "w1",
       "name": "Nima Cor",
-      "role_label": "extortion recipient",
+      "role_label": "colleague who received the threat",
       "side": "prosecution"
     },
     {
@@ -89,7 +89,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "The message used my manager's voice and repeated a mistake from my performance review. It demanded twelve thousand dollars within two days. If I reported it, the voice said my job would disappear and the review would be sent to future employers. I saved the audio and payment instructions before speaking to anyone at the studio.",
+      "text": "The message arrived as an audio file in my work inbox with payment instructions attached. It used my manager's voice and repeated a mistake from my performance review. It demanded twelve thousand dollars within two days. If I reported it, the voice said my job would disappear and the review would be sent to future employers. I saved the audio and payment instructions before speaking to anyone at the studio.",
       "surface_persuasion": 0.65,
       "true_weight": 0.55,
       "direction": "guilt",
@@ -105,12 +105,12 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "I examined the recording and the studio devices. The manager's speech was generated from public interviews, so that voice does not identify its maker. Beneath it were four breaths and a whispered count. Their microphone signature and room reflection matched an unedited tutorial recorded on Evan's laptop earlier that evening.",
+      "text": "I examined the recording and the studio devices. The manager's speech was generated from public interviews, so that voice does not identify its maker. Beneath it were four breaths and a quiet 'one, two' count before speaking. The way the microphone and room sound match a practice recording Evan made on that laptop the same evening — including that whispered count.",
       "surface_persuasion": 0.6,
       "true_weight": 0.4,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "This witness fixed the practical setting before suspicion centred on Evan Rusk, giving the room context for the records that followed.",
+      "reveal_note": "This witness showed the cloned speech alone does not name a maker, then tied the hidden breaths to a tutorial on Evan's laptop — shifting the fight to who used that machine.",
       "tags": [
         "method",
         "credibility"
@@ -120,7 +120,7 @@
       "id": "b3",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit three is the voice-source report. Every phrase spoken in the manager's cloned voice came from six public interviews. The software used to assemble it is freely available, and no hidden marker identifies a particular user. The report therefore links the recording to a public source library, not to Evan or any other individual.",
+      "text": "Exhibit one is the voice-source report. Every phrase spoken in the manager's cloned voice came from six public interviews. The software used to assemble it is freely available, and no hidden marker identifies a particular user. The report therefore links the recording to a public source library, not to Evan or any other individual.",
       "surface_persuasion": 0.8,
       "true_weight": 0.2,
       "direction": "innocence",
@@ -169,12 +169,12 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit five is the recovered render history from Evan's laptop. Although the project folder was deleted, temporary files preserve its layer order: cloned speech, the matching breath-and-count track, then a tone masking each edit. Evan's physical key authenticated the final export. It matches Nima's file exactly, including a compression error absent from every earlier workshop recording.",
+      "text": "Exhibit two recovers temporary editing files from Evan's laptop. Layer order: cloned speech on top, breath-and-count underneath, then a masking tone — a short beep covering each cut. Evan's USB security key unlocked the export at the same minute the file reached Nima's inbox. It matches Nima's file, including a compression error — a unique digital glitch shared only by this finished file and the laptop leftovers.",
       "surface_persuasion": 0.55,
       "true_weight": 0.9,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The strongest prosecution point was this: the hidden breaths and count matched Evan’s microphone and room, while his hardware key unlocked and exported the final audio.",
+      "reveal_note": "The strongest prosecution point was this: the hidden breaths and count matched Evan's microphone and room, while his hardware key unlocked and exported the final audio.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -201,12 +201,12 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "examination",
-      "text": "I manage the studio's computers and access system. Three contractor badges remained active until midnight, and the console bay had no camera. Sample drives containing voices, room tones, and tutorials sat in open bays. Hardware keys did not require a PIN. Our log records a key's certificate, but it cannot show which authorised person was holding that key.",
+      "text": "I manage the studio's computers and access system. Three contractor badges remained active until midnight, and the console bay had no camera. Sample drives containing voices, room tones, and tutorials sat in open bays. Hardware keys did not require a PIN. Our log records a key's certificate — a device ID for the physical USB security key — but it cannot show which authorised person was holding that key.",
       "surface_persuasion": 0.6,
       "true_weight": 0.3,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "This testimony tested whether the system record described a person’s conduct or only an event produced around them.",
+      "reveal_note": "This testimony tested whether the system record described a person's conduct or only an event produced around them.",
       "tags": [
         "credibility",
         "motive"
@@ -217,7 +217,7 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "The recovered project was on your laptop, with breaths and a whispered count from your tutorial? Yes. That is what the examination found. Your key opened, exported, and then deleted that project while your badge was still inside. Can you identify anyone else using the laptop then? No. I was packing equipment in another room and saw nobody at the console.",
+      "text": "The recovered project was on your laptop, with breaths and a whispered count from your tutorial? Yes. That is what the examination found. Your key unlocked the session that exported the project and then deleted it, while your badge still showed you as inside the studio. Can you identify anyone else using the laptop then? No. I was packing equipment in another room and saw nobody at the console.",
       "turns": [
         {
           "speaker": "pc",
@@ -229,7 +229,7 @@
         },
         {
           "speaker": "pc",
-          "text": "Your key opened, exported, and then deleted that project while your badge was still inside. Can you identify anyone else using the laptop then?"
+          "text": "Your key unlocked the session that exported the project and then deleted it, while your badge still showed you as inside the studio. Can you identify anyone else using the laptop then?"
         },
         {
           "speaker": "w3",
@@ -251,11 +251,11 @@
       "kind": "witness",
       "speaker": "w4",
       "mode": "cross",
-      "text": "Only Evan's key authenticated the export while his badge was still inside? Yes. Three contractor badges also remained active, the console bay had no camera, and someone could copy workshop files without another access record. So the key log cannot tell this jury who held the key? Correct to each point. It records no face, fingerprint, or PIN.",
+      "text": "Only Evan's key authenticated the export while his badge still showed him as inside the studio? Yes. Three contractor badges also remained active, the console bay had no camera, and someone could copy workshop files without another access record. So the key log cannot tell this jury who held the key? Yes — to all of that. The log has no face, fingerprint, or PIN.",
       "turns": [
         {
           "speaker": "pc",
-          "text": "Only Evan's key authenticated the export while his badge was still inside?"
+          "text": "Only Evan's key authenticated the export while his badge still showed him as inside the studio?"
         },
         {
           "speaker": "w4",
@@ -267,14 +267,14 @@
         },
         {
           "speaker": "w4",
-          "text": "Correct to each point. It records no face, fingerprint, or PIN."
+          "text": "Yes — to all of that. The log has no face, fingerprint, or PIN."
         }
       ],
       "surface_persuasion": 0.55,
       "true_weight": 0.2,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The final witness supplied a separate check on the timeline, reducing the risk that one attractive clue would decide the case alone.",
+      "reveal_note": "This cross locked in both points: only Evan's key unlocked the export, and the key log still cannot name who held it.",
       "tags": [
         "credibility",
         "motive"
@@ -284,7 +284,7 @@
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "Do not research voice cloning, the studio, or anyone involved. The prosecution must make you sure Evan participated in making and sending the message, knowingly demanded money through a threat to Nima's employment, and intended to obtain that money dishonestly. A device record is not automatically a person. Evan does not have to identify another user or explain every suspicious file.",
+      "text": "Do not research voice cloning, the studio, or anyone involved. The prosecution must make you sure Evan participated in making the message and causing it to be delivered, knowingly demanded money through a threat to Nima's employment, and intended to obtain that money dishonestly. A device record is not automatically a person. Evan does not have to identify another user or explain every suspicious file.",
       "surface_persuasion": 0.40700000000000003,
       "true_weight": 0.5,
       "direction": "innocence",
@@ -303,7 +303,7 @@
     "b10"
   ],
   "verdict_truth": "Guilty",
-  "twist": "The manager's cloned voice was the loudest clue and the least identifying: every phrase came from public interviews. The more specific trail was hidden underneath. Evan's breath-and-count track sat inside a recovered project on his laptop, followed by the final export and deletion authenticated with his physical key while his badge remained inside.",
+  "twist": "The manager's cloned voice was the loudest clue and the least identifying: every phrase came from public interviews. The more specific trail was hidden underneath. On Evan's laptop, temporary files preserved cloned speech on top, his breath-and-count track underneath, and a masking tone last, then a final export unlocked with his physical key while his badge still showed him as inside the studio.",
   "difficulty_target": 0.5,
   "jury": {
     "jurors": [
@@ -311,7 +311,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
+        "persona": "A cautious holdout who wants the decisive record stated without exaggeration. In The Borrowed Voice, this juror keeps returning to the open console and active contractor badges.",
         "register": "plain",
         "arc": "vibes",
         "initial": {
@@ -380,7 +380,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
+        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof. In The Borrowed Voice, this juror keeps returning to Nima's fear without letting it replace authorship proof.",
         "register": "blunt",
         "arc": "steady",
         "initial": {
@@ -449,7 +449,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
+        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation. In The Borrowed Voice, this juror keeps returning to the prosecution burden on who held the key.",
         "register": "formal",
         "arc": "principled_holdout",
         "initial": {
@@ -462,7 +462,7 @@
         },
         "lines": {
           "agree": [
-            "Juror 4: Evan need not identify the other user. The prosecution must prove he made and sent the threat."
+            "Juror 4: Evan need not identify the other user. The prosecution must prove he made the threat and caused it to be delivered."
           ],
           "pushback": [
             "Juror 4: The log has no face, fingerprint, or PIN. We cannot silently add a person to it.",
@@ -521,7 +521,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
+        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained. In The Borrowed Voice, this juror keeps returning to layer order in the recovered project.",
         "register": "formal",
         "arc": "steady",
         "initial": {
@@ -534,7 +534,7 @@
         },
         "lines": {
           "agree": [
-            "Juror 5: Layering the breath track, cloned speech, and masking tone shows deliberate construction, not an accidental export."
+            "Juror 5: Layering cloned speech, the breath track, and masking tone shows deliberate construction, not an accidental export."
           ],
           "pushback": [
             "Juror 5: The method is clear. The harder question is whether Evan or another authorised person carried it out.",
@@ -593,7 +593,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
+        "persona": "A steady foreperson who makes the room distinguish suspicion from proof. In The Borrowed Voice, this juror keeps returning to the compression match between laptop leftovers and Nima's file.",
         "register": "plain",
         "arc": "foreperson",
         "initial": {
@@ -650,7 +650,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
+        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove identity. In The Borrowed Voice, this juror keeps returning to temporary files versus the deleted project folder.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -719,7 +719,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
+        "persona": "A practical juror who tests digital records against ordinary workplace habits. In The Borrowed Voice, this juror keeps returning to whether shared workshop access can explain every Evan-specific record.",
         "register": "plain",
         "arc": "mind_changer",
         "initial": {
@@ -800,7 +800,7 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
+        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear. In The Borrowed Voice, this juror keeps returning to Evan's denial against the export and deletion.",
         "register": "hesitant",
         "arc": "steady",
         "initial": {
@@ -868,7 +868,7 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
+        "persona": "A rule-focused juror who brings the room back to the prosecution burden. In The Borrowed Voice, this juror keeps returning to key-and-badge timing beside the delivered threat.",
         "register": "blunt",
         "arc": "burden_drifter",
         "initial": {
@@ -888,13 +888,13 @@
           ],
           "burden_drift": [
             "Juror 10: If Evan says another person used his key and laptop, I keep wanting him to say who.",
-            "Juror 10: Evan's inability to explain the deleted project troubles me, even though I know the Crown carries the burden."
+            "Juror 10: Evan's inability to explain the deleted project troubles me, even though I know the prosecution carries the burden."
           ],
           "concede": [
             "Juror 10: The lack of a camera leaves an access gap that the key certificate cannot close by itself."
           ],
           "burden_correct": [
-            "Juror 10: Evan does not have to name another user. The prosecution must prove he made and sent the threat."
+            "Juror 10: Evan does not have to name another user. The prosecution must prove he made the threat and caused it to be delivered."
           ],
           "final": [
             "Juror 10: My vote must rest on the prosecution's proof, not on answers Evan could not provide."
@@ -942,7 +942,7 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
+        "persona": "A patient listener who changes position when a timeline finally accounts for every event. In The Borrowed Voice, this juror keeps returning to the late-night session from render to inbox delivery.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -1011,7 +1011,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Borrowed Voice, this juror keeps returning to the synthetic recording that resembled the manager.",
+        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides. In The Borrowed Voice, this juror keeps returning to separating the public voice from the hardware-key record.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -1024,7 +1024,7 @@
         },
         "lines": {
           "agree": [
-            "Juror 12: The recovered project shows a deliberate method, but the Crown still must prove Evan was its author.",
+            "Juror 12: The recovered project shows a deliberate method, but the prosecution still must prove Evan was its author.",
             "Juror 12: The key and badge support identity; the public voice does not. We should keep those propositions separate."
           ],
           "pushback": [

@@ -3,13 +3,13 @@
   "publish_date": "2026-08-06",
   "label": "fiction",
   "title": "The Edited Minute",
-  "setting": "a workplace safety inquiry, an automated transcription suite, and a disputed sixty-second audio gap in the present day",
+  "setting": "a workplace safety inquiry, an automated transcription suite, and a disputed sixty-two-second audio gap in the present day",
   "charge": "fabricating evidence for an official inquiry",
   "elements": [
     "Evidence was knowingly altered or fabricated",
     "The accused intended the false material to mislead the inquiry"
   ],
-  "hook": "A safety interview loses sixty seconds, and the edit history carries recorder Leni Vos's initials. The missing minute protected management. The raw waveform says nobody deleted it.",
+  "hook": "A safety interview loses sixty-two seconds, and the edit history carries recorder Leni Vos's initials. The missing minute protected management. The raw waveform says nobody deleted it.",
   "accused": {
     "cast_id": "acc",
     "human": "Leni Vos, 31, records workplace safety interviews while studying part-time and supports a grandparent with declining mobility.",
@@ -19,21 +19,21 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "A damaging answer disappeared from the official transcript, the edit history bears Leni Vos's initials, and management praised the clean version before promotion decisions. Leni controlled the recording and delivered the final file. The defence will blame automation, but software does not choose which minute protects the people who approve your contract."
+        "text": "A damaging answer disappeared from the official transcript, and the edit history bears Leni Vos's initials. Leni controlled the recording and delivered the final file. The defence will blame automation, but software does not choose which minute protects the people who approve your contract."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The audio was never deleted. A silence-removal model collapsed a low-volume answer because two microphones were out of phase, and the suite wrote Leni's initials to every automatic cleanup under her session. The untouched recorder card still contains the full minute. A bad default created a misleading transcript; intent requires a human decision the logs do not show."
+        "text": "The audio was never deleted. Two microphones cancelled each other out, so the software treated a spoken answer as silence and deleted that stretch — what the suite calls a silence-removal model when inputs are out of phase. It wrote Leni's initials to every automatic cleanup under her session. The untouched recorder card still contains the full minute. A bad default created a misleading transcript; intent requires a human decision the logs do not show."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Leni heard the answer live, received the rough-section warning, and later certified a transcript that omitted it. Her message that the section was handled came before release, not after the complaint. The automatic process may have made the first cut, but the prosecution says Leni knowingly adopted that altered record when she reviewed and issued it as complete."
+        "text": "Leni heard the answer live, wrote that a rough section was handled, and later certified a transcript that omitted it. Her message that the section was handled came before release, not after the complaint. The automatic process may have made the first cut, but the prosecution says Leni knowingly adopted that altered record when she reviewed and issued it as complete."
       },
       "defence": {
         "speaker": "dc",
-        "text": "Negligence is not fabrication. Handled referred to noise markers across the file, and the review screen showed continuous time because the suite renumbered automatically. The raw card, preserved by Leni herself, contains the answer and exposes the defect. A person intending concealment does not archive the unedited proof beside the final file."
+        "text": "Negligence is not fabrication. 'Handled' referred to noise markers across the file, and the review screen showed continuous time because the suite renumbered automatically. The raw card, preserved by Leni herself, contains the answer and exposes the defect. A person intending concealment does not archive the unedited proof beside the final file."
       }
     }
   },
@@ -87,12 +87,12 @@
       "id": "b1",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit one is the edit history. At 16:08, an entry under initials LV removes sixty-two seconds labelled low-confidence speech. Leni's initials appear beside every manual edit she made that afternoon. The missing answer criticised management, so the record looks like a precise, self-authored deletion with an obvious beneficiary. The initials personalized an automated entry without distinguishing a command from a system action.",
+      "text": "Exhibit one is the edit history. At 16:08, an entry under initials LV removes sixty-two seconds labelled low-confidence speech. Leni's initials appear beside every manual edit she made that afternoon. The missing answer criticised management, so the record looks like a precise deletion that appears as if she made it herself, with an obvious beneficiary.",
       "surface_persuasion": 0.84,
       "true_weight": 0.18,
       "direction": "guilt",
       "reveal_stamp": "misleading",
-      "reveal_note": "The apparent shortcut in the edit history collapsed when the original source was compared.",
+      "reveal_note": "The edit history looked like a shortcut to guilt until the original recorder card was compared.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -103,12 +103,12 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "I commissioned the interview and later discovered the transcript jumped from a question to the next topic. Leni had sole responsibility for review and wrote rough section handled in a message. Management had complained about the witness before. When I saw her initials on the deletion, I believed the omission was intentional.",
+      "text": "I commissioned the interview and later discovered the transcript jumped from a question to the next topic. Leni had sole responsibility for review and wrote 'rough section handled' in a message. Management had complained about the witness before. When I saw her initials on the deletion, I believed the omission was intentional.",
       "surface_persuasion": 0.6,
       "true_weight": 0.32,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "commissioned the interview and later discovered the transcript jumped from a question to the next topic helped test a witness account while leaving the central issue open.",
+      "reveal_note": "The director discovered the transcript jumped from a question to praise — that gap is the missing minute.",
       "tags": [
         "digital_forensics",
         "credibility"
@@ -150,7 +150,7 @@
       "true_weight": 0.55,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The wider sequence qualified what the same initials appear beside automatic punctuation changes could fairly support.",
+      "reveal_note": "The same initials also appear beside automatic punctuation changes, so initials alone do not prove a manual cut.",
       "tags": [
         "procedure",
         "credibility"
@@ -160,12 +160,12 @@
       "id": "b4",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The prosecution tenders Leni's ready-for-release marker. She clicked it twenty-three minutes after processing ended, and the interface displayed a continuous numbered transcript with no blank page. The act shows responsibility for delivery, but not necessarily awareness that the software compressed original time and hid a missing interval. Certification proved responsibility for review, but not knowledge of the hidden gap.",
+      "text": "The prosecution offers Leni's ready-for-release marker. She marked the file ready for release twenty-three minutes after processing ended. The screen showed a continuous numbered transcript with no blank. She certified that file as complete and sent it out as the official record of the interview.",
       "surface_persuasion": 0.7899999999999999,
       "true_weight": 0.22,
       "direction": "guilt",
       "reveal_stamp": "misleading",
-      "reveal_note": "leni's ready-for-release marker looked conclusive until its hidden assumption was tested.",
+      "reveal_note": "The ready-for-release marker showed she certified delivery; later evidence tested whether she knew of the gap.",
       "tags": [
         "digital_forensics",
         "motive"
@@ -176,12 +176,12 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "I examined the exported transcript and the untouched recorder card. The card contains the entire answer. On the processed track, two microphones carry the same voice with reversed phase, making speech energy appear close to silence. The suite's cleanup model then collapsed that section and renumbered every following timestamp. The recovered audio established preservation and mechanism before anyone inferred motive.",
+      "text": "I examined the exported transcript and the untouched recorder card. The card contains the entire answer. On the processed track, two microphones cancelled each other — reversed phase — so speech energy looked like silence. The suite's cleanup model then collapsed that section and renumbered every following timestamp. So the answer was on the card the whole time; the processed file is what lost it.",
       "surface_persuasion": 0.66,
       "true_weight": 0.76,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "The corroboration behind examined the exported transcript and the untouched recorder card carried genuine weight on timing, control, or method.",
+      "reveal_note": "Comparing the exported transcript with the untouched recorder card showed where the minute was lost.",
       "tags": [
         "timeline",
         "digital_forensics"
@@ -191,12 +191,12 @@
       "id": "b6",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit six is the automatic-job log stored outside the project history. It shows silence-removal model SR-4 created the sixty-two-second cut at 16:08 without a user command. The job inherited Leni's profile initials because she launched the batch, while the action field explicitly reads automated threshold event rather than manual range deletion.",
+      "text": "Exhibit two is the automatic-job log stored outside the project history. It shows silence-removal model SR-4 created the sixty-two-second cut at 16:08 without a user command. The job inherited Leni's profile initials because she launched the batch, while the action field explicitly reads automated threshold event rather than manual range deletion.",
       "surface_persuasion": 0.7000000000000001,
       "true_weight": 0.8300000000000001,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "the automatic-job log stored outside the project history survived cross-examination and connected evidence from separate sources.",
+      "reveal_note": "The automatic-job log stored outside the project history labels a cleanup, not a manual cut.",
       "tags": [
         "procedure",
         "timeline"
@@ -238,7 +238,7 @@
       "true_weight": 0.55,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The wider sequence qualified what the software concealed the time gap on the transcript screen could fairly support.",
+      "reveal_note": "The software hid the time gap on the transcript screen, which is why a clean review could miss it.",
       "tags": [
         "procedure",
         "procedure"
@@ -254,7 +254,7 @@
       "true_weight": 0.48,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "gave the missing answer and assumed it had been removed because management disliked it added context without resolving identity or intent.",
+      "reveal_note": "The witness gave the missing answer and assumed it was removed because management disliked it — motive inferred, not proved.",
       "tags": [
         "procedure",
         "credibility"
@@ -296,7 +296,7 @@
       "true_weight": 0.3,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The limits surrounding leni later sent you only the shortened transcript kept it from deciding the charge alone.",
+      "reveal_note": "Sending only the shortened transcript later does not by itself prove Leni knew the minute was missing when she certified the file.",
       "tags": [
         "credibility",
         "digital_forensics"
@@ -306,12 +306,12 @@
       "id": "b11",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit nine is the evidence archive created before processing began. Leni copied the recorder card, generated a checksum, and locked it against changes under the inquiry's retention rule. The checksum still matches. That preserved original made the missing answer recoverable and would inevitably expose any deliberate attempt to conceal it.",
+      "text": "Exhibit three is the evidence archive created before processing began. Leni copied the recorder card, created a digital fingerprint called a checksum, and locked the copy. That fingerprint still matches, so the original was not swapped later. The preserved original made the missing answer recoverable.",
       "surface_persuasion": 0.74,
       "true_weight": 0.9,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "Independent records confirmed what the evidence archive created before processing began contributed to the final reconstruction.",
+      "reveal_note": "Before processing, Leni locked a checksummed copy of the card; the fingerprint still matches.",
       "tags": [
         "procedure",
         "timeline",
@@ -322,12 +322,12 @@
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The judge directs you that Leni need not prove the software acted automatically or explain why review missed the gap. The prosecution must establish knowing fabrication and intent to mislead beyond reasonable doubt. Distinguish a processing event from conscious adoption of an altered record, and do not investigate the inquiry, software, employer, or witnesses beyond the exhibits admitted here.",
+      "text": "The judge directs you that Leni need not prove the software acted automatically or explain why review missed the gap. The prosecution must establish knowing fabrication and intent to mislead beyond reasonable doubt. Distinguish a processing event from knowingly accepting a false version as the official record, and do not investigate the inquiry, software, employer, or witnesses beyond the exhibits admitted here.",
       "surface_persuasion": 0.45,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance helped test a witness account while leaving the central issue open.",
+      "reveal_note": "The judge reminded the jury that the accused need not prove an alternative story.",
       "tags": [
         "burden",
         "procedure"
@@ -349,7 +349,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A retiree who wants testimony anchored to something independent, especially when weighing operator initials versus an automatic process.",
+        "persona": "A retiree who wants testimony anchored to something independent.",
         "register": "hesitant",
         "arc": "steady",
         "initial": {
@@ -363,15 +363,15 @@
         },
         "lines": {
           "agree": [
-            "For me, the anchor is the recorder original, automatic-job log, and preserved checksum; it answers the weakness that first divided this room.",
-            "In my notes at seat 2, the recorder original, automatic-job log, and preserved checksum agrees across sources that did not depend on one another."
+            "For me, the anchor is the recorder original, automatic-job log, and preserved checksum — they answer the weakness that first divided this room.",
+            "In my notes at seat 2, the recorder original, automatic-job log, and preserved checksum agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I will not let the initials and release marker decide more than its source can support.",
-            "I need the chronology laid out before I choose between those accounts. Here that means operator initials against an automatic process."
+            "I will not let the initials and release marker decide more than their source can support.",
+            "Two records agreeing matters more to me than one record sounding certain. Here that means operator initials against an automatic process."
           ],
           "concede": [
-            "I admit the initials and release marker, especially before the underlying record is opened."
+            "I admit the initials and release marker looked damning at first, especially before the underlying record was opened."
           ],
           "final": [
             "My verdict rests on the recorder original, automatic-job log, and preserved checksum, with the burden left where the judge placed it."
@@ -419,7 +419,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A delivery worker who focuses on custody and physical sequence, especially when weighing operator initials versus an automatic process.",
+        "persona": "A delivery worker who focuses on custody and physical sequence.",
         "register": "blunt",
         "arc": "mind_changer",
         "initial": {
@@ -433,15 +433,15 @@
         },
         "lines": {
           "agree": [
-            "I move because the recorder original, automatic-job log, and preserved checksum; it answers the weakness that first divided this room.",
-            "In my notes at seat 3, the recorder original, automatic-job log, and preserved checksum agrees across sources that did not depend on one another."
+            "I move because of the recorder original, automatic-job log, and preserved checksum — they answer the weakness that first divided this room.",
+            "In my notes at seat 3, the recorder original, automatic-job log, and preserved checksum agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I keep separating the initials and release marker decide more than its source can support.",
-            "Two records agreeing matters more to me than one record sounding certain. Here that means operator initials against an automatic process."
+            "I keep separating the initials and release marker from what they can actually prove.",
+            "I am testing which side can explain the missing link without assumption. Here that means operator initials against an automatic process."
           ],
           "concede": [
-            "I can see why the initials and release marker, especially before the underlying record is opened."
+            "I can see why the initials and release marker swayed people, especially before the underlying record was opened."
           ],
           "final": [
             "I finish with the recorder original, automatic-job log, and preserved checksum, with the burden left where the judge placed it."
@@ -489,7 +489,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps, especially when weighing operator initials versus an automatic process.",
+        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps.",
         "register": "plain",
         "arc": "principled_holdout",
         "initial": {
@@ -503,21 +503,21 @@
         },
         "lines": {
           "agree": [
-            "The part I cannot explain away is the recorder original, automatic-job log, and preserved checksum; it answers the weakness that first divided this room.",
-            "In my notes at seat 4, the recorder original, automatic-job log, and preserved checksum agrees across sources that did not depend on one another."
+            "The part I cannot explain away is the recorder original, automatic-job log, and preserved checksum — they answer the weakness that first divided this room.",
+            "In my notes at seat 4, the recorder original, automatic-job log, and preserved checksum agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "Before I rely on the initials and release marker decide more than its source can support.",
-            "I am testing which side can explain the missing link without assumption. Here that means operator initials against an automatic process."
+            "Before I rely on the initials and release marker, I need the underlying record opened.",
+            "The burden makes me separate a possible story from a proved one. Here that means operator initials against an automatic process."
           ],
           "concede": [
-            "At first I gave too much weight to the initials and release marker, especially before the underlying record is opened."
+            "At first I gave too much weight to the initials and release marker, especially before the underlying record was opened."
           ],
           "final": [
             "The deciding chain for me is the recorder original, automatic-job log, and preserved checksum, with the burden left where the judge placed it."
           ],
           "holdout": [
-            "I will hold on operator initials versus an automatic process until evidence, rather than consensus, answers it; from seat 4, I relate it to operator initials against an automatic process."
+            "I will hold on operator initials versus an automatic process until independent records — not pressure from the room — answer it."
           ]
         },
         "reaction_rules": [
@@ -562,7 +562,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A blunt sceptic who will not turn probability into certainty, especially when weighing operator initials versus an automatic process.",
+        "persona": "A blunt sceptic who will not turn probability into certainty.",
         "register": "formal",
         "arc": "vibes",
         "initial": {
@@ -575,15 +575,15 @@
         },
         "lines": {
           "agree": [
-            "I checked the sequence against the recorder original, automatic-job log, and preserved checksum; it answers the weakness that first divided this room.",
-            "In my notes at seat 5, the recorder original, automatic-job log, and preserved checksum agrees across sources that did not depend on one another."
+            "I checked the sequence against the recorder original, automatic-job log, and preserved checksum — they answer the weakness that first divided this room.",
+            "In my notes at seat 5, the recorder original, automatic-job log, and preserved checksum agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I hear the force of the initials and release marker decide more than its source can support.",
-            "The burden makes me separate a possible story from a proved one. Here that means operator initials against an automatic process."
+            "I hear the force of the initials and release marker, but I will not let them decide more than their source can support.",
+            "I need the chronology laid out before I choose between those accounts. Here that means operator initials against an automatic process."
           ],
           "concede": [
-            "I concede the surface force of the initials and release marker, especially before the underlying record is opened."
+            "I concede the surface force of the initials and release marker, especially before the underlying record was opened."
           ],
           "final": [
             "I return at the end to the recorder original, automatic-job log, and preserved checksum, with the burden left where the judge placed it."
@@ -631,7 +631,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A shift worker who notices breaks in chronology, especially when weighing operator initials versus an automatic process.",
+        "persona": "A shift worker who notices breaks in chronology.",
         "register": "hesitant",
         "arc": "vibes",
         "initial": {
@@ -645,15 +645,15 @@
         },
         "lines": {
           "agree": [
-            "What changes my vote is the recorder original, automatic-job log, and preserved checksum; it answers the weakness that first divided this room.",
-            "In my notes at seat 6, the recorder original, automatic-job log, and preserved checksum agrees across sources that did not depend on one another."
+            "What changes my vote is the recorder original, automatic-job log, and preserved checksum — they answer the weakness that first divided this room.",
+            "In my notes at seat 6, the recorder original, automatic-job log, and preserved checksum agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I am not treating the initials and release marker decide more than its source can support.",
+            "I am not treating the initials and release marker as proving more than their source can support.",
             "I want the source data before I accept the label attached to it. Here that means operator initials against an automatic process."
           ],
           "concede": [
-            "I was initially moved by the initials and release marker, especially before the underlying record is opened."
+            "I was initially moved by the initials and release marker, especially before the underlying record was opened."
           ],
           "final": [
             "My final vote follows the recorder original, automatic-job log, and preserved checksum, with the burden left where the judge placed it."
@@ -701,7 +701,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A bookkeeper who tests whether separate records truly reconcile, especially when weighing operator initials versus an automatic process.",
+        "persona": "A bookkeeper who tests whether separate records truly reconcile.",
         "register": "blunt",
         "arc": "steady",
         "initial": {
@@ -714,15 +714,15 @@
         },
         "lines": {
           "agree": [
-            "I trust the recorder original, automatic-job log, and preserved checksum; it answers the weakness that first divided this room.",
-            "In my notes at seat 7, the recorder original, automatic-job log, and preserved checksum agrees across sources that did not depend on one another."
+            "I trust the recorder original, automatic-job log, and preserved checksum — they answer the weakness that first divided this room.",
+            "In my notes at seat 7, the recorder original, automatic-job log, and preserved checksum agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "My problem with the initials and release marker decide more than its source can support.",
+            "My problem is letting the initials and release marker decide more than their source can support.",
             "A vivid clue will not move me unless the later sequence supports it. Here that means operator initials against an automatic process."
           ],
           "concede": [
-            "The opposing account fairly points to the initials and release marker, especially before the underlying record is opened."
+            "The opposing account fairly points to the initials and release marker, especially before the underlying record was opened."
           ],
           "final": [
             "I resolve the doubt through the recorder original, automatic-job log, and preserved checksum, with the burden left where the judge placed it."
@@ -770,7 +770,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A caregiver who is alert to pressure and unequal power, especially when weighing operator initials versus an automatic process.",
+        "persona": "A caregiver who is alert to pressure and unequal power.",
         "register": "plain",
         "arc": "principled_holdout",
         "initial": {
@@ -784,21 +784,21 @@
         },
         "lines": {
           "agree": [
-            "The room should start with the recorder original, automatic-job log, and preserved checksum; it answers the weakness that first divided this room.",
-            "In my notes at seat 8, the recorder original, automatic-job log, and preserved checksum agrees across sources that did not depend on one another."
+            "The room should start with the recorder original, automatic-job log, and preserved checksum — they answer the weakness that first divided this room.",
+            "In my notes at seat 8, the recorder original, automatic-job log, and preserved checksum agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "We should test the initials and release marker decide more than its source can support.",
+            "We should test whether the initials and release marker can decide more than their source can support.",
             "I am asking whether the physical evidence and the testimony converge. Here that means operator initials against an automatic process."
           ],
           "concede": [
-            "I cannot dismiss the initials and release marker, especially before the underlying record is opened."
+            "I cannot dismiss the initials and release marker, especially before the underlying record was opened."
           ],
           "final": [
             "The complete record leaves me with the recorder original, automatic-job log, and preserved checksum, with the burden left where the judge placed it."
           ],
           "holdout": [
-            "I will hold on operator initials versus an automatic process until evidence, rather than consensus, answers it; from seat 8, I relate it to operator initials against an automatic process."
+            "I will hold on operator initials versus an automatic process until independent records — not pressure from the room — answer it."
           ]
         },
         "reaction_rules": [
@@ -843,7 +843,7 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A technician who distrusts labels without source data, especially when weighing operator initials versus an automatic process.",
+        "persona": "A technician who distrusts labels without source data.",
         "register": "formal",
         "arc": "mind_changer",
         "initial": {
@@ -857,15 +857,15 @@
         },
         "lines": {
           "agree": [
-            "I needed corroboration, and the recorder original, automatic-job log, and preserved checksum; it answers the weakness that first divided this room.",
-            "In my notes at seat 9, the recorder original, automatic-job log, and preserved checksum agrees across sources that did not depend on one another."
+            "I needed corroboration, and the recorder original, automatic-job log, and preserved checksum provide it — they answer the weakness that first divided this room.",
+            "In my notes at seat 9, the recorder original, automatic-job log, and preserved checksum agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I still question the initials and release marker decide more than its source can support.",
+            "I still question whether the initials and release marker can decide more than their source can support.",
             "I need to know what this proves about intent, not only opportunity. Here that means operator initials against an automatic process."
           ],
           "concede": [
-            "There is real persuasive force in the initials and release marker, especially before the underlying record is opened."
+            "There is real persuasive force in the initials and release marker, especially before the underlying record was opened."
           ],
           "final": [
             "I am voting from the recorder original, automatic-job log, and preserved checksum, with the burden left where the judge placed it."
@@ -913,7 +913,7 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A coach who asks whether conduct matches the claimed motive, especially when weighing operator initials versus an automatic process.",
+        "persona": "A coach who asks whether conduct matches the claimed motive.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -927,15 +927,15 @@
         },
         "lines": {
           "agree": [
-            "The timing becomes coherent through the recorder original, automatic-job log, and preserved checksum; it answers the weakness that first divided this room.",
-            "In my notes at seat 10, the recorder original, automatic-job log, and preserved checksum agrees across sources that did not depend on one another."
+            "The timing becomes coherent through the recorder original, automatic-job log, and preserved checksum — they answer the weakness that first divided this room.",
+            "In my notes at seat 10, the recorder original, automatic-job log, and preserved checksum agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I refuse to confuse the initials and release marker decide more than its source can support.",
-            "The custody trail matters only if it follows the same object throughout. Here that means operator initials against an automatic process."
+            "I refuse to let the initials and release marker decide more than their source can support.",
+            "I am checking whether my doubt is evidential or merely speculative. Here that means operator initials against an automatic process."
           ],
           "concede": [
-            "I understand the reliance on the initials and release marker, especially before the underlying record is opened."
+            "I understand the reliance on the initials and release marker, especially before the underlying record was opened."
           ],
           "final": [
             "My conclusion turns on the recorder original, automatic-job log, and preserved checksum, with the burden left where the judge placed it."
@@ -983,7 +983,7 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A student who can be swept up by a vivid first impression, especially when weighing operator initials versus an automatic process.",
+        "persona": "A student who can be swept up by a vivid first impression.",
         "register": "blunt",
         "arc": "burden_drifter",
         "initial": {
@@ -997,24 +997,24 @@
         },
         "lines": {
           "agree": [
-            "I am persuaded by the recorder original, automatic-job log, and preserved checksum; it answers the weakness that first divided this room.",
-            "In my notes at seat 11, the recorder original, automatic-job log, and preserved checksum agrees across sources that did not depend on one another."
+            "I am persuaded by the recorder original, automatic-job log, and preserved checksum — they answer the weakness that first divided this room.",
+            "In my notes at seat 11, the recorder original, automatic-job log, and preserved checksum agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I want a source check on the initials and release marker decide more than its source can support.",
+            "I want a source check before the initials and release marker decide more than their source can support.",
             "I am checking whether my doubt is evidential or merely speculative. Here that means operator initials against an automatic process."
           ],
           "concede": [
-            "I began from the initials and release marker, especially before the underlying record is opened."
+            "I began from the initials and release marker, especially before the underlying record was opened."
           ],
           "final": [
             "After testing both stories, I rely on the recorder original, automatic-job log, and preserved checksum, with the burden left where the judge placed it."
           ],
           "burden_drift": [
-            "I catch myself asking for an innocent explanation, even though that is not the accused's burden; from seat 11, I relate it to operator initials against an automatic process."
+            "I catch myself asking for an innocent explanation, even though that is not the accused's burden. From seat 11, that temptation is about operator initials against an automatic process."
           ],
           "burden_correct": [
-            "I am correcting course: the prosecution must close the gap, not the accused; from seat 11, I relate it to operator initials against an automatic process."
+            "I am correcting course: the prosecution must close the gap, not the accused. From seat 11, that means operator initials against an automatic process."
           ]
         },
         "reaction_rules": [
@@ -1071,7 +1071,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A foreperson who restates disagreements before calling a vote, especially when weighing operator initials versus an automatic process.",
+        "persona": "A foreperson who restates disagreements before calling a vote.",
         "register": "plain",
         "arc": "foreperson",
         "initial": {
@@ -1085,15 +1085,15 @@
         },
         "lines": {
           "agree": [
-            "My holdout ends with the recorder original, automatic-job log, and preserved checksum; it answers the weakness that first divided this room.",
-            "In my notes at seat 12, the recorder original, automatic-job log, and preserved checksum agrees across sources that did not depend on one another."
+            "My holdout ends with the recorder original, automatic-job log, and preserved checksum — they answer the weakness that first divided this room.",
+            "In my notes at seat 12, the recorder original, automatic-job log, and preserved checksum agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I am holding against the initials and release marker decide more than its source can support.",
+            "I am holding against letting the initials and release marker decide more than their source can support.",
             "Consensus will not substitute for the independent record I still need. Here that means operator initials against an automatic process."
           ],
           "concede": [
-            "I will grant the initials and release marker, especially before the underlying record is opened."
+            "I will grant that the initials and release marker looked strong, especially before the underlying record was opened."
           ],
           "final": [
             "I can now decide because of the recorder original, automatic-job log, and preserved checksum, with the burden left where the judge placed it."

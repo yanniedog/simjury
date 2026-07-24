@@ -12,8 +12,8 @@
   "hook": "The route dashboard says the driver's phone was touched eleven times. The defence says every touch came from a mounted scanner. One silent passenger camera sees what neither side expected.",
   "accused": {
     "cast_id": "acc",
-    "human": "Dara Kelm, 41, delivers medical supplies on overnight routes and coaches a junior futsal team. Her partner and several drivers sit behind her.",
-    "if_guilty": "a custodial sentence, loss of the licence that supports her household, and permanent blame for a cyclist's injuries"
+    "human": "Dara Kelm, 41, delivers medical supplies on overnight routes and coaches a junior indoor football team. Her partner and several drivers sit behind her.",
+    "if_guilty": "a prison sentence, loss of the licence that supports her household, and permanent blame for a cyclist's injuries"
   },
   "statements": {
     "opening": {
@@ -23,17 +23,17 @@
       },
       "defence": {
         "speaker": "dc",
-        "text": "The dashboard cannot distinguish a driver's touch from the mounted scanner's automatic inputs. Rain obscured the signal, the cyclist entered late, and the route system had been malfunctioning for weeks. Dara braked before impact and immediately called for help. The prosecution has converted noisy telemetry into a moral story, but dangerous driving requires proof of what she actually did."
+        "text": "The dashboard cannot distinguish a driver's touch from the mounted scanner's automatic inputs. Rain obscured the signal, the cyclist entered on the crossing phase after the van's light turned red, and the route system had been malfunctioning for weeks. Dara braked before impact and immediately called for help. The prosecution has converted noisy electronic logs into a moral story, but dangerous driving requires proof of what she actually did."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The recovered cabin film isolates the decisive act: Dara reads the reroute for four uninterrupted seconds while a red signal fills the windscreen. The mounted display position does not explain her thumb contacting it, and rain cannot alter the frame counter. Brake, signal, and camera clocks agree. That chosen inattention, not the unreliable dashboard total, proves the dangerous driving charged."
+        "text": "The recovered cabin film isolates the decisive act: Dara reads the reroute for four uninterrupted seconds while a red signal fills the windscreen. The mounted display position does not explain her thumb contacting it, and rain cannot alter the camera's frame-by-frame clock. Brake, signal, and camera clocks agree. That chosen inattention, not the unreliable dashboard total, proves the dangerous driving charged."
       },
       "defence": {
         "speaker": "dc",
-        "text": "A cabin camera compresses time and flattens gaze. The engineer accepted Dara may have checked the mirror and the mounted display sits beside it. Rain distorted the view, while the company's scoring system punished delay even when drivers should pull over. If you cannot separate an unsafe system, bad weather, and a tragic mistake from legally dangerous driving, you cannot convict."
+        "text": "A cabin camera compresses time and flattens gaze. The engineer accepted that Dara may have checked the mirror, and that the mounted display sits beside it. Rain distorted the view, while the company's scoring system punished delay even when drivers should pull over. If you cannot separate an unsafe system, bad weather, and a tragic mistake from legally dangerous driving, you cannot convict."
       }
     }
   },
@@ -92,7 +92,7 @@
       "true_weight": 0.18,
       "direction": "innocence",
       "reveal_stamp": "misleading",
-      "reveal_note": "the route dashboard looked conclusive until its hidden assumption was tested.",
+      "reveal_note": "The route dashboard looked conclusive until shared device identifiers and scanner noise were tested.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -103,12 +103,12 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "I reconstructed speed from the van controller and road marks. The vehicle entered at forty-six, below the limit, then braked less than one second before impact. The signal had been red for five seconds. Nothing in the controller identifies where the driver was looking during the missing four seconds. The controller fixed reaction time but left the missing glance for other evidence.",
+      "text": "I reconstructed speed from the van controller and road marks. The vehicle entered at forty-six kilometres an hour, below the limit, then braked under a second before impact. By impact the signal had been red about three seconds. The controller establishes when she braked, not where she looked. Agreed records show the cyclist suffered a fractured pelvis and six weeks in hospital.",
       "surface_persuasion": 0.6,
       "true_weight": 0.32,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The limits surrounding reconstructed speed from the van controller and road marks kept it from deciding the charge alone.",
+      "reveal_note": "Speed and red-light timing set the approach; hospital records prove serious injury, but not where she was looking.",
       "tags": [
         "digital_forensics",
         "credibility"
@@ -150,7 +150,7 @@
       "true_weight": 0.55,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "eleven interactions sounds precise, but it is not eleven screen taps helped test a witness account while leaving the central issue open.",
+      "reveal_note": "Eleven interactions sounds precise, but it is not eleven deliberate screen taps.",
       "tags": [
         "timeline",
         "credibility"
@@ -160,12 +160,12 @@
       "id": "b4",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "The defence tenders maintenance tickets showing the route unit froze and restarted twice that week. Other drivers reported phantom interactions and delayed messages. Those faults make the raw count unreliable, and they explain why Dara had complained that the dashboard punished workers for inputs they never made. The tickets weakened the event count without explaining the recovered cabin images.",
+      "text": "The defence offers maintenance tickets showing the route unit froze and restarted twice that week. Other drivers reported phantom interactions and delayed messages. Those faults make the raw count unreliable, and they explain why Dara had complained that the dashboard punished workers for inputs they never made. The tickets weakened the event count without explaining the recovered cabin images.",
       "surface_persuasion": 0.7899999999999999,
       "true_weight": 0.22,
       "direction": "innocence",
       "reveal_stamp": "misleading",
-      "reveal_note": "Later evidence exposed what maintenance tickets showing the route unit froze and restarted twice that week could not establish.",
+      "reveal_note": "Maintenance tickets weaken the dashboard count; they do not explain the recovered cabin images.",
       "tags": [
         "digital_forensics",
         "motive"
@@ -176,12 +176,12 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "I sent the reroute because a clinic requested an urgent package. The message was marked read six seconds before the crash. Drivers are trained to pull over, but the schedule software also scores late arrivals. Dara had already lost two preferred shifts after a delay, so the system gave her a reason to read while moving.",
+      "text": "I sent the reroute because a clinic requested an urgent package. The message was marked read as she began looking down, four seconds before impact. Drivers are trained to pull over, but the schedule software also scores late arrivals. Dara had already lost two preferred shifts after a delay, so the system gave her a reason to read while moving.",
       "surface_persuasion": 0.58,
       "true_weight": 0.42,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "sent the reroute because a clinic requested an urgent package added context without resolving identity or intent.",
+      "reveal_note": "The reroute was marked read as the filmed look began; that timing still does not prove what her eyes saw on screen.",
       "tags": [
         "timeline",
         "digital_forensics"
@@ -191,12 +191,12 @@
       "id": "b6",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit six is the passenger camera, recovered after its memory card was found behind a loose panel. It shows Dara's face turn toward the mounted display for four continuous seconds. Her right thumb scrolls once. During the same sequence, the red signal grows brighter through the windscreen and the cyclist enters view.",
+      "text": "Exhibit two is the passenger camera, recovered after its memory card was found behind a loose panel. It shows Dara's face turn toward the mounted display for four continuous seconds. Her right thumb scrolls once. During the same sequence, the red signal grows brighter through the windscreen and the cyclist enters view.",
       "surface_persuasion": 0.66,
       "true_weight": 0.76,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The corroboration behind the passenger camera, recovered after its memory card was found behind a loose panel carried genuine weight on timing, control, or method.",
+      "reveal_note": "The passenger camera opened a cabin view the dashboard count could not explain alone.",
       "tags": [
         "timeline",
         "timeline"
@@ -238,7 +238,7 @@
       "true_weight": 0.55,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "the display sits close to the left mirror, does it not helped test a witness account while leaving the central issue open.",
+      "reveal_note": "The mounted display sits close to the left mirror, so a glance that way has more than one possible target.",
       "tags": [
         "timeline",
         "procedure"
@@ -249,12 +249,12 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "examination",
-      "text": "I tested the camera against the van geometry. Mirror checks produce a short eye movement left; this recording shows a sustained downward fixation and a thumb movement on the display. Rain reduces exterior detail but does not alter cabin timing. The clip's frame counter matches the vehicle controller within two hundredths of a second.",
+      "text": "I tested the camera against the van geometry. Mirror checks produce a short eye movement left; this recording shows a sustained downward fixation and a thumb movement on the display. Rain reduces exterior detail but does not alter cabin timing. The camera's frame-by-frame clock matches the vehicle controller within two hundredths of a second.",
       "surface_persuasion": 0.7000000000000001,
       "true_weight": 0.8300000000000001,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "Independent records confirmed what tested the camera against the van geometry contributed to the final reconstruction.",
+      "reveal_note": "Geometry testing supported the cabin sightline; the frame-by-frame clock matched the van controller.",
       "tags": [
         "timeline",
         "credibility"
@@ -296,7 +296,7 @@
       "true_weight": 0.3,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "rain and head movement can blur the exact direction of a glance added context without resolving identity or intent.",
+      "reveal_note": "Rain and head movement can blur the exact direction of a glance on cabin video.",
       "tags": [
         "credibility",
         "digital_forensics"
@@ -306,12 +306,12 @@
       "id": "b11",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit nine synchronises the passenger clip, signal controller, and brake data. Dara begins reading at 22:14:08, the light turns red one second later, and the cyclist enters at 22:14:11. Her eyes return forward at 22:14:12; braking begins immediately, but collision is then unavoidable. The clocks agree independently. Agreement across three clocks removed the timing ambiguity left by every single source.",
+      "text": "Exhibit three synchronises the passenger clip, signal controller, and brake data. Dara begins reading at 22:14:08, the light turns red one second later, and the cyclist enters on the crossing phase at 22:14:11. Her eyes return forward at 22:14:12; braking begins immediately, but collision is then unavoidable. The three clocks agree independently.",
       "surface_persuasion": 0.74,
       "true_weight": 0.9,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "exhibit nine synchronises the passenger clip, signal controller, and brake data survived cross-examination and connected evidence from separate sources.",
+      "reveal_note": "Passenger clip, signal controller, and brake data line up on one timeline for the final seconds.",
       "tags": [
         "timeline",
         "timeline",
@@ -327,7 +327,7 @@
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The limits surrounding the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance kept it from deciding the charge alone.",
+      "reveal_note": "The judge reminded the jury that the accused need not prove an alternative story or explain every suspicious circumstance.",
       "tags": [
         "burden",
         "procedure"
@@ -349,7 +349,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A caregiver who is alert to pressure and unequal power, especially when weighing a noisy dashboard versus the recovered view.",
+        "persona": "A caregiver who is alert to pressure and unequal power.",
         "register": "formal",
         "arc": "principled_holdout",
         "initial": {
@@ -363,21 +363,21 @@
         },
         "lines": {
           "agree": [
-            "For me, the anchor is the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
-            "In my notes at seat 2, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
+            "For me, the anchor is the cabin footage of her eyes and the synchronized clocks — they answer the weakness that first divided this room.",
+            "In my notes at seat 2, the cabin footage of her eyes and the synchronized clocks agree across sources that did not depend on one another."
           ],
           "pushback": [
             "I will not let the dashboard interaction count decide more than its source can support.",
-            "I need the chronology laid out before I choose between those accounts. Here that means the dashboard against the recovered view."
+            "I need the chronology laid out before I choose between those accounts. Here that means the dashboard against the recovered cabin view."
           ],
           "concede": [
-            "I admit the dashboard interaction count, especially before the underlying record is opened."
+            "I admit the dashboard interaction count looked damning at first, especially before the underlying record was opened."
           ],
           "final": [
-            "My verdict rests on the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
+            "My verdict rests on the cabin footage of her eyes and the synchronized clocks, with the burden left where the judge placed it."
           ],
           "holdout": [
-            "I will hold on a noisy dashboard versus the recovered view until evidence, rather than consensus, answers it; from seat 2, I relate it to the dashboard against the recovered view."
+            "I will hold on the dashboard versus the recovered cabin view until independent records — not pressure from the room — answer it."
           ]
         },
         "reaction_rules": [
@@ -422,7 +422,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A technician who distrusts labels without source data, especially when weighing a noisy dashboard versus the recovered view.",
+        "persona": "A technician who distrusts labels without source data.",
         "register": "hesitant",
         "arc": "mind_changer",
         "initial": {
@@ -436,18 +436,18 @@
         },
         "lines": {
           "agree": [
-            "I move because the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
-            "In my notes at seat 3, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
+            "I move because of the cabin footage of her eyes and the synchronized clocks — they answer the weakness that first divided this room.",
+            "In my notes at seat 3, the cabin footage of her eyes and the synchronized clocks agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I keep separating the dashboard interaction count decide more than its source can support.",
-            "Two records agreeing matters more to me than one record sounding certain. Here that means the dashboard against the recovered view."
+            "I keep separating the dashboard interaction count from what it can actually prove.",
+            "Two records agreeing matters more to me than one record sounding certain. Here that means the dashboard against the recovered cabin view."
           ],
           "concede": [
-            "I can see why the dashboard interaction count, especially before the underlying record is opened."
+            "I can see why the dashboard interaction count swayed people, especially before the underlying record was opened."
           ],
           "final": [
-            "I finish with the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
+            "I finish with the cabin footage of her eyes and the synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
@@ -492,7 +492,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A coach who asks whether conduct matches the claimed motive, especially when weighing a noisy dashboard versus the recovered view.",
+        "persona": "A coach who asks whether conduct matches the claimed motive.",
         "register": "blunt",
         "arc": "drifter",
         "initial": {
@@ -505,18 +505,18 @@
         },
         "lines": {
           "agree": [
-            "The part I cannot explain away is the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
-            "In my notes at seat 4, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
+            "The part I cannot explain away is the cabin footage of her eyes and the synchronized clocks — they answer the weakness that first divided this room.",
+            "In my notes at seat 4, the cabin footage of her eyes and the synchronized clocks agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "Before I rely on the dashboard interaction count decide more than its source can support.",
-            "I am testing which side can explain the missing link without assumption. Here that means the dashboard against the recovered view."
+            "Before I rely on the dashboard interaction count, I need the underlying record opened.",
+            "I am testing which side can explain the missing link without assumption. Here that means the dashboard against the recovered cabin view."
           ],
           "concede": [
-            "At first I gave too much weight to the dashboard interaction count, especially before the underlying record is opened."
+            "At first I gave too much weight to the dashboard interaction count, especially before the underlying record was opened."
           ],
           "final": [
-            "The deciding chain for me is the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
+            "The deciding chain for me is the cabin footage of her eyes and the synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
@@ -561,7 +561,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A student who can be swept up by a vivid first impression, especially when weighing a noisy dashboard versus the recovered view.",
+        "persona": "A student who can be swept up by a vivid first impression.",
         "register": "plain",
         "arc": "burden_drifter",
         "initial": {
@@ -575,24 +575,24 @@
         },
         "lines": {
           "agree": [
-            "I checked the sequence against the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
-            "In my notes at seat 5, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
+            "I checked the sequence against the cabin footage of her eyes and the synchronized clocks — they answer the weakness that first divided this room.",
+            "In my notes at seat 5, the cabin footage of her eyes and the synchronized clocks agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I hear the force of the dashboard interaction count decide more than its source can support.",
-            "The burden makes me separate a possible story from a proved one. Here that means the dashboard against the recovered view."
+            "I hear the force of the dashboard interaction count, but I will not let it decide more than its source can support.",
+            "The burden makes me separate a possible story from a proved one. Here that means the dashboard against the recovered cabin view."
           ],
           "concede": [
-            "I concede the surface force of the dashboard interaction count, especially before the underlying record is opened."
+            "I concede the surface force of the dashboard interaction count, especially before the underlying record was opened."
           ],
           "final": [
-            "I return at the end to the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
+            "I return at the end to the cabin footage of her eyes and the synchronized clocks, with the burden left where the judge placed it."
           ],
           "burden_drift": [
-            "I catch myself asking for an innocent explanation, even though that is not the accused's burden; from seat 5, I relate it to the dashboard against the recovered view."
+            "I catch myself asking for an innocent explanation, even though that is not the accused's burden. From seat 5, that temptation is about the dashboard against the recovered cabin view."
           ],
           "burden_correct": [
-            "I am correcting course: the prosecution must close the gap, not the accused; from seat 5, I relate it to the dashboard against the recovered view."
+            "I am correcting course: the prosecution must close the gap, not the accused. From seat 5, that means the dashboard against the recovered cabin view."
           ]
         },
         "reaction_rules": [
@@ -649,7 +649,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A foreperson who restates disagreements before calling a vote, especially when weighing a noisy dashboard versus the recovered view.",
+        "persona": "A foreperson who restates disagreements before calling a vote.",
         "register": "formal",
         "arc": "foreperson",
         "initial": {
@@ -663,18 +663,18 @@
         },
         "lines": {
           "agree": [
-            "What changes my vote is the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
-            "In my notes at seat 6, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
+            "What changes my vote is the cabin footage of her eyes and the synchronized clocks — they answer the weakness that first divided this room.",
+            "In my notes at seat 6, the cabin footage of her eyes and the synchronized clocks agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I am not treating the dashboard interaction count decide more than its source can support.",
-            "I want the source data before I accept the label attached to it. Here that means the dashboard against the recovered view."
+            "I am not treating the dashboard interaction count as proving more than its source can support.",
+            "I want the source data before I accept the label attached to it. Here that means the dashboard against the recovered cabin view."
           ],
           "concede": [
-            "I was initially moved by the dashboard interaction count, especially before the underlying record is opened."
+            "I was initially moved by the dashboard interaction count, especially before the underlying record was opened."
           ],
           "final": [
-            "My final vote follows the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
+            "My final vote follows the cabin footage of her eyes and the synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
@@ -719,7 +719,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A retiree who wants testimony anchored to something independent, especially when weighing a noisy dashboard versus the recovered view.",
+        "persona": "A retiree who wants testimony anchored to something independent.",
         "register": "hesitant",
         "arc": "steady",
         "initial": {
@@ -732,18 +732,18 @@
         },
         "lines": {
           "agree": [
-            "I trust the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
-            "In my notes at seat 7, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
+            "I trust the cabin footage of her eyes and the synchronized clocks — they answer the weakness that first divided this room.",
+            "In my notes at seat 7, the cabin footage of her eyes and the synchronized clocks agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "My problem with the dashboard interaction count decide more than its source can support.",
-            "A vivid clue will not move me unless the later sequence supports it. Here that means the dashboard against the recovered view."
+            "My problem is letting the dashboard interaction count decide more than its source can support.",
+            "A vivid clue will not move me unless the later sequence supports it. Here that means the dashboard against the recovered cabin view."
           ],
           "concede": [
-            "The opposing account fairly points to the dashboard interaction count, especially before the underlying record is opened."
+            "The opposing account fairly points to the dashboard interaction count, especially before the underlying record was opened."
           ],
           "final": [
-            "I resolve the doubt through the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
+            "I resolve the doubt through the cabin footage of her eyes and the synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
@@ -788,7 +788,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A delivery worker who focuses on custody and physical sequence, especially when weighing a noisy dashboard versus the recovered view.",
+        "persona": "A delivery worker who focuses on custody and physical sequence.",
         "register": "blunt",
         "arc": "mind_changer",
         "initial": {
@@ -802,18 +802,18 @@
         },
         "lines": {
           "agree": [
-            "The room should start with the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
-            "In my notes at seat 8, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
+            "The room should start with the cabin footage of her eyes and the synchronized clocks — they answer the weakness that first divided this room.",
+            "In my notes at seat 8, the cabin footage of her eyes and the synchronized clocks agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "We should test the dashboard interaction count decide more than its source can support.",
-            "I am asking whether the physical evidence and the testimony converge. Here that means the dashboard against the recovered view."
+            "We should test whether the dashboard interaction count can decide more than its source can support.",
+            "I am asking whether the physical evidence and the testimony converge. Here that means the dashboard against the recovered cabin view."
           ],
           "concede": [
-            "I cannot dismiss the dashboard interaction count, especially before the underlying record is opened."
+            "I cannot dismiss the dashboard interaction count, especially before the underlying record was opened."
           ],
           "final": [
-            "The complete record leaves me with the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
+            "The complete record leaves me with the cabin footage of her eyes and the synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
@@ -858,7 +858,7 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps, especially when weighing a noisy dashboard versus the recovered view.",
+        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps.",
         "register": "plain",
         "arc": "principled_holdout",
         "initial": {
@@ -872,21 +872,21 @@
         },
         "lines": {
           "agree": [
-            "I needed corroboration, and the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
-            "In my notes at seat 9, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
+            "I needed corroboration, and the cabin footage of her eyes and the synchronized clocks provide it — they answer the weakness that first divided this room.",
+            "In my notes at seat 9, the cabin footage of her eyes and the synchronized clocks agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I still question the dashboard interaction count decide more than its source can support.",
-            "I need to know what this proves about intent, not only opportunity. Here that means the dashboard against the recovered view."
+            "I still question whether the dashboard interaction count can decide more than its source can support.",
+            "I need to know what this proves about intent, not only opportunity. Here that means the dashboard against the recovered cabin view."
           ],
           "concede": [
-            "There is real persuasive force in the dashboard interaction count, especially before the underlying record is opened."
+            "There is real persuasive force in the dashboard interaction count, especially before the underlying record was opened."
           ],
           "final": [
-            "I am voting from the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
+            "I am voting from the cabin footage of her eyes and the synchronized clocks, with the burden left where the judge placed it."
           ],
           "holdout": [
-            "I will hold on a noisy dashboard versus the recovered view until evidence, rather than consensus, answers it; from seat 9, I relate it to the dashboard against the recovered view."
+            "I will hold on the dashboard versus the recovered cabin view until independent records — not pressure from the room — answer it."
           ]
         },
         "reaction_rules": [
@@ -931,7 +931,7 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A blunt sceptic who will not turn probability into certainty, especially when weighing a noisy dashboard versus the recovered view.",
+        "persona": "A blunt sceptic who will not turn probability into certainty.",
         "register": "formal",
         "arc": "vibes",
         "initial": {
@@ -944,18 +944,18 @@
         },
         "lines": {
           "agree": [
-            "The timing becomes coherent through the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
-            "In my notes at seat 10, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
+            "The timing becomes coherent through the cabin footage of her eyes and the synchronized clocks — they answer the weakness that first divided this room.",
+            "In my notes at seat 10, the cabin footage of her eyes and the synchronized clocks agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I refuse to confuse the dashboard interaction count decide more than its source can support.",
-            "The custody trail matters only if it follows the same object throughout. Here that means the dashboard against the recovered view."
+            "I refuse to let the dashboard interaction count decide more than its source can support.",
+            "I am checking whether my doubt is evidential or merely speculative. Here that means the dashboard against the recovered cabin view."
           ],
           "concede": [
-            "I understand the reliance on the dashboard interaction count, especially before the underlying record is opened."
+            "I understand the reliance on the dashboard interaction count, especially before the underlying record was opened."
           ],
           "final": [
-            "My conclusion turns on the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
+            "My conclusion turns on the cabin footage of her eyes and the synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
@@ -1000,7 +1000,7 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A shift worker who notices breaks in chronology, especially when weighing a noisy dashboard versus the recovered view.",
+        "persona": "A shift worker who notices breaks in chronology.",
         "register": "hesitant",
         "arc": "vibes",
         "initial": {
@@ -1014,18 +1014,18 @@
         },
         "lines": {
           "agree": [
-            "I am persuaded by the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
-            "In my notes at seat 11, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
+            "I am persuaded by the cabin footage of her eyes and the synchronized clocks — they answer the weakness that first divided this room.",
+            "In my notes at seat 11, the cabin footage of her eyes and the synchronized clocks agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I want a source check on the dashboard interaction count decide more than its source can support.",
-            "I am checking whether my doubt is evidential or merely speculative. Here that means the dashboard against the recovered view."
+            "I want a source check before the dashboard interaction count decides more than its source can support.",
+            "I am checking whether my doubt is evidential or merely speculative. Here that means the dashboard against the recovered cabin view."
           ],
           "concede": [
-            "I began from the dashboard interaction count, especially before the underlying record is opened."
+            "I began from the dashboard interaction count, especially before the underlying record was opened."
           ],
           "final": [
-            "After testing both stories, I rely on the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
+            "After testing both stories, I rely on the cabin footage of her eyes and the synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [
@@ -1070,7 +1070,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A bookkeeper who tests whether separate records truly reconcile, especially when weighing a noisy dashboard versus the recovered view.",
+        "persona": "A bookkeeper who tests whether separate records truly reconcile.",
         "register": "blunt",
         "arc": "steady",
         "initial": {
@@ -1084,18 +1084,18 @@
         },
         "lines": {
           "agree": [
-            "My holdout ends with the cabin footage, gaze analysis, and synchronized clocks; it answers the weakness that first divided this room.",
-            "In my notes at seat 12, the cabin footage, gaze analysis, and synchronized clocks agrees across sources that did not depend on one another."
+            "My holdout ends with the cabin footage of her eyes and the synchronized clocks — they answer the weakness that first divided this room.",
+            "In my notes at seat 12, the cabin footage of her eyes and the synchronized clocks agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I am holding against the dashboard interaction count decide more than its source can support.",
-            "Consensus will not substitute for the independent record I still need. Here that means the dashboard against the recovered view."
+            "I am holding against letting the dashboard interaction count decide more than its source can support.",
+            "Consensus will not substitute for the independent record I still need. Here that means the dashboard against the recovered cabin view."
           ],
           "concede": [
-            "I will grant the dashboard interaction count, especially before the underlying record is opened."
+            "I will grant that the dashboard interaction count looked strong, especially before the underlying record was opened."
           ],
           "final": [
-            "I can now decide because of the cabin footage, gaze analysis, and synchronized clocks, with the burden left where the judge placed it."
+            "I can now decide because of the cabin footage of her eyes and the synchronized clocks, with the burden left where the judge placed it."
           ]
         },
         "reaction_rules": [

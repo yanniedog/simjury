@@ -9,7 +9,7 @@
     "The accused intentionally or recklessly applied unlawful force",
     "The force caused the complainant's injury and was not lawful self-defence"
   ],
-  "hook": "A fourteen-second phone clip shows driver Daro Venn striking a passenger beside a stopped car. The missing minute shows what happened before the camera turned toward them.",
+  "hook": "A fourteen-second phone clip appears to show driver Daro Venn striking a passenger beside a stopped car. The missing minute shows what happened before the camera turned toward them.",
   "accused": {
     "cast_id": "acc",
     "human": "Daro Venn, 42, drives nights while caring for a teenage child and studying vehicle maintenance through a community course.",
@@ -19,25 +19,25 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The public clip is short, but it is clear: Daro Venn steps toward his passenger and strikes him beside the car. Kevi Marr suffered a fractured cheek and had no weapon. Daro was angry about a poor rating and ended the trip early. The defence will stretch ordinary passenger movement into a threat because the complete journey was not initially public."
+        "text": "The public clip is short, but it is clear: Daro Venn steps toward his passenger and strikes him beside the car. Kevi Marr suffered a facial injury and had no weapon. Daro was angry about a poor rating and ended the trip early. The defence will stretch ordinary passenger movement into a threat and will rely on journey footage that was not in the first public clip."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The clip begins after Kevi grabbed the steering wheel, punched Daro inside the moving car, and followed him when Daro escaped. A second phone kept recording from the rear seat. Daro's single outward movement blocked another blow; Kevi then fell against the open door. The charge excludes lawful self-defence, and the full sequence matters."
+        "text": "The clip begins after Kevi grabbed the steering wheel, punched Daro inside the moving car, and followed him when Daro escaped. A second phone kept recording from the rear seat. Daro's single outward movement blocked another blow; Kevi then fell against the open door. Self-defence, if it was lawful, means this charge is not proved. The full sequence matters."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution says the danger had ended when Daro left the protected driver's position and rounded the open door. The obscured frames hide the precise facial contact, and the rear witness knew him from earlier rides. His angry message and forward arm movement support retaliation, not a necessary block. The question is whether that later force remained defensive after separation, and the prosecution says it did not."
+        "text": "The prosecution says the danger had ended when Daro left the driver's seat and walked around the open door. The obscured frames hide the precise facial contact, and the rear witness knew him from earlier rides. His angry message and forward arm movement support retaliation, not a necessary block. The question is whether that later force remained defensive after separation, and the prosecution says it did not."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The synced recording and vehicle data show one continuous emergency: steering interference, hard braking, an interior punch, immediate exit, pursuit, and a defensive block. The public clip deleted the beginning and made that block look like an attack. Daro need not prove perfect judgment under pressure. The prosecution must exclude lawful self-defence beyond reasonable doubt, and it cannot."
+        "text": "The synced recording and vehicle data show one continuous emergency: steering interference, hard braking, an interior punch, immediate exit, pursuit, and a defensive block. The public clip starts after the beginning and makes that block look like an attack. Daro need not prove perfect judgment under pressure. The prosecution must exclude lawful self-defence beyond reasonable doubt, and it cannot."
       }
     }
   },
-  "epilogue": "Daro returned to night driving after the platform restored his account and funded repairs to the damaged steering column. Kevi completed a behaviour program and paid compensation for the interior damage without admitting the criminal charge against Daro had been justified. The second passenger withdrew from public discussion after threats followed the short clip. The platform added secure full-trip evidence uploads for safety disputes.",
+  "epilogue": "Daro returned to night driving after the platform restored his account and funded repairs to the damaged steering column. Kevi completed a behaviour program and paid compensation for the interior damage without agreeing that charging Daro was right. The second passenger withdrew from public discussion after threats followed the short clip. The platform added secure full-trip evidence uploads for safety disputes.",
   "cast": [
     {
       "id": "judge",
@@ -72,7 +72,7 @@
     {
       "id": "w2",
       "name": "Ola Prinn",
-      "role_label": "video and telematics examiner",
+      "role_label": "video and vehicle-data examiner",
       "side": "prosecution"
     },
     {
@@ -92,7 +92,7 @@
       "true_weight": 0.18,
       "direction": "guilt",
       "reveal_stamp": "misleading",
-      "reveal_note": "Later evidence exposed what the fourteen-second clip shared after the trip could not establish.",
+      "reveal_note": "The fourteen-second public clip looked complete until the missing minute was restored.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -103,12 +103,12 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "I complained when Daro took a red diversion route and said I would leave the lowest rating. He stopped suddenly, got out, and came around the car. I raised my phone because he looked furious. He struck my face, and I hit the door. I did not threaten him outside the car.",
+      "text": "I complained when Daro took a longer diversion the app marked in red — what drivers call a red route — instead of the turn I wanted, and said I would leave the lowest rating. He stopped suddenly, got out, and came around the car. I raised my phone because he looked furious. He struck my face, and I hit the door. I did not threaten him outside the car.",
       "surface_persuasion": 0.6,
       "true_weight": 0.32,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "complained when daro took a red diversion route and said i would leave the lowest rating added context without resolving identity or intent.",
+      "reveal_note": "Kevi complained about the longer red diversion route and threatened the lowest rating; that dispute starts the roadside stop.",
       "tags": [
         "digital_forensics",
         "credibility"
@@ -150,7 +150,7 @@
       "true_weight": 0.55,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The limits surrounding before the stop, you reached between the seats for the steering wheel kept it from deciding the charge alone.",
+      "reveal_note": "Wheel contact and the interior push happened before the public clip started.",
       "tags": [
         "procedure",
         "credibility"
@@ -160,12 +160,12 @@
       "id": "b4",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The prosecution tenders Daro's message after the trip: A rating is not a licence to attack a driver. The wording confirms anger and identifies the rating dispute. It is also consistent with a shaken person describing an attack on himself, so the message adds context without deciding who used unlawful force first.",
+      "text": "The prosecution offers Daro's message after the trip: 'A rating is not a licence to attack a driver.' The wording confirms anger and identifies the rating dispute. It is also consistent with a shaken person describing an attack on himself, so the message adds context without deciding who used unlawful force first.",
       "surface_persuasion": 0.7899999999999999,
       "true_weight": 0.22,
       "direction": "guilt",
       "reveal_stamp": "misleading",
-      "reveal_note": "daro's message after the trip: a rating is not a licence to attack a driver was persuasive on the surface but weak on the fact it claimed to prove.",
+      "reveal_note": "Daro's post-trip message is angry context, not proof of an unlawful strike.",
       "tags": [
         "digital_forensics",
         "motive"
@@ -181,7 +181,7 @@
       "true_weight": 0.76,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "Independent records confirmed what synchronized the public clip, a rear passenger's continuous recording, and the car's motion log contributed to the final reconstruction.",
+      "reveal_note": "Syncing the public clip with the rear recording restored the minute the short clip cut away.",
       "tags": [
         "timeline",
         "digital_forensics"
@@ -191,12 +191,12 @@
       "id": "b6",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit six is the synchronized sequence. The rear audio captures Daro saying stay back while retreating around the door. Kevi advances and swings. Daro raises one forearm and pushes outward once; Kevi's momentum carries him into the door edge. The records contain no second strike, pursuit by Daro, or renewed force after Kevi falls.",
+      "text": "Exhibit two is the synchronized sequence. The rear audio captures Daro saying stay back while retreating around the door. Kevi advances and swings. Daro raises one forearm and pushes outward once; Kevi's momentum carries him into the door edge. The records contain no second strike, pursuit by Daro, or renewed force after Kevi falls.",
       "surface_persuasion": 0.7000000000000001,
       "true_weight": 0.8300000000000001,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "the synchronized sequence fixed a disputed link through an independent record.",
+      "reveal_note": "The synchronized sequence fixed retreat, pursuit, and a single outward block through an independent record.",
       "tags": [
         "procedure",
         "timeline"
@@ -207,7 +207,7 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "cross",
-      "text": "The rear camera cannot show the exact point of facial contact? Not continuously; a headrest obscures two frames. Daro still moves his arm toward Kevi? Yes, during Kevi's forward swing and while Daro is retreating. So you cannot decide lawful self-defence for this jury? Correct. I can establish the sequence, timing, and absence of any later strike.",
+      "text": "The rear camera cannot show the exact point of facial contact? Not continuously; a headrest obscures two frames. Daro still moves his arm toward Kevi? Yes, during Kevi's forward swing and while Daro is retreating. So you are not here to tell this jury whether that was lawful self-defence? Correct. I can establish the sequence, timing, and absence of any later strike.",
       "turns": [
         {
           "speaker": "dc",
@@ -227,7 +227,7 @@
         },
         {
           "speaker": "dc",
-          "text": "So you cannot decide lawful self-defence for this jury?"
+          "text": "So you are not here to tell this jury whether that was lawful self-defence?"
         },
         {
           "speaker": "w2",
@@ -238,7 +238,7 @@
       "true_weight": 0.55,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The limits surrounding the rear camera cannot show the exact point of facial contact kept it from deciding the charge alone.",
+      "reveal_note": "The rear camera cannot show every facial contact frame; it still shows retreat and pursuit timing.",
       "tags": [
         "procedure",
         "procedure"
@@ -254,7 +254,7 @@
       "true_weight": 0.48,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "was the second passenger and recorded because the argument frightened me helped test a witness account while leaving the central issue open.",
+      "reveal_note": "The second passenger filmed from fear; that explains the recording, not the legal conclusion.",
       "tags": [
         "procedure",
         "credibility"
@@ -296,7 +296,7 @@
       "true_weight": 0.3,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The wider sequence qualified what you knew daro from two earlier rides could fairly support.",
+      "reveal_note": "Prior rides with Daro are background; they do not decide whether the contact was unlawful.",
       "tags": [
         "credibility",
         "digital_forensics"
@@ -306,12 +306,12 @@
       "id": "b11",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit nine is the car's signed motion record. It fixes a steering deflection caused from the passenger side, emergency braking, the driver's door opening four seconds later, and no vehicle movement afterward. Those timestamps independently match the continuous rear recording and place Daro's exit within one unfolding threat rather than a later retaliatory encounter.",
+      "text": "Exhibit three is the car's motion log — speed, steering, and door sensors stored in a tamper-checked file from the vehicle system. It fixes a sharp passenger-side steering yank, emergency braking, the driver's door opening four seconds later, and no vehicle movement afterward. Those timestamps match the continuous rear recording and place Daro's exit inside one unfolding threat.",
       "surface_persuasion": 0.74,
       "true_weight": 0.9,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "The corroboration behind the car's signed motion record carried genuine weight on timing, control, or method.",
+      "reveal_note": "The car's tamper-checked motion log matched the continuous rear recording on steering, braking, and the exit.",
       "tags": [
         "procedure",
         "timeline",
@@ -327,7 +327,7 @@
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "the judge directs you that daro does not have to prove self-defence added context without resolving identity or intent.",
+      "reveal_note": "The judge reminded the jury that Daro need not prove self-defence; the prosecution must exclude it.",
       "tags": [
         "burden",
         "procedure"
@@ -349,7 +349,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps, especially when weighing a cropped clip versus the continuous threat sequence.",
+        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps.",
         "register": "plain",
         "arc": "principled_holdout",
         "initial": {
@@ -363,21 +363,21 @@
         },
         "lines": {
           "agree": [
-            "For me, the anchor is the continuous rear recording, retreat sequence, and motion log; it answers the weakness that first divided this room.",
-            "In my notes at seat 2, the continuous rear recording, retreat sequence, and motion log agrees across sources that did not depend on one another."
+            "For me, the anchor is the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "In my notes at seat 2, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I will not let the cropped roadside clip and angry message decide more than its source can support.",
-            "I need the chronology laid out before I choose between those accounts. Here that means the cropped clip against the continuous sequence."
+            "I will not let the cropped roadside clip and angry message decide more than their source can support.",
+            "The burden makes me separate a possible story from a proved one. Here that means the cropped clip against the continuous sequence."
           ],
           "concede": [
-            "I admit the cropped roadside clip and angry message, especially before the underlying record is opened."
+            "I admit the cropped roadside clip and angry message looked damning at first, especially before the underlying record was opened."
           ],
           "final": [
             "My verdict rests on the continuous rear recording, retreat sequence, and motion log, with the burden left where the judge placed it."
           ],
           "holdout": [
-            "I will hold on a cropped clip versus the continuous threat sequence until evidence, rather than consensus, answers it; from seat 2, I relate it to the cropped clip against the continuous sequence."
+            "I will hold on the cropped clip versus the continuous sequence until independent records — not pressure from the room — answer it."
           ]
         },
         "reaction_rules": [
@@ -422,7 +422,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A blunt sceptic who will not turn probability into certainty, especially when weighing a cropped clip versus the continuous threat sequence.",
+        "persona": "A blunt sceptic who will not turn probability into certainty.",
         "register": "formal",
         "arc": "vibes",
         "initial": {
@@ -436,15 +436,15 @@
         },
         "lines": {
           "agree": [
-            "I move because the continuous rear recording, retreat sequence, and motion log; it answers the weakness that first divided this room.",
-            "In my notes at seat 3, the continuous rear recording, retreat sequence, and motion log agrees across sources that did not depend on one another."
+            "I move because of the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "In my notes at seat 3, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I keep separating the cropped roadside clip and angry message decide more than its source can support.",
-            "Two records agreeing matters more to me than one record sounding certain. Here that means the cropped clip against the continuous sequence."
+            "I keep separating the cropped roadside clip and angry message from what they can actually prove.",
+            "I need the chronology laid out before I choose between those accounts. Here that means the cropped clip against the continuous sequence."
           ],
           "concede": [
-            "I can see why the cropped roadside clip and angry message, especially before the underlying record is opened."
+            "I can see why the cropped roadside clip and angry message swayed people, especially before the underlying record was opened."
           ],
           "final": [
             "I finish with the continuous rear recording, retreat sequence, and motion log, with the burden left where the judge placed it."
@@ -492,7 +492,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A shift worker who notices breaks in chronology, especially when weighing a cropped clip versus the continuous threat sequence.",
+        "persona": "A shift worker who notices breaks in chronology.",
         "register": "hesitant",
         "arc": "vibes",
         "initial": {
@@ -506,15 +506,15 @@
         },
         "lines": {
           "agree": [
-            "The part I cannot explain away is the continuous rear recording, retreat sequence, and motion log; it answers the weakness that first divided this room.",
-            "In my notes at seat 4, the continuous rear recording, retreat sequence, and motion log agrees across sources that did not depend on one another."
+            "The part I cannot explain away is the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "In my notes at seat 4, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "Before I rely on the cropped roadside clip and angry message decide more than its source can support.",
-            "I am testing which side can explain the missing link without assumption. Here that means the cropped clip against the continuous sequence."
+            "Before I rely on the cropped roadside clip and angry message, I need the underlying record opened.",
+            "Two records agreeing matters more to me than one record sounding certain. Here that means the cropped clip against the continuous sequence."
           ],
           "concede": [
-            "At first I gave too much weight to the cropped roadside clip and angry message, especially before the underlying record is opened."
+            "At first I gave too much weight to the cropped roadside clip and angry message, especially before the underlying record was opened."
           ],
           "final": [
             "The deciding chain for me is the continuous rear recording, retreat sequence, and motion log, with the burden left where the judge placed it."
@@ -562,7 +562,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A bookkeeper who tests whether separate records truly reconcile, especially when weighing a cropped clip versus the continuous threat sequence.",
+        "persona": "A bookkeeper who tests whether separate records truly reconcile.",
         "register": "blunt",
         "arc": "steady",
         "initial": {
@@ -576,15 +576,15 @@
         },
         "lines": {
           "agree": [
-            "I checked the sequence against the continuous rear recording, retreat sequence, and motion log; it answers the weakness that first divided this room.",
-            "In my notes at seat 5, the continuous rear recording, retreat sequence, and motion log agrees across sources that did not depend on one another."
+            "I checked the sequence against the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "In my notes at seat 5, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I hear the force of the cropped roadside clip and angry message decide more than its source can support.",
-            "The burden makes me separate a possible story from a proved one. Here that means the cropped clip against the continuous sequence."
+            "I hear the force of the cropped roadside clip and angry message, but I will not let them decide more than their source can support.",
+            "I am testing which side can explain the missing link without assumption. Here that means the cropped clip against the continuous sequence."
           ],
           "concede": [
-            "I concede the surface force of the cropped roadside clip and angry message, especially before the underlying record is opened."
+            "I concede the surface force of the cropped roadside clip and angry message, especially before the underlying record was opened."
           ],
           "final": [
             "I return at the end to the continuous rear recording, retreat sequence, and motion log, with the burden left where the judge placed it."
@@ -632,7 +632,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A caregiver who is alert to pressure and unequal power, especially when weighing a cropped clip versus the continuous threat sequence.",
+        "persona": "A caregiver who is alert to pressure and unequal power.",
         "register": "plain",
         "arc": "principled_holdout",
         "initial": {
@@ -646,21 +646,21 @@
         },
         "lines": {
           "agree": [
-            "What changes my vote is the continuous rear recording, retreat sequence, and motion log; it answers the weakness that first divided this room.",
-            "In my notes at seat 6, the continuous rear recording, retreat sequence, and motion log agrees across sources that did not depend on one another."
+            "What changes my vote is the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "In my notes at seat 6, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I am not treating the cropped roadside clip and angry message decide more than its source can support.",
+            "I am not treating the cropped roadside clip and angry message as proving more than their source can support.",
             "I want the source data before I accept the label attached to it. Here that means the cropped clip against the continuous sequence."
           ],
           "concede": [
-            "I was initially moved by the cropped roadside clip and angry message, especially before the underlying record is opened."
+            "I was initially moved by the cropped roadside clip and angry message, especially before the underlying record was opened."
           ],
           "final": [
             "My final vote follows the continuous rear recording, retreat sequence, and motion log, with the burden left where the judge placed it."
           ],
           "holdout": [
-            "I will hold on a cropped clip versus the continuous threat sequence until evidence, rather than consensus, answers it; from seat 6, I relate it to the cropped clip against the continuous sequence."
+            "I will hold on the cropped clip versus the continuous sequence until independent records — not pressure from the room — answer it."
           ]
         },
         "reaction_rules": [
@@ -705,7 +705,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A technician who distrusts labels without source data, especially when weighing a cropped clip versus the continuous threat sequence.",
+        "persona": "A technician who distrusts labels without source data.",
         "register": "formal",
         "arc": "mind_changer",
         "initial": {
@@ -719,15 +719,15 @@
         },
         "lines": {
           "agree": [
-            "I trust the continuous rear recording, retreat sequence, and motion log; it answers the weakness that first divided this room.",
-            "In my notes at seat 7, the continuous rear recording, retreat sequence, and motion log agrees across sources that did not depend on one another."
+            "I trust the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "In my notes at seat 7, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "My problem with the cropped roadside clip and angry message decide more than its source can support.",
+            "My problem is letting the cropped roadside clip and angry message decide more than their source can support.",
             "A vivid clue will not move me unless the later sequence supports it. Here that means the cropped clip against the continuous sequence."
           ],
           "concede": [
-            "The opposing account fairly points to the cropped roadside clip and angry message, especially before the underlying record is opened."
+            "The opposing account fairly points to the cropped roadside clip and angry message, especially before the underlying record was opened."
           ],
           "final": [
             "I resolve the doubt through the continuous rear recording, retreat sequence, and motion log, with the burden left where the judge placed it."
@@ -775,7 +775,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A coach who asks whether conduct matches the claimed motive, especially when weighing a cropped clip versus the continuous threat sequence.",
+        "persona": "A coach who asks whether conduct matches the claimed motive.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -789,15 +789,15 @@
         },
         "lines": {
           "agree": [
-            "The room should start with the continuous rear recording, retreat sequence, and motion log; it answers the weakness that first divided this room.",
-            "In my notes at seat 8, the continuous rear recording, retreat sequence, and motion log agrees across sources that did not depend on one another."
+            "The room should start with the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "In my notes at seat 8, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "We should test the cropped roadside clip and angry message decide more than its source can support.",
+            "We should test whether the cropped roadside clip and angry message can decide more than their source can support.",
             "I am asking whether the physical evidence and the testimony converge. Here that means the cropped clip against the continuous sequence."
           ],
           "concede": [
-            "I cannot dismiss the cropped roadside clip and angry message, especially before the underlying record is opened."
+            "I cannot dismiss the cropped roadside clip and angry message, especially before the underlying record was opened."
           ],
           "final": [
             "The complete record leaves me with the continuous rear recording, retreat sequence, and motion log, with the burden left where the judge placed it."
@@ -845,7 +845,7 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A student who can be swept up by a vivid first impression, especially when weighing a cropped clip versus the continuous threat sequence.",
+        "persona": "A student who can be swept up by a vivid first impression.",
         "register": "blunt",
         "arc": "burden_drifter",
         "initial": {
@@ -858,24 +858,24 @@
         },
         "lines": {
           "agree": [
-            "I needed corroboration, and the continuous rear recording, retreat sequence, and motion log; it answers the weakness that first divided this room.",
-            "In my notes at seat 9, the continuous rear recording, retreat sequence, and motion log agrees across sources that did not depend on one another."
+            "I needed corroboration, and the continuous rear recording, retreat sequence, and motion log provide it — they answer the weakness that first divided this room.",
+            "In my notes at seat 9, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I still question the cropped roadside clip and angry message decide more than its source can support.",
+            "I still question whether the cropped roadside clip and angry message can decide more than their source can support.",
             "I need to know what this proves about intent, not only opportunity. Here that means the cropped clip against the continuous sequence."
           ],
           "concede": [
-            "There is real persuasive force in the cropped roadside clip and angry message, especially before the underlying record is opened."
+            "There is real persuasive force in the cropped roadside clip and angry message, especially before the underlying record was opened."
           ],
           "final": [
             "I am voting from the continuous rear recording, retreat sequence, and motion log, with the burden left where the judge placed it."
           ],
           "burden_drift": [
-            "I catch myself asking for an innocent explanation, even though that is not the accused's burden; from seat 9, I relate it to the cropped clip against the continuous sequence."
+            "I catch myself asking for an innocent explanation, even though that is not the accused's burden. From seat 9, that temptation is about the cropped clip against the continuous sequence."
           ],
           "burden_correct": [
-            "I am correcting course: the prosecution must close the gap, not the accused; from seat 9, I relate it to the cropped clip against the continuous sequence."
+            "I am correcting course: the prosecution must close the gap, not the accused. From seat 9, that means the cropped clip against the continuous sequence."
           ]
         },
         "reaction_rules": [
@@ -932,7 +932,7 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A foreperson who restates disagreements before calling a vote, especially when weighing a cropped clip versus the continuous threat sequence.",
+        "persona": "A foreperson who restates disagreements before calling a vote.",
         "register": "plain",
         "arc": "foreperson",
         "initial": {
@@ -946,15 +946,15 @@
         },
         "lines": {
           "agree": [
-            "The timing becomes coherent through the continuous rear recording, retreat sequence, and motion log; it answers the weakness that first divided this room.",
-            "In my notes at seat 10, the continuous rear recording, retreat sequence, and motion log agrees across sources that did not depend on one another."
+            "The timing becomes coherent through the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "In my notes at seat 10, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I refuse to confuse the cropped roadside clip and angry message decide more than its source can support.",
-            "The custody trail matters only if it follows the same object throughout. Here that means the cropped clip against the continuous sequence."
+            "I refuse to let the cropped roadside clip and angry message decide more than their source can support.",
+            "A familiar driver-witness still needs the continuous recording, not just a short clip. Here that means the cropped clip against the continuous sequence."
           ],
           "concede": [
-            "I understand the reliance on the cropped roadside clip and angry message, especially before the underlying record is opened."
+            "I understand the reliance on the cropped roadside clip and angry message, especially before the underlying record was opened."
           ],
           "final": [
             "My conclusion turns on the continuous rear recording, retreat sequence, and motion log, with the burden left where the judge placed it."
@@ -1002,7 +1002,7 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A retiree who wants testimony anchored to something independent, especially when weighing a cropped clip versus the continuous threat sequence.",
+        "persona": "A retiree who wants testimony anchored to something independent.",
         "register": "formal",
         "arc": "steady",
         "initial": {
@@ -1015,15 +1015,15 @@
         },
         "lines": {
           "agree": [
-            "I am persuaded by the continuous rear recording, retreat sequence, and motion log; it answers the weakness that first divided this room.",
-            "In my notes at seat 11, the continuous rear recording, retreat sequence, and motion log agrees across sources that did not depend on one another."
+            "I am persuaded by the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "In my notes at seat 11, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I want a source check on the cropped roadside clip and angry message decide more than its source can support.",
+            "I want a source check before the cropped roadside clip and angry message decide more than their source can support.",
             "I am checking whether my doubt is evidential or merely speculative. Here that means the cropped clip against the continuous sequence."
           ],
           "concede": [
-            "I began from the cropped roadside clip and angry message, especially before the underlying record is opened."
+            "I began from the cropped roadside clip and angry message, especially before the underlying record was opened."
           ],
           "final": [
             "After testing both stories, I rely on the continuous rear recording, retreat sequence, and motion log, with the burden left where the judge placed it."
@@ -1071,7 +1071,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A delivery worker who focuses on custody and physical sequence, especially when weighing a cropped clip versus the continuous threat sequence.",
+        "persona": "A delivery worker who focuses on custody and physical sequence.",
         "register": "hesitant",
         "arc": "mind_changer",
         "initial": {
@@ -1085,15 +1085,15 @@
         },
         "lines": {
           "agree": [
-            "My holdout ends with the continuous rear recording, retreat sequence, and motion log; it answers the weakness that first divided this room.",
-            "In my notes at seat 12, the continuous rear recording, retreat sequence, and motion log agrees across sources that did not depend on one another."
+            "My holdout ends with the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "In my notes at seat 12, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I am holding against the cropped roadside clip and angry message decide more than its source can support.",
+            "I am holding against letting the cropped roadside clip and angry message decide more than their source can support.",
             "Consensus will not substitute for the independent record I still need. Here that means the cropped clip against the continuous sequence."
           ],
           "concede": [
-            "I will grant the cropped roadside clip and angry message, especially before the underlying record is opened."
+            "I will grant that the cropped roadside clip and angry message looked strong, especially before the underlying record was opened."
           ],
           "final": [
             "I can now decide because of the continuous rear recording, retreat sequence, and motion log, with the burden left where the judge placed it."
