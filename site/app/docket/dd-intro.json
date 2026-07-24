@@ -9,7 +9,7 @@
     "A parcel left the warehouse without authority",
     "The accused took it dishonestly, knowing it was not theirs"
   ],
-  "hook": "A late parcel vanished from a quiet reception desk. The night guard says he saw the trainee take it. The trainee says he only moved it to the safe shelf — and that the badge on the camera was already out of date.",
+  "hook": "A late parcel vanished from a quiet reception desk. The night guard says he saw the trainee take it. The trainee says she only moved it to the safe shelf — and that the name on the camera came from a pass the system had already retired.",
   "accused": {
     "cast_id": "acc",
     "human": "Nia Cole, 24. Three months into the night shift. Lives with her brother; this job pays the rent.",
@@ -23,21 +23,21 @@
       },
       "defence": {
         "speaker": "dc",
-        "text": "Nia Cole moved a parcel to the safe shelf, as she had been told to do with late drops. The badge on the camera feed was expired. The person who truly left with the parcel used that dead badge. If you are not sure it was her, you must acquit."
+        "text": "Nia Cole moved a parcel to the safe shelf, as she had been told to do with late drops. The name on the camera feed belonged to a retired pass. The person who truly left with the parcel used that dead badge. If you are not sure it was her, you must acquit."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The camera places her at the desk. The parcel is gone. The night guard saw her carry it away. Do not let a story about an expired badge erase what your eyes and ears have already heard."
+        "text": "The camera places her at the desk. The parcel is gone. The night guard saw her carry it away. Do not let a story about a retired pass erase what your eyes and ears have already heard."
       },
       "defence": {
         "speaker": "dc",
-        "text": "Place and time are not the whole charge. Dishonesty is. The expired badge and the safe-shelf policy leave real doubt. If she may have been doing her job, you must find her not guilty."
+        "text": "Place and time are not the whole charge. Dishonesty is. The retired pass and the safe-shelf instruction leave real doubt. If she may have been doing her job, you must find her not guilty."
       }
     }
   },
-  "epilogue": "Two weeks later a contractor was caught selling warehouse parcels from a van two towns over. His lanyard still held the expired badge from the camera. Nia kept her job. The warehouse changed how it retires old passes — and how it trains new night staff on the safe shelf.",
+  "epilogue": "Two weeks later a contractor was caught selling warehouse parcels from a van two towns over. His lanyard still held the retired pass from the camera. Nia kept her job. The warehouse changed how it retires old passes — and how it trains new night staff on the safe shelf.",
   "cast": [
     {
       "id": "judge",
@@ -81,7 +81,7 @@
       "id": "b1",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit one is the reception camera. At 1:12 in the morning a figure in a trainee jacket lifts a brown parcel from the desk and walks toward the side door. The on-screen name badge reads Nia Cole. The time stamp matches the missing-parcel log.",
+      "text": "Exhibit one is the reception camera. At 1:12 in the morning a figure in a trainee jacket lifts a brown parcel from the desk and walks toward the side door. The name printed on the camera screen reads Nia Cole. The time stamp matches the missing-parcel log.",
       "surface_persuasion": 0.85,
       "true_weight": 0.25,
       "direction": "guilt",
@@ -97,7 +97,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "I was on the mezzanine. I saw the trainee take the parcel off the desk and head for the side door. Nobody else was in reception. Late parcels stay on that desk until morning unless a supervisor signs them out.",
+      "text": "I was on the upper walkway overlooking reception. I saw the trainee take the parcel off the desk and head for the side door. Nobody else was in reception. Late parcels stay on that desk until morning unless a supervisor signs them out.",
       "surface_persuasion": 0.7,
       "true_weight": 0.3,
       "direction": "guilt",
@@ -113,7 +113,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "'How far were you from the desk?' 'Maybe twenty metres, looking down.' 'Could you read the badge with your own eyes?' 'No — I used the camera name on the monitor.' 'And you did not see the safe shelf by the side door?' 'Not from where I stood.'",
+      "text": "'How far were you from the desk?' 'Maybe twenty metres, looking down.' 'Could you read the badge with your own eyes?' 'No — I used the camera name on the monitor.' 'And you did not see the safe shelf by the side door?' 'Not from where I stood.' 'Were night trainees told anything different about late drops?' 'Not that I heard.'",
       "turns": [
         {
           "speaker": "dc",
@@ -138,6 +138,14 @@
         {
           "speaker": "w1",
           "text": "Not from where I stood."
+        },
+        {
+          "speaker": "dc",
+          "text": "Were night trainees told anything different about late drops?"
+        },
+        {
+          "speaker": "w1",
+          "text": "Not that I heard."
         }
       ],
       "surface_persuasion": 0.45,
@@ -154,7 +162,7 @@
       "id": "b4",
       "kind": "exhibit",
       "speaker": "clerk",
-      "text": "Exhibit two is the access log. The badge number printed on the camera overlay was retired three weeks earlier. The same number opens the side door at 1:14 — but the live staff system shows that number was already marked lost, not issued to the trainee.",
+      "text": "Exhibit two is the door and badge record. The name on the camera was tied to a pass number retired three weeks earlier — marked lost, not given to the trainee. That same dead number still opens the side door at 1:14.",
       "surface_persuasion": 0.55,
       "true_weight": 0.85,
       "direction": "innocence",
@@ -209,7 +217,7 @@
       "true_weight": 0.35,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "Acting alone sounds suspicious until you hear the written night-shift rule she followed.",
+      "reveal_note": "Acting alone sounds suspicious until you hear the night-shift instruction she says she followed.",
       "tags": [
         "motive",
         "procedure"
@@ -219,7 +227,7 @@
       "id": "b7",
       "kind": "direction",
       "speaker": "judge",
-      "text": "Members of the jury, the prosecution must prove each element beyond reasonable doubt. Suspicion is not enough. If you find yourselves unsure whether she took the parcel dishonestly, you must return a verdict of not guilty.",
+      "text": "Members of the jury, the prosecution must prove each element beyond reasonable doubt. Suspicion is not enough. Dishonestly means she took it knowing it was not hers to take, not merely moved it as part of her job. If you are unsure, you must return a verdict of not guilty.",
       "surface_persuasion": 0.4,
       "true_weight": 0.5,
       "direction": "innocence",
@@ -240,7 +248,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "Takes the camera badge at face value - her on the feed, parcel gone.",
+        "persona": "Takes the camera badge at face value: her on the feed, parcel gone.",
         "register": "blunt",
         "arc": "vibes",
         "initial": {
@@ -253,7 +261,7 @@
         },
         "lines": {
           "agree": [
-            "That is what I have been saying - her badge, her hands on the parcel.",
+            "That is what I have been saying — her badge, her hands on the parcel.",
             "See, even the camera agrees with me."
           ],
           "pushback": [
@@ -261,7 +269,7 @@
             "Nobody else was standing there when it left."
           ],
           "concede": [
-            "Fine - if that badge was already retired, the feed proves less than I thought."
+            "Fine — if that badge was already retired, the feed proves less than I thought."
           ],
           "final": [
             "I go with what the camera shows."
@@ -309,7 +317,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "Practical; trusts the night-shift note about the safe shelf.",
+        "persona": "Practical; trusts the night-shift instruction about the safe shelf.",
         "register": "plain",
         "arc": "steady",
         "initial": {
@@ -322,18 +330,18 @@
         },
         "lines": {
           "agree": [
-            "The written night rule matters - late drops go to the safe shelf.",
-            "If she followed the note, that is not theft."
+            "What she was told for late drops matters — safe shelf, not open desk.",
+            "If she followed that instruction, that is not theft."
           ],
           "pushback": [
-            "A note on a wall does not erase a missing parcel.",
+            "A spoken instruction does not erase a missing parcel.",
             "People invent policies after they get caught."
           ],
           "concede": [
-            "All right - the shelf rule was real, and she named it before anyone else did."
+            "All right — the shelf instruction was real, and she named it before anyone else did."
           ],
           "final": [
-            "I follow what was written down for the night staff."
+            "I follow what the night trainees were told to do."
           ]
         },
         "reaction_rules": [
@@ -389,7 +397,7 @@
         },
         "lines": {
           "agree": [
-            "Precisely. The standard is sure - not suspicious, not probably."
+            "Precisely. The standard is sure — not suspicious, not probably."
           ],
           "pushback": [
             "You are asking her to explain the missing parcel. That is not her job, it is the prosecution's.",
@@ -532,12 +540,12 @@
         },
         "lines": {
           "agree": [
-            "Noted - and for what it is worth, I agree with that.",
+            "Noted — and for what it is worth, I agree with that.",
             "The guard put her at the desk with the parcel in her hands."
           ],
           "pushback": [
             "We still have to decide as a room, not as twelve solo votes.",
-            "An expired badge story can wait until we finish the guard evidence."
+            "An retired-pass story can wait until we finish the guard evidence."
           ],
           "concede": [
             "If the pass was already dead, that changes how I read the camera."
@@ -588,7 +596,7 @@
         },
         "lines": {
           "agree": [
-            "Yes - that timestamp is the bit I keep coming back to.",
+            "Yes — that timestamp is the bit I keep coming back to.",
             "The feed puts her there when the parcel leaves the desk."
           ],
           "pushback": [
@@ -656,15 +664,15 @@
         },
         "lines": {
           "agree": [
-            "I keep rereading that ghost-label point. A dead badge on the feed is not an accident.",
+            "I keep coming back to that retired-pass point. A dead badge on the feed is not an accident.",
             "If the pass was retired, someone else could have worn that look."
           ],
           "pushback": [
-            "Or she used a pass that should have been cut up - that still looks bad.",
+            "Or she used a pass that should have been cut up — that still looks bad.",
             "Do not turn a paperwork failure into an alibi."
           ],
           "concede": [
-            "All right - a contractor with that lanyard later is hard to ignore."
+            "All right — if that pass was already marked lost, the name on the screen proves a lot less."
           ],
           "final": [
             "The dead badge moved me off sure guilty."
@@ -737,7 +745,7 @@
         "lines": {
           "agree": [
             "Mm. The louder the witness, the less I tend to believe.",
-            "The guard is sure - that alone makes me careful."
+            "The guard is sure — that alone makes me careful."
           ],
           "pushback": [
             "I still need a clean account of where the parcel went after the shelf.",
@@ -803,7 +811,7 @@
         },
         "lines": {
           "agree": [
-            "Exactly. Parcel gone, story ready - too neat by half."
+            "Exactly. Parcel gone, story ready — too neat by half."
           ],
           "pushback": [
             "Then where did the parcel go? Someone in this room tell me that."
@@ -813,7 +821,7 @@
             "An honest trainee rings the supervisor. She never explained why she did not."
           ],
           "concede": [
-            "All right, all right - the judge did say it is not hers to prove."
+            "All right, all right — the judge did say it is not hers to prove."
           ],
           "burden_correct": [
             "I withdraw it. They have to make us sure; she owes us nothing."
@@ -877,8 +885,8 @@
         },
         "lines": {
           "agree": [
-            "Yes - say that part again, that is the part that moves me.",
-            "Safe shelf first, then someone else with the dead badge - that sequence fits."
+            "Yes — say that part again, that is the part that moves me.",
+            "Safe shelf first, then someone else with the dead badge — that sequence fits."
           ],
           "pushback": [
             "Or she walked it out and the badge talk is a distraction.",
@@ -948,7 +956,7 @@
             "A retired pass on the feed is a real problem for sure guilt."
           ],
           "pushback": [
-            "Still - she is the only person the guard names with the parcel.",
+            "Still — she is the only person the guard names with the parcel.",
             "Screens can lie, but empty shelves do not invent themselves."
           ],
           "concede": [

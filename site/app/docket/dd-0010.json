@@ -3,18 +3,18 @@
   "publish_date": "2026-07-30",
   "label": "fiction",
   "title": "The Export",
-  "setting": "a subscription company's server room, a dark-market listing, and one hardware key, the present day",
+  "setting": "a subscription company's server room, a dark-market listing, and one hardware key — present day",
   "charge": "unauthorised access and sale of personal data",
   "elements": [
     "The customer database was exported and sold without authority",
-    "The accused performed the export",
+    "The accused performed the export, or caused it to be performed under his credentials",
     "He did so dishonestly, for gain"
   ],
   "hook": "At 2:14 in the morning, someone pulled 1.1 million customer records out of MintVault in eleven minutes — no wrong turns, no tripped alarms. Nine days earlier, Leo Brandt had reported a phishing email that stole his password. He is either the unluckiest administrator alive, or the only one who knew the map by heart.",
   "accused": {
     "cast_id": "w3",
     "human": "Leo Brandt, 38. Senior systems administrator; spent three years writing memos about the company's sloppy security — the shared logins, the sticky-note PINs — until colleagues hid them when he walked past.",
-    "if_guilty": "prison for the data theft, and three years of being the one who cared reread as reconnaissance"
+    "if_guilty": "prison for the data theft — and three years of being 'the one who cared' reread as reconnaissance"
   },
   "statements": {
     "opening": {
@@ -24,7 +24,7 @@
       },
       "defence": {
         "speaker": "dc",
-        "text": "Leo Brandt is the man who reported the phishing email — the same day, before any breach — and thieves do not ring the alarm on themselves. He is the man who wrote the memos about shared logins and PINs on sticky notes, in a shared-drawer culture where anyone in operations could lift a key overnight and return it by morning. The Crown has built a chain out of an institution's own carelessness. The judge will tell you: one honest break in that chain, and you must acquit."
+        "text": "Leo Brandt is the man who reported the phishing email — the same day, before any breach — and thieves do not ring the alarm on themselves. He wrote the memos about shared logins and PINs on sticky notes, in a shared-drawer culture where anyone in operations could lift a key overnight and return it by morning. The Crown — that is, the prosecution — has built a chain out of an institution's own carelessness. The judge will tell you: one honest break in that chain, and you must acquit."
       }
     },
     "closing": {
@@ -54,7 +54,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "We learned of the breach the way you never want to: our customers' records appeared for sale online. The export itself ran at 2:14 in the morning through an internal administrator session — one point one million records, names, addresses, and payment tokens, pulled in eleven minutes by someone who knew exactly where everything lived.",
+      "text": "We learned of the breach the way you never want to: our customers' records appeared for sale online. The export ran at 2:14am through an administrator session — one point one million names, addresses, and payment details held as tokens, enough to bill a card without the full number, pulled in eleven minutes by someone who knew exactly where everything lived.",
       "surface_persuasion": 0.6,
       "true_weight": 0.5,
       "direction": "guilt",
@@ -66,7 +66,7 @@
       "id": "b2",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit two, tendered by the defence: a phishing email received by the accused nine days before the breach — a pixel-perfect fake of the company's IT portal, asking him to re-enter his administrator credentials. He clicked it. The defence says his stolen credentials, not his hands, performed the export.",
+      "text": "Exhibit one, put in by the defence: a phishing email received by the accused nine days before the breach — a pixel-perfect fake of the company's IT portal, asking him to re-enter his administrator credentials. He clicked it. The defence says his stolen credentials, not his hands, performed the export.",
       "surface_persuasion": 0.75,
       "true_weight": 0.2,
       "direction": "innocence",
@@ -79,7 +79,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
-      "text": "The administrator account had historically been shared among three operations staff, against policy? Yes. There were gaps in the access logging? There were. Your own team had flagged those gaps and deferred them twice for budget reasons? Yes. The accused wrote the memo complaining about both the shared account and the logging gaps? He did.",
+      "text": "The administrator account had historically been shared among three operations staff, against policy? Yes. There were gaps in the access logging? There were. Your own team had flagged those gaps and deferred them twice for budget reasons? Yes. The accused wrote the memo complaining about both the shared account and the logging gaps? He did. And after he reported it, that password was changed the same afternoon? Yes.",
       "turns": [
         { "speaker": "dc", "text": "The administrator account had historically been shared among three operations staff, against policy?" },
         { "speaker": "w1", "text": "Yes." },
@@ -88,7 +88,9 @@
         { "speaker": "dc", "text": "Your own team had flagged those gaps and deferred them twice for budget reasons?" },
         { "speaker": "w1", "text": "Yes." },
         { "speaker": "dc", "text": "The accused wrote the memo complaining about both the shared account and the logging gaps?" },
-        { "speaker": "w1", "text": "He did." }
+        { "speaker": "w1", "text": "He did." },
+        { "speaker": "dc", "text": "And after he reported it, that password was changed the same afternoon?" },
+        { "speaker": "w1", "text": "Yes." }
       ],
       "surface_persuasion": 0.5,
       "true_weight": 0.45,
@@ -102,7 +104,7 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "The database was listed on a dark market by a vendor called corvid underscore nine — a fresh account with no history, asking a premium price. The sample rows the vendor posted matched our victim's records exactly. Within a week the listing was marked sold, and the vendor account went silent for good.",
+      "text": "The database was listed on a dark market by a vendor called corvid underscore nine — a fresh account with no history, asking a premium price. The sample rows the vendor posted matched the company's records exactly. Within a week the listing was marked sold, and the vendor account went silent for good.",
       "surface_persuasion": 0.6,
       "true_weight": 0.5,
       "direction": "guilt",
@@ -114,7 +116,7 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit four: the export session's authentication chain. Beyond the password, the session was approved by the accused's personal hardware security key — a device requiring both his PIN and a physical touch, registered to him alone, never reported lost or stolen. The session arrived through a personal VPN subscription paid from his own card.",
+      "text": "Exhibit two: the export's authentication chain. Beyond the password, the session needed his personal hardware key — PIN plus physical touch, registered to him alone. Company policy, which he signed on joining, required that key stay on his person. A VPN hides where you sit online by routing through another city; logs show that tunnel ended in the same city as the 2:14 session, paid from his card.",
       "surface_persuasion": 0.55,
       "true_weight": 0.85,
       "direction": "guilt",
@@ -126,7 +128,7 @@
       "id": "b6",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit five: the money. The wallet that received the sale proceeds moved them, over six weeks, into an exchange account opened eight months earlier with the accused's passport and a selfie verification. From there, regular withdrawals landed in his everyday bank account — the same account his salary goes into.",
+      "text": "Exhibit three: the money. The sale payment went first to a digital wallet, then — over six weeks — into a currency-exchange account opened eight months earlier with his passport photo and a face-scan selfie. From there, regular withdrawals landed in the bank account that receives his salary.",
       "surface_persuasion": 0.5,
       "true_weight": 0.75,
       "direction": "guilt",
@@ -152,13 +154,13 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "The key needs a PIN as well. Where is that PIN written? Nowhere. I never wrote it down. Your onboarding form says the key stays on your person at all times. When did the desk drawer enter your account? (The witness did not answer.) Shown a VPN receipt in your own inbox, Mr Brandt — what was it for? Streaming sport. It exits in the city the export came from.",
+      "text": "The key needs a PIN. Where is that PIN written? Nowhere. I never wrote it down. Your onboarding form says the key stays on your person. When did 'desk drawer' enter that story — before the charge, or after? The witness is not answering. Shown a VPN receipt in your inbox, Mr Brandt — what was it for? Streaming sport. It exits in the city the export came from.",
       "turns": [
-        { "speaker": "pc", "text": "The key needs a PIN as well. Where is that PIN written?" },
+        { "speaker": "pc", "text": "The key needs a PIN. Where is that PIN written?" },
         { "speaker": "w3", "text": "Nowhere. I never wrote it down." },
-        { "speaker": "pc", "text": "Your onboarding form says the key stays on your person at all times. When did the desk drawer enter your account?" },
-        { "speaker": "w3", "text": "(The witness did not answer.)" },
-        { "speaker": "pc", "text": "Shown a VPN receipt in your own inbox, Mr Brandt — what was it for?" },
+        { "speaker": "pc", "text": "Your onboarding form says the key stays on your person. When did 'desk drawer' enter that story — before the charge, or after?" },
+        { "speaker": "judge", "text": "The witness is not answering." },
+        { "speaker": "pc", "text": "Shown a VPN receipt in your inbox, Mr Brandt — what was it for?" },
         { "speaker": "w3", "text": "Streaming sport." },
         { "speaker": "pc", "text": "It exits in the city the export came from." }
       ],
@@ -232,7 +234,7 @@
         "initial": { "position": "G", "confidence": 65 },
         "weights": { "digital_forensics": 2, "identity": 1 },
         "lines": {
-          "agree": ["A phish captures what you type. It cannot press a button on a key in your pocket.", "PIN plus touch plus his VPN. The password story ended at Exhibit four."],
+          "agree": ["A phish captures what you type. It cannot press a button on a key in your pocket.", "PIN plus touch plus his VPN. The password story ended at Exhibit two."],
           "pushback": ["Stop arguing the password. Nobody disputes the password. Argue the key.", "Logging gaps hide what happened. They do not authenticate anything."],
           "concede": ["The shared-drawer culture was real. It just needed his PIN to matter."],
           "final": ["I have carried one of those keys for years. Mine has never exported a database without me."]
@@ -338,7 +340,7 @@
         "initial": { "position": "NG", "confidence": 70 },
         "weights": { "digital_forensics": 2, "identity": 2 },
         "lines": {
-          "agree": ["The key needed a touch and a PIN. The phish got neither. I have run out of innocent geometry.", "corvid_9 was born for one sale and its money died in his bank. Follow that arc and try to land anywhere else."],
+          "agree": ["The key needed a touch and a PIN. The phish got neither. I have run out of innocent explanations that fit the key, the PIN, and the VPN at once.", "corvid_9 was born for one sale and its money died in his bank. Follow that arc and try to land anywhere else."],
           "pushback": ["I want it on record: the phish was real, and it fooled me exactly the way it was meant to fool us.", "The reported email felt like character evidence. It was set dressing."],
           "concede": ["All right. The chain closed and my doubt did not survive the closing."],
           "final": ["He built himself a reasonable doubt nine days early. It worked on me for most of a day."]

@@ -3,7 +3,7 @@
   "publish_date": "2026-08-04",
   "label": "fiction",
   "title": "The Borrowed Face",
-  "setting": "a remote payroll contractor, synthetic interview footage, and a rented flat in the present day",
+  "setting": "a payroll contractor that hired remote video workers, synthetic interview footage, and a rented flat in the present day",
   "charge": "obtaining wages by deception",
   "elements": [
     "A false identity or representation was used to obtain wages",
@@ -12,18 +12,18 @@
   "hook": "A contractor works ninety paid hours under Lio Sarin's face. The interviews pass live movement checks, the wages reach his account, and every session comes from his flat. Then one blink appears twice.",
   "accused": {
     "cast_id": "acc",
-    "human": "Lio Sarin, 24, is an apprentice sound editor who shared a cramped flat with an older cousin and sent most wages home to a parent recovering from surgery.",
+    "human": "Lio Sarin, 24, is an apprentice sound editor who shared a cramped flat with his older cousin Mina Sarin and sent most wages home to a parent recovering from surgery.",
     "if_guilty": "a fraud conviction, removal from his apprenticeship, and debt for wages he says he never earned"
   },
   "statements": {
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "A false worker used Lio Sarin's face, identity papers, bank account, and home connection. The system challenged the worker to turn, blink, and speak random phrases; each challenge passed. Ninety hours of wages then landed in Lio's account and paid his rent. The simplest explanation is participation, not an invisible impersonator operating inside his home."
+        "text": "A false worker used Lio Sarin's face, identity papers, bank account, and the flat's internet line. The system ran on-screen checks that ask the person to turn, blink, and speak random phrases; each challenge passed. Ninety hours of wages then landed in Lio's account and paid his rent. The simplest explanation is participation, not an invisible impersonator operating inside his home."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The face was synthetic, the identity file came from a stolen tenancy application, and the account was controlled through a forwarding rule Lio never created. His cousin had the flat, the router, and the voice recordings needed to build the worker. A copied face passing a copied test proves the test failed. It does not prove the person copied agreed."
+        "text": "The face was synthetic, the identity file came from a stolen tenancy application, and the account was controlled through a bank setting that secretly sent deposit emails elsewhere — a forwarding rule Lio never created. His cousin Mina had the flat, the router, and the voice recordings needed to build the worker. A copied face passing a copied test proves the test failed. It does not prove the person copied agreed."
       }
     },
     "closing": {
@@ -33,11 +33,11 @@
       },
       "defence": {
         "speaker": "dc",
-        "text": "The repeated blink is not decoration; it is proof the live interview was assembled. Device logs place Lio at his apprenticeship during key sessions, while the cousin used a hidden virtual camera and redirected every bank alert. Rent was paid to stop eviction of them both, then the rest moved away. Suspicion attaches to the face. Control attaches elsewhere."
+        "text": "The repeated blink is not decoration; it is proof the live interview was assembled. Device logs place Lio at his apprenticeship during key sessions, while Mina used a hidden virtual camera and redirected every bank alert. Rent was paid to stop eviction of them both, then the rest moved away. Suspicion attaches to the face. Control attaches elsewhere."
       }
     }
   },
-  "epilogue": "The contractor replaced its movement challenge with supervised identity checks and compensated workers whose files had been exposed. Lio completed the apprenticeship after a long suspension and moved to a studio with separate network access. The former flatmate entered a repayment arrangement in related proceedings. Lio's parent sold a small vehicle to cover legal debt, then later received support from an industry hardship fund.",
+  "epilogue": "The contractor replaced its movement challenge with supervised identity checks and compensated workers whose files had been exposed. Lio completed the apprenticeship after a long suspension and moved to a studio with separate network access. Mina entered a repayment arrangement in related proceedings. Lio's parent sold a small vehicle to cover legal debt, then later received support from an industry hardship fund.",
   "cast": [
     {
       "id": "judge",
@@ -78,7 +78,7 @@
     {
       "id": "w3",
       "name": "Mina Sarin",
-      "role_label": "former flatmate",
+      "role_label": "cousin and former flatmate",
       "side": "defence"
     }
   ],
@@ -87,12 +87,12 @@
       "id": "b1",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "Exhibit one combines six live-check certificates. Each says the worker turned on command, blinked at random prompts, and repeated a changing phrase while a face match exceeded ninety-four per cent. The compliance manager treated those certificates as proof Lio personally attended every session, because the system advertised resistance to recordings and masks.",
+      "text": "Exhibit one combines six live-check certificates. Each says the worker turned on camera, followed turn-and-blink prompts, and spoke on cue. Together they cover ninety billed hours under Lio's name. The prosecution offers them as proof someone using his face cleared the contractor's presence tests.",
       "surface_persuasion": 0.84,
       "true_weight": 0.18,
       "direction": "guilt",
       "reveal_stamp": "misleading",
-      "reveal_note": "The apparent shortcut in exhibit one combines six live-check certificates collapsed when the original source was compared.",
+      "reveal_note": "Exhibit one's live-check certificates looked like a shortcut to proof of presence until the original frames were compared.",
       "tags": [
         "digital_forensics",
         "identity"
@@ -108,7 +108,7 @@
       "true_weight": 0.32,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "the identity package was unusually complete: licence image, tenancy statement, tax number, and a voice sample from the onboarding call helped test a witness account while leaving the central issue open.",
+      "reveal_note": "The identity package was unusually complete, but completeness alone does not prove Lio supplied it.",
       "tags": [
         "digital_forensics",
         "credibility"
@@ -150,7 +150,7 @@
       "true_weight": 0.55,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The wider sequence qualified what your system certified every session as live could fairly support.",
+      "reveal_note": "Cross-examination limited the certificates to 'the system accepted an input,' not 'Lio was personally present.'",
       "tags": [
         "identity",
         "credibility"
@@ -160,12 +160,12 @@
       "id": "b4",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The prosecution tenders Lio's bank statement. Contractor wages entered his account and paid four weeks of overdue rent. He did not report the deposits for forty-two days. Those facts suggest benefit and silence, although the statement also shows every remaining payment forwarded within minutes to an unfamiliar holding account. The onward transfers made benefit look real while leaving ultimate control unresolved.",
+      "text": "Exhibit two is Lio's bank statement. Contractor wages entered his account on schedule after each billed block. Rent left the same account within hours of those deposits. For forty-two days he made no complaint to the bank or the contractor about money arriving under his name.",
       "surface_persuasion": 0.62,
       "true_weight": 0.38,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "lio's bank statement looked conclusive until its hidden assumption was tested.",
+      "reveal_note": "Lio's bank statement shows wages and rent; it does not prove he controlled the scheme.",
       "tags": [
         "digital_forensics",
         "motive"
@@ -176,12 +176,12 @@
       "kind": "witness",
       "speaker": "w2",
       "mode": "examination",
-      "text": "I compared the onboarding videos frame by frame. In two sessions weeks apart, a blink contains the same compression blocks and identical strand movement above the left eyebrow. Natural movements do not repeat pixel for pixel. A virtual-camera driver also appears in the session logs, disguised as an ordinary webcam.",
+      "text": "I compared the onboarding videos frame by frame. In two sessions weeks apart, a blink contains the same compression blocks and identical strand movement above the left eyebrow. Natural movements do not repeat pixel for pixel. A virtual-camera driver — software that feeds a fake webcam into the call — also appears in the session logs, disguised as an ordinary webcam.",
       "surface_persuasion": 0.58,
       "true_weight": 0.42,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The corroboration behind compared the onboarding videos frame by frame carried genuine weight on timing, control, or method.",
+      "reveal_note": "Frame matching showed the same blink reused across sessions, which natural video should not do.",
       "tags": [
         "timeline",
         "digital_forensics"
@@ -191,12 +191,12 @@
       "id": "b6",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit six is the device-location schedule. During seven billed shifts, Lio's apprenticeship terminal recorded badge entry, editing activity, and supervised audio sessions across the day. The false contractor account worked simultaneously from the flat. The overlap totals thirty-one hours and includes two live challenges that display his face. That overlap tested whether one person could plausibly perform both sets of work.",
+      "text": "Exhibit three is the device-location schedule. During seven billed shifts, Lio's apprenticeship badge and supervised terminal place him across town at the same minutes the interview sessions still ran from the flat's internet line. The face worked from home while the badge worked elsewhere.",
       "surface_persuasion": 0.66,
       "true_weight": 0.82,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "the device-location schedule helped test a witness account while leaving the central issue open.",
+      "reveal_note": "The device-location schedule supports an alibi clock; it does not by itself name who ran the interviews.",
       "tags": [
         "identity",
         "timeline"
@@ -238,7 +238,7 @@
       "true_weight": 0.72,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "Independent records confirmed what a synthetic face could be prepared from material lio never supplied for this scheme contributed to the final reconstruction.",
+      "reveal_note": "The examiner could prove compositing — building a fake face from clips — not who ran the fake face.",
       "tags": [
         "identity",
         "procedure"
@@ -249,12 +249,12 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "examination",
-      "text": "I shared the flat and managed the router. Lio left tenancy scans and voice reels on a backup drive we both used. I knew his account was behind on rent. His cousin slept in the living room for two months and used a curtained desk overnight, saying the noise was freelance translation work.",
+      "text": "I shared the flat and managed the router. Lio left tenancy scans and voice reels on a backup drive we both used. I knew his account was behind on rent. I slept in the living room for two months and used a curtained desk overnight, saying the noise was freelance translation work.",
       "surface_persuasion": 0.56,
       "true_weight": 0.48,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "shared the flat and managed the router added context without resolving identity or intent.",
+      "reveal_note": "Mina's account put her at the router and the curtained desk, but did not by itself prove who operated the fake face.",
       "tags": [
         "identity",
         "credibility"
@@ -265,11 +265,11 @@
       "kind": "witness",
       "speaker": "w3",
       "mode": "cross",
-      "text": "You disliked the cousin and blamed them only after police arrived? I was frightened and did not understand the software. You never saw the false worker on screen? No, the desk faced away behind a curtain. Then your evidence is suspicion from household habits? And the router account showing their device configured the virtual camera.",
+      "text": "You only blamed software you claim not to understand after police arrived? I was frightened and did not understand the software. You never saw the false worker on screen? No, the desk faced away behind a curtain. Then your evidence is suspicion from household habits? Not only habits. The router log shows my device set up the virtual camera.",
       "turns": [
         {
           "speaker": "pc",
-          "text": "You disliked the cousin and blamed them only after police arrived?"
+          "text": "You only blamed software you claim not to understand after police arrived?"
         },
         {
           "speaker": "w3",
@@ -289,14 +289,14 @@
         },
         {
           "speaker": "w3",
-          "text": "And the router account showing their device configured the virtual camera."
+          "text": "Not only habits. The router log shows my device set up the virtual camera."
         }
       ],
       "surface_persuasion": 0.52,
       "true_weight": 0.3,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The limits surrounding you disliked the cousin and blamed them only after police arrived kept it from deciding the charge alone.",
+      "reveal_note": "Mina admitted her device configured the virtual camera while still denying she understood the scheme.",
       "tags": [
         "credibility",
         "digital_forensics"
@@ -306,12 +306,12 @@
       "id": "b11",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit nine is the bank-alert audit. A new forwarding rule sent all deposit notices to an address controlled from the cousin's handset. The same handset authenticated the holding account and withdrew funds after rent was paid. Lio's own phone never opened the contractor portal, and its security log records two rejected attempts from the flat.",
+      "text": "Exhibit four is the bank-alert audit. A new forwarding rule sent all deposit notices to an address controlled from Mina's handset. The same handset authenticated the holding account and withdrew funds after rent was paid. Lio's own phone never opened the contractor portal, and its security log records two rejected attempts from the flat.",
       "surface_persuasion": 0.72,
       "true_weight": 0.9,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "Independent records confirmed what the bank-alert audit contributed to the final reconstruction.",
+      "reveal_note": "The alert forwarding and withdrawals tied control of the money to Mina's handset, not Lio's phone.",
       "tags": [
         "identity",
         "timeline",
@@ -322,12 +322,12 @@
       "id": "b10",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The judge directs you that Lio need not identify the person who assembled or operated the false face. The prosecution must prove his knowing participation and dishonest intent beyond reasonable doubt. Separate resemblance, account benefit, device control, and simultaneous activity, relying only on admitted records rather than outside searches about synthetic media or the household.",
+      "text": "You must decide only on the evidence you heard. Looking like Lio, receiving wages, or living where the sessions ran is not enough on its own. The prosecution must prove he knowingly took part and meant to gain. Do not fill gaps with ideas from outside this trial.",
       "surface_persuasion": 0.45,
       "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "the judge directs you that the accused does not have to prove an alternative story or explain every suspicious circumstance helped test a witness account while leaving the central issue open.",
+      "reveal_note": "The judge reminded the jury that Lio need not prove who else did it; the prosecution must prove knowing participation.",
       "tags": [
         "burden",
         "procedure"
@@ -341,7 +341,7 @@
     "b10"
   ],
   "verdict_truth": "Not Guilty",
-  "twist": "The live checks passed because the same manufactured face could turn, speak, and even blink on command. One blink repeating pixel for pixel exposed the trick; simultaneous apprenticeship records showed Lio working elsewhere while his face worked from the flat. The wages touched his rent, but the cousin's handset controlled the alerts, holding account, and withdrawals.",
+  "twist": "The live checks passed because the same manufactured face could turn, speak, and even blink on command. One blink repeating pixel for pixel exposed the trick; simultaneous apprenticeship records showed Lio working elsewhere while his face worked from the flat. The wages touched his rent, but Mina's handset controlled the alerts, holding account, and withdrawals.",
   "difficulty_target": 0.7,
   "jury": {
     "jurors": [
@@ -349,7 +349,7 @@
         "id": "J-01",
         "seat": 2,
         "label": "Juror 2",
-        "persona": "A technician who distrusts labels without source data, especially when weighing digital resemblance versus human control.",
+        "persona": "A technician who distrusts labels without source data.",
         "register": "hesitant",
         "arc": "vibes",
         "initial": {
@@ -363,15 +363,15 @@
         },
         "lines": {
           "agree": [
-            "For me, the anchor is the duplicated frames, device separation, and alert routing; it answers the weakness that first divided this room.",
-            "In my notes at seat 2, the duplicated frames, device separation, and alert routing agrees across sources that did not depend on one another."
+            "For me, the anchor is the duplicated frames, device separation, and alert routing — they answer the weakness that first divided this room.",
+            "In my notes at seat 2, the duplicated frames, device separation, and alert routing agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I will not let the live-face certificates and rent payments decide more than its source can support.",
-            "I need the chronology laid out before I choose between those accounts. Here that means digital resemblance against human control."
+            "I will not let the live-face certificates and rent payments decide more than their source can support.",
+            "Two records agreeing matters more to me than one record sounding certain. Here that means digital resemblance against human control."
           ],
           "concede": [
-            "I admit the live-face certificates and rent payments, especially before the underlying record is opened."
+            "I admit the live-face certificates and rent payments looked damning at first, especially before the underlying record was opened."
           ],
           "final": [
             "My verdict rests on the duplicated frames, device separation, and alert routing, with the burden left where the judge placed it."
@@ -419,7 +419,7 @@
         "id": "J-02",
         "seat": 3,
         "label": "Juror 3",
-        "persona": "A coach who asks whether conduct matches the claimed motive, especially when weighing digital resemblance versus human control.",
+        "persona": "A coach who asks whether conduct matches the claimed motive.",
         "register": "blunt",
         "arc": "steady",
         "initial": {
@@ -433,15 +433,15 @@
         },
         "lines": {
           "agree": [
-            "I move because the duplicated frames, device separation, and alert routing; it answers the weakness that first divided this room.",
-            "In my notes at seat 3, the duplicated frames, device separation, and alert routing agrees across sources that did not depend on one another."
+            "I move because of the duplicated frames, device separation, and alert routing — they answer the weakness that first divided this room.",
+            "In my notes at seat 3, the duplicated frames, device separation, and alert routing agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I keep separating the live-face certificates and rent payments decide more than its source can support.",
-            "Two records agreeing matters more to me than one record sounding certain. Here that means digital resemblance against human control."
+            "I keep separating the live-face certificates and rent payments from what they can actually prove.",
+            "I am testing which side can explain the missing link without assumption. Here that means digital resemblance against human control."
           ],
           "concede": [
-            "I can see why the live-face certificates and rent payments, especially before the underlying record is opened."
+            "I can see why the live-face certificates and rent payments swayed people, especially before the underlying record was opened."
           ],
           "final": [
             "I finish with the duplicated frames, device separation, and alert routing, with the burden left where the judge placed it."
@@ -489,7 +489,7 @@
         "id": "J-03",
         "seat": 4,
         "label": "Juror 4",
-        "persona": "A student who can be swept up by a vivid first impression, especially when weighing digital resemblance versus human control.",
+        "persona": "A student who can be swept up by a vivid first impression.",
         "register": "plain",
         "arc": "principled_holdout",
         "initial": {
@@ -503,27 +503,27 @@
         },
         "lines": {
           "agree": [
-            "The part I cannot explain away is the duplicated frames, device separation, and alert routing; it answers the weakness that first divided this room.",
-            "In my notes at seat 4, the duplicated frames, device separation, and alert routing agrees across sources that did not depend on one another."
+            "The part I cannot explain away is the duplicated frames, device separation, and alert routing — they answer the weakness that first divided this room.",
+            "In my notes at seat 4, the duplicated frames, device separation, and alert routing agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "Before I rely on the live-face certificates and rent payments decide more than its source can support.",
-            "I am testing which side can explain the missing link without assumption. Here that means digital resemblance against human control."
+            "Before I rely on the live-face certificates and rent payments, I need the underlying record opened.",
+            "The burden makes me separate a possible story from a proved one. Here that means digital resemblance against human control."
           ],
           "concede": [
-            "At first I gave too much weight to the live-face certificates and rent payments, especially before the underlying record is opened."
+            "At first I gave too much weight to the live-face certificates and rent payments, especially before the underlying record was opened."
           ],
           "final": [
             "The deciding chain for me is the duplicated frames, device separation, and alert routing, with the burden left where the judge placed it."
           ],
           "burden_drift": [
-            "I catch myself asking for an innocent explanation, even though that is not the accused's burden; from seat 4, I relate it to digital resemblance against human control."
+            "I catch myself asking for an innocent explanation, even though that is not the accused's burden. From seat 4, that temptation is about digital resemblance against human control."
           ],
           "burden_correct": [
-            "I am correcting course: the prosecution must close the gap, not the accused; from seat 4, I relate it to digital resemblance against human control."
+            "I am correcting course: the prosecution must close the gap, not the accused. From seat 4, that means digital resemblance against human control."
           ],
           "holdout": [
-            "I will hold until the duplicated frames, device separation, and alert routing is tested against the burden."
+            "I will hold until independent records — not pressure from the room — show who controlled the face and the money."
           ]
         },
         "reaction_rules": [
@@ -568,7 +568,7 @@
         "id": "J-04",
         "seat": 5,
         "label": "Juror 5",
-        "persona": "A foreperson who restates disagreements before calling a vote, especially when weighing digital resemblance versus human control.",
+        "persona": "A foreperson who restates disagreements before calling a vote.",
         "register": "formal",
         "arc": "burden_drifter",
         "initial": {
@@ -582,21 +582,21 @@
         },
         "lines": {
           "agree": [
-            "I checked the sequence against the duplicated frames, device separation, and alert routing; it answers the weakness that first divided this room.",
-            "In my notes at seat 5, the duplicated frames, device separation, and alert routing agrees across sources that did not depend on one another."
+            "I checked the sequence against the duplicated frames, device separation, and alert routing — they answer the weakness that first divided this room.",
+            "In my notes at seat 5, the duplicated frames, device separation, and alert routing agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I hear the force of the live-face certificates and rent payments decide more than its source can support.",
-            "The burden makes me separate a possible story from a proved one. Here that means digital resemblance against human control."
+            "I hear the force of the live-face certificates and rent payments, but I will not let them decide more than their source can support.",
+            "I need the chronology laid out before I choose between those accounts. Here that means digital resemblance against human control."
           ],
           "concede": [
-            "I concede the surface force of the live-face certificates and rent payments, especially before the underlying record is opened."
+            "I concede the surface force of the live-face certificates and rent payments, especially before the underlying record was opened."
           ],
           "final": [
             "I return at the end to the duplicated frames, device separation, and alert routing, with the burden left where the judge placed it."
           ],
           "burden_drift": [
-            "I catch myself demanding an explanation because the live-face certificates and rent payments feels personal."
+            "I catch myself demanding an explanation because the live-face certificates and rent payments feel personal — but feeling is not the burden."
           ]
         },
         "reaction_rules": [
@@ -641,7 +641,7 @@
         "id": "J-05",
         "seat": 6,
         "label": "Juror 6",
-        "persona": "A retiree who wants testimony anchored to something independent, especially when weighing digital resemblance versus human control.",
+        "persona": "A retiree who wants testimony anchored to something independent.",
         "register": "hesitant",
         "arc": "foreperson",
         "initial": {
@@ -655,21 +655,21 @@
         },
         "lines": {
           "agree": [
-            "What changes my vote is the duplicated frames, device separation, and alert routing; it answers the weakness that first divided this room.",
-            "In my notes at seat 6, the duplicated frames, device separation, and alert routing agrees across sources that did not depend on one another."
+            "What changes my vote is the duplicated frames, device separation, and alert routing — they answer the weakness that first divided this room.",
+            "In my notes at seat 6, the duplicated frames, device separation, and alert routing agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I am not treating the live-face certificates and rent payments decide more than its source can support.",
+            "I am not treating the live-face certificates and rent payments as proving more than their source can support.",
             "I want the source data before I accept the label attached to it. Here that means digital resemblance against human control."
           ],
           "concede": [
-            "I was initially moved by the live-face certificates and rent payments, especially before the underlying record is opened."
+            "I was initially moved by the live-face certificates and rent payments, especially before the underlying record was opened."
           ],
           "final": [
             "My final vote follows the duplicated frames, device separation, and alert routing, with the burden left where the judge placed it."
           ],
           "burden_correct": [
-            "I correct that mistake: the live-face certificates and rent payments does not move the burden from the prosecution."
+            "I correct that mistake: the live-face certificates and rent payments do not move the burden from the prosecution."
           ]
         },
         "reaction_rules": [
@@ -714,7 +714,7 @@
         "id": "J-06",
         "seat": 7,
         "label": "Juror 7",
-        "persona": "A delivery worker who focuses on custody and physical sequence, especially when weighing digital resemblance versus human control.",
+        "persona": "A delivery worker who focuses on custody and physical sequence.",
         "register": "blunt",
         "arc": "drifter",
         "initial": {
@@ -728,15 +728,15 @@
         },
         "lines": {
           "agree": [
-            "I trust the duplicated frames, device separation, and alert routing; it answers the weakness that first divided this room.",
-            "In my notes at seat 7, the duplicated frames, device separation, and alert routing agrees across sources that did not depend on one another."
+            "I trust the duplicated frames, device separation, and alert routing — they answer the weakness that first divided this room.",
+            "In my notes at seat 7, the duplicated frames, device separation, and alert routing agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "My problem with the live-face certificates and rent payments decide more than its source can support.",
+            "My problem is letting the live-face certificates and rent payments decide more than their source can support.",
             "A vivid clue will not move me unless the later sequence supports it. Here that means digital resemblance against human control."
           ],
           "concede": [
-            "The opposing account fairly points to the live-face certificates and rent payments, especially before the underlying record is opened."
+            "The opposing account fairly points to the live-face certificates and rent payments, especially before the underlying record was opened."
           ],
           "final": [
             "I resolve the doubt through the duplicated frames, device separation, and alert routing, with the burden left where the judge placed it."
@@ -784,7 +784,7 @@
         "id": "J-07",
         "seat": 8,
         "label": "Juror 8",
-        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps, especially when weighing digital resemblance versus human control.",
+        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps.",
         "register": "plain",
         "arc": "mind_changer",
         "initial": {
@@ -798,21 +798,21 @@
         },
         "lines": {
           "agree": [
-            "The room should start with the duplicated frames, device separation, and alert routing; it answers the weakness that first divided this room.",
-            "In my notes at seat 8, the duplicated frames, device separation, and alert routing agrees across sources that did not depend on one another."
+            "The room should start with the duplicated frames, device separation, and alert routing — they answer the weakness that first divided this room.",
+            "In my notes at seat 8, the duplicated frames, device separation, and alert routing agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "We should test the live-face certificates and rent payments decide more than its source can support.",
+            "We should test whether the live-face certificates and rent payments can decide more than their source can support.",
             "I am asking whether the physical evidence and the testimony converge. Here that means digital resemblance against human control."
           ],
           "concede": [
-            "I cannot dismiss the live-face certificates and rent payments, especially before the underlying record is opened."
+            "I cannot dismiss the live-face certificates and rent payments, especially before the underlying record was opened."
           ],
           "final": [
             "The complete record leaves me with the duplicated frames, device separation, and alert routing, with the burden left where the judge placed it."
           ],
           "holdout": [
-            "I will hold on digital resemblance versus human control until evidence, rather than consensus, answers it; from seat 8, I relate it to digital resemblance against human control."
+            "I will hold until independent records — not pressure from the room — show who controlled the face and the money."
           ]
         },
         "reaction_rules": [
@@ -857,7 +857,7 @@
         "id": "J-08",
         "seat": 9,
         "label": "Juror 9",
-        "persona": "A blunt sceptic who will not turn probability into certainty, especially when weighing digital resemblance versus human control.",
+        "persona": "A blunt sceptic who will not turn probability into certainty.",
         "register": "formal",
         "arc": "steady",
         "initial": {
@@ -871,15 +871,15 @@
         },
         "lines": {
           "agree": [
-            "I needed corroboration, and the duplicated frames, device separation, and alert routing; it answers the weakness that first divided this room.",
-            "In my notes at seat 9, the duplicated frames, device separation, and alert routing agrees across sources that did not depend on one another."
+            "I needed corroboration, and the duplicated frames, device separation, and alert routing provide it — they answer the weakness that first divided this room.",
+            "In my notes at seat 9, the duplicated frames, device separation, and alert routing agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I still question the live-face certificates and rent payments decide more than its source can support.",
+            "I still question whether the live-face certificates and rent payments can decide more than their source can support.",
             "I need to know what this proves about intent, not only opportunity. Here that means digital resemblance against human control."
           ],
           "concede": [
-            "There is real persuasive force in the live-face certificates and rent payments, especially before the underlying record is opened."
+            "There is real persuasive force in the live-face certificates and rent payments, especially before the underlying record was opened."
           ],
           "final": [
             "I am voting from the duplicated frames, device separation, and alert routing, with the burden left where the judge placed it."
@@ -927,7 +927,7 @@
         "id": "J-09",
         "seat": 10,
         "label": "Juror 10",
-        "persona": "A shift worker who notices breaks in chronology, especially when weighing digital resemblance versus human control.",
+        "persona": "A shift worker who notices breaks in chronology.",
         "register": "hesitant",
         "arc": "drifter",
         "initial": {
@@ -941,15 +941,15 @@
         },
         "lines": {
           "agree": [
-            "The timing becomes coherent through the duplicated frames, device separation, and alert routing; it answers the weakness that first divided this room.",
-            "In my notes at seat 10, the duplicated frames, device separation, and alert routing agrees across sources that did not depend on one another."
+            "The timing becomes coherent through the duplicated frames, device separation, and alert routing — they answer the weakness that first divided this room.",
+            "In my notes at seat 10, the duplicated frames, device separation, and alert routing agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I refuse to confuse the live-face certificates and rent payments decide more than its source can support.",
-            "The custody trail matters only if it follows the same object throughout. Here that means digital resemblance against human control."
+            "I refuse to let the live-face certificates and rent payments decide more than their source can support.",
+            "I am checking whether my doubt is evidential or merely speculative. Here that means digital resemblance against human control."
           ],
           "concede": [
-            "I understand the reliance on the live-face certificates and rent payments, especially before the underlying record is opened."
+            "I understand the reliance on the live-face certificates and rent payments, especially before the underlying record was opened."
           ],
           "final": [
             "My conclusion turns on the duplicated frames, device separation, and alert routing, with the burden left where the judge placed it."
@@ -997,7 +997,7 @@
         "id": "J-10",
         "seat": 11,
         "label": "Juror 11",
-        "persona": "A bookkeeper who tests whether separate records truly reconcile, especially when weighing digital resemblance versus human control.",
+        "persona": "A bookkeeper who tests whether separate records truly reconcile.",
         "register": "blunt",
         "arc": "steady",
         "initial": {
@@ -1011,15 +1011,15 @@
         },
         "lines": {
           "agree": [
-            "I am persuaded by the duplicated frames, device separation, and alert routing; it answers the weakness that first divided this room.",
-            "In my notes at seat 11, the duplicated frames, device separation, and alert routing agrees across sources that did not depend on one another."
+            "I am persuaded by the duplicated frames, device separation, and alert routing — they answer the weakness that first divided this room.",
+            "In my notes at seat 11, the duplicated frames, device separation, and alert routing agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I want a source check on the live-face certificates and rent payments decide more than its source can support.",
+            "I want a source check before the live-face certificates and rent payments decide more than their source can support.",
             "I am checking whether my doubt is evidential or merely speculative. Here that means digital resemblance against human control."
           ],
           "concede": [
-            "I began from the live-face certificates and rent payments, especially before the underlying record is opened."
+            "I began from the live-face certificates and rent payments, especially before the underlying record was opened."
           ],
           "final": [
             "After testing both stories, I rely on the duplicated frames, device separation, and alert routing, with the burden left where the judge placed it."
@@ -1067,7 +1067,7 @@
         "id": "J-11",
         "seat": 12,
         "label": "Juror 12",
-        "persona": "A caregiver who is alert to pressure and unequal power, especially when weighing digital resemblance versus human control.",
+        "persona": "A caregiver who is alert to pressure and unequal power.",
         "register": "plain",
         "arc": "principled_holdout",
         "initial": {
@@ -1081,21 +1081,21 @@
         },
         "lines": {
           "agree": [
-            "My holdout ends with the duplicated frames, device separation, and alert routing; it answers the weakness that first divided this room.",
-            "In my notes at seat 12, the duplicated frames, device separation, and alert routing agrees across sources that did not depend on one another."
+            "My holdout ends with the duplicated frames, device separation, and alert routing — they answer the weakness that first divided this room.",
+            "In my notes at seat 12, the duplicated frames, device separation, and alert routing agree across sources that did not depend on one another."
           ],
           "pushback": [
-            "I am holding against the live-face certificates and rent payments decide more than its source can support.",
+            "I am holding against letting the live-face certificates and rent payments decide more than their source can support.",
             "Consensus will not substitute for the independent record I still need. Here that means digital resemblance against human control."
           ],
           "concede": [
-            "I will grant the live-face certificates and rent payments, especially before the underlying record is opened."
+            "I will grant that the live-face certificates and rent payments looked strong, especially before the underlying record was opened."
           ],
           "final": [
             "I can now decide because of the duplicated frames, device separation, and alert routing, with the burden left where the judge placed it."
           ],
           "holdout": [
-            "I will hold on digital resemblance versus human control until evidence, rather than consensus, answers it; from seat 12, I relate it to digital resemblance against human control."
+            "I will hold until independent records — not pressure from the room — show who controlled the face and the money."
           ]
         },
         "reaction_rules": [
