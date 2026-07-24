@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import type { DocketCase, Statement } from '../../lib/v2/caseSchema'
-import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
+import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
+import { phaseNarratorCue } from '../../lib/narratorCues'
 import { StoryText } from './CaseMedia'
+import { NarratorCue } from './NarratorCue'
 
 /**
  * A counsel statement card — the visual voice of one side of the duel.
@@ -50,24 +52,26 @@ export function OpeningStatements({
   onDone: () => void
 }) {
   const { prosecution, defence } = trial.statements.opening
+  const phaseCue = phaseNarratorCue('openings')
   const [activeSpeaker, setActiveSpeaker] = useState<string | null>(null)
 
-  // Narrate both openings in their advocates' voices; stop on unmount.
   useEffect(() => {
     if (!narration) {
       setActiveSpeaker(null)
       return stopSpeech
     }
-    speakAll([
-      { text: prosecution.text, key: prosecution.speaker },
-      { text: defence.text, key: defence.speaker },
-    ], {
-      rate: playbackRate,
-      onLine: setActiveSpeaker,
-      done: () => setActiveSpeaker(null),
-    })
+    speak(phaseCue, 'narrator', () => {
+      speakAll([
+        { text: prosecution.text, key: prosecution.speaker },
+        { text: defence.text, key: defence.speaker },
+      ], {
+        rate: playbackRate,
+        onLine: setActiveSpeaker,
+        done: () => setActiveSpeaker(null),
+      })
+    }, playbackRate)
     return stopSpeech
-  }, [prosecution.text, prosecution.speaker, defence.text, defence.speaker, narration, playbackRate])
+  }, [phaseCue, prosecution.text, prosecution.speaker, defence.text, defence.speaker, narration, playbackRate])
 
   return (
     <div className="phase-view openings-view space-y-6">
@@ -79,6 +83,8 @@ export function OpeningStatements({
           Two accounts. One burden of proof.
         </h1>
       </div>
+
+      <NarratorCue text={phaseCue} />
 
       {activeSpeaker && (
         <p className="speaker-focus text-xs text-amber-200/80" aria-live="polite">

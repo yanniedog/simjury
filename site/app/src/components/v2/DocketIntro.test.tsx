@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { makeDocketCase } from '../../lib/v2/fixtures'
+import { phaseNarratorCue } from '../../lib/narratorCues'
 
 const narrationMocks = vi.hoisted(() => ({
-  speak: vi.fn(),
+  speakAll: vi.fn(),
   stopSpeech: vi.fn(),
 }))
 const effectState = vi.hoisted(() => ({
@@ -29,7 +30,7 @@ describe('DocketIntro narration', () => {
     effectState.cleanup = undefined
   })
 
-  it('narrates the hook at the selected playback rate and stops on cleanup', () => {
+  it('narrates the briefing cue and hook at the selected playback rate and stops on cleanup', () => {
     const trial = makeDocketCase()
 
     DocketIntro({
@@ -40,17 +41,18 @@ describe('DocketIntro narration', () => {
       onBegin: () => undefined,
     })
 
-    expect(narrationMocks.speak).toHaveBeenCalledWith(
-      trial.hook,
-      'narrator',
-      undefined,
-      1.15,
+    expect(narrationMocks.speakAll).toHaveBeenCalledWith(
+      [
+        { text: phaseNarratorCue('intro'), key: 'narrator' },
+        { text: trial.hook, key: 'narrator' },
+      ],
+      { rate: 1.15 },
     )
     effectState.cleanup?.()
     expect(narrationMocks.stopSpeech).toHaveBeenCalledOnce()
   })
 
-  it('does not narrate the hook when narration is off', () => {
+  it('does not narrate when narration is off', () => {
     DocketIntro({
       trial: makeDocketCase(),
       dayNumber: 1,
@@ -59,6 +61,6 @@ describe('DocketIntro narration', () => {
       onBegin: () => undefined,
     })
 
-    expect(narrationMocks.speak).not.toHaveBeenCalled()
+    expect(narrationMocks.speakAll).not.toHaveBeenCalled()
   })
 })
