@@ -29,6 +29,10 @@ export function phaseNarratorCue(phase: PhaseCueId): string {
   return PHASE_CUES[phase]
 }
 
+export function allPhaseNarratorCues(): string[] {
+  return Object.values(PHASE_CUES)
+}
+
 function speakerOf(trial: DocketCase, id: string) {
   return trial.cast.find((m) => m.id === id)
 }

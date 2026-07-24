@@ -33,7 +33,6 @@ import {
   stopSpeech,
   type NarrationRate,
 } from './lib/narration'
-import { phaseNarratorCue } from './lib/narratorCues'
 import { DocketIntro } from './components/v2/DocketIntro'
 import { OpeningStatements } from './components/v2/OpeningStatements'
 import { DocketBeatView } from './components/v2/DocketBeatView'
@@ -187,16 +186,6 @@ function DocketApp({
   useEffect(() => {
     document.getElementById('phase-heading')?.focus()
   }, [phase, beatIndex])
-
-  useEffect(() => {
-    if (!narration) return stopSpeech
-    if (phase === 'juryroom') {
-      speak(phaseNarratorCue('juryroom'), 'narrator', undefined, playbackRate)
-    } else if (phase === 'reveal') {
-      speak(phaseNarratorCue('reveal'), 'narrator', undefined, playbackRate)
-    }
-    return stopSpeech
-  }, [phase, narration, playbackRate])
 
   if (!trial) {
     return (
@@ -419,6 +408,8 @@ function DocketApp({
           room={room}
           dayNumber={dayNumber}
           stats={revealStats}
+          narration={narration}
+          playbackRate={playbackRate}
           onChooseAnother={chooseAnotherSitting}
           isIntro={isIntro}
         />

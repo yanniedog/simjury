@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
 import type { BeatReveal, DocketAnalysis } from '../../lib/v2/analyze'
 import type { StoredPlay } from '../../lib/storage'
@@ -5,6 +6,7 @@ import type { Stats } from '../../lib/stats'
 import { buildShareText } from '../../lib/share'
 import { ShareCard } from '../ShareCard'
 import { StatsPanel } from '../StatsPanel'
+import { speak, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { phaseNarratorCue } from '../../lib/narratorCues'
 import type { Verdict } from './DocketVerdict'
 import { NarratorCue } from './NarratorCue'
@@ -46,6 +48,8 @@ export function DocketReveal({
   room,
   dayNumber,
   stats,
+  narration,
+  playbackRate,
   onChooseAnother,
   isIntro = false,
 }: {
@@ -55,10 +59,20 @@ export function DocketReveal({
   room: NonNullable<StoredPlay['room']>
   dayNumber: number
   stats: Stats
+  narration: boolean
+  playbackRate: NarrationRate
   onChooseAnother: () => void
   /** Guided intro is outside the daily queue - no Daily #N share card. */
   isIntro?: boolean
 }) {
+  const phaseCue = phaseNarratorCue('reveal')
+
+  useEffect(() => {
+    if (!narration) return stopSpeech
+    speak(phaseCue, 'narrator', undefined, playbackRate)
+    return stopSpeech
+  }, [phaseCue, narration, playbackRate])
+
   const roomLabel =
     room.kind === 'hung'
       ? `hung, ${room.g}–${room.ng}`
@@ -80,7 +94,7 @@ export function DocketReveal({
 
   return (
     <div className="phase-view reveal-view space-y-6">
-      <NarratorCue text={phaseNarratorCue('reveal')} />
+      <NarratorCue text={phaseCue} />
 
       <div className="judgment-record border p-5 text-center">
         <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">

@@ -33,8 +33,54 @@ const namedVoices = {
 const voices = ['af_heart', 'af_bella', 'bf_emma', 'af_nicole', 'am_fenrir', 'am_michael']
 const voiceFor = (key) => namedVoices[key] ?? voices[hash(key) % voices.length]
 
+
+function loadPhaseCues() {
+  const src = readFileSync(join(siteRoot, 'app', 'src', 'lib', 'narratorCues.ts'), 'utf8')
+  const match = src.match(/const PHASE_CUES: Record<PhaseCueId, string> = (\{[\s\S]*?\n\})/)
+  if (!match) throw new Error('PHASE_CUES missing from narratorCues.ts')
+  return Function(`"use strict"; return (${match[1]})`)()
+}
+
+function speakerOf(docket, id) {
+  return (docket.cast ?? []).find((m) => m.id === id)
+}
+
+/** Mirror site/app/src/lib/narratorCues.ts speakerNarratorCue for clip generation. */
+function speakerNarratorCue(docket, beat) {
+  const member = speakerOf(docket, beat.speaker)
+  if (!member) return null
+  const name = member.name
+  const role = member.role_label
+  if (beat.kind === 'direction') {
+    return `This is ${name}, ${role}. They will remind you of the legal rules that bind your decision.`
+  }
+  if (beat.kind === 'exhibit') {
+    return `This is an exhibit, presented by ${name}. Look at what it shows — and what it does not prove by itself.`
+  }
+  if (beat.mode === 'cross') {
+    return `This is cross-examination of ${name}. The other side will test their account. Listen for what holds up and what wobbles.`
+  }
+  if (member.side === 'prosecution') {
+    return `This is ${name}, ${role}. Their job is to help prove the charge. Listen for the key facts they put forward.`
+  }
+  if (member.side === 'defence') {
+    return `This is ${name}, ${role}. Their job is to raise doubt about the charge. Listen for the gaps they point out.`
+  }
+  return `This is ${name}, ${role}.`
+}
+
+function narratorCueLines(docket) {
+  const lines = Object.values(loadPhaseCues()).map((text) => ({ speaker: 'narrator', text }))
+  for (const beat of docket.beats ?? []) {
+    const text = speakerNarratorCue(docket, beat)
+    if (text) lines.push({ speaker: 'narrator', text })
+  }
+  return lines
+}
+
 function spokenLines(c) {
-  const lines = c.hook ? [{ speaker: 'narrator', text: c.hook }] : []
+  const lines = [...narratorCueLines(c)]
+  if (c.hook) lines.push({ speaker: 'narrator', text: c.hook })
   for (const phase of ['opening', 'closing']) {
     for (const side of ['prosecution', 'defence']) {
       const statement = c.statements?.[phase]?.[side]

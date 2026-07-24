@@ -17,6 +17,10 @@ function modeLabelFor(beat: DocketBeat): string {
   return 'Judge’s direction'
 }
 
+function beatModeKey(beat: DocketBeat): string {
+  return `${beat.kind}:${beat.mode ?? ''}`
+}
+
 export function DocketBeatView({
   trial,
   beatIndex,
@@ -40,19 +44,26 @@ export function DocketBeatView({
   const isLast = beatIndex === total - 1
   const media = trial.media?.beats[beat.id]
   const previousSpeaker = useRef<string | null>(null)
+  const previousModeKey = useRef<string | null>(null)
   const phaseCueShown = useRef(false)
+  // Lock the chosen cue per beat id so speakAll onLine setState cannot flip cueText mid-beat.
+  const lockedCue = useRef<{ beatId: string; text: string | null } | null>(null)
 
-  const showPhaseCue = beatIndex === 0
-  const speakerChanged = previousSpeaker.current !== beat.speaker
-  const speakerCue = speakerChanged ? speakerNarratorCue(trial, beat) : null
-  const cueText = showPhaseCue && !phaseCueShown.current
-    ? phaseNarratorCue('beats')
-    : speakerCue
-
-  useEffect(() => {
+  if (lockedCue.current?.beatId !== beat.id) {
+    const showPhaseCue = beatIndex === 0 && !phaseCueShown.current
+    const modeKey = beatModeKey(beat)
+    const speakerOrModeChanged =
+      previousSpeaker.current !== beat.speaker || previousModeKey.current !== modeKey
+    const speakerCue = speakerOrModeChanged ? speakerNarratorCue(trial, beat) : null
+    lockedCue.current = {
+      beatId: beat.id,
+      text: showPhaseCue ? phaseNarratorCue('beats') : speakerCue,
+    }
     previousSpeaker.current = beat.speaker
+    previousModeKey.current = modeKey
     if (beatIndex === 0) phaseCueShown.current = true
-  }, [beat.speaker, beatIndex])
+  }
+  const cueText = lockedCue.current.text
 
   useEffect(() => {
     setActiveDialogue(null)
