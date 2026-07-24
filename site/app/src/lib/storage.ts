@@ -45,6 +45,8 @@ export type StoredProgress = z.infer<typeof storedProgressSchema>
 
 const KEY_PREFIX = 'simjury-daily:v1:'
 const PROGRESS_PREFIX = 'simjury-progress:v1:'
+export const INTRO_COMPLETE_KEY = 'simjury:intro-complete'
+
 function storage(): Storage | null {
   try {
     return typeof localStorage === 'undefined' ? null : localStorage
@@ -116,6 +118,26 @@ export function clearProgress(day: number): void {
   if (!store) return
   try {
     store.removeItem(PROGRESS_PREFIX + day)
+  } catch {
+    // Blocked storage is non-fatal.
+  }
+}
+
+export function isIntroComplete(): boolean {
+  const store = storage()
+  if (!store) return false
+  try {
+    return store.getItem(INTRO_COMPLETE_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+export function markIntroComplete(): void {
+  const store = storage()
+  if (!store) return
+  try {
+    store.setItem(INTRO_COMPLETE_KEY, '1')
   } catch {
     // Blocked storage is non-fatal.
   }
