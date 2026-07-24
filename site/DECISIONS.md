@@ -22,6 +22,14 @@ where the web deliberately diverges, and why. (Android/pilot rules are unchanged
   public in this repository, so anyone can reconstruct which public corpus line an id
   represents. There is no Cloudflare narration endpoint, runtime AI, or backend player
   state.
+- **Publish model (2026-07-25):** each shard release keeps one merged `clips.zip` plus
+  individual content-addressed MP3 assets. The publisher uploads only *missing* MP3s
+  (no blind full clobber) and honors API rate-limit reset, so Actions' 1k REST
+  calls/hour/repo budget survives cue-only or single-case regenerations. Browser playback
+  stays on per-clip MP3 URLs via `<audio>` — Release assets are not CORS-readable and the
+  static CSP `connect-src` is `'self'`, so client-side zip extraction is not used. After
+  merging narration tooling changes, prefer `workflow_dispatch` for `dd-intro` (or a
+  single case) over a full `all` regen unless the corpus itself changed.
 
 ## D-WEB-2 — Listenable "jury room" (lite) (overrides GROWTH.md G-B / M-5 for web only)
 

@@ -105,10 +105,17 @@ function clipsFor(docket) {
   return clips
 }
 
+/** Numeric daily dockets plus the guided intro case. */
+const DOCKET_FILE_RE = /^(dd-\d{4}|dd-intro)\.json$/
 const allCases = readdirSync(docketDir)
-  .filter((file) => /^dd-\d{4}\.json$/.test(file))
+  .filter((file) => DOCKET_FILE_RE.test(file))
   .map((file) => file.replace(/\.json$/, ''))
-  .sort()
+  .sort((a, b) => {
+    // Keep dd-intro after the numbered runway so "all" matrices stay stable.
+    if (a === 'dd-intro') return 1
+    if (b === 'dd-intro') return -1
+    return a.localeCompare(b)
+  })
 const selected = requested === 'all'
   ? allCases
   : requested.split(',').map((item) => item.trim()).filter(Boolean)

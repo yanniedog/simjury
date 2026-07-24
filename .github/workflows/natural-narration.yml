@@ -17,6 +17,7 @@ on:
       - "site/narration-requirements.txt"
       - "site/scripts/build-kokoro-jobs.mjs"
       - "site/scripts/generate-kokoro-clips.py"
+      - "site/scripts/publish-kokoro-clips.mjs"
       - ".github/workflows/natural-narration.yml"
 
 permissions:
@@ -48,15 +49,22 @@ jobs:
             requested="$REQUESTED_CASES"
           else
             changed="$(git diff --name-only HEAD^ HEAD)"
-            if grep -Eq '^(\.github/workflows/natural-narration\.yml|site/app/src/lib/(narration|narratorCues)\.ts|site/app/src/lib/narratorCueCopy\.json|site/narration-requirements\.txt|site/scripts/(build-kokoro-jobs\.mjs|generate-kokoro-clips\.py))$' <<< "$changed"; then
+            # Only synthesis inputs / spoken cue copy should force all.
+            # build-kokoro-jobs matrix/filter changes (e.g. adding dd-intro) should
+            # use workflow_dispatch for the affected case ids instead.
+            if grep -Eq '^(site/app/src/lib/(narration|narratorCues)\.ts|site/app/src/lib/narratorCueCopy\.json|site/narration-requirements\.txt|site/scripts/generate-kokoro-clips\.py)$' <<< "$changed"; then
               requested="all"
             else
-              requested="$(sed -nE 's#^site/app/docket/(dd-[0-9]{4})\.json$#\1#p' <<< "$changed" |
+              requested="$(sed -nE 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p' <<< "$changed" |
                 sort -u | paste -sd, -)"
             fi
           fi
-          test -n "$requested"
-          echo "value=$(node site/scripts/build-kokoro-jobs.mjs --case "$requested" --list)" >> "$GITHUB_OUTPUT"
+          if [[ -z "$requested" ]]; then
+            echo "No narration corpus changes; skipping generation."
+            echo "value=[]" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=$(node site/scripts/build-kokoro-jobs.mjs --case "$requested" --list)" >> "$GITHUB_OUTPUT"
+          fi
       - name: Create stable GitHub voice-pack releases
         env:
           GH_TOKEN: ${{ github.token }}
@@ -70,6 +78,7 @@ jobs:
 
   generate:
     needs: prepare
+    if: needs.prepare.outputs.cases != '[]'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
@@ -107,34 +116,24 @@ jobs:
           retention-days: 1
 
   publish:
-    needs: generate
+    needs: [prepare, generate]
+    if: needs.prepare.outputs.cases != '[]'
     runs-on: ubuntu-latest
+    # Full first-time publishes may wait through GITHUB_TOKEN hourly resets.
+    timeout-minutes: 360
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
       - name: Collect generated case packs
         uses: actions/download-artifact@v4
         with:
           pattern: narration-*
           path: narration-clips
           merge-multiple: true
-      - name: Publish clips sequentially to GitHub Releases
-        shell: bash
+      - name: Publish shard zips + missing MP3s only
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-        run: |
-          shopt -s nullglob
-          for shard in $(seq 0 31); do
-            files=(narration-clips/"$shard"/*.mp3)
-            if (( ${#files[@]} )); then
-              for attempt in 1 2 3 4 5; do
-                if gh release upload "narration-kokoro-$shard" "${files[@]}" --clobber; then
-                  break
-                fi
-                if (( attempt == 5 )); then
-                  echo "Upload failed after $attempt attempts for shard $shard" >&2
-                  exit 1
-                fi
-                sleep $((attempt * 30))
-              done
-            fi
-          done
+        run: node site/scripts/publish-kokoro-clips.mjs --clips narration-clips
