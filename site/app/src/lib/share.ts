@@ -31,7 +31,7 @@ export function convictionTile(value: number): string {
 /**
  * Build the spoiler-safe share text. It deliberately reveals nothing about the
  * case, charge, authored outcome, or player's verdict. It shares the shape of
- * their thinking and the fictional room's split, not a win or loss.
+ * their thinking and the room's split, not a win or loss.
  */
 export function buildShareText(
   input: ShareInput,
@@ -44,8 +44,8 @@ export function buildShareText(
     const split = `${Math.max(input.room.g, input.room.ng)}–${Math.min(input.room.g, input.room.ng)}`
     lines.push(
       input.room.kind === 'hung'
-        ? `🏛️ My fictional jury hung ${split}`
-        : `🏛️ My fictional jury: ${split}${input.room.kind === 'unanimous' ? ' unanimous' : ''}`,
+        ? `🏛️ My jury hung ${split}`
+        : `🏛️ My jury: ${split}${input.room.kind === 'unanimous' ? ' unanimous' : ''}`,
     )
   }
 

@@ -52,6 +52,18 @@ where the web deliberately diverges, and why. (Android/pilot rules are unchanged
   Hand-drawn SVGs in `public/art/` are temporary placeholders until generated files land.
 - Images contain **no legible text** (F-4 safety) and no real person's likeness.
 
+## D-WEB-4 — No fiction / deterministic / GitHub chrome in player UI (owner-directed, 2026-07-24)
+
+- **DAILY-PIVOT.md** originally required daily cases to say they are fiction in player-facing
+  surfaces. That chrome rule is **overridden for product UI**: landing, `/today/`, share copy,
+  and in-app chrome must not surface fiction / simulation / deterministic / GitHub disclaimer
+  language.
+- **Data-layer safety is unchanged:** schema `label: "fiction"`, banned-token scan, and
+  fictional media caption rules remain mandatory authoring/CI invariants. The player strips
+  the leading fiction label before rendering captions (`playerMediaCaption`).
+- Android / Install links stay unlinked from the landing product path (pilot remains parked
+  at `/install/` for engineers who know the URL) and are omitted from `sitemap.xml`.
+
 ## Unchanged, still binding on the web
 
 - **No real names / no reveal content pre-verdict (F-4 / P-5).** Enforced for juror text by a
@@ -60,3 +72,5 @@ where the web deliberately diverges, and why. (Android/pilot rules are unchanged
   the GitHub Actions build; all game state remains client-side.
 - **The reveal is the twist** (GROWTH §8 spoiler policy) — public copy names no defendant,
   year, court, or outcome.
+- **Schema fiction pin** — every daily case JSON keeps `label: "fiction"` even though the UI
+  no longer repeats that word to players (see D-WEB-4).

@@ -1,6 +1,16 @@
 import type { MediaAsset } from '../../lib/v2/caseSchema'
 import { storyParagraphs } from '../../lib/storyText'
 
+/** Authoring captions must start with a fiction label; players see the label stripped. */
+export function playerMediaCaption(caption: string): string {
+  return caption
+    .replace(
+      /^Fictional (court sketch|character portrait|reconstruction)\b\s*/i,
+      (_: string, kind: string) => kind.charAt(0).toUpperCase() + kind.slice(1) + ' ',
+    )
+    .trim()
+}
+
 export function CaseMedia({
   asset,
   priority = false,
@@ -19,7 +29,7 @@ export function CaseMedia({
         className={asset.kind === 'evidence' ? 'aspect-video' : 'aspect-[3/2]'}
       />
       <figcaption>
-        {asset.caption}
+        {playerMediaCaption(asset.caption)}
       </figcaption>
     </figure>
   )
