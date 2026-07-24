@@ -285,11 +285,11 @@ export function checkDocketCase(c: DocketCase): string[] {
   const beatWordsMin = intro ? 25 : BEAT_WORDS_MIN
   const beatWordsMax = intro ? 80 : BEAT_WORDS_MAX
   const caseWordsMin = intro ? 200 : CASE_WORDS_MIN
-  const caseWordsMax = intro ? CASE_WORDS_MAX : CASE_WORDS_MAX
+  const caseWordsMax = CASE_WORDS_MAX
   const statementWordsMin = intro ? 25 : STATEMENT_WORDS_MIN
-  const statementWordsMax = intro ? STATEMENT_WORDS_MAX : STATEMENT_WORDS_MAX
+  const statementWordsMax = STATEMENT_WORDS_MAX
   const witnessMin = intro ? 1 : WITNESS_COUNT_MIN
-  const witnessMax = intro ? WITNESS_COUNT_MAX : WITNESS_COUNT_MAX
+  const witnessMax = WITNESS_COUNT_MAX
 
   // Pacing.
   let totalWords = 0
