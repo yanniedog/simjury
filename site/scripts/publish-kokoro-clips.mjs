@@ -44,6 +44,20 @@ if (!process.env.GH_TOKEN && !process.env.GITHUB_TOKEN) {
   process.exit(1)
 }
 
+function requireBin(name) {
+  const probe = run(name, ['-h'], { stdio: 'ignore' })
+  // zip/unzip print help to stderr and may use non-zero; existence is ENOENT.
+  if (probe.error && probe.error.code === 'ENOENT') {
+    console.error(
+      `publish-kokoro-clips: required binary '${name}' not found on PATH (CI ubuntu-latest provides zip/unzip; install them for local runs)`,
+    )
+    process.exit(1)
+  }
+}
+
+requireBin('zip')
+requireBin('unzip')
+
 function sleep(ms) {
   const seconds = Math.max(1, Math.ceil(ms / 1000))
   const result = spawnSync('sleep', [String(seconds)], { stdio: 'ignore' })
@@ -74,11 +88,7 @@ function rateLimitResetMs(stderr = '', stdout = '') {
   }
   const retryAfter = blob.match(/Retry-After:\s*(\d+)/i)?.[1]
   if (retryAfter) return Math.max(Number(retryAfter) * 1000, 15_000)
-  const api = run('gh', ['api', 'rate_limit', '--jq', '.resources.core.reset'])
-  if (api.status === 0) {
-    const ms = Number(api.stdout.trim()) * 1000 - Date.now() + 5_000
-    if (Number.isFinite(ms)) return Math.max(ms, 15_000)
-  }
+  // Do not call `gh api rate_limit` here -- that burns more quota while limited.
   return 120_000
 }
 
