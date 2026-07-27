@@ -112,16 +112,31 @@
   .verdict-dialog button:last-child { border-color: var(--paper-50); color: var(--court-950); background: var(--paper-50); font-weight: 700; }
 
   .jury-table { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); gap: .55rem; padding: 1.4rem; border: 1px solid rgb(244 240 232 / 11%); border-radius: 45% / 35%; background: radial-gradient(ellipse, rgb(214 185 121 / 9%), rgb(21 29 33 / 80%) 66%); box-shadow: inset 0 0 0 .65rem rgb(8 11 13 / 45%), 0 1.25rem 4rem rgb(0 0 0 / 22%); }
-  .jury-seat { display: grid; place-items: center; min-height: 3rem; padding: .35rem; border: 1px solid rgb(244 240 232 / 13%); border-radius: .65rem; font-size: .68rem; }
+  .jury-seat { display: grid; place-items: center; min-height: 3rem; padding: .35rem; border: 1px solid rgb(244 240 232 / 13%); border-radius: .65rem; font-size: .68rem; transition: transform .25s ease, outline-color .25s ease, background-color .25s ease; }
   .jury-seat small { display: block; margin-top: .1rem; font-size: .5rem; font-weight: 800; letter-spacing: .05em; }
   .jury-seat.active { outline: 2px solid var(--brass-400); outline-offset: 2px; transform: translateY(-2px); }
+  .jury-seat.stirred:not(.active) { outline: 1px solid rgb(214 185 121 / 45%); outline-offset: 1px; background: rgb(214 185 121 / 10%); }
   .jury-seat.player { border-color: var(--brass-400); }
   .speaker-focus { display: flex; justify-content: center; align-items: center; min-height: 2.5rem; padding: .55rem 1rem; border-radius: 999px; background: rgb(214 185 121 / 8%); }
   .room-transcript { padding-right: .4rem; scrollbar-color: rgb(214 185 121 / 35%) transparent; }
-  .room-line { border-color: rgb(244 240 232 / 10%); border-radius: .8rem; background: rgb(21 29 33 / 66%); }
+  .room-line { border-color: rgb(244 240 232 / 10%); border-radius: .8rem; background: rgb(21 29 33 / 66%); animation: room-line-in .35s ease; }
+  .room-pass, .room-hands-sealed { animation: room-line-in .35s ease; }
+  .round-stepper { display: flex; justify-content: center; align-items: center; gap: .35rem; margin: 0 auto; padding: 0; list-style: none; }
+  .round-step { display: grid; place-items: center; }
+  .round-step-mark { display: grid; place-items: center; min-width: 1.85rem; min-height: 1.85rem; padding: 0 .4rem; border: 1px solid rgb(244 240 232 / 16%); border-radius: .55rem; color: var(--steel-300); font-size: .7rem; font-weight: 700; letter-spacing: .04em; background: rgb(21 29 33 / 70%); }
+  .round-step.current .round-step-mark { border-color: var(--brass-400); color: var(--paper-50); background: rgb(214 185 121 / 18%); box-shadow: 0 0 0 1px rgb(214 185 121 / 25%); }
+  .round-step.complete .round-step-mark { border-color: rgb(114 199 170 / 45%); color: #9fd9c4; }
+  .round-step.soft .round-step-mark { min-width: 1.4rem; opacity: .7; font-size: .85rem; letter-spacing: .12em; }
+  .evidence-chips { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .15rem; scrollbar-color: rgb(214 185 121 / 35%) transparent; scroll-snap-type: x proximity; }
+  .evidence-chip { flex: 0 0 auto; display: grid; place-items: center; min-width: 2.5rem; min-height: 2.5rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .65rem; color: var(--steel-300); background: rgb(8 11 13 / 55%); font-size: .8rem; font-weight: 700; scroll-snap-align: start; transition: border-color .2s ease, background-color .2s ease, color .2s ease; }
+  .evidence-chip.selected { border-color: var(--brass-400); color: var(--paper-50); background: rgb(214 185 121 / 16%); }
+  .evidence-chip.used:not(.selected) { border-style: dashed; color: rgb(244 240 232 / 55%); }
+  .evidence-preview { max-height: 9rem; overflow-y: auto; }
   .deliberation-console { border-color: rgb(214 185 121 / 20%); border-radius: 1rem; background: rgb(21 29 33 / 84%); box-shadow: 0 1.25rem 3rem rgb(0 0 0 / 18%); }
-  .deliberation-console select { min-height: 48px; }
+  .deliberation-console.is-listening { border-color: rgb(214 185 121 / 38%); }
   .deliberation-console button { min-height: 48px; }
+  .listen-panel { padding: .35rem 0; }
+  .verdict-pending { box-shadow: inset 0 0 0 2px currentColor; animation: verdict-pulse 1.4s ease infinite; }
 
   .judgment-record { border-color: rgb(214 185 121 / 28%); border-radius: 1.25rem; background: linear-gradient(145deg, rgb(214 185 121 / 12%), rgb(21 29 33 / 72%)); }
   .judgment-record h1 { font-family: Georgia, serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; }
@@ -130,6 +145,8 @@
 }
 
 @keyframes stage-enter { from { opacity: 0; transform: translateY(.5rem); } }
+@keyframes room-line-in { from { opacity: 0; transform: translateY(.35rem); } to { opacity: 1; transform: none; } }
+@keyframes verdict-pulse { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.12); } }
 
 @media (max-width: 68rem) {
   .docket-topbar { grid-template-columns: auto minmax(10rem, 1fr) auto; }
