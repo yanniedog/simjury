@@ -1,130 +1,129 @@
 {
-  "engine": "Qwen/Qwen3-TTS-12Hz-1.7B",
+  "engine": "hexgrad/Kokoro-82M",
   "license": "Apache-2.0",
   "sampleRate": 24000,
-  "refText": "Members of the jury, you must decide this case only on the evidence you have heard in this courtroom, and on nothing else.",
   "male": [
     {
-      "id": "m_baritone_judge",
-      "label": "deep male judge",
-      "instruct": "Adult male, late fifties, deep resonant baritone, unmistakably masculine chest voice, slow measured courtroom authority, no breathiness, no youthful lift, English."
+      "id": "bm_george",
+      "label": "British male judge",
+      "lang": "b"
     },
     {
-      "id": "m_counsel_steel",
-      "label": "firm male counsel",
-      "instruct": "Adult male, mid-forties, low firm tenor-baritone, unmistakably male, crisp courtroom advocacy, confident and precise, English."
+      "id": "bm_lewis",
+      "label": "British male counsel",
+      "lang": "b"
     },
     {
-      "id": "m_witness_gravel",
-      "label": "gravel male witness",
-      "instruct": "Adult male, early fifties, slightly gravelly low voice, unmistakably masculine, plainspoken and grounded, English."
+      "id": "am_michael",
+      "label": "firm male witness",
+      "lang": "a"
     },
     {
-      "id": "m_officer_flat",
-      "label": "flat male officer",
-      "instruct": "Adult male, late thirties, mid-low masculine police-report delivery, dry and even, no soft feminine overtones, English."
+      "id": "am_fenrir",
+      "label": "low male officer",
+      "lang": "a"
     },
     {
-      "id": "m_juror_warm",
+      "id": "am_puck",
       "label": "warm male juror",
-      "instruct": "Adult male, early forties, warm low conversational voice, clearly male timbre, thoughtful and steady, English."
+      "lang": "a"
     },
     {
-      "id": "m_juror_blunt",
+      "id": "am_echo",
       "label": "blunt male juror",
-      "instruct": "Adult male, mid-thirties, blunt mid-low masculine speech, short cadence, no softness in the upper register, English."
+      "lang": "a"
     },
     {
-      "id": "m_juror_elder",
-      "label": "elder male juror",
-      "instruct": "Older adult male, sixties, deeper slower masculine voice with mild age grain, dignified and clear, English."
+      "id": "bm_daniel",
+      "label": "elder British male",
+      "lang": "b"
     },
     {
-      "id": "m_accused_tense",
+      "id": "am_liam",
       "label": "tense male accused",
-      "instruct": "Adult male, mid-forties, tense lower register, unmistakably male, restrained emotion under pressure, English."
+      "lang": "a"
     },
     {
-      "id": "m_expert_clear",
+      "id": "am_onyx",
       "label": "clear male expert",
-      "instruct": "Adult male, late thirties, clear mid-low explanatory voice, masculine and clinical, English."
+      "lang": "a"
     },
     {
-      "id": "m_clerk_even",
+      "id": "am_eric",
       "label": "even male clerk",
-      "instruct": "Adult male, early thirties, even mid-low procedural voice, plainly male, unhurried, English."
+      "lang": "a"
     },
     {
-      "id": "m_juror_young",
+      "id": "am_adam",
       "label": "young male juror",
-      "instruct": "Adult male, mid-twenties, lower youthful male voice still clearly masculine, not boyish, English."
+      "lang": "a"
     },
     {
-      "id": "m_narrator_calm",
-      "label": "calm male narrator",
-      "instruct": "Adult male, forties, calm low documentary narrator, rich masculine resonance, neutral and listenable, English."
+      "id": "bm_fable",
+      "label": "calm British male narrator",
+      "lang": "b"
     }
   ],
   "female": [
     {
-      "id": "f_narrator_clear",
+      "id": "af_heart",
       "label": "clear female narrator",
-      "instruct": "Adult female, mid-thirties, clear mezzo voice, unmistakably feminine, calm podcast narrator, warm and articulate, English."
+      "lang": "a"
     },
     {
-      "id": "f_counsel_sharp",
+      "id": "af_bella",
       "label": "sharp female counsel",
-      "instruct": "Adult female, late thirties, sharp bright mezzo-soprano, unmistakably female, precise courtroom advocacy, English."
+      "lang": "a"
     },
     {
-      "id": "f_counsel_warm",
-      "label": "warm female counsel",
-      "instruct": "Adult female, early forties, warm lower-female register that remains clearly feminine, persuasive and steady, English."
+      "id": "bf_emma",
+      "label": "warm British female counsel",
+      "lang": "b"
     },
     {
-      "id": "f_witness_soft",
+      "id": "af_nicole",
       "label": "soft female witness",
-      "instruct": "Adult female, late twenties, soft higher feminine voice, careful and sincere, no masculine chest dominance, English."
+      "lang": "a"
     },
     {
-      "id": "f_witness_firm",
-      "label": "firm female witness",
-      "instruct": "Adult female, mid-forties, firm feminine alto-mezzo, composed and direct, clearly female, English."
+      "id": "bf_isabella",
+      "label": "firm British female witness",
+      "lang": "b"
     },
     {
-      "id": "f_juror_plain",
+      "id": "af_sarah",
       "label": "plain female juror",
-      "instruct": "Adult female, mid-thirties, plain conversational female voice, natural and unforced, English."
+      "lang": "a"
     },
     {
-      "id": "f_juror_hesitant",
+      "id": "af_aoede",
       "label": "hesitant female juror",
-      "instruct": "Adult female, early thirties, hesitant lighter feminine voice, thoughtful pauses, clearly female, English."
+      "lang": "a"
     },
     {
-      "id": "f_juror_blunt",
+      "id": "af_kore",
       "label": "blunt female juror",
-      "instruct": "Adult female, late thirties, blunt bright female voice, clipped certainty, no deep male colouring, English."
+      "lang": "a"
     },
     {
-      "id": "f_juror_elder",
-      "label": "elder female juror",
-      "instruct": "Older adult female, early sixties, mature feminine voice with gentle age, clear and measured, English."
+      "id": "bf_alice",
+      "label": "elder British female",
+      "lang": "b"
     },
     {
-      "id": "f_officer_cool",
+      "id": "af_nova",
       "label": "cool female officer",
-      "instruct": "Adult female, mid-thirties, cool professional female voice, report-like delivery, unmistakably feminine, English."
+      "lang": "a"
     },
     {
-      "id": "f_accused_strained",
+      "id": "af_sky",
       "label": "strained female accused",
-      "instruct": "Adult female, early forties, strained but clearly female mid voice, controlled under pressure, English."
+      "lang": "a"
     },
     {
-      "id": "f_clerk_bright",
+      "id": "af_alloy",
       "label": "bright female clerk",
-      "instruct": "Adult female, late twenties, bright feminine procedural voice, tidy and audible, English."
+      "lang": "a"
     }
   ]
 }

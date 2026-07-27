@@ -1,5 +1,5 @@
 /**
- * Gender-correct Qwen voice jobs: bank ids stay male/female and collision-free.
+ * Gender-correct Kokoro voice jobs: bank ids stay male/female and collision-free.
  */
 import { readFileSync, readdirSync, mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -10,9 +10,9 @@ import { describe, expect, it } from 'vitest'
 const scriptsDir = join(import.meta.dirname, '../../../scripts')
 const docketDir = join(import.meta.dirname, '../../docket')
 
-describe('Qwen narration voice jobs', () => {
+describe('Kokoro narration voice jobs', () => {
   it('assigns gender-correct voices and builds without collisions', () => {
-    const out = mkdtempSync(join(tmpdir(), 'qwen-jobs-'))
+    const out = mkdtempSync(join(tmpdir(), 'kokoro-jobs-'))
     try {
       execFileSync(
         process.execPath,
@@ -29,7 +29,7 @@ describe('Qwen narration voice jobs', () => {
           engine: string
           clips: Array<{ speaker: string; voice: string; gender?: string }>
         }
-        expect(job.engine).toContain('Qwen')
+        expect(job.engine).toContain('Kokoro')
         const bySpeaker = new Map<string, string>()
         for (const clip of job.clips) {
           const prior = bySpeaker.get(clip.speaker)
@@ -37,7 +37,7 @@ describe('Qwen narration voice jobs', () => {
           else bySpeaker.set(clip.speaker, clip.voice)
         }
 
-        expect(bySpeaker.get('narrator')).toBe('f_narrator_clear')
+        expect(bySpeaker.get('narrator')).toBe('af_heart')
 
         const genders = JSON.parse(
           readFileSync(join(import.meta.dirname, 'castGenders.json'), 'utf8'),
@@ -48,11 +48,11 @@ describe('Qwen narration voice jobs', () => {
           const gender = genders[member.name]
           expect(gender, member.name).toBeTruthy()
           if (member.id === 'judge') {
-            expect(voice).toBe(gender === 'female' ? 'f_counsel_warm' : 'm_baritone_judge')
+            expect(voice).toBe(gender === 'female' ? 'bf_emma' : 'bm_george')
           } else if (gender === 'female') {
-            expect(voice).toMatch(/^f_/)
+            expect(voice).toMatch(/^[ab]f_/)
           } else {
-            expect(voice).toMatch(/^m_/)
+            expect(voice).toMatch(/^[ab]m_/)
           }
         }
       }

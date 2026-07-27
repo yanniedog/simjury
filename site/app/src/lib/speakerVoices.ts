@@ -9,13 +9,16 @@ import voiceBank from './narrationVoices.json'
 
 export type SpeakerGender = 'female' | 'male'
 
-export const NARRATOR_VOICE = 'f_narrator_clear'
-export const JUDGE_VOICE_MALE = 'm_baritone_judge'
-export const JUDGE_VOICE_FEMALE = 'f_counsel_warm'
+/** Highest-grade Kokoro female narrator — reserved. */
+export const NARRATOR_VOICE = 'af_heart'
+/** British male gravitas for male judges. */
+export const JUDGE_VOICE_MALE = 'bm_george'
+/** Warm British female for female judges. */
+export const JUDGE_VOICE_FEMALE = 'bf_emma'
 
 const FEMALE_VOICES = voiceBank.female
   .map((v) => v.id)
-  .filter((id) => id !== NARRATOR_VOICE)
+  .filter((id) => id !== NARRATOR_VOICE && id !== JUDGE_VOICE_FEMALE)
 
 const MALE_VOICES = voiceBank.male
   .map((v) => v.id)
@@ -23,54 +26,54 @@ const MALE_VOICES = voiceBank.male
 
 const FEMALE_PREFERRED: Record<string, string> = {
   judge: JUDGE_VOICE_FEMALE,
-  pc: 'f_counsel_sharp',
-  pros: 'f_counsel_sharp',
-  dc: 'f_counsel_warm',
-  defc: 'f_counsel_warm',
-  clerk: 'f_clerk_bright',
-  acc: 'f_accused_strained',
-  w1: 'f_witness_soft',
-  w2: 'f_witness_firm',
-  w3: 'f_officer_cool',
-  w4: 'f_juror_plain',
-  w5: 'f_juror_hesitant',
-  'J-01': 'f_juror_blunt',
-  'J-02': 'f_juror_elder',
-  'J-03': 'f_witness_soft',
-  'J-04': 'f_witness_firm',
-  'J-05': 'f_officer_cool',
-  'J-06': 'f_counsel_sharp',
-  'J-07': 'f_clerk_bright',
-  'J-08': 'f_juror_plain',
-  'J-09': 'f_juror_hesitant',
-  'J-10': 'f_accused_strained',
-  'J-11': 'f_juror_blunt',
+  pc: 'af_bella',
+  pros: 'af_bella',
+  dc: 'bf_isabella',
+  defc: 'bf_alice',
+  clerk: 'af_alloy',
+  acc: 'af_sky',
+  w1: 'af_nicole',
+  w2: 'bf_isabella',
+  w3: 'af_nova',
+  w4: 'af_sarah',
+  w5: 'af_aoede',
+  'J-01': 'af_kore',
+  'J-02': 'bf_alice',
+  'J-03': 'af_nicole',
+  'J-04': 'bf_isabella',
+  'J-05': 'af_nova',
+  'J-06': 'af_bella',
+  'J-07': 'af_alloy',
+  'J-08': 'af_sarah',
+  'J-09': 'af_aoede',
+  'J-10': 'af_sky',
+  'J-11': 'af_kore',
 }
 
 const MALE_PREFERRED: Record<string, string> = {
   judge: JUDGE_VOICE_MALE,
-  pc: 'm_counsel_steel',
-  pros: 'm_counsel_steel',
-  dc: 'm_counsel_steel',
-  defc: 'm_counsel_steel',
-  clerk: 'm_clerk_even',
-  acc: 'm_accused_tense',
-  w1: 'm_witness_gravel',
-  w2: 'm_officer_flat',
-  w3: 'm_juror_warm',
-  w4: 'm_juror_blunt',
-  w5: 'm_expert_clear',
-  'J-01': 'm_juror_elder',
-  'J-02': 'm_juror_young',
-  'J-03': 'm_narrator_calm',
-  'J-04': 'm_witness_gravel',
-  'J-05': 'm_officer_flat',
-  'J-06': 'm_juror_warm',
-  'J-07': 'm_juror_blunt',
-  'J-08': 'm_expert_clear',
-  'J-09': 'm_clerk_even',
-  'J-10': 'm_accused_tense',
-  'J-11': 'm_juror_young',
+  pc: 'bm_lewis',
+  pros: 'bm_lewis',
+  dc: 'bm_lewis',
+  defc: 'bm_lewis',
+  clerk: 'am_eric',
+  acc: 'am_liam',
+  w1: 'am_michael',
+  w2: 'am_fenrir',
+  w3: 'am_puck',
+  w4: 'am_echo',
+  w5: 'am_onyx',
+  'J-01': 'bm_daniel',
+  'J-02': 'am_adam',
+  'J-03': 'bm_fable',
+  'J-04': 'am_michael',
+  'J-05': 'am_fenrir',
+  'J-06': 'am_puck',
+  'J-07': 'am_echo',
+  'J-08': 'am_onyx',
+  'J-09': 'am_eric',
+  'J-10': 'am_liam',
+  'J-11': 'am_adam',
 }
 
 export type SpeakerVoicePlan = {
