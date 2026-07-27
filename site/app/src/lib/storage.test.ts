@@ -131,12 +131,12 @@ describe('in-progress sitting', () => {
     expect(loadProgress(5)).toBeNull()
   })
 
-  it('clears pre-verdict progress without deleting the locked play', () => {
+  it('clears pre-record progress without deleting the finished play', () => {
     vi.stubGlobal('localStorage', memoryStorage())
     saveProgress({
       day: 5,
       caseId: 'd-0001',
-      phase: 'verdict',
+      phase: 'closings',
       beatIndex: 9,
     })
     savePlay({

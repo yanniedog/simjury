@@ -7,6 +7,7 @@ export type PhaseCueId =
   | 'intro'
   | 'openings'
   | 'beats'
+  | 'closings'
   | 'verdict'
   | 'juryroom'
   | 'reveal'

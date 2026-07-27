@@ -23,7 +23,7 @@ const TRAPPY = [argue('b1', 'proves'), argue('b1', 'proves'), argue('b1', 'prove
 const PASSIVE = [pass, pass, pass]
 
 describe('determinism (I-8)', () => {
-  it('same case + verdict + actions => byte-identical log and outcome', () => {
+  it('same case + actions => byte-identical deliberation log before finish', () => {
     const a = runDeliberation(makeDocketCase(), 'not_guilty', DECISIVE)
     const b = runDeliberation(makeDocketCase(), 'not_guilty', DECISIVE)
     expect(JSON.stringify(a.log)).toBe(JSON.stringify(b.log))
@@ -36,10 +36,14 @@ describe('determinism (I-8)', () => {
     expect(JSON.stringify(a.log)).not.toBe(JSON.stringify(b.log))
   })
 
-  it('a different verdict reseeds the room', () => {
+  it('player verdict is applied only at finish and can change the tally', () => {
     const a = runDeliberation(makeDocketCase(), 'not_guilty', PASSIVE)
     const b = runDeliberation(makeDocketCase(), 'guilty', PASSIVE)
-    expect(JSON.stringify(a.log)).not.toBe(JSON.stringify(b.log))
+    // Open-round events match; only the final vote/outcome may differ.
+    const openA = a.log.filter((e) => e.phase !== 'done' && e.type !== 'vote' && e.type !== 'outcome' && e.type !== 'deadlock_direction')
+    const openB = b.log.filter((e) => e.phase !== 'done' && e.type !== 'vote' && e.type !== 'outcome' && e.type !== 'deadlock_direction')
+    expect(JSON.stringify(openA)).toBe(JSON.stringify(openB))
+    expect(a.outcome.tally).not.toEqual(b.outcome.tally)
   })
 })
 

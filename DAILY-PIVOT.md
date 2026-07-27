@@ -8,7 +8,7 @@ not cover, the standing constraint docs below still bind.
 
 simjury.com pivots from a single 25-minute historical case to **The Daily Docket**: one
 **synthetic, fictional, 2026-relevant case per day**, playable end-to-end (intro →
-evidence → verdict → jury room → reveal → share) in **8–10 minutes**, with a
+evidence → closings → jury room → verdict → judge readout → reveal → share) in **8–10 minutes**, with a
 **dynamic, interactive jury deliberation** whose outcome (unanimous / majority / hung)
 genuinely varies with how the player argues.
 
@@ -23,7 +23,8 @@ Owner decisions, recorded verbatim:
 2. **Deliberation is an interactive room** — a deterministic, seeded, client-side engine
    (TypeScript port of `archive/simjury-build-spec-v3.md` §7.7 + §9 at daily scale):
    11 fictional jurors with personas, theme weights, and ordered reaction rules; the
-    player argues evidence after locking their own verdict; the room's verdict is earned,
+    player argues evidence first, then locks their own verdict; seat leanings and
+    tallies stay hidden until the judge reads the result. The room's verdict is earned,
     not scripted. Deliberation and narration use no runtime AI and store no player state
     on a backend.
 3. **Case supply is LLM-drafted batches behind hardened CI gates, with human
@@ -84,8 +85,9 @@ approved plan of record for this pivot; D2/D3/D7 land the details in-repo as the
 ## The 8–10 minute budget (hard design constraint)
 
 intro 20–30s · evidence 4.5–5.5 min (10–14 narrated beats, 40–70 words each, 3–4
-witnesses, 3–5 conviction check-ins) · verdict lock 30–45s · jury room 2–2.5 min
-(2 open rounds → mid-vote → 1 round → final vote; ~3 actions where the player argues;
-3–4 jurors speak per round) · reveal + share 1–1.5 min. Pacing is a launch verification step: the
+witnesses, 3–5 conviction check-ins) · closings · jury room 2–2.5 min
+(2 open rounds → mid-vote → 1 round → player verdict lock → judge readout;
+~3 actions where the player argues; 3–4 jurors speak per round) · reveal + share 1–1.5 min.
+Pacing is a launch verification step: the
 fixture case `dd-0000` must clock 8–10 minutes with narration on before launch content
 is drafted.
