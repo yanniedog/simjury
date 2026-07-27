@@ -18,13 +18,18 @@ do not re-enable `:app:assembleDebug` / `./gradlew test` in `ci.yml` without an 
 
 ## 3. Bot presence gate (`bot-presence-gate`)
 
-Waits until **gemini**, **codex**, and **sourcery** have posted on the PR since the wait anchor.
+Waits until **at least one** configured review bot has posted since the wait anchor.
 
-| Key | GitHub logins |
-|-----|---------------|
-| gemini | `gemini-code-assist[bot]`, `google-github-actions-bot[bot]`, … |
-| codex | `chatgpt-codex-connector[bot]` |
-| sourcery | `sourcery-ai[bot]` |
+Default required slot (OR-group): **`sourcery|codex|cursor`**
+
+| Key | GitHub logins | Notes |
+|-----|---------------|-------|
+| sourcery | `sourcery-ai[bot]` | Skips some docs/setup PRs |
+| codex | `chatgpt-codex-connector[bot]` | Needs ChatGPT Codex Connector app |
+| cursor | `cursor`, `cursor[bot]` | Cursor Automation reviews |
+| gemini | `gemini-code-assist[bot]`, … | **Optional** — consumer Code Assist is sunset (noise) |
+
+Comma = ALL-of slots. `|` = OR within a slot. Example: `sourcery|cursor` passes if either posted.
 
 Codex does not auto-review on every repo. The `pr-request-bot-reviews` workflow posts `@codex review` once when Codex has not yet appeared. Install **ChatGPT Codex Connector** on the repository (Settings → Integrations → GitHub Apps). Manual fallback: comment `@codex review` on the PR.
 
@@ -37,7 +42,7 @@ npm run pr:arm-and-park -- --pr <n>      # preferred — arms auto-merge + class
 
 **Do not** run `wait-for-bots --watch` inside an agent session. CI may poll; agents park.
 
-Env: `SIMJURY_BOT_WAIT_REQUIRED=gemini,codex,sourcery` (fallback: `JCS2_BOT_WAIT_REQUIRED`, `AR_BOT_WAIT_REQUIRED`, `BOT_WAIT_REQUIRED`).
+Env: `SIMJURY_BOT_WAIT_REQUIRED=sourcery|codex|cursor` (fallback: `JCS2_BOT_WAIT_REQUIRED`, `AR_BOT_WAIT_REQUIRED`, `BOT_WAIT_REQUIRED`).
 
 ## 4. Bot feedback gate (`bot-feedback-gate`)
 

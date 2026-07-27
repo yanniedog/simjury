@@ -444,13 +444,13 @@ Options:
   --watch, -w           Poll every ${POLL_INTERVAL_SEC}s until ready or cap
   --bot-tag             Reset wait anchor to now (after @mentioning bots)
   --since <iso>         Anchor wait window to timestamp (ISO 8601)
-  --require-bots <list> Comma-separated required keys (default: gemini,codex,sourcery)
+  --require-bots <list> Comma-separated slots; use | for OR (default: sourcery|codex|cursor)
   --help, -h            Show this help
 
 Exit codes: 0 ready | 2 still waiting | 1 error or required bots missing at cap (DO NOT MERGE)
 
 Env: BOT_WAIT_POLL_SEC, BOT_WAIT_QUIET_SEC, BOT_WAIT_MIN_SEC, BOT_WAIT_MAX_MIN,
-     SIMJURY_BOT_WAIT_REQUIRED (or JCS2_/AR_/BOT_WAIT_REQUIRED) — comma-separated bot keys
+     SIMJURY_BOT_WAIT_REQUIRED (or JCS2_/AR_/BOT_WAIT_REQUIRED) — slots with optional | OR-groups
      SIMJURY_BOT_WAIT_STATE_DIR (or JCS2_/AR_) — per-PR anchor JSON (default: <repo>/.simjury-bot-wait)
      BOT_WAIT_IGNORE_CHECK_NAMES — comma-separated gh pr checks names to ignore (CI self-gate)
 

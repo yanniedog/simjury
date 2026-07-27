@@ -10,6 +10,7 @@ import {
   isChorePrTitle,
 } from './lib/pr-gate-exempt.mjs';
 import { loginMatchesRequiredKey } from './lib/bot-wait-config.mjs';
+import { isBotNoise } from './lib/bot-noise.mjs';
 
 const BOT = { login: 'gemini-code-assist[bot]', __typename: 'Bot' };
 const HUMAN = { login: 'yanniedog', __typename: 'User' };
@@ -60,6 +61,11 @@ if (!isChorePrTitle('chore: update deps')) failures.push('isChorePrTitle(chore) 
 if (isBotPrAuthor('sourcery-ai[bot]') !== true) failures.push('isBotPrAuthor(sourcery) !== true');
 if (isBotPrAuthor('chatgpt-codex-connector[bot]') !== true) failures.push('isBotPrAuthor(codex) !== true');
 if (!loginMatchesRequiredKey('chatgpt-codex-connector[bot]', 'codex')) failures.push('codex alias mismatch');
+if (!loginMatchesRequiredKey('cursor[bot]', 'sourcery|cursor|codex')) failures.push('cursor OR-group mismatch');
+
+const sunset =
+  'The consumer version of Gemini Code Assist on GitHub has been sunset. All code review activity has officially ceased.';
+if (!isBotNoise(sunset)) failures.push('gemini sunset should be noise');
 
 if (failures.length) {
   console.error('FAIL verify-pr-gate-logic:');

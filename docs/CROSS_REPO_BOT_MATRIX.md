@@ -1,15 +1,28 @@
 # Cross-repo bot matrix alignment
 
-Required bots on human work PRs (presence gate): **gemini**, **codex**, **sourcery**.
+## Required presence (OR-group)
 
-| Repository | `*_BOT_WAIT_REQUIRED` | Auto `@codex review` | Status |
-|------------|------------------------|----------------------|--------|
-| [cursor-global-workflow](https://github.com/yanniedog/cursor-global-workflow) | `gemini,codex,sourcery` (template) | `pr-request-bot-reviews` template + bootstrap | OPEN — [PR #3](https://github.com/yanniedog/cursor-global-workflow/pull/3); apply act-or-park pack |
-| [jcs2-mod](https://github.com/yanniedog/jcs2-mod) | `JCS2_BOT_WAIT_REQUIRED=gemini,codex,sourcery` | `pr-request-bot-reviews` workflow | OPEN — [PR #19](https://github.com/yanniedog/jcs2-mod/pull/19); apply act-or-park pack |
-| [simjury](https://github.com/yanniedog/simjury) | `SIMJURY_BOT_WAIT_REQUIRED=gemini,codex,sourcery` | `pr-request-bot-reviews` workflow | MERGED presence; **act-or-park in-tree** (`npm run pr:arm-and-park`) |
-| [AR-local](https://github.com/yanniedog/AR-local) | `AR_BOT_WAIT_REQUIRED=gemini,codex,sourcery` | `pr-request-bot-reviews` workflow | OPEN — [PR #436](https://github.com/yanniedog/AR-local/pull/436); apply act-or-park pack |
+Default: **`sourcery|codex|cursor`** — any one review bot satisfies the presence slot.
 
-Only these four repos use `pr-bot-presence-gate.yml`. Installing Codex on **All repositories** also lets non-gated repositories request a Codex review with `@codex review`.
+| Why | Detail |
+|-----|--------|
+| Sourcery flaky | Skips some docs/setup PRs (seen on AR-app #37/#38/#41) |
+| Gemini sunset | Consumer Code Assist posts a sunset notice only — treated as **noise**, not required |
+| Cursor Automation | Often the only real review (`cursor` / `cursor[bot]`) |
+
+Syntax: commas = ALL-of slots; `|` = OR within a slot.
+
+| Repository | `*_BOT_WAIT_REQUIRED` | Notes |
+|------------|------------------------|-------|
+| [simjury](https://github.com/yanniedog/simjury) | `sourcery\|codex\|cursor` | In-tree OR-groups + `npm run pr:arm-and-park` |
+| [AR-app](https://github.com/yanniedog/AR-app) | `sourcery\|cursor` (recommended) | Apply pack: [`cross-repo-patches/AR-app/`](cross-repo-patches/AR-app/README.md) |
+| [AR-local](https://github.com/yanniedog/AR-local) | `sourcery\|codex\|cursor` | Apply same OR-group + retries |
+| [jcs2-mod](https://github.com/yanniedog/jcs2-mod) | `sourcery\|codex\|cursor` | Apply same |
+| [cursor-global-workflow](https://github.com/yanniedog/cursor-global-workflow) | template default | Mirror from simjury |
+
+## Presence gate retries (required)
+
+Do **not** fail the required check on the first `wait-for-bots` exit 2. Race: gate runs on `opened` before bots post → sticky red check. Use in-job retries (simjury: 12×30s) and keep event re-fires on review/comment. `cancel-in-progress: false` on concurrency groups.
 
 ## Act-or-park (token efficiency)
 
@@ -23,4 +36,4 @@ Agents must not `--watch` bot gates. Portable pack: [`docs/cross-repo-patches/cu
 2. Choose **All repositories** for the `yanniedog` account (preferred), or select every active repo.
 3. Save.
 
-Without the app, `bot-presence-gate` waits until timeout for `chatgpt-codex-connector[bot]`. The `pr-request-bot-reviews` workflow posts `@codex review` automatically but Codex must still be installed.
+Without the app, prefer counting **Cursor Automation** via the `cursor` key in the OR-group.
