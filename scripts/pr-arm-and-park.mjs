@@ -125,6 +125,13 @@ GitHub Actions re-fire bot gates; auto-merge merges when green.`);
       console.log(
         `pr:arm-and-park: PR #${prNumber} PARKED — waiting only; auto-merge ${armed}. END AGENT TURN.`,
       );
+      if (result.progression?.autoMerge && !result.autoMergeArmed) {
+        console.error(
+          `  auto-merge arm failed: ${result.progression.autoMerge.detail || result.progression.autoMerge.action}`,
+        );
+      } else if (result.progression?.autoMerge) {
+        console.log(`  auto-merge: ${result.progression.autoMerge.action} — ${result.progression.autoMerge.detail}`);
+      }
       printGateList('Waiting on', result.classification?.waiting);
       console.log('  Do NOT run --watch / sleep polls. Re-run pr:arm-and-park when woken for actionable work.');
     }

@@ -7,7 +7,7 @@ import { ghJson } from './gh-pr-review-threads.mjs';
 
 const GH_TIMEOUT_MS = 120_000;
 const PR_VIEW_FIELDS =
-  'number,state,headRefName,baseRefName,mergeable,mergeStateStatus,autoMergeRequest';
+  'number,state,headRefName,baseRefName,mergeable,mergeStateStatus,autoMergeRequest,isDraft';
 
 export function classifyBranchState(meta) {
   const ms = meta?.mergeStateStatus || 'UNKNOWN';
@@ -138,8 +138,28 @@ export function updatePrBranch(prNumber, { dryRun = false, force = false } = {})
   };
 }
 
+function ghMarkReady(prNumber, { dryRun = false } = {}) {
+  const args = ['pr', 'ready', String(prNumber)];
+  if (dryRun) {
+    return { ok: true, stdout: `gh ${args.join(' ')}`, stderr: '', exitCode: 0 };
+  }
+  const r = spawnSync('gh', args, { encoding: 'utf8', timeout: GH_TIMEOUT_MS });
+  if (r.error?.code === 'ETIMEDOUT') {
+    return { ok: false, stdout: '', stderr: `gh timed out after ${GH_TIMEOUT_MS}ms`, exitCode: 1 };
+  }
+  if (r.error) {
+    return { ok: false, stdout: '', stderr: r.error.message, exitCode: 1 };
+  }
+  return {
+    ok: r.status === 0,
+    stdout: (r.stdout || '').trim(),
+    stderr: (r.stderr || '').trim(),
+    exitCode: r.status ?? 1,
+  };
+}
+
 export function enableSquashAutoMerge(prNumber, { dryRun = false } = {}) {
-  const meta = fetchPrMergeMeta(prNumber);
+  let meta = fetchPrMergeMeta(prNumber);
   if (isAutoMergeEnabled(meta)) {
     return {
       ok: true,
@@ -147,6 +167,19 @@ export function enableSquashAutoMerge(prNumber, { dryRun = false } = {}) {
       detail: `squash auto-merge already enabled (${meta.autoMergeRequest?.enabledAt})`,
       exitCode: 0,
     };
+  }
+  // Draft PRs cannot arm auto-merge — mark ready first (AGENTS.md step after CI starts).
+  if (meta.isDraft) {
+    const ready = ghMarkReady(prNumber, { dryRun });
+    if (!ready.ok && !dryRun) {
+      return {
+        ok: false,
+        action: 'failed',
+        detail: `PR is draft and gh pr ready failed: ${ready.stderr || ready.stdout}`,
+        exitCode: ready.exitCode || 1,
+      };
+    }
+    if (!dryRun) meta = fetchPrMergeMeta(prNumber);
   }
   const result = mergePullRequest(prNumber, { dryRun });
   if (!result.ok) {
@@ -160,7 +193,11 @@ export function enableSquashAutoMerge(prNumber, { dryRun = false } = {}) {
   return {
     ok: true,
     action: dryRun ? 'skipped' : 'enabled',
-    detail: dryRun ? result.stdout : 'squash auto-merge enabled',
+    detail: dryRun
+      ? result.stdout
+      : meta.isDraft
+        ? 'marked ready + squash auto-merge enabled'
+        : 'squash auto-merge enabled',
     exitCode: 0,
   };
 }

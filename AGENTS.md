@@ -89,7 +89,7 @@ Orchestrator (Lead)
 On every open PR the Orchestrator must automatically:
 
 1. Open PR as **draft** first; mark ready only after initial CI run starts
-2. Run `npm run pr:arm-and-park -- --pr <n>` (single shot):
+2. Run `npm run pr:arm-and-park -- --pr <n>` (single shot; marks ready + arms auto-merge if still draft):
    - **exit 0** — gates green; auto-merge armed; turn may end once summary posted
    - **exit 2** — **PARKED** (waiting on bots/CI only); auto-merge armed; **END TURN** — do not poll
    - **exit 3** — **ACTIONABLE** — fix CI failures, conflicts, or unresolved review threads, push, re-run arm-and-park
