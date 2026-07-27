@@ -9,8 +9,10 @@ import { pick, rngFor, type Rng } from './rng'
 
 /**
  * The Daily Docket deliberation engine — v3 spec §9 at daily scale, pure and
- * deterministic. The player deliberates first (arguing evidence across open
- * rounds), then locks their own verdict when the foreperson calls the vote:
+ * deterministic. Open rounds walk a short pragmatic agenda (not a full
+ * evidence replay). The room can auto-raise agenda points; the player (juror
+ * 1) or any authored juror may optionally raise other evidence. After three
+ * open rounds the player locks their verdict:
  *
  *   INITIAL_POSITIONS → OPEN_ROUND ×2 → MID_VOTE → OPEN_ROUND ×1
  *     → FINAL_VOTE (+ player lock) → (unanimous | majority ≥10 | HUNG)
@@ -96,6 +98,13 @@ export interface DeliberationState {
   /** The room voiced its own burden_correct line; a later cite is not the player's catch. */
   driftRoomCorrected: boolean
   outcome: Outcome | null
+  /**
+   * Short pragmatic discussion list (≤3 beat ids) — not a full case replay.
+   * Auto rounds walk this agenda; anyone may still raise other evidence.
+   */
+  agenda: string[]
+  /** Beat ids already raised this sitting (player or room). */
+  raisedBeatIds: string[]
 }
 
 export const SPEAKERS_PER_ROUND = 4
@@ -136,6 +145,52 @@ function tallyOf(jurors: JurorState[]): { g: number; ng: number; u: number } {
   return { g, ng, u }
 }
 
+/**
+ * Build a ≤3-beat discussion agenda: decisive signal, one contested/trap
+ * point, and burden direction when present. Deterministic from the case —
+ * never walks the full evidence list.
+ */
+export function buildAgenda(caseData: DocketCase): string[] {
+  const picks: string[] = []
+  const take = (id: string | undefined) => {
+    if (id && !picks.includes(id)) picks.push(id)
+  }
+
+  const nonDirection = caseData.beats.filter((b) => b.kind !== 'direction')
+  const decisive = [...nonDirection]
+    .filter((b) => b.reveal_stamp === 'decisive')
+    .sort((a, b) => b.true_weight - a.true_weight || a.id.localeCompare(b.id))
+  take(decisive[0]?.id)
+
+  const contested = [...nonDirection]
+    .filter((b) => b.reveal_stamp === 'misleading' || b.surface_persuasion >= 0.7)
+    .filter((b) => !picks.includes(b.id))
+    .sort(
+      (a, b) =>
+        b.surface_persuasion - a.surface_persuasion ||
+        a.true_weight - b.true_weight ||
+        a.id.localeCompare(b.id),
+    )
+  take(contested[0]?.id)
+
+  const burden = caseData.beats.find(
+    (b) => b.kind === 'direction' && b.tags.includes('burden'),
+  )
+  take(burden?.id)
+
+  if (picks.length < 3) {
+    const filler = [...nonDirection]
+      .filter((b) => !picks.includes(b.id))
+      .sort((a, b) => b.true_weight - a.true_weight || a.id.localeCompare(b.id))
+    for (const beat of filler) {
+      take(beat.id)
+      if (picks.length >= 3) break
+    }
+  }
+
+  return picks.slice(0, 3)
+}
+
 export function startDeliberation(caseData: DocketCase): DeliberationState {
   const state: DeliberationState = {
     caseData,
@@ -156,6 +211,8 @@ export function startDeliberation(caseData: DocketCase): DeliberationState {
     driftCorrectedByPlayer: false,
     driftRoomCorrected: false,
     outcome: null,
+    agenda: buildAgenda(caseData),
+    raisedBeatIds: [],
   }
   emit(state, { actor: 'room', type: 'positions', tally: tallyOf(state.jurors) })
   return state
@@ -250,100 +307,7 @@ function peerPressure(state: DeliberationState, boost = 0): void {
   }
 }
 
-/** Play one open round: the player's action, the room's responses, the drift. */
-export function playRound(state: DeliberationState, action: PlayerAction): void {
-  if (state.phase !== 'open_1' && state.phase !== 'open_2' && state.phase !== 'open_3') {
-    throw new Error(`No open round in phase ${state.phase}`)
-  }
-
-  if (action.type === 'pass') {
-    emit(state, { actor: 'player', type: 'pass' })
-    // Quiet round: two distinct jurors fill the silence with default-rule
-    // chatter (picking the second from the remaining pool avoids the same
-    // juror speaking both lines back-to-back).
-    const firstJuror = pick(state.rng, state.caseData.jury.jurors)
-    const remaining = state.caseData.jury.jurors.filter((j) => j.id !== firstJuror.id)
-    const secondJuror = pick(state.rng, remaining)
-    for (const juror of [firstJuror, secondJuror]) {
-      const fn = juror.reaction_rules[juror.reaction_rules.length - 1].effect.line
-      emit(state, {
-        actor: juror.id,
-        type: 'respond',
-        lineFunction: fn,
-        line: voice(state, juror, fn),
-        delta: 0,
-        position: state.jurors.find((s) => s.id === juror.id)!.position,
-      })
-      if (fn === 'burden_drift') {
-        state.driftActive = true
-        emit(state, { actor: juror.id, type: 'drift' })
-      }
-    }
-  } else {
-    const beat = beatById(state.caseData, action.beatId)
-    if (action.type === 'cite_direction' && beat.kind !== 'direction') {
-      throw new Error(
-        `cite_direction requires a direction beat, got ${action.beatId} (${beat.kind})`,
-      )
-    }
-    if (action.type === 'argue' && beat.kind === 'direction') {
-      throw new Error(
-        `argue cannot target direction beat ${action.beatId}; use cite_direction`,
-      )
-    }
-    const stance: Stance = action.type === 'cite_direction' ? 'proves' : action.stance
-    const push: 'guilt' | 'innocence' =
-      stance === 'proves'
-        ? beat.direction
-        : beat.direction === 'guilt'
-          ? 'innocence'
-          : 'guilt'
-    emit(state, {
-      actor: 'player',
-      type: action.type === 'cite_direction' ? 'cite' : 'argue',
-      beatId: beat.id,
-      stance,
-      push,
-    })
-
-    // Responders: jurors whose non-default rule matches speak first (heaviest
-    // theme weight first), then one rng pick keeps the room lively.
-    // Snapshot drift state before responders run: a drift that this same
-    // action's responses newly trigger is not one the player just corrected.
-    const driftActiveBeforeResponse = state.driftActive
-    const jurors = state.caseData.jury.jurors
-    const matched = jurors
-      .filter((j) => {
-        const r = matchRule(j, beat, stance, push)
-        return r && j.reaction_rules.indexOf(r) < j.reaction_rules.length - 1
-      })
-      .sort((a, b) => {
-        const wa = Math.max(...beat.tags.map((t) => a.weights[t] ?? 0), 0)
-        const wb = Math.max(...beat.tags.map((t) => b.weights[t] ?? 0), 0)
-        return wb - wa || a.seat - b.seat
-      })
-      .slice(0, SPEAKERS_PER_ROUND - 1)
-    const rest = jurors.filter((j) => !matched.includes(j))
-    const speakers = rest.length > 0 ? [...matched, pick(state.rng, rest)] : matched
-    for (const juror of speakers) respond(state, juror, beat, stance, push)
-
-    // Citing the burden direction while the room has drifted corrects it —
-    // unless the room already voiced its own correction first.
-    if (
-      action.type === 'cite_direction' &&
-      driftActiveBeforeResponse &&
-      !state.driftCorrectedByPlayer &&
-      !state.driftRoomCorrected &&
-      beat.tags.includes('burden')
-    ) {
-      state.driftCorrectedByPlayer = true
-      emit(state, { actor: 'player', type: 'drift_corrected', beatId: beat.id })
-    }
-  }
-
-  peerPressure(state)
-  emit(state, { actor: 'room', type: 'positions', tally: tallyOf(state.jurors) })
-
+function advanceOpenPhase(state: DeliberationState): void {
   if (state.phase === 'open_1') {
     state.phase = 'open_2'
   } else if (state.phase === 'open_2') {
@@ -376,6 +340,157 @@ export function playRound(state: DeliberationState, action: PlayerAction): void 
   } else {
     state.phase = 'final_vote'
   }
+}
+
+function markRaised(state: DeliberationState, beatId: string): void {
+  if (!state.raisedBeatIds.includes(beatId)) state.raisedBeatIds.push(beatId)
+}
+
+/** Pick the juror who cares most about this beat's themes (foreperson fallback). */
+function pickRaiser(state: DeliberationState, beat: DocketBeat): Juror {
+  const jurors = state.caseData.jury.jurors
+  const ranked = [...jurors].sort((a, b) => {
+    const wa = Math.max(...beat.tags.map((t) => a.weights[t] ?? 0), 0)
+    const wb = Math.max(...beat.tags.map((t) => b.weights[t] ?? 0), 0)
+    return wb - wa || a.seat - b.seat
+  })
+  return ranked[0] ?? jurors[0]
+}
+
+/**
+ * Raise a beat into discussion (player or room juror). Shared by playRound
+ * and autoPlayRound so attribution stays consistent.
+ */
+function raiseBeat(
+  state: DeliberationState,
+  actor: string,
+  beat: DocketBeat,
+  stance: Stance,
+): void {
+  const push: 'guilt' | 'innocence' =
+    stance === 'proves'
+      ? beat.direction
+      : beat.direction === 'guilt'
+        ? 'innocence'
+        : 'guilt'
+  const eventType = beat.kind === 'direction' ? 'cite' : 'argue'
+  emit(state, {
+    actor,
+    type: eventType,
+    beatId: beat.id,
+    stance,
+    push,
+  })
+  markRaised(state, beat.id)
+
+  const driftActiveBeforeResponse = state.driftActive
+  const jurors = state.caseData.jury.jurors
+  const matched = jurors
+    .filter((j) => {
+      if (j.id === actor) return false
+      const r = matchRule(j, beat, stance, push)
+      return r && j.reaction_rules.indexOf(r) < j.reaction_rules.length - 1
+    })
+    .sort((a, b) => {
+      const wa = Math.max(...beat.tags.map((t) => a.weights[t] ?? 0), 0)
+      const wb = Math.max(...beat.tags.map((t) => b.weights[t] ?? 0), 0)
+      return wb - wa || a.seat - b.seat
+    })
+    .slice(0, SPEAKERS_PER_ROUND - 1)
+  const rest = jurors.filter((j) => j.id !== actor && !matched.includes(j))
+  const speakers = rest.length > 0 ? [...matched, pick(state.rng, rest)] : matched
+  for (const juror of speakers) respond(state, juror, beat, stance, push)
+
+  if (
+    actor === 'player' &&
+    eventType === 'cite' &&
+    driftActiveBeforeResponse &&
+    !state.driftCorrectedByPlayer &&
+    !state.driftRoomCorrected &&
+    beat.tags.includes('burden')
+  ) {
+    state.driftCorrectedByPlayer = true
+    emit(state, { actor: 'player', type: 'drift_corrected', beatId: beat.id })
+  }
+}
+
+function playQuietRound(state: DeliberationState, actor: string): void {
+  emit(state, { actor, type: 'pass' })
+  // Quiet round: two distinct jurors fill the silence with default-rule
+  // chatter (picking the second from the remaining pool avoids the same
+  // juror speaking both lines back-to-back).
+  const firstJuror = pick(state.rng, state.caseData.jury.jurors)
+  const remaining = state.caseData.jury.jurors.filter((j) => j.id !== firstJuror.id)
+  const secondJuror = pick(state.rng, remaining)
+  for (const juror of [firstJuror, secondJuror]) {
+    const fn = juror.reaction_rules[juror.reaction_rules.length - 1].effect.line
+    emit(state, {
+      actor: juror.id,
+      type: 'respond',
+      lineFunction: fn,
+      line: voice(state, juror, fn),
+      delta: 0,
+      position: state.jurors.find((s) => s.id === juror.id)!.position,
+    })
+    if (fn === 'burden_drift') {
+      state.driftActive = true
+      emit(state, { actor: juror.id, type: 'drift' })
+    }
+  }
+}
+
+/** Play one open round: the player's action, the room's responses, the drift. */
+export function playRound(state: DeliberationState, action: PlayerAction): void {
+  if (state.phase !== 'open_1' && state.phase !== 'open_2' && state.phase !== 'open_3') {
+    throw new Error(`No open round in phase ${state.phase}`)
+  }
+
+  if (action.type === 'pass') {
+    playQuietRound(state, 'player')
+  } else {
+    const beat = beatById(state.caseData, action.beatId)
+    if (action.type === 'cite_direction' && beat.kind !== 'direction') {
+      throw new Error(
+        `cite_direction requires a direction beat, got ${action.beatId} (${beat.kind})`,
+      )
+    }
+    if (action.type === 'argue' && beat.kind === 'direction') {
+      throw new Error(
+        `argue cannot target direction beat ${action.beatId}; use cite_direction`,
+      )
+    }
+    const stance: Stance = action.type === 'cite_direction' ? 'proves' : action.stance
+    raiseBeat(state, 'player', beat, stance)
+  }
+
+  peerPressure(state)
+  emit(state, { actor: 'room', type: 'positions', tally: tallyOf(state.jurors) })
+  advanceOpenPhase(state)
+}
+
+/**
+ * Auto-advance one open round: the next agenda beat is raised by the juror
+ * who cares most about it. If the agenda is exhausted, the room talks quietly.
+ * Deterministic given the current RNG stream.
+ */
+export function autoPlayRound(state: DeliberationState): void {
+  if (state.phase !== 'open_1' && state.phase !== 'open_2' && state.phase !== 'open_3') {
+    throw new Error(`No open round in phase ${state.phase}`)
+  }
+
+  const nextId = state.agenda.find((id) => !state.raisedBeatIds.includes(id))
+  if (!nextId) {
+    playQuietRound(state, 'room')
+  } else {
+    const beat = beatById(state.caseData, nextId)
+    const raiser = pickRaiser(state, beat)
+    const stance: Stance = 'proves'
+    raiseBeat(state, raiser.id, beat, stance)
+  }
+
+  peerPressure(state)
+  emit(state, { actor: 'room', type: 'positions', tally: tallyOf(state.jurors) })
+  advanceOpenPhase(state)
 }
 
 /** Resolve final vote (and, if needed, the majority vote) into an outcome. */

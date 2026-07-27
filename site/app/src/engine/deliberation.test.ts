@@ -5,7 +5,10 @@ import { describe, expect, it } from 'vitest'
 import { docketCaseSchema, type DocketCase } from '../lib/v2/caseSchema'
 import { makeDocketCase, makeJuror } from '../lib/v2/fixtures'
 import {
+  autoPlayRound,
+  buildAgenda,
   runDeliberation,
+  startDeliberation,
   type PlayerAction,
 } from './deliberation'
 
@@ -21,6 +24,27 @@ const cite = (beatId: string): PlayerAction => ({ type: 'cite_direction', beatId
 const DECISIVE = [argue('b4', 'proves'), argue('b7', 'proves'), argue('b4', 'proves')]
 const TRAPPY = [argue('b1', 'proves'), argue('b1', 'proves'), argue('b1', 'proves')]
 const PASSIVE = [pass, pass, pass]
+
+describe('pragmatic agenda', () => {
+  it('picks at most three beats and never the full case', () => {
+    const trial = makeDocketCase()
+    const agenda = buildAgenda(trial)
+    expect(agenda.length).toBeGreaterThan(0)
+    expect(agenda.length).toBeLessThanOrEqual(3)
+    expect(agenda.length).toBeLessThan(trial.beats.length)
+  })
+
+  it('autoPlayRound raises agenda beats without player action', () => {
+    const state = startDeliberation(makeDocketCase())
+    expect(state.phase).toBe('open_1')
+    autoPlayRound(state)
+    expect(state.raisedBeatIds.length).toBe(1)
+    expect(state.agenda).toContain(state.raisedBeatIds[0])
+    expect(state.phase).toBe('open_2')
+    expect(state.log.some((e) => e.type === 'argue' || e.type === 'cite')).toBe(true)
+    expect(state.log.some((e) => e.type === 'argue' && e.actor === 'player')).toBe(false)
+  })
+})
 
 describe('determinism (I-8)', () => {
   it('same case + actions => byte-identical deliberation log before finish', () => {
