@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
 import {
+  autoPlayRound,
   finish,
   playRound,
   startDeliberation,
@@ -14,10 +15,14 @@ import { phaseNarratorCue } from '../../lib/narratorCues'
 import type { Verdict } from './DocketVerdict'
 import { NarratorCue } from './NarratorCue'
 
+/** Dwell after a round so the transcript is readable and Pause/Raise stay usable. */
+const AUTO_DWELL_MS = 850
+const AUTO_START_MS = 700
+
 const ROUND_LABEL: Partial<Record<DeliberationState['phase'], string>> = {
-  open_1: 'First point',
-  open_2: 'Second point',
-  open_3: 'Final point',
+  open_1: 'Point 1',
+  open_2: 'Point 2',
+  open_3: 'Point 3',
 }
 
 function roundIndex(phase: DeliberationState['phase']): number {
@@ -27,12 +32,16 @@ function roundIndex(phase: DeliberationState['phase']): number {
   return 3
 }
 
-function usedBeatIds(log: RoomEvent[]): Set<string> {
-  const used = new Set<string>()
-  for (const e of log) {
-    if ((e.type === 'argue' || e.type === 'cite') && e.beatId) used.add(e.beatId)
-  }
-  return used
+function beatCue(text: string): string {
+  const trimmed = text.trim()
+  if (trimmed.length <= 90) return trimmed
+  return `${trimmed.slice(0, 87).trimEnd()}…`
+}
+
+function actorLabel(e: RoomEvent, trial: DocketCase): string {
+  if (e.actor === 'player') return 'You'
+  if (e.actor === 'room') return 'The room'
+  return trial.jury.jurors.find((j) => j.id === e.actor)?.label ?? 'A juror'
 }
 
 function RoundStepper({
@@ -162,19 +171,24 @@ function FeedLine({ e, trial, revealVotes }: { e: RoomEvent; trial: DocketCase; 
   if (e.type === 'argue' || e.type === 'cite') {
     const beat = trial.beats.find((b) => b.id === e.beatId)
     const beatNumber = trial.beats.findIndex((b) => b.id === e.beatId) + 1
-    const speaker = trial.cast.find((m) => m.id === beat?.speaker)
+    const who = actorLabel(e, trial)
+    const verb = who === 'You' ? 'raise' : 'raises'
     const stance =
       e.type === 'cite'
-        ? 'You rely on the judge’s legal direction.'
+        ? `${verb} the judge’s legal direction.`
         : e.stance === 'proves'
-          ? `You argue that it supports ${beat?.direction === 'guilt' ? 'conviction' : 'acquittal'}.`
-          : 'You challenge its reliability.'
+          ? `${verb} evidence that may support ${beat?.direction === 'guilt' ? 'conviction' : 'acquittal'}.`
+          : who === 'You'
+            ? 'challenge whether this evidence can be trusted.'
+            : 'challenges whether this evidence can be trusted.'
     return (
       <li className="rounded-lg border border-neutral-700 bg-neutral-800/60 p-3">
-        <p className="text-xs font-semibold text-neutral-300">You</p>
-        <p className="mt-1 text-sm text-neutral-200">{stance}</p>
+        <p className="text-xs font-semibold text-neutral-300">{who}</p>
+        <p className="mt-1 text-sm text-neutral-200">
+          {who === 'You' ? `You ${stance}` : `${who} ${stance}`}
+        </p>
         <p className="mt-2 border-l border-neutral-600 pl-3 text-xs leading-relaxed text-neutral-400">
-          Evidence {beatNumber} · {speaker?.name ?? 'The record'}: “{beat?.text ?? 'The selected evidence'}”
+          #{beatNumber}: “{beatCue(beat?.text ?? 'The selected evidence')}”
         </p>
       </li>
     )
@@ -182,7 +196,9 @@ function FeedLine({ e, trial, revealVotes }: { e: RoomEvent; trial: DocketCase; 
   if (e.type === 'pass') {
     return (
       <li className="room-pass rounded-lg border border-neutral-800 bg-neutral-900/50 px-3 py-2 text-sm text-neutral-400">
-        You let the room talk — a full round still passes.
+        {e.actor === 'player'
+          ? 'You let this point pass.'
+          : 'No new issue raised — the room talks on.'}
       </li>
     )
   }
@@ -224,29 +240,28 @@ function floorCopy({
   listening,
   activeLabel,
   awaitingPlayerVote,
+  paused,
+  raising,
   phase,
-  stirCount,
 }: {
   outcome: Outcome | null
   listening: boolean
   activeLabel: string | null
   awaitingPlayerVote: boolean
+  paused: boolean
+  raising: boolean
   phase: DeliberationState['phase']
-  stirCount: number | null
 }): string {
   if (outcome) return 'The court has the floor'
   if (listening && activeLabel) return `${activeLabel} has the floor`
   if (listening) return 'The room is answering'
   if (awaitingPlayerVote) return 'Your turn to lock a verdict'
-  if (stirCount !== null && stirCount > 0) {
-    return stirCount === 1
-      ? 'One juror answered — your move'
-      : `${stirCount} jurors answered — your move`
-  }
-  if (phase === 'open_1') return 'Pick evidence and make your first point'
-  if (phase === 'open_2') return 'Make your second point'
-  if (phase === 'open_3') return 'One last point before you vote'
-  return 'The foreperson waits for your point'
+  if (raising) return 'Raise something if you want — or resume'
+  if (paused) return 'Paused — resume when ready, or raise an issue'
+  if (phase === 'open_1') return 'The room opens a short agenda'
+  if (phase === 'open_2') return 'Next point on the agenda'
+  if (phase === 'open_3') return 'Last point before the vote'
+  return 'Deliberation continues'
 }
 
 export function JuryRoomView({
@@ -270,16 +285,102 @@ export function JuryRoomView({
   const [pendingVerdict, setPendingVerdict] = useState<Verdict | null>(null)
   const [activeJurorId, setActiveJurorId] = useState<string | null>(null)
   const [listening, setListening] = useState(false)
+  const [paused, setPaused] = useState(false)
+  const [raising, setRaising] = useState(false)
   const [stirredIds, setStirredIds] = useState<readonly string[]>([])
-  const [stirCount, setStirCount] = useState<number | null>(null)
   const transcriptRef = useRef<HTMLUListElement>(null)
   const followTranscriptRef = useRef(true)
   const continueButton = useRef<HTMLButtonElement>(null)
   const listenGeneration = useRef(0)
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const startedRef = useRef(false)
+  const pausedRef = useRef(false)
+  const raisingRef = useRef(false)
+  const outcomeRef = useRef(false)
 
   const revealVotes = outcome !== null
-  const used = usedBeatIds(state.log)
   const logLength = state.log.length
+  const inOpenRound = state.phase.startsWith('open')
+  const awaitingPlayerVote = state.phase === 'final_vote' && !outcome
+  const beat = trial.beats.find((b) => b.id === selectedBeat)!
+
+  useEffect(() => {
+    pausedRef.current = paused
+  }, [paused])
+  useEffect(() => {
+    raisingRef.current = raising
+  }, [raising])
+  useEffect(() => {
+    outcomeRef.current = outcome !== null
+  }, [outcome])
+
+  function clearAdvanceTimer() {
+    if (advanceTimer.current) {
+      clearTimeout(advanceTimer.current)
+      advanceTimer.current = null
+    }
+  }
+
+  function endListening(generation: number) {
+    if (listenGeneration.current !== generation) return
+    setActiveJurorId(null)
+    setListening(false)
+  }
+
+  function scheduleAutoAdvance(delayMs: number) {
+    clearAdvanceTimer()
+    advanceTimer.current = setTimeout(() => {
+      advanceTimer.current = null
+      if (pausedRef.current || raisingRef.current || outcomeRef.current) return
+      const current = stateRef.current
+      if (!current?.phase.startsWith('open')) return
+      runRound('auto')
+    }, delayMs)
+  }
+
+  function runRound(mode: 'auto' | PlayerAction) {
+    const current = stateRef.current
+    if (!current || !current.phase.startsWith('open') || outcomeRef.current) return
+    clearAdvanceTimer()
+    const before = current.log.length
+    setActiveJurorId(null)
+    setPendingVerdict(null)
+    setRaising(false)
+    raisingRef.current = false
+    stopSpeech()
+    if (mode === 'auto') autoPlayRound(current)
+    else playRound(current, mode)
+    const spoken = current.log
+      .slice(before)
+      .filter((e) => e.type === 'respond' && e.line)
+      .map((e) => ({ text: e.line!, key: e.actor }))
+    setStirredIds(spoken.map((line) => line.key))
+    const generation = ++listenGeneration.current
+    const stillOpen = current.phase.startsWith('open')
+    if (narration && spoken.length > 0) {
+      setListening(true)
+      setActiveJurorId(spoken[0]?.key ?? null)
+      speakAll(spoken, {
+        onLine: (key) => {
+          if (listenGeneration.current === generation) setActiveJurorId(key)
+        },
+        done: () => {
+          endListening(generation)
+          if (stillOpen && !pausedRef.current && !raisingRef.current) {
+            scheduleAutoAdvance(AUTO_DWELL_MS)
+          }
+        },
+        rate: playbackRate,
+      })
+    } else {
+      setListening(false)
+      setActiveJurorId(null)
+      if (stillOpen && !pausedRef.current && !raisingRef.current) {
+        scheduleAutoAdvance(AUTO_DWELL_MS)
+      }
+    }
+    setTick((t) => t + 1)
+  }
 
   useEffect(() => {
     setActiveJurorId(null)
@@ -291,14 +392,20 @@ export function JuryRoomView({
   }, [narration, playbackRate])
 
   useEffect(() => {
+    if (startedRef.current) return
+    startedRef.current = true
+    scheduleAutoAdvance(AUTO_START_MS)
+    return () => {
+      clearAdvanceTimer()
+      stopSpeech()
+    }
+    // Mount-once autoplay kickoff.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
     if (outcome) continueButton.current?.focus()
   }, [outcome])
-
-  const beat = trial.beats.find((b) => b.id === selectedBeat)!
-  const inOpenRound = state.phase.startsWith('open')
-  const awaitingPlayerVote = state.phase === 'final_vote' && !outcome
-  const renderedPhase = state.phase
-  const consoleLocked = listening || !inOpenRound
 
   useEffect(() => {
     document.getElementById('phase-heading')?.focus()
@@ -311,10 +418,31 @@ export function JuryRoomView({
     }
   }, [logLength, revealVotes, listening])
 
-  function endListening(generation: number) {
-    if (listenGeneration.current !== generation) return
-    setActiveJurorId(null)
-    setListening(false)
+  function togglePause() {
+    if (!inOpenRound || outcome) return
+    if (paused) {
+      setPaused(false)
+      pausedRef.current = false
+      if (!listening && !raisingRef.current) scheduleAutoAdvance(AUTO_DWELL_MS)
+      return
+    }
+    setPaused(true)
+    pausedRef.current = true
+    clearAdvanceTimer()
+  }
+
+  function openRaise() {
+    if (!inOpenRound || outcome || listening) return
+    setPaused(true)
+    pausedRef.current = true
+    clearAdvanceTimer()
+    setRaising(true)
+    raisingRef.current = true
+  }
+
+  function cancelRaise() {
+    setRaising(false)
+    raisingRef.current = false
   }
 
   function skipListening() {
@@ -322,42 +450,18 @@ export function JuryRoomView({
     stopSpeech()
     setActiveJurorId(null)
     setListening(false)
-  }
-
-  function act(action: PlayerAction) {
-    if (!inOpenRound || state.phase !== renderedPhase || listening) return
-    const before = state.log.length
-    setActiveJurorId(null)
-    setPendingVerdict(null)
-    setStirCount(null)
-    stopSpeech()
-    playRound(state, action)
-    const spoken = state.log
-      .slice(before)
-      .filter((e) => e.type === 'respond' && e.line)
-      .map((e) => ({ text: e.line!, key: e.actor }))
-    setStirredIds(spoken.map((line) => line.key))
-    setStirCount(spoken.length)
-    const generation = ++listenGeneration.current
-    if (narration && spoken.length > 0) {
-      setListening(true)
-      setActiveJurorId(spoken[0]?.key ?? null)
-      speakAll(spoken, {
-        onLine: (key) => {
-          if (listenGeneration.current === generation) setActiveJurorId(key)
-        },
-        done: () => endListening(generation),
-        rate: playbackRate,
-      })
-    } else {
-      setListening(false)
-      setActiveJurorId(null)
+    if (
+      stateRef.current?.phase.startsWith('open') &&
+      !pausedRef.current &&
+      !raisingRef.current
+    ) {
+      scheduleAutoAdvance(AUTO_DWELL_MS)
     }
-    setTick((t) => t + 1)
   }
 
   function sealVerdict(chosen: Verdict) {
     if (state.phase !== 'final_vote' || outcome) return
+    clearAdvanceTimer()
     setActiveJurorId(null)
     setListening(false)
     stopSpeech()
@@ -393,9 +497,9 @@ export function JuryRoomView({
       ? (trial.jury.jurors.find((juror) => juror.id === activeJurorId)?.label ?? 'A juror')
       : null
 
-  const beatSpeaker =
-    trial.cast.find((member) => member.id === beat.speaker)?.name ?? 'The record'
-  const beatNumber = trial.beats.findIndex((item) => item.id === beat.id) + 1
+  const agendaBeats = state.agenda
+    .map((id) => trial.beats.find((b) => b.id === id))
+    .filter((b): b is NonNullable<typeof b> => Boolean(b))
 
   return (
     <div className="phase-view jury-room-view space-y-5">
@@ -403,24 +507,65 @@ export function JuryRoomView({
         <h1 id="phase-heading" tabIndex={-1} className="text-xs uppercase tracking-[0.2em] text-neutral-500 focus:outline-none">
           The jury room · {heading}
         </h1>
-        {!outcome && !awaitingPlayerVote && (
-          <RoundStepper phase={state.phase} done={false} />
-        )}
-        {awaitingPlayerVote && <RoundStepper phase={state.phase} done={false} />}
-        {outcome && <RoundStepper phase="final_vote" done />}
+        <RoundStepper phase={outcome ? 'final_vote' : state.phase} done={Boolean(outcome)} />
         <p className="text-sm text-neutral-400">
           {outcome
             ? 'The room’s vote is public now.'
             : awaitingPlayerVote
               ? 'Lock your verdict. The judge then reads the room.'
-              : 'Three points with the room. Votes stay private until the judge speaks.'}
+              : 'A short agenda — not a full replay. Raise something only if you want.'}
         </p>
       </div>
 
-      {!outcome && !awaitingPlayerVote && !listening && (
+      {!outcome && !awaitingPlayerVote && !listening && !raising && (
         <NarratorCue text={phaseNarratorCue('juryroom')} />
       )}
       {awaitingPlayerVote && <NarratorCue text={phaseNarratorCue('verdict')} />}
+
+      {inOpenRound && !outcome && (
+        <div className="deliberation-transport" role="group" aria-label="Deliberation playback">
+          <button
+            type="button"
+            onClick={togglePause}
+            className="transport-btn"
+            aria-pressed={paused}
+          >
+            {paused ? 'Resume' : 'Pause'}
+          </button>
+          <button
+            type="button"
+            onClick={openRaise}
+            disabled={listening || raising}
+            className="transport-btn transport-secondary"
+          >
+            Raise an issue
+          </button>
+          {listening && (
+            <button type="button" onClick={skipListening} className="transport-btn transport-secondary">
+              Skip speech
+            </button>
+          )}
+        </div>
+      )}
+
+      {agendaBeats.length > 0 && inOpenRound && !outcome && (
+        <ol className="agenda-strip" aria-label="Discussion agenda">
+          {agendaBeats.map((item, i) => {
+            const done = state.raisedBeatIds.includes(item.id)
+            const speaker =
+              trial.cast.find((m) => m.id === item.speaker)?.name ?? 'The record'
+            return (
+              <li key={item.id} className={`agenda-item${done ? ' done' : ''}`}>
+                <span className="agenda-index" aria-hidden="true">{i + 1}</span>
+                <span>
+                  {item.kind === 'direction' ? 'Legal direction' : speaker}
+                  {done ? ' · raised' : ''}
+                </span>
+              </li>
+            )
+          })}
+        </ol>
+      )}
 
       <Bench
         state={state}
@@ -435,8 +580,9 @@ export function JuryRoomView({
           listening,
           activeLabel,
           awaitingPlayerVote,
+          paused,
+          raising,
           phase: state.phase,
-          stirCount: listening ? null : stirCount,
         })}
       </p>
 
@@ -529,100 +675,74 @@ export function JuryRoomView({
             </p>
           )}
         </div>
-      ) : inOpenRound ? (
-        <div
-          className={`deliberation-console space-y-3 border p-4${consoleLocked ? ' is-listening' : ''}`}
-          aria-busy={listening || undefined}
-        >
-          {listening ? (
-            <div className="listen-panel space-y-3 text-center">
-              <p className="text-xs uppercase tracking-wider text-neutral-500">
-                Listening to the room
-              </p>
-              <p className="text-sm text-neutral-300">
-                {activeLabel
-                  ? `${activeLabel} is speaking.`
-                  : 'Jurors are answering your point.'}
-              </p>
+      ) : raising && inOpenRound ? (
+        <div className="deliberation-console space-y-3 border p-4">
+          <p className="text-xs uppercase tracking-wider text-neutral-500">
+            Optional raise · you are juror 1
+          </p>
+          <p className="text-sm text-neutral-400">
+            Pick one point if something still bothers you. Skip this if the agenda is enough.
+          </p>
+          <div className="evidence-chips" role="group" aria-label="Evidence you can raise">
+            {trial.beats.map((b, i) => {
+              const who = trial.cast.find((m) => m.id === b.speaker)
+              const selected = b.id === selectedBeat
+              const already = state.raisedBeatIds.includes(b.id)
+              return (
+                <button
+                  key={b.id}
+                  type="button"
+                  aria-pressed={selected}
+                  aria-label={`Evidence ${i + 1}, ${who?.name ?? b.speaker}${already ? ', already raised' : ''}`}
+                  onClick={() => setSelectedBeat(b.id)}
+                  className={`evidence-chip${selected ? ' selected' : ''}${already ? ' used' : ''}`}
+                >
+                  <span aria-hidden="true">{i + 1}</span>
+                </button>
+              )
+            })}
+          </div>
+          <div className="evidence-preview rounded-lg border border-neutral-800 bg-neutral-950/70 p-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+              #{trial.beats.findIndex((item) => item.id === beat.id) + 1} ·{' '}
+              {trial.cast.find((m) => m.id === beat.speaker)?.name ?? 'The record'}
+              {beat.kind === 'direction' ? ' · legal direction' : ''}
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-neutral-300">{beatCue(beat.text)}</p>
+          </div>
+          {beat.kind === 'direction' ? (
+            <button
+              type="button"
+              onClick={() => runRound({ type: 'cite_direction', beatId: beat.id })}
+              className="w-full rounded-lg bg-neutral-100 px-4 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
+            >
+              Raise this direction
+            </button>
+          ) : (
+            <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
-                onClick={skipListening}
-                className="w-full rounded-lg border border-neutral-600 px-4 py-2.5 text-sm font-semibold text-neutral-100 transition hover:bg-neutral-800"
+                onClick={() => runRound({ type: 'argue', beatId: beat.id, stance: 'proves' })}
+                className="rounded-lg bg-neutral-100 px-3 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
               >
-                Skip ahead
+                Support {beat.direction === 'guilt' ? 'conviction' : 'acquittal'}
+              </button>
+              <button
+                type="button"
+                onClick={() => runRound({ type: 'argue', beatId: beat.id, stance: 'unreliable' })}
+                className="rounded-lg border border-neutral-600 px-3 py-2.5 text-sm font-semibold text-neutral-200 transition hover:bg-neutral-800"
+              >
+                Challenge reliability
               </button>
             </div>
-          ) : (
-            <>
-              <p className="text-xs uppercase tracking-wider text-neutral-500">
-                Choose evidence, then argue
-              </p>
-              <div
-                className="evidence-chips"
-                role="group"
-                aria-label="Evidence from the trial"
-              >
-                {trial.beats.map((b, i) => {
-                  const who = trial.cast.find((m) => m.id === b.speaker)
-                  const selected = b.id === selectedBeat
-                  const alreadyUsed = used.has(b.id)
-                  return (
-                    <button
-                      key={b.id}
-                      type="button"
-                      aria-pressed={selected}
-                      aria-label={`Evidence ${i + 1}, ${who?.name ?? b.speaker}${alreadyUsed ? ', already raised' : ''}`}
-                      onClick={() => setSelectedBeat(b.id)}
-                      className={`evidence-chip${selected ? ' selected' : ''}${alreadyUsed ? ' used' : ''}`}
-                    >
-                      <span aria-hidden="true">{i + 1}</span>
-                    </button>
-                  )
-                })}
-              </div>
-              <div className="evidence-preview rounded-lg border border-neutral-800 bg-neutral-950/70 p-3">
-                <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                  Evidence {beatNumber} · {beatSpeaker}
-                  {beat.kind === 'direction' ? ' · legal direction' : ''}
-                  {used.has(beat.id) ? ' · raised before' : ''}
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-neutral-300">{beat.text}</p>
-              </div>
-              {beat.kind === 'direction' ? (
-                <button
-                  type="button"
-                  onClick={() => act({ type: 'cite_direction', beatId: beat.id })}
-                  className="w-full rounded-lg bg-neutral-100 px-4 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
-                >
-                  Cite this direction
-                </button>
-              ) : (
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => act({ type: 'argue', beatId: beat.id, stance: 'proves' })}
-                    className="rounded-lg bg-neutral-100 px-3 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
-                  >
-                    Argue this supports {beat.direction === 'guilt' ? 'conviction' : 'acquittal'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => act({ type: 'argue', beatId: beat.id, stance: 'unreliable' })}
-                    className="rounded-lg border border-neutral-600 px-3 py-2.5 text-sm font-semibold text-neutral-200 transition hover:bg-neutral-800"
-                  >
-                    Challenge its reliability
-                  </button>
-                </div>
-              )}
-              <button
-                type="button"
-                onClick={() => act({ type: 'pass' })}
-                className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-xs text-neutral-400 transition hover:bg-neutral-900"
-              >
-                Pass — let the room talk this round
-              </button>
-            </>
           )}
+          <button
+            type="button"
+            onClick={cancelRaise}
+            className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-xs text-neutral-400 transition hover:bg-neutral-900"
+          >
+            Never mind — keep the agenda moving
+          </button>
         </div>
       ) : null}
     </div>

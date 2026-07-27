@@ -5,7 +5,7 @@
     "beats": "Now the evidence. Witnesses and exhibits come one at a time. You do not decide yet — just listen carefully.",
     "closings": "Now the closings. Each side makes its final argument. After this, you retire with the jury to deliberate — you lock your own verdict only after that discussion.",
     "verdict": "Deliberation is over. Choose guilty or not guilty. To convict, you must be sure beyond reasonable doubt. The judge will then read how the rest of the jury voted.",
-    "juryroom": "Now the jury room. Argue the evidence with the other jurors. Keep your vote private for now — seats and tallies stay hidden until the judge reads the result.",
+    "juryroom": "Now the jury room. A short agenda runs automatically — pause anytime. Raise an issue only if you want; seats and tallies stay hidden until the judge reads the result.",
     "reveal": "This is the record. See how your verdict compares with the case outcome, and which pieces of evidence the authors marked as decisive."
   },
   "speaker": {

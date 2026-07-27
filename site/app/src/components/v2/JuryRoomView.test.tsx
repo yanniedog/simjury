@@ -4,7 +4,7 @@ import { makeDocketCase } from '../../lib/v2/fixtures'
 import { JuryRoomView } from './JuryRoomView'
 
 describe('JuryRoomView', () => {
-  it('shows evidence chips, round progress, and hides seat votes during deliberation', () => {
+  it('shows autoplay controls, a short agenda, and hides seat votes', () => {
     const trial = makeDocketCase()
     const markup = renderToStaticMarkup(
       <JuryRoomView
@@ -17,16 +17,14 @@ describe('JuryRoomView', () => {
 
     expect(markup).toContain('Jury room transcript')
     expect(markup).toContain('Deliberation progress')
-    expect(markup).toContain('Evidence from the trial')
-    expect(markup).toContain('Evidence 1')
-    expect(markup).toContain(trial.beats[0].text)
-    expect(markup).toContain('Argue this supports conviction')
-    expect(markup).toContain('Challenge its reliability')
-    expect(markup).toContain('Pass — let the room talk this round')
-    expect(markup).toContain('Three points with the room')
-    expect(markup).toContain('Pick evidence and make your first point')
+    expect(markup).toContain('Deliberation playback')
+    expect(markup).toContain('Pause')
+    expect(markup).toContain('Raise an issue')
+    expect(markup).toContain('Discussion agenda')
+    expect(markup).toContain('A short agenda')
+    expect(markup).toContain('The room opens a short agenda')
     expect(markup).not.toContain('→ guilty')
     expect(markup).not.toContain('A show of hands:')
-    expect(markup).not.toContain('authored case record')
+    expect(markup).not.toContain('Choose evidence, then argue')
   })
 })
