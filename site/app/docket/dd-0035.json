@@ -1,6 +1,6 @@
 {
   "id": "dd-0035",
-  "publish_date": "2026-08-07",
+  "publish_date": "2026-08-10",
   "label": "fiction",
   "title": "The Red Route",
   "setting": "a late-night ride-booking trip, two phone recordings, and a disputed roadside struggle in the present day",
@@ -103,7 +103,7 @@
       "kind": "witness",
       "speaker": "w1",
       "mode": "examination",
-      "text": "I complained when Daro took a longer diversion the app marked in red — what drivers call a red route — instead of the turn I wanted, and said I would leave the lowest rating. He stopped suddenly, got out, and came around the car. I raised my phone because he looked furious. He struck my face, and I hit the door. I did not threaten him outside the car.",
+      "text": "I complained when Daro took a longer diversion the app marked in red \u2014 what drivers call a red route \u2014 instead of the turn I wanted, and said I would leave the lowest rating. He stopped suddenly, got out, and came around the car. I raised my phone because he looked furious. He struck my face, and I hit the door. I did not threaten him outside the car.",
       "surface_persuasion": 0.6,
       "true_weight": 0.32,
       "direction": "guilt",
@@ -306,7 +306,7 @@
       "id": "b11",
       "kind": "exhibit",
       "speaker": "dc",
-      "text": "Exhibit three is the car's motion log — speed, steering, and door sensors stored in a tamper-checked file from the vehicle system. It fixes a sharp passenger-side steering yank, emergency braking, the driver's door opening four seconds later, and no vehicle movement afterward. Those timestamps match the continuous rear recording and place Daro's exit inside one unfolding threat.",
+      "text": "Exhibit three is the car's motion log \u2014 speed, steering, and door sensors stored in a tamper-checked file from the vehicle system. It fixes a sharp passenger-side steering yank, emergency braking, the driver's door opening four seconds later, and no vehicle movement afterward. Those timestamps match the continuous rear recording and place Daro's exit inside one unfolding threat.",
       "surface_persuasion": 0.74,
       "true_weight": 0.9,
       "direction": "innocence",
@@ -363,7 +363,7 @@
         },
         "lines": {
           "agree": [
-            "For me, the anchor is the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "For me, the anchor is the continuous rear recording, retreat sequence, and motion log \u2014 they answer the weakness that first divided this room.",
             "In my notes at seat 2, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
@@ -377,7 +377,7 @@
             "My verdict rests on the continuous rear recording, retreat sequence, and motion log, with the burden left where the judge placed it."
           ],
           "holdout": [
-            "I will hold on the cropped clip versus the continuous sequence until independent records — not pressure from the room — answer it."
+            "I will hold on the cropped clip versus the continuous sequence until independent records \u2014 not pressure from the room \u2014 answer it."
           ]
         },
         "reaction_rules": [
@@ -436,7 +436,7 @@
         },
         "lines": {
           "agree": [
-            "I move because of the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "I move because of the continuous rear recording, retreat sequence, and motion log \u2014 they answer the weakness that first divided this room.",
             "In my notes at seat 3, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
@@ -506,7 +506,7 @@
         },
         "lines": {
           "agree": [
-            "The part I cannot explain away is the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "The part I cannot explain away is the continuous rear recording, retreat sequence, and motion log \u2014 they answer the weakness that first divided this room.",
             "In my notes at seat 4, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
@@ -576,7 +576,7 @@
         },
         "lines": {
           "agree": [
-            "I checked the sequence against the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "I checked the sequence against the continuous rear recording, retreat sequence, and motion log \u2014 they answer the weakness that first divided this room.",
             "In my notes at seat 5, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
@@ -646,7 +646,7 @@
         },
         "lines": {
           "agree": [
-            "What changes my vote is the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "What changes my vote is the continuous rear recording, retreat sequence, and motion log \u2014 they answer the weakness that first divided this room.",
             "In my notes at seat 6, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
@@ -660,7 +660,7 @@
             "My final vote follows the continuous rear recording, retreat sequence, and motion log, with the burden left where the judge placed it."
           ],
           "holdout": [
-            "I will hold on the cropped clip versus the continuous sequence until independent records — not pressure from the room — answer it."
+            "I will hold on the cropped clip versus the continuous sequence until independent records \u2014 not pressure from the room \u2014 answer it."
           ]
         },
         "reaction_rules": [
@@ -719,7 +719,7 @@
         },
         "lines": {
           "agree": [
-            "I trust the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "I trust the continuous rear recording, retreat sequence, and motion log \u2014 they answer the weakness that first divided this room.",
             "In my notes at seat 7, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
@@ -789,7 +789,7 @@
         },
         "lines": {
           "agree": [
-            "The room should start with the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "The room should start with the continuous rear recording, retreat sequence, and motion log \u2014 they answer the weakness that first divided this room.",
             "In my notes at seat 8, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
@@ -858,7 +858,7 @@
         },
         "lines": {
           "agree": [
-            "I needed corroboration, and the continuous rear recording, retreat sequence, and motion log provide it — they answer the weakness that first divided this room.",
+            "I needed corroboration, and the continuous rear recording, retreat sequence, and motion log provide it \u2014 they answer the weakness that first divided this room.",
             "In my notes at seat 9, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
@@ -946,7 +946,7 @@
         },
         "lines": {
           "agree": [
-            "The timing becomes coherent through the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "The timing becomes coherent through the continuous rear recording, retreat sequence, and motion log \u2014 they answer the weakness that first divided this room.",
             "In my notes at seat 10, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
@@ -1015,7 +1015,7 @@
         },
         "lines": {
           "agree": [
-            "I am persuaded by the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "I am persuaded by the continuous rear recording, retreat sequence, and motion log \u2014 they answer the weakness that first divided this room.",
             "In my notes at seat 11, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
@@ -1085,7 +1085,7 @@
         },
         "lines": {
           "agree": [
-            "My holdout ends with the continuous rear recording, retreat sequence, and motion log — they answer the weakness that first divided this room.",
+            "My holdout ends with the continuous rear recording, retreat sequence, and motion log \u2014 they answer the weakness that first divided this room.",
             "In my notes at seat 12, the continuous rear recording, retreat sequence, and motion log agree across sources that did not depend on one another."
           ],
           "pushback": [
