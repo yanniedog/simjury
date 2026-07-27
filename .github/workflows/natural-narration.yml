@@ -26,6 +26,7 @@ on:
       - "site/scripts/speaker-voices.mjs"
       - "site/scripts/ensure-narration-voicebank.py"
       - "site/scripts/generate-kokoro-clips.py"
+      - "site/scripts/qwen_tts_load.py"
       - "site/scripts/publish-kokoro-clips.mjs"
       - ".github/workflows/natural-narration.yml"
 
@@ -38,8 +39,9 @@ concurrency:
   cancel-in-progress: false
 
 env:
+  # Single Hub root only — dual TRANSFORMERS_CACHE paths produced incomplete
+  # speech_tokenizer snapshots that Actions then re-cached forever.
   HF_HOME: ${{ github.workspace }}/.hf-cache
-  TRANSFORMERS_CACHE: ${{ github.workspace }}/.hf-cache/transformers
   HF_HUB_ENABLE_HF_TRANSFER: "1"
 
 jobs:
@@ -65,7 +67,7 @@ jobs:
           else
             changed="$(git diff --name-only HEAD^ HEAD)"
             # Synthesis inputs / spoken cue copy / voice bank force all.
-            if grep -Eq '^(site/app/src/lib/(narration|narratorCues|castGenders|speakerVoices|narrationVoices)\.(ts|json)|site/app/src/lib/narratorCueCopy\.json|site/narration-requirements\.txt|site/scripts/(generate-kokoro-clips\.py|ensure-narration-voicebank\.py|speaker-voices\.mjs))$' <<< "$changed"; then
+            if grep -Eq '^(site/app/src/lib/(narration|narratorCues|castGenders|speakerVoices|narrationVoices)\.(ts|json)|site/app/src/lib/narratorCueCopy\.json|site/narration-requirements\.txt|site/scripts/(generate-kokoro-clips\.py|ensure-narration-voicebank\.py|qwen_tts_load\.py|speaker-voices\.mjs))$' <<< "$changed"; then
               requested="all"
             else
               requested="$(sed -nE 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p' <<< "$changed" |
@@ -113,13 +115,13 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: .hf-cache
-          key: qwen3-tts-hf-${{ hashFiles('site/narration-requirements.txt') }}
+          key: qwen3-tts-hf-v2-${{ hashFiles('site/narration-requirements.txt') }}
           restore-keys: |
-            qwen3-tts-hf-
+            qwen3-tts-hf-v2-
       - name: Install open-source speech tooling
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg sox libsox-fmt-all
           python -m pip install --upgrade pip
           pip install -r site/narration-requirements.txt
       - name: Restore published voicebank when present
@@ -189,13 +191,13 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: .hf-cache
-          key: qwen3-tts-hf-${{ hashFiles('site/narration-requirements.txt') }}
+          key: qwen3-tts-hf-v2-${{ hashFiles('site/narration-requirements.txt') }}
           restore-keys: |
-            qwen3-tts-hf-
+            qwen3-tts-hf-v2-
       - name: Install open-source speech tooling
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg sox libsox-fmt-all
           python -m pip install --upgrade pip
           pip install -r site/narration-requirements.txt
       - name: Fetch VoiceDesign reference bank

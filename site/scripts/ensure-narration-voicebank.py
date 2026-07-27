@@ -17,30 +17,15 @@ import numpy as np
 import soundfile as sf
 import torch
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from qwen_tts_load import load_qwen_model, pick_device
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
     stream=sys.stdout,
 )
 log = logging.getLogger("ensure-narration-voicebank")
-
-
-def pick_device() -> str:
-    if torch.cuda.is_available():
-        return "cuda:0"
-    if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
-        return "mps"
-    return "cpu"
-
-
-def model_kwargs(device: str) -> dict:
-    kwargs: dict = {
-        "device_map": device,
-        "dtype": torch.bfloat16 if device.startswith("cuda") else torch.float32,
-    }
-    if device.startswith("cuda"):
-        kwargs["attn_implementation"] = "sdpa"
-    return kwargs
 
 
 def profile_complete(output: Path, voice_id: str) -> bool:
@@ -73,11 +58,7 @@ def main() -> None:
     if device == "cpu":
         torch.set_num_threads(max(1, min(8, os.cpu_count() or 4)))
 
-    from qwen_tts import Qwen3TTSModel
-
-    model_id = "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign"
-    log.info("Loading %s", model_id)
-    model = Qwen3TTSModel.from_pretrained(model_id, **model_kwargs(device))
+    model = load_qwen_model("Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign", device)
     ref_text = catalog["refText"]
 
     for profile in missing:
