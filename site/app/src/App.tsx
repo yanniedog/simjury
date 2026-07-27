@@ -47,7 +47,7 @@ import {
 } from './components/v2/DocketChrome'
 import { NarratorCue } from './components/v2/NarratorCue'
 
-type Phase = 'intro' | 'openings' | 'beats' | 'verdict' | 'juryroom' | 'reveal'
+type Phase = 'intro' | 'openings' | 'beats' | 'closings' | 'juryroom' | 'reveal'
 
 /** Read the full play history from storage and reduce it to stats. */
 function statsFromStorage(): Stats {
@@ -73,7 +73,7 @@ function IntroGate({
   playbackRate: NarrationRate
 }) {
   const cue =
-    'Welcome to SimJury. Before today’s case, a short guided sitting teaches how a trial works here — briefing, openings, evidence, your verdict, then the jury room.'
+    'Welcome to SimJury. Before today’s case, a short guided sitting teaches how a trial works here — briefing, openings, evidence, closings, the jury room, then your verdict.'
 
   useEffect(() => {
     if (narration) speak(cue, 'narrator', undefined, playbackRate)
@@ -268,60 +268,43 @@ function DocketApp({
   }
 
   function nextBeat() {
-    const atVerdict = beatIndex + 1 >= beatCount
-    const nextBeatIndex = atVerdict ? beatIndex : beatIndex + 1
-    if (atVerdict) setPhase('verdict')
+    const atClosings = beatIndex + 1 >= beatCount
+    const nextBeatIndex = atClosings ? beatIndex : beatIndex + 1
+    if (atClosings) setPhase('closings')
     else setBeatIndex(nextBeatIndex)
     persistProgress({
-      phase: atVerdict ? 'verdict' : 'beats',
+      phase: atClosings ? 'closings' : 'beats',
       beatIndex: nextBeatIndex,
     })
   }
 
-  function lockVerdict(chosen: Verdict) {
-    const locked = loadPlayForSitting(day, caseStorageId(activeTrial))
-    if (verdict !== null) return
-    if (locked) {
-      clearProgress(day)
-      setVerdict(locked.verdict)
-      setRoom(locked.room ?? null)
-      if (locked.room) {
-        setRevealStats(statsFromStorage())
-        setPhase('reveal')
-      } else {
-        setPhase('juryroom')
-      }
-      return
-    }
-    setVerdict(chosen)
-    savePlay({
-      day,
-      caseId: caseStorageId(activeTrial),
-      convictions: [],
-      verdict: chosen,
-    })
-    clearProgress(day)
+  function enterJuryRoom() {
     setPhase('juryroom')
+    persistProgress({
+      phase: 'juryroom',
+      beatIndex,
+    })
   }
 
-  function roomDone(outcome: Outcome) {
-    if (!verdict) return
-    const done = analyzeDocketPlay(activeTrial, verdict)
+  function roomDone(outcome: Outcome, chosen: Verdict) {
+    const done = analyzeDocketPlay(activeTrial, chosen)
     const roomRecord: NonNullable<StoredPlay['room']> = {
       kind: outcome.kind,
       verdict: outcome.verdict,
       g: outcome.tally.g,
       ng: outcome.tally.ng,
     }
+    setVerdict(chosen)
     setRoom(roomRecord)
     savePlay({
       day,
       caseId: caseStorageId(activeTrial),
       convictions: [],
-      verdict,
+      verdict: chosen,
       correct: done.correct,
       room: roomRecord,
     })
+    clearProgress(day)
     if (isIntro) markIntroComplete()
     setRevealStats(statsFromStorage())
     setPhase('reveal')
@@ -396,19 +379,18 @@ function DocketApp({
           onNext={nextBeat}
         />
       )}
-      {phase === 'verdict' && (
+      {phase === 'closings' && (
         <DocketVerdict
           trial={activeTrial}
           narration={narration}
           playbackRate={playbackRate}
-          onLock={lockVerdict}
+          onContinue={enterJuryRoom}
         />
       )}
-      {phase === 'juryroom' && verdict && (
+      {phase === 'juryroom' && (
         <JuryRoomView
-          key={`${activeTrial.id}-${verdict}`}
+          key={activeTrial.id}
           trial={activeTrial}
-          playerVerdict={verdict}
           narration={narration}
           playbackRate={playbackRate}
           onDone={roomDone}

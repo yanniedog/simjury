@@ -9,19 +9,18 @@ import { pick, rngFor, type Rng } from './rng'
 
 /**
  * The Daily Docket deliberation engine — v3 spec §9 at daily scale, pure and
- * deterministic. The player locks a verdict first (no anchoring), then plays
- * up to three open rounds against 11 rule-driven jurors:
+ * deterministic. The player deliberates first (arguing evidence across open
+ * rounds), then locks their own verdict when the foreperson calls the vote:
  *
  *   INITIAL_POSITIONS → OPEN_ROUND ×2 → MID_VOTE → OPEN_ROUND ×1
- *     → FINAL_VOTE → (unanimous | majority ≥10 | HUNG)
+ *     → FINAL_VOTE (+ player lock) → (unanimous | majority ≥10 | HUNG)
  *
- * Same case + same verdict + same actions ⇒ byte-identical event log (the
- * I-8 determinism requirement); different arguments consume the seeded rng
- * differently and the room genuinely diverges. Jurors respond through their
- * authored reaction rules; `vibes`/`drifter` arcs weigh a beat's surface
- * persuasion while everyone else weighs its true weight — so arguing the
- * decisive evidence moves the room, and arguing the traps mostly moves the
- * gullible.
+ * Mid-vote tallies exist in the event log for the dynamics gate; the player
+ * UI withholds seat leanings and vote counts until the judge reads the
+ * result. Same case + same actions ⇒ byte-identical deliberation log (I-8);
+ * the player's locked vote is applied only at `finish` and affects the final
+ * 12-count. Jurors respond through authored reaction rules; `vibes`/`drifter`
+ * arcs weigh surface persuasion while everyone else weighs true weight.
  */
 
 export type PlayerVerdict = 'guilty' | 'not_guilty'
@@ -85,7 +84,8 @@ export interface Outcome {
 
 export interface DeliberationState {
   caseData: DocketCase
-  playerVerdict: PlayerVerdict
+  /** Set when the player locks at `finish`; null during open rounds. */
+  playerVerdict: PlayerVerdict | null
   jurors: JurorState[]
   phase: Phase
   tick: number
@@ -136,13 +136,10 @@ function tallyOf(jurors: JurorState[]): { g: number; ng: number; u: number } {
   return { g, ng, u }
 }
 
-export function startDeliberation(
-  caseData: DocketCase,
-  playerVerdict: PlayerVerdict,
-): DeliberationState {
+export function startDeliberation(caseData: DocketCase): DeliberationState {
   const state: DeliberationState = {
     caseData,
-    playerVerdict,
+    playerVerdict: null,
     jurors: caseData.jury.jurors.map((j) => ({
       id: j.id,
       seat: j.seat,
@@ -154,7 +151,7 @@ export function startDeliberation(
     phase: 'open_1',
     tick: 0,
     log: [],
-    rng: rngFor(`${caseData.id}:${playerVerdict}`),
+    rng: rngFor(caseData.id),
     driftActive: false,
     driftCorrectedByPlayer: false,
     driftRoomCorrected: false,
@@ -237,8 +234,9 @@ function respond(
 }
 
 function roomSign(state: DeliberationState): number {
-  const playerSign = state.playerVerdict === 'guilty' ? 1 : -1
-  return sign(playerSign + state.jurors.reduce((s, j) => s + sign(j.position), 0))
+  // Peer pressure follows the eleven jurors only — the player's vote is locked
+  // after deliberation, so it must not steer the room during open rounds.
+  return sign(state.jurors.reduce((s, j) => s + sign(j.position), 0))
 }
 
 function peerPressure(state: DeliberationState, boost = 0): void {
@@ -381,11 +379,16 @@ export function playRound(state: DeliberationState, action: PlayerAction): void 
 }
 
 /** Resolve final vote (and, if needed, the majority vote) into an outcome. */
-export function finish(state: DeliberationState): Outcome {
+export function finish(
+  state: DeliberationState,
+  playerVerdict: PlayerVerdict,
+): Outcome {
   if (state.phase !== 'final_vote') {
     throw new Error(`Cannot finish from phase ${state.phase}`)
   }
   if (state.outcome) return state.outcome
+
+  state.playerVerdict = playerVerdict
 
   // The judge instructs undecided jurors to reach a view: they lean with the
   // room, or by lot if the room itself is level.
@@ -397,7 +400,7 @@ export function finish(state: DeliberationState): Outcome {
     }
   }
 
-  const playerG = state.playerVerdict === 'guilty' ? 1 : 0
+  const playerG = playerVerdict === 'guilty' ? 1 : 0
   const jurorTally = tallyOf(state.jurors)
   let g = jurorTally.g + playerG
   let ng = jurorTally.ng + (1 - playerG)
@@ -458,10 +461,10 @@ export function runDeliberation(
   playerVerdict: PlayerVerdict,
   actions: PlayerAction[],
 ): { outcome: Outcome; log: RoomEvent[]; state: DeliberationState } {
-  const state = startDeliberation(caseData, playerVerdict)
+  const state = startDeliberation(caseData)
   const rounds: PlayerAction[] = [...actions]
   while (rounds.length < 3) rounds.push({ type: 'pass' })
   for (let i = 0; i < 3; i++) playRound(state, rounds[i])
-  const outcome = finish(state)
+  const outcome = finish(state, playerVerdict)
   return { outcome, log: state.log, state }
 }

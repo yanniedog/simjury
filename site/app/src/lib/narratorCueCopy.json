@@ -3,8 +3,9 @@
     "intro": "This is the briefing. You will meet the person on trial and learn the charge. Listen for what the prosecution must prove — you decide later if they proved it.",
     "openings": "Now you will hear openings. Each side tells its story of the case before any evidence is called. Notice what each side asks you to believe.",
     "beats": "Now the evidence. Witnesses and exhibits come one at a time. You do not decide yet — just listen carefully.",
-    "verdict": "Now you decide. After the closings, choose guilty or not guilty. To convict, you must be sure beyond reasonable doubt.",
-    "juryroom": "Now you explain your reasons to the other jurors. Your verdict is already sealed — this is where you defend what persuaded you.",
+    "closings": "Now the closings. Each side makes its final argument. After this, you retire with the jury to deliberate — you lock your own verdict only after that discussion.",
+    "verdict": "Deliberation is over. Choose guilty or not guilty. To convict, you must be sure beyond reasonable doubt. The judge will then read how the rest of the jury voted.",
+    "juryroom": "Now the jury room. Argue the evidence with the other jurors. Keep your vote private for now — seats and tallies stay hidden until the judge reads the result.",
     "reveal": "This is the record. See how your verdict compares with the case outcome, and which pieces of evidence the authors marked as decisive."
   },
   "speaker": {

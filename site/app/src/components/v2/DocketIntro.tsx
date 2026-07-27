@@ -91,9 +91,10 @@ export function DocketIntro({
       </div>
 
       <p className="text-sm leading-relaxed text-neutral-400">
-        You are Juror #1. Hear the evidence, commit your verdict for this
-        sitting, then explain what persuaded you. About ten minutes, start to
-        verdict. Your progress stays in this browser.
+        You are Juror #1. Hear the evidence, deliberate with the room, then
+        lock your verdict for this sitting. The judge reads the jury’s votes
+        only after you commit. About ten minutes, start to record. Your
+        progress stays in this browser.
       </p>
 
       <button

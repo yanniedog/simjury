@@ -20,53 +20,66 @@ const ROUND_LABEL: Partial<Record<DeliberationState['phase'], string>> = {
   open_3: 'Final round',
 }
 
-function positionTone(position: number): string {
-  if (position > 0) return 'border-red-800 bg-red-950/40 text-red-300'
-  if (position < 0) return 'border-emerald-800 bg-emerald-950/40 text-emerald-300'
-  return 'border-amber-700 bg-amber-950/30 text-amber-300'
-}
-
-function positionLabel(position: number): string {
-  if (position > 0) return 'Guilty'
-  if (position < 0) return 'Not guilty'
-  return 'Undecided'
-}
-
 function Bench({
   state,
   playerVerdict,
   activeJurorId,
+  revealPositions,
 }: {
   state: DeliberationState
-  playerVerdict: Verdict
+  playerVerdict: Verdict | null
   activeJurorId: string | null
+  revealPositions: boolean
 }) {
-  const playerTone =
-    playerVerdict === 'Guilty'
+  const playerTone = !revealPositions || !playerVerdict
+    ? 'border-neutral-700 bg-neutral-900/60 text-neutral-300'
+    : playerVerdict === 'Guilty'
       ? 'border-red-800 bg-red-950/40 text-red-300'
       : 'border-emerald-800 bg-emerald-950/40 text-emerald-300'
+  const playerMark = revealPositions && playerVerdict
+    ? (playerVerdict === 'Guilty' ? 'G' : 'NG')
+    : '·'
   return (
     <div className="jury-table" role="list" aria-label="The twelve jury seats">
-      <div
-        role="listitem"
-        className={`jury-seat player ${playerTone}`}
-      >
-        <span className="sr-only">{`Seat 1, you, ${playerVerdict}`}</span>
-        <span aria-hidden="true">You</span><small aria-hidden="true">{playerVerdict === 'Guilty' ? 'G' : 'NG'}</small>
+      <div role="listitem" className={`jury-seat player ${playerTone}`}>
+        <span className="sr-only">
+          {`Seat 1, you${revealPositions && playerVerdict ? `, ${playerVerdict}` : ', deliberating'}`}
+        </span>
+        <span aria-hidden="true">You</span>
+        <small aria-hidden="true">{playerMark}</small>
       </div>
       {[...state.jurors]
         .sort((a, b) => a.seat - b.seat)
         .map((j) => {
           const isActive = j.id === activeJurorId
+          const lean =
+            j.position > 0 ? 'Guilty' : j.position < 0 ? 'Not guilty' : 'Undecided'
+          const tone = !revealPositions
+            ? `border-neutral-700 bg-neutral-900/40 text-neutral-400${isActive ? ' active' : ''}`
+            : j.position > 0
+              ? `border-red-800 bg-red-950/40 text-red-300${isActive ? ' active' : ''}`
+              : j.position < 0
+                ? `border-emerald-800 bg-emerald-950/40 text-emerald-300${isActive ? ' active' : ''}`
+                : `border-amber-700 bg-amber-950/30 text-amber-300${isActive ? ' active' : ''}`
+          const mark = !revealPositions
+            ? '·'
+            : j.position > 0
+              ? 'G'
+              : j.position < 0
+                ? 'NG'
+                : '—'
           return (
             <div
               key={j.id}
               role="listitem"
               aria-current={isActive ? 'true' : undefined}
-              className={`jury-seat ${positionTone(j.position)}${isActive ? ' active' : ''}`}
+              className={`jury-seat ${tone}`}
             >
-              <span className="sr-only">{`Seat ${j.seat}, ${j.label}, ${positionLabel(j.position)}${isActive ? ', speaking now' : ''}`}</span>
-              <span aria-hidden="true">{j.seat}</span><small aria-hidden="true">{j.position > 0 ? 'G' : j.position < 0 ? 'NG' : '—'}</small>
+              <span className="sr-only">
+                {`Seat ${j.seat}, ${j.label}${revealPositions ? `, ${lean}` : ''}${isActive ? ', speaking now' : ''}`}
+              </span>
+              <span aria-hidden="true">{j.seat}</span>
+              <small aria-hidden="true">{mark}</small>
             </div>
           )
         })}
@@ -74,18 +87,13 @@ function Bench({
   )
 }
 
-function FeedLine({ e, trial }: { e: RoomEvent; trial: DocketCase }) {
+function FeedLine({ e, trial, revealVotes }: { e: RoomEvent; trial: DocketCase; revealVotes: boolean }) {
   if (e.type === 'respond' && e.line) {
     const juror = trial.jury.jurors.find((j) => j.id === e.actor)
     return (
       <li className="room-line border p-3">
         <p className="text-xs font-semibold text-neutral-400">
           {juror?.label ?? e.actor}
-          {e.delta !== undefined && e.delta !== 0 && (
-            <span className={e.delta > 0 ? 'ml-2 text-red-400' : 'ml-2 text-emerald-400'}>
-              {e.delta > 0 ? '→ guilty' : '→ not guilty'}
-            </span>
-          )}
         </p>
         <p className="mt-1 text-sm text-neutral-200">{e.line}</p>
       </li>
@@ -114,7 +122,7 @@ function FeedLine({ e, trial }: { e: RoomEvent; trial: DocketCase }) {
   if (e.type === 'pass') {
     return <li className="px-3 text-xs italic text-neutral-500">You let the room talk.</li>
   }
-  if (e.type === 'vote' && e.tally) {
+  if (e.type === 'vote' && e.tally && revealVotes) {
     return (
       <li className="rounded-lg border border-neutral-700 bg-neutral-900 p-3 text-center text-sm text-neutral-300">
         A show of hands: <b className="text-red-300">{e.tally.g} guilty</b> ·{' '}
@@ -123,7 +131,7 @@ function FeedLine({ e, trial }: { e: RoomEvent; trial: DocketCase }) {
       </li>
     )
   }
-  if (e.type === 'deadlock_direction') {
+  if (e.type === 'deadlock_direction' && revealVotes) {
     return (
       <li className="rounded-lg border border-amber-800 bg-amber-950/30 p-3 text-center text-sm text-amber-200">
         The judge: “{e.detail}”
@@ -142,33 +150,31 @@ function FeedLine({ e, trial }: { e: RoomEvent; trial: DocketCase }) {
 
 export function JuryRoomView({
   trial,
-  playerVerdict,
   narration,
   playbackRate,
   onDone,
 }: {
   trial: DocketCase
-  playerVerdict: Verdict
   narration: boolean
   playbackRate: NarrationRate
-  onDone: (outcome: Outcome) => void
+  onDone: (outcome: Outcome, verdict: Verdict) => void
 }) {
   const stateRef = useRef<DeliberationState | null>(null)
-  stateRef.current ??= startDeliberation(
-    trial,
-    playerVerdict === 'Guilty' ? 'guilty' : 'not_guilty',
-  )
+  stateRef.current ??= startDeliberation(trial)
   const state = stateRef.current
   const [, setTick] = useState(0)
   const [selectedBeat, setSelectedBeat] = useState(trial.beats[0].id)
   const [outcome, setOutcome] = useState<Outcome | null>(null)
+  const [playerVerdict, setPlayerVerdict] = useState<Verdict | null>(null)
+  const [pendingVerdict, setPendingVerdict] = useState<Verdict | null>(null)
   const [activeJurorId, setActiveJurorId] = useState<string | null>(null)
   const transcriptRef = useRef<HTMLUListElement>(null)
   const followTranscriptRef = useRef(true)
+  const confirmDialog = useRef<HTMLDialogElement>(null)
+  const sealButton = useRef<HTMLButtonElement>(null)
 
-  // Rate/toggle changes cancel speech in App; clear its visual state here too.
-  // When narration is on, speak the jury-room phase cue once (same pattern as intro/openings).
-  // The cleanup also prevents narration overlapping the reveal on unmount.
+  const revealVotes = outcome !== null
+
   useEffect(() => {
     setActiveJurorId(null)
     stopSpeech()
@@ -177,20 +183,25 @@ export function JuryRoomView({
     return stopSpeech
   }, [narration, playbackRate])
 
+  useEffect(() => {
+    const dialog = confirmDialog.current
+    if (!dialog) return
+    if (pendingVerdict) {
+      if (!dialog.open) dialog.showModal()
+      sealButton.current?.focus()
+    } else if (dialog.open) {
+      dialog.close()
+    }
+  }, [pendingVerdict])
+
   const beat = trial.beats.find((b) => b.id === selectedBeat)!
   const inOpenRound = state.phase.startsWith('open')
-  // The phase this render was painted for. `state` is mutable, so a rapid
-  // double-click would re-enter act() after playRound already advanced the
-  // phase — burning a second round on the same action, or throwing once the
-  // room reaches final_vote. A stale click (live phase != rendered phase) is
-  // simply ignored; the re-render re-arms the buttons for the new round.
+  const awaitingPlayerVote = state.phase === 'final_vote' && !outcome
   const renderedPhase = state.phase
 
-  // Internal deliberation rounds do not change App's outer phase, so restore
-  // focus here as the round heading changes for keyboard and screen-reader users.
   useEffect(() => {
     document.getElementById('phase-heading')?.focus()
-  }, [state.phase])
+  }, [state.phase, outcome, awaitingPlayerVote])
 
   const logLength = state.log.length
   useEffect(() => {
@@ -198,7 +209,7 @@ export function JuryRoomView({
     if (transcript && followTranscriptRef.current) {
       transcript.scrollTop = transcript.scrollHeight
     }
-  }, [logLength])
+  }, [logLength, revealVotes])
 
   function act(action: PlayerAction) {
     if (!inOpenRound || state.phase !== renderedPhase) return
@@ -219,34 +230,60 @@ export function JuryRoomView({
     setTick((t) => t + 1)
   }
 
-  function callVote() {
-    // Same double-click hazard as act(): finish() throws once the phase has
-    // left final_vote, so a second click before re-render must be a no-op.
-    if (state.phase !== 'final_vote') return
+  function sealVerdict(chosen: Verdict) {
+    if (state.phase !== 'final_vote' || outcome) return
     setActiveJurorId(null)
     stopSpeech()
-    setOutcome(finish(state))
+    setPlayerVerdict(chosen)
+    const locked = finish(state, chosen === 'Guilty' ? 'guilty' : 'not_guilty')
+    setOutcome(locked)
+    setPendingVerdict(null)
     setTick((t) => t + 1)
+    const judgeLine =
+      locked.kind === 'hung'
+        ? `The judge reads the result. The jury is hung, ${locked.tally.g} to ${locked.tally.ng}.`
+        : `The judge reads the result. The jury finds ${locked.verdict === 'guilty' ? 'guilty' : 'not guilty'}, ${locked.tally.g} to ${locked.tally.ng}${locked.kind === 'unanimous' ? ', unanimous' : ', by majority'}.`
+    if (narration) speak(judgeLine, 'narrator', undefined, playbackRate)
   }
+
+  const heading = outcome
+    ? 'The judge reads the result'
+    : awaitingPlayerVote
+      ? 'Your verdict'
+      : (ROUND_LABEL[state.phase] ?? 'The vote')
 
   return (
     <div className="phase-view jury-room-view space-y-5">
       <div className="phase-heading space-y-1 text-center">
         <h1 id="phase-heading" tabIndex={-1} className="text-xs uppercase tracking-[0.2em] text-neutral-500 focus:outline-none">
-          The jury room · {ROUND_LABEL[state.phase] ?? 'The vote'}
+          The jury room · {heading}
         </h1>
         <p className="text-sm text-neutral-400">
-          Your verdict is sealed for this sitting. Now explain what persuaded you.
+          {outcome
+            ? 'Votes stay private until the court announces them.'
+            : awaitingPlayerVote
+              ? 'Deliberation is finished. Lock your verdict before the judge reads the room.'
+              : 'Argue the evidence with the room. Votes stay private until the judge reads them out.'}
         </p>
       </div>
 
-      <NarratorCue text={phaseNarratorCue('juryroom')} />
+      {!outcome && !awaitingPlayerVote && <NarratorCue text={phaseNarratorCue('juryroom')} />}
+      {awaitingPlayerVote && <NarratorCue text={phaseNarratorCue('verdict')} />}
 
-      <Bench state={state} playerVerdict={playerVerdict} activeJurorId={activeJurorId} />
+      <Bench
+        state={state}
+        playerVerdict={playerVerdict}
+        activeJurorId={activeJurorId}
+        revealPositions={revealVotes}
+      />
       <p aria-live="polite" className="speaker-focus text-xs text-amber-200/80">
-        {activeJurorId
-          ? `${trial.jury.jurors.find((juror) => juror.id === activeJurorId)?.label ?? 'A juror'} has the floor`
-          : 'The foreperson opens deliberations'}
+        {outcome
+          ? 'The court has the floor'
+          : activeJurorId
+            ? `${trial.jury.jurors.find((juror) => juror.id === activeJurorId)?.label ?? 'A juror'} has the floor`
+            : awaitingPlayerVote
+              ? 'The foreperson asks for your vote'
+              : 'The foreperson opens deliberations'}
       </p>
 
       <ul
@@ -261,17 +298,22 @@ export function JuryRoomView({
         className="room-transcript max-h-80 space-y-2 overflow-y-auto"
       >
         {state.log.map((e, i) => (
-          <FeedLine key={i} e={e} trial={trial} />
+          <FeedLine key={i} e={e} trial={trial} revealVotes={revealVotes} />
         ))}
       </ul>
 
-      {outcome ? (
+      {outcome && playerVerdict ? (
         <div className="space-y-4">
           <div className="rounded-lg border border-neutral-700 bg-neutral-900 p-5 text-center">
             <p className="text-xs uppercase tracking-wider text-neutral-500">
-              The room returns
+              The judge addresses the court
             </p>
-            <p className="mt-1 text-2xl font-semibold text-neutral-50">
+            <p className="mt-2 text-sm leading-relaxed text-neutral-300">
+              {outcome.kind === 'hung'
+                ? `Members of the jury, you are unable to agree. The court records a hung jury, ${outcome.tally.g} guilty to ${outcome.tally.ng} not guilty.`
+                : `Members of the jury, by a vote of ${outcome.tally.g} to ${outcome.tally.ng}${outcome.kind === 'unanimous' ? ', unanimous' : ''}, you find the accused ${outcome.verdict === 'guilty' ? 'guilty' : 'not guilty'}.`}
+            </p>
+            <p className="mt-3 text-2xl font-semibold text-neutral-50">
               {outcome.kind === 'hung'
                 ? 'Hung jury'
                 : outcome.verdict === 'guilty'
@@ -282,15 +324,72 @@ export function JuryRoomView({
               {outcome.tally.g}–{outcome.tally.ng}
               {outcome.kind === 'majority' && ' · by majority'}
               {outcome.kind === 'unanimous' && ' · unanimous'}
+              {' · your vote: '}
+              {playerVerdict}
             </p>
           </div>
           <button
             type="button"
-            onClick={() => onDone(outcome)}
+            onClick={() => onDone(outcome, playerVerdict)}
             className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
           >
             Open the authored case record →
           </button>
+        </div>
+      ) : awaitingPlayerVote ? (
+        <div className="space-y-4">
+          <div className="verdict-threshold border p-4 text-center">
+            <p className="text-sm leading-relaxed text-neutral-400">
+              To convict, you must be sure <em>beyond reasonable doubt</em>. Doubt
+              alone is enough to acquit.
+            </p>
+          </div>
+          <div className="verdict-choices grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setPendingVerdict('Not Guilty')}
+              className="rounded-lg border border-emerald-700 bg-emerald-950/40 px-4 py-4 font-semibold text-emerald-300 transition hover:bg-emerald-900/40"
+            >
+              <span className="block">Not persuaded to convict</span>
+              <span className="mt-1 block text-xs font-normal">Verdict: Not guilty</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setPendingVerdict('Guilty')}
+              className="rounded-lg border border-red-800 bg-red-950/40 px-4 py-4 font-semibold text-red-300 transition hover:bg-red-900/40"
+            >
+              <span className="block">Persuaded beyond reasonable doubt</span>
+              <span className="mt-1 block text-xs font-normal">Verdict: Guilty</span>
+            </button>
+          </div>
+          <dialog
+            ref={confirmDialog}
+            onClose={() => setPendingVerdict(null)}
+            className="verdict-dialog"
+            aria-labelledby="verdict-confirm-title"
+          >
+            <p className="chrome-label">Seal the record</p>
+            <h2 id="verdict-confirm-title">Your verdict: {pendingVerdict}</h2>
+            <p>
+              This decision is permanent for this sitting. The judge will then read
+              how the rest of the jury voted.
+            </p>
+            <div>
+              <button type="button" onClick={() => confirmDialog.current?.close()}>
+                Review again
+              </button>
+              <button
+                ref={sealButton}
+                type="button"
+                onClick={() => {
+                  if (!pendingVerdict) return
+                  sealVerdict(pendingVerdict)
+                }}
+              >
+                Seal my verdict
+              </button>
+            </div>
+          </dialog>
         </div>
       ) : inOpenRound ? (
         <div className="deliberation-console space-y-3 border p-4">
@@ -325,7 +424,7 @@ export function JuryRoomView({
               onClick={() => act({ type: 'cite_direction', beatId: beat.id })}
               className="w-full rounded-lg bg-neutral-100 px-4 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
             >
-              ⚖️ Cite this direction
+              Cite this direction
             </button>
           ) : (
             <div className="grid grid-cols-2 gap-2">
@@ -353,15 +452,7 @@ export function JuryRoomView({
             Say nothing this round
           </button>
         </div>
-      ) : (
-        <button
-          type="button"
-          onClick={callVote}
-          className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
-        >
-          The foreperson calls the vote
-        </button>
-      )}
+      ) : null}
     </div>
   )
 }

@@ -11,17 +11,18 @@ import {
  * strategy space and rejects rooms with foregone conclusions. A docket case
  * only ships if
  *
- *  1. for EACH verdict the player can lock, the room reaches at least two
- *     distinct terminal outcomes (kind + verdict) across the strategy space
- *     (the deliberation must be able to surprise, whichever way the player
- *     locks their own vote), and
+ *  1. for EACH verdict the player can lock after deliberation, the room
+ *     reaches at least two distinct terminal outcomes (kind + verdict) across
+ *     the strategy space (arguments must still be able to surprise, whichever
+ *     way the player later locks their own vote), and
  *  2. for each locked verdict, arguing the decisive evidence moves the room
  *     strictly further toward `verdict_truth` than saying nothing — unless
  *     passive play already maxes out the truth-side tally (skilled play
  *     must matter).
  *
  * Strategies are deterministic functions of the case, so this gate is as
- * reproducible as the engine itself.
+ * reproducible as the engine itself. The player's vote is applied only at
+ * finish and does not reseed open-round deliberation.
  */
 
 function truthDirection(c: DocketCase): 'guilt' | 'innocence' {
