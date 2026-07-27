@@ -18,7 +18,7 @@ export const JUDGE_VOICE_FEMALE = 'bf_emma'
 
 const FEMALE_VOICES = voiceBank.female
   .map((v) => v.id)
-  .filter((id) => id !== NARRATOR_VOICE)
+  .filter((id) => id !== NARRATOR_VOICE && id !== JUDGE_VOICE_FEMALE)
 
 const MALE_VOICES = voiceBank.male
   .map((v) => v.id)
@@ -28,8 +28,8 @@ const FEMALE_PREFERRED: Record<string, string> = {
   judge: JUDGE_VOICE_FEMALE,
   pc: 'af_bella',
   pros: 'af_bella',
-  dc: 'bf_emma',
-  defc: 'bf_emma',
+  dc: 'bf_isabella',
+  defc: 'bf_alice',
   clerk: 'af_alloy',
   acc: 'af_sky',
   w1: 'af_nicole',

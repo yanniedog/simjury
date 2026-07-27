@@ -54,9 +54,14 @@ def lang_for_voice(voice_id: str, catalog: dict) -> str:
     for profile in list(catalog.get("male", [])) + list(catalog.get("female", [])):
         if profile["id"] == voice_id:
             return str(profile.get("lang") or ("b" if voice_id.startswith(("bf_", "bm_")) else "a"))
+    # Prefix fallback for intentional ad-hoc Kokoro voices (British packs).
     if voice_id.startswith(("bf_", "bm_")):
         return "b"
-    return "a"
+    if voice_id.startswith(("af_", "am_")):
+        return "a"
+    raise ValueError(
+        f"Unknown Kokoro voice id {voice_id!r}: not in catalog and does not use a known prefix"
+    )
 
 
 def synthesise(pipeline, text: str, voice: str) -> np.ndarray:
@@ -86,11 +91,14 @@ def main() -> None:
     clips = job["clips"]
     if not clips:
         raise RuntimeError(f"Job {options.job} has no clips")
+    sample_rate = int(job.get("sampleRate") or 0)
+    if sample_rate <= 0:
+        raise ValueError(f"Job {options.job} missing positive sampleRate")
 
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     needed = sorted({clip["voice"] for clip in clips})
     for voice_id in needed:
-        lang_for_voice(voice_id, catalog)  # validates known id or falls back by prefix
+        lang_for_voice(voice_id, catalog)  # validates known id or known prefix
 
     threads = max(1, min(8, os.cpu_count() or 4))
     torch.set_num_threads(threads)
@@ -140,7 +148,7 @@ def main() -> None:
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as handle:
             wav_path = Path(handle.name)
         try:
-            sf.write(wav_path, audio, 24000, subtype="PCM_16")
+            sf.write(wav_path, audio, sample_rate, subtype="PCM_16")
             encode_mp3(wav_path, target)
         finally:
             wav_path.unlink(missing_ok=True)

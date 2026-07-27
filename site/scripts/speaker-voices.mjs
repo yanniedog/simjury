@@ -27,10 +27,10 @@ export const JUDGE_VOICE_MALE = 'bm_george'
 /** Warm British feminine timbre for female judges. */
 export const JUDGE_VOICE_FEMALE = 'bf_emma'
 
-/** Distinct female English Kokoro voices (af_heart reserved for narrator). */
+/** Distinct female English Kokoro voices (af_heart narrator, bf_emma female judges). */
 export const FEMALE_VOICES = VOICE_BANK.female
   .map((v) => v.id)
-  .filter((id) => id !== NARRATOR_VOICE)
+  .filter((id) => id !== NARRATOR_VOICE && id !== JUDGE_VOICE_FEMALE)
 
 /** Distinct male English Kokoro voices (bm_george reserved for male judges). */
 export const MALE_VOICES = VOICE_BANK.male
@@ -41,8 +41,8 @@ const FEMALE_PREFERRED = {
   judge: JUDGE_VOICE_FEMALE,
   pc: 'af_bella',
   pros: 'af_bella',
-  dc: 'bf_emma',
-  defc: 'bf_emma',
+  dc: 'bf_isabella',
+  defc: 'bf_alice',
   clerk: 'af_alloy',
   acc: 'af_sky',
   w1: 'af_nicole',
