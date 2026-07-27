@@ -1,7 +1,7 @@
 """Build or refresh the Qwen3-TTS VoiceDesign reference bank.
 
-Each profile in site/narration/voices.json becomes a short reference WAV used later
-by the Base model for consistent per-speaker cloning.
+Each profile in site/app/src/lib/narrationVoices.json becomes a short reference WAV
+used later by the Base model for consistent per-speaker cloning.
 """
 
 from __future__ import annotations
@@ -43,6 +43,11 @@ def model_kwargs(device: str) -> dict:
     return kwargs
 
 
+def profile_complete(output: Path, voice_id: str) -> bool:
+    """Clone jobs need both the reference WAV and its JSON metadata."""
+    return (output / f"{voice_id}.wav").is_file() and (output / f"{voice_id}.json").is_file()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Ensure Qwen VoiceDesign reference WAVs exist")
     parser.add_argument("--voices", type=Path, required=True)
@@ -56,7 +61,7 @@ def main() -> None:
     missing = [
         profile
         for profile in profiles
-        if options.force or not (options.output / f"{profile['id']}.wav").is_file()
+        if options.force or not profile_complete(options.output, profile["id"])
     ]
     if not missing:
         log.info("Voicebank complete (%d profiles).", len(profiles))
