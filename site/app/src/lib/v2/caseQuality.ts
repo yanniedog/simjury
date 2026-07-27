@@ -72,10 +72,6 @@ export const BEAT_WORDS_MAX = 70
 export const CASE_WORDS_MIN = 550
 export const CASE_WORDS_MAX = 1050
 
-function isIntroCase(c: DocketCase): boolean {
-  return c.id === 'dd-intro'
-}
-
 function dialogueFingerprint(text: string): string {
   return (text.toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []).join(' ')
 }
@@ -280,15 +276,15 @@ function jurorIssues(
 /** Design issues for a single docket case (empty array = good). */
 export function checkDocketCase(c: DocketCase): string[] {
   // The v1 puzzle-design core applies unchanged to v2 beats.
+  // Guided intro uses the same floors as every other docket case.
   const issues: string[] = [...checkCase(c)]
-  const intro = isIntroCase(c)
-  const beatWordsMin = intro ? 25 : BEAT_WORDS_MIN
-  const beatWordsMax = intro ? 80 : BEAT_WORDS_MAX
-  const caseWordsMin = intro ? 200 : CASE_WORDS_MIN
+  const beatWordsMin = BEAT_WORDS_MIN
+  const beatWordsMax = BEAT_WORDS_MAX
+  const caseWordsMin = CASE_WORDS_MIN
   const caseWordsMax = CASE_WORDS_MAX
-  const statementWordsMin = intro ? 25 : STATEMENT_WORDS_MIN
+  const statementWordsMin = STATEMENT_WORDS_MIN
   const statementWordsMax = STATEMENT_WORDS_MAX
-  const witnessMin = intro ? 1 : WITNESS_COUNT_MIN
+  const witnessMin = WITNESS_COUNT_MIN
   const witnessMax = WITNESS_COUNT_MAX
 
   // Pacing.

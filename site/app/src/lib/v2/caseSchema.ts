@@ -244,8 +244,8 @@ export const docketCaseSchema = z
      */
     epilogue: z.string().min(1),
     cast: z.array(castMemberSchema).min(3).max(9),
-    /** Featured cases keep 10–14; the guided intro may be as short as 6. */
-    beats: z.array(docketBeatSchema).min(6).max(14),
+    /** Every docket case — including the guided intro — keeps 10–14 narrated beats. */
+    beats: z.array(docketBeatSchema).min(10).max(14),
     /**
      * Legacy mid-trial check-in beat ids. Optional/empty for new cases — the
      * player UI no longer records progressive conviction.
@@ -291,15 +291,6 @@ export const docketCaseSchema = z
       }
       beatIds.add(b.id)
     })
-    // Floor is 6 for dd-intro only; featured launch cases stay on the
-    // DAILY-PIVOT 10-14 narrated-beat budget.
-    if (c.id !== 'dd-intro' && c.beats.length < 10) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `featured cases need 10-14 beats (got ${c.beats.length}); only dd-intro may be shorter`,
-        path: ['beats'],
-      })
-    }
     for (const beatId of Object.keys(c.media?.beats ?? {})) {
       if (!beatIds.has(beatId)) {
         ctx.addIssue({
