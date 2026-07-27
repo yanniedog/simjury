@@ -92,7 +92,7 @@ function clipsFor(docket) {
   for (const { speaker, text } of spokenLines(docket)) {
     const gender = genders.get(speaker) ?? 'female'
     const voice = voiceBySpeaker.get(speaker)
-    if (!voice) throw new Error(`No Kokoro voice assigned for speaker: ${speaker}`)
+    if (!voice) throw new Error(`No narration voice assigned for speaker: ${speaker}`)
     const id = narrationIdFor(text, speaker, gender, voice)
     const clip = { id, speaker, gender, voice, text }
     const prior = clips.get(id)
@@ -144,7 +144,7 @@ for (const caseId of selected) {
   const clips = clipsFor(docket)
   const job = {
     caseId,
-    engine: 'hexgrad/Kokoro-82M',
+    engine: 'Qwen/Qwen3-TTS-12Hz-1.7B',
     license: 'Apache-2.0',
     sampleRate: 24000,
     clips: [...clips.values()]
