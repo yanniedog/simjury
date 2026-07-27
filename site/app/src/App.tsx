@@ -29,6 +29,8 @@ import {
   narrationRate,
   setNarrationEnabled,
   setNarrationRate,
+  setNarrationSpeakers,
+  clearNarrationSpeakers,
   speak,
   stopSpeech,
   type NarrationRate,
@@ -186,6 +188,18 @@ function DocketApp({
   useEffect(() => {
     document.getElementById('phase-heading')?.focus()
   }, [phase, beatIndex])
+
+  useEffect(() => {
+    if (!trial) {
+      clearNarrationSpeakers()
+      return
+    }
+    setNarrationSpeakers({
+      cast: trial.cast.map((m) => ({ id: m.id, name: m.name })),
+      jurors: trial.jury.jurors.map((j) => ({ id: j.id, persona: j.persona })),
+    })
+    return clearNarrationSpeakers
+  }, [trial])
 
   if (!trial) {
     return (

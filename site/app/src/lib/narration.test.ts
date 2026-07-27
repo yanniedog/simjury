@@ -1,14 +1,17 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
+  clearNarrationSpeakers,
   fallbackVoiceIndexes,
   NARRATION_SHARDS,
   narrationIdFor,
   narrationRate,
+  narrationSupported,
   naturalVoiceUrlFor,
   normaliseNarrationRate,
   selectLocalVoices,
   setNarrationEnabled,
   setNarrationRate,
+  setNarrationSpeakers,
   speak,
   speakAll,
   voiceParamsFor,
@@ -17,18 +20,23 @@ import {
 
 afterEach(() => {
   setNarrationEnabled(false)
+  clearNarrationSpeakers()
   vi.unstubAllGlobals()
 })
 
 describe('voiceParamsFor', () => {
   it('maps text to an opaque, stable, sharded GitHub release asset', () => {
-    const id = narrationIdFor('The evidence is ready.', 'pc')
+    const id = narrationIdFor('The evidence is ready.', 'pc', 'female', 'af_bella')
     expect(id).toMatch(/^pc-[0-9a-f]{8}$/)
-    const url = naturalVoiceUrlFor('The evidence is ready.', 'pc')
+    const url = naturalVoiceUrlFor('The evidence is ready.', 'pc', 'female', 'af_bella')
     const shard = url.match(/narration-kokoro-(\d+)/)?.[1]
     expect(url).toMatch(new RegExp(`/narration-kokoro-\\d+/${id}\\.mp3$`))
     expect(Number(shard)).toBeLessThan(NARRATION_SHARDS)
     expect(url).not.toContain('evidence')
+    // Gender and voice are folded into the id so role remaps diverge cleanly.
+    expect(narrationIdFor('The evidence is ready.', 'pc', 'female', 'af_bella')).not.toBe(
+      narrationIdFor('The evidence is ready.', 'pc', 'male', 'am_fenrir'),
+    )
   })
 
   it('is deterministic per speaker key', () => {
@@ -40,15 +48,18 @@ describe('voiceParamsFor', () => {
   })
 
   it('keeps pitch and rate in their designed bands', () => {
-    for (const key of ['judge', 'clerk', 'w1', 'w5', 'J-01', 'J-11']) {
+    for (const key of ['clerk', 'w1', 'w5', 'J-01', 'J-11']) {
       const p = voiceParamsFor(key, 7)
-      expect(p.pitch).toBeGreaterThanOrEqual(0.94)
-      expect(p.pitch).toBeLessThanOrEqual(1.06)
+      expect(p.pitch).toBeGreaterThanOrEqual(0.9)
+      expect(p.pitch).toBeLessThanOrEqual(1.12)
       expect(p.rate).toBeGreaterThanOrEqual(0.94)
       expect(p.rate).toBeLessThanOrEqual(1.01)
       expect(p.voiceIndex).toBeGreaterThanOrEqual(0)
       expect(p.voiceIndex).toBeLessThan(7)
     }
+    const judge = voiceParamsFor('judge', 7)
+    expect(judge.pitch).toBeLessThan(0.95)
+    expect(judge.rate).toBeLessThan(0.95)
   })
 
   it('survives a device with no voices', () => {
@@ -74,6 +85,33 @@ describe('voiceParamsFor', () => {
     expect(indexes[0]).not.toBe(indexes[1])
     expect(indexes[1]).toBe(indexes[2])
     expect(indexes[2]).not.toBe(indexes[3])
+  })
+
+  it('uses gender-matched voices when a case plan is registered', () => {
+    setNarrationSpeakers({
+      cast: [
+        { id: 'pc', name: 'Asha Verlaine' },
+        { id: 'dc', name: 'Theo Marchetti' },
+      ],
+    })
+    const deviceVoices = [
+      { name: 'Microsoft Zira', lang: 'en-US', localService: true },
+      { name: 'Microsoft David', lang: 'en-US', localService: true },
+      { name: 'Google UK English Female', lang: 'en-GB', localService: true },
+      { name: 'Google UK English Male', lang: 'en-GB', localService: true },
+    ] as SpeechSynthesisVoice[]
+    vi.stubGlobal('window', {
+      speechSynthesis: {
+        cancel: vi.fn(),
+        getVoices: () => deviceVoices,
+        speak: vi.fn(),
+      },
+    })
+    expect(narrationSupported()).toBe(true)
+    const indexes = fallbackVoiceIndexes(['pc', 'dc'], deviceVoices.length)
+    expect(indexes[0]).not.toBe(indexes[1])
+    expect(deviceVoices[indexes[0]].name).toMatch(/Zira|Female/)
+    expect(deviceVoices[indexes[1]].name).toMatch(/David|Male/)
   })
 
 })
