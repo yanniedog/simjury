@@ -16,6 +16,8 @@ describe('DocketBeatView dialogue', () => {
         beatIndex={1}
         narration={false}
         playbackRate={1}
+        notes={[]}
+        onNoteChange={() => undefined}
         onNext={() => undefined}
       />,
     )
@@ -24,6 +26,7 @@ describe('DocketBeatView dialogue', () => {
     expect(markup).toContain('Counsel Maddox')
     expect(markup).toContain('Renn Halloway')
     expect(markup).not.toContain('Speaking now')
+    expect(markup).toContain('Jot a short recollection note')
   })
 
   it('shows a cross-examination cue after direct of the same witness', () => {
@@ -35,6 +38,8 @@ describe('DocketBeatView dialogue', () => {
         beatIndex={1}
         narration={false}
         playbackRate={1}
+        notes={[]}
+        onNoteChange={() => undefined}
         onNext={() => undefined}
       />,
     )

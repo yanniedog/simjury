@@ -11,6 +11,13 @@ import {
   type RoomEvent,
 } from '../../engine/deliberation'
 import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
+import {
+  memoryLabel,
+  noteForBeat,
+  notesForOwner,
+  PLAYER_NOTE_OWNER,
+  type SittingNote,
+} from '../../lib/jurorNotes'
 import { phaseNarratorCue } from '../../lib/narratorCues'
 import type { Verdict } from './DocketVerdict'
 import { NarratorCue } from './NarratorCue'
@@ -32,16 +39,27 @@ function roundIndex(phase: DeliberationState['phase']): number {
   return 3
 }
 
-function beatCue(text: string): string {
-  const trimmed = text.trim()
-  if (trimmed.length <= 90) return trimmed
-  return `${trimmed.slice(0, 87).trimEnd()}…`
-}
-
 function actorLabel(e: RoomEvent, trial: DocketCase): string {
   if (e.actor === 'player') return 'You'
   if (e.actor === 'room') return 'The room'
   return trial.jury.jurors.find((j) => j.id === e.actor)?.label ?? 'A juror'
+}
+
+function ownerIdForActor(actor: string): string | null {
+  if (actor === 'player') return PLAYER_NOTE_OWNER
+  if (actor === 'room' || actor === 'judge') return null
+  return actor
+}
+
+function writtenRecord(
+  notes: SittingNote[],
+  actor: string,
+  beatId: string | undefined,
+): SittingNote | undefined {
+  if (!beatId) return undefined
+  const ownerId = ownerIdForActor(actor)
+  if (!ownerId) return undefined
+  return noteForBeat(notes, ownerId, beatId)
 }
 
 function RoundStepper({
@@ -156,7 +174,17 @@ function Bench({
   )
 }
 
-function FeedLine({ e, trial, revealVotes }: { e: RoomEvent; trial: DocketCase; revealVotes: boolean }) {
+function FeedLine({
+  e,
+  trial,
+  notes,
+  revealVotes,
+}: {
+  e: RoomEvent
+  trial: DocketCase
+  notes: SittingNote[]
+  revealVotes: boolean
+}) {
   if (e.type === 'respond' && e.line) {
     const juror = trial.jury.jurors.find((j) => j.id === e.actor)
     return (
@@ -169,27 +197,34 @@ function FeedLine({ e, trial, revealVotes }: { e: RoomEvent; trial: DocketCase; 
     )
   }
   if (e.type === 'argue' || e.type === 'cite') {
-    const beat = trial.beats.find((b) => b.id === e.beatId)
-    const beatNumber = trial.beats.findIndex((b) => b.id === e.beatId) + 1
     const who = actorLabel(e, trial)
     const verb = who === 'You' ? 'raise' : 'raises'
+    const memory = e.beatId ? memoryLabel(trial, e.beatId) : null
+    const note = writtenRecord(notes, e.actor, e.beatId)
     const stance =
       e.type === 'cite'
-        ? `${verb} the judge’s legal direction.`
+        ? `${verb} the judge’s direction from memory.`
         : e.stance === 'proves'
-          ? `${verb} evidence that may support ${beat?.direction === 'guilt' ? 'conviction' : 'acquittal'}.`
+          ? `${verb} a point from recollection.`
           : who === 'You'
-            ? 'challenge whether this evidence can be trusted.'
-            : 'challenges whether this evidence can be trusted.'
+            ? 'challenge whether that recollection holds.'
+            : 'challenges whether that recollection holds.'
     return (
       <li className="rounded-lg border border-neutral-700 bg-neutral-800/60 p-3">
         <p className="text-xs font-semibold text-neutral-300">{who}</p>
         <p className="mt-1 text-sm text-neutral-200">
           {who === 'You' ? `You ${stance}` : `${who} ${stance}`}
         </p>
-        <p className="mt-2 border-l border-neutral-600 pl-3 text-xs leading-relaxed text-neutral-400">
-          #{beatNumber}: “{beatCue(beat?.text ?? 'The selected evidence')}”
-        </p>
+        {note ? (
+          <p className="mt-2 border-l border-amber-700/50 pl-3 text-xs leading-relaxed text-neutral-300">
+            Note · #{memory?.number ?? '?'}: “{note.text}”
+          </p>
+        ) : (
+          <p className="mt-2 border-l border-neutral-600 pl-3 text-xs leading-relaxed text-neutral-500">
+            From memory · #{memory?.number ?? '?'} · {memory?.title ?? 'a sitting point'}
+            {' — no written note'}
+          </p>
+        )}
       </li>
     )
   }
@@ -268,11 +303,13 @@ export function JuryRoomView({
   trial,
   narration,
   playbackRate,
+  notes,
   onDone,
 }: {
   trial: DocketCase
   narration: boolean
   playbackRate: NarrationRate
+  notes: SittingNote[]
   onDone: (outcome: Outcome, verdict: Verdict) => void
 }) {
   const stateRef = useRef<DeliberationState | null>(null)
@@ -287,6 +324,8 @@ export function JuryRoomView({
   const [listening, setListening] = useState(false)
   const [paused, setPaused] = useState(false)
   const [raising, setRaising] = useState(false)
+  const [notesOpen, setNotesOpen] = useState(false)
+  const [notesOwner, setNotesOwner] = useState<string | null>(null)
   const [stirredIds, setStirredIds] = useState<readonly string[]>([])
   const transcriptRef = useRef<HTMLUListElement>(null)
   const followTranscriptRef = useRef(true)
@@ -303,6 +342,24 @@ export function JuryRoomView({
   const inOpenRound = state.phase.startsWith('open')
   const awaitingPlayerVote = state.phase === 'final_vote' && !outcome
   const beat = trial.beats.find((b) => b.id === selectedBeat)!
+  const playerNotes = notesForOwner(notes, PLAYER_NOTE_OWNER)
+  const ownersWithNotes = [
+    ...(playerNotes.length > 0 ? [PLAYER_NOTE_OWNER] : []),
+    ...trial.jury.jurors
+      .map((j) => j.id)
+      .filter((id) => notesForOwner(notes, id).length > 0),
+  ]
+  const canReloadNotes = ownersWithNotes.length > 0
+  const activeOwner =
+    activeJurorId && notesForOwner(notes, activeJurorId).length > 0
+      ? activeJurorId
+      : null
+  const viewingOwner = notesOwner ?? (activeOwner || (playerNotes.length > 0 ? PLAYER_NOTE_OWNER : ownersWithNotes[0] ?? null))
+  const viewingNotes = viewingOwner ? notesForOwner(notes, viewingOwner) : []
+  const viewingLabel =
+    viewingOwner === PLAYER_NOTE_OWNER
+      ? 'Your notes'
+      : trial.jury.jurors.find((j) => j.id === viewingOwner)?.label ?? 'Notes'
 
   useEffect(() => {
     pausedRef.current = paused
@@ -513,7 +570,7 @@ export function JuryRoomView({
             ? 'The room’s vote is public now.'
             : awaitingPlayerVote
               ? 'Lock your verdict. The judge then reads the room.'
-              : 'A short agenda — not a full replay. Raise something only if you want.'}
+              : 'Discuss from notes and memory — no transcript in this room.'}
         </p>
       </div>
 
@@ -540,10 +597,70 @@ export function JuryRoomView({
           >
             Raise an issue
           </button>
+          {canReloadNotes && (
+            <button
+              type="button"
+              onClick={() => {
+                setNotesOpen((open) => !open)
+                if (!notesOwner) {
+                  setNotesOwner(activeOwner ?? ownersWithNotes[0] ?? null)
+                }
+              }}
+              className="transport-btn transport-secondary"
+              aria-pressed={notesOpen}
+            >
+              {notesOpen ? 'Hide notes' : 'Reload notes'}
+            </button>
+          )}
           {listening && (
             <button type="button" onClick={skipListening} className="transport-btn transport-secondary">
               Skip speech
             </button>
+          )}
+        </div>
+      )}
+
+      {notesOpen && canReloadNotes && viewingOwner && (
+        <div className="notes-reload panel border p-4">
+          <div className="notes-reload-head">
+            <p className="text-xs uppercase tracking-wider text-neutral-500">
+              Written notes only · {viewingLabel}
+            </p>
+            {ownersWithNotes.length > 1 && (
+              <label className="notes-owner-pick">
+                <span className="sr-only">Whose notes</span>
+                <select
+                  value={viewingOwner}
+                  onChange={(event) => setNotesOwner(event.target.value)}
+                  className="notes-owner-select"
+                >
+                  {ownersWithNotes.map((id) => (
+                    <option key={id} value={id}>
+                      {id === PLAYER_NOTE_OWNER
+                        ? 'You (juror 1)'
+                        : trial.jury.jurors.find((j) => j.id === id)?.label ?? id}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+          </div>
+          {viewingNotes.length === 0 ? (
+            <p className="mt-2 text-sm text-neutral-500">No notes for this juror.</p>
+          ) : (
+            <ul className="mt-3 space-y-2">
+              {viewingNotes.map((note) => {
+                const memory = memoryLabel(trial, note.beatId)
+                return (
+                  <li key={`${note.ownerId}-${note.beatId}`} className="note-recall-card">
+                    <p className="text-xs text-neutral-500">
+                      #{memory.number} · {memory.title}
+                    </p>
+                    <p className="mt-1 text-sm text-neutral-200">“{note.text}”</p>
+                  </li>
+                )
+              })}
+            </ul>
           )}
         </div>
       )}
@@ -598,7 +715,7 @@ export function JuryRoomView({
         className="room-transcript max-h-80 space-y-2 overflow-y-auto"
       >
         {state.log.map((e, i) => (
-          <FeedLine key={i} e={e} trial={trial} revealVotes={revealVotes} />
+          <FeedLine key={i} e={e} trial={trial} notes={notes} revealVotes={revealVotes} />
         ))}
       </ul>
 
@@ -678,24 +795,25 @@ export function JuryRoomView({
       ) : raising && inOpenRound ? (
         <div className="deliberation-console space-y-3 border p-4">
           <p className="text-xs uppercase tracking-wider text-neutral-500">
-            Optional raise · you are juror 1
+            Optional raise · from your notes or memory
           </p>
           <p className="text-sm text-neutral-400">
-            Pick one point if something still bothers you. Skip this if the agenda is enough.
+            The room has no transcript — only notes you (or others) wrote, and what you remember.
           </p>
-          <div className="evidence-chips" role="group" aria-label="Evidence you can raise">
+          <div className="evidence-chips" role="group" aria-label="Points you can raise from memory">
             {trial.beats.map((b, i) => {
-              const who = trial.cast.find((m) => m.id === b.speaker)
+              const memory = memoryLabel(trial, b.id)
               const selected = b.id === selectedBeat
+              const hasPlayerNote = Boolean(noteForBeat(notes, PLAYER_NOTE_OWNER, b.id))
               const already = state.raisedBeatIds.includes(b.id)
               return (
                 <button
                   key={b.id}
                   type="button"
                   aria-pressed={selected}
-                  aria-label={`Evidence ${i + 1}, ${who?.name ?? b.speaker}${already ? ', already raised' : ''}`}
+                  aria-label={`${memory.title}${hasPlayerNote ? ', has your note' : ', memory only'}${already ? ', already raised' : ''}`}
                   onClick={() => setSelectedBeat(b.id)}
-                  className={`evidence-chip${selected ? ' selected' : ''}${already ? ' used' : ''}`}
+                  className={`evidence-chip${selected ? ' selected' : ''}${already ? ' used' : ''}${hasPlayerNote ? ' noted' : ''}`}
                 >
                   <span aria-hidden="true">{i + 1}</span>
                 </button>
@@ -703,12 +821,25 @@ export function JuryRoomView({
             })}
           </div>
           <div className="evidence-preview rounded-lg border border-neutral-800 bg-neutral-950/70 p-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-              #{trial.beats.findIndex((item) => item.id === beat.id) + 1} ·{' '}
-              {trial.cast.find((m) => m.id === beat.speaker)?.name ?? 'The record'}
-              {beat.kind === 'direction' ? ' · legal direction' : ''}
-            </p>
-            <p className="mt-2 text-sm leading-relaxed text-neutral-300">{beatCue(beat.text)}</p>
+            {(() => {
+              const memory = memoryLabel(trial, beat.id)
+              const mine = noteForBeat(notes, PLAYER_NOTE_OWNER, beat.id)
+              return (
+                <>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                    #{memory.number} · {memory.title}
+                    {mine ? ' · your note' : ' · memory only'}
+                  </p>
+                  {mine ? (
+                    <p className="mt-2 text-sm leading-relaxed text-neutral-200">“{mine.text}”</p>
+                  ) : (
+                    <p className="mt-2 text-sm leading-relaxed text-neutral-500">
+                      You did not jot a note on this point. Raise it only from recollection.
+                    </p>
+                  )}
+                </>
+              )
+            })()}
           </div>
           {beat.kind === 'direction' ? (
             <button
