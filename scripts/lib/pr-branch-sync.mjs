@@ -1,11 +1,9 @@
 /**
  * PR branch freshness + squash auto-merge progression (WORKFLOW.md step 7).
  */
-import { spawnSync } from 'node:child_process';
 import { mergePullRequest } from './pr-merge.mjs';
-import { ghJson } from './gh-pr-review-threads.mjs';
+import { ghJson, runGh } from './gh-pr-review-threads.mjs';
 
-const GH_TIMEOUT_MS = 120_000;
 const PR_VIEW_FIELDS =
   'number,state,headRefName,baseRefName,mergeable,mergeStateStatus,autoMergeRequest,isDraft';
 
@@ -65,27 +63,16 @@ export function fetchPrMergeMeta(prNumber) {
 }
 
 function ghUpdateBranch(prNumber, { dryRun = false } = {}) {
-  const args = ['pr', 'update-branch', String(prNumber)];
-  if (dryRun) {
-    return { ok: true, stdout: `gh ${args.join(' ')}`, stderr: '', exitCode: 0 };
-  }
-  const r = spawnSync('gh', args, { encoding: 'utf8', timeout: GH_TIMEOUT_MS });
-  if (r.error?.code === 'ETIMEDOUT') {
-    return { ok: false, stdout: '', stderr: `gh timed out after ${GH_TIMEOUT_MS}ms`, exitCode: 1 };
-  }
-  if (r.error) {
-    return { ok: false, stdout: '', stderr: r.error.message, exitCode: 1 };
-  }
-  return {
-    ok: r.status === 0,
-    stdout: (r.stdout || '').trim(),
-    stderr: (r.stderr || '').trim(),
-    exitCode: r.status ?? 1,
-  };
+  return runGh(['pr', 'update-branch', String(prNumber)], { dryRun });
 }
 
-export function updatePrBranch(prNumber, { dryRun = false, force = false } = {}) {
-  const meta = fetchPrMergeMeta(prNumber);
+/**
+ * @param {number} prNumber
+ * @param {{ dryRun?: boolean, force?: boolean, meta?: object }} [opts]
+ *   Pass `meta` from a prior `fetchPrMergeMeta` to avoid a duplicate `gh pr view`.
+ */
+export function updatePrBranch(prNumber, { dryRun = false, force = false, meta: metaIn } = {}) {
+  const meta = metaIn || fetchPrMergeMeta(prNumber);
   const state = classifyBranchState(meta);
   if (state.status === 'conflict') {
     return {
@@ -139,23 +126,7 @@ export function updatePrBranch(prNumber, { dryRun = false, force = false } = {})
 }
 
 function ghMarkReady(prNumber, { dryRun = false } = {}) {
-  const args = ['pr', 'ready', String(prNumber)];
-  if (dryRun) {
-    return { ok: true, stdout: `gh ${args.join(' ')}`, stderr: '', exitCode: 0 };
-  }
-  const r = spawnSync('gh', args, { encoding: 'utf8', timeout: GH_TIMEOUT_MS });
-  if (r.error?.code === 'ETIMEDOUT') {
-    return { ok: false, stdout: '', stderr: `gh timed out after ${GH_TIMEOUT_MS}ms`, exitCode: 1 };
-  }
-  if (r.error) {
-    return { ok: false, stdout: '', stderr: r.error.message, exitCode: 1 };
-  }
-  return {
-    ok: r.status === 0,
-    stdout: (r.stdout || '').trim(),
-    stderr: (r.stderr || '').trim(),
-    exitCode: r.status ?? 1,
-  };
+  return runGh(['pr', 'ready', String(prNumber)], { dryRun });
 }
 
 export function enableSquashAutoMerge(prNumber, { dryRun = false } = {}) {
@@ -220,7 +191,8 @@ export function progressPullRequest(prNumber, { dryRun = false, syncBranch = tru
     return out;
   }
   if (syncBranch && (state.behind || state.status === 'blocked' || state.status === 'unknown')) {
-    out.sync = updatePrBranch(prNumber, { dryRun, force: state.behind });
+    // Reuse the meta we already fetched — avoid a second `gh pr view`.
+    out.sync = updatePrBranch(prNumber, { dryRun, force: state.behind, meta });
     if (!out.sync.ok) {
       out.blocked = true;
       out.ok = false;
