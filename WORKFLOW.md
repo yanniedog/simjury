@@ -2,6 +2,8 @@
 
 Human workflows: **PR → CI + bot QA gates → squash merge**.
 
+Agent contract: **act or park — never poll.** See [Act or park](#act-or-park--never-poll).
+
 ## 1. Open a PR
 
 Push a `cursor/*` branch and open a PR to `main`.
@@ -31,13 +33,14 @@ Comma = ALL-of slots. `|` = OR within a slot. Example: `sourcery|cursor` passes 
 
 Codex does not auto-review on every repo. The `pr-request-bot-reviews` workflow posts `@codex review` once when Codex has not yet appeared. Install **ChatGPT Codex Connector** on the repository (Settings → Integrations → GitHub Apps). Manual fallback: comment `@codex review` on the PR.
 
-Local pre-merge check (single shot; agents should not `--watch`):
+Local single-shot check (agents):
 
 ```sh
-npm run wait-for-bots -- --pr <n>
+npm run wait-for-bots -- --pr <n>          # exit 0 ready | 2 waiting | 1 error
+npm run pr:arm-and-park -- --pr <n>      # preferred — arms auto-merge + classifies
 ```
 
-Exit **0** = ready. Exit **2** = still waiting. Exit **1** = error or missing bots at cap.
+**Do not** run `wait-for-bots --watch` inside an agent session. CI may poll; agents park.
 
 Env: `SIMJURY_BOT_WAIT_REQUIRED=sourcery|codex|cursor` (fallback: `JCS2_BOT_WAIT_REQUIRED`, `AR_BOT_WAIT_REQUIRED`, `BOT_WAIT_REQUIRED`).
 
@@ -49,19 +52,42 @@ All substantive review threads must be **resolved** on GitHub before merge.
 npm run pr:bot-feedback-check -- --pr <n>
 ```
 
-## 5. Aggregate gate check
+## 5. Act or park — never poll
+
+Agents burn tokens when they sleep-poll for bots. Use one command:
+
+```sh
+npm run pr:arm-and-park -- --pr <n>
+```
+
+| Exit | Meaning | Agent action |
+|------|---------|--------------|
+| **0** | Gates green; auto-merge armed | Done for this turn (merge pending on GitHub) |
+| **2** | **Parked** — waiting on bots/CI only | **END TURN** — do not `--watch` |
+| **3** | **Actionable** — CI fail / threads / conflicts | Fix, push, re-run arm-and-park |
+| **1** | Hard error | Fix auth/tooling |
+
+What arm-and-park does (one shot, no loops):
+
+1. Sync branch when behind (`gh pr update-branch`)
+2. Enable squash auto-merge (`gh pr merge --auto --squash --delete-branch`)
+3. Classify merge gates as ready / waiting / actionable
+
+Aggregate single-shot audit (no watch in agents):
 
 ```sh
 npm run pr:gates:check -- --pr <n>
-npm run pr:gates:check -- --watch --pr <n>
 ```
+
+`--watch` exists for **humans / CI only** — not for Cursor agents.
 
 ## 6. Merge
 
-When all gates pass:
+When gates are green, auto-merge (armed by `pr:arm-and-park`) lands the squash. Manual:
 
 ```sh
 gh pr merge <n> --auto --squash --delete-branch
+# or: npm run pr:merge -- --pr <n>
 ```
 
 See [`.github/MERGE_POLICY.md`](.github/MERGE_POLICY.md).
@@ -92,14 +118,19 @@ npm run branch-protection:apply
 
 | Script | Purpose |
 |--------|---------|
-| `npm run wait-for-bots` | Poll until required bots posted |
+| `npm run pr:arm-and-park` | **Preferred agent entry** — arm auto-merge + classify (no poll) |
+| `npm run wait-for-bots` | Single-shot bot presence (CI may `--watch`; agents must not) |
 | `npm run pr:bot-feedback-check` | Thread closure gate |
-| `npm run pr:gates:check` | All merge gates |
+| `npm run pr:gates:check` | All merge gates (single shot) |
+| `npm run pr:merge` | Enable squash auto-merge |
 | `npm run branch-protection:apply` | Apply legacy branch protection |
 | `npm run repo-merge-settings:apply` | Squash-only repo settings |
 | `npm run github:bot-gates:operator` | Setup helper + local verify |
-| `npm run pilot:auto-release-commit:verify` | Auto-release push helper tests |
+
+## Cross-repo sync
+
+Canonical agent rules for all projects live in [cursor-global-workflow](https://github.com/yanniedog/cursor-global-workflow). Portable patches for this efficiency protocol: [`docs/cross-repo-patches/cursor-global-workflow/`](docs/cross-repo-patches/cursor-global-workflow/README.md).
 
 ## Auto release (pilot APK)
 
-When the PR queue to `main` drains, **pilot-auto-release-on-queue-drain** bumps the app version and dispatches **pilot-android-apk**. See [WORKFLOW.md](WORKFLOW.md#auto-release-when-pr-queue-drains). Requires **GitHub Actions** on the main ruleset bypass list for direct pushes.
+When the PR queue to `main` drains, **pilot-auto-release-on-queue-drain** bumps the app version and dispatches **pilot-android-apk**. Requires **GitHub Actions** on the main ruleset bypass list for direct pushes.

@@ -30,6 +30,9 @@ git push -u origin cursor/codex-required-bots-a216
 gh pr create --draft --title "ci: require Codex on bot-presence-gate (gemini,codex,sourcery)"
 ```
 
-## Codex GitHub App
+## Apply on AR-local (operator)
 
-Settings → Integrations → GitHub Apps → **ChatGPT Codex Connector** → grant access to AR-local.
+Also apply the **act-or-park** efficiency pack from
+[`../cursor-global-workflow/`](../cursor-global-workflow/README.md) so agents
+stop `--watch` babysitting bot gates (`npm run pr:arm-and-park`).
+
