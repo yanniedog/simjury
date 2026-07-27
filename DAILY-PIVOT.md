@@ -50,7 +50,7 @@ Owner decisions, recorded verbatim:
   falls back to an English voice advertised as local by the browser, keeping adjacent
   speakers distinct when at least two voices exist.
 - **No generative runtime AI** — all player-facing text is pre-authored JSON, case
-  generation happens in PRs, and Apache-2.0 Kokoro narration is generated in GitHub
+  generation happens in PRs, and Apache-2.0 Qwen3-TTS narration is generated in GitHub
   Actions rather than synthesized during play.
 - **Fiction, and it says so** — every daily case carries the pinned `label: "fiction"`
   (the simjury-daily safety invariant). Daily cases are built from real trial *patterns*,
