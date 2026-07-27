@@ -13,6 +13,7 @@
     "pr:gates:check": "node scripts/pr-gates-check.mjs",
     "pr:gate-exempt-policy:verify": "node scripts/verify-pr-gate-exempt-policy.mjs",
     "pr:gate-logic:verify": "node scripts/verify-pr-gate-logic.mjs",
+    "pr:bot-wait-or-groups:verify": "node scripts/verify-bot-wait-or-groups.mjs",
     "pilot:auto-release-commit:verify": "node scripts/verify-pilot-auto-release-commit.mjs",
     "github:bot-gates:operator": "node scripts/github-bot-gates-operator.mjs",
     "pr:request-codex-review": "node scripts/request-codex-review.mjs",
