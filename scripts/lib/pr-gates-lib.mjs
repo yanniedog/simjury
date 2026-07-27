@@ -208,7 +208,7 @@ export function gateCiRequired(prNumber) {
       id: 'ci-required',
       pass: false,
       detail: `Failed: ${ci.failedNames.join(', ')}`,
-      action: 'Fix failing required checks; gh pr checks <n> --watch',
+      action: 'Fix failing required checks; then npm run pr:arm-and-park -- --pr <n>',
     };
   }
   if (ci.pending) {
@@ -216,7 +216,7 @@ export function gateCiRequired(prNumber) {
       id: 'ci-required',
       pass: false,
       detail: 'Required checks still pending',
-      action: 'Wait for CI; gh pr checks <n> --watch',
+      action: 'Park — npm run pr:arm-and-park -- --pr <n> (do not --watch in agents)',
     };
   }
   return { id: 'ci-required', pass: true, detail: 'All required checks passed' };
@@ -329,8 +329,8 @@ export function gateWaitForBots(prNumber, githubBotGate) {
     exitCode,
     action:
       exitCode === 2
-        ? `npm run wait-for-bots -- --watch --pr ${prNumber}`
-        : `npm run wait-for-bots -- --pr ${prNumber} (exit 1 = missing bots or error — do not merge)`,
+        ? `npm run pr:arm-and-park -- --pr ${prNumber} (park if exit 2 — do not --watch)`
+        : `npm run wait-for-bots -- --pr ${prNumber} (exit 1 = missing bots — request reviews, do not poll)`,
   };
 }
 

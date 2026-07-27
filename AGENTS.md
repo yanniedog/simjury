@@ -84,20 +84,23 @@ Orchestrator (Lead)
 
 **Bot feedback is never optional.** Agents must address every actionable bot review comment and resolve every thread — without waiting for the user to ask. Treat open bot threads as a merge blocker equal to CI failure.
 
+**Act or park — never poll.** Agents must not run `wait-for-bots --watch`, `pr:gates:check --watch`, `gh pr checks --watch`, or sleep-until-bots loops. Those burn tokens while GitHub owns the clock. Use one-shot `npm run pr:arm-and-park`.
+
 On every open PR the Orchestrator must automatically:
 
 1. Open PR as **draft** first; mark ready only after initial CI run starts
-2. Run `gh pr checks <n>` — fix failures and push until green
-3. **Wait for `bot-presence-gate`** — run `npm run wait-for-bots -- --watch --pr <n>` until exit 0; do not merge while bots are missing
-4. Read all bot review comments (`gh api repos/.../pulls/<n>/comments` and `/reviews`)
-5. **Apply every valid fix**; reply on each thread confirming the fix (or why N/A)
-6. **Resolve every review thread** via `.github/scripts/resolve-bot-threads.sh <n>` — never merge with open threads
-7. Run `npm run pr:gates:check -- --pr <n>` — abort if exit non-zero
-8. Run `.github/scripts/assert-pr-mergeable.sh <n>` — abort if it fails
-9. Squash merge when **all** gates pass: `gh pr merge <n> --auto --squash --delete-branch`
-10. Rebase stacked PRs onto `main` after upstream merge
+2. Run `npm run pr:arm-and-park -- --pr <n>` (single shot; marks ready + arms auto-merge if still draft):
+   - **exit 0** — gates green; auto-merge armed; turn may end once summary posted
+   - **exit 2** — **PARKED** (waiting on bots/CI only); auto-merge armed; **END TURN** — do not poll
+   - **exit 3** — **ACTIONABLE** — fix CI failures, conflicts, or unresolved review threads, push, re-run arm-and-park
+3. When actionable: read bot review comments (`gh api` reviews/comments); **apply every valid fix**; reply on each thread; run `.github/scripts/resolve-bot-threads.sh <n>`
+4. Re-arm: `npm run pr:arm-and-park -- --pr <n>` after each fix push
+5. Squash auto-merge is armed by arm-and-park (`gh pr merge --auto --squash --delete-branch`); do not babysit until merge
+6. Rebase stacked PRs onto `main` after upstream merge (actionable when behind)
 
 **Never merge immediately after `validate` passes.** `bot-presence-gate` and `bot-feedback-gate` must also be green. See `WORKFLOW.md`.
+
+**Forbidden agent loops:** `npm run wait-for-bots -- --watch`, `npm run pr:gates:check -- --watch`, `while sleep; do wait-for-bots; done`. CI workflows may poll; agents must not.
 
 ### Backlog hygiene (mandatory — no user prompt)
 
@@ -117,7 +120,8 @@ When landing on `main` with no open PR, run `.github/scripts/audit-bot-feedback.
 ### End
 
 1. Push branch; open/update PR
-2. Respond to CI and review bots until all checks pass
+2. Run `npm run pr:arm-and-park -- --pr <n>` once
+3. Exit 2 → park (end turn). Exit 3 → fix actionable work, re-arm. Exit 0 → done.
 
 ---
 
@@ -140,13 +144,14 @@ Orchestrator **must** synthesize subagent output; never merge unreviewed subagen
 No squash merge to `main` unless:
 
 1. CI `validate` — **success**
-2. CI `bot-presence-gate` — **success** (required bots posted; see `npm run wait-for-bots`)
+2. CI `bot-presence-gate` — **success** (required bots posted)
 3. CI `bot-feedback-gate` — **success** (review threads resolved)
 4. Bot comments read and **fixed in code** (or explicitly acknowledged as N/A with reply)
-5. `npm run pr:gates:check -- --pr <n>` exits 0
-6. `assert-pr-mergeable.sh <pr>` passes
-7. Case content PRs include harness checklist (if applicable)
-8. PR size ≤ ~400 lines (split if larger)
+5. `npm run pr:arm-and-park -- --pr <n>` exits **0** (or exit **2** parked with auto-merge armed while waiting — not a merge claim)
+6. Case content PRs include harness checklist (if applicable)
+7. PR size ≤ ~400 lines (split if larger)
+
+Single-shot audits (no agent watch): `npm run pr:gates:check -- --pr <n>` and `.github/scripts/assert-pr-mergeable.sh <pr>`.
 
 ---
 
@@ -160,3 +165,4 @@ No squash merge to `main` unless:
 - Large multi-concern PRs
 - Merge with unresolved bot review threads
 - Wait for the user to ask before addressing bot feedback
+- Agent `--watch` / sleep-poll babysitting of bot gates (use `pr:arm-and-park`)

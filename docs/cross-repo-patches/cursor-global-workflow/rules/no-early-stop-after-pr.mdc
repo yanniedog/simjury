@@ -1,0 +1,23 @@
+---
+description: "Do not stop with actionable PR work open; parked waiting (arm-and-park exit 2) is OK"
+alwaysApply: true
+---
+
+# No early stop after PR (act or park)
+
+Before ending any shipping turn with an open PR:
+
+```sh
+npm run pr:arm-and-park -- --pr <n>
+```
+
+- Exit **0** — gates clear; auto-merge armed; turn may end.
+- Exit **2** — **parked** (waiting on bots/CI only); auto-merge armed; **OK to end turn**. Do not `--watch`.
+- Exit **3** — actionable work remains; fix CI/threads/conflicts before ending.
+- Exit **1** — tooling error; fix and retry.
+
+Never end with "done" / "shipped" / "CI green so we're good" while exit **3** actionable work remains.
+
+Never burn a turn sleep-polling for exit 0 while only bots/CI are pending — that is exit **2**; park.
+
+Full ship bar: **`WORKFLOW.md`**.

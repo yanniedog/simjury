@@ -4,13 +4,22 @@ All PRs to `main` use **squash merge** (auto-merge when enabled).
 
 ## Merge command
 
-After `npm run pr:gates:check -- --pr <n>` exits **0**:
+Preferred (agents):
+
+```sh
+npm run pr:arm-and-park -- --pr <n>
+```
+
+Exit **0** = gates green + auto-merge armed. Exit **2** = parked waiting (OK to end turn). Exit **3** = actionable work remains.
+
+Manual after gates green:
 
 ```sh
 gh pr merge <n> --auto --squash --delete-branch
 ```
 
 Do not merge on CI green alone — complete bot wait and thread resolution per `WORKFLOW.md`.
+Do not run agent `--watch` loops; GitHub Actions + auto-merge own the wait.
 
 ## Repository settings (squash-only)
 

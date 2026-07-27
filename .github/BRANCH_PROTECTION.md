@@ -44,12 +44,11 @@ See also `WORKFLOW.md` and `.github/MERGE_POLICY.md`.
 1. Never `git push origin main`
 2. Open PR from `cursor/*` branches
 3. Fix CI failures in the same branch
-4. Run `npm run wait-for-bots -- --watch --pr <n>` until exit 0
-5. Fix bot feedback; resolve all review threads
-6. Run `npm run pr:gates:check -- --pr <n>` — must exit 0
-7. Run `.github/scripts/assert-pr-mergeable.sh <n>`
-8. Squash merge: `gh pr merge <n> --auto --squash --delete-branch`
+4. Run `npm run pr:arm-and-park -- --pr <n>` (single shot) — **never** `--watch` in agents
+5. On exit 2 (parked): end turn; on exit 3: fix bots/threads/CI, push, re-arm
+6. Squash auto-merge is armed by arm-and-park; do not babysit-poll until merge
 
 **Auto-release:** `pilot-auto-release-on-queue-drain` commits version bumps directly to `main` when the PR queue drains. Add **GitHub Actions** to the ruleset bypass list (see [WORKFLOW.md](../WORKFLOW.md#auto-release-when-pr-queue-drains)). Fallback bump PRs are gate-exempt (`chore(pilot): auto-release bump v…`).
 
 **Agents must never wait for the user to ask before addressing bot feedback.**
+**Agents must never sleep-poll bot gates** — use `pr:arm-and-park`.
