@@ -4,6 +4,24 @@ Hierarchical development team for SimJury. Every agent session declares its **ro
 
 ---
 
+## Active surface (binding)
+
+**simjury.com only.** All agent work targets the Daily Docket web app in `site/app/`
+(and related site/CI/docs). See `CLAUDE.md` and `DAILY-PIVOT.md`.
+
+### Android / JVM pilot — FROZEN until further notice
+
+Do **not** develop, refactor, “fix,” or release the Android/JVM pilot (`pilot/`,
+`pilot-android-apk`, APK auto-release, emulator smoke, Compose UI, Gradle modules)
+unless the owner explicitly lifts this freeze in writing. Parked handoff:
+`PHASE4-STATUS.md`. PRs that touch Android app code or re-enable Android CI/release
+workflows are out of scope and must be closed.
+
+Allowed without lifting the freeze: incidental path mentions in docs that still point
+agents *away* from Android, and leaving `pilot/` sources in the tree untouched.
+
+---
+
 ## Hierarchy
 
 ```
@@ -20,34 +38,37 @@ Orchestrator (Lead)
 - Delegates to subagents; does not implement large diffs directly
 - Ensures CI green and all review threads resolved before merge
 - **Accountability:** final PR quality; squash merge only when gates pass
+- Rejects or closes any PR that resumes Android/pilot work while the freeze holds
 
 ### Architect
 
-- Schema, module boundaries, `PILOT-SPEC.md` / `ROADMAP.md` alignment
+- Schema, module boundaries, Daily Docket / `ROADMAP.md` alignment for `site/app/`
 - Reviews cross-module impact before Engineer merges
 - **Reports to:** Orchestrator
 - **Deliverables:** ADRs and schema changes in small PRs
 
 ### Content Curator
 
-- Owns `CASE_HARNESS.md` compliance
-- Selects, tabulates, adapts case material — never invents testimony
+- Owns Daily Docket case quality (`docs/DAILY-CASES.md`, banned-token / fiction gates)
+- Historical harness (`CASE_HARNESS.md`) only if the owner reopens that track
 - **Reports to:** Orchestrator
-- **Deliverables:** `TABULATION.md`, case JSON, `BALANCE.md` (Phase 4+)
+- **Deliverables:** case JSON, quality notes (historical: `TABULATION.md` / `BALANCE.md`)
 
 ### Engineer
 
-- Implements app code per `PILOT-SPEC.md`
+- Implements **simjury.com** / `site/app/` per `DAILY-PIVOT.md` and site decisions
 - Matches existing conventions; minimal diffs
 - **Reports to:** Architect for design; Orchestrator for delivery
 - **Deliverables:** code + tests per PR
+- Does **not** work in `pilot/` while Android is frozen
 
 ### QA
 
-- Runs `./gradlew test`, manual pilot run, reveal-gate verification
+- Runs `site/app` checks (`npm test`, `validate:cases`, manual Daily Docket playthrough)
 - Files issues and confirms fixes through tests
 - **Reports to:** Orchestrator
 - **Deliverables:** test additions, CI fixes, gate sign-off in PR
+- Does **not** run Android device QA or Gradle pilot work while the freeze holds
 
 ---
 
@@ -55,8 +76,8 @@ Orchestrator (Lead)
 
 ### Start
 
-1. Read `CLAUDE.md`
-2. Read `PILOT-SPEC.md` + current phase in `ROADMAP.md`
+1. Read `CLAUDE.md` and `DAILY-PIVOT.md`
+2. Confirm work is for **simjury.com** / `site/app/` (abort if the task is Android/pilot)
 3. Declare role and task in first commit/PR message
 
 ### PR automation (mandatory — no user prompt)
@@ -131,8 +152,10 @@ No squash merge to `main` unless:
 
 ## Anti-patterns (do not)
 
-- Re-read entire `archive/simjury-build-spec-v3.md` each session — use `PILOT-SPEC.md`
-- Implement Phase 4+ features during Phase 1
+- Develop, test, or release the Android/JVM pilot while the freeze holds
+- Re-enable `pilot-android-apk` / APK auto-release without an owner unlock
+- Re-read entire `archive/simjury-build-spec-v3.md` each session — use `DAILY-PIVOT.md` / `PILOT-SPEC.md` only if the owner reopens that track
+- Implement Phase 4+ historical/Android features during the Daily Docket track
 - Push directly to `main`
 - Large multi-concern PRs
 - Merge with unresolved bot review threads

@@ -55,29 +55,31 @@ jobs:
           npm run pr:gate-exempt-policy:verify
           npm run pilot:auto-release-commit:verify
 
+      # ANDROID FROZEN (2026-07-27) — do not re-enable without owner instruction.
+      # See AGENTS.md / CLAUDE.md / DAILY-PIVOT.md decision #5.
+      - name: Android / JVM pilot frozen
+        run: |
+          echo "Skipping pilot Gradle tests and Android APK assemble (frozen until further notice)."
+
       - name: Set up Java
-        if: hashFiles('pilot/**') != ''
+        if: false
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
 
       - name: Run pilot tests
-        if: hashFiles('pilot/**') != ''
+        if: false
         working-directory: pilot
         run: |
           chmod +x gradlew
           ./gradlew test --console=plain
 
       - name: Set up Android SDK (build-only)
-        if: hashFiles('pilot/app/**') != ''
+        if: false
         run: bash .github/scripts/setup-android-sdk.sh pilot/local.properties
 
       - name: Assemble Android debug APK
-        if: hashFiles('pilot/app/**') != ''
+        if: false
         working-directory: pilot
         run: ./gradlew :app:assembleDebug --console=plain
-
-      - name: Pilot placeholder (Phase 0)
-        if: hashFiles('pilot/**') == ''
-        run: echo "Phase 0 — pilot app not yet present; docs-only validation passed"

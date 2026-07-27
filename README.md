@@ -72,22 +72,22 @@ The bootstrap verifies a topic-branch Git checkout, a reachable and dry-run-push
 Authenticate with `gh auth login` or inject `GH_TOKEN` as a cloud secret. Never put
 tokens in repository files, `.env`, command-line arguments, or Git configuration.
 
-## Android preview APK
+## Android preview APK — FROZEN
 
-After a PR merges to `main` and the **PR queue drains** (no other open PRs to `main`), **pilot-auto-release-on-queue-drain** bumps `versionName` in `pilot/app/build.gradle.kts` and **pilot-android-apk** publishes to GitHub Releases. This matches [AR-local](https://github.com/yanniedog/AR-local) `mobile-auto-release-on-queue-drain` behaviour: one release per drained merge batch, not per intermediate PR while others are still open.
+**Frozen until further notice (2026-07-27).** Product work is **simjury.com only**.
+Do not develop the Android app, bump pilot versions, or publish APKs unless the owner
+lifts the freeze. See `AGENTS.md`, `CLAUDE.md`, and `DAILY-PIVOT.md` decision #5.
+
+Existing install URLs may still resolve to the last published preview; they are not an
+active delivery track:
 
 | Asset | URL |
 |-------|-----|
 | Install page | [simjury.com/install](https://simjury.com/install/) |
 | Rolling APK | `https://github.com/yanniedog/simjury/releases/download/app-apk-latest/app-preview.apk` |
-| Update manifest | `https://github.com/yanniedog/simjury/releases/download/app-apk-latest/app-apk-latest.json` |
-| Install page (GitHub mirror) | `https://github.com/yanniedog/simjury/releases/download/app-apk-latest/install.html` |
 
-The installed app checks the manifest on launch and offers an in-app update (AR-local parity). Enable **Install unknown apps** for `SimJury` when prompted.
-
-Manual recovery: **Actions → pilot-auto-release-on-queue-drain → Run workflow** (re-bump if missed), or **Actions → pilot-android-apk → Run workflow** (build only).
-
-**One-time operator setup:** GitHub Actions must be on the `main` ruleset bypass list so the drain workflow can push version bumps directly. See [WORKFLOW.md](WORKFLOW.md#auto-release-when-pr-queue-drains).
+Owner unlock (only when the freeze is lifted): run **pilot-android-apk** with
+`unlock_android=UNLOCK-ANDROID`. Auto-release on queue drain is disabled.
 
 
 | Area | Location | Phase |
@@ -99,7 +99,7 @@ Manual recovery: **Actions → pilot-auto-release-on-queue-drain → Run workflo
 | Historical case harness | `CASE_HARNESS.md` | Parked |
 | Growth & cold-start playbook | `GROWTH.md` | Future |
 | Agent roles & supervision | `AGENTS.md` | 0 |
-| JVM/Android pilot | `pilot/` | Parked |
+| JVM/Android pilot | `pilot/` | **Frozen** until further notice |
 | Full future spec | `archive/simjury-build-spec-v3.md` | Deferred |
 
 ## Development workflow

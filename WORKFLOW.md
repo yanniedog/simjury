@@ -10,7 +10,9 @@ Chore PRs (`chore:` / `chore(scope):`) and bot-authored PRs skip bot gates autom
 
 ## 2. PR CI (`validate`)
 
-The `ci` workflow runs docs/projectmem checks and `./gradlew test` (plus `:app:assembleDebug` when the Android module exists).
+The `ci` workflow runs docs/projectmem checks and site-related gate script checks.
+**Android / JVM pilot steps are frozen** (skipped until further notice — `DAILY-PIVOT.md` #5);
+do not re-enable `:app:assembleDebug` / `./gradlew test` in `ci.yml` without an owner unlock.
 
 ## 3. Bot presence gate (`bot-presence-gate`)
 

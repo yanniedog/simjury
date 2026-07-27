@@ -1,6 +1,9 @@
 # Auto pilot APK release when the last open PR to main is squash-merged.
 # Bumps versionName in pilot/app/build.gradle.kts and dispatches pilot-android-apk.
 # Parity with AR-local mobile-auto-release-on-queue-drain.yml
+#
+# ANDROID FROZEN (2026-07-27) until further notice — see AGENTS.md / DAILY-PIVOT.md.
+# This workflow no longer bumps or dispatches APK builds while the freeze holds.
 
 name: pilot-auto-release-on-queue-drain
 
@@ -25,18 +28,7 @@ jobs:
     name: bump pilot version when queue drained
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: main
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-
-      - name: Queue drained → patch bump to main (APK via pilot-android-apk)
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha || '' }}
-        run: node pilot/scripts/pilot-auto-release-on-drain.mjs
+      - name: Android / JVM pilot frozen
+        run: |
+          echo "Skipping pilot auto-release — Android is frozen until further notice."
+          echo "See AGENTS.md, CLAUDE.md, and DAILY-PIVOT.md decision #5."
