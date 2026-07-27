@@ -27,8 +27,8 @@ The repo's primary work is **The Daily Docket** on **simjury.com** — daily syn
   to a `TABULATION.md` row + a real source (`CASE_HARNESS.md`). Applies to `c_001`, not
   the daily pipeline.
 - **No runtime AI; static hosting only** — all player-facing text is pre-authored JSON.
-- **One concern per PR, ≤ 400 lines, squash merge.** Wait for the bot gates
-  (`WORKFLOW.md`). (Documented exception: the D1 import PR — see `DAILY-PIVOT.md`.)
+- **One concern per PR, ≤ 400 lines, squash merge.** Agents: `npm run pr:arm-and-park`
+  (act or park — never `--watch` babysitting). See `WORKFLOW.md`.
 
 ## Build & test
 

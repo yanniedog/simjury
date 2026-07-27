@@ -1,0 +1,34 @@
+---
+description: "Never run agent --watch / sleep-poll loops on bot gates — use pr:arm-and-park"
+alwaysApply: true
+---
+
+# No agent watch loops
+
+Cursor agents must **not** babysit PRs by polling. That burns tokens while GitHub Actions and squash auto-merge already own the wait.
+
+## Forbidden in agent sessions
+
+```sh
+npm run wait-for-bots -- --watch
+npm run pr:gates:check -- --watch
+gh pr checks <n> --watch
+while true; do npm run wait-for-bots; sleep 45; done
+```
+
+CI workflows may poll. Humans may poll. **Agents must not.**
+
+## Required
+
+```sh
+npm run pr:arm-and-park -- --pr <n>
+```
+
+| Exit | Action |
+|------|--------|
+| 0 | Ready — turn may end |
+| 2 | Parked (bots/CI only) — **END TURN** |
+| 3 | Actionable — fix, push, re-run |
+| 1 | Error |
+
+Do not spawn pr-fix/babysit workers whose only job is to sleep until bots post.

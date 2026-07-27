@@ -53,6 +53,7 @@ jobs:
         run: |
           npm run pr:gate-logic:verify
           npm run pr:gate-exempt-policy:verify
+          npm run pr:arm-and-park:verify
           npm run pilot:auto-release-commit:verify
 
       # ANDROID FROZEN (2026-07-27) — do not re-enable without owner instruction.

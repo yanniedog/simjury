@@ -12,6 +12,29 @@ fi
 echo "Checking merge readiness for PR #${PR_NUMBER}..."
 
 if command -v node >/dev/null 2>&1 && [[ -f package.json ]]; then
+  if npm run pr:arm-and-park -- --help >/dev/null 2>&1; then
+    set +e
+    npm run pr:arm-and-park -- --pr "$PR_NUMBER"
+    code=$?
+    set -e
+    case "$code" in
+      0)
+        echo "PR #${PR_NUMBER} ready (arm-and-park exit 0)."
+        exit 0
+        ;;
+      2)
+        echo "PR #${PR_NUMBER} parked waiting (arm-and-park exit 2) — not merge-ready yet." >&2
+        exit 1
+        ;;
+      3)
+        echo "PR #${PR_NUMBER} has actionable work (arm-and-park exit 3)." >&2
+        exit 1
+        ;;
+      *)
+        echo "pr:arm-and-park failed (exit $code); falling back to pr:gates:check" >&2
+        ;;
+    esac
+  fi
   npm run pr:gates:check -- --pr "$PR_NUMBER"
   echo ""
   echo "PR #${PR_NUMBER} passes automated merge preflight."
