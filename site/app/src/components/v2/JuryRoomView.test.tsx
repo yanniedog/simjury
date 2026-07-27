@@ -4,7 +4,7 @@ import { makeDocketCase } from '../../lib/v2/fixtures'
 import { JuryRoomView } from './JuryRoomView'
 
 describe('JuryRoomView', () => {
-  it('shows the selected evidence and hides seat votes during deliberation', () => {
+  it('shows evidence chips, round progress, and hides seat votes during deliberation', () => {
     const trial = makeDocketCase()
     const markup = renderToStaticMarkup(
       <JuryRoomView
@@ -16,12 +16,17 @@ describe('JuryRoomView', () => {
     )
 
     expect(markup).toContain('Jury room transcript')
+    expect(markup).toContain('Deliberation progress')
+    expect(markup).toContain('Evidence from the trial')
     expect(markup).toContain('Evidence 1')
     expect(markup).toContain(trial.beats[0].text)
     expect(markup).toContain('Argue this supports conviction')
     expect(markup).toContain('Challenge its reliability')
-    expect(markup).toContain('Votes stay private until the judge reads them out')
+    expect(markup).toContain('Pass — let the room talk this round')
+    expect(markup).toContain('Three points with the room')
+    expect(markup).toContain('Pick evidence and make your first point')
     expect(markup).not.toContain('→ guilty')
-    expect(markup).not.toContain('A show of hands')
+    expect(markup).not.toContain('A show of hands:')
+    expect(markup).not.toContain('authored case record')
   })
 })
