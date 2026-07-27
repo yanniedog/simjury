@@ -34,14 +34,27 @@ const storedPlaySchema = z.object({
 
 export type StoredPlay = z.infer<typeof storedPlaySchema>
 
+const sittingNoteSchema = z.object({
+  ownerId: z.string().min(1),
+  beatId: z.string().min(1),
+  text: z.string().min(1).max(140),
+})
+
 const storedProgressSchema = z.object({
   day: z.number(),
   caseId: z.string(),
   phase: z.enum(['openings', 'beats', 'closings', 'juryroom']),
   beatIndex: z.number().int().nonnegative(),
+  /** Recollection notes taken during the sitting (player + NPC stubs). */
+  notes: z.array(sittingNoteSchema).default([]),
 })
 
 export type StoredProgress = z.infer<typeof storedProgressSchema>
+
+/** Caller may omit notes; save writes an empty list. */
+export type StoredProgressInput = Omit<StoredProgress, 'notes'> & {
+  notes?: StoredProgress['notes']
+}
 
 const KEY_PREFIX = 'simjury-daily:v1:'
 const PROGRESS_PREFIX = 'simjury-progress:v1:'
@@ -103,11 +116,15 @@ export function loadProgress(day: number): StoredProgress | null {
   }
 }
 
-export function saveProgress(progress: StoredProgress): void {
+export function saveProgress(progress: StoredProgressInput): void {
   const store = storage()
   if (!store) return
   try {
-    store.setItem(PROGRESS_PREFIX + progress.day, JSON.stringify(progress))
+    const normalized: StoredProgress = {
+      ...progress,
+      notes: progress.notes ?? [],
+    }
+    store.setItem(PROGRESS_PREFIX + progress.day, JSON.stringify(normalized))
   } catch {
     // Blocked storage is non-fatal; the current sitting can still continue.
   }

@@ -131,7 +131,24 @@
   .evidence-chip { flex: 0 0 auto; display: grid; place-items: center; min-width: 2.5rem; min-height: 2.5rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .65rem; color: var(--steel-300); background: rgb(8 11 13 / 55%); font-size: .8rem; font-weight: 700; scroll-snap-align: start; transition: border-color .2s ease, background-color .2s ease, color .2s ease; }
   .evidence-chip.selected { border-color: var(--brass-400); color: var(--paper-50); background: rgb(214 185 121 / 16%); }
   .evidence-chip.used:not(.selected) { border-style: dashed; color: rgb(244 240 232 / 55%); }
+  .evidence-chip.noted:not(.selected) { border-color: rgb(214 185 121 / 40%); }
   .evidence-preview { max-height: 9rem; overflow-y: auto; }
+  .evidence-toolbar { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+  .note-icon-btn { position: relative; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .65rem; color: var(--steel-300); background: rgb(21 29 33 / 70%); }
+  .note-icon-btn:hover, .note-icon-btn.open { border-color: var(--brass-400); color: var(--paper-50); }
+  .note-icon-btn.has-note { border-color: rgb(214 185 121 / 45%); }
+  .note-icon-svg { width: 1.05rem; height: 1.05rem; }
+  .note-dot { position: absolute; top: .28rem; right: .28rem; width: .4rem; height: .4rem; border-radius: 999px; background: var(--brass-400); }
+  .note-panel { padding: .85rem 1rem; border: 1px solid rgb(214 185 121 / 22%); border-radius: .9rem; background: rgb(21 29 33 / 88%); }
+  .note-panel-label { display: block; margin-bottom: .45rem; color: var(--steel-300); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; }
+  .note-textarea { width: 100%; min-height: 4.5rem; padding: .7rem .8rem; border: 1px solid rgb(244 240 232 / 12%); border-radius: .65rem; color: var(--paper-50); background: rgb(8 11 13 / 65%); font-size: .9rem; line-height: 1.45; resize: vertical; }
+  .note-panel-actions { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-top: .55rem; }
+  .note-count { color: var(--steel-300); font-size: .75rem; }
+  .note-save-btn { min-height: 2.25rem; padding: .35rem .9rem; border: 1px solid rgb(244 240 232 / 18%); border-radius: .55rem; color: var(--paper-50); background: rgb(214 185 121 / 14%); font-size: .8rem; font-weight: 600; }
+  .notes-reload { border-color: rgb(214 185 121 / 20%); border-radius: 1rem; background: rgb(21 29 33 / 84%); }
+  .notes-reload-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; }
+  .notes-owner-select { min-height: 2.25rem; padding: .35rem .6rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .55rem; color: var(--paper-50); background: rgb(8 11 13 / 70%); font-size: .8rem; }
+  .note-recall-card { padding: .7rem .8rem; border: 1px solid rgb(244 240 232 / 10%); border-radius: .7rem; background: rgb(8 11 13 / 45%); }
   .deliberation-console { border-color: rgb(214 185 121 / 20%); border-radius: 1rem; background: rgb(21 29 33 / 84%); box-shadow: 0 1.25rem 3rem rgb(0 0 0 / 18%); }
   .deliberation-console.is-listening { border-color: rgb(214 185 121 / 38%); }
   .deliberation-console button { min-height: 48px; }

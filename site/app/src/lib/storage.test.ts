@@ -125,10 +125,29 @@ describe('in-progress sitting', () => {
       caseId: 'd-0001',
       phase: 'beats',
       beatIndex: 3,
+      notes: [{ ownerId: 'player', beatId: 'b1', text: 'Seemed unsure.' }],
     })
     expect(loadProgress(5)?.beatIndex).toBe(3)
+    expect(loadProgress(5)?.notes).toEqual([
+      { ownerId: 'player', beatId: 'b1', text: 'Seemed unsure.' },
+    ])
     clearProgress(5)
     expect(loadProgress(5)).toBeNull()
+  })
+
+  it('defaults missing notes to an empty list for legacy progress', () => {
+    const store = memoryStorage()
+    store.setItem(
+      'simjury-progress:v1:5',
+      JSON.stringify({
+        day: 5,
+        caseId: 'd-0001',
+        phase: 'beats',
+        beatIndex: 2,
+      }),
+    )
+    vi.stubGlobal('localStorage', store)
+    expect(loadProgress(5)?.notes).toEqual([])
   })
 
   it('clears pre-record progress without deleting the finished play', () => {

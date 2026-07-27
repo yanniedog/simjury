@@ -23,6 +23,11 @@ import {
   type StoredProgress,
   type StoredPlay,
 } from './lib/storage'
+import {
+  ensureNpcNotes,
+  upsertPlayerNote,
+  type SittingNote,
+} from './lib/jurorNotes'
 import { computeStats, type DayResult, type Stats } from './lib/stats'
 import {
   narrationEnabled,
@@ -156,6 +161,7 @@ function DocketApp({
       : (validProgress?.phase ?? 'intro'),
   )
   const [beatIndex, setBeatIndex] = useState(validProgress?.beatIndex ?? 0)
+  const [notes, setNotes] = useState<SittingNote[]>(validProgress?.notes ?? [])
   const [verdict, setVerdict] = useState<Verdict | null>(
     validStored?.verdict ?? null,
   )
@@ -236,17 +242,42 @@ function DocketApp({
   }
 
   function persistProgress(
-    update: Omit<StoredProgress, 'day' | 'caseId'>,
+    update: Omit<StoredProgress, 'day' | 'caseId' | 'notes'> & {
+      notes?: SittingNote[]
+    },
   ) {
-    saveProgress({ day, caseId: caseStorageId(activeTrial), ...update })
+    saveProgress({
+      day,
+      caseId: caseStorageId(activeTrial),
+      ...update,
+      notes: update.notes ?? notes,
+    })
+  }
+
+  function savePlayerNote(beatId: string, text: string) {
+    const next = upsertPlayerNote(notes, beatId, text)
+    setNotes(next)
+    const progressPhase =
+      phase === 'openings' || phase === 'beats' || phase === 'closings' || phase === 'juryroom'
+        ? phase
+        : 'beats'
+    saveProgress({
+      day,
+      caseId: caseStorageId(activeTrial),
+      phase: progressPhase,
+      beatIndex,
+      notes: next,
+    })
   }
 
   function begin() {
     setBeatIndex(0)
+    setNotes([])
     setPhase('openings')
     persistProgress({
       phase: 'openings',
       beatIndex: 0,
+      notes: [],
     })
   }
 
@@ -254,6 +285,7 @@ function DocketApp({
     if (verdict !== null) return
     clearProgress(day)
     setBeatIndex(0)
+    setNotes([])
     setRoom(null)
     setRevealStats(null)
     setPhase('intro')
@@ -279,10 +311,13 @@ function DocketApp({
   }
 
   function enterJuryRoom() {
+    const withNpc = ensureNpcNotes(activeTrial, notes)
+    setNotes(withNpc)
     setPhase('juryroom')
     persistProgress({
       phase: 'juryroom',
       beatIndex,
+      notes: withNpc,
     })
   }
 
@@ -376,6 +411,8 @@ function DocketApp({
           beatIndex={beatIndex}
           narration={narration}
           playbackRate={playbackRate}
+          notes={notes}
+          onNoteChange={savePlayerNote}
           onNext={nextBeat}
         />
       )}
@@ -393,6 +430,7 @@ function DocketApp({
           trial={activeTrial}
           narration={narration}
           playbackRate={playbackRate}
+          notes={notes}
           onDone={roomDone}
         />
       )}

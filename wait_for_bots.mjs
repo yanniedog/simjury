@@ -397,6 +397,20 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
         missing: [],
       };
     }
+    // Aged PR with bots present but CI still settling: keep waiting (exit 2) so
+    // the presence gate can retry instead of painting a sticky red check.
+    if (allRequiredPosted && !checksReady) {
+      return {
+        status: 'waiting',
+        message:
+          `Required bots posted since aged anchor; waiting for CI to settle before clearing presence gate.`,
+        elapsedMs,
+        remainingCapMs: 0,
+        lastBotAt: lastBotAt?.toISOString() || null,
+        botsSeen: seenLogins,
+        missing: [],
+      };
+    }
     return {
       status: 'timeout',
       message:
