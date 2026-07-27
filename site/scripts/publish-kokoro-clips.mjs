@@ -204,7 +204,7 @@ for (let shard = 0; shard < NARRATION_SHARDS; shard++) {
     .filter((path) => statSync(path).isFile())
   if (newMp3s.length === 0) continue
 
-  const tag = `narration-kokoro-${shard}`
+  const tag = `narration-qwen-${shard}`
   const { complete: existing, broken } = listAssets(tag)
   if (broken.length) deleteBrokenAssets(tag, broken)
   const missing = clobberMp3s

@@ -1,104 +1,81 @@
 /**
  * Gender-aware voice planning for Daily Docket narration.
- * Kokoro clip assignment mirrors site/scripts/speaker-voices.mjs so browser
+ * Voice assignment mirrors site/scripts/speaker-voices.mjs so browser
  * URLs match CI-generated assets; device fallback stays gender-matched and
  * as distinct as the local inventory allows.
  */
 import castGenders from './castGenders.json'
+import voiceBank from './narrationVoices.json'
 
 export type SpeakerGender = 'female' | 'male'
 
-export const NARRATOR_VOICE = 'af_heart'
-export const JUDGE_VOICE_MALE = 'bm_george'
-export const JUDGE_VOICE_FEMALE = 'bf_emma'
+export const NARRATOR_VOICE = 'f_narrator_clear'
+export const JUDGE_VOICE_MALE = 'm_baritone_judge'
+export const JUDGE_VOICE_FEMALE = 'f_counsel_warm'
 
-const FEMALE_VOICES = [
-  'af_bella',
-  'af_nicole',
-  'af_sarah',
-  'af_kore',
-  'af_aoede',
-  'af_nova',
-  'af_alloy',
-  'bf_isabella',
-  'bf_alice',
-  'bf_lily',
-  'af_jessica',
-  'af_sky',
-  'af_river',
-  'bf_emma',
-] as const
+const FEMALE_VOICES = voiceBank.female
+  .map((v) => v.id)
+  .filter((id) => id !== NARRATOR_VOICE)
 
-const MALE_VOICES = [
-  'am_fenrir',
-  'am_michael',
-  'am_puck',
-  'am_onyx',
-  'am_liam',
-  'am_echo',
-  'am_eric',
-  'bm_fable',
-  'bm_daniel',
-  'bm_lewis',
-  'am_adam',
-  'am_santa',
-] as const
+const MALE_VOICES = voiceBank.male
+  .map((v) => v.id)
+  .filter((id) => id !== JUDGE_VOICE_MALE)
 
 const FEMALE_PREFERRED: Record<string, string> = {
   judge: JUDGE_VOICE_FEMALE,
-  pc: 'af_bella',
-  pros: 'af_bella',
-  dc: 'af_nicole',
-  defc: 'af_nicole',
-  clerk: 'bf_alice',
-  acc: 'af_kore',
-  w1: 'af_aoede',
-  w2: 'af_nova',
-  w3: 'af_alloy',
-  w4: 'bf_isabella',
-  w5: 'af_sarah',
-  'J-01': 'af_jessica',
-  'J-02': 'af_sky',
-  'J-03': 'af_river',
-  'J-04': 'bf_lily',
-  'J-05': 'bf_emma',
-  'J-06': 'af_bella',
-  'J-07': 'af_nicole',
-  'J-08': 'af_kore',
-  'J-09': 'bf_alice',
-  'J-10': 'af_aoede',
-  'J-11': 'af_nova',
+  pc: 'f_counsel_sharp',
+  pros: 'f_counsel_sharp',
+  dc: 'f_counsel_warm',
+  defc: 'f_counsel_warm',
+  clerk: 'f_clerk_bright',
+  acc: 'f_accused_strained',
+  w1: 'f_witness_soft',
+  w2: 'f_witness_firm',
+  w3: 'f_officer_cool',
+  w4: 'f_juror_plain',
+  w5: 'f_juror_hesitant',
+  'J-01': 'f_juror_blunt',
+  'J-02': 'f_juror_elder',
+  'J-03': 'f_witness_soft',
+  'J-04': 'f_witness_firm',
+  'J-05': 'f_officer_cool',
+  'J-06': 'f_counsel_sharp',
+  'J-07': 'f_clerk_bright',
+  'J-08': 'f_juror_plain',
+  'J-09': 'f_juror_hesitant',
+  'J-10': 'f_accused_strained',
+  'J-11': 'f_juror_blunt',
 }
 
 const MALE_PREFERRED: Record<string, string> = {
   judge: JUDGE_VOICE_MALE,
-  pc: 'am_fenrir',
-  pros: 'am_fenrir',
-  dc: 'am_michael',
-  defc: 'am_michael',
-  clerk: 'bm_daniel',
-  acc: 'am_puck',
-  w1: 'am_onyx',
-  w2: 'am_liam',
-  w3: 'am_echo',
-  w4: 'am_eric',
-  w5: 'bm_fable',
-  'J-01': 'bm_lewis',
-  'J-02': 'am_adam',
-  'J-03': 'am_santa',
-  'J-04': 'am_fenrir',
-  'J-05': 'am_michael',
-  'J-06': 'am_puck',
-  'J-07': 'am_onyx',
-  'J-08': 'am_liam',
-  'J-09': 'am_echo',
-  'J-10': 'am_eric',
-  'J-11': 'bm_fable',
+  pc: 'm_counsel_steel',
+  pros: 'm_counsel_steel',
+  dc: 'm_counsel_steel',
+  defc: 'm_counsel_steel',
+  clerk: 'm_clerk_even',
+  acc: 'm_accused_tense',
+  w1: 'm_witness_gravel',
+  w2: 'm_officer_flat',
+  w3: 'm_juror_warm',
+  w4: 'm_juror_blunt',
+  w5: 'm_expert_clear',
+  'J-01': 'm_juror_elder',
+  'J-02': 'm_juror_young',
+  'J-03': 'm_narrator_calm',
+  'J-04': 'm_witness_gravel',
+  'J-05': 'm_officer_flat',
+  'J-06': 'm_juror_warm',
+  'J-07': 'm_juror_blunt',
+  'J-08': 'm_expert_clear',
+  'J-09': 'm_clerk_even',
+  'J-10': 'm_accused_tense',
+  'J-11': 'm_juror_young',
 }
 
 export type SpeakerVoicePlan = {
   genderByKey: Map<string, SpeakerGender>
-  /** Kokoro voice id per speaker — must match site/scripts/speaker-voices.mjs. */
+  /** Synthesis voice id per speaker — must match site/scripts/speaker-voices.mjs. */
   kokoroByKey: Map<string, string>
   keys: string[]
 }
@@ -131,7 +108,7 @@ export function genderForCastName(name: string, id = ''): SpeakerGender {
   return hash(id || name) % 2 === 0 ? 'female' : 'male'
 }
 
-function preferredKokoro(speakerId: string, gender: SpeakerGender): string {
+function preferredVoice(speakerId: string, gender: SpeakerGender): string {
   if (speakerId === 'narrator') return NARRATOR_VOICE
   const fixed = gender === 'female' ? FEMALE_PREFERRED[speakerId] : MALE_PREFERRED[speakerId]
   if (fixed) return fixed
@@ -178,7 +155,7 @@ export function deviceVoiceGender(name: string): SpeakerGender | 'unknown' {
 
 /**
  * Build a case voice plan from cast + jurors. Mirrors scripts/speaker-voices.mjs
- * so natural-clip URLs resolve to the CI-generated Kokoro assets.
+ * so natural-clip URLs resolve to the CI-generated assets.
  */
 export function buildSpeakerVoicePlan(input: {
   cast: Array<{ id: string; name: string }>
@@ -207,7 +184,7 @@ export function buildSpeakerVoicePlan(input: {
 
   for (const id of ordered) {
     const gender = genderByKey.get(id) ?? 'female'
-    const preferred = preferredKokoro(id, gender)
+    const preferred = preferredVoice(id, gender)
     if (id === 'judge') {
       kokoroByKey.set(id, preferred)
       used.add(preferred)
