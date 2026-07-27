@@ -1,5 +1,8 @@
 # Build SimJury pilot Android APK and publish to GitHub Releases (AR-local parity).
 #
+# ANDROID FROZEN (2026-07-27) until further notice — see AGENTS.md / DAILY-PIVOT.md.
+# Automatic push/PR triggers are disabled. Owner-only manual unlock required to run.
+#
 # Release gate: emulator install + launch smoke test must pass before publish.
 # Rolling: app-apk-latest (manifest app-apk-latest.json for in-app self-update)
 # Versioned: app-v{semver} e.g. app-v0.1.1
@@ -14,21 +17,11 @@ name: pilot-android-apk
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'pilot/app/**'
-      - 'pilot/case-model/**'
-      - 'pilot/deliberation-core/**'
-      - 'pilot/scripts/**'
-      - '.github/workflows/pilot-android-apk.yml'
-  pull_request:
-    paths:
-      - 'pilot/app/**'
-      - 'pilot/case-model/**'
-      - 'pilot/deliberation-core/**'
-      - 'pilot/scripts/**'
-      - '.github/workflows/pilot-android-apk.yml'
+    inputs:
+      unlock_android:
+        description: "Owner-only unlock — type UNLOCK-ANDROID to run (frozen otherwise)"
+        required: true
+        default: ""
 
 permissions:
   contents: write
@@ -39,8 +32,20 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  frozen-notice:
+    name: android frozen
+    if: github.event.inputs.unlock_android != 'UNLOCK-ANDROID'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refuse locked Android build
+        run: |
+          echo "::error::Android/JVM pilot is frozen until further notice (DAILY-PIVOT.md #5)."
+          echo "Re-run with unlock_android=UNLOCK-ANDROID only when the owner lifts the freeze."
+          exit 1
+
   android-apk:
     name: pilot preview apk (GHA)
+    if: github.event.inputs.unlock_android == 'UNLOCK-ANDROID'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

@@ -10,8 +10,9 @@ Phased delivery. **Do not skip phases.** Each phase ends with a gate PR that mus
 and the D0–D9 delivery ladder.** Daily synthetic 2026-relevant cases (8–10 min, fiction,
 interactive seeded jury room) on simjury.com, absorbing the `simjury-daily` repo's
 pipeline into `site/app/`. The JVM/Android pilot (Phases 1–3) and the historical track
-(Phases 4–6) below are both **parked** (c_001 stays live at `/play`; G-4 and Android work
-paused).
+(Phases 4–6) below are **parked**, and **Android development is frozen until further
+notice** (owner, 2026-07-27 — `DAILY-PIVOT.md` #5). Case c_001 stays live at `/play`;
+do not resume G-4 or Android CI/APK work without an explicit owner unlock.
 
 ---
 

@@ -35,6 +35,11 @@ Owner decisions, recorded verbatim:
    `simjury.com/play` as "the deep case". Phase 4 G-4 work (operator clearance, device
    QA, gate PR) and the Android pilot are **paused indefinitely**; no further effort is
    scheduled on them while the daily track is built.
+5. **Android / JVM pilot frozen until further notice (owner, 2026-07-27).** Product work
+   is **simjury.com only**. Agents must not develop the Android app, re-enable Android
+   CI/APK release automation, or treat `pilot/` as an active delivery track. Sources may
+   remain in the tree; CI skips Android assemble/test and APK workflows stay disabled
+   until the owner lifts the freeze explicitly.
 
 ## What carries over unchanged (binding on the daily track)
 
