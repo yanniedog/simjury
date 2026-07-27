@@ -86,7 +86,7 @@ function Bench({
   state: DeliberationState
   playerVerdict: Verdict | null
   activeJurorId: string | null
-  stirredIds: Set<string>
+  stirredIds: readonly string[]
   revealPositions: boolean
 }) {
   const playerTone = !revealPositions || !playerVerdict
@@ -110,7 +110,7 @@ function Bench({
         .sort((a, b) => a.seat - b.seat)
         .map((j) => {
           const isActive = j.id === activeJurorId
-          const stirred = stirredIds.has(j.id)
+          const stirred = stirredIds.includes(j.id)
           const lean =
             j.position > 0 ? 'Guilty' : j.position < 0 ? 'Not guilty' : 'Undecided'
           const tone = !revealPositions
@@ -270,7 +270,7 @@ export function JuryRoomView({
   const [pendingVerdict, setPendingVerdict] = useState<Verdict | null>(null)
   const [activeJurorId, setActiveJurorId] = useState<string | null>(null)
   const [listening, setListening] = useState(false)
-  const [stirredIds, setStirredIds] = useState<Set<string>>(() => new Set())
+  const [stirredIds, setStirredIds] = useState<readonly string[]>([])
   const [stirCount, setStirCount] = useState<number | null>(null)
   const transcriptRef = useRef<HTMLUListElement>(null)
   const followTranscriptRef = useRef(true)
@@ -279,6 +279,7 @@ export function JuryRoomView({
 
   const revealVotes = outcome !== null
   const used = usedBeatIds(state.log)
+  const logLength = state.log.length
 
   useEffect(() => {
     setActiveJurorId(null)
@@ -303,7 +304,6 @@ export function JuryRoomView({
     document.getElementById('phase-heading')?.focus()
   }, [state.phase, outcome, awaitingPlayerVote])
 
-  const logLength = state.log.length
   useEffect(() => {
     const transcript = transcriptRef.current
     if (transcript && followTranscriptRef.current) {
@@ -336,8 +336,7 @@ export function JuryRoomView({
       .slice(before)
       .filter((e) => e.type === 'respond' && e.line)
       .map((e) => ({ text: e.line!, key: e.actor }))
-    const speakers = new Set(spoken.map((line) => line.key))
-    setStirredIds(speakers)
+    setStirredIds(spoken.map((line) => line.key))
     setStirCount(spoken.length)
     const generation = ++listenGeneration.current
     if (narration && spoken.length > 0) {
@@ -366,7 +365,7 @@ export function JuryRoomView({
     const locked = finish(state, chosen === 'Guilty' ? 'guilty' : 'not_guilty')
     setOutcome(locked)
     setPendingVerdict(null)
-    setStirredIds(new Set())
+    setStirredIds([])
     setTick((t) => t + 1)
     const judgeLine =
       locked.kind === 'hung'
@@ -427,7 +426,7 @@ export function JuryRoomView({
         state={state}
         playerVerdict={playerVerdict}
         activeJurorId={activeJurorId}
-        stirredIds={revealVotes ? new Set() : stirredIds}
+        stirredIds={revealVotes ? [] : stirredIds}
         revealPositions={revealVotes}
       />
       <p aria-live="polite" className="speaker-focus text-xs text-amber-200/80">
@@ -560,7 +559,7 @@ export function JuryRoomView({
               </p>
               <div
                 className="evidence-chips"
-                role="listbox"
+                role="group"
                 aria-label="Evidence from the trial"
               >
                 {trial.beats.map((b, i) => {
@@ -571,8 +570,7 @@ export function JuryRoomView({
                     <button
                       key={b.id}
                       type="button"
-                      role="option"
-                      aria-selected={selected}
+                      aria-pressed={selected}
                       aria-label={`Evidence ${i + 1}, ${who?.name ?? b.speaker}${alreadyUsed ? ', already raised' : ''}`}
                       onClick={() => setSelectedBeat(b.id)}
                       className={`evidence-chip${selected ? ' selected' : ''}${alreadyUsed ? ' used' : ''}`}
