@@ -116,7 +116,8 @@ export function ensureNpcNotes(
   for (const juror of trial.jury.jurors) {
     const scored = trial.beats
       .map((beat) => {
-        const weight = Math.max(...beat.tags.map((t) => juror.weights[t] ?? 0), 0)
+        const tags = beat.tags ?? []
+        const weight = Math.max(...tags.map((t) => juror.weights[t] ?? 0), 0)
         return { beat, weight }
       })
       .filter((row) => row.weight >= 0.45)
