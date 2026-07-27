@@ -9,13 +9,13 @@ import { caseStorageId } from '../../lib/v2/caseRevision'
 import type { DocketSitting } from '../../lib/v2/cases'
 import { INTRO_CASE_ID } from '../../lib/v2/cases'
 
-export type DocketPhase = 'intro' | 'openings' | 'beats' | 'verdict' | 'juryroom' | 'reveal'
+export type DocketPhase = 'intro' | 'openings' | 'beats' | 'closings' | 'juryroom' | 'reveal'
 
 const PHASES: Array<{ id: DocketPhase; label: string; short: string }> = [
   { id: 'intro', label: 'Briefing', short: '01' },
   { id: 'openings', label: 'Openings', short: '02' },
   { id: 'beats', label: 'Evidence', short: '03' },
-  { id: 'verdict', label: 'Verdict', short: '04' },
+  { id: 'closings', label: 'Closings', short: '04' },
   { id: 'juryroom', label: 'Jury room', short: '05' },
   { id: 'reveal', label: 'Record', short: '06' },
 ]

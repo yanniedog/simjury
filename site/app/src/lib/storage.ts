@@ -37,7 +37,7 @@ export type StoredPlay = z.infer<typeof storedPlaySchema>
 const storedProgressSchema = z.object({
   day: z.number(),
   caseId: z.string(),
-  phase: z.enum(['openings', 'beats', 'verdict']),
+  phase: z.enum(['openings', 'beats', 'closings', 'juryroom']),
   beatIndex: z.number().int().nonnegative(),
 })
 

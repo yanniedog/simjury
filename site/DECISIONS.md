@@ -39,9 +39,13 @@ where the web deliberately diverges, and why. (Android/pilot rules are unchanged
   jury room** — 11 **fictional** jurors (allowed: v3 PS-4 makes jurors fictional) who voice a
   short deliberation the player *hears*, then the room reaches its **own** verdict. This is a
   reduced form of v3 §7.7/§9, **not** the full deterministic engine or process scoring.
-- The player's own verdict is **locked before** the room deliberates, so the room never hints
-  or anchors (preserves P-6/P-7). Juror lines reason only from the trial evidence and contain
-  **no reveal content and no F-4 banned tokens** (spoiler-safe by construction).
+- **Amended (owner-directed product rule, 2026-07-27):** on the Daily Docket interactive
+  room, the player **deliberates first**, then locks their verdict; seat leanings and vote
+  tallies stay hidden until the **judge reads the result**. (Earlier lock-before wording
+  applied to the scripted lite room / anti-anchoring note below and is superseded for the
+  interactive engine.)
+- Juror lines reason only from the trial evidence and contain **no reveal content and no
+  F-4 banned tokens** (spoiler-safe by construction).
 - Content lives in `site/content/cases/<id>/jury_room.json` (web-owned, committed) and is
   synced into the player alongside the pilot case assets. It is intentionally distinct from a
   future full-v3 `jurors.json` (Phase 5, ≥40 authored lines + reaction rules per juror).
