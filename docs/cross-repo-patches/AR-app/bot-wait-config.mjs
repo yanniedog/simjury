@@ -82,7 +82,7 @@ export function resolveRequiredKeys(argvKeys, envRaw) {
 
 export function loginsForKey(key) {
   const k = String(key || '').toLowerCase();
-  // OR-group passed by mistake — expand first alternative only for login list helpers
+  // OR-group passed by mistake — expand into the union of all alternatives for login list helpers
   if (k.includes('|')) {
     const set = new Set();
     for (const alt of alternativesForSlot(k)) {

@@ -1,4 +1,4 @@
-# AR-app: PR bot presence harden
+# AR-app: PR bot presence hardening
 
 `cursor[bot]` cannot push to `yanniedog/AR-app` from simjury cloud agents. Apply this pack on AR-app.
 
