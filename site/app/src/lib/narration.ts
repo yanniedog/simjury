@@ -1,4 +1,12 @@
 /** Open-source Kokoro clips from GitHub Releases, with device-local speech fallback. */
+import {
+  assignDeviceVoiceIndexes,
+  buildSpeakerVoicePlan,
+  type SpeakerVoicePlan,
+  voiceParamsForGender,
+  type SpeakerGender,
+} from './speakerVoices'
+
 export interface VoiceParams {
   voiceIndex: number
   pitch: number
@@ -21,28 +29,74 @@ function hash(value: string): number {
   return h >>> 0
 }
 
-export function narrationIdFor(text: string, key: string): string {
+export function narrationIdFor(
+  text: string,
+  key: string,
+  gender?: SpeakerGender,
+  voice?: string,
+): string {
   const slug = key.toLowerCase().replace(/[^a-z0-9-]/g, '-')
-  return `${slug}-${hash(`${key}\0${text}`).toString(16).padStart(8, '0')}`
+  const g = gender ?? genderForKey(key)
+  const v = voice ?? activePlan?.kokoroByKey.get(key) ?? (g === 'female' ? 'af_bella' : 'am_fenrir')
+  const material = key === 'narrator' ? `${key}\0${text}` : `${key}\0${g}\0${v}\0${text}`
+  return `${slug}-${hash(material).toString(16).padStart(8, '0')}`
 }
 
-export function naturalVoiceUrlFor(text: string, key: string): string {
-  const id = narrationIdFor(text, key)
+export function naturalVoiceUrlFor(
+  text: string,
+  key: string,
+  gender?: SpeakerGender,
+  voice?: string,
+): string {
+  const id = narrationIdFor(text, key, gender, voice)
   const shard = Number.parseInt(id.slice(-8, -6), 16) % NARRATION_SHARDS
   return `https://github.com/yanniedog/simjury/releases/download/narration-kokoro-${shard}/${id}.mp3`
 }
 
+let activePlan: SpeakerVoicePlan | null = null
+let plannedIndexes: Map<string, number> = new Map()
+
+/** Register cast/juror genders for the active sitting so fallback voices stay matched. */
+export function setNarrationSpeakers(input: {
+  cast: Array<{ id: string; name: string }>
+  jurors?: Array<{ id: string; persona: string }>
+}): void {
+  activePlan = buildSpeakerVoicePlan(input)
+  rebuildPlannedIndexes()
+}
+
+export function clearNarrationSpeakers(): void {
+  activePlan = null
+  plannedIndexes = new Map()
+}
+
+function genderForKey(key: string): SpeakerGender {
+  return activePlan?.genderByKey.get(key) ?? (key === 'narrator' ? 'female' : hash(key) % 2 === 0 ? 'female' : 'male')
+}
+
 export function voiceParamsFor(key: string, voiceCount: number): VoiceParams {
-  const h = hash(key)
+  const gender = genderForKey(key)
+  const { pitch, rate } = voiceParamsForGender(key, gender)
+  const planned = plannedIndexes.get(key)
   return {
-    voiceIndex: voiceCount > 0 ? h % voiceCount : 0,
-    pitch: key === 'narrator' ? 1 : 0.94 + (h % 13) / 100,
-    rate: 0.94 + ((h >>> 3) % 8) / 100,
+    voiceIndex: planned ?? (voiceCount > 0 ? hash(key) % voiceCount : 0),
+    pitch,
+    rate,
   }
 }
 
-/** Reserve a different available voice whenever the visible speaker changes. */
+/**
+ * Reserve a different available voice whenever the visible speaker changes.
+ * When a case plan is active, indexes come from gender-aware unique assignment.
+ */
 export function fallbackVoiceIndexes(keys: string[], voiceCount: number): number[] {
+  if (activePlan && voiceCount > 0) {
+    // Prefer the live module voice list when its length matches the caller's count.
+    const list = voices.length === voiceCount ? voices : Array.from({ length: voiceCount }, (_, i) => ({ name: `Voice ${i}` }))
+    const assigned = assignDeviceVoiceIndexes(activePlan, list)
+    plannedIndexes = assigned
+    return keys.map((key) => assigned.get(key) ?? hash(key) % voiceCount)
+  }
   const indexes: number[] = []
   for (const [i, key] of keys.entries()) {
     let index = voiceParamsFor(key, voiceCount).voiceIndex
@@ -69,9 +123,10 @@ export function voiceQualityScore(name: string, localService: boolean): number {
 export function selectLocalVoices(all: SpeechSynthesisVoice[]): SpeechSynthesisVoice[] {
   const local = all.filter((voice) => voice.localService)
   const english = local.filter((voice) => /^en/i.test(voice.lang))
-  return [...(english.length > 0 ? english : local)]
-    .sort((a, b) => voiceQualityScore(b.name, true) - voiceQualityScore(a.name, true))
-    .slice(0, 8)
+  // Keep a wide English local pool so each courtroom speaker can stay distinct.
+  return [...(english.length > 0 ? english : local)].sort(
+    (a, b) => voiceQualityScore(b.name, true) - voiceQualityScore(a.name, true),
+  )
 }
 
 const STORAGE_KEY = 'simjury:narration'
@@ -84,10 +139,18 @@ function synth(): SpeechSynthesis | null {
 }
 
 let voices: SpeechSynthesisVoice[] = []
+
+function rebuildPlannedIndexes(): void {
+  if (activePlan && voices.length > 0) {
+    plannedIndexes = assignDeviceVoiceIndexes(activePlan, voices)
+  }
+}
+
 function refreshVoices(): void {
   const s = synth()
   if (!s || typeof s.getVoices !== 'function') return
   voices = selectLocalVoices(s.getVoices())
+  rebuildPlannedIndexes()
 }
 {
   const s = synth()

@@ -14,8 +14,10 @@ on:
       - "site/app/src/lib/narration.ts"
       - "site/app/src/lib/narratorCues.ts"
       - "site/app/src/lib/narratorCueCopy.json"
+      - "site/app/src/lib/castGenders.json"
       - "site/narration-requirements.txt"
       - "site/scripts/build-kokoro-jobs.mjs"
+      - "site/scripts/speaker-voices.mjs"
       - "site/scripts/generate-kokoro-clips.py"
       - "site/scripts/publish-kokoro-clips.mjs"
       - ".github/workflows/natural-narration.yml"
@@ -53,7 +55,7 @@ jobs:
             # Only synthesis inputs / spoken cue copy should force all.
             # build-kokoro-jobs matrix/filter changes (e.g. adding dd-intro) should
             # use workflow_dispatch for the affected case ids instead.
-            if grep -Eq '^(site/app/src/lib/(narration|narratorCues)\.ts|site/app/src/lib/narratorCueCopy\.json|site/narration-requirements\.txt|site/scripts/generate-kokoro-clips\.py)$' <<< "$changed"; then
+            if grep -Eq '^(site/app/src/lib/(narration|narratorCues|castGenders)\.(ts|json)|site/app/src/lib/narratorCueCopy\.json|site/narration-requirements\.txt|site/scripts/(generate-kokoro-clips\.py|speaker-voices\.mjs))$' <<< "$changed"; then
               requested="all"
             else
               requested="$(sed -nE 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p' <<< "$changed" |

@@ -1,6 +1,7 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { assignKokoroVoices } from './speaker-voices.mjs'
 
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 const docketDir = join(siteRoot, 'app', 'docket')
@@ -19,19 +20,13 @@ function hash(value) {
   return h >>> 0
 }
 
-function narrationIdFor(text, key) {
+/** Clip ids fold gender + voice so per-case uniqueness remaps stay corpus-safe. */
+function narrationIdFor(text, key, gender = 'female', voice = 'af_heart') {
   const slug = key.toLowerCase().replace(/[^a-z0-9-]/g, '-')
-  return `${slug}-${hash(`${key}\0${text}`).toString(16).padStart(8, '0')}`
+  const material =
+    key === 'narrator' ? `${key}\0${text}` : `${key}\0${gender}\0${voice}\0${text}`
+  return `${slug}-${hash(material).toString(16).padStart(8, '0')}`
 }
-
-const namedVoices = {
-  narrator: 'af_heart',
-  judge: 'bf_emma',
-  pc: 'af_bella',
-  dc: 'bf_emma',
-}
-const voices = ['af_heart', 'af_bella', 'bf_emma', 'af_nicole', 'am_fenrir', 'am_michael']
-const voiceFor = (key) => namedVoices[key] ?? voices[hash(key) % voices.length]
 
 const cueCopy = JSON.parse(
   readFileSync(join(siteRoot, 'app', 'src', 'lib', 'narratorCueCopy.json'), 'utf8'),
@@ -92,10 +87,14 @@ function spokenLines(c) {
 }
 
 function clipsFor(docket) {
+  const { voices: voiceBySpeaker, genders } = assignKokoroVoices(docket)
   const clips = new Map()
   for (const { speaker, text } of spokenLines(docket)) {
-    const id = narrationIdFor(text, speaker)
-    const clip = { id, speaker, voice: voiceFor(speaker), text }
+    const gender = genders.get(speaker) ?? 'female'
+    const voice = voiceBySpeaker.get(speaker)
+    if (!voice) throw new Error(`No Kokoro voice assigned for speaker: ${speaker}`)
+    const id = narrationIdFor(text, speaker, gender, voice)
+    const clip = { id, speaker, gender, voice, text }
     const prior = clips.get(id)
     if (prior && JSON.stringify(prior) !== JSON.stringify(clip)) {
       throw new Error(`Narration id collision: ${id}`)
