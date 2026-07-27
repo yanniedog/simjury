@@ -101,8 +101,9 @@ function main(): void {
       // Design gate, then the deliberation-dynamics simulation: a docket case
       // only ships if its room is alive (see src/engine/dynamics.ts).
       gate: (cases) => {
-        // dd-intro is schema-validated with the folder but excluded from daily
-        // queue/runway gates (runtime also keeps it off the publish queue).
+        // dd-intro stays off the daily publish/runway calendar and queue
+        // variety checks, but it must pass the same per-case design-quality
+        // and dynamics gates as every featured docket case.
         const dailyCases = cases.filter((c) => c.id !== 'dd-intro')
         const introCases = cases.filter((c) => c.id === 'dd-intro')
         const runwayError = docketRunwayError(

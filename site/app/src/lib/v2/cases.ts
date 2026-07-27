@@ -8,9 +8,10 @@ import { docketCaseSchema, type DocketCase } from './caseSchema'
  * one ever slips through we fail loudly at load rather than rendering a broken
  * trial to a player.
  *
- * The guided intro (`dd-intro`) lives in the same folder for schema validation
- * but is excluded from the daily publish queue — it is offered on first visit
- * and via the archive chooser, never as "today's" featured case.
+ * The guided intro (`dd-intro`) lives in the same folder and must pass the same
+ * schema, design-quality, and dynamics floors as every other docket case. It is
+ * excluded only from the daily publish queue — offered on first visit and via
+ * the archive chooser, never as "today's" featured case.
  */
 const modules = import.meta.glob('/docket/*.json', {
   eager: true,

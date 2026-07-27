@@ -29,11 +29,11 @@
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The camera places her at the desk. The parcel is gone. The night guard saw her carry it away. Do not let a story about a retired pass erase what your eyes and ears have already heard."
+        "text": "The camera places her at the desk when the parcel leaves. The night guard saw her carry it toward the side door. No supervisor signed it out. A story about a retired pass does not erase what the feed and the walkway both show. If you are sure she took it dishonestly, you must convict."
       },
       "defence": {
         "speaker": "dc",
-        "text": "Place and time are not the whole charge. Dishonesty is. The retired pass and the safe-shelf instruction leave real doubt. If she may have been doing her job, you must find her not guilty."
+        "text": "Place and time are not the whole charge. Dishonesty is. The badge on the screen was already retired. Her supervisor taught the safe-shelf rule for late drops. Her live pass was still on her when they searched. If she may have been doing her job, you must find her not guilty."
       }
     }
   },
@@ -70,10 +70,10 @@
       "side": "prosecution"
     },
     {
-      "id": "clerk",
-      "name": "the clerk",
-      "role_label": "clerk of the court",
-      "side": "court"
+      "id": "w2",
+      "name": "Elin Marsh",
+      "role_label": "night-shift supervisor",
+      "side": "defence"
     }
   ],
   "beats": [
@@ -161,8 +161,39 @@
     {
       "id": "b4",
       "kind": "exhibit",
-      "speaker": "clerk",
-      "text": "Exhibit two is the door and badge record. The name on the camera was tied to a pass number retired three weeks earlier — marked lost, not given to the trainee. That same dead number still opens the side door at 1:14.",
+      "speaker": "pc",
+      "text": "Exhibit two is the night desk log. The parcel is marked received at midnight and never signed out by a supervisor. By morning the desk is empty and the missing-parcel report names the trainee shift. The prosecution says that gap is the theft window.",
+      "surface_persuasion": 0.65,
+      "true_weight": 0.35,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The unsigned gap shows the parcel left the desk, not that she took it dishonestly or past the safe shelf.",
+      "tags": [
+        "opportunity",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b5",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "text": "I train every new night starter on day one. Late drops do not stay on the open desk. They go on the locked safe shelf by the side door until morning. I showed Nia that shelf myself in her first week, and I still tell trainees not to wake me for ordinary late moves.",
+      "surface_persuasion": 0.55,
+      "true_weight": 0.8,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The supervisor confirms the safe-shelf rule and the do-not-wake instruction she relied on.",
+      "tags": [
+        "procedure",
+        "method"
+      ]
+    },
+    {
+      "id": "b6",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit three is the door and badge record. The name on the camera was tied to a pass number retired three weeks earlier — marked lost, not issued to the trainee. That same dead number still opens the side door at 1:14, two minutes after the desk camera.",
       "surface_persuasion": 0.55,
       "true_weight": 0.85,
       "direction": "innocence",
@@ -174,11 +205,53 @@
       ]
     },
     {
-      "id": "b5",
+      "id": "b7",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "cross",
+      "text": "'Did you watch her move that parcel on the night itself?' 'No — I was upstairs on the loading bay.' 'So you cannot say she used the safe shelf that night?' 'I can say that is what she was taught to do.' 'And a trainee who ignores you could still walk a parcel out?' 'Anyone could — that is why we lock the shelf.'",
+      "turns": [
+        {
+          "speaker": "pc",
+          "text": "Did you watch her move that parcel on the night itself?"
+        },
+        {
+          "speaker": "w2",
+          "text": "No — I was upstairs on the loading bay."
+        },
+        {
+          "speaker": "pc",
+          "text": "So you cannot say she used the safe shelf that night?"
+        },
+        {
+          "speaker": "w2",
+          "text": "I can say that is what she was taught to do."
+        },
+        {
+          "speaker": "pc",
+          "text": "And a trainee who ignores you could still walk a parcel out?"
+        },
+        {
+          "speaker": "w2",
+          "text": "Anyone could — that is why we lock the shelf."
+        }
+      ],
+      "surface_persuasion": 0.6,
+      "true_weight": 0.4,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "She did not see the move; the rule still explains an innocent desk-to-shelf trip.",
+      "tags": [
+        "credibility",
+        "procedure"
+      ]
+    },
+    {
+      "id": "b8",
       "kind": "witness",
       "speaker": "acc",
       "mode": "examination",
-      "text": "My supervisor told me late drops go on the safe shelf by the side door, not the open desk. I moved that parcel there. I did not take it outside. I still had my own live badge on my lanyard when they searched me.",
+      "text": "My supervisor told me late drops go on the safe shelf by the side door, not the open desk. I moved that parcel there. I did not take it outside. I still had my own live badge on my lanyard when they searched me at the end of the shift.",
       "surface_persuasion": 0.5,
       "true_weight": 0.6,
       "direction": "innocence",
@@ -190,11 +263,11 @@
       ]
     },
     {
-      "id": "b6",
+      "id": "b9",
       "kind": "witness",
       "speaker": "acc",
       "mode": "cross",
-      "text": "'Why not call your supervisor before moving it?' 'Night trainees were told not to wake them for ordinary late drops.' 'So you chose to move it alone?' 'Yes — to the shelf I was shown on day one.'",
+      "text": "'Why not call your supervisor before moving it?' 'Night trainees were told not to wake them for ordinary late drops.' 'So you chose to move it alone?' 'Yes — to the shelf I was shown on day one.' 'Did anyone see you put it on that shelf?' 'Not that I know of.'",
       "turns": [
         {
           "speaker": "pc",
@@ -211,6 +284,14 @@
         {
           "speaker": "acc",
           "text": "Yes — to the shelf I was shown on day one."
+        },
+        {
+          "speaker": "pc",
+          "text": "Did anyone see you put it on that shelf?"
+        },
+        {
+          "speaker": "acc",
+          "text": "Not that I know of."
         }
       ],
       "surface_persuasion": 0.55,
@@ -224,7 +305,22 @@
       ]
     },
     {
-      "id": "b7",
+      "id": "b10",
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "Exhibit four is the end-of-shift search and the live access log. Her current pass was on her lanyard and had not opened the side door that night. The safe shelf was empty by dawn, but the dead pass that opened the door never belonged to her account.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.75,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Her live badge never opened the exit; the retired pass did — after the desk move.",
+      "tags": [
+        "digital_forensics",
+        "identity"
+      ]
+    },
+    {
+      "id": "b11",
       "kind": "direction",
       "speaker": "judge",
       "text": "Members of the jury, the prosecution must prove each element beyond reasonable doubt. Suspicion is not enough. Dishonestly means she took it knowing it was not hers to take, not merely moved it as part of her job. If you are unsure, you must return a verdict of not guilty.",
@@ -1008,8 +1104,8 @@
   },
   "gen_meta": {
     "model": "manual",
-    "prompt_version": "dd-intro-2026-07",
-    "reviewer": "simplify-plan",
-    "batch_pr": "simplify-jury"
+    "prompt_version": "dd-intro-parity-2026-07",
+    "reviewer": "intro-case-parity",
+    "batch_pr": "intro-parity"
   }
 }
