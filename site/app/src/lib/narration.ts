@@ -1,4 +1,4 @@
-/** Open-source Qwen3-TTS clips from GitHub Releases, with device-local speech fallback. */
+/** Open-source Kokoro-82M clips from GitHub Releases, with device-local speech fallback. */
 import {
   assignDeviceVoiceIndexes,
   buildSpeakerVoicePlan,
@@ -37,7 +37,7 @@ export function narrationIdFor(
 ): string {
   const slug = key.toLowerCase().replace(/[^a-z0-9-]/g, '-')
   const g = gender ?? genderForKey(key)
-  const v = voice ?? activePlan?.kokoroByKey.get(key) ?? (g === 'female' ? 'f_counsel_sharp' : 'm_counsel_steel')
+  const v = voice ?? activePlan?.kokoroByKey.get(key) ?? (g === 'female' ? 'af_bella' : 'bm_lewis')
   const material = key === 'narrator' ? `${key}\0${text}` : `${key}\0${g}\0${v}\0${text}`
   return `${slug}-${hash(material).toString(16).padStart(8, '0')}`
 }
@@ -50,7 +50,7 @@ export function naturalVoiceUrlFor(
 ): string {
   const id = narrationIdFor(text, key, gender, voice)
   const shard = Number.parseInt(id.slice(-8, -6), 16) % NARRATION_SHARDS
-  return `https://github.com/yanniedog/simjury/releases/download/narration-qwen-${shard}/${id}.mp3`
+  return `https://github.com/yanniedog/simjury/releases/download/narration-kokoro-${shard}/${id}.mp3`
 }
 
 let activePlan: SpeakerVoicePlan | null = null
@@ -274,7 +274,7 @@ function speakFallback(
   }
 }
 
-/** Play an opaque-id Qwen3-TTS clip from GitHub; fall back locally if it is unavailable. */
+/** Play an opaque-id Kokoro-82M clip from GitHub; fall back locally if it is unavailable. */
 export function speak(
   text: string,
   key: string,

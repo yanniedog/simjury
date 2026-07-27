@@ -26,16 +26,16 @@ afterEach(() => {
 
 describe('voiceParamsFor', () => {
   it('maps text to an opaque, stable, sharded GitHub release asset', () => {
-    const id = narrationIdFor('The evidence is ready.', 'pc', 'female', 'f_counsel_sharp')
+    const id = narrationIdFor('The evidence is ready.', 'pc', 'female', 'af_bella')
     expect(id).toMatch(/^pc-[0-9a-f]{8}$/)
-    const url = naturalVoiceUrlFor('The evidence is ready.', 'pc', 'female', 'f_counsel_sharp')
-    const shard = url.match(/narration-qwen-(\d+)/)?.[1]
-    expect(url).toMatch(new RegExp(`/narration-qwen-\\d+/${id}\\.mp3$`))
+    const url = naturalVoiceUrlFor('The evidence is ready.', 'pc', 'female', 'af_bella')
+    const shard = url.match(/narration-kokoro-(\d+)/)?.[1]
+    expect(url).toMatch(new RegExp(`/narration-kokoro-\\d+/${id}\\.mp3$`))
     expect(Number(shard)).toBeLessThan(NARRATION_SHARDS)
     expect(url).not.toContain('evidence')
     // Gender and voice are folded into the id so role remaps diverge cleanly.
-    expect(narrationIdFor('The evidence is ready.', 'pc', 'female', 'f_counsel_sharp')).not.toBe(
-      narrationIdFor('The evidence is ready.', 'pc', 'male', 'm_counsel_steel'),
+    expect(narrationIdFor('The evidence is ready.', 'pc', 'female', 'af_bella')).not.toBe(
+      narrationIdFor('The evidence is ready.', 'pc', 'male', 'bm_lewis'),
     )
   })
 
@@ -117,7 +117,7 @@ describe('voiceParamsFor', () => {
 })
 
 describe('natural narration', () => {
-  it('plays the GitHub-hosted Qwen3-TTS clip before using device speech', async () => {
+  it('plays the GitHub-hosted Kokoro-82M clip before using device speech', async () => {
     class FakeAudio {
       static instances: FakeAudio[] = []
       preload = ''

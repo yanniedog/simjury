@@ -2,9 +2,9 @@
  * Gender-aware narration voice assignment for Daily Docket.
  *
  * Rules:
- * - Female speakers → female Qwen VoiceDesign bank ids; male → male bank ids
- * - Judge → reserved gravitas voice (m_baritone_judge / f_counsel_warm)
- * - Narrator → reserved f_narrator_clear
+ * - Female speakers → female Kokoro voice ids; male → male Kokoro voice ids
+ * - Judge → reserved gravitas voice (bm_george / bf_emma)
+ * - Narrator → reserved af_heart
  * - Within a case, walk the gender pool so speakers stay as distinct as the
  *   catalog allows; clip ids fold the chosen voice so remaps stay corpus-safe
  */
@@ -18,75 +18,75 @@ const CAST_GENDER = JSON.parse(
 )
 const VOICE_BANK = JSON.parse(readFileSync(join(here, '../app/src/lib/narrationVoices.json'), 'utf8'))
 
-/** Warm, clear bench narrator — never reassigned to courtroom speakers. */
-export const NARRATOR_VOICE = 'f_narrator_clear'
+/** Highest-grade Kokoro female narrator — never reassigned to courtroom speakers. */
+export const NARRATOR_VOICE = 'af_heart'
 
-/** Deep masculine gravitas for male judges. */
-export const JUDGE_VOICE_MALE = 'm_baritone_judge'
+/** British masculine gravitas for male judges. */
+export const JUDGE_VOICE_MALE = 'bm_george'
 
-/** Authoritative feminine counsel-adjacent timbre for female judges. */
-export const JUDGE_VOICE_FEMALE = 'f_counsel_warm'
+/** Warm British feminine timbre for female judges. */
+export const JUDGE_VOICE_FEMALE = 'bf_emma'
 
-/** Distinct female English Qwen bank voices (f_narrator_clear reserved for narrator). */
+/** Distinct female English Kokoro voices (af_heart reserved for narrator). */
 export const FEMALE_VOICES = VOICE_BANK.female
   .map((v) => v.id)
   .filter((id) => id !== NARRATOR_VOICE)
 
-/** Distinct male English Qwen bank voices (m_baritone_judge reserved for male judges). */
+/** Distinct male English Kokoro voices (bm_george reserved for male judges). */
 export const MALE_VOICES = VOICE_BANK.male
   .map((v) => v.id)
   .filter((id) => id !== JUDGE_VOICE_MALE)
 
 const FEMALE_PREFERRED = {
   judge: JUDGE_VOICE_FEMALE,
-  pc: 'f_counsel_sharp',
-  pros: 'f_counsel_sharp',
-  dc: 'f_counsel_warm',
-  defc: 'f_counsel_warm',
-  clerk: 'f_clerk_bright',
-  acc: 'f_accused_strained',
-  w1: 'f_witness_soft',
-  w2: 'f_witness_firm',
-  w3: 'f_officer_cool',
-  w4: 'f_juror_plain',
-  w5: 'f_juror_hesitant',
-  'J-01': 'f_juror_blunt',
-  'J-02': 'f_juror_elder',
-  'J-03': 'f_witness_soft',
-  'J-04': 'f_witness_firm',
-  'J-05': 'f_officer_cool',
-  'J-06': 'f_counsel_sharp',
-  'J-07': 'f_clerk_bright',
-  'J-08': 'f_juror_plain',
-  'J-09': 'f_juror_hesitant',
-  'J-10': 'f_accused_strained',
-  'J-11': 'f_juror_blunt',
+  pc: 'af_bella',
+  pros: 'af_bella',
+  dc: 'bf_emma',
+  defc: 'bf_emma',
+  clerk: 'af_alloy',
+  acc: 'af_sky',
+  w1: 'af_nicole',
+  w2: 'bf_isabella',
+  w3: 'af_nova',
+  w4: 'af_sarah',
+  w5: 'af_aoede',
+  'J-01': 'af_kore',
+  'J-02': 'bf_alice',
+  'J-03': 'af_nicole',
+  'J-04': 'bf_isabella',
+  'J-05': 'af_nova',
+  'J-06': 'af_bella',
+  'J-07': 'af_alloy',
+  'J-08': 'af_sarah',
+  'J-09': 'af_aoede',
+  'J-10': 'af_sky',
+  'J-11': 'af_kore',
 }
 
 const MALE_PREFERRED = {
   judge: JUDGE_VOICE_MALE,
-  pc: 'm_counsel_steel',
-  pros: 'm_counsel_steel',
-  dc: 'm_counsel_steel',
-  defc: 'm_counsel_steel',
-  clerk: 'm_clerk_even',
-  acc: 'm_accused_tense',
-  w1: 'm_witness_gravel',
-  w2: 'm_officer_flat',
-  w3: 'm_juror_warm',
-  w4: 'm_juror_blunt',
-  w5: 'm_expert_clear',
-  'J-01': 'm_juror_elder',
-  'J-02': 'm_juror_young',
-  'J-03': 'm_narrator_calm',
-  'J-04': 'm_witness_gravel',
-  'J-05': 'm_officer_flat',
-  'J-06': 'm_juror_warm',
-  'J-07': 'm_juror_blunt',
-  'J-08': 'm_expert_clear',
-  'J-09': 'm_clerk_even',
-  'J-10': 'm_accused_tense',
-  'J-11': 'm_juror_young',
+  pc: 'bm_lewis',
+  pros: 'bm_lewis',
+  dc: 'bm_lewis',
+  defc: 'bm_lewis',
+  clerk: 'am_eric',
+  acc: 'am_liam',
+  w1: 'am_michael',
+  w2: 'am_fenrir',
+  w3: 'am_puck',
+  w4: 'am_echo',
+  w5: 'am_onyx',
+  'J-01': 'bm_daniel',
+  'J-02': 'am_adam',
+  'J-03': 'bm_fable',
+  'J-04': 'am_michael',
+  'J-05': 'am_fenrir',
+  'J-06': 'am_puck',
+  'J-07': 'am_echo',
+  'J-08': 'am_onyx',
+  'J-09': 'am_eric',
+  'J-10': 'am_liam',
+  'J-11': 'am_adam',
 }
 
 export function hash(value) {

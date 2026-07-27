@@ -144,7 +144,7 @@ for (const caseId of selected) {
   const clips = clipsFor(docket)
   const job = {
     caseId,
-    engine: 'Qwen/Qwen3-TTS-12Hz-1.7B',
+    engine: 'hexgrad/Kokoro-82M',
     license: 'Apache-2.0',
     sampleRate: 24000,
     clips: [...clips.values()]
