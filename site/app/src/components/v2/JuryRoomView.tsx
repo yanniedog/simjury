@@ -15,20 +15,78 @@ import type { Verdict } from './DocketVerdict'
 import { NarratorCue } from './NarratorCue'
 
 const ROUND_LABEL: Partial<Record<DeliberationState['phase'], string>> = {
-  open_1: 'Round 1 of 3',
-  open_2: 'Round 2 of 3',
-  open_3: 'Final round',
+  open_1: 'First point',
+  open_2: 'Second point',
+  open_3: 'Final point',
+}
+
+function roundIndex(phase: DeliberationState['phase']): number {
+  if (phase === 'open_1') return 0
+  if (phase === 'open_2') return 1
+  if (phase === 'open_3' || phase === 'mid_vote') return 2
+  return 3
+}
+
+function usedBeatIds(log: RoomEvent[]): Set<string> {
+  const used = new Set<string>()
+  for (const e of log) {
+    if ((e.type === 'argue' || e.type === 'cite') && e.beatId) used.add(e.beatId)
+  }
+  return used
+}
+
+function RoundStepper({
+  phase,
+  done,
+}: {
+  phase: DeliberationState['phase']
+  done: boolean
+}) {
+  const idx = done ? 4 : roundIndex(phase)
+  const handsDone = done || phase === 'open_3' || phase === 'final_vote'
+  const steps = [
+    { key: 'r1', label: '1', title: 'First point', complete: idx > 0, current: idx === 0 },
+    { key: 'r2', label: '2', title: 'Second point', complete: idx > 1, current: idx === 1 },
+    {
+      key: 'hands',
+      label: '···',
+      title: 'Private hands',
+      complete: handsDone,
+      current: false,
+      soft: true,
+    },
+    { key: 'r3', label: '3', title: 'Final point', complete: idx > 2, current: idx === 2 },
+    { key: 'you', label: 'You', title: 'Your verdict', complete: done, current: idx === 3 && !done },
+  ]
+  return (
+    <ol className="round-stepper" aria-label="Deliberation progress">
+      {steps.map((step) => (
+        <li
+          key={step.key}
+          className={`round-step${step.complete ? ' complete' : ''}${step.current ? ' current' : ''}${step.soft ? ' soft' : ''}`}
+          aria-current={step.current ? 'step' : undefined}
+        >
+          <span className="round-step-mark" aria-hidden="true">
+            {step.complete && !step.soft ? '✓' : step.label}
+          </span>
+          <span className="sr-only">{step.title}</span>
+        </li>
+      ))}
+    </ol>
+  )
 }
 
 function Bench({
   state,
   playerVerdict,
   activeJurorId,
+  stirredIds,
   revealPositions,
 }: {
   state: DeliberationState
   playerVerdict: Verdict | null
   activeJurorId: string | null
+  stirredIds: readonly string[]
   revealPositions: boolean
 }) {
   const playerTone = !revealPositions || !playerVerdict
@@ -52,10 +110,11 @@ function Bench({
         .sort((a, b) => a.seat - b.seat)
         .map((j) => {
           const isActive = j.id === activeJurorId
+          const stirred = stirredIds.includes(j.id)
           const lean =
             j.position > 0 ? 'Guilty' : j.position < 0 ? 'Not guilty' : 'Undecided'
           const tone = !revealPositions
-            ? `border-neutral-700 bg-neutral-900/40 text-neutral-400${isActive ? ' active' : ''}`
+            ? `border-neutral-700 bg-neutral-900/40 text-neutral-400${isActive ? ' active' : ''}${stirred ? ' stirred' : ''}`
             : j.position > 0
               ? `border-red-800 bg-red-950/40 text-red-300${isActive ? ' active' : ''}`
               : j.position < 0
@@ -74,6 +133,7 @@ function Bench({
               role="listitem"
               aria-current={isActive ? 'true' : undefined}
               className={`jury-seat ${tone}`}
+              title={j.label}
             >
               <span className="sr-only">
                 {`Seat ${j.seat}, ${j.label}${revealPositions ? `, ${lean}` : ''}${isActive ? ', speaking now' : ''}`}
@@ -120,9 +180,20 @@ function FeedLine({ e, trial, revealVotes }: { e: RoomEvent; trial: DocketCase; 
     )
   }
   if (e.type === 'pass') {
-    return <li className="px-3 text-xs italic text-neutral-500">You let the room talk.</li>
+    return (
+      <li className="room-pass rounded-lg border border-neutral-800 bg-neutral-900/50 px-3 py-2 text-sm text-neutral-400">
+        You let the room talk — a full round still passes.
+      </li>
+    )
   }
-  if (e.type === 'vote' && e.tally && revealVotes) {
+  if (e.type === 'vote' && e.tally) {
+    if (!revealVotes) {
+      return (
+        <li className="room-hands-sealed rounded-lg border border-neutral-700 bg-neutral-900/70 p-3 text-center text-sm text-neutral-400">
+          A private show of hands — sealed until the judge speaks.
+        </li>
+      )
+    }
     return (
       <li className="rounded-lg border border-neutral-700 bg-neutral-900 p-3 text-center text-sm text-neutral-300">
         A show of hands: <b className="text-red-300">{e.tally.g} guilty</b> ·{' '}
@@ -148,6 +219,36 @@ function FeedLine({ e, trial, revealVotes }: { e: RoomEvent; trial: DocketCase; 
   return null
 }
 
+function floorCopy({
+  outcome,
+  listening,
+  activeLabel,
+  awaitingPlayerVote,
+  phase,
+  stirCount,
+}: {
+  outcome: Outcome | null
+  listening: boolean
+  activeLabel: string | null
+  awaitingPlayerVote: boolean
+  phase: DeliberationState['phase']
+  stirCount: number | null
+}): string {
+  if (outcome) return 'The court has the floor'
+  if (listening && activeLabel) return `${activeLabel} has the floor`
+  if (listening) return 'The room is answering'
+  if (awaitingPlayerVote) return 'Your turn to lock a verdict'
+  if (stirCount !== null && stirCount > 0) {
+    return stirCount === 1
+      ? 'One juror answered — your move'
+      : `${stirCount} jurors answered — your move`
+  }
+  if (phase === 'open_1') return 'Pick evidence and make your first point'
+  if (phase === 'open_2') return 'Make your second point'
+  if (phase === 'open_3') return 'One last point before you vote'
+  return 'The foreperson waits for your point'
+}
+
 export function JuryRoomView({
   trial,
   narration,
@@ -168,15 +269,21 @@ export function JuryRoomView({
   const [playerVerdict, setPlayerVerdict] = useState<Verdict | null>(null)
   const [pendingVerdict, setPendingVerdict] = useState<Verdict | null>(null)
   const [activeJurorId, setActiveJurorId] = useState<string | null>(null)
+  const [listening, setListening] = useState(false)
+  const [stirredIds, setStirredIds] = useState<readonly string[]>([])
+  const [stirCount, setStirCount] = useState<number | null>(null)
   const transcriptRef = useRef<HTMLUListElement>(null)
   const followTranscriptRef = useRef(true)
-  const confirmDialog = useRef<HTMLDialogElement>(null)
-  const sealButton = useRef<HTMLButtonElement>(null)
+  const continueButton = useRef<HTMLButtonElement>(null)
+  const listenGeneration = useRef(0)
 
   const revealVotes = outcome !== null
+  const used = usedBeatIds(state.log)
+  const logLength = state.log.length
 
   useEffect(() => {
     setActiveJurorId(null)
+    setListening(false)
     stopSpeech()
     if (!narration) return stopSpeech
     speak(phaseNarratorCue('juryroom'), 'narrator', undefined, playbackRate)
@@ -184,60 +291,81 @@ export function JuryRoomView({
   }, [narration, playbackRate])
 
   useEffect(() => {
-    const dialog = confirmDialog.current
-    if (!dialog) return
-    if (pendingVerdict) {
-      if (!dialog.open) dialog.showModal()
-      sealButton.current?.focus()
-    } else if (dialog.open) {
-      dialog.close()
-    }
-  }, [pendingVerdict])
+    if (outcome) continueButton.current?.focus()
+  }, [outcome])
 
   const beat = trial.beats.find((b) => b.id === selectedBeat)!
   const inOpenRound = state.phase.startsWith('open')
   const awaitingPlayerVote = state.phase === 'final_vote' && !outcome
   const renderedPhase = state.phase
+  const consoleLocked = listening || !inOpenRound
 
   useEffect(() => {
     document.getElementById('phase-heading')?.focus()
   }, [state.phase, outcome, awaitingPlayerVote])
 
-  const logLength = state.log.length
   useEffect(() => {
     const transcript = transcriptRef.current
     if (transcript && followTranscriptRef.current) {
       transcript.scrollTop = transcript.scrollHeight
     }
-  }, [logLength, revealVotes])
+  }, [logLength, revealVotes, listening])
+
+  function endListening(generation: number) {
+    if (listenGeneration.current !== generation) return
+    setActiveJurorId(null)
+    setListening(false)
+  }
+
+  function skipListening() {
+    listenGeneration.current += 1
+    stopSpeech()
+    setActiveJurorId(null)
+    setListening(false)
+  }
 
   function act(action: PlayerAction) {
-    if (!inOpenRound || state.phase !== renderedPhase) return
+    if (!inOpenRound || state.phase !== renderedPhase || listening) return
     const before = state.log.length
     setActiveJurorId(null)
+    setPendingVerdict(null)
+    setStirCount(null)
     stopSpeech()
     playRound(state, action)
     const spoken = state.log
       .slice(before)
       .filter((e) => e.type === 'respond' && e.line)
       .map((e) => ({ text: e.line!, key: e.actor }))
-    setActiveJurorId(spoken[0]?.key ?? null)
-    speakAll(spoken, {
-      onLine: setActiveJurorId,
-      done: () => setActiveJurorId(null),
-      rate: playbackRate,
-    })
+    setStirredIds(spoken.map((line) => line.key))
+    setStirCount(spoken.length)
+    const generation = ++listenGeneration.current
+    if (narration && spoken.length > 0) {
+      setListening(true)
+      setActiveJurorId(spoken[0]?.key ?? null)
+      speakAll(spoken, {
+        onLine: (key) => {
+          if (listenGeneration.current === generation) setActiveJurorId(key)
+        },
+        done: () => endListening(generation),
+        rate: playbackRate,
+      })
+    } else {
+      setListening(false)
+      setActiveJurorId(null)
+    }
     setTick((t) => t + 1)
   }
 
   function sealVerdict(chosen: Verdict) {
     if (state.phase !== 'final_vote' || outcome) return
     setActiveJurorId(null)
+    setListening(false)
     stopSpeech()
     setPlayerVerdict(chosen)
     const locked = finish(state, chosen === 'Guilty' ? 'guilty' : 'not_guilty')
     setOutcome(locked)
     setPendingVerdict(null)
+    setStirredIds([])
     setTick((t) => t + 1)
     const judgeLine =
       locked.kind === 'hung'
@@ -246,44 +374,70 @@ export function JuryRoomView({
     if (narration) speak(judgeLine, 'narrator', undefined, playbackRate)
   }
 
+  function chooseVerdict(chosen: Verdict) {
+    if (pendingVerdict === chosen) {
+      sealVerdict(chosen)
+      return
+    }
+    setPendingVerdict(chosen)
+  }
+
   const heading = outcome
     ? 'The judge reads the result'
     : awaitingPlayerVote
       ? 'Your verdict'
-      : (ROUND_LABEL[state.phase] ?? 'The vote')
+      : (ROUND_LABEL[state.phase] ?? 'Deliberation')
+
+  const activeLabel =
+    activeJurorId
+      ? (trial.jury.jurors.find((juror) => juror.id === activeJurorId)?.label ?? 'A juror')
+      : null
+
+  const beatSpeaker =
+    trial.cast.find((member) => member.id === beat.speaker)?.name ?? 'The record'
+  const beatNumber = trial.beats.findIndex((item) => item.id === beat.id) + 1
 
   return (
     <div className="phase-view jury-room-view space-y-5">
-      <div className="phase-heading space-y-1 text-center">
+      <div className="phase-heading space-y-2 text-center">
         <h1 id="phase-heading" tabIndex={-1} className="text-xs uppercase tracking-[0.2em] text-neutral-500 focus:outline-none">
           The jury room · {heading}
         </h1>
+        {!outcome && !awaitingPlayerVote && (
+          <RoundStepper phase={state.phase} done={false} />
+        )}
+        {awaitingPlayerVote && <RoundStepper phase={state.phase} done={false} />}
+        {outcome && <RoundStepper phase="final_vote" done />}
         <p className="text-sm text-neutral-400">
           {outcome
-            ? 'Votes stay private until the court announces them.'
+            ? 'The room’s vote is public now.'
             : awaitingPlayerVote
-              ? 'Deliberation is finished. Lock your verdict before the judge reads the room.'
-              : 'Argue the evidence with the room. Votes stay private until the judge reads them out.'}
+              ? 'Lock your verdict. The judge then reads the room.'
+              : 'Three points with the room. Votes stay private until the judge speaks.'}
         </p>
       </div>
 
-      {!outcome && !awaitingPlayerVote && <NarratorCue text={phaseNarratorCue('juryroom')} />}
+      {!outcome && !awaitingPlayerVote && !listening && (
+        <NarratorCue text={phaseNarratorCue('juryroom')} />
+      )}
       {awaitingPlayerVote && <NarratorCue text={phaseNarratorCue('verdict')} />}
 
       <Bench
         state={state}
         playerVerdict={playerVerdict}
         activeJurorId={activeJurorId}
+        stirredIds={revealVotes ? [] : stirredIds}
         revealPositions={revealVotes}
       />
       <p aria-live="polite" className="speaker-focus text-xs text-amber-200/80">
-        {outcome
-          ? 'The court has the floor'
-          : activeJurorId
-            ? `${trial.jury.jurors.find((juror) => juror.id === activeJurorId)?.label ?? 'A juror'} has the floor`
-            : awaitingPlayerVote
-              ? 'The foreperson asks for your vote'
-              : 'The foreperson opens deliberations'}
+        {floorCopy({
+          outcome,
+          listening,
+          activeLabel,
+          awaitingPlayerVote,
+          phase: state.phase,
+          stirCount: listening ? null : stirCount,
+        })}
       </p>
 
       <ul
@@ -329,11 +483,12 @@ export function JuryRoomView({
             </p>
           </div>
           <button
+            ref={continueButton}
             type="button"
             onClick={() => onDone(outcome, playerVerdict)}
             className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
           >
-            Open the authored case record →
+            See how you did →
           </button>
         </div>
       ) : awaitingPlayerVote ? (
@@ -347,110 +502,127 @@ export function JuryRoomView({
           <div className="verdict-choices grid grid-cols-2 gap-3">
             <button
               type="button"
-              onClick={() => setPendingVerdict('Not Guilty')}
-              className="rounded-lg border border-emerald-700 bg-emerald-950/40 px-4 py-4 font-semibold text-emerald-300 transition hover:bg-emerald-900/40"
+              aria-pressed={pendingVerdict === 'Not Guilty'}
+              onClick={() => chooseVerdict('Not Guilty')}
+              className={`rounded-lg border border-emerald-700 bg-emerald-950/40 px-4 py-4 font-semibold text-emerald-300 transition hover:bg-emerald-900/40${pendingVerdict === 'Not Guilty' ? ' verdict-pending' : ''}`}
             >
-              <span className="block">Not persuaded to convict</span>
+              <span className="block">
+                {pendingVerdict === 'Not Guilty' ? 'Tap again to seal' : 'Not persuaded to convict'}
+              </span>
               <span className="mt-1 block text-xs font-normal">Verdict: Not guilty</span>
             </button>
             <button
               type="button"
-              onClick={() => setPendingVerdict('Guilty')}
-              className="rounded-lg border border-red-800 bg-red-950/40 px-4 py-4 font-semibold text-red-300 transition hover:bg-red-900/40"
+              aria-pressed={pendingVerdict === 'Guilty'}
+              onClick={() => chooseVerdict('Guilty')}
+              className={`rounded-lg border border-red-800 bg-red-950/40 px-4 py-4 font-semibold text-red-300 transition hover:bg-red-900/40${pendingVerdict === 'Guilty' ? ' verdict-pending' : ''}`}
             >
-              <span className="block">Persuaded beyond reasonable doubt</span>
+              <span className="block">
+                {pendingVerdict === 'Guilty' ? 'Tap again to seal' : 'Persuaded beyond reasonable doubt'}
+              </span>
               <span className="mt-1 block text-xs font-normal">Verdict: Guilty</span>
             </button>
           </div>
-          <dialog
-            ref={confirmDialog}
-            onClose={() => setPendingVerdict(null)}
-            className="verdict-dialog"
-            aria-labelledby="verdict-confirm-title"
-          >
-            <p className="chrome-label">Seal the record</p>
-            <h2 id="verdict-confirm-title">Your verdict: {pendingVerdict}</h2>
-            <p>
-              This decision is permanent for this sitting. The judge will then read
-              how the rest of the jury voted.
+          {pendingVerdict && (
+            <p className="text-center text-xs text-neutral-500">
+              Permanent for this sitting · tap the same choice again to seal, or pick the other side.
             </p>
-            <div>
-              <button type="button" onClick={() => confirmDialog.current?.close()}>
-                Review again
-              </button>
-              <button
-                ref={sealButton}
-                type="button"
-                onClick={() => {
-                  if (!pendingVerdict) return
-                  sealVerdict(pendingVerdict)
-                }}
-              >
-                Seal my verdict
-              </button>
-            </div>
-          </dialog>
+          )}
         </div>
       ) : inOpenRound ? (
-        <div className="deliberation-console space-y-3 border p-4">
-          <p className="text-xs uppercase tracking-wider text-neutral-500">
-            Make your point
-          </p>
-          <select
-            value={selectedBeat}
-            onChange={(e) => setSelectedBeat(e.target.value)}
-            aria-label="Choose a piece of evidence"
-            className="w-full rounded-md border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm text-neutral-200"
-          >
-            {trial.beats.map((b, i) => {
-              const who = trial.cast.find((m) => m.id === b.speaker)
-              return (
-                <option key={b.id} value={b.id}>
-                  {i + 1}. {who?.name ?? b.speaker} — {b.text.slice(0, 48)}…
-                </option>
-              )
-            })}
-          </select>
-          <div className="rounded-lg border border-neutral-800 bg-neutral-950/70 p-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-              Evidence {trial.beats.findIndex((item) => item.id === beat.id) + 1} ·{' '}
-              {trial.cast.find((member) => member.id === beat.speaker)?.name ?? 'The record'}
-            </p>
-            <p className="mt-2 text-sm leading-relaxed text-neutral-300">{beat.text}</p>
-          </div>
-          {beat.kind === 'direction' ? (
-            <button
-              type="button"
-              onClick={() => act({ type: 'cite_direction', beatId: beat.id })}
-              className="w-full rounded-lg bg-neutral-100 px-4 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
-            >
-              Cite this direction
-            </button>
-          ) : (
-            <div className="grid grid-cols-2 gap-2">
+        <div
+          className={`deliberation-console space-y-3 border p-4${consoleLocked ? ' is-listening' : ''}`}
+          aria-busy={listening || undefined}
+        >
+          {listening ? (
+            <div className="listen-panel space-y-3 text-center">
+              <p className="text-xs uppercase tracking-wider text-neutral-500">
+                Listening to the room
+              </p>
+              <p className="text-sm text-neutral-300">
+                {activeLabel
+                  ? `${activeLabel} is speaking.`
+                  : 'Jurors are answering your point.'}
+              </p>
               <button
                 type="button"
-                onClick={() => act({ type: 'argue', beatId: beat.id, stance: 'proves' })}
-                className="rounded-lg bg-neutral-100 px-3 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
+                onClick={skipListening}
+                className="w-full rounded-lg border border-neutral-600 px-4 py-2.5 text-sm font-semibold text-neutral-100 transition hover:bg-neutral-800"
               >
-                Argue this supports {beat.direction === 'guilt' ? 'conviction' : 'acquittal'}
-              </button>
-              <button
-                type="button"
-                onClick={() => act({ type: 'argue', beatId: beat.id, stance: 'unreliable' })}
-                className="rounded-lg border border-neutral-600 px-3 py-2.5 text-sm font-semibold text-neutral-200 transition hover:bg-neutral-800"
-              >
-                Challenge its reliability
+                Skip ahead
               </button>
             </div>
+          ) : (
+            <>
+              <p className="text-xs uppercase tracking-wider text-neutral-500">
+                Choose evidence, then argue
+              </p>
+              <div
+                className="evidence-chips"
+                role="group"
+                aria-label="Evidence from the trial"
+              >
+                {trial.beats.map((b, i) => {
+                  const who = trial.cast.find((m) => m.id === b.speaker)
+                  const selected = b.id === selectedBeat
+                  const alreadyUsed = used.has(b.id)
+                  return (
+                    <button
+                      key={b.id}
+                      type="button"
+                      aria-pressed={selected}
+                      aria-label={`Evidence ${i + 1}, ${who?.name ?? b.speaker}${alreadyUsed ? ', already raised' : ''}`}
+                      onClick={() => setSelectedBeat(b.id)}
+                      className={`evidence-chip${selected ? ' selected' : ''}${alreadyUsed ? ' used' : ''}`}
+                    >
+                      <span aria-hidden="true">{i + 1}</span>
+                    </button>
+                  )
+                })}
+              </div>
+              <div className="evidence-preview rounded-lg border border-neutral-800 bg-neutral-950/70 p-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                  Evidence {beatNumber} · {beatSpeaker}
+                  {beat.kind === 'direction' ? ' · legal direction' : ''}
+                  {used.has(beat.id) ? ' · raised before' : ''}
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-neutral-300">{beat.text}</p>
+              </div>
+              {beat.kind === 'direction' ? (
+                <button
+                  type="button"
+                  onClick={() => act({ type: 'cite_direction', beatId: beat.id })}
+                  className="w-full rounded-lg bg-neutral-100 px-4 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
+                >
+                  Cite this direction
+                </button>
+              ) : (
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => act({ type: 'argue', beatId: beat.id, stance: 'proves' })}
+                    className="rounded-lg bg-neutral-100 px-3 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
+                  >
+                    Argue this supports {beat.direction === 'guilt' ? 'conviction' : 'acquittal'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => act({ type: 'argue', beatId: beat.id, stance: 'unreliable' })}
+                    className="rounded-lg border border-neutral-600 px-3 py-2.5 text-sm font-semibold text-neutral-200 transition hover:bg-neutral-800"
+                  >
+                    Challenge its reliability
+                  </button>
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => act({ type: 'pass' })}
+                className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-xs text-neutral-400 transition hover:bg-neutral-900"
+              >
+                Pass — let the room talk this round
+              </button>
+            </>
           )}
-          <button
-            type="button"
-            onClick={() => act({ type: 'pass' })}
-            className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-xs text-neutral-400 transition hover:bg-neutral-900"
-          >
-            Say nothing this round
-          </button>
         </div>
       ) : null}
     </div>
