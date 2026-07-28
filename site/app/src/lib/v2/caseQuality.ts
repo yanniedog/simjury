@@ -284,7 +284,9 @@ function jurorIssues(
       const reachable = [...(dirs ?? [])].some((beatDirection) =>
         r.when.stance === 'proves'
           ? beatDirection === r.when.direction
-          : opposite(beatDirection) === r.when.direction,
+          : r.when.stance === 'unreliable'
+            ? opposite(beatDirection) === r.when.direction
+            : false,
       )
       if (!reachable) {
         issues.push(

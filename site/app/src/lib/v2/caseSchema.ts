@@ -168,10 +168,11 @@ export const positionSchema = z.enum(['G', 'NG', 'U'])
 export type Position = z.infer<typeof positionSchema>
 
 /**
- * A player argument's stance toward a beat: it proves what it says, or it
- * cannot be trusted. Rules may match either, or wildcard with 'any'.
+ * A player argument's stance toward a beat: it proves what it says, it cannot
+ * be trusted, or it is a neutral probe that only matches `any`-stance rules.
+ * Rules may match either authored stance, or wildcard with 'any'.
  */
-export const stanceSchema = z.enum(['proves', 'unreliable'])
+export const stanceSchema = z.enum(['proves', 'unreliable', 'probe'])
 export type Stance = z.infer<typeof stanceSchema>
 
 export const reactionRuleSchema = z.object({
