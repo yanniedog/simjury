@@ -90,12 +90,12 @@ On every open PR the Orchestrator must automatically:
 
 1. Open PR as **draft** first; mark ready only after initial CI run starts
 2. Run `npm run pr:arm-and-park -- --pr <n>` (single shot; marks ready + arms auto-merge if still draft):
-   - **exit 0** — gates green; auto-merge armed; turn may end once summary posted
-   - **exit 2** — **PARKED** (waiting on bots/CI only); auto-merge armed; **END TURN** — do not poll
-   - **exit 3** — **ACTIONABLE** — fix CI failures, conflicts, or unresolved review threads, push, re-run arm-and-park
+ - **exit 0** — gates green; auto-merge armed; finish any remaining post-merge ownership
+ - **exit 2** — waiting on bots/CI only; auto-merge armed; **keep ownership** via self-wake (no `--watch` busy-poll, and do **not** hand follow-up to the user)
+ - **exit 3** — **ACTIONABLE** — fix CI failures, conflicts, or unresolved review threads, push, re-run arm-and-park
 3. When actionable: read bot review comments (`gh api` reviews/comments); **apply every valid fix**; reply on each thread; run `.github/scripts/resolve-bot-threads.sh <n>`
 4. Re-arm: `npm run pr:arm-and-park -- --pr <n>` after each fix push
-5. Squash auto-merge is armed by arm-and-park (`gh pr merge --auto --squash --delete-branch`); do not babysit until merge
+5. Squash auto-merge is armed by arm-and-park (`gh pr merge --auto --squash --delete-branch`); stay owned until merge completes
 6. Rebase stacked PRs onto `main` after upstream merge (actionable when behind)
 
 **Never merge immediately after `validate` passes.** `bot-presence-gate` and `bot-feedback-gate` must also be green. See `WORKFLOW.md`.
@@ -121,7 +121,7 @@ When landing on `main` with no open PR, run `.github/scripts/audit-bot-feedback.
 
 1. Push branch; open/update PR
 2. Run `npm run pr:arm-and-park -- --pr <n>` once
-3. Exit 2 → park (end turn). Exit 3 → fix actionable work, re-arm. Exit 0 → done.
+3. Exit 2 → keep ownership with self-wake until merge. Exit 3 → fix actionable work, re-arm. Exit 0 → finish remaining ownership (post-merge jobs included).
 
 ---
 

@@ -18,7 +18,7 @@ GitHub Actions already re-fire bot gates; squash auto-merge already lands when g
 | Exit of `pr:arm-and-park` | Meaning |
 |---------------------------|---------|
 | 0 | Gates green; auto-merge armed |
-| 2 | Parked — waiting on bots/CI only; **END TURN** |
+| 2 | Waiting on bots/CI only — keep ownership via self-wake (no handoff) |
 | 3 | Actionable — fix CI / threads / conflicts |
 | 1 | Hard error |
 

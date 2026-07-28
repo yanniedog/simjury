@@ -1,13 +1,13 @@
 ---
-description: "Never run agent --watch / sleep-poll loops on bot gates — use pr:arm-and-park"
+description: "Never busy-poll bot gates with --watch — use arm-and-park + self-wake ownership"
 alwaysApply: true
 ---
 
 # No agent watch loops
 
-Cursor agents must **not** babysit PRs by polling. That burns tokens while GitHub Actions and squash auto-merge already own the wait.
+Do **not** burn tokens on tight `--watch` / sleep-poll loops for bot gates. GitHub Actions and squash auto-merge already own that wait. This does **not** mean hand work back to the user.
 
-## Forbidden in agent sessions
+## Forbidden busy-poll patterns
 
 ```sh
 npm run wait-for-bots -- --watch
@@ -16,9 +16,7 @@ gh pr checks <n> --watch
 while true; do npm run wait-for-bots; sleep 45; done
 ```
 
-CI workflows may poll. Humans may poll. **Agents must not.**
-
-## Required
+## Required ownership
 
 ```sh
 npm run pr:arm-and-park -- --pr <n>
@@ -26,9 +24,9 @@ npm run pr:arm-and-park -- --pr <n>
 
 | Exit | Action |
 |------|--------|
-| 0 | Ready — turn may end |
-| 2 | Parked (bots/CI only) — **END TURN** |
-| 3 | Actionable — fix, push, re-run |
-| 1 | Error |
+| 0 | Ready — finish any post-merge steps you still own |
+| 2 | Waiting on bots/CI only — auto-merge armed; **keep ownership** via self-wake (`/loop`, heartbeat, or next-turn re-check). Do **not** tell the user to follow up. |
+| 3 | Actionable — fix, push, re-run arm-and-park |
+| 1 | Error — diagnose and fix |
 
-Do not spawn pr-fix/babysit workers whose only job is to sleep until bots post.
+Waiting is fine. Abandoning the loop to the user is not. See global rule `own-followthrough-never-handoff`.

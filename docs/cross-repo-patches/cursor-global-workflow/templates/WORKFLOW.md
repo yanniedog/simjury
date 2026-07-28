@@ -24,14 +24,14 @@ npm run pr:arm-and-park -- --pr <n>
 
 | Exit | Meaning |
 |------|---------|
-| 0 | Ready — auto-merge armed |
-| 2 | Parked — waiting on bots/CI; **END AGENT TURN** |
+| 0 | Ready — auto-merge armed; finish remaining ownership |
+| 2 | Waiting on bots/CI — keep ownership via self-wake (no handoff) |
 | 3 | Actionable — fix threads/CI/conflicts, push, re-run |
 | 1 | Error |
 
 **Forbidden for agents:** `wait-for-bots --watch`, `pr:gates:check --watch`, sleep-until-bots loops.
 
-CI workflows may still poll. Humans may use `--watch`. Agents park on exit 2.
+CI workflows may still poll. Humans may use `--watch`. Exit 2 means wait with ownership, not dump work on the user.
 
 When exit 3 includes unresolved threads: synthesize feedback → one push → in-thread replies → resolve threads → re-run arm-and-park.
 
