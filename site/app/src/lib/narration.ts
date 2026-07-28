@@ -1,4 +1,12 @@
-/** Open-source Kokoro-82M clips from GitHub Releases, with device-local speech fallback. */
+/** Open-source narration clips from GitHub Releases, with device-local speech fallback. */
+import {
+  ALT_VOICE_ENGINE_ID,
+  ALT_VOICE_RELEASE_PREFIX,
+  altVoiceModeAvailable,
+  buildAltVoiceByKey,
+  normaliseNarrationEngine,
+  type NarrationEngineId,
+} from './narrationAltVoice'
 import {
   assignDeviceVoiceIndexes,
   buildSpeakerVoicePlan,
@@ -16,6 +24,7 @@ export interface VoiceParams {
 export const NARRATION_RATES = [0.85, 1, 1.15] as const
 export type NarrationRate = (typeof NARRATION_RATES)[number]
 export const NARRATION_SHARDS = 32
+export type { NarrationEngineId }
 type SpokenLine = { text: string; key: string }
 
 export function normaliseNarrationRate(value: unknown): NarrationRate {
@@ -29,16 +38,38 @@ function hash(value: string): number {
   return h >>> 0
 }
 
+function voiceForEngine(
+  key: string,
+  gender: SpeakerGender,
+  engine: NarrationEngineId,
+  voice?: string,
+): string {
+  if (voice) return voice
+  if (engine === ALT_VOICE_ENGINE_ID) {
+    return altVoiceByKey.get(key) ?? (gender === 'female' ? 'ariadne' : 'orpheus')
+  }
+  return activePlan?.kokoroByKey.get(key) ?? (gender === 'female' ? 'af_bella' : 'bm_lewis')
+}
+
 export function narrationIdFor(
   text: string,
   key: string,
   gender?: SpeakerGender,
   voice?: string,
+  engine: NarrationEngineId = narrationEngine(),
 ): string {
   const slug = key.toLowerCase().replace(/[^a-z0-9-]/g, '-')
   const g = gender ?? genderForKey(key)
-  const v = voice ?? activePlan?.kokoroByKey.get(key) ?? (g === 'female' ? 'af_bella' : 'bm_lewis')
-  const material = key === 'narrator' ? `${key}\0${text}` : `${key}\0${g}\0${v}\0${text}`
+  const v = voiceForEngine(key, g, engine, voice)
+  // Kokoro ids stay byte-stable; only experimental engines fold into the hash.
+  const material =
+    engine === 'kokoro'
+      ? key === 'narrator'
+        ? `${key}\0${text}`
+        : `${key}\0${g}\0${v}\0${text}`
+      : key === 'narrator'
+        ? `${key}\0${engine}\0${text}`
+        : `${key}\0${engine}\0${g}\0${v}\0${text}`
   return `${slug}-${hash(material).toString(16).padStart(8, '0')}`
 }
 
@@ -47,13 +78,16 @@ export function naturalVoiceUrlFor(
   key: string,
   gender?: SpeakerGender,
   voice?: string,
+  engine: NarrationEngineId = narrationEngine(),
 ): string {
-  const id = narrationIdFor(text, key, gender, voice)
+  const id = narrationIdFor(text, key, gender, voice, engine)
   const shard = Number.parseInt(id.slice(-8, -6), 16) % NARRATION_SHARDS
-  return `https://github.com/yanniedog/simjury/releases/download/narration-kokoro-${shard}/${id}.mp3`
+  const prefix = engine === ALT_VOICE_ENGINE_ID ? ALT_VOICE_RELEASE_PREFIX : 'narration-kokoro'
+  return `https://github.com/yanniedog/simjury/releases/download/${prefix}-${shard}/${id}.mp3`
 }
 
 let activePlan: SpeakerVoicePlan | null = null
+let altVoiceByKey: Map<string, string> = new Map()
 let plannedIndexes: Map<string, number> = new Map()
 
 /** Register cast/juror genders for the active sitting so fallback voices stay matched. */
@@ -62,11 +96,15 @@ export function setNarrationSpeakers(input: {
   jurors?: Array<{ id: string; persona: string }>
 }): void {
   activePlan = buildSpeakerVoicePlan(input)
+  altVoiceByKey = altVoiceModeAvailable()
+    ? buildAltVoiceByKey({ genderByKey: activePlan.genderByKey, keys: activePlan.keys })
+    : new Map()
   rebuildPlannedIndexes()
 }
 
 export function clearNarrationSpeakers(): void {
   activePlan = null
+  altVoiceByKey = new Map()
   plannedIndexes = new Map()
 }
 
@@ -131,6 +169,36 @@ export function selectLocalVoices(all: SpeechSynthesisVoice[]): SpeechSynthesisV
 
 const STORAGE_KEY = 'simjury:narration'
 const RATE_STORAGE_KEY = 'simjury:narration-rate'
+const ENGINE_STORAGE_KEY = 'simjury:narration-engine'
+
+let memoryEngine: NarrationEngineId = 'kokoro'
+
+export function narrationEngine(): NarrationEngineId {
+  if (!altVoiceModeAvailable()) return 'kokoro'
+  try {
+    return normaliseNarrationEngine(localStorage.getItem(ENGINE_STORAGE_KEY) ?? memoryEngine)
+  } catch {
+    return normaliseNarrationEngine(memoryEngine)
+  }
+}
+
+export function setNarrationEngine(value: unknown): NarrationEngineId {
+  memoryEngine = normaliseNarrationEngine(value)
+  try {
+    localStorage.setItem(ENGINE_STORAGE_KEY, memoryEngine)
+  } catch {
+    // Session memory still applies when storage is blocked.
+  }
+  stopSpeech()
+  return memoryEngine
+}
+
+export {
+  ALT_VOICE_LABEL,
+  DEFAULT_VOICE_LABEL,
+  altVoiceModeAvailable,
+  normaliseNarrationEngine,
+} from './narrationAltVoice'
 
 function synth(): SpeechSynthesis | null {
   return typeof window !== 'undefined' && 'speechSynthesis' in window
@@ -274,7 +342,7 @@ function speakFallback(
   }
 }
 
-/** Play an opaque-id Kokoro-82M clip from GitHub; fall back locally if it is unavailable. */
+/** Play an opaque-id release clip; fall back to Kokoro then device speech if needed. */
 export function speak(
   text: string,
   key: string,
@@ -294,32 +362,42 @@ export function speak(
     return
   }
 
-  let fellBack = false
-  const fallback = () => {
-    if (fellBack || activeId !== myId) return
-    fellBack = true
-    activeAudio = null
-    speakFallback(text, key, myId, done, playbackRate, onError, sequence)
+  const engine = narrationEngine()
+  const urls = [naturalVoiceUrlFor(text, key, undefined, undefined, engine)]
+  // Experimental clips may lag; try Standard Kokoro before device speech.
+  if (engine === ALT_VOICE_ENGINE_ID) {
+    urls.push(naturalVoiceUrlFor(text, key, undefined, undefined, 'kokoro'))
   }
-  try {
-    const audio = new Audio(naturalVoiceUrlFor(text, key))
-    activeAudio = audio
-    audio.preload = 'auto'
-    audio.playbackRate = playbackRate
-    audio.onplay = () => {
+
+  let urlIndex = 0
+  const playNext = () => {
+    if (activeId !== myId) return
+    if (urlIndex >= urls.length) {
+      activeAudio = null
+      speakFallback(text, key, myId, done, playbackRate, onError, sequence)
+      return
+    }
+    try {
+      const audio = new Audio(urls[urlIndex++])
+      activeAudio = audio
+      audio.preload = 'auto'
       audio.playbackRate = playbackRate
-    }
-    audio.onended = () => {
-      if (activeId === myId) {
-        activeAudio = null
-        done?.()
+      audio.onplay = () => {
+        audio.playbackRate = playbackRate
       }
+      audio.onended = () => {
+        if (activeId === myId) {
+          activeAudio = null
+          done?.()
+        }
+      }
+      audio.onerror = playNext
+      void audio.play().catch(playNext)
+    } catch {
+      playNext()
     }
-    audio.onerror = fallback
-    void audio.play().catch(fallback)
-  } catch {
-    fallback()
   }
+  playNext()
 }
 
 export function speakAll(

@@ -33,6 +33,14 @@ where the web deliberately diverges, and why. (Android/pilot rules are unchanged
   static CSP `connect-src` is `'self'`, so client-side zip extraction is not used. After
   merging narration tooling changes, prefer `workflow_dispatch` for `dd-intro` (or a
   single case) over a full `all` regen unless the corpus itself changed.
+- **Experimental alt voice mode (owner-directed, 2026-07-28):** the player may offer an
+  optional **Experimental** narration engine (Apache-2.0 Scylla's Band on free CPU ONNX)
+  beside the Kokoro default. It is gated by `site/app/src/lib/narrationAltVoice.json`
+  (`enabled`) and ships clips under `narration-scylla-*` releases via
+  `.github/workflows/scylla-narration.yml`. Missing experimental clips fall back to Kokoro,
+  then device speech. **Removable without touching Kokoro:** set `enabled: false` or delete
+  the alt-voice modules, UI wiring, scylla scripts, and that workflow. Owner may yank the
+  mode if quality is not good enough.
 
 ## D-WEB-2 — Listenable "jury room" (lite) (overrides GROWTH.md G-B / M-5 for web only)
 

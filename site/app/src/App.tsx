@@ -31,13 +31,16 @@ import {
 import { computeStats, type DayResult, type Stats } from './lib/stats'
 import {
   narrationEnabled,
+  narrationEngine,
   narrationRate,
   setNarrationEnabled,
+  setNarrationEngine,
   setNarrationRate,
   setNarrationSpeakers,
   clearNarrationSpeakers,
   speak,
   stopSpeech,
+  type NarrationEngineId,
   type NarrationRate,
 } from './lib/narration'
 import { DocketIntro } from './components/v2/DocketIntro'
@@ -136,6 +139,7 @@ function DocketApp({
 }) {
   const [narration, setNarration] = useState(narrationEnabled())
   const [playbackRate, setPlaybackRate] = useState(narrationRate())
+  const [voiceEngine, setVoiceEngine] = useState(narrationEngine())
   const day = sitting?.day ?? todayDay
   const trial = sitting?.trial ?? null
   const storageCaseId = trial ? caseStorageId(trial) : null
@@ -214,8 +218,10 @@ function DocketApp({
         caseTitle="The Daily Docket"
         narration={narration}
         playbackRate={playbackRate}
+        voiceEngine={voiceEngine}
         onToggleNarration={toggleNarration}
         onRateChange={changeNarrationRate}
+        onVoiceEngineChange={changeVoiceEngine}
       >
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-semibold">SimJury — The Daily Docket</h1>
@@ -239,6 +245,10 @@ function DocketApp({
 
   function changeNarrationRate(rate: NarrationRate) {
     setPlaybackRate(setNarrationRate(rate))
+  }
+
+  function changeVoiceEngine(engine: NarrationEngineId) {
+    setVoiceEngine(setNarrationEngine(engine))
   }
 
   function persistProgress(
@@ -363,8 +373,10 @@ function DocketApp({
       charge={activeTrial.charge}
       narration={narration}
       playbackRate={playbackRate}
+      voiceEngine={voiceEngine}
       onToggleNarration={toggleNarration}
       onRateChange={changeNarrationRate}
+      onVoiceEngineChange={changeVoiceEngine}
       sidebar={(
         <DocketSittingChooser
           sittings={sittings}
@@ -463,6 +475,7 @@ export default function App() {
   )
   const [narration, setNarration] = useState(narrationEnabled())
   const [playbackRate, setPlaybackRate] = useState(narrationRate())
+  const [voiceEngine, setVoiceEngine] = useState(narrationEngine())
 
   const selected =
     selectedDay === INTRO_SITTING_DAY
@@ -477,12 +490,14 @@ export default function App() {
         caseTitle="Guided intro"
         narration={narration}
         playbackRate={playbackRate}
+        voiceEngine={voiceEngine}
         onToggleNarration={() => {
           const next = !narration
           setNarrationEnabled(next)
           setNarration(next)
         }}
         onRateChange={(rate) => setPlaybackRate(setNarrationRate(rate))}
+        onVoiceEngineChange={(engine) => setVoiceEngine(setNarrationEngine(engine))}
       >
         <IntroGate
           narration={narration}

@@ -1,7 +1,12 @@
 import type { ReactNode } from 'react'
 import {
+  ALT_VOICE_LABEL,
+  DEFAULT_VOICE_LABEL,
+  altVoiceModeAvailable,
   narrationSupported,
+  normaliseNarrationEngine,
   normaliseNarrationRate,
+  type NarrationEngineId,
   type NarrationRate,
 } from '../../lib/narration'
 import { loadPlayForSitting, loadProgress } from '../../lib/storage'
@@ -29,8 +34,10 @@ export function DocketShell({
   charge,
   narration,
   playbackRate,
+  voiceEngine = 'kokoro',
   onToggleNarration,
   onRateChange,
+  onVoiceEngineChange,
 }: {
   children: ReactNode
   sidebar?: ReactNode
@@ -40,11 +47,14 @@ export function DocketShell({
   charge?: string
   narration: boolean
   playbackRate: NarrationRate
+  voiceEngine?: NarrationEngineId
   onToggleNarration: () => void
   onRateChange: (rate: NarrationRate) => void
+  onVoiceEngineChange?: (engine: NarrationEngineId) => void
 }) {
   const currentPhaseIndex = PHASES.findIndex((step) => step.id === phase)
   const phaseLabel = PHASES[currentPhaseIndex]?.label ?? 'Briefing'
+  const showVoiceMode = altVoiceModeAvailable() && typeof onVoiceEngineChange === 'function'
   return (
     <main className="docket-shell min-h-screen text-neutral-100">
       <a href="#phase-heading" className="docket-skip">Skip to the case</a>
@@ -54,6 +64,16 @@ export function DocketShell({
         <div className="docket-phase" role="progressbar" aria-valuenow={currentPhaseIndex + 1} aria-valuemin={1} aria-valuemax={PHASES.length} aria-valuetext={`${phaseLabel}, stage ${currentPhaseIndex + 1} of ${PHASES.length}`}><span>{phaseLabel}</span><i aria-hidden="true" style={{ width: `${((currentPhaseIndex + 1) / PHASES.length) * 100}%` }} /></div>
         {narrationSupported() && (
           <div className="narration-controls">
+            {showVoiceMode && (
+              <select
+                aria-label="Narration voice mode"
+                value={voiceEngine}
+                onChange={(event) => onVoiceEngineChange(normaliseNarrationEngine(event.target.value))}
+              >
+                <option value="kokoro">{DEFAULT_VOICE_LABEL}</option>
+                <option value="scylla">{ALT_VOICE_LABEL}</option>
+              </select>
+            )}
             <select aria-label="Narration speed" value={playbackRate} onChange={(event) => onRateChange(normaliseNarrationRate(event.target.value))}>
               <option value={0.85}>Relaxed</option><option value={1}>Standard</option><option value={1.15}>Brisk</option>
             </select>
