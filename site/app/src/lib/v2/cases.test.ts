@@ -25,7 +25,11 @@ describe('docket queue', () => {
     const commissioned = [introCase, ...docketQueue]
     expect(commissioned).toHaveLength(7)
     expect(new Set(commissioned.map((trial) => trial?.id))).toHaveLength(7)
-    expect(commissioned.every((c) => c?.gen_meta.prompt_version === 'dd-2026-v3')).toBe(true)
+    expect(commissioned.every((c) =>
+      ['dd-2026-v3', 'dd-2026-v3-20min'].includes(
+        c?.gen_meta.prompt_version ?? '',
+      ),
+    )).toBe(true)
   })
 
   it('serves each launch case on its canonical publish date', () => {
