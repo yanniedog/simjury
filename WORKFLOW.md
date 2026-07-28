@@ -62,8 +62,8 @@ npm run pr:arm-and-park -- --pr <n>
 
 | Exit | Meaning | Agent action |
 |------|---------|--------------|
-| **0** | Gates green; auto-merge armed | Done for this turn (merge pending on GitHub) |
-| **2** | **Parked** — waiting on bots/CI only | **END TURN** — do not `--watch` |
+| **0** | Gates green; auto-merge armed | Finish remaining ownership (post-merge included) |
+| **2** | Waiting on bots/CI only | Keep ownership via self-wake — do not `--watch`, do not hand off to the user |
 | **3** | **Actionable** — CI fail / threads / conflicts | Fix, push, re-run arm-and-park |
 | **1** | Hard error | Fix auth/tooling |
 

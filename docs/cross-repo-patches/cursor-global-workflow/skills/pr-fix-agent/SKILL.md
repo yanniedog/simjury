@@ -41,9 +41,9 @@ npm run pr:arm-and-park -- --pr <n>
 
 Then: `npm run pr:arm-and-park -- --pr <n>` again.
 
-## When exit 2 (parked)
+## When exit 2 (waiting)
 
-**END TURN.** Do not spawn another babysitter to wait. Chief may resume later if actionable work appears (new bot threads, CI fail).
+Keep ownership via self-wake. Do not busy-poll with `--watch`, and do not hand follow-up to the user. Re-run `pr:arm-and-park` when woken; on exit 3, fix and push.
 
 ## Merge
 

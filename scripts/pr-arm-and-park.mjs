@@ -7,7 +7,7 @@
  *
  * Exit codes:
  *   0  ready — all gates pass (auto-merge armed when possible)
- *   2  parked — waiting on CI/bots only; auto-merge armed; END AGENT TURN
+ *   2  waiting — CI/bots only; auto-merge armed; keep ownership via self-wake (no --watch)
  *   3  actionable — agent must fix CI / threads / conflicts (do not park)
  *   1  hard error
  */
@@ -62,12 +62,12 @@ One-shot PR progression for agents (no --watch, no sleep polls):
 
 Exit codes:
   0  ready — gates green; auto-merge will land (or already mergeable)
-  2  parked — only waiting on bots/CI; END TURN (do not poll)
+  2  waiting — bots/CI only; keep ownership via self-wake (do not --watch, do not hand off)
   3  actionable — fix CI, conflicts, or review threads then re-run
   1  error
 
 Never run wait-for-bots --watch or pr:gates:check --watch in an agent session.
-GitHub Actions re-fire bot gates; auto-merge merges when green.`);
+GitHub Actions re-fire bot gates; auto-merge merges when green. Exit 2 is not a user handoff.`);
     process.exit(0);
   }
   if (args.prError) {
@@ -123,7 +123,7 @@ GitHub Actions re-fire bot gates; auto-merge merges when green.`);
   if (mode === 'waiting') {
     if (!args.quiet && !args.json) {
       console.log(
-        `pr:arm-and-park: PR #${prNumber} PARKED — waiting only; auto-merge ${armed}. END AGENT TURN.`,
+        `pr:arm-and-park: PR #${prNumber} WAITING — bots/CI only; auto-merge ${armed}. Keep ownership (self-wake); do not hand off.`,
       );
       if (result.progression?.autoMerge && !result.autoMergeArmed) {
         console.error(
@@ -133,10 +133,9 @@ GitHub Actions re-fire bot gates; auto-merge merges when green.`);
         console.log(`  auto-merge: ${result.progression.autoMerge.action} — ${result.progression.autoMerge.detail}`);
       }
       printGateList('Waiting on', result.classification?.waiting);
-      console.log('  Do NOT run --watch / sleep polls. Re-run pr:arm-and-park when woken for actionable work.');
+      console.log('  Do NOT run --watch / sleep polls. Self-wake and re-run pr:arm-and-park; never dump follow-up on the user.');
     }
-    // Parked is success for token efficiency — exit 2 so closeout can detect open PR,
-    // but AGENTS.md treats exit 2 from arm-and-park as OK to end turn.
+    // Exit 2 = waiting only (token-efficient). Agents must keep ownership via self-wake.
     process.exit(2);
   }
 
