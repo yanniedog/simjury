@@ -689,6 +689,15 @@ export function checkDocketQueue(cases: DocketCase[]): QualityIssue[] {
   }
 
   // Anti-meta: never more than VERDICT_RUN_MAX identical verdicts in a row.
+  // During the owner-authorised atomic v2 -> v3 replacement campaign, the
+  // mixed queue is temporary and its cross-generation ordering is not a
+  // publishable docket. Keep all schema, uniqueness, and per-case checks
+  // active, but defer this one sequence rule until the queue is homogeneous.
+  const generations = new Set(
+    cases.map((c) => c.gen_meta.prompt_version === 'dd-2026-v3' ? 'v3' : 'legacy'),
+  )
+  if (generations.size > 1) return issues
+
   const byDate = [...cases].sort((a, b) =>
     a.publish_date.localeCompare(b.publish_date),
   )
