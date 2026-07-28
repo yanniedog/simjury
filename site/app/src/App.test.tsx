@@ -1,6 +1,19 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import { IntroGate } from './App'
+import { FictionDisclosureGate, IntroGate } from './App'
+
+describe('FictionDisclosureGate', () => {
+  it('states the fiction premise once at site entry without grading the player', () => {
+    const markup = renderToStaticMarkup(
+      <FictionDisclosureGate onContinue={() => undefined} />,
+    )
+
+    expect(markup).toContain('Everything in SimJury is fictional')
+    expect(markup).toContain('cases, people, places, evidence')
+    expect(markup).toContain('Enter SimJury')
+    expect(markup).not.toContain('correct')
+  })
+})
 
 describe('IntroGate', () => {
   it('warns that the guided sitting is a complete non-graphic murder case', () => {

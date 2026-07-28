@@ -18,7 +18,7 @@ function WhatMatteredCard({ reveal, trial }: { reveal: BeatReveal; trial: Docket
     <li className="space-y-2 rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
       <div className="flex flex-wrap items-center gap-2">
         <span className="rounded-full border border-emerald-700 px-2 py-0.5 text-xs font-medium text-emerald-300">
-          Decisive
+          Author-highlighted
         </span>
         <span className={`text-xs ${pointsGuilt ? 'text-red-400' : 'text-emerald-400'}`}>
           Supports {pointsGuilt ? 'convicting' : 'not convicting'}
@@ -101,14 +101,14 @@ export function DocketReveal({
           Your judgment is on the record.
         </h1>
         <p className="mt-2 text-sm text-neutral-300">
-          Case outcome: <strong>{trial.verdict_truth}</strong> · Your verdict:{' '}
+          Authors’ reference verdict: <strong>{trial.verdict_truth}</strong> · Your verdict:{' '}
           <strong>{verdict}</strong>
         </p>
         <p className="mt-2 text-sm leading-relaxed text-neutral-400">
           {analysis.correct
-            ? 'You and the case outcome reached the same legal conclusion.'
-            : 'You reached a different legal conclusion from the case outcome.'}
-          {' '}That is something to examine, not a score.
+            ? 'Your verdict matches the authors’ intended resolution.'
+            : 'Your verdict differs from the authors’ intended resolution.'}
+          {' '}This is an editorial comparison, not an objectively correct answer.
         </p>
         <p className="mt-2 text-sm text-neutral-400">Jury room: {roomLabel}.</p>
       </div>
@@ -125,9 +125,9 @@ export function DocketReveal({
       </div>
 
       <div className="rounded-lg border border-neutral-800 bg-neutral-900/20 p-4">
-        <h2 className="font-semibold text-neutral-200">What mattered</h2>
+        <h2 className="font-semibold text-neutral-200">The authors’ reasoning</h2>
         <p className="mt-2 text-sm leading-relaxed text-neutral-500">
-          The pieces of evidence the case authors marked as decisive.
+          The evidence the authors gave greatest weight in their intended resolution.
         </p>
         <ul className="mt-4 space-y-3">
           {mattered.map((reveal) => (

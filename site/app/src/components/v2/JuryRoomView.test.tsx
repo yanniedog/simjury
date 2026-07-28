@@ -2,6 +2,10 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { makeDocketCase } from '../../lib/v2/fixtures'
 import { ensureNpcNotes, recollectionStub, upsertPlayerNote } from '../../lib/jurorNotes'
+import {
+  phaseNarratorCue,
+  REASONABLE_DOUBT_DIRECTION,
+} from '../../lib/narratorCues'
 import { JuryRoomView } from './JuryRoomView'
 
 describe('JuryRoomView', () => {
@@ -60,6 +64,22 @@ describe('JuryRoomView', () => {
 
     expect(markup).toContain('>Pause<')
     expect(markup).not.toContain('Hear first point')
+  })
+
+  it('explains the staged room without presenting it as legal doctrine', () => {
+    const cue = phaseNarratorCue('juryroom')
+
+    expect(cue).toContain('three focused rounds')
+    expect(cue).toContain('pause, reopen written notes, or raise a point')
+    expect(cue).toContain('choose your own verdict')
+    expect(cue).not.toMatch(/\blawful\b|\blegally required\b/i)
+  })
+
+  it('uses the complete reasonable-doubt direction', () => {
+    expect(REASONABLE_DOUBT_DIRECTION).toBe(
+      'If, after considering all the evidence, you are not sure the prosecution proved every element beyond reasonable doubt, your verdict must be Not Guilty.',
+    )
+    expect(phaseNarratorCue('verdict')).toBe(REASONABLE_DOUBT_DIRECTION)
   })
 })
 

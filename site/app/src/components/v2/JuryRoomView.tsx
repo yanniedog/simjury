@@ -18,7 +18,10 @@ import {
   PLAYER_NOTE_OWNER,
   type SittingNote,
 } from '../../lib/jurorNotes'
-import { phaseNarratorCue } from '../../lib/narratorCues'
+import {
+  phaseNarratorCue,
+  REASONABLE_DOUBT_DIRECTION,
+} from '../../lib/narratorCues'
 import type { Verdict } from './DocketVerdict'
 import { NarratorCue } from './NarratorCue'
 import { SpeakerPortrait } from './SpeakerPortrait'
@@ -796,15 +799,14 @@ export function JuryRoomView({
             onClick={() => onDone(outcome, playerVerdict)}
             className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
           >
-            See how you did →
+            Review the reference verdict →
           </button>
         </div>
       ) : awaitingPlayerVote ? (
         <div className="space-y-4">
           <div className="verdict-threshold border p-4 text-center">
             <p className="text-sm leading-relaxed text-neutral-400">
-              To convict, you must be sure <em>beyond reasonable doubt</em>. Doubt
-              alone is enough to acquit.
+              {REASONABLE_DOUBT_DIRECTION}
             </p>
           </div>
           <div className="verdict-choices grid grid-cols-2 gap-3">
