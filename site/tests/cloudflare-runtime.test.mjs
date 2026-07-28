@@ -11,10 +11,13 @@ import {
   parseCapability,
   parseCaseId,
   parseDisplayName,
+  parseLiveEvent,
   parseSeatId,
   roomRoute,
+  roomSocketRoute,
   roomExpiryCutoff,
   seatMaySend,
+  seatCapabilityFromProtocols,
 } from '../src/live-policy.js'
 import worker from '../src/worker.js'
 
@@ -193,9 +196,60 @@ test('room inputs and capability routes fail closed', () => {
   assert.equal(roomRoute('/api/live/rooms/room_12'), 'room_12')
   assert.equal(roomRoute('/api/live/rooms/room%2Fescape'), null)
   assert.equal(roomRoute('/api/live/rooms/room_12/socket'), null)
+  assert.equal(roomSocketRoute('/api/live/rooms/room_12/socket'), 'room_12')
+  assert.equal(seatCapabilityFromProtocols(`simjury-v1, ${capability}`), capability)
+  assert.equal(seatCapabilityFromProtocols(`${capability}, simjury-v1`), null)
   assert.equal(bearerCapability(new Request('https://simjury.com', {
     headers: { Authorization: `Bearer ${capability}` },
   })), capability)
+})
+
+test('human deliberation events have a small explicit protocol', () => {
+  assert.deepEqual(parseLiveEvent(JSON.stringify({
+    type: 'message',
+    text: '  I still have a question.  ',
+  })), { type: 'message', text: 'I still have a question.' })
+  assert.deepEqual(parseLiveEvent(JSON.stringify({
+    type: 'position',
+    position: 'U',
+    reason: 'The time is unclear.',
+  })), { type: 'position', position: 'U', reason: 'The time is unclear.' })
+  assert.equal(parseLiveEvent(JSON.stringify({ type: 'position', position: 'maybe' })), null)
+  assert.equal(parseLiveEvent(JSON.stringify({ type: 'message', text: '' })), null)
+  assert.equal(parseLiveEvent('x'.repeat(1_025)), null)
+})
+
+test('socket capabilities are verified at the public boundary and not put in the URL', async () => {
+  const capability = 'b'.repeat(43)
+  let internalRequest
+  const rooms = {
+    idFromName: (name) => name,
+    get: () => ({
+      fetch(request) {
+        internalRequest = request
+        return Response.json({ forwarded: true })
+      },
+    }),
+  }
+  const response = await worker.fetch(new Request(
+    'https://simjury.com/api/live/rooms/room_12/socket',
+    {
+      headers: {
+        Upgrade: 'websocket',
+        'Sec-WebSocket-Protocol': `simjury-v1, ${capability}`,
+      },
+    },
+  ), { LIVE_JURY_ENABLED: 'true', ROOMS: rooms })
+  assert.equal((await response.json()).forwarded, true)
+  assert.equal(new URL(internalRequest.url).pathname, '/internal/connect')
+  assert.equal(internalRequest.headers.get('X-SimJury-Seat-Token'), capability)
+  assert.equal(internalRequest.url.includes(capability), false)
+
+  const rejected = await worker.fetch(new Request(
+    'https://simjury.com/api/live/rooms/room_12/socket',
+    { headers: { Upgrade: 'websocket' } },
+  ), { LIVE_JURY_ENABLED: 'true', ROOMS: rooms })
+  assert.equal(rejected.status, 401)
 })
 
 test('admission caps and retries cannot create unregistered rooms', () => {
@@ -217,6 +271,8 @@ test('health exposes readiness and immutable free-beta limits', async () => {
     seatsPerRoom: 12,
     messagesPerSeat: 40,
     messageCharacters: 500,
+    frameCharacters: 1_024,
+    historyEvents: 120,
     displayNameCharacters: 32,
     roomTtlSeconds: 7_200,
   })
