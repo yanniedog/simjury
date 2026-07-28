@@ -61,6 +61,7 @@ const PROGRESS_PREFIX = 'simjury-progress:v1:'
 const STORAGE_PROBE_KEY = 'simjury:storage-write-probe'
 /** Versioned so the entirely new grave-crime guided case is offered once. */
 export const INTRO_COMPLETE_KEY = 'simjury:intro-complete:v2'
+export const FICTION_DISCLOSURE_KEY = 'simjury:fiction-disclosure:v1'
 
 function storage(): Storage | null {
   try {
@@ -186,6 +187,27 @@ export function markIntroComplete(): void {
     store.setItem(INTRO_COMPLETE_KEY, '1')
   } catch {
     // Blocked storage is non-fatal.
+  }
+}
+
+/** The fiction notice is shown once per browser profile when storage is available. */
+export function hasSeenFictionDisclosure(): boolean {
+  const store = storage()
+  if (!store) return false
+  try {
+    return store.getItem(FICTION_DISCLOSURE_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+export function markFictionDisclosureSeen(): void {
+  const store = storage()
+  if (!store) return
+  try {
+    store.setItem(FICTION_DISCLOSURE_KEY, '1')
+  } catch {
+    // Blocked storage is non-fatal; the notice remains dismissed for this load.
   }
 }
 

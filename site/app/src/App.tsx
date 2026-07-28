@@ -15,11 +15,13 @@ import { caseStorageId } from './lib/v2/caseRevision'
 import {
   clearProgress,
   completePlay,
+  hasSeenFictionDisclosure,
   isIntroComplete,
   loadAllPlays,
   loadPlayForSitting,
   loadProgress,
   markIntroComplete,
+  markFictionDisclosureSeen,
   saveProgress,
   type StoredProgress,
   type StoredPlay,
@@ -57,6 +59,32 @@ import {
 import { NarratorCue } from './components/v2/NarratorCue'
 
 type Phase = 'intro' | 'openings' | 'beats' | 'closings' | 'juryroom' | 'reveal'
+
+export function FictionDisclosureGate({ onContinue }: { onContinue: () => void }) {
+  return (
+    <div className="phase-view space-y-6 text-center">
+      <div className="phase-heading space-y-2">
+        <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
+          Before you enter
+        </p>
+        <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">
+          A fictional courtroom
+        </h1>
+      </div>
+      <p className="mx-auto max-w-xl text-base leading-relaxed text-neutral-300">
+        Everything in SimJury is fictional. The cases, people, places, evidence,
+        and jury-room dialogue are created for this experience.
+      </p>
+      <button
+        type="button"
+        onClick={onContinue}
+        className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
+      >
+        Enter SimJury
+      </button>
+    </div>
+  )
+}
 
 /** Read the full play history from storage and reduce it to stats. */
 function statsFromStorage(): Stats {
@@ -491,6 +519,9 @@ export default function App() {
   const [offerIntro, setOfferIntro] = useState(
     () => Boolean(intro) && !isIntroComplete(),
   )
+  const [showFictionDisclosure, setShowFictionDisclosure] = useState(
+    () => !hasSeenFictionDisclosure(),
+  )
   const [narration, setNarration] = useState(narrationEnabled())
   const [playbackRate, setPlaybackRate] = useState(narrationRate())
   const [voiceEngine, setVoiceEngine] = useState(narrationEngine())
@@ -502,6 +533,32 @@ export default function App() {
         ? featured
         : selectDocketSitting(sittings, selectedDay)
   const activeDay = selected?.day ?? selectedDay
+
+  if (showFictionDisclosure) {
+    return (
+      <DocketShell
+        phase="intro"
+        caseTitle="SimJury"
+        narration={narration}
+        playbackRate={playbackRate}
+        voiceEngine={voiceEngine}
+        onToggleNarration={() => {
+          const next = !narration
+          setNarrationEnabled(next)
+          setNarration(next)
+        }}
+        onRateChange={(rate) => setPlaybackRate(setNarrationRate(rate))}
+        onVoiceEngineChange={(engine) => setVoiceEngine(setNarrationEngine(engine))}
+      >
+        <FictionDisclosureGate
+          onContinue={() => {
+            markFictionDisclosureSeen()
+            setShowFictionDisclosure(false)
+          }}
+        />
+      </DocketShell>
+    )
+  }
 
   if (offerIntro && intro) {
     return (
