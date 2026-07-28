@@ -1,0 +1,335 @@
+{
+  "id": "dd-0039",
+  "publish_date": "2026-08-18",
+  "label": "fiction",
+  "title": "The Woman in the Red Coat",
+  "offence_code": "murder",
+  "content_advisories": ["death", "serious_violence"],
+  "detail_level": "non_graphic",
+  "setting": "a cooperative gallery in a fictional city, the present day",
+  "charge": "murder",
+  "elements": [
+    "The accused caused the victim’s death.",
+    "The accused intended to kill or cause really serious injury.",
+    "The killing was not legally justified or excused."
+  ],
+  "hook": "A lobby camera shows Iona Venn leaving her gallery in a red coat at 9:05. Her business partner speaks to reception seven minutes later and dies soon afterwards. The camera never captured the departing woman’s face.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Iona Venn, 47, co-founded the gallery and kept twelve adults employed through three difficult years. Her sister and several former apprentices sit behind the defence table.",
+    "if_guilty": "life imprisonment, the loss of the gallery, and a final public account of debts she concealed while trying to save it"
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "The red coat was not an alibi. It was a costume worn by an assistant while Iona Venn stayed behind with the partner who planned to expose her hidden debts. The assistant lied, and you must treat her carefully. Yet a transit record, the victim’s final call, and a broken bracelet all confirm the same deliberate deception."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The prosecution’s story depends on Elia Marr, an admitted liar who received immunity and had her own reason to escape blame. A coat is not a face. A broken clasp is not a clock. Iona left a failing business after an argument, exactly as the lobby footage appears to show. Suspicion cannot repair the gaps in Elia’s account."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Do not convict because of debt, anger, or Elia’s unsupported word. Convict because independent facts lock together. Elia’s transit card travelled inside the red coat. The victim was alive after that staged departure. A piece of Iona’s intact-afternoon bracelet was in the victim’s closed hand, and Iona changed her account only after the clasp was found."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "Every strand still requires an assumption. A borrowed coat does not prove Iona arranged the borrowing. A transit card proves where Elia travelled, not where Iona remained. The clasp could have broken during the earlier argument that everyone accepts occurred. When the central witness has lied for immunity, coincidence cannot be promoted into proof beyond reasonable doubt."
+      }
+    }
+  },
+  "epilogue": "The cooperative gallery closed for one season and reopened under shared financial control. Elia Marr left the arts sector and declined every interview request. The victim’s adult family established confidential debt advice for small cultural organisations, asking that the programme carry no family name. Former apprentices preserved the last unfinished exhibition exactly as it had been arranged, including one empty wall.",
+  "cast": [
+    { "id": "judge", "name": "Judge Orin Pell", "role_label": "the judge", "side": "court" },
+    { "id": "pc", "name": "Mara Senn", "role_label": "prosecuting counsel", "side": "prosecution" },
+    { "id": "dc", "name": "Tomas Vey", "role_label": "defence counsel", "side": "defence" },
+    { "id": "acc", "name": "Iona Venn", "role_label": "the accused — gallery co-founder", "side": "defence" },
+    { "id": "w1", "name": "Soren Tey", "role_label": "gallery receptionist", "side": "prosecution" },
+    { "id": "w2", "name": "Elia Marr", "role_label": "gallery assistant", "side": "prosecution" },
+    { "id": "w3", "name": "Pera Sann", "role_label": "business adviser", "side": "prosecution" }
+  ],
+  "media": {
+    "cover": {
+      "src": "/today/media/dd-0039/cover.webp",
+      "alt": "A contemporary courtroom sketch viewed from the jury box, with the accused beside defence counsel and a red coat on an unmarked evidence stand",
+      "caption": "Fictional court sketch from the jury box",
+      "kind": "court_sketch"
+    },
+    "accused": {
+      "src": "/today/media/dd-0039/characters/acc.webp",
+      "alt": "Courtroom sketch of Iona Venn seated beside defence counsel",
+      "caption": "Fictional character portrait of the accused",
+      "kind": "portrait"
+    },
+    "beats": {},
+    "portraits": {
+      "judge": { "src": "/today/media/dd-0039/characters/judge.webp", "alt": "Courtroom sketch of Judge Orin Pell", "caption": "Fictional character portrait of the judge", "kind": "portrait" },
+      "pc": { "src": "/today/media/dd-0039/characters/pc.webp", "alt": "Courtroom sketch of prosecutor Mara Senn", "caption": "Fictional character portrait of prosecuting counsel", "kind": "portrait" },
+      "dc": { "src": "/today/media/dd-0039/characters/dc.webp", "alt": "Courtroom sketch of defence counsel Tomas Vey", "caption": "Fictional character portrait of defence counsel", "kind": "portrait" },
+      "acc": { "src": "/today/media/dd-0039/characters/acc.webp", "alt": "Courtroom sketch of Iona Venn", "caption": "Fictional character portrait of the accused", "kind": "portrait" },
+      "w1": { "src": "/today/media/dd-0039/characters/w1.webp", "alt": "Courtroom sketch of receptionist Soren Tey", "caption": "Fictional character portrait of a witness", "kind": "portrait" },
+      "w2": { "src": "/today/media/dd-0039/characters/w2.webp", "alt": "Courtroom sketch of assistant Elia Marr", "caption": "Fictional character portrait of a witness", "kind": "portrait" },
+      "w3": { "src": "/today/media/dd-0039/characters/w3.webp", "alt": "Courtroom sketch of adviser Pera Sann", "caption": "Fictional character portrait of a witness", "kind": "portrait" },
+      "J-01": { "src": "/today/media/dd-0039/characters/J-01.webp", "alt": "Courtroom sketch of Juror 2", "caption": "Fictional character portrait of a juror", "kind": "portrait" },
+      "J-02": { "src": "/today/media/dd-0039/characters/J-02.webp", "alt": "Courtroom sketch of Juror 3", "caption": "Fictional character portrait of a juror", "kind": "portrait" },
+      "J-03": { "src": "/today/media/dd-0039/characters/J-03.webp", "alt": "Courtroom sketch of Juror 4", "caption": "Fictional character portrait of a juror", "kind": "portrait" },
+      "J-04": { "src": "/today/media/dd-0039/characters/J-04.webp", "alt": "Courtroom sketch of Juror 5", "caption": "Fictional character portrait of a juror", "kind": "portrait" },
+      "J-05": { "src": "/today/media/dd-0039/characters/J-05.webp", "alt": "Courtroom sketch of Juror 6", "caption": "Fictional character portrait of a juror", "kind": "portrait" },
+      "J-06": { "src": "/today/media/dd-0039/characters/J-06.webp", "alt": "Courtroom sketch of Juror 7", "caption": "Fictional character portrait of a juror", "kind": "portrait" },
+      "J-07": { "src": "/today/media/dd-0039/characters/J-07.webp", "alt": "Courtroom sketch of Juror 8", "caption": "Fictional character portrait of a juror", "kind": "portrait" },
+      "J-08": { "src": "/today/media/dd-0039/characters/J-08.webp", "alt": "Courtroom sketch of Juror 9", "caption": "Fictional character portrait of a juror", "kind": "portrait" },
+      "J-09": { "src": "/today/media/dd-0039/characters/J-09.webp", "alt": "Courtroom sketch of Juror 10", "caption": "Fictional character portrait of a juror", "kind": "portrait" },
+      "J-10": { "src": "/today/media/dd-0039/characters/J-10.webp", "alt": "Courtroom sketch of Juror 11", "caption": "Fictional character portrait of a juror", "kind": "portrait" },
+      "J-11": { "src": "/today/media/dd-0039/characters/J-11.webp", "alt": "Courtroom sketch of Juror 12", "caption": "Fictional character portrait of a juror", "kind": "portrait" }
+    }
+  },
+  "beats": [
+    {
+      "id": "b1", "kind": "exhibit", "speaker": "dc",
+      "text": "Exhibit one is the lobby recording. At 9:05, a person in Iona Venn’s distinctive red coat crosses the foyer, turns away from the camera, and leaves through the main doors. The receptionist looks up and waves. The person’s face remains outside the camera’s view for the entire recording.",
+      "surface_persuasion": 0.88, "true_weight": 0.18, "direction": "innocence", "reveal_stamp": "misleading",
+      "reveal_note": "The recording proved that the coat left the gallery, but the hidden face meant it never proved that Iona wore the coat.",
+      "tags": ["identity", "timeline"]
+    },
+    {
+      "id": "b2", "kind": "witness", "speaker": "w1", "mode": "examination",
+      "text": "Why did you believe the person in the lobby was Iona Venn? I recognised Iona’s red coat and the person walked with the same quick pace. I did not see the person’s face, but I had watched Iona leave in that coat many times.",
+      "turns": [
+        { "speaker": "pc", "text": "Why did you believe the person in the lobby was Iona Venn?" },
+        { "speaker": "w1", "text": "I recognised Iona’s red coat and the person walked with the same quick pace. I did not see the person’s face, but I had watched Iona leave in that coat many times." }
+      ],
+      "surface_persuasion": 0.66, "true_weight": 0.36, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "Soren made an honest identification from clothing and movement, not from the departing person’s face.",
+      "tags": ["identity", "credibility"]
+    },
+    {
+      "id": "b3", "kind": "witness", "speaker": "w1", "mode": "cross",
+      "text": "Did the departing person ever turn a visible face toward you or the camera? No. I identified the red coat, not a face. Could another adult have worn that coat? Another adult of similar build could have worn it instead.",
+      "turns": [
+        { "speaker": "dc", "text": "Did the departing person ever turn a visible face toward you or the camera?" },
+        { "speaker": "w1", "text": "No. I identified the red coat, not a face." },
+        { "speaker": "dc", "text": "Could another adult have worn that coat?" },
+        { "speaker": "w1", "text": "Another adult of similar build could have worn it instead." }
+      ],
+      "surface_persuasion": 0.48, "true_weight": 0.52, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "The concession removed the only eyewitness identification supporting Iona’s apparent departure.",
+      "tags": ["identity", "credibility"]
+    },
+    {
+      "id": "b4", "kind": "exhibit", "speaker": "pc",
+      "text": "Exhibit two combines the reception call and the agreed medical evidence. At 9:12, the victim called reception and asked for a folder to be brought upstairs. The medical evidence places the death shortly after that call and rules out accident or natural causes, attributing the death to deliberate violence by another person. Whoever caused the death remained inside after the red-coated person left at 9:05.",
+      "surface_persuasion": 0.54, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "The agreed evidence established a deliberate killing after the staged departure, when the victim was unquestionably alive and the coat had already left.",
+      "tags": ["timeline", "causation"]
+    },
+    {
+      "id": "b5", "kind": "witness", "speaker": "w3", "mode": "examination",
+      "text": "What was due to happen the next morning? The victim planned to sell the gallery building, dissolve the cooperative, and disclose debts that Iona had hidden from the other members. Iona argued that disclosure would destroy twelve livelihoods and everything they had built together.",
+      "turns": [
+        { "speaker": "pc", "text": "What was due to happen the next morning?" },
+        { "speaker": "w3", "text": "The victim planned to sell the gallery building, dissolve the cooperative, and disclose debts that Iona had hidden from the other members. Iona argued that disclosure would destroy twelve livelihoods and everything they had built together." }
+      ],
+      "surface_persuasion": 0.56, "true_weight": 0.42, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "The planned disclosure supplied a reason for conflict, but motive alone could not identify the person who remained upstairs.",
+      "tags": ["motive", "intent"]
+    },
+    {
+      "id": "b6", "kind": "witness", "speaker": "w2", "mode": "examination",
+      "text": "Why did you leave the gallery wearing Iona’s coat? Iona asked me to wear it, keep my face turned away, and walk through the lobby at 9:05. She said the camera needed to show her leaving. I understood that she intended to remain upstairs unseen.",
+      "turns": [
+        { "speaker": "pc", "text": "Why did you leave the gallery wearing Iona’s coat?" },
+        { "speaker": "w2", "text": "Iona asked me to wear it, keep my face turned away, and walk through the lobby at 9:05. She said the camera needed to show her leaving. I understood that she intended to remain upstairs unseen." }
+      ],
+      "surface_persuasion": 0.5, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "Elia directly described the staged departure, but her admitted lies meant independent confirmation remained essential.",
+      "tags": ["identity", "credibility", "intent"]
+    },
+    {
+      "id": "b7", "kind": "witness", "speaker": "w2", "mode": "cross",
+      "text": "What did you receive for giving this account? The prosecution agreed not to charge me for helping stage the departure. Did you deny wearing the coat in two earlier interviews? I denied it twice because I feared being blamed for the death.",
+      "turns": [
+        { "speaker": "dc", "text": "What did you receive for giving this account?" },
+        { "speaker": "w2", "text": "The prosecution agreed not to charge me for helping stage the departure." },
+        { "speaker": "dc", "text": "Did you deny wearing the coat in two earlier interviews?" },
+        { "speaker": "w2", "text": "I denied it twice because I feared being blamed for the death." }
+      ],
+      "surface_persuasion": 0.76, "true_weight": 0.3, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "Elia had powerful reasons to lie, so her account could not safely carry the case without independent evidence.",
+      "tags": ["credibility", "procedure"]
+    },
+    {
+      "id": "b8", "kind": "exhibit", "speaker": "pc",
+      "text": "Exhibit three is Elia’s personal transit record. Her travel card registered a journey beginning near the gallery soon after 9:05. The card was later found in the red coat’s inner pocket, where Elia routinely kept it. The record independently confirms that Elia, not Iona, travelled away in the coat.",
+      "surface_persuasion": 0.55, "true_weight": 0.76, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "The transit record corroborated the compromised witness without relying on her memory, bargain, or honesty.",
+      "tags": ["identity", "timeline", "digital_forensics"]
+    },
+    {
+      "id": "b9", "kind": "exhibit", "speaker": "pc",
+      "text": "Exhibit four is a broken clasp recovered from the victim’s closed hand. It fits Iona’s distinctive bracelet exactly. A photograph taken that afternoon shows the clasp intact, while a photograph after the death shows it missing. Laboratory testing found the fracture surfaces were fresh and formed one matching break.",
+      "surface_persuasion": 0.58, "true_weight": 0.88, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "The fresh matching break placed Iona in direct contact with the victim after the bracelet had been photographed intact.",
+      "tags": ["identity", "method", "timeline"]
+    },
+    {
+      "id": "b10", "kind": "witness", "speaker": "acc", "mode": "examination",
+      "text": "How do you explain the coat and the broken clasp? Elia borrowed the coat without asking me. My bracelet broke during an argument with my partner earlier that afternoon, when we both reached for the same folder. I left by a rear door before nine o’clock.",
+      "turns": [
+        { "speaker": "dc", "text": "How do you explain the coat and the broken clasp?" },
+        { "speaker": "acc", "text": "Elia borrowed the coat without asking me. My bracelet broke during an argument with my partner earlier that afternoon, when we both reached for the same folder. I left by a rear door before nine o’clock." }
+      ],
+      "surface_persuasion": 0.54, "true_weight": 0.34, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "Iona offered innocent explanations for each item, but those explanations had to be tested against her earlier account.",
+      "tags": ["credibility", "timeline", "identity"]
+    },
+    {
+      "id": "b11", "kind": "witness", "speaker": "acc", "mode": "cross",
+      "text": "What did you say in your first interview about physical contact that afternoon? I said there had been no physical contact. Why did you ask a jeweller the next morning to replace a clasp you now say broke earlier? I cannot explain that message.",
+      "turns": [
+        { "speaker": "pc", "text": "What did you say in your first interview about physical contact that afternoon?" },
+        { "speaker": "acc", "text": "I said there had been no physical contact." },
+        { "speaker": "pc", "text": "Why did you ask a jeweller the next morning to replace a clasp you now say broke earlier?" },
+        { "speaker": "acc", "text": "I cannot explain that message." }
+      ],
+      "surface_persuasion": 0.54, "true_weight": 0.64, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "Iona’s changed account and next-morning repair request made the earlier innocent-break explanation unsafe.",
+      "tags": ["credibility", "timeline", "intent"]
+    },
+    {
+      "id": "b12", "kind": "direction", "speaker": "judge",
+      "text": "Elia Marr admitted lying and received immunity, so examine her evidence with particular care. The prosecution must still make you sure that Iona remained inside, caused the death, and intended death or really serious injury. Consider whether the independent transit, timing, and bracelet evidence reliably confirms Elia’s account. Do not research this fictional case.",
+      "surface_persuasion": 0.4, "true_weight": 0.5, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "The direction preserves the burden and prevents Elia’s compromised evidence from becoming proof merely because it is dramatic.",
+      "tags": ["burden", "procedure"]
+    }
+  ],
+  "checkins": [],
+  "verdict_truth": "Guilty",
+  "twist": "The red-coat alibi was true as an image and false as an identification. Elia left wearing Iona’s coat while Iona remained with her partner. Elia’s compromised testimony was independently confirmed by the transit record, the post-9:12 timeline, and the newly broken bracelet.",
+  "difficulty_target": 0.64,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01", "seat": 2, "label": "Juror 2 — Anya", "persona": "A careful retiree who will not use Elia’s testimony unless another record confirms it.", "register": "formal", "arc": "principled_holdout",
+        "initial": { "position": "NG", "confidence": 76 }, "weights": { "credibility": 2, "burden": 2, "timeline": 1 },
+        "lines": { "agree": ["The transit record confirms Elia wore the coat without asking us to trust Elia’s word.", "The judge is right that corroboration must do the work here."], "pushback": ["Elia lied twice and received immunity; her unsupported account proves nothing.", "A red coat and a motive cannot establish murder."], "concede": ["I accept the independent records answer part of my concern about Elia."], "holdout": ["I will remain with the burden until the independent evidence closes every material gap."], "final": ["The corroboration is now strong enough for me to decide." ] },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "pushback" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 15, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
+        ]
+      },
+      {
+        "id": "J-02", "seat": 3, "label": "Juror 3 — Bram", "persona": "A visual thinker who initially treats the coat as if it were Iona’s face.", "register": "blunt", "arc": "vibes",
+        "initial": { "position": "G", "confidence": 58 }, "weights": { "identity": 2, "digital_forensics": 1 },
+        "lines": { "agree": ["The transit card proves the woman in the coat was Elia, not Iona.", "Once the face disappears, the camera is not an alibi."], "pushback": ["The lobby recording still looks exactly like Iona leaving.", "I am not replacing a visible departure with one witness’s bargain."], "concede": ["I accept that I identified a coat rather than a person."], "final": ["The image changed meaning when the transit record identified the wearer."] },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 15, "line": "concede" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 14, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-03", "seat": 4, "label": "Juror 4 — Cora", "persona": "A project planner who builds the night minute by minute before judging anyone’s motive.", "register": "plain", "arc": "steady",
+        "initial": { "position": "NG", "confidence": 74 }, "weights": { "timeline": 2, "causation": 2 },
+        "lines": { "agree": ["The victim was alive seven minutes after the staged departure.", "The timing places the killer inside after Elia left in the coat."], "pushback": ["Debt explains an argument, not the sequence of the death.", "I need every time anchored to the reception call."], "concede": ["The reception call gives the timeline a reliable centre."], "final": ["The sequence is consistent from the coat departure to the later death."] },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 12, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 10, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-04", "seat": 5, "label": "Juror 5 — Dev", "persona": "An undecided analyst who changes position only when separate sources converge.", "register": "formal", "arc": "mind_changer",
+        "initial": { "position": "G", "confidence": 52 }, "weights": { "identity": 2, "timeline": 2, "method": 1 },
+        "lines": { "agree": ["The transit card and broken clasp are independent of Elia’s bargain.", "Three separate records now support the same staged-departure account."], "pushback": ["One compromised witness cannot turn an ambiguous camera into certainty.", "I am looking for convergence, not another repetition of Elia’s story."], "concede": ["The independent records remove the main reason I withheld judgment."], "final": ["The separate strands converge on one conclusion."] },
+        "reaction_rules": [
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 18, "line": "concede" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 12, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-05", "seat": 6, "label": "Juror 6 — Eren", "persona": "A repair technician who pays close attention to the fresh matching fracture.", "register": "plain", "arc": "steady",
+        "initial": { "position": "U", "confidence": 38 }, "weights": { "method": 2, "identity": 1 },
+        "lines": { "agree": ["A fresh matching fracture is stronger than a guess about when the bracelet broke.", "The clasp puts Iona in direct contact after the bracelet was photographed intact."], "pushback": ["A broken object needs a reliable time before it identifies anyone.", "I will not treat laboratory language as magic."], "concede": ["The afternoon photograph and fresh fracture give the clasp a clear time window."], "final": ["The physical break is consistent with the rest of the timeline."] },
+        "reaction_rules": [
+          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 12, "line": "agree" } },
+          { "when": { "theme": "method", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -8, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-06", "seat": 7, "label": "Juror 7 — Fia", "persona": "A union delegate who distrusts immunity bargains and workplace blame-shifting.", "register": "blunt", "arc": "burden_drifter",
+        "initial": { "position": "NG", "confidence": 75 }, "weights": { "credibility": 2, "procedure": 2, "burden": 1 },
+        "lines": { "agree": ["Elia’s immunity means every important claim needs outside support.", "The judge told us to handle the compromised testimony with care."], "pushback": ["Elia saved herself by pointing at Iona; that is not clean evidence.", "If Iona is innocent, she should explain why Elia chose her coat."], "concede": ["The transit card supports Elia without depending on her bargain."], "burden_drift": ["I keep wanting Iona to prove why Elia wore the coat, even though that is not Iona’s burden."], "final": ["I decide only after separating Elia’s bargain from the independent records."] },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "burden", "stance": "any" }, "effect": { "delta": -1, "confidence": -10, "line": "burden_drift" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-07", "seat": 8, "label": "Juror 8 — Garen", "persona": "An accountant who understands hidden debt but refuses to turn it directly into intent.", "register": "formal", "arc": "steady",
+        "initial": { "position": "G", "confidence": 54 }, "weights": { "motive": 2, "intent": 2 },
+        "lines": { "agree": ["The planned disclosure explains why that evening mattered to Iona.", "The staged departure shows planning beyond an ordinary financial argument."], "pushback": ["Concealing debt is not proof of an intention to kill.", "A desperate motive remains only context until conduct confirms it."], "concede": ["The motive gains weight when it is paired with the deliberate coat substitution."], "final": ["I use the debt as context, not as a substitute for proof."] },
+        "reaction_rules": [
+          { "when": { "theme": "intent", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 12, "line": "agree" } },
+          { "when": { "theme": "motive", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -8, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-08", "seat": 9, "label": "Juror 9 — Hali", "persona": "A counsellor who understands fear-driven lies without confusing that empathy with proof.", "register": "hesitant", "arc": "drifter",
+        "initial": { "position": "NG", "confidence": 72 }, "weights": { "credibility": 2, "coercion": 1, "timeline": 1 },
+        "lines": { "agree": ["Elia’s fear may explain her lies, but explanation does not make her account true.", "Independent records are the only safe way to use Elia’s evidence."], "pushback": ["I can understand Elia’s fear and still doubt her accusation.", "The immunity bargain keeps pulling me away from certainty."], "concede": ["The transit record confirms the most important part of Elia’s account."], "final": ["I separate why Elia lied from whether the independent evidence confirms her."] },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 10, "line": "concede" } },
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 8, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-09", "seat": 10, "label": "Juror 10 — Ivo", "persona": "A retired solicitor who keeps motive, identity, causation, and intent in separate boxes.", "register": "formal", "arc": "foreperson",
+        "initial": { "position": "U", "confidence": 34 }, "weights": { "burden": 2, "causation": 2, "intent": 1 },
+        "lines": { "agree": ["The independent evidence addresses identity and timing; the staged departure addresses intent.", "We can assess weak strands together without pretending any one strand is conclusive."], "pushback": ["Motive cannot prove identity, and identity cannot alone prove murderous intent.", "We should test each element before discussing a final verdict."], "concede": ["The combined evidence now answers each element separately."], "burden_correct": ["Iona does not have to explain the crime; the prosecution must prove every element."], "final": ["I am satisfied only after checking causation, intent, and the burden separately."] },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "any" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
+          { "when": { "theme": "causation", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 12, "line": "agree" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-10", "seat": 11, "label": "Juror 11 — Jessa", "persona": "A sceptical editor who compares every later explanation with the speaker’s first words.", "register": "blunt", "arc": "steady",
+        "initial": { "position": "G", "confidence": 58 }, "weights": { "credibility": 2, "timeline": 1 },
+        "lines": { "agree": ["Iona first denied any contact, then invented an earlier bracelet break.", "The next-morning repair message conflicts with the new explanation."], "pushback": ["People remember arguments badly, so one changed phrase is not enough.", "Elia changed her account more often than Iona did."], "concede": ["The repair request makes Iona’s changed account materially important."], "final": ["The account changes matter because the physical evidence fixes their timing."] },
+        "reaction_rules": [
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 12, "line": "agree" } },
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -8, "line": "pushback" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      },
+      {
+        "id": "J-11", "seat": 12, "label": "Juror 12 — Kellan", "persona": "A teacher who corrects anyone who asks Iona to solve the case for the prosecution.", "register": "plain", "arc": "steady",
+        "initial": { "position": "G", "confidence": 52 }, "weights": { "burden": 2, "procedure": 2, "identity": 1 },
+        "lines": { "agree": ["The prosecution has supplied independent evidence for the staged departure.", "The issue is whether their proof makes us sure, not whether Iona can prove another story."], "pushback": ["We cannot make Iona identify someone else before considering not guilty.", "Elia’s bargain means we must demand corroboration, not abandon the burden."], "concede": ["The transit and bracelet evidence supply the corroboration I required."], "burden_correct": ["The defence does not have to explain who else caused the death; the prosecution must prove Iona did."], "final": ["I have kept the burden on the prosecution throughout my decision."] },
+        "reaction_rules": [
+          { "when": { "theme": "burden", "stance": "any" }, "effect": { "delta": 1, "confidence": 12, "line": "burden_correct" } },
+          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 12, "line": "concede" } },
+          { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5.6-sol",
+    "prompt_version": "dd-2026-v3",
+    "reviewer": "Codex Content Curator",
+    "batch_pr": "pending",
+    "language_reviewer": "Codex language review",
+    "sensitivity_reviewer": "Codex non-graphic serious-crime review"
+  }
+}
