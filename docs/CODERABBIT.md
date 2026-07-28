@@ -35,9 +35,41 @@ Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.
 | `.coderabbit.yaml` | **Quiet** profile (high-severity only), **no walkthrough/summary**, draft PRs on, incremental review, path filters + SimJury path instructions |
 | `scripts/lib/bot-wait-config.mjs` | `coderabbit` alias + default OR-group |
 | `bot-presence-gate` | Env `SIMJURY_BOT_WAIT_REQUIRED=sourcery\|codex\|cursor\|coderabbit` |
+| `pr-coderabbit-rate-limit-retry` | When CR posts “Review limit reached”, wait then `@coderabbitai review` |
 
 Chore / WIP titles are skipped by CodeRabbit (`ignore_title_keywords`) and are still
 gate-exempt in SimJury scripts.
+
+## Auto-retry after rate limit
+
+CodeRabbit does **not** resume on its own after a rate-limit comment. Workflow
+[`.github/workflows/pr-coderabbit-rate-limit-retry.yml`](../.github/workflows/pr-coderabbit-rate-limit-retry.yml)
+is **self-contained** (no repo scripts). It listens for those comments, sleeps until
+“Next review available in N minutes” (+2m buffer, max 120m), then posts:
+
+```text
+<!-- simjury-coderabbit-rate-limit-retry -->
+@coderabbitai review
+```
+
+Concurrency uses `cancel-in-progress: false` so ordinary PR comments cannot cancel a
+sleeping waiter. Duplicate rate-limit runs self-skip when a retry is already armed,
+CodeRabbit already reviewed, or a newer rate-limit comment owns the window.
+
+Install on other repos (one file):
+
+```sh
+npm run coderabbit:rate-limit-retry:install-all
+# or pack:
+# docs/cross-repo-patches/coderabbit-rate-limit-retry/
+```
+
+Local helpers (simjury):
+
+```sh
+npm run pr:coderabbit-rate-limit-retry -- --pr <n>
+npm run pr:coderabbit-rate-limit-retry:verify
+```
 
 ## Other active repos
 
@@ -54,3 +86,4 @@ re-installing the app; add a local `.coderabbit.yaml` when you want repo-specifi
 | `@coderabbitai summary` | Summary only |
 | `@coderabbitai configuration` | Dump resolved config |
 | `@coderabbitai pause` / `resume` | Pause / resume auto-review on that PR |
+| `@coderabbitai rate limit` | Show remaining allowance (does not consume a review) |
