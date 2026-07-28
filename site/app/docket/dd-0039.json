@@ -13,35 +13,35 @@
     "The accused intended to kill or cause really serious injury.",
     "The killing was not legally justified or excused."
   ],
-  "hook": "A lobby camera shows Iona Venn leaving her gallery in a red coat at 9:05. Her business partner speaks to reception seven minutes later and dies soon afterwards. The camera never captured the departing woman’s face.",
+  "hook": "Nera Vale stays late to finish the community exhibition she has promised young artists for months. At 9:05, a lobby camera shows Iona Venn’s red coat leaving the gallery. Seven minutes later, Nera calls reception. The camera never captures the departing person’s face.",
   "accused": {
     "cast_id": "acc",
-    "human": "Iona Venn, 47, co-founded the gallery and kept twelve adults employed through three difficult years. Her sister and several former apprentices sit behind the defence table.",
-    "if_guilty": "life imprisonment, the loss of the gallery, and a final public account of debts she concealed while trying to save it"
+    "human": "Iona Venn, 47, co-founded the gallery with Nera Vale and mentored its apprentices. Her sister and several former apprentices sit behind the defence table.",
+    "if_guilty": "Any sentence is a matter for the judge after the verdict and must play no part in the jury’s decision."
   },
   "statements": {
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The red coat was not an alibi. It was a costume worn by an assistant while Iona Venn stayed behind with the partner who planned to expose her hidden debts. The assistant lied, and you must treat her carefully. Yet a transit record, the victim’s final call, and a broken bracelet all confirm the same deliberate deception."
+        "text": "The prosecution says Iona Venn arranged for Elia Marr to leave in her red coat while Iona’s dispute with Nera Vale reached its end upstairs. You’ll hear why Elia’s account requires caution. You’ll also hear about the camera, a transit record, Iona’s bracelet, and what Iona first told investigators. Consider whether those separate strands prove Iona stayed."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The prosecution’s story depends on Elia Marr, an admitted liar who received immunity and had her own reason to escape blame. A coat is not a face. A broken clasp is not a clock. Iona left a failing business after an argument, exactly as the lobby footage appears to show. Suspicion cannot repair the gaps in Elia’s account."
+        "text": "The defence says the evidence will prove Elia wore the coat, but not why she wore it or where Iona was afterwards. Elia lied twice and received immunity. The rear door was opened before nine, beyond the camera’s view. The bracelet broke sometime that day, not necessarily near Nera’s death. Ask whether the prosecution can close those gaps."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Do not convict because of debt, anger, or Elia’s unsupported word. Convict because independent facts lock together. Elia’s transit card travelled inside the red coat. The victim was alive after that staged departure. A piece of Iona’s intact-afternoon bracelet was in the victim’s closed hand, and Iona changed her account only after the clasp was found."
+        "text": "Elia’s bargain makes caution necessary, but it doesn’t erase what she knew: Iona asked her to wear the coat and avoid the camera. The transit record confirms Elia left in it. Nera was killed afterwards, holding part of Iona’s bracelet. Iona’s first account omitted the rear door and the earlier struggle. The prosecution says that combination leaves no reasonable alternative."
       },
       "defence": {
         "speaker": "dc",
-        "text": "Every strand still requires an assumption. A borrowed coat does not prove Iona arranged the borrowing. A transit card proves where Elia travelled, not where Iona remained. The clasp could have broken during the earlier argument that everyone accepts occurred. When the central witness has lied for immunity, coincidence cannot be promoted into proof beyond reasonable doubt."
+        "text": "What did the independent evidence actually prove? Elia travelled in the coat; it didn’t locate Iona. The rear door opened at a time consistent with Iona leaving. The clasp matched Iona’s bracelet; science couldn’t say whether it broke during the afternoon folder dispute or near Nera’s death. A troubling account isn’t proof. If you aren’t sure Iona stayed and killed Nera, acquit."
       }
     }
   },
-  "epilogue": "The cooperative gallery closed for one season and reopened under shared financial control. Elia Marr left the arts sector and declined every interview request. The victim’s adult family established confidential debt advice for small cultural organisations, asking that the programme carry no family name. Former apprentices preserved the last unfinished exhibition exactly as it had been arranged, including one empty wall.",
+  "epilogue": "Nera Vale’s family asked the gallery to finish the community exhibition she had planned, but without turning her work into a memorial attraction. It reopened for one season under shared financial control. Elia Marr left the arts sector and declined every interview request. Former apprentices completed Nera’s unfinished display from her notes and kept one wall empty for new artists. Iona’s sister continued attending every hearing, while the cooperative’s members lived with questions the trial record could not answer.",
   "cast": [
     { "id": "judge", "name": "Judge Orin Pell", "role_label": "the judge", "side": "court" },
     { "id": "pc", "name": "Mara Senn", "role_label": "prosecuting counsel", "side": "prosecution" },
@@ -49,7 +49,7 @@
     { "id": "acc", "name": "Iona Venn", "role_label": "the accused — gallery co-founder", "side": "defence" },
     { "id": "w1", "name": "Soren Tey", "role_label": "gallery receptionist", "side": "prosecution" },
     { "id": "w2", "name": "Elia Marr", "role_label": "gallery assistant", "side": "prosecution" },
-    { "id": "w3", "name": "Pera Sann", "role_label": "business adviser", "side": "prosecution" }
+    { "id": "w3", "name": "Pera Sann", "role_label": "forensic pathologist", "side": "prosecution" }
   ],
   "media": {
     "cover": {
@@ -72,7 +72,7 @@
       "acc": { "src": "/today/media/dd-0039/characters/acc.webp", "alt": "Courtroom sketch of Iona Venn", "caption": "Fictional character portrait of the accused", "kind": "portrait" },
       "w1": { "src": "/today/media/dd-0039/characters/w1.webp", "alt": "Courtroom sketch of receptionist Soren Tey", "caption": "Fictional character portrait of a witness", "kind": "portrait" },
       "w2": { "src": "/today/media/dd-0039/characters/w2.webp", "alt": "Courtroom sketch of assistant Elia Marr", "caption": "Fictional character portrait of a witness", "kind": "portrait" },
-      "w3": { "src": "/today/media/dd-0039/characters/w3.webp", "alt": "Courtroom sketch of adviser Pera Sann", "caption": "Fictional character portrait of a witness", "kind": "portrait" },
+      "w3": { "src": "/today/media/dd-0039/characters/w3.webp", "alt": "Courtroom sketch of forensic pathologist Pera Sann", "caption": "Fictional character portrait of a witness", "kind": "portrait" },
       "J-01": { "src": "/today/media/dd-0039/characters/J-01.webp", "alt": "Courtroom sketch of Juror 2", "caption": "Fictional character portrait of a juror", "kind": "portrait" },
       "J-02": { "src": "/today/media/dd-0039/characters/J-02.webp", "alt": "Courtroom sketch of Juror 3", "caption": "Fictional character portrait of a juror", "kind": "portrait" },
       "J-03": { "src": "/today/media/dd-0039/characters/J-03.webp", "alt": "Courtroom sketch of Juror 4", "caption": "Fictional character portrait of a juror", "kind": "portrait" },
@@ -88,184 +88,246 @@
   },
   "beats": [
     {
-      "id": "b1", "kind": "exhibit", "speaker": "dc",
-      "text": "Exhibit one is the lobby recording. At 9:05, a person in Iona Venn’s distinctive red coat crosses the foyer, turns away from the camera, and leaves through the main doors. The receptionist looks up and waves. The person’s face remains outside the camera’s view for the entire recording.",
-      "surface_persuasion": 0.88, "true_weight": 0.18, "direction": "innocence", "reveal_stamp": "misleading",
-      "reveal_note": "The recording proved that the coat left the gallery, but the hidden face meant it never proved that Iona wore the coat.",
-      "tags": ["identity", "timeline"]
-    },
-    {
-      "id": "b2", "kind": "witness", "speaker": "w1", "mode": "examination",
-      "text": "Why did you believe the person in the lobby was Iona Venn? I recognised Iona’s red coat and the person walked with the same quick pace. I did not see the person’s face, but I had watched Iona leave in that coat many times.",
+      "id": "b1", "kind": "witness", "speaker": "w1", "mode": "examination",
+      "text": "Tell us who Nera Vale was at the gallery. Nera chose young artists, remembered every installer’s birthday, and was finishing a free community exhibition that night. When did you last hear from her? At 9:12, she called reception, sounded alert, and asked me to bring a blue folder upstairs after I locked the front desk.",
       "turns": [
-        { "speaker": "pc", "text": "Why did you believe the person in the lobby was Iona Venn?" },
-        { "speaker": "w1", "text": "I recognised Iona’s red coat and the person walked with the same quick pace. I did not see the person’s face, but I had watched Iona leave in that coat many times." }
+        { "speaker": "pc", "text": "Tell us who Nera Vale was at the gallery." },
+        { "speaker": "w1", "text": "Nera chose young artists, remembered every installer’s birthday, and was finishing a free community exhibition that night." },
+        { "speaker": "pc", "text": "When did you last hear from her?" },
+        { "speaker": "w1", "text": "At 9:12, she called reception, sounded alert, and asked me to bring a blue folder upstairs after I locked the front desk." }
       ],
-      "surface_persuasion": 0.66, "true_weight": 0.36, "direction": "innocence", "reveal_stamp": "minor",
-      "reveal_note": "Soren made an honest identification from clothing and movement, not from the departing person’s face.",
-      "tags": ["identity", "credibility"]
-    },
-    {
-      "id": "b3", "kind": "witness", "speaker": "w1", "mode": "cross",
-      "text": "Did the departing person ever turn a visible face toward you or the camera? No. I identified the red coat, not a face. Could another adult have worn that coat? Another adult of similar build could have worn it instead.",
-      "turns": [
-        { "speaker": "dc", "text": "Did the departing person ever turn a visible face toward you or the camera?" },
-        { "speaker": "w1", "text": "No. I identified the red coat, not a face." },
-        { "speaker": "dc", "text": "Could another adult have worn that coat?" },
-        { "speaker": "w1", "text": "Another adult of similar build could have worn it instead." }
-      ],
-      "surface_persuasion": 0.48, "true_weight": 0.52, "direction": "guilt", "reveal_stamp": "minor",
-      "reveal_note": "The concession removed the only eyewitness identification supporting Iona’s apparent departure.",
-      "tags": ["identity", "credibility"]
-    },
-    {
-      "id": "b4", "kind": "exhibit", "speaker": "pc",
-      "text": "Exhibit two combines the reception call and the agreed medical evidence. At 9:12, the victim called reception and asked for a folder to be brought upstairs. The medical evidence places the death shortly after that call and rules out accident or natural causes, attributing the death to deliberate violence by another person. Whoever caused the death remained inside after the red-coated person left at 9:05.",
-      "surface_persuasion": 0.54, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
-      "reveal_note": "The agreed evidence established a deliberate killing after the staged departure, when the victim was unquestionably alive and the coat had already left.",
+      "surface_persuasion": 0.42, "true_weight": 0.5, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "Soren’s direct recollection established that Nera was alive and speaking normally at 9:12, but it did not identify who was upstairs with her.",
       "tags": ["timeline", "causation"]
     },
     {
-      "id": "b5", "kind": "witness", "speaker": "w3", "mode": "examination",
-      "text": "What was due to happen the next morning? The victim planned to sell the gallery building, dissolve the cooperative, and disclose debts that Iona had hidden from the other members. Iona argued that disclosure would destroy twelve livelihoods and everything they had built together.",
+      "id": "b2", "kind": "witness", "speaker": "w1", "mode": "examination",
+      "text": "How was the lobby recording preserved? I managed the camera system. The morning after Nera died, I exported the 8:45-to-9:20 file in an investigator’s presence, checked it against the playback, and signed the evidence copy. Its system hash still matches. What does it show at 9:05? Someone in Iona’s red coat leaves through the main doors without showing their face.",
       "turns": [
-        { "speaker": "pc", "text": "What was due to happen the next morning?" },
-        { "speaker": "w3", "text": "The victim planned to sell the gallery building, dissolve the cooperative, and disclose debts that Iona had hidden from the other members. Iona argued that disclosure would destroy twelve livelihoods and everything they had built together." }
+        { "speaker": "pc", "text": "How was the lobby recording preserved?" },
+        { "speaker": "w1", "text": "I managed the camera system. The morning after Nera died, I exported the 8:45-to-9:20 file in an investigator’s presence, checked it against the playback, and signed the evidence copy. Its system hash still matches." },
+        { "speaker": "pc", "text": "What does it show at 9:05?" },
+        { "speaker": "w1", "text": "Someone in Iona’s red coat leaves through the main doors without showing their face." }
       ],
-      "surface_persuasion": 0.56, "true_weight": 0.42, "direction": "guilt", "reveal_stamp": "minor",
-      "reveal_note": "The planned disclosure supplied a reason for conflict, but motive alone could not identify the person who remained upstairs.",
-      "tags": ["motive", "intent"]
+      "surface_persuasion": 0.62, "true_weight": 0.36, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "Soren authenticated the continuous recording and its export. It reliably showed the coat leaving, while leaving the wearer’s identity unresolved.",
+      "tags": ["identity", "timeline", "procedure"]
+    },
+    {
+      "id": "b3", "kind": "witness", "speaker": "w1", "mode": "cross",
+      "text": "You waved because you recognised the coat, not the face? That’s right. I didn’t see a face. The camera doesn’t cover the rear corridor either, does it? No. The rear door is beyond its view. So the recording cannot show whether Iona used that door before 9:05? It can’t show that, no.",
+      "turns": [
+        { "speaker": "dc", "text": "You waved because you recognised the coat, not the face?" },
+        { "speaker": "w1", "text": "That’s right. I didn’t see a face." },
+        { "speaker": "dc", "text": "The camera doesn’t cover the rear corridor either, does it?" },
+        { "speaker": "w1", "text": "No. The rear door is beyond its view." },
+        { "speaker": "dc", "text": "So the recording cannot show whether Iona used that door before 9:05?" },
+        { "speaker": "w1", "text": "It can’t show that, no." }
+      ],
+      "surface_persuasion": 0.5, "true_weight": 0.56, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "The camera’s two blind spots mattered separately: it did not identify the coat’s wearer, and it could not test Iona’s account of using the rear door.",
+      "tags": ["identity", "alibi", "credibility"]
+    },
+    {
+      "id": "b4", "kind": "witness", "speaker": "w3", "mode": "examination",
+      "text": "What examination did you conduct? I examined Nera Vale the next morning, reviewed the emergency observations, and compared them with the 9:12 call. What could you conclude? Nera died between about 9:13 and 9:28 from a deliberate impact capable of causing death or really serious injury. The findings weren’t consistent with accident, natural illness, or self-infliction.",
+      "turns": [
+        { "speaker": "pc", "text": "What examination did you conduct?" },
+        { "speaker": "w3", "text": "I examined Nera Vale the next morning, reviewed the emergency observations, and compared them with the 9:12 call." },
+        { "speaker": "pc", "text": "What could you conclude?" },
+        { "speaker": "w3", "text": "Nera died between about 9:13 and 9:28 from a deliberate impact capable of causing death or really serious injury. The findings weren’t consistent with accident, natural illness, or self-infliction." }
+      ],
+      "surface_persuasion": 0.54, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "Dr Sann’s examination proved a deliberate homicide in the stated time window and supported the required intent, but did not identify the attacker.",
+      "tags": ["causation", "timeline", "intent"]
+    },
+    {
+      "id": "b5", "kind": "witness", "speaker": "w3", "mode": "cross",
+      "text": "Your time range begins after Nera’s call, but it doesn’t tell us who was in the room? Correct. Medical findings don’t identify a person. And the range is fifteen minutes, not an exact time? Yes. It’s the narrowest responsible estimate. Could your examination show whether someone left through the rear door before 9:05? No, it couldn’t.",
+      "turns": [
+        { "speaker": "dc", "text": "Your time range begins after Nera’s call, but it doesn’t tell us who was in the room?" },
+        { "speaker": "w3", "text": "Correct. Medical findings don’t identify a person." },
+        { "speaker": "dc", "text": "And the range is fifteen minutes, not an exact time?" },
+        { "speaker": "w3", "text": "Yes. It’s the narrowest responsible estimate." },
+        { "speaker": "dc", "text": "Could your examination show whether someone left through the rear door before 9:05?" },
+        { "speaker": "w3", "text": "No, it couldn’t." }
+      ],
+      "surface_persuasion": 0.46, "true_weight": 0.54, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "The medical evidence established what happened to Nera and roughly when, while remaining neutral about identity and the unobserved rear exit.",
+      "tags": ["causation", "timeline", "alibi"]
     },
     {
       "id": "b6", "kind": "witness", "speaker": "w2", "mode": "examination",
-      "text": "Why did you leave the gallery wearing Iona’s coat? Iona asked me to wear it, keep my face turned away, and walk through the lobby at 9:05. She said the camera needed to show her leaving. I understood that she intended to remain upstairs unseen.",
+      "text": "Tell us how you came to wear Iona’s coat. Iona handed it to me around 8:45. She said, “Leave through the lobby, don’t face the camera, and take the coat home.” What did you understand? That she didn’t want Nera to know whether she was still there. I left at 9:05 and didn’t see Iona again.",
       "turns": [
-        { "speaker": "pc", "text": "Why did you leave the gallery wearing Iona’s coat?" },
-        { "speaker": "w2", "text": "Iona asked me to wear it, keep my face turned away, and walk through the lobby at 9:05. She said the camera needed to show her leaving. I understood that she intended to remain upstairs unseen." }
+        { "speaker": "pc", "text": "Tell us how you came to wear Iona’s coat." },
+        { "speaker": "w2", "text": "Iona handed it to me around 8:45. She said, “Leave through the lobby, don’t face the camera, and take the coat home.”" },
+        { "speaker": "pc", "text": "What did you understand?" },
+        { "speaker": "w2", "text": "That she didn’t want Nera to know whether she was still there. I left at 9:05 and didn’t see Iona again." }
       ],
-      "surface_persuasion": 0.5, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
-      "reveal_note": "Elia directly described the staged departure, but her admitted lies meant independent confirmation remained essential.",
+      "surface_persuasion": 0.66, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "Elia described a suspicious request in Iona’s own words. Even if accepted, her evidence stopped at Elia’s departure and did not establish that Iona remained.",
       "tags": ["identity", "credibility", "intent"]
     },
     {
       "id": "b7", "kind": "witness", "speaker": "w2", "mode": "cross",
-      "text": "What did you receive for giving this account? The prosecution agreed not to charge me for helping stage the departure. Did you deny wearing the coat in two earlier interviews? I denied it twice because I feared being blamed for the death.",
+      "text": "You denied wearing the coat in two interviews? I did. I was scared. Then you received immunity for helping with the deception? Yes. You had a staff key to the rear door? Along with six other people. Did you see Iona after 8:45? No. So your belief that she stayed was an assumption? Yes, based on what she’d said.",
       "turns": [
-        { "speaker": "dc", "text": "What did you receive for giving this account?" },
-        { "speaker": "w2", "text": "The prosecution agreed not to charge me for helping stage the departure." },
-        { "speaker": "dc", "text": "Did you deny wearing the coat in two earlier interviews?" },
-        { "speaker": "w2", "text": "I denied it twice because I feared being blamed for the death." }
+        { "speaker": "dc", "text": "You denied wearing the coat in two interviews?" },
+        { "speaker": "w2", "text": "I did. I was scared." },
+        { "speaker": "dc", "text": "Then you received immunity for helping with the deception?" },
+        { "speaker": "w2", "text": "Yes." },
+        { "speaker": "dc", "text": "You had a staff key to the rear door?" },
+        { "speaker": "w2", "text": "Along with six other people." },
+        { "speaker": "dc", "text": "Did you see Iona after 8:45?" },
+        { "speaker": "w2", "text": "No." },
+        { "speaker": "dc", "text": "So your belief that she stayed was an assumption?" },
+        { "speaker": "w2", "text": "Yes, based on what she’d said." }
       ],
-      "surface_persuasion": 0.76, "true_weight": 0.3, "direction": "innocence", "reveal_stamp": "minor",
-      "reveal_note": "Elia had powerful reasons to lie, so her account could not safely carry the case without independent evidence.",
-      "tags": ["credibility", "procedure"]
+      "surface_persuasion": 0.62, "true_weight": 0.56, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "Elia’s immunity and earlier denials required caution. More importantly, she conceded she never observed Iona after 8:45 and inferred that Iona stayed.",
+      "tags": ["credibility", "procedure", "timeline"]
     },
     {
-      "id": "b8", "kind": "exhibit", "speaker": "pc",
-      "text": "Exhibit three is Elia’s personal transit record. Her travel card registered a journey beginning near the gallery soon after 9:05. The card was later found in the red coat’s inner pocket, where Elia routinely kept it. The record independently confirms that Elia, not Iona, travelled away in the coat.",
-      "surface_persuasion": 0.55, "true_weight": 0.76, "direction": "guilt", "reveal_stamp": "decisive",
-      "reveal_note": "The transit record corroborated the compromised witness without relying on her memory, bargain, or honesty.",
+      "id": "b8", "kind": "exhibit", "speaker": "judge",
+      "text": "The parties agree that the transit operator’s records were produced by its records custodian and match the card later recovered from the red coat’s inner pocket. The card began a journey near the gallery at 9:08. You may accept that Elia, who admits carrying the card, travelled away in the coat. The record does not locate Iona.",
+      "surface_persuasion": 0.52, "true_weight": 0.5, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "The authenticated transit record independently confirmed Elia’s journey and part of her account, but supplied no evidence about Iona’s location.",
       "tags": ["identity", "timeline", "digital_forensics"]
     },
     {
-      "id": "b9", "kind": "exhibit", "speaker": "pc",
-      "text": "Exhibit four is a broken clasp recovered from the victim’s closed hand. It fits Iona’s distinctive bracelet exactly. A photograph taken that afternoon shows the clasp intact, while a photograph after the death shows it missing. Laboratory testing found the fracture surfaces were fresh and formed one matching break.",
-      "surface_persuasion": 0.58, "true_weight": 0.88, "direction": "guilt", "reveal_stamp": "decisive",
-      "reveal_note": "The fresh matching break placed Iona in direct contact with the victim after the bracelet had been photographed intact.",
-      "tags": ["identity", "method", "timeline"]
+      "id": "b9", "kind": "witness", "speaker": "acc", "mode": "examination",
+      "text": "What happened after your argument with Nera? We both grabbed a blue folder around four. My bracelet caught, and I thought the clasp had fallen into my sleeve. I left through the rear door before nine because I couldn’t face another argument. Why ask Elia to take the coat? I wanted Nera to think I’d used the lobby. It was childish, not a plan to hurt her.",
+      "turns": [
+        { "speaker": "dc", "text": "What happened after your argument with Nera?" },
+        { "speaker": "acc", "text": "We both grabbed a blue folder around four. My bracelet caught, and I thought the clasp had fallen into my sleeve. I left through the rear door before nine because I couldn’t face another argument." },
+        { "speaker": "dc", "text": "Why ask Elia to take the coat?" },
+        { "speaker": "acc", "text": "I wanted Nera to think I’d used the lobby. It was childish, not a plan to hurt her." }
+      ],
+      "surface_persuasion": 0.48, "true_weight": 0.54, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "Iona accepted arranging the coat deception and offered an innocent explanation. Her account required testing against the rear-door and clasp evidence.",
+      "tags": ["alibi", "credibility", "intent"]
     },
     {
-      "id": "b10", "kind": "witness", "speaker": "acc", "mode": "examination",
-      "text": "How do you explain the coat and the broken clasp? Elia borrowed the coat without asking me. My bracelet broke during an argument with my partner earlier that afternoon, when we both reached for the same folder. I left by a rear door before nine o’clock.",
-      "turns": [
-        { "speaker": "dc", "text": "How do you explain the coat and the broken clasp?" },
-        { "speaker": "acc", "text": "Elia borrowed the coat without asking me. My bracelet broke during an argument with my partner earlier that afternoon, when we both reached for the same folder. I left by a rear door before nine o’clock." }
-      ],
-      "surface_persuasion": 0.54, "true_weight": 0.34, "direction": "innocence", "reveal_stamp": "minor",
-      "reveal_note": "Iona offered innocent explanations for each item, but those explanations had to be tested against her earlier account.",
-      "tags": ["credibility", "timeline", "identity"]
+      "id": "b10", "kind": "exhibit", "speaker": "judge",
+      "text": "By agreement, the rear-door service contractor’s custodian has certified the original audit, its export, and the uninterrupted evidence copy. It records the alarm being disarmed with a shared staff credential at 8:50, the door opening at 8:52 for eleven seconds, then relocking. The audit cannot identify who used the credential. No camera covered that corridor.",
+      "surface_persuasion": 0.62, "true_weight": 0.82, "direction": "innocence", "reveal_stamp": "decisive",
+      "reveal_note": "The authenticated rear-door audit independently supported the timing of Iona’s account. Because the credential was shared and the corridor unfilmed, it did not prove she left, but it left that reasonable possibility open.",
+      "tags": ["alibi", "timeline", "digital_forensics"]
     },
     {
       "id": "b11", "kind": "witness", "speaker": "acc", "mode": "cross",
-      "text": "What did you say in your first interview about physical contact that afternoon? I said there had been no physical contact. Why did you ask a jeweller the next morning to replace a clasp you now say broke earlier? I cannot explain that message.",
+      "text": "In your first interview, you said, “We argued, but there was no struggle,” correct? Yes. You didn’t mention grabbing the folder? I wasn’t asked about the folder. You also said you were home by nine, without mentioning the rear door? I said I’d left before nine. I should’ve explained the door, but I was exhausted and frightened.",
       "turns": [
-        { "speaker": "pc", "text": "What did you say in your first interview about physical contact that afternoon?" },
-        { "speaker": "acc", "text": "I said there had been no physical contact." },
-        { "speaker": "pc", "text": "Why did you ask a jeweller the next morning to replace a clasp you now say broke earlier?" },
-        { "speaker": "acc", "text": "I cannot explain that message." }
+        { "speaker": "pc", "text": "In your first interview, you said, “We argued, but there was no struggle,” correct?" },
+        { "speaker": "acc", "text": "Yes." },
+        { "speaker": "pc", "text": "You didn’t mention grabbing the folder?" },
+        { "speaker": "acc", "text": "I wasn’t asked about the folder." },
+        { "speaker": "pc", "text": "You also said you were home by nine, without mentioning the rear door?" },
+        { "speaker": "acc", "text": "I said I’d left before nine. I should’ve explained the door, but I was exhausted and frightened." }
       ],
-      "surface_persuasion": 0.54, "true_weight": 0.64, "direction": "guilt", "reveal_stamp": "decisive",
-      "reveal_note": "Iona’s changed account and next-morning repair request made the earlier innocent-break explanation unsafe.",
-      "tags": ["credibility", "timeline", "intent"]
+      "surface_persuasion": 0.78, "true_weight": 0.4, "direction": "guilt", "reveal_stamp": "misleading",
+      "reveal_note": "The omissions reasonably damaged Iona’s credibility, but her first account did not deny an earlier folder tug or claim she used the lobby. It could not fill the prosecution’s identity gap.",
+      "tags": ["credibility", "timeline", "alibi"]
     },
     {
-      "id": "b12", "kind": "direction", "speaker": "judge",
-      "text": "Elia Marr admitted lying and received immunity, so examine her evidence with particular care. The prosecution must still make you sure that Iona remained inside, caused the death, and intended death or really serious injury. Consider whether the independent transit, timing, and bracelet evidence reliably confirms Elia’s account. Do not research this fictional case.",
+      "id": "b12", "kind": "witness", "speaker": "w3", "mode": "examination",
+      "text": "How was the clasp recovered and tested? I photographed it in Nera’s closed hand during my examination, placed it in a numbered sterile packet, sealed it, and recorded every transfer to the materials laboratory. What did the agreed laboratory report find? The clasp exactly fitted Iona’s bracelet, and its fracture was recent—within roughly twenty-four hours of recovery.",
+      "turns": [
+        { "speaker": "pc", "text": "How was the clasp recovered and tested?" },
+        { "speaker": "w3", "text": "I photographed it in Nera’s closed hand during my examination, placed it in a numbered sterile packet, sealed it, and recorded every transfer to the materials laboratory." },
+        { "speaker": "pc", "text": "What did the agreed laboratory report find?" },
+        { "speaker": "w3", "text": "The clasp exactly fitted Iona’s bracelet, and its fracture was recent—within roughly twenty-four hours of recovery." }
+      ],
+      "surface_persuasion": 0.64, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "The documented recovery, custody, and agreed comparison reliably connected the clasp to Iona’s bracelet. The broad fracture window did not place the break near Nera’s death.",
+      "tags": ["identity", "method", "procedure"]
+    },
+    {
+      "id": "b13", "kind": "witness", "speaker": "w3", "mode": "cross",
+      "text": "“Within twenty-four hours” includes the four o’clock folder dispute? Yes. The testing can’t distinguish four o’clock from nine fifteen? It can’t. Did you find biological material that timed contact between Iona and Nera? No. Does a clasp in Nera’s hand tell you when she picked it up? No. My examination establishes possession at death, not when or how she obtained it.",
+      "turns": [
+        { "speaker": "dc", "text": "“Within twenty-four hours” includes the four o’clock folder dispute?" },
+        { "speaker": "w3", "text": "Yes." },
+        { "speaker": "dc", "text": "The testing can’t distinguish four o’clock from nine fifteen?" },
+        { "speaker": "w3", "text": "It can’t." },
+        { "speaker": "dc", "text": "Did you find biological material that timed contact between Iona and Nera?" },
+        { "speaker": "w3", "text": "No." },
+        { "speaker": "dc", "text": "Does a clasp in Nera’s hand tell you when she picked it up?" },
+        { "speaker": "w3", "text": "No. My examination establishes possession at death, not when or how she obtained it." }
+      ],
+      "surface_persuasion": 0.58, "true_weight": 0.78, "direction": "innocence", "reveal_stamp": "decisive",
+      "reveal_note": "The expert’s limitations removed the claimed time link. The clasp connected Nera to Iona’s bracelet, but was equally consistent with the earlier folder dispute.",
+      "tags": ["method", "timeline", "identity"]
+    },
+    {
+      "id": "b14", "kind": "direction", "speaker": "judge",
+      "text": "Elia Marr lied twice and received immunity, so assess her evidence with care. The prosecution must prove that Iona remained inside, caused Nera’s death, and intended death or really serious injury. Iona does not have to prove who used the rear door or how Nera obtained the clasp. If, after considering the evidence, you are not sure every element was proved beyond reasonable doubt, your verdict must be Not Guilty.",
       "surface_persuasion": 0.4, "true_weight": 0.5, "direction": "innocence", "reveal_stamp": "minor",
-      "reveal_note": "The direction preserves the burden and prevents Elia’s compromised evidence from becoming proof merely because it is dramatic.",
+      "reveal_note": "The direction keeps the burden on the prosecution and identifies the unresolved location and timing issues without deciding them for the jury.",
       "tags": ["burden", "procedure"]
     }
   ],
   "checkins": [],
-  "verdict_truth": "Guilty",
-  "twist": "The red-coat alibi was true as an image and false as an identification. Elia left wearing Iona’s coat while Iona remained with her partner. Elia’s compromised testimony was independently confirmed by the transit record, the post-9:12 timeline, and the newly broken bracelet.",
+  "verdict_truth": "Not Guilty",
+  "twist": "The coat switch was proved, but the prosecution’s completed inference was not. The transit record located Elia, not Iona; the authenticated rear-door audit was compatible with Iona leaving; and the clasp testing could not distinguish the afternoon dispute from the time of death. The strongest prosecution reading remains that Iona arranged an apparent departure, concealed the rear exit, and left Nera holding her clasp—but those suspicious facts do not prove beyond reasonable doubt that Iona stayed and killed Nera.",
   "difficulty_target": 0.64,
   "jury": {
     "jurors": [
       {
-        "id": "J-01", "seat": 2, "label": "Juror 2 — Anya", "persona": "A careful retiree who will not use Elia’s testimony unless another record confirms it.", "register": "formal", "arc": "principled_holdout",
+        "id": "J-01", "seat": 2, "label": "Juror 2 — Anya", "persona": "Anya listens for what a witness personally observed and resists filling gaps with confidence.", "register": "formal", "arc": "principled_holdout",
         "initial": { "position": "NG", "confidence": 76 }, "weights": { "credibility": 2, "burden": 2, "timeline": 1 },
-        "lines": { "agree": ["The transit record confirms Elia wore the coat without asking us to trust Elia’s word.", "The judge is right that corroboration must do the work here."], "pushback": ["Elia lied twice and received immunity; her unsupported account proves nothing.", "A red coat and a motive cannot establish murder."], "concede": ["I accept the independent records answer part of my concern about Elia."], "holdout": ["I will remain with the burden until the independent evidence closes every material gap."], "final": ["The corroboration is now strong enough for me to decide." ] },
+        "lines": { "agree": ["Can we separate what Elia saw from what she assumed?", "The rear-door record doesn’t prove Iona left, but it means she may have."], "pushback": ["I disagree. The transit record confirms Elia’s journey, not Iona’s location.", "Elia lied twice; why would her unconfirmed assumption make us sure?"], "concede": ["I accept the coat request is real prosecution evidence. I still need the missing location link."], "holdout": ["I’m not crossing that gap just because Iona’s explanation is awkward."], "final": ["For me, the prosecution proved concealment, not who killed Nera."] },
         "reaction_rules": [
           { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "pushback" } },
-          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 15, "line": "concede" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 15, "line": "agree" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "holdout" } }
         ]
       },
       {
-        "id": "J-02", "seat": 3, "label": "Juror 3 — Bram", "persona": "A visual thinker who initially treats the coat as if it were Iona’s face.", "register": "blunt", "arc": "vibes",
-        "initial": { "position": "G", "confidence": 58 }, "weights": { "identity": 2, "digital_forensics": 1 },
-        "lines": { "agree": ["The transit card proves the woman in the coat was Elia, not Iona.", "Once the face disappears, the camera is not an alibi."], "pushback": ["The lobby recording still looks exactly like Iona leaving.", "I am not replacing a visible departure with one witness’s bargain."], "concede": ["I accept that I identified a coat rather than a person."], "final": ["The image changed meaning when the transit record identified the wearer."] },
+        "id": "J-02", "seat": 3, "label": "Juror 3 — Bram", "persona": "Bram keeps replaying the vivid coat footage and needs prompting to name what it does not show.", "register": "blunt", "arc": "vibes",
+        "initial": { "position": "G", "confidence": 58 }, "weights": { "identity": 2, "alibi": 2, "digital_forensics": 1 },
+        "lines": { "agree": ["Right, the camera misses both the face and the rear door.", "If Elia’s in the coat, why did I keep seeing Iona when I watched it?"], "pushback": ["But Iona arranged the trick. Doesn’t that count for something?", "I can’t just shrug off Nera holding Iona’s clasp."], "concede": ["Wait—I was treating the coat like a face. The recording never gave us one."], "final": ["The picture looked complete before we asked what was outside its frame."] },
         "reaction_rules": [
-          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 15, "line": "concede" } },
-          { "when": { "theme": "identity", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 14, "line": "pushback" } },
+          { "when": { "theme": "identity", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 14, "line": "concede" } },
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 15, "line": "concede" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
       },
       {
-        "id": "J-03", "seat": 4, "label": "Juror 4 — Cora", "persona": "A project planner who builds the night minute by minute before judging anyone’s motive.", "register": "plain", "arc": "steady",
+        "id": "J-03", "seat": 4, "label": "Juror 4 — Cora", "persona": "Cora writes down every time, then checks which person each timestamp actually locates.", "register": "plain", "arc": "steady",
         "initial": { "position": "NG", "confidence": 74 }, "weights": { "timeline": 2, "causation": 2 },
-        "lines": { "agree": ["The victim was alive seven minutes after the staged departure.", "The timing places the killer inside after Elia left in the coat."], "pushback": ["Debt explains an argument, not the sequence of the death.", "I need every time anchored to the reception call."], "concede": ["The reception call gives the timeline a reliable centre."], "final": ["The sequence is consistent from the coat departure to the later death."] },
+        "lines": { "agree": ["At 8:52 the rear door opens; at 9:05 Elia leaves; at 9:12 Nera calls. Where’s Iona in that sequence?", "The medical window starts after the only record consistent with Iona leaving."], "pushback": ["No, the 9:12 call proves Nera was alive. It doesn’t place Iona beside her.", "Which timestamp actually closes the rear-door possibility?"], "concede": ["I’ll accept that the coat plan looks bad. It still doesn’t answer the location question."], "final": ["The times establish a homicide, but they don’t complete the identification."] },
         "reaction_rules": [
-          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 12, "line": "agree" } },
-          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 10, "line": "pushback" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
+          { "when": { "theme": "causation", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 8, "line": "concede" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
       },
       {
-        "id": "J-04", "seat": 5, "label": "Juror 5 — Dev", "persona": "An undecided analyst who changes position only when separate sources converge.", "register": "formal", "arc": "mind_changer",
+        "id": "J-04", "seat": 5, "label": "Juror 5 — Dev", "persona": "Dev begins on the prosecution side but changes course when independent records do not support the same inference.", "register": "formal", "arc": "mind_changer",
         "initial": { "position": "G", "confidence": 52 }, "weights": { "identity": 2, "timeline": 2, "method": 1 },
-        "lines": { "agree": ["The transit card and broken clasp are independent of Elia’s bargain.", "Three separate records now support the same staged-departure account."], "pushback": ["One compromised witness cannot turn an ambiguous camera into certainty.", "I am looking for convergence, not another repetition of Elia’s story."], "concede": ["The independent records remove the main reason I withheld judgment."], "final": ["The separate strands converge on one conclusion."] },
+        "lines": { "agree": ["The records are independent, but they don’t converge on Iona staying.", "The rear audit and the fracture limit point away from the prosecution’s completed timeline."], "pushback": ["I started with guilt because the coat request looked planned. What independent item takes the next step?", "Are we combining gaps, or combining proof?"], "concede": ["I’ve changed my view. The clasp and transit evidence corroborate details, not the alleged killing."], "final": ["Separate records matter only if they prove the proposition we’re deciding."] },
         "reaction_rules": [
-          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 18, "line": "concede" } },
-          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 12, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 18, "line": "concede" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 12, "line": "agree" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
       },
       {
-        "id": "J-05", "seat": 6, "label": "Juror 6 — Eren", "persona": "A repair technician who pays close attention to the fresh matching fracture.", "register": "plain", "arc": "steady",
+        "id": "J-05", "seat": 6, "label": "Juror 6 — Eren", "persona": "Eren asks experts to translate ranges and limits before giving scientific language extra weight.", "register": "plain", "arc": "steady",
         "initial": { "position": "U", "confidence": 38 }, "weights": { "method": 2, "identity": 1 },
-        "lines": { "agree": ["A fresh matching fracture is stronger than a guess about when the bracelet broke.", "The clasp puts Iona in direct contact after the bracelet was photographed intact."], "pushback": ["A broken object needs a reliable time before it identifies anyone.", "I will not treat laboratory language as magic."], "concede": ["The afternoon photograph and fresh fracture give the clasp a clear time window."], "final": ["The physical break is consistent with the rest of the timeline."] },
+        "lines": { "agree": ["‘Recent’ sounded precise until Dr Sann said it meant a whole day.", "The match tells us whose bracelet it came from. It doesn’t tell us when it broke."], "pushback": ["Can someone point to a test that separates four o’clock from nine fifteen?", "I’m not ignoring the clasp. I’m refusing to give it a timestamp it doesn’t have."], "concede": ["All right, I’d been treating possession at death as contact at death. They aren’t the same."], "final": ["The science supports a match, not the prosecution’s time of contact."] },
         "reaction_rules": [
-          { "when": { "theme": "method", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 12, "line": "agree" } },
-          { "when": { "theme": "method", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -8, "line": "pushback" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 14, "line": "concede" } },
+          { "when": { "theme": "method", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 8, "line": "pushback" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
       },
       {
-        "id": "J-06", "seat": 7, "label": "Juror 7 — Fia", "persona": "A union delegate who distrusts immunity bargains and workplace blame-shifting.", "register": "blunt", "arc": "burden_drifter",
+        "id": "J-06", "seat": 7, "label": "Juror 7 — Fia", "persona": "Fia distrusts bargains and sometimes catches herself demanding answers from the accused.", "register": "blunt", "arc": "burden_drifter",
         "initial": { "position": "NG", "confidence": 75 }, "weights": { "credibility": 2, "procedure": 2, "burden": 1 },
-        "lines": { "agree": ["Elia’s immunity means every important claim needs outside support.", "The judge told us to handle the compromised testimony with care."], "pushback": ["Elia saved herself by pointing at Iona; that is not clean evidence.", "If Iona is innocent, she should explain why Elia chose her coat."], "concede": ["The transit card supports Elia without depending on her bargain."], "burden_drift": ["I keep wanting Iona to prove why Elia wore the coat, even though that is not Iona’s burden."], "final": ["I decide only after separating Elia’s bargain from the independent records."] },
+        "lines": { "agree": ["Elia told the truth about travelling only after immunity. Why should I trust the part no record confirms?", "Yes, the bargain doesn’t erase her evidence; it means we test every piece."], "pushback": ["Hold on. Iona arranged the coat trick, and I want an honest reason why.", "Elia’s account isn’t clean just because one travel record matches it."], "concede": ["The transit card confirms Elia left. I agree it stops there."], "burden_drift": ["I was about to say Iona should prove the rear-door user. That’s backwards, isn’t it?"], "final": ["Once I put the burden back, Elia’s assumption couldn’t carry the missing step."] },
         "reaction_rules": [
           { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 10, "line": "agree" } },
           { "when": { "theme": "burden", "stance": "any" }, "effect": { "delta": -1, "confidence": -10, "line": "burden_drift" } },
@@ -273,52 +335,52 @@
         ]
       },
       {
-        "id": "J-07", "seat": 8, "label": "Juror 8 — Garen", "persona": "An accountant who understands hidden debt but refuses to turn it directly into intent.", "register": "formal", "arc": "steady",
-        "initial": { "position": "G", "confidence": 54 }, "weights": { "motive": 2, "intent": 2 },
-        "lines": { "agree": ["The planned disclosure explains why that evening mattered to Iona.", "The staged departure shows planning beyond an ordinary financial argument."], "pushback": ["Concealing debt is not proof of an intention to kill.", "A desperate motive remains only context until conduct confirms it."], "concede": ["The motive gains weight when it is paired with the deliberate coat substitution."], "final": ["I use the debt as context, not as a substitute for proof."] },
+        "id": "J-07", "seat": 8, "label": "Juror 8 — Garen", "persona": "Garen sees the coat request as planning, yet keeps asking what that planning was intended to achieve.", "register": "formal", "arc": "steady",
+        "initial": { "position": "G", "confidence": 54 }, "weights": { "intent": 2, "identity": 1, "timeline": 1 },
+        "lines": { "agree": ["The request was deliberate, but was it a plan to avoid Nera or a plan to kill her?", "Planning a false appearance is probative. It still needs a connection to the homicide."], "pushback": ["I’m not comfortable dismissing a carefully arranged deception as childish.", "If the coat wasn’t about the killing, what was it about?"], "concede": ["I accept the rear-door timing gives the lesser explanation real support."], "final": ["The prosecution proved a deception, but not the murderous purpose it alleged."] },
         "reaction_rules": [
           { "when": { "theme": "intent", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 12, "line": "agree" } },
-          { "when": { "theme": "motive", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -8, "line": "pushback" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 12, "line": "concede" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
       },
       {
-        "id": "J-08", "seat": 9, "label": "Juror 9 — Hali", "persona": "A counsellor who understands fear-driven lies without confusing that empathy with proof.", "register": "hesitant", "arc": "drifter",
-        "initial": { "position": "NG", "confidence": 72 }, "weights": { "credibility": 2, "coercion": 1, "timeline": 1 },
-        "lines": { "agree": ["Elia’s fear may explain her lies, but explanation does not make her account true.", "Independent records are the only safe way to use Elia’s evidence."], "pushback": ["I can understand Elia’s fear and still doubt her accusation.", "The immunity bargain keeps pulling me away from certainty."], "concede": ["The transit record confirms the most important part of Elia’s account."], "final": ["I separate why Elia lied from whether the independent evidence confirms her."] },
+        "id": "J-08", "seat": 9, "label": "Juror 9 — Hali", "persona": "Hali speaks tentatively, revisits first impressions, and distinguishes an understandable lie from a reliable account.", "register": "hesitant", "arc": "drifter",
+        "initial": { "position": "NG", "confidence": 72 }, "weights": { "credibility": 2, "alibi": 1, "timeline": 1 },
+        "lines": { "agree": ["Maybe Elia was frightened. But that explains the lie; it doesn’t verify the accusation, does it?", "I think the rear-door record matters because it supports something other than Elia’s assumption."], "pushback": ["I’m still bothered that Iona asked Elia to hide her face.", "Could the clasp in Nera’s hand really be only coincidence? I’m not sure."], "concede": ["Yes—I was letting the strange coat request answer a different question."], "final": ["I can believe parts of Elia’s account without being sure Iona killed Nera."] },
         "reaction_rules": [
-          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 10, "line": "concede" } },
-          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 8, "line": "pushback" } },
+          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": 8, "line": "agree" } },
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 10, "line": "agree" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
       },
       {
-        "id": "J-09", "seat": 10, "label": "Juror 10 — Ivo", "persona": "A retired solicitor who keeps motive, identity, causation, and intent in separate boxes.", "register": "formal", "arc": "foreperson",
-        "initial": { "position": "U", "confidence": 34 }, "weights": { "burden": 2, "causation": 2, "intent": 1 },
-        "lines": { "agree": ["The independent evidence addresses identity and timing; the staged departure addresses intent.", "We can assess weak strands together without pretending any one strand is conclusive."], "pushback": ["Motive cannot prove identity, and identity cannot alone prove murderous intent.", "We should test each element before discussing a final verdict."], "concede": ["The combined evidence now answers each element separately."], "burden_correct": ["Iona does not have to explain the crime; the prosecution must prove every element."], "final": ["I am satisfied only after checking causation, intent, and the burden separately."] },
+        "id": "J-09", "seat": 10, "label": "Juror 10 — Ivo", "persona": "Ivo keeps the discussion orderly by asking the room to test one element and one inference at a time.", "register": "formal", "arc": "foreperson",
+        "initial": { "position": "U", "confidence": 34 }, "weights": { "burden": 2, "causation": 2, "timeline": 1 },
+        "lines": { "agree": ["Let’s mark what is agreed: Nera was murdered after 9:12. Identity remains separate.", "The rear-door record does not establish an alibi, but it prevents us from assuming continued presence."], "pushback": ["Which element are we addressing with that point?", "We can consider the strands together only after stating what each strand proves."], "concede": ["I accept the prosecution’s evidence establishes a deliberate killing. It still has to establish Iona caused it."], "burden_correct": ["Fia, you caught it: Iona doesn’t have to identify the rear-door user. The prosecution has to exclude the reasonable possibility."], "final": ["I’m not sure the identity element was proved, so the legal direction determines my verdict."] },
         "reaction_rules": [
           { "when": { "theme": "burden", "stance": "any" }, "effect": { "delta": 1, "confidence": 10, "line": "burden_correct" } },
-          { "when": { "theme": "causation", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 12, "line": "agree" } },
+          { "when": { "theme": "timeline", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 12, "line": "agree" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
       },
       {
-        "id": "J-10", "seat": 11, "label": "Juror 11 — Jessa", "persona": "A sceptical editor who compares every later explanation with the speaker’s first words.", "register": "blunt", "arc": "steady",
-        "initial": { "position": "G", "confidence": 58 }, "weights": { "credibility": 2, "timeline": 1 },
-        "lines": { "agree": ["Iona first denied any contact, then invented an earlier bracelet break.", "The next-morning repair message conflicts with the new explanation."], "pushback": ["People remember arguments badly, so one changed phrase is not enough.", "Elia changed her account more often than Iona did."], "concede": ["The repair request makes Iona’s changed account materially important."], "final": ["The account changes matter because the physical evidence fixes their timing."] },
+        "id": "J-10", "seat": 11, "label": "Juror 11 — Jessa", "persona": "Jessa notices changed accounts quickly, but will revise a sharp first reaction when the actual words are read back.", "register": "blunt", "arc": "steady",
+        "initial": { "position": "G", "confidence": 58 }, "weights": { "credibility": 2, "timeline": 1, "method": 2 },
+        "lines": { "agree": ["Read Iona’s first words again. She denied a struggle, not every bit of contact.", "The lab can’t time the break. That knocks out the point I thought was strongest."], "pushback": ["She left out the rear door. I’m allowed to think that looks bad.", "Why should we accept Iona’s correction when we reject Elia’s?"], "concede": ["All right, I overstated the first interview. The omission hurts credibility; it isn’t a contradiction on the clasp."], "final": ["The changed account raised suspicion, but the expert couldn’t give it a time link."] },
         "reaction_rules": [
-          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 12, "line": "agree" } },
-          { "when": { "theme": "credibility", "stance": "unreliable", "direction": "innocence" }, "effect": { "delta": 1, "confidence": -8, "line": "pushback" } },
+          { "when": { "theme": "credibility", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 1, "confidence": 8, "line": "pushback" } },
+          { "when": { "theme": "method", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 12, "line": "concede" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
       },
       {
-        "id": "J-11", "seat": 12, "label": "Juror 12 — Kellan", "persona": "A teacher who corrects anyone who asks Iona to solve the case for the prosecution.", "register": "plain", "arc": "steady",
-        "initial": { "position": "G", "confidence": 52 }, "weights": { "burden": 2, "procedure": 2, "identity": 1 },
-        "lines": { "agree": ["The prosecution has supplied independent evidence for the staged departure.", "The issue is whether their proof makes us sure, not whether Iona can prove another story."], "pushback": ["We cannot make Iona identify someone else before considering not guilty.", "Elia’s bargain means we must demand corroboration, not abandon the burden."], "concede": ["The transit and bracelet evidence supply the corroboration I required."], "burden_correct": ["The defence does not have to explain who else caused the death; the prosecution must prove Iona did."], "final": ["I have kept the burden on the prosecution throughout my decision."] },
+        "id": "J-11", "seat": 12, "label": "Juror 12 — Kellan", "persona": "Kellan tests every proposed verdict against the judge’s words and invites corrections when the room shifts the burden.", "register": "plain", "arc": "steady",
+        "initial": { "position": "G", "confidence": 52 }, "weights": { "burden": 2, "procedure": 2, "identity": 1, "alibi": 2 },
+        "lines": { "agree": ["We don’t have to decide who used the rear door. We have to decide whether that possibility is reasonably open.", "The coat evidence proves a deception, not the identity of Nera’s attacker."], "pushback": ["Can we say exactly which evidence makes us sure Iona stayed?", "Elia’s bargain doesn’t make her evidence worthless, but what confirms her assumption?"], "concede": ["I came in leaning guilty. The rear record means I can’t simply place Iona upstairs."], "burden_correct": ["Not so fast—asking Iona to solve the missing minutes puts the burden on the wrong person."], "final": ["The direction answers it: I’m not sure Iona caused Nera’s death."] },
         "reaction_rules": [
           { "when": { "theme": "burden", "stance": "any" }, "effect": { "delta": 1, "confidence": 12, "line": "burden_correct" } },
-          { "when": { "theme": "digital_forensics", "stance": "proves", "direction": "guilt" }, "effect": { "delta": 2, "confidence": 12, "line": "concede" } },
+          { "when": { "theme": "alibi", "stance": "proves", "direction": "innocence" }, "effect": { "delta": 2, "confidence": 12, "line": "concede" } },
           { "when": { "theme": "any", "stance": "any" }, "effect": { "delta": 0, "confidence": 0, "line": "pushback" } }
         ]
       }
