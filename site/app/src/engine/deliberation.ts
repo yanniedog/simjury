@@ -388,9 +388,11 @@ function raiseBeat(
     explicitPush ??
     (stance === 'proves'
       ? beat.direction
-      : beat.direction === 'guilt'
-        ? 'innocence'
-        : 'guilt')
+      : stance === 'probe'
+        ? 'neutral'
+        : beat.direction === 'guilt'
+          ? 'innocence'
+          : 'guilt')
   const eventType = beat.kind === 'direction' ? 'cite' : 'argue'
   emit(state, {
     actor,

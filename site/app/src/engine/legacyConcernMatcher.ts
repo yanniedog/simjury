@@ -43,6 +43,8 @@ export function legacyLanguagePack(
   notes: SittingNote[],
 ): DeliberationLanguagePack {
   const tags = [...new Set(trial.beats.flatMap(({ tags: beatTags }) => beatTags))]
+  const playerNotes = notesForOwner(notes, PLAYER_NOTE_OWNER)
+  const noteByBeatId = new Map(playerNotes.map((note) => [note.beatId, note.text]))
   return {
     caseId: trial.id,
     issues: tags.map((tag) => ({
@@ -52,8 +54,6 @@ export function legacyLanguagePack(
     })),
     evidence: trial.beats.map((beat, index) => {
       const speaker = trial.cast.find(({ id }) => id === beat.speaker)
-      const note = notesForOwner(notes, PLAYER_NOTE_OWNER)
-        .find(({ beatId }) => beatId === beat.id)?.text
       return {
         id: beat.id,
         label: memoryLabel(trial, beat.id).title,
@@ -61,7 +61,7 @@ export function legacyLanguagePack(
           `point ${index + 1}`,
           speaker?.name,
           speaker?.role_label,
-          note,
+          noteByBeatId.get(beat.id),
           ...beat.tags.map(words),
         ]),
         issueIds: beat.tags,
@@ -84,8 +84,14 @@ export function interpretLegacyConcern(
     legacyLanguagePack(trial, notes),
     targetSeat,
   )
-  const evidenceBeat = understanding.frame.evidenceIds.find((beatId) =>
+  const matchedEvidenceIds = understanding.frame.evidenceIds.filter((beatId) =>
     trial.beats.some(({ id }) => id === beatId))
+  // When several recollections match, keep the player's selected chip.
+  const selectedEvidenceMatched = matchedEvidenceIds.includes(preferredBeatId)
+  const ambiguousEvidence = matchedEvidenceIds.length > 1 && !selectedEvidenceMatched
+  const evidenceBeat = selectedEvidenceMatched || ambiguousEvidence
+    ? preferredBeatId
+    : matchedEvidenceIds[0]
   const preferred = trial.beats.find(({ id }) => id === preferredBeatId)
   const issueBeat = understanding.frame.issueId
     ? (
@@ -99,7 +105,9 @@ export function interpretLegacyConcern(
   return {
     understanding,
     beatId,
-    clarification: understanding.needsClarification
+    clarification: ambiguousEvidence
+      ? 'That could refer to more than one recollection. Choose the numbered point you mean, then use it anyway.'
+      : understanding.needsClarification
       ? `${understanding.clarification} You can also choose a numbered recollection below, then use it anyway.`
       : null,
   }
@@ -118,17 +126,23 @@ export function actionForConcern(
     summary: concern.understanding.playerText.replace(/\s+/g, ' ').trim().slice(0, 500),
     targetJurorId,
   }
-  const push =
-    claimedPosition === 'G'
-      ? 'guilt'
-      : claimedPosition === 'NG'
-        ? 'innocence'
-        : 'neutral'
-  if (beat.kind === 'direction') return { type: 'cite_direction', push, ...shared }
+  // Legal directions stay neutral cites — never invert a burden/doubt
+  // direction into a guilt or innocence push from the claimed button.
+  if (beat.kind === 'direction') {
+    return { type: 'cite_direction', push: 'neutral', ...shared }
+  }
+  if (claimedPosition === 'U') {
+    return {
+      type: 'argue',
+      stance: 'probe',
+      push: 'neutral',
+      ...shared,
+    }
+  }
   return {
     type: 'argue',
     stance: claimedPosition === 'G' ? 'proves' : 'unreliable',
-    push,
+    push: claimedPosition === 'G' ? 'guilt' : 'innocence',
     ...shared,
   }
 }

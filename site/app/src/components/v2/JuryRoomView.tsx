@@ -228,9 +228,13 @@ function FeedLine({
         ? `${verb} the judge’s direction from memory.`
         : e.stance === 'proves'
           ? `${verb} a point from recollection.`
-          : who === 'You'
-            ? 'challenge whether that recollection holds.'
-            : 'challenges whether that recollection holds.'
+          : e.stance === 'probe'
+            ? who === 'You'
+              ? 'ask the room to test that recollection.'
+              : 'asks the room to test that recollection.'
+            : who === 'You'
+              ? 'challenge whether that recollection holds.'
+              : 'challenges whether that recollection holds.'
     return (
       <li className="rounded-lg border border-neutral-700 bg-neutral-800/60 p-3">
         <p className="text-xs font-semibold text-neutral-300">{who}</p>
@@ -360,6 +364,7 @@ export function JuryRoomView({
   const [notesOwner, setNotesOwner] = useState<string | null>(null)
   const [concernText, setConcernText] = useState('')
   const [concernFeedback, setConcernFeedback] = useState<string | null>(null)
+  const [pendingClaim, setPendingClaim] = useState<ClaimedPosition | null>(null)
   const [targetJurorId, setTargetJurorId] = useState('')
   const [stirredIds, setStirredIds] = useState<readonly string[]>([])
   const transcriptRef = useRef<HTMLUListElement>(null)
@@ -584,6 +589,7 @@ export function JuryRoomView({
     setRaising(false)
     raisingRef.current = false
     setConcernFeedback(null)
+    setPendingClaim(null)
   }
 
   function submitConcern(position: ClaimedPosition, useSelected = false) {
@@ -591,6 +597,7 @@ export function JuryRoomView({
       setConcernFeedback('Put your concern in your own words first.')
       return
     }
+    const claimed = useSelected ? (pendingClaim ?? position) : position
     const targetSeat = trial.jury.jurors.find(({ id }) => id === targetJurorId)?.seat
     const interpreted = interpretLegacyConcern(
       trial,
@@ -600,6 +607,7 @@ export function JuryRoomView({
       targetSeat,
     )
     if (interpreted.clarification && !useSelected) {
+      setPendingClaim(position)
       setSelectedBeat(interpreted.beatId)
       setConcernFeedback(interpreted.clarification)
       return
@@ -611,11 +619,12 @@ export function JuryRoomView({
     runRound(actionForConcern(
       trial,
       concern,
-      position,
+      claimed,
       targetJurorId || undefined,
     ))
     setConcernText('')
     setConcernFeedback(null)
+    setPendingClaim(null)
   }
 
   function skipListening() {
@@ -1030,7 +1039,7 @@ export function JuryRoomView({
           {concernFeedback ? (
             <button
               type="button"
-              onClick={() => submitConcern('U', true)}
+              onClick={() => submitConcern(pendingClaim ?? 'U', true)}
               className="w-full rounded-lg bg-neutral-100 px-4 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
             >
               Use selected recollection anyway
