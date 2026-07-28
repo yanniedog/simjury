@@ -109,16 +109,19 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: .scyllasband
-          key: scyllasband-onnx-int8-v1-${{ hashFiles('site/scylla-narration-requirements.txt') }}
+          key: scyllasband-onnx-int8-v2-${{ hashFiles('site/scylla-narration-requirements.txt') }}
           restore-keys: |
-            scyllasband-onnx-int8-v1-
+            scyllasband-onnx-int8-v2-
       - name: Install Scylla's Band (CPU ONNX INT8)
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
           python -m pip install --upgrade pip
           pip install -r site/scylla-narration-requirements.txt
-          if [[ ! -d .scyllasband/.git ]]; then
+          if [[ -d .scyllasband/.git ]]; then
+            git -C .scyllasband fetch --depth 1 origin main
+            git -C .scyllasband reset --hard origin/main
+          else
             rm -rf .scyllasband
             git clone --depth 1 https://github.com/lowkeytea/scyllasband.git .scyllasband
           fi
