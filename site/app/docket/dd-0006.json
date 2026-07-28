@@ -367,7 +367,7 @@
     }
   ],
   "checkins": [],
-  "verdict_truth": "Guilty",
+  "reference_verdict": "Guilty",
   "twist": "The authors’ intended resolution is Guilty on principal liability, not because Corin owned a synthetic-media studio. The central inference is that Corin’s non-exportable token was freshly confirmed while certified footage placed the token and Corin together during the activation window; Jori’s advance instruction and the unapproved risk scenario support intent. The strongest reasonable opposing interpretation is that Daro used shared project access and briefly reached the bag through the unfilmed side entrance, while Corin’s writing described a legitimate safety demonstration.",
   "difficulty_target": 0.72,
   "jury": {

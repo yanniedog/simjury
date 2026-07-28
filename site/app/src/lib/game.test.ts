@@ -21,7 +21,7 @@ function beat(overrides: Partial<TrialCase['beats'][number]>) {
   }
 }
 
-function trial(beats: TrialCase['beats'], verdict_truth: TrialCase['verdict_truth']): TrialCase {
+function trial(beats: TrialCase['beats'], reference_verdict: TrialCase['reference_verdict']): TrialCase {
   return {
     id: 'd-0001',
     publish_date: '2026-01-01',
@@ -31,7 +31,7 @@ function trial(beats: TrialCase['beats'], verdict_truth: TrialCase['verdict_trut
     charge: 'c',
     elements: ['one', 'two'],
     beats,
-    verdict_truth,
+    reference_verdict,
     twist: 'x',
     difficulty_target: 0.5,
     gen_meta: { model: 'm', prompt_version: 'p', reviewer: 'r', batch_pr: 'b' },
@@ -71,8 +71,8 @@ describe('analyzePlay', () => {
   const t = trial(beats, 'Not Guilty')
 
   it('marks a matching verdict correct', () => {
-    expect(analyzePlay(t, [60, 40, 45], 'Not Guilty').correct).toBe(true)
-    expect(analyzePlay(t, [60, 40, 45], 'Guilty').correct).toBe(false)
+    expect(analyzePlay(t, [60, 40, 45], 'Not Guilty').matchesReference).toBe(true)
+    expect(analyzePlay(t, [60, 40, 45], 'Guilty').matchesReference).toBe(false)
   })
 
   it('counts the first beat against the neutral start', () => {

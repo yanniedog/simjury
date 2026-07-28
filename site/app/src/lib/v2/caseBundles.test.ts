@@ -18,7 +18,7 @@ import {
 
 function makeTrial(): DocketCaseV4 {
   const raw = structuredClone(makeDocketCase()) as unknown as Record<string, unknown>
-  delete raw.verdict_truth
+  delete raw.reference_verdict
   delete raw.twist
   delete raw.epilogue
   delete (raw.accused as Record<string, unknown>).if_guilty

@@ -294,7 +294,7 @@
     }
   ],
   "checkins": [],
-  "verdict_truth": "Not Guilty",
+  "reference_verdict": "Not Guilty",
   "twist": "The authors’ reference resolution is Not Guilty. The authenticated restart entry maps the lobby frame to 1:13, before Dax arrived, and the centrally timed carriage image then identifies Lena away during the fatal window. The strongest prosecution interpretation is that her hidden visit, lie, and access to the shared credential show a planned deception. Those facts are probative, but they do not overcome the verified sequence or identify her in the fatal encounter.",
   "difficulty_target": 0.42,
   "jury": {

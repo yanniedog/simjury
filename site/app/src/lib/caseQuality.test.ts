@@ -33,7 +33,7 @@ function make(overrides: Partial<TrialCase> = {}): TrialCase {
       beat({ id: 'b3', direction: 'innocence', reveal_stamp: 'minor', surface_persuasion: 0.3, true_weight: 0.3 }),
       beat({ id: 'b4', direction: 'guilt', reveal_stamp: 'minor', surface_persuasion: 0.4, true_weight: 0.4 }),
     ],
-    verdict_truth: 'Not Guilty',
+    reference_verdict: 'Not Guilty',
     twist: 'x',
     difficulty_target: 0.5,
     gen_meta: { model: 'm', prompt_version: 'p', reviewer: 'r', batch_pr: 'b' },
@@ -105,20 +105,20 @@ describe('checkCase', () => {
 
   it('flags an unsolvable case (decisive evidence contradicts the verdict)', () => {
     // Same beats, but claim the verdict is Guilty while decisive beat points innocence.
-    expect(checkCase(make({ verdict_truth: 'Guilty' })).join()).toMatch(
-      /point to the true verdict/,
+    expect(checkCase(make({ reference_verdict: 'Guilty' })).join()).toMatch(
+      /support the reference verdict/,
     )
   })
 
-  it('flags a trap that points toward the true verdict instead of away from it', () => {
+  it('flags a trap that points toward the reference verdict instead of away from it', () => {
     const c = make({
       beats: make().beats.map((b) =>
-        // make()'s trap is 'guilt' against a 'Not Guilty' truth (correctly misleading);
-        // flip it to 'innocence' so it now reinforces the truth instead.
+        // The fixture's trap argues guilt against a Not Guilty reference;
+        // flip it to innocence so it reinforces the reference instead.
         b.reveal_stamp === 'misleading' ? { ...b, direction: 'innocence' } : b,
       ),
     })
-    expect(checkCase(c).join()).toMatch(/must point away from the true verdict/)
+    expect(checkCase(c).join()).toMatch(/must point away from the reference verdict/)
   })
 
   it('flags a misleading beat that secretly carries decisive weight', () => {
@@ -139,7 +139,7 @@ describe('checkCase', () => {
     // ones against it (3 vs 2 by count), but the heavy pair outweighs them —
     // the case is unsolvable "on average" even though it looks fine by count.
     const c = make({
-      verdict_truth: 'Guilty',
+      reference_verdict: 'Guilty',
       beats: [
         beat({ id: 'b1', direction: 'innocence', reveal_stamp: 'misleading', surface_persuasion: 0.85, true_weight: 0.2 }),
         beat({ id: 'b2', direction: 'guilt', reveal_stamp: 'decisive', surface_persuasion: 0.3, true_weight: 0.6 }),
@@ -149,7 +149,7 @@ describe('checkCase', () => {
         beat({ id: 'b6', direction: 'innocence', reveal_stamp: 'decisive', surface_persuasion: 0.3, true_weight: 1 }),
       ],
     })
-    expect(checkCase(c).join()).toMatch(/point to the true verdict/)
+    expect(checkCase(c).join()).toMatch(/support the reference verdict/)
   })
 })
 
@@ -161,7 +161,7 @@ describe('checkQueue', () => {
         id: 'd-0002',
         publish_date: '2026-01-02',
         title: 'B',
-        verdict_truth: 'Guilty',
+        reference_verdict: 'Guilty',
         beats: [
           beat({ id: 'b1', direction: 'innocence', reveal_stamp: 'misleading', surface_persuasion: 0.8, true_weight: 0.2 }),
           beat({ id: 'b2', direction: 'guilt', reveal_stamp: 'decisive', surface_persuasion: 0.4, true_weight: 0.9 }),

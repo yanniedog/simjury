@@ -7,7 +7,7 @@ export interface ShareInput {
   currentStreak?: number
   /**
    * The jury room's own result (docket loop). Spoiler-safe by construction:
-   * the room's split says nothing about the true verdict or the player's.
+   * the room's split says nothing about the reference verdict or the player's.
    */
   room?: { kind: 'unanimous' | 'majority' | 'hung'; g: number; ng: number }
 }

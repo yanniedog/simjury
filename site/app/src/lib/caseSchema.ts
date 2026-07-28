@@ -16,7 +16,7 @@ export const beatSchema = z.object({
   text: z.string().min(1),
   /** How convincing the beat *feels* (0..1). */
   surface_persuasion: z.number().min(0).max(1),
-  /** What the beat is *actually* worth to the truth (0..1). */
+  /** The authors' editorial assessment of the beat's probative weight (0..1). */
   true_weight: z.number().min(0).max(1),
   direction: z.enum(['guilt', 'innocence']),
   reveal_stamp: z.enum(['decisive', 'minor', 'misleading']),
@@ -32,7 +32,7 @@ export const caseSchema = z.object({
   charge: z.string().min(1),
   elements: z.array(z.string().min(1)).min(2).max(4),
   beats: z.array(beatSchema).min(4).max(6),
-  verdict_truth: z.enum(['Guilty', 'Not Guilty']),
+  reference_verdict: z.enum(['Guilty', 'Not Guilty']),
   twist: z.string().min(1),
   difficulty_target: z.number().min(0).max(1),
   gen_meta: z.object({
