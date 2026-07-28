@@ -78,7 +78,7 @@ export function DocketVerdict({
 
       <p className="text-center text-sm leading-relaxed text-neutral-400">
         The court will retire you to deliberate with the other jurors. You lock your
-        own verdict after that discussion — not before.
+        own position after that discussion — not before.
       </p>
 
       <button

@@ -2,7 +2,7 @@ import type { DocketBeat, DocketCase } from './caseSchema'
 
 /**
  * Verdict-only analysis for the docket loop. Mid-trial check-ins are gone;
- * the reveal compares the player's locked verdict to the authored outcome and
+ * the reveal compares the player's locked position to the editorial reference and
  * surfaces the decisive beats the case authors marked.
  */
 
