@@ -2,1087 +2,340 @@
   "id": "dd-0017",
   "publish_date": "2026-08-01",
   "label": "fiction",
-  "title": "The Falling Parcel",
-  "setting": "A delivery-drone injury trial in 2026, with an operator blamed for a route change made by a silent overnight map update. The aircraft flies autonomously once launched, but a remote operator still launches and supervises each flight.",
-  "charge": "Dangerous operation of an autonomous delivery aircraft causing serious injury",
+  "title": "The Locked Floor",
+  "offence_code": "hostage_taking",
+  "content_advisories": ["captivity", "serious_violence"],
+  "detail_level": "non_graphic",
+  "setting": "A present-day independent radio station where a genuine external threat is followed by the unlawful detention of an adult finance manager.",
+  "charge": "hostage-taking",
   "elements": [
-    "Pavel Senn was operating or supervising the delivery aircraft when it launched.",
-    "Pavel's decision to launch or continue the flight fell far below the care expected of a reasonable fleet operator — not a small mistake, but conduct so careless that a careful fleet operator would not have allowed the flight to go ahead — and created an obvious risk of serious injury.",
-    "That dangerous operation caused Jonel Park's serious injury."
+    "The accused intentionally detained or helped to detain an adult against that person’s will.",
+    "The accused intended to compel another person or an institution to act as a condition of the hostage’s release.",
+    "The accused knew that the detention and demand were unlawful."
   ],
-  "hook": "A medicine parcel crashes through a glass shelter. The flight log puts the operator's name on the route, but his preserved screen shows a different path.",
+  "hook": "A producer locks an adult colleague inside a broadcast floor during a genuine threat outside. He calls it protection. She says he made her release depend on the station withdrawing its investigation into him.",
   "accused": {
-    "cast_id": "w4",
-    "human": "Pavel Senn trains rescue volunteers and took the fleet job after a factory closure.",
-    "if_guilty": "A conviction means prison, permanent loss of aviation work, and the collapse of the retraining plan supporting his household."
+    "cast_id": "acc",
+    "human": "Niko Brann, 36, produced local radio documentaries and supports an adult partner through long-term medical treatment.",
+    "if_guilty": "A conviction would imprison him for years, end his broadcasting career, and leave his partner without the household’s principal income."
+  },
+  "media": {
+    "cover": {
+      "src": "/today/media/dd-0017/cover.webp",
+      "alt": "A courtroom sketch of a closed studio door shown beside a station floor plan with no operational detail.",
+      "caption": "Fictional court sketch: the closed studio door at the centre of the detention dispute.",
+      "kind": "court_sketch"
+    },
+    "accused": {
+      "src": "/today/media/dd-0017/characters/acc.webp",
+      "alt": "Courtroom portrait of the accused, Niko Brann.",
+      "caption": "Fictional character portrait: Niko Brann, the accused radio producer.",
+      "kind": "portrait"
+    },
+    "beats": {},
+    "portraits": {
+      "judge": {"src": "/today/media/dd-0017/characters/judge.webp", "alt": "Courtroom portrait of Judge Mara Quill.", "caption": "Fictional character portrait: Judge Mara Quill.", "kind": "portrait"},
+      "pc": {"src": "/today/media/dd-0017/characters/pc.webp", "alt": "Courtroom portrait of prosecuting counsel Sela Dorn.", "caption": "Fictional character portrait: Sela Dorn, prosecuting counsel.", "kind": "portrait"},
+      "dc": {"src": "/today/media/dd-0017/characters/dc.webp", "alt": "Courtroom portrait of defence counsel Iven Rohe.", "caption": "Fictional character portrait: Iven Rohe, defence counsel.", "kind": "portrait"},
+      "acc": {"src": "/today/media/dd-0017/characters/acc.webp", "alt": "Courtroom portrait of the accused, Niko Brann.", "caption": "Fictional character portrait: Niko Brann, the accused.", "kind": "portrait"},
+      "w1": {"src": "/today/media/dd-0017/characters/w1.webp", "alt": "Courtroom portrait of finance manager Leda Vos.", "caption": "Fictional character portrait: Leda Vos, finance manager.", "kind": "portrait"},
+      "w2": {"src": "/today/media/dd-0017/characters/w2.webp", "alt": "Courtroom portrait of station director Arin Pell.", "caption": "Fictional character portrait: Arin Pell, station director.", "kind": "portrait"},
+      "w3": {"src": "/today/media/dd-0017/characters/w3.webp", "alt": "Courtroom portrait of access engineer Toma Nerr.", "caption": "Fictional character portrait: Toma Nerr, building-access engineer.", "kind": "portrait"},
+      "J-01": {"src": "/today/media/dd-0017/characters/J-01.webp", "alt": "Courtroom portrait of juror 2, the safety representative.", "caption": "Fictional character portrait: Juror 2, the safety representative.", "kind": "portrait"},
+      "J-02": {"src": "/today/media/dd-0017/characters/J-02.webp", "alt": "Courtroom portrait of juror 3, the call-centre trainer.", "caption": "Fictional character portrait: Juror 3, the call-centre trainer.", "kind": "portrait"},
+      "J-03": {"src": "/today/media/dd-0017/characters/J-03.webp", "alt": "Courtroom portrait of juror 4, the locksmith.", "caption": "Fictional character portrait: Juror 4, the locksmith.", "kind": "portrait"},
+      "J-04": {"src": "/today/media/dd-0017/characters/J-04.webp", "alt": "Courtroom portrait of juror 5, the theatre usher.", "caption": "Fictional character portrait: Juror 5, the theatre usher.", "kind": "portrait"},
+      "J-05": {"src": "/today/media/dd-0017/characters/J-05.webp", "alt": "Courtroom portrait of juror 6, the payroll officer.", "caption": "Fictional character portrait: Juror 6, the payroll officer.", "kind": "portrait"},
+      "J-06": {"src": "/today/media/dd-0017/characters/J-06.webp", "alt": "Courtroom portrait of juror 7, the retired paramedic.", "caption": "Fictional character portrait: Juror 7, the retired paramedic.", "kind": "portrait"},
+      "J-07": {"src": "/today/media/dd-0017/characters/J-07.webp", "alt": "Courtroom portrait of juror 8, the building manager.", "caption": "Fictional character portrait: Juror 8, the building manager.", "kind": "portrait"},
+      "J-08": {"src": "/today/media/dd-0017/characters/J-08.webp", "alt": "Courtroom portrait of juror 9, the community mediator.", "caption": "Fictional character portrait: Juror 9, the community mediator.", "kind": "portrait"},
+      "J-09": {"src": "/today/media/dd-0017/characters/J-09.webp", "alt": "Courtroom portrait of juror 10, the audio editor.", "caption": "Fictional character portrait: Juror 10, the audio editor.", "kind": "portrait"},
+      "J-10": {"src": "/today/media/dd-0017/characters/J-10.webp", "alt": "Courtroom portrait of juror 11, the hospital receptionist.", "caption": "Fictional character portrait: Juror 11, the hospital receptionist.", "kind": "portrait"},
+      "J-11": {"src": "/today/media/dd-0017/characters/J-11.webp", "alt": "Courtroom portrait of juror 12, the foreperson and café owner.", "caption": "Fictional character portrait: Juror 12, the foreperson and café owner.", "kind": "portrait"}
+    }
   },
   "statements": {
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Pavel Senn was responsible for the aircraft that struck a crowded shelter and seriously injured Jonel Park. His operator ID appears beside the route approval. Two wind alerts were on his dashboard, and he had the power to ground the flight. The prosecution says a careful operator would have stopped the aircraft rather than send it through a busy street."
+        "text": "The first safety lock protected everyone from a threat outside. The danger ended, but Niko Brann kept Leda Vos behind a closed door and told the station director that she would leave only when the investigation into him was withdrawn. That deliberate condition transformed a lawful precaution into hostage-taking."
       },
       "defence": {
         "speaker": "dc",
-        "text": "Pavel approved a safe route the day before the accident. Overnight, the map service moved that route eighteen metres east, into a wind channel — a narrow gap between the towers beside the shelter where strong gusts funnel along the street. His screen kept the old green approval badge and showed no warning that anything had changed. The defence says Pavel checked what the system showed and had no reason to know the aircraft would enter that channel."
+        "text": "The external threat was real, the station’s safety procedure was confused, and Leda’s first message said she was staying upstairs. Niko Brann made a heated employment demand during an emergency, but he did not knowingly hold a hostage. The prosecution has turned frightened, imprecise words into criminal intent."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The overnight update does not erase Pavel's responsibility. He was supervising the flight, he saw two district wind alerts, and he alone in this courtroom could have grounded the aircraft. The route badge may not prove that he approved the changed coordinates, but it does prove he was on duty and trusted an automated display despite worsening weather. If you are sure that choice created an obvious and serious risk, the charge is proved."
+        "text": "Listen to the condition Niko repeated to two adults: the door opens when the investigation is withdrawn. He continued the lock after the external danger ended, rejected Leda’s request to leave, and used her detention to pressure the director. No weapon was required. Control, demand, and knowledge prove the charge."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The prosecution has proved a terrible injury, not dangerous conduct by Pavel. Neither district alert required grounding, and the screen showed the route as approved. The preserved system data confirms that the aircraft received new coordinates while Pavel still saw yesterday's safe path. If a reasonable operator could rely on the very display designed to warn him, you cannot be sure his conduct fell far below the required standard — not a small mistake, but carelessness no careful fleet operator would allow. That is reasonable doubt."
+        "text": "The building had received a genuine threat. Leda wrote that she was staying, and Niko believed the floor remained safest. His angry request for a retraction was wrong, but the prosecution must prove he knowingly detained her to compel the station. Emergency confusion and criminal hostage-taking are not the same."
       }
     }
   },
-  "epilogue": "Jonel completed months of rehabilitation and returned to work with limited movement in one shoulder. The fleet suspended automatic route updates and now requires a fresh operator acknowledgement whenever coordinates change. Pavel returned to training work after the trial. He later met Jonel through the company's restorative program, where they met to talk about the harm and what followed; neither of them described the meeting as easy.",
+  "epilogue": "The station separated emergency access controls from employment authority and created a direct release channel for every occupied floor. Leda Vos moved into public-interest finance work and stopped recording from enclosed studios. Niko’s programmes remained in the archive without promotion. Staff established an independent fund for trauma leave, while the original external threat was investigated in a separate fictional proceeding.",
   "cast": [
-    {
-      "id": "judge",
-      "name": "Judge Aven",
-      "role_label": "the judge",
-      "side": "court"
-    },
-    {
-      "id": "pc",
-      "name": "Mara Venn",
-      "role_label": "prosecuting counsel",
-      "side": "prosecution"
-    },
-    {
-      "id": "dc",
-      "name": "Oren Pike",
-      "role_label": "defence counsel",
-      "side": "defence"
-    },
-    {
-      "id": "w1",
-      "name": "Eris Dain",
-      "role_label": "fleet safety manager",
-      "side": "prosecution"
-    },
-    {
-      "id": "w2",
-      "name": "Jonel Park",
-      "role_label": "injured commuter",
-      "side": "prosecution"
-    },
-    {
-      "id": "w3",
-      "name": "Toma Vey",
-      "role_label": "interface reliability engineer",
-      "side": "defence"
-    },
-    {
-      "id": "w4",
-      "name": "Pavel Senn",
-      "role_label": "the accused — remote fleet operator",
-      "side": "defence"
-    }
+    {"id": "judge", "name": "Judge Mara Quill", "role_label": "the judge", "side": "court"},
+    {"id": "pc", "name": "Sela Dorn", "role_label": "prosecuting counsel", "side": "prosecution"},
+    {"id": "dc", "name": "Iven Rohe", "role_label": "defence counsel", "side": "defence"},
+    {"id": "acc", "name": "Niko Brann", "role_label": "the accused and radio producer", "side": "defence"},
+    {"id": "w1", "name": "Leda Vos", "role_label": "finance manager and detained adult", "side": "prosecution"},
+    {"id": "w2", "name": "Arin Pell", "role_label": "station director", "side": "prosecution"},
+    {"id": "w3", "name": "Toma Nerr", "role_label": "building-access engineer", "side": "prosecution"}
   ],
   "beats": [
     {
-      "id": "b1",
-      "kind": "exhibit",
-      "speaker": "pc",
-      "text": "The flight record shows Pavel's operator ID beside a green approval badge for Route 14. The aircraft left the depot at 8:12, shifted into the wind channel between the towers beside the shelter, where gusts forced it below the approved altitude before it struck the shelter and released its parcel. Investigators initially read the record as proof that Pavel had approved the route flown that morning.",
-      "surface_persuasion": 0.8,
-      "true_weight": 0.15,
-      "direction": "guilt",
-      "reveal_stamp": "misleading",
-      "reveal_note": "The operator ID makes the route look personally approved, but the badge does not reveal which version of the route Pavel actually saw.",
-      "tags": [
-        "digital_forensics",
-        "identity"
-      ]
-    },
-    {
-      "id": "b2",
-      "kind": "witness",
-      "speaker": "w2",
-      "mode": "examination",
-      "text": "I'm Jonel Park. I was waiting beneath the glass shelter for the 8:15 tram. The aircraft came along the street lower than the delivery drones usually fly. It tilted hard, clipped the shelter frame and dropped the parcel through the roof. Glass cut my face, and the impact dislocated my shoulder. I spent four months in rehabilitation. I never saw whoever was controlling it.",
-      "surface_persuasion": 0.6,
-      "true_weight": 0.3,
-      "direction": "guilt",
-      "reveal_stamp": "minor",
-      "reveal_note": "Jonel proves the flight's dangerous path and the resulting injury, but cannot say what the operator knew before launch.",
-      "tags": [
-        "credibility",
-        "procedure"
-      ]
-    },
-    {
-      "id": "b3",
-      "kind": "witness",
-      "speaker": "w1",
-      "mode": "examination",
-      "text": "I'm Eris Dain, the fleet safety manager. I led the accident review. Our first report treated Pavel's green badge as a fresh approval because the manual said a changed route would clear it. Testing showed the badge could survive an overnight map update. That behaviour was not documented, so I withdrew the report's conclusion that Pavel had approved the coordinates flown that morning.",
-      "surface_persuasion": 0.5,
-      "true_weight": 0.5,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "The prosecution's own safety manager explains why the original report no longer proves that Pavel approved the changed route.",
-      "tags": [
-        "digital_forensics",
-        "procedure"
-      ]
-    },
-    {
-      "id": "b4",
-      "kind": "exhibit",
-      "speaker": "pc",
-      "text": "The dashboard log records two district wind alerts at 7:42 and 7:58. Pavel opened the weather panel after the second alert. Both notices warned operators to review local conditions, but they did not name Route 14, exceed the company's grounding threshold — the wind level that required a stop — or trigger the red stop-flight banner that locks a launch.",
-      "surface_persuasion": 0.55,
-      "true_weight": 0.35,
-      "direction": "guilt",
-      "reveal_stamp": "minor",
-      "reveal_note": "The alerts gave Pavel a reason to pay attention, although company policy did not require him to stop this flight.",
-      "tags": [
-        "method",
-        "digital_forensics"
-      ]
-    },
-    {
-      "id": "b5",
-      "kind": "exhibit",
-      "speaker": "dc",
-      "text": "The map-service audit shows that Route 14 was recalculated at 3:06 a.m. and shifted eighteen metres east, into the wind channel between the towers beside the shelter — a narrow gap where strong gusts funnel along the street. The operator interface received the new route but retained the green badge from Pavel's approval the previous afternoon. The event log contains no changed-route banner or request for a fresh acknowledgement.",
-      "surface_persuasion": 0.5,
-      "true_weight": 0.85,
-      "direction": "innocence",
-      "reveal_stamp": "decisive",
-      "reveal_note": "The audit ties the dangerous geometry to an automatic update and shows that the warning Pavel was trained to expect never appeared.",
-      "tags": [
-        "timeline",
-        "digital_forensics"
-      ]
-    },
-    {
-      "id": "b6",
-      "kind": "witness",
-      "speaker": "w3",
-      "mode": "examination",
-      "text": "I'm Toma Vey, an interface reliability engineer. I rebuilt Pavel's screen from preserved display events and compared it with the aircraft commands. At 8:12, his display showed the green path approved the previous afternoon. At the same moment, the aircraft received the route shifted east by the map service. There was no visual or audible indication that the coordinates had changed.",
-      "surface_persuasion": 0.55,
-      "true_weight": 0.75,
-      "direction": "innocence",
-      "reveal_stamp": "decisive",
-      "reveal_note": "The reconstruction shows that Pavel's display and the aircraft's actual coordinates did not match at launch.",
-      "tags": [
-        "method",
-        "procedure"
-      ]
-    },
-    {
-      "id": "b7",
-      "kind": "witness",
-      "speaker": "w3",
-      "mode": "cross",
-      "text": "You did not watch Pavel's screen that morning, did you? No. I reconstructed it from the display-event record stored by the system. And Pavel still had authority to ground the aircraft? Yes. But the record captures every warning and screen change, with no gap before launch. It shows no changed-route notice and no unsafe-flight warning for him to act on.",
+      "id": "b1", "kind": "witness", "speaker": "w2", "mode": "examination",
       "turns": [
-        {
-          "speaker": "pc",
-          "text": "You did not watch Pavel's screen that morning, did you?"
-        },
-        {
-          "speaker": "w3",
-          "text": "No. I reconstructed it from the display-event record stored by the system."
-        },
-        {
-          "speaker": "pc",
-          "text": "And Pavel still had authority to ground the aircraft?"
-        },
-        {
-          "speaker": "w3",
-          "text": "Yes. But the record captures every warning and screen change, with no gap before launch. It shows no changed-route notice and no unsafe-flight warning for him to act on."
-        }
+        {"speaker": "pc", "text": "What condition did Niko state during the recorded call?"},
+        {"speaker": "w2", "text": "He said Leda would remain upstairs until I withdrew the finance investigation and announced that the allegations against him were false."},
+        {"speaker": "pc", "text": "Did you agree to that condition?"},
+        {"speaker": "w2", "text": "No. I told him the external threat had ended and asked him to release her immediately. He ended the call without agreeing."}
       ],
-      "surface_persuasion": 0.55,
-      "true_weight": 0.35,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "Cross-examination tests the reconstruction's limits without identifying any warning or screen event omitted from it.",
-      "tags": [
-        "credibility",
-        "procedure"
-      ]
+      "text": "What condition did Niko state during the recorded call? He said Leda would remain upstairs until I withdrew the finance investigation and announced that the allegations against him were false. Did you agree to that condition? No. I told him the external threat had ended and asked him to release her immediately. He ended the call without agreeing.",
+      "surface_persuasion": 0.76, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "The director heard an explicit demand tied to Leda’s continued detention, although the recording alone did not establish whether Niko still controlled the door.",
+      "tags": ["coercion", "intent", "credibility"]
     },
     {
-      "id": "b8",
-      "kind": "witness",
-      "speaker": "w4",
-      "mode": "examination",
-      "text": "I'm Pavel Senn. I supervised six medicine flights that morning. After the second district alert, I opened the weather panel. Route 14 was green, the corridor wind reading for that mapped path was below the stop threshold, and there was no instruction to approve a change. I was authorised to ground the aircraft, but I believed I was sending it along the route I had checked the previous afternoon.",
-      "surface_persuasion": 0.5,
-      "true_weight": 0.25,
-      "direction": "guilt",
-      "reveal_stamp": "minor",
-      "reveal_note": "Pavel admits he had control of the flight and saw the alerts, leaving the jury to decide whether relying on the green route was dangerously careless.",
-      "tags": [
-        "motive",
-        "credibility"
-      ]
-    },
-    {
-      "id": "b9",
-      "kind": "witness",
-      "speaker": "w4",
-      "mode": "cross",
-      "text": "Your team was behind target that morning? Yes. Delivery times were monitored, but safety stops were not penalised. And you still had authority to ground the aircraft? Yes. You did not open the raw coordinates after two wind alerts? No. We were trained to review the mapped route and corridor reading. Both were green. Raw coordinates sat in a maintenance panel needing specialist software.",
+      "id": "b2", "kind": "witness", "speaker": "w1", "mode": "examination",
       "turns": [
-        {
-          "speaker": "pc",
-          "text": "Your team was behind target that morning?"
-        },
-        {
-          "speaker": "w4",
-          "text": "Yes. Delivery times were monitored, but safety stops were not penalised."
-        },
-        {
-          "speaker": "pc",
-          "text": "And you still had authority to ground the aircraft?"
-        },
-        {
-          "speaker": "w4",
-          "text": "Yes."
-        },
-        {
-          "speaker": "pc",
-          "text": "You did not open the raw coordinates after two wind alerts?"
-        },
-        {
-          "speaker": "w4",
-          "text": "No. We were trained to review the mapped route and corridor reading. Both were green. Raw coordinates sat in a maintenance panel needing specialist software."
-        }
+        {"speaker": "pc", "text": "What happened when you asked to leave the floor?"},
+        {"speaker": "w1", "text": "Niko stood beside the access panel and said the door would open after Arin withdrew the investigation."},
+        {"speaker": "pc", "text": "Did you consent to remain after the external warning ended?"},
+        {"speaker": "w1", "text": "No. I asked three times to leave. I stayed because the door remained locked and Niko controlled the release panel."}
       ],
-      "surface_persuasion": 0.5,
-      "true_weight": 0.4,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "Pavel's explanation is consistent with the interface records, although the jury must still assess whether a careful operator should have stopped after the district alerts.",
-      "tags": [
-        "procedure",
-        "credibility"
-      ]
+      "text": "What happened when you asked to leave the floor? Niko stood beside the access panel and said the door would open after Arin withdrew the investigation. Did you consent to remain after the external warning ended? No. I asked three times to leave. I stayed because the door remained locked and Niko controlled the release panel.",
+      "surface_persuasion": 0.67, "true_weight": 0.72, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "Leda directly described non-consensual detention, Niko’s control of release, and the same condition reported independently by the director.",
+      "tags": ["coercion", "method", "credibility"]
     },
     {
-      "id": "b10",
-      "kind": "direction",
-      "speaker": "judge",
-      "text": "To convict, you must be sure that Pavel's decision fell far below reasonable care, created an obvious risk of serious injury, and caused Jonel's injury. Consider whether a reasonable operator could rely on the green route after the wind alerts. If you think it is reasonably possible that Pavel's screen still showed the old safe route with no change warning, you must acquit.",
-      "surface_persuasion": 0.404,
-      "true_weight": 0.5,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "The final direction separates the undisputed harm from the disputed question of whether Pavel's conduct was criminally dangerous.",
-      "tags": [
-        "burden",
-        "digital_forensics"
-      ]
+      "id": "b3", "kind": "witness", "speaker": "w1", "mode": "cross",
+      "turns": [
+        {"speaker": "dc", "text": "What did your first message to a colleague say?"},
+        {"speaker": "w1", "text": "It said, ‘I am staying upstairs until this is clear.’"},
+        {"speaker": "dc", "text": "Why did you use the words ‘I am staying’ if you wanted to leave?"},
+        {"speaker": "w1", "text": "I was trying not to alarm my colleague while Niko stood beside me. I did not mean that I had freely chosen to remain."}
+      ],
+      "text": "What did your first message to a colleague say? It said, ‘I am staying upstairs until this is clear.’ Why did you use the words ‘I am staying’ if you wanted to leave? I was trying not to alarm my colleague while Niko stood beside me. I did not mean that I had freely chosen to remain.",
+      "surface_persuasion": 0.84, "true_weight": 0.22, "direction": "innocence", "reveal_stamp": "misleading",
+      "reveal_note": "The isolated phrase sounded voluntary, but Leda’s complete message, repeated requests to leave, and contemporaneous recording explained why she wrote cautiously.",
+      "tags": ["credibility", "coercion", "intent"]
+    },
+    {
+      "id": "b4", "kind": "exhibit", "speaker": "dc",
+      "text": "The defence tenders the external threat notice received shortly before the floor first locked. Station security classified the warning as credible and instructed staff to shelter temporarily. The message was genuine, not created by Niko, and justified the initial safety restriction. It did not specify how long staff should remain or authorize any employment demand.",
+      "surface_persuasion": 0.8, "true_weight": 0.48, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "The genuine threat explained the lawful initial lock but did not justify continued detention after security lifted the warning.",
+      "tags": ["procedure", "intent", "timeline"]
+    },
+    {
+      "id": "b5", "kind": "witness", "speaker": "w3", "mode": "examination",
+      "turns": [
+        {"speaker": "pc", "text": "When did the station-wide safety restriction end?"},
+        {"speaker": "w3", "text": "At 4:18 p.m. Every occupied floor received a release signal from the central controller."},
+        {"speaker": "pc", "text": "Why did the broadcast floor remain locked?"},
+        {"speaker": "w3", "text": "At 4:19 p.m., Niko’s personal code activated a local hold. That hold continued until police released it at 4:47 p.m."}
+      ],
+      "text": "When did the station-wide safety restriction end? At 4:18 p.m. Every occupied floor received a release signal from the central controller. Why did the broadcast floor remain locked? At 4:19 p.m., Niko’s personal code activated a local hold. That hold continued until police released it at 4:47 p.m.",
+      "surface_persuasion": 0.65, "true_weight": 0.88, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "The access record separates the lawful emergency lock from Niko’s personal decision to continue Leda’s detention.",
+      "tags": ["method", "timeline", "identity"]
+    },
+    {
+      "id": "b6", "kind": "witness", "speaker": "w3", "mode": "cross",
+      "turns": [
+        {"speaker": "dc", "text": "Could Niko have believed the release signal was unsafe or mistaken?"},
+        {"speaker": "w3", "text": "He could question it, but the panel displayed ‘external warning cleared’ before accepting his local hold."},
+        {"speaker": "dc", "text": "Does the access record reveal his private reason for using the hold?"},
+        {"speaker": "w3", "text": "No. The record proves his code continued the lock after the warning ended. Other evidence must establish his purpose."}
+      ],
+      "text": "Could Niko have believed the release signal was unsafe or mistaken? He could question it, but the panel displayed ‘external warning cleared’ before accepting his local hold. Does the access record reveal his private reason for using the hold? No. The record proves his code continued the lock after the warning ended. Other evidence must establish his purpose.",
+      "surface_persuasion": 0.57, "true_weight": 0.56, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "The engineer fairly limited the system evidence: it proved deliberate continuation and notice, while intent depended on Niko’s words and conduct.",
+      "tags": ["intent", "method", "credibility"]
+    },
+    {
+      "id": "b7", "kind": "witness", "speaker": "acc", "mode": "examination",
+      "turns": [
+        {"speaker": "dc", "text": "Why did you continue the local hold after the central release?"},
+        {"speaker": "acc", "text": "The threat had been credible, and I feared the central release was premature. I believed the broadcast floor remained safest."},
+        {"speaker": "dc", "text": "Why did you mention the investigation?"},
+        {"speaker": "acc", "text": "I was frightened and angry. I demanded fairness, but I never intended Leda’s safety to depend on that demand."}
+      ],
+      "text": "Why did you continue the local hold after the central release? The threat had been credible, and I feared the central release was premature. I believed the broadcast floor remained safest. Why did you mention the investigation? I was frightened and angry. I demanded fairness, but I never intended Leda’s safety to depend on that demand.",
+      "surface_persuasion": 0.62, "true_weight": 0.42, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "Niko offered a possible safety motive, but it did not explain the identical release condition he stated to Leda and the director.",
+      "tags": ["intent", "credibility", "procedure"]
+    },
+    {
+      "id": "b8", "kind": "witness", "speaker": "acc", "mode": "cross",
+      "turns": [
+        {"speaker": "pc", "text": "Did you tell Leda that the door would open after the investigation was withdrawn?"},
+        {"speaker": "acc", "text": "Yes. I said those words while I was angry."},
+        {"speaker": "pc", "text": "Did you repeat the same condition to the station director while your code kept the door locked?"},
+        {"speaker": "acc", "text": "Yes, but I did not intend physical harm. I wanted the station to correct what I believed was unfair."}
+      ],
+      "text": "Did you tell Leda that the door would open after the investigation was withdrawn? Yes. I said those words while I was angry. Did you repeat the same condition to the station director while your code kept the door locked? Yes, but I did not intend physical harm. I wanted the station to correct what I believed was unfair.",
+      "surface_persuasion": 0.64, "true_weight": 0.82, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "Niko admitted the repeated condition and his employment purpose. Hostage-taking required unlawful detention and compulsion, not an intention to injure.",
+      "tags": ["intent", "coercion", "credibility"]
+    },
+    {
+      "id": "b9", "kind": "exhibit", "speaker": "pc",
+      "text": "Leda’s phone preserved a recording made at 4:24 p.m. Her voice asks, ‘Niko, may I leave now that the warning is cleared?’ Niko replies, ‘The door opens when Arin withdraws the report.’ The file was uploaded automatically during the incident, and its timestamp agrees with the local-hold record and the director’s call.",
+      "surface_persuasion": 0.7, "true_weight": 0.94, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "The contemporaneous recording unites the disputed elements: Leda asked to leave, Niko refused, and he made release conditional on institutional action.",
+      "tags": ["coercion", "intent", "timeline"]
+    },
+    {
+      "id": "b10", "kind": "direction", "speaker": "judge",
+      "text": "You must decide whether Niko intentionally detained Leda against her will, made institutional action a condition of release, and knew that conduct was unlawful. A weapon or physical injury is not required. The genuine external threat may explain the first lock. If it leaves reasonable doubt about the later local hold and demand, your verdict must be Not Guilty.",
+      "surface_persuasion": 0.5, "true_weight": 0.55, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "The direction prevents the room from treating emergency caution as criminal by itself and keeps the burden on the later detention, condition, and knowledge.",
+      "tags": ["burden", "coercion", "intent"]
     }
   ],
-  "checkins": [
-    "b3",
-    "b5",
-    "b8",
-    "b10"
-  ],
-  "verdict_truth": "Not Guilty",
-  "twist": "Pavel's green approval was genuine—but it was attached to yesterday's route. At 3:06 a.m., the map service moved the aircraft's path into the wind channel between the towers beside the shelter while leaving Pavel's display looking unchanged.",
-  "difficulty_target": 0.58,
+  "checkins": [],
+  "verdict_truth": "Guilty",
+  "twist": "The external threat was genuine, and the first safety lock was lawful. Niko committed hostage-taking only after the warning cleared, when his personal code continued the lock and he made Leda’s release depend on the station withdrawing its investigation.",
+  "difficulty_target": 0.6,
   "jury": {
     "jurors": [
       {
-        "id": "J-01",
-        "seat": 2,
-        "label": "Juror 2",
-        "persona": "A rule-focused juror who brings the room back to the prosecution burden.",
-        "register": "blunt",
-        "arc": "vibes",
-        "initial": {
-          "position": "G",
-          "confidence": 80
-        },
-        "weights": {
-          "digital_forensics": 2,
-          "identity": 1
-        },
-        "lines": {
-          "agree": [
-            "Juror 2: Pavel was the operator on duty, saw the alerts and could stop the flight. That is evidence against him, even if the route badge was stale.",
-            "Juror 2: The automatic update explains the route change. It does not answer whether a reasonable operator would have launched after two wind alerts."
-          ],
-          "pushback": [
-            "Juror 2: Slow down. Are we saying the badge proves Pavel saw the changed route, or only that his name stayed attached to it?",
-            "Juror 2: The injury is not in dispute. The question is whether Pavel's decision fell far below reasonable care."
-          ],
-          "concede": [
-            "Juror 2: I accept that Pavel did not approve the shifted coordinates. I still want to test what the weather alerts required of him."
-          ],
-          "final": [
-            "Juror 2: I am not satisfied beyond reasonable doubt that a careful operator had to ground a green route after district alerts that stayed below the company threshold."
-          ]
-        },
+        "id": "J-01", "seat": 2, "label": "Safety representative", "persona": "Separates a valid emergency precaution from a later use of the same door for coercion.", "register": "formal", "arc": "principled_holdout",
+        "initial": {"position": "NG", "confidence": 68},
+        "weights": {"procedure": 2, "coercion": 2, "burden": 1},
+        "lines": {"agree": ["The first lock followed a genuine warning and was not hostage-taking."], "pushback": ["The safety explanation ends when Niko imposes a release condition."], "concede": ["The local hold record makes me reconsider whether this remained an emergency measure."], "burden_drift": ["Because Leda was frightened, I am tempted to assume every later act was unlawful."], "burden_correct": ["The prosecution must prove the later detention and coercive purpose separately."], "final": ["The evidence proves that Niko converted safety control into unlawful leverage."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "timeline",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": -10,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "procedure", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "agree"}},
+          {"when": {"theme": "credibility", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 3, "line": "burden_drift"}},
+          {"when": {"theme": "coercion", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-02",
-        "seat": 3,
-        "label": "Juror 3",
-        "persona": "A patient listener who changes position when a timeline finally accounts for every event.",
-        "register": "plain",
-        "arc": "steady",
-        "initial": {
-          "position": "NG",
-          "confidence": 60
-        },
-        "weights": {
-          "digital_forensics": 2,
-          "timeline": 1
-        },
-        "lines": {
-          "agree": [
-            "Juror 3: The timing fits. Pavel approved the old route, the system changed it at 3:06, and the aircraft received the new coordinates while his screen still showed the old path.",
-            "Juror 3: Eris changed her conclusion after the interface test. That makes more sense of the records than assuming Pavel secretly approved a route no screen ever showed him."
-          ],
-          "pushback": [
-            "Juror 3: Where in the timeline do we place Pavel's alleged approval of the changed route? I cannot find that event.",
-            "Juror 3: The green badge looks bad until we ask when it was created. The date matters."
-          ],
-          "concede": [
-            "Juror 3: I had treated the operator ID and the route approval as two facts. They are one stale record, so I need to reduce the weight I gave it."
-          ],
-          "final": [
-            "Juror 3: The complete timeline leaves Pavel looking at an unchanged safe route. I cannot call his decision criminally dangerous on that evidence."
-          ]
-        },
+        "id": "J-02", "seat": 3, "label": "Call-centre trainer", "persona": "Listens for the exact condition in a conversation and dislikes paraphrases that blur responsibility.", "register": "plain", "arc": "steady",
+        "initial": {"position": "G", "confidence": 62},
+        "weights": {"coercion": 2, "credibility": 2, "intent": 1},
+        "lines": {"agree": ["Niko used the same release condition with Leda and the director."], "pushback": ["An angry complaint is not enough unless it is tied to the locked door."], "concede": ["I accept that the outside warning explains why the incident began."], "burden_drift": ["The repeated words make me want Niko to prove he meant something else."], "burden_correct": ["His explanation is evidence, but the prosecution still carries every element."], "final": ["The complete conversations show a deliberate demand, not a verbal accident."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "timeline",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "unreliable",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "coercion", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "agree"}},
+          {"when": {"theme": "credibility", "stance": "unreliable", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 3, "line": "pushback"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
         ]
       },
       {
-        "id": "J-03",
-        "seat": 4,
-        "label": "Juror 4",
-        "persona": "A blunt juror who challenges convenient memory from witnesses on both sides.",
-        "register": "formal",
-        "arc": "principled_holdout",
-        "initial": {
-          "position": "NG",
-          "confidence": 80
-        },
-        "weights": {
-          "burden": 2,
-          "digital_forensics": 1
-        },
-        "lines": {
-          "agree": [
-            "Juror 4: Pavel's screen stayed green and gave no changed-route warning. That directly weakens the claim that he saw an obvious risk."
-          ],
-          "pushback": [
-            "Juror 4: Do not tell me what the screen probably showed. Point me to the preserved record.",
-            "Juror 4: Pavel's memory helps him. The event log helps him too, and that is much harder to dismiss."
-          ],
-          "concede": [
-            "Juror 4: Eris admitted the original report was wrong about the badge. I will not rely on a conclusion its own author withdrew."
-          ],
-          "holdout": [
-            "Juror 4: I am not moving until someone shows me the obvious risk Pavel was supposed to see on a green screen.",
-            "Juror 4: The weather alerts deserve discussion. They do not become a stop order just because an accident happened later."
-          ],
-          "final": [
-            "Juror 4: The records support Pavel on the only disputed point: what he could see. I vote not guilty."
-          ]
-        },
+        "id": "J-03", "seat": 4, "label": "Locksmith", "persona": "Treats control of a door as neutral until the person controlling it states an unlawful purpose.", "register": "blunt", "arc": "steady",
+        "initial": {"position": "NG", "confidence": 55},
+        "weights": {"method": 2, "identity": 1, "intent": 2},
+        "lines": {"agree": ["Niko’s code, not the station warning, kept that floor locked."], "pushback": ["A lock record shows control, but words and timing must show purpose."], "concede": ["The panel notice means Niko knew the central warning had ended."], "burden_drift": ["If he controlled the door, I start expecting him to justify every minute."], "burden_correct": ["Control alone is not enough; unlawful detention and compulsion must be proved."], "final": ["The code, notice, and repeated condition establish knowing control for an unlawful purpose."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "unreliable",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "burden",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "holdout"
-            }
-          }
+          {"when": {"theme": "method", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-04",
-        "seat": 5,
-        "label": "Juror 5",
-        "persona": "A cautious holdout who wants the decisive record stated without exaggeration.",
-        "register": "formal",
-        "arc": "steady",
-        "initial": {
-          "position": "G",
-          "confidence": 55
-        },
-        "weights": {
-          "burden": 2,
-          "method": 1
-        },
-        "lines": {
-          "agree": [
-            "Juror 5: The audit proves the route moved and the badge remained. It does not prove Pavel checked every local wind condition as carefully as he should have."
-          ],
-          "pushback": [
-            "Juror 5: We agree the badge was stale. We still have to decide what the two alerts meant for a reasonable operator.",
-            "Juror 5: Toma proved what the screen displayed, not what Pavel actually noticed. Let us keep those questions separate."
-          ],
-          "concede": [
-            "Juror 5: I can no longer treat Pavel's ID as proof that he approved the dangerous path. The system carried it forward without asking him."
-          ],
-          "burden_correct": [
-            "Juror 5: Pavel does not have to prove he was careful. The prosecution has to make us sure his conduct was dangerously below the standard.",
-            "Juror 5: If we cannot decide what a reasonable operator should have done with those non-mandatory alerts, that uncertainty belongs to the prosecution."
-          ],
-          "final": [
-            "Juror 5: The changed route and missing warning create reasonable doubt about dangerous conduct. My verdict is not guilty."
-          ]
-        },
+        "id": "J-04", "seat": 5, "label": "Theatre usher", "persona": "Recognises how calm wording can conceal fear when one person controls the exit.", "register": "plain", "arc": "vibes",
+        "initial": {"position": "G", "confidence": 72},
+        "weights": {"credibility": 2, "coercion": 2, "method": 1},
+        "lines": {"agree": ["Leda’s careful message sounds like someone trying not to escalate danger."], "pushback": ["I will not read ‘I am staying’ without the locked-door context."], "concede": ["The genuine outside threat explains why Leda first remained upstairs."], "burden_drift": ["Her fear makes guilt feel obvious before I test the legal elements."], "burden_correct": ["Fear matters only through evidence of detention, demand, and knowledge."], "final": ["Leda’s recording confirms that her continued stay was not voluntary."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "burden",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "burden_correct"
-            }
-          },
-          {
-            "when": {
-              "theme": "method",
-              "stance": "unreliable",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "credibility", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 6, "line": "agree"}},
+          {"when": {"theme": "procedure", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 3, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-05",
-        "seat": 6,
-        "label": "Juror 6",
-        "persona": "An empathetic juror who notices harm but refuses to let sympathy replace proof.",
-        "register": "plain",
-        "arc": "foreperson",
-        "initial": {
-          "position": "G",
-          "confidence": 50
-        },
-        "weights": {
-          "procedure": 1,
-          "digital_forensics": 1
-        },
-        "lines": {
-          "agree": [
-            "Juror 6: Jonel's injury was awful, and Pavel was responsible for the flight. We still need proof that his decision was dangerously careless.",
-            "Juror 6: The weather panel gave Pavel information and authority. I want to know whether launching after those district alerts was unreasonable even with a green route."
-          ],
-          "pushback": [
-            "Juror 6: We cannot turn Jonel's pain into proof of what Pavel saw before launch.",
-            "Juror 6: I believe Jonel completely. His evidence tells us what happened under the shelter, not whether Pavel saw an obvious risk."
-          ],
-          "concede": [
-            "Juror 6: The old badge made me think Pavel chose this exact path. Now I understand that the system made that choice without telling him."
-          ],
-          "final": [
-            "Juror 6: Jonel deserves accountability, but this charge requires proof of Pavel's dangerous conduct. I am not sure of it, so I vote not guilty."
-          ]
-        },
+        "id": "J-05", "seat": 6, "label": "Payroll officer", "persona": "Changes position when employment pressure is linked to a concrete act of control.", "register": "formal", "arc": "mind_changer",
+        "initial": {"position": "U", "confidence": 38},
+        "weights": {"motive": 1, "coercion": 2, "intent": 2},
+        "lines": {"agree": ["The withdrawal demand concerns Niko’s employment, but the door gave it force."], "pushback": ["Workplace anger is not criminal unless Niko used detention to advance it."], "concede": ["His admission connects the employment demand directly to release."], "burden_drift": ["A serious grievance can make me assume he planned coercion from the start."], "burden_correct": ["The first safety lock was lawful; only the later conduct is charged."], "final": ["The admitted condition proves that continued detention served Niko’s demand."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "procedure",
-              "stance": "unreliable",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 10, "line": "concede"}},
+          {"when": {"theme": "coercion", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "agree"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-06",
-        "seat": 7,
-        "label": "Juror 7",
-        "persona": "A systems-minded juror alert to both automation errors and deliberate manipulation.",
-        "register": "hesitant",
-        "arc": "drifter",
-        "initial": {
-          "position": "G",
-          "confidence": 45
-        },
-        "weights": {
-          "credibility": 1,
-          "method": 2
-        },
-        "lines": {
-          "agree": [
-            "Juror 7: The aircraft and the operator screen were using different route states. That is a concrete system failure, not just Pavel's excuse.",
-            "Juror 7: Toma's reconstruction comes from the application's event data. Unless that record has a gap, it is our best evidence of what the interface displayed."
-          ],
-          "pushback": [
-            "Juror 7: A green badge can be wrong, but Pavel still knew automation can fail. How much independent checking did his job require?",
-            "Juror 7: I want the raw event log, not a coloured diagram prepared for court. Which one supports Toma's conclusion?"
-          ],
-          "concede": [
-            "Juror 7: The audit timestamp and display events agree. I accept that the stale badge came from the software, not from a second approval by Pavel.",
-            "Juror 7: The system recorded no changed-route banner. That matters because the interface was designed to make operators rely on that warning."
-          ],
-          "final": [
-            "Juror 7: The failure occurred between the map service and the operator display. The prosecution has not shown that Pavel could detect it through the normal controls."
-          ]
-        },
+        "id": "J-06", "seat": 7, "label": "Retired paramedic", "persona": "Initially gives emergency judgment broad latitude but insists that emergency authority must end.", "register": "blunt", "arc": "drifter",
+        "initial": {"position": "NG", "confidence": 60},
+        "weights": {"procedure": 2, "timeline": 2, "coercion": 1},
+        "lines": {"agree": ["Sheltering during the original warning was a reasonable safety response."], "pushback": ["At 4:18 the emergency ended; at 4:19 Niko made a different choice."], "concede": ["The one-minute sequence separates caution from coercion for me."], "burden_drift": ["Once the warning cleared, I want Niko to explain why he knew better than security."], "burden_correct": ["The prosecution must prove his choice was knowing and conditional, not merely mistaken."], "final": ["The later local hold and repeated demand satisfy that burden."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "method",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": -10,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "method",
-              "stance": "unreliable",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": -10,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "credibility",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "timeline", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "procedure", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "agree"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-07",
-        "seat": 8,
-        "label": "Juror 8",
-        "persona": "A quiet questioner who tests what the strongest theory still leaves unexplained.",
-        "register": "plain",
-        "arc": "mind_changer",
-        "initial": {
-          "position": "G",
-          "confidence": 70
-        },
-        "weights": {
-          "timeline": 2,
-          "method": 2
-        },
-        "lines": {
-          "agree": [
-            "Juror 8: Pavel had the last human chance to stop the flight. Is that enough to make his decision dangerous when the route and corridor reading were green?",
-            "Juror 8: The alerts did not name Route 14, but Pavel opened them. Why would a careful operator check the panel and still miss a serious local risk?"
-          ],
-          "pushback": [
-            "Juror 8: What evidence shows Pavel could see that the route had moved east?",
-            "Juror 8: If the company expected operators to inspect raw coordinates, why did no witness identify that rule or practice?"
-          ],
-          "concede": [
-            "Juror 8: The strongest guilty fact was Pavel's approval. Once we learn it belonged to yesterday's route, the prosecution needs another way to prove the obvious risk."
-          ],
-          "final": [
-            "Juror 8: I cannot answer how Pavel was meant to discover the changed path. That unanswered question is reasonable doubt."
-          ]
-        },
+        "id": "J-07", "seat": 8, "label": "Building manager", "persona": "Knows access records are precise about control but cautious about what they reveal about intention.", "register": "formal", "arc": "steady",
+        "initial": {"position": "G", "confidence": 55},
+        "weights": {"method": 2, "timeline": 2, "intent": 1},
+        "lines": {"agree": ["The personal code proves Niko continued the restriction after the release signal."], "pushback": ["The access system cannot read his purpose, so I need the spoken condition too."], "concede": ["The recording supplies the intention that the access log cannot contain."], "burden_drift": ["A personal code can feel like personal guilt before the purpose is proved."], "burden_correct": ["The records must support every element rather than substitute for them."], "final": ["Control and intention are independently proved and then corroborate each other."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "timeline",
-              "stance": "unreliable",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": -1,
-              "confidence": -5,
-              "line": "pushback"
-            }
-          },
-          {
-            "when": {
-              "theme": "method",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "timeline",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 15,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "concede"
-            }
-          }
+          {"when": {"theme": "method", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 6, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-08",
-        "seat": 9,
-        "label": "Juror 9",
-        "persona": "A steady foreperson who makes the room distinguish suspicion from proof.",
-        "register": "hesitant",
-        "arc": "steady",
-        "initial": {
-          "position": "NG",
-          "confidence": 60
-        },
-        "weights": {
-          "procedure": 2
-        },
-        "lines": {
-          "agree": [
-            "Juror 9: We can agree on three facts: Pavel supervised the launch, the map service changed the route, and his screen gave no warning. The dispute is what reasonable care required after the alerts.",
-            "Juror 9: Let us put the injury to one side for a moment and test the conduct element on its own."
-          ],
-          "pushback": [
-            "Juror 9: We are using 'responsible' in two different ways. Pavel managed the flight, but the charge requires dangerous operation.",
-            "Juror 9: Can anyone point to evidence that the district alerts made this green corridor obviously unsafe?"
-          ],
-          "concede": [
-            "Juror 9: The approval badge establishes Pavel's role, not his knowledge of the route change. I agree those are different facts."
-          ],
-          "final": [
-            "Juror 9: We do not have to decide whether Pavel was perfect. We have to decide whether the prosecution proved criminally dangerous conduct, and I do not think it did."
-          ]
-        },
+        "id": "J-08", "seat": 9, "label": "Community mediator", "persona": "Distinguishes an emotional demand from coercion by asking what leverage made refusal impossible.", "register": "plain", "arc": "principled_holdout",
+        "initial": {"position": "NG", "confidence": 52},
+        "weights": {"coercion": 2, "intent": 1, "burden": 2},
+        "lines": {"agree": ["A demand becomes coercive here because Leda’s release was the leverage."], "pushback": ["Niko’s anger alone cannot prove hostage-taking."], "concede": ["His own admission removes doubt about the condition he imposed."], "burden_drift": ["The director’s refusal makes me want to judge Niko for the entire dispute."], "burden_correct": ["We are deciding detention and compulsion, not whether the investigation was fair."], "final": ["The prosecution proved the precise unlawful leverage required by the charge."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "procedure",
-              "stance": "unreliable",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "procedure",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "coercion", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "burden_correct"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-09",
-        "seat": 10,
-        "label": "Juror 10",
-        "persona": "A careful note-taker who separates a striking clue from the chain needed to prove dangerous conduct.",
-        "register": "blunt",
-        "arc": "burden_drifter",
-        "initial": {
-          "position": "G",
-          "confidence": 65
-        },
-        "weights": {
-          "method": 1,
-          "burden": 1
-        },
-        "lines": {
-          "pushback": [
-            "Juror 10: The green badge does not settle this. The question is what Pavel should have done with the information he actually received."
-          ],
-          "burden_drift": [
-            "Juror 10: My notes show Pavel opened the weather panel and chose not to ground the aircraft. I still think he should explain why that was reasonable.",
-            "Juror 10: Pavel was in charge. If he cannot satisfy us that launching was safe, I am inclined to hold that against him.",
-            "Juror 10: I keep asking Pavel to prove that he checked enough. I know the judge said the prosecution carries that burden, but his answer still feels incomplete."
-          ],
-          "concede": [
-            "Juror 10: I have crossed out 'approved changed route' in my notes. The badge proves only that Pavel approved the earlier route."
-          ],
-          "burden_correct": [
-            "Juror 10: I was making Pavel prove he acted reasonably. That is backwards. The prosecution must make us sure his conduct fell far below reasonable care."
-          ],
-          "final": [
-            "Juror 10: Once I apply the burden correctly, the missing warning and non-mandatory alerts leave me with reasonable doubt."
-          ]
-        },
+        "id": "J-09", "seat": 10, "label": "Audio editor", "persona": "Trusts complete contemporaneous recordings more than remembered summaries or isolated phrases.", "register": "hesitant", "arc": "drifter",
+        "initial": {"position": "U", "confidence": 34},
+        "weights": {"digital_forensics": 2, "credibility": 2, "timeline": 1},
+        "lines": {"agree": ["The phone recording preserves Leda’s question and Niko’s condition in sequence."], "pushback": ["The isolated phrase ‘I am staying’ leaves out who controlled the door."], "concede": ["The matching timestamp and access record answer my concern about context."], "burden_drift": ["A clear recording can make me stop testing how the file was preserved."], "burden_correct": ["The file still needs authentication and must prove the charged condition."], "final": ["The authenticated recording supports guilt without relying on memory alone."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "method",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "burden_drift"
-            }
-          },
-          {
-            "when": {
-              "theme": "burden",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": -10,
-              "line": "burden_correct"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "burden_drift"
-            }
-          }
+          {"when": {"theme": "credibility", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "agree"}},
+          {"when": {"theme": "timeline", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 6, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-10",
-        "seat": 11,
-        "label": "Juror 11",
-        "persona": "A practical juror who tests digital records against ordinary workplace habits.",
-        "register": "hesitant",
-        "arc": "drifter",
-        "initial": {
-          "position": "U",
-          "confidence": 40
-        },
-        "weights": {
-          "digital_forensics": 1,
-          "timeline": 1
-        },
-        "lines": {
-          "agree": [
-            "Juror 11: In most workplaces, staff use the dashboard they are given. If the company wanted a coordinate check after every alert, it needed a rule and a usable tool for that.",
-            "Juror 11: Pavel did what the training described: he opened the panel, checked the corridor and looked for a stop warning. All three records support him."
-          ],
-          "pushback": [
-            "Juror 11: Are we sure operators never used the maintenance panel, or are we just taking Pavel's word for that?",
-            "Juror 11: A company threshold is a minimum, not a promise of safety. A careful operator can still stop below it."
-          ],
-          "concede": [
-            "Juror 11: Eris confirmed that the manual told operators the badge would clear after a route change. Pavel's reliance on it was ordinary, not invented after the accident."
-          ],
-          "final": [
-            "Juror 11: I might want a better safety system, but I cannot convict a worker for following the system and training his employer provided."
-          ]
-        },
+        "id": "J-10", "seat": 11, "label": "Hospital receptionist", "persona": "Understands cautious messages from people who feel watched and resists judging their wording in isolation.", "register": "plain", "arc": "vibes",
+        "initial": {"position": "G", "confidence": 68},
+        "weights": {"credibility": 2, "coercion": 1, "procedure": 1},
+        "lines": {"agree": ["Leda’s cautious first message is consistent with trying not to provoke Niko."], "pushback": ["Her word ‘staying’ does not answer whether the choice was voluntary."], "concede": ["I accept that the original warning gave everyone a valid reason to shelter."], "burden_drift": ["Leda’s fear makes me want to accept her interpretation without checking it."], "burden_correct": ["Her account must still match the door record, recording, and director’s evidence."], "final": ["Those independent sources confirm that Leda was detained for leverage."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "timeline",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "unreliable",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "credibility", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
+          {"when": {"theme": "procedure", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 3, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-11",
-        "seat": 12,
-        "label": "Juror 12",
-        "persona": "A sceptic who distrusts polished system evidence until its collection method is clear.",
-        "register": "plain",
-        "arc": "steady",
-        "initial": {
-          "position": "NG",
-          "confidence": 55
-        },
-        "weights": {
-          "method": 1,
-          "credibility": 1,
-          "burden": 1
-        },
-        "lines": {
-          "agree": [
-            "Juror 12: The operator ID is original system data. It proves Pavel was responsible for the launch, even though it does not prove he saw the shifted route.",
-            "Juror 12: Pavel's account matches the defence engineer's reconstruction, but those two sources are not independent of each other."
-          ],
-          "pushback": [
-            "Juror 12: Before I trust the reconstruction, I need to know whether the event data had any missing interval or could be edited after the accident.",
-            "Juror 12: The coloured replay is an interpretation. What do the underlying timestamps and route commands show?"
-          ],
-          "concede": [
-            "Juror 12: Toma answered the collection question: the display log was preserved automatically and has no gap before launch. I can rely on it."
-          ],
-          "final": [
-            "Juror 12: The underlying records, not just the courtroom replay, show two route states. That creates reasonable doubt about what risk Pavel could see."
-          ]
-        },
+        "id": "J-11", "seat": 12, "label": "Café owner and foreperson", "persona": "Keeps the room focused on the transition from emergency protection to employment leverage.", "register": "plain", "arc": "foreperson",
+        "initial": {"position": "G", "confidence": 57},
+        "weights": {"burden": 2, "timeline": 2, "intent": 2},
+        "lines": {"agree": ["The case turns on what Niko chose after the central warning ended."], "pushback": ["We should not treat the entire incident as one undivided emergency."], "concede": ["The local hold, demand, and recording form a single later sequence."], "burden_drift": ["The seriousness of captivity can make the room skip Niko’s knowledge element."], "burden_correct": ["We must find intentional detention, a release condition, and knowledge beyond reasonable doubt."], "final": ["Each element is proved by a different source, and the sources agree."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "burden",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "method",
-              "stance": "unreliable",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "burden_correct"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
         ]
       }
     ]
   },
   "gen_meta": {
-    "model": "openai-codex",
-    "prompt_version": "dd-2026-v2",
-    "reviewer": "Codex Content Curator; independent QA rewrite and dynamics verification",
-    "batch_pr": "cursor/case-dd0017-coherence"
+    "model": "gpt-5",
+    "prompt_version": "dd-2026-v3",
+    "reviewer": "content-curator",
+    "batch_pr": "grave-crime-seven-case-replacement",
+    "language_reviewer": "language-and-clarity-pass",
+    "sensitivity_reviewer": "adult-captivity-non-graphic-pass"
   }
 }
