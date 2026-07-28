@@ -105,9 +105,12 @@ export function genderForJuror(persona: string, id: string): SpeakerGender {
   return hash(id) % 2 === 0 ? 'female' : 'male'
 }
 
-export function genderForCastName(name: string, id = ''): SpeakerGender {
+export function genderForCastName(name: string, id = '', roleLabel = ''): SpeakerGender {
   const named = (castGenders as Record<string, SpeakerGender>)[name]
   if (named === 'female' || named === 'male') return named
+  const role = String(roleLabel ?? '')
+  if (/\b(woman|female|she)\b/i.test(role)) return 'female'
+  if (/\b(man who|male)\b/i.test(role)) return 'male'
   return hash(id || name) % 2 === 0 ? 'female' : 'male'
 }
 
@@ -161,7 +164,7 @@ export function deviceVoiceGender(name: string): SpeakerGender | 'unknown' {
  * so natural-clip URLs resolve to the CI-generated assets.
  */
 export function buildSpeakerVoicePlan(input: {
-  cast: Array<{ id: string; name: string }>
+  cast: Array<{ id: string; name: string; role_label?: string }>
   jurors?: Array<{ id: string; persona: string }>
 }): SpeakerVoicePlan {
   const genderByKey = new Map<string, SpeakerGender>()
@@ -173,17 +176,25 @@ export function buildSpeakerVoicePlan(input: {
   used.add(NARRATOR_VOICE)
 
   for (const member of input.cast) {
-    genderByKey.set(member.id, genderForCastName(member.name, member.id))
+    genderByKey.set(member.id, genderForCastName(member.name, member.id, member.role_label))
   }
   for (const juror of input.jurors ?? []) {
     genderByKey.set(juror.id, genderForJuror(juror.persona, juror.id))
   }
 
-  const keys = ['narrator', ...[...genderByKey.keys()].filter((k) => k !== 'narrator').sort()]
+  // Walk order must byte-match site/scripts/speaker-voices.mjs's assignKokoroVoices:
+  // cast (id-sorted, judge first), then jurors (id-sorted) — NOT one merged sort,
+  // since juror ids ("J-01") and cast ids ("pc") interleave differently under a
+  // combined alphabetical sort, which silently diverges the greedy unique-voice
+  // walk from the CI-generated corpus and 404s that speaker's clips.
+  const castSorted = [...input.cast].sort((a, b) => a.id.localeCompare(b.id))
+  const jurorsSorted = [...(input.jurors ?? [])].sort((a, b) => a.id.localeCompare(b.id))
   const ordered = [
-    ...keys.filter((k) => k === 'judge'),
-    ...keys.filter((k) => k !== 'judge' && k !== 'narrator'),
+    ...castSorted.filter((m) => m.id === 'judge').map((m) => m.id),
+    ...castSorted.filter((m) => m.id !== 'judge').map((m) => m.id),
+    ...jurorsSorted.map((j) => j.id),
   ]
+  const keys = ['narrator', ...ordered]
 
   for (const id of ordered) {
     const gender = genderByKey.get(id) ?? 'female'
@@ -226,20 +237,24 @@ export function assignDeviceVoiceIndexes(
 
   const used = new Set<number>()
   const pick = (gender: SpeakerGender, key: string): number => {
-    const preferred =
-      gender === 'female'
-        ? [...femaleIdx, ...unknownIdx, ...maleIdx]
-        : [...maleIdx, ...unknownIdx, ...femaleIdx]
-    const pool = preferred.length > 0 ? preferred : voices.map((_, i) => i)
-    const start = hash(key) % pool.length
-    for (let i = 0; i < pool.length; i++) {
-      const index = pool[(start + i) % pool.length]
-      if (!used.has(index)) {
-        used.add(index)
-        return index
+    const genderIdx = gender === 'female' ? femaleIdx : maleIdx
+    const crossIdx = gender === 'female' ? maleIdx : femaleIdx
+    // Exhaust the gender-matched pool (hash-rotated for variety) before ever
+    // falling back to unknown or cross-gender voices, so a single early tier
+    // with an unlucky hash offset can't steal a slot another speaker needs.
+    const tiers = [genderIdx, unknownIdx, crossIdx].filter((tier) => tier.length > 0)
+    for (const tier of tiers) {
+      const start = hash(key) % tier.length
+      for (let i = 0; i < tier.length; i++) {
+        const index = tier[(start + i) % tier.length]
+        if (!used.has(index)) {
+          used.add(index)
+          return index
+        }
       }
     }
-    return pool[start]
+    const fallback = voices.map((_, i) => i)
+    return fallback[hash(key) % fallback.length]
   }
 
   const ordered = [

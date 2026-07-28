@@ -92,7 +92,7 @@ let plannedIndexes: Map<string, number> = new Map()
 
 /** Register cast/juror genders for the active sitting so fallback voices stay matched. */
 export function setNarrationSpeakers(input: {
-  cast: Array<{ id: string; name: string }>
+  cast: Array<{ id: string; name: string; role_label?: string }>
   jurors?: Array<{ id: string; persona: string }>
 }): void {
   activePlan = buildSpeakerVoicePlan(input)
@@ -182,6 +182,9 @@ export function narrationEngine(): NarrationEngineId {
   }
 }
 
+/** Switch Default/Experimental narration mid-sitting without restarting the
+ * case: whatever line (or phase queue) was playing keeps playing, seamlessly,
+ * under the new engine's clips from the point it was interrupted. */
 export function setNarrationEngine(value: unknown): NarrationEngineId {
   memoryEngine = normaliseNarrationEngine(value)
   try {
@@ -189,7 +192,7 @@ export function setNarrationEngine(value: unknown): NarrationEngineId {
   } catch {
     // Session memory still applies when storage is blocked.
   }
-  stopSpeech()
+  resumeActiveSession()
   return memoryEngine
 }
 
@@ -281,6 +284,19 @@ let activeAudio: HTMLAudioElement | null = null
 
 type FallbackSequence = { keys: string[]; index: number }
 
+/** Bookkeeping for the currently playing line(s), so an engine switch can
+ * resume from here instead of restarting the phase or going silent. */
+type NarrationSession = {
+  lines: SpokenLine[]
+  index: number
+  rate: NarrationRate
+  onLine?: (key: string, index: number) => void
+  done?: () => void
+  onError?: () => void
+}
+
+let activeSession: NarrationSession | null = null
+
 function cancelCurrent(): void {
   if (activeAudio) {
     activeAudio.onended = null
@@ -296,6 +312,7 @@ function cancelCurrent(): void {
 
 export function stopSpeech(): void {
   activeId++
+  activeSession = null
   cancelCurrent()
 }
 
@@ -310,13 +327,21 @@ function speakFallback(
 ): void {
   if (activeId !== myId) return
   const s = synth()
+  // A genuinely unspeakable line still reports onError, but the sequence must
+  // advance — otherwise one missing clip on one device silences every line
+  // after it (narrator plays, no speaker after it ever does) for the rest of
+  // the phase.
   if (!s) {
+    if (!sequence) activeSession = null
     onError?.()
+    done?.()
     return
   }
   refreshVoices()
   if (voices.length === 0) {
+    if (!sequence) activeSession = null
     onError?.()
+    done?.()
     return
   }
   const u = new SpeechSynthesisUtterance(text)
@@ -329,16 +354,26 @@ function speakFallback(
   u.pitch = params.pitch
   u.rate = params.rate * playbackRate
   u.onend = () => {
-    if (activeId === myId) done?.()
+    if (activeId === myId) {
+      if (!sequence) activeSession = null
+      done?.()
+    }
   }
-  // Do not call done on error — a failing voice must not auto-advance unheard lines.
   u.onerror = () => {
-    if (activeId === myId) onError?.()
+    if (activeId === myId) {
+      if (!sequence) activeSession = null
+      onError?.()
+      done?.()
+    }
   }
   try {
     s.speak(u)
   } catch {
-    if (activeId === myId) onError?.()
+    if (activeId === myId) {
+      if (!sequence) activeSession = null
+      onError?.()
+      done?.()
+    }
   }
 }
 
@@ -351,6 +386,14 @@ export function speak(
   onError?: () => void,
   sequence: FallbackSequence | null = null,
 ): void {
+  // A bare speak() call (not routed through speakAll) is still resumable on
+  // its own: track it as a single-line session so an engine switch mid-cue
+  // replays this exact line instead of doing nothing.
+  if (!sequence) {
+    activeSession = text && narrationEnabled()
+      ? { lines: [{ text, key }], index: 0, rate: playbackRate, done, onError }
+      : null
+  }
   if (!narrationEnabled() || !text) {
     done?.()
     return
@@ -370,9 +413,11 @@ export function speak(
   }
 
   let urlIndex = 0
+  let settled = false
   const playNext = () => {
-    if (activeId !== myId) return
+    if (settled || activeId !== myId) return
     if (urlIndex >= urls.length) {
+      settled = true
       activeAudio = null
       speakFallback(text, key, myId, done, playbackRate, onError, sequence)
       return
@@ -387,7 +432,9 @@ export function speak(
       }
       audio.onended = () => {
         if (activeId === myId) {
+          settled = true
           activeAudio = null
+          if (!sequence) activeSession = null
           done?.()
         }
       }
@@ -410,17 +457,49 @@ export function speakAll(
   } = {},
 ): void {
   if (!narrationEnabled()) {
+    activeSession = null
     options.done?.()
     return
   }
+  const rate = options.rate ?? narrationRate()
+  activeSession = { lines, index: 0, rate, onLine: options.onLine, done: options.done, onError: options.onError }
   const keys = lines.map((line) => line.key)
   const next = (i: number): void => {
     if (i >= lines.length) {
+      activeSession = null
       options.done?.()
       return
     }
+    if (activeSession) activeSession.index = i
     options.onLine?.(lines[i].key, i)
-    speak(lines[i].text, lines[i].key, () => next(i + 1), options.rate, options.onError, { keys, index: i })
+    speak(lines[i].text, lines[i].key, () => next(i + 1), rate, options.onError, { keys, index: i })
   }
   next(0)
+}
+
+/**
+ * Resume the in-flight line (or phase queue) under whichever engine is now
+ * active, instead of stopping cold or restarting from the beginning. Called
+ * whenever the narration engine changes mid-playback.
+ */
+function resumeActiveSession(): void {
+  const session = activeSession
+  activeId++
+  cancelCurrent()
+  if (!session) {
+    activeSession = null
+    return
+  }
+  const remaining = session.lines.slice(session.index)
+  if (remaining.length === 0) {
+    activeSession = null
+    return
+  }
+  const baseIndex = session.index
+  speakAll(remaining, {
+    rate: session.rate,
+    onLine: session.onLine ? (key, i) => session.onLine?.(key, baseIndex + i) : undefined,
+    done: session.done,
+    onError: session.onError,
+  })
 }
