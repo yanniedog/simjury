@@ -1,0 +1,21 @@
+# SimJury
+
+> SimJury is an account-free daily courtroom experience. A player hears a serious fictional case, examines the evidence, deliberates with eleven authored jurors, and locks a verdict in about ten minutes.
+
+SimJury is a static website. The interactive Daily Docket requires JavaScript, while its raw HTML contains a non-spoiler description of every phase for text-only clients. Player progress, notes, verdicts, preferences, and sitting statistics stay in the browser.
+
+## Canonical public pages
+
+- [Home](https://simjury.com/): Product introduction, content notice, and the path into the Daily Docket.
+- [The Daily Docket](https://simjury.com/today/): Guided introduction, daily and past sittings, evidence, deliberation, verdict, reveal, and sharing.
+- [Privacy](https://simjury.com/privacy/): Browser storage, narration requests, static delivery, and the absence of accounts, tracking, and runtime AI.
+
+## Site access
+
+- [Complete machine-readable site guide](https://simjury.com/llms-full.txt): Detailed route, interaction, accessibility, privacy, and architecture inventory.
+- [XML sitemap](https://simjury.com/sitemap.xml): Canonical public HTML pages.
+- [Robots policy](https://simjury.com/robots.txt): Public crawling is allowed.
+
+## Boundaries
+
+These crawl guides do not reproduce or link unreleased case facts, case answers, reveal spoilers, hidden juror state, source JSON, or the frozen engineering-only Android installer. `/play/` is a legacy redirect to the Daily Docket rather than a separate public product.
