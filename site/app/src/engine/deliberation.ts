@@ -26,10 +26,24 @@ import { pick, rngFor, type Rng } from './rng'
  */
 
 export type PlayerVerdict = 'guilty' | 'not_guilty'
+export type DiscussionPush = 'guilt' | 'innocence' | 'neutral'
 
 export type PlayerAction =
-  | { type: 'argue'; beatId: string; stance: Stance }
-  | { type: 'cite_direction'; beatId: string }
+  | {
+      type: 'argue'
+      beatId: string
+      stance: Stance
+      push?: DiscussionPush
+      summary?: string
+      targetJurorId?: string
+    }
+  | {
+      type: 'cite_direction'
+      beatId: string
+      push?: DiscussionPush
+      summary?: string
+      targetJurorId?: string
+    }
   | { type: 'pass' }
 
 export type Phase =
@@ -67,7 +81,7 @@ export interface RoomEvent {
     | 'outcome'
   beatId?: string
   stance?: Stance
-  push?: 'guilt' | 'innocence'
+  push?: DiscussionPush
   line?: string
   lineFunction?: LineFunction
   delta?: number
@@ -228,7 +242,7 @@ function beatById(c: DocketCase, id: string): DocketBeat {
   return beat
 }
 
-function matchRule(j: Juror, beat: DocketBeat, stance: Stance, push: 'guilt' | 'innocence') {
+function matchRule(j: Juror, beat: DocketBeat, stance: Stance, push: DiscussionPush) {
   return j.reaction_rules.find((r) => {
     const themeOk = r.when.theme === 'any' || beat.tags.includes(r.when.theme)
     const stanceOk = r.when.stance === 'any' || r.when.stance === stance
@@ -248,7 +262,7 @@ function respond(
   juror: Juror,
   beat: DocketBeat,
   stance: Stance,
-  push: 'guilt' | 'innocence',
+  push: DiscussionPush,
 ): void {
   const rule = matchRule(juror, beat, stance, push)
   if (!rule) return
@@ -268,7 +282,7 @@ function respond(
   // rather than reversing the argument's direction.
   const raw = Math.abs(rule.effect.delta) * Math.max(0, 0.4 + q + 0.2 * weight)
   const steps = rule.effect.delta === 0 ? 0 : Math.min(2, Math.floor(raw + state.rng()))
-  const pushSign = push === 'guilt' ? 1 : -1
+  const pushSign = push === 'guilt' ? 1 : push === 'innocence' ? -1 : 0
   const moveSign = pushSign * sign(rule.effect.delta)
 
   js.position = clamp(js.position + moveSign * steps, -2, 2)
@@ -366,13 +380,19 @@ function raiseBeat(
   actor: string,
   beat: DocketBeat,
   stance: Stance,
+  summary?: string,
+  targetJurorId?: string,
+  explicitPush?: DiscussionPush,
 ): void {
-  const push: 'guilt' | 'innocence' =
-    stance === 'proves'
+  const push: DiscussionPush =
+    explicitPush ??
+    (stance === 'proves'
       ? beat.direction
-      : beat.direction === 'guilt'
-        ? 'innocence'
-        : 'guilt'
+      : stance === 'probe'
+        ? 'neutral'
+        : beat.direction === 'guilt'
+          ? 'innocence'
+          : 'guilt')
   const eventType = beat.kind === 'direction' ? 'cite' : 'argue'
   emit(state, {
     actor,
@@ -380,6 +400,7 @@ function raiseBeat(
     beatId: beat.id,
     stance,
     push,
+    detail: summary,
   })
   markRaised(state, beat.id)
 
@@ -398,7 +419,14 @@ function raiseBeat(
     })
     .slice(0, SPEAKERS_PER_ROUND - 1)
   const rest = jurors.filter((j) => j.id !== actor && !matched.includes(j))
-  const speakers = rest.length > 0 ? [...matched, pick(state.rng, rest)] : matched
+  const candidates = rest.length > 0 ? [...matched, pick(state.rng, rest)] : matched
+  const target = jurors.find(({ id }) => id === targetJurorId)
+  const speakers = target
+    ? [target, ...candidates.filter(({ id }) => id !== target.id)].slice(
+        0,
+        SPEAKERS_PER_ROUND,
+      )
+    : candidates
   for (const juror of speakers) respond(state, juror, beat, stance, push)
 
   if (
@@ -460,7 +488,15 @@ export function playRound(state: DeliberationState, action: PlayerAction): void 
       )
     }
     const stance: Stance = action.type === 'cite_direction' ? 'proves' : action.stance
-    raiseBeat(state, 'player', beat, stance)
+    raiseBeat(
+      state,
+      'player',
+      beat,
+      stance,
+      action.summary,
+      action.targetJurorId,
+      action.push,
+    )
   }
 
   peerPressure(state)
