@@ -61,7 +61,8 @@ const PROGRESS_PREFIX = 'simjury-progress:v1:'
 const STORAGE_PROBE_KEY = 'simjury:storage-write-probe'
 /** Versioned so the entirely new grave-crime guided case is offered once. */
 export const INTRO_COMPLETE_KEY = 'simjury:intro-complete:v2'
-export const FICTION_DISCLOSURE_KEY = 'simjury:fiction-disclosure:v1'
+/** Bumped when the single entry disclosure added the binding 18+ condition. */
+export const FICTION_DISCLOSURE_KEY = 'simjury:fiction-disclosure:v2'
 
 function storage(): Storage | null {
   try {
@@ -190,7 +191,7 @@ export function markIntroComplete(): void {
   }
 }
 
-/** The fiction notice is shown once per browser profile when storage is available. */
+/** The combined fiction and 18+ notice is shown once per browser profile. */
 export function hasSeenFictionDisclosure(): boolean {
   const store = storage()
   if (!store) return false
