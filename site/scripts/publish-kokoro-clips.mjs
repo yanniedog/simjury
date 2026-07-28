@@ -34,6 +34,7 @@ const valueAfter = (flag) => {
   return index === -1 ? undefined : args[index + 1]
 }
 const clipsRoot = resolve(valueAfter('--clips') ?? 'narration-clips')
+const tagPrefix = valueAfter('--tag-prefix') ?? 'narration-kokoro'
 const clobberMp3s = args.includes('--clobber-mp3s')
 const repo = process.env.GH_REPO || process.env.GITHUB_REPOSITORY
 if (!repo) {
@@ -42,6 +43,10 @@ if (!repo) {
 }
 if (!process.env.GH_TOKEN && !process.env.GITHUB_TOKEN) {
   console.error('publish-kokoro-clips: GH_TOKEN or GITHUB_TOKEN is required')
+  process.exit(1)
+}
+if (!/^[a-z0-9-]+$/i.test(tagPrefix)) {
+  console.error(`publish-kokoro-clips: invalid --tag-prefix ${tagPrefix}`)
   process.exit(1)
 }
 
@@ -204,7 +209,7 @@ for (let shard = 0; shard < NARRATION_SHARDS; shard++) {
     .filter((path) => statSync(path).isFile())
   if (newMp3s.length === 0) continue
 
-  const tag = `narration-kokoro-${shard}`
+  const tag = `${tagPrefix}-${shard}`
   const { complete: existing, broken } = listAssets(tag)
   if (broken.length) deleteBrokenAssets(tag, broken)
   const missing = clobberMp3s

@@ -1,0 +1,6 @@
+# Experimental alt voice mode (Scylla's Band). Removable with scylla-narration.yml.
+numpy>=1.26
+soundfile>=0.12
+onnxruntime>=1.18
+huggingface_hub>=0.23
+# Install the package from GitHub in the workflow (not on PyPI as a normal wheel).
