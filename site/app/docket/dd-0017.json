@@ -72,7 +72,7 @@
       },
       "defence": {
         "speaker": "dc",
-        "text": "Suspicion is not the statutory test. The first recording preserves Leda's voluntary choice. Her later account never places Niko's employment demand in the room. The second recording contains an argument, not a condition of release. The access record identifies a shared credential and cannot say when Niko saw the all-clear or who maintained the hold. The prosecution has not excluded a safety failure plus an angry, separate grievance."
+        "text": "Suspicion is not the statutory test. The first recording preserves Leda's voluntary choice. Her later account never places Niko's employment demand in the room. The second recording contains an argument, not a condition of release. The access record identifies the shared RF-2 credential; it cannot say when Niko saw the all-clear or who imposed the local hold, which only the central desk could release. The prosecution has not excluded a safety failure plus an angry, separate grievance."
       }
     }
   },
@@ -237,7 +237,7 @@
   ],
   "checkins": [],
   "verdict_truth": "Not Guilty",
-  "twist": "The reference resolution is Not Guilty because neither recording states that Leda's release depended on withdrawal, and the authenticated access record cannot identify who imposed the shared hold, when Niko saw the all-clear, or whether he could release it. The strongest opposing interpretation remains serious: Niko was the floor controller, stood by the panel, learned during the call that central had cleared the warning, and demanded retraction before anyone came down. Those facts support suspicion, but they do not exclude a safety-control failure plus a separate angry grievance beyond reasonable doubt.",
+  "twist": "The reference resolution is Not Guilty because neither recording states that Leda's release depended on withdrawal, and the authenticated access record cannot identify who imposed the local hold with the shared RF-2 credential, when Niko saw the all-clear, or whether he could release it. The strongest opposing interpretation remains serious: Niko was the floor controller, stood by the panel, learned during the call that central had cleared the warning, and demanded retraction before anyone came down. Those facts support suspicion, but they do not exclude a safety-control failure plus a separate angry grievance beyond reasonable doubt.",
   "difficulty_target": 0.7,
   "jury": {
     "jurors": [
