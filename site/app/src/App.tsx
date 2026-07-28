@@ -51,12 +51,36 @@ import { OpeningStatements } from './components/v2/OpeningStatements'
 import { DocketBeatView } from './components/v2/DocketBeatView'
 import { DocketVerdict, type Verdict } from './components/v2/DocketVerdict'
 import { JuryRoomView } from './components/v2/JuryRoomView'
+import {
+  liveInviteFromHash,
+  loadLiveJurySession,
+  type LiveInvite,
+  type LiveJurySession,
+} from './lib/liveJury'
+import { LiveJuryLobby } from './components/v2/LiveJuryLobby'
 import { DocketReveal } from './components/v2/DocketReveal'
 import {
   DocketShell,
   DocketSittingChooser,
 } from './components/v2/DocketChrome'
 import { NarratorCue } from './components/v2/NarratorCue'
+
+function dayForLiveInviteCase(
+  caseId: string,
+  sittings: DocketSitting[],
+  featuredSitting: DocketSitting | null,
+  intro: DocketSitting | null,
+  todayDay: number,
+): number | null {
+  if (intro?.trial.id === caseId) return INTRO_SITTING_DAY
+  if (featuredSitting?.trial.id === caseId) return todayDay
+  return sittings.find((sitting) => sitting.trial.id === caseId)?.day ?? null
+}
+
+function readPendingLiveInvite(): LiveInvite | null {
+  if (typeof window === 'undefined') return null
+  return liveInviteFromHash(window.location.hash)
+}
 
 type Phase = 'intro' | 'openings' | 'beats' | 'closings' | 'juryroom' | 'reveal'
 
@@ -213,6 +237,13 @@ function DocketApp({
   const [revealStats, setRevealStats] = useState<Stats | null>(() =>
     validStored?.room ? statsFromStorage() : null,
   )
+  const [liveSession, setLiveSession] = useState<LiveJurySession | null>(
+    () => trial ? loadLiveJurySession(trial.id) : null,
+  )
+
+  useEffect(() => {
+    setLiveSession(trial ? loadLiveJurySession(trial.id) : null)
+  }, [trial])
 
   const analysis = useMemo(
     () => (trial && verdict ? analyzeDocketPlay(trial, verdict) : null),
@@ -449,6 +480,15 @@ function DocketApp({
           </button>
         </div>
       )}
+      {trial && (
+        <div className="mb-6">
+          <LiveJuryLobby
+            caseId={activeTrial.id}
+            session={liveSession}
+            onSession={setLiveSession}
+          />
+        </div>
+      )}
       {phase === 'intro' && (
         <DocketIntro
           trial={activeTrial}
@@ -456,6 +496,7 @@ function DocketApp({
           narration={narration}
           playbackRate={playbackRate}
           onBegin={begin}
+          liveSession={liveSession}
         />
       )}
       {phase === 'openings' && (
@@ -520,9 +561,19 @@ export default function App() {
   const sittings = useMemo(() => docketLibrarySittings(), [])
   const featured = useMemo(() => featuredDocketSitting(today), [today])
   const intro = useMemo(() => introSitting(), [])
-  const [selectedDay, setSelectedDay] = useState(todayDay)
+  const pendingInvite = useMemo(() => readPendingLiveInvite(), [])
+  const inviteDay = pendingInvite
+    ? dayForLiveInviteCase(
+      pendingInvite.caseId,
+      sittings,
+      featured,
+      intro,
+      todayDay,
+    )
+    : null
+  const [selectedDay, setSelectedDay] = useState(inviteDay ?? todayDay)
   const [offerIntro, setOfferIntro] = useState(
-    () => Boolean(intro) && !isIntroComplete(),
+    () => Boolean(intro) && !isIntroComplete() && !pendingInvite,
   )
   const [showFictionDisclosure, setShowFictionDisclosure] = useState(
     () => !hasSeenFictionDisclosure(),
