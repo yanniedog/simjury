@@ -71,8 +71,9 @@ describe('DocketIntro narration', () => {
   })
 
   it('omits an advisory when the case has none', () => {
+    const trial = makeDocketCase()
     const markup = DocketIntro({
-      trial: makeDocketCase(),
+      trial,
       dayNumber: 1,
       narration: true,
       playbackRate: 1,
@@ -83,7 +84,7 @@ describe('DocketIntro narration', () => {
     expect(narrationMocks.speakAll).toHaveBeenCalledWith(
       [
         { text: phaseNarratorCue('intro'), key: 'narrator' },
-        { text: makeDocketCase().hook, key: 'narrator' },
+        { text: trial.hook, key: 'narrator' },
       ],
       { rate: 1 },
     )
