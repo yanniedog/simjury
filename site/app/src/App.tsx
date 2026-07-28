@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import type { Outcome } from './engine/deliberation'
 import { analyzeDocketPlay } from './lib/v2/analyze'
 import {
@@ -199,22 +199,23 @@ function DocketApp({
     document.getElementById('phase-heading')?.focus()
   }, [phase, beatIndex])
 
-  // Registered synchronously during render (not in an effect) so the voice
-  // plan is ready before any child's own mount effect calls speak() — child
-  // effects fire before a parent's, so a useEffect here would let the first
-  // line of a resumed beat/jury-room phase go out under the wrong voice.
-  const registeredTrialRef = useRef<typeof trial>(null)
-  if (registeredTrialRef.current !== trial) {
-    registeredTrialRef.current = trial
-    if (trial) {
-      setNarrationSpeakers({
-        cast: trial.cast.map((m) => ({ id: m.id, name: m.name, role_label: m.role_label })),
-        jurors: trial.jury.jurors.map((j) => ({ id: j.id, persona: j.persona })),
-      })
-    } else {
+  // useLayoutEffect (not useEffect) so the voice plan is registered before any
+  // child's own mount effect calls speak() — ALL layout effects in a commit
+  // fire, bottom-up, before ANY passive effect fires, so this beats a child's
+  // useEffect regardless of tree position. A plain useEffect here would let
+  // the first line of a resumed beat/jury-room phase go out under the wrong
+  // (or no) voice, since child effects run before a parent's useEffect.
+  useLayoutEffect(() => {
+    if (!trial) {
       clearNarrationSpeakers()
+      return
     }
-  }
+    setNarrationSpeakers({
+      cast: trial.cast.map((m) => ({ id: m.id, name: m.name, role_label: m.role_label })),
+      jurors: trial.jury.jurors.map((j) => ({ id: j.id, persona: j.persona })),
+    })
+    return clearNarrationSpeakers
+  }, [trial])
 
   if (!trial) {
     return (
