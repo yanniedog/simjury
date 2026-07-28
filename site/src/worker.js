@@ -431,10 +431,11 @@ export default {
     if (!isLiveRoute(pathname)) return env.ASSETS.fetch(request)
 
     if (request.method === 'GET' && pathname === '/api/live/healthz') {
+      const enabled = liveJuryEnabled(env)
       return json({
         ok: true,
-        live_jury_enabled: liveJuryEnabled(env),
-        ready: false,
+        live_jury_enabled: enabled,
+        ready: enabled && Boolean(env.POOL_COORDINATOR) && Boolean(env.ROOMS),
         limits: FREE_BETA_LIMITS,
       })
     }

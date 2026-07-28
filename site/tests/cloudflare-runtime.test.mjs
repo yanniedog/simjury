@@ -376,6 +376,15 @@ test('health exposes readiness and immutable free-beta limits', async () => {
   assert.equal(enabledBody.live_jury_enabled, true)
   assert.equal(enabledBody.ready, false)
   assert.deepEqual(enabledBody.limits, FREE_BETA_LIMITS)
+  const readyBody = await (await worker.fetch(new Request(
+    'https://simjury.com/api/live/healthz',
+  ), {
+    LIVE_JURY_ENABLED: 'true',
+    POOL_COORDINATOR: {},
+    ROOMS: {},
+  })).json()
+  assert.equal(readyBody.live_jury_enabled, true)
+  assert.equal(readyBody.ready, true)
   const invalidMethod = await worker.fetch(
     new Request('https://simjury.com/api/live/healthz', { method: 'POST' }),
     { LIVE_JURY_ENABLED: 'true' },

@@ -69,7 +69,11 @@ requireText(privacyHtml, 'Cloudflare receives ordinary HTTP request metadata nee
 requireText(privacyHtml, 'does not add analytics or tracking code', 'privacy page must state the analytics and tracking posture')
 requireText(privacyHtml, 'does not attach your locally saved progress, notes or verdicts to those requests.', 'privacy page must separate static delivery requests from saved player state')
 requireText(privacyHtml, 'Daily cases are fictional and pre-authored.', 'privacy page must describe case authorship accurately')
-requireText(privacyHtml, 'produced deterministically in your browser', 'privacy page must describe juror execution accurately')
+requireText(privacyHtml, 'Authored juror responses and solo outcomes are produced deterministically in your browser', 'privacy page must describe solo juror execution accurately')
+requireText(privacyHtml, 'display name you choose, your room seat, messages, stated position and optional reasons', 'privacy page must enumerate live-room participant data')
+requireText(privacyHtml, 'deleted when the room closes or expires after two hours', 'privacy page must state live-room retention')
+requireText(privacyHtml, 'Anyone with the private invitation can join while seats remain', 'privacy page must explain the live invitation boundary')
+requireText(privacyHtml, 'There is no runtime generative AI.', 'privacy page must state the live-room AI boundary')
 requireText(sitemap, 'https://simjury.com/privacy/', 'sitemap must include the privacy page')
 
 requireText(headers, 'Cache-Control: no-transform', 'responses must block automatic analytics injection')
