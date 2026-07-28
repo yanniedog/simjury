@@ -4,6 +4,7 @@ import type {
   DocketCase,
   Juror,
 } from './caseSchema'
+import { OFFENCE_PROFILES } from './offenceProfiles'
 
 /**
  * Programmatic fixture builders for the v2 gate and engine tests. These build
@@ -17,6 +18,10 @@ export function prose(words: number): string {
   const seed = ['the', 'witness', 'described', 'what', 'the', 'record', 'shows']
   const out: string[] = []
   for (let i = 0; i < words; i++) out.push(seed[i % seed.length])
+  if (out.length > 0) {
+    out[0] = `${out[0][0].toUpperCase()}${out[0].slice(1)}`
+    out[out.length - 1] = `${out[out.length - 1]}.`
+  }
   return out.join(' ')
 }
 
@@ -203,6 +208,91 @@ export function makeDocketCase(overrides: Partial<DocketCase> = {}): DocketCase 
     difficulty_target: 0.5,
     jury: { jurors: makeJurors() },
     gen_meta: { model: 'm', prompt_version: 'p', reviewer: 'r', batch_pr: 'b' },
+    ...overrides,
+  }
+}
+
+export function makeV3DocketCase(
+  overrides: Partial<DocketCase> = {},
+): DocketCase {
+  const base = makeDocketCase()
+  const castById = new Map(base.cast.map((member) => [member.id, member]))
+  const beats = base.beats.map((beat) => {
+    const punctuated = {
+      ...beat,
+      reveal_note: /[.!?…]$/u.test(beat.reveal_note)
+        ? beat.reveal_note
+        : `${beat.reveal_note}.`,
+    }
+    if (beat.kind !== 'witness') return punctuated
+    const witnessSide = castById.get(beat.speaker)?.side
+    const counselSide =
+      beat.mode === 'cross'
+        ? witnessSide === 'prosecution'
+          ? 'defence'
+          : 'prosecution'
+        : witnessSide
+    const counsel =
+      base.cast.find(
+        (member) =>
+          member.side === counselSide && /counsel/i.test(member.role_label),
+      )?.id ?? 'pros'
+    const question =
+      'Please explain clearly what the admitted record proves about this disputed issue.'
+    const answer = prose(48)
+    return {
+      ...punctuated,
+      text: `${question} ${answer}`,
+      turns: [
+        { speaker: counsel, text: question },
+        { speaker: beat.speaker, text: answer },
+      ],
+    }
+  })
+  const profile = OFFENCE_PROFILES.murder
+  const portraitIds = [
+    ...base.cast.map((member) => member.id),
+    ...base.jury.jurors.map((juror) => juror.id),
+  ]
+  const portraits = Object.fromEntries(
+    portraitIds.map((id) => [
+      id,
+      {
+        src: `/today/media/dd-0001/characters/${id}.webp`,
+        alt: `Courtroom sketch of ${id}`,
+        caption: 'Fictional court sketch of a speaking character',
+        kind: 'portrait' as const,
+      },
+    ]),
+  )
+  return {
+    ...base,
+    offence_code: 'murder',
+    charge: profile.charge,
+    elements: [...profile.elements],
+    content_advisories: [...profile.advisories],
+    detail_level: 'non_graphic',
+    twist: 'The loud evidence was hollow; the quiet exhibit was the answer.',
+    beats,
+    media: {
+      cover: {
+        src: '/today/media/dd-0001/cover.webp',
+        alt: 'A fictional contemporary courtroom',
+        caption: 'Fictional court sketch from the jury box',
+        kind: 'court_sketch',
+      },
+      accused: portraits.acc,
+      beats: {},
+      portraits,
+    },
+    gen_meta: {
+      model: 'm',
+      prompt_version: 'dd-2026-v3',
+      reviewer: 'r',
+      batch_pr: 'b',
+      language_reviewer: 'language reviewer',
+      sensitivity_reviewer: 'sensitivity reviewer',
+    },
     ...overrides,
   }
 }

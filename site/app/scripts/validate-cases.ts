@@ -7,20 +7,68 @@
  * designed case can never reach a queue. An empty-but-present directory is a
  * legitimate pre-content state; a missing directory is a broken checkout.
  */
-import { readdirSync, readFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { dirname, join, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { ZodType } from 'zod'
 import { caseSchema, type TrialCase } from '../src/lib/caseSchema'
 import { checkQueue, type QualityIssue } from '../src/lib/caseQuality'
 import { docketCaseSchema, type DocketCase } from '../src/lib/v2/caseSchema'
-import { checkDocketCase, checkDocketQueue } from '../src/lib/v2/caseQuality'
+import {
+  checkDocketCase,
+  checkDocketQueue,
+  checkV3Corpus,
+} from '../src/lib/v2/caseQuality'
 import { docketRunwayError } from '../src/lib/v2/runway'
 import { checkDynamics } from '../src/engine/dynamics'
 
 // Resolve relative to this script, not the process cwd, so it works the same
 // from CI (repo root) and from anywhere locally.
 const APP_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
+const PUBLIC_ROOT = resolve(APP_ROOT, 'public')
+
+function checkV3MediaFiles(
+  cases: DocketCase[],
+): Pick<QualityIssue, 'caseId' | 'message'>[] {
+  const issues: Pick<QualityIssue, 'caseId' | 'message'>[] = []
+
+  for (const trial of cases.filter(
+    (candidate) => candidate.gen_meta.prompt_version === 'dd-2026-v3',
+  )) {
+    if (!trial.media) {
+      issues.push({
+        caseId: trial.id,
+        message: 'v3 case is missing its media manifest',
+      })
+      continue
+    }
+    const media = [
+      ['cover', trial.media.cover.src],
+      ...Object.entries(trial.media.portraits ?? {}).map(([speakerId, asset]) => [
+        `portrait ${speakerId}`,
+        asset.src,
+      ]),
+    ]
+
+    for (const [label, src] of media) {
+      const publicPath = src.startsWith('/today/')
+        ? src.slice('/today/'.length)
+        : src.replace(/^\/+/, '')
+      const diskPath = resolve(PUBLIC_ROOT, publicPath)
+      if (
+        !diskPath.startsWith(`${PUBLIC_ROOT}${sep}`) ||
+        !existsSync(diskPath)
+      ) {
+        issues.push({
+          caseId: trial.id,
+          message: `${label} media file is missing: ${src}`,
+        })
+      }
+    }
+  }
+
+  return issues
+}
 
 interface Queue<T> {
   name: string
@@ -110,6 +158,8 @@ function main(): void {
           dailyCases.map((c) => c.publish_date),
         )
         return [
+          ...checkV3Corpus(cases),
+          ...checkV3MediaFiles(cases),
           ...checkDocketQueue(dailyCases),
           ...introCases.flatMap((c) =>
             checkDocketCase(c).map((message) => ({
