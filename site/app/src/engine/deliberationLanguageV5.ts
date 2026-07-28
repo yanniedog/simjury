@@ -83,7 +83,9 @@ function overlapScore(input: string, inputTokens: Set<string>, concept: Language
   const phrases = [concept.label, ...concept.aliases].map(normalize).filter(Boolean)
   let score = 0
   for (const phrase of phrases) {
-    if (input.includes(phrase)) score = Math.max(score, phrase.includes(' ') ? 8 : 5)
+    if (` ${input} `.includes(` ${phrase} `)) {
+      score = Math.max(score, phrase.includes(' ') ? 8 : 5)
+    }
     const phraseTokens = tokens(phrase)
     let overlap = 0
     for (const token of phraseTokens) if (inputTokens.has(token)) overlap++
