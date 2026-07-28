@@ -76,6 +76,16 @@ product.
 - The removed installer stays omitted from `sitemap.xml`; `/install/` is a tombstone
   redirect to `/`.
 
+## D-WEB-5 — One fiction and adult-entry disclosure (owner-directed, 2026-07-29)
+
+- D-WEB-4 is narrowed: SimJury identifies the entire experience as fictional and
+  for adults aged 18 and over in one combined entry gate, remembered by the browser.
+- Cases do not repeat fiction or age disclaimers. Authoring labels, media safeguards,
+  and the ban on real identities remain unchanged.
+- Serious-crime evidence is written plainly for adults, including material mechanisms,
+  quantities, injuries, deaths, and consequences. It remains non-graphic and omits
+  operationally reusable instructions for committing harm.
+
 ## Unchanged, still binding on the web
 
 - **No real names / no reveal content pre-verdict.** Enforced by Daily Docket
