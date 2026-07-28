@@ -485,4 +485,17 @@ describe('checkDocketQueue', () => {
     )
     expect(checkDocketQueue(q).map((i) => i.message).join()).toMatch(/in a row/)
   })
+
+  it('defers verdict sequencing while atomic v3 replacements are mixed with legacy cases', () => {
+    const q = ['01', '02', '03', '04'].map((n, i) =>
+      makeDocketCase({
+        id: `dd-00${n}`,
+        publish_date: `2026-08-0${i + 1}`,
+        title: `T${n}`,
+      }),
+    )
+    q[0].gen_meta.prompt_version = 'dd-2026-v3'
+
+    expect(checkDocketQueue(q).map((i) => i.message).join()).not.toMatch(/in a row/)
+  })
 })
