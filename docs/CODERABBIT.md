@@ -32,7 +32,7 @@ Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.
 
 | Piece | Purpose |
 |-------|---------|
-| `.coderabbit.yaml` | Chill profile, draft PRs on, incremental review, path filters + SimJury path instructions |
+| `.coderabbit.yaml` | Chill profile, **no walkthrough/summary**, draft PRs on, incremental review, path filters + SimJury path instructions |
 | `scripts/lib/bot-wait-config.mjs` | `coderabbit` alias + default OR-group |
 | `bot-presence-gate` | Env `SIMJURY_BOT_WAIT_REQUIRED=sourcery\|codex\|cursor\|coderabbit` |
 

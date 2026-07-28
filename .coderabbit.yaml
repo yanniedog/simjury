@@ -4,10 +4,21 @@ language: en-US
 reviews:
   profile: chill
   request_changes_workflow: false
-  high_level_summary: true
+  # No walkthrough / summary spam — keep inline findings only.
+  high_level_summary: false
+  high_level_summary_in_walkthrough: false
   poem: false
-  review_status: true
+  review_status: false
   review_details: false
+  in_progress_fortune: false
+  changed_files_summary: false
+  sequence_diagrams: false
+  estimate_code_review_effort: false
+  assess_linked_issues: false
+  related_issues: false
+  related_prs: false
+  suggested_labels: false
+  suggested_reviewers: false
   enable_prompt_for_ai_agents: true
   path_filters:
     - "!**/node_modules/**"
