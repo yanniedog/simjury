@@ -92,19 +92,20 @@ export function FictionDisclosureGate({ onContinue }: { onContinue: () => void }
           Before you enter
         </p>
         <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">
-          A fictional courtroom
+          A fictional courtroom for adults
         </h1>
       </div>
       <p className="mx-auto max-w-xl text-base leading-relaxed text-neutral-300">
         Everything in SimJury is fictional. The cases, people, places, evidence,
-        and jury-room dialogue are created for this experience.
+        and jury-room dialogue are created for this experience. SimJury is for
+        adults aged 18 and over and deals directly with serious crime.
       </p>
       <button
         type="button"
         onClick={onContinue}
         className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
       >
-        Enter SimJury
+        I’m 18 or older — enter SimJury
       </button>
     </div>
   )

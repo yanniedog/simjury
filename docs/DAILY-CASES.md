@@ -22,10 +22,16 @@ enforce the hard rules; this file holds the taste. Companion: the drafting promp
 5. **The charge carries the highest stakes.** Every active case uses one canonical
    grave-offence profile from `offenceProfiles.ts`. Do not combine counts merely to
    make a premise sound larger.
-6. **Non-graphic and non-operational.** Everyone is an adult. Do not describe gore,
-   attack construction, drug production, trafficking routes, security weaknesses, or
-   evasion methods. National-security cases use invented institutions with no real
-   geopolitical analogue.
+6. **Adult, concrete, non-operational.** SimJury is an 18+ experience. State the
+   specific facts an adult juror needs: the alleged weapon or device category, exact
+   chronology, quantities, location, physical findings, injuries, deaths, and wider
+   consequences when they matter to an element or inference. Do not hide a material
+   fact behind “an incident”, “a device”, “a substance”, or another euphemism. Detail
+   remains non-graphic and must not become a reproducible method: omit construction
+   steps, material ratios, wiring or calibration instructions, drug-production
+   recipes, live security weaknesses, trafficking routes, and evasion techniques.
+   National-security cases use invented institutions with no real geopolitical
+   analogue.
 
 ## Shape of the commissioned V3 cases (`site/app/src/lib/v2/caseSchema.ts`)
 
@@ -109,6 +115,23 @@ element from admissible evidence. Balance modern records with memory, motive,
 credibility, causation, knowledge, intent, command, coercion, duress, and the
 burden of proof.
 Across seven cases, no two central inferences may depend on the same mechanism.
+
+### Specificity standard for major crime
+
+- **Homicide and violence:** name the physical act, injury, cause of death, medical
+  window, and expert limitations in direct, non-graphic language.
+- **Explosives and firearms:** authors may name the device or weapon category,
+  placement, trigger class, forensic residue, blast or ballistic consequence, and
+  alleged purpose. Never provide a usable assembly sequence or performance recipe.
+- **Drugs and organised crime:** state the fictional drug, quantity, purity or batch
+  scale, participant role, proceeds, intended distribution, and health or community
+  consequence where probative. Omit synthesis instructions and operational routes.
+- **National security and digital evidence:** identify the fictional information,
+  recipient, system event, prejudice, custody, and verification method precisely.
+  Never disclose a real exploitable weakness or teach access, concealment, or evasion.
+
+Specificity must serve proof, comprehension, character, or consequence. It must not
+be inserted merely for shock value.
 
 ## Crime-writer standard
 
