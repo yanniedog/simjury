@@ -5,6 +5,7 @@ import {
   docketCaseSchema,
   docketCaseSchemaForPromptVersion,
   docketCaseV4Schema,
+  parseDocketCaseForPromptVersion,
   type DocketCaseV4,
 } from './caseSchema'
 import { makeDocketCase } from './fixtures'
@@ -88,6 +89,7 @@ describe('Docket Case V4 editorial contract', () => {
     const trial = makeV4Case()
     expect(docketCaseSchemaForPromptVersion(trial)).toBe(docketCaseV4Schema)
     expect(docketCaseSchemaForPromptVersion(makeDocketCase())).toBe(docketCaseSchema)
+    expect(parseDocketCaseForPromptVersion(trial)).toEqual(trial)
     expect(trial.label).toBe('fiction')
   })
 
@@ -120,11 +122,11 @@ describe('Docket Case V4 editorial contract', () => {
 
     analysis.beats.pop()
     sheet.approvals.legal.content_hash = 'stale'
-    sheet.foundations = []
+    sheet.foundations.push(sheet.foundations[0])
     expect(checkV4EditorialBundle(trial, analysis, sheet)).toEqual(expect.arrayContaining([
       'legal approval is stale',
       'post-verdict analysis must cover every playable beat exactly once',
-      `material beat '${trial.beats[0].id}' needs an evidentiary foundation`,
+      `foundation lists beat '${trial.beats[0].id}' more than once`,
     ]))
   })
 })

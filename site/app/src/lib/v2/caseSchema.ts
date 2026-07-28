@@ -28,6 +28,16 @@ function isRealCalendarDate(value: string): boolean {
   return month >= 1 && month <= 12 && day >= 1 && day <= daysInMonth[month - 1]
 }
 
+export const docketCaseIdSchema = z
+  .string()
+  .regex(/^(dd-\d{4}|dd-intro)$/, 'id must identify a docket case')
+export const docketCaseRevisionSchema = z
+  .string()
+  .regex(
+    /^(dd-\d{4}|dd-intro)@[0-9a-f]{8}$/,
+    'case revision must be a docket case storage id',
+  )
+
 /**
  * Schema v2 — the Daily Docket case (`dd-*`), per DAILY-PIVOT.md.
  *
@@ -209,9 +219,7 @@ export const jurorSchema = z.object({
 export type Juror = z.infer<typeof jurorSchema>
 
 const docketCaseV3ObjectSchema = z.object({
-    id: z
-      .string()
-      .regex(/^(dd-\d{4}|dd-intro)$/, 'id must look like dd-0001 or dd-intro'),
+    id: docketCaseIdSchema,
     publish_date: z
       .string()
       .regex(/^\d{4}-\d{2}-\d{2}$/, 'publish_date must be YYYY-MM-DD')
@@ -292,15 +300,39 @@ const docketCaseV3ObjectSchema = z.object({
     }),
   })
 
-type DocketReferenceFields = {
-  cast: Array<{ id: string }>
-  beats: Array<{ id: string }>
-  media?: {
-    beats: Record<string, unknown>
-    portraits?: Record<string, unknown>
-  }
-  jury: { jurors: Array<{ id: string }> }
-}
+const docketCaseV4ObjectSchema = docketCaseV3ObjectSchema
+  .omit({
+    accused: true,
+    beats: true,
+    verdict_truth: true,
+    twist: true,
+    gen_meta: true,
+  })
+  .extend({
+    accused: z
+      .object({
+        cast_id: z.string().min(1),
+        human: z.string().min(1),
+      })
+      .strict(),
+    beats: z.array(docketBeatV4Schema).min(10).max(14),
+    gen_meta: z
+      .object({
+        model: z.string(),
+        prompt_version: z.literal('dd-2026-v4'),
+        reviewer: z.string(),
+        batch_pr: z.string(),
+        language_reviewer: z.string().optional(),
+        sensitivity_reviewer: z.string().optional(),
+      })
+      .strict(),
+  })
+  .strict()
+
+type ReferenceKeys = 'cast' | 'beats' | 'media' | 'jury'
+type DocketReferenceFields =
+  | Pick<z.infer<typeof docketCaseV3ObjectSchema>, ReferenceKeys>
+  | Pick<z.infer<typeof docketCaseV4ObjectSchema>, ReferenceKeys>
 
 function refineDocketReferences(
   c: DocketReferenceFields,
@@ -366,35 +398,9 @@ export type DocketCase = z.infer<typeof docketCaseSchema>
  * V4 trial data. This strict schema intentionally rejects every historical
  * answer-key field and pre-verdict punishment consequence.
  */
-export const docketCaseV4Schema = docketCaseV3ObjectSchema
-  .omit({
-    accused: true,
-    beats: true,
-    verdict_truth: true,
-    twist: true,
-    gen_meta: true,
-  })
-  .extend({
-    accused: z
-      .object({
-        cast_id: z.string().min(1),
-        human: z.string().min(1),
-      })
-      .strict(),
-    beats: z.array(docketBeatV4Schema).min(10).max(14),
-    gen_meta: z
-      .object({
-        model: z.string(),
-        prompt_version: z.literal('dd-2026-v4'),
-        reviewer: z.string(),
-        batch_pr: z.string(),
-        language_reviewer: z.string().optional(),
-        sensitivity_reviewer: z.string().optional(),
-      })
-      .strict(),
-  })
-  .strict()
-  .superRefine(refineDocketReferences)
+export const docketCaseV4Schema = docketCaseV4ObjectSchema.superRefine(
+  refineDocketReferences,
+)
 export type DocketCaseV4 = z.infer<typeof docketCaseV4Schema>
 
 export const analysisRoleSchema = z.enum([
@@ -407,15 +413,8 @@ export type AnalysisRole = z.infer<typeof analysisRoleSchema>
 export const docketCaseAnalysisV4Schema = z
   .object({
     schema_version: z.literal(4),
-    case_id: z
-      .string()
-      .regex(/^(dd-\d{4}|dd-intro)$/, 'case_id must identify a docket case'),
-    case_revision: z
-      .string()
-      .regex(
-        /^(dd-\d{4}|dd-intro)@[0-9a-f]{8}$/,
-        'case_revision must be a case storage id',
-      ),
+    case_id: docketCaseIdSchema,
+    case_revision: docketCaseRevisionSchema,
     reference_verdict: z.enum(['Guilty', 'Not Guilty']),
     reference_reasoning: z.string().min(1),
     strongest_opposing_interpretation: z.string().min(1),
@@ -464,4 +463,10 @@ export function docketCaseSchemaForPromptVersion(
   return marker.success && marker.data.gen_meta.prompt_version === 'dd-2026-v4'
     ? docketCaseV4Schema
     : docketCaseSchema
+}
+
+export function parseDocketCaseForPromptVersion(
+  value: unknown,
+): DocketCase | DocketCaseV4 {
+  return docketCaseSchemaForPromptVersion(value).parse(value)
 }

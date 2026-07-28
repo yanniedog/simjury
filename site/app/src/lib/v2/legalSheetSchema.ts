@@ -1,6 +1,11 @@
 import { z } from 'zod'
 import { caseStorageId } from './caseRevision'
-import type { DocketCaseAnalysisV4, DocketCaseV4 } from './caseSchema'
+import {
+  docketCaseIdSchema,
+  docketCaseRevisionSchema,
+  type DocketCaseAnalysisV4,
+  type DocketCaseV4,
+} from './caseSchema'
 
 const text = z.string().min(1)
 const textList = z.array(text).min(1)
@@ -16,10 +21,8 @@ const approvalSchema = z
 export const legalSheetSchema = z
   .object({
     schema_version: z.literal(1),
-    case_id: z
-      .string()
-      .regex(/^(dd-\d{4}|dd-intro)$/, 'case_id must identify a docket case'),
-    case_revision: text,
+    case_id: docketCaseIdSchema,
+    case_revision: docketCaseRevisionSchema,
     jurisdiction: z.literal('State of Orinth'),
     statute: z
       .object({
@@ -112,7 +115,13 @@ export function checkV4EditorialBundle(
     issues.push('post-verdict analysis must cover every playable beat exactly once')
   }
 
-  const foundationIds = new Set(sheet.foundations.map((item) => item.beat_id))
+  const foundationIds = new Set<string>()
+  for (const item of sheet.foundations) {
+    if (foundationIds.has(item.beat_id)) {
+      issues.push(`foundation lists beat '${item.beat_id}' more than once`)
+    }
+    foundationIds.add(item.beat_id)
+  }
   const materialIds = analysis.beats
     .filter((beat) => beat.analysis_role !== 'context')
     .map((beat) => beat.beat_id)
