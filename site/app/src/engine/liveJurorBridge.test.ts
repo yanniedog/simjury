@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import type { LiveRoomEvent } from '../lib/liveJuryConnection'
 import { makeDocketCase } from '../lib/v2/fixtures'
 import { buildHybridTranscript } from './liveJurorBridge'
@@ -106,6 +106,20 @@ describe('deterministic live-juror bridge', () => {
     expect(reconnected).toEqual(once)
     expect(reconnected.filter((item) => item.kind === 'human')).toHaveLength(1)
     expect(new Set(reconnected.map(({ key }) => key)).size).toBe(reconnected.length)
+  })
+
+  it('keeps the first event and safely reports a conflicting duplicate sequence', () => {
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const first = message(4, 1, 'The digital record does not prove guilt.')
+    const conflict = message(4, 2, 'A different contribution.', 'Morgan')
+    const transcript = buildHybridTranscript(makeDocketCase(), [first, conflict])
+
+    expect(transcript[0]).toEqual({ kind: 'human', key: 'human-4', event: first })
+    expect(warning).toHaveBeenCalledWith(
+      'Live jury sequence 4 conflicted; keeping its first event.',
+    )
+    expect(warning.mock.calls.flat().join(' ')).not.toContain(conflict.text)
+    warning.mockRestore()
   })
 
   it('never turns position events into authored replies', () => {

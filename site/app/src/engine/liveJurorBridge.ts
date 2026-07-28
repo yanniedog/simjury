@@ -113,7 +113,16 @@ export function buildHybridTranscript(
   trial: DocketCase,
   events: LiveRoomEvent[],
 ): HybridTranscriptItem[] {
-  const unique = new Map(events.map((event) => [event.sequence, event]))
+  const unique = new Map<number, LiveRoomEvent>()
+  for (const event of events) {
+    const existing = unique.get(event.sequence)
+    if (!existing) {
+      unique.set(event.sequence, event)
+    } else if (JSON.stringify(existing) !== JSON.stringify(event)) {
+      // Never log human text or names. First-seen server history remains authoritative.
+      console.warn(`Live jury sequence ${event.sequence} conflicted; keeping its first event.`)
+    }
+  }
   const ordered = [...unique.values()].sort((a, b) => a.sequence - b.sequence)
   const pack = legacyLanguagePack(trial, [])
   const seenThreads = new Set<string>()
