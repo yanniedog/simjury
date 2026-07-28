@@ -187,36 +187,35 @@ describe('serious-crime case integration', () => {
   ) => {
     const matches = seriousCase.beats.filter(predicate)
     if (matches.length !== 1) {
-      throw new Error(`dd-0006 needs exactly one ${label}; found ${matches.length}`)
+      throw new Error(
+        `${seriousCase.id} needs exactly one ${label}; found ${matches.length}`,
+      )
     }
     return matches[0]
   }
+  const isEvidenceBeat = (beat: DocketCase['beats'][number]) =>
+    beat.kind !== 'direction'
+  const isDecisiveEvidence = (beat: DocketCase['beats'][number]) =>
+    isEvidenceBeat(beat) && beat.reveal_stamp === 'decisive'
+  const isTrap = (beat: DocketCase['beats'][number]) =>
+    isEvidenceBeat(beat) && beat.reveal_stamp === 'misleading'
   const direction = oneBeat('jury direction', (beat) => beat.kind === 'direction')
   const decisiveGuilt = oneBeat(
     'decisive guilt beat',
-    (beat) =>
-      beat.kind !== 'direction' &&
-      beat.reveal_stamp === 'decisive' &&
-      beat.direction === 'guilt',
+    (beat) => isDecisiveEvidence(beat) && beat.direction === 'guilt',
   )
   const decisiveInnocence = oneBeat(
     'decisive innocence beat',
-    (beat) =>
-      beat.kind !== 'direction' &&
-      beat.reveal_stamp === 'decisive' &&
-      beat.direction === 'innocence',
+    (beat) => isDecisiveEvidence(beat) && beat.direction === 'innocence',
   )
   const attempt = oneBeat(
     'attempt evidence beat',
     (beat) =>
-      beat.kind !== 'direction' &&
+      isEvidenceBeat(beat) &&
       beat.direction === 'guilt' &&
       beat.tags.includes('causation'),
   )
-  const trap = oneBeat(
-    'misleading beat',
-    (beat) => beat.kind !== 'direction' && beat.reveal_stamp === 'misleading',
-  )
+  const trap = oneBeat('misleading beat', isTrap)
 
   it('plays the authored fixture to a terminal outcome, deterministically', () => {
     const actions = [
