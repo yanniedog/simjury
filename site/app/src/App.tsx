@@ -85,12 +85,17 @@ export function IntroGate({
   narration: boolean
   playbackRate: NarrationRate
 }) {
+  const [narratorActive, setNarratorActive] = useState(false)
   const cue =
     'Welcome to SimJury. Before today’s case, a short guided sitting teaches how a trial works here — briefing, openings, evidence, closings, the jury room, then your verdict.'
 
   useEffect(() => {
-    if (narration) speak(cue, 'narrator', undefined, playbackRate)
-    return stopSpeech
+    setNarratorActive(narration)
+    if (narration) speak(cue, 'narrator', () => setNarratorActive(false), playbackRate)
+    return () => {
+      setNarratorActive(false)
+      stopSpeech()
+    }
   }, [cue, narration, playbackRate])
 
   return (
@@ -103,7 +108,7 @@ export function IntroGate({
           Start with a guided intro?
         </h1>
       </div>
-      <NarratorCue text={cue} />
+      <NarratorCue text={cue} active={narratorActive} />
       <p className="text-sm leading-relaxed text-neutral-400">
         About five minutes. The guided sitting is a complete murder case with non-graphic references to death and serious violence. You can skip it or reopen it later from the case library.
       </p>

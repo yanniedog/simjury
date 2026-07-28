@@ -42,6 +42,8 @@ describe('JuryRoomView', () => {
     )
 
     expect(markup).toContain('Hear first point')
+    expect(markup).toContain('aria-live="polite"')
+    expect(markup).toContain('aria-atomic="true"')
     expect(markup).not.toContain('>Pause<')
   })
 

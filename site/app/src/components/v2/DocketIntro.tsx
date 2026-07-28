@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
 import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { phaseNarratorCue } from '../../lib/narratorCues'
@@ -20,10 +20,12 @@ export function DocketIntro({
   onBegin: () => void
 }) {
   const accused = trial.cast.find((m) => m.id === trial.accused.cast_id)
+  const [narratorActive, setNarratorActive] = useState(false)
   const phaseCue = phaseNarratorCue('intro')
   const advisory = contentAdvisoryText(trial.content_advisories)
 
   useEffect(() => {
+    setNarratorActive(narration)
     if (!narration) return stopSpeech
     speakAll(
       [
@@ -31,7 +33,7 @@ export function DocketIntro({
         ...(advisory ? [{ text: advisory, key: 'narrator' }] : []),
         { text: trial.hook, key: 'narrator' },
       ],
-      { rate: playbackRate },
+      { rate: playbackRate, done: () => setNarratorActive(false) },
     )
     return stopSpeech
   }, [advisory, phaseCue, trial.hook, narration, playbackRate])
@@ -48,7 +50,7 @@ export function DocketIntro({
         <p className="text-sm text-neutral-400">{trial.setting}</p>
       </div>
 
-      <NarratorCue text={phaseCue} />
+      <NarratorCue text={phaseCue} active={narratorActive} />
 
       {advisory && (
         <aside

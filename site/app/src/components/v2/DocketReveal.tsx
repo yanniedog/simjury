@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
 import type { BeatReveal, DocketAnalysis } from '../../lib/v2/analyze'
 import type { StoredPlay } from '../../lib/storage'
@@ -66,10 +66,12 @@ export function DocketReveal({
   isIntro?: boolean
 }) {
   const phaseCue = phaseNarratorCue('reveal')
+  const [narratorActive, setNarratorActive] = useState(false)
 
   useEffect(() => {
+    setNarratorActive(narration)
     if (!narration) return stopSpeech
-    speak(phaseCue, 'narrator', undefined, playbackRate)
+    speak(phaseCue, 'narrator', () => setNarratorActive(false), playbackRate)
     return stopSpeech
   }, [phaseCue, narration, playbackRate])
 
@@ -94,7 +96,7 @@ export function DocketReveal({
 
   return (
     <div className="phase-view reveal-view space-y-6">
-      <NarratorCue text={phaseCue} />
+      <NarratorCue text={phaseCue} active={narratorActive} />
 
       <div className="judgment-record border p-5 text-center">
         <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">

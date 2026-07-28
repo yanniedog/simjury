@@ -17,6 +17,7 @@ vi.mock('react', async (importOriginal) => {
     useEffect: (effect: () => void | (() => void)) => {
       effectState.cleanup = effect() ?? undefined
     },
+    useState: <T,>(initial: T) => [initial, vi.fn()] as const,
   }
 })
 
@@ -52,7 +53,7 @@ describe('DocketIntro narration', () => {
         },
         { text: trial.hook, key: 'narrator' },
       ],
-      { rate: 1.15 },
+      { rate: 1.15, done: expect.any(Function) },
     )
     effectState.cleanup?.()
     expect(narrationMocks.stopSpeech).toHaveBeenCalledOnce()
@@ -86,7 +87,7 @@ describe('DocketIntro narration', () => {
         { text: phaseNarratorCue('intro'), key: 'narrator' },
         { text: trial.hook, key: 'narrator' },
       ],
-      { rate: 1 },
+      { rate: 1, done: expect.any(Function) },
     )
   })
 })

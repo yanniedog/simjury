@@ -195,6 +195,7 @@ function FeedLine({
       <li
         className={`room-line speech-turn border p-3${active ? ' speech-turn-active' : ''}`}
         aria-current={active ? 'true' : undefined}
+        data-event-tick={e.tick}
       >
         <div className="flex items-start gap-3">
           <SpeakerPortrait trial={trial} speakerId={e.actor} className="h-16 w-14" />
@@ -337,6 +338,8 @@ export function JuryRoomView({
   const [pendingVerdict, setPendingVerdict] = useState<Verdict | null>(null)
   const [activeJurorId, setActiveJurorId] = useState<string | null>(null)
   const [activeEventTick, setActiveEventTick] = useState<number | null>(null)
+  const [narratorActive, setNarratorActive] = useState(false)
+  const [liveResponseText, setLiveResponseText] = useState('')
   const [listening, setListening] = useState(false)
   const [paused, setPaused] = useState(false)
   const [raising, setRaising] = useState(false)
@@ -400,6 +403,7 @@ export function JuryRoomView({
     if (listenGeneration.current !== generation) return
     setActiveJurorId(null)
     setActiveEventTick(null)
+    setNarratorActive(false)
     setListening(false)
   }
 
@@ -427,6 +431,7 @@ export function JuryRoomView({
     const before = current.log.length
     setActiveJurorId(null)
     setActiveEventTick(null)
+    setNarratorActive(false)
     setPendingVerdict(null)
     setRaising(false)
     raisingRef.current = false
@@ -437,6 +442,7 @@ export function JuryRoomView({
       .slice(before)
       .filter((e) => e.type === 'respond' && e.line)
     const spoken = spokenEvents.map((e) => ({ text: e.line!, key: e.actor }))
+    setLiveResponseText(narration ? '' : spoken.map(({ text }) => text).join(' '))
     setStirredIds(spoken.map((line) => line.key))
     const generation = ++listenGeneration.current
     const stillOpen = current.phase.startsWith('open')
@@ -457,6 +463,7 @@ export function JuryRoomView({
             scheduleAutoAdvance(AUTO_DWELL_MS)
           }
         },
+        onError: () => endListening(generation),
         rate: playbackRate,
       })
     } else {
@@ -478,10 +485,17 @@ export function JuryRoomView({
   useEffect(() => {
     clearAdvanceTimer()
     setActiveJurorId(null)
+    setActiveEventTick(null)
+    setNarratorActive(narration)
     setListening(false)
     stopSpeech()
     if (!narration) return stopSpeech
-    speak(phaseNarratorCue('juryroom'), 'narrator', undefined, playbackRate)
+    speak(
+      phaseNarratorCue('juryroom'),
+      'narrator',
+      () => setNarratorActive(false),
+      playbackRate,
+    )
     if (
       startedRef.current &&
       stateRef.current?.phase.startsWith('open') &&
@@ -519,6 +533,13 @@ export function JuryRoomView({
     }
   }, [logLength, revealVotes, listening])
 
+  useEffect(() => {
+    if (activeEventTick === null) return
+    transcriptRef.current
+      ?.querySelector<HTMLElement>(`[data-event-tick="${activeEventTick}"]`)
+      ?.scrollIntoView({ block: 'nearest' })
+  }, [activeEventTick])
+
   function togglePause() {
     if (!inOpenRound || outcome) return
     if (paused) {
@@ -552,6 +573,7 @@ export function JuryRoomView({
     listenGeneration.current += 1
     stopSpeech()
     setActiveJurorId(null)
+    setActiveEventTick(null)
     setListening(false)
     if (
       stateRef.current?.phase.startsWith('open') &&
@@ -566,6 +588,8 @@ export function JuryRoomView({
     if (state.phase !== 'final_vote' || outcome) return
     clearAdvanceTimer()
     setActiveJurorId(null)
+    setActiveEventTick(null)
+    setNarratorActive(false)
     setListening(false)
     stopSpeech()
     setPlayerVerdict(chosen)
@@ -622,7 +646,7 @@ export function JuryRoomView({
       </div>
 
       {!outcome && !awaitingPlayerVote && !listening && !raising && (
-        <NarratorCue text={phaseNarratorCue('juryroom')} />
+        <NarratorCue text={phaseNarratorCue('juryroom')} active={narratorActive} />
       )}
       {awaitingPlayerVote && <NarratorCue text={phaseNarratorCue('verdict')} />}
 
@@ -762,6 +786,9 @@ export function JuryRoomView({
           raising,
           phase: state.phase,
         })}
+      </p>
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {liveResponseText}
       </p>
 
       <ul
