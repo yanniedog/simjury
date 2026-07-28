@@ -3,6 +3,7 @@ import {
   JURY_SIZE,
   MAJORITY_DIRECTION,
   ROOM_SCHEMA_VERSION,
+  canAdvance,
   createRoom,
   dispatch,
   replay,
@@ -84,7 +85,40 @@ describe('Deliberation V5 procedure', () => {
       'needs a contribution',
     )
     state = discuss(state, 3)
+    const openBallot = { type: 'first_ballot_opened' } as const
+    const beforeCheck = snapshot(state)
+    expect(canAdvance(state, openBallot)).toEqual({ allowed: true })
+    expect(state).toEqual(beforeCheck)
+    expect(dispatch(state, openBallot).stage).toBe('first_ballot')
+  })
+
+  it('does not carry a pending pre-ballot contribution into the required further discussion', () => {
+    let state = discuss(openFloor(), 3)
+    state = dispatch(state, {
+      type: 'argument_raised', speakerSeat: 1,
+      frame: frame('extra-point'), threadId: 'extra-point',
+    })
+    expect(canAdvance(state, { type: 'first_ballot_opened' })).toEqual({
+      allowed: false,
+      reason: 'Complete the pending discussion round before opening the first ballot',
+    })
+    expect(canAdvance(state, { type: 'discussion_round_completed' })).toEqual({ allowed: true })
+    state = dispatch(state, { type: 'discussion_round_completed' })
     expect(dispatch(state, { type: 'first_ballot_opened' }).stage).toBe('first_ballot')
+  })
+
+  it('does not count a pass as an opinion or meaningful discussion', () => {
+    const pass = frame('pass')
+    pass.act = 'pass'
+    const opinion = dispatch(createRoom({ roomId: 'room-1', beliefs: beliefs() }), {
+      type: 'opinion_circle_started',
+    })
+    expect(canAdvance(opinion, {
+      type: 'opinion_stated', speakerSeat: 1, frame: pass, threadId: 'pass',
+    }).allowed).toBe(false)
+    expect(canAdvance(openFloor(), {
+      type: 'argument_raised', speakerSeat: 1, frame: pass, threadId: 'pass',
+    }).allowed).toBe(false)
   })
 
   it('returns a unanimous verdict at the first ballot', () => {
@@ -162,5 +196,10 @@ describe('event sourcing', () => {
     const duplicate = beliefs()
     duplicate[11].seat = 11
     expect(() => createRoom({ roomId: 'bad', beliefs: duplicate })).toThrow()
+    for (const invalidSeat of [1.5, Number.NaN]) {
+      const invalid = beliefs()
+      invalid[0].seat = invalidSeat
+      expect(() => createRoom({ roomId: 'bad', beliefs: invalid })).toThrow()
+    }
   })
 })

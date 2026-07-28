@@ -79,7 +79,7 @@ export type RoomSnapshot = RoomState
 export interface RoomConfig { roomId: string; beliefs: BeliefState[] }
 
 function clone<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value)) as T
+  return structuredClone(value)
 }
 
 function assertSeat(seat: number): void {
@@ -93,7 +93,7 @@ export function createRoom(config: RoomConfig): RoomState {
   if (
     seats.length !== JURY_SIZE ||
     new Set(seats).size !== JURY_SIZE ||
-    seats.some((seat) => seat < 1 || seat > JURY_SIZE)
+    seats.some((seat) => !Number.isInteger(seat) || seat < 1 || seat > JURY_SIZE)
   ) {
     throw new Error(`A room requires exactly ${JURY_SIZE} unique seats`)
   }
@@ -165,6 +165,7 @@ function applyEvent(previous: RoomState, event: RoomEvent): RoomState {
     case 'opinion_stated':
       if (state.stage !== 'opinion_circle') throw new Error('The opinion circle is not open')
       assertSeat(event.speakerSeat)
+      if (event.frame.act === 'pass') throw new Error('An opinion must be substantive')
       if (state.opinionSeats.includes(event.speakerSeat)) throw new Error('Seat already gave an opinion')
       state.opinionSeats.push(event.speakerSeat)
       addThreadEvent(state, event)
@@ -175,6 +176,7 @@ function applyEvent(previous: RoomState, event: RoomEvent): RoomState {
         throw new Error('Arguments may be raised only during an open floor')
       }
       assertSeat(event.speakerSeat)
+      if (event.frame.act === 'pass') throw new Error('A discussion contribution cannot be a pass')
       state.currentRoundContributions++
       addThreadEvent(state, event)
       break
@@ -190,6 +192,9 @@ function applyEvent(previous: RoomState, event: RoomEvent): RoomState {
     case 'first_ballot_opened':
       if (state.stage !== 'open_floor' || state.discussionRounds < REQUIRED_DISCUSSION_ROUNDS) {
         throw new Error(`The first ballot requires ${REQUIRED_DISCUSSION_ROUNDS} discussion rounds`)
+      }
+      if (state.currentRoundContributions > 0) {
+        throw new Error('Complete the pending discussion round before opening the first ballot')
       }
       state.stage = 'first_ballot'
       break
@@ -243,7 +248,11 @@ export function availableActions(state: RoomState): RoomEventPayload['type'][] {
     case 'open_floor': {
       const actions: RoomEventPayload['type'][] = ['argument_raised']
       if (state.currentRoundContributions > 0) actions.push('discussion_round_completed')
-      if (!state.failedUnanimousBallot && state.discussionRounds >= REQUIRED_DISCUSSION_ROUNDS) {
+      if (
+        !state.failedUnanimousBallot &&
+        state.discussionRounds >= REQUIRED_DISCUSSION_ROUNDS &&
+        state.currentRoundContributions === 0
+      ) {
         actions.push('first_ballot_opened')
       }
       return actions
@@ -259,18 +268,16 @@ export function availableActions(state: RoomState): RoomEventPayload['type'][] {
   }
 }
 
-export function canAdvance(state: RoomState): { allowed: boolean; reason?: string } {
-  if (state.stage === 'complete') return { allowed: false, reason: 'The room is complete' }
-  if (state.stage === 'opinion_circle' && state.opinionSeats.length < JURY_SIZE) {
-    return { allowed: false, reason: `${JURY_SIZE - state.opinionSeats.length} opinions remain` }
+export function canAdvance(
+  state: RoomState,
+  payload: RoomEventPayload,
+): { allowed: boolean; reason?: string } {
+  try {
+    dispatch(state, payload)
+    return { allowed: true }
+  } catch (error) {
+    return { allowed: false, reason: error instanceof Error ? error.message : 'Invalid transition' }
   }
-  if (state.stage === 'open_floor' && state.currentRoundContributions === 0) {
-    return { allowed: false, reason: 'A juror must contribute before the round can close' }
-  }
-  if (state.stage === 'final_floor' && state.currentRoundContributions === 0) {
-    return { allowed: false, reason: 'The room must have a final opportunity to discuss concerns' }
-  }
-  return { allowed: true }
 }
 
 export function replay(config: RoomConfig, events: RoomEvent[]): RoomState {
