@@ -3,9 +3,9 @@
     "intro": "This is the briefing. You will meet the person on trial and learn the charge. Listen for what the prosecution must prove — you decide later if they proved it.",
     "openings": "Now you will hear openings. Each side tells its story of the case before any evidence is called. Notice what each side asks you to believe.",
     "beats": "Now the evidence. Witnesses and exhibits come one at a time. You do not decide yet — just listen carefully.",
-    "closings": "Now the closings. Each side makes its final argument. After this, you retire with the jury to deliberate — you lock your own verdict only after that discussion.",
+    "closings": "Now the closings. Each side makes its final argument. After this, you retire with the jury to deliberate — you lock your own position only after that discussion.",
     "verdict": "If, after considering all the evidence, you are not sure the prosecution proved every element beyond reasonable doubt, your verdict must be Not Guilty.",
-    "juryroom": "Welcome to the jury room. Under the fictional Aster Reach procedure used here, all 12 jurors first try to agree after three focused rounds. You may pause, reopen written notes, or raise a point. Then choose your own verdict. If the first ballot is not unanimous, the judge gives a neutral direction: keep considering each view without surrendering an honestly held one. Eleven matching votes can then return a verdict; undecided jurors remain undecided and may leave the jury hung.",
+    "juryroom": "Welcome to the jury room. Under the fictional Aster Reach procedure used here, all 12 jurors first try to agree after three focused rounds. You may pause, reopen written notes, or raise a point. Then choose a verdict or remain undecided. If the first ballot is not unanimous, the judge gives a neutral direction: keep considering each view without surrendering an honestly held one. Eleven matching votes can then return a verdict; undecided jurors remain undecided and may leave the jury hung.",
     "reveal": "This is the post-verdict review. Compare your reasoning with the authors’ reference verdict and the evidence they gave greatest weight. It is an editorial view, not a score."
   },
   "speaker": {

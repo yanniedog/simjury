@@ -103,13 +103,13 @@ export function DocketReveal({
           Your judgment is on the record.
         </h1>
         <p className="mt-2 text-sm text-neutral-300">
-          Authors’ reference verdict: <strong>{trial.reference_verdict}</strong> · Your verdict:{' '}
+          Authors’ reference verdict: <strong>{trial.reference_verdict}</strong> · Your position:{' '}
           <strong>{verdict}</strong>
         </p>
         <p className="mt-2 text-sm leading-relaxed text-neutral-400">
           {analysis.matchesReference
-            ? 'Your verdict matches the authors’ intended resolution.'
-            : 'Your verdict differs from the authors’ intended resolution.'}
+            ? 'Your position matches the authors’ intended resolution.'
+            : 'Your position differs from the authors’ intended resolution.'}
           {' '}This is an editorial comparison, not an objectively correct answer.
         </p>
         <p className="mt-2 text-sm text-neutral-400">Jury room: {roomLabel}.</p>

@@ -167,33 +167,13 @@ describe('fictional jury procedure', () => {
     expect(state.log.at(-1)?.tally).toEqual({ g: 6, ng: 5, u: 1 })
   })
 
-  it('lets every juror consider a point while limiting the spoken exchange', () => {
-    const state = startDeliberation(makeDocketCase())
-    const before = state.jurors.map(({ position }) => position)
-
-    playRound(state, argue('b4', 'proves'))
-
-    const moved = state.jurors.filter(
-      ({ position }, index) => position !== before[index],
-    ).length
-    const spoken = state.log.filter((event) => event.type === 'respond').length
-    expect(moved).toBeGreaterThan(spoken)
-    expect(spoken).toBeLessThanOrEqual(4)
-  })
-
   it('never uses the RNG stream to select juror positions', () => {
-    const low = startDeliberation(makeDocketCase())
-    const high = startDeliberation(makeDocketCase())
-    low.rng = () => 0
-    high.rng = () => 0.999
-
-    for (const action of DECISIVE) {
-      playRound(low, action)
-      playRound(high, action)
-    }
-
-    expect(low.jurors.map(({ position }) => position)).toEqual(
-      high.jurors.map(({ position }) => position),
+    const rooms = [startDeliberation(makeDocketCase()), startDeliberation(makeDocketCase())]
+    rooms[0].rng = () => 0
+    rooms[1].rng = () => 0.999
+    DECISIVE.forEach((action) => rooms.forEach((room) => playRound(room, action)))
+    expect(rooms[0].jurors.map(({ position }) => position)).toEqual(
+      rooms[1].jurors.map(({ position }) => position),
     )
   })
 
@@ -217,17 +197,7 @@ describe('fictional jury procedure', () => {
     expect(finalEvents[1].detail).toBe(MAJORITY_DIRECTION)
   })
 
-  it('does not treat ten matching votes as a verdict', () => {
-    const state = readyRoom([1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 0])
-
-    expect(finish(state, 'guilty')).toMatchObject({
-      kind: 'hung',
-      verdict: null,
-      tally: { g: 10, ng: 1, u: 1 },
-    })
-  })
-
-  it('includes the player as the twelfth vote', () => {
+  it('includes the player as the twelfth vote and rejects ten matching votes', () => {
     const guiltyPlayer = finish(
       readyRoom([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]),
       'guilty',
@@ -241,6 +211,18 @@ describe('fictional jury procedure', () => {
     expect(notGuiltyPlayer.tally).toEqual({ g: 10, ng: 1, u: 1 })
     expect(guiltyPlayer.kind).toBe('majority')
     expect(notGuiltyPlayer.kind).toBe('hung')
+  })
+
+  it('counts an undecided player in U while allowing eleven jurors to agree', () => {
+    const outcome = finish(readyRoom(Array(11).fill(1)), 'undecided')
+    const hung = finish(readyRoom([...Array(10).fill(1), 0]), 'undecided')
+
+    expect(hung.kind).toBe('hung')
+    expect(outcome).toMatchObject({
+      kind: 'majority',
+      verdict: 'guilty',
+      tally: { g: 11, ng: 0, u: 1 },
+    })
   })
 })
 

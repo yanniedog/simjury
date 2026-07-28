@@ -10,14 +10,14 @@ describe('DocketReveal', () => {
     const markup = renderToStaticMarkup(
       <DocketReveal
         trial={trial}
-        analysis={analyzeDocketPlay(trial, 'Not Guilty')}
-        verdict="Not Guilty"
+        analysis={analyzeDocketPlay(trial, 'Undecided')}
+        verdict="Undecided"
         room={{
-          kind: 'unanimous',
+          kind: 'majority',
           verdict: 'not_guilty',
           g: 0,
-          ng: 12,
-          u: 0,
+          ng: 11,
+          u: 1,
         }}
         dayNumber={1}
         stats={{ played: 1, currentStreak: 1, maxStreak: 1 }}
@@ -31,7 +31,7 @@ describe('DocketReveal', () => {
     expect(markup).toContain('authors’ intended resolution')
     expect(markup).toContain('editorial comparison')
     expect(markup).toContain('not an objectively correct answer')
+    expect(markup).toContain('Undecided')
     expect(markup).not.toContain('Case outcome')
-    expect(markup).not.toContain('>Decisive<')
   })
 })

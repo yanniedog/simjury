@@ -126,11 +126,11 @@ strict V4 trial/analysis/legal-sheet schemas and computed 19–21 minute budget 
 editorial bundle integrity (no pre-verdict spoilers, balanced competent cases,
 authenticated decisive material, public-juror context, courtroom structure,
 check-ins, jury floors) → **deliberation dynamics** (the simulated room must be able
-to reach ≥2 outcomes for a fixed player verdict, and arguing the decisive evidence
+to reach ≥2 outcomes for a fixed player position, and arguing the decisive evidence
 must beat silence toward the reference verdict) → queue rules (uniqueness, verdict variety,
 ≤3-run) → banned-token scan (extend `BANNED` lists as new content introduces risks).
 
-If dynamics fail (usually "foregone conclusion" for one locked verdict): every juror
+If dynamics fail (usually "foregone conclusion" for one locked position): every juror
 considers an argued beat through their authored reaction rules, while at most four
 voice the exchange. No random draw selects a position. Author enough relevant weights
 and rules for the strongest three-point synthesis to move the room without coercion.

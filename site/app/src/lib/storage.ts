@@ -14,8 +14,7 @@ const storedPlaySchema = z.object({
   day: z.number(),
   caseId: z.string(),
   convictions: z.array(z.number()).default([]),
-  /** The player's sealed verdict is binary; live and authored jurors may remain undecided. */
-  verdict: z.enum(['Guilty', 'Not Guilty']),
+  verdict: z.enum(['Guilty', 'Not Guilty', 'Undecided']),
   swayedByTraps: z.number().optional(),
   totalTraps: z.number().optional(),
   /** The jury room's own result (docket loop); absent on v1 plays. */

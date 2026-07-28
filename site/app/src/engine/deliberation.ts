@@ -30,7 +30,8 @@ import { pick, rngFor, type Rng } from './rng'
  * arcs weigh surface persuasion while everyone else weighs true weight.
  */
 
-export type PlayerVerdict = 'guilty' | 'not_guilty'
+export type PlayerVerdict = 'guilty' | 'not_guilty' | 'undecided'
+type RoomVerdict = Exclude<PlayerVerdict, 'undecided'>
 export type DiscussionPush = 'guilt' | 'innocence' | 'neutral'
 
 export type PlayerAction =
@@ -97,7 +98,7 @@ export interface RoomEvent {
 
 export interface Outcome {
   kind: 'unanimous' | 'majority' | 'hung'
-  verdict: PlayerVerdict | null
+  verdict: RoomVerdict | null
   /** Final 12-vote tally, player included. */
   tally: { g: number; ng: number; u: number }
   burdenDrift: { occurred: boolean; correctedByPlayer: boolean }
@@ -440,8 +441,7 @@ function raiseBeat(
       )
     : candidates
   // Every juror considers the point through their authored reaction rule.
-  // Only the selected speakers voice that reasoning, keeping the room concise
-  // without making silent jurors immune to evidence they have just heard.
+  // Only selected speakers voice it; silence does not make others immune.
   const speakerIds = new Set(speakers.map(({ id }) => id))
   for (const juror of jurors) {
     if (juror.id !== actor) {
@@ -562,10 +562,12 @@ export function finish(
   state.playerVerdict = playerVerdict
 
   const playerG = playerVerdict === 'guilty' ? 1 : 0
+  const playerNg = playerVerdict === 'not_guilty' ? 1 : 0
+  const playerU = playerVerdict === 'undecided' ? 1 : 0
   const jurorTally = tallyOf(state.jurors)
   const g = jurorTally.g + playerG
-  const ng = jurorTally.ng + (1 - playerG)
-  const u = jurorTally.u
+  const ng = jurorTally.ng + playerNg
+  const u = jurorTally.u + playerU
   emit(state, { actor: 'room', type: 'vote', tally: { g, ng, u } })
 
   let kind: Outcome['kind']
