@@ -9,11 +9,35 @@
     "reveal": "This is the post-verdict review. Compare your reasoning with the authors’ reference verdict and the evidence they gave greatest weight. It is an editorial view, not a score."
   },
   "speaker": {
-    "direction": "This is {name}, {role}. They will remind you of the legal rules that bind your decision.",
-    "exhibit": "This is an exhibit, presented by {name}. Look at what it shows — and what it does not prove by itself.",
-    "cross": "This is cross-examination of {name}. The other side will test their account. Listen for what holds up and what wobbles.",
-    "prosecution": "This is {name}, {role}. Their job is to help prove the charge. Listen for the key facts they put forward.",
-    "defence": "This is {name}, {role}. Their job is to raise doubt about the charge. Listen for the gaps they point out.",
-    "fallback": "This is {name}, {role}."
+    "direction": [
+      "{name}, {role}, now gives the legal direction. Keep each element separate as you listen.",
+      "The legal rules now come from {name}, {role}. This is law, not evidence.",
+      "{name}, {role}, returns to the rules that bind your decision. Notice what cannot substitute for proof."
+    ],
+    "exhibit": [
+      "{name} presents the next exhibit. Separate the record itself from the inference counsel asks you to draw.",
+      "An exhibit is now shown through {name}. Ask where it came from, what it establishes, and where its limits begin.",
+      "{name} turns to a document or physical item. Notice its source, custody, and what it cannot identify by itself."
+    ],
+    "cross": [
+      "Cross-examination of {name} now begins. Listen for a real concession, not merely agreed wording.",
+      "Cross-examination of {name} tests the account. Notice whether the answer accepts the premise, qualifies it, or resists it.",
+      "Cross-examination of {name} begins. Short propositions will test memory, method, and limits."
+    ],
+    "prosecution": [
+      "The prosecution calls {name}, {role}. Keep direct recollection separate from reconstruction or assumption.",
+      "{name}, {role}, now gives evidence for the prosecution. Note both the point and its limits.",
+      "{name}, {role}, is called for the prosecution. Listen for what they personally saw, did, or authenticated."
+    ],
+    "defence": [
+      "The defence calls {name}, {role}. Listen for the competing account and the evidence that supports it.",
+      "{name}, {role}, now gives evidence for the defence. Test it by the same standard as every other witness.",
+      "{name}, {role}, is called for the defence. Notice whether the evidence exposes a gap or offers a different inference."
+    ],
+    "fallback": [
+      "{name}, {role}, now addresses the court.",
+      "The next voice is {name}, {role}.",
+      "{name}, {role}, takes the floor."
+    ]
   }
 }

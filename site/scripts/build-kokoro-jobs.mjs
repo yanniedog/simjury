@@ -37,6 +37,13 @@ function fillSpeakerTemplate(template, member) {
   return template.split('{name}').join(member.name).split('{role}').join(member.role_label)
 }
 
+function stableTemplate(templates, seed) {
+  const index = [...seed].reduce(
+    (total, character) => (total * 31 + character.charCodeAt(0)) >>> 0,
+    0,
+  ) % templates.length
+  return templates[index]
+}
 
 function speakerOf(docket, id) {
   return (docket.cast ?? []).find((m) => m.id === id)
@@ -47,12 +54,15 @@ function speakerNarratorCue(docket, beat) {
   const member = speakerOf(docket, beat.speaker)
   if (!member) return null
   const templates = cueCopy.speaker
-  if (beat.kind === 'direction') return fillSpeakerTemplate(templates.direction, member)
-  if (beat.kind === 'exhibit') return fillSpeakerTemplate(templates.exhibit, member)
-  if (beat.mode === 'cross') return fillSpeakerTemplate(templates.cross, member)
-  if (member.side === 'prosecution') return fillSpeakerTemplate(templates.prosecution, member)
-  if (member.side === 'defence') return fillSpeakerTemplate(templates.defence, member)
-  return fillSpeakerTemplate(templates.fallback, member)
+  const seed = `${docket.id}:${beat.id}:${member.id}`
+  const cue = (kind) =>
+    fillSpeakerTemplate(stableTemplate(templates[kind], `${seed}:${kind}`), member)
+  if (beat.kind === 'direction') return cue('direction')
+  if (beat.kind === 'exhibit') return cue('exhibit')
+  if (beat.mode === 'cross') return cue('cross')
+  if (member.side === 'prosecution') return cue('prosecution')
+  if (member.side === 'defence') return cue('defence')
+  return cue('fallback')
 }
 
 function narratorCueLines(docket) {
