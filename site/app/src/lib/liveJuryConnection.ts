@@ -56,8 +56,11 @@ function eventFrom(value: unknown): LiveRoomEvent | null {
     event.event_type === 'message'
     && (typeof event.text !== 'string' || event.text.length > 500)
   ) return null
-  if (event.event_type === 'position' && !['G', 'NG', 'U'].includes(event.position ?? '')) {
-    return null
+  if (event.event_type === 'position') {
+    if (!['G', 'NG', 'U'].includes(event.position ?? '')) return null
+    if (event.reason !== undefined && (
+      typeof event.reason !== 'string' || event.reason.length > 500
+    )) return null
   }
   return event as LiveRoomEvent
 }
@@ -131,7 +134,17 @@ export class LiveJuryConnection {
 
   private send(value: object): void {
     if (!this.socket || this.socket.readyState !== 1) {
-      throw new Error('The live room is reconnecting. Try again in a moment.')
+      const status = this.snapshot.status
+      if (status === 'closed') {
+        throw new Error('The live room is closed.')
+      }
+      if (status === 'superseded') {
+        throw new Error('This seat reconnected in another tab.')
+      }
+      if (status === 'reconnecting') {
+        throw new Error('The live room is reconnecting. Try again in a moment.')
+      }
+      throw new Error('The live room is not connected yet. Try again in a moment.')
     }
     this.socket.send(JSON.stringify(value))
   }

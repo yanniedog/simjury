@@ -79,7 +79,7 @@ describe('LiveJuryConnection', () => {
   it('sends bounded messages and positions only while open', () => {
     const { connection, sockets } = harness()
     connection.start()
-    expect(() => connection.sendMessage('hello')).toThrow('reconnecting')
+    expect(() => connection.sendMessage('hello')).toThrow('not connected yet')
     sockets[0].open()
     connection.sendMessage('  What does the clock prove? ')
     connection.sendPosition('U', 'I need an answer.')
@@ -88,6 +88,26 @@ describe('LiveJuryConnection', () => {
       { type: 'position', position: 'U', reason: 'I need an answer.' },
     ])
     expect(() => connection.sendMessage('x'.repeat(501))).toThrow('1–500')
+    expect(() => connection.sendPosition('G', 'x'.repeat(501))).toThrow('at most 500')
+  })
+
+  it('rejects oversized inbound position reasons and names closed send failures', () => {
+    const { connection, sockets, updates } = harness()
+    connection.start()
+    sockets[0].open()
+    sockets[0].message({
+      type: 'event',
+      event_type: 'position',
+      sequence: 1,
+      seat_id: 1,
+      display_name: 'Alex',
+      position: 'G',
+      reason: 'x'.repeat(501),
+    })
+    expect(updates.at(-1)?.events).toEqual([])
+    sockets[0].end(1001, 'Host ended the sitting.')
+    expect(updates.at(-1)?.status).toBe('closed')
+    expect(() => connection.sendMessage('hello')).toThrow('live room is closed')
   })
 
   it('reconnects transient failures but stops a superseded seat', () => {
@@ -95,6 +115,7 @@ describe('LiveJuryConnection', () => {
     connection.start()
     sockets[0].end(1006)
     expect(updates.at(-1)?.status).toBe('reconnecting')
+    expect(() => connection.sendMessage('hello')).toThrow('reconnecting')
     retries[0]()
     expect(sockets).toHaveLength(2)
     sockets[1].end(4001)
@@ -102,6 +123,7 @@ describe('LiveJuryConnection', () => {
       status: 'superseded',
       error: 'This seat reconnected in another tab.',
     })
+    expect(() => connection.sendMessage('hello')).toThrow('another tab')
     expect(retries).toHaveLength(1)
   })
 
