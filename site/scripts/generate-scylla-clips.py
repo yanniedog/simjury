@@ -34,6 +34,50 @@ CATALOG_PATH = (
 DEFAULT_AFFECT = {"calm": 0.45, "questioning": 0.15}
 
 
+def render_clip_audio(
+    runtime: object,
+    *,
+    text: str,
+    voice: str,
+    language: str,
+    clip_id: str,
+) -> tuple[np.ndarray, int]:
+    """Synthesize one clip via Scylla's Band's long-form chunk planner.
+
+    A single un-chunked `runtime.synthesize()` call can exceed the onnx-int8
+    bundle's fixed 640-latent-frame export budget on long courtroom lines
+    (see lowkeytea/scyllasband README "Long-Form Controls"). `render_text_records`
+    runs the same sentence-boundary chunk planner, frame-count preflight, and
+    overlong-chunk retry-splitting used by the `scyllasband speak --file long.txt`
+    CLI path, then stitches the per-chunk audio (with boundary crossfades and
+    punctuation pause floors) into one waveform. If a chunk is still over budget
+    after retry-splitting, this raises rather than producing silent/missing audio.
+    """
+    from scyllasband.streaming import render_text_records
+
+    audio, sample_rate, metadata = render_text_records(
+        runtime,
+        [{"voice": voice, "language": language, "text": text}],
+        affect=dict(DEFAULT_AFFECT),
+        affect_guidance_scale=1.0,
+        sampler="heun",
+        steps=8,
+        backend="onnx",
+        progress_stream=None,
+    )
+    chunk_count = int(metadata.get("chunk_count") or 1)
+    if chunk_count > 1:
+        log.info(
+            "%s: long-form text split into %d chunks to stay under the bundle's latent-frame budget",
+            clip_id,
+            chunk_count,
+        )
+    arr = np.asarray(audio, dtype=np.float32).reshape(-1)
+    if arr.size == 0:
+        raise RuntimeError(f"Scylla produced empty audio for {clip_id}")
+    return arr, int(sample_rate)
+
+
 def encode_mp3(wav: Path, target: Path) -> None:
     subprocess.run(
         [
@@ -59,27 +103,6 @@ def language_for(voice_id: str, catalog: dict) -> str:
     if not lang:
         raise ValueError(f"Unknown Scylla voice id {voice_id!r}: missing languages entry")
     return str(lang)
-
-
-def audio_from_result(result: object) -> tuple[np.ndarray, int]:
-    if hasattr(result, "audio"):
-        audio = getattr(result, "audio")
-    elif isinstance(result, dict) and "audio" in result:
-        audio = result["audio"]
-    else:
-        audio = result
-    if hasattr(audio, "detach"):
-        audio = audio.detach().cpu().numpy()
-    arr = np.asarray(audio, dtype=np.float32).reshape(-1)
-    if arr.size == 0:
-        raise RuntimeError("Scylla produced empty audio")
-    sample_rate = (
-        getattr(result, "sample_rate", None)
-        or getattr(result, "sampleRate", None)
-        or (result.get("sample_rate") if isinstance(result, dict) else None)
-        or 24000
-    )
-    return arr, int(sample_rate)
 
 
 def resolve_bundle(explicit: Path | None) -> Path:
@@ -141,7 +164,7 @@ def main() -> None:
         len(needed),
     )
 
-    from scyllasband import ScyllasBandRuntime, SynthesisRequest
+    from scyllasband import ScyllasBandRuntime
 
     runtime = ScyllasBandRuntime.from_bundle(
         str(bundle),
@@ -174,18 +197,13 @@ def main() -> None:
             language,
             clip.get("gender"),
         )
-        result = runtime.synthesize(
-            SynthesisRequest(
-                text=text,
-                voice_id=voice,
-                language=language,
-                affect=dict(DEFAULT_AFFECT),
-                affect_guidance_scale=1.0,
-                sampler="heun",
-                steps=8,
-            )
+        audio, sample_rate = render_clip_audio(
+            runtime,
+            text=text,
+            voice=voice,
+            language=language,
+            clip_id=clip_id,
         )
-        audio, sample_rate = audio_from_result(result)
         if sample_rate != sample_rate_job:
             log.warning(
                 "%s: sample_rate %s != job %s; writing runtime rate",
