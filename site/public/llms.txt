@@ -7,7 +7,7 @@ SimJury is a static website. The interactive Daily Docket requires JavaScript, w
 ## Canonical public pages
 
 - [Home](https://simjury.com/): Product introduction, content notice, and the path into the Daily Docket.
-- [The Daily Docket](https://simjury.com/today/): Guided introduction, daily and past sittings, evidence, deliberation, verdict, reveal, and sharing.
+- [The Daily Docket](https://simjury.com/today/): Today's featured sitting, the complete seven-case library, evidence, deliberation, verdict, reveal, and sharing.
 - [Privacy](https://simjury.com/privacy/): Browser storage, narration requests, static delivery, and the absence of accounts, tracking, and runtime AI.
 
 ## Site access
@@ -18,4 +18,4 @@ SimJury is a static website. The interactive Daily Docket requires JavaScript, w
 
 ## Boundaries
 
-These crawl guides do not reproduce or link unreleased case facts, case answers, reveal spoilers, hidden juror state, source JSON, or the frozen engineering-only Android installer. `/play/` is a legacy redirect to the Daily Docket rather than a separate public product.
+These crawl guides do not reproduce or link case-specific facts, case answers, reveal spoilers, hidden juror state, source JSON, or the frozen engineering-only Android installer. `/play/` is a legacy redirect to the Daily Docket rather than a separate public product.

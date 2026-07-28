@@ -16,6 +16,7 @@ describe('IntroGate', () => {
     expect(markup).toContain('complete murder case')
     expect(markup).toContain('non-graphic references to death and serious violence')
     expect(markup).toContain('You can skip it')
+    expect(markup).toContain('case library')
     expect(markup).toContain('Take the guided intro')
     expect(markup).toContain('Skip to today')
   })

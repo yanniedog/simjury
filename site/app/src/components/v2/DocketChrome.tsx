@@ -110,10 +110,10 @@ function sittingStatus(sitting: DocketSitting): string {
   return progress?.caseId === caseStorageId(sitting.trial) ? 'in progress' : 'not started'
 }
 
-export function DocketSittingChooser({ sittings, selectedDay, todayDay, onSelect, introSitting }: {
+export function DocketSittingChooser({ sittings, selectedCaseId, featuredSitting, onSelect, introSitting }: {
   sittings: DocketSitting[]
-  selectedDay: number
-  todayDay: number
+  selectedCaseId: string
+  featuredSitting: DocketSitting | null
   onSelect: (day: number) => void
   /** Synthetic sitting for the guided intro; day may be negative. */
   introSitting?: DocketSitting | null
@@ -121,19 +121,32 @@ export function DocketSittingChooser({ sittings, selectedDay, todayDay, onSelect
   const all = introSitting
     ? [introSitting, ...sittings.filter((s) => s.trial.id !== INTRO_CASE_ID)]
     : sittings
-  const options = [...all].reverse().map((sitting) => ({
-    day: sitting.day,
-    label: sitting.trial.id === INTRO_CASE_ID
-      ? `Guided intro — ${sitting.trial.title} (${sittingStatus(sitting)})`
-      : `${sitting.day === todayDay ? 'Today' : dateFormatter.format(sitting.date)} — ${sitting.trial.title} (${sittingStatus(sitting)})`,
-  }))
+  const options = [...all].reverse().map((librarySitting) => {
+    const sitting = librarySitting.trial.id === featuredSitting?.trial.id
+      ? featuredSitting
+      : librarySitting
+    return {
+      day: sitting.day,
+      id: sitting.trial.id,
+      label: sitting.trial.id === INTRO_CASE_ID
+        ? `Guided intro — ${sitting.trial.title} (${sittingStatus(sitting)})`
+        : `${sitting === featuredSitting ? 'Today' : dateFormatter.format(sitting.date)} — ${sitting.trial.title} (${sittingStatus(sitting)})`,
+    }
+  })
   return (
     <nav aria-label="Daily Docket sittings">
       <details className="docket-archive">
-        <summary>Docket archive <span aria-hidden="true">＋</span></summary>
-        <label htmlFor="docket-sitting">Choose another sitting</label>
-        <select id="docket-sitting" value={selectedDay} onChange={(event) => onSelect(Number(event.target.value))}>
-          {options.map((option) => <option key={option.day} value={option.day}>{option.label}</option>)}
+        <summary>Case library <span aria-hidden="true">＋</span></summary>
+        <label htmlFor="docket-sitting">Choose one of {options.length} cases</label>
+        <select
+          id="docket-sitting"
+          value={selectedCaseId}
+          onChange={(event) => {
+            const option = options.find(({ id }) => id === event.target.value)
+            if (option) onSelect(option.day)
+          }}
+        >
+          {options.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
         </select>
       </details>
     </nav>
