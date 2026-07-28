@@ -19,7 +19,7 @@ export interface DocketAnalysis {
 
 export function analyzeDocketPlay(
   c: DocketCase,
-  verdict: DocketCase['reference_verdict'],
+  verdict: DocketCase['reference_verdict'] | 'Undecided',
 ): DocketAnalysis {
   const reveals: BeatReveal[] = c.beats.map((beat) => ({ beat }))
   const whatMattered = reveals.filter((r) => r.beat.reveal_stamp === 'decisive')

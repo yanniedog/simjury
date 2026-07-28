@@ -11,7 +11,7 @@ import {
  * strategy space and rejects rooms with foregone conclusions. A docket case
  * only ships if
  *
- *  1. for EACH verdict the player can lock after deliberation, the room
+ *  1. for EACH position the player can lock after deliberation, the room
  *     reaches at least two distinct terminal outcomes (kind + verdict) across
  *     the strategy space (arguments must still be able to surprise, whichever
  *     way the player later locks their own vote), and
@@ -54,19 +54,30 @@ function citeBurden(c: DocketCase): PlayerAction[] {
   return direction ? [{ type: 'cite_direction', beatId: direction.id }] : []
 }
 
+/** The strongest complete theory, including corroboration below the decisive stamp. */
+function referenceSynthesis(c: DocketCase): PlayerAction[] {
+  const reference = referenceDirection(c)
+  return c.beats
+    .filter((b) => b.kind !== 'direction' && b.direction === reference)
+    .sort((a, b) => b.true_weight - a.true_weight)
+    .slice(0, 3)
+    .map((b) => ({ type: 'argue', beatId: b.id, stance: 'proves' }))
+}
+
 /** The fixed strategy space the gate explores. */
 export function strategies(c: DocketCase): Record<string, PlayerAction[]> {
   return {
     passive: [],
     decisive: byWeightDesc(c, 'decisive'),
+    synthesis: referenceSynthesis(c),
     trappy: byWeightDesc(c, 'misleading'),
     counsel: [...byWeightDesc(c, 'decisive').slice(0, 2), ...citeBurden(c)],
   }
 }
 
 // Outcome variety is judged at the verdict level (kind + verdict), not the
-// exact vote tally — two "hung" results with different splits (8-4 vs 9-3)
-// are the same terminal outcome for a player, not evidence the room moved.
+// exact vote tally — two hung results with different splits are still the same
+// terminal outcome for a player.
 function signature(o: Outcome): string {
   return `${o.kind}:${o.verdict ?? 'none'}`
 }
@@ -75,10 +86,10 @@ function signature(o: Outcome): string {
 export function checkDynamics(c: DocketCase): string[] {
   const issues: string[] = []
   const space = strategies(c)
-  const verdicts: PlayerVerdict[] = ['guilty', 'not_guilty']
+  const verdicts: PlayerVerdict[] = ['guilty', 'not_guilty', 'undecided']
   const referenceSide: 'g' | 'ng' = c.reference_verdict === 'Guilty' ? 'g' : 'ng'
 
-  // Variance must exist for a fixed player verdict — otherwise the "variety"
+  // Variance must exist for a fixed player position — otherwise the "variety"
   // is just the player's own vote moving the tally, not the room moving.
   // Required for BOTH verdicts: whichever way the player locks their own
   // vote, their arguments must still be able to change the room's outcome.

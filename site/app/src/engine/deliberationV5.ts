@@ -1,9 +1,17 @@
+import {
+  JURY_SIZE,
+  MAJORITY_DIRECTION,
+  MAJORITY_THRESHOLD,
+  REQUIRED_DISCUSSION_ROUNDS,
+} from './juryProcedure'
+
 export const ROOM_SCHEMA_VERSION = 5 as const
-export const JURY_SIZE = 12
-export const MAJORITY_THRESHOLD = 11
-export const REQUIRED_DISCUSSION_ROUNDS = 3
-export const MAJORITY_DIRECTION =
-  'Continue to consider each other’s views, but no juror should surrender an honestly held view merely to reach a verdict. A verdict may be returned only if at least 11 of 12 jurors agree.'
+export {
+  JURY_SIZE,
+  MAJORITY_DIRECTION,
+  MAJORITY_THRESHOLD,
+  REQUIRED_DISCUSSION_ROUNDS,
+} from './juryProcedure'
 
 export type VotePosition = 'G' | 'NG' | 'U'
 export type RoomStage =

@@ -108,7 +108,7 @@ export function DocketIntro({
 
       <p className="text-sm leading-relaxed text-neutral-400">
         {liveSession ? `You have seat ${liveSession.seatId}.` : 'You are Juror #1.'} Hear the evidence, deliberate with the room, then
-        lock your verdict for this sitting. The judge reads the jury’s votes
+        lock your position for this sitting. The judge reads the jury’s votes
         only after you commit. Allow about twenty minutes. Your
         progress stays in this browser.
       </p>

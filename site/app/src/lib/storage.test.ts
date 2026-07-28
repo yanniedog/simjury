@@ -110,6 +110,12 @@ describe('storage', () => {
     expect(loadPlay(5)).toBeNull()
   })
 
+  it('round-trips an undecided player position without treating it as not guilty', () => {
+    vi.stubGlobal('localStorage', memoryStorage())
+    savePlay({ day: 5, caseId: 'd-0001', convictions: [], verdict: 'Undecided' })
+    expect(loadPlay(5)?.verdict).toBe('Undecided')
+  })
+
   it('drops legacy answer-key grading from a stored play', () => {
     const store = memoryStorage()
     store.setItem(
@@ -224,6 +230,7 @@ describe('in-progress sitting', () => {
         verdict: 'guilty' as const,
         g: 8,
         ng: 4,
+        u: 0,
       },
     }
 

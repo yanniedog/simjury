@@ -11,6 +11,7 @@ describe('strategies', () => {
     const s = strategies(makeDocketCase())
     expect(s.passive).toEqual([])
     expect(s.decisive.length).toBeGreaterThan(0)
+    expect(s.synthesis).toHaveLength(3)
     expect(s.trappy.length).toBeGreaterThan(0)
     expect(s.counsel.some((a) => a.type === 'cite_direction')).toBe(true)
   })
@@ -21,13 +22,16 @@ describe('checkDynamics', () => {
     expect(checkDynamics(makeDocketCase())).toEqual([])
   })
 
-  it('passes an authored serious-crime case', () => {
-    const raw = readFileSync(
-      join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'docket', 'dd-0006.json'),
-      'utf8',
-    )
-    expect(checkDynamics(docketCaseSchema.parse(JSON.parse(raw)))).toEqual([])
-  })
+  it.each(['dd-0006.json', 'dd-0032.json'])(
+    'passes authored serious-crime case %s',
+    (filename) => {
+      const raw = readFileSync(
+        join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'docket', filename),
+        'utf8',
+      )
+      expect(checkDynamics(docketCaseSchema.parse(JSON.parse(raw)))).toEqual([])
+    },
+  )
 
   it('flags a foregone-conclusion room', () => {
     const c = makeDocketCase()

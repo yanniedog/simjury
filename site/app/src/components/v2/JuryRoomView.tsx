@@ -95,7 +95,7 @@ function RoundStepper({
       soft: true,
     },
     { key: 'r3', label: '3', title: 'Final point', complete: idx > 2, current: idx === 2 },
-    { key: 'you', label: 'You', title: 'Your verdict', complete: done, current: idx === 3 && !done },
+    { key: 'you', label: 'You', title: 'Your position', complete: done, current: idx === 3 && !done },
   ]
   return (
     <ol className="round-stepper" aria-label="Deliberation progress">
@@ -286,7 +286,7 @@ function FeedLine({
       </li>
     )
   }
-  if (e.type === 'deadlock_direction' && revealVotes) {
+  if (e.type === 'majority_direction' && revealVotes) {
     return (
       <li className="rounded-lg border border-amber-800 bg-amber-950/30 p-3 text-center text-sm text-amber-200">
         The judge: “{e.detail}”
@@ -323,7 +323,7 @@ function floorCopy({
   if (outcome) return 'The court has the floor'
   if (listening && activeLabel) return `${activeLabel} has the floor`
   if (listening) return 'The room is answering'
-  if (awaitingPlayerVote) return 'Your turn to lock a verdict'
+  if (awaitingPlayerVote) return 'Your turn to lock a position'
   if (raising) return 'Raise something if you want — or resume'
   if (paused) return 'Paused — resume when ready, or raise an issue'
   if (phase === 'open_1') return 'The room opens a short agenda'
@@ -655,7 +655,14 @@ export function JuryRoomView({
     setListening(false)
     stopSpeech()
     setPlayerVerdict(chosen)
-    const locked = finish(state, chosen === 'Guilty' ? 'guilty' : 'not_guilty')
+    const locked = finish(
+      state,
+      chosen === 'Guilty'
+        ? 'guilty'
+        : chosen === 'Not Guilty'
+          ? 'not_guilty'
+          : 'undecided',
+    )
     setOutcome(locked)
     onSeal(locked, chosen)
     setPendingVerdict(null)
@@ -663,8 +670,8 @@ export function JuryRoomView({
     setTick((t) => t + 1)
     const judgeLine =
       locked.kind === 'hung'
-        ? `The judge reads the result. The jury is hung, ${locked.tally.g} to ${locked.tally.ng}.`
-        : `The judge reads the result. The jury finds ${locked.verdict === 'guilty' ? 'guilty' : 'not guilty'}, ${locked.tally.g} to ${locked.tally.ng}${locked.kind === 'unanimous' ? ', unanimous' : ', by majority'}.`
+        ? `The judge reads the result. The jury is hung: ${locked.tally.g} guilty, ${locked.tally.ng} not guilty, and ${locked.tally.u} undecided.`
+        : `The judge reads the result. The jury finds ${locked.verdict === 'guilty' ? 'guilty' : 'not guilty'}: ${locked.tally.g} guilty, ${locked.tally.ng} not guilty, and ${locked.tally.u} undecided${locked.kind === 'unanimous' ? ', unanimous' : ', by majority'}.`
     if (narration) speak(judgeLine, 'narrator', undefined, playbackRate)
   }
 
@@ -679,7 +686,7 @@ export function JuryRoomView({
   const heading = outcome
     ? 'The judge reads the result'
     : awaitingPlayerVote
-      ? 'Your verdict'
+      ? 'Your position'
       : (ROUND_LABEL[state.phase] ?? 'Deliberation')
 
   const activeLabel =
@@ -702,7 +709,7 @@ export function JuryRoomView({
           {outcome
             ? 'The room’s vote is public now.'
             : awaitingPlayerVote
-              ? 'Lock your verdict. The judge then reads the room.'
+              ? 'Lock your position. The judge then reads the room.'
               : 'Discuss from notes and memory — no transcript in this room.'}
         </p>
       </div>
@@ -885,8 +892,8 @@ export function JuryRoomView({
             </p>
             <p className="mt-2 text-sm leading-relaxed text-neutral-300">
               {outcome.kind === 'hung'
-                ? `Members of the jury, you are unable to agree. The court records a hung jury, ${outcome.tally.g} guilty to ${outcome.tally.ng} not guilty.`
-                : `Members of the jury, by a vote of ${outcome.tally.g} to ${outcome.tally.ng}${outcome.kind === 'unanimous' ? ', unanimous' : ''}, you find the accused ${outcome.verdict === 'guilty' ? 'guilty' : 'not guilty'}.`}
+                ? `Members of the jury, you are unable to agree. The court records a hung jury: ${outcome.tally.g} guilty, ${outcome.tally.ng} not guilty, and ${outcome.tally.u} undecided.`
+                : `Members of the jury, by a vote of ${outcome.tally.g} guilty, ${outcome.tally.ng} not guilty, and ${outcome.tally.u} undecided${outcome.kind === 'unanimous' ? ', unanimous' : ''}, you find the accused ${outcome.verdict === 'guilty' ? 'guilty' : 'not guilty'}.`}
             </p>
             <p className="mt-3 text-2xl font-semibold text-neutral-50">
               {outcome.kind === 'hung'
@@ -896,7 +903,7 @@ export function JuryRoomView({
                   : 'Not guilty'}
             </p>
             <p className="mt-1 text-sm text-neutral-400">
-              {outcome.tally.g}–{outcome.tally.ng}
+              G {outcome.tally.g} · NG {outcome.tally.ng} · U {outcome.tally.u}
               {outcome.kind === 'majority' && ' · by majority'}
               {outcome.kind === 'unanimous' && ' · unanimous'}
               {' · your vote: '}
@@ -918,7 +925,7 @@ export function JuryRoomView({
               {REASONABLE_DOUBT_DIRECTION}
             </p>
           </div>
-          <div className="verdict-choices grid grid-cols-2 gap-3">
+          <div className="verdict-choices grid gap-3 sm:grid-cols-3">
             <button
               type="button"
               aria-pressed={pendingVerdict === 'Not Guilty'}
@@ -941,10 +948,21 @@ export function JuryRoomView({
               </span>
               <span className="mt-1 block text-xs font-normal">Verdict: Guilty</span>
             </button>
+            <button
+              type="button"
+              aria-pressed={pendingVerdict === 'Undecided'}
+              onClick={() => chooseVerdict('Undecided')}
+              className={`rounded-lg border border-amber-800 bg-amber-950/30 px-4 py-4 font-semibold text-amber-200 transition hover:bg-amber-900/30${pendingVerdict === 'Undecided' ? ' verdict-pending' : ''}`}
+            >
+              <span className="block">
+                {pendingVerdict === 'Undecided' ? 'Tap again to seal' : 'Unable to decide'}
+              </span>
+              <span className="mt-1 block text-xs font-normal">Position: Undecided</span>
+            </button>
           </div>
           {pendingVerdict && (
             <p className="text-center text-xs text-neutral-500">
-              Permanent for this sitting · tap the same choice again to seal, or pick the other side.
+              Permanent for this sitting · tap the same choice again to seal, or choose another position.
             </p>
           )}
         </div>
