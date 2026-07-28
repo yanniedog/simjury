@@ -22,10 +22,11 @@ function assert(cond, msg) {
   }
 }
 
-assert(JSON.stringify(parseRequiredKeys('')) === JSON.stringify(['sourcery|codex|cursor']), 'default OR-group');
+assert(JSON.stringify(parseRequiredKeys('')) === JSON.stringify(['sourcery|codex|cursor|coderabbit']), 'default OR-group');
 assert(JSON.stringify(alternativesForSlot('sourcery|cursor|codex')) === JSON.stringify(['sourcery', 'cursor', 'codex']), 'alts');
 assert(loginMatchesRequiredKey('cursor[bot]', 'cursor'), 'cursor[bot] matches cursor');
 assert(loginMatchesRequiredKey('cursor', 'sourcery|cursor|codex'), 'cursor satisfies OR-group');
+assert(loginMatchesRequiredKey('coderabbitai[bot]', 'coderabbit'), 'coderabbitai[bot] matches coderabbit');
 assert(loginMatchesRequiredKey('sourcery-ai[bot]', 'sourcery|cursor'), 'sourcery satisfies OR-group');
 assert(!loginMatchesRequiredKey('gemini-code-assist[bot]', 'sourcery|cursor|codex'), 'gemini does not satisfy review OR-group');
 
@@ -37,8 +38,9 @@ assert(
   missingRequiredKeys(['sourcery'], ['cursor[bot]']).length === 1,
   'cursor alone does not satisfy sourcery-only',
 );
-assert(requiredBotsSatisfied(['sourcery|codex|cursor'], ['chatgpt-codex-connector[bot]']), 'codex satisfies default');
-assert(!requiredBotsSatisfied(['sourcery|codex|cursor'], ['gemini-code-assist[bot]']), 'gemini alone insufficient');
+assert(requiredBotsSatisfied(['sourcery|codex|cursor|coderabbit'], ['chatgpt-codex-connector[bot]']), 'codex satisfies default');
+assert(requiredBotsSatisfied(['sourcery|codex|cursor|coderabbit'], ['coderabbitai[bot]']), 'coderabbit satisfies default');
+assert(!requiredBotsSatisfied(['sourcery|codex|cursor|coderabbit'], ['gemini-code-assist[bot]']), 'gemini alone insufficient');
 
 const formatted = formatRequiredKeys(['sourcery|cursor']);
 assert(/OR/.test(formatted) && /sourcery/.test(formatted) && /cursor/.test(formatted), 'format shows OR');
