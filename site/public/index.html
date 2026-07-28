@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SimJury — One case. Your verdict. Every day.</title>
-  <meta name="description" content="Take Juror #1's seat in one contemporary case a day. Hear the evidence, seal your verdict, and face the jury room in about ten minutes." />
+  <meta name="description" content="Take Juror #1's seat in one grave criminal case a day. Hear both sides, test the evidence, deliberate, then lock your verdict in about ten minutes." />
   <meta property="og:title" content="SimJury — The Daily Docket" />
-  <meta property="og:description" content="One case. One permanent verdict. One jury room that may not agree with you. About ten minutes, free and private." />
+  <meta property="og:description" content="One grave charge. One jury room. One verdict to lock after deliberation. About ten minutes; no account required." />
   <meta property="og:url" content="https://simjury.com/" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://simjury.com/art/og-card.webp" />
@@ -30,21 +30,22 @@
     <div><a href="#how">How it works</a><a class="nav-seat" href="/today/">Take your seat</a></div>
   </nav>
 
-  <main id="main">
+  <main id="main" tabindex="-1">
     <header class="hero">
       <div class="hero-copy">
         <div class="session-status"><span aria-hidden="true"></span> Court is ready <b>Juror 01</b></div>
-        <p class="eyebrow">One case · Every day</p>
+        <p class="eyebrow">One grave case · Every day</p>
         <h1>Judgment starts <em>before</em> the verdict.</h1>
-        <p class="lede">Step into a contemporary courtroom. Hear the witnesses, examine the evidence, then defend the decision only you can make.</p>
+        <p class="lede">Hear both sides. Test every element. Deliberate with eleven jurors, then lock the decision only you can make.</p>
+        <aside class="content-note" aria-label="Content notice">Serious criminal cases with non-graphic references to death, violence, terrorism, captivity, organised crime and illegal drug manufacture. A case-specific advisory appears before each sitting.</aside>
         <div class="cta">
           <a class="btn primary" href="/today/">Enter the jury box <span aria-hidden="true">→</span></a>
           <a class="btn ghost" href="#how">How it works</a>
         </div>
-        <ul class="trust-line" role="list" aria-label="Experience details"><li>About 10 minutes</li><li>Private in your browser</li><li>No account</li></ul>
+        <ul class="trust-line" role="list" aria-label="Experience details"><li>About 10 minutes</li><li>Progress saved locally</li><li>No account</li></ul>
       </div>
       <div class="hero-scene">
-        <img src="/today/media/dd-0001/ade-court.webp" fetchpriority="high" alt="Contemporary court sketch from a juror's eye level, facing the judge, witness stand and counsel tables." />
+        <img src="/art/daily-docket-hero.webp" width="1280" height="853" loading="eager" decoding="async" fetchpriority="high" alt="Contemporary courtroom sketch from the jury box, showing a witness giving evidence before the judge and counsel." />
         <div class="scene-wash" aria-hidden="true"></div>
         <div class="scene-label"><span>Your view</span><strong>Seat 01 · Jury box</strong></div>
         <div class="scene-caption"><span>The Daily Docket</span><p>Read or listen. Your progress stays on this device.</p></div>
@@ -54,9 +55,9 @@
     <section class="section ritual" id="how" aria-labelledby="ritual-title">
       <div class="section-heading"><p class="eyebrow">Inside the sitting</p><h2 id="ritual-title">A short path from evidence to judgment.</h2></div>
       <ol class="steps" role="list">
-        <li><span>01</span><div><strong>Hear the case</strong><p>Meet the people involved and follow each piece of evidence in order.</p></div></li>
-        <li><span>02</span><div><strong>Seal your verdict</strong><p>Decide guilty or not guilty. Commit when you are ready — locking is final for the sitting.</p></div></li>
-        <li><span>03</span><div><strong>Face the jury room</strong><p>Explain what persuaded you to the other jurors, who may see the case differently.</p></div></li>
+        <li><span>01</span><div><strong>Hear both sides</strong><p>Meet the accused, hear both openings and examine each piece of evidence in order.</p></div></li>
+        <li><span>02</span><div><strong>Deliberate from the evidence</strong><p>Choose the evidence that matters and test your reasoning with eleven jurors. This is single-player: there are no live players or chat.</p></div></li>
+        <li><span>03</span><div><strong>Lock your verdict</strong><p>Decide Guilty or Not Guilty only after deliberation. Your verdict is final for that sitting.</p></div></li>
       </ol>
     </section>
 
@@ -67,7 +68,10 @@
   </main>
 
   <footer>
-    <p><strong>SimJury</strong> · A daily exercise in judgment.</p>
+    <div>
+      <p><strong>SimJury</strong> · A daily exercise in judgment.</p>
+      <p class="privacy-note">Your progress, notes and verdict stay on this device. With narration on, your browser may fetch public audio clips over the network; those requests do not include your saved progress, notes or verdict.</p>
+    </div>
     <p><a href="/today/">Today’s case</a></p>
   </footer>
 

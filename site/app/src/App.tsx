@@ -69,7 +69,7 @@ function statsFromStorage(): Stats {
   return computeStats(results)
 }
 
-function IntroGate({
+export function IntroGate({
   onStartIntro,
   onSkip,
   narration,
@@ -100,7 +100,7 @@ function IntroGate({
       </div>
       <NarratorCue text={cue} />
       <p className="text-sm leading-relaxed text-neutral-400">
-        About five minutes. You can reopen it later from the docket archive.
+        About five minutes. The guided sitting is a complete murder case with non-graphic references to death and serious violence. You can skip it or reopen it later from the docket archive.
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         <button
