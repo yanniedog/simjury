@@ -472,6 +472,21 @@ describe('checkV3Corpus', () => {
     expect(issues.join()).toMatch(/exactly 7 cases/)
     expect(issues.join()).toMatch(/missing offence profile/)
   })
+
+  it('keeps the corpus gate active for the twenty-minute v3 revision', () => {
+    const twentyMinute = corpus()
+      .slice(0, -1)
+      .map((trial) => ({
+        ...trial,
+        gen_meta: {
+          ...trial.gen_meta,
+          prompt_version: 'dd-2026-v3-20min',
+        },
+      }))
+    const issues = checkV3Corpus(twentyMinute).map((issue) => issue.message)
+    expect(issues.join()).toMatch(/exactly 7 cases/)
+    expect(issues.join()).toMatch(/missing offence profile/)
+  })
 })
 
 describe('checkDocketQueue', () => {

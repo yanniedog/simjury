@@ -15,7 +15,7 @@ import {
  *     reaches at least two distinct terminal outcomes (kind + verdict) across
  *     the strategy space (arguments must still be able to surprise, whichever
  *     way the player later locks their own vote), and
- *  2. for each locked verdict, arguing the central evidence moves the room
+ *  2. for each locked position, arguing the central evidence moves the room
  *     strictly further toward the authors' `reference_verdict` than saying
  *     nothing — unless passive play already maxes out that side's tally.
  *
