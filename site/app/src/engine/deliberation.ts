@@ -17,7 +17,7 @@ import { pick, rngFor, type Rng } from './rng'
  * deterministic. Open rounds walk a short pragmatic agenda (not a full
  * evidence replay). The room can auto-raise agenda points; the player (juror
  * 1) or any authored juror may optionally raise other evidence. After three
- * open rounds the player locks their verdict:
+ * open rounds the player locks their position:
  *
  *   INITIAL_POSITIONS → OPEN_ROUND ×2 → MID_VOTE → OPEN_ROUND ×1
  *     → FINAL_VOTE (+ player lock) → (unanimous | majority ≥11 | HUNG)
