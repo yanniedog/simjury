@@ -46,6 +46,10 @@ export function parseCaseId(value) {
   return typeof value === 'string' && /^dd-[a-z0-9-]{1,60}$/.test(value) ? value : null
 }
 
+export function parseDerivationRevision(value) {
+  return parseOpaqueId(value)
+}
+
 export function parseDisplayName(value) {
   if (typeof value !== 'string'
     || /[\u0000-\u001f\u007f\u202a-\u202e\u2066-\u2069]/i.test(value)) return null
@@ -64,12 +68,14 @@ export function roomSocketRoute(pathname) {
   return match ? decodeOpaqueId(match[1]) : null
 }
 
-export function seatCapabilityFromProtocols(value) {
+export function socketCredentialsFromProtocols(value) {
   if (typeof value !== 'string') return null
   const protocols = value.split(',').map((part) => part.trim())
-  return protocols.length === 2 && protocols[0] === 'simjury-v1'
+  const seatToken = protocols.length === 3 && protocols[0] === 'simjury-v2'
     ? parseCapability(protocols[1])
     : null
+  const derivationRevision = parseDerivationRevision(protocols[2])
+  return seatToken && derivationRevision ? { seatToken, derivationRevision } : null
 }
 
 function safeText(value) {

@@ -9,6 +9,7 @@ const session: LiveJurySession = {
   displayName: 'Alex',
   seatId: 1,
   seatToken: 's'.repeat(43),
+  derivationRevision: 'hybrid-v1-1234abcd',
 }
 
 class FakeSocket {
@@ -36,7 +37,11 @@ function harness() {
     origin: 'https://simjury.com',
     socketFactory: (url, protocols) => {
       expect(url).toBe('wss://simjury.com/api/live/rooms/room_12/socket')
-      expect(protocols).toEqual(['simjury-v1', session.seatToken])
+      expect(protocols).toEqual([
+        'simjury-v2',
+        session.seatToken,
+        session.derivationRevision,
+      ])
       const socket = new FakeSocket()
       sockets.push(socket)
       return socket
@@ -55,6 +60,22 @@ describe('LiveJuryConnection', () => {
     expect(() => new LiveJuryConnection(session, vi.fn())).toThrow(
       'require a browser origin',
     )
+  })
+
+  it('does not open a socket for an unpinned legacy session', () => {
+    const updates: LiveRoomSnapshot[] = []
+    const socketFactory = vi.fn()
+    const connection = new LiveJuryConnection(
+      { ...session, derivationRevision: null },
+      (value) => updates.push(value),
+      { origin: 'https://simjury.com', socketFactory },
+    )
+    connection.start()
+    expect(socketFactory).not.toHaveBeenCalled()
+    expect(updates.at(-1)).toMatchObject({
+      status: 'closed',
+      error: expect.stringContaining('continue solo'),
+    })
   })
 
   it('merges ordered reconnect history and live events without duplicates', () => {

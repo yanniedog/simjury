@@ -7,6 +7,7 @@ import {
   liveJuryEnabled,
   parseCapability,
   parseCaseId,
+  parseDerivationRevision,
   parseDisplayName,
   parseLiveEvent,
   parseOpaqueId,
@@ -14,7 +15,7 @@ import {
   roomRoute,
   roomSocketRoute,
   roomExpiryCutoff,
-  seatCapabilityFromProtocols,
+  socketCredentialsFromProtocols,
   seatMaySend,
   unavailable,
 } from './live-policy.js'
@@ -166,6 +167,7 @@ export class RoomDO {
       CREATE TABLE IF NOT EXISTS room_meta (
         singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
         case_id TEXT NOT NULL,
+        derivation_revision TEXT,
         invite_hash TEXT NOT NULL,
         host_hash TEXT NOT NULL,
         created_at INTEGER NOT NULL,
@@ -191,6 +193,10 @@ export class RoomDO {
         messages INTEGER NOT NULL DEFAULT 0 CHECK (messages >= 0)
       );
     `)
+    const metaColumns = [...state.storage.sql.exec('PRAGMA table_info(room_meta)')]
+    if (!metaColumns.some(({ name }) => name === 'derivation_revision')) {
+      state.storage.sql.exec('ALTER TABLE room_meta ADD COLUMN derivation_revision TEXT')
+    }
   }
 
   async fetch(request) {
@@ -199,11 +205,18 @@ export class RoomDO {
       const { pathname } = new URL(request.url)
       if (pathname !== '/internal/connect') return unavailable('ROOM_ROUTE_NOT_FOUND', 404)
       const seatToken = parseCapability(request.headers.get('X-SimJury-Seat-Token'))
-      if (!seatToken) return unavailable('VERIFIED_SEAT_REQUIRED', 401)
+      const derivationRevision = parseDerivationRevision(
+        request.headers.get('X-SimJury-Derivation-Revision'),
+      )
+      if (!seatToken || !derivationRevision) return unavailable('VERIFIED_SEAT_REQUIRED', 401)
       const meta = [...this.state.storage.sql.exec(
-        "SELECT expires_at FROM room_meta WHERE singleton = 1 AND status = 'open'",
+        `SELECT derivation_revision, expires_at FROM room_meta
+          WHERE singleton = 1 AND status = 'open'`,
       )][0]
       if (!meta || meta.expires_at <= Date.now()) return unavailable('ROOM_NOT_FOUND', 404)
+      if (meta.derivation_revision !== derivationRevision) {
+        return unavailable('ROOM_REVISION_MISMATCH', 409)
+      }
       const seat = [...this.state.storage.sql.exec(
         'SELECT seat_id, display_name FROM room_seats WHERE token_hash = ?',
         await digest(seatToken),
@@ -246,7 +259,7 @@ export class RoomDO {
       return new Response(null, {
         status: 101,
         webSocket: pair[0],
-        headers: { 'Sec-WebSocket-Protocol': 'simjury-v1' },
+        headers: { 'Sec-WebSocket-Protocol': 'simjury-v2' },
       })
     } else {
       const { pathname } = new URL(request.url)
@@ -256,17 +269,27 @@ export class RoomDO {
         const caseId = parseCaseId(body.caseId)
         const inviteToken = parseCapability(body.inviteToken)
         const hostToken = parseCapability(body.hostToken)
-        if (!caseId || !inviteToken || !hostToken) return unavailable('INVALID_ROOM', 400)
+        const derivationRevision = parseDerivationRevision(body.derivationRevision)
+        if (!caseId || !inviteToken || !hostToken || !derivationRevision) {
+          return unavailable('INVALID_ROOM', 400)
+        }
         const existing = [...this.state.storage.sql.exec(
-          'SELECT case_id FROM room_meta WHERE singleton = 1',
+          'SELECT case_id, derivation_revision FROM room_meta WHERE singleton = 1',
         )][0]
-        if (existing) return json({ created: true, duplicate: true, case_id: existing.case_id })
+        if (existing) {
+          return existing.case_id === caseId
+            && existing.derivation_revision === derivationRevision
+            ? json({ created: true, duplicate: true, case_id: existing.case_id })
+            : unavailable('ROOM_ID_CONFLICT', 409)
+        }
         const now = Date.now()
         this.state.storage.sql.exec(
           `INSERT INTO room_meta
-            (singleton, case_id, invite_hash, host_hash, created_at, expires_at, status)
-            VALUES (1, ?, ?, ?, ?, ?, 'open')`,
+            (singleton, case_id, derivation_revision, invite_hash, host_hash,
+              created_at, expires_at, status)
+            VALUES (1, ?, ?, ?, ?, ?, ?, 'open')`,
           caseId,
+          derivationRevision,
           await digest(inviteToken),
           await digest(hostToken),
           now,
@@ -276,7 +299,8 @@ export class RoomDO {
         return json({ created: true }, 201)
       }
       const meta = [...this.state.storage.sql.exec(
-        'SELECT case_id, invite_hash, host_hash, expires_at, status FROM room_meta WHERE singleton = 1',
+        `SELECT case_id, derivation_revision, invite_hash, host_hash, expires_at, status
+          FROM room_meta WHERE singleton = 1`,
       )][0]
       if (!meta || meta.status !== 'open' || meta.expires_at <= Date.now()) {
         return unavailable('ROOM_NOT_FOUND', 404)
@@ -285,7 +309,9 @@ export class RoomDO {
         const inviteToken = parseCapability(body.inviteToken)
         const participantKey = parseOpaqueId(body.participantKey)
         const displayName = parseDisplayName(body.displayName)
+        const derivationRevision = parseDerivationRevision(body.derivationRevision)
         if (!inviteToken || !participantKey || !displayName
+          || derivationRevision !== meta.derivation_revision
           || await digest(inviteToken) !== meta.invite_hash) {
           return unavailable('ROOM_NOT_FOUND', 404)
         }
@@ -316,7 +342,13 @@ export class RoomDO {
           seatId, participantHash, displayName, await digest(seatToken),
           Date.now(), Date.now(),
         )
-        return json({ room_id: body.roomId, case_id: meta.case_id, seat_id: seatId, seat_token: seatToken })
+        return json({
+          room_id: body.roomId,
+          case_id: meta.case_id,
+          derivation_revision: meta.derivation_revision,
+          seat_id: seatId,
+          seat_token: seatToken,
+        })
       }
       const inviteToken = parseCapability(request.headers.get('X-SimJury-Invite'))
       if (request.method === 'GET' && pathname === '/internal/status') {
@@ -326,7 +358,12 @@ export class RoomDO {
         const seats = [...this.state.storage.sql.exec(
           'SELECT seat_id, display_name FROM room_seats ORDER BY seat_id',
         )]
-        return json({ case_id: meta.case_id, seats, capacity: FREE_BETA_LIMITS.seatsPerRoom })
+        return json({
+          case_id: meta.case_id,
+          derivation_revision: meta.derivation_revision,
+          seats,
+          capacity: FREE_BETA_LIMITS.seatsPerRoom,
+        })
       }
       const hostToken = parseCapability(request.headers.get('X-SimJury-Host'))
       if (request.method === 'DELETE' && pathname === '/internal/close') {
@@ -454,22 +491,24 @@ export default {
       if (request.headers.get('Upgrade')?.toLowerCase() !== 'websocket') {
         return unavailable('WEBSOCKET_REQUIRED', 426)
       }
-      const seatToken = seatCapabilityFromProtocols(
+      const credentials = socketCredentialsFromProtocols(
         request.headers.get('Sec-WebSocket-Protocol'),
       )
-      if (!seatToken) return unavailable('VERIFIED_SEAT_REQUIRED', 401)
+      if (!credentials) return unavailable('VERIFIED_SEAT_REQUIRED', 401)
       return durableFetch(env.ROOMS, socketRoomId, '/internal/connect', {
         headers: {
           Upgrade: 'websocket',
-          'Sec-WebSocket-Protocol': 'simjury-v1',
-          'X-SimJury-Seat-Token': seatToken,
+          'Sec-WebSocket-Protocol': 'simjury-v2',
+          'X-SimJury-Seat-Token': credentials.seatToken,
+          'X-SimJury-Derivation-Revision': credentials.derivationRevision,
         },
       })
     }
     if (request.method === 'POST' && pathname === '/api/live/rooms') {
       const body = await bodyOf(request)
       const caseId = parseCaseId(body?.case_id)
-      if (!caseId) return unavailable('INVALID_CASE', 400)
+      const derivationRevision = parseDerivationRevision(body?.derivation_revision)
+      if (!caseId || !derivationRevision) return unavailable('INVALID_CASE', 400)
       const roomId = crypto.randomUUID().replaceAll('-', '')
       const inviteToken = randomCapability()
       const hostToken = randomCapability()
@@ -485,7 +524,7 @@ export default {
       if (!admission.ok) return admission
       const created = await durableFetch(env.ROOMS, roomId, '/internal/create', {
         method: 'POST',
-        body: JSON.stringify({ caseId, inviteToken, hostToken }),
+        body: JSON.stringify({ caseId, derivationRevision, inviteToken, hostToken }),
       })
       if (!created.ok) {
         await durableFetch(env.POOL_COORDINATOR, 'global', `/internal/rooms/${roomId}`, {
@@ -496,6 +535,7 @@ export default {
       return json({
         room_id: roomId,
         case_id: caseId,
+        derivation_revision: derivationRevision,
         invite_token: inviteToken,
         host_token: hostToken,
         expires_in: FREE_BETA_LIMITS.roomTtlSeconds,
@@ -505,6 +545,8 @@ export default {
     if (roomId && request.method === 'POST') {
       const body = await bodyOf(request)
       if (!body) return unavailable('INVALID_JSON', 400)
+      const derivationRevision = parseDerivationRevision(body.derivation_revision)
+      if (!derivationRevision) return unavailable('ROOM_REVISION_MISMATCH', 409)
       return durableFetch(env.ROOMS, roomId, '/internal/join', {
         method: 'POST',
         body: JSON.stringify({
@@ -512,6 +554,7 @@ export default {
           inviteToken: body.invite_token,
           participantKey: body.participant_key,
           displayName: body.display_name,
+          derivationRevision,
         }),
       })
     }

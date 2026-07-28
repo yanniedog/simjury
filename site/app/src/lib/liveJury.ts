@@ -1,3 +1,6 @@
+import type { DocketCase } from './v2/caseSchema'
+import { stableContentHash } from './v2/caseRevision'
+
 export interface LiveInvite {
   roomId: string
   inviteToken: string
@@ -5,6 +8,7 @@ export interface LiveInvite {
 }
 
 export interface LiveJurySession extends LiveInvite {
+  derivationRevision: string | null
   displayName: string
   seatId: number
   seatToken: string
@@ -26,9 +30,25 @@ export class LiveJuryApiError extends Error {
   }
 }
 
+export const LIVE_JURY_REVISION_MESSAGE =
+  'This room was opened under a different version of the case. Start a new room or continue solo; its authored replies cannot safely change mid-room.'
+
+export class LiveJuryRevisionError extends Error {
+  constructor() {
+    super(LIVE_JURY_REVISION_MESSAGE)
+    this.name = 'LiveJuryRevisionError'
+  }
+}
+
 const OPAQUE = /^[a-zA-Z0-9_-]{1,80}$/
 const CAPABILITY = /^[a-zA-Z0-9_-]{43}$/
 const CASE_ID = /^dd-[a-z0-9-]{1,60}$/
+/** Bump whenever client-side authored-reply derivation changes. */
+const DERIVATION_ALGORITHM = 'hybrid-v1'
+
+export function liveJuryDerivationRevision(trial: DocketCase): string {
+  return `${DERIVATION_ALGORITHM}-${stableContentHash(trial)}`
+}
 
 function patternInner(pattern: RegExp): string {
   return pattern.source.replace(/^\^/, '').replace(/\$$/, '')
@@ -77,8 +97,10 @@ export function loadLiveJurySession(caseId: string): LiveJurySession | null {
   try {
     const value = JSON.parse(
       sessionStorage.getItem(`simjury.live.session.${caseId}`) ?? 'null',
-    ) as LiveJurySession | null
-    return value
+    ) as (Omit<LiveJurySession, 'derivationRevision'> & {
+      derivationRevision?: unknown
+    }) | null
+    const valid = value
       && value.caseId === caseId
       && OPAQUE.test(value.roomId)
       && CAPABILITY.test(value.inviteToken)
@@ -88,8 +110,14 @@ export function loadLiveJurySession(caseId: string): LiveJurySession | null {
       && Number.isInteger(value.seatId)
       && value.seatId >= 1
       && value.seatId <= 12
-      ? value
-      : null
+    if (!valid) return null
+    return {
+      ...value,
+      derivationRevision: typeof value.derivationRevision === 'string'
+        && OPAQUE.test(value.derivationRevision)
+        ? value.derivationRevision
+        : null,
+    }
   } catch {
     return null
   }
@@ -111,12 +139,30 @@ export function liveJuryHealth(): Promise<LiveJuryHealth> {
 }
 
 /** Returns false when the room is gone; true when confirmed open. Throws on transport errors. */
-export async function verifyLiveJurySession(session: LiveJurySession): Promise<boolean> {
+function requireMatchingRevision(
+  roomRevision: unknown,
+  expectedRevision: string,
+): void {
+  if (
+    sessionRevision(roomRevision) !== expectedRevision
+  ) throw new LiveJuryRevisionError()
+}
+
+function sessionRevision(value: unknown): string | null {
+  return typeof value === 'string' && OPAQUE.test(value) ? value : null
+}
+
+export async function verifyLiveJurySession(
+  session: LiveJurySession,
+  expectedRevision: string,
+): Promise<boolean> {
+  requireMatchingRevision(session.derivationRevision, expectedRevision)
   try {
-    const status = await api<{ case_id: string }>(
+    const status = await api<{ case_id: string, derivation_revision?: unknown }>(
       `/api/live/rooms/${encodeURIComponent(session.roomId)}`,
       { headers: { Authorization: `Bearer ${session.inviteToken}` } },
     )
+    requireMatchingRevision(status.derivation_revision, expectedRevision)
     return status.case_id === session.caseId
   } catch (error) {
     if (error instanceof LiveJuryApiError && error.status === 404) return false
@@ -127,10 +173,12 @@ export async function verifyLiveJurySession(session: LiveJurySession): Promise<b
 async function join(
   invite: LiveInvite,
   displayName: string,
+  derivationRevision: string,
 ): Promise<Omit<LiveJurySession, 'displayName' | 'inviteToken' | 'hostToken'>> {
   const joined = await api<{
     room_id: string
     case_id: string
+    derivation_revision?: unknown
     seat_id: number
     seat_token: string
   }>(`/api/live/rooms/${encodeURIComponent(invite.roomId)}`, {
@@ -140,11 +188,14 @@ async function join(
       invite_token: invite.inviteToken,
       participant_key: participantKey(invite.roomId),
       display_name: displayName,
+      derivation_revision: derivationRevision,
     }),
   })
+  requireMatchingRevision(joined.derivation_revision, derivationRevision)
   return {
     roomId: joined.room_id,
     caseId: joined.case_id,
+    derivationRevision,
     seatId: joined.seat_id,
     seatToken: joined.seat_token,
   }
@@ -160,8 +211,9 @@ async function deleteRoom(roomId: string, hostToken: string): Promise<void> {
 export async function hostLiveJury(
   caseId: string,
   displayName: string,
+  derivationRevision: string,
 ): Promise<LiveJurySession> {
-  if (!CASE_ID.test(caseId)) {
+  if (!CASE_ID.test(caseId) || !OPAQUE.test(derivationRevision)) {
     throw new Error('This sitting cannot host a live jury.')
   }
   const created = await api<{
@@ -169,10 +221,14 @@ export async function hostLiveJury(
     invite_token: string
     host_token: string
     case_id?: string
+    derivation_revision?: unknown
   }>('/api/live/rooms', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ case_id: caseId }),
+    body: JSON.stringify({
+      case_id: caseId,
+      derivation_revision: derivationRevision,
+    }),
   })
   const invite: LiveInvite = {
     roomId: created.room_id,
@@ -180,7 +236,8 @@ export async function hostLiveJury(
     caseId: created.case_id ?? caseId,
   }
   try {
-    const joined = await join(invite, displayName)
+    requireMatchingRevision(created.derivation_revision, derivationRevision)
+    const joined = await join(invite, displayName, derivationRevision)
     return {
       ...invite,
       ...joined,
@@ -198,18 +255,20 @@ export async function joinLiveJury(
   invite: LiveInvite,
   expectedCaseId: string,
   displayName: string,
+  derivationRevision: string,
 ): Promise<LiveJurySession> {
   if (invite.caseId !== expectedCaseId) {
     throw new Error('This invitation is for a different Daily Docket case.')
   }
-  const status = await api<{ case_id: string }>(
+  const status = await api<{ case_id: string, derivation_revision?: unknown }>(
     `/api/live/rooms/${encodeURIComponent(invite.roomId)}`,
     { headers: { Authorization: `Bearer ${invite.inviteToken}` } },
   )
   if (status.case_id !== expectedCaseId) {
     throw new Error('This invitation is for a different Daily Docket case.')
   }
-  const joined = await join(invite, displayName)
+  requireMatchingRevision(status.derivation_revision, derivationRevision)
+  const joined = await join(invite, displayName, derivationRevision)
   return { ...invite, ...joined, caseId: joined.caseId, displayName }
 }
 
@@ -220,4 +279,10 @@ export async function closeLiveJury(session: LiveJurySession): Promise<void> {
 
 export function isRoomGoneError(error: unknown): boolean {
   return error instanceof LiveJuryApiError && error.status === 404
+}
+
+export function isLiveJuryRevisionError(
+  error: unknown,
+): error is LiveJuryRevisionError {
+  return error instanceof LiveJuryRevisionError
 }
