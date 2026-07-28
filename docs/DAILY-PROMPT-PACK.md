@@ -9,31 +9,33 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 
 1. Use one of the seven canonical grave-offence slots in `DAILY-CASES.md`. Never add an
    eighth active case or reuse an old plot.
-2. Draft each case with the template below. Set every `gen_meta` reviewer and keep
-   `prompt_version` equal to the version line at the bottom of this file.
+2. Draft the playable trial, post-verdict analysis, and legal sheet with the
+   template below. Set every `gen_meta` reviewer and keep `prompt_version` equal
+   to the version line at the bottom of this file.
 3. Run the gates. Fix pacing/design/jury/dynamics failures by editing the case.
 4. Open one atomic case PR. Every line receives story, language, legal-clarity, and
    sensitivity review before the bot gates.
 
 ## Template
 
-> Write one fictional criminal-trial case as a single JSON object matching the SimJury
-> Daily Docket schema v2 (`site/app/src/lib/v2/caseSchema.ts`). It must be entirely
+> Write one fictional criminal-trial case as a V4 editorial bundle matching
+> `site/app/src/lib/v2/caseSchema.ts` and `legalSheetSchema.ts`: a playable trial,
+> a separately loaded post-verdict analysis, and a one-page legal sheet. It must be entirely
 > invented — no real people, companies, brands, products, courts, or places; invent
 > business names and describe platforms by genre ("a rideshare app"). Set
 > `label: "fiction"`.
 >
 > **Slots:** id **{dd-NNNN}** · publish_date **{YYYY-MM-DD}** · offence_code
 > **{canonical grave profile}** ·
-> true verdict **{Guilty|Not Guilty}** · trap shape **{feels-guilty-is-innocent |
+> reference verdict **{Guilty|Not Guilty}** · tension shape **{feels-guilty-is-innocent |
 > feels-innocent-is-guilty | over-trusted-machine | under-trusted-human}** ·
 > difficulty_target **{0.3–0.8}** · scenario family **{from DAILY-CASES.md, 2026}**.
 >
 > **Top-level fields:** `"title"` (invented case title), `"setting"` (contemporary
 > 2026 setting sketch), `"charge"` and `"elements"` copied exactly from the selected
 > offence profile, `"content_advisories"` containing every profile requirement,
-> `"detail_level": "non_graphic"`, `"verdict_truth"` (set to the true verdict slot),
-> and `"gen_meta"` (`{ model: "model-name", prompt_version: "dd-2026-v3", reviewer:
+> `"detail_level": "non_graphic"`, and `"gen_meta"` (`{ model: "model-name",
+> prompt_version: "dd-2026-v4", reviewer:
 > "reviewer-name", batch_pr: "pr-number", language_reviewer: "name",
 > sensitivity_reviewer: "name" }`).
 >
@@ -49,32 +51,43 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 > people, not just the puzzle — never skip them. `hook`: a 15–60 word present-tense
 > cold open, the first thing read, ending on the case's central tension. `accused`:
 > `{ cast_id` (the defence-side accused), `human` (who they are outside this room —
-> age, life, who waits in the gallery), `if_guilty` (the concrete human cost of
-> conviction) `}`. `statements`: `{ opening: { prosecution: { speaker, text },
+> age, work, relationships, and relevant history without punishment or hardship
+> advocacy) `}`. `statements`: `{ opening: { prosecution: { speaker, text },
 > defence: { speaker, text } }, closing: { prosecution: { speaker, text }, defence:
-> { speaker, text } } }` — each speech 40–90 words, `speaker` = the matching counsel
-> id, telling that side's *story* of the case (not a fact list). `epilogue`: 50–130
-> words of outcome-neutral aftermath — what became of these people in the months after
-> trial (avoid naming acquittal, conviction, or hung jury; the app shows one epilogue
-> regardless of the player's room outcome). Hook + all four statements + evidence
-> must total ≤ 1250 narrated words.
+> { speaker, text } } }` — each speech 80–120 words, `speaker` = the matching counsel
+> id, telling that side's *story* of the case (not a fact list). The epilogue belongs
+> only in the analysis file and must be outcome-neutral or contain separate guilty,
+> not-guilty, and hung branches.
 >
-> **Evidence:** 10–14 beats, each 40–70 words, total 550–1050 words, set in the
+> **Twenty-minute public-juror budget:** write 1,500–1,800 spoken words. Reserve at
+> least 180 for the setting, accused, charge, and plain-English elements; 320 across
+> the rival openings and closings; and 900 for evidence and directions. These words
+> must explain relationships, chronology, unfamiliar legal language, provenance,
+> admissibility, and evidentiary limits. They must not repeat the hook or inflate a
+> transition. The runtime adds a separate fixed nine-minute interaction allowance.
+>
+> **Evidence:** 10–14 beats, normally 65–110 spoken words each, set in the
 > present day (2026), grouped by speaker with examination/cross `mode` on witness
 > beats. Every witness beat, examination and cross, uses explicit structured `turns`.
-> Counsel asks a specific complete question and the witness gives a complete answer.
-> Never use a bare yes/no answer or an ambiguous pronoun. Each beat carries
+> Direct examination uses open questions and sensory recollection. Cross uses short
+> leading propositions, controlled concessions, occasional resistance, and follow-up.
+> Experts qualify methodology and limits; lay witnesses may contract, hesitate,
+> correct themselves, or admit incomplete memory. Each beat carries
 > 1–3 `tags` from: identity, alibi, digital_forensics, motive, opportunity, method,
 > timeline, credibility, procedure, burden, knowledge, intent, causation, duress,
 > command, or coercion. At least one direction beat tagged
-> `burden` (plain-English burden/standard + "do not research this case online").
-> Include ≥1 `misleading` beat (surface_persuasion − true_weight ≥ 0.25) pointing
-> away from the true verdict and placed early; ≥1 `decisive` beat (true_weight ≥ 0.6)
-> pointing toward it and placed late; beats arguing both directions; `minor` beats
-> under 0.6 true_weight. `checkins` may be empty; if retained, beat ids stay in order
-> and the last check-in is the final beat. Every beat has a `reveal_note` saying what it was
-> really worth and why; write the `twist` (2–4 sentences) explaining why the obvious
-> read was wrong.
+> `burden` gives the exact reasonable-doubt direction and explains each unfamiliar
+> element in ordinary language. A later direction reminds jurors which facts are
+> agreed, which remain disputed, and that punishment is irrelevant.
+>
+> Do not put `verdict_truth`, `twist`, `epilogue`, `true_weight`, `reveal_stamp`, or
+> `reveal_note` in the playable trial. Limit the analysis file to one or two central
+> propositions, identify the strongest reasonable opposing interpretation, and mark
+> at least one genuinely probative counterweight for the losing side. The legal sheet
+> must state the fictional jurisdiction/statute, exact elements, agreed and disputed
+> facts, best competent case for each side, foundation and limitations for every
+> decisive item, an innocent alternative, required directions, epilogue strategy,
+> prejudice checks, named approvals, and a blind-test sign-off.
 >
 > **Jury:** exactly 11 jurors, seats 2–12, ids J-01…J-11. Initial split contested
 > (3–8 G, ≥1 NG; a U is welcome). Arcs must include vibes, principled_holdout, and
@@ -92,16 +105,16 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 > text-free courtroom portrait for every cast member and juror. Declare portraits under
 > `media.portraits` using `/today/media/<case-id>/characters/<speaker-id>.webp`.
 >
-> Write with the control and fair misdirection of a skilled crime novelist. Plant the
-> twist at least twice before the decisive beat. Write the whole thing to be *listened
-> to* on a commute: the hook should hook, the
-> counsel should sound like rival storytellers, the epilogue should land. Output only
-> the JSON.
+> Write with the control and fairness of a skilled crime novelist, but do not disclose
+> the completed inference in either opening. Write the whole thing to be *listened to*
+> by someone encountering these people, facts, and law for the first time. Output only
+> the three JSON artifacts.
 
 ## After drafting — the gates will check (do not fight them)
 
-schema v2 (incl. the engagement layer and its word budgets) → design v2
-(trap/signal/both-sides/solvable, pacing, courtroom structure,
+strict V4 trial/analysis/legal-sheet schemas and computed 19–21 minute budget →
+editorial bundle integrity (no pre-verdict spoilers, balanced competent cases,
+authenticated decisive material, public-juror context, courtroom structure,
 check-ins, jury floors) → **deliberation dynamics** (the simulated room must be able
 to reach ≥2 outcomes for a fixed player verdict, and arguing the decisive evidence
 must beat silence toward the truth) → queue rules (uniqueness, verdict variety,
@@ -118,4 +131,4 @@ G-juror's confidence below 70, or add a themed rule with a real delta — before
 touching the case text.
 
 ---
-prompt_version: dd-2026-v3
+prompt_version: dd-2026-v4

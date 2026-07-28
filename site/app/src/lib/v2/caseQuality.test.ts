@@ -8,6 +8,34 @@ describe('checkDocketCase', () => {
     expect(checkDocketCase(makeV3DocketCase())).toEqual([])
   })
 
+  it('accepts a transitional V3 case only when its spoken content earns twenty minutes', () => {
+    const c = makeV3DocketCase()
+    c.gen_meta.prompt_version = 'dd-2026-v3-20min'
+    c.setting = prose(70)
+    c.hook = prose(40)
+    c.accused.human = prose(50)
+    for (const phase of [c.statements.opening, c.statements.closing]) {
+      phase.prosecution.text = prose(85)
+      phase.defence.text = prose(85)
+    }
+    c.beats = c.beats.map((beat) => {
+      if (!beat.turns?.length) return { ...beat, text: prose(100) }
+      const turns = [
+        beat.turns[0],
+        { ...beat.turns[1], text: prose(88) },
+      ]
+      return {
+        ...beat,
+        text: turns.map((turn) => turn.text).join(' '),
+        turns,
+      }
+    })
+
+    expect(checkDocketCase(c)).toEqual([])
+    c.setting = 'Brief.'
+    expect(checkDocketCase(c).join()).toMatch(/public-juror context/)
+  })
+
   it('rejects missing v3 offence, review, portrait, and dialogue metadata', () => {
     const c = makeDocketCase({
       gen_meta: {

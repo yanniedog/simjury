@@ -13,9 +13,9 @@ enforce the hard rules; this file holds the taste. Companion: the drafting promp
    historical-case track was removed and must not be reintroduced.
 2. **Relevant in 2026, always.** Crime, dialogue, and process are contemporary: the
    player should feel they could be summonsed onto this jury this year.
-3. **The V4 target is 15 minutes.** Every new V4 case must pass the computed
-   14–16 minute window. The commissioned V3 slate retains its existing pacing
-   floors only until migration.
+3. **The V4 target is 20 minutes.** Every new V4 case must pass the computed
+   19–21 minute window. The commissioned V3 slate retains its existing pacing
+   floors only until a content-first `dd-2026-v3-20min` repair or full migration.
 4. **Exactly seven active cases.** The guided intro plus six dated sittings form one
    deliberately small, fully authored slate. Old daily, archived, and prototype cases
    are not part of the product.
@@ -45,15 +45,35 @@ enforce the hard rules; this file holds the taste. Companion: the drafting promp
 V4 moves editorial analysis and the epilogue out of the playable trial. Its
 duration metric counts the scene, charge, accused introduction, four counsel
 statements, and spoken evidence at 150 words per minute, then adds a fixed
-nine-minute interaction allowance. The schema rejects totals below 14 or above
-16 minutes; a hand-entered estimate cannot bypass that gate.
+nine-minute interaction allowance. The schema rejects totals below 19 or above
+21 minutes; a hand-entered estimate cannot bypass that gate.
 
-The puzzle core is unchanged from v1: **the gap between how a beat feels
-(`surface_persuasion`) and what it is worth (`true_weight`)**. Every case needs ≥1
-`misleading` trap (gap ≥ 0.25), ≥1 `decisive` signal (worth ≥ 0.6), both sides argued,
-and the decisive beats on balance pointing at `verdict_truth`. Put the loud trap early
-and the quiet decisive beat late, so the first instinct is the wrong one. Keep every
-trap **before the final check-in** — a trap after it can never be scored as bait.
+The added time is an explanation budget, not padding. A V4 case needs 1,500–1,800
+spoken words, including at least 180 words of scene, charge, elements and accused
+background; 320 words across the rival openings and closings; and 900 words of
+evidence and directions. Before asking the public to draw an inference, establish:
+
+- where and when the events occurred, who the important people are, and how they
+  relate to one another;
+- the fictional jurisdiction, the single charge, each element in plain English,
+  the prosecution burden, and any unfamiliar legal term;
+- what is agreed, what is disputed, and the chronology needed to understand why;
+- who created or kept each important record, how it reached court, what it can
+  prove, and what it cannot prove; and
+- the strongest competent account for each side and the innocent alternative the
+  prosecution must exclude.
+
+Do not make the narrator repeat a stock preface. Use the narrator for orientation
+and transitions; let counsel explain rival theories, witnesses explain what they
+personally perceived or did, experts state qualified limits, and the judge explain
+the governing law.
+
+V3's hidden answer-key fields remain only until migration. V4 keeps editorial
+assessment in the post-verdict analysis file: one or two central propositions,
+at least one genuinely probative counterweight for the other side, the strongest
+reasonable opposing interpretation, and no pre-verdict “truth,” “twist,” or
+“decisive” label. The trial should make both accounts intelligible before either
+closing asks the jury to assemble the inference.
 
 ## Make them care (the engagement layer)
 
@@ -88,12 +108,12 @@ The setting supplies gravity, not spectacle. The jury still decides one conteste
 element from admissible evidence. Balance modern records with memory, motive,
 credibility, causation, knowledge, intent, command, coercion, duress, and the
 burden of proof.
-Across seven cases, no two twists may share the same mechanism.
+Across seven cases, no two central inferences may depend on the same mechanism.
 
 ## Crime-writer standard
 
-- Plant every reveal in at least two earlier details. The twist must reinterpret those
-  details; it must never introduce a stranger, record, or motive after the evidence ends.
+- Plant every closing inference in at least two earlier details. Post-verdict analysis
+  may connect those details, but must never introduce a stranger, record, or motive.
 - Give both sides a psychologically coherent account. Sympathy is never proof, and a
   victim or accused is never reduced to a puzzle prop.
 - Each beat makes one principal evidentiary point. State what a record proves and what

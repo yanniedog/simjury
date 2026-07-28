@@ -9,7 +9,7 @@ not cover, the standing constraint docs below still bind.
 simjury.com pivots from a single 25-minute historical case to **The Daily Docket**: one
 **synthetic, fictional, 2026-relevant case per day**, playable end-to-end (intro →
 evidence → closings → jury room → verdict → judge readout → reveal → share) in
-**14–16 minutes under V4**, with a
+**19–21 minutes under V4**, with a
 **dynamic, interactive jury deliberation** whose outcome (unanimous / majority / hung)
 genuinely varies with how the player argues.
 
@@ -78,14 +78,22 @@ The full design (product shape, schema, engine, gates, verification) is captured
 approved plan of record for this pivot; D2/D3/D7 land the details in-repo as they ship
 (`site/app/src/lib/caseSchema.ts`, `site/app/src/engine/`, `docs/DAILY-CASES.md`).
 
-## The 14–16 minute V4 budget (hard design constraint)
+## The 19–21 minute V4 budget (hard design constraint)
 
-V4 targets a 15-minute sitting. Its checked estimate counts the scene-setting,
-charge, accused introduction, counsel statements, and evidence at 150 spoken
-words per minute, then reserves nine minutes for courtroom transitions, exhibit
-inspection, substantive deliberation, and the result/reveal. The estimate is
-computed from case content; authors cannot override it with a declared duration.
+V4 targets a 20-minute sitting. Its checked estimate counts the scene-setting,
+charge, plain-English elements, accused and character background, counsel
+statements, witness evidence, exhibit foundations and limitations, chronology,
+and judicial directions at 150 spoken words per minute. It then reserves nine
+minutes for courtroom transitions, exhibit inspection, substantive deliberation,
+and the result/reveal. That interaction allowance is unchanged: the extra five
+minutes must be 750 words of useful explanation, not a larger fictional estimate.
 
-The playable V3 slate remains governed by its existing 8–10 minute content floors
-until each case receives its complete V4 trial, analysis, and legal-sheet migration.
-V3 compatibility is transitional, not the target for newly commissioned cases.
+A valid case contains 1,500–1,800 spoken words and separately reserves at least
+180 words for the public-juror briefing, 320 for balanced rival openings and
+closings, and 900 for evidence and directions. The estimate is computed from
+case content; authors cannot override it with a declared duration.
+
+Legacy V3 cases retain their old content floors only while they are awaiting repair.
+A content-first repair uses `dd-2026-v3-20min`, which applies the same computed
+19–21 minute and section floors while the V4 trial/analysis/legal-sheet consumer is
+completed. V3 compatibility is transitional, not the target for new cases.

@@ -4,6 +4,9 @@ import {
   estimateV4Duration,
   V4_DURATION_MINUTES_MAX,
   V4_DURATION_MINUTES_MIN,
+  V4_EVIDENCE_WORDS_MIN,
+  V4_SCENE_WORDS_MIN,
+  V4_STATEMENT_WORDS_MIN,
 } from './duration'
 import { CONTENT_ADVISORIES, OFFENCE_CODES } from './offenceProfiles'
 
@@ -421,6 +424,33 @@ export const docketCaseV4Schema = docketCaseV4ObjectSchema.superRefine(
         message:
           `estimated duration ${estimate.totalMinutes.toFixed(2)} minutes; ` +
           `V4 cases must take ${V4_DURATION_MINUTES_MIN}-${V4_DURATION_MINUTES_MAX} minutes`,
+        path: ['beats'],
+      })
+    }
+    if (estimate.sceneWords < V4_SCENE_WORDS_MIN) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          `scene, charge, elements, and accused background total ${estimate.sceneWords} words; ` +
+          `public-juror context needs at least ${V4_SCENE_WORDS_MIN}`,
+        path: ['setting'],
+      })
+    }
+    if (estimate.statementWords < V4_STATEMENT_WORDS_MIN) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          `openings and closings total ${estimate.statementWords} words; ` +
+          `balanced rival explanations need at least ${V4_STATEMENT_WORDS_MIN}`,
+        path: ['statements'],
+      })
+    }
+    if (estimate.evidenceWords < V4_EVIDENCE_WORDS_MIN) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          `spoken evidence and directions total ${estimate.evidenceWords} words; ` +
+          `foundations, limitations, chronology, and legal directions need at least ${V4_EVIDENCE_WORDS_MIN}`,
         path: ['beats'],
       })
     }
