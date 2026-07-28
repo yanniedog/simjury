@@ -712,7 +712,7 @@ export function JuryRoomView({
       )}
       {awaitingPlayerVote && <NarratorCue text={phaseNarratorCue('verdict')} />}
 
-      {liveSession && <LiveJuryPanel session={liveSession} />}
+      {liveSession && <LiveJuryPanel session={liveSession} trial={trial} />}
 
       {inOpenRound && !outcome && (
         <div className="deliberation-transport" role="group" aria-label="Deliberation playback">
