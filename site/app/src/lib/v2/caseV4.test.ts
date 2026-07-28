@@ -9,19 +9,30 @@ import {
   type DocketCaseV4,
 } from './caseSchema'
 import { makeDocketCase } from './fixtures'
-import { checkV4EditorialBundle, legalSheetSchema } from './legalSheetSchema'
+import {
+  checkV4EditorialBundle,
+  legalSheetContentHash,
+  legalSheetSchema,
+} from './legalSheetSchema'
 
 function makeV4Case(): DocketCaseV4 {
   const raw = structuredClone(makeDocketCase()) as unknown as Record<string, unknown>
   delete raw.verdict_truth
   delete raw.twist
+  delete raw.epilogue
   delete (raw.accused as Record<string, unknown>).if_guilty
   for (const beat of raw.beats as Array<Record<string, unknown>>) {
     delete beat.true_weight
     delete beat.reveal_stamp
     delete beat.reveal_note
   }
-  ;(raw.gen_meta as Record<string, unknown>).prompt_version = 'dd-2026-v4'
+  raw.offence_code = 'murder'
+  raw.content_advisories = ['death']
+  raw.detail_level = 'non_graphic'
+  const metadata = raw.gen_meta as Record<string, unknown>
+  metadata.prompt_version = 'dd-2026-v4'
+  metadata.language_reviewer = 'Language reviewer'
+  metadata.sensitivity_reviewer = 'Sensitivity reviewer'
   return docketCaseV4Schema.parse(raw)
 }
 
@@ -35,6 +46,10 @@ function makeBundle(trial: DocketCaseV4) {
     reference_reasoning: 'The prosecution did not exclude the alternative.',
     strongest_opposing_interpretation: 'The combined records still support knowledge.',
     sentencing_context: 'Sentencing would be determined by the judge.',
+    epilogue: {
+      mode: 'outcome_neutral',
+      text: 'The people involved continued living with the unresolved consequences.',
+    },
     beats: trial.beats.map((beat, index) => ({
       beat_id: beat.id,
       editorial_weight: index === 0 ? 0.8 : 0.4,
@@ -74,13 +89,17 @@ function makeBundle(trial: DocketCaseV4) {
     }],
     alternative_innocent_inference: 'Another authorised user created the record.',
     required_directions: ['Apply the criminal standard to every element.'],
-    epilogue_strategy: 'result_branched',
+    epilogue_strategy: 'outcome_neutral',
     checks: {
       victim_humanity: 'The affected person is treated as a person.',
       accused_prejudice: 'Irrelevant punishment is excluded.',
     },
     approvals: { legal: approval, read_aloud: approval, blind_test: approval },
   })
+  const approvalHash = legalSheetContentHash(sheet)
+  for (const item of Object.values(sheet.approvals)) {
+    item.content_hash = approvalHash
+  }
   return { analysis, sheet }
 }
 
@@ -104,11 +123,21 @@ describe('Docket Case V4 editorial contract', () => {
     for (const legacy of [
       { verdict_truth: 'Guilty' },
       { twist: 'A completed answer.' },
+      { epilogue: 'The authored outcome.' },
       { accused: { ...trial.accused, if_guilty: 'Pre-verdict punishment.' } },
       { beats: [oldBeat, ...trial.beats.slice(1)] },
     ]) {
       expect(docketCaseV4Schema.safeParse({ ...trial, ...legacy }).success).toBe(false)
     }
+    for (const field of ['offence_code', 'content_advisories', 'detail_level']) {
+      const incomplete = { ...trial } as Record<string, unknown>
+      delete incomplete[field]
+      expect(docketCaseV4Schema.safeParse(incomplete).success).toBe(false)
+    }
+    expect(docketCaseV4Schema.safeParse({
+      ...trial,
+      gen_meta: { ...trial.gen_meta, language_reviewer: undefined },
+    }).success).toBe(false)
   })
 
   it('validates isolated analysis and a hash-bound legal sheet', () => {
@@ -119,9 +148,13 @@ describe('Docket Case V4 editorial contract', () => {
       ...analysis,
       verdict_truth: 'Not Guilty',
     }).success).toBe(false)
+    expect(docketCaseAnalysisV4Schema.safeParse({
+      ...analysis,
+      reference_reasoning: ' ',
+    }).success).toBe(false)
 
     analysis.beats.pop()
-    sheet.approvals.legal.content_hash = 'stale'
+    sheet.required_directions.push('A later legal-sheet change.')
     sheet.foundations.push(sheet.foundations[0])
     expect(checkV4EditorialBundle(trial, analysis, sheet)).toEqual(expect.arrayContaining([
       'legal approval is stale',

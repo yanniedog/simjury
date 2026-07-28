@@ -76,26 +76,12 @@ product.
 - The removed installer stays omitted from `sitemap.xml`; `/install/` is a tombstone
   redirect to `/`.
 
-## D-WEB-5 — Static-first live-jury boundary (owner-directed, 2026-07-29)
-
-- Static Assets remains the default execution path. Solo cases, narration metadata and
-  local deliberation must work without a backend.
-- Runtime code is permitted only for the explicitly allowlisted live-jury API and
-  Discord interaction paths. The approved surface is one Worker with Durable Objects
-  for pooling, fairness and live rooms; additional routes, bindings or Cloudflare
-  products require a new owner decision and a CI guard update.
-- No runtime generative AI is permitted. Simulated-juror language remains authored,
-  versioned and deterministic.
-- If the live service is unavailable or reaches its admission cap, the site offers
-  immediate local deliberation instead of degrading the ordinary player.
-
 ## Unchanged, still binding on the web
 
 - **No real names / no reveal content pre-verdict.** Enforced by Daily Docket
   authoring and validation gates.
-- **No general accounts or tracking.** GitHub-authored cases remain bundled during the
-  GitHub Actions build. Only users who explicitly join a live jury enter the narrowly
-  allowlisted Discord-authenticated runtime described in D-WEB-5.
+- **No accounts, tracking, or dynamic routes.** GitHub-authored cases are bundled during
+  the GitHub Actions build; all game state remains client-side.
 - **The reveal is the twist** — public copy names no defendant,
   year, court, or outcome.
 - **Schema fiction pin** — every daily case JSON keeps `label: "fiction"` even though the UI

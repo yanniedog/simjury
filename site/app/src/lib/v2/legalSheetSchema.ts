@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { caseStorageId } from './caseRevision'
+import { caseStorageId, stableContentHash } from './caseRevision'
 import {
   docketCaseIdSchema,
   docketCaseRevisionSchema,
@@ -7,7 +7,7 @@ import {
   type DocketCaseV4,
 } from './caseSchema'
 
-const text = z.string().min(1)
+const text = z.string().trim().min(1)
 const textList = z.array(text).min(1)
 const approvalSchema = z
   .object({
@@ -74,6 +74,13 @@ export const legalSheetSchema = z
 
 export type LegalSheet = z.infer<typeof legalSheetSchema>
 
+export function legalSheetContentHash(sheet: LegalSheet): string {
+  const content = Object.fromEntries(
+    Object.entries(sheet).filter(([key]) => key !== 'approvals'),
+  )
+  return `${sheet.case_revision}@legal-${stableContentHash(content)}`
+}
+
 /** Cross-file integrity checks for the V4 trial, reveal and legal sheet. */
 export function checkV4EditorialBundle(
   trial: DocketCaseV4,
@@ -82,6 +89,7 @@ export function checkV4EditorialBundle(
 ): string[] {
   const issues: string[] = []
   const revision = caseStorageId(trial)
+  const approvalHash = legalSheetContentHash(sheet)
 
   if (analysis.case_id !== trial.id || sheet.case_id !== trial.id) {
     issues.push('trial, analysis and legal sheet must share one case id')
@@ -93,7 +101,7 @@ export function checkV4EditorialBundle(
     issues.push('analysis and legal sheet must match the current case revision')
   }
   for (const [name, approval] of Object.entries(sheet.approvals)) {
-    if (approval.content_hash !== revision) {
+    if (approval.content_hash !== approvalHash) {
       issues.push(`${name} approval is stale`)
     }
   }
@@ -104,6 +112,9 @@ export function checkV4EditorialBundle(
     )
   ) {
     issues.push('legal-sheet elements must match the playable charge elements')
+  }
+  if (sheet.epilogue_strategy !== analysis.epilogue.mode) {
+    issues.push('legal-sheet epilogue strategy must match post-verdict analysis')
   }
 
   const beatIds = new Set(trial.beats.map((beat) => beat.id))

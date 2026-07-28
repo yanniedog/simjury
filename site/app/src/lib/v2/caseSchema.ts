@@ -304,11 +304,15 @@ const docketCaseV4ObjectSchema = docketCaseV3ObjectSchema
   .omit({
     accused: true,
     beats: true,
+    epilogue: true,
     verdict_truth: true,
     twist: true,
     gen_meta: true,
   })
   .extend({
+    offence_code: z.enum(OFFENCE_CODES),
+    content_advisories: z.array(z.enum(CONTENT_ADVISORIES)).min(1),
+    detail_level: z.literal('non_graphic'),
     accused: z
       .object({
         cast_id: z.string().min(1),
@@ -322,8 +326,8 @@ const docketCaseV4ObjectSchema = docketCaseV3ObjectSchema
         prompt_version: z.literal('dd-2026-v4'),
         reviewer: z.string(),
         batch_pr: z.string(),
-        language_reviewer: z.string().optional(),
-        sensitivity_reviewer: z.string().optional(),
+        language_reviewer: z.string().min(1),
+        sensitivity_reviewer: z.string().min(1),
       })
       .strict(),
   })
@@ -410,15 +414,30 @@ export const analysisRoleSchema = z.enum([
 ])
 export type AnalysisRole = z.infer<typeof analysisRoleSchema>
 
+const analysisTextSchema = z.string().trim().min(1)
+const epilogueAnalysisSchema = z.discriminatedUnion('mode', [
+  z.object({
+    mode: z.literal('outcome_neutral'),
+    text: analysisTextSchema,
+  }),
+  z.object({
+    mode: z.literal('result_branched'),
+    guilty: analysisTextSchema,
+    not_guilty: analysisTextSchema,
+    hung: analysisTextSchema,
+  }),
+])
+
 export const docketCaseAnalysisV4Schema = z
   .object({
     schema_version: z.literal(4),
     case_id: docketCaseIdSchema,
     case_revision: docketCaseRevisionSchema,
     reference_verdict: z.enum(['Guilty', 'Not Guilty']),
-    reference_reasoning: z.string().min(1),
-    strongest_opposing_interpretation: z.string().min(1),
-    sentencing_context: z.string().min(1),
+    reference_reasoning: analysisTextSchema,
+    strongest_opposing_interpretation: analysisTextSchema,
+    sentencing_context: analysisTextSchema,
+    epilogue: epilogueAnalysisSchema,
     beats: z
       .array(
         z
@@ -426,7 +445,7 @@ export const docketCaseAnalysisV4Schema = z
             beat_id: z.string().min(1),
             editorial_weight: z.number().min(0).max(1),
             analysis_role: analysisRoleSchema,
-            analysis_note: z.string().min(1),
+            analysis_note: analysisTextSchema,
           })
           .strict(),
       )

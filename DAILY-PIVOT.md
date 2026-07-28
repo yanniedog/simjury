@@ -8,16 +8,9 @@ not cover, the standing constraint docs below still bind.
 
 simjury.com pivots from a single 25-minute historical case to **The Daily Docket**: one
 **synthetic, fictional, 2026-relevant case per day**, playable end-to-end (intro →
-evidence → closings → jury room → verdict → judge readout → reveal → share) in **14–16 minutes**, with a
+evidence → closings → jury room → verdict → judge readout → reveal → share) in **8–10 minutes**, with a
 **dynamic, interactive jury deliberation** whose outcome (unanimous / majority / hung)
 genuinely varies with how the player argues.
-
-**Owner amendment, 2026-07-29:** the complete standard solo path now targets
-**14–16 minutes at 1× narration**. Live-jury queue time is excluded, and sincere
-deliberation may run longer. Hosting is **static-first**: ordinary site and solo-play
-traffic stays on Cloudflare Static Assets, while an allowlisted Worker plus Durable
-Objects may serve only the live-jury API and Discord interaction paths. Runtime
-generative AI remains prohibited.
 
 Owner decisions, recorded verbatim:
 
@@ -46,14 +39,11 @@ Owner decisions, recorded verbatim:
 
 ## What carries over unchanged (binding on the daily track)
 
-- **Static-first hosting** — GitHub-authored assets deploy through Cloudflare Static
-  Assets. Ordinary site and solo-play traffic must not invoke runtime compute. The
-  owner-approved live-jury expansion may use one strictly route-allowlisted Worker and
-  Durable Objects for Discord interactions, authentication, pooling and live rooms;
-  every route and binding is fail-closed in CI. Solo play remains local and fully
-  available when that service is unavailable. Pre-generated narration is served from
-  GitHub Releases and falls back to an English voice advertised as local by the browser,
-  keeping adjacent speakers distinct when at least two voices exist.
+- **Static-only hosting** — GitHub-authored assets deploy through Cloudflare Static Assets
+  with no Worker script, dynamic route, account, or tracking. Game state remains entirely
+  on the player's device; pre-generated narration is served from GitHub Releases and
+  falls back to an English voice advertised as local by the browser, keeping adjacent
+  speakers distinct when at least two voices exist.
 - **No generative runtime AI** — all player-facing text is pre-authored JSON, case
   generation happens in PRs, and Apache-2.0 Kokoro-82M narration is generated in GitHub
   Actions rather than synthesized during play.
@@ -87,11 +77,12 @@ The full design (product shape, schema, engine, gates, verification) is captured
 approved plan of record for this pivot; D2/D3/D7 land the details in-repo as they ship
 (`site/app/src/lib/caseSchema.ts`, `site/app/src/engine/`, `docs/DAILY-CASES.md`).
 
-## The 14–16 minute budget (hard design constraint)
+## The 8–10 minute budget (hard design constraint)
 
-At 1× narration: briefing, scene, accused and charge 1:15 · rival openings 1:30 ·
-evidence 5:45–6:15 (normally 12–14 beats) · closings and directions 1:30 · jury room
-4:15–4:45 · result and reference analysis 0:45. Pacing validation measures generated
-clip duration, transitions and standard interaction dwell, not word count alone. Queue
-time for a live jury is excluded, and deliberation is never forced to conclude to meet
-the target.
+intro 20–30s · evidence 4.5–5.5 min (10–14 narrated beats, 40–70 words each, 3–4
+witnesses, 3–5 conviction check-ins) · closings · jury room 2–2.5 min
+(2 open rounds → mid-vote → 1 round → player verdict lock → judge readout;
+~3 actions where the player argues; 3–4 jurors speak per round) · reveal + share 1–1.5 min.
+Pacing is a launch verification step: the
+fixture case `dd-0000` must clock 8–10 minutes with narration on before launch content
+is drafted.

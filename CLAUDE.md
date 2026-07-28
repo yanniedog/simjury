@@ -21,11 +21,7 @@ to the current web product.
 - **Daily cases are fiction, and say so** — `label: "fiction"` is a safety
   invariant. Cases use real trial patterns, never real events, and contain no real
   names of people, companies, brands, or specific places in player-visible text.
-- **No runtime AI; static-first hosting** — player-facing text is pre-authored JSON.
-  Ordinary site and solo-play requests stay on Cloudflare Static Assets. The only
-  permitted runtime expansion is the owner-approved, path-allowlisted live-jury
-  service recorded in `DAILY-PIVOT.md` and `site/DECISIONS.md`; CI must reject any
-  unapproved route, binding, AI service, or storage product.
+- **No runtime AI; static hosting only** — player-facing text is pre-authored JSON.
 - **Preserve provenance** — `archive/daily-v1/` is retained verbatim and is not a
   shipped case source.
 - **One concern per PR, about 400 lines, squash merge.** Agents use
