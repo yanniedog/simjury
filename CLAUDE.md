@@ -21,7 +21,9 @@ to the current web product.
 - **Daily cases are fiction, and say so** — `label: "fiction"` is a safety
   invariant. Cases use real trial patterns, never real events, and contain no real
   names of people, companies, brands, or specific places in player-visible text.
-- **No runtime AI; static hosting only** — player-facing text is pre-authored JSON.
+- **No runtime AI; static-first hosting** — player-facing text is pre-authored JSON.
+  Ordinary and solo routes remain static; only the allowlisted live-jury paths
+  may use the bounded Worker and SQLite Durable Objects.
 - **Preserve provenance** — `archive/daily-v1/` is retained verbatim and is not a
   shipped case source.
 - **One concern per PR, about 400 lines, squash merge.** Agents use
