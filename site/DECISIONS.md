@@ -20,8 +20,8 @@ product.
   the timing and order of narration playback. URLs contain a deterministic opaque clip id
   rather than player state or case text. The authored text and mapping algorithm are
   public in this repository, so anyone can reconstruct which public corpus line an id
-  represents. There is no Cloudflare narration endpoint, runtime AI, or backend player
-  state.
+  represents. There is no Cloudflare narration endpoint, runtime AI, or backend
+  solo-player state.
 - **Publish model (2026-07-25):** each shard release keeps one merged `clips.zip` plus
   individual content-addressed MP3 assets. The publisher uploads only *missing* MP3s
   (no blind full clobber) and honors API rate-limit reset, so Actions' 1k REST
@@ -80,8 +80,9 @@ product.
 
 - **No real names / no reveal content pre-verdict.** Enforced by Daily Docket
   authoring and validation gates.
-- **No accounts, tracking, or dynamic routes.** GitHub-authored cases are bundled during
-  the GitHub Actions build; all game state remains client-side.
+- **Static-first and no runtime AI.** GitHub-authored cases and solo state remain
+  client-side. Only `/api/live/*` and `/discord/interactions` may use the bounded
+  Worker and three allowlisted SQLite Durable Objects for short-lived human rooms.
 - **The reveal is the twist** — public copy names no defendant,
   year, court, or outcome.
 - **Schema fiction pin** — every daily case JSON keeps `label: "fiction"` even though the UI

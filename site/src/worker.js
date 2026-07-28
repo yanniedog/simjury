@@ -1,7 +1,13 @@
 import {
   FREE_BETA_LIMITS,
+  admissionDecision,
+  decodeOpaqueId,
   isLiveRoute,
   liveJuryEnabled,
+  parseOpaqueId,
+  parseSeatId,
+  roomExpiryCutoff,
+  seatMaySend,
   unavailable,
 } from './live-policy.js'
 
@@ -33,18 +39,24 @@ export class PoolCoordinatorDO {
     if (!liveJuryEnabled(this.env)) return unavailable()
     const { pathname } = new URL(request.url)
     if (request.method === 'POST' && pathname === '/internal/admit') {
-      const { admissionId, roomId } = await request.json()
-      const validId = (value) => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,80}$/.test(value)
-      if (!validId(admissionId) || !validId(roomId)) {
+      let body
+      try {
+        body = await request.json()
+      } catch {
+        return unavailable('INVALID_JSON', 400)
+      }
+      const admissionId = parseOpaqueId(body?.admissionId)
+      const roomId = parseOpaqueId(body?.roomId)
+      if (!admissionId || !roomId) {
         return unavailable('INVALID_ADMISSION', 400)
       }
       const utcDay = new Date().toISOString().slice(0, 10)
       this.state.storage.sql.exec('DELETE FROM admissions WHERE utc_day <> ?', utcDay)
+      this.state.storage.sql.exec('DELETE FROM active_rooms WHERE opened_at <= ?', roomExpiryCutoff())
       const duplicate = [...this.state.storage.sql.exec(
-        'SELECT 1 AS present FROM admissions WHERE admission_id = ?',
+        'SELECT room_id FROM admissions WHERE admission_id = ?',
         admissionId,
       )][0]
-      if (duplicate) return json({ admitted: true, duplicate: true })
       const admissions = [...this.state.storage.sql.exec(
         'SELECT COUNT(*) AS count FROM admissions WHERE utc_day = ?',
         utcDay,
@@ -56,10 +68,18 @@ export class PoolCoordinatorDO {
         'SELECT 1 AS present FROM active_rooms WHERE room_id = ?',
         roomId,
       )][0]
-      if (admissions >= FREE_BETA_LIMITS.admissionsPerUtcDay
-        || (!existingRoom && activeRooms >= FREE_BETA_LIMITS.concurrentRooms)) {
-        return unavailable('LIVE_JURY_CAP_REACHED', 429)
+      const decision = admissionDecision({
+        admissions,
+        activeRooms,
+        duplicateRoomId: duplicate?.room_id,
+        roomExists: Boolean(existingRoom),
+        roomId,
+      })
+      if (decision === 'mismatch') return unavailable('ADMISSION_ROOM_MISMATCH', 409)
+      if (decision === 'duplicate') {
+        return json({ admitted: true, duplicate: true, room_id: duplicate.room_id })
       }
+      if (decision === 'capped') return unavailable('LIVE_JURY_CAP_REACHED', 429)
       this.state.storage.sql.exec(
         'INSERT INTO admissions (admission_id, utc_day, room_id) VALUES (?, ?, ?)',
         admissionId,
@@ -74,7 +94,8 @@ export class PoolCoordinatorDO {
       return json({ admitted: true })
     }
     if (request.method === 'DELETE' && pathname.startsWith('/internal/rooms/')) {
-      const roomId = decodeURIComponent(pathname.slice('/internal/rooms/'.length))
+      const roomId = decodeOpaqueId(pathname.slice('/internal/rooms/'.length))
+      if (!roomId) return unavailable('INVALID_ROOM_ID', 400)
       this.state.storage.sql.exec('DELETE FROM active_rooms WHERE room_id = ?', roomId)
       return new Response(null, { status: 204 })
     }
@@ -111,6 +132,10 @@ export class RoomDO {
         payload TEXT NOT NULL,
         created_at INTEGER NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS seat_usage (
+        seat_id TEXT PRIMARY KEY,
+        messages INTEGER NOT NULL DEFAULT 0 CHECK (messages >= 0)
+      );
     `)
   }
 
@@ -119,25 +144,44 @@ export class RoomDO {
     if (request.headers.get('Upgrade')?.toLowerCase() !== 'websocket') {
       return unavailable('WEBSOCKET_REQUIRED', 426)
     }
+    const seatId = parseSeatId(request.headers.get('X-SimJury-Verified-Seat'))
+    if (!seatId) return unavailable('VERIFIED_SEAT_REQUIRED', 401)
 
     const pair = new WebSocketPair()
+    this.state.storage.sql.exec(
+      'INSERT OR IGNORE INTO seat_usage (seat_id, messages) VALUES (?, 0)',
+      seatId,
+    )
     this.state.acceptWebSocket(pair[1])
-    pair[1].serializeAttachment({ acceptedAt: Date.now(), messages: 0 })
-    await this.state.storage.setAlarm(Date.now() + FREE_BETA_LIMITS.roomTtlSeconds * 1_000)
+    pair[1].serializeAttachment({ acceptedAt: Date.now(), seatId })
+    if (await this.state.storage.getAlarm() === null) {
+      await this.state.storage.setAlarm(Date.now() + FREE_BETA_LIMITS.roomTtlSeconds * 1_000)
+    }
     return new Response(null, { status: 101, webSocket: pair[0] })
   }
 
   async webSocketMessage(socket, message) {
-    const attachment = socket.deserializeAttachment() ?? { messages: 0 }
+    const { seatId } = socket.deserializeAttachment() ?? {}
+    if (!parseSeatId(seatId)) {
+      socket.close(1008, 'Seat identity is missing')
+      return
+    }
     if (typeof message !== 'string' || message.length > FREE_BETA_LIMITS.messageCharacters) {
       socket.close(1009, 'Message exceeds the live-jury beta limit')
       return
     }
-    if (attachment.messages >= FREE_BETA_LIMITS.messagesPerSeat) {
+    const usage = [...this.state.storage.sql.exec(
+      'SELECT messages FROM seat_usage WHERE seat_id = ?',
+      seatId,
+    )][0]?.messages ?? 0
+    if (!seatMaySend(usage)) {
       socket.close(1008, 'Message limit reached')
       return
     }
-    socket.serializeAttachment({ ...attachment, messages: attachment.messages + 1 })
+    this.state.storage.sql.exec(
+      'UPDATE seat_usage SET messages = messages + 1 WHERE seat_id = ?',
+      seatId,
+    )
     socket.send(JSON.stringify({ type: 'runtime_pending', solo_path: '/today/' }))
   }
 
@@ -163,6 +207,12 @@ export default {
         live_jury_enabled: liveJuryEnabled(env),
         ready: false,
         limits: FREE_BETA_LIMITS,
+      })
+    }
+    if (pathname === '/api/live/healthz') {
+      return new Response(null, {
+        status: 405,
+        headers: { Allow: 'GET', 'Cache-Control': 'no-store' },
       })
     }
 

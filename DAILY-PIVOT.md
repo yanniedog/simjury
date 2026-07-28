@@ -25,8 +25,8 @@ Owner decisions, recorded verbatim:
    11 fictional jurors with personas, theme weights, and ordered reaction rules; the
     player argues evidence first, then locks their own verdict; seat leanings and
     tallies stay hidden until the judge reads the result. The room's verdict is earned,
-    not scripted. Deliberation and narration use no runtime AI and store no player state
-    on a backend.
+    not scripted. Deliberation and narration use no runtime AI. Solo state stays
+    on-device; live human rooms may retain short-lived room state.
 3. **Case supply is LLM-drafted batches behind hardened CI gates, with human
    spot-checks.** This deliberately relaxes simjury-daily's "a human reads every case"
    rule (owner decision, 2026-07-13). The gates — schema, design-quality, jury floors,
