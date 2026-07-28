@@ -209,6 +209,7 @@ export class RoomDO {
         await digest(seatToken),
       )][0]
       if (!seat) return unavailable('VERIFIED_SEAT_REQUIRED', 401)
+      this.closeSeatSockets(String(seat.seat_id))
       const pair = new WebSocketPair()
       this.state.storage.sql.exec(
         'INSERT OR IGNORE INTO seat_usage (seat_id, messages) VALUES (?, 0)',
@@ -301,11 +302,7 @@ export class RoomDO {
             .find((candidate) => !used.has(candidate))
         if (!seatId) return unavailable('ROOM_FULL', 409)
         if (prior) {
-          for (const socket of this.state.getWebSockets()) {
-            if (socket.deserializeAttachment()?.seatId === String(seatId)) {
-              socket.close(4001, 'Seat reconnected')
-            }
-          }
+          this.closeSeatSockets(String(seatId))
         }
         const seatToken = randomCapability()
         this.state.storage.sql.exec(
@@ -354,11 +351,6 @@ export class RoomDO {
       socket.close(1009, 'Message exceeds the live-jury beta limit')
       return
     }
-    const event = parseLiveEvent(message)
-    if (!event) {
-      socket.send(JSON.stringify({ type: 'error', code: 'INVALID_EVENT' }))
-      return
-    }
     const usage = [...this.state.storage.sql.exec(
       'SELECT messages FROM seat_usage WHERE seat_id = ?',
       seatId,
@@ -371,6 +363,11 @@ export class RoomDO {
       'UPDATE seat_usage SET messages = messages + 1 WHERE seat_id = ?',
       seatId,
     )
+    const event = parseLiveEvent(message)
+    if (!event) {
+      socket.send(JSON.stringify({ type: 'error', code: 'INVALID_EVENT' }))
+      return
+    }
     const { type: eventType, ...eventData } = event
     const payload = JSON.stringify({
       seat_id: Number(seatId),
@@ -402,6 +399,14 @@ export class RoomDO {
     const message = JSON.stringify({ type: 'presence', connected_seats: [...new Set(seats)] })
     for (const socket of this.state.getWebSockets()) {
       if (socket !== exclude) socket.send(message)
+    }
+  }
+
+  closeSeatSockets(seatId) {
+    for (const socket of this.state.getWebSockets()) {
+      if (socket.deserializeAttachment()?.seatId === seatId) {
+        socket.close(4001, 'Seat reconnected')
+      }
     }
   }
 

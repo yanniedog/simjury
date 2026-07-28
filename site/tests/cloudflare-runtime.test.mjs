@@ -19,7 +19,7 @@ import {
   seatMaySend,
   seatCapabilityFromProtocols,
 } from '../src/live-policy.js'
-import worker from '../src/worker.js'
+import worker, { RoomDO } from '../src/worker.js'
 
 const config = JSON.parse(readFileSync(new URL('../wrangler.json', import.meta.url), 'utf8'))
 const expectedClasses = ['PoolCoordinatorDO', 'FairnessDO', 'RoomDO']
@@ -250,6 +250,87 @@ test('socket capabilities are verified at the public boundary and not put in the
     { headers: { Upgrade: 'websocket' } },
   ), { LIVE_JURY_ENABLED: 'true', ROOMS: rooms })
   assert.equal(rejected.status, 401)
+
+  const misordered = await worker.fetch(new Request(
+    'https://simjury.com/api/live/rooms/room_12/socket',
+    {
+      headers: {
+        Upgrade: 'websocket',
+        'Sec-WebSocket-Protocol': `${capability}, simjury-v1`,
+      },
+    },
+  ), { LIVE_JURY_ENABLED: 'true', ROOMS: rooms })
+  assert.equal(misordered.status, 401)
+
+  const notWebSocket = await worker.fetch(new Request(
+    'https://simjury.com/api/live/rooms/room_12/socket',
+  ), { LIVE_JURY_ENABLED: 'true', ROOMS: rooms })
+  assert.equal(notWebSocket.status, 426)
+  assert.equal((await notWebSocket.json()).code, 'WEBSOCKET_REQUIRED')
+})
+
+function fakeRoom() {
+  const events = []
+  const usage = new Map([['1', 0], ['2', 0]])
+  const sockets = []
+  const sql = {
+    exec(statement, ...bindings) {
+      if (statement.includes('SELECT messages FROM seat_usage')) {
+        return [{ messages: usage.get(String(bindings[0])) ?? 0 }]
+      }
+      if (statement.includes('UPDATE seat_usage SET messages')) {
+        const seat = String(bindings[0])
+        usage.set(seat, (usage.get(seat) ?? 0) + 1)
+      }
+      if (statement.includes('INSERT INTO room_events')) events.push(bindings)
+      if (statement.includes('last_insert_rowid')) return [{ sequence: events.length }]
+      return []
+    },
+  }
+  const state = {
+    storage: { sql },
+    getWebSockets: () => sockets,
+  }
+  return { events, room: new RoomDO(state, { LIVE_JURY_ENABLED: 'true' }), sockets, usage }
+}
+
+function fakeSocket(seatId) {
+  return {
+    closed: null,
+    sent: [],
+    close(code, reason) { this.closed = { code, reason } },
+    deserializeAttachment: () => ({ displayName: `Juror ${seatId}`, seatId }),
+    send(message) { this.sent.push(JSON.parse(message)) },
+  }
+}
+
+test('room messages meter invalid frames and enforce the lifetime seat cap', async () => {
+  const { events, room, sockets, usage } = fakeRoom()
+  const socket = fakeSocket('1')
+  sockets.push(socket)
+  await room.webSocketMessage(socket, '{"type":"unsupported"}')
+  assert.deepEqual(socket.sent[0], { type: 'error', code: 'INVALID_EVENT' })
+  assert.equal(usage.get('1'), 1)
+  assert.equal(events.length, 0)
+  for (let index = 1; index < FREE_BETA_LIMITS.messagesPerSeat; index++) {
+    await room.webSocketMessage(socket, JSON.stringify({ type: 'message', text: `Point ${index}` }))
+  }
+  await room.webSocketMessage(socket, JSON.stringify({ type: 'message', text: 'one too many' }))
+  assert.deepEqual(socket.closed, { code: 1008, reason: 'Message limit reached' })
+  assert.equal(events.length, FREE_BETA_LIMITS.messagesPerSeat - 1)
+})
+
+test('room presence excludes a closed socket and duplicate seat sockets are superseded', () => {
+  const { room, sockets } = fakeRoom()
+  const first = fakeSocket('1')
+  const duplicate = fakeSocket('1')
+  const second = fakeSocket('2')
+  sockets.push(first, duplicate, second)
+  room.closeSeatSockets('1')
+  assert.equal(first.closed.code, 4001)
+  assert.equal(duplicate.closed.code, 4001)
+  room.webSocketClose(second)
+  assert.deepEqual(first.sent.at(-1), { type: 'presence', connected_seats: [1] })
 })
 
 test('admission caps and retries cannot create unregistered rooms', () => {
