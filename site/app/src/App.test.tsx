@@ -17,7 +17,7 @@ describe('FictionDisclosureGate', () => {
 })
 
 describe('IntroGate', () => {
-  it('warns that the guided sitting is a complete non-graphic murder case', () => {
+  it('warns that the guided sitting directly discusses death and serious violence', () => {
     const markup = renderToStaticMarkup(
       <IntroGate
         narration={false}
@@ -28,7 +28,7 @@ describe('IntroGate', () => {
     )
 
     expect(markup).toContain('complete murder case')
-    expect(markup).toContain('non-graphic references to death and serious violence')
+    expect(markup).toContain('direct discussion of death and serious violence')
     expect(markup).toContain('You can skip it')
     expect(markup).toContain('case library')
     expect(markup).toContain('Take the guided intro')
