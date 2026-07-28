@@ -110,16 +110,20 @@ describe('storage', () => {
     expect(loadPlay(5)).toBeNull()
   })
 
-  it('round-trips the correctness field', () => {
-    vi.stubGlobal('localStorage', memoryStorage())
-    savePlay({
-      day: 5,
-      caseId: 'd-0001',
-      convictions: [],
-      verdict: 'Guilty',
-      correct: true,
-    })
-    expect(loadPlay(5)?.correct).toBe(true)
+  it('drops legacy answer-key grading from a stored play', () => {
+    const store = memoryStorage()
+    store.setItem(
+      KEY,
+      JSON.stringify({
+        day: 5,
+        caseId: 'd-0001',
+        convictions: [],
+        verdict: 'Guilty',
+        correct: true,
+      }),
+    )
+    vi.stubGlobal('localStorage', store)
+    expect(loadPlay(5)).not.toHaveProperty('correct')
   })
 
   it('rejects a play saved without a caseId (pre-caseId schema)', () => {
@@ -137,8 +141,8 @@ describe('loadAllPlays', () => {
   it('returns every valid play and skips corrupt entries', () => {
     const store = memoryStorage()
     vi.stubGlobal('localStorage', store)
-    savePlay({ day: 1, caseId: 'd-0001', convictions: [], verdict: 'Guilty', correct: true })
-    savePlay({ day: 2, caseId: 'd-0002', convictions: [], verdict: 'Not Guilty', correct: false })
+    savePlay({ day: 1, caseId: 'd-0001', convictions: [], verdict: 'Guilty' })
+    savePlay({ day: 2, caseId: 'd-0002', convictions: [], verdict: 'Not Guilty' })
     store.setItem('simjury-daily:v1:3', '{ corrupt')
     store.setItem('unrelated-key', 'ignored')
 
@@ -215,7 +219,6 @@ describe('in-progress sitting', () => {
       caseId: 'd-0001',
       convictions: [],
       verdict: 'Guilty' as const,
-      correct: true,
       room: {
         kind: 'majority' as const,
         verdict: 'guilty' as const,

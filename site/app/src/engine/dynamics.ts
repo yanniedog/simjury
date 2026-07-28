@@ -15,34 +15,33 @@ import {
  *     reaches at least two distinct terminal outcomes (kind + verdict) across
  *     the strategy space (arguments must still be able to surprise, whichever
  *     way the player later locks their own vote), and
- *  2. for each locked verdict, arguing the decisive evidence moves the room
- *     strictly further toward `verdict_truth` than saying nothing — unless
- *     passive play already maxes out the truth-side tally (skilled play
- *     must matter).
+ *  2. for each locked verdict, arguing the central evidence moves the room
+ *     strictly further toward the authors' `reference_verdict` than saying
+ *     nothing — unless passive play already maxes out that side's tally.
  *
  * Strategies are deterministic functions of the case, so this gate is as
  * reproducible as the engine itself. The player's vote is applied only at
  * finish and does not reseed open-round deliberation.
  */
 
-function truthDirection(c: DocketCase): 'guilt' | 'innocence' {
-  return c.verdict_truth === 'Guilty' ? 'guilt' : 'innocence'
+function referenceDirection(c: DocketCase): 'guilt' | 'innocence' {
+  return c.reference_verdict === 'Guilty' ? 'guilt' : 'innocence'
 }
 
 /**
  * Top beats by weight for a reveal stamp, as `argue` actions. `direction`
  * beats are never eligible — `playRound` requires those to be cited, not
- * argued — and for the `decisive` stamp only truth-aligned beats are picked,
+ * argued — and for the legacy `decisive` stamp only reference-aligned beats are picked,
  * since a case may (validly) carry decisive evidence on both sides as long
- * as the true side wins on total weight; arguing an opposed decisive beat
- * would spend a skilled-play round pushing away from the truth.
+ * as the reference side wins on total weight; arguing an opposed central beat
+ * would spend a skilled-play round pushing away from the editorial reference.
  */
 function byWeightDesc(c: DocketCase, stamp: 'decisive' | 'misleading'): PlayerAction[] {
   const key = stamp === 'decisive' ? 'true_weight' : 'surface_persuasion'
-  const truth = truthDirection(c)
+  const reference = referenceDirection(c)
   return c.beats
     .filter((b) => b.kind !== 'direction' && b.reveal_stamp === stamp)
-    .filter((b) => stamp !== 'decisive' || b.direction === truth)
+    .filter((b) => stamp !== 'decisive' || b.direction === reference)
     .sort((a, b) => b[key] - a[key])
     .slice(0, 3)
     .map((b) => ({ type: 'argue', beatId: b.id, stance: 'proves' }))
@@ -88,7 +87,7 @@ export function checkDynamics(c: DocketCase): string[] {
   const issues: string[] = []
   const space = strategies(c)
   const verdicts: PlayerVerdict[] = ['guilty', 'not_guilty']
-  const truthSide: 'g' | 'ng' = c.verdict_truth === 'Guilty' ? 'g' : 'ng'
+  const referenceSide: 'g' | 'ng' = c.reference_verdict === 'Guilty' ? 'g' : 'ng'
 
   // Variance must exist for a fixed player verdict — otherwise the "variety"
   // is just the player's own vote moving the tally, not the room moving.
@@ -109,21 +108,21 @@ export function checkDynamics(c: DocketCase): string[] {
     }
   }
 
-  const MAX_TRUTH_TALLY = 12
+  const MAX_REFERENCE_TALLY = 12
   for (const v of verdicts) {
     const decisive = outcomes.get(`${v}:decisive`)
     const passive = outcomes.get(`${v}:passive`)
     if (!decisive || !passive) continue
-    if (decisive.tally[truthSide] < passive.tally[truthSide]) {
+    if (decisive.tally[referenceSide] < passive.tally[referenceSide]) {
       issues.push(
-        `arguing the decisive evidence (as ${v}) moves the room away from the true verdict — the room does not reward skilled play`,
+        `arguing the central evidence (as ${v}) moves the room away from the authors' reference verdict — the room does not reward skilled play`,
       )
     } else if (
-      decisive.tally[truthSide] === passive.tally[truthSide] &&
-      passive.tally[truthSide] < MAX_TRUTH_TALLY
+      decisive.tally[referenceSide] === passive.tally[referenceSide] &&
+      passive.tally[referenceSide] < MAX_REFERENCE_TALLY
     ) {
       issues.push(
-        `arguing the decisive evidence (as ${v}) does not move the room any further toward the true verdict than doing nothing — the room does not reward skilled play`,
+        `arguing the central evidence (as ${v}) does not move the room any further toward the authors' reference verdict than doing nothing — the room does not reward skilled play`,
       )
     }
   }

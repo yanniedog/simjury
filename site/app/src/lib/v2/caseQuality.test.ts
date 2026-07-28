@@ -477,8 +477,8 @@ describe('checkV3Corpus', () => {
 describe('checkDocketQueue', () => {
   it('accepts a varied queue and keeps v1 uniqueness rules', () => {
     const guilty = () => {
-      const c = makeDocketCase({ verdict_truth: 'Guilty' })
-      // Flip the design so a Guilty truth stays solvable: trap now argues
+      const c = makeDocketCase({ reference_verdict: 'Guilty' })
+      // Flip the design so a Guilty reference stays coherent: the trap now argues
       // innocence, decisive beats argue guilt.
       c.beats = c.beats.map((b) => {
         if (b.reveal_stamp === 'misleading') return { ...b, direction: 'innocence' as const }

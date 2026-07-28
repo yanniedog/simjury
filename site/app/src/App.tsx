@@ -408,7 +408,6 @@ function DocketApp({
   }
 
   function persistRoomResult(outcome: Outcome, chosen: Verdict) {
-    const done = analyzeDocketPlay(activeTrial, chosen)
     const roomRecord: NonNullable<StoredPlay['room']> = {
       kind: outcome.kind,
       verdict: outcome.verdict,
@@ -423,7 +422,6 @@ function DocketApp({
       caseId: caseStorageId(activeTrial),
       convictions: [],
       verdict: chosen,
-      correct: done.correct,
       room: roomRecord,
     })
     if (isIntro) markIntroComplete()

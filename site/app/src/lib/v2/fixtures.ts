@@ -203,7 +203,7 @@ export function makeDocketCase(overrides: Partial<DocketCase> = {}): DocketCase 
     cast: makeCast(),
     beats,
     checkins: ['b3', 'b6', beats[beats.length - 1].id],
-    verdict_truth: 'Not Guilty',
+    reference_verdict: 'Not Guilty',
     twist: 'the loud evidence was hollow; the quiet exhibit was the answer',
     difficulty_target: 0.5,
     jury: { jurors: makeJurors() },

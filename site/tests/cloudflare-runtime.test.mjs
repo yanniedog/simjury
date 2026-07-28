@@ -73,6 +73,15 @@ test('disabled live endpoints fail safely to solo play', async () => {
   assert.equal((await response.json()).solo_path, '/today/')
 })
 
+test('enabled live endpoints fail closed when a required binding is absent', async () => {
+  const response = await worker.fetch(
+    new Request('https://simjury.com/api/live/rooms/example'),
+    { LIVE_JURY_ENABLED: 'true', ROOMS: {} },
+  )
+  assert.equal(response.status, 503)
+  assert.equal((await response.json()).code, 'LIVE_JURY_PIPELINE_NOT_READY')
+})
+
 test('enabled room requests route only to the named room Durable Object', async () => {
   const calls = []
   const rooms = {
@@ -94,7 +103,7 @@ test('enabled room requests route only to the named room Durable Object', async 
     new Request('https://simjury.com/api/live/rooms/example', {
       headers: { Authorization: `Bearer ${'a'.repeat(43)}` },
     }),
-    { LIVE_JURY_ENABLED: 'true', ROOMS: rooms },
+    { LIVE_JURY_ENABLED: 'true', POOL_COORDINATOR: {}, ROOMS: rooms },
   )
   const body = await response.json()
   assert.equal(response.status, 200)
@@ -169,7 +178,7 @@ test('live JSON request bodies are bounded before allocation', async () => {
       headers: { 'Content-Type': 'application/json', 'Content-Length': '3000' },
       body: JSON.stringify({ case_id: 'dd-0039' }),
     },
-  ), { LIVE_JURY_ENABLED: 'true' })
+  ), { LIVE_JURY_ENABLED: 'true', POOL_COORDINATOR: {}, ROOMS: {} })
   assert.equal(response.status, 400)
   assert.equal((await response.json()).code, 'INVALID_CASE')
 })
@@ -239,7 +248,7 @@ test('socket capabilities are verified at the public boundary and not put in the
         'Sec-WebSocket-Protocol': `simjury-v1, ${capability}`,
       },
     },
-  ), { LIVE_JURY_ENABLED: 'true', ROOMS: rooms })
+  ), { LIVE_JURY_ENABLED: 'true', POOL_COORDINATOR: {}, ROOMS: rooms })
   assert.equal((await response.json()).forwarded, true)
   assert.equal(new URL(internalRequest.url).pathname, '/internal/connect')
   assert.equal(internalRequest.headers.get('X-SimJury-Seat-Token'), capability)
@@ -248,7 +257,7 @@ test('socket capabilities are verified at the public boundary and not put in the
   const rejected = await worker.fetch(new Request(
     'https://simjury.com/api/live/rooms/room_12/socket',
     { headers: { Upgrade: 'websocket' } },
-  ), { LIVE_JURY_ENABLED: 'true', ROOMS: rooms })
+  ), { LIVE_JURY_ENABLED: 'true', POOL_COORDINATOR: {}, ROOMS: rooms })
   assert.equal(rejected.status, 401)
 
   const misordered = await worker.fetch(new Request(
@@ -259,12 +268,12 @@ test('socket capabilities are verified at the public boundary and not put in the
         'Sec-WebSocket-Protocol': `${capability}, simjury-v1`,
       },
     },
-  ), { LIVE_JURY_ENABLED: 'true', ROOMS: rooms })
+  ), { LIVE_JURY_ENABLED: 'true', POOL_COORDINATOR: {}, ROOMS: rooms })
   assert.equal(misordered.status, 401)
 
   const notWebSocket = await worker.fetch(new Request(
     'https://simjury.com/api/live/rooms/room_12/socket',
-  ), { LIVE_JURY_ENABLED: 'true', ROOMS: rooms })
+  ), { LIVE_JURY_ENABLED: 'true', POOL_COORDINATOR: {}, ROOMS: rooms })
   assert.equal(notWebSocket.status, 426)
   assert.equal((await notWebSocket.json()).code, 'WEBSOCKET_REQUIRED')
 })

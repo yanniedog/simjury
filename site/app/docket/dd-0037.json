@@ -264,7 +264,7 @@
     }
   ],
   "checkins": [],
-  "verdict_truth": "Not Guilty",
+  "reference_verdict": "Not Guilty",
   "twist": "The reference resolution is Not Guilty because the authenticated manifest showed six authorised files, a known fault silently carried page seven, and Sela had been assigned to correct the internal master. The strongest opposing interpretation is serious: she knew the recipient, improved the protected page, and sent the package eleven minutes later. But the records cannot show that she saw or knew about the hidden attachment, so that timing does not prove intentional assistance beyond reasonable doubt.",
   "difficulty_target": 0.68,
   "jury": {

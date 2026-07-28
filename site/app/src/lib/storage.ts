@@ -18,7 +18,6 @@ const storedPlaySchema = z.object({
   caseId: z.string(),
   convictions: z.array(z.number()).default([]),
   verdict: z.enum(['Guilty', 'Not Guilty']),
-  correct: z.boolean().optional(),
   swayedByTraps: z.number().optional(),
   totalTraps: z.number().optional(),
   /** The jury room's own result (docket loop); absent on v1 plays. */

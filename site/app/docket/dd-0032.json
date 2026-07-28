@@ -242,7 +242,7 @@
     }
   ],
   "checkins": [],
-  "verdict_truth": "Guilty",
+  "reference_verdict": "Guilty",
   "twist": "The editorial reference is Guilty because the contained phrase entered an authenticated criminal order signed by a physical key during Celis’s exclusive recorded access, after Celis knew Sava faced a protection demand. The strongest reasonable opposing interpretation remains substantial: two investigators also knew the phrase, the audit identifies a device rather than a hand, Celis’s lawful mediation explains possession, and the qualified client note contains both inculpatory and exculpatory words. A jury could therefore regard activation or criminal purpose as not proved beyond reasonable doubt.",
   "difficulty_target": 0.7,
   "jury": {

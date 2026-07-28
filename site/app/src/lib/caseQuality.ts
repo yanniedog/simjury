@@ -1,16 +1,16 @@
 import type { TrialBeat, TrialCase } from './caseSchema'
 
-type Verdict = TrialCase['verdict_truth']
+type Verdict = TrialCase['reference_verdict']
 
 /**
  * Design-quality gate for cases. The schema guarantees a case is well-*formed*;
  * this guarantees it is well-*designed* as a puzzle:
  *
  *  - it contains a trap (a beat that feels more persuasive than it is worth),
- *  - it contains a real signal (a decisive beat that carries genuine weight),
+ *  - it contains a central signal (a beat carrying substantial editorial weight),
  *  - it argues both guilt and innocence, and
- *  - it is actually solvable — the decisive evidence, on balance, points to the
- *    true verdict rather than away from it.
+ *  - the central evidence, on balance, supports the authors' reference verdict
+ *    while retaining a competent opposing interpretation.
  *
  * Run over the whole queue it also enforces uniqueness and verdict variety, so
  * the daily never repeats an id/date/title or becomes predictable.
@@ -40,7 +40,7 @@ export interface QualityIssue {
  * The structural slice the design checks need. Both the v1 daily case and the
  * v2 docket case satisfy it, so `checkCase` / `checkQueue` serve both gates.
  */
-export type DesignedCase = Pick<TrialCase, 'beats' | 'verdict_truth'>
+export type DesignedCase = Pick<TrialCase, 'beats' | 'reference_verdict'>
 export type QueueCase = DesignedCase &
   Pick<TrialCase, 'id' | 'publish_date' | 'title'>
 
@@ -75,13 +75,12 @@ export function checkCase(c: DesignedCase): string[] {
           `(surface_persuasion - true_weight >= ${MISLEAD_MIN_GAP})`,
       )
     }
-    // A trap that actually points at the truth isn't a trap — a player who
-    // follows it ends up correct, so `analyzePlay` would wrongly count "moved
-    // toward the truth" as "took the bait".
-    if (directionMatchesVerdict(b.direction, c.verdict_truth)) {
+    // A trap that points at the reference resolution is not serving its
+    // editorial purpose: it should make the opposing reading genuinely tempting.
+    if (directionMatchesVerdict(b.direction, c.reference_verdict)) {
       issues.push(
-        `misleading beat ${b.id} must point away from the true verdict ` +
-          `(a trap that reinforces the truth cannot mislead)`,
+        `misleading beat ${b.id} must point away from the reference verdict ` +
+          `(a trap that reinforces the authors' resolution cannot mislead)`,
       )
     }
     // Same reasoning as the minor-beat guard below: a beat stamped "misleading"
@@ -117,14 +116,14 @@ export function checkCase(c: DesignedCase): string[] {
   // several light ones, so solvability must be judged by true_weight, not by
   // how many decisive beats fall on each side.
   const alignedWeight = decisive
-    .filter((b) => directionMatchesVerdict(b.direction, c.verdict_truth))
+    .filter((b) => directionMatchesVerdict(b.direction, c.reference_verdict))
     .reduce((sum, b) => sum + b.true_weight, 0)
   const totalDecisiveWeight = decisive.reduce((sum, b) => sum + b.true_weight, 0)
   const opposedWeight = totalDecisiveWeight - alignedWeight
   if (decisive.length > 0 && alignedWeight - opposedWeight <= EPSILON) {
     issues.push(
-      'the decisive beats must, on balance by weight, point to the true verdict ' +
-        '(the case must be solvable)',
+      'the central beats must, on balance by weight, support the reference verdict ' +
+        '(the authors must provide a coherent intended resolution)',
     )
   }
 
@@ -162,7 +161,7 @@ export function checkQueue(cases: QueueCase[]): QualityIssue[] {
   // Once the queue is more than a couple of cases, it should not be all one
   // verdict — otherwise the "twist" becomes guessable from habit.
   if (cases.length >= 3) {
-    const verdicts = new Set(cases.map((c) => c.verdict_truth))
+    const verdicts = new Set(cases.map((c) => c.reference_verdict))
     if (verdicts.size < 2) {
       issues.push({
         caseId: '(queue)',
