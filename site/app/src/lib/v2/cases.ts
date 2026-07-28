@@ -1,5 +1,6 @@
 import { dayIndex } from '../daily'
 import { docketCaseSchema, type DocketCase } from './caseSchema'
+import { loadV4CaseBundles } from './caseBundles'
 
 /**
  * Runtime docket queue. Every JSON file in `docket/` is bundled at build time,
@@ -16,6 +17,35 @@ import { docketCaseSchema, type DocketCase } from './caseSchema'
 const modules = import.meta.glob('/docket/*.json', {
   eager: true,
   import: 'default',
+})
+const v4TrialModules = import.meta.glob('/docket/*/trial.json', {
+  eager: true,
+  import: 'default',
+})
+const v4AnalysisModules = import.meta.glob('/docket/*/analysis.json', {
+  import: 'default',
+})
+const v4LegalSheetModules = import.meta.glob('/docket/*/legal-sheet.json', {
+  import: 'default',
+})
+const v4DeliberationModules = import.meta.glob(
+  '/docket/*/deliberation-pack.json',
+  {
+    import: 'default',
+  },
+)
+
+/**
+ * V4 is discovered through the active case module now, while the commissioned
+ * V3 queue remains the selectable player surface during migration. The V5
+ * jury/reveal consumer can add these validated bundles to DocketSitting
+ * without changing the file boundary or loading editorial data early.
+ */
+export const v4CaseBundles = loadV4CaseBundles({
+  trials: v4TrialModules,
+  analyses: v4AnalysisModules,
+  legalSheets: v4LegalSheetModules,
+  deliberationPacks: v4DeliberationModules,
 })
 
 export const INTRO_CASE_ID = 'dd-intro'
@@ -39,6 +69,15 @@ function loadAllCases(): DocketCase[] {
 }
 
 const allCases = loadAllCases()
+
+const duplicateV4Id = v4CaseBundles.find((bundle) =>
+  allCases.some((trial) => trial.id === bundle.trial.id),
+)
+if (duplicateV4Id) {
+  throw new Error(
+    `Docket case ${duplicateV4Id.trial.id} exists in both V3 and V4`,
+  )
+}
 
 export const introCase: DocketCase | null =
   allCases.find((c) => c.id === INTRO_CASE_ID) ?? null
