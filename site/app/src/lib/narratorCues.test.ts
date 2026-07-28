@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { makeV3DocketCase } from './v2/fixtures'
 import { introSceneNarratorCue, speakerNarratorCue } from './narratorCues'
+import narratorCueCopy from './narratorCueCopy.json'
 
 describe('narrator cues', () => {
   it('sets the scene and introduces the accused and charge', () => {
@@ -28,5 +29,6 @@ describe('narrator cues', () => {
       .filter((cue): cue is string => Boolean(cue))
     expect(cues.some((cue) => /source|custody|authenticated|limits/i.test(cue))).toBe(true)
     expect(cues.join(' ')).not.toMatch(/\bfiction(?:al)?\b/i)
+    expect(narratorCueCopy.phaseCues.juryroom).not.toMatch(/\bfiction(?:al)?\b/i)
   })
 })
