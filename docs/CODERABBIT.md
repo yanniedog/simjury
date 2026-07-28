@@ -56,7 +56,20 @@ Concurrency uses `cancel-in-progress: false` so ordinary PR comments cannot canc
 sleeping waiter. Duplicate rate-limit runs self-skip when a retry is already armed,
 CodeRabbit already reviewed, or a newer rate-limit comment owns the window.
 
-To install on another repo, copy that single workflow file into `.github/workflows/`.
+Install on other repos (one file):
+
+```sh
+npm run coderabbit:rate-limit-retry:install-all
+# or pack:
+# docs/cross-repo-patches/coderabbit-rate-limit-retry/
+```
+
+Local helpers (simjury):
+
+```sh
+npm run pr:coderabbit-rate-limit-retry -- --pr <n>
+npm run pr:coderabbit-rate-limit-retry:verify
+```
 
 ## Other active repos
 
