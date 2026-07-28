@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
 import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { phaseNarratorCue } from '../../lib/narratorCues'
+import { contentAdvisoryText } from '../../lib/v2/offenceProfiles'
 import { CaseMedia, StoryText } from './CaseMedia'
 import { NarratorCue } from './NarratorCue'
 
@@ -20,18 +21,20 @@ export function DocketIntro({
 }) {
   const accused = trial.cast.find((m) => m.id === trial.accused.cast_id)
   const phaseCue = phaseNarratorCue('intro')
+  const advisory = contentAdvisoryText(trial.content_advisories)
 
   useEffect(() => {
     if (!narration) return stopSpeech
     speakAll(
       [
         { text: phaseCue, key: 'narrator' },
+        ...(advisory ? [{ text: advisory, key: 'narrator' }] : []),
         { text: trial.hook, key: 'narrator' },
       ],
       { rate: playbackRate },
     )
     return stopSpeech
-  }, [phaseCue, trial.hook, narration, playbackRate])
+  }, [advisory, phaseCue, trial.hook, narration, playbackRate])
 
   return (
     <div className="phase-view briefing-view space-y-6">
@@ -46,6 +49,15 @@ export function DocketIntro({
       </div>
 
       <NarratorCue text={phaseCue} />
+
+      {advisory && (
+        <aside
+          aria-label="Content advisory"
+          className="rounded-lg border border-amber-800/70 bg-amber-950/30 px-4 py-3 text-sm text-amber-100"
+        >
+          {advisory}
+        </aside>
+      )}
 
       {trial.media?.cover && <CaseMedia asset={trial.media.cover} priority />}
 

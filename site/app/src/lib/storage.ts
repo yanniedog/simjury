@@ -58,7 +58,8 @@ export type StoredProgressInput = Omit<StoredProgress, 'notes'> & {
 
 const KEY_PREFIX = 'simjury-daily:v1:'
 const PROGRESS_PREFIX = 'simjury-progress:v1:'
-export const INTRO_COMPLETE_KEY = 'simjury:intro-complete'
+/** Versioned so the entirely new grave-crime guided case is offered once. */
+export const INTRO_COMPLETE_KEY = 'simjury:intro-complete:v2'
 
 function storage(): Storage | null {
   try {

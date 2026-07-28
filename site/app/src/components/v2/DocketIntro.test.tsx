@@ -31,7 +31,9 @@ describe('DocketIntro narration', () => {
   })
 
   it('narrates the briefing cue and hook at the selected playback rate and stops on cleanup', () => {
-    const trial = makeDocketCase()
+    const trial = makeDocketCase({
+      content_advisories: ['death', 'serious_violence'],
+    })
 
     DocketIntro({
       trial,
@@ -44,6 +46,10 @@ describe('DocketIntro narration', () => {
     expect(narrationMocks.speakAll).toHaveBeenCalledWith(
       [
         { text: phaseNarratorCue('intro'), key: 'narrator' },
+        {
+          text: 'Content advisory: death, serious violence.',
+          key: 'narrator',
+        },
         { text: trial.hook, key: 'narrator' },
       ],
       { rate: 1.15 },
@@ -62,5 +68,24 @@ describe('DocketIntro narration', () => {
     })
 
     expect(narrationMocks.speakAll).not.toHaveBeenCalled()
+  })
+
+  it('omits an advisory when the case has none', () => {
+    const markup = DocketIntro({
+      trial: makeDocketCase(),
+      dayNumber: 1,
+      narration: true,
+      playbackRate: 1,
+      onBegin: () => undefined,
+    })
+
+    expect(markup.props.children).toBeDefined()
+    expect(narrationMocks.speakAll).toHaveBeenCalledWith(
+      [
+        { text: phaseNarratorCue('intro'), key: 'narrator' },
+        { text: makeDocketCase().hook, key: 'narrator' },
+      ],
+      { rate: 1 },
+    )
   })
 })

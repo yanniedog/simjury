@@ -21,6 +21,7 @@ import {
 import { phaseNarratorCue } from '../../lib/narratorCues'
 import type { Verdict } from './DocketVerdict'
 import { NarratorCue } from './NarratorCue'
+import { SpeakerPortrait } from './SpeakerPortrait'
 
 /** Dwell after a round so the transcript is readable and Pause/Raise stay usable. */
 const AUTO_DWELL_MS = 850
@@ -189,10 +190,15 @@ function FeedLine({
     const juror = trial.jury.jurors.find((j) => j.id === e.actor)
     return (
       <li className="room-line border p-3">
-        <p className="text-xs font-semibold text-neutral-400">
-          {juror?.label ?? e.actor}
-        </p>
-        <p className="mt-1 text-sm text-neutral-200">{e.line}</p>
+        <div className="flex items-start gap-3">
+          <SpeakerPortrait trial={trial} speakerId={e.actor} className="h-16 w-14" />
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-neutral-400">
+              {juror?.label ?? e.actor}
+            </p>
+            <p className="mt-1 text-sm text-neutral-200">{e.line}</p>
+          </div>
+        </div>
       </li>
     )
   }

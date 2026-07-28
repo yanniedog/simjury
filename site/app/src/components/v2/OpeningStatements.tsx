@@ -4,6 +4,7 @@ import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narra
 import { phaseNarratorCue } from '../../lib/narratorCues'
 import { StoryText } from './CaseMedia'
 import { NarratorCue } from './NarratorCue'
+import { SpeakerPortrait } from './SpeakerPortrait'
 
 /**
  * A counsel statement card — the visual voice of one side of the duel.
@@ -24,13 +25,18 @@ export function StatementCard({
   const nameTone = side === 'prosecution' ? 'text-red-300' : 'text-emerald-300'
   return (
     <article className={`statement-card ${tone}`}>
-      <p className={`text-sm font-semibold ${nameTone}`}>
-        {counsel?.name ?? statement.speaker}
-        <span className="ml-2 font-normal text-neutral-500">
-          · {counsel?.role_label ?? side}
-        </span>
-      </p>
-      <StoryText text={statement.text} className="mt-3 leading-relaxed text-neutral-100" />
+      <div className="flex items-start gap-4">
+        <SpeakerPortrait trial={trial} speakerId={statement.speaker} />
+        <div className="min-w-0">
+          <p className={`text-sm font-semibold ${nameTone}`}>
+            {counsel?.name ?? statement.speaker}
+            <span className="ml-2 font-normal text-neutral-500">
+              · {counsel?.role_label ?? side}
+            </span>
+          </p>
+          <StoryText text={statement.text} className="mt-3 leading-relaxed text-neutral-100" />
+        </div>
+      </div>
     </article>
   )
 }
