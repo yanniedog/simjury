@@ -13,6 +13,14 @@ const catalog = JSON.parse(
   readFileSync(join(siteRoot, 'app', 'src', 'lib', 'narrationAltVoice.json'), 'utf8'),
 )
 const ENGINE = catalog.engine
+/** Must match ALT_VOICE_ENGINE_ID in site/app/src/lib/narrationAltVoice.ts. */
+const ALT_VOICE_ENGINE_ID = 'scylla'
+if (ENGINE !== ALT_VOICE_ENGINE_ID) {
+  throw new Error(
+    `Alt voice engine mismatch: narrationAltVoice.json.engine is "${ENGINE}", expected "${ALT_VOICE_ENGINE_ID}". ` +
+      'Update narrationAltVoice.json or ALT_VOICE_ENGINE_ID in narrationAltVoice.ts so they match.',
+  )
+}
 const args = process.argv.slice(2)
 const valueAfter = (flag) => {
   const index = args.indexOf(flag)

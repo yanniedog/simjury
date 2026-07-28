@@ -13,6 +13,12 @@ export const ALT_VOICE_ENGINE_ID = 'scylla' as const
 export type AltVoiceEngineId = typeof ALT_VOICE_ENGINE_ID
 export type NarrationEngineId = 'kokoro' | AltVoiceEngineId
 
+if (catalog.engine !== ALT_VOICE_ENGINE_ID) {
+  throw new Error(
+    `Alt voice engine mismatch: narrationAltVoice.json.engine is "${catalog.engine}", expected "${ALT_VOICE_ENGINE_ID}"`,
+  )
+}
+
 export const ALT_VOICE_RELEASE_PREFIX = catalog.releasePrefix
 export const ALT_VOICE_LABEL = catalog.label
 export const DEFAULT_VOICE_LABEL = catalog.defaultLabel
