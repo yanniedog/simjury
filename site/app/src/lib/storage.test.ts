@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   clearProgress,
+  completePlay,
   loadAllPlays,
   loadPlay,
   loadPlayForSitting,
@@ -169,6 +170,59 @@ describe('in-progress sitting', () => {
 
     expect(loadProgress(5)).toBeNull()
     expect(loadPlay(5)?.verdict).toBe('Guilty')
+  })
+
+  it('stores a sealed room result and clears progress idempotently', () => {
+    vi.stubGlobal('localStorage', memoryStorage())
+    saveProgress({
+      day: 5,
+      caseId: 'd-0001',
+      phase: 'juryroom',
+      beatIndex: 9,
+    })
+    const play = {
+      day: 5,
+      caseId: 'd-0001',
+      convictions: [],
+      verdict: 'Guilty' as const,
+      correct: true,
+      room: {
+        kind: 'majority' as const,
+        verdict: 'guilty' as const,
+        g: 8,
+        ng: 4,
+      },
+    }
+
+    completePlay(play)
+    completePlay(play)
+
+    expect(loadPlay(5)).toEqual(play)
+    expect(loadProgress(5)).toBeNull()
+  })
+
+  it('retains resumable progress when a sealed result cannot be stored', () => {
+    const store = memoryStorage()
+    vi.stubGlobal('localStorage', store)
+    saveProgress({
+      day: 5,
+      caseId: 'd-0001',
+      phase: 'juryroom',
+      beatIndex: 9,
+    })
+    store.setItem = () => {
+      throw new Error('storage full')
+    }
+
+    completePlay({
+      day: 5,
+      caseId: 'd-0001',
+      convictions: [],
+      verdict: 'Guilty',
+    })
+
+    expect(loadPlay(5)).toBeNull()
+    expect(loadProgress(5)?.phase).toBe('juryroom')
   })
 
   it('rejects malformed progress', () => {

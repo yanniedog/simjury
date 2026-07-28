@@ -13,12 +13,12 @@ import { dayIndex } from './lib/daily'
 import { caseStorageId } from './lib/v2/caseRevision'
 import {
   clearProgress,
+  completePlay,
   isIntroComplete,
   loadAllPlays,
   loadPlayForSitting,
   loadProgress,
   markIntroComplete,
-  savePlay,
   saveProgress,
   type StoredProgress,
   type StoredPlay,
@@ -337,7 +337,7 @@ function DocketApp({
     })
   }
 
-  function roomDone(outcome: Outcome, chosen: Verdict) {
+  function persistRoomResult(outcome: Outcome, chosen: Verdict) {
     const done = analyzeDocketPlay(activeTrial, chosen)
     const roomRecord: NonNullable<StoredPlay['room']> = {
       kind: outcome.kind,
@@ -347,7 +347,7 @@ function DocketApp({
     }
     setVerdict(chosen)
     setRoom(roomRecord)
-    savePlay({
+    completePlay({
       day,
       caseId: caseStorageId(activeTrial),
       convictions: [],
@@ -355,8 +355,13 @@ function DocketApp({
       correct: done.correct,
       room: roomRecord,
     })
-    clearProgress(day)
     if (isIntro) markIntroComplete()
+  }
+
+  function roomDone(outcome: Outcome, chosen: Verdict) {
+    // Repeating the persistence is intentional: the seal callback normally
+    // committed this exact keyed play, while this keeps direct callers safe.
+    persistRoomResult(outcome, chosen)
     setRevealStats(statsFromStorage())
     setPhase('reveal')
   }
@@ -449,6 +454,7 @@ function DocketApp({
           narration={narration}
           playbackRate={playbackRate}
           notes={notes}
+          onSeal={persistRoomResult}
           onDone={roomDone}
         />
       )}

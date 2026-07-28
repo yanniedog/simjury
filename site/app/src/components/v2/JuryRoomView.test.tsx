@@ -17,6 +17,7 @@ describe('JuryRoomView', () => {
         narration={false}
         playbackRate={1}
         notes={notes}
+        onSeal={() => undefined}
         onDone={() => undefined}
       />,
     )
@@ -25,6 +26,40 @@ describe('JuryRoomView', () => {
     expect(markup).toContain('Discuss from notes and memory')
     expect(markup).not.toContain(trial.beats[0].text)
     expect(markup).not.toContain('Choose evidence, then argue')
+  })
+
+  it('makes narration-off deliberation explicitly user-paced', () => {
+    const trial = makeDocketCase()
+    const markup = renderToStaticMarkup(
+      <JuryRoomView
+        trial={trial}
+        narration={false}
+        playbackRate={1}
+        notes={[]}
+        onSeal={() => undefined}
+        onDone={() => undefined}
+      />,
+    )
+
+    expect(markup).toContain('Hear first point')
+    expect(markup).not.toContain('>Pause<')
+  })
+
+  it('keeps speech playback controls when narration is on', () => {
+    const trial = makeDocketCase()
+    const markup = renderToStaticMarkup(
+      <JuryRoomView
+        trial={trial}
+        narration
+        playbackRate={1}
+        notes={[]}
+        onSeal={() => undefined}
+        onDone={() => undefined}
+      />,
+    )
+
+    expect(markup).toContain('>Pause<')
+    expect(markup).not.toContain('Hear first point')
   })
 })
 
