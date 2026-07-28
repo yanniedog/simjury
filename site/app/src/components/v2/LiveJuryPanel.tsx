@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { buildHybridTranscript } from '../../engine/liveJurorBridge'
 import type { LiveJurySession } from '../../lib/liveJury'
+import type { DocketCase } from '../../lib/v2/caseSchema'
 import {
   LiveJuryConnection,
   type LivePosition,
@@ -28,7 +30,13 @@ function humanEventText(event: LiveRoomEvent): string {
     : `Position: ${POSITION_LABEL[event.position!]}`
 }
 
-export function LiveJuryPanel({ session }: { session: LiveJurySession }) {
+export function LiveJuryPanel({
+  session,
+  trial,
+}: {
+  session: LiveJurySession
+  trial: DocketCase
+}) {
   const [room, setRoom] = useState<LiveRoomSnapshot>(EMPTY_ROOM)
   const [message, setMessage] = useState('')
   const [reason, setReason] = useState('')
@@ -76,6 +84,10 @@ export function LiveJuryPanel({ session }: { session: LiveJurySession }) {
     names.set(session.seatId, session.displayName)
     return names
   }, [room.events, session.displayName, session.seatId])
+  const transcript = useMemo(
+    () => buildHybridTranscript(trial, room.events),
+    [room.events, trial],
+  )
 
   function sendMessage() {
     try {
@@ -139,8 +151,9 @@ export function LiveJuryPanel({ session }: { session: LiveJurySession }) {
       </div>
 
       <p className="text-sm leading-relaxed text-neutral-400">
-        Talk here with the real people in your invited room. The authored jurors
-        continue below, so you can compare and challenge both discussions.
+        Talk with the real people in your invited room. Clearly labelled authored
+        jurors also answer each concern using this case&apos;s fixed evidence and
+        dialogue rules. They are simulations, not remote people or live AI.
       </p>
 
       {presence.length > 0 && (
@@ -151,19 +164,43 @@ export function LiveJuryPanel({ session }: { session: LiveJurySession }) {
 
       <ul
         ref={transcriptRef}
-        aria-label="Live human jury transcript"
+        aria-label="Live human and authored jury transcript"
         className="max-h-64 space-y-2 overflow-y-auto"
       >
-        {room.events.length === 0 ? (
+        {transcript.length === 0 ? (
           <li className="rounded-lg border border-neutral-800 bg-neutral-950/50 p-3 text-sm text-neutral-500">
             No one has spoken yet. Raise the first question, doubt, or inference.
           </li>
-        ) : room.events.map((event) => {
+        ) : transcript.map((item) => {
+          if (item.kind === 'authored') {
+            const active = item.sourceSequence === activeSequence
+            return (
+              <li
+                key={item.key}
+                className={`speech-turn rounded-lg border p-3 ${
+                  active ? 'speech-turn-active' : 'border-sky-900/70 bg-sky-950/20'
+                }`}
+                aria-current={active ? 'true' : undefined}
+              >
+                <p className="speaker-heading text-xs font-semibold text-sky-300">
+                  <span>
+                    {item.jurorLabel} · Authored juror, not a live person · Reply
+                    to message {item.sourceSequence}
+                  </span>
+                  <SpeakerFlag active={active} />
+                </p>
+                <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-neutral-200">
+                  {item.text}
+                </p>
+              </li>
+            )
+          }
+          const event = item.event
           const mine = event.seat_id === session.seatId
           const active = event.sequence === activeSequence
           return (
             <li
-              key={event.sequence}
+              key={item.key}
               className={`speech-turn rounded-lg border p-3 ${
                 active ? 'speech-turn-active' : 'border-neutral-800 bg-neutral-950/60'
               }`}
@@ -171,7 +208,8 @@ export function LiveJuryPanel({ session }: { session: LiveJurySession }) {
             >
               <p className="speaker-heading text-xs font-semibold text-neutral-400">
                 <span>
-                  {mine ? 'You' : event.display_name} · seat {event.seat_id}
+                  {mine ? 'You' : event.display_name} · Live human · seat {event.seat_id}
+                  {' · '}message {event.sequence}
                 </span>
                 <SpeakerFlag active={active} />
               </p>
@@ -204,7 +242,7 @@ export function LiveJuryPanel({ session }: { session: LiveJurySession }) {
           onClick={sendMessage}
           className="w-full rounded-md border border-amber-700 px-3 py-2 text-sm font-semibold text-amber-100 hover:bg-amber-950/40 disabled:opacity-50"
         >
-          Send to the human jury
+          Send to the jury
         </button>
       </div>
 
