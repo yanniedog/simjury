@@ -310,12 +310,14 @@ export function JuryRoomView({
   narration,
   playbackRate,
   notes,
+  onSeal,
   onDone,
 }: {
   trial: DocketCase
   narration: boolean
   playbackRate: NarrationRate
   notes: SittingNote[]
+  onSeal: (outcome: Outcome, verdict: Verdict) => void
   onDone: (outcome: Outcome, verdict: Verdict) => void
 }) {
   const stateRef = useRef<DeliberationState | null>(null)
@@ -335,13 +337,15 @@ export function JuryRoomView({
   const [stirredIds, setStirredIds] = useState<readonly string[]>([])
   const transcriptRef = useRef<HTMLUListElement>(null)
   const followTranscriptRef = useRef(true)
-  const continueButton = useRef<HTMLButtonElement>(null)
+  const headingRef = useRef<HTMLHeadingElement>(null)
   const listenGeneration = useRef(0)
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const startedRef = useRef(false)
+  const narrationRef = useRef(narration)
   const pausedRef = useRef(false)
   const raisingRef = useRef(false)
   const outcomeRef = useRef(false)
+  narrationRef.current = narration
 
   const revealVotes = outcome !== null
   const logLength = state.log.length
@@ -392,9 +396,15 @@ export function JuryRoomView({
 
   function scheduleAutoAdvance(delayMs: number) {
     clearAdvanceTimer()
+    if (!narrationRef.current) return
     advanceTimer.current = setTimeout(() => {
       advanceTimer.current = null
-      if (pausedRef.current || raisingRef.current || outcomeRef.current) return
+      if (
+        !narrationRef.current ||
+        pausedRef.current ||
+        raisingRef.current ||
+        outcomeRef.current
+      ) return
       const current = stateRef.current
       if (!current?.phase.startsWith('open')) return
       runRound('auto')
@@ -438,7 +448,12 @@ export function JuryRoomView({
     } else {
       setListening(false)
       setActiveJurorId(null)
-      if (stillOpen && !pausedRef.current && !raisingRef.current) {
+      if (
+        narrationRef.current &&
+        stillOpen &&
+        !pausedRef.current &&
+        !raisingRef.current
+      ) {
         scheduleAutoAdvance(AUTO_DWELL_MS)
       }
     }
@@ -446,18 +461,30 @@ export function JuryRoomView({
   }
 
   useEffect(() => {
+    clearAdvanceTimer()
     setActiveJurorId(null)
     setListening(false)
     stopSpeech()
     if (!narration) return stopSpeech
     speak(phaseNarratorCue('juryroom'), 'narrator', undefined, playbackRate)
+    if (
+      startedRef.current &&
+      stateRef.current?.phase.startsWith('open') &&
+      !pausedRef.current &&
+      !raisingRef.current
+    ) {
+      scheduleAutoAdvance(AUTO_START_MS)
+    }
     return stopSpeech
+    // Timer helpers intentionally read current refs; recreating them in this
+    // dependency list would restart the room on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [narration, playbackRate])
 
   useEffect(() => {
     if (startedRef.current) return
     startedRef.current = true
-    scheduleAutoAdvance(AUTO_START_MS)
+    if (narrationRef.current) scheduleAutoAdvance(AUTO_START_MS)
     return () => {
       clearAdvanceTimer()
       stopSpeech()
@@ -467,12 +494,8 @@ export function JuryRoomView({
   }, [])
 
   useEffect(() => {
-    if (outcome) continueButton.current?.focus()
-  }, [outcome])
-
-  useEffect(() => {
-    document.getElementById('phase-heading')?.focus()
-  }, [state.phase, outcome, awaitingPlayerVote])
+    if (awaitingPlayerVote || outcome) headingRef.current?.focus()
+  }, [outcome, awaitingPlayerVote])
 
   useEffect(() => {
     const transcript = transcriptRef.current
@@ -496,8 +519,10 @@ export function JuryRoomView({
 
   function openRaise() {
     if (!inOpenRound || outcome || listening) return
-    setPaused(true)
-    pausedRef.current = true
+    if (narrationRef.current) {
+      setPaused(true)
+      pausedRef.current = true
+    }
     clearAdvanceTimer()
     setRaising(true)
     raisingRef.current = true
@@ -531,6 +556,7 @@ export function JuryRoomView({
     setPlayerVerdict(chosen)
     const locked = finish(state, chosen === 'Guilty' ? 'guilty' : 'not_guilty')
     setOutcome(locked)
+    onSeal(locked, chosen)
     setPendingVerdict(null)
     setStirredIds([])
     setTick((t) => t + 1)
@@ -567,7 +593,7 @@ export function JuryRoomView({
   return (
     <div className="phase-view jury-room-view space-y-5">
       <div className="phase-heading space-y-2 text-center">
-        <h1 id="phase-heading" tabIndex={-1} className="text-xs uppercase tracking-[0.2em] text-neutral-500 focus:outline-none">
+        <h1 ref={headingRef} id="phase-heading" tabIndex={-1} className="text-xs uppercase tracking-[0.2em] text-neutral-500 focus:outline-none">
           The jury room · {heading}
         </h1>
         <RoundStepper phase={outcome ? 'final_vote' : state.phase} done={Boolean(outcome)} />
@@ -587,14 +613,28 @@ export function JuryRoomView({
 
       {inOpenRound && !outcome && (
         <div className="deliberation-transport" role="group" aria-label="Deliberation playback">
-          <button
-            type="button"
-            onClick={togglePause}
-            className="transport-btn"
-            aria-pressed={paused}
-          >
-            {paused ? 'Resume' : 'Pause'}
-          </button>
+          {narration ? (
+            <button
+              type="button"
+              onClick={togglePause}
+              className="transport-btn"
+              aria-pressed={paused}
+            >
+              {paused ? 'Resume' : 'Pause'}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => runRound('auto')}
+              className="transport-btn"
+            >
+              {state.phase === 'open_1'
+                ? 'Hear first point'
+                : state.phase === 'open_3'
+                  ? 'Hear final point'
+                  : 'Continue to next point'}
+            </button>
+          )}
           <button
             type="button"
             onClick={openRaise}
@@ -752,7 +792,6 @@ export function JuryRoomView({
             </p>
           </div>
           <button
-            ref={continueButton}
             type="button"
             onClick={() => onDone(outcome, playerVerdict)}
             className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"

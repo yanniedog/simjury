@@ -94,14 +94,22 @@ export function loadPlayForSitting(
   return play?.caseId === caseId ? play : null
 }
 
-export function savePlay(play: StoredPlay): void {
+export function savePlay(play: StoredPlay): boolean {
   const store = storage()
-  if (!store) return
+  if (!store) return false
   try {
     store.setItem(KEY_PREFIX + play.day, JSON.stringify(play))
+    return true
   } catch {
     // Full/blocked storage is non-fatal; the play just won't persist.
+    return false
   }
+}
+
+/** Commit a sealed result and remove its now-obsolete resume point. Safe to repeat. */
+export function completePlay(play: StoredPlay): void {
+  // Retain resumable progress if the completed result could not be written.
+  if (savePlay(play)) clearProgress(play.day)
 }
 
 export function loadProgress(day: number): StoredProgress | null {
