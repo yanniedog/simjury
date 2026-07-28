@@ -136,6 +136,19 @@ export const docketBeatSchema = beatSchema.extend({
 })
 export type DocketBeat = z.infer<typeof docketBeatSchema>
 
+/**
+ * V4 trial beats contain only material the jury may see before returning a
+ * result. Editorial assessment lives in the separately loaded analysis file.
+ */
+export const docketBeatV4Schema = docketBeatSchema
+  .omit({
+    true_weight: true,
+    reveal_stamp: true,
+    reveal_note: true,
+  })
+  .strict()
+export type DocketBeatV4 = z.infer<typeof docketBeatV4Schema>
+
 export const positionSchema = z.enum(['G', 'NG', 'U'])
 export type Position = z.infer<typeof positionSchema>
 
@@ -195,8 +208,7 @@ export const jurorSchema = z.object({
 })
 export type Juror = z.infer<typeof jurorSchema>
 
-export const docketCaseSchema = z
-  .object({
+const docketCaseV3ObjectSchema = z.object({
     id: z
       .string()
       .regex(/^(dd-\d{4}|dd-intro)$/, 'id must look like dd-0001 or dd-intro'),
@@ -279,7 +291,21 @@ export const docketCaseSchema = z
       sensitivity_reviewer: z.string().optional(),
     }),
   })
-  .superRefine((c, ctx) => {
+
+type DocketReferenceFields = {
+  cast: Array<{ id: string }>
+  beats: Array<{ id: string }>
+  media?: {
+    beats: Record<string, unknown>
+    portraits?: Record<string, unknown>
+  }
+  jury: { jurors: Array<{ id: string }> }
+}
+
+function refineDocketReferences(
+  c: DocketReferenceFields,
+  ctx: z.RefinementCtx,
+): void {
     // Cast and beat ids are used as map keys downstream (speaker resolution,
     // check-in ordering) — a duplicate would silently shadow an earlier entry
     // instead of failing loudly, so reject it here at the schema boundary.
@@ -328,5 +354,114 @@ export const docketCaseSchema = z
         })
       }
     }
-  })
+}
+
+/** Legacy V3 parser retained while the seven cases migrate independently. */
+export const docketCaseSchema = docketCaseV3ObjectSchema.superRefine(
+  refineDocketReferences,
+)
 export type DocketCase = z.infer<typeof docketCaseSchema>
+
+/**
+ * V4 trial data. This strict schema intentionally rejects every historical
+ * answer-key field and pre-verdict punishment consequence.
+ */
+export const docketCaseV4Schema = docketCaseV3ObjectSchema
+  .omit({
+    accused: true,
+    beats: true,
+    verdict_truth: true,
+    twist: true,
+    gen_meta: true,
+  })
+  .extend({
+    accused: z
+      .object({
+        cast_id: z.string().min(1),
+        human: z.string().min(1),
+      })
+      .strict(),
+    beats: z.array(docketBeatV4Schema).min(10).max(14),
+    gen_meta: z
+      .object({
+        model: z.string(),
+        prompt_version: z.literal('dd-2026-v4'),
+        reviewer: z.string(),
+        batch_pr: z.string(),
+        language_reviewer: z.string().optional(),
+        sensitivity_reviewer: z.string().optional(),
+      })
+      .strict(),
+  })
+  .strict()
+  .superRefine(refineDocketReferences)
+export type DocketCaseV4 = z.infer<typeof docketCaseV4Schema>
+
+export const analysisRoleSchema = z.enum([
+  'central',
+  'counterweight',
+  'context',
+])
+export type AnalysisRole = z.infer<typeof analysisRoleSchema>
+
+export const docketCaseAnalysisV4Schema = z
+  .object({
+    schema_version: z.literal(4),
+    case_id: z
+      .string()
+      .regex(/^(dd-\d{4}|dd-intro)$/, 'case_id must identify a docket case'),
+    case_revision: z
+      .string()
+      .regex(
+        /^(dd-\d{4}|dd-intro)@[0-9a-f]{8}$/,
+        'case_revision must be a case storage id',
+      ),
+    reference_verdict: z.enum(['Guilty', 'Not Guilty']),
+    reference_reasoning: z.string().min(1),
+    strongest_opposing_interpretation: z.string().min(1),
+    sentencing_context: z.string().min(1),
+    beats: z
+      .array(
+        z
+          .object({
+            beat_id: z.string().min(1),
+            editorial_weight: z.number().min(0).max(1),
+            analysis_role: analysisRoleSchema,
+            analysis_note: z.string().min(1),
+          })
+          .strict(),
+      )
+      .min(1),
+  })
+  .strict()
+  .superRefine((analysis, ctx) => {
+    const seen = new Set<string>()
+    analysis.beats.forEach((beat, index) => {
+      if (seen.has(beat.beat_id)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `duplicate beat analysis: ${beat.beat_id}`,
+          path: ['beats', index, 'beat_id'],
+        })
+      }
+      seen.add(beat.beat_id)
+    })
+  })
+export type DocketCaseAnalysisV4 = z.infer<
+  typeof docketCaseAnalysisV4Schema
+>
+
+/** Selects the strict parser without weakening either schema during migration. */
+export function docketCaseSchemaForPromptVersion(
+  value: unknown,
+): typeof docketCaseSchema | typeof docketCaseV4Schema {
+  const marker = z
+    .object({
+      gen_meta: z.object({ prompt_version: z.string() }).passthrough(),
+    })
+    .passthrough()
+    .safeParse(value)
+  return marker.success && marker.data.gen_meta.prompt_version === 'dd-2026-v4'
+    ? docketCaseV4Schema
+    : docketCaseSchema
+}

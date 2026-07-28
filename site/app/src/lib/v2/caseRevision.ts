@@ -1,7 +1,7 @@
-import type { DocketCase } from './caseSchema'
+import type { DocketCase, DocketCaseV4 } from './caseSchema'
 
 /** Stable storage identity that changes whenever the authored case changes. */
-export function caseStorageId(trial: DocketCase): string {
+export function caseStorageId(trial: DocketCase | DocketCaseV4): string {
   let hash = 0x811c9dc5
   const content = JSON.stringify(trial)
   for (let index = 0; index < content.length; index++) {
