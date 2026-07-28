@@ -167,6 +167,36 @@ describe('fictional jury procedure', () => {
     expect(state.log.at(-1)?.tally).toEqual({ g: 6, ng: 5, u: 1 })
   })
 
+  it('lets every juror consider a point while limiting the spoken exchange', () => {
+    const state = startDeliberation(makeDocketCase())
+    const before = state.jurors.map(({ position }) => position)
+
+    playRound(state, argue('b4', 'proves'))
+
+    const moved = state.jurors.filter(
+      ({ position }, index) => position !== before[index],
+    ).length
+    const spoken = state.log.filter((event) => event.type === 'respond').length
+    expect(moved).toBeGreaterThan(spoken)
+    expect(spoken).toBeLessThanOrEqual(4)
+  })
+
+  it('never uses the RNG stream to select juror positions', () => {
+    const low = startDeliberation(makeDocketCase())
+    const high = startDeliberation(makeDocketCase())
+    low.rng = () => 0
+    high.rng = () => 0.999
+
+    for (const action of DECISIVE) {
+      playRound(low, action)
+      playRound(high, action)
+    }
+
+    expect(low.jurors.map(({ position }) => position)).toEqual(
+      high.jurors.map(({ position }) => position),
+    )
+  })
+
   it('accepts 11 matching votes only after the neutral direction', () => {
     const state = readyRoom([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0])
 

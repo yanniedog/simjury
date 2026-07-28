@@ -12,9 +12,9 @@ import {
  * only ships if
  *
  *  1. for EACH verdict the player can lock after deliberation, the room
- *     reaches at least two distinct final states across the strategy space
- *     (arguments must move the tally even when the lawful threshold means
- *     both rooms remain hung), and
+ *     reaches at least two distinct terminal outcomes (kind + verdict) across
+ *     the strategy space (arguments must still be able to surprise, whichever
+ *     way the player later locks their own vote), and
  *  2. for each locked verdict, arguing the decisive evidence moves the room
  *     strictly further toward `verdict_truth` than saying nothing — unless
  *     passive play already maxes out the truth-side tally (skilled play
@@ -55,21 +55,32 @@ function citeBurden(c: DocketCase): PlayerAction[] {
   return direction ? [{ type: 'cite_direction', beatId: direction.id }] : []
 }
 
+/** The strongest complete theory, including corroboration below the decisive stamp. */
+function truthSynthesis(c: DocketCase): PlayerAction[] {
+  const truth = truthDirection(c)
+  return c.beats
+    .filter((b) => b.kind !== 'direction' && b.direction === truth)
+    .sort((a, b) => b.true_weight - a.true_weight)
+    .slice(0, 3)
+    .map((b) => ({ type: 'argue', beatId: b.id, stance: 'proves' }))
+}
+
 /** The fixed strategy space the gate explores. */
 export function strategies(c: DocketCase): Record<string, PlayerAction[]> {
   return {
     passive: [],
     decisive: byWeightDesc(c, 'decisive'),
+    synthesis: truthSynthesis(c),
     trappy: byWeightDesc(c, 'misleading'),
     counsel: [...byWeightDesc(c, 'decisive').slice(0, 2), ...citeBurden(c)],
   }
 }
 
-// An 11-of-12 threshold can leave every strategy hung even though discussion
-// changes several minds. Include all three positions so the gate catches a
-// genuinely frozen room without rejecting meaningfully different hung rooms.
+// Outcome variety is judged at the verdict level (kind + verdict), not the
+// exact vote tally — two hung results with different splits are still the same
+// terminal outcome for a player.
 function signature(o: Outcome): string {
-  return `${o.kind}:${o.verdict ?? 'none'}:${o.tally.g}:${o.tally.ng}:${o.tally.u}`
+  return `${o.kind}:${o.verdict ?? 'none'}`
 }
 
 /** Dynamics issues for one case (empty array = the room is alive). */

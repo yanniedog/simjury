@@ -129,7 +129,7 @@ export interface DeliberationState {
 export const SPEAKERS_PER_ROUND = 4
 export { MAJORITY_THRESHOLD } from './juryProcedure'
 
-/** Per-arc probability of drifting one step toward the room majority per round. */
+/** Per-arc susceptibility to an open-round social-pressure step. */
 const PRESSURE: Record<Juror['arc'], number> = {
   vibes: 0.25,
   steady: 0.1,
@@ -268,6 +268,7 @@ function respond(
   beat: DocketBeat,
   stance: Stance,
   push: DiscussionPush,
+  speaks = true,
 ): void {
   const rule = matchRule(juror, beat, stance, push)
   if (!rule) return
@@ -286,7 +287,7 @@ function respond(
   // Floor at 0 so a strongly-resisted beat dampens toward "no reaction"
   // rather than reversing the argument's direction.
   const raw = Math.abs(rule.effect.delta) * Math.max(0, 0.4 + q + 0.2 * weight)
-  const steps = rule.effect.delta === 0 ? 0 : Math.min(2, Math.floor(raw + state.rng()))
+  const steps = rule.effect.delta === 0 ? 0 : Math.min(3, Math.ceil(raw))
   const pushSign = push === 'guilt' ? 1 : push === 'innocence' ? -1 : 0
   const moveSign = pushSign * sign(rule.effect.delta)
 
@@ -294,16 +295,18 @@ function respond(
   js.confidence = clamp(js.confidence + rule.effect.confidence, 0, 100)
 
   const fn = rule.effect.line
-  emit(state, {
-    actor: juror.id,
-    type: 'respond',
-    beatId: beat.id,
-    lineFunction: fn,
-    line: voice(state, juror, fn),
-    delta: moveSign * steps,
-    position: js.position,
-  })
-  if (fn === 'burden_drift') {
+  if (speaks) {
+    emit(state, {
+      actor: juror.id,
+      type: 'respond',
+      beatId: beat.id,
+      lineFunction: fn,
+      line: voice(state, juror, fn),
+      delta: moveSign * steps,
+      position: js.position,
+    })
+  }
+  if (speaks && fn === 'burden_drift') {
     state.driftActive = true
     emit(state, { actor: juror.id, type: 'drift' })
   }
@@ -315,12 +318,16 @@ function roomSign(state: DeliberationState): number {
   return sign(state.jurors.reduce((s, j) => s + sign(j.position), 0))
 }
 
-function peerPressure(state: DeliberationState, boost = 0): void {
+function peerPressure(state: DeliberationState): void {
   const toward = roomSign(state)
   if (toward === 0) return
   for (const js of state.jurors) {
-    const p = clamp(PRESSURE[js.arc] + boost, 0, 1)
-    if (state.rng() < p && sign(js.position) !== toward) {
+    const susceptibility = PRESSURE[js.arc]
+    if (
+      susceptibility >= 0.2 &&
+      js.confidence < 70 &&
+      sign(js.position) !== toward
+    ) {
       js.position = clamp(js.position + toward, -2, 2)
     }
   }
@@ -432,7 +439,15 @@ function raiseBeat(
         SPEAKERS_PER_ROUND,
       )
     : candidates
-  for (const juror of speakers) respond(state, juror, beat, stance, push)
+  // Every juror considers the point through their authored reaction rule.
+  // Only the selected speakers voice that reasoning, keeping the room concise
+  // without making silent jurors immune to evidence they have just heard.
+  const speakerIds = new Set(speakers.map(({ id }) => id))
+  for (const juror of jurors) {
+    if (juror.id !== actor) {
+      respond(state, juror, beat, stance, push, speakerIds.has(juror.id))
+    }
+  }
 
   if (
     actor === 'player' &&
