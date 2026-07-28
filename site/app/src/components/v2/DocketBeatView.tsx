@@ -5,6 +5,7 @@ import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narra
 import { phaseNarratorCue, speakerNarratorCue } from '../../lib/narratorCues'
 import { CaseMedia, StoryText } from './CaseMedia'
 import { NarratorCue } from './NarratorCue'
+import { SpeakerPortrait } from './SpeakerPortrait'
 
 function speakerOf(trial: DocketCase, id: string) {
   return trial.cast.find((m) => m.id === id)
@@ -188,22 +189,30 @@ export function DocketBeatView({
                   aria-current={activeTurn === index ? 'true' : undefined}
                   className={`rounded-lg border p-4 ${witness ? 'ml-6 border-emerald-900/60 bg-emerald-950/20' : 'mr-6 border-red-900/60 bg-red-950/20'} ${activeTurn === index ? 'ring-2 ring-amber-300/70' : ''}`}
                 >
-                  <p className="mb-2 flex items-center justify-between gap-3 text-sm font-semibold text-neutral-300">
-                    <span>
-                      {member?.name ?? turn.speaker}
-                      {member?.role_label && (
-                        <span className="font-normal text-neutral-500"> · {member.role_label}</span>
-                      )}
-                    </span>
-                    {activeTurn === index && <span className="text-xs uppercase tracking-wider text-amber-200">Speaking now</span>}
-                  </p>
-                  <StoryText text={turn.text} className="text-lg leading-relaxed text-neutral-100" />
+                  <div className="flex items-start gap-4">
+                    <SpeakerPortrait trial={trial} speakerId={turn.speaker} />
+                    <div className="min-w-0 flex-1">
+                      <p className="mb-2 flex items-center justify-between gap-3 text-sm font-semibold text-neutral-300">
+                        <span>
+                          {member?.name ?? turn.speaker}
+                          {member?.role_label && (
+                            <span className="font-normal text-neutral-500"> · {member.role_label}</span>
+                          )}
+                        </span>
+                        {activeTurn === index && <span className="text-xs uppercase tracking-wider text-amber-200">Speaking now</span>}
+                      </p>
+                      <StoryText text={turn.text} className="text-lg leading-relaxed text-neutral-100" />
+                    </div>
+                  </div>
                 </article>
               )
             })}
           </section>
         ) : (
-          <StoryText text={beat.text} className="mt-4 min-h-[6rem] text-lg leading-relaxed text-neutral-100" />
+          <div className="mt-4 flex items-start gap-4">
+            <SpeakerPortrait trial={trial} speakerId={beat.speaker} />
+            <StoryText text={beat.text} className="min-h-[6rem] text-lg leading-relaxed text-neutral-100" />
+          </div>
         )}
       </div>
 
