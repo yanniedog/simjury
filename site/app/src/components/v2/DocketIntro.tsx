@@ -5,6 +5,8 @@ import { introSceneNarratorCue, phaseNarratorCue } from '../../lib/narratorCues'
 import { contentAdvisoryText } from '../../lib/v2/offenceProfiles'
 import { CaseMedia, StoryText } from './CaseMedia'
 import { NarratorCue } from './NarratorCue'
+import { LiveJuryLobby } from './LiveJuryLobby'
+import type { LiveJurySession } from '../../lib/liveJury'
 
 export function DocketIntro({
   trial,
@@ -12,12 +14,16 @@ export function DocketIntro({
   narration,
   playbackRate,
   onBegin,
+  liveSession,
+  onLiveSession,
 }: {
   trial: DocketCase
   dayNumber: number
   narration: boolean
   playbackRate: NarrationRate
   onBegin: () => void
+  liveSession?: LiveJurySession | null
+  onLiveSession?: (session: LiveJurySession | null) => void
 }) {
   const accused = trial.cast.find((m) => m.id === trial.accused.cast_id)
   const [narratorActive, setNarratorActive] = useState(false)
@@ -104,11 +110,19 @@ export function DocketIntro({
       </div>
 
       <p className="text-sm leading-relaxed text-neutral-400">
-        You are Juror #1. Hear the evidence, deliberate with the room, then
+        {liveSession ? `You have seat ${liveSession.seatId}.` : 'You are Juror #1.'} Hear the evidence, deliberate with the room, then
         lock your verdict for this sitting. The judge reads the jury’s votes
-        only after you commit. About ten minutes, start to record. Your
+        only after you commit. About fifteen minutes, start to record. Your
         progress stays in this browser.
       </p>
+
+      {onLiveSession && (
+        <LiveJuryLobby
+          caseId={trial.id}
+          session={liveSession ?? null}
+          onSession={onLiveSession}
+        />
+      )}
 
       <button
         type="button"

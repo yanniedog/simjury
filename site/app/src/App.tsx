@@ -51,6 +51,7 @@ import { OpeningStatements } from './components/v2/OpeningStatements'
 import { DocketBeatView } from './components/v2/DocketBeatView'
 import { DocketVerdict, type Verdict } from './components/v2/DocketVerdict'
 import { JuryRoomView } from './components/v2/JuryRoomView'
+import { loadLiveJurySession, type LiveJurySession } from './lib/liveJury'
 import { DocketReveal } from './components/v2/DocketReveal'
 import {
   DocketShell,
@@ -213,6 +214,13 @@ function DocketApp({
   const [revealStats, setRevealStats] = useState<Stats | null>(() =>
     validStored?.room ? statsFromStorage() : null,
   )
+  const [liveSession, setLiveSession] = useState<LiveJurySession | null>(
+    () => trial ? loadLiveJurySession(trial.id) : null,
+  )
+
+  useEffect(() => {
+    setLiveSession(trial ? loadLiveJurySession(trial.id) : null)
+  }, [trial])
 
   const analysis = useMemo(
     () => (trial && verdict ? analyzeDocketPlay(trial, verdict) : null),
@@ -456,6 +464,8 @@ function DocketApp({
           narration={narration}
           playbackRate={playbackRate}
           onBegin={begin}
+          liveSession={liveSession}
+          onLiveSession={setLiveSession}
         />
       )}
       {phase === 'openings' && (
