@@ -153,7 +153,7 @@ export function LiveJuryPanel({
       <p className="text-sm leading-relaxed text-neutral-400">
         Talk with the real people in your invited room. Clearly labelled authored
         jurors also answer each concern using this case&apos;s fixed evidence and
-        dialogue rules. They are simulations, not remote people or live AI.
+        dialogue rules. Speaker labels distinguish them from live people.
       </p>
 
       {presence.length > 0 && (

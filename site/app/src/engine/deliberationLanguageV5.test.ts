@@ -91,6 +91,21 @@ describe('deterministic contribution understanding', () => {
     })
   })
 
+  it('distinguishes ordinary pro-guilt wording from a challenge or question', () => {
+    expect(understandContribution(
+      'The door record proves guilt.',
+      pack,
+    ).frame.position).toBe('G')
+    expect(understandContribution(
+      'The door record does not prove guilt.',
+      pack,
+    ).frame.position).toBe('NG')
+    expect(understandContribution(
+      'Does the door record prove guilt?',
+      pack,
+    ).frame.position).toBe('U')
+  })
+
   it('does not confuse a numbered concept with its longer neighbour', () => {
     const numeric = { ...pack, issues: [
       { id: 'issue-1', label: 'Issue concept 1', aliases: ['concern one'] },

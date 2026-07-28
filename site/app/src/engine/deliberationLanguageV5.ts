@@ -107,11 +107,12 @@ function bestMatch<T extends LanguageConcept>(
 
 function positionOf(input: string): VotePosition {
   if (
-    /\b(not guilty|reasonable doubt|not sure|not convinced|does not.{0,48}\bproves?|did not.{0,48}\bproves?|not think.{0,48}\b(guilty|proved|proves|convinced))\b/.test(input)
+    /\b(not guilty|reasonable doubt|not sure|not convinced|does not.{0,48}\bproves?|did not.{0,48}\bproves?|not think.{0,48}\b(guilt|guilty|proved|proves|convinced))\b/.test(input)
   ) return 'NG'
   if (/\b(undecided|unsure|do not know|can not decide|not certain)\b/.test(input)) return 'U'
-  if (/\b(guilty|proved|convinced)\b/.test(input)) {
-    return /\b(not|never|hardly)\b.{0,24}\b(guilty|proved|convinced)\b/.test(input) ? 'NG' : 'G'
+  if (/^(does|can|could|would|is)\b/.test(input)) return 'U'
+  if (/\b(guilt|guilty|proved|convinced)\b/.test(input)) {
+    return /\b(not|never|hardly)\b.{0,24}\b(guilt|guilty|proved|convinced)\b/.test(input) ? 'NG' : 'G'
   }
   return 'U'
 }

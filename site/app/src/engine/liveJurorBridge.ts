@@ -24,30 +24,38 @@ export type HybridTranscriptItem =
       text: string
     }
 
-function relevantBeat(trial: DocketCase, understanding: Understanding): DocketBeat | undefined {
+export const LIVE_BRIDGE_HISTORY_EVENTS = 120
+
+type AuthoredReply = { jurorId: string; jurorLabel: string; text: string }
+const replyCache = new WeakMap<DocketCase, Map<string, AuthoredReply[]>>()
+
+function relevantBeat(
+  trial: DocketCase,
+  understanding: Understanding,
+  playerText: string,
+): DocketBeat | undefined {
+  const point = playerText.match(/\bpoint\s*(\d{1,2})\b/i)
+  if (point) return trial.beats[Number(point[1]) - 1]
   const matched = understanding.frame.evidenceIds
     .map((id) => trial.beats.find((beat) => beat.id === id))
     .filter((beat): beat is DocketBeat => Boolean(beat))
-  if (matched.length) {
-    return matched.find((beat) =>
-      understanding.frame.issueId
-        ? beat.tags.some((tag) => tag === understanding.frame.issueId)
-        : true,
-    ) ?? matched[0]
-  }
+  if (matched.length === 1) return matched[0]
+  if (matched.length > 1) return undefined
   if (!understanding.frame.issueId) return undefined
-  return [...trial.beats]
+  const issueBeats = trial.beats
     .filter((beat) => beat.tags.some((tag) => tag === understanding.frame.issueId))
-    .sort((a, b) => b.true_weight - a.true_weight || a.id.localeCompare(b.id))[0]
+  return issueBeats.length === 1 ? issueBeats[0] : undefined
 }
 
 function threadKey(understanding: Understanding, beat?: DocketBeat): string | null {
-  const subject = understanding.frame.issueId
-    ? `issue:${understanding.frame.issueId}`
-    : beat
-      ? `evidence:${beat.id}`
+  const subject = beat
+    ? `evidence:${beat.id}`
+    : understanding.frame.issueId
+      ? `issue:${understanding.frame.issueId}`
       : null
-  return subject ? `${subject}:${understanding.frame.position}` : null
+  return subject
+    ? `${subject}:${understanding.frame.issueId ?? 'unclassified'}:${understanding.frame.position}`
+    : null
 }
 
 function fallbackJuror(trial: DocketCase, sourceSequence: number) {
@@ -55,10 +63,13 @@ function fallbackJuror(trial: DocketCase, sourceSequence: number) {
   return jurors[sourceSequence % jurors.length] ?? jurors[0]
 }
 
-function jurorForBeat(trial: DocketCase, beat: DocketBeat) {
+function jurorForBeat(trial: DocketCase, beat: DocketBeat, issueId?: string) {
   return [...trial.jury.jurors].sort((a, b) => {
-    const aWeight = Math.max(...beat.tags.map((tag) => Math.abs(a.weights[tag] ?? 0)), 0)
-    const bWeight = Math.max(...beat.tags.map((tag) => Math.abs(b.weights[tag] ?? 0)), 0)
+    const score = (weights: typeof a.weights) => issueId
+      ? Math.abs(Object.entries(weights).find(([id]) => id === issueId)?.[1] ?? 0)
+      : Math.max(...beat.tags.map((tag) => Math.abs(weights[tag] ?? 0)), 0)
+    const aWeight = score(a.weights)
+    const bWeight = score(b.weights)
     return bWeight - aWeight || a.seat - b.seat
   })[0]
 }
@@ -74,7 +85,7 @@ function authoredReplies(
   sourceSequence: number,
   understanding: Understanding,
   beat: DocketBeat,
-): Array<{ jurorId: string; jurorLabel: string; text: string }> {
+): AuthoredReply[] {
   const concern: ConcernInterpretation = {
     understanding,
     beatId: beat.id,
@@ -87,7 +98,7 @@ function authoredReplies(
     trial,
     concern,
     understanding.frame.position,
-    jurorForBeat(trial, beat)?.id,
+    jurorForBeat(trial, beat, understanding.frame.issueId)?.id,
   ))
   return state.log
     .slice(start)
@@ -102,6 +113,25 @@ function authoredReplies(
         text: event.line!,
       }
     })
+}
+
+function cachedReplies(
+  trial: DocketCase,
+  sourceSequence: number,
+  understanding: Understanding,
+  beat: DocketBeat,
+): AuthoredReply[] {
+  let caseCache = replyCache.get(trial)
+  if (!caseCache) {
+    caseCache = new Map()
+    replyCache.set(trial, caseCache)
+  }
+  const key = `${sourceSequence}:${understanding.frame.id}:${beat.id}`
+  const prior = caseCache.get(key)
+  if (prior) return prior
+  const replies = authoredReplies(trial, sourceSequence, understanding, beat)
+  caseCache.set(key, replies)
+  return replies
 }
 
 /**
@@ -123,7 +153,9 @@ export function buildHybridTranscript(
       console.warn(`Live jury sequence ${event.sequence} conflicted; keeping its first event.`)
     }
   }
-  const ordered = [...unique.values()].sort((a, b) => a.sequence - b.sequence)
+  const ordered = [...unique.values()]
+    .sort((a, b) => a.sequence - b.sequence)
+    .slice(-LIVE_BRIDGE_HISTORY_EVENTS)
   const pack = legacyLanguagePack(trial, [])
   const seenThreads = new Set<string>()
   const transcript: HybridTranscriptItem[] = []
@@ -133,7 +165,7 @@ export function buildHybridTranscript(
     if (event.event_type !== 'message' || !event.text?.trim()) continue
 
     const understanding = understandContribution(event.text, pack)
-    const beat = relevantBeat(trial, understanding)
+    const beat = relevantBeat(trial, understanding, event.text)
     const key = threadKey(understanding, beat)
     const uncertain = understanding.needsClarification || !beat
     if (uncertain) {
@@ -150,15 +182,11 @@ export function buildHybridTranscript(
       continue
     }
 
-    const replies = authoredReplies(trial, event.sequence, understanding, beat)
     const repeated = Boolean(key && seenThreads.has(key))
     if (key) seenThreads.add(key)
     if (repeated) {
-      const juror = replies[0]
-        ?? (() => {
-          const fallback = fallbackJuror(trial, event.sequence)
-          return { jurorId: fallback.id, jurorLabel: fallback.label, text: '' }
-        })()
+      const juror = jurorForBeat(trial, beat, understanding.frame.issueId)
+        ?? fallbackJuror(trial, event.sequence)
       const subject = pack.issues.find(({ id }) => id === understanding.frame.issueId)?.label
         ?? pack.evidence.find(({ id }) => id === beat.id)?.label
         ?? 'evidence'
@@ -166,14 +194,15 @@ export function buildHybridTranscript(
         kind: 'authored',
         key: `authored-${event.sequence}-repeat`,
         sourceSequence: event.sequence,
-        jurorId: juror.jurorId,
-        jurorLabel: juror.jurorLabel,
+        jurorId: juror.id,
+        jurorLabel: juror.label,
         responseKind: 'repeat',
         text: `That returns us to the same ${subject} concern. What new part of the record should change the earlier discussion?`,
       })
       continue
     }
 
+    const replies = cachedReplies(trial, event.sequence, understanding, beat)
     const fallback = fallbackJuror(trial, event.sequence)
     const usable = replies.length ? replies : [{
       jurorId: fallback.id,
