@@ -28,6 +28,7 @@ export function DocketVerdict({
       setActiveSpeaker(null)
       return stopSpeech
     }
+    setActiveSpeaker('narrator')
     speak(phaseCue, 'narrator', () => {
       speakAll([
         { text: prosecution.text, key: prosecution.speaker },
@@ -52,7 +53,7 @@ export function DocketVerdict({
         </h1>
       </div>
 
-      <NarratorCue text={phaseCue} />
+      <NarratorCue text={phaseCue} active={activeSpeaker === 'narrator'} />
 
       {activeSpeaker && (
         <p className="speaker-focus text-xs text-amber-200/80" aria-live="polite">
@@ -60,8 +61,18 @@ export function DocketVerdict({
         </p>
       )}
 
-      <StatementCard trial={trial} statement={prosecution} side="prosecution" />
-      <StatementCard trial={trial} statement={defence} side="defence" />
+      <StatementCard
+        trial={trial}
+        statement={prosecution}
+        side="prosecution"
+        active={activeSpeaker === prosecution.speaker}
+      />
+      <StatementCard
+        trial={trial}
+        statement={defence}
+        side="defence"
+        active={activeSpeaker === defence.speaker}
+      />
 
       <p className="text-center text-sm leading-relaxed text-neutral-400">
         The court will retire you to deliberate with the other jurors. You lock your

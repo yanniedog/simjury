@@ -5,6 +5,7 @@ import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narra
 import { phaseNarratorCue, speakerNarratorCue } from '../../lib/narratorCues'
 import { CaseMedia, StoryText } from './CaseMedia'
 import { NarratorCue } from './NarratorCue'
+import { SpeakerFlag } from './SpeakerFlag'
 import { SpeakerPortrait } from './SpeakerPortrait'
 
 function speakerOf(trial: DocketCase, id: string) {
@@ -43,6 +44,8 @@ export function DocketBeatView({
   const beat = trial.beats[beatIndex]
   const turns = beat.turns ?? [{ speaker: beat.speaker, text: beat.text }]
   const [activeDialogue, setActiveDialogue] = useState<{ beatId: string; index: number } | null>(null)
+  const [narratorActive, setNarratorActive] = useState(false)
+  const [singleSpeakerActive, setSingleSpeakerActive] = useState(false)
   const [notesOpen, setNotesOpen] = useState(false)
   const activeTurn = activeDialogue?.beatId === beat.id ? activeDialogue.index : null
   const activeSpeakerId = activeTurn === null ? beat.speaker : turns[activeTurn]?.speaker ?? beat.speaker
@@ -83,6 +86,8 @@ export function DocketBeatView({
 
   useEffect(() => {
     setActiveDialogue(null)
+    setNarratorActive(false)
+    setSingleSpeakerActive(false)
     if (!narration) return stopSpeech
 
     const lines: Array<{ text: string; key: string }> = []
@@ -94,17 +99,35 @@ export function DocketBeatView({
     }
 
     if (lines.length === 1) {
-      speak(lines[0].text, lines[0].key, undefined, playbackRate)
+      setSingleSpeakerActive(lines[0].key !== 'narrator')
+      setNarratorActive(lines[0].key === 'narrator')
+      speak(lines[0].text, lines[0].key, () => {
+        setSingleSpeakerActive(false)
+        setNarratorActive(false)
+      }, playbackRate)
     } else {
       speakAll(lines, {
         rate: playbackRate,
         onLine: (key, index) => {
-          if (key === 'narrator') return
+          setNarratorActive(key === 'narrator')
+          setSingleSpeakerActive(!beat.turns && key !== 'narrator')
+          if (key === 'narrator') {
+            setActiveDialogue(null)
+            return
+          }
           const dialogueIndex = cueText ? index - 1 : index
           if (dialogueIndex >= 0) setActiveDialogue({ beatId: beat.id, index: dialogueIndex })
         },
-        done: () => setActiveDialogue(null),
-        onError: () => setActiveDialogue(null),
+        done: () => {
+          setActiveDialogue(null)
+          setNarratorActive(false)
+          setSingleSpeakerActive(false)
+        },
+        onError: () => {
+          setActiveDialogue(null)
+          setNarratorActive(false)
+          setSingleSpeakerActive(false)
+        },
       })
     }
     return stopSpeech
@@ -168,7 +191,7 @@ export function DocketBeatView({
         </div>
       )}
 
-      {cueText && <NarratorCue text={cueText} />}
+      {cueText && <NarratorCue text={cueText} active={narratorActive} />}
 
       <div>
         <h1 id="phase-heading" tabIndex={-1} className="text-sm font-semibold text-neutral-200 focus:outline-none">
@@ -187,7 +210,7 @@ export function DocketBeatView({
                 <article
                   key={`${turn.speaker}-${index}`}
                   aria-current={activeTurn === index ? 'true' : undefined}
-                  className={`rounded-lg border p-4 ${witness ? 'ml-6 border-emerald-900/60 bg-emerald-950/20' : 'mr-6 border-red-900/60 bg-red-950/20'} ${activeTurn === index ? 'ring-2 ring-amber-300/70' : ''}`}
+                  className={`speech-turn rounded-lg border p-4 ${witness ? 'ml-6 border-emerald-900/60 bg-emerald-950/20' : 'mr-6 border-red-900/60 bg-red-950/20'}${activeTurn === index ? ' speech-turn-active' : ''}`}
                 >
                   <div className="flex items-start gap-4">
                     <SpeakerPortrait trial={trial} speakerId={turn.speaker} />
@@ -199,7 +222,7 @@ export function DocketBeatView({
                             <span className="font-normal text-neutral-500"> · {member.role_label}</span>
                           )}
                         </span>
-                        {activeTurn === index && <span className="text-xs uppercase tracking-wider text-amber-200">Speaking now</span>}
+                        <SpeakerFlag active={activeTurn === index} />
                       </p>
                       <StoryText text={turn.text} className="text-lg leading-relaxed text-neutral-100" />
                     </div>
@@ -209,9 +232,20 @@ export function DocketBeatView({
             })}
           </section>
         ) : (
-          <div className="mt-4 flex items-start gap-4">
+          <div
+            className={`speech-turn mt-4 flex items-start gap-4 rounded-lg border border-neutral-800 p-4${singleSpeakerActive ? ' speech-turn-active' : ''}`}
+            aria-current={singleSpeakerActive ? 'true' : undefined}
+          >
             <SpeakerPortrait trial={trial} speakerId={beat.speaker} />
-            <StoryText text={beat.text} className="min-h-[6rem] text-lg leading-relaxed text-neutral-100" />
+            <div className="min-w-0 flex-1">
+              <p className="speaker-heading mb-2">
+                <span className="text-sm font-semibold text-neutral-300">
+                  {speaker?.name ?? beat.speaker}
+                </span>
+                <SpeakerFlag active={singleSpeakerActive} />
+              </p>
+              <StoryText text={beat.text} className="min-h-[6rem] text-lg leading-relaxed text-neutral-100" />
+            </div>
           </div>
         )}
       </div>
