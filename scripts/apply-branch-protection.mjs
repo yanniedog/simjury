@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Apply branch protection on main requiring pilot CI + bot merge gates.
+ * Apply branch protection on main requiring repository CI + bot merge gates.
  *
  * Usage: npm run branch-protection:apply [-- --branch main] [-- --dry-run]
  */

@@ -3,7 +3,5 @@ node_modules/
 .dev.vars
 .env
 dist/
-# Synced from pilot/src/main/resources/cases (single source of truth) — see scripts/sync-cases.mjs
-public/cases/
 # Built from site/app (Vite) by `build:app` — see site/package.json
 public/today/

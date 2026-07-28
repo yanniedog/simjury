@@ -21,7 +21,7 @@ Owner decisions, recorded verbatim:
    The Victorian 3-minute cases are superseded by the 2026 mandate and are archived for
    provenance (`archive/daily-v1/`), not shipped.
 2. **Deliberation is an interactive room** — a deterministic, seeded, client-side engine
-   (TypeScript port of `archive/simjury-build-spec-v3.md` §7.7 + §9 at daily scale):
+   (a deterministic TypeScript engine at daily scale):
    11 fictional jurors with personas, theme weights, and ordered reaction rules; the
     player argues evidence first, then locks their own verdict; seat leanings and
     tallies stay hidden until the judge reads the result. The room's verdict is earned,
@@ -32,15 +32,10 @@ Owner decisions, recorded verbatim:
    rule (owner decision, 2026-07-13). The gates — schema, design-quality, jury floors,
    deliberation-dynamics simulation, banned-token scan, queue rules, ≥14-day runway —
    are the primary defence; `gen_meta` records model, prompt version, and reviewer.
-4. **The historical track is parked, not removed.** Case c_001 (Beck) stays live at
-   `simjury.com/play` as "the deep case". Phase 4 G-4 work (operator clearance, device
-   QA, gate PR) and the Android pilot are **paused indefinitely**; no further effort is
-   scheduled on them while the daily track is built.
-5. **Android / JVM pilot frozen until further notice (owner, 2026-07-27).** Product work
-   is **simjury.com only**. Agents must not develop the Android app, re-enable Android
-   CI/APK release automation, or treat `pilot/` as an active delivery track. Sources may
-   remain in the tree; CI skips Android assemble/test and APK workflows stay disabled
-   until the owner lifts the freeze explicitly.
+4. **Android/JVM and real historical-case tracks removed (owner, 2026-07-29).**
+   Their code, content, sourcing material, build/release automation, and installer
+   were deleted and must not be reintroduced. Old `/play` and `/install` URLs
+   redirect to the current web product. The Daily Docket remains active.
 
 ## What carries over unchanged (binding on the daily track)
 
@@ -54,9 +49,9 @@ Owner decisions, recorded verbatim:
   Actions rather than synthesized during play.
 - **Fiction, and it says so** — every daily case carries the pinned `label: "fiction"`
   (the simjury-daily safety invariant). Daily cases are built from real trial *patterns*,
-  never from real events. Real historical cases ship only through `CASE_HARNESS.md`.
+  never from real events. The removed real historical-case track must not return.
 - **No real names** of people, companies, brands, or specific places in any
-  player-visible text — enforced by a banned-token scan (the daily analogue of F-4).
+  player-visible text — enforced by a banned-token scan.
   2026 relevance is achieved with invented platforms ("a rideshare app"), never brands.
 - **Spoiler-safe sharing** — share cards never contain the verdict truth or case content.
 - **PR discipline** — one concern per PR, squash merge, bot gates per `WORKFLOW.md`.
@@ -71,11 +66,11 @@ Owner decisions, recorded verbatim:
 | D1 | Import simjury-daily pipeline into `site/app/` (vite/TS/vitest scaffold, `src/lib` + tests verbatim, site CI workflow); archive Victorian docket to `archive/daily-v1/` |
 | D2 | Case schema v2 (10–14 beats, cast/speakers, theme tags, jury block) + quality gate v2 + hand-authored fixture case `dd-0000` |
 | D3 | Deliberation engine (`site/app/src/engine/`) + determinism/variance tests |
-| D4 | Player UI: courtroom reader (narration port from `/play`, check-ins, verdict lock) |
+| D4 | Player UI: courtroom reader with narration, check-ins, and verdict lock |
 | D5 | Player UI: jury room + reveal v2 (trap analysis, twist, streak, share) |
 | D6 | Deliberation-dynamics CI gate wired into `validate:cases` |
 | D7 | `docs/DAILY-CASES.md` (2026 design system) + prompt pack + launch docket `dd-0001…dd-0014` |
-| D8 | Site cutover: homepage → today's case; `/play` linked as the deep case; epoch baselined; deploy |
+| D8 | Site cutover: homepage → today's case; legacy paths tombstoned; epoch baselined; deploy |
 | D9 | (simjury-daily repo) supersession README; operator archives the repo |
 
 The full design (product shape, schema, engine, gates, verification) is captured in the

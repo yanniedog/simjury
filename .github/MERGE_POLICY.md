@@ -41,7 +41,7 @@ npm run repo-merge-settings:apply
 
 Required checks on `main`:
 
-- `validate` — docs, projectmem, pilot tests (+ Android when present)
+- `validate` — authority docs and PR-gate tooling
 - `bot-presence-gate` — `sourcery|codex|cursor` (OR-group) posted since wait anchor
 - `bot-feedback-gate` — review threads resolved
 

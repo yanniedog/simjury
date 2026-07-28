@@ -23,7 +23,7 @@ jobs:
       - name: Verify required docs exist
         run: |
           set -euo pipefail
-          for f in README.md PILOT-SPEC.md ROADMAP.md CASE_HARNESS.md AGENTS.md CLAUDE.md; do
+          for f in README.md DAILY-PIVOT.md ROADMAP.md WORKFLOW.md AGENTS.md CLAUDE.md docs/DAILY-CASES.md; do
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
           test -d .projectmem || { echo "Missing .projectmem"; exit 1; }
@@ -34,10 +34,10 @@ jobs:
           test -f .projectmem/config.toml
           test -f .projectmem/AI_INSTRUCTIONS.md
 
-      - name: Check agent harness references
+      - name: Check repository policy references
         run: |
-          grep -q "CASE_HARNESS" AGENTS.md
-          grep -q "Phase" ROADMAP.md
+          grep -q "Daily Docket" AGENTS.md
+          grep -q "Daily Docket" ROADMAP.md
           grep -q "bot-presence-gate" AGENTS.md
           grep -q "bot-presence-gate" .github/BRANCH_PROTECTION.md
           test -f WORKFLOW.md
@@ -55,33 +55,3 @@ jobs:
           npm run pr:gate-exempt-policy:verify
           npm run pr:bot-wait-or-groups:verify
           npm run pr:arm-and-park:verify
-          npm run pilot:auto-release-commit:verify
-
-      # ANDROID FROZEN (2026-07-27) — do not re-enable without owner instruction.
-      # See AGENTS.md / CLAUDE.md / DAILY-PIVOT.md decision #5.
-      - name: Android / JVM pilot frozen
-        run: |
-          echo "Skipping pilot Gradle tests and Android APK assemble (frozen until further notice)."
-
-      - name: Set up Java
-        if: false
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-
-      - name: Run pilot tests
-        if: false
-        working-directory: pilot
-        run: |
-          chmod +x gradlew
-          ./gradlew test --console=plain
-
-      - name: Set up Android SDK (build-only)
-        if: false
-        run: bash .github/scripts/setup-android-sdk.sh pilot/local.properties
-
-      - name: Assemble Android debug APK
-        if: false
-        working-directory: pilot
-        run: ./gradlew :app:assembleDebug --console=plain

@@ -51,7 +51,7 @@ The static privacy page explains:
 - `https://simjury.com/llms.txt` provides the concise machine-readable index.
 - Unknown routes return a real HTTP 404 page.
 - `/play/` redirects to `/today/`.
-- The Android/JVM pilot is frozen and its installer is deliberately absent from public discovery.
+- `/install/` redirects to `/`; the former app and installer were removed.
 
 ## Architecture and cost boundary
 

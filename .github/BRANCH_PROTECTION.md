@@ -21,7 +21,7 @@ Configure in GitHub **Settings → Rules → Rulesets** (preferred) or **Branche
 
 | Workflow / job | Check name | Purpose |
 |----------------|------------|---------|
-| `ci` | **validate** | Docs, projectmem, pilot tests |
+| `ci` | **validate** | Authority docs and PR-gate tooling |
 | `pr-bot-presence-gate` | **bot-presence-gate** | Required review bot (`sourcery\|codex\|cursor`) posted since anchor |
 | `pr-bot-feedback-check` | **bot-feedback-gate** | Review threads resolved |
 
@@ -47,8 +47,6 @@ See also `WORKFLOW.md` and `.github/MERGE_POLICY.md`.
 4. Run `npm run pr:arm-and-park -- --pr <n>` (single shot) — **never** `--watch` in agents
 5. On exit 2 (parked): end turn; on exit 3: fix bots/threads/CI, push, re-arm
 6. Squash auto-merge is armed by arm-and-park; do not babysit-poll until merge
-
-**Auto-release:** `pilot-auto-release-on-queue-drain` commits version bumps directly to `main` when the PR queue drains. Add **GitHub Actions** to the ruleset bypass list (see [WORKFLOW.md](../WORKFLOW.md#auto-release-when-pr-queue-drains)). Fallback bump PRs are gate-exempt (`chore(pilot): auto-release bump v…`).
 
 **Agents must never wait for the user to ask before addressing bot feedback.**
 **Agents must never sleep-poll bot gates** — use `pr:arm-and-park`.

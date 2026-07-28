@@ -9,8 +9,8 @@ The daily-case web app for simjury.com. Imported verbatim from the (now retired)
 trial *patterns*, and says so — the `label: "fiction"` pin in
 [`src/lib/caseSchema.ts`](src/lib/caseSchema.ts) is a safety invariant, never a
 formality. No real names of people, companies, brands, or places in player-visible
-text. Real historical cases ship only through the pilot harness (`CASE_HARNESS.md`),
-never through this pipeline.
+text. The removed real historical-case track must not be reintroduced into this
+pipeline.
 
 ## Develop
 

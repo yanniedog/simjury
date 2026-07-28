@@ -5,15 +5,8 @@
  * Skip for:
  *   - PRs opened by GitHub bots (github-actions[bot], dependabot, …)
  *   - Conventional chore PRs (chore: / chore(scope):)
- *   - Known automated chores (pilot auto-release bumps)
  */
 import { ghJson } from './gh-pr-review-threads.mjs';
-import {
-  isAutoReleaseBumpTitle,
-  isAutoReleaseCommitOnly,
-} from './pr-pilot-auto-release-commit.mjs';
-
-export { isAutoReleaseBumpTitle };
 
 /**
  * @param {{ login?: string, __typename?: string, type?: string }|string} author
@@ -40,7 +33,7 @@ export function isChorePrTitle(title) {
 
 /**
  * @param {{ title?: string, authorLogin?: string, authorType?: string, author?: object }} meta
- * @returns {'bot-authored'|'chore'|'pilot-auto-release'|null}
+ * @returns {'bot-authored'|'chore'|null}
  */
 export function gateExemptReasonFromPrMeta(meta = {}) {
   const title = String(meta.title || '').trim();
@@ -51,25 +44,13 @@ export function gateExemptReasonFromPrMeta(meta = {}) {
   };
 
   if (isBotPrAuthor(author)) return 'bot-authored';
-  if (isChorePrTitle(title)) {
-    if (isAutoReleaseBumpTitle(title)) return 'pilot-auto-release';
-    return 'chore';
-  }
-  if (isAutoReleaseBumpTitle(title)) return 'pilot-auto-release';
+  if (isChorePrTitle(title)) return 'chore';
   return null;
 }
 
 /** @deprecated Use gateExemptReasonFromPrMeta */
 export function gateExemptReasonFromTitle(title) {
   return gateExemptReasonFromPrMeta({ title });
-}
-
-/**
- * @param {string[]|object[]} files
- * @returns {boolean}
- */
-export function isGateExemptFileList(files) {
-  return isAutoReleaseCommitOnly(files);
 }
 
 /**
@@ -82,17 +63,9 @@ export function isGateExemptPr(prNumber) {
 
 /**
  * @param {number|string} prNumber
- * @returns {'bot-authored'|'chore'|'pilot-auto-release'|null}
+ * @returns {'bot-authored'|'chore'|null}
  */
 export function gateExemptReason(prNumber) {
-  const view = ghJson(['pr', 'view', String(prNumber), '--json', 'title,author,files']);
-  const metaReason = gateExemptReasonFromPrMeta({ title: view?.title, author: view?.author });
-  if (metaReason) return metaReason;
-
-  const paths = (Array.isArray(view?.files) ? view.files : []).map((f) => f.path);
-  if (paths.length === 0) return null;
-  if (isAutoReleaseCommitOnly(paths) && isAutoReleaseBumpTitle(view?.title)) {
-    return 'pilot-auto-release';
-  }
-  return null;
+  const view = ghJson(['pr', 'view', String(prNumber), '--json', 'title,author']);
+  return gateExemptReasonFromPrMeta({ title: view?.title, author: view?.author });
 }

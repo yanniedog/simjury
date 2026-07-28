@@ -44,7 +44,7 @@ requireText(html, 'Your progress, notes and verdict stay on this device', 'landi
 requireText(html, 'href="/privacy/"', 'landing footer must link to the privacy page')
 requireText(html, 'This is single-player: there are no live players or chat.', 'landing must distinguish scripted jurors from live players')
 requireText(html, 'tabindex="-1"', 'landing main target must accept focus from the skip link')
-requireText(html, '/art/daily-docket-hero.webp', 'landing must use its stable, case-independent hero asset')
+requireText(html, '/daily-docket-cover.webp', 'landing must use the stable case-independent hero asset')
 
 const deliberateAt = html.indexOf('Deliberate from the evidence')
 const lockAt = html.indexOf('Lock your verdict')
@@ -52,7 +52,7 @@ if (deliberateAt < 0 || lockAt < 0 || deliberateAt > lockAt) {
   failures.push('landing must describe deliberation before the final verdict lock')
 }
 
-forbidText(html, '/today/media/dd-', 'landing hero must not depend on replaceable docket assets')
+forbidText(html, '/today/media/dd-', 'landing hero must not depend on replaceable docket case assets')
 forbidText(html, 'Private in your browser', 'landing must not overstate browser privacy')
 forbidText(html, 'free and private', 'social copy must not overstate privacy')
 forbidText(html, 'cloudflareinsights.com', 'landing must not embed Cloudflare analytics')

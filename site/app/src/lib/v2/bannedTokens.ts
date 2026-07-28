@@ -1,8 +1,8 @@
 import type { DocketCase } from './caseSchema'
 
 /**
- * Banned-token scan for the Daily Docket — the daily analogue of the pilot's
- * F-4 rule (DAILY-PIVOT.md): no real names of people, companies, brands, or
+ * Banned-token scan for the Daily Docket fiction boundary: no real names of
+ * people, companies, brands, or
  * platforms in player-visible text. 2026 relevance is achieved with invented
  * platforms ("a rideshare app"), never real ones.
  *

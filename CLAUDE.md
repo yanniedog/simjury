@@ -2,44 +2,39 @@
 
 ## Start here
 
-The repo's primary work is **The Daily Docket** on **simjury.com** — daily synthetic
-2026 cases with an interactive jury room. Before working:
+The repository's only product surface is **The Daily Docket** on
+**simjury.com**, implemented in `site/app/`.
 
-1. Read [`DAILY-PIVOT.md`](DAILY-PIVOT.md) — the owner decision record: what the daily
-   track is, its delivery ladder (D0–D9), and the constraints that bind it.
-2. **Android / JVM pilot is FROZEN until further notice** (owner, 2026-07-27). Do not
-   edit `pilot/` app code, re-enable Android CI/release workflows, ship APKs, or resume
-   Phase 4 G-4 device work. [`PHASE4-STATUS.md`](PHASE4-STATUS.md) remains the frozen
-   handoff. Lift only on an explicit owner instruction.
-3. The historical Case 001 (Beck) web deep-case at `/play` may stay linked from the
-   site; do not expand the Android shell around it while frozen.
-4. Other authority docs, as needed: [`ROADMAP.md`](ROADMAP.md) (tracks + phase gates),
-   [`CASE_HARNESS.md`](CASE_HARNESS.md) (historical case rules — not the daily pipeline),
-   [`WORKFLOW.md`](WORKFLOW.md) (PR bot gates), [`site/DECISIONS.md`](site/DECISIONS.md).
+1. Read [`DAILY-PIVOT.md`](DAILY-PIVOT.md), the owner decision record and product
+   constraints.
+2. Read [`docs/DAILY-CASES.md`](docs/DAILY-CASES.md) for case-authoring rules.
+3. Use [`ROADMAP.md`](ROADMAP.md), [`WORKFLOW.md`](WORKFLOW.md), and
+   [`site/DECISIONS.md`](site/DECISIONS.md) as needed.
+
+On 2026-07-29 the owner removed the former Android/JVM app and real historical-case
+track. They must not be reintroduced. Old `/play` and `/install` URLs are tombstoned
+to the current web product.
 
 ## Non-negotiable rules
 
-- **simjury.com only** — agent sessions implement Daily Docket / site work, not Android.
-- **Daily cases are fiction, and say so** — the `label: "fiction"` pin is a safety
-  invariant. Built from real trial *patterns*, never real events; **no real names** of
-  people, companies, brands, or places in player-visible text (banned-token scan).
-- **Historical cases: never invent testimony or evidence.** Every block/exhibit must trace
-  to a `TABULATION.md` row + a real source (`CASE_HARNESS.md`). Applies to `c_001`, not
-  the daily pipeline.
-- **No runtime AI; static hosting only** — all player-facing text is pre-authored JSON.
-- **One concern per PR, ≤ 400 lines, squash merge.** Agents: `npm run pr:arm-and-park`
-  (act or park — never `--watch` babysitting). See `WORKFLOW.md`.
+- **Daily Docket only** — work in `site/app/` and its site, CI, content, and docs.
+- **Daily cases are fiction, and say so** — `label: "fiction"` is a safety
+  invariant. Cases use real trial patterns, never real events, and contain no real
+  names of people, companies, brands, or specific places in player-visible text.
+- **No runtime AI; static hosting only** — player-facing text is pre-authored JSON.
+- **Preserve provenance** — `archive/daily-v1/` is retained verbatim and is not a
+  shipped case source.
+- **One concern per PR, about 400 lines, squash merge.** Agents use
+  `npm run pr:arm-and-park`; never `--watch` babysitting.
 
-## Build & test
-
-```powershell
-# site/app (The Daily Docket — the only active product surface)
-cd site/app; npm ci  # once
-npm run lint; npm run typecheck; npm test; npm run validate:cases; npm run build
-```
-
-Parked (do not run for product work while Android is frozen):
+## Build and test
 
 ```powershell
-# pilot\gradlew.bat -p pilot test   # JVM/Android — frozen
+cd site/app
+npm ci
+npm run lint
+npm run typecheck
+npm test
+npm run validate:cases
+npm run build
 ```
