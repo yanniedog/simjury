@@ -12,6 +12,8 @@ export function NarratorCue({
       className={`narrator-cue speech-turn${active ? ' speech-turn-active' : ''}`}
       aria-label={`Narrator${active ? ', speaking' : ''}`}
       aria-current={active ? 'true' : undefined}
+      aria-live="polite"
+      aria-atomic="true"
     >
       <p className="speaker-heading">
         <span className="chrome-label">Narrator</span>

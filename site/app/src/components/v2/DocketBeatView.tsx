@@ -85,9 +85,12 @@ export function DocketBeatView({
   const cueText = lockedCue.current.text
 
   useEffect(() => {
-    setActiveDialogue(null)
-    setNarratorActive(false)
-    setSingleSpeakerActive(false)
+    const resetSpeakingState = () => {
+      setActiveDialogue(null)
+      setNarratorActive(false)
+      setSingleSpeakerActive(false)
+    }
+    resetSpeakingState()
     if (!narration) return stopSpeech
 
     const lines: Array<{ text: string; key: string }> = []
@@ -101,10 +104,7 @@ export function DocketBeatView({
     if (lines.length === 1) {
       setSingleSpeakerActive(lines[0].key !== 'narrator')
       setNarratorActive(lines[0].key === 'narrator')
-      speak(lines[0].text, lines[0].key, () => {
-        setSingleSpeakerActive(false)
-        setNarratorActive(false)
-      }, playbackRate)
+      speak(lines[0].text, lines[0].key, resetSpeakingState, playbackRate)
     } else {
       speakAll(lines, {
         rate: playbackRate,
@@ -118,16 +118,8 @@ export function DocketBeatView({
           const dialogueIndex = cueText ? index - 1 : index
           if (dialogueIndex >= 0) setActiveDialogue({ beatId: beat.id, index: dialogueIndex })
         },
-        done: () => {
-          setActiveDialogue(null)
-          setNarratorActive(false)
-          setSingleSpeakerActive(false)
-        },
-        onError: () => {
-          setActiveDialogue(null)
-          setNarratorActive(false)
-          setSingleSpeakerActive(false)
-        },
+        done: resetSpeakingState,
+        onError: resetSpeakingState,
       })
     }
     return stopSpeech

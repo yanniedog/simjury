@@ -27,6 +27,8 @@ describe('shared speaker focus', () => {
     )
 
     expect(markup).toContain('Narrator, speaking')
+    expect(markup).toContain('aria-live="polite"')
+    expect(markup).toContain('aria-atomic="true"')
     expect(markup).toContain('speech-turn-active')
     expect(markup).toContain('Speaking')
   })
