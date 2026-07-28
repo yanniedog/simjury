@@ -3,10 +3,12 @@ import {
   canPersistSitting,
   clearProgress,
   completePlay,
+  hasSeenFictionDisclosure,
   loadAllPlays,
   loadPlay,
   loadPlayForSitting,
   loadProgress,
+  markFictionDisclosureSeen,
   savePlay,
   saveProgress,
 } from './storage'
@@ -30,6 +32,14 @@ const KEY = 'simjury-daily:v1:5'
 afterEach(() => vi.unstubAllGlobals())
 
 describe('storage', () => {
+  it('remembers the site-entry fiction disclosure', () => {
+    vi.stubGlobal('localStorage', memoryStorage())
+
+    expect(hasSeenFictionDisclosure()).toBe(false)
+    markFictionDisclosureSeen()
+    expect(hasSeenFictionDisclosure()).toBe(true)
+  })
+
   it('probes whether storage accepts writes without leaving probe data behind', () => {
     const store = memoryStorage()
     vi.stubGlobal('localStorage', store)

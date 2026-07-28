@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
 import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
-import { phaseNarratorCue } from '../../lib/narratorCues'
+import { introSceneNarratorCue, phaseNarratorCue } from '../../lib/narratorCues'
 import { contentAdvisoryText } from '../../lib/v2/offenceProfiles'
 import { CaseMedia, StoryText } from './CaseMedia'
 import { NarratorCue } from './NarratorCue'
@@ -21,6 +21,7 @@ export function DocketIntro({
 }) {
   const accused = trial.cast.find((m) => m.id === trial.accused.cast_id)
   const phaseCue = phaseNarratorCue('intro')
+  const sceneCue = introSceneNarratorCue(trial)
   const advisory = contentAdvisoryText(trial.content_advisories)
 
   useEffect(() => {
@@ -28,13 +29,14 @@ export function DocketIntro({
     speakAll(
       [
         { text: phaseCue, key: 'narrator' },
+        { text: sceneCue, key: 'narrator' },
         ...(advisory ? [{ text: advisory, key: 'narrator' }] : []),
         { text: trial.hook, key: 'narrator' },
       ],
       { rate: playbackRate },
     )
     return stopSpeech
-  }, [advisory, phaseCue, trial.hook, narration, playbackRate])
+  }, [advisory, phaseCue, sceneCue, trial.hook, narration, playbackRate])
 
   return (
     <div className="phase-view briefing-view space-y-6">
@@ -48,7 +50,7 @@ export function DocketIntro({
         <p className="text-sm text-neutral-400">{trial.setting}</p>
       </div>
 
-      <NarratorCue text={phaseCue} />
+      <NarratorCue text={`${phaseCue} ${sceneCue}`} />
 
       {advisory && (
         <aside
@@ -74,9 +76,6 @@ export function DocketIntro({
         </p>
         <p className="mt-1 text-sm leading-relaxed text-neutral-300">
           {trial.accused.human}
-        </p>
-        <p className="mt-2 text-sm text-neutral-400">
-          If you convict: <span className="text-neutral-200">{trial.accused.if_guilty}</span>
         </p>
         </div>
       </div>
