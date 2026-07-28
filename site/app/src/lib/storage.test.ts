@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
+  canPersistSitting,
   clearProgress,
   completePlay,
   loadAllPlays,
@@ -29,6 +30,25 @@ const KEY = 'simjury-daily:v1:5'
 afterEach(() => vi.unstubAllGlobals())
 
 describe('storage', () => {
+  it('probes whether storage accepts writes without leaving probe data behind', () => {
+    const store = memoryStorage()
+    vi.stubGlobal('localStorage', store)
+
+    expect(canPersistSitting()).toBe(true)
+    expect(store.length).toBe(0)
+  })
+
+  it('reports unavailable storage when writes are blocked', () => {
+    vi.stubGlobal('localStorage', {
+      ...memoryStorage(),
+      setItem: () => {
+        throw new Error('blocked')
+      },
+    })
+
+    expect(canPersistSitting()).toBe(false)
+  })
+
   it('round-trips a valid play', () => {
     vi.stubGlobal('localStorage', memoryStorage())
     savePlay({ day: 5, caseId: 'd-0001', convictions: [], verdict: 'Not Guilty' })

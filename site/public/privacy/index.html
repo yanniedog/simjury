@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privacy — SimJury</title>
+  <meta name="description" content="What SimJury stores in your browser, what optional narration requests reveal, and what is not collected." />
+  <link rel="canonical" href="https://simjury.com/privacy/" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/landing-modern.css" />
+</head>
+<body class="landing privacy">
+  <a class="skip-link" href="#main">Skip to the privacy details</a>
+  <div class="atmosphere" aria-hidden="true"></div>
+
+  <nav class="site-nav" aria-label="Primary">
+    <a class="wordmark" href="/" aria-label="SimJury home">Sim<span>Jury</span></a>
+    <span class="nav-edition">Privacy</span>
+    <div><a href="/">Home</a><a class="nav-seat" href="/today/">Take your seat</a></div>
+  </nav>
+
+  <main id="main" class="privacy-main" tabindex="-1">
+    <header class="privacy-hero">
+      <p class="eyebrow">Plain-language privacy</p>
+      <h1>Your sitting stays with this browser.</h1>
+      <p>SimJury has no player accounts or backend player-state service. Progress is useful because it is saved locally; that also means it cannot follow you to another browser or device.</p>
+    </header>
+
+    <section class="privacy-grid" aria-label="Privacy details">
+      <article>
+        <p class="privacy-number" aria-hidden="true">01</p>
+        <h2>What is stored</h2>
+        <p>Your progress, notes, verdict, narration preferences and sitting statistics use this browser’s site storage on this device.</p>
+        <p>SimJury does not send that saved player state to an account or player-state backend.</p>
+      </article>
+
+      <article>
+        <p class="privacy-number" aria-hidden="true">02</p>
+        <h2>No sync or recovery</h2>
+        <p>There is no cross-device or cross-browser sync. Switching browser or device, using a separate browser profile, or clearing SimJury site data removes your access to the saved information there.</p>
+      </article>
+
+      <article>
+        <p class="privacy-number" aria-hidden="true">03</p>
+        <h2>Optional narration</h2>
+        <p>When narration is on, your browser can fetch public audio clips from GitHub Releases. GitHub can observe request metadata, request timing and the requested clip IDs.</p>
+        <p>Those requests do not contain your saved progress, notes, verdict or statistics. Clip IDs map to lines in SimJury’s public, pre-authored case corpus.</p>
+      </article>
+
+      <article>
+        <p class="privacy-number" aria-hidden="true">04</p>
+        <h2>Web delivery, not player tracking</h2>
+        <p>Static pages and assets are served through Cloudflare. Like any CDN, Cloudflare receives ordinary HTTP request metadata needed to deliver them.</p>
+        <p>SimJury does not add analytics or tracking code, and does not attach your locally saved progress, notes or verdicts to those requests.</p>
+      </article>
+
+      <article>
+        <p class="privacy-number" aria-hidden="true">05</p>
+        <h2>How the experience works</h2>
+        <p>Daily cases are fictional and pre-authored. Juror responses and outcomes are produced deterministically in your browser from the authored case and your choices.</p>
+        <p>There is no runtime generative AI, live juror or hidden human responding during a sitting.</p>
+      </article>
+    </section>
+
+    <aside class="privacy-callout">
+      <p class="eyebrow">Before you sit</p>
+      <h2>Use the browser you want to return to.</h2>
+      <p>If browser storage is unavailable, SimJury will still let you continue the current sitting and will warn you that it cannot resume later.</p>
+      <a class="btn primary" href="/today/">Open today’s case <span aria-hidden="true">→</span></a>
+    </aside>
+  </main>
+
+  <footer>
+    <div><p><strong>SimJury</strong> · A daily exercise in judgment.</p></div>
+    <p><a href="/">Home</a> · <a href="/today/">Today’s case</a></p>
+  </footer>
+</body>
+</html>

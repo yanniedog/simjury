@@ -58,6 +58,7 @@ export type StoredProgressInput = Omit<StoredProgress, 'notes'> & {
 
 const KEY_PREFIX = 'simjury-daily:v1:'
 const PROGRESS_PREFIX = 'simjury-progress:v1:'
+const STORAGE_PROBE_KEY = 'simjury:storage-write-probe'
 /** Versioned so the entirely new grave-crime guided case is offered once. */
 export const INTRO_COMPLETE_KEY = 'simjury:intro-complete:v2'
 
@@ -67,6 +68,25 @@ function storage(): Storage | null {
   } catch {
     // Access can throw in privacy modes / sandboxed frames.
     return null
+  }
+}
+
+/** True only when site storage accepts a write, not merely when the API exists. */
+export function canPersistSitting(): boolean {
+  const store = storage()
+  if (!store) return false
+  try {
+    store.setItem(STORAGE_PROBE_KEY, '1')
+    const persisted = store.getItem(STORAGE_PROBE_KEY) === '1'
+    store.removeItem(STORAGE_PROBE_KEY)
+    return persisted
+  } catch {
+    try {
+      store.removeItem(STORAGE_PROBE_KEY)
+    } catch {
+      // Storage is blocked; there is nothing else to clean up.
+    }
+    return false
   }
 }
 
