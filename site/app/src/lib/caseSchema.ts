@@ -7,8 +7,8 @@ import { z } from 'zod'
  * The `label` field is pinned to the literal `"fiction"`. This is a deliberate
  * safety invariant, not a formality: the daily pipeline generates fiction built
  * from real trial *patterns*, never claims about real people, so a real-labelled
- * case can never enter the daily queue. Real historical cases ship through the
- * separate, human-cleared harness in the pilot repo — never here.
+ * case can never enter the daily queue. The removed real historical-case track
+ * must not be reintroduced here.
  */
 export const beatSchema = z.object({
   id: z.string().min(1),

@@ -1,5 +1,5 @@
 {
-  "name": "main — pilot CI + bot gates",
+  "name": "main — site CI + bot gates",
   "target": "branch",
   "source_type": "Repository",
   "enforcement": "active",

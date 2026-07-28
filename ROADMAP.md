@@ -1,133 +1,39 @@
 # SimJury Rollout Roadmap
 
-Phased delivery. **Do not skip phases.** Each phase ends with a gate PR that must pass CI and review before the next phase begins.
+## The Daily Docket
 
----
+The Daily Docket is SimJury's only product track: fictional, contemporary cases
+playable in eight to ten minutes at `simjury.com/today`, with a deterministic,
+client-side interactive jury room.
 
-## Track D — The Daily Docket (current, primary)
+The delivery ladder and product constraints are recorded in
+[`DAILY-PIVOT.md`](DAILY-PIVOT.md). Case design and validation live in
+[`docs/DAILY-CASES.md`](docs/DAILY-CASES.md).
 
-**Owner pivot 2026-07-13 — see [`DAILY-PIVOT.md`](DAILY-PIVOT.md) for the decision record
-and the D0–D9 delivery ladder.** Daily synthetic 2026-relevant cases (8–10 min, fiction,
-interactive seeded jury room) on simjury.com, absorbing the `simjury-daily` repo's
-pipeline into `site/app/`. The JVM/Android pilot (Phases 1–3) and the historical track
-(Phases 4–6) below are **parked**, and **Android development is frozen until further
-notice** (owner, 2026-07-27 — `DAILY-PIVOT.md` #5). Case c_001 stays live at `/play`;
-do not resume G-4 or Android CI/APK work without an explicit owner unlock.
+## Removed tracks
 
----
+Owner decision, 2026-07-29: the Android/JVM application and real
+historical-case track were removed from the repository. They are not parked or
+deferred and must not be reintroduced. Old `/play` and `/install` routes redirect
+to the Daily Docket landing path.
 
-## Phase 0 — Foundation
+`archive/daily-v1/` remains as provenance for the retired fictional Victorian
+daily docket and is not a shipped product surface.
 
-**Goal:** Governance, memory, harness, branch protection.
+## Current priorities
 
-**G-0:** Met — merged to `main`.
-
----
-
-## Phase 1 — JVM Pilot App (parked)
-
-**Goal:** End-to-end playable CLI loop on case C-000.
-
-| Deliverable | Status |
-|-------------|--------|
-| Gradle JVM project in `pilot/` | Done |
-| `:case-model` module (schema + V-rules) | Done |
-| Case loader + validator | Done |
-| C-000 synthetic case assets | Done |
-| Game session (summons → reveal) | Done |
-| Reveal gate + validator tests | Done |
-
-**G-1:** Met — merged to `main`.
-
----
-
-## Phase 2 — Engine Extraction
-
-**Goal:** Split pure Kotlin modules reusable by Android.
-
-| Deliverable | Status |
-|-------------|--------|
-| `:case-model` module (schema + V-rules) | Done |
-| `:deliberation-core` skeleton (state machine stub) | Done |
-| Fixture case `C-999` for tests only | Done |
-| Pilot CLI refactored to use modules | Done |
-
-**Gate G-2:** Met — determinism test on stub engine; C-999 fixture validates.
-
----
-
-## Phase 3 — Android Shell (parked)
-
-**Goal:** Compose UI for trial reading + diary + vote + reveal.
-
-| Deliverable | Status |
-|-------------|--------|
-| `:app` module skeleton | Done |
-| Navigation + dark theme tokens | Done |
-| Trial reader screens | Done |
-| Diary + verdict + reveal screens | Done |
-| DataStore save model | Done |
-
-**Gate G-3:** ✅ Code architecture verified; device testing deferred (see `G3-SIGNOFF.md`).
-
----
-
-## Phase 4 — First Historical Case
-
-**Planning:** [`PHASE4-PLAN.md`](PHASE4-PLAN.md) — Beck source acquisition, harness floors, PR breakdown, G-4 gate.
-
-**Goal:** Case 001 (Beck) authored per harness, not per raw v3 quantities.
-
-| Deliverable | PR scope |
-|-------------|----------|
-| Source document acquisition (EX-1) | Operator PR / handoff |
-| Condensed Beck case (harness floors, not v3 floors) | Multiple small PRs |
-| Human clearance sign-off | Operator |
-| Balance test | One PR |
-
-**Gate G-4:** Full playthrough; `BALANCE.md`; clearance complete.
-
-**Note:** Re-read `archive/simjury-build-spec-v3.md` Section 8.6 only after G-3 passes. The harness (`CASE_HARNESS.md`) sets **pilot-appropriate floors**, not v3's 110-block minimum.
-
----
-
-## Phase 5 — Deliberation + Scoring
-
-**Goal:** 11 jurors, deliberation phases, process score, share card.
-
-Port v3 Sections 9, 12, 13 incrementally — one subsystem per PR.
-
-**Gate G-5:** Four terminal outcomes on device; scoring tests green.
-
----
-
-## Phase 6 — Release
-
-**Goal:** Accessibility, licensing, Play submission.
-
-Follow v3 Part B where not contradicted by pilot decisions recorded in projectmem.
-
-**Gate G-6:** Signed AAB; `CONFORMANCE.md` populated from v3 checklist.
-
----
+1. Maintain at least a fourteen-day fictional case runway behind schema, design,
+   banned-token, jury-floor, and deliberation-dynamics gates.
+2. Keep the complete first-time and returning-player journeys listenable,
+   accessible, and low-friction.
+3. Preserve the assets-only Cloudflare boundary and local-only player state.
+4. Ship small, reviewable PRs through the required CI and bot gates.
 
 ## PR discipline
 
 | Rule | Rationale |
 |------|-----------|
-| Max ~400 lines changed per PR | Reviewable; CI fast |
-| One gate concern per PR | Clear rollback |
+| Max about 400 changed lines per PR | Reviewable; CI fast |
+| One concern per PR | Clear rollback |
 | Squash merge to `main` | Linear history |
-| **Wait for bot gates before merge** | `bot-presence-gate` + `bot-feedback-gate` (see `WORKFLOW.md`) |
-| projectmem `add_decision` for phase transitions | Audit trail |
-| Resolve all bot comments before merge | PR gates |
-
----
-
-## Decision log
-
-Record phase transitions and scope changes in projectmem:
-
-```bash
-pjm decision "Phase N complete — G-N passed" --at "ROADMAP.md"
-```
+| Wait for all required gates | No unresolved review feedback |

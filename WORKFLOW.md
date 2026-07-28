@@ -12,9 +12,8 @@ Chore PRs (`chore:` / `chore(scope):`) and bot-authored PRs skip bot gates autom
 
 ## 2. PR CI (`validate`)
 
-The `ci` workflow runs docs/projectmem checks and site-related gate script checks.
-**Android / JVM pilot steps are frozen** (skipped until further notice — `DAILY-PIVOT.md` #5);
-do not re-enable `:app:assembleDebug` / `./gradlew test` in `ci.yml` without an owner unlock.
+The `ci` workflow runs repository-policy and PR gate script checks. Daily Docket
+application checks run in the site workflows.
 
 ## 3. Bot presence gate (`bot-presence-gate`)
 
@@ -92,20 +91,6 @@ gh pr merge <n> --auto --squash --delete-branch
 
 See [`.github/MERGE_POLICY.md`](.github/MERGE_POLICY.md).
 
-## Auto release when PR queue drains
-
-AR-local parity: when a PR squash-merges to `main`, **pilot-auto-release-on-queue-drain** counts remaining open PRs (`gh pr list --state open --base main`). If **> 0**, it exits cleanly. If **0** (last PR in the queue landed), it bumps `versionName` patch in `pilot/app/build.gradle.kts` via `pilot/scripts/pilot-auto-release-on-drain.mjs`, commits, and **pushes directly to `main`**. It then dispatches **pilot-android-apk** (a `GITHUB_TOKEN` push does not re-trigger workflows). Concurrency group `pilot-auto-release-on-drain` (`cancel-in-progress: false`) serializes drain checks.
-
-### Direct commit to main (one-time GitHub setup)
-
-Add **GitHub Actions** to the `main` ruleset bypass list (Settings → Rules → Rulesets). Optionally scope to `.github/workflows/pilot-auto-release-on-queue-drain.yml`. If push fails, the drain script falls back to a gate-exempt bump PR (`scripts/lib/pr-pilot-auto-release-commit.mjs`).
-
-Verify bypass is configured:
-
-```sh
-npm run github:bot-gates:operator
-```
-
 ## Enable branch protection (one-time)
 
 ```sh
@@ -130,7 +115,3 @@ npm run branch-protection:apply
 ## Cross-repo sync
 
 Canonical agent rules for all projects live in [cursor-global-workflow](https://github.com/yanniedog/cursor-global-workflow). Portable patches for this efficiency protocol: [`docs/cross-repo-patches/cursor-global-workflow/`](docs/cross-repo-patches/cursor-global-workflow/README.md).
-
-## Auto release (pilot APK)
-
-When the PR queue to `main` drains, **pilot-auto-release-on-queue-drain** bumps the app version and dispatches **pilot-android-apk**. Requires **GitHub Actions** on the main ruleset bypass list for direct pushes.

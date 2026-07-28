@@ -18,4 +18,4 @@ SimJury is a static website. The interactive Daily Docket requires JavaScript, w
 
 ## Boundaries
 
-These crawl guides do not reproduce or link case-specific facts, case answers, reveal spoilers, hidden juror state, source JSON, or the frozen engineering-only Android installer. `/play/` is a legacy redirect to the Daily Docket rather than a separate public product.
+These crawl guides do not reproduce or link case-specific facts, case answers, reveal spoilers, hidden juror state, or source JSON. The former app and installer were removed. `/play/` and `/install/` are legacy redirects, not separate public products.

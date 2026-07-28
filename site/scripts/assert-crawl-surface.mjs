@@ -108,7 +108,6 @@ for (const [label, source] of [
   for (const forbidden of [
     'verdict_truth',
     '"twist"',
-    '/install/',
     '/docket/dd-',
   ]) {
     forbidText(source, forbidden, `${label} must not expose ${forbidden}`)

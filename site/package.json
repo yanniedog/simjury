@@ -2,15 +2,13 @@
   "name": "simjury-web",
   "private": true,
   "type": "module",
-  "description": "simjury.com landing + install site (Cloudflare Workers static assets)",
+  "description": "simjury.com Daily Docket static site",
   "engines": {
     "node": ">=24"
   },
   "scripts": {
-    "sync": "node scripts/sync-cases.mjs",
     "install:app": "npm --prefix app ci",
     "build:app": "npm --prefix app run build",
-    "prebuild:assets": "node scripts/sync-cases.mjs",
     "build:assets": "npm run build:app",
     "predev": "npm run install:app && npm run build:assets",
     "dev": "wrangler dev",

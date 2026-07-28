@@ -1,7 +1,7 @@
 name: site
 
 # simjury.com (Cloudflare Static Assets) CI/CD.
-#   - On PRs touching site/**: build + F-4 spoiler scan + wrangler dry-run (no deploy).
+#   - On PRs touching site/**: build + Daily Docket checks + wrangler dry-run (no deploy).
 #   - On push to main (i.e. AFTER a PR merges through the bot gates): deploy.
 # Deploys never run from a PR — only from a merged change on main.
 
@@ -9,13 +9,11 @@ on:
   pull_request:
     paths:
       - "site/**"
-      - "pilot/src/main/resources/cases/c_001/**"
       - ".github/workflows/site.yml"
   push:
     branches: [main]
     paths:
       - "site/**"
-      - "pilot/src/main/resources/cases/c_001/**"
       - ".github/workflows/site.yml"
 
 permissions:
@@ -40,7 +38,7 @@ jobs:
       - name: Enforce assets-only Cloudflare guardrails
         working-directory: site
         run: npm run guard:cloudflare
-      - name: Validate (case sync + F-4 spoiler scan + wrangler dry-run)
+      - name: Validate Daily Docket static site
         working-directory: site
         run: npm run check
 

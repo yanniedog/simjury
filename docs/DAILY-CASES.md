@@ -10,7 +10,7 @@ enforce the hard rules; this file holds the taste. Companion: the drafting promp
 1. **Every case is fiction, and it says so.** `label` is pinned to `"fiction"`. Build
    from *patterns* real trials share — never from a real event, person, company, brand,
    or specific place. Invented names only ("Norwall Haulage", "a rideshare app"). Real
-   historical cases ship only through the pilot harness (`CASE_HARNESS.md`).
+   historical-case track was removed and must not be reintroduced.
 2. **Relevant in 2026, always.** Crime, dialogue, and process are contemporary: the
    player should feel they could be summonsed onto this jury this year.
 3. **The 8–10 minute budget is a design constraint, not a suggestion.** Every floor

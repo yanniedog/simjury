@@ -1,7 +1,7 @@
 {
   "name": "simjury",
   "private": true,
-  "description": "SimJury pilot — PR bot gates (parity with jcs2-mod / AR-local)",
+  "description": "SimJury Daily Docket web app and repository automation",
   "engines": {
     "node": "24.x"
   },
@@ -17,7 +17,6 @@
     "pr:gate-exempt-policy:verify": "node scripts/verify-pr-gate-exempt-policy.mjs",
     "pr:gate-logic:verify": "node scripts/verify-pr-gate-logic.mjs",
     "pr:bot-wait-or-groups:verify": "node scripts/verify-bot-wait-or-groups.mjs",
-    "pilot:auto-release-commit:verify": "node scripts/verify-pilot-auto-release-commit.mjs",
     "github:bot-gates:operator": "node scripts/github-bot-gates-operator.mjs",
     "pr:request-codex-review": "node scripts/request-codex-review.mjs",
     "branch-protection:apply": "node scripts/apply-branch-protection.mjs",

@@ -1,2 +1,4 @@
 /play /today/ 302
 /play/* /today/ 302
+/install / 302
+/install/* / 302
