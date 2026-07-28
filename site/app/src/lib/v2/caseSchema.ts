@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { beatSchema } from '../caseSchema'
+import { CONTENT_ADVISORIES, OFFENCE_CODES } from './offenceProfiles'
 
 function isRealCalendarDate(value: string): boolean {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value)
@@ -53,6 +54,12 @@ export const THEMES = [
   'credibility',
   'procedure',
   'burden',
+  'knowledge',
+  'intent',
+  'causation',
+  'duress',
+  'command',
+  'coercion',
 ] as const
 export const themeSchema = z.enum(THEMES)
 export type Theme = z.infer<typeof themeSchema>
@@ -199,6 +206,10 @@ export const docketCaseSchema = z
       .refine(isRealCalendarDate, 'publish_date must be a real calendar date'),
     label: z.literal('fiction'),
     title: z.string().min(1),
+    /** Optional during the grave-crime docket migration; required by the final quality gate. */
+    offence_code: z.enum(OFFENCE_CODES).optional(),
+    content_advisories: z.array(z.enum(CONTENT_ADVISORIES)).min(1).optional(),
+    detail_level: z.literal('non_graphic').optional(),
     /** Contemporary setting sketch (replaces v1 `era`) — always the present day. */
     setting: z.string().min(1),
     charge: z.string().min(1),
@@ -225,6 +236,8 @@ export const docketCaseSchema = z
         cover: mediaAssetSchema,
         accused: mediaAssetSchema,
         beats: z.record(z.string(), mediaAssetSchema),
+        /** Individual courtroom sketches keyed by cast or juror id. */
+        portraits: z.record(z.string(), mediaAssetSchema).optional(),
       })
       .optional(),
     /** The duel: both advocates' openings and closings, narrated in voice. */
@@ -262,6 +275,8 @@ export const docketCaseSchema = z
       prompt_version: z.string(),
       reviewer: z.string(),
       batch_pr: z.string(),
+      language_reviewer: z.string().optional(),
+      sensitivity_reviewer: z.string().optional(),
     }),
   })
   .superRefine((c, ctx) => {
@@ -297,6 +312,19 @@ export const docketCaseSchema = z
           code: z.ZodIssueCode.custom,
           message: `media references unknown beat: ${beatId}`,
           path: ['media', 'beats', beatId],
+        })
+      }
+    }
+    const characterIds = new Set([
+      ...c.cast.map((member) => member.id),
+      ...c.jury.jurors.map((juror) => juror.id),
+    ])
+    for (const portraitId of Object.keys(c.media?.portraits ?? {})) {
+      if (!characterIds.has(portraitId)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `media portrait references unknown character: ${portraitId}`,
+          path: ['media', 'portraits', portraitId],
         })
       }
     }
