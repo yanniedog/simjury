@@ -2,10 +2,15 @@ import {
   FREE_BETA_LIMITS,
   admissionDecision,
   decodeOpaqueId,
+  bearerCapability,
   isLiveRoute,
   liveJuryEnabled,
+  parseCapability,
+  parseCaseId,
+  parseDisplayName,
   parseOpaqueId,
   parseSeatId,
+  roomRoute,
   roomExpiryCutoff,
   seatMaySend,
   unavailable,
@@ -16,6 +21,34 @@ function json(value, status = 200) {
     status,
     headers: { 'Cache-Control': 'no-store' },
   })
+}
+
+function randomCapability() {
+  const bytes = crypto.getRandomValues(new Uint8Array(32))
+  return btoa(String.fromCharCode(...bytes))
+    .replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '')
+}
+
+async function digest(value) {
+  const bytes = new TextEncoder().encode(value)
+  const hash = await crypto.subtle.digest('SHA-256', bytes)
+  return [...new Uint8Array(hash)].map((byte) => byte.toString(16).padStart(2, '0')).join('')
+}
+
+async function bodyOf(request) {
+  const contentLength = Number(request.headers.get('Content-Length'))
+  if (Number.isFinite(contentLength) && contentLength > 2_048) return null
+  try {
+    const text = await request.text()
+    return text.length <= 2_048 ? JSON.parse(text) : null
+  } catch {
+    return null
+  }
+}
+
+function durableFetch(namespace, name, path, init) {
+  const stub = namespace.get(namespace.idFromName(name))
+  return stub.fetch(new Request(`https://durable.internal${path}`, init))
 }
 
 export class PoolCoordinatorDO {
@@ -125,7 +158,25 @@ export class RoomDO {
   constructor(state, env) {
     this.state = state
     this.env = env
+    state.storage.sql.exec('PRAGMA foreign_keys = ON')
     state.storage.sql.exec(`
+      CREATE TABLE IF NOT EXISTS room_meta (
+        singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
+        case_id TEXT NOT NULL,
+        invite_hash TEXT NOT NULL,
+        host_hash TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        expires_at INTEGER NOT NULL,
+        status TEXT NOT NULL CHECK (status IN ('open', 'closed'))
+      );
+      CREATE TABLE IF NOT EXISTS room_seats (
+        seat_id INTEGER PRIMARY KEY CHECK (seat_id BETWEEN 1 AND 12),
+        participant_hash TEXT NOT NULL UNIQUE,
+        display_name TEXT NOT NULL CHECK (length(display_name) BETWEEN 1 AND 32),
+        token_hash TEXT NOT NULL,
+        joined_at INTEGER NOT NULL,
+        last_seen_at INTEGER NOT NULL
+      );
       CREATE TABLE IF NOT EXISTS room_events (
         sequence INTEGER PRIMARY KEY,
         event_type TEXT NOT NULL,
@@ -142,7 +193,92 @@ export class RoomDO {
   async fetch(request) {
     if (!liveJuryEnabled(this.env)) return unavailable()
     if (request.headers.get('Upgrade')?.toLowerCase() !== 'websocket') {
-      return unavailable('WEBSOCKET_REQUIRED', 426)
+      const { pathname } = new URL(request.url)
+      const body = request.method === 'POST' ? await bodyOf(request) : null
+      if (request.method === 'POST' && !body) return unavailable('INVALID_JSON', 400)
+      if (request.method === 'POST' && pathname === '/internal/create') {
+        const caseId = parseCaseId(body.caseId)
+        const inviteToken = parseCapability(body.inviteToken)
+        const hostToken = parseCapability(body.hostToken)
+        if (!caseId || !inviteToken || !hostToken) return unavailable('INVALID_ROOM', 400)
+        const existing = [...this.state.storage.sql.exec(
+          'SELECT case_id FROM room_meta WHERE singleton = 1',
+        )][0]
+        if (existing) return json({ created: true, duplicate: true, case_id: existing.case_id })
+        const now = Date.now()
+        this.state.storage.sql.exec(
+          `INSERT INTO room_meta
+            (singleton, case_id, invite_hash, host_hash, created_at, expires_at, status)
+            VALUES (1, ?, ?, ?, ?, ?, 'open')`,
+          caseId,
+          await digest(inviteToken),
+          await digest(hostToken),
+          now,
+          now + FREE_BETA_LIMITS.roomTtlSeconds * 1_000,
+        )
+        await this.state.storage.setAlarm(now + FREE_BETA_LIMITS.roomTtlSeconds * 1_000)
+        return json({ created: true }, 201)
+      }
+      const meta = [...this.state.storage.sql.exec(
+        'SELECT case_id, invite_hash, host_hash, expires_at, status FROM room_meta WHERE singleton = 1',
+      )][0]
+      if (!meta || meta.status !== 'open' || meta.expires_at <= Date.now()) {
+        return unavailable('ROOM_NOT_FOUND', 404)
+      }
+      if (request.method === 'POST' && pathname === '/internal/join') {
+        const inviteToken = parseCapability(body.inviteToken)
+        const participantKey = parseOpaqueId(body.participantKey)
+        const displayName = parseDisplayName(body.displayName)
+        if (!inviteToken || !participantKey || !displayName
+          || await digest(inviteToken) !== meta.invite_hash) {
+          return unavailable('ROOM_NOT_FOUND', 404)
+        }
+        const participantHash = await digest(participantKey)
+        const prior = [...this.state.storage.sql.exec(
+          'SELECT seat_id FROM room_seats WHERE participant_hash = ?',
+          participantHash,
+        )][0]
+        const used = new Set([...this.state.storage.sql.exec(
+          'SELECT seat_id FROM room_seats ORDER BY seat_id',
+        )].map(({ seat_id: seatId }) => seatId))
+        const seatId = prior?.seat_id
+          ?? Array.from({ length: FREE_BETA_LIMITS.seatsPerRoom }, (_, index) => index + 1)
+            .find((candidate) => !used.has(candidate))
+        if (!seatId) return unavailable('ROOM_FULL', 409)
+        const seatToken = randomCapability()
+        this.state.storage.sql.exec(
+          `INSERT INTO room_seats
+            (seat_id, participant_hash, display_name, token_hash, joined_at, last_seen_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+            ON CONFLICT(participant_hash) DO UPDATE SET
+              display_name = excluded.display_name,
+              token_hash = excluded.token_hash,
+              last_seen_at = excluded.last_seen_at`,
+          seatId, participantHash, displayName, await digest(seatToken),
+          Date.now(), Date.now(),
+        )
+        return json({ room_id: body.roomId, case_id: meta.case_id, seat_id: seatId, seat_token: seatToken })
+      }
+      const inviteToken = parseCapability(request.headers.get('X-SimJury-Invite'))
+      if (request.method === 'GET' && pathname === '/internal/status') {
+        if (!inviteToken || await digest(inviteToken) !== meta.invite_hash) {
+          return unavailable('ROOM_NOT_FOUND', 404)
+        }
+        const seats = [...this.state.storage.sql.exec(
+          'SELECT seat_id, display_name FROM room_seats ORDER BY seat_id',
+        )]
+        return json({ case_id: meta.case_id, seats, capacity: FREE_BETA_LIMITS.seatsPerRoom })
+      }
+      const hostToken = parseCapability(request.headers.get('X-SimJury-Host'))
+      if (request.method === 'DELETE' && pathname === '/internal/close') {
+        if (!hostToken || await digest(hostToken) !== meta.host_hash) {
+          return unavailable('ROOM_NOT_FOUND', 404)
+        }
+        this.state.storage.sql.exec("UPDATE room_meta SET status = 'closed' WHERE singleton = 1")
+        for (const socket of this.state.getWebSockets()) socket.close(1001, 'Host closed the room')
+        return new Response(null, { status: 204 })
+      }
+      return unavailable('ROOM_ROUTE_NOT_FOUND', 404)
     }
     const seatId = parseSeatId(request.headers.get('X-SimJury-Verified-Seat'))
     if (!seatId) return unavailable('VERIFIED_SEAT_REQUIRED', 401)
@@ -217,6 +353,72 @@ export default {
     }
 
     if (!liveJuryEnabled(env)) return unavailable()
+    if (request.method === 'POST' && pathname === '/api/live/rooms') {
+      const body = await bodyOf(request)
+      const caseId = parseCaseId(body?.case_id)
+      if (!caseId) return unavailable('INVALID_CASE', 400)
+      const roomId = crypto.randomUUID().replaceAll('-', '')
+      const inviteToken = randomCapability()
+      const hostToken = randomCapability()
+      const admission = await durableFetch(
+        env.POOL_COORDINATOR,
+        'global',
+        '/internal/admit',
+        {
+          method: 'POST',
+          body: JSON.stringify({ admissionId: randomCapability(), roomId }),
+        },
+      )
+      if (!admission.ok) return admission
+      const created = await durableFetch(env.ROOMS, roomId, '/internal/create', {
+        method: 'POST',
+        body: JSON.stringify({ caseId, inviteToken, hostToken }),
+      })
+      if (!created.ok) {
+        await durableFetch(env.POOL_COORDINATOR, 'global', `/internal/rooms/${roomId}`, {
+          method: 'DELETE',
+        })
+        return created
+      }
+      return json({
+        room_id: roomId,
+        case_id: caseId,
+        invite_token: inviteToken,
+        host_token: hostToken,
+        expires_in: FREE_BETA_LIMITS.roomTtlSeconds,
+      }, 201)
+    }
+    const roomId = roomRoute(pathname)
+    if (roomId && request.method === 'POST') {
+      const body = await bodyOf(request)
+      if (!body) return unavailable('INVALID_JSON', 400)
+      return durableFetch(env.ROOMS, roomId, '/internal/join', {
+        method: 'POST',
+        body: JSON.stringify({
+          roomId,
+          inviteToken: body.invite_token,
+          participantKey: body.participant_key,
+          displayName: body.display_name,
+        }),
+      })
+    }
+    if (roomId && request.method === 'GET') {
+      return durableFetch(env.ROOMS, roomId, '/internal/status', {
+        headers: { 'X-SimJury-Invite': bearerCapability(request) ?? '' },
+      })
+    }
+    if (roomId && request.method === 'DELETE') {
+      const closed = await durableFetch(env.ROOMS, roomId, '/internal/close', {
+        method: 'DELETE',
+        headers: { 'X-SimJury-Host': bearerCapability(request) ?? '' },
+      })
+      if (closed.ok) {
+        await durableFetch(env.POOL_COORDINATOR, 'global', `/internal/rooms/${roomId}`, {
+          method: 'DELETE',
+        })
+      }
+      return closed
+    }
     return unavailable('LIVE_JURY_PIPELINE_NOT_READY', 501)
   },
 }
