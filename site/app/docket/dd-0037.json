@@ -1,0 +1,353 @@
+{
+  "id": "dd-0037",
+  "publish_date": "2026-08-13",
+  "label": "fiction",
+  "title": "The Seventh Page",
+  "offence_code": "treason",
+  "content_advisories": ["serious_violence"],
+  "detail_level": "non_graphic",
+  "setting": "An unnamed fictional state during an invented armed conflict, where a defence-language specialist is accused of deliberately sending protected negotiating information to a hostile foreign authority.",
+  "charge": "treason by assisting a hostile foreign power",
+  "elements": [
+    "An armed conflict existed between the fictional state and a hostile foreign power.",
+    "The accused intentionally provided material assistance to that hostile power.",
+    "The accused knew the assistance would prejudice the fictional state’s security or defence."
+  ],
+  "hook": "Six authorised pages leave a secure office. A seventh travels with them: the fictional government’s protected negotiating limit. Sela Orr says the export system attached it automatically. The seventh page carries three corrections made during her own editing session.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Sela Orr, 51, is a defence-language specialist who cares for her adult spouse and has publicly argued that secrecy prolongs the fictional conflict.",
+    "if_guilty": "A conviction would imprison her for decades, separate her from her dependent spouse, and formally record her peace advocacy as intentional assistance to a hostile power."
+  },
+  "media": {
+    "cover": {
+      "src": "/today/media/dd-0037/cover.webp",
+      "alt": "A courtroom sketch of seven closed document pages on an evidence table, with the final page set slightly apart.",
+      "caption": "Fictional court sketch: the seven-page export at the centre of the treason charge.",
+      "kind": "court_sketch"
+    },
+    "accused": {
+      "src": "/today/media/dd-0037/characters/acc.webp",
+      "alt": "Courtroom portrait of the accused, Sela Orr.",
+      "caption": "Fictional character portrait: Sela Orr, the accused defence-language specialist.",
+      "kind": "portrait"
+    },
+    "beats": {},
+    "portraits": {
+      "judge": {"src": "/today/media/dd-0037/characters/judge.webp", "alt": "Courtroom portrait of Judge Oren Vale.", "caption": "Fictional character portrait: Judge Oren Vale.", "kind": "portrait"},
+      "pc": {"src": "/today/media/dd-0037/characters/pc.webp", "alt": "Courtroom portrait of prosecuting counsel Mira Dorr.", "caption": "Fictional character portrait: Mira Dorr, prosecuting counsel.", "kind": "portrait"},
+      "dc": {"src": "/today/media/dd-0037/characters/dc.webp", "alt": "Courtroom portrait of defence counsel Tavi Rell.", "caption": "Fictional character portrait: Tavi Rell, defence counsel.", "kind": "portrait"},
+      "acc": {"src": "/today/media/dd-0037/characters/acc.webp", "alt": "Courtroom portrait of the accused, Sela Orr.", "caption": "Fictional character portrait: Sela Orr, the accused.", "kind": "portrait"},
+      "w1": {"src": "/today/media/dd-0037/characters/w1.webp", "alt": "Courtroom portrait of records custodian Halen Voss.", "caption": "Fictional character portrait: Halen Voss, records custodian.", "kind": "portrait"},
+      "w2": {"src": "/today/media/dd-0037/characters/w2.webp", "alt": "Courtroom portrait of language specialist Neri Sann.", "caption": "Fictional character portrait: Neri Sann, language specialist.", "kind": "portrait"},
+      "w3": {"src": "/today/media/dd-0037/characters/w3.webp", "alt": "Courtroom portrait of document examiner Dr Pava Lell.", "caption": "Fictional character portrait: Dr Pava Lell, document examiner.", "kind": "portrait"},
+      "J-01": {"src": "/today/media/dd-0037/characters/J-01.webp", "alt": "Courtroom portrait of juror 2, the civics teacher.", "caption": "Fictional character portrait: Juror 2, the civics teacher.", "kind": "portrait"},
+      "J-02": {"src": "/today/media/dd-0037/characters/J-02.webp", "alt": "Courtroom portrait of juror 3, the registry officer.", "caption": "Fictional character portrait: Juror 3, the registry officer.", "kind": "portrait"},
+      "J-03": {"src": "/today/media/dd-0037/characters/J-03.webp", "alt": "Courtroom portrait of juror 4, the literary translator.", "caption": "Fictional character portrait: Juror 4, the literary translator.", "kind": "portrait"},
+      "J-04": {"src": "/today/media/dd-0037/characters/J-04.webp", "alt": "Courtroom portrait of juror 5, the office administrator.", "caption": "Fictional character portrait: Juror 5, the office administrator.", "kind": "portrait"},
+      "J-05": {"src": "/today/media/dd-0037/characters/J-05.webp", "alt": "Courtroom portrait of juror 6, the school principal.", "caption": "Fictional character portrait: Juror 6, the school principal.", "kind": "portrait"},
+      "J-06": {"src": "/today/media/dd-0037/characters/J-06.webp", "alt": "Courtroom portrait of juror 7, the peace counsellor.", "caption": "Fictional character portrait: Juror 7, the peace counsellor.", "kind": "portrait"},
+      "J-07": {"src": "/today/media/dd-0037/characters/J-07.webp", "alt": "Courtroom portrait of juror 8, the systems administrator.", "caption": "Fictional character portrait: Juror 8, the systems administrator.", "kind": "portrait"},
+      "J-08": {"src": "/today/media/dd-0037/characters/J-08.webp", "alt": "Courtroom portrait of juror 9, the home-care coordinator.", "caption": "Fictional character portrait: Juror 9, the home-care coordinator.", "kind": "portrait"},
+      "J-09": {"src": "/today/media/dd-0037/characters/J-09.webp", "alt": "Courtroom portrait of juror 10, the public archivist.", "caption": "Fictional character portrait: Juror 10, the public archivist.", "kind": "portrait"},
+      "J-10": {"src": "/today/media/dd-0037/characters/J-10.webp", "alt": "Courtroom portrait of juror 11, the copy editor.", "caption": "Fictional character portrait: Juror 11, the copy editor.", "kind": "portrait"},
+      "J-11": {"src": "/today/media/dd-0037/characters/J-11.webp", "alt": "Courtroom portrait of juror 12, the foreperson and hardware merchant.", "caption": "Fictional character portrait: Juror 12, the foreperson and hardware merchant.", "kind": "portrait"}
+    }
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Sela Orr sent a hostile authority the one page it needed most. She corrected that protected page, attached a note describing its value, and used an account she had been warned was hostile. Her hope that disclosure might force peace explains her decision; it does not make the assistance accidental."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The office export system could attach a seventh page automatically, and the defence will reproduce that fault. Sela corrected an internal working draft as part of her job. Political dissent, peace advocacy, and an unreliable export process cannot prove that she intentionally assisted a hostile power beyond reasonable doubt."
+      }
+    },
+    "closing": {
+      "prosecution": {
+        "speaker": "pc",
+        "text": "Automation can append an untouched file. It cannot correct three figures, write a recipient-specific note, or erase Sela’s signed warning about the destination account. The corrected page arrived, and the recipient thanked the sender for it. Whatever her political motive, Sela knowingly provided material assistance during an armed conflict."
+      },
+      "defence": {
+        "speaker": "dc",
+        "text": "The state has proved a dangerous disclosure, not Sela’s intention. The export fault is real, her work required accurate drafts, and the reply does not name her. Treason cannot be inferred from dissent or hindsight. Unless the prosecution excludes accidental attachment and mistaken destination beyond reasonable doubt, you must acquit."
+      }
+    }
+  },
+  "epilogue": "The fictional government rebuilt its export system so working drafts could not enter authorised packages without two-person approval. Negotiators later published a redacted account of the failed talks. Sela’s spouse asked every political group to leave the family outside public campaigning. The language office created a protected channel for internal dissent, while the broader conflict remained outside the scope of this trial.",
+  "cast": [
+    {"id": "judge", "name": "Judge Oren Vale", "role_label": "the judge", "side": "court"},
+    {"id": "pc", "name": "Mira Dorr", "role_label": "prosecuting counsel", "side": "prosecution"},
+    {"id": "dc", "name": "Tavi Rell", "role_label": "defence counsel", "side": "defence"},
+    {"id": "acc", "name": "Sela Orr", "role_label": "the accused and defence-language specialist", "side": "defence"},
+    {"id": "w1", "name": "Halen Voss", "role_label": "secure records custodian", "side": "prosecution"},
+    {"id": "w2", "name": "Neri Sann", "role_label": "language specialist and colleague", "side": "prosecution"},
+    {"id": "w3", "name": "Dr Pava Lell", "role_label": "document examiner", "side": "prosecution"}
+  ],
+  "beats": [
+    {
+      "id": "b1", "kind": "witness", "speaker": "w1", "mode": "examination",
+      "turns": [
+        {"speaker": "pc", "text": "What did the authorised export package contain?"},
+        {"speaker": "w1", "text": "It contained six approved language briefs. The received package contained those six briefs plus a protected seventh page stating the fictional government’s negotiating limit."},
+        {"speaker": "pc", "text": "Where was the package sent?"},
+        {"speaker": "w1", "text": "It was sent to an account controlled by the hostile foreign authority during the armed conflict."}
+      ],
+      "text": "What did the authorised export package contain? It contained six approved language briefs. The received package contained those six briefs plus a protected seventh page stating the fictional government’s negotiating limit. Where was the package sent? It was sent to an account controlled by the hostile foreign authority during the armed conflict.",
+      "surface_persuasion": 0.7, "true_weight": 0.56, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "The custodian established material assistance and destination, but this evidence alone did not prove who intentionally included the seventh page.",
+      "tags": ["method", "procedure", "identity"]
+    },
+    {
+      "id": "b2", "kind": "witness", "speaker": "w1", "mode": "cross",
+      "turns": [
+        {"speaker": "dc", "text": "Can the export system attach a page that the operator did not select?"},
+        {"speaker": "w1", "text": "Yes. A saved working draft can inherit an attachment from an earlier package."},
+        {"speaker": "dc", "text": "Did the transmission log record a separate click selecting page seven?"},
+        {"speaker": "w1", "text": "No. It recorded one package export. The log does not identify which pages the operator consciously intended to include."}
+      ],
+      "text": "Can the export system attach a page that the operator did not select? Yes. A saved working draft can inherit an attachment from an earlier package. Did the transmission log record a separate click selecting page seven? No. It recorded one package export. The log does not identify which pages the operator consciously intended to include.",
+      "surface_persuasion": 0.62, "true_weight": 0.52, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "The cross-examination established a genuine accidental-export mechanism and prevented the transmission record from proving intention by itself.",
+      "tags": ["procedure", "intent", "digital_forensics"]
+    },
+    {
+      "id": "b3", "kind": "exhibit", "speaker": "dc",
+      "text": "The defence reproduces the export fault with an unused test package. Selecting the same six authorised page types causes a previously linked seventh page to travel without a separate prompt. The resulting audit entry resembles the charged transmission. The demonstration proves the system could add an untouched page automatically; it does not address changes made to that page beforehand.",
+      "surface_persuasion": 0.87, "true_weight": 0.2, "direction": "innocence", "reveal_stamp": "misleading",
+      "reveal_note": "The fault was real but incomplete as an explanation. It could attach a page automatically, yet it could not make Sela’s corrections or write her cover note.",
+      "tags": ["digital_forensics", "procedure", "intent"]
+    },
+    {
+      "id": "b4", "kind": "witness", "speaker": "w2", "mode": "examination",
+      "turns": [
+        {"speaker": "pc", "text": "What had Sela said about the protected negotiating limit?"},
+        {"speaker": "w2", "text": "She said secrecy around the limit prolonged the conflict and that disclosure might force both fictional governments back to negotiations."},
+        {"speaker": "pc", "text": "Did she advocate violence or loyalty to the hostile power?"},
+        {"speaker": "w2", "text": "No. Her stated purpose was peace, but she believed disclosure could create pressure."}
+      ],
+      "text": "What had Sela said about the protected negotiating limit? She said secrecy around the limit prolonged the conflict and that disclosure might force both fictional governments back to negotiations. Did she advocate violence or loyalty to the hostile power? No. Her stated purpose was peace, but she believed disclosure could create pressure.",
+      "surface_persuasion": 0.59, "true_weight": 0.44, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "Sela’s words supplied a possible reason for deliberate disclosure, while also showing an idealistic motive rather than allegiance to the hostile authority.",
+      "tags": ["motive", "intent", "credibility"]
+    },
+    {
+      "id": "b5", "kind": "witness", "speaker": "w2", "mode": "cross",
+      "turns": [
+        {"speaker": "dc", "text": "Was Sela permitted to argue for openness and peace inside the office?"},
+        {"speaker": "w2", "text": "Yes. Internal disagreement was lawful and common."},
+        {"speaker": "dc", "text": "Did you ever hear Sela say she intended to assist the hostile authority?"},
+        {"speaker": "w2", "text": "No. I heard her argue that public pressure could shorten the conflict. I never heard her express support for the hostile government."}
+      ],
+      "text": "Was Sela permitted to argue for openness and peace inside the office? Yes. Internal disagreement was lawful and common. Did you ever hear Sela say she intended to assist the hostile authority? No. I heard her argue that public pressure could shorten the conflict. I never heard her express support for the hostile government.",
+      "surface_persuasion": 0.58, "true_weight": 0.46, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "The colleague correctly separated lawful dissent from treason and confirmed that political belief alone did not prove intentional assistance.",
+      "tags": ["motive", "intent", "burden"]
+    },
+    {
+      "id": "b6", "kind": "witness", "speaker": "w3", "mode": "examination",
+      "turns": [
+        {"speaker": "pc", "text": "What does the revision history show about page seven?"},
+        {"speaker": "w3", "text": "Sela’s authenticated session corrected three obsolete figures on that page eleven minutes before export. No authorised page was changed."},
+        {"speaker": "pc", "text": "Could the export fault make those corrections?"},
+        {"speaker": "w3", "text": "No. The fault can attach an existing file. It cannot edit content or choose more accurate figures."}
+      ],
+      "text": "What does the revision history show about page seven? Sela’s authenticated session corrected three obsolete figures on that page eleven minutes before export. No authorised page was changed. Could the export fault make those corrections? No. The fault can attach an existing file. It cannot edit content or choose more accurate figures.",
+      "surface_persuasion": 0.66, "true_weight": 0.92, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "The manual corrections focused only on the protected page and made its information more useful immediately before transmission.",
+      "tags": ["identity", "intent", "digital_forensics"]
+    },
+    {
+      "id": "b7", "kind": "witness", "speaker": "w3", "mode": "cross",
+      "turns": [
+        {"speaker": "dc", "text": "Did Sela’s ordinary duties include correcting inaccurate working drafts?"},
+        {"speaker": "w3", "text": "Yes. The edits were within her authorised role."},
+        {"speaker": "dc", "text": "Does the revision history prove why she corrected page seven?"},
+        {"speaker": "w3", "text": "No. It proves deliberate editing, timing, and identity. Intention to transmit must be assessed with the destination warning, cover note, and recipient response."}
+      ],
+      "text": "Did Sela’s ordinary duties include correcting inaccurate working drafts? Yes. The edits were within her authorised role. Does the revision history prove why she corrected page seven? No. It proves deliberate editing, timing, and identity. Intention to transmit must be assessed with the destination warning, cover note, and recipient response.",
+      "surface_persuasion": 0.56, "true_weight": 0.55, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "The examiner confined the revision evidence to what it proved and left the jury to decide intent from the complete chain.",
+      "tags": ["intent", "procedure", "credibility"]
+    },
+    {
+      "id": "b8", "kind": "exhibit", "speaker": "pc",
+      "text": "The recipient replied, ‘The corrected limit is useful.’ The phrase matches a private cover note saved in Sela’s draft folder: ‘Page seven now has the current limit.’ The reply arrived through the hostile authority’s account eighteen minutes after transmission. Neither text describes operations, locations, or methods; both identify the same corrected information.",
+      "surface_persuasion": 0.68, "true_weight": 0.82, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "The matching language links Sela’s private note to the hostile recipient’s acknowledgment and supports deliberate, useful assistance.",
+      "tags": ["intent", "method", "identity"]
+    },
+    {
+      "id": "b9", "kind": "witness", "speaker": "acc", "mode": "examination",
+      "turns": [
+        {"speaker": "dc", "text": "Why did you correct page seven?"},
+        {"speaker": "acc", "text": "Accurate working drafts were part of my job. I believed the page remained internal and did not choose it for export."},
+        {"speaker": "dc", "text": "Why was the cover note in your folder?"},
+        {"speaker": "acc", "text": "It was an internal reminder. I did not write it for a hostile recipient, and I did not intend to assist one."}
+      ],
+      "text": "Why did you correct page seven? Accurate working drafts were part of my job. I believed the page remained internal and did not choose it for export. Why was the cover note in your folder? It was an internal reminder. I did not write it for a hostile recipient, and I did not intend to assist one.",
+      "surface_persuasion": 0.61, "true_weight": 0.38, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "Sela offered an innocent purpose for each act separately, but her account did not explain the hostile destination warning or matching acknowledgment.",
+      "tags": ["credibility", "intent", "procedure"]
+    },
+    {
+      "id": "b10", "kind": "witness", "speaker": "acc", "mode": "cross",
+      "turns": [
+        {"speaker": "pc", "text": "Had you signed a warning identifying the destination account as controlled by the hostile authority?"},
+        {"speaker": "acc", "text": "Yes. I signed that warning three weeks earlier."},
+        {"speaker": "pc", "text": "Did the export screen display that account before you confirmed transmission?"},
+        {"speaker": "acc", "text": "Yes. The address was displayed, but I believed I was sending only the six authorised briefs."}
+      ],
+      "text": "Had you signed a warning identifying the destination account as controlled by the hostile authority? Yes. I signed that warning three weeks earlier. Did the export screen display that account before you confirmed transmission? Yes. The address was displayed, but I believed I was sending only the six authorised briefs.",
+      "surface_persuasion": 0.62, "true_weight": 0.7, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "Sela admitted prior knowledge of the hostile account and confirmation of that visible destination, completing the knowledge element when combined with the corrected page.",
+      "tags": ["credibility", "intent", "identity"]
+    },
+    {
+      "id": "b11", "kind": "direction", "speaker": "judge",
+      "text": "You must decide whether Sela intentionally provided material assistance to a hostile foreign power and knew the assistance would prejudice the fictional state’s security or defence. Peace advocacy, dissent, and document carelessness are not treason. The prosecution must exclude accidental attachment and mistaken destination beyond reasonable doubt. If either remains reasonably possible, your verdict must be Not Guilty.",
+      "surface_persuasion": 0.5, "true_weight": 0.55, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "The direction protects lawful dissent and requires proof of intentional assistance, hostile destination, and security knowledge rather than political disapproval.",
+      "tags": ["burden", "intent", "procedure"]
+    }
+  ],
+  "checkins": [],
+  "verdict_truth": "Guilty",
+  "twist": "The export fault was genuine and could attach a seventh page automatically. It could not correct that page, create Sela’s matching cover note, or remove her knowledge of the hostile destination. Her motive was to force peace, but the assistance was deliberate.",
+  "difficulty_target": 0.72,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01", "seat": 2, "label": "Civics teacher", "persona": "Protects lawful dissent and demands proof of conduct rather than disloyal-sounding belief.", "register": "formal", "arc": "principled_holdout",
+        "initial": {"position": "NG", "confidence": 72},
+        "weights": {"burden": 2, "intent": 2, "motive": -1},
+        "lines": {"agree": ["The prosecution must prove intentional assistance, not punish Sela’s argument for peace."], "pushback": ["Political dissent cannot fill a missing link between editing and transmission."], "concede": ["The corrected page, hostile destination, and acknowledgment now form a direct chain."], "burden_drift": ["The wartime setting makes critical speech feel more incriminating than it is."], "burden_correct": ["The judge requires proof of assistance and knowledge beyond reasonable doubt."], "final": ["The conduct, rather than the opinion, ultimately proves the treason charge."]},
+        "reaction_rules": [
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 5, "line": "burden_correct"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-02", "seat": 3, "label": "Registry officer", "persona": "Reads audit records carefully and distinguishes automated packaging from manual revision.", "register": "formal", "arc": "steady",
+        "initial": {"position": "G", "confidence": 64},
+        "weights": {"digital_forensics": 2, "procedure": 2, "identity": 1},
+        "lines": {"agree": ["The revision history proves that Sela manually changed only page seven."], "pushback": ["The package log alone cannot show which page she intended to send."], "concede": ["The reproduced fault confirms a real risk of accidental attachment."], "burden_drift": ["A restricted page in a hostile inbox makes carelessness feel like intention."], "burden_correct": ["The audit must prove who acted, what was deliberate, and what remained automatic."], "final": ["Manual corrections and destination confirmation distinguish this export from an accident."]},
+        "reaction_rules": [
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "agree"}},
+          {"when": {"theme": "procedure", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-03", "seat": 4, "label": "Literary translator", "persona": "Changes position when matching language reveals the intended audience of a document.", "register": "hesitant", "arc": "mind_changer",
+        "initial": {"position": "U", "confidence": 35},
+        "weights": {"intent": 2, "credibility": 1, "method": 2},
+        "lines": {"agree": ["The phrase ‘corrected limit’ connects the private note with the recipient’s reply."], "pushback": ["Similar wording matters only if the documents share a deliberate context."], "concede": ["The matching language makes an internal reminder less plausible to me."], "burden_drift": ["Words that sound secretive can tempt me to infer guilt too quickly."], "burden_correct": ["Language supports intention only when timing and destination independently agree."], "final": ["Here the wording, corrections, and hostile destination reinforce one another."]},
+        "reaction_rules": [
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 10, "line": "concede"}},
+          {"when": {"theme": "method", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-04", "seat": 5, "label": "Office administrator", "persona": "Has seen attachment faults and initially treats the reproduced export error as decisive.", "register": "plain", "arc": "vibes",
+        "initial": {"position": "NG", "confidence": 66},
+        "weights": {"procedure": 2, "digital_forensics": 1, "intent": 1},
+        "lines": {"agree": ["The test proves that an operator can send an extra page without selecting it."], "pushback": ["That fault does not explain why Sela corrected the protected page immediately beforehand."], "concede": ["The manual edits make this export different from the clean demonstration."], "burden_drift": ["Because the office system failed, I start expecting Sela to prove she noticed nothing."], "burden_correct": ["The prosecution must still prove that she intended the assistance."], "final": ["The fault creates doubt in general, but the case-specific edits overcome it."]},
+        "reaction_rules": [
+          {"when": {"theme": "procedure", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 8, "line": "agree"}},
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-05", "seat": 6, "label": "School principal", "persona": "Responds strongly to signed warnings and expects professionals to understand acknowledged responsibilities.", "register": "blunt", "arc": "steady",
+        "initial": {"position": "G", "confidence": 70},
+        "weights": {"credibility": 2, "intent": 2, "procedure": 1},
+        "lines": {"agree": ["Sela signed the warning and then confirmed the same hostile destination."], "pushback": ["Signing a warning proves knowledge of the account, not knowledge of every attachment."], "concede": ["The export fault explains how an innocent operator could send an extra page."], "burden_drift": ["Her professional role makes me want to treat negligence as deliberate betrayal."], "burden_correct": ["Treason requires intention, so professional carelessness cannot be enough."], "final": ["The warning becomes decisive only when joined to the focused corrections and cover note."]},
+        "reaction_rules": [
+          {"when": {"theme": "credibility", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
+          {"when": {"theme": "procedure", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 3, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-06", "seat": 7, "label": "Peace counsellor", "persona": "Understands Sela’s stated motive and resists equating a desire for peace with allegiance to an enemy.", "register": "plain", "arc": "principled_holdout",
+        "initial": {"position": "NG", "confidence": 62},
+        "weights": {"motive": 2, "intent": 2, "burden": 1},
+        "lines": {"agree": ["A peace motive does not prevent an intentional decision to assist a hostile authority."], "pushback": ["Sela’s political belief cannot itself prove any criminal act."], "concede": ["Her manual corrections and known destination make the assistance look deliberate."], "burden_drift": ["In wartime, the room may treat criticism as a duty to prove loyalty."], "burden_correct": ["Sela does not have to prove patriotism; the prosecution must prove treason."], "final": ["I accept her motive as sincere and still find the intentional assistance proved."]},
+        "reaction_rules": [
+          {"when": {"theme": "motive", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 3, "line": "burden_drift"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-07", "seat": 8, "label": "Systems administrator", "persona": "Tests whether a claimed system fault actually explains every human action in the audit trail.", "register": "formal", "arc": "steady",
+        "initial": {"position": "G", "confidence": 58},
+        "weights": {"digital_forensics": 2, "intent": 2, "procedure": 1},
+        "lines": {"agree": ["Automation explains attachment, but it cannot explain editing and confirmation."], "pushback": ["A technical fault should not become a universal answer to separate human actions."], "concede": ["The defence demonstration proves that the export interface was unsafe."], "burden_drift": ["A bad system can make me demand that the operator disprove every possibility."], "burden_correct": ["The prosecution must isolate the human decisions from the system failure."], "final": ["The focused revisions and visible destination are the human decisions that remain."]},
+        "reaction_rules": [
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "agree"}},
+          {"when": {"theme": "procedure", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 3, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-08", "seat": 9, "label": "Home-care coordinator", "persona": "Feels the human cost to Sela’s spouse but does not use sympathy as evidence of innocence.", "register": "hesitant", "arc": "drifter",
+        "initial": {"position": "U", "confidence": 32},
+        "weights": {"credibility": 1, "motive": 2, "intent": 2},
+        "lines": {"agree": ["Sela’s family responsibility makes the alleged choice hard to understand, not impossible."], "pushback": ["Neither family hardship nor political conscience answers the revision history."], "concede": ["The evidence of deliberate correction changes how I read her personal motive."], "burden_drift": ["The charge is so grave that I sometimes expect Sela to explain every document."], "burden_correct": ["Her family circumstances cannot raise or lower the prosecution’s burden."], "final": ["I decide from the edits, warning, and acknowledgment rather than sympathy."]},
+        "reaction_rules": [
+          {"when": {"theme": "motive", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 3, "line": "agree"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-09", "seat": 10, "label": "Public archivist", "persona": "Distrusts secrecy claims and demands clear proof that the information was both protected and materially useful.", "register": "formal", "arc": "steady",
+        "initial": {"position": "NG", "confidence": 54},
+        "weights": {"procedure": 2, "method": 2, "burden": 1},
+        "lines": {"agree": ["The recipient’s reply shows that the corrected limit was materially useful."], "pushback": ["A protected label does not prove intentional assistance by Sela."], "concede": ["The matching cover note links usefulness to her own work rather than a generic classification."], "burden_drift": ["Official secrecy can make the court accept importance without testing it."], "burden_correct": ["The state must prove both material assistance and Sela’s knowledge of it."], "final": ["The acknowledgment and warning satisfy those separate requirements."]},
+        "reaction_rules": [
+          {"when": {"theme": "method", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "burden_correct"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-10", "seat": 11, "label": "Copy editor", "persona": "Notices that the corrected figures and cover note use deliberate, audience-aware language.", "register": "plain", "arc": "vibes",
+        "initial": {"position": "G", "confidence": 66},
+        "weights": {"intent": 2, "identity": 1, "credibility": 2},
+        "lines": {"agree": ["Three corrections on one protected page look purposeful rather than routine."], "pushback": ["Editing a draft is lawful, so the destination and note still matter."], "concede": ["The automatic export fault is a real weakness in the prosecution’s first impression."], "burden_drift": ["The phrase ‘hostile power’ makes ordinary editing sound criminal by association."], "burden_correct": ["The wording must be tested against conduct, not against the label on the recipient."], "final": ["The edits, note, and acknowledgment show writing prepared for that recipient."]},
+        "reaction_rules": [
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "agree"}},
+          {"when": {"theme": "procedure", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 3, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-11", "seat": 12, "label": "Hardware merchant and foreperson", "persona": "Breaks the case into destination, assistance, intention, and knowledge before discussing motive.", "register": "plain", "arc": "foreperson",
+        "initial": {"position": "G", "confidence": 56},
+        "weights": {"burden": 2, "intent": 2, "procedure": 1},
+        "lines": {"agree": ["We have a hostile destination, useful information, focused edits, and prior warning."], "pushback": ["We should not let Sela’s politics stand in for any missing element."], "concede": ["The system fault means the package log cannot prove intention alone."], "burden_drift": ["The conflict creates pressure to decide loyalty before deciding evidence."], "burden_correct": ["Our task is the three canonical elements, each proved beyond reasonable doubt."], "final": ["The independent evidence proves every element without relying on political belief."]},
+        "reaction_rules": [
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "burden_correct"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "agree"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5",
+    "prompt_version": "dd-2026-v3",
+    "reviewer": "content-curator",
+    "batch_pr": "grave-crime-seven-case-replacement",
+    "language_reviewer": "language-and-clarity-pass",
+    "sensitivity_reviewer": "fictional-national-security-non-operational-pass"
+  }
+}
