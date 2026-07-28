@@ -8,8 +8,8 @@ const base = {
 
 describe('share text room line', () => {
   it('adds a spoiler-safe room split', () => {
-    const text = buildShareText({ ...base, room: { kind: 'hung', g: 7, ng: 5 } })
-    expect(text).toContain('🏛️ My jury hung 7–5')
+    const text = buildShareText({ ...base, room: { kind: 'hung', g: 7, ng: 4, u: 1 } })
+    expect(text).toContain('🏛️ My jury hung 7–4–1 undecided')
     // Still no verdict words anywhere.
     expect(text.toLowerCase()).not.toContain('guilt')
   })
