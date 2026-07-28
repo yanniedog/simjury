@@ -1,14 +1,14 @@
 # SimJury
 
-> SimJury is an account-free daily courtroom experience. A player hears a serious fictional case, examines the evidence, deliberates with eleven authored jurors, and locks a verdict in about ten minutes.
+> SimJury is an account-free daily courtroom experience. A player hears a serious case, examines the evidence, and deliberates with eleven authored jurors in about twenty minutes. An optional live-jury beta lets invited people join the same room alongside the clearly labelled authored jurors. The player may record Guilty, Not Guilty, or Undecided / No verdict; the jury may agree or hang.
 
-SimJury is a static website. The interactive Daily Docket requires JavaScript, while its raw HTML contains a non-spoiler description of every phase for text-only clients. Player progress, notes, verdicts, preferences, and sitting statistics stay in the browser.
+SimJury is static-first. The interactive Daily Docket requires JavaScript, while its raw HTML contains a non-spoiler description of every phase for text-only clients. Solo progress, notes, verdicts, preferences, and sitting statistics stay in the browser. Optional live rooms use short-lived room state only while invited people deliberate.
 
 ## Canonical public pages
 
 - [Home](https://simjury.com/): Product introduction, content notice, and the path into the Daily Docket.
-- [The Daily Docket](https://simjury.com/today/): Today's featured sitting, the complete seven-case library, evidence, deliberation, verdict, reveal, and sharing.
-- [Privacy](https://simjury.com/privacy/): Browser storage, narration requests, static delivery, and the absence of accounts, tracking, and runtime AI.
+- [The Daily Docket](https://simjury.com/today/): Today's featured sitting, the complete seven-case library, evidence, authored or optional live-human deliberation, jury result, reveal, and sharing.
+- [Privacy](https://simjury.com/privacy/): Browser storage, short-lived live-room data, narration requests, static delivery, and the absence of accounts, tracking, and runtime AI.
 
 ## Site access
 

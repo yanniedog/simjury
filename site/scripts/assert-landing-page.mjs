@@ -7,6 +7,8 @@ const publicRoot = join(siteRoot, 'public')
 const html = readFileSync(join(publicRoot, 'index.html'), 'utf8')
 const privacyHtml = readFileSync(join(publicRoot, 'privacy', 'index.html'), 'utf8')
 const css = readFileSync(join(publicRoot, 'landing-modern.css'), 'utf8')
+const readyJs = readFileSync(join(publicRoot, 'ready.js'), 'utf8')
+const appStorage = readFileSync(join(siteRoot, 'app', 'src', 'lib', 'storage.ts'), 'utf8')
 const headers = readFileSync(join(publicRoot, '_headers'), 'utf8')
 const sitemap = readFileSync(join(publicRoot, 'sitemap.xml'), 'utf8')
 const failures = []
@@ -37,25 +39,47 @@ for (const reference of new Set(localReferences)) {
 }
 
 requireText(html, 'One grave case · Every day', 'landing must position the docket as serious crime')
-requireText(html, 'non-graphic references', 'landing must give a visible mature-content notice')
+requireText(html, 'direct discussion of death, violence', 'landing must give an honest adult-content notice')
 requireText(html, 'case-specific advisory', 'landing must promise a case-specific content advisory')
 requireText(html, 'Progress saved locally', 'landing must describe local progress accurately')
-requireText(html, 'Your progress, notes and verdict stay on this device', 'landing must explain saved-state privacy')
+requireText(html, 'Solo progress, notes and verdict stay on this device', 'landing must explain solo saved-state privacy')
+requireText(html, 'short-lived room service described in Privacy', 'landing must disclose live-room data handling')
 requireText(html, 'href="/privacy/"', 'landing footer must link to the privacy page')
-requireText(html, 'This is single-player: there are no live players or chat.', 'landing must distinguish scripted jurors from live players')
+requireText(html, 'optional live-jury beta', 'landing must disclose the optional live-human pathway')
+requireText(html, 'alongside them', 'landing must describe hybrid human and authored deliberation')
+requireText(html, 'Guilty, Not Guilty, or Undecided / No verdict', 'landing must offer the player a genuine undecided position')
+requireText(html, 'Any juror may remain undecided', 'landing must preserve undecided positions throughout the room')
+requireText(html, 'hung jury with no verdict', 'landing must disclose the hung-jury outcome')
+requireText(html, 'role="dialog"', 'landing entry disclosure must expose dialog semantics')
+requireText(html, 'aria-modal="true"', 'landing entry disclosure must be modal')
+requireText(html, 'Everything in SimJury is fictional', 'landing entry must contain the single fiction disclosure')
+requireText(html, 'adults aged 18 and over', 'landing entry must contain the 18+ condition')
+requireText(html, 'id="fiction-disclosure-accept"', 'landing entry must provide an explicit acknowledgement')
+if (html.split('Everything in SimJury is fictional').length !== 2) {
+  failures.push('landing must state the fiction disclosure exactly once')
+}
+requireText(readyJs, "simjury:fiction-disclosure:v2", 'landing and app must share the versioned disclosure key')
+requireText(appStorage, "simjury:fiction-disclosure:v2", 'app must retain the root landing disclosure key')
+requireText(readyJs, 'window.localStorage.getItem', 'landing must suppress a previously accepted disclosure')
+requireText(readyJs, 'window.localStorage.setItem', 'landing must persist a new acknowledgement')
+requireText(readyJs, 'catch {', 'landing disclosure must survive unavailable browser storage')
+requireText(readyJs, 'disclosureAccept.focus()', 'landing disclosure must move keyboard focus to its action')
 requireText(html, 'tabindex="-1"', 'landing main target must accept focus from the skip link')
 requireText(html, '/daily-docket-cover.webp', 'landing must use the stable case-independent hero asset')
 
 const deliberateAt = html.indexOf('Deliberate from the evidence')
-const lockAt = html.indexOf('Lock your verdict')
-if (deliberateAt < 0 || lockAt < 0 || deliberateAt > lockAt) {
-  failures.push('landing must describe deliberation before the final verdict lock')
+const viewAt = html.indexOf('Reach your view; hear the room')
+if (deliberateAt < 0 || viewAt < 0 || deliberateAt > viewAt) {
+  failures.push('landing must describe deliberation before the individual view and room result')
 }
 
 forbidText(html, '/today/media/dd-', 'landing hero must not depend on replaceable docket case assets')
 forbidText(html, 'Private in your browser', 'landing must not overstate browser privacy')
 forbidText(html, 'free and private', 'social copy must not overstate privacy')
 forbidText(html, 'cloudflareinsights.com', 'landing must not embed Cloudflare analytics')
+forbidText(html, 'About 10 minutes', 'landing must not retain the obsolete ten-minute promise')
+forbidText(html, 'This is single-player: there are no live players or chat.', 'landing must not deny the optional live-human pathway')
+forbidText(html, 'simulations', 'landing must use authored-juror language consistently')
 forbidText(css, '.hero-copy { order: 2; }', 'mobile landing must not place artwork before the value proposition')
 
 requireText(privacyHtml, 'no player accounts or backend player-state service', 'privacy page must explain the absence of accounts and backend player state')
