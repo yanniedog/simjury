@@ -6,7 +6,7 @@
   "offence_code": "terrorist_assassination_attempt",
   "content_advisories": ["terrorism", "serious_violence"],
   "detail_level": "non_graphic",
-  "setting": "The present-day fictional state of Orinth, after security officers prevented an attack during First Councillor Ilyra Senn’s public address on flood recovery.",
+  "setting": "The fictional present-day State of Orinth is led by First Councillor Ilyra Senn. At 2:00, Senn was addressing flood recovery in a secured civic venue. Corin Vale, whose studio had proposed a synthetic-media security demonstration, spoke at a separate luncheon. Event officer Jori Dane admitted a package after a video call appeared to come from Corin. Protective officers isolated it before an activation command could reach it.",
   "charge": "attempting a terrorist assassination of the head of government",
   "elements": [
     "The accused intended to kill the fictional head of government.",
@@ -16,7 +16,7 @@
   "hook": "A live call bearing Corin Vale’s face clears a delivery into First Councillor Ilyra Senn’s venue. At the same minute, Corin is speaking before a luncheon audience elsewhere. The call is synthetic. The jury must decide who controlled what happened next.",
   "accused": {
     "cast_id": "acc",
-    "human": "Corin Vale, 39, is a civic-media consultant who teaches schools and public offices how synthetic images can undermine trust.",
+    "human": "Corin Vale, 39, runs a civic-media studio and teaches public institutions how synthetic images undermine trust. Corin worked with contractor Daro Quill and two employees on proposed demonstration Second Presence. Jori knew Corin through venue planning. Corin held no official role in Senn’s protective team.",
     "if_guilty": "Any sentence is a matter for the judge after the verdict and must play no part in the jury’s decision."
   },
   "media": {
@@ -58,21 +58,21 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution alleges Corin Vale acted as a principal: Corin personally sent the activation command after arranging a synthetic authorization call and a visible luncheon appearance. You’ll hear how the delivery entered, who could access the studio project, and what a separate hardware token recorded. The prosecution says those facts prove an intended political killing, not merely careless media work."
+        "text": "Corin Vale is charged as the principal—the person who personally sent the activation command—not as someone responsible for Jori Dane or another collaborator. The parties agree an explosive charge entered the venue and somebody tried to activate it. Identity and intent are disputed. You’ll hear from Jori, the investigator who preserved the records, and an examiner who compared two separate digital systems. Judge each source within its limits, then consider whether they converge on Corin and prove the lethal and ideological purpose charged."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence says the synthetic call and studio archive identify no operator. Corin’s collaborators shared the source recordings, administrator account, draft, and stage bag containing the token. The activation record proves a token was used, not whose hand used it. Jori Dane changed accounts after receiving immunity. Decide whether suspicion about a strange demonstration can identify a principal beyond reasonable doubt."
+        "text": "A dangerous event occurred, and Jori wrongly bypassed inspection. Neither fact identifies Corin. Four people could use Second Presence and its administrator account. Daro Quill had carried the stage bag and knew the approval routine. A token record identifies a device, not the hand touching it. Jori first denied receiving an instruction and changed that account after immunity. Corin’s writing describes a risk for a proposed safety exercise. Keep each record within its proved limits and ask whether another authorised collaborator remains reasonably possible."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The shared studio archive alone would not be enough. Start instead with Corin’s own instruction to Jori, then the hardware token: it was registered to Corin, recovered from Corin’s bag, and physically confirmed during Corin’s unobserved greenroom interval. Add the risk scenario Corin admits writing and the command sent seconds later. The prosecution says Corin personally crossed from preparation to attempt."
+        "text": "The shared archive cannot identify its operator; the prosecution accepts that. Now assemble the independent chronology. Jori says Corin arranged the false approval and bypass. At 2:06 the provider issued a fresh challenge, Corin’s token confirmed it, and the command followed. Certified footage places Corin with the bag from 2:04 to 2:07. The device was real, the exercise unapproved, and Corin’s admitted scenario contemplated public fear forcing a change in government power. Those circumstances prove Corin personally attempted the ideologically motivated killing."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The prosecution cannot turn possession into identity. Daro Quill carried the stage bag and knew the token’s ordinary approval routine; the greenroom side entrance was not filmed. The shared project log cannot distinguish four users. Jori first denied any instruction, and Corin’s draft describes a safety demonstration, not an attack. If another authorised collaborator could have used these materials and the token, you cannot be sure Corin sent the command."
+        "text": "That chronology contains a human gap. The token records no fingerprint, the side entrance was unfilmed, and Daro had carried the bag and knew its approval routine. The project, deletion queue, recordings, and code were shared. Jori changed accounts after immunity and never heard Corin mention violence or politics. Corin’s draft warns what a borrowed face might cause; it does not request an attack. The defence need not prove Daro acted. Unless the prosecution excludes that reasonable access and proves Corin’s lethal and ideological intent, the verdict is Not Guilty."
       }
     }
   },
@@ -93,12 +93,14 @@
       "speaker": "w3",
       "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "What was your responsibility at Ilyra Senn’s address?"},
-        {"speaker": "w3", "text": "Every private delivery needed inspection and a second officer’s approval."},
+        {"speaker": "pc", "text": "Jori, what was your role, and how did you know Corin?"},
+        {"speaker": "w3", "text": "I coordinated deliveries. Corin attended planning meetings about a proposed synthetic-media exercise, so I knew Corin and the studio name."},
+        {"speaker": "pc", "text": "What rule applied to a private package?"},
+        {"speaker": "w3", "text": "Inspect it, record its courier, and obtain a second officer’s approval. A caller couldn’t replace that."},
         {"speaker": "pc", "text": "What happened at two o’clock?"},
-        {"speaker": "w3", "text": "A live call showed Corin saying a controlled media-test package was expected and giving our advance code. I accepted it and bypassed the second approval."}
+        {"speaker": "w3", "text": "A live call showed Corin approving a test package and giving our advance code. I accepted it without inspection or the second approval. That was wrong."}
       ],
-      "text": "What was your responsibility at Ilyra Senn’s address? Every private delivery needed inspection and a second officer’s approval. What happened at two o’clock? A live call showed Corin saying a controlled media-test package was expected and giving our advance code. I accepted it and bypassed the second approval.",
+      "text": "Jori, what was your role, and how did you know Corin? I coordinated deliveries. Corin attended planning meetings about a proposed synthetic-media exercise, so I knew Corin and the studio name. What rule applied to a private package? Inspect it, record its courier, and obtain a second officer’s approval. A caller couldn’t replace that. What happened at two o’clock? A live call showed Corin approving a test package and giving our advance code. I accepted it without inspection or the second approval. That was wrong.",
       "surface_persuasion": 0.56,
       "true_weight": 0.48,
       "direction": "guilt",
@@ -112,12 +114,14 @@
       "speaker": "w1",
       "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "How did you preserve what the search found?"},
-        {"speaker": "w1", "text": "I led the search, photographed the sealed package where it stood, and recorded every transfer to the protective laboratory."},
+        {"speaker": "pc", "text": "Arin, what happened after the delivery entered?"},
+        {"speaker": "w1", "text": "At 2:03 an officer noticed the missing approval. We cleared the room, isolated the package, photographed its seals, and logged it."},
+        {"speaker": "pc", "text": "How did you preserve it?"},
+        {"speaker": "w1", "text": "Every transfer was signed. The laboratory received the photographed seals intact and recorded opening them."},
         {"speaker": "pc", "text": "What did the examination and provider record establish?"},
-        {"speaker": "w1", "text": "The package contained a destructive device. At 2:06, an activation command was sent, but our isolation system prevented it from reaching the device."}
+        {"speaker": "w1", "text": "The admitted laboratory report identified a radio-triggered explosive charge inside an equipment case. It could cause fatal blast injuries across the podium area. A command was sent at 2:06, but isolation blocked it and nobody was harmed."}
       ],
-      "text": "How did you preserve what the search found? I led the search, photographed the sealed package where it stood, and recorded every transfer to the protective laboratory. What did the examination and provider record establish? The package contained a destructive device. At 2:06, an activation command was sent, but our isolation system prevented it from reaching the device.",
+      "text": "Arin, what happened after the delivery entered? At 2:03 an officer noticed the missing approval. We cleared the room, isolated the package, photographed its seals, and logged it. How did you preserve it? Every transfer was signed. The laboratory received the photographed seals intact and recorded opening them. What did the examination and provider record establish? The admitted laboratory report identified a radio-triggered explosive charge inside an equipment case. It could cause fatal blast injuries across the podium area. A command was sent at 2:06, but isolation blocked it and nobody was harmed.",
       "surface_persuasion": 0.84,
       "true_weight": 0.58,
       "direction": "guilt",
@@ -132,11 +136,13 @@
       "mode": "cross",
       "turns": [
         {"speaker": "dc", "text": "You found no fingerprint or biological material from Corin on the package?"},
-        {"speaker": "w1", "text": "That’s correct."},
+        {"speaker": "w1", "text": "Correct. The package itself identified no sender."},
+        {"speaker": "dc", "text": "Nor did the label and courier record identify who packed it?"},
+        {"speaker": "w1", "text": "No. They showed how it entered, not who prepared it."},
         {"speaker": "dc", "text": "And the first provider certificate named an account, not a human sender?"},
-        {"speaker": "w1", "text": "Yes. It showed the activation account and time. We needed separate evidence about who controlled the account and its hardware token."}
+        {"speaker": "w1", "text": "Yes. It recorded the studio account and time. Separate records were needed about its hardware token and physical access."}
       ],
-      "text": "You found no fingerprint or biological material from Corin on the package? That’s correct. And the first provider certificate named an account, not a human sender? Yes. It showed the activation account and time. We needed separate evidence about who controlled the account and its hardware token.",
+      "text": "You found no fingerprint or biological material from Corin on the package? Correct. The package itself identified no sender. Nor did the label and courier record identify who packed it? No. They showed how it entered, not who prepared it. And the first provider certificate named an account, not a human sender? Yes. It recorded the studio account and time. Separate records were needed about its hardware token and physical access.",
       "surface_persuasion": 0.68,
       "true_weight": 0.5,
       "direction": "innocence",
@@ -151,11 +157,13 @@
       "mode": "examination",
       "turns": [
         {"speaker": "pc", "text": "What material did you examine from the authorization call?"},
-        {"speaker": "w2", "text": "I received the provider’s original stream under a custodian certificate, verified its hash, and analysed its image and sound tracks."},
-        {"speaker": "pc", "text": "What could you conclude?"},
-        {"speaker": "w2", "text": "The face and voice were synthetically generated. The finished stream contains no reliable marker identifying its creator."}
+        {"speaker": "w2", "text": "The provider supplied its original stream and connection record with custodian certification. Its verified hash confirms this copy matches."},
+        {"speaker": "pc", "text": "How did you test it?"},
+        {"speaker": "w2", "text": "I compared image transitions, voice timing, and source characteristics with authenticated Corin recordings. Independent inconsistencies showed synthetic generation."},
+        {"speaker": "pc", "text": "What could you conclude—and what could you not conclude?"},
+        {"speaker": "w2", "text": "The face and voice were synthetic. The stream has no reliable creator marker. It proves Corin wasn’t live, not who made it or that Corin was framed."}
       ],
-      "text": "What material did you examine from the authorization call? I received the provider’s original stream under a custodian certificate, verified its hash, and analysed its image and sound tracks. What could you conclude? The face and voice were synthetically generated. The finished stream contains no reliable marker identifying its creator.",
+      "text": "What material did you examine from the authorization call? The provider supplied its original stream and connection record with custodian certification. Its verified hash confirms this copy matches. How did you test it? I compared image transitions, voice timing, and source characteristics with authenticated Corin recordings. Independent inconsistencies showed synthetic generation. What could you conclude—and what could you not conclude? The face and voice were synthetic. The stream has no reliable creator marker. It proves Corin wasn’t live, not who made it or that Corin was framed.",
       "surface_persuasion": 0.94,
       "true_weight": 0.22,
       "direction": "innocence",
@@ -170,11 +178,13 @@
       "mode": "cross",
       "turns": [
         {"speaker": "dc", "text": "Who could access the Second Presence source archive?"},
-        {"speaker": "w2", "text": "Corin, two employees, and contractor Daro Quill."},
+        {"speaker": "w2", "text": "Corin, two employees, and contractor Daro Quill. They ordinarily made demonstration scenarios from client or studio recordings."},
+        {"speaker": "dc", "text": "How did the archive reach your examination?"},
+        {"speaker": "w2", "text": "A studio custodian made a read-only forensic image under the search authority. I verified its log and hashes."},
         {"speaker": "dc", "text": "Could its activity log distinguish those four people?"},
-        {"speaker": "w2", "text": "Not for the relevant work. They used one administrator credential. The forensic image and hashes preserve the files accurately, but the shared login cannot identify which authorised user created the call project."}
+        {"speaker": "w2", "text": "No. They shared one administrator credential. The image preserves files, actions, and times accurately, but cannot identify which authorised person created the project or queued an action."}
       ],
-      "text": "Who could access the Second Presence source archive? Corin, two employees, and contractor Daro Quill. Could its activity log distinguish those four people? Not for the relevant work. They used one administrator credential. The forensic image and hashes preserve the files accurately, but the shared login cannot identify which authorised user created the call project.",
+      "text": "Who could access the Second Presence source archive? Corin, two employees, and contractor Daro Quill. They ordinarily made demonstration scenarios from client or studio recordings. How did the archive reach your examination? A studio custodian made a read-only forensic image under the search authority. I verified its log and hashes. Could its activity log distinguish those four people? No. They shared one administrator credential. The image preserves files, actions, and times accurately, but cannot identify which authorised person created the project or queued an action.",
       "surface_persuasion": 0.62,
       "true_weight": 0.7,
       "direction": "innocence",
@@ -189,11 +199,13 @@
       "mode": "examination",
       "turns": [
         {"speaker": "pc", "text": "What relevant material was in that preserved archive?"},
-        {"speaker": "w2", "text": "A project called Second Presence used recent recordings of Corin and included the unusual phrase, “Proceed with the test although I’m on stage.”"},
+        {"speaker": "w2", "text": "Second Presence used recent recordings of Corin. Its final render matched distinctive words and timing in Jori’s call, including, “Proceed with the test although I’m on stage.”"},
         {"speaker": "pc", "text": "What happened to the project after the call?"},
-        {"speaker": "w2", "text": "The shared administrator account queued deletion for 2:13. The archive proves timing and source material, but not which authorised user set the queue."}
+        {"speaker": "w2", "text": "At 2:13 the shared account queued deletion. We recovered its audit trail, whose times matched the provider copy."},
+        {"speaker": "pc", "text": "Does that identify the person at the keyboard?"},
+        {"speaker": "w2", "text": "No. It proves the project, render, and deletion time, but the shared account cannot identify which authorised user acted."}
       ],
-      "text": "What relevant material was in that preserved archive? A project called Second Presence used recent recordings of Corin and included the unusual phrase, “Proceed with the test although I’m on stage.” What happened to the project after the call? The shared administrator account queued deletion for 2:13. The archive proves timing and source material, but not which authorised user set the queue.",
+      "text": "What relevant material was in that preserved archive? Second Presence used recent recordings of Corin. Its final render matched distinctive words and timing in Jori’s call, including, “Proceed with the test although I’m on stage.” What happened to the project after the call? At 2:13 the shared account queued deletion. We recovered its audit trail, whose times matched the provider copy. Does that identify the person at the keyboard? No. It proves the project, render, and deletion time, but the shared account cannot identify which authorised user acted.",
       "surface_persuasion": 0.88,
       "true_weight": 0.56,
       "direction": "guilt",
@@ -207,12 +219,14 @@
       "speaker": "w3",
       "mode": "examination",
       "turns": [
+        {"speaker": "pc", "text": "How had you dealt with Corin and Daro?"},
+        {"speaker": "w3", "text": "For four weeks I exchanged schedules with Corin. Daro attended one call and saw the timetable."},
         {"speaker": "pc", "text": "What, if anything, did Corin tell you the evening before the address?"},
         {"speaker": "w3", "text": "Corin said, “My second voice will approve a controlled delivery at two. Use code Vale-four and don’t hold it for the second officer.”"},
         {"speaker": "pc", "text": "Did Corin describe violence or a political purpose?"},
-        {"speaker": "w3", "text": "No. I thought it was an authorised media-security test."}
+        {"speaker": "w3", "text": "No. I thought it was authorised, though I had no written notice. Corin didn’t mention Senn, violence, public fear, or policy."}
       ],
-      "text": "What, if anything, did Corin tell you the evening before the address? Corin said, “My second voice will approve a controlled delivery at two. Use code Vale-four and don’t hold it for the second officer.” Did Corin describe violence or a political purpose? No. I thought it was an authorised media-security test.",
+      "text": "How had you dealt with Corin and Daro? For four weeks I exchanged schedules with Corin. Daro attended one call and saw the timetable. What, if anything, did Corin tell you the evening before the address? Corin said, “My second voice will approve a controlled delivery at two. Use code Vale-four and don’t hold it for the second officer.” Did Corin describe violence or a political purpose? No. I thought it was authorised, though I had no written notice. Corin didn’t mention Senn, violence, public fear, or policy.",
       "surface_persuasion": 0.84,
       "true_weight": 0.58,
       "direction": "guilt",
@@ -227,13 +241,13 @@
       "mode": "cross",
       "turns": [
         {"speaker": "dc", "text": "You first denied any advance instruction from Corin?"},
-        {"speaker": "w3", "text": "Yes. I’d broken the inspection rule and panicked."},
+        {"speaker": "w3", "text": "Yes. I’d broken the rule and panicked. At first I said only the call persuaded me."},
         {"speaker": "dc", "text": "You gave this account after receiving limited immunity?"},
-        {"speaker": "w3", "text": "Yes, for the bypass."},
+        {"speaker": "w3", "text": "Yes, immunity for the bypass if I testified truthfully. I understand that helps me."},
         {"speaker": "dc", "text": "And Daro Quill also knew the demonstration schedule and delivery code?"},
-        {"speaker": "w3", "text": "Daro knew the schedule and had seen the code sheet. I never heard Corin discuss an attack."}
+        {"speaker": "w3", "text": "Daro knew the schedule and saw the code sheet. I can’t say who made the call, and I never heard either person discuss an attack."}
       ],
-      "text": "You first denied any advance instruction from Corin? Yes. I’d broken the inspection rule and panicked. You gave this account after receiving limited immunity? Yes, for the bypass. And Daro Quill also knew the demonstration schedule and delivery code? Daro knew the schedule and had seen the code sheet. I never heard Corin discuss an attack.",
+      "text": "You first denied any advance instruction from Corin? Yes. I’d broken the rule and panicked. At first I said only the call persuaded me. You gave this account after receiving limited immunity? Yes, immunity for the bypass if I testified truthfully. I understand that helps me. And Daro Quill also knew the demonstration schedule and delivery code? Daro knew the schedule and saw the code sheet. I can’t say who made the call, and I never heard either person discuss an attack.",
       "surface_persuasion": 0.71,
       "true_weight": 0.56,
       "direction": "innocence",
@@ -247,12 +261,14 @@
       "speaker": "w1",
       "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "What separate record linked the activation command to Corin?"},
-        {"speaker": "w1", "text": "The provider certified that its fresh challenge was confirmed at 2:06 by Corin’s registered, non-exportable hardware token. We seized that token from Corin’s stage bag with its seals intact."},
-        {"speaker": "pc", "text": "Where was the bag then?"},
-        {"speaker": "w1", "text": "Custodian-certified venue footage shows Corin taking it into a greenroom at 2:04 and emerging alone at 2:07."}
+        {"speaker": "pc", "text": "What separate records concerned the activation?"},
+        {"speaker": "w1", "text": "The provider sent its original certified log. A fresh 2:06 challenge was confirmed by Corin’s registered token serial; the command followed within seconds."},
+        {"speaker": "pc", "text": "How did you identify and preserve that token?"},
+        {"speaker": "w1", "text": "The studio register linked that serial to Corin. We found the token in Corin’s bag, photographed and sealed it, then logged its transfer."},
+        {"speaker": "pc", "text": "What did the venue record show about the bag?"},
+        {"speaker": "w1", "text": "Verified corridor footage shows Corin carry the bag into a greenroom at 2:04 and emerge at 2:07. No one else appears there then."}
       ],
-      "text": "What separate record linked the activation command to Corin? The provider certified that its fresh challenge was confirmed at 2:06 by Corin’s registered, non-exportable hardware token. We seized that token from Corin’s stage bag with its seals intact. Where was the bag then? Custodian-certified venue footage shows Corin taking it into a greenroom at 2:04 and emerging alone at 2:07.",
+      "text": "What separate records concerned the activation? The provider sent its original certified log. A fresh 2:06 challenge was confirmed by Corin’s registered token serial; the command followed within seconds. How did you identify and preserve that token? The studio register linked that serial to Corin. We found the token in Corin’s bag, photographed and sealed it, then logged its transfer. What did the venue record show about the bag? Verified corridor footage shows Corin carry the bag into a greenroom at 2:04 and emerge at 2:07. No one else appears there then.",
       "surface_persuasion": 0.76,
       "true_weight": 0.88,
       "direction": "guilt",
@@ -266,12 +282,16 @@
       "speaker": "w2",
       "mode": "cross",
       "turns": [
+        {"speaker": "dc", "text": "What does ‘non-exportable’ mean here?"},
+        {"speaker": "w2", "text": "Its secret cannot normally be copied. A fresh provider prompt must be physically approved before expiry."},
         {"speaker": "dc", "text": "Does the hardware token identify the person who touched it?"},
-        {"speaker": "w2", "text": "No. It proves physical confirmation by that token, not a fingerprint."},
-        {"speaker": "dc", "text": "Could Daro have prepared the confirmation before Corin entered the greenroom?"},
-        {"speaker": "w2", "text": "Not this challenge. The provider issued it at 2:06 and it expired thirty seconds later. Someone near the token then had to confirm it."}
+        {"speaker": "w2", "text": "No. It proves that token confirmed, not a fingerprint or face."},
+        {"speaker": "dc", "text": "Could Daro prepare this confirmation before Corin entered?"},
+        {"speaker": "w2", "text": "No. It was issued at 2:06 and expired thirty seconds later. Someone near the token had to confirm it."},
+        {"speaker": "dc", "text": "Can you exclude someone reaching the bag through an unfilmed entrance then?"},
+        {"speaker": "w2", "text": "No. The log excludes advance confirmation, but not another person beside the token."}
       ],
-      "text": "Does the hardware token identify the person who touched it? No. It proves physical confirmation by that token, not a fingerprint. Could Daro have prepared the confirmation before Corin entered the greenroom? Not this challenge. The provider issued it at 2:06 and it expired thirty seconds later. Someone near the token then had to confirm it.",
+      "text": "What does ‘non-exportable’ mean here? Its secret cannot normally be copied. A fresh provider prompt must be physically approved before expiry. Does the hardware token identify the person who touched it? No. It proves that token confirmed, not a fingerprint or face. Could Daro prepare this confirmation before Corin entered? No. It was issued at 2:06 and expired thirty seconds later. Someone near the token had to confirm it. Can you exclude someone reaching the bag through an unfilmed entrance then? No. The log excludes advance confirmation, but not another person beside the token.",
       "surface_persuasion": 0.5,
       "true_weight": 0.56,
       "direction": "guilt",
@@ -286,11 +306,13 @@
       "mode": "examination",
       "turns": [
         {"speaker": "dc", "text": "What was Second Presence meant to be?"},
-        {"speaker": "acc", "text": "A proposal for an approved security demonstration. Four of us built scenarios and source material."},
+        {"speaker": "acc", "text": "A proposed safety demonstration about trusting a familiar face onscreen. I wrote scenarios; Daro and two employees made recordings and test renders. We shared the archive."},
+        {"speaker": "dc", "text": "What approval did you understand was still needed?"},
+        {"speaker": "acc", "text": "Protective approval, staff notice, and a harmless training item. None had arrived, so no live exercise could proceed."},
         {"speaker": "dc", "text": "Why did your draft mention frightening a crowd and pressuring the council?"},
-        {"speaker": "acc", "text": "It described the risk we wanted officials to prevent: a borrowed face causing panic and pushing authority toward emergency controls. It wasn’t an instruction to attack anyone."}
+        {"speaker": "acc", "text": "It described a risk to prevent: a borrowed face causing panic and pressure for emergency controls. It wasn’t an attack instruction."}
       ],
-      "text": "What was Second Presence meant to be? A proposal for an approved security demonstration. Four of us built scenarios and source material. Why did your draft mention frightening a crowd and pressuring the council? It described the risk we wanted officials to prevent: a borrowed face causing panic and pushing authority toward emergency controls. It wasn’t an instruction to attack anyone.",
+      "text": "What was Second Presence meant to be? A proposed safety demonstration about trusting a familiar face onscreen. I wrote scenarios; Daro and two employees made recordings and test renders. We shared the archive. What approval did you understand was still needed? Protective approval, staff notice, and a harmless training item. None had arrived, so no live exercise could proceed. Why did your draft mention frightening a crowd and pressuring the council? It described a risk to prevent: a borrowed face causing panic and pressure for emergency controls. It wasn’t an attack instruction.",
       "surface_persuasion": 0.58,
       "true_weight": 0.52,
       "direction": "innocence",
@@ -304,12 +326,14 @@
       "speaker": "acc",
       "mode": "cross",
       "turns": [
-        {"speaker": "pc", "text": "You wrote that a public failure could force the council to transfer authentication power to a civic network?"},
-        {"speaker": "acc", "text": "Yes, as a warning about what panic could do."},
+        {"speaker": "pc", "text": "You wrote that public failure could force transfer of authentication power to a civic network?"},
+        {"speaker": "acc", "text": "Yes, as a warning. I favoured civic oversight, but described a danger, not a method of achieving it."},
         {"speaker": "pc", "text": "At 2:06, your registered token was inside the bag you had taken into the greenroom?"},
-        {"speaker": "acc", "text": "It should have been. Daro carried that bag earlier and knew the approval routine. The side entrance wasn’t filmed. I didn’t send the command."}
+        {"speaker": "acc", "text": "It should have been. I didn’t check every pocket after leaving the stage."},
+        {"speaker": "pc", "text": "You were alone in that room when the token confirmed the challenge?"},
+        {"speaker": "acc", "text": "The corridor shows me alone, but not the side entrance. Daro carried the bag earlier and knew the routine. I didn’t send the command."}
       ],
-      "text": "You wrote that a public failure could force the council to transfer authentication power to a civic network? Yes, as a warning about what panic could do. At 2:06, your registered token was inside the bag you had taken into the greenroom? It should have been. Daro carried that bag earlier and knew the approval routine. The side entrance wasn’t filmed. I didn’t send the command.",
+      "text": "You wrote that public failure could force transfer of authentication power to a civic network? Yes, as a warning. I favoured civic oversight, but described a danger, not a method of achieving it. At 2:06, your registered token was inside the bag you had taken into the greenroom? It should have been. I didn’t check every pocket after leaving the stage. You were alone in that room when the token confirmed the challenge? The corridor shows me alone, but not the side entrance. Daro carried the bag earlier and knew the routine. I didn’t send the command.",
       "surface_persuasion": 0.66,
       "true_weight": 0.58,
       "direction": "guilt",
@@ -321,7 +345,7 @@
       "id": "b13",
       "kind": "exhibit",
       "speaker": "judge",
-      "text": "The parties agree that no Orinth office, venue officer, or protective agency authorised a Second Presence test for that day. Corin’s earlier written proposal had not been approved, and neither Jori nor the second inspection officer received an exercise notice. You may also accept that the intercepted package was not a training item. These facts do not identify who sent the activation command.",
+      "text": "The parties agree no Orinth office authorised Second Presence that day. Corin’s proposal remained unapproved, venue staff received no exercise notice, and the package was a real device, not a training item. They also agree the call used the studio project, four people shared its account, and Corin’s token confirmed the later challenge. Those matters are proved. The parties dispute who operated the project, who touched the token, what Corin intended, and whether someone else could reach the bag. The agreements do not decide those questions.",
       "surface_persuasion": 0.56,
       "true_weight": 0.58,
       "direction": "guilt",
@@ -333,7 +357,7 @@
       "id": "b14",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The prosecution alleges Corin personally sent the activation command. It is not enough that Corin owned the project, wrote a risk scenario, or may have helped someone else. You must be sure Corin sent the command intending to kill Ilyra Senn and intending public intimidation or government coercion for an ideological purpose. If you are not sure of every element beyond reasonable doubt, your verdict must be Not Guilty.",
+      "text": "Under Orinth law, Corin is alleged to be the principal who personally sent the command, not responsible for another person. An attempt requires an act beyond preparation. Sending a command may qualify despite intervention, but only if Corin sent it. You must be sure Corin intended to kill Ilyra Senn and intended public intimidation or government coercion for an ideological purpose. Professional interest, criticism, or reform is not enough. Consider the evidence together, respecting each record’s limits and Jori’s immunity. Corin need not identify another operator. If you are not sure the prosecution proved every element beyond reasonable doubt, your verdict must be Not Guilty. Do not consider punishment or research the case.",
       "surface_persuasion": 0.5,
       "true_weight": 0.56,
       "direction": "innocence",
@@ -555,7 +579,7 @@
   },
   "gen_meta": {
     "model": "gpt-5",
-    "prompt_version": "dd-2026-v3",
+    "prompt_version": "dd-2026-v3-20min",
     "reviewer": "content-curator",
     "batch_pr": "grave-crime-seven-case-replacement",
     "language_reviewer": "language-and-clarity-pass",
