@@ -32,7 +32,7 @@ Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.
 
 | Piece | Purpose |
 |-------|---------|
-| `.coderabbit.yaml` | Review profile + path filters (see current file) |
+| `.coderabbit.yaml` | **Quiet** profile (high-severity only), **no walkthrough/summary**, draft PRs on, incremental review, path filters + SimJury path instructions |
 | `scripts/lib/bot-wait-config.mjs` | `coderabbit` alias + default OR-group |
 | `bot-presence-gate` | Env `SIMJURY_BOT_WAIT_REQUIRED=sourcery\|codex\|cursor\|coderabbit` |
 | `pr-coderabbit-rate-limit-retry` | When CR posts “Review limit reached”, wait then `@coderabbitai review` |
