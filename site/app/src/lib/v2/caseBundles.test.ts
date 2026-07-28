@@ -13,7 +13,9 @@ import {
 import {
   estimateV4Duration,
   V4_DURATION_MINUTES_MIN,
+  V4_EVIDENCE_WORDS_MIN,
   V4_SPOKEN_WORDS_PER_MINUTE,
+  V4_STATEMENT_WORDS_MIN,
   type V4DurationSource,
 } from './duration'
 import { makeDocketCase } from './fixtures'
@@ -21,6 +23,11 @@ import {
   legalSheetContentHash,
   legalSheetSchema,
 } from './legalSheetSchema'
+
+function padWords(text: string, needed: number, filler = 'context'): string {
+  if (needed <= 0) return text
+  return `${text} ${Array.from({ length: needed }, () => filler).join(' ')}`
+}
 
 function makeTrial(): DocketCaseV4 {
   const raw = structuredClone(makeDocketCase()) as unknown as Record<string, unknown>
@@ -44,15 +51,63 @@ function makeTrial(): DocketCaseV4 {
       sensitivity_reviewer: 'Sensitivity reviewer',
     },
   })
-  const estimate = estimateV4Duration(raw as unknown as V4DurationSource)
+
+  let estimate = estimateV4Duration(raw as unknown as V4DurationSource)
+  const statements = raw.statements as {
+    opening: { prosecution: { text: string }; defence: { text: string } }
+    closing: { prosecution: { text: string }; defence: { text: string } }
+  }
+  const statementPad = Math.max(
+    0,
+    V4_STATEMENT_WORDS_MIN - estimate.statementWords,
+  )
+  if (statementPad > 0) {
+    const share = Math.ceil(statementPad / 4)
+    statements.opening.prosecution.text = padWords(
+      statements.opening.prosecution.text,
+      share,
+      'advocacy',
+    )
+    statements.opening.defence.text = padWords(
+      statements.opening.defence.text,
+      share,
+      'advocacy',
+    )
+    statements.closing.prosecution.text = padWords(
+      statements.closing.prosecution.text,
+      share,
+      'advocacy',
+    )
+    statements.closing.defence.text = padWords(
+      statements.closing.defence.text,
+      share,
+      'advocacy',
+    )
+  }
+
+  estimate = estimateV4Duration(raw as unknown as V4DurationSource)
+  const evidencePad = Math.max(0, V4_EVIDENCE_WORDS_MIN - estimate.evidenceWords)
+  if (evidencePad > 0) {
+    const beats = raw.beats as Array<{
+      text: string
+      turns?: Array<{ text: string }>
+    }>
+    const share = Math.ceil(evidencePad / Math.max(1, beats.length))
+    for (const beat of beats) {
+      if (beat.turns && beat.turns.length > 0) {
+        beat.turns[0].text = padWords(beat.turns[0].text, share, 'testimony')
+      } else {
+        beat.text = padWords(beat.text, share, 'testimony')
+      }
+    }
+  }
+
+  estimate = estimateV4Duration(raw as unknown as V4DurationSource)
   const missingWords = Math.ceil(
     Math.max(0, V4_DURATION_MINUTES_MIN - estimate.totalMinutes) *
       V4_SPOKEN_WORDS_PER_MINUTE,
   )
-  raw.hook = `${raw.hook} ${Array.from(
-    { length: missingWords },
-    () => 'context',
-  ).join(' ')}`
+  raw.hook = padWords(String(raw.hook), missingWords, 'context')
   return docketCaseV4Schema.parse(raw)
 }
 
