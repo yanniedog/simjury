@@ -10,6 +10,11 @@ import {
 } from './caseSchema'
 import { makeDocketCase } from './fixtures'
 import {
+  estimateV4Duration,
+  V4_DURATION_MINUTES_MAX,
+  V4_DURATION_MINUTES_MIN,
+} from './duration'
+import {
   checkV4EditorialBundle,
   legalSheetContentHash,
   legalSheetSchema,
@@ -138,6 +143,59 @@ describe('Docket Case V4 editorial contract', () => {
       ...trial,
       gen_meta: { ...trial.gen_meta, language_reviewer: undefined },
     }).success).toBe(false)
+  })
+
+  it('enforces the 14-16 minute estimate on V4 only', () => {
+    const trial = makeV4Case()
+    const estimate = estimateV4Duration(trial)
+    expect(estimate.totalMinutes).toBeGreaterThanOrEqual(V4_DURATION_MINUTES_MIN)
+    expect(estimate.totalMinutes).toBeLessThanOrEqual(V4_DURATION_MINUTES_MAX)
+
+    const short = structuredClone(trial)
+    short.setting = short.charge = short.hook = short.accused.human = 'Brief.'
+    short.elements = short.elements.map(() => 'Brief.')
+    for (const phase of [short.statements.opening, short.statements.closing]) {
+      phase.prosecution.text = phase.defence.text = 'Brief.'
+    }
+    short.beats = short.beats.map((beat) => ({
+      ...beat,
+      text: 'Brief.',
+      turns: beat.turns?.map((turn) => ({ ...turn, text: 'Brief.' })),
+    }))
+    expect(estimateV4Duration(short).totalMinutes).toBeLessThan(V4_DURATION_MINUTES_MIN)
+    const shortResult = docketCaseV4Schema.safeParse(short)
+    expect(shortResult.success).toBe(false)
+    if (!shortResult.success) {
+      expect(shortResult.error.issues).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          message: expect.stringContaining(
+            `V4 cases must take ${V4_DURATION_MINUTES_MIN}-${V4_DURATION_MINUTES_MAX} minutes`,
+          ),
+        }),
+      ]))
+    }
+
+    const long = structuredClone(trial)
+    const longText = Array.from({ length: 220 }, () => 'evidence').join(' ')
+    long.beats = long.beats.map((beat) => ({
+      ...beat,
+      text: longText,
+      turns: undefined,
+    }))
+    expect(estimateV4Duration(long).totalMinutes).toBeGreaterThan(V4_DURATION_MINUTES_MAX)
+    const longResult = docketCaseV4Schema.safeParse(long)
+    expect(longResult.success).toBe(false)
+    if (!longResult.success) {
+      expect(longResult.error.issues).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          message: expect.stringContaining(
+            `V4 cases must take ${V4_DURATION_MINUTES_MIN}-${V4_DURATION_MINUTES_MAX} minutes`,
+          ),
+        }),
+      ]))
+    }
+
+    expect(docketCaseSchema.safeParse(makeDocketCase()).success).toBe(true)
   })
 
   it('validates isolated analysis and a hash-bound legal sheet', () => {

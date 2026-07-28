@@ -13,8 +13,9 @@ enforce the hard rules; this file holds the taste. Companion: the drafting promp
    historical-case track was removed and must not be reintroduced.
 2. **Relevant in 2026, always.** Crime, dialogue, and process are contemporary: the
    player should feel they could be summonsed onto this jury this year.
-3. **The 8–10 minute budget is a design constraint, not a suggestion.** Every floor
-   below derives from it.
+3. **The V4 target is 15 minutes.** Every new V4 case must pass the computed
+   14–16 minute window. The commissioned V3 slate retains its existing pacing
+   floors only until migration.
 4. **Exactly seven active cases.** The guided intro plus six dated sittings form one
    deliberately small, fully authored slate. Old daily, archived, and prototype cases
    are not part of the product.
@@ -26,7 +27,7 @@ enforce the hard rules; this file holds the taste. Companion: the drafting promp
    evasion methods. National-security cases use invented institutions with no real
    geopolitical analogue.
 
-## Shape of a case (schema v2 — `site/app/src/lib/v2/caseSchema.ts`)
+## Shape of the commissioned V3 cases (`site/app/src/lib/v2/caseSchema.ts`)
 
 | Piece | Budget | Why |
 |---|---|---|
@@ -40,6 +41,12 @@ enforce the hard rules; this file holds the taste. Companion: the drafting promp
 | Jury | exactly 11, contested 3–8 G split | the interactive room |
 | Twist | 2–4 sentences | the reveal's centrepiece |
 | Epilogue | 50–130 words | what the verdict did to these people |
+
+V4 moves editorial analysis and the epilogue out of the playable trial. Its
+duration metric counts the scene, charge, accused introduction, four counsel
+statements, and spoken evidence at 150 words per minute, then adds a fixed
+nine-minute interaction allowance. The schema rejects totals below 14 or above
+16 minutes; a hand-entered estimate cannot bypass that gate.
 
 The puzzle core is unchanged from v1: **the gap between how a beat feels
 (`surface_persuasion`) and what it is worth (`true_weight`)**. Every case needs ≥1
