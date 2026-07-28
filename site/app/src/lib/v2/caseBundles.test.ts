@@ -10,13 +10,7 @@ import {
   docketCaseV4Schema,
   type DocketCaseV4,
 } from './caseSchema'
-import {
-  estimateV4Duration,
-  V4_DURATION_MINUTES_MIN,
-  V4_SPOKEN_WORDS_PER_MINUTE,
-  type V4DurationSource,
-} from './duration'
-import { makeDocketCase } from './fixtures'
+import { makeDocketCase, prose } from './fixtures'
 import {
   legalSheetContentHash,
   legalSheetSchema,
@@ -44,15 +38,26 @@ function makeTrial(): DocketCaseV4 {
       sensitivity_reviewer: 'Sensitivity reviewer',
     },
   })
-  const estimate = estimateV4Duration(raw as unknown as V4DurationSource)
-  const missingWords = Math.ceil(
-    Math.max(0, V4_DURATION_MINUTES_MIN - estimate.totalMinutes) *
-      V4_SPOKEN_WORDS_PER_MINUTE,
-  )
-  raw.hook = `${raw.hook} ${Array.from(
-    { length: missingWords },
-    () => 'context',
-  ).join(' ')}`
+  raw.setting = `${raw.setting} ${prose(130)}`
+  const statements = raw.statements as Record<
+    'opening' | 'closing',
+    Record<'prosecution' | 'defence', { text: string }>
+  >
+  for (const phase of Object.values(statements)) {
+    for (const statement of Object.values(phase)) {
+      statement.text = `${statement.text} ${prose(30)}`
+    }
+  }
+  for (const beat of raw.beats as Array<{
+    text: string
+    turns?: Array<{ text: string }>
+  }>) {
+    if (beat.turns?.length) {
+      beat.turns[beat.turns.length - 1].text += ` ${prose(33)}`
+    } else {
+      beat.text += ` ${prose(33)}`
+    }
+  }
   return docketCaseV4Schema.parse(raw)
 }
 
