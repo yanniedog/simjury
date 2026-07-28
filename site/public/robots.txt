@@ -2,3 +2,7 @@ User-agent: *
 Allow: /
 
 Sitemap: https://simjury.com/sitemap.xml
+
+# AI-readable public-site guides:
+# https://simjury.com/llms.txt
+# https://simjury.com/llms-full.txt

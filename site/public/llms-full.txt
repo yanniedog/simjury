@@ -1,0 +1,62 @@
+# SimJury complete public-site guide
+
+This document describes every canonical public page and every phase of the interactive SimJury experience without disclosing case answers or future dockets.
+
+## Product
+
+SimJury's Daily Docket is a single-player exercise in judgment. Each sitting presents one serious fictional criminal case in a contemporary courtroom. The player occupies Juror 01's seat, hears both sides, tests the evidence with an authored eleven-juror room, and locks a final verdict. A sitting is designed for about eight to ten minutes.
+
+There are no accounts, public leaderboards, live opponents, chat, runtime generative AI, or server-side player state.
+
+## Canonical public routes
+
+### https://simjury.com/
+
+The static home page explains the value proposition, mature-content scope, approximate duration, local save model, and three-part journey: hear both sides, deliberate from the evidence, then lock a verdict. Its primary action opens the Daily Docket.
+
+### https://simjury.com/today/
+
+The Daily Docket is an interactive JavaScript application. Its raw HTML contains a readable fallback summary for clients that do not execute JavaScript. The complete player journey is:
+
+1. First visit: accept a guided introductory sitting or skip directly to today's case.
+2. Docket selection: open today's sitting, the guided introduction, or an available past sitting from the browser-side archive chooser.
+3. Briefing: read the title, charge, case-specific advisory, accused's position, and instructions.
+4. Openings: hear the prosecution and defence frame the dispute.
+5. Evidence: move through each authored evidence beat in order, read or listen, and write private notes.
+6. Closings: hear both advocates draw their arguments together.
+7. Deliberation: choose evidence and arguments across three rounds while up to four distinct jurors respond in each round. Seat leanings and tallies remain hidden.
+8. Verdict: lock Guilty or Not Guilty after deliberation. The choice is final for that sitting.
+9. Judgment and reveal: hear the room's result, compare it with the player's verdict, inspect the case analysis and reveal, update local statistics, and optionally create a spoiler-safe share card.
+
+Narration is optional. Authored audio is fetched as static media when available, with browser speech as a fallback. The app supports keyboard navigation, visible focus, semantic headings, transcript text alongside audio, responsive desktop and mobile layouts, and reduced-motion preferences.
+
+The archive is a date-based chooser inside `/today/`, not a collection of separate case URLs. These crawl guides therefore do not reproduce or link case answers or unreleased case facts.
+
+### https://simjury.com/privacy/
+
+The static privacy page explains:
+
+- progress, notes, verdicts, narration preferences, and sitting statistics are stored in the current browser;
+- there is no cross-browser or cross-device sync, account recovery, or backend player-state service;
+- clearing site data or changing browser/profile/device removes access to those local records;
+- optional narration requests public audio clips from GitHub Releases, so GitHub can observe ordinary request metadata, timing, and opaque clip identifiers;
+- Cloudflare receives ordinary request metadata while delivering the static site;
+- SimJury adds no analytics or tracking code;
+- cases and juror responses are pre-authored, with deterministic outcomes computed locally and no runtime generative AI.
+
+## Discovery and HTTP behavior
+
+- `https://simjury.com/robots.txt` permits all user agents and names the XML sitemap.
+- `https://simjury.com/sitemap.xml` lists every canonical public HTML page.
+- `https://simjury.com/llms.txt` provides the concise machine-readable index.
+- Unknown routes return a real HTTP 404 page.
+- `/play/` redirects to `/today/`.
+- The Android/JVM pilot is frozen and its installer is deliberately absent from public discovery.
+
+## Architecture and cost boundary
+
+The site is composed entirely of static GitHub-authored assets deployed through Cloudflare Static Assets. It has no Worker script, database, object storage, runtime AI binding, analytics service, or dynamic rendering service. Case text and the deterministic deliberation engine are bundled at build time. This guide is served identically to browsers and crawlers; there is no user-agent branching or bot-only content.
+
+## Spoiler and publication boundary
+
+This crawl guide intentionally excludes verdict truth, twists, trap analysis, exact juror rules, hidden tallies, unreleased case titles and facts, and the contents of future dockets. The interactive app's static bundle contains its pre-authored publication queue, but this guide neither reproduces nor links those details, so ordinary crawl discovery does not spoil a sitting.
