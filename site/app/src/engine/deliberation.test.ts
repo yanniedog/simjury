@@ -89,7 +89,7 @@ describe('arguments move the room', () => {
     expect(state.log.find((event) => event.type === 'respond')?.actor).toBe(target.id)
   })
 
-  it('arguing the decisive evidence beats doing nothing, toward the truth', () => {
+  it('arguing the central evidence beats doing nothing toward the reference verdict', () => {
     const argued = runDeliberation(makeDocketCase(), 'not_guilty', DECISIVE)
     const passive = runDeliberation(makeDocketCase(), 'not_guilty', PASSIVE)
     expect(argued.outcome.tally.ng).toBeGreaterThan(passive.outcome.tally.ng)
@@ -229,7 +229,7 @@ describe('serious-crime case integration', () => {
     expect(a.outcome.tally.g + a.outcome.tally.ng).toBe(12)
   })
 
-  it('arguing the decisive evidence moves the authored room toward the truth', () => {
+  it('arguing the central evidence moves the room toward the reference verdict', () => {
     const argued = runDeliberation(seriousCase, 'guilty', [
       argue(decisiveGuilt.id, 'proves'),
     ])

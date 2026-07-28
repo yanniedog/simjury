@@ -127,7 +127,7 @@ editorial bundle integrity (no pre-verdict spoilers, balanced competent cases,
 authenticated decisive material, public-juror context, courtroom structure,
 check-ins, jury floors) → **deliberation dynamics** (the simulated room must be able
 to reach ≥2 outcomes for a fixed player verdict, and arguing the decisive evidence
-must beat silence toward the truth) → queue rules (uniqueness, verdict variety,
+must beat silence toward the reference verdict) → queue rules (uniqueness, verdict variety,
 ≤3-run) → banned-token scan (extend `BANNED` lists as new content introduces risks).
 
 If dynamics fail (usually "foregone conclusion" for one locked verdict): only four
@@ -135,7 +135,7 @@ jurors respond to each argued beat — the top three by their weight on that bea
 themes, plus one random — so a juror the decisive evidence should move must actually
 carry weight on that beat's theme, or it never gets called. The reliable fix is to
 give one swing juror (a drifter or the mind-changer) weight 2 on the decisive theme
-plus a `proves`-toward-truth rule with delta 2, so skilled play can push the room past
+plus a `proves`-toward-reference rule with delta 2, so skilled play can push the room past
 the 10-vote majority even when the player locked the wrong verdict. Then soften a
 G-juror's confidence below 70, or add a themed rule with a real delta — before
 touching the case text.

@@ -3,7 +3,7 @@ import type { TrialBeat, TrialCase } from './caseSchema'
 /** The four screens of a single day's play. */
 export type Phase = 'intro' | 'beats' | 'verdict' | 'reveal'
 
-export type Verdict = TrialCase['verdict_truth']
+export type Verdict = TrialCase['reference_verdict']
 
 /** Where the conviction slider starts each day: a neutral, open mind. */
 export const START_CONVICTION = 50
@@ -41,7 +41,7 @@ export interface BeatOutcome {
 }
 
 export interface PlayAnalysis {
-  correct: boolean
+  matchesReference: boolean
   outcomes: BeatOutcome[]
   /** How many misleading beats swayed the juror toward their trap. */
   swayedByTraps: number
@@ -70,7 +70,7 @@ export function analyzePlay(
   })
 
   return {
-    correct: verdict === trial.verdict_truth,
+    matchesReference: verdict === trial.reference_verdict,
     outcomes,
     swayedByTraps: outcomes.filter((o) => o.tookBait).length,
     totalTraps: trial.beats.filter((b) => b.reveal_stamp === 'misleading')

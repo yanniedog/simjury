@@ -767,14 +767,14 @@ export function checkDocketQueue(cases: DocketCase[]): QualityIssue[] {
     a.publish_date.localeCompare(b.publish_date),
   )
   let run = 0
-  let last: DocketCase['verdict_truth'] | null = null
+  let last: DocketCase['reference_verdict'] | null = null
   for (const c of byDate) {
-    run = c.verdict_truth === last ? run + 1 : 1
-    last = c.verdict_truth
+    run = c.reference_verdict === last ? run + 1 : 1
+    last = c.reference_verdict
     if (run === VERDICT_RUN_MAX + 1) {
       issues.push({
         caseId: c.id,
-        message: `more than ${VERDICT_RUN_MAX} '${c.verdict_truth}' verdicts in a row — vary the queue`,
+        message: `more than ${VERDICT_RUN_MAX} '${c.reference_verdict}' verdicts in a row — vary the queue`,
         kind: 'variety',
       })
     }

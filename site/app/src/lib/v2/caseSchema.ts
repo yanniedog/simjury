@@ -293,7 +293,7 @@ const docketCaseV3ObjectSchema = z.object({
      * player UI no longer records progressive conviction.
      */
     checkins: z.array(z.string().min(1)).max(5),
-    verdict_truth: z.enum(['Guilty', 'Not Guilty']),
+    reference_verdict: z.enum(['Guilty', 'Not Guilty']),
     twist: z.string().min(1),
     difficulty_target: z.number().min(0).max(1),
     jury: z.object({
@@ -314,7 +314,7 @@ const docketCaseV4ObjectSchema = docketCaseV3ObjectSchema
     accused: true,
     beats: true,
     epilogue: true,
-    verdict_truth: true,
+    reference_verdict: true,
     twist: true,
     gen_meta: true,
   })

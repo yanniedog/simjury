@@ -54,7 +54,7 @@ Owner decisions, recorded verbatim:
 - **No real names** of people, companies, brands, or specific places in any
   player-visible text — enforced by a banned-token scan.
   2026 relevance is achieved with invented platforms ("a rideshare app"), never brands.
-- **Spoiler-safe sharing** — share cards never contain the verdict truth or case content.
+- **Spoiler-safe sharing** — share cards never contain the reference verdict or case content.
 - **PR discipline** — one concern per PR, squash merge, bot gates per `WORKFLOW.md`.
   **Exception (owner-approved 2026-07-13):** the D1 import PR below exceeds the
   ≤400-line guideline by nature (it imports an existing, tested codebase verbatim).

@@ -279,7 +279,7 @@
     }
   ],
   "checkins": [],
-  "verdict_truth": "Not Guilty",
+  "reference_verdict": "Not Guilty",
   "twist": "The coat switch was proved, but the prosecution’s completed inference was not. The transit record located Elia, not Iona; the authenticated rear-door audit was compatible with Iona leaving; and the clasp testing could not distinguish the afternoon dispute from the time of death. The strongest prosecution reading remains that Iona arranged an apparent departure, concealed the rear exit, and left Nera holding her clasp—but those suspicious facts do not prove beyond reasonable doubt that Iona stayed and killed Nera.",
   "difficulty_target": 0.64,
   "jury": {

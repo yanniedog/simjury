@@ -11,7 +11,7 @@ export interface BeatReveal {
 }
 
 export interface DocketAnalysis {
-  correct: boolean
+  matchesReference: boolean
   /** Decisive beats from case stamps — what the authors say mattered most. */
   whatMattered: BeatReveal[]
   reveals: BeatReveal[]
@@ -19,13 +19,13 @@ export interface DocketAnalysis {
 
 export function analyzeDocketPlay(
   c: DocketCase,
-  verdict: DocketCase['verdict_truth'],
+  verdict: DocketCase['reference_verdict'],
 ): DocketAnalysis {
   const reveals: BeatReveal[] = c.beats.map((beat) => ({ beat }))
   const whatMattered = reveals.filter((r) => r.beat.reveal_stamp === 'decisive')
 
   return {
-    correct: verdict === c.verdict_truth,
+    matchesReference: verdict === c.reference_verdict,
     whatMattered,
     reveals,
   }
