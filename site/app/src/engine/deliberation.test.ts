@@ -181,11 +181,49 @@ describe('serious-crime case integration', () => {
     'utf8',
   )
   const seriousCase = docketCaseSchema.parse(JSON.parse(raw))
+  const oneBeat = (
+    label: string,
+    predicate: (beat: DocketCase['beats'][number]) => boolean,
+  ) => {
+    const matches = seriousCase.beats.filter(predicate)
+    if (matches.length !== 1) {
+      throw new Error(`dd-0006 needs exactly one ${label}; found ${matches.length}`)
+    }
+    return matches[0]
+  }
+  const direction = oneBeat('jury direction', (beat) => beat.kind === 'direction')
+  const decisiveGuilt = oneBeat(
+    'decisive guilt beat',
+    (beat) =>
+      beat.kind !== 'direction' &&
+      beat.reveal_stamp === 'decisive' &&
+      beat.direction === 'guilt',
+  )
+  const decisiveInnocence = oneBeat(
+    'decisive innocence beat',
+    (beat) =>
+      beat.kind !== 'direction' &&
+      beat.reveal_stamp === 'decisive' &&
+      beat.direction === 'innocence',
+  )
+  const attempt = oneBeat(
+    'attempt evidence beat',
+    (beat) =>
+      beat.kind !== 'direction' &&
+      beat.direction === 'guilt' &&
+      beat.tags.includes('causation'),
+  )
+  const trap = oneBeat(
+    'misleading beat',
+    (beat) => beat.kind !== 'direction' && beat.reveal_stamp === 'misleading',
+  )
 
   it('plays the authored fixture to a terminal outcome, deterministically', () => {
-    const direction = seriousCase.beats.find((beat) => beat.kind === 'direction')
-    if (!direction) throw new Error('dd-0006 needs a jury direction')
-    const actions = [argue('b9', 'proves'), argue('b2', 'proves'), cite(direction.id)]
+    const actions = [
+      argue(decisiveGuilt.id, 'proves'),
+      argue(attempt.id, 'proves'),
+      cite(direction.id),
+    ]
     const a = runDeliberation(seriousCase, 'guilty', actions)
     const b = runDeliberation(seriousCase, 'guilty', actions)
     expect(a.outcome).toEqual(b.outcome)
@@ -193,7 +231,9 @@ describe('serious-crime case integration', () => {
   })
 
   it('arguing the decisive evidence moves the authored room toward the truth', () => {
-    const argued = runDeliberation(seriousCase, 'guilty', [argue('b9', 'proves')])
+    const argued = runDeliberation(seriousCase, 'guilty', [
+      argue(decisiveGuilt.id, 'proves'),
+    ])
     const passive = runDeliberation(seriousCase, 'guilty', [pass, pass, pass])
     expect(argued.outcome.tally.g).toBeGreaterThanOrEqual(passive.outcome.tally.g)
   })
@@ -202,8 +242,12 @@ describe('serious-crime case integration', () => {
     const seen = new Set<string>()
     const plays: PlayerAction[][] = [
       [pass, pass, pass],
-      [argue('b6', 'proves'), argue('b2', 'proves'), argue('b11', 'proves')],
-      [argue('b1', 'proves'), argue('b4', 'proves'), argue('b1', 'proves')],
+      [argue(decisiveGuilt.id, 'proves'), argue(attempt.id, 'proves'), cite(direction.id)],
+      [
+        argue(decisiveInnocence.id, 'proves'),
+        argue(trap.id, 'proves'),
+        argue(decisiveInnocence.id, 'proves'),
+      ],
     ]
     for (const v of ['guilty', 'not_guilty'] as const) {
       for (const p of plays) {
