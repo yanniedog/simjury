@@ -6,6 +6,14 @@ import {
   type Juror,
   type Theme,
 } from './caseSchema'
+import {
+  estimateV4Duration,
+  V4_DURATION_MINUTES_MAX,
+  V4_DURATION_MINUTES_MIN,
+  V4_EVIDENCE_WORDS_MIN,
+  V4_SCENE_WORDS_MIN,
+  V4_STATEMENT_WORDS_MIN,
+} from './duration'
 import { OFFENCE_CODES, OFFENCE_PROFILES } from './offenceProfiles'
 
 type Direction = 'guilt' | 'innocence'
@@ -72,6 +80,12 @@ export const BEAT_WORDS_MAX = 70
 /** Total evidence budget (all beat words) for the 4.5–5.5 min reading phase. */
 export const CASE_WORDS_MIN = 550
 export const CASE_WORDS_MAX = 1050
+export const TWENTY_MINUTE_BEAT_WORDS_MIN = 50
+export const TWENTY_MINUTE_BEAT_WORDS_MAX = 160
+export const TWENTY_MINUTE_CASE_WORDS_MIN = 900
+export const TWENTY_MINUTE_CASE_WORDS_MAX = 1500
+export const TWENTY_MINUTE_STATEMENT_WORDS_MIN = 80
+export const TWENTY_MINUTE_STATEMENT_WORDS_MAX = 130
 
 function dialogueFingerprint(text: string): string {
   return (text.toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []).join(' ')
@@ -133,6 +147,13 @@ export const NARRATED_WORDS_MAX = 1250
 export function wordCount(text: string): number {
   const words = text.trim().split(/\s+/)
   return words[0] === '' ? 0 : words.length
+}
+
+function beatSpokenWordCount(beat: DocketCase['beats'][number]): number {
+  if (beat.turns?.length) {
+    return beat.turns.reduce((total, turn) => total + wordCount(turn.text), 0)
+  }
+  return wordCount(beat.text)
 }
 
 function scaffoldIssues(c: DocketCase): string[] {
@@ -310,15 +331,28 @@ export function checkDocketCase(c: DocketCase): string[] {
   // The v1 puzzle-design core applies unchanged to v2 beats.
   // Guided intro uses the same floors as every other docket case.
   const issues: string[] = [...checkCase(c)]
-  const beatWordsMin = BEAT_WORDS_MIN
-  const beatWordsMax = BEAT_WORDS_MAX
-  const caseWordsMin = CASE_WORDS_MIN
-  const caseWordsMax = CASE_WORDS_MAX
-  const statementWordsMin = STATEMENT_WORDS_MIN
-  const statementWordsMax = STATEMENT_WORDS_MAX
+  const isTwentyMinuteV3 = c.gen_meta.prompt_version === 'dd-2026-v3-20min'
+  const beatWordsMin = isTwentyMinuteV3
+    ? TWENTY_MINUTE_BEAT_WORDS_MIN
+    : BEAT_WORDS_MIN
+  const beatWordsMax = isTwentyMinuteV3
+    ? TWENTY_MINUTE_BEAT_WORDS_MAX
+    : BEAT_WORDS_MAX
+  const caseWordsMin = isTwentyMinuteV3
+    ? TWENTY_MINUTE_CASE_WORDS_MIN
+    : CASE_WORDS_MIN
+  const caseWordsMax = isTwentyMinuteV3
+    ? TWENTY_MINUTE_CASE_WORDS_MAX
+    : CASE_WORDS_MAX
+  const statementWordsMin = isTwentyMinuteV3
+    ? TWENTY_MINUTE_STATEMENT_WORDS_MIN
+    : STATEMENT_WORDS_MIN
+  const statementWordsMax = isTwentyMinuteV3
+    ? TWENTY_MINUTE_STATEMENT_WORDS_MAX
+    : STATEMENT_WORDS_MAX
   const witnessMin = WITNESS_COUNT_MIN
   const witnessMax = WITNESS_COUNT_MAX
-  const isV3 = c.gen_meta.prompt_version === 'dd-2026-v3'
+  const isV3 = c.gen_meta.prompt_version.startsWith('dd-2026-v3')
 
   if (isV3) {
     if (!c.offence_code) {
@@ -366,7 +400,9 @@ export function checkDocketCase(c: DocketCase): string[] {
   // Pacing.
   let totalWords = 0
   for (const b of c.beats) {
-    const words = wordCount(b.text)
+    const words = isTwentyMinuteV3
+      ? beatSpokenWordCount(b)
+      : wordCount(b.text)
     totalWords += words
     if (words < beatWordsMin || words > beatWordsMax) {
       issues.push(
@@ -415,10 +451,37 @@ export function checkDocketCase(c: DocketCase): string[] {
     }
   }
   const narratedWords = totalWords + hookWords + statementWords
-  if (narratedWords > NARRATED_WORDS_MAX) {
+  if (!isTwentyMinuteV3 && narratedWords > NARRATED_WORDS_MAX) {
     issues.push(
       `hook + statements + evidence total ${narratedWords} narrated words; the 8-10 minute loop caps at ${NARRATED_WORDS_MAX}`,
     )
+  }
+  if (isTwentyMinuteV3) {
+    const estimate = estimateV4Duration(c)
+    if (
+      estimate.totalMinutes < V4_DURATION_MINUTES_MIN ||
+      estimate.totalMinutes > V4_DURATION_MINUTES_MAX
+    ) {
+      issues.push(
+        `estimated duration ${estimate.totalMinutes.toFixed(2)} minutes; ` +
+        `20-minute cases must take ${V4_DURATION_MINUTES_MIN}-${V4_DURATION_MINUTES_MAX} minutes`,
+      )
+    }
+    if (estimate.sceneWords < V4_SCENE_WORDS_MIN) {
+      issues.push(
+        `public-juror context has ${estimate.sceneWords} words; needs at least ${V4_SCENE_WORDS_MIN}`,
+      )
+    }
+    if (estimate.statementWords < V4_STATEMENT_WORDS_MIN) {
+      issues.push(
+        `balanced rival explanations have ${estimate.statementWords} words; need at least ${V4_STATEMENT_WORDS_MIN}`,
+      )
+    }
+    if (estimate.evidenceWords < V4_EVIDENCE_WORDS_MIN) {
+      issues.push(
+        `spoken evidence and directions have ${estimate.evidenceWords} words; need at least ${V4_EVIDENCE_WORDS_MIN}`,
+      )
+    }
   }
   const epilogueWords = wordCount(c.epilogue)
   if (epilogueWords < EPILOGUE_WORDS_MIN || epilogueWords > EPILOGUE_WORDS_MAX) {

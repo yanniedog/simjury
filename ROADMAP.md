@@ -3,7 +3,7 @@
 ## The Daily Docket
 
 The Daily Docket is SimJury's only product track: fictional, contemporary cases
-targeting a 15-minute sitting (14–16 minutes for V4) at `simjury.com/today`,
+targeting a 20-minute sitting (19–21 minutes for V4) at `simjury.com/today`,
 with a deterministic, client-side interactive jury room.
 
 The delivery ladder and product constraints are recorded in

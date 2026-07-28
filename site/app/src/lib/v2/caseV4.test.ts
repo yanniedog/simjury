@@ -8,11 +8,14 @@ import {
   parseDocketCaseForPromptVersion,
   type DocketCaseV4,
 } from './caseSchema'
-import { makeDocketCase } from './fixtures'
+import { makeDocketCase, prose } from './fixtures'
 import {
   estimateV4Duration,
   V4_DURATION_MINUTES_MAX,
   V4_DURATION_MINUTES_MIN,
+  V4_EVIDENCE_WORDS_MIN,
+  V4_SCENE_WORDS_MIN,
+  V4_STATEMENT_WORDS_MIN,
 } from './duration'
 import {
   checkV4EditorialBundle,
@@ -38,6 +41,26 @@ function makeV4Case(): DocketCaseV4 {
   metadata.prompt_version = 'dd-2026-v4'
   metadata.language_reviewer = 'Language reviewer'
   metadata.sensitivity_reviewer = 'Sensitivity reviewer'
+  raw.setting = `${raw.setting} ${prose(130)}`
+  const statements = raw.statements as Record<
+    'opening' | 'closing',
+    Record<'prosecution' | 'defence', { text: string }>
+  >
+  for (const phase of Object.values(statements)) {
+    for (const statement of Object.values(phase)) {
+      statement.text = `${statement.text} ${prose(30)}`
+    }
+  }
+  for (const beat of raw.beats as Array<{
+    text: string
+    turns?: Array<{ text: string }>
+  }>) {
+    if (beat.turns?.length) {
+      beat.turns[beat.turns.length - 1].text += ` ${prose(33)}`
+    } else {
+      beat.text += ` ${prose(33)}`
+    }
+  }
   return docketCaseV4Schema.parse(raw)
 }
 
@@ -145,11 +168,14 @@ describe('Docket Case V4 editorial contract', () => {
     }).success).toBe(false)
   })
 
-  it('enforces the 14-16 minute estimate on V4 only', () => {
+  it('enforces the 19-21 minute estimate on V4 only', () => {
     const trial = makeV4Case()
     const estimate = estimateV4Duration(trial)
     expect(estimate.totalMinutes).toBeGreaterThanOrEqual(V4_DURATION_MINUTES_MIN)
     expect(estimate.totalMinutes).toBeLessThanOrEqual(V4_DURATION_MINUTES_MAX)
+    expect(estimate.sceneWords).toBeGreaterThanOrEqual(V4_SCENE_WORDS_MIN)
+    expect(estimate.statementWords).toBeGreaterThanOrEqual(V4_STATEMENT_WORDS_MIN)
+    expect(estimate.evidenceWords).toBeGreaterThanOrEqual(V4_EVIDENCE_WORDS_MIN)
 
     const short = structuredClone(trial)
     short.setting = short.charge = short.hook = short.accused.human = 'Brief.'
@@ -196,6 +222,31 @@ describe('Docket Case V4 editorial contract', () => {
     }
 
     expect(docketCaseSchema.safeParse(makeDocketCase()).success).toBe(true)
+  })
+
+  it('rejects a duration-compliant case that starves public-juror context', () => {
+    const trial = makeV4Case()
+    const originalWords = estimateV4Duration(trial).spokenWords
+    trial.setting = trial.charge = trial.hook = trial.accused.human = 'Brief.'
+    trial.elements = trial.elements.map(() => 'Brief.')
+    const shortened = estimateV4Duration(trial)
+    const replacementWords = originalWords - shortened.spokenWords
+    const dialogueBeat = trial.beats.find((beat) => beat.turns?.length)
+    expect(dialogueBeat).toBeDefined()
+    dialogueBeat!.turns![0].text += ` ${prose(replacementWords)}`
+
+    const estimate = estimateV4Duration(trial)
+    expect(estimate.totalMinutes).toBeGreaterThanOrEqual(V4_DURATION_MINUTES_MIN)
+    expect(estimate.totalMinutes).toBeLessThanOrEqual(V4_DURATION_MINUTES_MAX)
+    const result = docketCaseV4Schema.safeParse(trial)
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          message: expect.stringContaining('public-juror context needs at least'),
+        }),
+      ]))
+    }
   })
 
   it('validates isolated analysis and a hash-bound legal sheet', () => {

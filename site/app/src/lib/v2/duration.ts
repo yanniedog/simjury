@@ -1,12 +1,16 @@
-export const V4_DURATION_MINUTES_MIN = 14
-export const V4_DURATION_MINUTES_MAX = 16
+export const V4_DURATION_MINUTES_MIN = 19
+export const V4_DURATION_MINUTES_MAX = 21
 export const V4_SPOKEN_WORDS_PER_MINUTE = 150
+export const V4_SCENE_WORDS_MIN = 180
+export const V4_STATEMENT_WORDS_MIN = 320
+export const V4_EVIDENCE_WORDS_MIN = 900
 
 /**
  * Time reserved for courtroom transitions, exhibit inspection, substantive
  * deliberation, and the result/reveal. The spoken-content estimate is added
- * to this allowance; neither runtime speed nor a self-reported case field can
- * make an under-length or over-length V4 case pass validation.
+ * to this unchanged allowance. A 19-minute case therefore needs at least ten
+ * minutes (1,500 words) of actual scene, law, advocacy, and evidence; neither
+ * runtime speed nor a self-reported case field can make thin content pass.
  */
 export const V4_INTERACTION_MINUTES = 9
 
