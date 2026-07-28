@@ -24,7 +24,8 @@ export function buildShareText(
 
   if (input.room) {
     const split = `${Math.max(input.room.g, input.room.ng)}–${Math.min(input.room.g, input.room.ng)}`
-    const undecided = input.room.u ? `–${input.room.u} undecided` : ''
+    const undecidedCount = input.room.u ?? 0
+    const undecided = undecidedCount > 0 ? `–${undecidedCount} undecided` : ''
     lines.push(
       input.room.kind === 'hung'
         ? `🏛️ My jury hung ${split}${undecided}`
