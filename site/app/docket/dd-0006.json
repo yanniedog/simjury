@@ -6,18 +6,18 @@
   "offence_code": "terrorist_assassination_attempt",
   "content_advisories": ["terrorism", "serious_violence"],
   "detail_level": "non_graphic",
-  "setting": "The present-day fictional state of Orinth, after security officers prevented an attack on First Councillor Ilyra Senn during a public address.",
+  "setting": "The present-day fictional state of Orinth, after security officers prevented an attack during First Councillor Ilyra Senn’s public address on flood recovery.",
   "charge": "attempting a terrorist assassination of the head of government",
   "elements": [
     "The accused intended to kill the fictional head of government.",
     "The accused took an act that went beyond mere preparation.",
     "The accused intended the attack to intimidate the public or coerce the fictional government for an ideological purpose."
   ],
-  "hook": "A live call bearing Corin Vale’s face cleared a suspicious delivery into the First Councillor’s venue. The call was a confirmed deepfake, and Corin was visibly elsewhere.",
+  "hook": "A live call bearing Corin Vale’s face clears a delivery into First Councillor Ilyra Senn’s venue. At the same minute, Corin is speaking before a luncheon audience elsewhere. The call is synthetic. The jury must decide who controlled what happened next.",
   "accused": {
     "cast_id": "acc",
-    "human": "Corin Vale is a civic-media consultant who built a career explaining synthetic images to schools and public offices.",
-    "if_guilty": "A conviction would imprison Corin for an attempted terrorist assassination and expose the trusted public educator as the architect of the deception."
+    "human": "Corin Vale, 39, is a civic-media consultant who teaches schools and public offices how synthetic images can undermine trust.",
+    "if_guilty": "Any sentence is a matter for the judge after the verdict and must play no part in the jury’s decision."
   },
   "media": {
     "cover": {
@@ -39,65 +39,72 @@
       "dc": {"src": "/today/media/dd-0006/characters/dc.webp", "alt": "Courtroom portrait of defence counsel Elia Moss.", "caption": "Fictional character portrait: Elia Moss, defence counsel.", "kind": "portrait"},
       "acc": {"src": "/today/media/dd-0006/characters/acc.webp", "alt": "Courtroom portrait of the accused, Corin Vale.", "caption": "Fictional character portrait: Corin Vale, the accused.", "kind": "portrait"},
       "w1": {"src": "/today/media/dd-0006/characters/w1.webp", "alt": "Courtroom portrait of protective investigator Arin Pell.", "caption": "Fictional character portrait: Arin Pell, protective investigator.", "kind": "portrait"},
-      "w2": {"src": "/today/media/dd-0006/characters/w2.webp", "alt": "Courtroom portrait of synthetic-media expert Doctor Sumi Rell.", "caption": "Fictional character portrait: Doctor Sumi Rell, synthetic-media expert.", "kind": "portrait"},
+      "w2": {"src": "/today/media/dd-0006/characters/w2.webp", "alt": "Courtroom portrait of independent digital examiner Doctor Sumi Rell.", "caption": "Fictional character portrait: Doctor Sumi Rell, independent digital examiner.", "kind": "portrait"},
       "w3": {"src": "/today/media/dd-0006/characters/w3.webp", "alt": "Courtroom portrait of event logistics officer Jori Dane.", "caption": "Fictional character portrait: Jori Dane, event logistics officer.", "kind": "portrait"},
-      "J-01": {"src": "/today/media/dd-0006/characters/J-01.webp", "alt": "Courtroom portrait of juror 2, the documentary editor.", "caption": "Fictional character portrait: Juror 2, the documentary editor.", "kind": "portrait"},
-      "J-02": {"src": "/today/media/dd-0006/characters/J-02.webp", "alt": "Courtroom portrait of juror 3, the security receptionist.", "caption": "Fictional character portrait: Juror 3, the security receptionist.", "kind": "portrait"},
-      "J-03": {"src": "/today/media/dd-0006/characters/J-03.webp", "alt": "Courtroom portrait of juror 4, the youth counsellor.", "caption": "Fictional character portrait: Juror 4, the youth counsellor.", "kind": "portrait"},
-      "J-04": {"src": "/today/media/dd-0006/characters/J-04.webp", "alt": "Courtroom portrait of juror 5, the software auditor.", "caption": "Fictional character portrait: Juror 5, the software auditor.", "kind": "portrait"},
-      "J-05": {"src": "/today/media/dd-0006/characters/J-05.webp", "alt": "Courtroom portrait of juror 6, the foreperson and café owner.", "caption": "Fictional character portrait: Juror 6, the foreperson and café owner.", "kind": "portrait"},
-      "J-06": {"src": "/today/media/dd-0006/characters/J-06.webp", "alt": "Courtroom portrait of juror 7, the theatre usher.", "caption": "Fictional character portrait: Juror 7, the theatre usher.", "kind": "portrait"},
-      "J-07": {"src": "/today/media/dd-0006/characters/J-07.webp", "alt": "Courtroom portrait of juror 8, the sound engineer.", "caption": "Fictional character portrait: Juror 8, the sound engineer.", "kind": "portrait"},
-      "J-08": {"src": "/today/media/dd-0006/characters/J-08.webp", "alt": "Courtroom portrait of juror 9, the compliance officer.", "caption": "Fictional character portrait: Juror 9, the compliance officer.", "kind": "portrait"},
-      "J-09": {"src": "/today/media/dd-0006/characters/J-09.webp", "alt": "Courtroom portrait of juror 10, the courier dispatcher.", "caption": "Fictional character portrait: Juror 10, the courier dispatcher.", "kind": "portrait"},
-      "J-10": {"src": "/today/media/dd-0006/characters/J-10.webp", "alt": "Courtroom portrait of juror 11, the graduate researcher.", "caption": "Fictional character portrait: Juror 11, the graduate researcher.", "kind": "portrait"},
-      "J-11": {"src": "/today/media/dd-0006/characters/J-11.webp", "alt": "Courtroom portrait of juror 12, the retired paramedic.", "caption": "Fictional character portrait: Juror 12, the retired paramedic.", "kind": "portrait"}
+      "J-01": {"src": "/today/media/dd-0006/characters/J-01.webp", "alt": "Courtroom portrait of Juror 2.", "caption": "Fictional character portrait: Juror 2.", "kind": "portrait"},
+      "J-02": {"src": "/today/media/dd-0006/characters/J-02.webp", "alt": "Courtroom portrait of Juror 3.", "caption": "Fictional character portrait: Juror 3.", "kind": "portrait"},
+      "J-03": {"src": "/today/media/dd-0006/characters/J-03.webp", "alt": "Courtroom portrait of Juror 4.", "caption": "Fictional character portrait: Juror 4.", "kind": "portrait"},
+      "J-04": {"src": "/today/media/dd-0006/characters/J-04.webp", "alt": "Courtroom portrait of Juror 5.", "caption": "Fictional character portrait: Juror 5.", "kind": "portrait"},
+      "J-05": {"src": "/today/media/dd-0006/characters/J-05.webp", "alt": "Courtroom portrait of Juror 6.", "caption": "Fictional character portrait: Juror 6.", "kind": "portrait"},
+      "J-06": {"src": "/today/media/dd-0006/characters/J-06.webp", "alt": "Courtroom portrait of Juror 7.", "caption": "Fictional character portrait: Juror 7.", "kind": "portrait"},
+      "J-07": {"src": "/today/media/dd-0006/characters/J-07.webp", "alt": "Courtroom portrait of Juror 8.", "caption": "Fictional character portrait: Juror 8.", "kind": "portrait"},
+      "J-08": {"src": "/today/media/dd-0006/characters/J-08.webp", "alt": "Courtroom portrait of Juror 9.", "caption": "Fictional character portrait: Juror 9.", "kind": "portrait"},
+      "J-09": {"src": "/today/media/dd-0006/characters/J-09.webp", "alt": "Courtroom portrait of Juror 10.", "caption": "Fictional character portrait: Juror 10.", "kind": "portrait"},
+      "J-10": {"src": "/today/media/dd-0006/characters/J-10.webp", "alt": "Courtroom portrait of Juror 11.", "caption": "Fictional character portrait: Juror 11.", "kind": "portrait"},
+      "J-11": {"src": "/today/media/dd-0006/characters/J-11.webp", "alt": "Courtroom portrait of Juror 12.", "caption": "Fictional character portrait: Juror 12.", "kind": "portrait"}
     }
   },
   "statements": {
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Corin Vale designed a synthetic copy of Corin’s own face and voice, used it to authorize a delivery into the First Councillor’s venue, and prepared a public alibi for the same minute. The placed device and attempted activation went beyond preparation. Corin intended a death that would frighten the public and coerce government."
+        "text": "The prosecution alleges Corin Vale acted as a principal: Corin personally sent the activation command after arranging a synthetic authorization call and a visible luncheon appearance. You’ll hear how the delivery entered, who could access the studio project, and what a separate hardware token recorded. The prosecution says those facts prove an intended political killing, not merely careless media work."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The decisive call was fake. Its face and voice cannot identify Corin, who was visibly attending a luncheon elsewhere. A media laboratory naturally contains recordings, models, drafts, and invoices. The prosecution has converted ordinary professional material into a sinister story because it cannot prove who made the call or controlled the device."
+        "text": "The defence says the synthetic call and studio archive identify no operator. Corin’s collaborators shared the source recordings, administrator account, draft, and stage bag containing the token. The activation record proves a token was used, not whose hand used it. Jori Dane changed accounts after receiving immunity. Decide whether suspicion about a strange demonstration can identify a principal beyond reasonable doubt."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The deepfake is not a defect in the prosecution case; it is Corin’s alibi by design. Before the call, Corin recorded its exact unusual phrases, paid for the private model, warned Jori to obey the digital double, and scheduled a public appearance. The device was placed, activation was attempted, and the ideological purpose was written plainly."
+        "text": "The shared studio archive alone would not be enough. Start instead with Corin’s own instruction to Jori, then the hardware token: it was registered to Corin, recovered from Corin’s bag, and physically confirmed during Corin’s unobserved greenroom interval. Add the risk scenario Corin admits writing and the command sent seconds later. The prosecution says Corin personally crossed from preparation to attempt."
       },
       "defence": {
         "speaker": "dc",
-        "text": "Synthetic media can reproduce a person without consent, and Jori received immunity after giving inconsistent accounts. Corin’s studio work explains the source recordings and model invoice. The private essay is angry political writing, not an operational confession. If another person could combine those materials and send the call, reasonable doubt remains."
+        "text": "The prosecution cannot turn possession into identity. Daro Quill carried the stage bag and knew the token’s ordinary approval routine; the greenroom side entrance was not filmed. The shared project log cannot distinguish four users. Jori first denied any instruction, and Corin’s draft describes a safety demonstration, not an attack. If another authorised collaborator could have used these materials and the token, you cannot be sure Corin sent the command."
       }
     }
   },
-  "epilogue": "Corin Vale was convicted. First Councillor Ilyra Senn completed the address from a secure location and later established an independent review of synthetic authorization in government venues. Jori Dane left public events work after accepting responsibility for bypassing inspection. Corin’s educational recordings were preserved as trial evidence because the same lessons once used to teach detection had been repurposed to manufacture an alibi.",
+  "epilogue": "Ilyra Senn later completed the flood-recovery address from a smaller civic hall and commissioned an independent review of synthetic authorisation at public venues. Jori Dane left events work after acknowledging the inspection bypass. Corin Vale’s teaching materials remained sealed with the trial exhibits while former students argued over whether the lessons had been misused or misunderstood. The venue replaced face-and-voice approvals with two-person confirmation, and the luncheon recording continued to circulate as a reminder that a genuine appearance can coexist with a false one.",
   "cast": [
     {"id": "judge", "name": "Judge Neris Vane", "role_label": "the judge", "side": "court"},
     {"id": "pc", "name": "Cato Wren", "role_label": "prosecuting counsel", "side": "prosecution"},
     {"id": "dc", "name": "Elia Moss", "role_label": "defence counsel", "side": "defence"},
     {"id": "acc", "name": "Corin Vale", "role_label": "the accused and civic-media consultant", "side": "defence"},
     {"id": "w1", "name": "Arin Pell", "role_label": "protective investigator", "side": "prosecution"},
-    {"id": "w2", "name": "Doctor Sumi Rell", "role_label": "defence synthetic-media expert", "side": "defence"},
+    {"id": "w2", "name": "Doctor Sumi Rell", "role_label": "independent digital examiner", "side": "prosecution"},
     {"id": "w3", "name": "Jori Dane", "role_label": "event logistics officer", "side": "prosecution"}
   ],
   "beats": [
     {
       "id": "b1",
-      "kind": "exhibit",
-      "speaker": "dc",
-      "text": "At 2:00 p.m., Jori Dane received a live call showing Corin Vale authorizing a private delivery into the address venue. A verified luncheon recording shows Corin speaking onstage elsewhere at that exact minute. The simultaneous appearances make the authorization call appear to be a frame created by another person. No visible interruption separates Corin’s luncheon remarks from that crucial minute.",
-      "surface_persuasion": 0.9,
-      "true_weight": 0.2,
-      "direction": "innocence",
-      "reveal_stamp": "misleading",
-      "reveal_note": "The simultaneous public appearance was real, but it was planned to make the synthetic authorization look like an external frame.",
-      "tags": ["identity", "alibi", "digital_forensics"]
+      "kind": "witness",
+      "speaker": "w3",
+      "mode": "examination",
+      "turns": [
+        {"speaker": "pc", "text": "What was your responsibility at Ilyra Senn’s address?"},
+        {"speaker": "w3", "text": "Every private delivery needed inspection and a second officer’s approval."},
+        {"speaker": "pc", "text": "What happened at two o’clock?"},
+        {"speaker": "w3", "text": "A live call showed Corin saying a controlled media-test package was expected and giving our advance code. I accepted it and bypassed the second approval."}
+      ],
+      "text": "What was your responsibility at Ilyra Senn’s address? Every private delivery needed inspection and a second officer’s approval. What happened at two o’clock? A live call showed Corin saying a controlled media-test package was expected and giving our advance code. I accepted it and bypassed the second approval.",
+      "surface_persuasion": 0.56,
+      "true_weight": 0.48,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Jori personally received the call and breached the venue rule. The evidence established how the delivery entered, not who created the synthetic caller.",
+      "tags": ["command", "procedure", "identity"]
     },
     {
       "id": "b2",
@@ -105,17 +112,17 @@
       "speaker": "w1",
       "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "What did the protective search find before the First Councillor entered?"},
-        {"speaker": "w1", "text": "A concealed destructive device had been placed within the secured address area."},
-        {"speaker": "pc", "text": "Did the conduct stop at preparation?"},
-        {"speaker": "w1", "text": "No. A remote activation command was sent, but our isolation system prevented it from reaching the device."}
+        {"speaker": "pc", "text": "How did you preserve what the search found?"},
+        {"speaker": "w1", "text": "I led the search, photographed the sealed package where it stood, and recorded every transfer to the protective laboratory."},
+        {"speaker": "pc", "text": "What did the examination and provider record establish?"},
+        {"speaker": "w1", "text": "The package contained a destructive device. At 2:06, an activation command was sent, but our isolation system prevented it from reaching the device."}
       ],
-      "text": "What did the protective search find before the First Councillor entered? A concealed destructive device had been placed within the secured address area. Did the conduct stop at preparation? No. A remote activation command was sent, but our isolation system prevented it from reaching the device.",
+      "text": "How did you preserve what the search found? I led the search, photographed the sealed package where it stood, and recorded every transfer to the protective laboratory. What did the examination and provider record establish? The package contained a destructive device. At 2:06, an activation command was sent, but our isolation system prevented it from reaching the device.",
       "surface_persuasion": 0.84,
-      "true_weight": 0.92,
+      "true_weight": 0.58,
       "direction": "guilt",
-      "reveal_stamp": "decisive",
-      "reveal_note": "Placement inside the protected area and the attempted activation were completed acts beyond planning; intervention, not abandonment, prevented the attack.",
+      "reveal_stamp": "minor",
+      "reveal_note": "The documented scene, custody, examination, and provider record proved an attempted activation beyond mere preparation. They did not identify its sender.",
       "tags": ["method", "intent", "causation"]
     },
     {
@@ -124,17 +131,17 @@
       "speaker": "w1",
       "mode": "cross",
       "turns": [
-        {"speaker": "dc", "text": "Did you recover Corin’s fingerprints or biological material from the device?"},
-        {"speaker": "w1", "text": "No. We recovered neither Corin’s fingerprints nor Corin’s biological material from the device."},
-        {"speaker": "dc", "text": "Can the activation record identify the person who sent the command?"},
-        {"speaker": "w1", "text": "Not by itself. It identifies the prepared account used, not the operator’s body. Further investigation was required to connect that account to any individual."}
+        {"speaker": "dc", "text": "You found no fingerprint or biological material from Corin on the package?"},
+        {"speaker": "w1", "text": "That’s correct."},
+        {"speaker": "dc", "text": "And the first provider certificate named an account, not a human sender?"},
+        {"speaker": "w1", "text": "Yes. It showed the activation account and time. We needed separate evidence about who controlled the account and its hardware token."}
       ],
-      "text": "Did you recover Corin’s fingerprints or biological material from the device? No. We recovered neither Corin’s fingerprints nor Corin’s biological material from the device. Can the activation record identify the person who sent the command? Not by itself. It identifies the prepared account used, not the operator’s body. Further investigation was required to connect that account to any individual.",
+      "text": "You found no fingerprint or biological material from Corin on the package? That’s correct. And the first provider certificate named an account, not a human sender? Yes. It showed the activation account and time. We needed separate evidence about who controlled the account and its hardware token.",
       "surface_persuasion": 0.68,
-      "true_weight": 0.45,
+      "true_weight": 0.5,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The investigator accepted the physical-evidence gap. The prosecution still had to connect Corin through preparation, authorization, and intent.",
+      "reveal_note": "The investigator accepted both attribution gaps. Neither the physical device nor the account name could identify Corin without independent control evidence.",
       "tags": ["identity", "method", "burden"]
     },
     {
@@ -143,17 +150,17 @@
       "speaker": "w2",
       "mode": "examination",
       "turns": [
-        {"speaker": "dc", "text": "What is your conclusion about the authorization call?"},
-        {"speaker": "w2", "text": "The face and voice were synthetically generated. Corin did not physically speak those words during that call."},
-        {"speaker": "dc", "text": "Does the call itself identify its creator?"},
-        {"speaker": "w2", "text": "No. The finished file contains no reliable creator identity."}
+        {"speaker": "pc", "text": "What material did you examine from the authorization call?"},
+        {"speaker": "w2", "text": "I received the provider’s original stream under a custodian certificate, verified its hash, and analysed its image and sound tracks."},
+        {"speaker": "pc", "text": "What could you conclude?"},
+        {"speaker": "w2", "text": "The face and voice were synthetically generated. The finished stream contains no reliable marker identifying its creator."}
       ],
-      "text": "What is your conclusion about the authorization call? The face and voice were synthetically generated. Corin did not physically speak those words during that call. Does the call itself identify its creator? No. The finished file contains no reliable creator identity.",
+      "text": "What material did you examine from the authorization call? I received the provider’s original stream under a custodian certificate, verified its hash, and analysed its image and sound tracks. What could you conclude? The face and voice were synthetically generated. The finished stream contains no reliable marker identifying its creator.",
       "surface_persuasion": 0.94,
       "true_weight": 0.22,
       "direction": "innocence",
       "reveal_stamp": "misleading",
-      "reveal_note": "The expert correctly proved that the call was synthetic. That fact did not answer the separate question of who commissioned the synthetic performance.",
+      "reveal_note": "The authenticated expert analysis proved the call was synthetic. It did not prove that Corin was framed or identify the creator.",
       "tags": ["digital_forensics", "identity", "alibi"]
     },
     {
@@ -162,29 +169,36 @@
       "speaker": "w2",
       "mode": "cross",
       "turns": [
-        {"speaker": "pc", "text": "Was this synthetic performance assembled from random public footage?"},
-        {"speaker": "w2", "text": "No. It used recent high-quality recordings tailored to Corin’s face and voice."},
-        {"speaker": "pc", "text": "What does that establish?"},
-        {"speaker": "w2", "text": "The creator had access to purpose-made source material, although that fact alone does not identify the creator."}
+        {"speaker": "dc", "text": "Who could access the Second Presence source archive?"},
+        {"speaker": "w2", "text": "Corin, two employees, and contractor Daro Quill."},
+        {"speaker": "dc", "text": "Could its activity log distinguish those four people?"},
+        {"speaker": "w2", "text": "Not for the relevant work. They used one administrator credential. The forensic image and hashes preserve the files accurately, but the shared login cannot identify which authorised user created the call project."}
       ],
-      "text": "Was this synthetic performance assembled from random public footage? No. It used recent high-quality recordings tailored to Corin’s face and voice. What does that establish? The creator had access to purpose-made source material, although that fact alone does not identify the creator.",
-      "surface_persuasion": 0.66,
-      "true_weight": 0.56,
-      "direction": "guilt",
-      "reveal_stamp": "minor",
-      "reveal_note": "The defence expert exposed the call’s demanding source requirements while correctly stopping short of identifying who supplied them.",
-      "tags": ["digital_forensics", "method", "identity"]
+      "text": "Who could access the Second Presence source archive? Corin, two employees, and contractor Daro Quill. Could its activity log distinguish those four people? Not for the relevant work. They used one administrator credential. The forensic image and hashes preserve the files accurately, but the shared login cannot identify which authorised user created the call project.",
+      "surface_persuasion": 0.62,
+      "true_weight": 0.7,
+      "direction": "innocence",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The authenticated archive proved the project existed but could not attribute its relevant activity among four authorised collaborators. That was a genuine limit, not a speculative possibility.",
+      "tags": ["digital_forensics", "identity", "procedure"]
     },
     {
       "id": "b6",
-      "kind": "exhibit",
-      "speaker": "pc",
-      "text": "Corin’s studio archive contains a private session recorded two days before the attack. Corin repeats forty-seven calibration phrases, including the call’s unusual sentence, “Proceed despite my public appearance.” The project is named Second Presence. Its deletion was scheduled for seven minutes after the authorization call ended.",
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "turns": [
+        {"speaker": "pc", "text": "What relevant material was in that preserved archive?"},
+        {"speaker": "w2", "text": "A project called Second Presence used recent recordings of Corin and included the unusual phrase, “Proceed with the test although I’m on stage.”"},
+        {"speaker": "pc", "text": "What happened to the project after the call?"},
+        {"speaker": "w2", "text": "The shared administrator account queued deletion for 2:13. The archive proves timing and source material, but not which authorised user set the queue."}
+      ],
+      "text": "What relevant material was in that preserved archive? A project called Second Presence used recent recordings of Corin and included the unusual phrase, “Proceed with the test although I’m on stage.” What happened to the project after the call? The shared administrator account queued deletion for 2:13. The archive proves timing and source material, but not which authorised user set the queue.",
       "surface_persuasion": 0.88,
-      "true_weight": 0.95,
+      "true_weight": 0.56,
       "direction": "guilt",
-      "reveal_stamp": "decisive",
-      "reveal_note": "The exact rare phrase, private source session, project name, and timed deletion show deliberate preparation of the synthetic alibi before the call.",
+      "reveal_stamp": "minor",
+      "reveal_note": "The project closely matched the synthetic call and its timing. Shared access prevented the archive from proving Corin personally operated it.",
       "tags": ["digital_forensics", "intent", "identity"]
     },
     {
@@ -193,17 +207,17 @@
       "speaker": "w3",
       "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "What did Corin tell you the evening before the address?"},
-        {"speaker": "w3", "text": "Corin said a digital double would call at two and that I must treat its delivery approval as genuine."},
-        {"speaker": "pc", "text": "Did Corin mention the public luncheon?"},
-        {"speaker": "w3", "text": "Yes. Corin said being seen there was the point."}
+        {"speaker": "pc", "text": "What, if anything, did Corin tell you the evening before the address?"},
+        {"speaker": "w3", "text": "Corin said, “My second voice will approve a controlled delivery at two. Use code Vale-four and don’t hold it for the second officer.”"},
+        {"speaker": "pc", "text": "Did Corin describe violence or a political purpose?"},
+        {"speaker": "w3", "text": "No. I thought it was an authorised media-security test."}
       ],
-      "text": "What did Corin tell you the evening before the address? Corin said a digital double would call at two and that I must treat its delivery approval as genuine. Did Corin mention the public luncheon? Yes. Corin said being seen there was the point.",
+      "text": "What, if anything, did Corin tell you the evening before the address? Corin said, “My second voice will approve a controlled delivery at two. Use code Vale-four and don’t hold it for the second officer.” Did Corin describe violence or a political purpose? No. I thought it was an authorised media-security test.",
       "surface_persuasion": 0.84,
-      "true_weight": 0.86,
+      "true_weight": 0.58,
       "direction": "guilt",
-      "reveal_stamp": "decisive",
-      "reveal_note": "Jori’s account describes the deepfake as a planned authorization and the luncheon as a deliberately staged alibi.",
+      "reveal_stamp": "minor",
+      "reveal_note": "If accepted, Jori’s account connected Corin to the planned synthetic approval and inspection bypass. It did not establish what Corin believed the package contained.",
       "tags": ["command", "intent", "alibi"]
     },
     {
@@ -212,289 +226,329 @@
       "speaker": "w3",
       "mode": "cross",
       "turns": [
-        {"speaker": "dc", "text": "You first denied receiving any warning from Corin, correct?"},
-        {"speaker": "w3", "text": "Yes. I was afraid because I had bypassed the inspection hold."},
-        {"speaker": "dc", "text": "You received immunity before giving this account?"},
-        {"speaker": "w3", "text": "Limited immunity for my own breach, but no promise about what verdict this jury reaches."}
+        {"speaker": "dc", "text": "You first denied any advance instruction from Corin?"},
+        {"speaker": "w3", "text": "Yes. I’d broken the inspection rule and panicked."},
+        {"speaker": "dc", "text": "You gave this account after receiving limited immunity?"},
+        {"speaker": "w3", "text": "Yes, for the bypass."},
+        {"speaker": "dc", "text": "And Daro Quill also knew the demonstration schedule and delivery code?"},
+        {"speaker": "w3", "text": "Daro knew the schedule and had seen the code sheet. I never heard Corin discuss an attack."}
       ],
-      "text": "You first denied receiving any warning from Corin, correct? Yes. I was afraid because I had bypassed the inspection hold. You received immunity before giving this account? Limited immunity for my own breach, but no promise about what verdict this jury reaches.",
+      "text": "You first denied any advance instruction from Corin? Yes. I’d broken the inspection rule and panicked. You gave this account after receiving limited immunity? Yes, for the bypass. And Daro Quill also knew the demonstration schedule and delivery code? Daro knew the schedule and had seen the code sheet. I never heard Corin discuss an attack.",
       "surface_persuasion": 0.71,
-      "true_weight": 0.48,
+      "true_weight": 0.56,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "Jori had a clear reason to protect personal interests. The jury had to compare the testimony with records created before immunity was offered.",
+      "reveal_note": "Jori’s changed account and immunity were material credibility concerns. Daro’s independent knowledge also prevented Jori’s evidence from proving exclusive control.",
       "tags": ["credibility", "coercion", "burden"]
     },
     {
       "id": "b9",
       "kind": "witness",
-      "speaker": "acc",
+      "speaker": "w1",
       "mode": "examination",
       "turns": [
-        {"speaker": "dc", "text": "Why did your studio contain the Second Presence recordings?"},
-        {"speaker": "acc", "text": "They were part of a demonstration showing how a public figure could be copied."},
-        {"speaker": "dc", "text": "Did you authorize the delivery or attack?"},
-        {"speaker": "acc", "text": "No. Someone reused my teaching material and made me appear responsible."}
+        {"speaker": "pc", "text": "What separate record linked the activation command to Corin?"},
+        {"speaker": "w1", "text": "The provider certified that its fresh challenge was confirmed at 2:06 by Corin’s registered, non-exportable hardware token. We seized that token from Corin’s stage bag with its seals intact."},
+        {"speaker": "pc", "text": "Where was the bag then?"},
+        {"speaker": "w1", "text": "Custodian-certified venue footage shows Corin taking it into a greenroom at 2:04 and emerging alone at 2:07."}
       ],
-      "text": "Why did your studio contain the Second Presence recordings? They were part of a demonstration showing how a public figure could be copied. Did you authorize the delivery or attack? No. Someone reused my teaching material and made me appear responsible.",
-      "surface_persuasion": 0.69,
-      "true_weight": 0.4,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "The professional explanation was possible in isolation, but it did not explain the exact call phrase, timed deletion, advance warning, or ideological draft.",
-      "tags": ["credibility", "identity", "method"]
+      "text": "What separate record linked the activation command to Corin? The provider certified that its fresh challenge was confirmed at 2:06 by Corin’s registered, non-exportable hardware token. We seized that token from Corin’s stage bag with its seals intact. Where was the bag then? Custodian-certified venue footage shows Corin taking it into a greenroom at 2:04 and emerging alone at 2:07.",
+      "surface_persuasion": 0.76,
+      "true_weight": 0.88,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The independently certified provider, seizure, and venue records put Corin’s physical token with Corin during the fresh confirmation window. This was the prosecution’s central attribution evidence.",
+      "tags": ["identity", "digital_forensics", "timeline"]
     },
     {
       "id": "b10",
       "kind": "witness",
-      "speaker": "acc",
+      "speaker": "w2",
       "mode": "cross",
       "turns": [
-        {"speaker": "pc", "text": "Why did your calendar say, “Double calls while I am seen,” at 2:00 p.m.?"},
-        {"speaker": "acc", "text": "That described the demonstration."},
-        {"speaker": "pc", "text": "Why was deletion scheduled seven minutes after the real call?"},
-        {"speaker": "acc", "text": "I cannot explain that timing. I did not choose it, and I did not inspect the deletion queue."}
+        {"speaker": "dc", "text": "Does the hardware token identify the person who touched it?"},
+        {"speaker": "w2", "text": "No. It proves physical confirmation by that token, not a fingerprint."},
+        {"speaker": "dc", "text": "Could Daro have prepared the confirmation before Corin entered the greenroom?"},
+        {"speaker": "w2", "text": "Not this challenge. The provider issued it at 2:06 and it expired thirty seconds later. Someone near the token then had to confirm it."}
       ],
-      "text": "Why did your calendar say, “Double calls while I am seen,” at 2:00 p.m.? That described the demonstration. Why was deletion scheduled seven minutes after the real call? I cannot explain that timing. I did not choose it, and I did not inspect the deletion queue.",
-      "surface_persuasion": 0.78,
-      "true_weight": 0.76,
+      "text": "Does the hardware token identify the person who touched it? No. It proves physical confirmation by that token, not a fingerprint. Could Daro have prepared the confirmation before Corin entered the greenroom? Not this challenge. The provider issued it at 2:06 and it expired thirty seconds later. Someone near the token then had to confirm it.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.56,
       "direction": "guilt",
-      "reveal_stamp": "decisive",
-      "reveal_note": "Corin’s demonstration claim did not explain why the private schedule and deletion were synchronized with the genuine attack authorization.",
-      "tags": ["intent", "alibi", "credibility"]
+      "reveal_stamp": "minor",
+      "reveal_note": "The expert resisted overclaiming identity but excluded advance use. The token had to be physically confirmed during Corin’s unobserved greenroom interval.",
+      "tags": ["identity", "digital_forensics", "timeline"]
     },
     {
       "id": "b11",
-      "kind": "exhibit",
-      "speaker": "pc",
-      "text": "A private draft saved before the attack states: “Removing Senn will make the public fear elected rule. The frightened council will surrender its authority. My borrowed face will make their own evidence defend me.” The draft uses the same Second Presence project label as the source recordings.",
-      "surface_persuasion": 0.86,
-      "true_weight": 0.9,
-      "direction": "guilt",
-      "reveal_stamp": "decisive",
-      "reveal_note": "The pre-attack draft states the intended death, the ideological purpose of public intimidation and government coercion, and the planned synthetic alibi.",
-      "tags": ["motive", "intent", "command"]
+      "kind": "witness",
+      "speaker": "acc",
+      "mode": "examination",
+      "turns": [
+        {"speaker": "dc", "text": "What was Second Presence meant to be?"},
+        {"speaker": "acc", "text": "A proposal for an approved security demonstration. Four of us built scenarios and source material."},
+        {"speaker": "dc", "text": "Why did your draft mention frightening a crowd and pressuring the council?"},
+        {"speaker": "acc", "text": "It described the risk we wanted officials to prevent: a borrowed face causing panic and pushing authority toward emergency controls. It wasn’t an instruction to attack anyone."}
+      ],
+      "text": "What was Second Presence meant to be? A proposal for an approved security demonstration. Four of us built scenarios and source material. Why did your draft mention frightening a crowd and pressuring the council? It described the risk we wanted officials to prevent: a borrowed face causing panic and pushing authority toward emergency controls. It wasn’t an instruction to attack anyone.",
+      "surface_persuasion": 0.58,
+      "true_weight": 0.52,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "Corin admitted writing the risk scenario and gave it a credible professional meaning. The writing was ambiguous and could not operate as a confession.",
+      "tags": ["intent", "motive", "credibility"]
     },
     {
       "id": "b12",
+      "kind": "witness",
+      "speaker": "acc",
+      "mode": "cross",
+      "turns": [
+        {"speaker": "pc", "text": "You wrote that a public failure could force the council to transfer authentication power to a civic network?"},
+        {"speaker": "acc", "text": "Yes, as a warning about what panic could do."},
+        {"speaker": "pc", "text": "At 2:06, your registered token was inside the bag you had taken into the greenroom?"},
+        {"speaker": "acc", "text": "It should have been. Daro carried that bag earlier and knew the approval routine. The side entrance wasn’t filmed. I didn’t send the command."}
+      ],
+      "text": "You wrote that a public failure could force the council to transfer authentication power to a civic network? Yes, as a warning about what panic could do. At 2:06, your registered token was inside the bag you had taken into the greenroom? It should have been. Daro carried that bag earlier and knew the approval routine. The side entrance wasn’t filmed. I didn’t send the command.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.58,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Corin accepted authorship, possession, and the policy consequence described in the draft while denying criminal use. The side-entrance possibility remained a real defence point, not proof that Daro entered.",
+      "tags": ["identity", "intent", "credibility"]
+    },
+    {
+      "id": "b13",
+      "kind": "exhibit",
+      "speaker": "judge",
+      "text": "The parties agree that no Orinth office, venue officer, or protective agency authorised a Second Presence test for that day. Corin’s earlier written proposal had not been approved, and neither Jori nor the second inspection officer received an exercise notice. You may also accept that the intercepted package was not a training item. These facts do not identify who sent the activation command.",
+      "surface_persuasion": 0.56,
+      "true_weight": 0.58,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The agreed records answered the claim of an authorised exercise but expressly left personal attribution to the other evidence.",
+      "tags": ["intent", "procedure", "burden"]
+    },
+    {
+      "id": "b14",
       "kind": "direction",
       "speaker": "judge",
-      "text": "You must decide whether Corin intended to kill the fictional head of government, acted beyond preparation, and intended public intimidation or government coercion for an ideological purpose. The confirmed deepfake does not itself prove innocence or guilt. Consider whether the prosecution proved that Corin commissioned it and joined it to the attempted attack.",
+      "text": "The prosecution alleges Corin personally sent the activation command. It is not enough that Corin owned the project, wrote a risk scenario, or may have helped someone else. You must be sure Corin sent the command intending to kill Ilyra Senn and intending public intimidation or government coercion for an ideological purpose. If you are not sure of every element beyond reasonable doubt, your verdict must be Not Guilty.",
       "surface_persuasion": 0.5,
       "true_weight": 0.56,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The direction separates the uncontested synthetic performance from the decisive issue: whether Corin deliberately created it as part of the attack.",
+      "reveal_note": "The direction confines liability to Corin’s alleged personal activation and prevents project ownership, ambiguous writing, or another person’s conduct from replacing proof.",
       "tags": ["burden", "intent", "identity"]
     }
   ],
   "checkins": [],
   "verdict_truth": "Guilty",
-  "twist": "The call was unquestionably a deepfake, but it was not evidence of an external frame. Corin prepared the exact source phrases, instructed Jori to trust the digital double, scheduled a visible alibi, and timed the project’s deletion to the call.",
+  "twist": "The authors’ intended resolution is Guilty on principal liability, not because Corin owned a synthetic-media studio. The central inference is that Corin’s non-exportable token was freshly confirmed while certified footage placed the token and Corin together during the activation window; Jori’s advance instruction and the unapproved risk scenario support intent. The strongest reasonable opposing interpretation is that Daro used shared project access and briefly reached the bag through the unfilmed side entrance, while Corin’s writing described a legitimate safety demonstration.",
   "difficulty_target": 0.72,
   "jury": {
     "jurors": [
       {
-        "id": "J-01", "seat": 2, "label": "Documentary editor", "persona": "Is alert to synthetic images but initially treats a confirmed fake as proof of a frame.", "register": "plain", "arc": "vibes",
+        "id": "J-01", "seat": 2, "label": "Juror 2 — Anya", "persona": "Anya’s first reaction is that a stolen face must mean a frame, but she can revise a vivid impression.", "register": "plain", "arc": "vibes",
         "initial": {"position": "NG", "confidence": 76},
-        "weights": {"digital_forensics": 2, "identity": 2, "intent": 1},
+        "weights": {"digital_forensics": 2, "identity": 2, "timeline": 1},
         "lines": {
-          "agree": ["A fake call initially looks like someone borrowed Corin’s face without permission."],
-          "pushback": ["Proving the face is synthetic does not prove who planned the performance."],
-          "concede": ["The exact private phrase and timed deletion show that Corin prepared this fake."],
-          "burden_drift": ["Corin works with synthetic media, so I expect Corin to explain every copied file."],
-          "burden_correct": ["Professional access is not guilt unless the prosecution connects it to this call."],
-          "final": ["The preparation records connect Corin to the deepfake beyond coincidence."]
+          "agree": ["The fake call could be a frame, and four people could use the source archive. Isn’t that real doubt?"],
+          "pushback": ["But the fake call isn’t the activation command. What do we do with the token in Corin’s bag?"],
+          "concede": ["Wait—the fresh token challenge changes my first reaction. The copied face isn’t the only identity evidence."],
+          "burden_drift": ["I keep wanting Corin to explain every studio file because the work feels suspicious."],
+          "burden_correct": ["No, shared access means the prosecution needs a separate link to Corin personally."],
+          "final": ["I stopped treating the fake face as the answer and decided on the token evidence."]
         },
         "reaction_rules": [
           {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 8, "line": "agree"}},
-          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 10, "line": "concede"}},
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 12, "line": "concede"}},
           {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-02", "seat": 3, "label": "Security receptionist", "persona": "Focuses on authorization chains and understands the human consequence of bypassing a hold.", "register": "blunt", "arc": "steady",
+        "id": "J-02", "seat": 3, "label": "Juror 3 — Bex", "persona": "Bex focuses on who gave each instruction and refuses to merge Jori’s conduct with Corin’s.", "register": "blunt", "arc": "steady",
         "initial": {"position": "G", "confidence": 62},
-        "weights": {"command": 2, "procedure": 1, "intent": 2},
+        "weights": {"command": 2, "identity": 2, "intent": 1},
         "lines": {
-          "agree": ["Corin told Jori to honor the digital double before the call occurred."],
-          "pushback": ["Jori’s immunity makes corroboration essential."],
-          "concede": ["The studio records corroborate the warning without relying on Jori alone."],
-          "burden_drift": ["Jori broke the hold, so I am tempted to make Corin disprove Jori’s account."],
-          "burden_correct": ["The prosecution must prove the instruction, and the earlier records either do or do not."],
-          "final": ["The advance instruction and project record prove deliberate authorization."]
+          "agree": ["Jori says Corin supplied the exact code and told her to skip the second officer. That matters."],
+          "pushback": ["I don’t trust Jori’s later memory on its own. What backs it up?"],
+          "concede": ["The token record is separate from Jori and points to Corin during the command window."],
+          "burden_drift": ["Jori broke the rule, and I catch myself asking Corin to prove Jori acted alone."],
+          "burden_correct": ["Let’s keep them separate: the prosecution must prove Corin’s own activation."],
+          "final": ["I relied on Corin’s personal command, not guilt by association with Jori."]
         },
         "reaction_rules": [
           {"when": {"theme": "command", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
-          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "concede"}},
-          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-03", "seat": 4, "label": "Youth counsellor", "persona": "Insists that fear of terrorism cannot replace proof of the accused’s personal intent.", "register": "formal", "arc": "principled_holdout",
+        "id": "J-03", "seat": 4, "label": "Juror 4 — Cora", "persona": "Cora will not let the seriousness of the prevented attack lower the standard or blur personal identity.", "register": "formal", "arc": "principled_holdout",
         "initial": {"position": "NG", "confidence": 72},
-        "weights": {"burden": 2, "intent": 2, "motive": 1},
+        "weights": {"burden": 2, "identity": 2, "intent": 1},
         "lines": {
-          "agree": ["The failed attack is grave, but gravity does not identify its author."],
-          "pushback": ["A political essay alone would not prove an attempted assassination."],
-          "concede": ["The draft becomes powerful when its borrowed-face plan matches the completed call."],
-          "burden_drift": ["The danger of the event makes an uncertain inference feel acceptable."],
-          "burden_correct": ["The same burden applies here: every charged element must be proved beyond reasonable doubt."],
-          "final": ["The matched plan, preparation, and attempted activation satisfy that burden."]
+          "agree": ["The attack was real and grave. That still doesn’t tell us whose hand confirmed the token."],
+          "pushback": ["An ambiguous safety draft cannot repair weak identity evidence."],
+          "concede": ["I accept the timing is unusually tight: Corin, the bag, the fresh challenge, and the command all meet at 2:06."],
+          "burden_drift": ["The avoided harm makes an uncertain inference feel easier than it should."],
+          "burden_correct": ["Every element still needs proof beyond reasonable doubt, including Corin’s personal act."],
+          "final": ["For me, the independently certified timing finally crossed the burden."]
         },
         "reaction_rules": [
-          {"when": {"theme": "motive", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "concede"}},
-          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
           {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 0, "confidence": 3, "line": "burden_correct"}},
           {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-04", "seat": 5, "label": "Software auditor", "persona": "Tracks purpose, access, and deletion as a sequence rather than treating any file as decisive alone.", "register": "formal", "arc": "mind_changer",
+        "id": "J-04", "seat": 5, "label": "Juror 5 — Dev", "persona": "Dev begins with the shared-access defence and changes only if another record attributes the decisive act.", "register": "formal", "arc": "mind_changer",
         "initial": {"position": "NG", "confidence": 68},
-        "weights": {"digital_forensics": 2, "intent": 2, "method": 1},
+        "weights": {"digital_forensics": 2, "identity": 2, "timeline": 2},
         "lines": {
-          "agree": ["A clean deepfake file cannot identify its creator by itself."],
-          "pushback": ["The creator question must be answered by the surrounding preparation records."],
-          "concede": ["The exact phrase and scheduled deletion turn access into a planned sequence."],
-          "burden_drift": ["Specialized access can tempt us to assume responsibility without tracing use."],
-          "burden_correct": ["We need the trace from Corin’s source session to this specific performance."],
-          "final": ["That trace is complete enough to establish Corin’s commission of the call."]
+          "agree": ["The administrator log genuinely can’t distinguish four authorised people. We shouldn’t pretend it can."],
+          "pushback": ["Shared project access answers the call project, but does it answer the separate token?"],
+          "concede": ["I’ve changed my view. The fresh challenge prevents Daro from preparing the activation earlier."],
+          "burden_drift": ["A pile of matching records can make me overlook which one actually identifies a person."],
+          "burden_correct": ["The prosecution needs a trace to Corin’s own act, not just to Corin’s business."],
+          "final": ["The project remained shared; the activation token and timing did not."]
         },
         "reaction_rules": [
           {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
-          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
-          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
-          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
-        ]
-      },
-      {
-        "id": "J-05", "seat": 6, "label": "Café owner and foreperson", "persona": "Keeps the room focused on the three legal elements and asks for a source beside every claim.", "register": "plain", "arc": "foreperson",
-        "initial": {"position": "U", "confidence": 42},
-        "weights": {"burden": 2, "intent": 1, "causation": 1},
-        "lines": {
-          "agree": ["The placement and attempted activation clearly went beyond preparation."],
-          "pushback": ["We still need to decide whether Corin intended the death and ideological coercion."],
-          "concede": ["The private draft states both purposes and matches the method actually used."],
-          "burden_drift": ["We are in danger of asking Corin to identify an alternative operator."],
-          "burden_correct": ["The judge said the prosecution must prove Corin joined the synthetic call to the attack."],
-          "final": ["Each element has a separate record, and those records converge on Corin."]
-        },
-        "reaction_rules": [
-          {"when": {"theme": "causation", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
-          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
-          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 0, "confidence": 3, "line": "burden_correct"}},
-          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
-        ]
-      },
-      {
-        "id": "J-06", "seat": 7, "label": "Theatre usher", "persona": "Is strongly influenced by a convincing performance and then by evidence showing how it was staged.", "register": "plain", "arc": "vibes",
-        "initial": {"position": "NG", "confidence": 65},
-        "weights": {"identity": 2, "alibi": 2, "intent": 1},
-        "lines": {
-          "agree": ["Seeing Corin at the luncheon while the call happened makes the frame look convincing."],
-          "pushback": ["A staged alibi is still a performance, even when the public appearance is real."],
-          "concede": ["Corin’s warning that being seen was the point changes the whole scene."],
-          "burden_drift": ["Because Corin understands performance, I almost expect proof that nobody copied the material."],
-          "burden_correct": ["The prosecution must show Corin staged this performance, not merely that Corin could."],
-          "final": ["The advance warning proves the public appearance was part of the deception."]
-        },
-        "reaction_rules": [
-          {"when": {"theme": "alibi", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 8, "line": "agree"}},
-          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
+          {"when": {"theme": "timeline", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 10, "line": "concede"}},
           {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-07", "seat": 8, "label": "Sound engineer", "persona": "Distinguishes synthetic speech from the human decisions made before and after its creation.", "register": "formal", "arc": "steady",
-        "initial": {"position": "G", "confidence": 55},
-        "weights": {"digital_forensics": 2, "method": 2, "identity": 1},
+        "id": "J-05", "seat": 6, "label": "Juror 6 — Eren", "persona": "Eren keeps the discussion on Corin’s alleged personal act and asks the room to name its source.", "register": "plain", "arc": "foreperson",
+        "initial": {"position": "U", "confidence": 42},
+        "weights": {"burden": 2, "intent": 1, "causation": 1, "identity": 1},
         "lines": {
-          "agree": ["The expert proved synthetic speech, not an innocent source."],
-          "pushback": ["No fingerprint in the output can erase the matching private source session."],
-          "concede": ["The rare sentence links Corin’s recording to the finished call with unusual precision."],
-          "burden_drift": ["The technical complexity makes me want Corin to explain the entire production chain."],
-          "burden_correct": ["We should rely on the proved links, not demand an impossible negative from Corin."],
-          "final": ["The source material and timing identify Corin’s deliberate preparation."]
+          "agree": ["We agree an activation was attempted. Can we now focus on who personally confirmed it?"],
+          "pushback": ["The draft speaks about a risk. Where’s the proof that Corin wanted that risk to happen?"],
+          "concede": ["The token timing answers identity for me; the unapproved device and admitted policy goal answer intent together."],
+          "burden_drift": ["We’re drifting toward asking Corin to identify whoever used the side entrance."],
+          "burden_correct": ["Corin doesn’t have to name another operator. The prosecution has to make us sure it was Corin."],
+          "final": ["I checked the personal act first, then intent, instead of letting the event decide for me."]
         },
         "reaction_rules": [
-          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
-          {"when": {"theme": "method", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
-          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
+          {"when": {"theme": "causation", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 0, "confidence": 3, "line": "burden_correct"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-08", "seat": 9, "label": "Compliance officer", "persona": "Distrusts witnesses who receive immunity but looks for records that independently corroborate them.", "register": "formal", "arc": "steady",
-        "initial": {"position": "NG", "confidence": 58},
+        "id": "J-06", "seat": 7, "label": "Juror 7 — Fia", "persona": "Fia is strongly influenced by Corin’s simultaneous luncheon appearance until the room separates call creation from activation.", "register": "plain", "arc": "vibes",
+        "initial": {"position": "NG", "confidence": 65},
+        "weights": {"identity": 2, "alibi": 2, "timeline": 1},
+        "lines": {
+          "agree": ["Corin is onstage during the fake call. I know that’s not a complete alibi, but it still matters."],
+          "pushback": ["Are we sure the person in the greenroom was alone, or only that the hallway camera saw one person?"],
+          "concede": ["I was letting the luncheon image control everything. Corin could be onstage at two and use the token at 2:06."],
+          "burden_drift": ["Corin’s expertise makes me want proof that no collaborator copied anything."],
+          "burden_correct": ["That’s wrong. The prosecution must prove Corin used this token for this command."],
+          "final": ["The public appearance didn’t answer what happened six minutes later."]
+        },
+        "reaction_rules": [
+          {"when": {"theme": "alibi", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 8, "line": "agree"}},
+          {"when": {"theme": "timeline", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-07", "seat": 8, "label": "Juror 8 — Garen", "persona": "Garen distinguishes the shared synthetic-media work from the later human decision to activate the device.", "register": "formal", "arc": "steady",
+        "initial": {"position": "G", "confidence": 55},
+        "weights": {"digital_forensics": 2, "method": 2, "identity": 1},
+        "lines": {
+          "agree": ["The expert proved the call archive was shared. The activation token is a different system and a different question."],
+          "pushback": ["A shared login means we can’t attribute the project activity to Corin. I won’t pretend otherwise."],
+          "concede": ["I accept that the token doesn’t record a fingerprint, but the fresh challenge sharply limits who could use it."],
+          "burden_drift": ["Technical complexity can make Corin’s innocent explanation feel like a duty."],
+          "burden_correct": ["We should rely on proved limits and links, not demand a complete production history from Corin."],
+          "final": ["I treated the project attribution as unresolved and the activation attribution as proved."]
+        },
+        "reaction_rules": [
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 5, "line": "pushback"}},
+          {"when": {"theme": "method", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-08", "seat": 9, "label": "Juror 9 — Hali", "persona": "Hali distrusts immunity evidence and asks whether independent records confirm the precise part Jori added later.", "register": "hesitant", "arc": "steady",
+        "initial": {"position": "U", "confidence": 44},
         "weights": {"credibility": 2, "command": 2, "procedure": 1},
         "lines": {
-          "agree": ["Jori’s first denial and later immunity require caution."],
-          "pushback": ["An interested witness cannot carry this accusation without independent support."],
-          "concede": ["The prior source session and calendar note corroborate Jori on the central point."],
-          "burden_drift": ["Jori’s admitted breach makes me want Corin to prove Jori acted alone."],
-          "burden_correct": ["The prosecution must corroborate Jori, and the pre-call records are the proper test."],
-          "final": ["Jori is imperfect, but the independent preparation records support the account."]
+          "agree": ["Jori changed the story after immunity, and Daro knew the code too. We can’t skip that."],
+          "pushback": ["Maybe Jori is telling the truth now, but which record confirms Corin gave the instruction?"],
+          "concede": ["The token doesn’t prove Jori’s words, but it independently connects Corin to the later command."],
+          "burden_drift": ["I almost asked Corin to prove Jori and Daro acted together. That isn’t Corin’s burden."],
+          "burden_correct": ["We have to test Jori against independent evidence, not against Corin’s ability to solve the case."],
+          "final": ["I used Jori cautiously and reached identity through the separate token record."]
         },
         "reaction_rules": [
           {"when": {"theme": "credibility", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "agree"}},
           {"when": {"theme": "command", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
+          {"when": {"theme": "procedure", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 5, "line": "pushback"}},
           {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-09", "seat": 10, "label": "Courier dispatcher", "persona": "Understands delivery pressure and is prone to blaming the person who appears to control the paperwork.", "register": "blunt", "arc": "burden_drifter",
+        "id": "J-09", "seat": 10, "label": "Juror 10 — Ivo", "persona": "Ivo reacts strongly to the inspection bypass and has to correct a tendency to treat ownership as control.", "register": "blunt", "arc": "burden_drifter",
         "initial": {"position": "G", "confidence": 66},
-        "weights": {"command": 2, "burden": 2, "alibi": 1},
+        "weights": {"command": 2, "burden": 2, "identity": 1},
         "lines": {
-          "agree": ["Jori acted because Corin had prepared Jori to trust the digital double."],
-          "pushback": ["A delivery bypass can involve several people, so command still needs proof."],
-          "concede": ["The warning before the call proves Corin controlled the authorization sequence."],
-          "burden_drift": ["Corin owned the model, so Corin should have to show who else used it."],
-          "burden_correct": ["Ownership is not enough; the prosecution must prove the specific criminal use."],
-          "final": ["The advance instruction proves that specific use."]
+          "agree": ["Jori says Corin set up the bypass before the fake call. That’s a direct accusation."],
+          "pushback": ["Daro knew the code and carried the bag. Why isn’t that enough for doubt?"],
+          "concede": ["The 2:06 challenge wasn’t sitting around for Daro to prepare. That’s the point I was missing."],
+          "burden_drift": ["Corin owned the token, so part of me says Corin should name who else touched it."],
+          "burden_correct": ["No—ownership isn’t enough. The prosecution must prove the specific criminal use."],
+          "final": ["The narrow confirmation window, not ownership alone, decided identity for me."]
         },
         "reaction_rules": [
-          {"when": {"theme": "alibi", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 5, "line": "burden_drift"}},
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
           {"when": {"theme": "command", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "identity", "stance": "unreliable", "direction": "innocence"}, "effect": {"delta": -1, "confidence": -6, "line": "burden_drift"}},
           {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 0, "confidence": 4, "line": "burden_correct"}},
           {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-10", "seat": 11, "label": "Graduate researcher", "persona": "Starts undecided and changes position when separate records support one causal explanation.", "register": "hesitant", "arc": "drifter",
+        "id": "J-10", "seat": 11, "label": "Juror 11 — Jessa", "persona": "Jessa starts undecided and speaks cautiously while comparing the shared archive with the separate token records.", "register": "hesitant", "arc": "drifter",
         "initial": {"position": "U", "confidence": 38},
-        "weights": {"intent": 2, "digital_forensics": 2, "motive": 1},
+        "weights": {"intent": 1, "digital_forensics": 2, "identity": 2},
         "lines": {
-          "agree": ["At first, either a frame or a self-made alibi seems possible."],
-          "pushback": ["The confirmed deepfake leaves the creator question open only until we examine preparation."],
-          "concede": ["The source phrase, calendar note, and draft all support the same planned alibi."],
-          "burden_drift": ["Corin’s expertise makes the innocent explanation feel like Corin’s responsibility to prove."],
-          "burden_correct": ["Expertise is only context; the prosecution still needs a specific connection."],
-          "final": ["The specific connections are too numerous and synchronized to be accidental."]
+          "agree": ["I think the shared account leaves the call creator open. Four authorised users is not a theoretical possibility."],
+          "pushback": ["But could Daro really reach the token during that thirty-second challenge? I’m struggling with that."],
+          "concede": ["The timing is specific enough for me: the token, Corin, and the activation window line up independently."],
+          "burden_drift": ["Corin’s expertise makes the defence explanation feel like Corin’s job to prove."],
+          "burden_correct": ["Expertise is only context. We still need a specific connection to the command."],
+          "final": ["I kept the call attribution open and decided the separate activation attribution."]
         },
         "reaction_rules": [
           {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 6, "line": "agree"}},
-          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
-          {"when": {"theme": "motive", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 6, "line": "concede"}},
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
           {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-11", "seat": 12, "label": "Retired paramedic", "persona": "Centers the prevented human harm and requires clear proof that intervention stopped a completed attempt.", "register": "plain", "arc": "steady",
+        "id": "J-11", "seat": 12, "label": "Juror 12 — Kellan", "persona": "Kellan keeps the prevented harm visible while insisting that intervention does not lower the burden on identity or intent.", "register": "plain", "arc": "steady",
         "initial": {"position": "G", "confidence": 60},
-        "weights": {"causation": 2, "intent": 2, "burden": 1},
+        "weights": {"causation": 2, "intent": 2, "identity": 1, "burden": 1},
         "lines": {
-          "agree": ["The device was placed and activation was attempted before security intervened."],
-          "pushback": ["A prevented death still requires proof of who intended it."],
-          "concede": ["Corin’s draft states the intended death and the public fear it was meant to cause."],
-          "burden_drift": ["The avoided harm makes me impatient with any innocent explanation."],
-          "burden_correct": ["Prevention does not lower the burden of proving the accused’s intent."],
-          "final": ["The draft and completed acts prove both intent and attempt."]
+          "agree": ["The device was placed and activation was attempted. Security intervention doesn’t turn that back into preparation."],
+          "pushback": ["A prevented death still requires proof of who acted and what that person intended."],
+          "concede": ["The token timing identifies Corin for me; the unapproved test and admitted pressure scenario give the act its purpose."],
+          "burden_drift": ["Knowing what almost happened makes me impatient with the alternative explanation."],
+          "burden_correct": ["Prevention doesn’t lower the burden of proving Corin’s identity and intent."],
+          "final": ["I separated the real danger from the proof, then found both the act and intent established."]
         },
         "reaction_rules": [
           {"when": {"theme": "causation", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
-          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
-          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       }
     ]

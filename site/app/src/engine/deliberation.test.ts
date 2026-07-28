@@ -166,19 +166,17 @@ describe('serious-crime case integration', () => {
   const seriousCase = docketCaseSchema.parse(JSON.parse(raw))
 
   it('plays the authored fixture to a terminal outcome, deterministically', () => {
-    const actions = [argue('b6', 'proves'), argue('b2', 'proves'), cite('b12')]
+    const direction = seriousCase.beats.find((beat) => beat.kind === 'direction')
+    if (!direction) throw new Error('dd-0006 needs a jury direction')
+    const actions = [argue('b9', 'proves'), argue('b2', 'proves'), cite(direction.id)]
     const a = runDeliberation(seriousCase, 'guilty', actions)
     const b = runDeliberation(seriousCase, 'guilty', actions)
     expect(a.outcome).toEqual(b.outcome)
     expect(a.outcome.tally.g + a.outcome.tally.ng).toBe(12)
   })
 
-  it('arguing the decisive exhibits moves the authored room toward the truth', () => {
-    const argued = runDeliberation(seriousCase, 'guilty', [
-      argue('b6', 'proves'),
-      argue('b2', 'proves'),
-      argue('b11', 'proves'),
-    ])
+  it('arguing the decisive evidence moves the authored room toward the truth', () => {
+    const argued = runDeliberation(seriousCase, 'guilty', [argue('b9', 'proves')])
     const passive = runDeliberation(seriousCase, 'guilty', [pass, pass, pass])
     expect(argued.outcome.tally.g).toBeGreaterThanOrEqual(passive.outcome.tally.g)
   })
