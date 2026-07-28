@@ -2,22 +2,22 @@
   "id": "dd-intro",
   "publish_date": "2026-07-27",
   "label": "fiction",
-  "title": "Eighteen Minutes Fast",
+  "title": "The Lobby Frame",
   "offence_code": "murder_police_officer_on_duty",
   "content_advisories": ["death", "serious_violence"],
   "detail_level": "non_graphic",
-  "setting": "The present-day city of Aster Reach, where an overnight evidence-store alarm has ended with an officer dead and a municipal technician accused.",
+  "setting": "The court sits in the present-day fictional city of Aster Reach. Shortly after one o’clock in the morning, an alarm drew patrol officer Dax Mere into the municipal evidence archive. He met an unidentified person inside and died before help arrived. Lena Voss, the technician responsible for the archive alarm, now stands accused of murdering an on-duty police officer.",
   "charge": "murder of an on-duty police officer",
   "elements": [
     "The accused caused the on-duty officer’s death.",
     "The accused intended to kill or cause really serious injury.",
     "The killing was not legally justified or excused."
   ],
-  "hook": "A camera appears to show Lena Voss leaving the evidence store after Officer Dax Mere was killed. The image is genuine, the face is hers, and its time seems decisive.",
+  "hook": "A genuine lobby frame shows Lena crossing the archive beneath a clock reading 1:31. Dax was already dead by then—or so the display suggests. Before deciding what that image proves, the jury must learn which systems kept central time, what happened when the archive recorder restarted, and where Lena travelled next.",
   "accused": {
     "cast_id": "acc",
-    "human": "Lena Voss repairs municipal alarm systems and cares for her father between overnight callouts.",
-    "if_guilty": "A conviction would imprison her for life and formally name her as the person who murdered an officer responding to duty."
+    "human": "Lena Voss, 38, has maintained municipal alarm systems for eleven years. Her work involves overnight callouts, shared maintenance credentials, and confidential access cards. Weeks before Dax’s death, a supervisor warned her for failing to document repairs. She says professional embarrassment explains her hidden visit and first false account, but not the killing.",
+    "if_guilty": "If convicted, sentencing would be decided separately by the judge. The jury’s task is limited to deciding whether the prosecution proved the charge."
   },
   "media": {
     "cover": {
@@ -57,21 +57,21 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Officer Dax Mere walked into the archive on a routine alarm call and never came home. Lena Voss had entered secretly, hidden the visit, and appeared on a genuine lobby recording. You will hear the transit and recorder evidence as well. The prosecution says her access, dishonesty, and knowledge of the system identify a planned deception around his killing."
+        "text": "Dax Mere answered an alarm as part of his ordinary duty and was deliberately killed inside the archive. Lena had secretly entered with her service card, concealed an unauthorised repair, and first told investigators she stayed home. A genuine lobby frame shows her there. She also knew the system and could use the shared credential that disabled clock synchronisation. You will hear the transit and restart evidence too. The prosecution says the records must be weighed together, including their limits, before you decide whether her deception surrounded a repair or a murder."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The recording shows Lena, and she should not have lied about being there. But the clocks do not agree. You will hear how the original files were preserved, which systems used central time, and what the archive recorder recorded when it restarted. The defence says embarrassment explains Lena’s lie, while the reliable sequence prevents the prosecution from placing her with Dax."
+        "text": "Lena’s lie made her a proper suspect, and the defence will not excuse it. But a hidden repair is not proof of homicide. The systems in this case did not all keep the same time. Sela Rune will explain how the original files were obtained, preserved, and checked; what the archive recorded when it restarted; and how a centrally timed gate and continuous carriage video trace Lena’s journey. The defence says those independent records place her away before Dax entered, while his final recording identifies nobody."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Do not ignore the transit evidence; weigh it with everything else. Its gate record does not identify a person, and its camera shows Lena only later. She had entered secretly, denied the visit, and shared access to the credential that disabled the archive clock’s synchronization. Those are real strands of evidence. But if the corrected frame and carriage image leave you unsure, the prosecution has not discharged its burden."
+        "text": "Lena’s concealed entry, false account, technical access, and knowledge that alarm responders might attend are not trivial. The transit gate records a pass, not its carrier, and the shared credential records no individual user. Yet you must also confront the continuous carriage video and the automatic restart entry. The prosecution bears the burden on identity as well as the agreed homicide and intent. If you accept the corrected sequence as reliable and it leaves you unsure Lena met Dax, suspicion—even serious suspicion—cannot lawfully complete the case."
       },
       "defence": {
         "speaker": "dc",
-        "text": "Now the times can be put together. The preserved restart entry makes the displayed 1:31 frame a 1:13 departure. The central gate record begins Lena’s journey three minutes later, and the carriage image confirms her face. Her lie was foolish and damaging, but it concerned an unauthorized repair. It cannot place her in Dax’s unidentified fatal encounter or prove murder beyond reasonable doubt."
+        "text": "The chronology is now complete. The authenticated restart entry converts the displayed lobby time to a departure before Dax arrived. Three minutes later, a centrally timed gate recorded Lena’s pass; continuous video then shows her board, remain aboard throughout the fatal window, and leave across the city. Her lie concerned an unauthorised repair and damaged her credibility. It did not alter the automatic records, identify the shadowed person on Dax’s camera, or prove Lena caused his death beyond reasonable doubt."
       }
     }
   },
@@ -91,12 +91,14 @@
       "speaker": "w1",
       "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "What was Dax Mere like to work with?"},
-        {"speaker": "w1", "text": "Careful and kind. He checked my reports without making me feel small, and he called his sister after every night shift."},
+        {"speaker": "pc", "text": "How well did you know Dax Mere?"},
+        {"speaker": "w1", "text": "We partnered for eighteen months. He was careful and kind, checked my reports without making me feel small, and called his sister after every night shift."},
+        {"speaker": "pc", "text": "What did an archive alarm usually require?"},
+        {"speaker": "w1", "text": "The first officer checked the entrance, announced their presence, and waited if anything looked wrong. Dax didn’t treat routine calls casually."},
         {"speaker": "pc", "text": "What happened on his final call?"},
-        {"speaker": "w1", "text": "Dispatch sent him to the archive alarm at 1:16 a.m. His body camera connected at 1:18, and I followed when he stopped answering."}
+        {"speaker": "w1", "text": "Dispatch sent him at 1:16. His body camera connected at 1:18. I heard him ask someone to stop, then the sound broke up. I followed when he didn’t answer."}
       ],
-      "text": "What was Dax Mere like to work with? Careful and kind. He checked my reports without making me feel small, and he called his sister after every night shift. What happened on his final call? Dispatch sent him to the archive alarm at 1:16 a.m. His body camera connected at 1:18, and I followed when he stopped answering.",
+      "text": "How well did you know Dax Mere? We partnered for eighteen months. He was careful and kind, checked my reports without making me feel small, and called his sister after every night shift. What did an archive alarm usually require? The first officer checked the entrance, announced their presence, and waited if anything looked wrong. Dax didn’t treat routine calls casually. What happened on his final call? Dispatch sent him at 1:16. His body camera connected at 1:18. I heard him ask someone to stop, then the sound broke up. I followed when he didn’t answer.",
       "surface_persuasion": 0.54,
       "true_weight": 0.5,
       "direction": "guilt",
@@ -108,7 +110,7 @@
       "id": "b2",
       "kind": "exhibit",
       "speaker": "judge",
-      "text": "The parties agree that a qualified forensic physician examined Dax Mere and reviewed the emergency records. Dax died between 1:19 and 1:24 a.m. from deliberate force by another person. The findings exclude accident, natural illness, and self-infliction. The parties further agree that the attacker intended to kill or cause really serious injury and acted without lawful justification. Only identity is disputed.",
+      "text": "The parties agree that a qualified forensic physician examined Dax and reviewed the emergency records. Dax died between 1:19 and 1:24 from deliberate force by another person. Those findings exclude accident, natural illness, and self-infliction. They also prove the attacker intended to kill or cause really serious injury and acted without lawful justification. In legal terms, causation, murderous intent, and absence of justification are agreed. The prosecution must still prove the remaining element: that Lena was the attacker.",
       "surface_persuasion": 0.64,
       "true_weight": 0.58,
       "direction": "guilt",
@@ -120,7 +122,7 @@
       "id": "b3",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The parties also agree that the city camera custodian exported the original lobby recording in an investigator’s presence and verified its matching hash. The unedited frame displays 1:31 a.m. and clearly shows Lena crossing the lobby in her work coat. Read beside the medical window, the displayed time appears to place her leaving after Dax was attacked.",
+      "text": "The city camera custodian exported the original lobby recording in an investigator’s presence, retained the source drive, and verified that the export’s hash matched. A hash is a digital fingerprint used to detect a changed file. The unedited frame displays 1:31 and clearly shows Lena crossing the lobby in her work coat. The file and face are authentic. The hash does not prove that the recorder’s displayed clock was accurate.",
       "surface_persuasion": 0.93,
       "true_weight": 0.18,
       "direction": "guilt",
@@ -137,9 +139,11 @@
         {"speaker": "dc", "text": "The body-camera figure never shows a face, does it?"},
         {"speaker": "w1", "text": "No. I wish it did, but the face stays in shadow."},
         {"speaker": "dc", "text": "And you cannot identify the voice as Lena’s?"},
-        {"speaker": "w1", "text": "I can’t. The recording proves Dax met someone inside. It doesn’t tell me who that person was."}
+        {"speaker": "w1", "text": "I can’t. It’s brief and distorted."},
+        {"speaker": "dc", "text": "Dax never says Lena’s name or describes the person?"},
+        {"speaker": "w1", "text": "No. The recording proves he met someone inside during the fatal window. It doesn’t tell me who that person was, and I won’t pretend it does."}
       ],
-      "text": "The body-camera figure never shows a face, does it? No. I wish it did, but the face stays in shadow. And you cannot identify the voice as Lena’s? I can’t. The recording proves Dax met someone inside. It doesn’t tell me who that person was.",
+      "text": "The body-camera figure never shows a face, does it? No. I wish it did, but the face stays in shadow. And you cannot identify the voice as Lena’s? I can’t. It’s brief and distorted. Dax never says Lena’s name or describes the person? No. The recording proves he met someone inside during the fatal window. It doesn’t tell me who that person was, and I won’t pretend it does.",
       "surface_persuasion": 0.52,
       "true_weight": 0.56,
       "direction": "innocence",
@@ -151,7 +155,7 @@
       "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The parties agree that the access-system custodian produced the original register and verified its audit signature. Lena’s service card opened the archive at 12:47 a.m. She omitted that visit and first said she had stayed home. Dax’s signed call note says he planned to question her about the omission. No later entry used her card; lobby exits needed none.",
+      "text": "The access-system custodian produced the original server register and verified its audit signature. Lena’s service card opened the archive at 12:47. No later entry used it, although lobby exits needed no card. Lena omitted the visit and first said she stayed home. Dax’s signed call note says he planned to ask her about the unexplained access. The register proves use of her card at 12:47, not how long she remained or who carried it.",
       "surface_persuasion": 0.78,
       "true_weight": 0.5,
       "direction": "guilt",
@@ -166,11 +170,13 @@
       "mode": "examination",
       "turns": [
         {"speaker": "dc", "text": "What transit material did you examine?"},
-        {"speaker": "w2", "text": "I obtained the original gate log and continuous carriage video from their custodians, checked both hashes, and compared their clocks with the central time record."},
-        {"speaker": "dc", "text": "What did those files show?"},
-        {"speaker": "w2", "text": "Lena’s pass opened East Quay gate at 1:16 a.m. The carriage video shows her face at 1:19, with no gap or clock jump."}
+        {"speaker": "w2", "text": "The transit custodian supplied the original East Quay gate log, platform video, and continuous carriage video. I checked each signed export and hash against the retained source."},
+        {"speaker": "dc", "text": "How did you test their clocks?"},
+        {"speaker": "w2", "text": "The gate and both cameras synchronised with the city’s central time service. Their daily checks were within one second, with no reset or jump that night."},
+        {"speaker": "dc", "text": "What journey do they record?"},
+        {"speaker": "w2", "text": "Lena’s pass opened the gate at 1:16. Video shows her board at 1:18 and remain visible until West Crossing at 1:29. Even the nearest return route to the archive takes ten minutes."}
       ],
-      "text": "What transit material did you examine? I obtained the original gate log and continuous carriage video from their custodians, checked both hashes, and compared their clocks with the central time record. What did those files show? Lena’s pass opened East Quay gate at 1:16 a.m. The carriage video shows her face at 1:19, with no gap or clock jump.",
+      "text": "What transit material did you examine? The transit custodian supplied the original East Quay gate log, platform video, and continuous carriage video. I checked each signed export and hash against the retained source. How did you test their clocks? The gate and both cameras synchronised with the city’s central time service. Their daily checks were within one second, with no reset or jump that night. What journey do they record? Lena’s pass opened the gate at 1:16. Video shows her board at 1:18 and remain visible until West Crossing at 1:29. Even the nearest return route to the archive takes ten minutes.",
       "surface_persuasion": 0.72,
       "true_weight": 0.86,
       "direction": "innocence",
@@ -185,11 +191,13 @@
       "mode": "examination",
       "turns": [
         {"speaker": "dc", "text": "How did you test the archive recorder itself?"},
-        {"speaker": "w2", "text": "I imaged its original drive in an investigator’s presence, sealed the drive, and verified that the working copy and lobby export kept the same hashes."},
+        {"speaker": "w2", "text": "I imaged its original drive in an investigator’s presence. We recorded the serial, sealed the drive, and verified that my working copy and the lobby export kept matching hashes."},
+        {"speaker": "dc", "text": "Why could its displayed time differ from central time?"},
+        {"speaker": "w2", "text": "The recorder restarted after a power interruption. Its automatic system log says synchronisation was disabled, so at 10:04 it loaded a clock eighteen minutes fast."},
         {"speaker": "dc", "text": "What did its restart record show?"},
-        {"speaker": "w2", "text": "At 10:04 p.m. it loaded a clock eighteen minutes fast because synchronization was disabled. The displayed 1:31 frame was captured at 1:13."}
+        {"speaker": "w2", "text": "Every later frame retained that fixed difference. The displayed 1:31 lobby frame was captured at 1:13 central time. The restart entry was written automatically, hours before Lena became a suspect."}
       ],
-      "text": "How did you test the archive recorder itself? I imaged its original drive in an investigator’s presence, sealed the drive, and verified that the working copy and lobby export kept the same hashes. What did its restart record show? At 10:04 p.m. it loaded a clock eighteen minutes fast because synchronization was disabled. The displayed 1:31 frame was captured at 1:13.",
+      "text": "How did you test the archive recorder itself? I imaged its original drive in an investigator’s presence. We recorded the serial, sealed the drive, and verified that my working copy and the lobby export kept matching hashes. Why could its displayed time differ from central time? The recorder restarted after a power interruption. Its automatic system log says synchronisation was disabled, so at 10:04 it loaded a clock eighteen minutes fast. What did its restart record show? Every later frame retained that fixed difference. The displayed 1:31 lobby frame was captured at 1:13 central time. The restart entry was written automatically, hours before Lena became a suspect.",
       "surface_persuasion": 0.8,
       "true_weight": 0.92,
       "direction": "innocence",
@@ -204,11 +212,13 @@
       "mode": "cross",
       "turns": [
         {"speaker": "pc", "text": "The gate log alone does not identify who carried Lena’s pass?"},
-        {"speaker": "w2", "text": "That’s correct. Her face appears on the carriage three minutes later."},
+        {"speaker": "w2", "text": "That’s correct. The platform and carriage video identify her from 1:18 onward."},
         {"speaker": "pc", "text": "And the restart entry does not name who disabled synchronization?"},
-        {"speaker": "w2", "text": "No. A shared maintenance credential did that at 9:52 p.m.; four technicians, including Lena, could use it. The restart entry itself was automatic and predates her recorded visit."}
+        {"speaker": "w2", "text": "No. A shared maintenance credential disabled it at 9:52; four technicians, including Lena, could use that credential."},
+        {"speaker": "pc", "text": "So your records cannot tell us why the clock was changed?"},
+        {"speaker": "w2", "text": "They can’t identify purpose or user. They do show the change occurred before Lena’s 12:47 entry, and the automatic restart entry fixes the amount of error."}
       ],
-      "text": "The gate log alone does not identify who carried Lena’s pass? That’s correct. Her face appears on the carriage three minutes later. And the restart entry does not name who disabled synchronization? No. A shared maintenance credential did that at 9:52 p.m.; four technicians, including Lena, could use it. The restart entry itself was automatic and predates her recorded visit.",
+      "text": "The gate log alone does not identify who carried Lena’s pass? That’s correct. The platform and carriage video identify her from 1:18 onward. And the restart entry does not name who disabled synchronization? No. A shared maintenance credential disabled it at 9:52; four technicians, including Lena, could use that credential. So your records cannot tell us why the clock was changed? They can’t identify purpose or user. They do show the change occurred before Lena’s 12:47 entry, and the automatic restart entry fixes the amount of error.",
       "surface_persuasion": 0.64,
       "true_weight": 0.5,
       "direction": "guilt",
@@ -222,12 +232,14 @@
       "speaker": "acc",
       "mode": "examination",
       "turns": [
-        {"speaker": "dc", "text": "Why did you return to the archive that night?"},
-        {"speaker": "acc", "text": "I’d made a mess of an alarm repair and never opened a work ticket. I thought I could fix it before my supervisor found out."},
+        {"speaker": "dc", "text": "What mistake had you made at the archive?"},
+        {"speaker": "acc", "text": "I’d rushed an alarm repair and never opened the required work ticket. After my earlier warning, I panicked about losing trusted callout work."},
+        {"speaker": "dc", "text": "Why did you return that night?"},
+        {"speaker": "acc", "text": "I thought I could finish the repair and document it the next morning. That was dishonest and stupid, but I didn’t expect Dax or anyone else."},
         {"speaker": "dc", "text": "What do you remember about leaving?"},
-        {"speaker": "acc", "text": "I didn’t check the archive clock. I walked quickly to East Quay, used my pass, and boarded the waiting carriage."}
+        {"speaker": "acc", "text": "I didn’t check the lobby clock. I locked my tools, walked quickly to East Quay, used my pass, and boarded the waiting carriage. I stayed aboard to West Crossing."}
       ],
-      "text": "Why did you return to the archive that night? I’d made a mess of an alarm repair and never opened a work ticket. I thought I could fix it before my supervisor found out. What do you remember about leaving? I didn’t check the archive clock. I walked quickly to East Quay, used my pass, and boarded the waiting carriage.",
+      "text": "What mistake had you made at the archive? I’d rushed an alarm repair and never opened the required work ticket. After my earlier warning, I panicked about losing trusted callout work. Why did you return that night? I thought I could finish the repair and document it the next morning. That was dishonest and stupid, but I didn’t expect Dax or anyone else. What do you remember about leaving? I didn’t check the lobby clock. I locked my tools, walked quickly to East Quay, used my pass, and boarded the waiting carriage. I stayed aboard to West Crossing.",
       "surface_persuasion": 0.54,
       "true_weight": 0.5,
       "direction": "innocence",
@@ -242,11 +254,13 @@
       "mode": "cross",
       "turns": [
         {"speaker": "pc", "text": "You first told investigators you had stayed home?"},
-        {"speaker": "acc", "text": "Yes. That was a lie, and I corrected it when they showed me the access record."},
+        {"speaker": "acc", "text": "Yes. I lied because I was ashamed and afraid of another warning. I corrected it when they showed me the access record."},
         {"speaker": "pc", "text": "You could use the shared maintenance credential?"},
-        {"speaker": "acc", "text": "For alarm work, yes, like three other technicians. I didn’t disable the clock, and I wasn’t there when Dax arrived."}
+        {"speaker": "acc", "text": "For alarm work, yes, like three other technicians."},
+        {"speaker": "pc", "text": "And you knew an alarm could bring a patrol officer?"},
+        {"speaker": "acc", "text": "Of course. I believed the repair had cleared it. I didn’t disable the clock, I didn’t attack Dax, and I was already on the carriage when he arrived."}
       ],
-      "text": "You first told investigators you had stayed home? Yes. That was a lie, and I corrected it when they showed me the access record. You could use the shared maintenance credential? For alarm work, yes, like three other technicians. I didn’t disable the clock, and I wasn’t there when Dax arrived.",
+      "text": "You first told investigators you had stayed home? Yes. I lied because I was ashamed and afraid of another warning. I corrected it when they showed me the access record. You could use the shared maintenance credential? For alarm work, yes, like three other technicians. And you knew an alarm could bring a patrol officer? Of course. I believed the repair had cleared it. I didn’t disable the clock, I didn’t attack Dax, and I was already on the carriage when he arrived.",
       "surface_persuasion": 0.7,
       "true_weight": 0.46,
       "direction": "guilt",
@@ -256,9 +270,21 @@
     },
     {
       "id": "b11",
+      "kind": "exhibit",
+      "speaker": "judge",
+      "text": "For orientation, the parties agree that every time in this chronology uses central time after the recorder correction. At 9:52, a shared credential disabled synchronisation. At 10:04, the recorder restarted eighteen minutes fast. Lena’s card entered at 12:47; the corrected lobby frame shows her leave at 1:13. Her pass opened East Quay gate at 1:16, and video shows her aboard from 1:18 until 1:29. Dax’s camera connected at 1:18; the fatal encounter occurred between 1:19 and 1:24. The sequence does not identify the credential user or explain Lena’s lie.",
+      "surface_persuasion": 0.72,
+      "true_weight": 0.58,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The agreed central-time chronology lets first-time jurors compare every event without silently mixing the recorder display with verified time.",
+      "tags": ["timeline", "identity", "burden"]
+    },
+    {
+      "id": "b12",
       "kind": "direction",
       "speaker": "judge",
-      "text": "The intentional homicide is agreed; identity remains for you to decide. If, after considering all the evidence, you are not sure the prosecution proved every element beyond reasonable doubt, your verdict must be Not Guilty. Lena does not have to explain who killed Dax or prove her journey. Use only the evidence in court, and do not research the case.",
+      "text": "The charge has three elements. First, the prosecution must prove Lena caused Dax’s death. Because everyone agrees another person deliberately killed him, that element turns on identity: was Lena that person? Second, the attacker must have intended to kill or cause really serious injury. Third, the killing must lack lawful justification or excuse. Intent and absence of justification are agreed, but that agreement cannot prove identity. The prosecution bears the burden throughout. Lena does not have to identify the attacker, prove her journey, or explain every lie. A false account may damage credibility or support an inference, but it cannot replace proof of an element. Circumstantial evidence may be sufficient; assess what each record proves and what it cannot prove. If, after considering all the evidence, you are not sure the prosecution proved every element beyond reasonable doubt, your verdict must be Not Guilty. Use only evidence heard in court and do not research the case.",
       "surface_persuasion": 0.5,
       "true_weight": 0.56,
       "direction": "innocence",
@@ -477,9 +503,9 @@
   },
   "gen_meta": {
     "model": "gpt-5",
-    "prompt_version": "dd-2026-v3",
+    "prompt_version": "dd-2026-v3-20min",
     "reviewer": "content-curator-legal-fidelity-pass",
-    "batch_pr": "codex/rewrite-dd-intro",
+    "batch_pr": "codex/expand-ddintro20",
     "language_reviewer": "read-aloud-dialogue-pass",
     "sensitivity_reviewer": "victim-humanity-non-graphic-pass"
   }
