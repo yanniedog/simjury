@@ -135,6 +135,15 @@ describe('checkDocketCase', () => {
     expect(checkDocketCase(c).join()).toMatch(/must include structured dialogue turns/)
   })
 
+  it('reports missing v3 witness turns without throwing', () => {
+    const c = makeDocketCase()
+    c.gen_meta.prompt_version = 'dd-2026-v3'
+    c.beats[1].turns = undefined
+
+    expect(() => checkDocketCase(c)).not.toThrow()
+    expect(checkDocketCase(c).join()).toMatch(/must include structured dialogue turns/)
+  })
+
   it('flags a missing burden beat', () => {
     const c = makeDocketCase()
     c.beats = c.beats.map((b) =>

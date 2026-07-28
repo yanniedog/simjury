@@ -495,7 +495,12 @@ export function checkDocketCase(c: DocketCase): string[] {
           issues.push(`beat ${b.id} cross dialogue must alternate the witness with opposing counsel`)
         }
       }
-      if (isV3 && b.kind === 'witness') {
+      if (
+        isV3 &&
+        b.kind === 'witness' &&
+        b.turns &&
+        b.turns.length > 0
+      ) {
         const witnessSide = cast.get(b.speaker)?.side
         const expectedSide =
           b.mode === 'cross'
