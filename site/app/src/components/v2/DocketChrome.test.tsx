@@ -38,4 +38,32 @@ describe('DocketShell', () => {
     expect(markup).toContain('fetch public audio clips over the network')
     expect(markup).not.toContain('GitHub')
   })
+
+  it('exposes experimental voice mode when a change handler is provided', () => {
+    vi.stubGlobal('window', {
+      speechSynthesis: {
+        getVoices: () => [
+          { name: 'Desktop English', lang: 'en-US', localService: true },
+        ],
+      },
+    })
+    const markup = renderToStaticMarkup(
+      <DocketShell
+        phase="beats"
+        caseTitle="The Quiet Platform"
+        narration={true}
+        playbackRate={1}
+        voiceEngine="kokoro"
+        onToggleNarration={() => undefined}
+        onRateChange={() => undefined}
+        onVoiceEngineChange={() => undefined}
+      >
+        <h1 id="phase-heading">Case briefing</h1>
+      </DocketShell>,
+    )
+    expect(markup).toContain('aria-label="Narration voice mode"')
+    expect(markup).toContain('Experimental')
+    expect(markup).toContain('Default')
+  })
 })
+
