@@ -759,7 +759,9 @@ export function checkDocketQueue(cases: DocketCase[]): QualityIssue[] {
   // publishable docket. Keep all schema, uniqueness, and per-case checks
   // active, but defer this one sequence rule until the queue is homogeneous.
   const generations = new Set(
-    cases.map((c) => c.gen_meta.prompt_version === 'dd-2026-v3' ? 'v3' : 'legacy'),
+    cases.map((c) =>
+      c.gen_meta.prompt_version.startsWith('dd-2026-v3') ? 'v3' : 'legacy',
+    ),
   )
   if (generations.size > 1) return issues
 
@@ -792,7 +794,7 @@ export function checkDocketQueue(cases: DocketCase[]): QualityIssue[] {
 export function checkV3Corpus(cases: DocketCase[]): QualityIssue[] {
   if (
     cases.length === 0 ||
-    cases.some((c) => c.gen_meta.prompt_version !== 'dd-2026-v3')
+    cases.some((c) => !c.gen_meta.prompt_version.startsWith('dd-2026-v3'))
   ) {
     return []
   }
