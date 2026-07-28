@@ -74,23 +74,19 @@ function remoteHasWorkflow(owner, name) {
 }
 
 function openInstallPr(owner, name) {
-  try {
-    const existing = ghJson([
-      'pr',
-      'list',
-      '--repo',
-      `${owner}/${name}`,
-      '--head',
-      BRANCH,
-      '--state',
-      'open',
-      '--json',
-      'url,number',
-    ]);
-    return existing[0] || null;
-  } catch {
-    return null;
-  }
+  const existing = ghJson([
+    'pr',
+    'list',
+    '--repo',
+    `${owner}/${name}`,
+    '--head',
+    BRANCH,
+    '--state',
+    'open',
+    '--json',
+    'url,number',
+  ]);
+  return existing[0] || null;
 }
 
 function openPr(owner, name, defaultBranch, workflowBody, dryRun) {
@@ -146,13 +142,45 @@ function openPr(owner, name, defaultBranch, workflowBody, dryRun) {
       });
     } catch (pushErr) {
       const pushMsg = String(pushErr?.stderr || pushErr?.message || pushErr);
-      // Race / ref lock: if another install already opened the PR, treat as done.
-      const raced = openInstallPr(owner, name);
-      if (raced?.url) {
-        return { status: 'pr', url: raced.url };
+      const isRefLock = /cannot lock ref|reference already exists/i.test(pushMsg);
+      if (!isRefLock) throw pushErr;
+
+      // Look up an open install PR explicitly — a failed lookup must not look like "no PR".
+      let raced;
+      try {
+        raced = openInstallPr(owner, name);
+      } catch {
+        throw pushErr;
       }
-      // Delete stale remote ref then retry once (GitHub "cannot lock ref … already exists").
-      if (/cannot lock ref|reference already exists/i.test(pushMsg)) {
+
+      if (raced?.url) {
+        // Never delete a head ref that still has an open PR (GitHub would close it).
+        // Retry with a non-destructive forced update; only accept the existing PR if
+        // the remote tip already matches this commit.
+        try {
+          execFileSync('git', ['-C', dir, 'push', '-u', 'origin', `+HEAD:refs/heads/${BRANCH}`], {
+            encoding: 'utf8',
+            stdio: 'pipe',
+          });
+        } catch {
+          const head = execFileSync('git', ['-C', dir, 'rev-parse', 'HEAD'], {
+            encoding: 'utf8',
+          }).trim();
+          let remoteSha = '';
+          try {
+            remoteSha = String(
+              ghJson(['api', `repos/${full}/git/ref/heads/${BRANCH}`, '--jq', '.object.sha']),
+            ).trim();
+          } catch {
+            remoteSha = '';
+          }
+          if (remoteSha === head) {
+            return { status: 'pr', url: raced.url };
+          }
+          throw pushErr;
+        }
+      } else {
+        // Confirmed no open install PR — safe to clear a stale remote ref and retry once.
         try {
           gh(['api', '-X', 'DELETE', `repos/${full}/git/refs/heads/${BRANCH}`], { stdio: 'pipe' });
         } catch {
@@ -162,8 +190,6 @@ function openPr(owner, name, defaultBranch, workflowBody, dryRun) {
           encoding: 'utf8',
           stdio: 'pipe',
         });
-      } else {
-        throw pushErr;
       }
     }
 
