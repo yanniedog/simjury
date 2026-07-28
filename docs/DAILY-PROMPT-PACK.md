@@ -126,19 +126,18 @@ strict V4 trial/analysis/legal-sheet schemas and computed 19–21 minute budget 
 editorial bundle integrity (no pre-verdict spoilers, balanced competent cases,
 authenticated decisive material, public-juror context, courtroom structure,
 check-ins, jury floors) → **deliberation dynamics** (the simulated room must be able
-to reach ≥2 outcomes for a fixed player verdict, and arguing the decisive evidence
+to reach ≥2 outcomes for a fixed player position, and arguing the decisive evidence
 must beat silence toward the reference verdict) → queue rules (uniqueness, verdict variety,
 ≤3-run) → banned-token scan (extend `BANNED` lists as new content introduces risks).
 
-If dynamics fail (usually "foregone conclusion" for one locked verdict): only four
-jurors respond to each argued beat — the top three by their weight on that beat's
-themes, plus one random — so a juror the decisive evidence should move must actually
-carry weight on that beat's theme, or it never gets called. The reliable fix is to
-give one swing juror (a drifter or the mind-changer) weight 2 on the decisive theme
-plus a `proves`-toward-reference rule with delta 2, so skilled play can push the room past
-the 10-vote majority even when the player locked the wrong verdict. Then soften a
-G-juror's confidence below 70, or add a themed rule with a real delta — before
-touching the case text.
+If dynamics fail (usually "foregone conclusion" for one locked position): every juror
+considers an argued beat through their authored reaction rules, while at most four
+voice the exchange. No random draw selects a position. Author enough relevant weights
+and rules for the strongest three-point synthesis to move the room without coercion.
+After three substantive rounds, unanimity is tested first; only then may the neutral
+majority direction permit an 11-of-12 verdict. A juror who remains undecided stays
+undecided and may cause a hung jury. Fix weak evidence-to-juror connections rather
+than converting U votes or lowering the majority threshold.
 
 ---
 prompt_version: dd-2026-v4

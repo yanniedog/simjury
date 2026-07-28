@@ -73,7 +73,9 @@ describe('JuryRoomView', () => {
 
     expect(cue).toContain('three focused rounds')
     expect(cue).toContain('pause, reopen written notes, or raise a point')
-    expect(cue).toContain('choose your own verdict')
+    expect(cue).toContain('choose a verdict or remain undecided')
+    expect(cue).toContain('Eleven matching votes')
+    expect(cue).toContain('undecided jurors remain undecided')
     expect(cue).not.toMatch(/\blawful\b|\blegally required\b/i)
   })
 

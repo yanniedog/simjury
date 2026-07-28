@@ -5,7 +5,7 @@ import { phaseNarratorCue } from '../../lib/narratorCues'
 import { StatementCard } from './OpeningStatements'
 import { NarratorCue } from './NarratorCue'
 
-export type Verdict = DocketCase['reference_verdict']
+export type Verdict = DocketCase['reference_verdict'] | 'Undecided'
 
 /** Closing arguments before the jury retires. The player's lock happens after deliberation. */
 export function DocketVerdict({
