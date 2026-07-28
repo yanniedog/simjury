@@ -4,9 +4,9 @@
     "openings": "Now you will hear openings. Each side tells its story of the case before any evidence is called. Notice what each side asks you to believe.",
     "beats": "Now the evidence. Witnesses and exhibits come one at a time. You do not decide yet — just listen carefully.",
     "closings": "Now the closings. Each side makes its final argument. After this, you retire with the jury to deliberate — you lock your own verdict only after that discussion.",
-    "verdict": "Deliberation is over. Choose guilty or not guilty. To convict, you must be sure beyond reasonable doubt. The judge will then read how the rest of the jury voted.",
-    "juryroom": "Now the jury room. A short agenda runs from notes and memory — there is no transcript here. Pause anytime; reload notes only if someone wrote them. Seats and tallies stay hidden until the judge reads the result.",
-    "reveal": "This is the record. See how your verdict compares with the case outcome, and which pieces of evidence the authors marked as decisive."
+    "verdict": "If, after considering all the evidence, you are not sure the prosecution proved every element beyond reasonable doubt, your verdict must be Not Guilty.",
+    "juryroom": "Welcome to the jury room. You will hear three focused rounds drawn from jurors’ notes and memory. You may pause, reopen written notes, or raise a point. Positions stay private while you discuss. After the final round, choose your own verdict; the judge then announces the room’s result.",
+    "reveal": "This is the post-verdict review. Compare your reasoning with the authors’ reference verdict and the evidence they gave greatest weight. It is an editorial view, not a score."
   },
   "speaker": {
     "direction": "This is {name}, {role}. They will remind you of the legal rules that bind your decision.",

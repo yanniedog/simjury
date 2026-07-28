@@ -22,8 +22,24 @@ export function allPhaseNarratorCues(): string[] {
   return Object.values(PHASE_CUES)
 }
 
+export const REASONABLE_DOUBT_DIRECTION =
+  'If, after considering all the evidence, you are not sure the prosecution proved every element beyond reasonable doubt, your verdict must be Not Guilty.'
+
 function speakerOf(trial: DocketCase, id: string) {
   return trial.cast.find((m) => m.id === id)
+}
+
+function sentenceFragment(text: string): string {
+  const trimmed = text.trim().replace(/[.!?]+$/, '').replace(/\bfictional\b/gi, '')
+  const normalized = trimmed.replace(/\s+/g, ' ')
+  return normalized.charAt(0).toLocaleLowerCase() + normalized.slice(1)
+}
+
+/** A restrained, case-specific introduction assembled from authenticated case fields. */
+export function introSceneNarratorCue(trial: DocketCase): string {
+  const accused = speakerOf(trial, trial.accused.cast_id)
+  const accusedName = accused?.name ?? 'The accused'
+  return `We begin in ${sentenceFragment(trial.setting)}. ${accusedName} is the accused, charged with ${sentenceFragment(trial.charge)}.`
 }
 
 function fillSpeakerTemplate(
