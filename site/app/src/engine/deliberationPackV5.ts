@@ -220,8 +220,9 @@ export function evaluateDeliberationPack(pack: DeliberationPackV5): LanguageGate
       relevantTotal++
       const replies = planJurorReplies(result, runtime, beliefs)
       const firstMove = replies.find(({ moveId }) => moveId)?.moveId
-      if (firstMove && pack.responseMoves.find(({ id: moveId }) =>
-        moveId === firstMove)?.issueIds.includes(expectedIssue)) relevant++
+      const authoredMove = pack.responseMoves.find(({ id: moveId }) =>
+        moveId === firstMove)
+      if (authoredMove?.issueIds.includes(expectedIssue)) relevant++
       if (firstMove) {
         repeatTotal++
         const next = planJurorReplies(result, runtime, beliefs, [firstMove])
