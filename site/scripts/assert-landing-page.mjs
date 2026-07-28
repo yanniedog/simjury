@@ -5,8 +5,10 @@ import { fileURLToPath } from 'node:url'
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 const publicRoot = join(siteRoot, 'public')
 const html = readFileSync(join(publicRoot, 'index.html'), 'utf8')
+const privacyHtml = readFileSync(join(publicRoot, 'privacy', 'index.html'), 'utf8')
 const css = readFileSync(join(publicRoot, 'landing-modern.css'), 'utf8')
 const headers = readFileSync(join(publicRoot, '_headers'), 'utf8')
+const sitemap = readFileSync(join(publicRoot, 'sitemap.xml'), 'utf8')
 const failures = []
 
 function requireText(source, text, message) {
@@ -19,6 +21,7 @@ function forbidText(source, text, message) {
 
 const localReferences = [
   ...html.matchAll(/(?:href|src)="(\/[^"#?]*)"/g),
+  ...privacyHtml.matchAll(/(?:href|src)="(\/[^"#?]*)"/g),
 ].map((match) => match[1])
 
 for (const reference of new Set(localReferences)) {
@@ -38,6 +41,7 @@ requireText(html, 'non-graphic references', 'landing must give a visible mature-
 requireText(html, 'case-specific advisory', 'landing must promise a case-specific content advisory')
 requireText(html, 'Progress saved locally', 'landing must describe local progress accurately')
 requireText(html, 'Your progress, notes and verdict stay on this device', 'landing must explain saved-state privacy')
+requireText(html, 'href="/privacy/"', 'landing footer must link to the privacy page')
 requireText(html, 'This is single-player: there are no live players or chat.', 'landing must distinguish scripted jurors from live players')
 requireText(html, 'tabindex="-1"', 'landing main target must accept focus from the skip link')
 requireText(html, '/art/daily-docket-hero.webp', 'landing must use its stable, case-independent hero asset')
@@ -53,6 +57,20 @@ forbidText(html, 'Private in your browser', 'landing must not overstate browser 
 forbidText(html, 'free and private', 'social copy must not overstate privacy')
 forbidText(html, 'cloudflareinsights.com', 'landing must not embed Cloudflare analytics')
 forbidText(css, '.hero-copy { order: 2; }', 'mobile landing must not place artwork before the value proposition')
+
+requireText(privacyHtml, 'no player accounts or backend player-state service', 'privacy page must explain the absence of accounts and backend player state')
+requireText(privacyHtml, 'progress, notes, verdict, narration preferences and sitting statistics', 'privacy page must enumerate browser-stored player data')
+requireText(privacyHtml, 'There is no cross-device or cross-browser sync.', 'privacy page must explain that saved state does not sync')
+requireText(privacyHtml, 'clearing SimJury site data removes your access', 'privacy page must explain the effect of clearing browser data')
+requireText(privacyHtml, 'GitHub can observe request metadata, request timing and the requested clip IDs.', 'privacy page must disclose narration request visibility')
+requireText(privacyHtml, 'Those requests do not contain your saved progress, notes, verdict or statistics.', 'privacy page must distinguish media requests from saved state')
+requireText(privacyHtml, 'Static pages and assets are served through Cloudflare.', 'privacy page must disclose the static delivery provider')
+requireText(privacyHtml, 'Cloudflare receives ordinary HTTP request metadata needed to deliver them.', 'privacy page must disclose ordinary CDN request visibility')
+requireText(privacyHtml, 'does not add analytics or tracking code', 'privacy page must state the analytics and tracking posture')
+requireText(privacyHtml, 'does not attach your locally saved progress, notes or verdicts to those requests.', 'privacy page must separate static delivery requests from saved player state')
+requireText(privacyHtml, 'Daily cases are fictional and pre-authored.', 'privacy page must describe case authorship accurately')
+requireText(privacyHtml, 'produced deterministically in your browser', 'privacy page must describe juror execution accurately')
+requireText(sitemap, 'https://simjury.com/privacy/', 'sitemap must include the privacy page')
 
 requireText(headers, 'Cache-Control: no-transform', 'responses must block automatic analytics injection')
 requireText(headers, "script-src 'self'", 'landing CSP must retain a self-only script policy')

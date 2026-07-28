@@ -138,6 +138,53 @@
 .landing footer > div { max-width: 48rem; }
 .landing footer .privacy-note { margin-top: .65rem; font-size: .82rem; line-height: 1.55; }
 
+.privacy-main {
+  width: min(76rem, calc(100% - 3rem));
+  margin: 0 auto;
+  padding: clamp(4rem, 10vw, 8rem) 0;
+}
+
+.privacy-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(18rem, .75fr);
+  align-items: end;
+  gap: clamp(2rem, 8vw, 7rem);
+  padding-bottom: clamp(3rem, 7vw, 5rem);
+  border-bottom: 1px solid rgb(244 240 232 / 10%);
+}
+
+.privacy-hero .eyebrow { grid-column: 1 / -1; margin-bottom: -1rem; }
+.privacy-hero h1 {
+  max-width: 12ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 6rem);
+  font-weight: 400;
+  line-height: .95;
+  letter-spacing: -.055em;
+}
+.privacy-hero > p:last-child { margin: 0; color: var(--steel-300); font-size: 1.08rem; line-height: 1.7; }
+
+.privacy-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.privacy-grid article {
+  padding: clamp(1.75rem, 4vw, 3rem) clamp(1rem, 4vw, 3rem) clamp(2rem, 5vw, 3.5rem) 0;
+  border-bottom: 1px solid rgb(244 240 232 / 10%);
+}
+.privacy-grid article:nth-child(even) { padding-left: clamp(1rem, 4vw, 3rem); border-left: 1px solid rgb(244 240 232 / 10%); }
+.privacy-number { margin: 0 0 2rem; color: var(--brass-400); font-family: ui-monospace, monospace; font-size: .7rem; letter-spacing: .15em; }
+.privacy-grid h2, .privacy-callout h2 { margin: 0 0 .9rem; font-family: var(--font-display); font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 400; }
+.privacy-grid article > p:not(.privacy-number) { max-width: 34rem; color: var(--steel-300); line-height: 1.7; }
+
+.privacy-callout {
+  margin-top: clamp(3rem, 8vw, 6rem);
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+  border: 1px solid rgb(214 185 121 / 25%);
+  border-radius: 1.25rem;
+  background: linear-gradient(145deg, rgb(27 37 42 / 95%), rgb(16 22 25 / 95%));
+}
+.privacy-callout > p:not(.eyebrow) { max-width: 44rem; color: var(--steel-300); }
+.privacy-callout .btn { margin-top: 1rem; }
+
 @media (max-width: 62rem) {
   .landing .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 2.5rem; }
   .landing .hero-copy { order: 1; }
@@ -159,6 +206,11 @@
   .landing .chamber { grid-template-columns: 1fr; }
   .landing .steps { margin-top: 2.5rem; }
   .landing .paths { grid-template-columns: 1fr; }
+  .privacy-main { width: min(100% - 2rem, 42rem); padding-top: 3rem; }
+  .privacy-hero { grid-template-columns: 1fr; }
+  .privacy-hero .eyebrow { margin-bottom: 0; }
+  .privacy-grid { grid-template-columns: 1fr; }
+  .privacy-grid article:nth-child(even) { padding-left: 0; border-left: 0; }
 }
 
 @media (max-width: 30rem) {

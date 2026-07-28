@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import {
   ALT_VOICE_LABEL,
   DEFAULT_VOICE_LABEL,
@@ -9,7 +9,7 @@ import {
   type NarrationEngineId,
   type NarrationRate,
 } from '../../lib/narration'
-import { loadPlayForSitting, loadProgress } from '../../lib/storage'
+import { canPersistSitting, loadPlayForSitting, loadProgress } from '../../lib/storage'
 import { caseStorageId } from '../../lib/v2/caseRevision'
 import type { DocketSitting } from '../../lib/v2/cases'
 import { INTRO_CASE_ID } from '../../lib/v2/cases'
@@ -55,6 +55,7 @@ export function DocketShell({
   const currentPhaseIndex = PHASES.findIndex((step) => step.id === phase)
   const phaseLabel = PHASES[currentPhaseIndex]?.label ?? 'Briefing'
   const showVoiceMode = altVoiceModeAvailable() && typeof onVoiceEngineChange === 'function'
+  const [canPersist] = useState(canPersistSitting)
   return (
     <main className="docket-shell min-h-screen text-neutral-100">
       <a href="#phase-heading" className="docket-skip">Skip to the case</a>
@@ -86,7 +87,8 @@ export function DocketShell({
         <aside className="juror-docket" aria-label="Juror docket">
           {charge && <div className="docket-context"><p className="chrome-label">Charge before the court</p><p>{charge}</p></div>}
           {sidebar}
-          <p className="local-note"><span aria-hidden="true">◆</span> Your progress and verdict stay on this device. With narration on, spoken lines may fetch public audio clips over the network; case text is not placed in the request.</p>
+          {!canPersist && <p className="storage-warning" role="status">Storage is unavailable. This sitting will not resume after closing.</p>}
+          <p className="local-note"><span aria-hidden="true">◆</span> Saved only in this browser. There is no sync; switching browser or device, or clearing site data, removes access to progress, notes, verdicts and stats. <a href="/privacy/">Privacy details</a></p>
         </aside>
       </div>
     </main>
