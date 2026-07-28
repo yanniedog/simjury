@@ -3,14 +3,15 @@ import { describe, expect, it } from 'vitest'
 import { FictionDisclosureGate, IntroGate } from './App'
 
 describe('FictionDisclosureGate', () => {
-  it('states the fiction premise once at site entry without grading the player', () => {
+  it('states the fiction and 18+ premise once at site entry without grading the player', () => {
     const markup = renderToStaticMarkup(
       <FictionDisclosureGate onContinue={() => undefined} />,
     )
 
     expect(markup).toContain('Everything in SimJury is fictional')
     expect(markup).toContain('cases, people, places, evidence')
-    expect(markup).toContain('Enter SimJury')
+    expect(markup).toContain('adults aged 18 and over')
+    expect(markup).toContain('I’m 18 or older')
     expect(markup).not.toContain('correct')
   })
 })

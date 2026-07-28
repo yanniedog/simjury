@@ -25,6 +25,15 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 > business names and describe platforms by genre ("a rideshare app"). Set
 > `label: "fiction"`.
 >
+> **Audience and specificity:** SimJury is for adults aged 18 and over. Write
+> serious-crime facts plainly and specifically. Name the alleged weapon or device
+> category, relevant quantities, exact chronology, physical findings, injuries,
+> deaths, affected people, and consequences when they help prove or contest an
+> element. Do not euphemise a material fact as merely “an incident”, “a device”, or
+> “a substance”. Keep descriptions non-graphic and non-operational: never provide a
+> reproducible assembly sequence, ratios, wiring or calibration, drug-production
+> recipe, trafficking route, real security weakness, or evasion method.
+>
 > **Slots:** id **{dd-NNNN}** · publish_date **{YYYY-MM-DD}** · offence_code
 > **{canonical grave profile}** ·
 > reference verdict **{Guilty|Not Guilty}** · tension shape **{feels-guilty-is-innocent |
@@ -106,9 +115,10 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 > `media.portraits` using `/today/media/<case-id>/characters/<speaker-id>.webp`.
 >
 > Write with the control and fairness of a skilled crime novelist, but do not disclose
-> the completed inference in either opening. Write the whole thing to be *listened to*
-> by someone encountering these people, facts, and law for the first time. Output only
-> the three JSON artifacts.
+> the completed inference in either opening. The record should be frank enough for an
+> adult jury without turning evidential detail into instructions for committing harm.
+> Write the whole thing to be *listened to* by someone encountering these people,
+> facts, and law for the first time. Output only the three JSON artifacts.
 
 ## After drafting — the gates will check (do not fight them)
 
