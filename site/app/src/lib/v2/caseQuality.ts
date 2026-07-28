@@ -6,6 +6,7 @@ import {
   type Juror,
   type Theme,
 } from './caseSchema'
+import { OFFENCE_CODES, OFFENCE_PROFILES } from './offenceProfiles'
 
 type Direction = 'guilt' | 'innocence'
 
@@ -74,6 +75,35 @@ export const CASE_WORDS_MAX = 1050
 
 function dialogueFingerprint(text: string): string {
   return (text.toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []).join(' ')
+}
+
+function languageMechanicsIssue(label: string, text: string): string | null {
+  if (text !== text.trim()) return `${label} has leading or trailing whitespace`
+  const hasInvalidCharacter = [...text].some((character) => {
+    const code = character.charCodeAt(0)
+    return (
+      code === 0x7f ||
+      code === 0xfffd ||
+      (code >= 0 && code <= 0x08) ||
+      code === 0x0b ||
+      code === 0x0c ||
+      (code >= 0x0e && code <= 0x1f)
+    )
+  })
+  if (hasInvalidCharacter) {
+    return `${label} contains a control or replacement character`
+  }
+  if (/[ÂÃ]|â(?:€|€™|€œ|€)/u.test(text)) {
+    return `${label} contains mojibake`
+  }
+  if (/ {2,}/u.test(text)) return `${label} contains doubled whitespace`
+  if (/^(?:Q|A|Question|Answer|Counsel|Witness)\s*:/iu.test(text)) {
+    return `${label} embeds a speaker label instead of using structured turns`
+  }
+  if (!/[.!?…]["'”’)]?$/u.test(text)) {
+    return `${label} must end with ordinary terminal punctuation`
+  }
+  return null
 }
 /** A contested room: initial Guilty seats among the 11 jurors. */
 export const JURY_G_MIN = 3
@@ -286,6 +316,50 @@ export function checkDocketCase(c: DocketCase): string[] {
   const statementWordsMax = STATEMENT_WORDS_MAX
   const witnessMin = WITNESS_COUNT_MIN
   const witnessMax = WITNESS_COUNT_MAX
+  const isV3 = c.gen_meta.prompt_version === 'dd-2026-v3'
+
+  if (isV3) {
+    if (!c.offence_code) {
+      issues.push('v3 case must declare offence_code')
+    } else {
+      const profile = OFFENCE_PROFILES[c.offence_code]
+      if (c.charge !== profile.charge) {
+        issues.push(
+          `v3 charge must exactly match offence profile '${profile.charge}'`,
+        )
+      }
+      if (
+        c.elements.length !== profile.elements.length ||
+        c.elements.some((element, index) => element !== profile.elements[index])
+      ) {
+        issues.push('v3 elements must exactly match the offence profile')
+      }
+      const advisories = new Set(c.content_advisories ?? [])
+      for (const required of profile.advisories) {
+        if (!advisories.has(required)) {
+          issues.push(`v3 case is missing required content advisory '${required}'`)
+        }
+      }
+    }
+    if (c.detail_level !== 'non_graphic') {
+      issues.push("v3 case detail_level must be 'non_graphic'")
+    }
+    if (!c.gen_meta.language_reviewer?.trim()) {
+      issues.push('v3 case must record a language_reviewer')
+    }
+    if (!c.gen_meta.sensitivity_reviewer?.trim()) {
+      issues.push('v3 case must record a sensitivity_reviewer')
+    }
+    const portraitIds = new Set(Object.keys(c.media?.portraits ?? {}))
+    for (const id of [
+      ...c.cast.map((member) => member.id),
+      ...c.jury.jurors.map((juror) => juror.id),
+    ]) {
+      if (!portraitIds.has(id)) {
+        issues.push(`v3 case is missing a courtroom portrait for '${id}'`)
+      }
+    }
+  }
 
   // Pacing.
   let totalWords = 0
@@ -390,6 +464,9 @@ export function checkDocketCase(c: DocketCase): string[] {
         issues.push(`witness beat ${b.id} must declare examination or cross`)
       }
       witnessSpeakers.add(b.speaker)
+      if (isV3 && (!b.turns || b.turns.length === 0)) {
+        issues.push(`v3 witness beat ${b.id} must include structured dialogue turns`)
+      }
     }
     if (b.mode === 'cross' && (!b.turns || b.turns.length === 0)) {
       issues.push(`beat ${b.id} cross-examination must include structured dialogue turns`)
@@ -416,6 +493,28 @@ export function checkDocketCase(c: DocketCase): string[] {
           .find((member) => member?.side === opposingSide && /counsel/i.test(member.role_label))
         if (!opposingCounsel || opposingCounsel.side !== opposingSide || !/counsel/i.test(opposingCounsel.role_label)) {
           issues.push(`beat ${b.id} cross dialogue must alternate the witness with opposing counsel`)
+        }
+      }
+      if (isV3 && b.kind === 'witness') {
+        const witnessSide = cast.get(b.speaker)?.side
+        const expectedSide =
+          b.mode === 'cross'
+            ? witnessSide === 'prosecution'
+              ? 'defence'
+              : 'prosecution'
+            : witnessSide
+        const firstSpeaker = cast.get(b.turns[0]?.speaker ?? '')
+        if (
+          !firstSpeaker ||
+          firstSpeaker.side !== expectedSide ||
+          !/counsel/i.test(firstSpeaker.role_label)
+        ) {
+          issues.push(
+            `v3 ${b.mode} beat ${b.id} must begin with ${expectedSide} counsel`,
+          )
+        }
+        if (!b.turns.some((turn) => turn.speaker === b.speaker)) {
+          issues.push(`v3 witness beat ${b.id} must include the named witness`)
         }
       }
     }
@@ -524,6 +623,44 @@ export function checkDocketCase(c: DocketCase): string[] {
 
   for (const j of jurors) issues.push(...jurorIssues(j, themeDirections))
 
+  if (isV3) {
+    const languageSurfaces: Array<[string, string]> = [
+      ['hook', c.hook],
+      ['opening prosecution', c.statements.opening.prosecution.text],
+      ['opening defence', c.statements.opening.defence.text],
+      ['closing prosecution', c.statements.closing.prosecution.text],
+      ['closing defence', c.statements.closing.defence.text],
+      ['epilogue', c.epilogue],
+      ['twist', c.twist],
+    ]
+    for (const beat of c.beats) {
+      languageSurfaces.push(
+        [`beat ${beat.id} transcript`, beat.text],
+        [`beat ${beat.id} reveal note`, beat.reveal_note],
+      )
+      beat.turns?.forEach((turn, index) =>
+        languageSurfaces.push([
+          `beat ${beat.id} turn ${index + 1}`,
+          turn.text,
+        ]),
+      )
+    }
+    for (const juror of c.jury.jurors) {
+      for (const [fn, lines] of Object.entries(juror.lines)) {
+        lines.forEach((line, index) =>
+          languageSurfaces.push([
+            `juror ${juror.id} ${fn} line ${index + 1}`,
+            line,
+          ]),
+        )
+      }
+    }
+    for (const [label, text] of languageSurfaces) {
+      const issue = languageMechanicsIssue(label, text)
+      if (issue) issues.push(issue)
+    }
+  }
+
   issues.push(...scaffoldIssues(c))
   issues.push(...scanDocketCaseTokens(c))
 
@@ -564,5 +701,47 @@ export function checkDocketQueue(cases: DocketCase[]): QualityIssue[] {
     }
   }
 
+  return issues
+}
+
+/**
+ * Final v3 corpus contract. Transitional mixed queues are allowed while the
+ * seven atomic replacements land; once every active file is v3, the docket is
+ * exactly the owner-selected seven cases (guided intro plus six dated cases)
+ * with one case from every grave-offence profile.
+ */
+export function checkV3Corpus(cases: DocketCase[]): QualityIssue[] {
+  if (
+    cases.length === 0 ||
+    cases.some((c) => c.gen_meta.prompt_version !== 'dd-2026-v3')
+  ) {
+    return []
+  }
+
+  const issues: QualityIssue[] = []
+  if (cases.length !== OFFENCE_CODES.length) {
+    issues.push({
+      caseId: 'queue',
+      message: `v3 docket must contain exactly ${OFFENCE_CODES.length} cases including dd-intro (has ${cases.length})`,
+      kind: 'variety',
+    })
+  }
+  if (cases.filter((c) => c.id === 'dd-intro').length !== 1) {
+    issues.push({
+      caseId: 'queue',
+      message: 'v3 docket must contain exactly one dd-intro case',
+      kind: 'variety',
+    })
+  }
+  const present = new Set(cases.map((c) => c.offence_code).filter(Boolean))
+  for (const code of OFFENCE_CODES) {
+    if (!present.has(code)) {
+      issues.push({
+        caseId: 'queue',
+        message: `v3 docket is missing offence profile '${code}'`,
+        kind: 'variety',
+      })
+    }
+  }
   return issues
 }
