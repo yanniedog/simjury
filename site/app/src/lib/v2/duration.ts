@@ -14,6 +14,12 @@ interface DurationText {
   text: string
 }
 
+/**
+ * The estimator's structural input stays independent of caseSchema because
+ * that schema imports this runtime function. Passing the parsed V4 object into
+ * estimateV4Duration is the compile-time compatibility check without creating
+ * a schema/type initialization cycle.
+ */
 export interface V4DurationSource {
   setting: string
   charge: string
