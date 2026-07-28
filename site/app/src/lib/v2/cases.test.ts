@@ -11,10 +11,17 @@ import {
 
 describe('docket queue', () => {
   it('bundles featured cases and keeps the intro separate', () => {
-    expect(docketQueue.length).toBeGreaterThan(0)
+    expect(docketQueue.map((trial) => trial.id)).toEqual([
+      'dd-0006',
+      'dd-0017',
+      'dd-0032',
+      'dd-0038',
+      'dd-0037',
+      'dd-0039',
+    ])
     expect(docketQueue.every((c) => c.id !== INTRO_CASE_ID)).toBe(true)
     expect(introCase?.id).toBe(INTRO_CASE_ID)
-    expect(docketQueue.some((c) => c.id === 'dd-0000')).toBe(true)
+    expect([introCase, ...docketQueue].every((c) => c?.gen_meta.prompt_version === 'dd-2026-v3')).toBe(true)
   })
 
   it('serves each launch case on its canonical publish date', () => {

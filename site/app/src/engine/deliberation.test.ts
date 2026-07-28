@@ -158,41 +158,41 @@ describe('burden drift (v3 §9.5 lite)', () => {
   })
 })
 
-describe('dd-0000 integration', () => {
+describe('serious-crime case integration', () => {
   const raw = readFileSync(
-    join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'docket', 'dd-0000.json'),
+    join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'docket', 'dd-0006.json'),
     'utf8',
   )
-  const dd0000 = docketCaseSchema.parse(JSON.parse(raw))
+  const seriousCase = docketCaseSchema.parse(JSON.parse(raw))
 
   it('plays the authored fixture to a terminal outcome, deterministically', () => {
-    const actions = [argue('b6', 'proves'), argue('b10', 'proves'), cite('b11')]
-    const a = runDeliberation(dd0000, 'not_guilty', actions)
-    const b = runDeliberation(dd0000, 'not_guilty', actions)
+    const actions = [argue('b6', 'proves'), argue('b2', 'proves'), cite('b12')]
+    const a = runDeliberation(seriousCase, 'guilty', actions)
+    const b = runDeliberation(seriousCase, 'guilty', actions)
     expect(a.outcome).toEqual(b.outcome)
     expect(a.outcome.tally.g + a.outcome.tally.ng).toBe(12)
   })
 
-  it('arguing the decisive exhibits moves the authored room toward acquittal', () => {
-    const argued = runDeliberation(dd0000, 'not_guilty', [
+  it('arguing the decisive exhibits moves the authored room toward the truth', () => {
+    const argued = runDeliberation(seriousCase, 'guilty', [
       argue('b6', 'proves'),
-      argue('b10', 'proves'),
-      argue('b7', 'proves'),
+      argue('b2', 'proves'),
+      argue('b11', 'proves'),
     ])
-    const passive = runDeliberation(dd0000, 'not_guilty', [pass, pass, pass])
-    expect(argued.outcome.tally.ng).toBeGreaterThanOrEqual(passive.outcome.tally.ng)
+    const passive = runDeliberation(seriousCase, 'guilty', [pass, pass, pass])
+    expect(argued.outcome.tally.g).toBeGreaterThanOrEqual(passive.outcome.tally.g)
   })
 
   it('the authored room can reach different outcomes for different play', () => {
     const seen = new Set<string>()
     const plays: PlayerAction[][] = [
       [pass, pass, pass],
-      [argue('b6', 'proves'), argue('b10', 'proves'), argue('b7', 'proves')],
-      [argue('b1', 'proves'), argue('b2', 'proves'), argue('b4', 'proves')],
+      [argue('b6', 'proves'), argue('b2', 'proves'), argue('b11', 'proves')],
+      [argue('b1', 'proves'), argue('b4', 'proves'), argue('b1', 'proves')],
     ]
     for (const v of ['guilty', 'not_guilty'] as const) {
       for (const p of plays) {
-        const { outcome } = runDeliberation(dd0000, v, p)
+        const { outcome } = runDeliberation(seriousCase, v, p)
         seen.add(`${outcome.kind}:${outcome.verdict ?? 'none'}:${outcome.tally.g}`)
       }
     }

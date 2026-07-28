@@ -21,9 +21,9 @@ describe('checkDynamics', () => {
     expect(checkDynamics(makeDocketCase())).toEqual([])
   })
 
-  it('passes the authored dd-0000', () => {
+  it('passes an authored serious-crime case', () => {
     const raw = readFileSync(
-      join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'docket', 'dd-0000.json'),
+      join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'docket', 'dd-0006.json'),
       'utf8',
     )
     expect(checkDynamics(docketCaseSchema.parse(JSON.parse(raw)))).toEqual([])
