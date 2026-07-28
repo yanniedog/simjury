@@ -1,5 +1,10 @@
 import { z } from 'zod'
 import { beatSchema } from '../caseSchema'
+import {
+  estimateV4Duration,
+  V4_DURATION_MINUTES_MAX,
+  V4_DURATION_MINUTES_MIN,
+} from './duration'
 import { CONTENT_ADVISORIES, OFFENCE_CODES } from './offenceProfiles'
 
 function isRealCalendarDate(value: string): boolean {
@@ -403,7 +408,22 @@ export type DocketCase = z.infer<typeof docketCaseSchema>
  * answer-key field and pre-verdict punishment consequence.
  */
 export const docketCaseV4Schema = docketCaseV4ObjectSchema.superRefine(
-  refineDocketReferences,
+  (trial, ctx) => {
+    refineDocketReferences(trial, ctx)
+    const estimate = estimateV4Duration(trial)
+    if (
+      estimate.totalMinutes < V4_DURATION_MINUTES_MIN ||
+      estimate.totalMinutes > V4_DURATION_MINUTES_MAX
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          `estimated duration ${estimate.totalMinutes.toFixed(2)} minutes; ` +
+          `V4 cases must take ${V4_DURATION_MINUTES_MIN}-${V4_DURATION_MINUTES_MAX} minutes`,
+        path: ['beats'],
+      })
+    }
+  },
 )
 export type DocketCaseV4 = z.infer<typeof docketCaseV4Schema>
 

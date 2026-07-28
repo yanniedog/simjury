@@ -62,6 +62,9 @@ if (isBotPrAuthor('sourcery-ai[bot]') !== true) failures.push('isBotPrAuthor(sou
 if (isBotPrAuthor('chatgpt-codex-connector[bot]') !== true) failures.push('isBotPrAuthor(codex) !== true');
 if (!loginMatchesRequiredKey('chatgpt-codex-connector[bot]', 'codex')) failures.push('codex alias mismatch');
 if (!loginMatchesRequiredKey('cursor[bot]', 'sourcery|cursor|codex')) failures.push('cursor OR-group mismatch');
+if (!loginMatchesRequiredKey('coderabbitai[bot]', 'sourcery|codex|cursor|coderabbit')) {
+  failures.push('coderabbit OR-group mismatch');
+}
 
 const sunset =
   'The consumer version of Gemini Code Assist on GitHub has been sunset. All code review activity has officially ceased.';

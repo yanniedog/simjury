@@ -2,22 +2,23 @@
 
 ## Required presence (OR-group)
 
-Default: **`sourcery|codex|cursor`** — any one review bot satisfies the presence slot.
+Default: **`sourcery|codex|cursor|coderabbit`** — any one review bot satisfies the presence slot.
 
 | Why | Detail |
 |-----|--------|
 | Sourcery flaky | Skips some docs/setup PRs (seen on AR-app #37/#38/#41) |
 | Gemini sunset | Consumer Code Assist posts a sunset notice only — treated as **noise**, not required |
-| Cursor Automation | Often the only real review (`cursor` / `cursor[bot]`) |
+| Cursor Automation | Often posts a real review (`cursor` / `cursor[bot]`) |
+| CodeRabbit | Preferred flat-rate reviewer (`coderabbitai[bot]`) — [`CODERABBIT.md`](CODERABBIT.md) |
 
 Syntax: commas = ALL-of slots; `|` = OR within a slot.
 
 | Repository | `*_BOT_WAIT_REQUIRED` | Notes |
 |------------|------------------------|-------|
-| [simjury](https://github.com/yanniedog/simjury) | `sourcery\|codex\|cursor` | In-tree OR-groups + `npm run pr:arm-and-park` |
-| [AR-app](https://github.com/yanniedog/AR-app) | `sourcery\|cursor` (recommended) | Apply pack: [`cross-repo-patches/AR-app/`](cross-repo-patches/AR-app/README.md) |
-| [AR-local](https://github.com/yanniedog/AR-local) | `sourcery\|codex\|cursor` | Apply same OR-group + retries |
-| [jcs2-mod](https://github.com/yanniedog/jcs2-mod) | `sourcery\|codex\|cursor` | Apply same |
+| [simjury](https://github.com/yanniedog/simjury) | `sourcery\|codex\|cursor\|coderabbit` | In-tree OR-groups + `npm run pr:arm-and-park` |
+| [AR-app](https://github.com/yanniedog/AR-app) | `sourcery\|cursor\|coderabbit` (recommended) | Apply pack: [`cross-repo-patches/AR-app/`](cross-repo-patches/AR-app/README.md) |
+| [AR-local](https://github.com/yanniedog/AR-local) | `sourcery\|codex\|cursor\|coderabbit` | Apply same OR-group + retries |
+| [jcs2-mod](https://github.com/yanniedog/jcs2-mod) | `sourcery\|codex\|cursor\|coderabbit` | Apply same |
 | [cursor-global-workflow](https://github.com/yanniedog/cursor-global-workflow) | template default | Mirror from simjury |
 
 ## Presence gate retries (required)
@@ -30,10 +31,17 @@ Agents must not `--watch` bot gates. Portable pack: [`docs/cross-repo-patches/cu
 
 `cursor[bot]` cannot push to the three non-simjury repos from simjury cloud — operator (or a cloud agent with write access on those remotes) applies the pack.
 
+## Operator: install CodeRabbit GitHub App (all repos)
+
+1. Open https://github.com/apps/coderabbitai/installations/new
+2. Choose **All repositories** for the `yanniedog` account (preferred), or select every active repo.
+3. Confirm repos are enabled in https://app.coderabbit.ai/
+4. Details: [`CODERABBIT.md`](CODERABBIT.md)
+
 ## Operator: install Codex GitHub App (all repos)
 
 1. Open https://github.com/apps/chatgpt-codex-connector/installations/new
 2. Choose **All repositories** for the `yanniedog` account (preferred), or select every active repo.
 3. Save.
 
-Without the app, prefer counting **Cursor Automation** via the `cursor` key in the OR-group.
+Without Codex, prefer **CodeRabbit** or **Cursor Automation** via the OR-group.

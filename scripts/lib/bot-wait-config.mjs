@@ -1,14 +1,14 @@
 /**
  * Required-bot aliases for wait-for-bots and pr-bot-feedback-check.
  *
- * Keys are short names (gemini, codex, sourcery, cursor); values are GitHub logins.
+ * Keys are short names (gemini, codex, sourcery, cursor, coderabbit); values are GitHub logins.
  *
  * Required list supports OR-groups: "sourcery|cursor|codex" means any one of those
  * keys satisfies that slot. Commas separate ALL-of slots.
  *
  * Why OR-groups: Sourcery skips some PRs (docs/setup); Gemini Code Assist consumer
- * reviews are sunset; Cursor Automation often posts the only real review. Requiring
- * a single flaky bot hard-blocks merge. See docs/CROSS_REPO_BOT_MATRIX.md.
+ * reviews are sunset; CodeRabbit / Cursor Automation often post the real review.
+ * Requiring a single flaky bot hard-blocks merge. See docs/CROSS_REPO_BOT_MATRIX.md.
  */
 export const BOT_ALIASES = {
   gemini: [
@@ -21,20 +21,21 @@ export const BOT_ALIASES = {
   sourcery: ['sourcery-ai', 'sourcery-ai[bot]'],
   /** Cursor Automation / Bugbot-style reviews (login is often `cursor` or `cursor[bot]`). */
   cursor: ['cursor', 'cursor[bot]'],
+  /** CodeRabbit GitHub App reviews (`coderabbitai[bot]`). */
+  coderabbit: ['coderabbitai', 'coderabbitai[bot]'],
   claude: ['claude[bot]', 'claude-code[bot]', 'anthropic-claude[bot]'],
 };
 
 /**
- * Default: one review-presence slot. Any of sourcery, Codex connector, or Cursor
- * Automation satisfies. Gemini is optional (consumer Code Assist is sunset).
+ * Default: one review-presence slot. Any of sourcery, Codex, Cursor Automation,
+ * or CodeRabbit satisfies. Gemini is optional (consumer Code Assist is sunset).
  */
-export const DEFAULT_REQUIRED_KEYS = ['sourcery|codex|cursor'];
+export const DEFAULT_REQUIRED_KEYS = ['sourcery|codex|cursor|coderabbit'];
 
 export const OPTIONAL_BOT_LOGINS = [
   'claude[bot]',
   'claude-code[bot]',
   'copilot-pull-request-reviewer[bot]',
-  'coderabbitai[bot]',
   'greptile-apps[bot]',
   'gemini-code-assist[bot]',
   'gemini-code-assist',
