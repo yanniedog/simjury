@@ -52,6 +52,10 @@ is **self-contained** (no repo scripts). It listens for those comments, sleeps u
 @coderabbitai review
 ```
 
+Concurrency uses `cancel-in-progress: false` so ordinary PR comments cannot cancel a
+sleeping waiter. Duplicate rate-limit runs self-skip when a retry is already armed,
+CodeRabbit already reviewed, or a newer rate-limit comment owns the window.
+
 Install on other repos (one file):
 
 ```sh

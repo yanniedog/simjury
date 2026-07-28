@@ -73,6 +73,26 @@ function remoteHasWorkflow(owner, name) {
   }
 }
 
+function openInstallPr(owner, name) {
+  try {
+    const existing = ghJson([
+      'pr',
+      'list',
+      '--repo',
+      `${owner}/${name}`,
+      '--head',
+      BRANCH,
+      '--state',
+      'open',
+      '--json',
+      'url,number',
+    ]);
+    return existing[0] || null;
+  } catch {
+    return null;
+  }
+}
+
 function openPr(owner, name, defaultBranch, workflowBody, dryRun) {
   const full = `${owner}/${name}`;
   if (!defaultBranch) {
@@ -118,17 +138,11 @@ function openPr(owner, name, defaultBranch, workflowBody, dryRun) {
       ],
       { encoding: 'utf8', stdio: 'pipe' },
     );
-    try {
-      execFileSync('git', ['-C', dir, 'push', '-u', 'origin', `HEAD:${BRANCH}`, '--force-with-lease'], {
-        encoding: 'utf8',
-        stdio: 'pipe',
-      });
-    } catch {
-      execFileSync('git', ['-C', dir, 'push', '-u', 'origin', `HEAD:${BRANCH}`], {
-        encoding: 'utf8',
-        stdio: 'pipe',
-      });
-    }
+    // Force-refresh install branch so re-runs after a partial failure still land.
+    execFileSync('git', ['-C', dir, 'push', '-u', 'origin', `HEAD:${BRANCH}`, '--force'], {
+      encoding: 'utf8',
+      stdio: 'pipe',
+    });
 
     let prUrl = null;
     try {
@@ -139,6 +153,8 @@ function openPr(owner, name, defaultBranch, workflowBody, dryRun) {
         full,
         '--head',
         BRANCH,
+        '--state',
+        'open',
         '--json',
         'url,number',
       ]);
@@ -211,8 +227,14 @@ function main() {
       continue;
     }
     if (args.skipExisting && remoteHasWorkflow(args.owner, name)) {
-      console.log(`skip ${full} (workflow already present)`);
+      console.log(`skip ${full} (workflow already present on default branch)`);
       summary.skipped.push(full);
+      continue;
+    }
+    const existingInstallPr = openInstallPr(args.owner, name);
+    if (args.skipExisting && existingInstallPr) {
+      console.log(`skip ${full} (open install PR #${existingInstallPr.number}: ${existingInstallPr.url})`);
+      summary.skipped.push(existingInstallPr.url || full);
       continue;
     }
     try {
