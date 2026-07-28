@@ -4,6 +4,7 @@ import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narra
 import { phaseNarratorCue } from '../../lib/narratorCues'
 import { StoryText } from './CaseMedia'
 import { NarratorCue } from './NarratorCue'
+import { SpeakerFlag } from './SpeakerFlag'
 import { SpeakerPortrait } from './SpeakerPortrait'
 
 /**
@@ -15,24 +16,32 @@ export function StatementCard({
   trial,
   statement,
   side,
+  active = false,
 }: {
   trial: DocketCase
   statement: Statement
   side: 'prosecution' | 'defence'
+  active?: boolean
 }) {
   const counsel = trial.cast.find((m) => m.id === statement.speaker)
   const tone = side === 'prosecution' ? 'prosecution' : 'defence'
   const nameTone = side === 'prosecution' ? 'text-red-300' : 'text-emerald-300'
   return (
-    <article className={`statement-card ${tone}`}>
+    <article
+      className={`statement-card speech-turn ${tone}${active ? ' speech-turn-active' : ''}`}
+      aria-current={active ? 'true' : undefined}
+    >
       <div className="flex items-start gap-4">
         <SpeakerPortrait trial={trial} speakerId={statement.speaker} />
         <div className="min-w-0">
-          <p className={`text-sm font-semibold ${nameTone}`}>
+          <p className={`speaker-heading text-sm font-semibold ${nameTone}`}>
+            <span>
             {counsel?.name ?? statement.speaker}
             <span className="ml-2 font-normal text-neutral-500">
               · {counsel?.role_label ?? side}
             </span>
+            </span>
+            <SpeakerFlag active={active} />
           </p>
           <StoryText text={statement.text} className="mt-3 leading-relaxed text-neutral-100" />
         </div>
@@ -66,6 +75,7 @@ export function OpeningStatements({
       setActiveSpeaker(null)
       return stopSpeech
     }
+    setActiveSpeaker('narrator')
     speak(phaseCue, 'narrator', () => {
       speakAll([
         { text: prosecution.text, key: prosecution.speaker },
@@ -90,16 +100,28 @@ export function OpeningStatements({
         </h1>
       </div>
 
-      <NarratorCue text={phaseCue} />
+      <NarratorCue text={phaseCue} active={activeSpeaker === 'narrator'} />
 
       {activeSpeaker && (
         <p className="speaker-focus text-xs text-amber-200/80" aria-live="polite">
-          {(trial.cast.find((m) => m.id === activeSpeaker)?.name ?? 'Counsel')} is speaking
+          {activeSpeaker === 'narrator'
+            ? 'Narrator'
+            : trial.cast.find((m) => m.id === activeSpeaker)?.name ?? 'Counsel'} is speaking
         </p>
       )}
 
-      <StatementCard trial={trial} statement={prosecution} side="prosecution" />
-      <StatementCard trial={trial} statement={defence} side="defence" />
+      <StatementCard
+        trial={trial}
+        statement={prosecution}
+        side="prosecution"
+        active={activeSpeaker === prosecution.speaker}
+      />
+      <StatementCard
+        trial={trial}
+        statement={defence}
+        side="defence"
+        active={activeSpeaker === defence.speaker}
+      />
 
       <button
         type="button"

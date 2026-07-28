@@ -24,6 +24,7 @@ import {
 } from '../../lib/narratorCues'
 import type { Verdict } from './DocketVerdict'
 import { NarratorCue } from './NarratorCue'
+import { SpeakerFlag } from './SpeakerFlag'
 import { SpeakerPortrait } from './SpeakerPortrait'
 
 /** Dwell after a round so the transcript is readable and Pause/Raise stay usable. */
@@ -183,21 +184,28 @@ function FeedLine({
   trial,
   notes,
   revealVotes,
+  active,
 }: {
   e: RoomEvent
   trial: DocketCase
   notes: SittingNote[]
   revealVotes: boolean
+  active: boolean
 }) {
   if (e.type === 'respond' && e.line) {
     const juror = trial.jury.jurors.find((j) => j.id === e.actor)
     return (
-      <li className="room-line border p-3">
+      <li
+        className={`room-line speech-turn border p-3${active ? ' speech-turn-active' : ''}`}
+        aria-current={active ? 'true' : undefined}
+        data-event-tick={e.tick}
+      >
         <div className="flex items-start gap-3">
           <SpeakerPortrait trial={trial} speakerId={e.actor} className="h-16 w-14" />
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-neutral-400">
-              {juror?.label ?? e.actor}
+            <p className="speaker-heading text-xs font-semibold text-neutral-400">
+              <span>{juror?.label ?? e.actor}</span>
+              <SpeakerFlag active={active} />
             </p>
             <p className="mt-1 text-sm text-neutral-200">{e.line}</p>
           </div>
@@ -332,6 +340,9 @@ export function JuryRoomView({
   const [playerVerdict, setPlayerVerdict] = useState<Verdict | null>(null)
   const [pendingVerdict, setPendingVerdict] = useState<Verdict | null>(null)
   const [activeJurorId, setActiveJurorId] = useState<string | null>(null)
+  const [activeEventTick, setActiveEventTick] = useState<number | null>(null)
+  const [narratorActive, setNarratorActive] = useState(false)
+  const [liveResponseText, setLiveResponseText] = useState('')
   const [listening, setListening] = useState(false)
   const [paused, setPaused] = useState(false)
   const [raising, setRaising] = useState(false)
@@ -394,6 +405,8 @@ export function JuryRoomView({
   function endListening(generation: number) {
     if (listenGeneration.current !== generation) return
     setActiveJurorId(null)
+    setActiveEventTick(null)
+    setNarratorActive(false)
     setListening(false)
   }
 
@@ -420,25 +433,32 @@ export function JuryRoomView({
     clearAdvanceTimer()
     const before = current.log.length
     setActiveJurorId(null)
+    setActiveEventTick(null)
+    setNarratorActive(false)
     setPendingVerdict(null)
     setRaising(false)
     raisingRef.current = false
     stopSpeech()
     if (mode === 'auto') autoPlayRound(current)
     else playRound(current, mode)
-    const spoken = current.log
+    const spokenEvents = current.log
       .slice(before)
       .filter((e) => e.type === 'respond' && e.line)
-      .map((e) => ({ text: e.line!, key: e.actor }))
+    const spoken = spokenEvents.map((e) => ({ text: e.line!, key: e.actor }))
+    setLiveResponseText(narration ? '' : spoken.map(({ text }) => text).join(' '))
     setStirredIds(spoken.map((line) => line.key))
     const generation = ++listenGeneration.current
     const stillOpen = current.phase.startsWith('open')
     if (narration && spoken.length > 0) {
       setListening(true)
       setActiveJurorId(spoken[0]?.key ?? null)
+      setActiveEventTick(spokenEvents[0]?.tick ?? null)
       speakAll(spoken, {
-        onLine: (key) => {
-          if (listenGeneration.current === generation) setActiveJurorId(key)
+        onLine: (key, index) => {
+          if (listenGeneration.current === generation) {
+            setActiveJurorId(key)
+            setActiveEventTick(spokenEvents[index]?.tick ?? null)
+          }
         },
         done: () => {
           endListening(generation)
@@ -446,11 +466,13 @@ export function JuryRoomView({
             scheduleAutoAdvance(AUTO_DWELL_MS)
           }
         },
+        onError: () => endListening(generation),
         rate: playbackRate,
       })
     } else {
       setListening(false)
       setActiveJurorId(null)
+      setActiveEventTick(null)
       if (
         narrationRef.current &&
         stillOpen &&
@@ -466,10 +488,17 @@ export function JuryRoomView({
   useEffect(() => {
     clearAdvanceTimer()
     setActiveJurorId(null)
+    setActiveEventTick(null)
+    setNarratorActive(narration)
     setListening(false)
     stopSpeech()
     if (!narration) return stopSpeech
-    speak(phaseNarratorCue('juryroom'), 'narrator', undefined, playbackRate)
+    speak(
+      phaseNarratorCue('juryroom'),
+      'narrator',
+      () => setNarratorActive(false),
+      playbackRate,
+    )
     if (
       startedRef.current &&
       stateRef.current?.phase.startsWith('open') &&
@@ -507,6 +536,13 @@ export function JuryRoomView({
     }
   }, [logLength, revealVotes, listening])
 
+  useEffect(() => {
+    if (activeEventTick === null) return
+    transcriptRef.current
+      ?.querySelector<HTMLElement>(`[data-event-tick="${activeEventTick}"]`)
+      ?.scrollIntoView({ block: 'nearest' })
+  }, [activeEventTick])
+
   function togglePause() {
     if (!inOpenRound || outcome) return
     if (paused) {
@@ -540,6 +576,7 @@ export function JuryRoomView({
     listenGeneration.current += 1
     stopSpeech()
     setActiveJurorId(null)
+    setActiveEventTick(null)
     setListening(false)
     if (
       stateRef.current?.phase.startsWith('open') &&
@@ -554,6 +591,8 @@ export function JuryRoomView({
     if (state.phase !== 'final_vote' || outcome) return
     clearAdvanceTimer()
     setActiveJurorId(null)
+    setActiveEventTick(null)
+    setNarratorActive(false)
     setListening(false)
     stopSpeech()
     setPlayerVerdict(chosen)
@@ -610,7 +649,7 @@ export function JuryRoomView({
       </div>
 
       {!outcome && !awaitingPlayerVote && !listening && !raising && (
-        <NarratorCue text={phaseNarratorCue('juryroom')} />
+        <NarratorCue text={phaseNarratorCue('juryroom')} active={narratorActive} />
       )}
       {awaitingPlayerVote && <NarratorCue text={phaseNarratorCue('verdict')} />}
 
@@ -751,11 +790,13 @@ export function JuryRoomView({
           phase: state.phase,
         })}
       </p>
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {liveResponseText}
+      </p>
 
       <ul
         ref={transcriptRef}
         aria-label="Jury room transcript"
-        aria-live="polite"
         onScroll={(event) => {
           const transcript = event.currentTarget
           followTranscriptRef.current =
@@ -764,7 +805,14 @@ export function JuryRoomView({
         className="room-transcript max-h-80 space-y-2 overflow-y-auto"
       >
         {state.log.map((e, i) => (
-          <FeedLine key={i} e={e} trial={trial} notes={notes} revealVotes={revealVotes} />
+          <FeedLine
+            key={i}
+            e={e}
+            trial={trial}
+            notes={notes}
+            revealVotes={revealVotes}
+            active={e.tick === activeEventTick}
+          />
         ))}
       </ul>
 
