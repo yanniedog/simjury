@@ -1,0 +1,77 @@
+name: pr-coderabbit-rate-limit-retry
+
+# CodeRabbit does not auto-resume after rate limits. When it posts
+# "Review limit reached", wait for the stated window then @coderabbitai review.
+on:
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number
+        required: true
+        type: string
+      no_sleep:
+        description: Skip wait (test only)
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: pr-coderabbit-rate-limit-retry-${{ github.event.issue.number || inputs.pr_number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  retry-after-rate-limit:
+    if: >-
+      github.event_name == 'workflow_dispatch'
+      || (
+        github.event.issue.pull_request != null
+        && (
+          github.event.comment.user.login == 'coderabbitai[bot]'
+          || github.event.comment.user.login == 'coderabbitai'
+        )
+        && (
+          contains(github.event.comment.body, 'Review limit reached')
+          || contains(github.event.comment.body, 'rate limited by coderabbit.ai')
+          || contains(github.event.comment.body, 'reached your PR review limit')
+        )
+      )
+    runs-on: ubuntu-latest
+    # Pro+ windows are often ~30–60m; allow buffer + job overhead.
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Resolve PR number
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
+        run: |
+          case "${{ github.event_name }}" in
+            workflow_dispatch) PR="${{ inputs.pr_number }}" ;;
+            *)                 PR="${{ github.event.issue.number }}" ;;
+          esac
+          if [ -z "$PR" ] || [ "$PR" = "null" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "pr=$PR" >> "$GITHUB_OUTPUT"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+      - name: Wait for CodeRabbit quota then re-request review
+        if: steps.pr.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
+        run: |
+          EXTRA=()
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.no_sleep }}" = "true" ]; then
+            EXTRA+=(--no-sleep)
+          fi
+          node scripts/coderabbit-rate-limit-retry.mjs --pr "${{ steps.pr.outputs.pr }}" "${EXTRA[@]}"

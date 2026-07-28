@@ -32,12 +32,32 @@ Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.
 
 | Piece | Purpose |
 |-------|---------|
-| `.coderabbit.yaml` | Chill profile, draft PRs on, incremental review, path filters + SimJury path instructions |
+| `.coderabbit.yaml` | Review profile + path filters (see current file) |
 | `scripts/lib/bot-wait-config.mjs` | `coderabbit` alias + default OR-group |
 | `bot-presence-gate` | Env `SIMJURY_BOT_WAIT_REQUIRED=sourcery\|codex\|cursor\|coderabbit` |
+| `pr-coderabbit-rate-limit-retry` | When CR posts “Review limit reached”, wait then `@coderabbitai review` |
 
 Chore / WIP titles are skipped by CodeRabbit (`ignore_title_keywords`) and are still
 gate-exempt in SimJury scripts.
+
+## Auto-retry after rate limit
+
+CodeRabbit does **not** resume on its own after a rate-limit comment. Workflow
+[`.github/workflows/pr-coderabbit-rate-limit-retry.yml`](../.github/workflows/pr-coderabbit-rate-limit-retry.yml)
+listens for those comments, sleeps until “Next review available in N minutes”
+(+2m buffer, max 120m), then posts:
+
+```text
+<!-- simjury-coderabbit-rate-limit-retry -->
+@coderabbitai review
+```
+
+Local / manual:
+
+```sh
+npm run pr:coderabbit-rate-limit-retry -- --pr <n>
+npm run pr:coderabbit-rate-limit-retry:verify
+```
 
 ## Other active repos
 
@@ -54,3 +74,4 @@ re-installing the app; add a local `.coderabbit.yaml` when you want repo-specifi
 | `@coderabbitai summary` | Summary only |
 | `@coderabbitai configuration` | Dump resolved config |
 | `@coderabbitai pause` / `resume` | Pause / resume auto-review on that PR |
+| `@coderabbitai rate limit` | Show remaining allowance (does not consume a review) |
