@@ -5,7 +5,6 @@ import { introSceneNarratorCue, phaseNarratorCue } from '../../lib/narratorCues'
 import { contentAdvisoryText } from '../../lib/v2/offenceProfiles'
 import { CaseMedia, StoryText } from './CaseMedia'
 import { NarratorCue } from './NarratorCue'
-import { LiveJuryLobby } from './LiveJuryLobby'
 import type { LiveJurySession } from '../../lib/liveJury'
 
 export function DocketIntro({
@@ -15,7 +14,6 @@ export function DocketIntro({
   playbackRate,
   onBegin,
   liveSession,
-  onLiveSession,
 }: {
   trial: DocketCase
   dayNumber: number
@@ -23,7 +21,6 @@ export function DocketIntro({
   playbackRate: NarrationRate
   onBegin: () => void
   liveSession?: LiveJurySession | null
-  onLiveSession?: (session: LiveJurySession | null) => void
 }) {
   const accused = trial.cast.find((m) => m.id === trial.accused.cast_id)
   const [narratorActive, setNarratorActive] = useState(false)
@@ -115,14 +112,6 @@ export function DocketIntro({
         only after you commit. About fifteen minutes, start to record. Your
         progress stays in this browser.
       </p>
-
-      {onLiveSession && (
-        <LiveJuryLobby
-          caseId={trial.id}
-          session={liveSession ?? null}
-          onSession={onLiveSession}
-        />
-      )}
 
       <button
         type="button"
