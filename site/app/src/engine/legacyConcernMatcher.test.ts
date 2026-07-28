@@ -87,14 +87,21 @@ describe('legacy concern bridge', () => {
   it('keeps the selected recollection when it shares the matched issue tag', () => {
     const trial = makeDocketCase()
     const preferred = trial.beats.find(({ id }) => id === 'b7')!
+    const duplicate = { ...preferred, id: 'duplicate-identity-beat' }
+    const duplicateTrial = { ...trial, beats: [...trial.beats, duplicate] }
+    const notes = [
+      { ownerId: 'player', beatId: preferred.id, text: 'the shared identification concern' },
+      { ownerId: 'player', beatId: duplicate.id, text: 'the shared identification concern' },
+    ]
     const concern = interpretLegacyConcern(
-      trial,
-      [],
-      "I don't trust the witness's identification.",
+      duplicateTrial,
+      notes,
+      "I don't trust the shared identification concern.",
       preferred.id,
     )
     expect(preferred.tags).toContain('identity')
     expect(concern.understanding.frame.evidenceIds).toContain(preferred.id)
+    expect(concern.understanding.frame.evidenceIds).toContain(duplicate.id)
     expect(concern.beatId).toBe(preferred.id)
   })
 
@@ -103,10 +110,15 @@ describe('legacy concern bridge', () => {
     const identity = trial.beats.find(({ tags }) => tags.includes('identity'))!
     const duplicate = { ...identity, id: 'duplicate-identity-beat' }
     const preferred = trial.beats.find(({ tags }) => !tags.includes('identity'))!
+    const duplicateTrial = { ...trial, beats: [...trial.beats, duplicate] }
+    const notes = [
+      { ownerId: 'player', beatId: identity.id, text: 'the shared identification concern' },
+      { ownerId: 'player', beatId: duplicate.id, text: 'the shared identification concern' },
+    ]
     const concern = interpretLegacyConcern(
-      { ...trial, beats: [...trial.beats, duplicate] },
-      [],
-      'I am not sure about the identity evidence.',
+      duplicateTrial,
+      notes,
+      'I am not sure about the shared identification concern.',
       preferred.id,
     )
     expect(concern.beatId).toBe(preferred.id)
