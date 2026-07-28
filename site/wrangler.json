@@ -42,7 +42,7 @@
     }
   ],
   "vars": {
-    "LIVE_JURY_ENABLED": "false"
+    "LIVE_JURY_ENABLED": "true"
   },
   "observability": {
     "enabled": false

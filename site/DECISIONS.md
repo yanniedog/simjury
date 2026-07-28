@@ -76,6 +76,16 @@ product.
 - The removed installer stays omitted from `sitemap.xml`; `/install/` is a tombstone
   redirect to `/`.
 
+## D-WEB-5 — One fiction and adult-entry disclosure (owner-directed, 2026-07-29)
+
+- D-WEB-4 is narrowed: SimJury identifies the entire experience as fictional and
+  for adults aged 18 and over in one combined entry gate, remembered by the browser.
+- Cases do not repeat fiction or age disclaimers. Authoring labels, media safeguards,
+  and the ban on real identities remain unchanged.
+- Serious-crime evidence is written plainly for adults, including material mechanisms,
+  quantities, injuries, deaths, and consequences. It remains non-graphic and omits
+  operationally reusable instructions for committing harm.
+
 ## Unchanged, still binding on the web
 
 - **No real names / no reveal content pre-verdict.** Enforced by Daily Docket
@@ -87,3 +97,15 @@ product.
   year, court, or outcome.
 - **Schema fiction pin** — every daily case JSON keeps `label: "fiction"` even though the UI
   no longer repeats that word to players (see D-WEB-4).
+
+## D-WEB-6 — Bounded live-jury beta (owner-directed, 2026-07-29)
+
+- The invitation-only live-jury path is enabled. Ordinary pages and solo play
+  continue to bypass Worker execution.
+- A room uses capability-based host, invite, and seat access; retains only the
+  chosen display names, contributions, positions, timestamps, and token hashes;
+  and expires after two hours.
+- Hard launch caps are 1,000 room admissions per UTC day, 64 concurrent rooms,
+  12 seats per room, 40 contributions per seat, 500 characters per contribution,
+  and 120 replayed history events. These are cost and abuse ceilings, not targets.
+- Live people and authored jurors are labelled separately. No runtime AI is added.
