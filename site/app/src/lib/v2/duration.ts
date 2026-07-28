@@ -62,7 +62,12 @@ export function estimateV4Duration(
     trial.statements.closing.defence.text,
   ].reduce((total, text) => total + durationWordCount(text), 0)
   const evidenceWords = trial.beats.reduce((total, beat) => {
-    const spokenText = beat.turns?.map((turn) => turn.text).join(' ') ?? beat.text
+    // Turns are the spoken dialogue. When present, beat.text is the same
+    // transcript (or a summary) and must not be double-counted.
+    const spokenText =
+      beat.turns && beat.turns.length > 0
+        ? beat.turns.map((turn) => turn.text).join(' ')
+        : beat.text
     return total + durationWordCount(spokenText)
   }, 0)
   const spokenWords = sceneWords + statementWords + evidenceWords

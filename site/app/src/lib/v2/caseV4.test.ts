@@ -162,13 +162,15 @@ describe('Docket Case V4 editorial contract', () => {
       text: 'Brief.',
       turns: beat.turns?.map((turn) => ({ ...turn, text: 'Brief.' })),
     }))
-    expect(estimateV4Duration(short).totalMinutes).toBeLessThan(14)
+    expect(estimateV4Duration(short).totalMinutes).toBeLessThan(V4_DURATION_MINUTES_MIN)
     const shortResult = docketCaseV4Schema.safeParse(short)
     expect(shortResult.success).toBe(false)
     if (!shortResult.success) {
       expect(shortResult.error.issues).toEqual(expect.arrayContaining([
         expect.objectContaining({
-          message: expect.stringContaining('V4 cases must take 14-16 minutes'),
+          message: expect.stringContaining(
+            `V4 cases must take ${V4_DURATION_MINUTES_MIN}-${V4_DURATION_MINUTES_MAX} minutes`,
+          ),
         }),
       ]))
     }
@@ -180,13 +182,15 @@ describe('Docket Case V4 editorial contract', () => {
       text: longText,
       turns: undefined,
     }))
-    expect(estimateV4Duration(long).totalMinutes).toBeGreaterThan(16)
+    expect(estimateV4Duration(long).totalMinutes).toBeGreaterThan(V4_DURATION_MINUTES_MAX)
     const longResult = docketCaseV4Schema.safeParse(long)
     expect(longResult.success).toBe(false)
     if (!longResult.success) {
       expect(longResult.error.issues).toEqual(expect.arrayContaining([
         expect.objectContaining({
-          message: expect.stringContaining('V4 cases must take 14-16 minutes'),
+          message: expect.stringContaining(
+            `V4 cases must take ${V4_DURATION_MINUTES_MIN}-${V4_DURATION_MINUTES_MAX} minutes`,
+          ),
         }),
       ]))
     }
