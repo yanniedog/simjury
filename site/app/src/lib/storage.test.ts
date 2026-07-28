@@ -110,6 +110,21 @@ describe('storage', () => {
     expect(loadPlay(5)).toBeNull()
   })
 
+  it('does not restore an undecided live-room position as a player verdict', () => {
+    const store = memoryStorage()
+    store.setItem(
+      KEY,
+      JSON.stringify({
+        day: 5,
+        caseId: 'd-0001',
+        convictions: [],
+        verdict: 'Undecided',
+      }),
+    )
+    vi.stubGlobal('localStorage', store)
+    expect(loadPlay(5)).toBeNull()
+  })
+
   it('drops legacy answer-key grading from a stored play', () => {
     const store = memoryStorage()
     store.setItem(

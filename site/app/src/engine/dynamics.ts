@@ -55,10 +55,10 @@ function citeBurden(c: DocketCase): PlayerAction[] {
 }
 
 /** The strongest complete theory, including corroboration below the decisive stamp. */
-function truthSynthesis(c: DocketCase): PlayerAction[] {
-  const truth = truthDirection(c)
+function referenceSynthesis(c: DocketCase): PlayerAction[] {
+  const reference = referenceDirection(c)
   return c.beats
-    .filter((b) => b.kind !== 'direction' && b.direction === truth)
+    .filter((b) => b.kind !== 'direction' && b.direction === reference)
     .sort((a, b) => b.true_weight - a.true_weight)
     .slice(0, 3)
     .map((b) => ({ type: 'argue', beatId: b.id, stance: 'proves' }))
@@ -69,7 +69,7 @@ export function strategies(c: DocketCase): Record<string, PlayerAction[]> {
   return {
     passive: [],
     decisive: byWeightDesc(c, 'decisive'),
-    synthesis: truthSynthesis(c),
+    synthesis: referenceSynthesis(c),
     trappy: byWeightDesc(c, 'misleading'),
     counsel: [...byWeightDesc(c, 'decisive').slice(0, 2), ...citeBurden(c)],
   }

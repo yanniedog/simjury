@@ -5,9 +5,6 @@ import { z } from 'zod'
  * day) shows the result instead of letting the juror re-run the case — the
  * one-verdict-a-day rule that makes it a daily.
  *
- * `correct` is recorded so cross-day stats can be computed without re-deriving
- * from each day's case. Optional for backward compatibility.
- *
  * `caseId` pins the play to the specific case it was scored against.
  *
  * `convictions` remains optional/empty for backward compatibility with older
@@ -17,6 +14,7 @@ const storedPlaySchema = z.object({
   day: z.number(),
   caseId: z.string(),
   convictions: z.array(z.number()).default([]),
+  /** The player's sealed verdict is binary; live and authored jurors may remain undecided. */
   verdict: z.enum(['Guilty', 'Not Guilty']),
   swayedByTraps: z.number().optional(),
   totalTraps: z.number().optional(),
