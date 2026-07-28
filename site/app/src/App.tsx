@@ -533,6 +533,7 @@ function DocketApp({
           narration={narration}
           playbackRate={playbackRate}
           notes={notes}
+          liveSession={liveSession}
           onSeal={persistRoomResult}
           onDone={roomDone}
         />
