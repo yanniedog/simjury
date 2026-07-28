@@ -6,7 +6,7 @@
   "offence_code": "murder",
   "content_advisories": ["death", "serious_violence"],
   "detail_level": "non_graphic",
-  "setting": "a cooperative gallery in a fictional city, the present day",
+  "setting": "The Halden Cooperative Gallery occupies a converted warehouse in the fictional city of Oris. Co-founders Nera Vale and Iona Venn built it over twelve years, but a dispute over finances and control had divided them by the night Nera died. The public lobby has a camera; a staff corridor and alarmed rear door do not. Three staff members remained during the final exhibition setup.",
   "charge": "murder",
   "elements": [
     "The accused caused the victim’s death.",
@@ -16,28 +16,28 @@
   "hook": "Nera Vale stays late to finish the community exhibition she has promised young artists for months. At 9:05, a lobby camera shows Iona Venn’s red coat leaving the gallery. Seven minutes later, Nera calls reception. The camera never captures the departing person’s face.",
   "accused": {
     "cast_id": "acc",
-    "human": "Iona Venn, 47, co-founded the gallery with Nera Vale and mentored its apprentices. Her sister and several former apprentices sit behind the defence table.",
+    "human": "Iona Venn, 47, co-founded the gallery with Nera Vale and managed its building and apprentices. Their professional partnership had become bitter, though both still planned to finish the community exhibition. Iona’s sister and former apprentices sit behind the defence table. That history explains relationships and possible motive; it does not prove identity.",
     "if_guilty": "Any sentence is a matter for the judge after the verdict and must play no part in the jury’s decision."
   },
   "statements": {
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The prosecution says Iona Venn arranged for Elia Marr to leave in her red coat while Iona’s dispute with Nera Vale reached its end upstairs. You’ll hear why Elia’s account requires caution. You’ll also hear about the camera, a transit record, Iona’s bracelet, and what Iona first told investigators. Consider whether those separate strands prove Iona stayed."
+        "text": "Nera Vale was deliberately killed after her 9:12 call. The prosecution must prove Iona Venn caused that death and intended death or really serious injury. Its case is circumstantial: Iona arranged for Elia Marr to leave in her red coat while Iona’s dispute with Nera reached its end upstairs. Elia requires caution, so test her against the camera, transit record, rear-door audit, bracelet clasp, and Iona’s first interview. The prosecution says those independent strands prove Iona stayed and created a false departure."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence says the evidence will prove Elia wore the coat, but not why she wore it or where Iona was afterwards. Elia lied twice and received immunity. The rear door was opened before nine, beyond the camera’s view. The bracelet broke sometime that day, not necessarily near Nera’s death. Ask whether the prosecution can close those gaps."
+        "text": "The defence accepts Nera was murdered and that Iona foolishly asked Elia to wear the coat. But the evidence must prove the killer’s identity, not merely expose a lie. Elia lied twice, received immunity, and never saw Iona after 8:45. The authenticated rear door opened before nine beyond the camera’s view. The bracelet broke within a day, not necessarily near the death. Follow the chronology and ask whether the prosecution could ever reasonably exclude Iona leaving before Nera’s final call."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Elia’s bargain makes caution necessary, but it doesn’t erase what she knew: Iona asked her to wear the coat and avoid the camera. The transit record confirms Elia left in it. Nera was killed afterwards, holding part of Iona’s bracelet. Iona’s first account omitted the rear door and the earlier struggle. The prosecution says that combination leaves no reasonable alternative."
+        "text": "Elia’s immunity requires caution, but it doesn’t erase Iona’s own request: wear the distinctive coat, avoid facing the lobby camera, and take it home. The transit record independently confirms Elia carried out that deception. Nera was killed afterwards while holding part of Iona’s recently broken bracelet. Iona’s recorded first account omitted both the rear door and the folder struggle. The prosecution says the pieces reinforce one another: motive, a staged departure, physical contact, and concealment leave no reasonable innocent explanation."
       },
       "defence": {
         "speaker": "dc",
-        "text": "What did the independent evidence actually prove? Elia travelled in the coat; it didn’t locate Iona. The rear door opened at a time consistent with Iona leaving. The clasp matched Iona’s bracelet; science couldn’t say whether it broke during the afternoon folder dispute or near Nera’s death. A troubling account isn’t proof. If you aren’t sure Iona stayed and killed Nera, acquit."
+        "text": "Separate suspicion from proof. The transit record proves Elia travelled in the coat; it does not locate Iona. The rear door opened at a time consistent with Iona leaving, and no camera covered it. The clasp matches Iona’s bracelet, but the expert cannot distinguish the witnessed afternoon folder dispute from the time of death. Iona’s omissions can damage credibility without supplying the missing identity evidence. The prosecution carries every element. If the reasonable possibility remains that Iona left before Nera’s 9:12 call, the verdict must be Not Guilty."
       }
     }
   },
@@ -89,12 +89,12 @@
   "beats": [
     {
       "id": "b1", "kind": "witness", "speaker": "w1", "mode": "examination",
-      "text": "Tell us who Nera Vale was at the gallery. Nera chose young artists, remembered every installer’s birthday, and was finishing a free community exhibition that night. When did you last hear from her? At 9:12, she called reception, sounded alert, and asked me to bring a blue folder upstairs after I locked the front desk.",
+      "text": "Tell us who Nera Vale was at the gallery. Nera chose young artists, remembered every installer’s birthday, and had spent months building that night’s free community exhibition. She and Iona founded the cooperative together, but staff knew they were arguing about its finances. When did you last hear from Nera? At 9:12, her name appeared on the internal line. She sounded alert, used my name, and asked me to bring the blue budget folder upstairs after I locked reception.",
       "turns": [
         { "speaker": "pc", "text": "Tell us who Nera Vale was at the gallery." },
-        { "speaker": "w1", "text": "Nera chose young artists, remembered every installer’s birthday, and was finishing a free community exhibition that night." },
-        { "speaker": "pc", "text": "When did you last hear from her?" },
-        { "speaker": "w1", "text": "At 9:12, she called reception, sounded alert, and asked me to bring a blue folder upstairs after I locked the front desk." }
+        { "speaker": "w1", "text": "Nera chose young artists, remembered every installer’s birthday, and had spent months building that night’s free community exhibition. She and Iona founded the cooperative together, but staff knew they were arguing about its finances." },
+        { "speaker": "pc", "text": "When did you last hear from Nera?" },
+        { "speaker": "w1", "text": "At 9:12, her name appeared on the internal line. She sounded alert, used my name, and asked me to bring the blue budget folder upstairs after I locked reception." }
       ],
       "surface_persuasion": 0.42, "true_weight": 0.5, "direction": "guilt", "reveal_stamp": "minor",
       "reveal_note": "Soren’s direct recollection established that Nera was alive and speaking normally at 9:12, but it did not identify who was upstairs with her.",
@@ -102,12 +102,12 @@
     },
     {
       "id": "b2", "kind": "witness", "speaker": "w1", "mode": "examination",
-      "text": "How was the lobby recording preserved? I managed the camera system. The morning after Nera died, I exported the 8:45-to-9:20 file in an investigator’s presence, checked it against the playback, and signed the evidence copy. Its system hash still matches. What does it show at 9:05? Someone in Iona’s red coat leaves through the main doors without showing their face.",
+      "text": "How was the lobby recording preserved? I managed the camera system. The morning after Nera died, I exported the continuous 8:45-to-9:20 file in an investigator’s presence, compared it with the original playback, recorded its system hash, and signed the evidence copy. The hash still matches, and I found no missing interval or edit. What does it show at 9:05? Someone in Iona’s red coat crosses the lobby and leaves through the main doors. The person turns away; the camera never records a face.",
       "turns": [
         { "speaker": "pc", "text": "How was the lobby recording preserved?" },
-        { "speaker": "w1", "text": "I managed the camera system. The morning after Nera died, I exported the 8:45-to-9:20 file in an investigator’s presence, checked it against the playback, and signed the evidence copy. Its system hash still matches." },
+        { "speaker": "w1", "text": "I managed the camera system. The morning after Nera died, I exported the continuous 8:45-to-9:20 file in an investigator’s presence, compared it with the original playback, recorded its system hash, and signed the evidence copy. The hash still matches, and I found no missing interval or edit." },
         { "speaker": "pc", "text": "What does it show at 9:05?" },
-        { "speaker": "w1", "text": "Someone in Iona’s red coat leaves through the main doors without showing their face." }
+        { "speaker": "w1", "text": "Someone in Iona’s red coat crosses the lobby and leaves through the main doors. The person turns away; the camera never records a face." }
       ],
       "surface_persuasion": 0.62, "true_weight": 0.36, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "Soren authenticated the continuous recording and its export. It reliably showed the coat leaving, while leaving the wearer’s identity unresolved.",
@@ -115,14 +115,16 @@
     },
     {
       "id": "b3", "kind": "witness", "speaker": "w1", "mode": "cross",
-      "text": "You waved because you recognised the coat, not the face? That’s right. I didn’t see a face. The camera doesn’t cover the rear corridor either, does it? No. The rear door is beyond its view. So the recording cannot show whether Iona used that door before 9:05? It can’t show that, no.",
+      "text": "You waved because you recognised the coat, not the face? That’s right. I saw its colour and brass buttons, then the wearer’s back. I couldn’t identify a face, height, or build. The camera doesn’t cover the staff corridor or rear door, does it? No. A solid wall places both beyond its view. Seven staff members held keys or knew the shared alarm credential? Yes. So the recording cannot show whether Iona—or anyone else—used that rear route before 9:05? It can’t show that.",
       "turns": [
         { "speaker": "dc", "text": "You waved because you recognised the coat, not the face?" },
-        { "speaker": "w1", "text": "That’s right. I didn’t see a face." },
-        { "speaker": "dc", "text": "The camera doesn’t cover the rear corridor either, does it?" },
-        { "speaker": "w1", "text": "No. The rear door is beyond its view." },
-        { "speaker": "dc", "text": "So the recording cannot show whether Iona used that door before 9:05?" },
-        { "speaker": "w1", "text": "It can’t show that, no." }
+        { "speaker": "w1", "text": "That’s right. I saw its colour and brass buttons, then the wearer’s back. I couldn’t identify a face, height, or build." },
+        { "speaker": "dc", "text": "The camera doesn’t cover the staff corridor or rear door, does it?" },
+        { "speaker": "w1", "text": "No. A solid wall places both beyond its view." },
+        { "speaker": "dc", "text": "Seven staff members held keys or knew the shared alarm credential?" },
+        { "speaker": "w1", "text": "Yes." },
+        { "speaker": "dc", "text": "So the recording cannot show whether Iona—or anyone else—used that rear route before 9:05?" },
+        { "speaker": "w1", "text": "It can’t show that." }
       ],
       "surface_persuasion": 0.5, "true_weight": 0.56, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "The camera’s two blind spots mattered separately: it did not identify the coat’s wearer, and it could not test Iona’s account of using the rear door.",
@@ -130,27 +132,29 @@
     },
     {
       "id": "b4", "kind": "witness", "speaker": "w3", "mode": "examination",
-      "text": "What examination did you conduct? I examined Nera Vale the next morning, reviewed the emergency observations, and compared them with the 9:12 call. What could you conclude? Nera died between about 9:13 and 9:28 from a deliberate impact capable of causing death or really serious injury. The findings weren’t consistent with accident, natural illness, or self-infliction.",
+      "text": "What supported your medical opinion? I examined Nera the next morning, reviewed the paramedics’ observations and temperature readings, and considered the authenticated 9:12 call. Those sources support an estimate, not an exact minute. What could you conclude? Nera died between about 9:13 and 9:28. A single forceful blow to the back of her head with a hard blunt object fractured her skull and caused fatal brain injury. The angle and force weren’t consistent with a fall, natural illness, or self-infliction. They establish deliberate homicide and an intention at least to cause really serious injury, not the attacker’s identity.",
       "turns": [
-        { "speaker": "pc", "text": "What examination did you conduct?" },
-        { "speaker": "w3", "text": "I examined Nera Vale the next morning, reviewed the emergency observations, and compared them with the 9:12 call." },
+        { "speaker": "pc", "text": "What supported your medical opinion?" },
+        { "speaker": "w3", "text": "I examined Nera the next morning, reviewed the paramedics’ observations and temperature readings, and considered the authenticated 9:12 call. Those sources support an estimate, not an exact minute." },
         { "speaker": "pc", "text": "What could you conclude?" },
-        { "speaker": "w3", "text": "Nera died between about 9:13 and 9:28 from a deliberate impact capable of causing death or really serious injury. The findings weren’t consistent with accident, natural illness, or self-infliction." }
+        { "speaker": "w3", "text": "Nera died between about 9:13 and 9:28. A single forceful blow to the back of her head with a hard blunt object fractured her skull and caused fatal brain injury. The angle and force weren’t consistent with a fall, natural illness, or self-infliction. They establish deliberate homicide and an intention at least to cause really serious injury, not the attacker’s identity." }
       ],
       "surface_persuasion": 0.54, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
-      "reveal_note": "Dr Sann’s examination proved a deliberate homicide in the stated time window and supported the required intent, but did not identify the attacker.",
+      "reveal_note": "Dr Sann’s examination proved that one forceful blow from a hard blunt object caused fatal brain injury in the stated time window and supported the required intent, but did not identify the attacker or a specific weapon.",
       "tags": ["causation", "timeline", "intent"]
     },
     {
       "id": "b5", "kind": "witness", "speaker": "w3", "mode": "cross",
-      "text": "Your time range begins after Nera’s call, but it doesn’t tell us who was in the room? Correct. Medical findings don’t identify a person. And the range is fifteen minutes, not an exact time? Yes. It’s the narrowest responsible estimate. Could your examination show whether someone left through the rear door before 9:05? No, it couldn’t.",
+      "text": "Your time range begins after Nera’s call, but it doesn’t identify who was upstairs? Correct. Medical findings cannot name a person or place Iona in the room. And the range is fifteen minutes, not an exact time? Yes. Biological processes vary; 9:13 to 9:28 is the narrowest responsible estimate. You cannot use the injuries to decide whether the attacker arrived after the 9:05 lobby departure? Correct. Nor can your examination show whether Iona left through the rear door at 8:52? No. Those are questions for other evidence.",
       "turns": [
-        { "speaker": "dc", "text": "Your time range begins after Nera’s call, but it doesn’t tell us who was in the room?" },
-        { "speaker": "w3", "text": "Correct. Medical findings don’t identify a person." },
+        { "speaker": "dc", "text": "Your time range begins after Nera’s call, but it doesn’t identify who was upstairs?" },
+        { "speaker": "w3", "text": "Correct. Medical findings cannot name a person or place Iona in the room." },
         { "speaker": "dc", "text": "And the range is fifteen minutes, not an exact time?" },
-        { "speaker": "w3", "text": "Yes. It’s the narrowest responsible estimate." },
-        { "speaker": "dc", "text": "Could your examination show whether someone left through the rear door before 9:05?" },
-        { "speaker": "w3", "text": "No, it couldn’t." }
+        { "speaker": "w3", "text": "Yes. Biological processes vary; 9:13 to 9:28 is the narrowest responsible estimate." },
+        { "speaker": "dc", "text": "You cannot use the injuries to decide whether the attacker arrived after the 9:05 lobby departure?" },
+        { "speaker": "w3", "text": "Correct." },
+        { "speaker": "dc", "text": "Nor can your examination show whether Iona left through the rear door at 8:52?" },
+        { "speaker": "w3", "text": "No. Those are questions for other evidence." }
       ],
       "surface_persuasion": 0.46, "true_weight": 0.54, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "The medical evidence established what happened to Nera and roughly when, while remaining neutral about identity and the unobserved rear exit.",
@@ -158,12 +162,12 @@
     },
     {
       "id": "b6", "kind": "witness", "speaker": "w2", "mode": "examination",
-      "text": "Tell us how you came to wear Iona’s coat. Iona handed it to me around 8:45. She said, “Leave through the lobby, don’t face the camera, and take the coat home.” What did you understand? That she didn’t want Nera to know whether she was still there. I left at 9:05 and didn’t see Iona again.",
+      "text": "Describe your role and what happened with the coat. I was a paid gallery assistant working under both founders. Around 8:45, after they had argued, Iona handed me her red coat and said, “Leave through the lobby, don’t face the camera, and take the coat home.” She looked angry, not frightened. What did you understand? That she wanted Nera and anyone watching the lobby to think Iona had left. I followed the instruction at 9:05, used my own transit card, and didn’t see Iona again.",
       "turns": [
-        { "speaker": "pc", "text": "Tell us how you came to wear Iona’s coat." },
-        { "speaker": "w2", "text": "Iona handed it to me around 8:45. She said, “Leave through the lobby, don’t face the camera, and take the coat home.”" },
+        { "speaker": "pc", "text": "Describe your role and what happened with the coat." },
+        { "speaker": "w2", "text": "I was a paid gallery assistant working under both founders. Around 8:45, after they had argued, Iona handed me her red coat and said, “Leave through the lobby, don’t face the camera, and take the coat home.” She looked angry, not frightened." },
         { "speaker": "pc", "text": "What did you understand?" },
-        { "speaker": "w2", "text": "That she didn’t want Nera to know whether she was still there. I left at 9:05 and didn’t see Iona again." }
+        { "speaker": "w2", "text": "That she wanted Nera and anyone watching the lobby to think Iona had left. I followed the instruction at 9:05, used my own transit card, and didn’t see Iona again." }
       ],
       "surface_persuasion": 0.66, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
       "reveal_note": "Elia described a suspicious request in Iona’s own words. Even if accepted, her evidence stopped at Elia’s departure and did not establish that Iona remained.",
@@ -171,18 +175,22 @@
     },
     {
       "id": "b7", "kind": "witness", "speaker": "w2", "mode": "cross",
-      "text": "You denied wearing the coat in two interviews? I did. I was scared. Then you received immunity for helping with the deception? Yes. You had a staff key to the rear door? Along with six other people. Did you see Iona after 8:45? No. So your belief that she stayed was an assumption? Yes, based on what she’d said.",
+      "text": "You denied wearing the coat in two recorded interviews? I did. I was scared I’d be blamed. You admitted it only after prosecutors offered written immunity for the coat deception? Yes. The agreement requires truthful evidence but leaves the murder charge to others? That’s right. You had a staff key and knew the shared rear-door credential? Along with six other people. You never saw Iona after 8:45? No. You also cannot say who used the rear door at 8:52? No. So your belief that Iona stayed came from the coat request, not something you observed? Yes.",
       "turns": [
-        { "speaker": "dc", "text": "You denied wearing the coat in two interviews?" },
-        { "speaker": "w2", "text": "I did. I was scared." },
-        { "speaker": "dc", "text": "Then you received immunity for helping with the deception?" },
+        { "speaker": "dc", "text": "You denied wearing the coat in two recorded interviews?" },
+        { "speaker": "w2", "text": "I did. I was scared I’d be blamed." },
+        { "speaker": "dc", "text": "You admitted it only after prosecutors offered written immunity for the coat deception?" },
         { "speaker": "w2", "text": "Yes." },
-        { "speaker": "dc", "text": "You had a staff key to the rear door?" },
+        { "speaker": "dc", "text": "The agreement requires truthful evidence but leaves the murder charge to others?" },
+        { "speaker": "w2", "text": "That’s right." },
+        { "speaker": "dc", "text": "You had a staff key and knew the shared rear-door credential?" },
         { "speaker": "w2", "text": "Along with six other people." },
-        { "speaker": "dc", "text": "Did you see Iona after 8:45?" },
+        { "speaker": "dc", "text": "You never saw Iona after 8:45?" },
         { "speaker": "w2", "text": "No." },
-        { "speaker": "dc", "text": "So your belief that she stayed was an assumption?" },
-        { "speaker": "w2", "text": "Yes, based on what she’d said." }
+        { "speaker": "dc", "text": "You also cannot say who used the rear door at 8:52?" },
+        { "speaker": "w2", "text": "No." },
+        { "speaker": "dc", "text": "So your belief that Iona stayed came from the coat request, not something you observed?" },
+        { "speaker": "w2", "text": "Yes." }
       ],
       "surface_persuasion": 0.62, "true_weight": 0.56, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "Elia’s immunity and earlier denials required caution. More importantly, she conceded she never observed Iona after 8:45 and inferred that Iona stayed.",
@@ -190,19 +198,19 @@
     },
     {
       "id": "b8", "kind": "exhibit", "speaker": "judge",
-      "text": "The parties agree that the transit operator’s records were produced by its records custodian and match the card later recovered from the red coat’s inner pocket. The card began a journey near the gallery at 9:08. You may accept that Elia, who admits carrying the card, travelled away in the coat. The record does not locate Iona.",
+      "text": "The parties agree that the transit operator’s custodian exported the original journey record, verified its system signature, and matched it to the card later recovered from the red coat’s inner pocket. The card began a journey near the gallery at 9:08 and continued away from the district. Elia admits carrying that card and wearing the coat, so you may accept that she travelled away in it. The record independently supports that part of her account. It identifies the card’s movement; it does not identify the lobby figure by face or locate Iona.",
       "surface_persuasion": 0.52, "true_weight": 0.5, "direction": "guilt", "reveal_stamp": "minor",
       "reveal_note": "The authenticated transit record independently confirmed Elia’s journey and part of her account, but supplied no evidence about Iona’s location.",
       "tags": ["identity", "timeline", "digital_forensics"]
     },
     {
       "id": "b9", "kind": "witness", "speaker": "acc", "mode": "examination",
-      "text": "What happened after your argument with Nera? We both grabbed a blue folder around four. My bracelet caught, and I thought the clasp had fallen into my sleeve. I left through the rear door before nine because I couldn’t face another argument. Why ask Elia to take the coat? I wanted Nera to think I’d used the lobby. It was childish, not a plan to hurt her.",
+      "text": "Describe the disputes you had with Nera. At four, we both grabbed the blue budget folder. My bracelet caught; later I saw the clasp was gone. Around 8:40 we argued about gallery control. I walked down the staff corridor and used the rear door before nine because I couldn’t face another round. Why ask Elia to take the coat through the lobby? I wanted Nera to think I’d made a visible exit and stop looking for me. It was childish and deceptive, not a plan to hurt her.",
       "turns": [
-        { "speaker": "dc", "text": "What happened after your argument with Nera?" },
-        { "speaker": "acc", "text": "We both grabbed a blue folder around four. My bracelet caught, and I thought the clasp had fallen into my sleeve. I left through the rear door before nine because I couldn’t face another argument." },
-        { "speaker": "dc", "text": "Why ask Elia to take the coat?" },
-        { "speaker": "acc", "text": "I wanted Nera to think I’d used the lobby. It was childish, not a plan to hurt her." }
+        { "speaker": "dc", "text": "Describe the disputes you had with Nera." },
+        { "speaker": "acc", "text": "At four, we both grabbed the blue budget folder. My bracelet caught; later I saw the clasp was gone. Around 8:40 we argued about gallery control. I walked down the staff corridor and used the rear door before nine because I couldn’t face another round." },
+        { "speaker": "dc", "text": "Why ask Elia to take the coat through the lobby?" },
+        { "speaker": "acc", "text": "I wanted Nera to think I’d made a visible exit and stop looking for me. It was childish and deceptive, not a plan to hurt her." }
       ],
       "surface_persuasion": 0.48, "true_weight": 0.54, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "Iona accepted arranging the coat deception and offered an innocent explanation. Her account required testing against the rear-door and clasp evidence.",
@@ -210,21 +218,23 @@
     },
     {
       "id": "b10", "kind": "exhibit", "speaker": "judge",
-      "text": "By agreement, the rear-door service contractor’s custodian has certified the original audit, its export, and the uninterrupted evidence copy. It records the alarm being disarmed with a shared staff credential at 8:50, the door opening at 8:52 for eleven seconds, then relocking. The audit cannot identify who used the credential. No camera covered that corridor.",
+      "text": "By agreement, the rear-door contractor’s custodian certified the original audit, its export, the clock’s daily synchronization, and the uninterrupted evidence copy. It records the alarm being disarmed with the gallery’s shared staff credential at 8:50, the door opening at 8:52 for eleven seconds, and relocking. Seven staff members knew that credential; the system recorded no individual name or key. No camera covered the corridor. The audit therefore proves that someone used the rear exit at a time consistent with Iona’s account, but it cannot prove that person was Iona or exclude another authorised user.",
       "surface_persuasion": 0.62, "true_weight": 0.82, "direction": "innocence", "reveal_stamp": "decisive",
       "reveal_note": "The authenticated rear-door audit independently supported the timing of Iona’s account. Because the credential was shared and the corridor unfilmed, it did not prove she left, but it left that reasonable possibility open.",
       "tags": ["alibi", "timeline", "digital_forensics"]
     },
     {
       "id": "b11", "kind": "witness", "speaker": "acc", "mode": "cross",
-      "text": "In your first interview, you said, “We argued, but there was no struggle,” correct? Yes. You didn’t mention grabbing the folder? I wasn’t asked about the folder. You also said you were home by nine, without mentioning the rear door? I said I’d left before nine. I should’ve explained the door, but I was exhausted and frightened.",
+      "text": "In your authenticated first interview, you said, “We argued, but there was no struggle,” correct? Yes. You did not mention that both of you grabbed the blue folder? No. I was answering about the evening argument. You also said you were home by nine without mentioning the rear door? I said I’d left before nine. True, but I should have explained the rear route and coat request. You knew police were investigating Nera’s death? Yes. I was frightened, but knew the omissions made me look less involved.",
       "turns": [
-        { "speaker": "pc", "text": "In your first interview, you said, “We argued, but there was no struggle,” correct?" },
+        { "speaker": "pc", "text": "In your authenticated first interview, you said, “We argued, but there was no struggle,” correct?" },
         { "speaker": "acc", "text": "Yes." },
-        { "speaker": "pc", "text": "You didn’t mention grabbing the folder?" },
-        { "speaker": "acc", "text": "I wasn’t asked about the folder." },
-        { "speaker": "pc", "text": "You also said you were home by nine, without mentioning the rear door?" },
-        { "speaker": "acc", "text": "I said I’d left before nine. I should’ve explained the door, but I was exhausted and frightened." }
+        { "speaker": "pc", "text": "You did not mention that both of you grabbed the blue folder?" },
+        { "speaker": "acc", "text": "No. I was answering about the evening argument." },
+        { "speaker": "pc", "text": "You also said you were home by nine without mentioning the rear door?" },
+        { "speaker": "acc", "text": "I said I’d left before nine. True, but I should have explained the rear route and coat request." },
+        { "speaker": "pc", "text": "You knew police were investigating Nera’s death?" },
+        { "speaker": "acc", "text": "Yes. I was frightened, but knew the omissions made me look less involved." }
       ],
       "surface_persuasion": 0.78, "true_weight": 0.4, "direction": "guilt", "reveal_stamp": "misleading",
       "reveal_note": "The omissions reasonably damaged Iona’s credibility, but her first account did not deny an earlier folder tug or claim she used the lobby. It could not fill the prosecution’s identity gap.",
@@ -232,12 +242,12 @@
     },
     {
       "id": "b12", "kind": "witness", "speaker": "w3", "mode": "examination",
-      "text": "How was the clasp recovered and tested? I photographed it in Nera’s closed hand during my examination, placed it in a numbered sterile packet, sealed it, and recorded every transfer to the materials laboratory. What did the agreed laboratory report find? The clasp exactly fitted Iona’s bracelet, and its fracture was recent—within roughly twenty-four hours of recovery.",
+      "text": "How was the clasp recovered and tested? I photographed it where I found it in Nera’s closed hand, placed it in a numbered sterile packet, sealed it, and recorded every transfer to the accredited materials laboratory. The seals and item number were intact when it returned. What did the agreed laboratory report find? Its shape, wear pattern, and fracture surfaces exactly fitted Iona’s bracelet. Microscopic oxidation showed the break was recent, meaning within roughly twenty-four hours before recovery. The method cannot narrow that broad window to an hour or identify how Nera came to hold it.",
       "turns": [
         { "speaker": "pc", "text": "How was the clasp recovered and tested?" },
-        { "speaker": "w3", "text": "I photographed it in Nera’s closed hand during my examination, placed it in a numbered sterile packet, sealed it, and recorded every transfer to the materials laboratory." },
+        { "speaker": "w3", "text": "I photographed it where I found it in Nera’s closed hand, placed it in a numbered sterile packet, sealed it, and recorded every transfer to the accredited materials laboratory. The seals and item number were intact when it returned." },
         { "speaker": "pc", "text": "What did the agreed laboratory report find?" },
-        { "speaker": "w3", "text": "The clasp exactly fitted Iona’s bracelet, and its fracture was recent—within roughly twenty-four hours of recovery." }
+        { "speaker": "w3", "text": "Its shape, wear pattern, and fracture surfaces exactly fitted Iona’s bracelet. Microscopic oxidation showed the break was recent, meaning within roughly twenty-four hours before recovery. The method cannot narrow that broad window to an hour or identify how Nera came to hold it." }
       ],
       "surface_persuasion": 0.64, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
       "reveal_note": "The documented recovery, custody, and agreed comparison reliably connected the clasp to Iona’s bracelet. The broad fracture window did not place the break near Nera’s death.",
@@ -245,16 +255,16 @@
     },
     {
       "id": "b13", "kind": "witness", "speaker": "w3", "mode": "cross",
-      "text": "“Within twenty-four hours” includes the four o’clock folder dispute? Yes. The testing can’t distinguish four o’clock from nine fifteen? It can’t. Did you find biological material that timed contact between Iona and Nera? No. Does a clasp in Nera’s hand tell you when she picked it up? No. My examination establishes possession at death, not when or how she obtained it.",
+      "text": "“Within twenty-four hours” includes the four o’clock dispute? Yes. The test cannot distinguish four o’clock from nine fifteen, or show how the bracelet broke? Correct. Did you find blood, tissue, or another trace timing contact between Iona and Nera? No. Does the clasp tell you when Nera picked it up? No. A person may retain a small object for hours. My examination establishes she held Iona’s clasp at death, not when or how she obtained it, and not who caused her death.",
       "turns": [
-        { "speaker": "dc", "text": "“Within twenty-four hours” includes the four o’clock folder dispute?" },
+        { "speaker": "dc", "text": "“Within twenty-four hours” includes the four o’clock dispute?" },
         { "speaker": "w3", "text": "Yes." },
-        { "speaker": "dc", "text": "The testing can’t distinguish four o’clock from nine fifteen?" },
-        { "speaker": "w3", "text": "It can’t." },
-        { "speaker": "dc", "text": "Did you find biological material that timed contact between Iona and Nera?" },
+        { "speaker": "dc", "text": "The test cannot distinguish four o’clock from nine fifteen, or show how the bracelet broke?" },
+        { "speaker": "w3", "text": "Correct." },
+        { "speaker": "dc", "text": "Did you find blood, tissue, or another trace timing contact between Iona and Nera?" },
         { "speaker": "w3", "text": "No." },
-        { "speaker": "dc", "text": "Does a clasp in Nera’s hand tell you when she picked it up?" },
-        { "speaker": "w3", "text": "No. My examination establishes possession at death, not when or how she obtained it." }
+        { "speaker": "dc", "text": "Does the clasp tell you when Nera picked it up?" },
+        { "speaker": "w3", "text": "No. A person may retain a small object for hours. My examination establishes she held Iona’s clasp at death, not when or how she obtained it, and not who caused her death." }
       ],
       "surface_persuasion": 0.58, "true_weight": 0.78, "direction": "innocence", "reveal_stamp": "decisive",
       "reveal_note": "The expert’s limitations removed the claimed time link. The clasp connected Nera to Iona’s bracelet, but was equally consistent with the earlier folder dispute.",
@@ -262,7 +272,7 @@
     },
     {
       "id": "b14", "kind": "direction", "speaker": "judge",
-      "text": "Elia Marr lied twice and received immunity, so assess her evidence with care. The prosecution must prove that Iona remained inside, caused Nera’s death, and intended death or really serious injury. Iona does not have to prove who used the rear door or how Nera obtained the clasp. If, after considering the evidence, you are not sure every element was proved beyond reasonable doubt, your verdict must be Not Guilty.",
+      "text": "Members of the jury, the prosecution must prove Iona caused Nera’s death, intended death or really serious injury, and acted without legal excuse. Homicide and intent are established; identity is disputed. Elia lied twice and received immunity, so examine her evidence carefully without automatically accepting or rejecting it. Circumstantial evidence may combine, but each strand keeps its limits. Iona’s lies may affect credibility; they do not prove murder or reverse the burden. She need not identify the rear-door user or explain the clasp. If, after considering all the evidence, you are not sure the prosecution proved every element beyond reasonable doubt, your verdict must be Not Guilty.",
       "surface_persuasion": 0.4, "true_weight": 0.5, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "The direction keeps the burden on the prosecution and identifies the unresolved location and timing issues without deciding them for the jury.",
       "tags": ["burden", "procedure"]
@@ -388,7 +398,7 @@
   },
   "gen_meta": {
     "model": "gpt-5.6-sol",
-    "prompt_version": "dd-2026-v3",
+    "prompt_version": "dd-2026-v3-20min",
     "reviewer": "Codex Content Curator",
     "batch_pr": "pending",
     "language_reviewer": "Codex language review",
