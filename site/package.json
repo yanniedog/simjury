@@ -17,7 +17,8 @@
     "predeploy": "npm run install:app && npm run build:assets",
     "deploy": "wrangler deploy",
     "precheck": "npm run install:app && npm run build:assets",
-    "check": "npm run guard:cloudflare && wrangler deploy --dry-run",
+    "check": "npm run guard:cloudflare && npm run check:landing && wrangler deploy --dry-run",
+    "check:landing": "node scripts/assert-landing-page.mjs",
     "guard:cloudflare": "node scripts/assert-cloudflare-static-only.mjs"
   },
   "devDependencies": {
