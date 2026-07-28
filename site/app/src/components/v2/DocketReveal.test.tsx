@@ -17,6 +17,7 @@ describe('DocketReveal', () => {
           verdict: 'not_guilty',
           g: 0,
           ng: 12,
+          u: 0,
         }}
         dayNumber={1}
         stats={{ played: 1, currentStreak: 1, maxStreak: 1 }}

@@ -286,7 +286,7 @@ function FeedLine({
       </li>
     )
   }
-  if (e.type === 'deadlock_direction' && revealVotes) {
+  if (e.type === 'majority_direction' && revealVotes) {
     return (
       <li className="rounded-lg border border-amber-800 bg-amber-950/30 p-3 text-center text-sm text-amber-200">
         The judge: “{e.detail}”
@@ -663,8 +663,8 @@ export function JuryRoomView({
     setTick((t) => t + 1)
     const judgeLine =
       locked.kind === 'hung'
-        ? `The judge reads the result. The jury is hung, ${locked.tally.g} to ${locked.tally.ng}.`
-        : `The judge reads the result. The jury finds ${locked.verdict === 'guilty' ? 'guilty' : 'not guilty'}, ${locked.tally.g} to ${locked.tally.ng}${locked.kind === 'unanimous' ? ', unanimous' : ', by majority'}.`
+        ? `The judge reads the result. The jury is hung: ${locked.tally.g} guilty, ${locked.tally.ng} not guilty, and ${locked.tally.u} undecided.`
+        : `The judge reads the result. The jury finds ${locked.verdict === 'guilty' ? 'guilty' : 'not guilty'}: ${locked.tally.g} guilty, ${locked.tally.ng} not guilty, and ${locked.tally.u} undecided${locked.kind === 'unanimous' ? ', unanimous' : ', by majority'}.`
     if (narration) speak(judgeLine, 'narrator', undefined, playbackRate)
   }
 
@@ -885,8 +885,8 @@ export function JuryRoomView({
             </p>
             <p className="mt-2 text-sm leading-relaxed text-neutral-300">
               {outcome.kind === 'hung'
-                ? `Members of the jury, you are unable to agree. The court records a hung jury, ${outcome.tally.g} guilty to ${outcome.tally.ng} not guilty.`
-                : `Members of the jury, by a vote of ${outcome.tally.g} to ${outcome.tally.ng}${outcome.kind === 'unanimous' ? ', unanimous' : ''}, you find the accused ${outcome.verdict === 'guilty' ? 'guilty' : 'not guilty'}.`}
+                ? `Members of the jury, you are unable to agree. The court records a hung jury: ${outcome.tally.g} guilty, ${outcome.tally.ng} not guilty, and ${outcome.tally.u} undecided.`
+                : `Members of the jury, by a vote of ${outcome.tally.g} guilty, ${outcome.tally.ng} not guilty, and ${outcome.tally.u} undecided${outcome.kind === 'unanimous' ? ', unanimous' : ''}, you find the accused ${outcome.verdict === 'guilty' ? 'guilty' : 'not guilty'}.`}
             </p>
             <p className="mt-3 text-2xl font-semibold text-neutral-50">
               {outcome.kind === 'hung'
@@ -896,7 +896,7 @@ export function JuryRoomView({
                   : 'Not guilty'}
             </p>
             <p className="mt-1 text-sm text-neutral-400">
-              {outcome.tally.g}–{outcome.tally.ng}
+              G {outcome.tally.g} · NG {outcome.tally.ng} · U {outcome.tally.u}
               {outcome.kind === 'majority' && ' · by majority'}
               {outcome.kind === 'unanimous' && ' · unanimous'}
               {' · your vote: '}

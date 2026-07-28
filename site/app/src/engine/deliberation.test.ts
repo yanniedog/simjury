@@ -7,11 +7,13 @@ import { makeDocketCase, makeJuror } from '../lib/v2/fixtures'
 import {
   autoPlayRound,
   buildAgenda,
+  finish,
   playRound,
   runDeliberation,
   startDeliberation,
   type PlayerAction,
 } from './deliberation'
+import { MAJORITY_DIRECTION } from './juryProcedure'
 
 const pass: PlayerAction = { type: 'pass' }
 const argue = (beatId: string, stance: 'proves' | 'unreliable'): PlayerAction => ({
@@ -65,8 +67,8 @@ describe('determinism (I-8)', () => {
     const a = runDeliberation(makeDocketCase(), 'not_guilty', PASSIVE)
     const b = runDeliberation(makeDocketCase(), 'guilty', PASSIVE)
     // Open-round events match; only the final vote/outcome may differ.
-    const openA = a.log.filter((e) => e.phase !== 'done' && e.type !== 'vote' && e.type !== 'outcome' && e.type !== 'deadlock_direction')
-    const openB = b.log.filter((e) => e.phase !== 'done' && e.type !== 'vote' && e.type !== 'outcome' && e.type !== 'deadlock_direction')
+    const openA = a.log.filter((e) => e.phase !== 'done' && e.type !== 'vote' && e.type !== 'outcome' && e.type !== 'majority_direction')
+    const openB = b.log.filter((e) => e.phase !== 'done' && e.type !== 'vote' && e.type !== 'outcome' && e.type !== 'majority_direction')
     expect(JSON.stringify(openA)).toBe(JSON.stringify(openB))
     expect(a.outcome.tally).not.toEqual(b.outcome.tally)
   })
@@ -101,14 +103,16 @@ describe('arguments move the room', () => {
     expect(trappy.outcome.tally.g).toBeGreaterThan(argued.outcome.tally.g)
   })
 
-  it('reaches at least two distinct outcomes across the strategy space', () => {
+  it('reaches at least two distinct final room states across the strategy space', () => {
     const strategies = [PASSIVE, DECISIVE, TRAPPY]
     const verdicts: Array<'guilty' | 'not_guilty'> = ['guilty', 'not_guilty']
     const seen = new Set<string>()
     for (const v of verdicts) {
       for (const s of strategies) {
         const { outcome } = runDeliberation(makeDocketCase(), v, s)
-        seen.add(`${outcome.kind}:${outcome.verdict ?? 'none'}`)
+        seen.add(
+          `${outcome.kind}:${outcome.verdict ?? 'none'}:${outcome.tally.g}:${outcome.tally.ng}:${outcome.tally.u}`,
+        )
       }
     }
     expect(seen.size).toBeGreaterThanOrEqual(2)
@@ -128,8 +132,85 @@ describe('arguments move the room', () => {
     for (const s of [PASSIVE, DECISIVE, TRAPPY]) {
       const { outcome } = runDeliberation(makeDocketCase(), 'not_guilty', s)
       expect(['unanimous', 'majority', 'hung']).toContain(outcome.kind)
-      expect(outcome.tally.g + outcome.tally.ng).toBe(12)
+      expect(outcome.tally.g + outcome.tally.ng + outcome.tally.u).toBe(12)
     }
+  })
+})
+
+describe('fictional jury procedure', () => {
+  function readyRoom(positions: number[]) {
+    const state = startDeliberation(makeDocketCase())
+    playRound(state, pass)
+    playRound(state, pass)
+    playRound(state, pass)
+    expect(state.phase).toBe('final_vote')
+    state.jurors.forEach((juror, index) => {
+      juror.position = positions[index]
+    })
+    return state
+  }
+
+  it('preserves undecided positions and never selects a final position by RNG', () => {
+    const state = readyRoom([1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 0])
+    state.rng = () => {
+      throw new Error('finish must not use RNG')
+    }
+
+    const outcome = finish(state, 'guilty')
+
+    expect(state.jurors.at(-1)?.position).toBe(0)
+    expect(outcome).toMatchObject({
+      kind: 'hung',
+      verdict: null,
+      tally: { g: 6, ng: 5, u: 1 },
+    })
+    expect(state.log.at(-1)?.tally).toEqual({ g: 6, ng: 5, u: 1 })
+  })
+
+  it('accepts 11 matching votes only after the neutral direction', () => {
+    const state = readyRoom([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0])
+
+    const outcome = finish(state, 'guilty')
+    const finalEvents = state.log.slice(-4)
+
+    expect(outcome).toMatchObject({
+      kind: 'majority',
+      verdict: 'guilty',
+      tally: { g: 11, ng: 0, u: 1 },
+    })
+    expect(finalEvents.map(({ type }) => type)).toEqual([
+      'vote',
+      'majority_direction',
+      'vote',
+      'outcome',
+    ])
+    expect(finalEvents[1].detail).toBe(MAJORITY_DIRECTION)
+  })
+
+  it('does not treat ten matching votes as a verdict', () => {
+    const state = readyRoom([1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 0])
+
+    expect(finish(state, 'guilty')).toMatchObject({
+      kind: 'hung',
+      verdict: null,
+      tally: { g: 10, ng: 1, u: 1 },
+    })
+  })
+
+  it('includes the player as the twelfth vote', () => {
+    const guiltyPlayer = finish(
+      readyRoom([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]),
+      'guilty',
+    )
+    const notGuiltyPlayer = finish(
+      readyRoom([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]),
+      'not_guilty',
+    )
+
+    expect(guiltyPlayer.tally).toEqual({ g: 11, ng: 0, u: 1 })
+    expect(notGuiltyPlayer.tally).toEqual({ g: 10, ng: 1, u: 1 })
+    expect(guiltyPlayer.kind).toBe('majority')
+    expect(notGuiltyPlayer.kind).toBe('hung')
   })
 })
 
@@ -226,7 +307,7 @@ describe('serious-crime case integration', () => {
     const a = runDeliberation(seriousCase, 'guilty', actions)
     const b = runDeliberation(seriousCase, 'guilty', actions)
     expect(a.outcome).toEqual(b.outcome)
-    expect(a.outcome.tally.g + a.outcome.tally.ng).toBe(12)
+    expect(a.outcome.tally.g + a.outcome.tally.ng + a.outcome.tally.u).toBe(12)
   })
 
   it('arguing the decisive evidence moves the authored room toward the truth', () => {

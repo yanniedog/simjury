@@ -77,8 +77,8 @@ export function DocketReveal({
 
   const roomLabel =
     room.kind === 'hung'
-      ? `hung, ${room.g}–${room.ng}`
-      : `${room.verdict === 'guilty' ? 'Guilty' : 'Not guilty'}, ${room.g}–${room.ng}${
+      ? `hung, ${room.g} guilty, ${room.ng} not guilty, ${room.u} undecided`
+      : `${room.verdict === 'guilty' ? 'Guilty' : 'Not guilty'}, ${room.g} guilty, ${room.ng} not guilty, ${room.u} undecided${
           room.kind === 'unanimous' ? ' unanimous' : ' by majority'
         }`
 
@@ -87,7 +87,7 @@ export function DocketReveal({
     : buildShareText({
         dayNumber,
         currentStreak: stats.currentStreak,
-        room: { kind: room.kind, g: room.g, ng: room.ng },
+        room: { kind: room.kind, g: room.g, ng: room.ng, u: room.u },
       })
 
   const mattered = analysis.whatMattered.length > 0

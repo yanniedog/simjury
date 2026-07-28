@@ -221,6 +221,7 @@ describe('in-progress sitting', () => {
         verdict: 'guilty' as const,
         g: 8,
         ng: 4,
+        u: 0,
       },
     }
 

@@ -12,9 +12,9 @@ import {
  * only ships if
  *
  *  1. for EACH verdict the player can lock after deliberation, the room
- *     reaches at least two distinct terminal outcomes (kind + verdict) across
- *     the strategy space (arguments must still be able to surprise, whichever
- *     way the player later locks their own vote), and
+ *     reaches at least two distinct final states across the strategy space
+ *     (arguments must move the tally even when the lawful threshold means
+ *     both rooms remain hung), and
  *  2. for each locked verdict, arguing the decisive evidence moves the room
  *     strictly further toward `verdict_truth` than saying nothing — unless
  *     passive play already maxes out the truth-side tally (skilled play
@@ -65,11 +65,11 @@ export function strategies(c: DocketCase): Record<string, PlayerAction[]> {
   }
 }
 
-// Outcome variety is judged at the verdict level (kind + verdict), not the
-// exact vote tally — two "hung" results with different splits (8-4 vs 9-3)
-// are the same terminal outcome for a player, not evidence the room moved.
+// An 11-of-12 threshold can leave every strategy hung even though discussion
+// changes several minds. Include all three positions so the gate catches a
+// genuinely frozen room without rejecting meaningfully different hung rooms.
 function signature(o: Outcome): string {
-  return `${o.kind}:${o.verdict ?? 'none'}`
+  return `${o.kind}:${o.verdict ?? 'none'}:${o.tally.g}:${o.tally.ng}:${o.tally.u}`
 }
 
 /** Dynamics issues for one case (empty array = the room is alive). */

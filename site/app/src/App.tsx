@@ -414,6 +414,7 @@ function DocketApp({
       verdict: outcome.verdict,
       g: outcome.tally.g,
       ng: outcome.tally.ng,
+      u: outcome.tally.u,
     }
     setVerdict(chosen)
     setRoom(roomRecord)

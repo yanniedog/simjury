@@ -9,7 +9,7 @@ export interface ShareInput {
    * The jury room's own result (docket loop). Spoiler-safe by construction:
    * the room's split says nothing about the true verdict or the player's.
    */
-  room?: { kind: 'unanimous' | 'majority' | 'hung'; g: number; ng: number }
+  room?: { kind: 'unanimous' | 'majority' | 'hung'; g: number; ng: number; u?: number }
 }
 
 /**
@@ -24,10 +24,11 @@ export function buildShareText(
 
   if (input.room) {
     const split = `${Math.max(input.room.g, input.room.ng)}–${Math.min(input.room.g, input.room.ng)}`
+    const undecided = input.room.u ? `–${input.room.u} undecided` : ''
     lines.push(
       input.room.kind === 'hung'
-        ? `🏛️ My jury hung ${split}`
-        : `🏛️ My jury: ${split}${input.room.kind === 'unanimous' ? ' unanimous' : ''}`,
+        ? `🏛️ My jury hung ${split}${undecided}`
+        : `🏛️ My jury: ${split}${undecided}${input.room.kind === 'unanimous' ? ' unanimous' : ''}`,
     )
   }
 

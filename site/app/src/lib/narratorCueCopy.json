@@ -5,7 +5,7 @@
     "beats": "Now the evidence. Witnesses and exhibits come one at a time. You do not decide yet — just listen carefully.",
     "closings": "Now the closings. Each side makes its final argument. After this, you retire with the jury to deliberate — you lock your own verdict only after that discussion.",
     "verdict": "If, after considering all the evidence, you are not sure the prosecution proved every element beyond reasonable doubt, your verdict must be Not Guilty.",
-    "juryroom": "Welcome to the jury room. You will hear three focused rounds drawn from jurors’ notes and memory. You may pause, reopen written notes, or raise a point. Positions stay private while you discuss. After the final round, choose your own verdict; the judge then announces the room’s result.",
+    "juryroom": "Welcome to the jury room. Under the fictional Aster Reach procedure used here, all 12 jurors first try to agree after three focused rounds. You may pause, reopen written notes, or raise a point. Then choose your own verdict. If the first ballot is not unanimous, the judge gives a neutral direction: keep considering each view without surrendering an honestly held one. Eleven matching votes can then return a verdict; undecided jurors remain undecided and may leave the jury hung.",
     "reveal": "This is the post-verdict review. Compare your reasoning with the authors’ reference verdict and the evidence they gave greatest weight. It is an editorial view, not a score."
   },
   "speaker": {

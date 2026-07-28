@@ -5,6 +5,11 @@ import type {
   LineFunction,
   Stance,
 } from '../lib/v2/caseSchema'
+import {
+  JURY_SIZE,
+  MAJORITY_DIRECTION,
+  MAJORITY_THRESHOLD,
+} from './juryProcedure'
 import { pick, rngFor, type Rng } from './rng'
 
 /**
@@ -15,7 +20,7 @@ import { pick, rngFor, type Rng } from './rng'
  * open rounds the player locks their verdict:
  *
  *   INITIAL_POSITIONS → OPEN_ROUND ×2 → MID_VOTE → OPEN_ROUND ×1
- *     → FINAL_VOTE (+ player lock) → (unanimous | majority ≥10 | HUNG)
+ *     → FINAL_VOTE (+ player lock) → (unanimous | majority ≥11 | HUNG)
  *
  * Mid-vote tallies exist in the event log for the dynamics gate; the player
  * UI withholds seat leanings and vote counts until the judge reads the
@@ -77,7 +82,7 @@ export interface RoomEvent {
     | 'drift'
     | 'drift_corrected'
     | 'vote'
-    | 'deadlock_direction'
+    | 'majority_direction'
     | 'outcome'
   beatId?: string
   stance?: Stance
@@ -94,7 +99,7 @@ export interface Outcome {
   kind: 'unanimous' | 'majority' | 'hung'
   verdict: PlayerVerdict | null
   /** Final 12-vote tally, player included. */
-  tally: { g: number; ng: number }
+  tally: { g: number; ng: number; u: number }
   burdenDrift: { occurred: boolean; correctedByPlayer: boolean }
 }
 
@@ -122,7 +127,7 @@ export interface DeliberationState {
 }
 
 export const SPEAKERS_PER_ROUND = 4
-export const MAJORITY_THRESHOLD = 10
+export { MAJORITY_THRESHOLD } from './juryProcedure'
 
 /** Per-arc probability of drifting one step toward the room majority per round. */
 const PRESSURE: Record<Juror['arc'], number> = {
@@ -541,40 +546,27 @@ export function finish(
 
   state.playerVerdict = playerVerdict
 
-  // The judge instructs undecided jurors to reach a view: they lean with the
-  // room, or by lot if the room itself is level.
-  const toward = roomSign(state)
-  for (const js of state.jurors) {
-    if (js.position === 0) {
-      const lean = toward !== 0 ? toward : state.rng() < 0.5 ? 1 : -1
-      js.position = lean
-    }
-  }
-
   const playerG = playerVerdict === 'guilty' ? 1 : 0
   const jurorTally = tallyOf(state.jurors)
-  let g = jurorTally.g + playerG
-  let ng = jurorTally.ng + (1 - playerG)
-  emit(state, { actor: 'room', type: 'vote', tally: { g, ng, u: 0 } })
+  const g = jurorTally.g + playerG
+  const ng = jurorTally.ng + (1 - playerG)
+  const u = jurorTally.u
+  emit(state, { actor: 'room', type: 'vote', tally: { g, ng, u } })
 
   let kind: Outcome['kind']
   let verdict: Outcome['verdict']
-  if (g === 12 || ng === 12) {
+  if (g === JURY_SIZE || ng === JURY_SIZE) {
     kind = 'unanimous'
-    verdict = g === 12 ? 'guilty' : 'not_guilty'
+    verdict = g === JURY_SIZE ? 'guilty' : 'not_guilty'
   } else {
-    // Deadlock direction, one last exchange under pressure, then majority vote.
+    // This follows three completed discussion rounds. The direction neither
+    // changes nor invents a juror's honestly held position.
     emit(state, {
       actor: 'judge',
-      type: 'deadlock_direction',
-      detail: 'A verdict of at least ten of you may now be accepted.',
+      type: 'majority_direction',
+      detail: MAJORITY_DIRECTION,
     })
-    peerPressure(state, 0.15)
-    const t = tallyOf(state.jurors)
-    // Any juror still undecided after pressure abstains to the defence side.
-    g = t.g + playerG
-    ng = 12 - g
-    emit(state, { actor: 'room', type: 'vote', tally: { g, ng, u: 0 } })
+    emit(state, { actor: 'room', type: 'vote', tally: { g, ng, u } })
     if (g >= MAJORITY_THRESHOLD) {
       kind = 'majority'
       verdict = 'guilty'
@@ -590,7 +582,7 @@ export function finish(
   state.outcome = {
     kind,
     verdict,
-    tally: { g, ng },
+    tally: { g, ng, u },
     burdenDrift: {
       occurred: state.driftActive,
       correctedByPlayer: state.driftCorrectedByPlayer,
@@ -600,7 +592,7 @@ export function finish(
     actor: 'room',
     type: 'outcome',
     detail: `${kind}${verdict ? `:${verdict}` : ''}`,
-    tally: { g, ng, u: 0 },
+    tally: { g, ng, u },
   })
   state.phase = 'done'
   return state.outcome

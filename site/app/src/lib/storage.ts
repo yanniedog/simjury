@@ -28,6 +28,7 @@ const storedPlaySchema = z.object({
       verdict: z.enum(['guilty', 'not_guilty']).nullable(),
       g: z.number(),
       ng: z.number(),
+      u: z.number().default(0),
     })
     .optional(),
 })
