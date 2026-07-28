@@ -289,7 +289,7 @@ function fakeRoom() {
   }
   const state = {
     storage: { sql },
-    getWebSockets: () => sockets,
+    getWebSockets: () => sockets.filter((socket) => !socket.closed),
   }
   return { events, room: new RoomDO(state, { LIVE_JURY_ENABLED: 'true' }), sockets, usage }
 }
@@ -323,14 +323,20 @@ test('room messages meter invalid frames and enforce the lifetime seat cap', asy
 test('room presence excludes a closed socket and duplicate seat sockets are superseded', () => {
   const { room, sockets } = fakeRoom()
   const first = fakeSocket('1')
-  const duplicate = fakeSocket('1')
   const second = fakeSocket('2')
-  sockets.push(first, duplicate, second)
+  sockets.push(first, second)
+  room.broadcastPresence()
+  assert.deepEqual(second.sent.at(-1), { type: 'presence', connected_seats: [1, 2] })
+
+  const duplicate = fakeSocket('1')
+  sockets.push(duplicate)
   room.closeSeatSockets('1')
   assert.equal(first.closed.code, 4001)
   assert.equal(duplicate.closed.code, 4001)
-  room.webSocketClose(second)
-  assert.deepEqual(first.sent.at(-1), { type: 'presence', connected_seats: [1] })
+  assert.equal(room.state.getWebSockets().map((socket) => socket.deserializeAttachment().seatId).join(','), '2')
+
+  room.webSocketClose(first)
+  assert.deepEqual(second.sent.at(-1), { type: 'presence', connected_seats: [2] })
 })
 
 test('admission caps and retries cannot create unregistered rooms', () => {
