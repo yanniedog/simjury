@@ -90,6 +90,15 @@ describe('deterministic contribution understanding', () => {
       position: 'U',
     })
   })
+
+  it('does not confuse a numbered concept with its longer neighbour', () => {
+    const numeric = { ...pack, issues: [
+      { id: 'issue-1', label: 'Issue concept 1', aliases: ['concern one'] },
+      { id: 'issue-12', label: 'Issue concept 12', aliases: ['concern twelve'] },
+    ] }
+    expect(understandContribution('Issue concept 12 concerns me.', numeric).frame.issueId)
+      .toBe('issue-12')
+  })
 })
 
 describe('relevant juror reply planning', () => {
