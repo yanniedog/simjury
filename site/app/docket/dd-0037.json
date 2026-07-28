@@ -6,7 +6,7 @@
   "offence_code": "treason",
   "content_advisories": ["serious_violence"],
   "detail_level": "non_graphic",
-  "setting": "In a fictional state during an invented armed conflict, a defence-language specialist is accused of knowingly adding a protected negotiating limit to an otherwise authorised exchange with a hostile foreign authority.",
+  "setting": "The invented Republic of Orinth is in an armed conflict with the equally fictional Veyran Authority. Both sides still use a court-approved channel to exchange ceasefire wording. Inside Orinth’s language office, six briefs were cleared for that channel while a seventh working page remained protected. The charge asks whether its disclosure was treason or a grave technical mistake.",
   "charge": "treason by assisting a hostile foreign power",
   "elements": [
     "An armed conflict existed between the fictional state and a hostile foreign power.",
@@ -16,7 +16,7 @@
   "hook": "The judge enters as negotiations continue beyond the courthouse. Seven pages lie under glass. Six were cleared. The seventh exposed a protected limit. Sela Orr, a defence-language specialist charged with treason, accepts she edited it and sent the package. She denies knowing it travelled. The question is not what happened, but what she knew.",
   "accused": {
     "cast_id": "acc",
-    "human": "Sela Orr, 51, is a defence-language specialist who maintains internal working drafts and has openly argued for more transparent peace negotiations.",
+    "human": "Sela Orr, 51, has spent eighteen years turning military and diplomatic instructions into precise negotiating language. She maintains internal working drafts but does not normally choose release attachments. Colleagues know she favours more transparent peace talks; that lawful opinion provides background, not proof of what she did on the afternoon charged.",
     "if_guilty": "If convicted, sentencing would be decided separately by the judge. The jury's task is limited to deciding whether the prosecution proved the charge."
   },
   "media": {
@@ -58,21 +58,21 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "You will hear that Sela Orr corrected a confidential negotiating limit, then confirmed a package bound for a hostile authority eleven minutes later. That authority used the limit at the next talks. The six approved briefs were lawful, and the system had a fault. The prosecution's case is that those facts do not explain this sequence: her timing, destination warning, and the advantage that followed."
+        "text": "This is not a case about criticising policy or merely making an error. The prosecution must prove that Sela Orr intentionally assisted the hostile Veyran Authority and knew the help would prejudice Orinth’s security. You will hear that she corrected a confidential negotiating limit, acknowledged the hostile destination, and confirmed a package eleven minutes later. The six approved briefs were lawful and the system had a fault. You must decide whether those facts explain the sequence or whether she knowingly exploited it."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The six briefs were supposed to go: they were an authorised part of peace talks. Page seven was not. You will see a signed release sheet and confirmation screen listing six files. You will hear that the system could silently inherit a seventh, and that earlier support tickets recorded the fault. Sela's job required the corrections. A disastrous mistake is not treason; the question is what she knew."
+        "text": "The six briefs were supposed to go because even hostile parties need an authorised channel for ceasefire talks. Page seven was not. You will see a signed release sheet and confirmation screen listing six files. You will hear that an old package link could silently carry a seventh, and that earlier support tickets recorded the same fault. Sela’s job required the corrections; another officer chose the attachments. A disastrous disclosure can cause real prejudice without being intentional treason. The unresolved question is what Sela knew when she pressed send."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Put the sequence together. Sela knew whose account it was, corrected the one page that later gave the hostile negotiators an advantage, and clicked send eleven minutes later. Neri's work request explains the edit, but not necessarily Sela's next act. The fault shows how a file can travel, but it does not compel you to accept that this experienced specialist missed the link. The prosecution says intention and knowledge are proved."
+        "text": "Put the admissible sequence together, without using Sela’s politics as a shortcut. She knew whose account it was, corrected the one protected page that later gave Veyran negotiators an advantage, signed through a destination warning, and clicked send eleven minutes later. Neri’s work request explains the edit, but not necessarily Sela’s next act. The reproduced fault shows how a file can travel; it does not compel you to accept that this experienced specialist missed the old link. The prosecution says the timing, expertise, warning and resulting advantage prove intentional assistance and knowledge."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The harm is real, but hindsight isn't proof of treason. Neri asked Sela to correct the internal master; Halen built and approved the six-file package. The authenticated release sheet and confirmation screen listed those six lawful briefs, while a known fault silently carried page seven. Knowledge of the recipient proves only where Sela knew the authorised package was going. No record shows she saw the hidden attachment. That missing link is reasonable doubt."
+        "text": "The harm and the armed conflict are agreed, but hindsight is not proof of treason. Neri asked Sela to correct the internal master; Halen built and approved the six-file package. The authenticated release sheet and confirmation screen listed those six lawful briefs, while a pre-existing fault silently carried page seven. Knowledge of the recipient proves where Sela knew the authorised package was going, not that she knew every file travelling behind the screen. No audit, message or witness shows she saw the hidden attachment. The defence says that missing mental-state link is reasonable doubt on two elements."
       }
     }
   },
@@ -90,14 +90,14 @@
     {
       "id": "b1", "kind": "witness", "speaker": "w1", "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "What was the office meant to send?"},
-        {"speaker": "w1", "text": "Six briefs, cleared for the negotiation channel. I checked the signed release sheet against the files."},
-        {"speaker": "pc", "text": "What did you preserve?"},
-        {"speaker": "w1", "text": "Both packages and two earlier support tickets from our service archive. I sealed them, recorded their hashes, and haven't altered them."},
-        {"speaker": "pc", "text": "What differed in the received copy?"},
-        {"speaker": "w1", "text": "It had page seven: our confidential negotiating ceiling."}
+        {"speaker": "pc", "text": "What was the language office authorised to send that afternoon?"},
+        {"speaker": "w1", "text": "Six ceasefire briefs. I assembled them, compared their filenames with the signed release sheet, and approved that package for the negotiation channel."},
+        {"speaker": "pc", "text": "How did you preserve the records after the disclosure?"},
+        {"speaker": "w1", "text": "I exported both packages and two older support tickets, recorded their system hashes, sealed read-only copies, and transferred them through the evidence register. The hashes still match."},
+        {"speaker": "pc", "text": "What differed between the authorised and received packages?"},
+        {"speaker": "w1", "text": "The received copy contained page seven, Orinth’s confidential negotiating ceiling. It appeared nowhere on my release sheet."}
       ],
-      "text": "What was the office meant to send? Six briefs, cleared for the negotiation channel. I checked the signed release sheet against the files. What did you preserve? Both packages and two earlier support tickets from our service archive. I sealed them, recorded their hashes, and haven't altered them. What differed in the received copy? It had page seven: our confidential negotiating ceiling.",
+      "text": "What was the language office authorised to send that afternoon? Six ceasefire briefs. I assembled them, compared their filenames with the signed release sheet, and approved that package for the negotiation channel. How did you preserve the records after the disclosure? I exported both packages and two older support tickets, recorded their system hashes, sealed read-only copies, and transferred them through the evidence register. The hashes still match. What differed between the authorised and received packages? The received copy contained page seven, Orinth’s confidential negotiating ceiling. It appeared nowhere on my release sheet.",
       "surface_persuasion": 0.62, "true_weight": 0.5, "direction": "guilt", "reveal_stamp": "minor",
       "reveal_note": "Halen authenticated the release sheet and both preserved packages. The evidence proves that the protected page arrived, but the cleared package itself listed only six files.",
       "tags": ["method", "procedure", "digital_forensics"]
@@ -105,16 +105,18 @@
     {
       "id": "b2", "kind": "witness", "speaker": "w1", "mode": "cross",
       "turns": [
-        {"speaker": "dc", "text": "The release sheet you authenticated lists six files?"},
-        {"speaker": "w1", "text": "Yes, six."},
-        {"speaker": "dc", "text": "And all six were meant for that account because the talks were authorised?"},
-        {"speaker": "w1", "text": "That's right."},
-        {"speaker": "dc", "text": "There is no seventh filename, exception warning, or handwritten addition?"},
-        {"speaker": "w1", "text": "No. I checked the sheet twice."},
-        {"speaker": "dc", "text": "Who assembled and approved the six-file package?"},
-        {"speaker": "w1", "text": "I did. Sela's role was language editing, not choosing the attachments."}
+        {"speaker": "dc", "text": "Your authenticated release sheet lists exactly six filenames, correct?"},
+        {"speaker": "w1", "text": "Correct. I signed beside six."},
+        {"speaker": "dc", "text": "All six were lawfully meant for the Veyran account because the ceasefire exchange had been authorised?"},
+        {"speaker": "w1", "text": "Yes. Sending those six was assigned work."},
+        {"speaker": "dc", "text": "There’s no seventh filename, warning, addition, or approval by Sela on that sheet?"},
+        {"speaker": "w1", "text": "No. I checked the original twice."},
+        {"speaker": "dc", "text": "You—not Sela—selected the attachments and created the release package?"},
+        {"speaker": "w1", "text": "I did. Sela maintained working drafts. She checked the displayed list and transmitted my package; she didn’t choose its contents."},
+        {"speaker": "dc", "text": "Her preserved confirmation displayed six filenames?"},
+        {"speaker": "w1", "text": "Yes, six."}
       ],
-      "text": "The release sheet you authenticated lists six files? Yes, six. And all six were meant for that account because the talks were authorised? That's right. There is no seventh filename, exception warning, or handwritten addition? No. I checked the sheet twice. Who assembled and approved the six-file package? I did. Sela's role was language editing, not choosing the attachments.",
+      "text": "Your authenticated release sheet lists exactly six filenames, correct? Correct. I signed beside six. All six were lawfully meant for the Veyran account because the ceasefire exchange had been authorised? Yes. Sending those six was assigned work. There’s no seventh filename, warning, addition, or approval by Sela on that sheet? No. I checked the original twice. You—not Sela—selected the attachments and created the release package? I did. Sela maintained working drafts. She checked the displayed list and transmitted my package; she didn’t choose its contents. Her preserved confirmation displayed six filenames? Yes, six.",
       "surface_persuasion": 0.58, "true_weight": 0.58, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "The authenticated release sheet makes the lawful purpose of the six-file transmission clear and contains no sign that Sela added or approved a seventh file.",
       "tags": ["procedure", "intent", "burden"]
@@ -122,14 +124,14 @@
     {
       "id": "b3", "kind": "witness", "speaker": "w2", "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "Why were any briefs going to a hostile authority?"},
-        {"speaker": "w2", "text": "We had an authorised channel for ceasefire wording. The six briefs contained language both teams were meant to see."},
-        {"speaker": "pc", "text": "What happened at the next negotiation?"},
-        {"speaker": "w2", "text": "I heard their delegate quote our exact private ceiling and refuse further movement. We lost four days from an already narrow security-planning window."},
-        {"speaker": "pc", "text": "Had that ceiling been cleared for release?"},
-        {"speaker": "w2", "text": "No. It was protected."}
+        {"speaker": "pc", "text": "Why was Orinth exchanging any material with an authority it was fighting?"},
+        {"speaker": "w2", "text": "Both governments authorised a narrow channel for ceasefire wording. The six briefs defined terms both teams needed to discuss. Sending them was lawful; revealing our internal limit was not."},
+        {"speaker": "pc", "text": "What did you personally hear at the next negotiation?"},
+        {"speaker": "w2", "text": "The Veyran delegate quoted our exact private ceiling and refused further movement. That figure was in no approved brief. I ended the session and notified security."},
+        {"speaker": "pc", "text": "What practical effect did that disclosure have?"},
+        {"speaker": "w2", "text": "We lost four days rebuilding our position, reducing the window for safe troop separation. I can explain the material assistance and security prejudice, not who knowingly sent the page."}
       ],
-      "text": "Why were any briefs going to a hostile authority? We had an authorised channel for ceasefire wording. The six briefs contained language both teams were meant to see. What happened at the next negotiation? I heard their delegate quote our exact private ceiling and refuse further movement. We lost four days from an already narrow security-planning window. Had that ceiling been cleared for release? No. It was protected.",
+      "text": "Why was Orinth exchanging any material with an authority it was fighting? Both governments authorised a narrow channel for ceasefire wording. The six briefs defined terms both teams needed to discuss. Sending them was lawful; revealing our internal limit was not. What did you personally hear at the next negotiation? The Veyran delegate quoted our exact private ceiling and refused further movement. That figure was in no approved brief. I ended the session and notified security. What practical effect did that disclosure have? We lost four days rebuilding our position, reducing the window for safe troop separation. I can explain the material assistance and security prejudice, not who knowingly sent the page.",
       "surface_persuasion": 0.7, "true_weight": 0.57, "direction": "guilt", "reveal_stamp": "minor",
       "reveal_note": "Neri's firsthand account proves that the seventh page materially assisted the hostile negotiators and prejudiced security planning. It does not identify who knowingly included it.",
       "tags": ["method", "intent", "credibility"]
@@ -137,14 +139,16 @@
     {
       "id": "b4", "kind": "witness", "speaker": "w2", "mode": "cross",
       "turns": [
-        {"speaker": "dc", "text": "You asked Sela to update page seven that afternoon?"},
-        {"speaker": "w2", "text": "Yes. The figures were stale, and keeping the internal master accurate was her job."},
-        {"speaker": "dc", "text": "You didn't ask her to prepare it for this exchange?"},
-        {"speaker": "w2", "text": "No. It was internal and excluded from my six-file release sheet."},
-        {"speaker": "dc", "text": "Did Sela ever tell you she'd send it?"},
-        {"speaker": "w2", "text": "No, she didn't."}
+        {"speaker": "dc", "text": "You asked Sela to update page seven at 3:32 that afternoon?"},
+        {"speaker": "w2", "text": "Yes. Three internal figures were stale. Keeping that master accurate was her ordinary role."},
+        {"speaker": "dc", "text": "Your message didn’t ask her to include it in the exchange?"},
+        {"speaker": "w2", "text": "No. I called it internal and said Halen already had the release package."},
+        {"speaker": "dc", "text": "Your release sheet excluded it, and Halen controlled that sheet?"},
+        {"speaker": "w2", "text": "That’s right."},
+        {"speaker": "dc", "text": "Did Sela ever propose giving Veyran this protected figure?"},
+        {"speaker": "w2", "text": "No. She favoured more openness after review, but I found no message proposing this disclosure."}
       ],
-      "text": "You asked Sela to update page seven that afternoon? Yes. The figures were stale, and keeping the internal master accurate was her job. You didn't ask her to prepare it for this exchange? No. It was internal and excluded from my six-file release sheet. Did Sela ever tell you she'd send it? No, she didn't.",
+      "text": "You asked Sela to update page seven at 3:32 that afternoon? Yes. Three internal figures were stale. Keeping that master accurate was her ordinary role. Your message didn’t ask her to include it in the exchange? No. I called it internal and said Halen already had the release package. Your release sheet excluded it, and Halen controlled that sheet? That’s right. Did Sela ever propose giving Veyran this protected figure? No. She favoured more openness after review, but I found no message proposing this disclosure.",
       "surface_persuasion": 0.58, "true_weight": 0.59, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "Neri supplied a firsthand, lawful reason for the edits that the prosecution had treated as suspicious and confirmed that page seven was excluded from the approved package.",
       "tags": ["intent", "procedure", "credibility"]
@@ -152,14 +156,14 @@
     {
       "id": "b5", "kind": "witness", "speaker": "w3", "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "What material did you examine?"},
-        {"speaker": "w3", "text": "Read-only images of Sela's workstation and the secure gateway, made in my presence, plus Halen's two support-ticket exports. I verified their hashes and timestamps against the secure records."},
-        {"speaker": "pc", "text": "What could those records reliably show?"},
-        {"speaker": "w3", "text": "The account in use, saved file versions, the package manifest, and transmission times."},
-        {"speaker": "pc", "text": "What couldn't they show?"},
-        {"speaker": "w3", "text": "What a person actually noticed on screen."}
+        {"speaker": "pc", "text": "What material did you receive, and how did you check its integrity?"},
+        {"speaker": "w3", "text": "Read-only images of Sela’s workstation and the gateway, plus Halen’s ticket exports. I compared their hashes with the sealed evidence copies, checked the gateway clock, and found no alteration or relevant drift."},
+        {"speaker": "pc", "text": "What can those records reliably establish?"},
+        {"speaker": "w3", "text": "The signed-in account, saved versions, filenames displayed, the destination shown, and transmission time."},
+        {"speaker": "pc", "text": "What can they not answer?"},
+        {"speaker": "w3", "text": "They cannot reveal what the user actually noticed, knew, or intended. Those are inferences for the jury, not forensic outputs."}
       ],
-      "text": "What material did you examine? Read-only images of Sela's workstation and the secure gateway, made in my presence, plus Halen's two support-ticket exports. I verified their hashes and timestamps against the secure records. What could those records reliably show? The account in use, saved file versions, the package manifest, and transmission times. What couldn't they show? What a person actually noticed on screen.",
+      "text": "What material did you receive, and how did you check its integrity? Read-only images of Sela’s workstation and the gateway, plus Halen’s ticket exports. I compared their hashes with the sealed evidence copies, checked the gateway clock, and found no alteration or relevant drift. What can those records reliably establish? The signed-in account, saved versions, filenames displayed, the destination shown, and transmission time. What can they not answer? They cannot reveal what the user actually noticed, knew, or intended. Those are inferences for the jury, not forensic outputs.",
       "surface_persuasion": 0.48, "true_weight": 0.45, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "Dr Lell authenticated the digital records, explained their custody and integrity, and qualified the crucial limit: logs cannot reveal what Sela perceived or intended.",
       "tags": ["digital_forensics", "procedure", "burden"]
@@ -167,14 +171,16 @@
     {
       "id": "b6", "kind": "witness", "speaker": "w3", "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "Did you test the alleged export fault?"},
-        {"speaker": "w3", "text": "Yes. On an isolated copy, I selected the same six file types."},
-        {"speaker": "pc", "text": "What happened?"},
-        {"speaker": "w3", "text": "Page seven travelled through an old package link, but the confirmation screen still listed six files. Two earlier support tickets described the same fault."},
-        {"speaker": "pc", "text": "Can the charged audit distinguish that fault from a deliberate attachment?"},
-        {"speaker": "w3", "text": "No. The audit pattern is the same."}
+        {"speaker": "pc", "text": "How did you test the defence claim that the seventh page could travel without being displayed?"},
+        {"speaker": "w3", "text": "On an isolated forensic copy, I restored the preserved package state and repeated the six-file export twelve times while recording its screen and audit output."},
+        {"speaker": "pc", "text": "What did those controlled runs show?"},
+        {"speaker": "w3", "text": "The inherited link carried page seven each time while both screens displayed six filenames. Removing the link stopped the extra file."},
+        {"speaker": "pc", "text": "Did anything show the fault existed earlier?"},
+        {"speaker": "w3", "text": "Yes. Two authenticated tickets, created three and six weeks earlier by other staff, described an unseen attachment and six-file confirmation."},
+        {"speaker": "pc", "text": "Can the charged audit distinguish accident from a deliberately preserved link?"},
+        {"speaker": "w3", "text": "No. Both produce the same pattern. My test establishes a mechanism, not Sela’s state of mind."}
       ],
-      "text": "Did you test the alleged export fault? Yes. On an isolated copy, I selected the same six file types. What happened? Page seven travelled through an old package link, but the confirmation screen still listed six files. Two earlier support tickets described the same fault. Can the charged audit distinguish that fault from a deliberate attachment? No. The audit pattern is the same.",
+      "text": "How did you test the defence claim that the seventh page could travel without being displayed? On an isolated forensic copy, I restored the preserved package state and repeated the six-file export twelve times while recording its screen and audit output. What did those controlled runs show? The inherited link carried page seven each time while both screens displayed six filenames. Removing the link stopped the extra file. Did anything show the fault existed earlier? Yes. Two authenticated tickets, created three and six weeks earlier by other staff, described an unseen attachment and six-file confirmation. Can the charged audit distinguish accident from a deliberately preserved link? No. Both produce the same pattern. My test establishes a mechanism, not Sela’s state of mind.",
       "surface_persuasion": 0.72, "true_weight": 0.88, "direction": "innocence", "reveal_stamp": "decisive",
       "reveal_note": "The authenticated system copy reproduced a silent inherited attachment, and contemporaneous support tickets proved it pre-dated this case. The charged audit cannot distinguish accident from choice.",
       "tags": ["digital_forensics", "procedure", "intent"]
@@ -182,16 +188,14 @@
     {
       "id": "b7", "kind": "witness", "speaker": "w3", "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "What does the revision history show?"},
-        {"speaker": "w3", "text": "Sela's account changed three figures on page seven eleven minutes before transmission. No other file changed."},
-        {"speaker": "pc", "text": "Were those changes accurate?"},
-        {"speaker": "w3", "text": "Yes. They made the negotiating ceiling current."},
-        {"speaker": "pc", "text": "Could the export fault have made them?"},
-        {"speaker": "w3", "text": "No. Those edits were manual."},
-        {"speaker": "pc", "text": "Could Sela still have known that the old link remained?"},
-        {"speaker": "w3", "text": "It's possible. The records can't tell us whether she did."}
+        {"speaker": "pc", "text": "Please place the account activity in time for the jury."},
+        {"speaker": "w3", "text": "Neri requested corrections at 3:32. Sela’s account edited page seven from 3:35 to 3:38, opened Halen’s package at 3:43, acknowledged the destination warning at 3:48, and transmitted at 3:49."},
+        {"speaker": "pc", "text": "Were the edits manual and accurate?"},
+        {"speaker": "w3", "text": "Yes. They made the ceiling current. The fault could carry the page, but could not edit it or acknowledge the warning."},
+        {"speaker": "pc", "text": "How must you qualify the prosecution’s timing inference?"},
+        {"speaker": "w3", "text": "The sequence supports knowing disclosure. It also fits the ordinary workflow: complete an assigned correction, open a colleague’s cleared package, see six filenames, then send. The records cannot choose between them."}
       ],
-      "text": "What does the revision history show? Sela's account changed three figures on page seven eleven minutes before transmission. No other file changed. Were those changes accurate? Yes. They made the negotiating ceiling current. Could the export fault have made them? No. Those edits were manual. Could Sela still have known that the old link remained? It's possible. The records can't tell us whether she did.",
+      "text": "Please place the account activity in time for the jury. Neri requested corrections at 3:32. Sela’s account edited page seven from 3:35 to 3:38, opened Halen’s package at 3:43, acknowledged the destination warning at 3:48, and transmitted at 3:49. Were the edits manual and accurate? Yes. They made the ceiling current. The fault could carry the page, but could not edit it or acknowledge the warning. How must you qualify the prosecution’s timing inference? The sequence supports knowing disclosure. It also fits the ordinary workflow: complete an assigned correction, open a colleague’s cleared package, see six filenames, then send. The records cannot choose between them.",
       "surface_persuasion": 0.86, "true_weight": 0.34, "direction": "guilt", "reveal_stamp": "misleading",
       "reveal_note": "The timing feels incriminating, but Neri assigned the corrections as ordinary work. Manual editing does not establish that Sela knew the separate export fault would carry the page.",
       "tags": ["intent", "identity", "digital_forensics"]
@@ -199,14 +203,16 @@
     {
       "id": "b8", "kind": "witness", "speaker": "w3", "mode": "cross",
       "turns": [
-        {"speaker": "dc", "text": "You can't say Sela saw page seven listed for export?"},
-        {"speaker": "w3", "text": "No. It wasn't listed."},
-        {"speaker": "dc", "text": "Can edit history show why she edited it, or whether she knew an old link remained?"},
-        {"speaker": "w3", "text": "No. It shows the account, session, edits, and timing. Not purpose, attention, or knowledge."},
-        {"speaker": "dc", "text": "Did you find a message from Sela telling the recipient about page seven?"},
-        {"speaker": "w3", "text": "No, I didn't."}
+        {"speaker": "dc", "text": "Neither screen showed page seven to the sender?"},
+        {"speaker": "w3", "text": "Correct. Both displayed six approved filenames."},
+        {"speaker": "dc", "text": "The destination warning named Veyran but listed no attachments or inherited link?"},
+        {"speaker": "w3", "text": "Correct. Veyran was also the lawful destination for the six briefs."},
+        {"speaker": "dc", "text": "Edit history cannot show why Sela corrected the page, what she noticed, remembered, knew, or intended?"},
+        {"speaker": "w3", "text": "No. It shows the account and timing, not those mental states."},
+        {"speaker": "dc", "text": "You searched for a message directing Veyran to page seven?"},
+        {"speaker": "w3", "text": "Yes. I found none. That absence doesn’t prove innocence, but no recipient-specific note supports deliberate disclosure."}
       ],
-      "text": "You can't say Sela saw page seven listed for export? No. It wasn't listed. Can edit history show why she edited it, or whether she knew an old link remained? No. It shows the account, session, edits, and timing. Not purpose, attention, or knowledge. Did you find a message from Sela telling the recipient about page seven? No, I didn't.",
+      "text": "Neither screen showed page seven to the sender? Correct. Both displayed six approved filenames. The destination warning named Veyran but listed no attachments or inherited link? Correct. Veyran was also the lawful destination for the six briefs. Edit history cannot show why Sela corrected the page, what she noticed, remembered, knew, or intended? No. It shows the account and timing, not those mental states. You searched for a message directing Veyran to page seven? Yes. I found none. That absence doesn’t prove innocence, but no recipient-specific note supports deliberate disclosure.",
       "surface_persuasion": 0.6, "true_weight": 0.82, "direction": "innocence", "reveal_stamp": "decisive",
       "reveal_note": "The authenticated records contain no recipient note and cannot prove Sela saw, knew about, or deliberately used the inherited attachment. That missing mental-state link is central.",
       "tags": ["intent", "burden", "digital_forensics"]
@@ -214,14 +220,16 @@
     {
       "id": "b9", "kind": "witness", "speaker": "acc", "mode": "examination",
       "turns": [
-        {"speaker": "dc", "text": "Take us through the last part of your shift."},
-        {"speaker": "acc", "text": "Neri asked me to fix three stale figures in the internal master. I did that, then opened Halen's cleared package."},
-        {"speaker": "dc", "text": "What appeared before you sent it?"},
-        {"speaker": "acc", "text": "Six approved filenames and the authorised channel. I didn't see page seven."},
-        {"speaker": "dc", "text": "Did you mean to help the hostile authority?"},
-        {"speaker": "acc", "text": "No. I meant to send the six negotiation briefs."}
+        {"speaker": "dc", "text": "Take the jury through what you remember doing after Neri’s message."},
+        {"speaker": "acc", "text": "I replaced the three stale figures she identified, reread that paragraph, and saved the internal master. A few minutes later I opened Halen’s cleared package for the scheduled exchange."},
+        {"speaker": "dc", "text": "What did the send screen show you?"},
+        {"speaker": "acc", "text": "Six approved filenames, the Veyran channel, and the usual hostile-recipient warning. The lawful talks were why we used that account. I checked the six names against Halen’s message. I didn’t see page seven."},
+        {"speaker": "dc", "text": "Did you know an inherited link could carry another file?"},
+        {"speaker": "acc", "text": "Not then. I hadn’t handled either support ticket and didn’t connect general complaints with this package."},
+        {"speaker": "dc", "text": "What did you intend when you confirmed transmission?"},
+        {"speaker": "acc", "text": "To send Halen’s six authorised briefs. I didn’t intend to give Veyran our ceiling."}
       ],
-      "text": "Take us through the last part of your shift. Neri asked me to fix three stale figures in the internal master. I did that, then opened Halen's cleared package. What appeared before you sent it? Six approved filenames and the authorised channel. I didn't see page seven. Did you mean to help the hostile authority? No. I meant to send the six negotiation briefs.",
+      "text": "Take the jury through what you remember doing after Neri’s message. I replaced the three stale figures she identified, reread that paragraph, and saved the internal master. A few minutes later I opened Halen’s cleared package for the scheduled exchange. What did the send screen show you? Six approved filenames, the Veyran channel, and the usual hostile-recipient warning. The lawful talks were why we used that account. I checked the six names against Halen’s message. I didn’t see page seven. Did you know an inherited link could carry another file? Not then. I hadn’t handled either support ticket and didn’t connect general complaints with this package. What did you intend when you confirmed transmission? To send Halen’s six authorised briefs. I didn’t intend to give Veyran our ceiling.",
       "surface_persuasion": 0.58, "true_weight": 0.52, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "Sela's account is consistent with the release sheet, Neri's assignment, and the reproduced fault, although the jury need not accept her denial merely because she gave it.",
       "tags": ["credibility", "intent", "procedure"]
@@ -229,21 +237,27 @@
     {
       "id": "b10", "kind": "witness", "speaker": "acc", "mode": "cross",
       "turns": [
-        {"speaker": "pc", "text": "You knew the account belonged to the hostile authority?"},
-        {"speaker": "acc", "text": "Of course. That's where the authorised talks were held."},
-        {"speaker": "pc", "text": "You'd signed a warning about that account?"},
+        {"speaker": "pc", "text": "You knew the Veyran account belonged to the hostile authority?"},
+        {"speaker": "acc", "text": "Yes. It was also our authorised negotiation account."},
+        {"speaker": "pc", "text": "You were trained and acknowledged its destination warning?"},
         {"speaker": "acc", "text": "Yes."},
-        {"speaker": "pc", "text": "And eleven minutes after correcting the secret limit, you clicked send?"},
-        {"speaker": "acc", "text": "I corrected my assigned draft, then sent Halen's package. Those facts are true. I didn't know they were linked."}
+        {"speaker": "pc", "text": "You understood that revealing Orinth’s ceiling would help Veyran?"},
+        {"speaker": "acc", "text": "Yes. That’s why it was protected."},
+        {"speaker": "pc", "text": "You made that ceiling accurate, then clicked send eleven minutes later?"},
+        {"speaker": "acc", "text": "I made the assigned correction, then sent Halen’s separate package. I deny knowing the old link joined them."},
+        {"speaker": "pc", "text": "You had publicly argued for more openness?"},
+        {"speaker": "acc", "text": "After proper review, yes—not for secretly releasing this limit."},
+        {"speaker": "pc", "text": "Your account is that an experienced specialist missed the page she had just improved?"},
+        {"speaker": "acc", "text": "My account is that the screen showed six files. The jury can judge that record and my answer."}
       ],
-      "text": "You knew the account belonged to the hostile authority? Of course. That's where the authorised talks were held. You'd signed a warning about that account? Yes. And eleven minutes after correcting the secret limit, you clicked send? I corrected my assigned draft, then sent Halen's package. Those facts are true. I didn't know they were linked.",
+      "text": "You knew the Veyran account belonged to the hostile authority? Yes. It was also our authorised negotiation account. You were trained and acknowledged its destination warning? Yes. You understood that revealing Orinth’s ceiling would help Veyran? Yes. That’s why it was protected. You made that ceiling accurate, then clicked send eleven minutes later? I made the assigned correction, then sent Halen’s separate package. I deny knowing the old link joined them. You had publicly argued for more openness? After proper review, yes—not for secretly releasing this limit. Your account is that an experienced specialist missed the page she had just improved? My account is that the screen showed six files. The jury can judge that record and my answer.",
       "surface_persuasion": 0.68, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
       "reveal_note": "Sela's knowledge of the recipient, her manual edits, and the close timing form the prosecution's strongest inference. They remain consistent with sending the six authorised briefs after routine editing.",
       "tags": ["credibility", "intent", "identity"]
     },
     {
       "id": "b11", "kind": "direction", "speaker": "judge",
-      "text": "An armed conflict and the security prejudice are agreed. This charge concerns page seven, not the six cleared briefs. You decide whether Sela knew it was included and intended the assistance. Editing it and sending the lawful package aren't enough without that link. If, after considering all the evidence, you aren't sure every element was proved beyond reasonable doubt, your verdict must be Not Guilty.",
+      "text": "Members of the jury, the conflict, Veyran’s hostile status, page seven’s arrival, and the resulting security prejudice are agreed. The six cleared briefs were lawful. You decide whether Sela intentionally provided the additional assistance and knew it would prejudice Orinth’s security. “Intentionally” means she meant to provide that help; accident or carelessness is insufficient. “Knew” means actual awareness, not that she ought to have noticed. You may combine the circumstances, but do not use her political views, the seriousness of the harm, or possible punishment as proof. Test what each record establishes and what it cannot. If, after considering all the evidence, you are not sure the prosecution proved every element beyond reasonable doubt, your verdict must be Not Guilty.",
       "surface_persuasion": 0.5, "true_weight": 0.55, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "The fictional statute requires intentional assistance and knowledge of security prejudice. The agreed harm cannot replace proof that Sela knew the seventh page was travelling.",
       "tags": ["burden", "intent", "procedure"]
@@ -380,7 +394,7 @@
   },
   "gen_meta": {
     "model": "gpt-5.6",
-    "prompt_version": "dd-2026-v3",
+    "prompt_version": "dd-2026-v3-20min",
     "reviewer": "content-curator",
     "batch_pr": "rewrite-dd0037-legal-dialogue-pass",
     "language_reviewer": "spoken-dialogue-and-listenability-pass",
