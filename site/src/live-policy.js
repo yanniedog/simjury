@@ -6,6 +6,8 @@ export const FREE_BETA_LIMITS = Object.freeze({
   seatsPerRoom: 12,
   messagesPerSeat: 40,
   messageCharacters: 500,
+  frameCharacters: 1_024,
+  historyEvents: 120,
   displayNameCharacters: 32,
   roomTtlSeconds: 2 * 60 * 60,
 })
@@ -55,6 +57,48 @@ export function roomRoute(pathname) {
   const match = pathname.match(/^\/api\/live\/rooms\/([^/]+)$/)
   if (!match) return null
   return decodeOpaqueId(match[1])
+}
+
+export function roomSocketRoute(pathname) {
+  const match = pathname.match(/^\/api\/live\/rooms\/([^/]+)\/socket$/)
+  return match ? decodeOpaqueId(match[1]) : null
+}
+
+export function seatCapabilityFromProtocols(value) {
+  if (typeof value !== 'string') return null
+  const protocols = value.split(',').map((part) => part.trim())
+  return protocols.length === 2 && protocols[0] === 'simjury-v1'
+    ? parseCapability(protocols[1])
+    : null
+}
+
+function safeText(value) {
+  if (typeof value !== 'string'
+    || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f\u202a-\u202e\u2066-\u2069]/i.test(value)) {
+    return null
+  }
+  const clean = value.trim().replace(/[ \t]+/g, ' ')
+  return clean && clean.length <= FREE_BETA_LIMITS.messageCharacters ? clean : null
+}
+
+export function parseLiveEvent(value) {
+  if (typeof value !== 'string' || value.length > FREE_BETA_LIMITS.frameCharacters) return null
+  try {
+    const event = JSON.parse(value)
+    if (event?.type === 'message') {
+      const text = safeText(event.text)
+      return text ? { type: 'message', text } : null
+    }
+    if (event?.type === 'position' && ['G', 'NG', 'U'].includes(event.position)) {
+      const reason = event.reason === undefined ? undefined : safeText(event.reason)
+      return event.reason === undefined || reason
+        ? { type: 'position', position: event.position, ...(reason ? { reason } : {}) }
+        : null
+    }
+  } catch {
+    return null
+  }
+  return null
 }
 
 export function bearerCapability(request) {

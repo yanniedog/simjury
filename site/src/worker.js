@@ -8,10 +8,13 @@ import {
   parseCapability,
   parseCaseId,
   parseDisplayName,
+  parseLiveEvent,
   parseOpaqueId,
   parseSeatId,
   roomRoute,
+  roomSocketRoute,
   roomExpiryCutoff,
+  seatCapabilityFromProtocols,
   seatMaySend,
   unavailable,
 } from './live-policy.js'
@@ -192,7 +195,60 @@ export class RoomDO {
 
   async fetch(request) {
     if (!liveJuryEnabled(this.env)) return unavailable()
-    if (request.headers.get('Upgrade')?.toLowerCase() !== 'websocket') {
+    if (request.headers.get('Upgrade')?.toLowerCase() === 'websocket') {
+      const { pathname } = new URL(request.url)
+      if (pathname !== '/internal/connect') return unavailable('ROOM_ROUTE_NOT_FOUND', 404)
+      const seatToken = parseCapability(request.headers.get('X-SimJury-Seat-Token'))
+      if (!seatToken) return unavailable('VERIFIED_SEAT_REQUIRED', 401)
+      const meta = [...this.state.storage.sql.exec(
+        "SELECT expires_at FROM room_meta WHERE singleton = 1 AND status = 'open'",
+      )][0]
+      if (!meta || meta.expires_at <= Date.now()) return unavailable('ROOM_NOT_FOUND', 404)
+      const seat = [...this.state.storage.sql.exec(
+        'SELECT seat_id, display_name FROM room_seats WHERE token_hash = ?',
+        await digest(seatToken),
+      )][0]
+      if (!seat) return unavailable('VERIFIED_SEAT_REQUIRED', 401)
+      this.closeSeatSockets(String(seat.seat_id))
+      const pair = new WebSocketPair()
+      this.state.storage.sql.exec(
+        'INSERT OR IGNORE INTO seat_usage (seat_id, messages) VALUES (?, 0)',
+        String(seat.seat_id),
+      )
+      this.state.storage.sql.exec(
+        'UPDATE room_seats SET last_seen_at = ? WHERE seat_id = ?',
+        Date.now(), seat.seat_id,
+      )
+      this.state.acceptWebSocket(pair[1])
+      pair[1].serializeAttachment({
+        acceptedAt: Date.now(),
+        displayName: seat.display_name,
+        seatId: String(seat.seat_id),
+      })
+      const history = [...this.state.storage.sql.exec(
+        `SELECT sequence, event_type, payload, created_at
+          FROM room_events ORDER BY sequence DESC LIMIT ?`,
+        FREE_BETA_LIMITS.historyEvents,
+      )].reverse().map((event) => ({
+        sequence: event.sequence,
+        type: 'event',
+        event_type: event.event_type,
+        ...JSON.parse(event.payload),
+        created_at: event.created_at,
+      }))
+      pair[1].send(JSON.stringify({
+        type: 'welcome',
+        seat_id: seat.seat_id,
+        display_name: seat.display_name,
+        history,
+      }))
+      this.broadcastPresence()
+      return new Response(null, {
+        status: 101,
+        webSocket: pair[0],
+        headers: { 'Sec-WebSocket-Protocol': 'simjury-v1' },
+      })
+    } else {
       const { pathname } = new URL(request.url)
       const body = request.method === 'POST' ? await bodyOf(request) : null
       if (request.method === 'POST' && !body) return unavailable('INVALID_JSON', 400)
@@ -245,6 +301,9 @@ export class RoomDO {
           ?? Array.from({ length: FREE_BETA_LIMITS.seatsPerRoom }, (_, index) => index + 1)
             .find((candidate) => !used.has(candidate))
         if (!seatId) return unavailable('ROOM_FULL', 409)
+        if (prior) {
+          this.closeSeatSockets(String(seatId))
+        }
         const seatToken = randomCapability()
         this.state.storage.sql.exec(
           `INSERT INTO room_seats
@@ -280,29 +339,15 @@ export class RoomDO {
       }
       return unavailable('ROOM_ROUTE_NOT_FOUND', 404)
     }
-    const seatId = parseSeatId(request.headers.get('X-SimJury-Verified-Seat'))
-    if (!seatId) return unavailable('VERIFIED_SEAT_REQUIRED', 401)
-
-    const pair = new WebSocketPair()
-    this.state.storage.sql.exec(
-      'INSERT OR IGNORE INTO seat_usage (seat_id, messages) VALUES (?, 0)',
-      seatId,
-    )
-    this.state.acceptWebSocket(pair[1])
-    pair[1].serializeAttachment({ acceptedAt: Date.now(), seatId })
-    if (await this.state.storage.getAlarm() === null) {
-      await this.state.storage.setAlarm(Date.now() + FREE_BETA_LIMITS.roomTtlSeconds * 1_000)
-    }
-    return new Response(null, { status: 101, webSocket: pair[0] })
   }
 
   async webSocketMessage(socket, message) {
-    const { seatId } = socket.deserializeAttachment() ?? {}
+    const { displayName, seatId } = socket.deserializeAttachment() ?? {}
     if (!parseSeatId(seatId)) {
       socket.close(1008, 'Seat identity is missing')
       return
     }
-    if (typeof message !== 'string' || message.length > FREE_BETA_LIMITS.messageCharacters) {
+    if (typeof message !== 'string' || message.length > FREE_BETA_LIMITS.frameCharacters) {
       socket.close(1009, 'Message exceeds the live-jury beta limit')
       return
     }
@@ -318,11 +363,59 @@ export class RoomDO {
       'UPDATE seat_usage SET messages = messages + 1 WHERE seat_id = ?',
       seatId,
     )
-    socket.send(JSON.stringify({ type: 'runtime_pending', solo_path: '/today/' }))
+    const event = parseLiveEvent(message)
+    if (!event) {
+      socket.send(JSON.stringify({ type: 'error', code: 'INVALID_EVENT' }))
+      return
+    }
+    const { type: eventType, ...eventData } = event
+    const payload = JSON.stringify({
+      seat_id: Number(seatId),
+      display_name: displayName,
+      ...eventData,
+    })
+    this.state.storage.sql.exec(
+      'INSERT INTO room_events (event_type, payload, created_at) VALUES (?, ?, ?)',
+      eventType, payload, Date.now(),
+    )
+    const sequence = [...this.state.storage.sql.exec(
+      'SELECT last_insert_rowid() AS sequence',
+    )][0].sequence
+    const outbound = JSON.stringify({
+      type: 'event',
+      event_type: eventType,
+      sequence,
+      ...JSON.parse(payload),
+    })
+    for (const peer of this.state.getWebSockets()) peer.send(outbound)
   }
 
-  async webSocketClose() {}
-  async webSocketError() {}
+  broadcastPresence(exclude) {
+    const seats = this.state.getWebSockets()
+      .filter((socket) => socket !== exclude)
+      .map((socket) => Number(socket.deserializeAttachment()?.seatId))
+      .filter((seatId) => Number.isInteger(seatId))
+      .sort((a, b) => a - b)
+    const message = JSON.stringify({ type: 'presence', connected_seats: [...new Set(seats)] })
+    for (const socket of this.state.getWebSockets()) {
+      if (socket !== exclude) socket.send(message)
+    }
+  }
+
+  closeSeatSockets(seatId) {
+    for (const socket of this.state.getWebSockets()) {
+      if (socket.deserializeAttachment()?.seatId === seatId) {
+        socket.close(4001, 'Seat reconnected')
+      }
+    }
+  }
+
+  async webSocketClose(socket) {
+    this.broadcastPresence(socket)
+  }
+  async webSocketError(socket) {
+    this.broadcastPresence(socket)
+  }
 
   async alarm() {
     for (const socket of this.state.getWebSockets()) {
@@ -353,6 +446,23 @@ export default {
     }
 
     if (!liveJuryEnabled(env)) return unavailable()
+    const socketRoomId = roomSocketRoute(pathname)
+    if (socketRoomId) {
+      if (request.headers.get('Upgrade')?.toLowerCase() !== 'websocket') {
+        return unavailable('WEBSOCKET_REQUIRED', 426)
+      }
+      const seatToken = seatCapabilityFromProtocols(
+        request.headers.get('Sec-WebSocket-Protocol'),
+      )
+      if (!seatToken) return unavailable('VERIFIED_SEAT_REQUIRED', 401)
+      return durableFetch(env.ROOMS, socketRoomId, '/internal/connect', {
+        headers: {
+          Upgrade: 'websocket',
+          'Sec-WebSocket-Protocol': 'simjury-v1',
+          'X-SimJury-Seat-Token': seatToken,
+        },
+      })
+    }
     if (request.method === 'POST' && pathname === '/api/live/rooms') {
       const body = await bodyOf(request)
       const caseId = parseCaseId(body?.case_id)
