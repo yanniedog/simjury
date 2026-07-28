@@ -176,7 +176,8 @@ export function understandContribution(
   const confidence = Math.min(1, (
     Math.max(issue.score, proposition.score) + Math.min(3, matchedEvidence.length * 1.5)
   ) / 10)
-  const label = pack.issues.find(({ id }) => id === issueId)?.label
+  const issueConcept = pack.issues.find(({ id }) => id === issueId)
+  const label = issueConcept?.label
   const needsClarification = !playerText || confidence < 0.35
   const options = pack.issues.slice(0, 3).map(({ label: option }) => option).join(', ')
   const paraphrase = label
@@ -197,7 +198,7 @@ export function understandContribution(
       targetSeat,
       issueId,
       propositionId: propositionWins ? proposition.concept?.id : undefined,
-      elementId: pack.issues.find(({ id }) => id === issueId)?.elementId,
+      elementId: issueConcept?.elementId,
       evidenceIds: matchedEvidence,
       relation: actOf(input) === 'raise_alternative' || actOf(input) === 'challenge_inference'
         ? 'undermines'
