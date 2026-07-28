@@ -44,15 +44,23 @@ gate-exempt in SimJury scripts.
 
 CodeRabbit does **not** resume on its own after a rate-limit comment. Workflow
 [`.github/workflows/pr-coderabbit-rate-limit-retry.yml`](../.github/workflows/pr-coderabbit-rate-limit-retry.yml)
-listens for those comments, sleeps until “Next review available in N minutes”
-(+2m buffer, max 120m), then posts:
+is **self-contained** (no repo scripts). It listens for those comments, sleeps until
+“Next review available in N minutes” (+2m buffer, max 120m), then posts:
 
 ```text
 <!-- simjury-coderabbit-rate-limit-retry -->
 @coderabbitai review
 ```
 
-Local / manual:
+Install on other repos (one file):
+
+```sh
+npm run coderabbit:rate-limit-retry:install-all
+# or pack:
+# docs/cross-repo-patches/coderabbit-rate-limit-retry/
+```
+
+Local helpers (simjury):
 
 ```sh
 npm run pr:coderabbit-rate-limit-retry -- --pr <n>

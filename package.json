@@ -21,6 +21,7 @@
     "pr:request-codex-review": "node scripts/request-codex-review.mjs",
     "pr:coderabbit-rate-limit-retry": "node scripts/coderabbit-rate-limit-retry.mjs",
     "pr:coderabbit-rate-limit-retry:verify": "node scripts/verify-coderabbit-rate-limit-retry.mjs",
+    "coderabbit:rate-limit-retry:install-all": "node scripts/install-coderabbit-rate-limit-retry-all-repos.mjs",
     "branch-protection:apply": "node scripts/apply-branch-protection.mjs",
     "repo-merge-settings:apply": "node scripts/apply-repo-merge-settings.mjs",
     "site:dev": "npm --prefix site run dev",
