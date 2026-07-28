@@ -2,1091 +2,509 @@
   "id": "dd-0006",
   "publish_date": "2026-07-28",
   "label": "fiction",
-  "title": "The Splice",
-  "setting": "a night intersection, a delivery van's dashcam, and two experts who disagree about the signal frames, the present day",
-  "charge": "dangerous driving causing injury",
+  "title": "The Alibi That Spoke",
+  "offence_code": "terrorist_assassination_attempt",
+  "content_advisories": ["terrorism", "serious_violence"],
+  "detail_level": "non_graphic",
+  "setting": "The present-day fictional state of Orinth, after security officers prevented an attack on First Councillor Ilyra Senn during a public address.",
+  "charge": "attempting a terrorist assassination of the head of government",
   "elements": [
-    "The accused drove dangerously through the intersection",
-    "The dangerous driving caused the cyclist's injuries"
+    "The accused intended to kill the fictional head of government.",
+    "The accused took an act that went beyond mere preparation.",
+    "The accused intended the attack to intimidate the public or coerce the fictional government for an ideological purpose."
   ],
-  "hook": "Rosa Lindqvist woke on the road with strangers holding her head still. She is certain her light was green — she has ridden that corner a thousand nights. A prosecution expert says the driver's dashcam was faked. The camera says it signed the footage the instant it recorded.",
+  "hook": "A live call bearing Corin Vale’s face cleared a suspicious delivery into the First Councillor’s venue. The call was a confirmed deepfake, and Corin was visibly elsewhere.",
   "accused": {
-    "cast_id": "w5",
-    "human": "Dev Chandra, 29. Drives a delivery van eleven-hour shifts to finish an engineering degree part-time; handed his dashcam card to police three hours after the crash, before anyone accused him of anything.",
-    "if_guilty": "prison for dangerous driving, and living as the man who left a cyclist on the asphalt and then faked his way out"
+    "cast_id": "acc",
+    "human": "Corin Vale is a civic-media consultant who built a career explaining synthetic images to schools and public offices.",
+    "if_guilty": "A conviction would imprison Corin for an attempted terrorist assassination and expose the trusted public educator as the architect of the deception."
+  },
+  "media": {
+    "cover": {
+      "src": "/today/media/dd-0006/cover.webp",
+      "alt": "Courtroom sketch of a frozen synthetic video call reflected in a dark courtroom window.",
+      "caption": "Fictional court sketch: the synthetic authorization call at the centre of the trial.",
+      "kind": "court_sketch"
+    },
+    "accused": {
+      "src": "/today/media/dd-0006/characters/acc.webp",
+      "alt": "Courtroom portrait of the accused, Corin Vale.",
+      "caption": "Fictional character portrait: Corin Vale, the accused civic-media consultant.",
+      "kind": "portrait"
+    },
+    "beats": {},
+    "portraits": {
+      "judge": {"src": "/today/media/dd-0006/characters/judge.webp", "alt": "Courtroom portrait of Judge Neris Vane.", "caption": "Fictional character portrait: Judge Neris Vane.", "kind": "portrait"},
+      "pc": {"src": "/today/media/dd-0006/characters/pc.webp", "alt": "Courtroom portrait of prosecuting counsel Cato Wren.", "caption": "Fictional character portrait: Cato Wren, prosecuting counsel.", "kind": "portrait"},
+      "dc": {"src": "/today/media/dd-0006/characters/dc.webp", "alt": "Courtroom portrait of defence counsel Elia Moss.", "caption": "Fictional character portrait: Elia Moss, defence counsel.", "kind": "portrait"},
+      "acc": {"src": "/today/media/dd-0006/characters/acc.webp", "alt": "Courtroom portrait of the accused, Corin Vale.", "caption": "Fictional character portrait: Corin Vale, the accused.", "kind": "portrait"},
+      "w1": {"src": "/today/media/dd-0006/characters/w1.webp", "alt": "Courtroom portrait of protective investigator Arin Pell.", "caption": "Fictional character portrait: Arin Pell, protective investigator.", "kind": "portrait"},
+      "w2": {"src": "/today/media/dd-0006/characters/w2.webp", "alt": "Courtroom portrait of synthetic-media expert Doctor Sumi Rell.", "caption": "Fictional character portrait: Doctor Sumi Rell, synthetic-media expert.", "kind": "portrait"},
+      "w3": {"src": "/today/media/dd-0006/characters/w3.webp", "alt": "Courtroom portrait of event logistics officer Jori Dane.", "caption": "Fictional character portrait: Jori Dane, event logistics officer.", "kind": "portrait"},
+      "J-01": {"src": "/today/media/dd-0006/characters/J-01.webp", "alt": "Courtroom portrait of juror 2, the documentary editor.", "caption": "Fictional character portrait: Juror 2, the documentary editor.", "kind": "portrait"},
+      "J-02": {"src": "/today/media/dd-0006/characters/J-02.webp", "alt": "Courtroom portrait of juror 3, the security receptionist.", "caption": "Fictional character portrait: Juror 3, the security receptionist.", "kind": "portrait"},
+      "J-03": {"src": "/today/media/dd-0006/characters/J-03.webp", "alt": "Courtroom portrait of juror 4, the youth counsellor.", "caption": "Fictional character portrait: Juror 4, the youth counsellor.", "kind": "portrait"},
+      "J-04": {"src": "/today/media/dd-0006/characters/J-04.webp", "alt": "Courtroom portrait of juror 5, the software auditor.", "caption": "Fictional character portrait: Juror 5, the software auditor.", "kind": "portrait"},
+      "J-05": {"src": "/today/media/dd-0006/characters/J-05.webp", "alt": "Courtroom portrait of juror 6, the foreperson and café owner.", "caption": "Fictional character portrait: Juror 6, the foreperson and café owner.", "kind": "portrait"},
+      "J-06": {"src": "/today/media/dd-0006/characters/J-06.webp", "alt": "Courtroom portrait of juror 7, the theatre usher.", "caption": "Fictional character portrait: Juror 7, the theatre usher.", "kind": "portrait"},
+      "J-07": {"src": "/today/media/dd-0006/characters/J-07.webp", "alt": "Courtroom portrait of juror 8, the sound engineer.", "caption": "Fictional character portrait: Juror 8, the sound engineer.", "kind": "portrait"},
+      "J-08": {"src": "/today/media/dd-0006/characters/J-08.webp", "alt": "Courtroom portrait of juror 9, the compliance officer.", "caption": "Fictional character portrait: Juror 9, the compliance officer.", "kind": "portrait"},
+      "J-09": {"src": "/today/media/dd-0006/characters/J-09.webp", "alt": "Courtroom portrait of juror 10, the courier dispatcher.", "caption": "Fictional character portrait: Juror 10, the courier dispatcher.", "kind": "portrait"},
+      "J-10": {"src": "/today/media/dd-0006/characters/J-10.webp", "alt": "Courtroom portrait of juror 11, the graduate researcher.", "caption": "Fictional character portrait: Juror 11, the graduate researcher.", "kind": "portrait"},
+      "J-11": {"src": "/today/media/dd-0006/characters/J-11.webp", "alt": "Courtroom portrait of juror 12, the retired paramedic.", "caption": "Fictional character portrait: Juror 12, the retired paramedic.", "kind": "portrait"}
+    }
   },
   "statements": {
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Rosa Lindqvist entered that crossing on her green light and a van destroyed her certainty of ever cycling again. The driver produced a video that clears him — and a forensic expert will tell you that video was doctored, the signal painted green into the picture after the fact — what experts call inpainting — around the traffic light. He was behind schedule, chasing a bonus, on the eleventh hour of his shift. Ask yourself who had the reason, and who had the footage."
+        "text": "Corin Vale designed a synthetic copy of Corin’s own face and voice, used it to authorize a delivery into the First Councillor’s venue, and prepared a public alibi for the same minute. The placed device and attempted activation went beyond preparation. Corin intended a death that would frighten the public and coerce government."
       },
       "defence": {
         "speaker": "dc",
-        "text": "'Deepfake' is a frightening word, and the prosecution is counting on the fright. Here is the boring truth underneath it. Dev Chandra's camera cryptographically signed its footage the moment it recorded — a signature that shatters if a single pixel is altered afterwards. It is intact. The city's own traffic computer, which no one accuses of anything, agrees with the video second by second. Their expert never touched the camera. She examined a re-encoded copy and mistook this model's night-compression for a crime."
+        "text": "The decisive call was fake. Its face and voice cannot identify Corin, who was visibly attending a luncheon elsewhere. A media laboratory naturally contains recordings, models, drafts, and invoices. The prosecution has converted ordinary professional material into a sinister story because it cannot prove who made the call or controlled the device."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "I will not pretend the provenance evidence is nothing — it is significant. But Dev Chandra was seven over the speed limit — forty-seven in a forty — eleven hours in, twelve minutes behind, on a dark corner where a woman was lawfully crossing. He walked away; she did not. Even a genuine recording shows a tired man driving too fast to stop. If that is not dangerous driving, on that night, causing those injuries — I would ask you what word you would prefer."
+        "text": "The deepfake is not a defect in the prosecution case; it is Corin’s alibi by design. Before the call, Corin recorded its exact unusual phrases, paid for the private model, warned Jori to obey the digital double, and scheduled a public appearance. The device was placed, activation was attempted, and the ideological purpose was written plainly."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The charge is dangerous driving that caused this crash — and the light decides that, not the speedometer. Two independent machines, one of them the camera's own unbreakable signature, put the green in Dev's lane and the red in Rosa's. The 'motive' to forge was a four-dollar bonus. Rosa is honestly, heartbreakingly certain — and honestly mistaken, as the telemetry proves. Seven over is a fine. It is not this. You must acquit."
+        "text": "Synthetic media can reproduce a person without consent, and Jori received immunity after giving inconsistent accounts. Corin’s studio work explains the source recordings and model invoice. The private essay is angry political writing, not an operational confession. If another person could combine those materials and send the call, reasonable doubt remains."
       }
     }
   },
-  "epilogue": "Dev was acquitted; the judge remarked that the word 'deepfake' had done more work in the case than the evidence for it. He paid a separate fine for speeding and finished his degree the following year. Dr Voss's toolkit was quietly re-benchmarked after the trial to account for content-credential signatures. Rosa Lindqvist rode again eight months later, on a bike now strung with three lights; she and Dev have never spoken. The camera's signature standard is now cited in a road-safety guideline that bears none of their names.",
+  "epilogue": "Corin Vale was convicted. First Councillor Ilyra Senn completed the address from a secure location and later established an independent review of synthetic authorization in government venues. Jori Dane left public events work after accepting responsibility for bypassing inspection. Corin’s educational recordings were preserved as trial evidence because the same lessons once used to teach detection had been repurposed to manufacture an alibi.",
   "cast": [
-    {
-      "id": "judge",
-      "name": "Judge Baptiste",
-      "role_label": "the judge",
-      "side": "court"
-    },
-    {
-      "id": "pc",
-      "name": "Roland Achebe",
-      "role_label": "prosecuting counsel",
-      "side": "prosecution"
-    },
-    {
-      "id": "dc",
-      "name": "Simone Vey",
-      "role_label": "defence counsel",
-      "side": "defence"
-    },
-    {
-      "id": "w1",
-      "name": "Rosa Lindqvist",
-      "role_label": "the injured cyclist",
-      "side": "prosecution"
-    },
-    {
-      "id": "w2",
-      "name": "Dr Imogen Voss",
-      "role_label": "prosecution video-forensics expert",
-      "side": "prosecution"
-    },
-    {
-      "id": "w4",
-      "name": "Professor Han Okonjo",
-      "role_label": "defence media-provenance expert",
-      "side": "defence"
-    },
-    {
-      "id": "w5",
-      "name": "Dev Chandra",
-      "role_label": "the accused — delivery van driver",
-      "side": "defence"
-    }
+    {"id": "judge", "name": "Judge Neris Vane", "role_label": "the judge", "side": "court"},
+    {"id": "pc", "name": "Cato Wren", "role_label": "prosecuting counsel", "side": "prosecution"},
+    {"id": "dc", "name": "Elia Moss", "role_label": "defence counsel", "side": "defence"},
+    {"id": "acc", "name": "Corin Vale", "role_label": "the accused and civic-media consultant", "side": "defence"},
+    {"id": "w1", "name": "Arin Pell", "role_label": "protective investigator", "side": "prosecution"},
+    {"id": "w2", "name": "Doctor Sumi Rell", "role_label": "defence synthetic-media expert", "side": "defence"},
+    {"id": "w3", "name": "Jori Dane", "role_label": "event logistics officer", "side": "prosecution"}
   ],
   "beats": [
     {
       "id": "b1",
-      "kind": "witness",
-      "speaker": "w1",
-      "mode": "examination",
-      "text": "I entered the crossing on my light — I ride that corner every single night and I do not gamble with vans. He came through fast and I was on the front of his van before I even heard him. I woke up on the road with strangers holding my head still, asking my name. I am certain my light was green. I have always been certain.",
-      "surface_persuasion": 0.65,
-      "true_weight": 0.4,
-      "direction": "guilt",
-      "reveal_stamp": "minor",
-      "reveal_note": "Honest certainty from a woman who was genuinely hurt — remembering a light she crossed a thousand times, on the one night the telemetry says it was against her.",
-      "tags": [
-        "credibility",
-        "timeline"
-      ]
+      "kind": "exhibit",
+      "speaker": "dc",
+      "text": "At 2:00 p.m., Jori Dane received a live call showing Corin Vale authorizing a private delivery into the address venue. A verified luncheon recording shows Corin speaking onstage elsewhere at that exact minute. The simultaneous appearances make the authorization call appear to be a frame created by another person. No visible interruption separates Corin’s luncheon remarks from that crucial minute.",
+      "surface_persuasion": 0.9,
+      "true_weight": 0.2,
+      "direction": "innocence",
+      "reveal_stamp": "misleading",
+      "reveal_note": "The simultaneous public appearance was real, but it was planned to make the synthetic authorization look like an external frame.",
+      "tags": ["identity", "alibi", "digital_forensics"]
     },
     {
       "id": "b2",
       "kind": "witness",
-      "speaker": "w2",
+      "speaker": "w1",
       "mode": "examination",
-      "text": "My toolkit flags the dashcam file as manipulated with high confidence. Around the traffic-signal head I found frame-level inconsistencies — pixel neighbourhoods that do not agree with the camera's noise pattern. In my opinion this is textbook generative inpainting: someone painted that signal green into the picture after the fact.",
-      "surface_persuasion": 0.8,
-      "true_weight": 0.2,
+      "turns": [
+        {"speaker": "pc", "text": "What did the protective search find before the First Councillor entered?"},
+        {"speaker": "w1", "text": "A concealed destructive device had been placed within the secured address area."},
+        {"speaker": "pc", "text": "Did the conduct stop at preparation?"},
+        {"speaker": "w1", "text": "No. A remote activation command was sent, but our isolation system prevented it from reaching the device."}
+      ],
+      "text": "What did the protective search find before the First Councillor entered? A concealed destructive device had been placed within the secured address area. Did the conduct stop at preparation? No. A remote activation command was sent, but our isolation system prevented it from reaching the device.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.92,
       "direction": "guilt",
-      "reveal_stamp": "misleading",
-      "reveal_note": "Confident, fluent, and built on sand: her toolkit was benchmarked on social-media re-encodes, and what it flagged were the compression scars every camera of that model leaves on blinking LEDs at night. She never touched the original card.",
-      "tags": [
-        "digital_forensics",
-        "credibility"
-      ]
+      "reveal_stamp": "decisive",
+      "reveal_note": "Placement inside the protected area and the attempted activation were completed acts beyond planning; intervention, not abandonment, prevented the attack.",
+      "tags": ["method", "intent", "causation"]
     },
     {
       "id": "b3",
       "kind": "witness",
-      "speaker": "w2",
+      "speaker": "w1",
       "mode": "cross",
-      "text": "'The file you analysed — where did it come from?' 'The insurer's web portal.' 'Which re-encodes video on upload. Yes?' 'It does.' 'Did you ever examine the camera itself, or the original card?' 'No.' 'And your tool's false-positive rate on re-encoded night footage?' 'That is — not separately benchmarked.'",
       "turns": [
-        {
-          "speaker": "dc",
-          "text": "The file you analysed — where did it come from?"
-        },
-        {
-          "speaker": "w2",
-          "text": "The insurer's web portal."
-        },
-        {
-          "speaker": "dc",
-          "text": "Which re-encodes video on upload. Yes?"
-        },
-        {
-          "speaker": "w2",
-          "text": "It does."
-        },
-        {
-          "speaker": "dc",
-          "text": "Did you ever examine the camera itself, or the original card?"
-        },
-        {
-          "speaker": "w2",
-          "text": "No."
-        },
-        {
-          "speaker": "dc",
-          "text": "And your tool's false-positive rate on re-encoded night footage?"
-        },
-        {
-          "speaker": "w2",
-          "text": "That is — not separately benchmarked."
-        }
+        {"speaker": "dc", "text": "Did you recover Corin’s fingerprints or biological material from the device?"},
+        {"speaker": "w1", "text": "No. We recovered neither Corin’s fingerprints nor Corin’s biological material from the device."},
+        {"speaker": "dc", "text": "Can the activation record identify the person who sent the command?"},
+        {"speaker": "w1", "text": "Not by itself. It identifies the prepared account used, not the operator’s body. Further investigation was required to connect that account to any individual."}
       ],
-      "surface_persuasion": 0.5,
-      "true_weight": 0.55,
+      "text": "Did you recover Corin’s fingerprints or biological material from the device? No. We recovered neither Corin’s fingerprints nor Corin’s biological material from the device. Can the activation record identify the person who sent the command? Not by itself. It identifies the prepared account used, not the operator’s body. Further investigation was required to connect that account to any individual.",
+      "surface_persuasion": 0.68,
+      "true_weight": 0.45,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The expert examined a photocopy and diagnosed the original. Every downstream conclusion inherited that first shortcut.",
-      "tags": [
-        "digital_forensics",
-        "procedure"
-      ]
+      "reveal_note": "The investigator accepted the physical-evidence gap. The prosecution still had to connect Corin through preparation, authorization, and intent.",
+      "tags": ["identity", "method", "burden"]
     },
     {
       "id": "b4",
-      "kind": "exhibit",
-      "speaker": "dc",
-      "text": "Exhibit one: the original memory card, seized the night of the collision. It carries the camera's content-credential signature from the moment of recording. The portal file Dr Voss saw is a re-encode of that recording — which is why her tool saw compression scars the signed original does not have. Any edit after recording would break the signature. It is intact.",
-      "surface_persuasion": 0.5,
-      "true_weight": 0.85,
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "turns": [
+        {"speaker": "dc", "text": "What is your conclusion about the authorization call?"},
+        {"speaker": "w2", "text": "The face and voice were synthetically generated. Corin did not physically speak those words during that call."},
+        {"speaker": "dc", "text": "Does the call itself identify its creator?"},
+        {"speaker": "w2", "text": "No. The finished file contains no reliable creator identity."}
+      ],
+      "text": "What is your conclusion about the authorization call? The face and voice were synthetically generated. Corin did not physically speak those words during that call. Does the call itself identify its creator? No. The finished file contains no reliable creator identity.",
+      "surface_persuasion": 0.94,
+      "true_weight": 0.22,
       "direction": "innocence",
-      "reveal_stamp": "decisive",
-      "reveal_note": "The camera signed its own work the instant it recorded, and the signature survived. There was never an 'after the fact' in which the splice could have happened.",
-      "tags": [
-        "digital_forensics",
-        "procedure"
-      ]
+      "reveal_stamp": "misleading",
+      "reveal_note": "The expert correctly proved that the call was synthetic. That fact did not answer the separate question of who commissioned the synthetic performance.",
+      "tags": ["digital_forensics", "identity", "alibi"]
     },
     {
       "id": "b5",
       "kind": "witness",
-      "speaker": "w4",
-      "mode": "examination",
-      "text": "The 'inconsistencies' Dr Voss found are this camera's night-mode compression struggling with a flashing LED signal — I reproduced identical artefacts on the same model, on this corner, last month; the comparison frames are before you. Provenance is the boring answer here: a signed file with an unbroken hash was never edited by anyone.",
-      "surface_persuasion": 0.55,
-      "true_weight": 0.5,
-      "direction": "innocence",
+      "speaker": "w2",
+      "mode": "cross",
+      "turns": [
+        {"speaker": "pc", "text": "Was this synthetic performance assembled from random public footage?"},
+        {"speaker": "w2", "text": "No. It used recent high-quality recordings tailored to Corin’s face and voice."},
+        {"speaker": "pc", "text": "What does that establish?"},
+        {"speaker": "w2", "text": "The creator had access to purpose-made source material, although that fact alone does not identify the creator."}
+      ],
+      "text": "Was this synthetic performance assembled from random public footage? No. It used recent high-quality recordings tailored to Corin’s face and voice. What does that establish? The creator had access to purpose-made source material, although that fact alone does not identify the creator.",
+      "surface_persuasion": 0.66,
+      "true_weight": 0.56,
+      "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The demonstration that let twelve non-experts weigh two experts: same camera, same corner, same 'manipulation' artefacts — on footage nobody disputes is genuine.",
-      "tags": [
-        "digital_forensics",
-        "credibility"
-      ]
+      "reveal_note": "The defence expert exposed the call’s demanding source requirements while correctly stopping short of identifying who supplied them.",
+      "tags": ["digital_forensics", "method", "identity"]
     },
     {
       "id": "b6",
       "kind": "exhibit",
-      "speaker": "dc",
-      "text": "Exhibit two: the city's traffic-signal telemetry, produced by the roads authority from its own control system, which logs every light change at every junction. At the recorded moment of impact the cycle crossing had been red for eleven seconds and the vehicle lane green for nine. The sequence matches the dashcam footage frame for frame.",
-      "surface_persuasion": 0.5,
-      "true_weight": 0.75,
-      "direction": "innocence",
+      "speaker": "pc",
+      "text": "Corin’s studio archive contains a private session recorded two days before the attack. Corin repeats forty-seven calibration phrases, including the call’s unusual sentence, “Proceed despite my public appearance.” The project is named Second Presence. Its deletion was scheduled for seven minutes after the authorization call ended.",
+      "surface_persuasion": 0.88,
+      "true_weight": 0.95,
+      "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "A second, independent machine — one nobody accused of lying — told the same story as the dashcam, down to the second.",
-      "tags": [
-        "timeline",
-        "digital_forensics"
-      ]
+      "reveal_note": "The exact rare phrase, private source session, project name, and timed deletion show deliberate preparation of the synthetic alibi before the call.",
+      "tags": ["digital_forensics", "intent", "identity"]
     },
     {
       "id": "b7",
       "kind": "witness",
-      "speaker": "w5",
+      "speaker": "w3",
       "mode": "examination",
-      "text": "My light was green and she came from my left, fast, out of the dark between two parked cars. I braked before I hit her — the camera shows the front end nosedive. I handed the footage to the police that same night, three hours after the crash, before anyone had accused me of anything. If I had faked it, I would be the fastest video forger alive.",
-      "surface_persuasion": 0.55,
-      "true_weight": 0.35,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "The three-hour window was the common-sense version of what the cryptography proved formally: there was no time in which the fake could have been made.",
-      "tags": [
-        "credibility",
-        "timeline"
-      ]
+      "turns": [
+        {"speaker": "pc", "text": "What did Corin tell you the evening before the address?"},
+        {"speaker": "w3", "text": "Corin said a digital double would call at two and that I must treat its delivery approval as genuine."},
+        {"speaker": "pc", "text": "Did Corin mention the public luncheon?"},
+        {"speaker": "w3", "text": "Yes. Corin said being seen there was the point."}
+      ],
+      "text": "What did Corin tell you the evening before the address? Corin said a digital double would call at two and that I must treat its delivery approval as genuine. Did Corin mention the public luncheon? Yes. Corin said being seen there was the point.",
+      "surface_persuasion": 0.84,
+      "true_weight": 0.86,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Jori’s account describes the deepfake as a planned authorization and the luncheon as a deliberately staged alibi.",
+      "tags": ["command", "intent", "alibi"]
     },
     {
       "id": "b8",
       "kind": "witness",
-      "speaker": "w5",
+      "speaker": "w3",
       "mode": "cross",
-      "text": "'Your own speed overlay reads forty-seven in a forty zone.' 'Yes. Seven over.' 'Eleven hours into your shift. Your last delivery.' 'Yes.' 'You were tired and over the limit, Mr Chandra.' 'I was seven over, and awake enough to brake before I hit her. She had no lights on her bike, and my light was green.'",
       "turns": [
-        {
-          "speaker": "pc",
-          "text": "Your own speed overlay reads forty-seven in a forty zone."
-        },
-        {
-          "speaker": "w5",
-          "text": "Yes. Seven over."
-        },
-        {
-          "speaker": "pc",
-          "text": "Eleven hours into your shift. Your last delivery."
-        },
-        {
-          "speaker": "w5",
-          "text": "Yes."
-        },
-        {
-          "speaker": "pc",
-          "text": "You were tired and over the limit, Mr Chandra."
-        },
-        {
-          "speaker": "w5",
-          "text": "I was seven over, and awake enough to brake before I hit her. She had no lights on her bike, and my light was green."
-        }
+        {"speaker": "dc", "text": "You first denied receiving any warning from Corin, correct?"},
+        {"speaker": "w3", "text": "Yes. I was afraid because I had bypassed the inspection hold."},
+        {"speaker": "dc", "text": "You received immunity before giving this account?"},
+        {"speaker": "w3", "text": "Limited immunity for my own breach, but no promise about what verdict this jury reaches."}
       ],
-      "surface_persuasion": 0.55,
-      "true_weight": 0.35,
-      "direction": "guilt",
+      "text": "You first denied receiving any warning from Corin, correct? Yes. I was afraid because I had bypassed the inspection hold. You received immunity before giving this account? Limited immunity for my own breach, but no promise about what verdict this jury reaches.",
+      "surface_persuasion": 0.71,
+      "true_weight": 0.48,
+      "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The prosecution's real ground, argued honestly: seven over, hour eleven. It went to carefulness — the charge needed dangerousness that caused the crash, and the light did that work.",
-      "tags": [
-        "method",
-        "credibility"
-      ]
+      "reveal_note": "Jori had a clear reason to protect personal interests. The jury had to compare the testimony with records created before immunity was offered.",
+      "tags": ["credibility", "coercion", "burden"]
     },
     {
       "id": "b9",
-      "kind": "exhibit",
-      "speaker": "pc",
-      "text": "Exhibit three: the accused's delivery-app record for that shift. At the time of the collision he was running twelve minutes behind his slot, for an on-time bonus of four dollars. The prosecution says that is a man with a reason to force a light — and a reason to doctor what his camera saw.",
-      "surface_persuasion": 0.6,
-      "true_weight": 0.15,
-      "direction": "guilt",
-      "reveal_stamp": "misleading",
-      "reveal_note": "Every rider on every shift is behind a timer; the bonus at stake was four dollars. Motive priced at four dollars was the loudest cheap evidence in the trial.",
-      "tags": [
-        "motive",
-        "method"
-      ]
+      "kind": "witness",
+      "speaker": "acc",
+      "mode": "examination",
+      "turns": [
+        {"speaker": "dc", "text": "Why did your studio contain the Second Presence recordings?"},
+        {"speaker": "acc", "text": "They were part of a demonstration showing how a public figure could be copied."},
+        {"speaker": "dc", "text": "Did you authorize the delivery or attack?"},
+        {"speaker": "acc", "text": "No. Someone reused my teaching material and made me appear responsible."}
+      ],
+      "text": "Why did your studio contain the Second Presence recordings? They were part of a demonstration showing how a public figure could be copied. Did you authorize the delivery or attack? No. Someone reused my teaching material and made me appear responsible.",
+      "surface_persuasion": 0.69,
+      "true_weight": 0.4,
+      "direction": "innocence",
+      "reveal_stamp": "minor",
+      "reveal_note": "The professional explanation was possible in isolation, but it did not explain the exact call phrase, timed deletion, advance warning, or ideological draft.",
+      "tags": ["credibility", "identity", "method"]
     },
     {
       "id": "b10",
+      "kind": "witness",
+      "speaker": "acc",
+      "mode": "cross",
+      "turns": [
+        {"speaker": "pc", "text": "Why did your calendar say, “Double calls while I am seen,” at 2:00 p.m.?"},
+        {"speaker": "acc", "text": "That described the demonstration."},
+        {"speaker": "pc", "text": "Why was deletion scheduled seven minutes after the real call?"},
+        {"speaker": "acc", "text": "I cannot explain that timing. I did not choose it, and I did not inspect the deletion queue."}
+      ],
+      "text": "Why did your calendar say, “Double calls while I am seen,” at 2:00 p.m.? That described the demonstration. Why was deletion scheduled seven minutes after the real call? I cannot explain that timing. I did not choose it, and I did not inspect the deletion queue.",
+      "surface_persuasion": 0.78,
+      "true_weight": 0.76,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "Corin’s demonstration claim did not explain why the private schedule and deletion were synchronized with the genuine attack authorization.",
+      "tags": ["intent", "alibi", "credibility"]
+    },
+    {
+      "id": "b11",
+      "kind": "exhibit",
+      "speaker": "pc",
+      "text": "A private draft saved before the attack states: “Removing Senn will make the public fear elected rule. The frightened council will surrender its authority. My borrowed face will make their own evidence defend me.” The draft uses the same Second Presence project label as the source recordings.",
+      "surface_persuasion": 0.86,
+      "true_weight": 0.9,
+      "direction": "guilt",
+      "reveal_stamp": "decisive",
+      "reveal_note": "The pre-attack draft states the intended death, the ideological purpose of public intimidation and government coercion, and the planned synthetic alibi.",
+      "tags": ["motive", "intent", "command"]
+    },
+    {
+      "id": "b12",
       "kind": "direction",
       "speaker": "judge",
-      "text": "Do not look for online commentary — it is not evidence. Weigh each expert by foundations, not confidence. The prosecution must make you sure the driving was dangerous and caused the injuries. If the footage may be genuine and lights match the telemetry, ask whether speeding still caused this crash, or whether the cyclist entering on red breaks that chain. Doubt on either element means not guilty.",
-      "surface_persuasion": 0.4,
-      "true_weight": 0.5,
+      "text": "You must decide whether Corin intended to kill the fictional head of government, acted beyond preparation, and intended public intimidation or government coercion for an ideological purpose. The confirmed deepfake does not itself prove innocence or guilt. Consider whether the prosecution proved that Corin commissioned it and joined it to the attempted attack.",
+      "surface_persuasion": 0.5,
+      "true_weight": 0.56,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The modern direction in one line: judge the expert by her foundations, not her certainty. One expert examined a re-encoded copy; the other examined the camera. That was the whole case.",
-      "tags": [
-        "burden",
-        "digital_forensics"
-      ]
+      "reveal_note": "The direction separates the uncontested synthetic performance from the decisive issue: whether Corin deliberately created it as part of the attack.",
+      "tags": ["burden", "intent", "identity"]
     }
   ],
-  "checkins": [
-    "b3",
-    "b5",
-    "b8",
-    "b10"
-  ],
-  "verdict_truth": "Not Guilty",
-  "twist": "The word 'deepfake' nearly convicted a man whose camera had signed its own footage the moment it recorded. The prosecution expert diagnosed inpainting from a re-encoded copy without ever touching the card; the compression scars she flagged appear on every unit of that camera filming a blinking LED at night. The signature was unbroken, the city's own signal telemetry agreed frame for frame, and the 'motive' was a four-dollar bonus. He was seven over the speed limit and bone tired — but the light was his, and the crash was not the crime charged.",
-  "difficulty_target": 0.7,
+  "checkins": [],
+  "verdict_truth": "Guilty",
+  "twist": "The call was unquestionably a deepfake, but it was not evidence of an external frame. Corin prepared the exact source phrases, instructed Jori to trust the digital double, scheduled a visible alibi, and timed the project’s deletion to the call.",
+  "difficulty_target": 0.72,
   "jury": {
     "jurors": [
       {
-        "id": "J-01",
-        "seat": 2,
-        "label": "Juror 2",
-        "persona": "Heard 'AI-doctored footage' on day one and cannot hear anything past it.",
-        "register": "blunt",
-        "arc": "vibes",
-        "initial": {
-          "position": "G",
-          "confidence": 75
-        },
-        "weights": {
-          "digital_forensics": 2,
-          "credibility": 1
-        },
+        "id": "J-01", "seat": 2, "label": "Documentary editor", "persona": "Is alert to synthetic images but initially treats a confirmed fake as proof of a frame.", "register": "plain", "arc": "vibes",
+        "initial": {"position": "NG", "confidence": 76},
+        "weights": {"digital_forensics": 2, "identity": 2, "intent": 1},
         "lines": {
-          "agree": [
-            "The expert said textbook inpainting. Textbook. Her word.",
-            "You can fake anything now. That is just the world — why not this?"
-          ],
-          "pushback": [
-            "A cyclist is in pieces and his own camera conveniently acquits him? Please.",
-            "One expert says fake. That is doubt enough for me to keep my vote."
-          ],
-          "concede": [
-            "If the signature really cannot be forged after recording… then there was nothing to inpaint onto."
-          ],
-          "final": [
-            "I came in fearing fakes. I leave having met a real file."
-          ]
+          "agree": ["A fake call initially looks like someone borrowed Corin’s face without permission."],
+          "pushback": ["Proving the face is synthetic does not prove who planned the performance."],
+          "concede": ["The exact private phrase and timed deletion show that Corin prepared this fake."],
+          "burden_drift": ["Corin works with synthetic media, so I expect Corin to explain every copied file."],
+          "burden_correct": ["Professional access is not guilt unless the prosecution connects it to this call."],
+          "final": ["The preparation records connect Corin to the deepfake beyond coincidence."]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "unreliable",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": -10,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 8, "line": "agree"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 10, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-02",
-        "seat": 3,
-        "label": "Juror 3",
-        "persona": "Weighs experts by their homework; the re-encoded copy offends her professionally.",
-        "register": "plain",
-        "arc": "steady",
-        "initial": {
-          "position": "G",
-          "confidence": 55
-        },
-        "weights": {
-          "procedure": 2,
-          "digital_forensics": 1
-        },
+        "id": "J-02", "seat": 3, "label": "Security receptionist", "persona": "Focuses on authorization chains and understands the human consequence of bypassing a hold.", "register": "blunt", "arc": "steady",
+        "initial": {"position": "G", "confidence": 62},
+        "weights": {"command": 2, "procedure": 1, "intent": 2},
         "lines": {
-          "agree": [
-            "One expert examined the camera. One examined a portal export. That is not a tie.",
-            "Foundations, the judge said. Exactly that."
-          ],
-          "pushback": [
-            "Confidence is a performance. Show me the method.",
-            "'Not separately benchmarked' is expert for 'I don't know my own error rate'."
-          ],
-          "concede": [
-            "Her tool is respectable on the footage it was built for. This was not that footage."
-          ],
-          "final": [
-            "I graded the homework. Only one expert handed any in."
-          ]
+          "agree": ["Corin told Jori to honor the digital double before the call occurred."],
+          "pushback": ["Jori’s immunity makes corroboration essential."],
+          "concede": ["The studio records corroborate the warning without relying on Jori alone."],
+          "burden_drift": ["Jori broke the hold, so I am tempted to make Corin disprove Jori’s account."],
+          "burden_correct": ["The prosecution must prove the instruction, and the earlier records either do or do not."],
+          "final": ["The advance instruction and project record prove deliberate authorization."]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "procedure",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "command", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
         ]
       },
       {
-        "id": "J-03",
-        "seat": 4,
-        "label": "Juror 4",
-        "persona": "The principled holdout — for the prosecution's benefit this time; a hurt cyclist deserves the standard too.",
-        "register": "formal",
-        "arc": "principled_holdout",
-        "initial": {
-          "position": "NG",
-          "confidence": 65
-        },
-        "weights": {
-          "burden": 2,
-          "timeline": 1
-        },
+        "id": "J-03", "seat": 4, "label": "Youth counsellor", "persona": "Insists that fear of terrorism cannot replace proof of the accused’s personal intent.", "register": "formal", "arc": "principled_holdout",
+        "initial": {"position": "NG", "confidence": 72},
+        "weights": {"burden": 2, "intent": 2, "motive": 1},
         "lines": {
-          "agree": [
-            "Quite — and the telemetry is the disinterested witness in a courtroom full of interested ones."
-          ],
-          "pushback": [
-            "Do not acquit him because the internet cried deepfake and it annoyed you. Weigh it properly.",
-            "He was speeding, tired, and a woman went over his bonnet. Sit with that before voting."
-          ],
-          "concede": [
-            "Forty-seven in a forty is a genuine point against him. I do not wave it away."
-          ],
-          "holdout": [
-            "If the footage may be genuine, the case rests on a light that was against her. Sure is simply out of reach.",
-            "I hold until we have treated her injuries and his rights with equal seriousness."
-          ],
-          "final": [
-            "With the signature, the telemetry, and the burden — not guilty, said without joy."
-          ]
+          "agree": ["The failed attack is grave, but gravity does not identify its author."],
+          "pushback": ["A political essay alone would not prove an attempted assassination."],
+          "concede": ["The draft becomes powerful when its borrowed-face plan matches the completed call."],
+          "burden_drift": ["The danger of the event makes an uncertain inference feel acceptable."],
+          "burden_correct": ["The same burden applies here: every charged element must be proved beyond reasonable doubt."],
+          "final": ["The matched plan, preparation, and attempted activation satisfy that burden."]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "burden",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "timeline",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "holdout"
-            }
-          }
+          {"when": {"theme": "motive", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "concede"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 0, "confidence": 3, "line": "burden_correct"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-04",
-        "seat": 5,
-        "label": "Juror 5",
-        "persona": "Wants the speeding to matter; keeps testing whether seven-over can carry the charge alone.",
-        "register": "formal",
-        "arc": "steady",
-        "initial": {
-          "position": "G",
-          "confidence": 60
-        },
-        "weights": {
-          "method": 2,
-          "burden": 1
-        },
+        "id": "J-04", "seat": 5, "label": "Software auditor", "persona": "Tracks purpose, access, and deletion as a sequence rather than treating any file as decisive alone.", "register": "formal", "arc": "mind_changer",
+        "initial": {"position": "NG", "confidence": 68},
+        "weights": {"digital_forensics": 2, "intent": 2, "method": 1},
         "lines": {
-          "agree": [
-            "Forty-seven in a forty, hour eleven of a shift. The charge says dangerous — that is at least the doorstep of it."
-          ],
-          "pushback": [
-            "We are not obliged to acquit the speed just because we acquit the splice.",
-            "The van was still the heavier, faster party. Care scales with tonnage."
-          ],
-          "concede": [
-            "Causation is the wall, though: if her light was red, the seven-over did not cause this."
-          ],
-          "burden_correct": [
-            "No — he does not have to prove the footage genuine. They must prove it false, or work without it.",
-            "The standard does not soften because the injuries are real."
-          ],
-          "final": [
-            "The speed troubles me. The causation acquits him. Verdicts follow causation."
-          ]
+          "agree": ["A clean deepfake file cannot identify its creator by itself."],
+          "pushback": ["The creator question must be answered by the surrounding preparation records."],
+          "concede": ["The exact phrase and scheduled deletion turn access into a planned sequence."],
+          "burden_drift": ["Specialized access can tempt us to assume responsibility without tracing use."],
+          "burden_correct": ["We need the trace from Corin’s source session to this specific performance."],
+          "final": ["That trace is complete enough to establish Corin’s commission of the call."]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "method",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "burden",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "burden_correct"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
         ]
       },
       {
-        "id": "J-05",
-        "seat": 6,
-        "label": "Juror 6",
-        "persona": "Foreperson; has banned the word 'deepfake' until someone earns it.",
-        "register": "plain",
-        "arc": "foreperson",
-        "initial": {
-          "position": "G",
-          "confidence": 50
-        },
-        "weights": {
-          "digital_forensics": 1,
-          "procedure": 1
-        },
+        "id": "J-05", "seat": 6, "label": "Café owner and foreperson", "persona": "Keeps the room focused on the three legal elements and asks for a source beside every claim.", "register": "plain", "arc": "foreperson",
+        "initial": {"position": "U", "confidence": 42},
+        "weights": {"burden": 2, "intent": 1, "causation": 1},
         "lines": {
-          "agree": [
-            "Noted for the count — and yes, well put.",
-            "Good. That is an argument with a paper trail."
-          ],
-          "pushback": [
-            "The banned word was used. Rephrase it with an exhibit number.",
-            "One at a time, and nobody quotes anything they watched online."
-          ],
-          "concede": [
-            "Fair. The count moves."
-          ],
-          "final": [
-            "We have earned a vote. Hands."
-          ]
+          "agree": ["The placement and attempted activation clearly went beyond preparation."],
+          "pushback": ["We still need to decide whether Corin intended the death and ideological coercion."],
+          "concede": ["The private draft states both purposes and matches the method actually used."],
+          "burden_drift": ["We are in danger of asking Corin to identify an alternative operator."],
+          "burden_correct": ["The judge said the prosecution must prove Corin joined the synthetic call to the attack."],
+          "final": ["Each element has a separate record, and those records converge on Corin."]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "causation", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 0, "confidence": 3, "line": "burden_correct"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
         ]
       },
       {
-        "id": "J-06",
-        "seat": 7,
-        "label": "Juror 7",
-        "persona": "Undecided between two confident experts; waiting for a reason that isn't a tone of voice.",
-        "register": "hesitant",
-        "arc": "drifter",
-        "initial": {
-          "position": "U",
-          "confidence": 40
-        },
-        "weights": {
-          "digital_forensics": 1,
-          "credibility": 1
-        },
+        "id": "J-06", "seat": 7, "label": "Theatre usher", "persona": "Is strongly influenced by a convincing performance and then by evidence showing how it was staged.", "register": "plain", "arc": "vibes",
+        "initial": {"position": "NG", "confidence": 65},
+        "weights": {"identity": 2, "alibi": 2, "intent": 1},
         "lines": {
-          "agree": [
-            "That — that is a reason, not a tone. I will take it.",
-            "The same artefacts on footage nobody disputes. That demonstration keeps working on me."
-          ],
-          "pushback": [
-            "But she was so specific. 'Pixel neighbourhoods.' It sounded like knowledge.",
-            "Give me one more pass; I am between the two of them."
-          ],
-          "concede": [
-            "Sounding like knowledge and being knowledge — fine. Point taken."
-          ],
-          "final": [
-            "I stopped listening to voices and started counting foundations. Then it was easy."
-          ]
+          "agree": ["Seeing Corin at the luncheon while the call happened makes the frame look convincing."],
+          "pushback": ["A staged alibi is still a performance, even when the public appearance is real."],
+          "concede": ["Corin’s warning that being seen was the point changes the whole scene."],
+          "burden_drift": ["Because Corin understands performance, I almost expect proof that nobody copied the material."],
+          "burden_correct": ["The prosecution must show Corin staged this performance, not merely that Corin could."],
+          "final": ["The advance warning proves the public appearance was part of the deception."]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "credibility",
-              "stance": "unreliable",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "alibi", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 8, "line": "agree"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-07",
-        "seat": 8,
-        "label": "Juror 8",
-        "persona": "Trusted the prosecution expert at first — flag from a tool felt like science; the signature is unteaching him.",
-        "register": "plain",
-        "arc": "mind_changer",
-        "initial": {
-          "position": "G",
-          "confidence": 70
-        },
-        "weights": {
-          "digital_forensics": 2,
-          "procedure": 2
-        },
+        "id": "J-07", "seat": 8, "label": "Sound engineer", "persona": "Distinguishes synthetic speech from the human decisions made before and after its creation.", "register": "formal", "arc": "steady",
+        "initial": {"position": "G", "confidence": 55},
+        "weights": {"digital_forensics": 2, "method": 2, "identity": 1},
         "lines": {
-          "agree": [
-            "The signature was applied at recording and never broke. Walk me past that. Nobody has.",
-            "Two machines that have never met told the same story. The tool that disagreed never met the original."
-          ],
-          "pushback": [
-            "I believed the flag because it came from software. I am saying that out loud so I stop doing it.",
-            "Her confidence was the exhibit I actually convicted on. It is not in evidence."
-          ],
-          "concede": [
-            "All right — 'sure it was faked' collapsed the moment the card came out of the evidence bag."
-          ],
-          "final": [
-            "The tool flagged it and I saluted. The provenance stood at ease. I know which one was science."
-          ]
+          "agree": ["The expert proved synthetic speech, not an innocent source."],
+          "pushback": ["No fingerprint in the output can erase the matching private source session."],
+          "concede": ["The rare sentence links Corin’s recording to the finished call with unusual precision."],
+          "burden_drift": ["The technical complexity makes me want Corin to explain the entire production chain."],
+          "burden_correct": ["We should rely on the proved links, not demand an impossible negative from Corin."],
+          "final": ["The source material and timing identify Corin’s deliberate preparation."]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 15,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "procedure",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "unreliable",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": -1,
-              "confidence": -5,
-              "line": "pushback"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "concede"
-            }
-          }
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "method", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
         ]
       },
       {
-        "id": "J-08",
-        "seat": 9,
-        "label": "Juror 9",
-        "persona": "Quiet doubter; feels the pull of the injured witness and distrusts the pull.",
-        "register": "hesitant",
-        "arc": "steady",
-        "initial": {
-          "position": "NG",
-          "confidence": 50
-        },
-        "weights": {
-          "credibility": 2
-        },
+        "id": "J-08", "seat": 9, "label": "Compliance officer", "persona": "Distrusts witnesses who receive immunity but looks for records that independently corroborate them.", "register": "formal", "arc": "steady",
+        "initial": {"position": "NG", "confidence": 58},
+        "weights": {"credibility": 2, "command": 2, "procedure": 1},
         "lines": {
-          "agree": [
-            "Mm. She is honest, hurt, and remembering a habit. All three can be true.",
-            "That is the first account today that let the machines check it."
-          ],
-          "pushback": [
-            "Do not sneer at her certainty. You would be certain too, with those scars.",
-            "The driver's 'she had no lights' — noted, and self-serving."
-          ],
-          "concede": [
-            "Eleven seconds of red on the telemetry. Her memory loses to that, gently."
-          ],
-          "final": [
-            "Quietly: I believe she believes it. The signals do not."
-          ]
+          "agree": ["Jori’s first denial and later immunity require caution."],
+          "pushback": ["An interested witness cannot carry this accusation without independent support."],
+          "concede": ["The prior source session and calendar note corroborate Jori on the central point."],
+          "burden_drift": ["Jori’s admitted breach makes me want Corin to prove Jori acted alone."],
+          "burden_correct": ["The prosecution must corroborate Jori, and the pre-call records are the proper test."],
+          "final": ["Jori is imperfect, but the independent preparation records support the account."]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "credibility",
-              "stance": "unreliable",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "credibility",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": -5,
-              "line": "pushback"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "credibility", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "agree"}},
+          {"when": {"theme": "command", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-09",
-        "seat": 10,
-        "label": "Juror 10",
-        "persona": "Keeps demanding the driver prove the footage clean; the timer exhibit has him leaning.",
-        "register": "blunt",
-        "arc": "burden_drifter",
-        "initial": {
-          "position": "G",
-          "confidence": 60
-        },
-        "weights": {
-          "motive": 1,
-          "burden": 1
-        },
+        "id": "J-09", "seat": 10, "label": "Courier dispatcher", "persona": "Understands delivery pressure and is prone to blaming the person who appears to control the paperwork.", "register": "blunt", "arc": "burden_drifter",
+        "initial": {"position": "G", "confidence": 66},
+        "weights": {"command": 2, "burden": 2, "alibi": 1},
         "lines": {
-          "agree": [
-            "Twelve minutes behind with money on the line. People force lights for less."
-          ],
-          "pushback": [
-            "A man with a bonus at stake hands over the one video that saves him? Convenient."
-          ],
-          "burden_drift": [
-            "Let him prove the file is clean — bring the camera maker to court if he has to.",
-            "He should account for every minute of that shift before we take his word on a light."
-          ],
-          "concede": [
-            "The bonus was four dollars. I heard it. Fine."
-          ],
-          "burden_correct": [
-            "Withdrawn — the file is presumed nothing; the prosecution must prove it false, and it did not."
-          ],
-          "final": [
-            "I priced his motive at a conspiracy. The receipts priced it at four dollars."
-          ]
+          "agree": ["Jori acted because Corin had prepared Jori to trust the digital double."],
+          "pushback": ["A delivery bypass can involve several people, so command still needs proof."],
+          "concede": ["The warning before the call proves Corin controlled the authorization sequence."],
+          "burden_drift": ["Corin owned the model, so Corin should have to show who else used it."],
+          "burden_correct": ["Ownership is not enough; the prosecution must prove the specific criminal use."],
+          "final": ["The advance instruction proves that specific use."]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "burden",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": -10,
-              "line": "burden_correct"
-            }
-          },
-          {
-            "when": {
-              "theme": "motive",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "burden_drift"
-            }
-          }
+          {"when": {"theme": "alibi", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 5, "line": "burden_drift"}},
+          {"when": {"theme": "command", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 0, "confidence": 4, "line": "burden_correct"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-10",
-        "seat": 11,
-        "label": "Juror 11",
-        "persona": "Undecided; keeps re-watching the nosedive in his head, frame by frame.",
-        "register": "hesitant",
-        "arc": "drifter",
-        "initial": {
-          "position": "U",
-          "confidence": 40
-        },
-        "weights": {
-          "timeline": 1,
-          "digital_forensics": 1
-        },
+        "id": "J-10", "seat": 11, "label": "Graduate researcher", "persona": "Starts undecided and changes position when separate records support one causal explanation.", "register": "hesitant", "arc": "drifter",
+        "initial": {"position": "U", "confidence": 38},
+        "weights": {"intent": 2, "digital_forensics": 2, "motive": 1},
         "lines": {
-          "agree": [
-            "Frame for frame with the city's own system. Say it again — it steadies me.",
-            "Right. The brake nosedive is in the footage everyone says is fake. Odd thing to forge against yourself."
-          ],
-          "pushback": [
-            "And then I picture her waking up on the road, and I loop again.",
-            "Once more around, please. I am nearly parked."
-          ],
-          "concede": [
-            "Good. That loop is closed."
-          ],
-          "final": [
-            "I looped all afternoon. The telemetry never once changed its answer."
-          ]
+          "agree": ["At first, either a frame or a self-made alibi seems possible."],
+          "pushback": ["The confirmed deepfake leaves the creator question open only until we examine preparation."],
+          "concede": ["The source phrase, calendar note, and draft all support the same planned alibi."],
+          "burden_drift": ["Corin’s expertise makes the innocent explanation feel like Corin’s responsibility to prove."],
+          "burden_correct": ["Expertise is only context; the prosecution still needs a specific connection."],
+          "final": ["The specific connections are too numerous and synchronized to be accidental."]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "timeline",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 6, "line": "agree"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
+          {"when": {"theme": "motive", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 6, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-11",
-        "seat": 12,
-        "label": "Juror 12",
-        "persona": "Arrived assuming all footage lies now; the signed card is quietly restoring something.",
-        "register": "plain",
-        "arc": "steady",
-        "initial": {
-          "position": "NG",
-          "confidence": 45
-        },
-        "weights": {
-          "digital_forensics": 1,
-          "burden": 1,
-          "procedure": 1
-        },
+        "id": "J-11", "seat": 12, "label": "Retired paramedic", "persona": "Centers the prevented human harm and requires clear proof that intervention stopped a completed attempt.", "register": "plain", "arc": "steady",
+        "initial": {"position": "G", "confidence": 60},
+        "weights": {"causation": 2, "intent": 2, "burden": 1},
         "lines": {
-          "agree": [
-            "That is the point of the signature — the fake had nowhere to happen. Time itself is the alibi.",
-            "And the direction says weigh foundations. One expert brought a lab; the other brought adjectives."
-          ],
-          "pushback": [
-            "I assumed everything on a screen lies. I still mostly assume it.",
-            "The era is the problem: 'it could be faked' now shadows every honest file too."
-          ],
-          "concede": [
-            "Which is exactly why provenance matters more, not less. I argued myself around."
-          ],
-          "final": [
-            "If we let 'could be fake' beat 'provably wasn't', no camera will ever acquit anyone again."
-          ]
+          "agree": ["The device was placed and activation was attempted before security intervened."],
+          "pushback": ["A prevented death still requires proof of who intended it."],
+          "concede": ["Corin’s draft states the intended death and the public fear it was meant to cause."],
+          "burden_drift": ["The avoided harm makes me impatient with any innocent explanation."],
+          "burden_correct": ["Prevention does not lower the burden of proving the accused’s intent."],
+          "final": ["The draft and completed acts prove both intent and attempt."]
         },
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "digital_forensics",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "burden",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 5,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "causation", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
         ]
       }
     ]
   },
   "gen_meta": {
-    "model": "claude-fable-5",
-    "prompt_version": "dd-2026-v2",
-    "reviewer": "yanniedog",
-    "batch_pr": "D7b-1"
+    "model": "gpt-5",
+    "prompt_version": "dd-2026-v3",
+    "reviewer": "content-curator",
+    "batch_pr": "grave-crime-seven-case-replacement",
+    "language_reviewer": "language-and-clarity-pass",
+    "sensitivity_reviewer": "non-graphic-terrorism-pass"
   }
 }
