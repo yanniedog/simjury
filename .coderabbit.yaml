@@ -1,8 +1,13 @@
 # CodeRabbit — https://docs.coderabbit.ai/getting-started/yaml-configuration
 # Manual re-review: comment `@coderabbitai review` on the PR.
 language: en-US
+# Only high-impact findings — no style/nits (also use reviews.profile: quiet).
+tone_instructions: >-
+  Report only high-severity issues: correctness bugs, security holes, data loss,
+  broken player flows, or fiction-safety (real names in player-visible text).
+  Skip style, renames, optional refactors, and low-confidence nits.
 reviews:
-  profile: chill
+  profile: quiet
   request_changes_workflow: false
   # No walkthrough / summary spam — keep inline findings only.
   high_level_summary: false
@@ -32,25 +37,23 @@ reviews:
   path_instructions:
     - path: "site/app/**"
       instructions: >-
-        Daily Docket / web app. Prefer small diffs, existing React patterns, and
-        static hosting constraints (no runtime AI). Flag fiction-safety issues:
-        player-visible text must not use real names of people, companies, brands,
-        or places; cases are labeled fiction.
+        Only high-severity issues. Flag broken flows, data loss, and
+        fiction-safety (real names of people/companies/brands/places in
+        player-visible text). Ignore style and optional refactors.
     - path: "site/public/cases/**"
       instructions: >-
-        Case JSON is pre-authored fiction. Enforce label fiction / banned-token
-        hygiene; do not invent testimony as if it were a historical source.
+        Only high-severity fiction/case integrity issues (e.g. real-name
+        leaks). Do not nitpick wording.
     - path: "pilot/**"
       instructions: >-
-        Historical Android/JVM track is parked. Flag accidental re-enablement of
-        pilot CI, APK release automation, or invented testimony without a
-        TABULATION.md + source trail.
+        Only high-severity: accidental pilot CI/APK re-enablement or invented
+        testimony without sources. Ignore style.
     - path: ".github/workflows/**"
       instructions: >-
-        Keep bot gates event-driven (act-or-park). Do not reintroduce agent
-        watch/poll loops for bot presence.
+        Only high-severity CI/gate breakages (e.g. reintroducing agent
+        watch/poll loops). Ignore cosmetic workflow nits.
     - path: "docs/**"
-      instructions: Keep authority docs aligned with DAILY-PIVOT.md and WORKFLOW.md.
+      instructions: Only flag docs that would cause incorrect operator actions.
   auto_review:
     enabled: true
     drafts: true
