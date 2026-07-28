@@ -42,7 +42,7 @@ npm run repo-merge-settings:apply
 Required checks on `main`:
 
 - `validate` — authority docs and PR-gate tooling
-- `bot-presence-gate` — `sourcery|codex|cursor` (OR-group) posted since wait anchor
+- `bot-presence-gate` — `sourcery|codex|cursor|coderabbit` (OR-group) posted since wait anchor
 - `bot-feedback-gate` — review threads resolved
 
 Enable via:

@@ -1,0 +1,56 @@
+# CodeRabbit — https://docs.coderabbit.ai/getting-started/yaml-configuration
+# Manual re-review: comment `@coderabbitai review` on the PR.
+language: en-US
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  review_details: false
+  enable_prompt_for_ai_agents: true
+  path_filters:
+    - "!**/node_modules/**"
+    - "!**/dist/**"
+    - "!**/build/**"
+    - "!**/.gradle/**"
+    - "!**/pilot/local.properties"
+    - "!**/*.lock"
+    - "!**/package-lock.json"
+    - "!site/art/**"
+  path_instructions:
+    - path: "site/app/**"
+      instructions: >-
+        Daily Docket / web app. Prefer small diffs, existing React patterns, and
+        static hosting constraints (no runtime AI). Flag fiction-safety issues:
+        player-visible text must not use real names of people, companies, brands,
+        or places; cases are labeled fiction.
+    - path: "site/public/cases/**"
+      instructions: >-
+        Case JSON is pre-authored fiction. Enforce label fiction / banned-token
+        hygiene; do not invent testimony as if it were a historical source.
+    - path: "pilot/**"
+      instructions: >-
+        Historical Android/JVM track is parked. Flag accidental re-enablement of
+        pilot CI, APK release automation, or invented testimony without a
+        TABULATION.md + source trail.
+    - path: ".github/workflows/**"
+      instructions: >-
+        Keep bot gates event-driven (act-or-park). Do not reintroduce agent
+        watch/poll loops for bot presence.
+    - path: "docs/**"
+      instructions: Keep authority docs aligned with DAILY-PIVOT.md and WORKFLOW.md.
+  auto_review:
+    enabled: true
+    drafts: true
+    auto_incremental_review: true
+    auto_pause_after_reviewed_commits: 8
+    ignore_title_keywords:
+      - "chore:"
+      - "chore("
+      - "wip"
+      - "do not review"
+    base_branches:
+      - ".*"
+chat:
+  auto_reply: true

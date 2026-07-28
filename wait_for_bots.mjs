@@ -458,7 +458,7 @@ Options:
   --watch, -w           Poll every ${POLL_INTERVAL_SEC}s until ready or cap
   --bot-tag             Reset wait anchor to now (after @mentioning bots)
   --since <iso>         Anchor wait window to timestamp (ISO 8601)
-  --require-bots <list> Comma-separated slots; use | for OR (default: sourcery|codex|cursor)
+  --require-bots <list> Comma-separated slots; use | for OR (default: sourcery|codex|cursor|coderabbit)
   --help, -h            Show this help
 
 Exit codes: 0 ready | 2 still waiting | 1 error or required bots missing at cap (DO NOT MERGE)
