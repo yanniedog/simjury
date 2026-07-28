@@ -17,8 +17,10 @@ project `simjury-web` in `site/`).
 Case JSON, media, art, and application code are authored in this repository and
 bundled by GitHub Actions. Player progress remains in browser storage.
 Pre-generated narration is served from GitHub Releases with device-local Web
-Speech as a fallback. The Cloudflare deployment is assets-only: no Worker script,
-Workers AI, D1, KV, R2, Durable Objects, Queues, Analytics Engine, public
+Speech as a fallback. The Cloudflare deployment is static-first: ordinary and
+solo routes bypass compute, while disabled-by-default live-jury routes use one
+Worker and three SQLite Durable Objects. It does not use Workers AI, D1, KV, R2,
+Queues, Analytics Engine, public
 `workers.dev` host, preview URLs, or observability.
 
 Natural narration requests deterministic opaque clip IDs from GitHub. GitHub can

@@ -25,8 +25,8 @@ Owner decisions, recorded verbatim:
    11 fictional jurors with personas, theme weights, and ordered reaction rules; the
     player argues evidence first, then locks their own verdict; seat leanings and
     tallies stay hidden until the judge reads the result. The room's verdict is earned,
-    not scripted. Deliberation and narration use no runtime AI and store no player state
-    on a backend.
+    not scripted. Deliberation and narration use no runtime AI. Solo state stays
+    on-device; live human rooms may retain short-lived room state.
 3. **Case supply is LLM-drafted batches behind hardened CI gates, with human
    spot-checks.** This deliberately relaxes simjury-daily's "a human reads every case"
    rule (owner decision, 2026-07-13). The gates — schema, design-quality, jury floors,
@@ -39,9 +39,9 @@ Owner decisions, recorded verbatim:
 
 ## What carries over unchanged (binding on the daily track)
 
-- **Static-only hosting** — GitHub-authored assets deploy through Cloudflare Static Assets
-  with no Worker script, dynamic route, account, or tracking. Game state remains entirely
-  on the player's device; pre-generated narration is served from GitHub Releases and
+- **Static-first hosting (owner-amended 2026-07-29)** — ordinary and solo traffic remains
+  static. Only `/api/live/*` and `/discord/interactions` may invoke the Worker and its
+  three allowlisted SQLite Durable Objects. Pre-generated narration is served from GitHub Releases and
   falls back to an English voice advertised as local by the browser, keeping adjacent
   speakers distinct when at least two voices exist.
 - **No generative runtime AI** — all player-facing text is pre-authored JSON, case

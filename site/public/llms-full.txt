@@ -6,7 +6,7 @@ This document describes every canonical public page and every phase of the inter
 
 SimJury's Daily Docket is a single-player exercise in judgment. Each sitting presents one serious fictional criminal case in a contemporary courtroom. The player occupies Juror 01's seat, hears both sides, tests the evidence with an authored eleven-juror room, and locks a final verdict. A sitting is designed for about eight to ten minutes.
 
-There are no accounts, public leaderboards, live opponents, chat, runtime generative AI, or server-side player state.
+There are no public accounts, public leaderboards, or runtime generative AI. Solo play remains local. The reserved live-jury service is disabled by default and will use short-lived room state only for selected human participants.
 
 ## Canonical public routes
 
@@ -55,7 +55,7 @@ The static privacy page explains:
 
 ## Architecture and cost boundary
 
-The site is composed entirely of static GitHub-authored assets deployed through Cloudflare Static Assets. It has no Worker script, database, object storage, runtime AI binding, analytics service, or dynamic rendering service. Case text and the deterministic deliberation engine are bundled at build time. This guide is served identically to browsers and crawlers; there is no user-agent branching or bot-only content.
+GitHub-authored site and solo-case assets deploy through Cloudflare Static Assets and bypass compute. Only `/api/live/*` and `/discord/interactions` invoke a bounded Worker with three SQLite Durable Objects for live-jury coordination and short-lived room state. The service uses no D1, KV, R2, Queues, runtime AI, analytics, or dynamic rendering. Case text and the deterministic deliberation engine remain bundled at build time. This guide is served identically to browsers and crawlers; there is no user-agent branching or bot-only content.
 
 ## Spoiler and publication boundary
 
