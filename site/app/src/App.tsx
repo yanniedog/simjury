@@ -53,6 +53,7 @@ import { DocketVerdict, type Verdict } from './components/v2/DocketVerdict'
 import { JuryRoomView } from './components/v2/JuryRoomView'
 import {
   liveInviteFromHash,
+  liveJuryDerivationRevision,
   loadLiveJurySession,
   type LiveInvite,
   type LiveJurySession,
@@ -206,6 +207,10 @@ function DocketApp({
   const day = sitting?.day ?? todayDay
   const trial = sitting?.trial ?? null
   const storageCaseId = trial ? caseStorageId(trial) : null
+  const liveDerivationRevision = useMemo(
+    () => trial ? liveJuryDerivationRevision(trial) : null,
+    [trial],
+  )
   const progress = useMemo(() => loadProgress(day), [day])
   const isIntro = trial?.id === INTRO_CASE_ID
 
@@ -484,6 +489,7 @@ function DocketApp({
         <div className="mb-6">
           <LiveJuryLobby
             caseId={activeTrial.id}
+            derivationRevision={liveDerivationRevision!}
             session={liveSession}
             onSession={setLiveSession}
           />
@@ -496,7 +502,11 @@ function DocketApp({
           narration={narration}
           playbackRate={playbackRate}
           onBegin={begin}
-          liveSession={liveSession}
+          liveSession={
+            liveSession?.derivationRevision === liveDerivationRevision
+              ? liveSession
+              : null
+          }
         />
       )}
       {phase === 'openings' && (
@@ -533,7 +543,11 @@ function DocketApp({
           narration={narration}
           playbackRate={playbackRate}
           notes={notes}
-          liveSession={liveSession}
+          liveSession={
+            liveSession?.derivationRevision === liveDerivationRevision
+              ? liveSession
+              : null
+          }
           onSeal={persistRoomResult}
           onDone={roomDone}
         />

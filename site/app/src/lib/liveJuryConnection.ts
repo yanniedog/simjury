@@ -1,4 +1,7 @@
-import type { LiveJurySession } from './liveJury'
+import {
+  LIVE_JURY_REVISION_MESSAGE,
+  type LiveJurySession,
+} from './liveJury'
 
 export type LivePosition = 'G' | 'NG' | 'U'
 
@@ -150,10 +153,15 @@ export class LiveJuryConnection {
   }
 
   private connect(status: LiveRoomSnapshot['status']): void {
+    const derivationRevision = this.session.derivationRevision
+    if (!derivationRevision) {
+      this.publish({ status: 'closed', error: LIVE_JURY_REVISION_MESSAGE })
+      return
+    }
     this.publish({ status, error: undefined })
     const socket = this.socketFactory(
       socketUrl(this.origin, this.session.roomId),
-      ['simjury-v1', this.session.seatToken],
+      ['simjury-v2', this.session.seatToken, derivationRevision],
     )
     this.socket = socket
     socket.onopen = () => {

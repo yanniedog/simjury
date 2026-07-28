@@ -10,6 +10,7 @@ import {
   isLiveRoute,
   parseCapability,
   parseCaseId,
+  parseDerivationRevision,
   parseDisplayName,
   parseLiveEvent,
   parseSeatId,
@@ -17,12 +18,13 @@ import {
   roomSocketRoute,
   roomExpiryCutoff,
   seatMaySend,
-  seatCapabilityFromProtocols,
+  socketCredentialsFromProtocols,
 } from '../src/live-policy.js'
 import worker, { RoomDO } from '../src/worker.js'
 
 const config = JSON.parse(readFileSync(new URL('../wrangler.json', import.meta.url), 'utf8'))
 const expectedClasses = ['PoolCoordinatorDO', 'FairnessDO', 'RoomDO']
+const REVISION = 'hybrid-v1-1234abcd'
 
 test('only live endpoints execute the Worker', () => {
   assert.deepEqual(config.assets.run_worker_first, LIVE_ROUTE_PATTERNS)
@@ -94,7 +96,11 @@ test('enabled room requests route only to the named room Durable Object', async 
       return {
         async fetch(request) {
           calls.push(['fetch', new URL(request.url).pathname])
-          return Response.json({ case_id: 'dd-0039', seats: [] })
+          return Response.json({
+            case_id: 'dd-0039',
+            derivation_revision: REVISION,
+            seats: [],
+          })
         },
       }
     },
@@ -150,13 +156,17 @@ test('room creation is admitted before allocation and host close releases capaci
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ case_id: 'dd-0039' }),
+      body: JSON.stringify({
+        case_id: 'dd-0039',
+        derivation_revision: REVISION,
+      }),
     },
   ), env)
   const created = await createdResponse.json()
   assert.equal(createdResponse.status, 201)
   assert.equal(parseCapability(created.invite_token), created.invite_token)
   assert.equal(parseCapability(created.host_token), created.host_token)
+  assert.equal(created.derivation_revision, REVISION)
   assert.deepEqual(calls.slice(0, 6).map(([label, operation]) => [label, operation]), [
     ['pool', 'id'], ['pool', 'get'], ['pool', 'POST'],
     ['room', 'id'], ['room', 'get'], ['room', 'POST'],
@@ -183,6 +193,32 @@ test('live JSON request bodies are bounded before allocation', async () => {
   assert.equal((await response.json()).code, 'INVALID_CASE')
 })
 
+test('legacy join requests fail before a room object is invoked', async () => {
+  let roomCalls = 0
+  const response = await worker.fetch(new Request(
+    'https://simjury.com/api/live/rooms/room_12',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        invite_token: 'a'.repeat(43),
+        participant_key: 'participant',
+        display_name: 'Alex',
+      }),
+    },
+  ), {
+    LIVE_JURY_ENABLED: 'true',
+    POOL_COORDINATOR: {},
+    ROOMS: {
+      idFromName: (value) => value,
+      get: () => ({ fetch: () => { roomCalls++; return Response.json({}) } }),
+    },
+  })
+  assert.equal(response.status, 409)
+  assert.equal((await response.json()).code, 'ROOM_REVISION_MISMATCH')
+  assert.equal(roomCalls, 0)
+})
+
 test('opaque room and seat identifiers fail closed', () => {
   assert.equal(decodeOpaqueId('%E0'), null)
   assert.equal(decodeOpaqueId('room%2Fescape'), null)
@@ -198,6 +234,8 @@ test('room inputs and capability routes fail closed', () => {
   assert.equal(parseCapability('short'), null)
   assert.equal(parseCaseId('dd-0039'), 'dd-0039')
   assert.equal(parseCaseId('C-001'), null)
+  assert.equal(parseDerivationRevision(REVISION), REVISION)
+  assert.equal(parseDerivationRevision('bad.revision'), null)
   assert.equal(parseDisplayName('  Alex   K. '), 'Alex K.')
   assert.equal(parseDisplayName(`bad\u0000name`), null)
   assert.equal(parseDisplayName(`Alex\u202eK.`), null)
@@ -206,8 +244,11 @@ test('room inputs and capability routes fail closed', () => {
   assert.equal(roomRoute('/api/live/rooms/room%2Fescape'), null)
   assert.equal(roomRoute('/api/live/rooms/room_12/socket'), null)
   assert.equal(roomSocketRoute('/api/live/rooms/room_12/socket'), 'room_12')
-  assert.equal(seatCapabilityFromProtocols(`simjury-v1, ${capability}`), capability)
-  assert.equal(seatCapabilityFromProtocols(`${capability}, simjury-v1`), null)
+  assert.deepEqual(
+    socketCredentialsFromProtocols(`simjury-v2, ${capability}, ${REVISION}`),
+    { seatToken: capability, derivationRevision: REVISION },
+  )
+  assert.equal(socketCredentialsFromProtocols(`simjury-v1, ${capability}`), null)
   assert.equal(bearerCapability(new Request('https://simjury.com', {
     headers: { Authorization: `Bearer ${capability}` },
   })), capability)
@@ -245,13 +286,14 @@ test('socket capabilities are verified at the public boundary and not put in the
     {
       headers: {
         Upgrade: 'websocket',
-        'Sec-WebSocket-Protocol': `simjury-v1, ${capability}`,
+        'Sec-WebSocket-Protocol': `simjury-v2, ${capability}, ${REVISION}`,
       },
     },
   ), { LIVE_JURY_ENABLED: 'true', POOL_COORDINATOR: {}, ROOMS: rooms })
   assert.equal((await response.json()).forwarded, true)
   assert.equal(new URL(internalRequest.url).pathname, '/internal/connect')
   assert.equal(internalRequest.headers.get('X-SimJury-Seat-Token'), capability)
+  assert.equal(internalRequest.headers.get('X-SimJury-Derivation-Revision'), REVISION)
   assert.equal(internalRequest.url.includes(capability), false)
 
   const rejected = await worker.fetch(new Request(
@@ -265,7 +307,7 @@ test('socket capabilities are verified at the public boundary and not put in the
     {
       headers: {
         Upgrade: 'websocket',
-        'Sec-WebSocket-Protocol': `${capability}, simjury-v1`,
+        'Sec-WebSocket-Protocol': `${capability}, simjury-v2, ${REVISION}`,
       },
     },
   ), { LIVE_JURY_ENABLED: 'true', POOL_COORDINATOR: {}, ROOMS: rooms })
@@ -312,6 +354,27 @@ function fakeSocket(seatId) {
     send(message) { this.sent.push(JSON.parse(message)) },
   }
 }
+
+test('legacy room metadata is migrated without assigning a silent revision', () => {
+  const statements = []
+  const state = {
+    storage: {
+      sql: {
+        exec(statement) {
+          statements.push(statement)
+          return statement.startsWith('PRAGMA table_info')
+            ? [{ name: 'case_id' }, { name: 'invite_hash' }]
+            : []
+        },
+      },
+    },
+  }
+  new RoomDO(state, { LIVE_JURY_ENABLED: 'true' })
+  assert.equal(
+    statements.includes('ALTER TABLE room_meta ADD COLUMN derivation_revision TEXT'),
+    true,
+  )
+})
 
 test('room messages meter invalid frames and enforce the lifetime seat cap', async () => {
   const { events, room, sockets, usage } = fakeRoom()

@@ -3,6 +3,7 @@ import {
   clearLiveJurySession,
   closeLiveJury,
   hostLiveJury,
+  isLiveJuryRevisionError,
   isRoomGoneError,
   joinLiveJury,
   liveInviteFromHash,
@@ -15,16 +16,18 @@ import {
 
 export function LiveJuryLobby({
   caseId,
+  derivationRevision,
   session,
   onSession,
 }: {
   caseId: string
+  derivationRevision: string
   session: LiveJurySession | null
   onSession: (session: LiveJurySession | null) => void
 }) {
   const [available, setAvailable] = useState<boolean | null>(null)
   const [sessionReady, setSessionReady] = useState(session === null)
-  const [invite] = useState(() =>
+  const [invite, setInvite] = useState(() =>
     typeof window === 'undefined' ? null : liveInviteFromHash(window.location.hash))
   const [name, setName] = useState('')
   const [busy, setBusy] = useState(false)
@@ -52,16 +55,22 @@ export function LiveJuryLobby({
           return
         }
         try {
-          const valid = await verifyLiveJurySession(session)
+          const valid = await verifyLiveJurySession(session, derivationRevision)
           if (cancelled) return
           if (!valid) {
             clearLiveJurySession(caseId)
             onSession(null)
             setMessage('Your live room is no longer available.')
           }
-        } catch {
+        } catch (error) {
           if (!cancelled) {
-            setMessage('Could not confirm the live room. Controls may be stale until you retry.')
+            if (isLiveJuryRevisionError(error)) {
+              clearLiveJurySession(caseId)
+              onSession(null)
+              setMessage(error.message)
+            } else {
+              setMessage('Could not confirm the live room. Controls may be stale until you retry.')
+            }
           }
         } finally {
           if (!cancelled) setSessionReady(true)
@@ -87,13 +96,17 @@ export function LiveJuryLobby({
     setFallbackUrl(null)
     try {
       const next = host
-        ? await hostLiveJury(caseId, name.trim())
-        : await joinLiveJury(invite!, caseId, name.trim())
+        ? await hostLiveJury(caseId, name.trim(), derivationRevision)
+        : await joinLiveJury(invite!, caseId, name.trim(), derivationRevision)
       saveLiveJurySession(next)
       onSession(next)
       setSessionReady(true)
       if (!host) history.replaceState(null, '', `${location.pathname}${location.search}`)
     } catch (error) {
+      if (isLiveJuryRevisionError(error) && invite) {
+        history.replaceState(null, '', `${location.pathname}${location.search}`)
+        setInvite(null)
+      }
       setMessage(error instanceof Error ? error.message : 'The live room could not be joined.')
     } finally {
       setBusy(false)
