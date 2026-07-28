@@ -10,6 +10,11 @@ import {
   type PlayerAction,
   type RoomEvent,
 } from '../../engine/deliberation'
+import {
+  actionForConcern,
+  interpretLegacyConcern,
+  type ClaimedPosition,
+} from '../../engine/legacyConcernMatcher'
 import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import {
   memoryLabel,
@@ -223,15 +228,24 @@ function FeedLine({
         ? `${verb} the judge’s direction from memory.`
         : e.stance === 'proves'
           ? `${verb} a point from recollection.`
-          : who === 'You'
-            ? 'challenge whether that recollection holds.'
-            : 'challenges whether that recollection holds.'
+          : e.stance === 'probe'
+            ? who === 'You'
+              ? 'ask the room to test that recollection.'
+              : 'asks the room to test that recollection.'
+            : who === 'You'
+              ? 'challenge whether that recollection holds.'
+              : 'challenges whether that recollection holds.'
     return (
       <li className="rounded-lg border border-neutral-700 bg-neutral-800/60 p-3">
         <p className="text-xs font-semibold text-neutral-300">{who}</p>
         <p className="mt-1 text-sm text-neutral-200">
           {who === 'You' ? `You ${stance}` : `${who} ${stance}`}
         </p>
+        {who === 'You' && e.detail && (
+          <blockquote className="mt-2 border-l border-amber-700/60 pl-3 text-sm leading-relaxed text-neutral-200">
+            “{e.detail}”
+          </blockquote>
+        )}
         {note ? (
           <p className="mt-2 border-l border-amber-700/50 pl-3 text-xs leading-relaxed text-neutral-300">
             Note · #{memory?.number ?? '?'}: “{note.text}”
@@ -348,6 +362,10 @@ export function JuryRoomView({
   const [raising, setRaising] = useState(false)
   const [notesOpen, setNotesOpen] = useState(false)
   const [notesOwner, setNotesOwner] = useState<string | null>(null)
+  const [concernText, setConcernText] = useState('')
+  const [concernFeedback, setConcernFeedback] = useState<string | null>(null)
+  const [pendingClaim, setPendingClaim] = useState<ClaimedPosition | null>(null)
+  const [targetJurorId, setTargetJurorId] = useState('')
   const [stirredIds, setStirredIds] = useState<readonly string[]>([])
   const transcriptRef = useRef<HTMLUListElement>(null)
   const followTranscriptRef = useRef(true)
@@ -570,6 +588,43 @@ export function JuryRoomView({
   function cancelRaise() {
     setRaising(false)
     raisingRef.current = false
+    setConcernFeedback(null)
+    setPendingClaim(null)
+  }
+
+  function submitConcern(position: ClaimedPosition, useSelected = false) {
+    if (!concernText.trim()) {
+      setConcernFeedback('Put your concern in your own words first.')
+      return
+    }
+    const claimed = useSelected ? (pendingClaim ?? position) : position
+    const targetSeat = trial.jury.jurors.find(({ id }) => id === targetJurorId)?.seat
+    const interpreted = interpretLegacyConcern(
+      trial,
+      notes,
+      concernText,
+      selectedBeat,
+      targetSeat,
+    )
+    if (interpreted.clarification && !useSelected) {
+      setPendingClaim(position)
+      setSelectedBeat(interpreted.beatId)
+      setConcernFeedback(interpreted.clarification)
+      return
+    }
+    const concern = useSelected
+      ? { ...interpreted, beatId: selectedBeat, clarification: null }
+      : interpreted
+    setSelectedBeat(concern.beatId)
+    runRound(actionForConcern(
+      trial,
+      concern,
+      claimed,
+      targetJurorId || undefined,
+    ))
+    setConcernText('')
+    setConcernFeedback(null)
+    setPendingClaim(null)
   }
 
   function skipListening() {
@@ -890,11 +945,56 @@ export function JuryRoomView({
       ) : raising && inOpenRound ? (
         <div className="deliberation-console space-y-3 border p-4">
           <p className="text-xs uppercase tracking-wider text-neutral-500">
-            Optional raise · from your notes or memory
+            Your turn · raise your own concern
           </p>
           <p className="text-sm text-neutral-400">
-            The room has no transcript — only notes you (or others) wrote, and what you remember.
+            Put it in your own words. The room will connect it to the closest
+            issue or recollection, ask if it is unsure, and answer the point.
           </p>
+          <label className="block space-y-1">
+            <span className="text-xs font-medium text-neutral-400">
+              Address the room or one juror
+            </span>
+            <select
+              value={targetJurorId}
+              onChange={(event) => setTargetJurorId(event.target.value)}
+              className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm text-neutral-200"
+            >
+              <option value="">The whole room</option>
+              {trial.jury.jurors.map((juror) => (
+                <option key={juror.id} value={juror.id}>
+                  Seat {juror.seat} · {juror.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block space-y-1">
+            <span className="text-xs font-medium text-neutral-400">
+              What do you want them to consider?
+            </span>
+            <textarea
+              value={concernText}
+              maxLength={500}
+              rows={3}
+              onChange={(event) => {
+                setConcernText(event.target.value)
+                setConcernFeedback(null)
+              }}
+              placeholder="For example: I don't think the access log proves who held the device."
+              className="w-full resize-y rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm leading-relaxed text-neutral-100"
+            />
+            <span className="block text-right text-xs text-neutral-600">
+              {concernText.length}/500
+            </span>
+          </label>
+          {concernFeedback && (
+            <div
+              role="status"
+              className="rounded-lg border border-amber-800/70 bg-amber-950/30 p-3 text-sm text-amber-100"
+            >
+              {concernFeedback}
+            </div>
+          )}
           <div className="evidence-chips" role="group" aria-label="Points you can raise from memory">
             {trial.beats.map((b, i) => {
               const memory = memoryLabel(trial, b.id)
@@ -936,29 +1036,44 @@ export function JuryRoomView({
               )
             })()}
           </div>
-          {beat.kind === 'direction' ? (
+          {concernFeedback ? (
             <button
               type="button"
-              onClick={() => runRound({ type: 'cite_direction', beatId: beat.id })}
+              onClick={() => submitConcern(pendingClaim ?? 'U', true)}
               className="w-full rounded-lg bg-neutral-100 px-4 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
             >
-              Raise this direction
+              Use selected recollection anyway
+            </button>
+          ) : beat.kind === 'direction' ? (
+            <button
+              type="button"
+              onClick={() => submitConcern('U')}
+              className="w-full rounded-lg bg-neutral-100 px-4 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
+            >
+              Raise this legal direction
             </button>
           ) : (
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid gap-2 sm:grid-cols-3">
               <button
                 type="button"
-                onClick={() => runRound({ type: 'argue', beatId: beat.id, stance: 'proves' })}
+                onClick={() => submitConcern('NG')}
                 className="rounded-lg bg-neutral-100 px-3 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
               >
-                Support {beat.direction === 'guilt' ? 'conviction' : 'acquittal'}
+                This raises doubt
               </button>
               <button
                 type="button"
-                onClick={() => runRound({ type: 'argue', beatId: beat.id, stance: 'unreliable' })}
+                onClick={() => submitConcern('G')}
                 className="rounded-lg border border-neutral-600 px-3 py-2.5 text-sm font-semibold text-neutral-200 transition hover:bg-neutral-800"
               >
-                Challenge reliability
+                This supports guilt
+              </button>
+              <button
+                type="button"
+                onClick={() => submitConcern('U')}
+                className="rounded-lg border border-neutral-600 px-3 py-2.5 text-sm font-semibold text-neutral-200 transition hover:bg-neutral-800"
+              >
+                Ask the room to test it
               </button>
             </div>
           )}

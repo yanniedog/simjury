@@ -7,6 +7,7 @@ import { makeDocketCase, makeJuror } from '../lib/v2/fixtures'
 import {
   autoPlayRound,
   buildAgenda,
+  playRound,
   runDeliberation,
   startDeliberation,
   type PlayerAction,
@@ -72,6 +73,22 @@ describe('determinism (I-8)', () => {
 })
 
 describe('arguments move the room', () => {
+  it('preserves a custom concern and lets the addressed juror answer first', () => {
+    const trial = makeDocketCase()
+    const target = trial.jury.jurors[5]
+    const state = startDeliberation(trial)
+    playRound(state, {
+      type: 'argue',
+      beatId: trial.beats[0].id,
+      stance: 'unreliable',
+      summary: 'The timing still does not fit.',
+      targetJurorId: target.id,
+    })
+    expect(state.log.find((event) => event.actor === 'player')?.detail)
+      .toBe('The timing still does not fit.')
+    expect(state.log.find((event) => event.type === 'respond')?.actor).toBe(target.id)
+  })
+
   it('arguing the decisive evidence beats doing nothing, toward the truth', () => {
     const argued = runDeliberation(makeDocketCase(), 'not_guilty', DECISIVE)
     const passive = runDeliberation(makeDocketCase(), 'not_guilty', PASSIVE)
