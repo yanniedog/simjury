@@ -28,6 +28,8 @@ import {
   REASONABLE_DOUBT_DIRECTION,
 } from '../../lib/narratorCues'
 import type { Verdict } from './DocketVerdict'
+import type { LiveJurySession } from '../../lib/liveJury'
+import { LiveJuryPanel } from './LiveJuryPanel'
 import { NarratorCue } from './NarratorCue'
 import { SpeakerFlag } from './SpeakerFlag'
 import { SpeakerPortrait } from './SpeakerPortrait'
@@ -335,6 +337,7 @@ export function JuryRoomView({
   narration,
   playbackRate,
   notes,
+  liveSession,
   onSeal,
   onDone,
 }: {
@@ -342,6 +345,7 @@ export function JuryRoomView({
   narration: boolean
   playbackRate: NarrationRate
   notes: SittingNote[]
+  liveSession?: LiveJurySession | null
   onSeal: (outcome: Outcome, verdict: Verdict) => void
   onDone: (outcome: Outcome, verdict: Verdict) => void
 }) {
@@ -707,6 +711,8 @@ export function JuryRoomView({
         <NarratorCue text={phaseNarratorCue('juryroom')} active={narratorActive} />
       )}
       {awaitingPlayerVote && <NarratorCue text={phaseNarratorCue('verdict')} />}
+
+      {liveSession && <LiveJuryPanel session={liveSession} />}
 
       {inOpenRound && !outcome && (
         <div className="deliberation-transport" role="group" aria-label="Deliberation playback">
