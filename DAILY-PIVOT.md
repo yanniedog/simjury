@@ -8,7 +8,8 @@ not cover, the standing constraint docs below still bind.
 
 simjury.com pivots from a single 25-minute historical case to **The Daily Docket**: one
 **synthetic, fictional, 2026-relevant case per day**, playable end-to-end (intro →
-evidence → closings → jury room → verdict → judge readout → reveal → share) in **8–10 minutes**, with a
+evidence → closings → jury room → verdict → judge readout → reveal → share) in
+**14–16 minutes under V4**, with a
 **dynamic, interactive jury deliberation** whose outcome (unanimous / majority / hung)
 genuinely varies with how the player argues.
 
@@ -77,12 +78,14 @@ The full design (product shape, schema, engine, gates, verification) is captured
 approved plan of record for this pivot; D2/D3/D7 land the details in-repo as they ship
 (`site/app/src/lib/caseSchema.ts`, `site/app/src/engine/`, `docs/DAILY-CASES.md`).
 
-## The 8–10 minute budget (hard design constraint)
+## The 14–16 minute V4 budget (hard design constraint)
 
-intro 20–30s · evidence 4.5–5.5 min (10–14 narrated beats, 40–70 words each, 3–4
-witnesses, 3–5 conviction check-ins) · closings · jury room 2–2.5 min
-(2 open rounds → mid-vote → 1 round → player verdict lock → judge readout;
-~3 actions where the player argues; 3–4 jurors speak per round) · reveal + share 1–1.5 min.
-Pacing is a launch verification step: the
-fixture case `dd-0000` must clock 8–10 minutes with narration on before launch content
-is drafted.
+V4 targets a 15-minute sitting. Its checked estimate counts the scene-setting,
+charge, accused introduction, counsel statements, and evidence at 150 spoken
+words per minute, then reserves nine minutes for courtroom transitions, exhibit
+inspection, substantive deliberation, and the result/reveal. The estimate is
+computed from case content; authors cannot override it with a declared duration.
+
+The playable V3 slate remains governed by its existing 8–10 minute content floors
+until each case receives its complete V4 trial, analysis, and legal-sheet migration.
+V3 compatibility is transitional, not the target for newly commissioned cases.

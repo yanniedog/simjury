@@ -24,6 +24,9 @@ to the current web product.
 - **No runtime AI; static-first hosting** — player-facing text is pre-authored JSON.
   Ordinary and solo routes remain static; only the allowlisted live-jury paths
   may use the bounded Worker and SQLite Durable Objects.
+- **A 15-minute V4 sitting** — new V4 cases must validate inside a computed
+  14–16 minute window. The playable V3 slate keeps its existing pacing gates
+  until each case is migrated; do not weaken either contract.
 - **Preserve provenance** — `archive/daily-v1/` is retained verbatim and is not a
   shipped case source.
 - **One concern per PR, about 400 lines, squash merge.** Agents use
