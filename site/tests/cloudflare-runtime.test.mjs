@@ -5,9 +5,14 @@ import {
   FREE_BETA_LIMITS,
   LIVE_ROUTE_PATTERNS,
   admissionDecision,
+  bearerCapability,
   decodeOpaqueId,
   isLiveRoute,
+  parseCapability,
+  parseCaseId,
+  parseDisplayName,
   parseSeatId,
+  roomRoute,
   roomExpiryCutoff,
   seatMaySend,
 } from '../src/live-policy.js'
@@ -65,17 +70,105 @@ test('disabled live endpoints fail safely to solo play', async () => {
   assert.equal((await response.json()).solo_path, '/today/')
 })
 
-test('enabled live endpoints remain closed until authentication is ready', async () => {
-  let forwarded = false
+test('enabled room requests route only to the named room Durable Object', async () => {
+  const calls = []
+  const rooms = {
+    idFromName(name) {
+      calls.push(['id', name])
+      return `id:${name}`
+    },
+    get(id) {
+      calls.push(['get', id])
+      return {
+        async fetch(request) {
+          calls.push(['fetch', new URL(request.url).pathname])
+          return Response.json({ case_id: 'dd-0039', seats: [] })
+        },
+      }
+    },
+  }
   const response = await worker.fetch(
-    new Request('https://simjury.com/api/live/rooms/example'),
-    { LIVE_JURY_ENABLED: 'true', ASSETS: { fetch: () => { forwarded = true } } },
+    new Request('https://simjury.com/api/live/rooms/example', {
+      headers: { Authorization: `Bearer ${'a'.repeat(43)}` },
+    }),
+    { LIVE_JURY_ENABLED: 'true', ROOMS: rooms },
   )
   const body = await response.json()
-  assert.equal(response.status, 501)
-  assert.equal(response.headers.get('Cache-Control'), 'no-store')
-  assert.equal(body.code, 'LIVE_JURY_PIPELINE_NOT_READY')
-  assert.equal(forwarded, false)
+  assert.equal(response.status, 200)
+  assert.equal(body.case_id, 'dd-0039')
+  assert.deepEqual(calls, [
+    ['id', 'example'],
+    ['get', 'id:example'],
+    ['fetch', '/internal/status'],
+  ])
+})
+
+test('room creation is admitted before allocation and host close releases capacity', async () => {
+  const calls = []
+  const namespace = (label, responder) => ({
+    idFromName(name) {
+      calls.push([label, 'id', name])
+      return `${label}:${name}`
+    },
+    get(id) {
+      calls.push([label, 'get', id])
+      return {
+        async fetch(request) {
+          calls.push([label, request.method, new URL(request.url).pathname])
+          return responder(request)
+        },
+      }
+    },
+  })
+  const coordinator = namespace('pool', (request) =>
+    new URL(request.url).pathname.startsWith('/internal/rooms/')
+      ? new Response(null, { status: 204 })
+      : Response.json({ admitted: true }))
+  const rooms = namespace('room', (request) =>
+    request.method === 'DELETE'
+      ? new Response(null, { status: 204 })
+      : Response.json({ created: true }, { status: 201 }))
+  const env = {
+    LIVE_JURY_ENABLED: 'true',
+    POOL_COORDINATOR: coordinator,
+    ROOMS: rooms,
+  }
+  const createdResponse = await worker.fetch(new Request(
+    'https://simjury.com/api/live/rooms',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ case_id: 'dd-0039' }),
+    },
+  ), env)
+  const created = await createdResponse.json()
+  assert.equal(createdResponse.status, 201)
+  assert.equal(parseCapability(created.invite_token), created.invite_token)
+  assert.equal(parseCapability(created.host_token), created.host_token)
+  assert.deepEqual(calls.slice(0, 6).map(([label, operation]) => [label, operation]), [
+    ['pool', 'id'], ['pool', 'get'], ['pool', 'POST'],
+    ['room', 'id'], ['room', 'get'], ['room', 'POST'],
+  ])
+
+  const closed = await worker.fetch(new Request(
+    `https://simjury.com/api/live/rooms/${created.room_id}`,
+    { method: 'DELETE', headers: { Authorization: `Bearer ${created.host_token}` } },
+  ), env)
+  assert.equal(closed.status, 204)
+  assert.equal(calls.at(-1)[2].startsWith('/internal/rooms/'), true)
+})
+
+test('live JSON request bodies are bounded before allocation', async () => {
+  const response = await worker.fetch(new Request(
+    'https://simjury.com/api/live/rooms',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': '3000' },
+      body: JSON.stringify({ case_id: 'dd-0039' }),
+    },
+  ), { LIVE_JURY_ENABLED: 'true' })
+  assert.equal(response.status, 400)
+  assert.equal((await response.json()).code, 'INVALID_CASE')
 })
 
 test('opaque room and seat identifiers fail closed', () => {
@@ -85,6 +178,24 @@ test('opaque room and seat identifiers fail closed', () => {
   assert.equal(parseSeatId('0'), null)
   assert.equal(parseSeatId('12'), '12')
   assert.equal(parseSeatId('13'), null)
+})
+
+test('room inputs and capability routes fail closed', () => {
+  const capability = 'a'.repeat(43)
+  assert.equal(parseCapability(capability), capability)
+  assert.equal(parseCapability('short'), null)
+  assert.equal(parseCaseId('dd-0039'), 'dd-0039')
+  assert.equal(parseCaseId('C-001'), null)
+  assert.equal(parseDisplayName('  Alex   K. '), 'Alex K.')
+  assert.equal(parseDisplayName(`bad\u0000name`), null)
+  assert.equal(parseDisplayName(`Alex\u202eK.`), null)
+  assert.equal(parseDisplayName('x'.repeat(33)), null)
+  assert.equal(roomRoute('/api/live/rooms/room_12'), 'room_12')
+  assert.equal(roomRoute('/api/live/rooms/room%2Fescape'), null)
+  assert.equal(roomRoute('/api/live/rooms/room_12/socket'), null)
+  assert.equal(bearerCapability(new Request('https://simjury.com', {
+    headers: { Authorization: `Bearer ${capability}` },
+  })), capability)
 })
 
 test('admission caps and retries cannot create unregistered rooms', () => {
@@ -103,8 +214,10 @@ test('health exposes readiness and immutable free-beta limits', async () => {
   assert.deepEqual(FREE_BETA_LIMITS, {
     admissionsPerUtcDay: 1_000,
     concurrentRooms: 64,
+    seatsPerRoom: 12,
     messagesPerSeat: 40,
     messageCharacters: 500,
+    displayNameCharacters: 32,
     roomTtlSeconds: 7_200,
   })
   const body = await (await worker.fetch(new Request(

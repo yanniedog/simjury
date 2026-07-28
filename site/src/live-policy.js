@@ -3,8 +3,10 @@ export const LIVE_ROUTE_PATTERNS = ['/api/live/*', '/discord/interactions']
 export const FREE_BETA_LIMITS = Object.freeze({
   admissionsPerUtcDay: 1_000,
   concurrentRooms: 64,
+  seatsPerRoom: 12,
   messagesPerSeat: 40,
   messageCharacters: 500,
+  displayNameCharacters: 32,
   roomTtlSeconds: 2 * 60 * 60,
 })
 
@@ -32,6 +34,32 @@ export function decodeOpaqueId(segment) {
 
 export function parseSeatId(value) {
   return typeof value === 'string' && /^(?:[1-9]|1[0-2])$/.test(value) ? value : null
+}
+
+export function parseCapability(value) {
+  return typeof value === 'string' && /^[a-zA-Z0-9_-]{43}$/.test(value) ? value : null
+}
+
+export function parseCaseId(value) {
+  return typeof value === 'string' && /^dd-[a-z0-9-]{1,60}$/.test(value) ? value : null
+}
+
+export function parseDisplayName(value) {
+  if (typeof value !== 'string'
+    || /[\u0000-\u001f\u007f\u202a-\u202e\u2066-\u2069]/i.test(value)) return null
+  const clean = value.trim().replace(/\s+/g, ' ')
+  return clean && clean.length <= FREE_BETA_LIMITS.displayNameCharacters ? clean : null
+}
+
+export function roomRoute(pathname) {
+  const match = pathname.match(/^\/api\/live\/rooms\/([^/]+)$/)
+  if (!match) return null
+  return decodeOpaqueId(match[1])
+}
+
+export function bearerCapability(request) {
+  const match = request.headers.get('Authorization')?.match(/^Bearer ([A-Za-z0-9_-]{43})$/)
+  return match ? match[1] : null
 }
 
 export function roomExpiryCutoff(now = Date.now()) {
