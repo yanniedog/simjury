@@ -57,7 +57,9 @@ export function DocketVerdict({
 
       {activeSpeaker && (
         <p className="speaker-focus text-xs text-amber-200/80" aria-live="polite">
-          {(trial.cast.find((m) => m.id === activeSpeaker)?.name ?? 'Counsel')} is speaking
+          {activeSpeaker === 'narrator'
+            ? 'Narrator'
+            : trial.cast.find((m) => m.id === activeSpeaker)?.name ?? 'Counsel'} is speaking
         </p>
       )}
 
