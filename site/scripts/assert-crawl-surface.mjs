@@ -70,6 +70,7 @@ requireText(robots, 'https://simjury.com/llms-full.txt', 'robots must advertise 
 requireText(today, '<div id="root">', 'built Daily Docket HTML must contain a semantic fallback')
 for (const text of [
   'guided introduction',
+  'seven-case library',
   'opening statements',
   'item of evidence',
   'eleven jurors',
@@ -83,6 +84,7 @@ for (const text of [
 for (const text of [
   '## Canonical public pages',
   'Complete machine-readable site guide',
+  'seven-case library',
   'https://simjury.com/llms-full.txt',
 ]) {
   requireText(llms, text, `llms.txt must include: ${text}`)
@@ -93,6 +95,7 @@ for (const text of [
   '## Discovery and HTTP behavior',
   '## Architecture and cost boundary',
   '## Spoiler and publication boundary',
+  'seven-case library',
 ]) {
   requireText(llmsFull, text, `llms-full.txt must include: ${text}`)
 }

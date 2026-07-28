@@ -1,6 +1,6 @@
 # SimJury complete public-site guide
 
-This document describes every canonical public page and every phase of the interactive SimJury experience without disclosing case answers or future dockets.
+This document describes every canonical public page and every phase of the interactive SimJury experience without disclosing case answers or case-specific facts.
 
 ## Product
 
@@ -19,7 +19,7 @@ The static home page explains the value proposition, mature-content scope, appro
 The Daily Docket is an interactive JavaScript application. Its raw HTML contains a readable fallback summary for clients that do not execute JavaScript. The complete player journey is:
 
 1. First visit: accept a guided introductory sitting or skip directly to today's case.
-2. Docket selection: open today's sitting, the guided introduction, or an available past sitting from the browser-side archive chooser.
+2. Case selection: open today's featured sitting or any case in the browser-side seven-case library, including the guided introduction.
 3. Briefing: read the title, charge, case-specific advisory, accused's position, and instructions.
 4. Openings: hear the prosecution and defence frame the dispute.
 5. Evidence: move through each authored evidence beat in order, read or listen, and write private notes.
@@ -30,7 +30,7 @@ The Daily Docket is an interactive JavaScript application. Its raw HTML contains
 
 Narration is optional. Authored audio is fetched as static media when available, with browser speech as a fallback. The app supports keyboard navigation, visible focus, semantic headings, transcript text alongside audio, responsive desktop and mobile layouts, and reduced-motion preferences.
 
-The archive is a date-based chooser inside `/today/`, not a collection of separate case URLs. These crawl guides therefore do not reproduce or link case answers or unreleased case facts.
+The case library is a chooser inside `/today/`, not a collection of separate case URLs. These crawl guides therefore do not reproduce or link case answers or case-specific facts.
 
 ### https://simjury.com/privacy/
 
@@ -59,4 +59,4 @@ The site is composed entirely of static GitHub-authored assets deployed through 
 
 ## Spoiler and publication boundary
 
-This crawl guide intentionally excludes verdict truth, twists, trap analysis, exact juror rules, hidden tallies, unreleased case titles and facts, and the contents of future dockets. The interactive app's static bundle contains its pre-authored publication queue, but this guide neither reproduces nor links those details, so ordinary crawl discovery does not spoil a sitting.
+This crawl guide intentionally excludes verdict truth, twists, trap analysis, exact juror rules, hidden tallies, and case-specific titles and facts. The interactive app's static bundle contains its complete pre-authored seven-case library, but this guide neither reproduces nor links those details, so ordinary crawl discovery does not spoil a sitting.

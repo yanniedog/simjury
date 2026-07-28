@@ -1,6 +1,9 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { DocketShell } from './DocketChrome'
+import { docketLibrarySittings, featuredDocketSitting, introSitting } from '../../lib/v2/cases'
+import { saveProgress } from '../../lib/storage'
+import { caseStorageId } from '../../lib/v2/caseRevision'
+import { DocketShell, DocketSittingChooser } from './DocketChrome'
 
 function writableStorage() {
   const values = new Map<string, string>()
@@ -105,6 +108,41 @@ describe('DocketShell', () => {
     expect(markup).toContain('Storage is unavailable')
     expect(markup).toContain('This sitting will not resume after closing')
     expect(markup).toContain('Case briefing')
+  })
+})
+
+describe('DocketSittingChooser', () => {
+  it('offers exactly seven unique commissioned cases', () => {
+    vi.stubGlobal('localStorage', writableStorage())
+    const sittings = docketLibrarySittings()
+    const intro = introSitting()
+    const featured = featuredDocketSitting(new Date(2026, 6, 29))
+    saveProgress({
+      day: featured!.day,
+      caseId: caseStorageId(featured!.trial),
+      phase: 'beats',
+      beatIndex: 0,
+    })
+    const markup = renderToStaticMarkup(
+      <DocketSittingChooser
+        sittings={sittings}
+        selectedCaseId={featured!.trial.id}
+        featuredSitting={featured}
+        onSelect={() => undefined}
+        introSitting={intro}
+      />,
+    )
+
+    expect(markup).toContain('Case library')
+    expect(markup).toContain('Choose one of 7 cases')
+    expect(markup.match(/<option/g)).toHaveLength(7)
+    expect(new Set(
+      [...markup.matchAll(/<option value="([^"]+)"/g)].map((match) => match[1]),
+    )).toHaveLength(7)
+    expect(markup).toContain('Today — The Alibi That Spoke (in progress)')
+    for (const trial of [intro!.trial, ...sittings.map(({ trial }) => trial)]) {
+      expect(markup).toContain(trial.title)
+    }
   })
 })
 

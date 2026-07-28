@@ -2,7 +2,8 @@ import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import type { Outcome } from './engine/deliberation'
 import { analyzeDocketPlay } from './lib/v2/analyze'
 import {
-  availableDocketSittings,
+  docketLibrarySittings,
+  featuredDocketSitting,
   INTRO_CASE_ID,
   INTRO_SITTING_DAY,
   introSitting,
@@ -62,11 +63,15 @@ function statsFromStorage(): Stats {
   const results: DayResult[] = []
   for (const play of loadAllPlays()) {
     // Guided intro uses a synthetic day and must not inflate daily streak stats.
-    if (play.room && play.day !== INTRO_SITTING_DAY && play.caseId !== INTRO_CASE_ID) {
+    if (
+      play.room &&
+      play.day !== INTRO_SITTING_DAY &&
+      play.caseId !== INTRO_CASE_ID
+    ) {
       results.push({ day: play.day })
     }
   }
-  return computeStats(results)
+  return computeStats(results, dayIndex(new Date()))
 }
 
 export function IntroGate({
@@ -100,7 +105,7 @@ export function IntroGate({
       </div>
       <NarratorCue text={cue} />
       <p className="text-sm leading-relaxed text-neutral-400">
-        About five minutes. The guided sitting is a complete murder case with non-graphic references to death and serious violence. You can skip it or reopen it later from the docket archive.
+        About five minutes. The guided sitting is a complete murder case with non-graphic references to death and serious violence. You can skip it or reopen it later from the case library.
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         <button
@@ -125,15 +130,15 @@ export function IntroGate({
 function DocketApp({
   sitting,
   sittings,
-  selectedDay,
   todayDay,
+  featuredSitting,
   onSelect,
   intro,
 }: {
   sitting: DocketSitting | null
   sittings: DocketSitting[]
-  selectedDay: number
   todayDay: number
+  featuredSitting: DocketSitting | null
   onSelect: (day: number) => void
   intro: DocketSitting | null
 }) {
@@ -391,8 +396,8 @@ function DocketApp({
       sidebar={(
         <DocketSittingChooser
           sittings={sittings}
-          selectedDay={selectedDay}
-          todayDay={todayDay}
+          selectedCaseId={activeTrial.id}
+          featuredSitting={featuredSitting}
           onSelect={onSelect}
           introSitting={intro}
         />
@@ -479,7 +484,8 @@ function DocketApp({
 export default function App() {
   const [today] = useState(() => new Date())
   const todayDay = dayIndex(today)
-  const sittings = useMemo(() => availableDocketSittings(today), [today])
+  const sittings = useMemo(() => docketLibrarySittings(), [])
+  const featured = useMemo(() => featuredDocketSitting(today), [today])
   const intro = useMemo(() => introSitting(), [])
   const [selectedDay, setSelectedDay] = useState(todayDay)
   const [offerIntro, setOfferIntro] = useState(
@@ -492,7 +498,9 @@ export default function App() {
   const selected =
     selectedDay === INTRO_SITTING_DAY
       ? intro
-      : selectDocketSitting(sittings, selectedDay)
+      : selectedDay === todayDay
+        ? featured
+        : selectDocketSitting(sittings, selectedDay)
   const activeDay = selected?.day ?? selectedDay
 
   if (offerIntro && intro) {
@@ -533,8 +541,8 @@ export default function App() {
       key={activeDay}
       sitting={selected}
       sittings={sittings}
-      selectedDay={activeDay}
       todayDay={todayDay}
+      featuredSitting={featured}
       onSelect={setSelectedDay}
       intro={intro}
     />

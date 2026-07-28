@@ -13,8 +13,13 @@ export interface Stats {
   maxStreak: number
 }
 
-export function computeStats(results: DayResult[]): Stats {
-  const sortedDays = [...new Set(results.map((r) => r.day))].sort((a, b) => a - b)
+export function computeStats(
+  results: DayResult[],
+  latestDay = Number.POSITIVE_INFINITY,
+): Stats {
+  const sortedDays = [
+    ...new Set(results.filter((r) => r.day <= latestDay).map((r) => r.day)),
+  ].sort((a, b) => a - b)
   const played = sortedDays.length
 
   let maxStreak = 0

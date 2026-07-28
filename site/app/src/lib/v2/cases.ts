@@ -1,4 +1,4 @@
-import { DAILY_EPOCH, dayIndex } from '../daily'
+import { dayIndex } from '../daily'
 import { docketCaseSchema, type DocketCase } from './caseSchema'
 
 /**
@@ -11,7 +11,7 @@ import { docketCaseSchema, type DocketCase } from './caseSchema'
  * The guided intro (`dd-intro`) lives in the same folder and must pass the same
  * schema, design-quality, and dynamics floors as every other docket case. It is
  * excluded only from the daily publish queue — offered on first visit and via
- * the archive chooser, never as "today's" featured case.
+ * the case library, never as "today's" featured case.
  */
 const modules = import.meta.glob('/docket/*.json', {
   eager: true,
@@ -53,9 +53,6 @@ export interface DocketSitting {
   trial: DocketCase
 }
 
-/** Keep the native date picker useful without growing it forever. */
-export const SITTING_HISTORY_LIMIT = 90
-
 function localDateString(date: Date): string {
   const y = date.getFullYear()
   const m = String(date.getMonth() + 1).padStart(2, '0')
@@ -85,44 +82,37 @@ function localDateFromIso(value: string): Date {
   return new Date(year, month - 1, date)
 }
 
-function dateFromDayIndex(day: number): Date {
-  return new Date(
-    DAILY_EPOCH.getFullYear(),
-    DAILY_EPOCH.getMonth(),
-    DAILY_EPOCH.getDate() + day,
-  )
-}
-
-/** The most recent published sittings through [date], oldest first. */
-export function availableDocketSittings(
-  date: Date,
+/**
+ * Every commissioned daily case, one stable sitting per case.
+ *
+ * Library availability is deliberately independent from publication timing:
+ * `docketCaseForDate` still controls the featured daily, while the library
+ * lets a player choose any bundled case without duplicating gap-day fallbacks.
+ */
+export function docketLibrarySittings(
   queue: DocketCase[] = docketQueue,
 ): DocketSitting[] {
-  if (queue.length === 0) return []
-  const firstPublished = queue.reduce(
-    (first, trial) => trial.publish_date < first ? trial.publish_date : first,
-    queue[0].publish_date,
-  )
-  const firstDay = dayIndex(localDateFromIso(firstPublished))
-  const lastDay = dayIndex(date)
-  const startDay = Math.max(firstDay, lastDay - SITTING_HISTORY_LIMIT + 1)
-  const sittings: DocketSitting[] = []
-
-  for (let day = startDay; day <= lastDay; day++) {
-    const sittingDate = dateFromDayIndex(day)
-    const trial = docketCaseForDate(sittingDate, queue)
-    if (trial) sittings.push({ day, date: sittingDate, trial })
-  }
-  return sittings
+  return queue.map((trial) => {
+    const date = localDateFromIso(trial.publish_date)
+    return { day: dayIndex(date), date, trial }
+  })
 }
 
-/** Exact sitting when available, otherwise the newest published fallback. */
+/** Exact library sitting only; an unknown day must not duplicate another case. */
 export function selectDocketSitting(
   sittings: DocketSitting[],
   day: number,
 ): DocketSitting | null {
-  return sittings.find((sitting) => sitting.day === day) ??
-    sittings[sittings.length - 1] ?? null
+  return sittings.find((sitting) => sitting.day === day) ?? null
+}
+
+/** Date-gated featured sitting, retaining the actual day as its storage key. */
+export function featuredDocketSitting(
+  date: Date,
+  queue: DocketCase[] = docketQueue,
+): DocketSitting | null {
+  const trial = docketCaseForDate(date, queue)
+  return trial ? { day: dayIndex(date), date, trial } : null
 }
 
 export function introSitting(): DocketSitting | null {

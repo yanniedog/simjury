@@ -135,9 +135,9 @@ Across seven cases, no two twists may share the same mechanism.
   portrait, dynamics, and narration review. Sample-only review is not sufficient.
 - `gen_meta` records the model, prompt version, PR, content reviewer, language reviewer,
   and sensitivity reviewer.
-- Keep the final dated case at least 14 days ahead of the UTC date. The six sittings may
-  repeat between publication dates because the product is intentionally limited to
-  seven total cases.
+- Keep the final dated case at least 14 days ahead of the UTC date. Publication dates
+  select the featured daily; all seven commissioned cases remain immediately playable
+  once bundled through the case library.
 
 ## Character art
 

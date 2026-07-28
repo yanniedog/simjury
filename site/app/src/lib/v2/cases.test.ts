@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import {
-  availableDocketSittings,
+  docketLibrarySittings,
   docketCaseForDate,
   docketQueue,
+  featuredDocketSitting,
   INTRO_CASE_ID,
   introCase,
   selectDocketSitting,
-  SITTING_HISTORY_LIMIT,
 } from './cases'
+import { dayIndex } from '../daily'
 
 describe('docket queue', () => {
   it('bundles featured cases and keeps the intro separate', () => {
@@ -21,7 +22,10 @@ describe('docket queue', () => {
     ])
     expect(docketQueue.every((c) => c.id !== INTRO_CASE_ID)).toBe(true)
     expect(introCase?.id).toBe(INTRO_CASE_ID)
-    expect([introCase, ...docketQueue].every((c) => c?.gen_meta.prompt_version === 'dd-2026-v3')).toBe(true)
+    const commissioned = [introCase, ...docketQueue]
+    expect(commissioned).toHaveLength(7)
+    expect(new Set(commissioned.map((trial) => trial?.id))).toHaveLength(7)
+    expect(commissioned.every((c) => c?.gen_meta.prompt_version === 'dd-2026-v3')).toBe(true)
   })
 
   it('serves each launch case on its canonical publish date', () => {
@@ -73,28 +77,36 @@ describe('docket queue', () => {
     expect(docketCaseForDate(playDate, docketQueue)?.id).toBe(first.id)
   })
 
-  it('lists each published sitting through the selected local date', () => {
-    const first = docketQueue[0]
-    const [year, month, day] = first.publish_date.split('-').map(Number)
-    const thirdDay = new Date(year, month - 1, day + 2)
-    const sittings = availableDocketSittings(thirdDay, docketQueue)
+  it('lists every commissioned daily case once, including future features', () => {
+    const sittings = docketLibrarySittings(docketQueue)
 
-    expect(sittings.length).toBe(3)
-    expect(sittings.every(({ trial, date }) => trial.publish_date <=
-      `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`,
-    )).toBe(true)
-  })
-
-  it('returns no sittings before the first publication or for an empty queue', () => {
-    expect(availableDocketSittings(new Date(2026, 6, 23), docketQueue)).toEqual([])
-    expect(availableDocketSittings(new Date(2026, 6, 24), [])).toEqual([])
-  })
-
-  it('caps history and falls back to its newest sitting', () => {
-    const sittings = availableDocketSittings(new Date(2027, 0, 31), docketQueue)
-    expect(sittings.length).toBeLessThanOrEqual(SITTING_HISTORY_LIMIT)
-    expect(selectDocketSitting(sittings, 99999)?.trial).toBe(
-      sittings[sittings.length - 1]?.trial,
+    expect(sittings.map(({ trial }) => trial.id)).toEqual(
+      docketQueue.map(({ id }) => id),
     )
+    expect(new Set(sittings.map(({ trial }) => trial.id))).toHaveLength(6)
+    expect(new Set(sittings.map(({ day }) => day))).toHaveLength(6)
+    for (const sitting of sittings) {
+      expect(sitting.day).toBe(dayIndex(sitting.date))
+      expect(selectDocketSitting(sittings, sitting.day)).toBe(sitting)
+    }
+  })
+
+  it('does not manufacture duplicate fallback sittings', () => {
+    const sittings = docketLibrarySittings(docketQueue.slice(0, 2))
+
+    expect(sittings.map(({ trial }) => trial.id)).toEqual(['dd-0006', 'dd-0017'])
+    expect(selectDocketSitting(sittings, 99999)).toBeNull()
+    expect(docketLibrarySittings([])).toEqual([])
+  })
+
+  it('keeps the featured default date-gated on a gap day', () => {
+    const gapDate = new Date(2026, 6, 29)
+    const featured = featuredDocketSitting(gapDate, docketQueue)
+
+    expect(featured?.trial).toBe(docketCaseForDate(gapDate, docketQueue))
+    expect(featured?.trial.id).toBe('dd-0006')
+    expect(featured?.day).toBe(dayIndex(gapDate))
+    expect(featured?.date).toBe(gapDate)
+    expect(featuredDocketSitting(new Date(2026, 6, 23), docketQueue)).toBeNull()
   })
 })

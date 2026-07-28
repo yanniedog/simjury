@@ -43,4 +43,12 @@ describe('computeStats', () => {
   it('counts a docket day once if storage contains a duplicate', () => {
     expect(computeStats([r(1), r(1), r(2)]).played).toBe(2)
   })
+
+  it('does not count an early library play before its featured day', () => {
+    expect(computeStats([r(10), r(11), r(20)], 11)).toEqual({
+      played: 2,
+      currentStreak: 2,
+      maxStreak: 2,
+    })
+  })
 })
