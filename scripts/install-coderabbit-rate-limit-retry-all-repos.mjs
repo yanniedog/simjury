@@ -74,23 +74,19 @@ function remoteHasWorkflow(owner, name) {
 }
 
 function openInstallPr(owner, name) {
-  try {
-    const existing = ghJson([
-      'pr',
-      'list',
-      '--repo',
-      `${owner}/${name}`,
-      '--head',
-      BRANCH,
-      '--state',
-      'open',
-      '--json',
-      'url,number',
-    ]);
-    return existing[0] || null;
-  } catch {
-    return null;
-  }
+  const existing = ghJson([
+    'pr',
+    'list',
+    '--repo',
+    `${owner}/${name}`,
+    '--head',
+    BRANCH,
+    '--state',
+    'open',
+    '--json',
+    'url,number',
+  ]);
+  return existing[0] || null;
 }
 
 function openPr(owner, name, defaultBranch, workflowBody, dryRun) {
@@ -139,57 +135,107 @@ function openPr(owner, name, defaultBranch, workflowBody, dryRun) {
       { encoding: 'utf8', stdio: 'pipe' },
     );
     // Force-refresh install branch so re-runs after a partial failure still land.
-    execFileSync('git', ['-C', dir, 'push', '-u', 'origin', `HEAD:${BRANCH}`, '--force'], {
-      encoding: 'utf8',
-      stdio: 'pipe',
-    });
+    try {
+      execFileSync('git', ['-C', dir, 'push', '-u', 'origin', `HEAD:${BRANCH}`, '--force'], {
+        encoding: 'utf8',
+        stdio: 'pipe',
+      });
+    } catch (pushErr) {
+      const pushMsg = String(pushErr?.stderr || pushErr?.message || pushErr);
+      const isRefLock = /cannot lock ref|reference already exists/i.test(pushMsg);
+      if (!isRefLock) throw pushErr;
+
+      // Look up an open install PR explicitly — a failed lookup must not look like "no PR".
+      let raced;
+      try {
+        raced = openInstallPr(owner, name);
+      } catch {
+        throw pushErr;
+      }
+
+      if (raced?.url) {
+        // Never delete a head ref that still has an open PR (GitHub would close it).
+        // Retry with a non-destructive forced update; only accept the existing PR if
+        // the remote tip already matches this commit.
+        try {
+          execFileSync('git', ['-C', dir, 'push', '-u', 'origin', `+HEAD:refs/heads/${BRANCH}`], {
+            encoding: 'utf8',
+            stdio: 'pipe',
+          });
+        } catch {
+          const head = execFileSync('git', ['-C', dir, 'rev-parse', 'HEAD'], {
+            encoding: 'utf8',
+          }).trim();
+          let remoteSha = '';
+          try {
+            remoteSha = String(
+              ghJson(['api', `repos/${full}/git/ref/heads/${BRANCH}`, '--jq', '.object.sha']),
+            ).trim();
+          } catch {
+            remoteSha = '';
+          }
+          if (remoteSha === head) {
+            return { status: 'pr', url: raced.url };
+          }
+          throw pushErr;
+        }
+      } else {
+        // Confirmed no open install PR — safe to clear a stale remote ref and retry once.
+        try {
+          gh(['api', '-X', 'DELETE', `repos/${full}/git/refs/heads/${BRANCH}`], { stdio: 'pipe' });
+        } catch {
+          /* ref may already be gone */
+        }
+        execFileSync('git', ['-C', dir, 'push', '-u', 'origin', `HEAD:${BRANCH}`, '--force'], {
+          encoding: 'utf8',
+          stdio: 'pipe',
+        });
+      }
+    }
 
     let prUrl = null;
-    try {
-      const existing = ghJson([
-        'pr',
-        'list',
-        '--repo',
-        full,
-        '--head',
-        BRANCH,
-        '--state',
-        'open',
-        '--json',
-        'url,number',
-      ]);
-      if (existing[0]?.url) {
-        prUrl = existing[0].url;
-      }
-    } catch {
-      /* create below */
+    const existingAfterPush = openInstallPr(owner, name);
+    if (existingAfterPush?.url) {
+      prUrl = existingAfterPush.url;
     }
     if (!prUrl) {
-      prUrl = gh([
-        'pr',
-        'create',
-        '--repo',
-        full,
-        '--base',
-        defaultBranch,
-        '--head',
-        BRANCH,
-        '--title',
-        'ci: auto-retry CodeRabbit review after rate limit',
-        '--body',
-        [
-          '## Summary',
-          '',
-          'Adds portable `.github/workflows/pr-coderabbit-rate-limit-retry.yml`.',
-          'When CodeRabbit posts **Review limit reached**, waits for the stated window, then comments `@coderabbitai review`.',
-          '',
-          'Self-contained (no repo scripts). Same workflow as simjury.',
-          '',
-          '## Role',
-          '',
-          'Engineer',
-        ].join('\n'),
-      ]).trim();
+      try {
+        prUrl = gh([
+          'pr',
+          'create',
+          '--repo',
+          full,
+          '--base',
+          defaultBranch,
+          '--head',
+          BRANCH,
+          '--title',
+          'ci: auto-retry CodeRabbit review after rate limit',
+          '--body',
+          [
+            '## Summary',
+            '',
+            'Adds portable `.github/workflows/pr-coderabbit-rate-limit-retry.yml`.',
+            'When CodeRabbit posts **Review limit reached**, waits for the stated window, then comments `@coderabbitai review`.',
+            '',
+            'Self-contained (no repo scripts). Same workflow as simjury.',
+            '',
+            '## Role',
+            '',
+            'Engineer',
+          ].join('\n'),
+        ]).trim();
+      } catch (createErr) {
+        const createMsg = String(createErr?.stderr || createErr?.message || createErr);
+        const urlMatch = createMsg.match(/https:\/\/github\.com\/[^\s]+\/pull\/\d+/);
+        if (urlMatch) {
+          prUrl = urlMatch[0];
+        } else {
+          const again = openInstallPr(owner, name);
+          if (again?.url) prUrl = again.url;
+          else throw createErr;
+        }
+      }
     }
     return { status: 'pr', url: prUrl };
   } finally {
