@@ -2,1147 +2,309 @@
   "id": "dd-0032",
   "publish_date": "2026-08-05",
   "label": "fiction",
-  "title": "The Quiet Alarm",
-  "setting": "a communal apartment building, a coin-sized tracking tag, and months of silent location alerts in the present day",
-  "charge": "stalking by electronic monitoring",
+  "title": "The Empty Chair",
+  "offence_code": "directing_organised_crime_syndicate",
+  "content_advisories": ["organised_crime", "serious_violence"],
+  "detail_level": "non_graphic",
+  "setting": "The present-day fictional port city of Nareth, where the Grey Quay Circle operated as the dockside mafia and smuggling cartel, receiving criminal orders from an unseen figure represented by an empty chair.",
+  "charge": "directing an organised crime syndicate",
   "elements": [
-    "The accused repeatedly monitored or followed the complainant",
-    "The conduct was intentional and caused reasonable fear"
+    "A structured criminal syndicate existed and committed serious offences.",
+    "The accused knowingly directed or controlled the syndicate’s criminal activities.",
+    "The accused intended to advance those criminal activities."
   ],
-  "hook": "A tracking tag travels beneath Sera Noll's bicycle seat for eighty-three days. The purchase account is shared, the fingerprints are partial, and the accused says anyone could have planted it. The shared account muddies who bought it. The battery change — on the night her bicycle sat in his repair room — points to who kept it running.",
+  "hook": "Six senior members of the dockside mafia met around seven chairs. Nobody sat in the seventh, yet every serious decision belonged to the person it represented.",
   "accused": {
     "cast_id": "acc",
-    "human": "Oris Vale, 38, repairs musical instruments and shares custody of a teenage son.",
-    "if_guilty": "imprisonment, a protection order affecting family contact, and the end of a small repair business run from home"
+    "human": "Celis Arden is a financial mediator who supported an elderly parent and publicly helped small traders settle debts.",
+    "if_guilty": "A conviction would imprison Celis as the unseen director whose orders sustained years of organised intimidation and violence."
+  },
+  "media": {
+    "cover": {"src": "/today/media/dd-0032/cover.webp", "alt": "Courtroom sketch of an empty seventh chair facing a syndicate meeting table.", "caption": "Fictional court sketch: the empty chair used to represent the unseen syndicate director.", "kind": "court_sketch"},
+    "accused": {"src": "/today/media/dd-0032/characters/acc.webp", "alt": "Courtroom portrait of the accused, Celis Arden.", "caption": "Fictional character portrait: Celis Arden, the accused financial mediator.", "kind": "portrait"},
+    "beats": {},
+    "portraits": {
+      "judge": {"src": "/today/media/dd-0032/characters/judge.webp", "alt": "Courtroom portrait of Judge Asha Venn.", "caption": "Fictional character portrait: Judge Asha Venn.", "kind": "portrait"},
+      "pc": {"src": "/today/media/dd-0032/characters/pc.webp", "alt": "Courtroom portrait of prosecuting counsel Ren Oris.", "caption": "Fictional character portrait: Ren Oris, prosecuting counsel.", "kind": "portrait"},
+      "dc": {"src": "/today/media/dd-0032/characters/dc.webp", "alt": "Courtroom portrait of defence counsel Mila Quen.", "caption": "Fictional character portrait: Mila Quen, defence counsel.", "kind": "portrait"},
+      "acc": {"src": "/today/media/dd-0032/characters/acc.webp", "alt": "Courtroom portrait of the accused, Celis Arden.", "caption": "Fictional character portrait: Celis Arden, the accused.", "kind": "portrait"},
+      "w1": {"src": "/today/media/dd-0032/characters/w1.webp", "alt": "Courtroom portrait of undercover investigator Tav Rook.", "caption": "Fictional character portrait: Tav Rook, undercover investigator.", "kind": "portrait"},
+      "w2": {"src": "/today/media/dd-0032/characters/w2.webp", "alt": "Courtroom portrait of cooperating bookkeeper Niko Pell.", "caption": "Fictional character portrait: Niko Pell, cooperating syndicate bookkeeper.", "kind": "portrait"},
+      "w3": {"src": "/today/media/dd-0032/characters/w3.webp", "alt": "Courtroom portrait of digital provenance examiner Doctor Ema Korr.", "caption": "Fictional character portrait: Doctor Ema Korr, digital provenance examiner.", "kind": "portrait"},
+      "J-01": {"src": "/today/media/dd-0032/characters/J-01.webp", "alt": "Courtroom portrait of juror 2, the hotel porter.", "caption": "Fictional character portrait: Juror 2, the hotel porter.", "kind": "portrait"},
+      "J-02": {"src": "/today/media/dd-0032/characters/J-02.webp", "alt": "Courtroom portrait of juror 3, the payroll officer.", "caption": "Fictional character portrait: Juror 3, the payroll officer.", "kind": "portrait"},
+      "J-03": {"src": "/today/media/dd-0032/characters/J-03.webp", "alt": "Courtroom portrait of juror 4, the retired court clerk.", "caption": "Fictional character portrait: Juror 4, the retired court clerk.", "kind": "portrait"},
+      "J-04": {"src": "/today/media/dd-0032/characters/J-04.webp", "alt": "Courtroom portrait of juror 5, the ferry mechanic.", "caption": "Fictional character portrait: Juror 5, the ferry mechanic.", "kind": "portrait"},
+      "J-05": {"src": "/today/media/dd-0032/characters/J-05.webp", "alt": "Courtroom portrait of juror 6, the foreperson and grocer.", "caption": "Fictional character portrait: Juror 6, the foreperson and grocer.", "kind": "portrait"},
+      "J-06": {"src": "/today/media/dd-0032/characters/J-06.webp", "alt": "Courtroom portrait of juror 7, the art student.", "caption": "Fictional character portrait: Juror 7, the art student.", "kind": "portrait"},
+      "J-07": {"src": "/today/media/dd-0032/characters/J-07.webp", "alt": "Courtroom portrait of juror 8, the fraud analyst.", "caption": "Fictional character portrait: Juror 8, the fraud analyst.", "kind": "portrait"},
+      "J-08": {"src": "/today/media/dd-0032/characters/J-08.webp", "alt": "Courtroom portrait of juror 9, the home-care worker.", "caption": "Fictional character portrait: Juror 9, the home-care worker.", "kind": "portrait"},
+      "J-09": {"src": "/today/media/dd-0032/characters/J-09.webp", "alt": "Courtroom portrait of juror 10, the market stallholder.", "caption": "Fictional character portrait: Juror 10, the market stallholder.", "kind": "portrait"},
+      "J-10": {"src": "/today/media/dd-0032/characters/J-10.webp", "alt": "Courtroom portrait of juror 11, the junior architect.", "caption": "Fictional character portrait: Juror 11, the junior architect.", "kind": "portrait"},
+      "J-11": {"src": "/today/media/dd-0032/characters/J-11.webp", "alt": "Courtroom portrait of juror 12, the school caretaker.", "caption": "Fictional character portrait: Juror 12, the school caretaker.", "kind": "portrait"}
+    }
   },
   "statements": {
     "opening": {
-      "prosecution": {
-        "speaker": "pc",
-        "text": "For eighty-three days, Oris Vale knew where Sera Noll slept, worked, and met friends because a tag beneath her bicycle reported every move. It was purchased through his household, renamed inside the account settings, and opened for a battery change while his repair-room camera recorded the bicycle beside his bench. He maintained the surveillance, and that monitoring left her reasonably afraid."
-      },
-      "defence": {
-        "speaker": "dc",
-        "text": "The household account served four relatives and the building workshop. The tag carries mixed fingerprints, and anyone with the common stairwell code could reach the bicycle. Oris and Sera still exchanged property after separating. The prosecution has assembled ordinary contact and shared technology into intent. It cannot identify who planted the tag or who viewed most alerts."
-      }
+      "prosecution": {"speaker": "pc", "text": "The Grey Quay Circle was a port cartel that committed serious offences through a disciplined structure. Its members reserved an empty chair for the director whose remote messages settled disputes, assigned criminal work, and controlled proceeds. Celis Arden hid behind that chair. A private test phrase, a recovered signing key, and Celis’s own decision map identify the director beyond reasonable doubt."},
+      "defence": {"speaker": "dc", "text": "The empty chair proves that the director was absent and unseen. Celis advised traders, reviewed lawful accounts, and knew people who later offended; none of that proves criminal command. The cooperating bookkeeper changed accounts after receiving protection, while electronic documents and phrases could be forwarded by anyone with access. Identity and control remain unproved."}
     },
     "closing": {
-      "prosecution": {
-        "speaker": "pc",
-        "text": "Planting and viewing leave different traces, and both converge. Oris renamed the tag Quiet Alarm, dismissed repeated safety warnings, opened its history after Sera changed routes, and replaced the battery on the only night the bicycle stood outside his repair room. The shared account creates noise around the edges; the maintenance sequence identifies deliberate control."
-      },
-      "defence": {
-        "speaker": "dc",
-        "text": "A device history can show an account, not a human mind. The caretaker moved bicycles, relatives used the tablet, and Sera visited the repair room voluntarily to collect property. The camera never shows Oris touching the tag. If another person could still have done the battery change, you must acquit — Oris does not have to name who else did it."
-      }
+      "prosecution": {"speaker": "pc", "text": "This was not guilt by association. Celis alone heard the invented phrase in a sealed interview. The chair’s next directive repeated it, using the signing key recovered from Celis’s locked cabinet. The decision map anticipated competing requests and supplied the binding outcome. Those independent facts prove identity, knowing control, and an intention to advance the Circle’s crimes."},
+      "defence": {"speaker": "dc", "text": "Investigators built their case around a phrase they created and records they interpreted. The bookkeeper benefited from cooperation, and the examiner cannot say whose hand pressed send. Celis’s financial work explains the spreadsheets and contacts. If a messenger, client, or investigator could have carried the phrase onward, the unseen chair still leaves reasonable doubt."}
     }
   },
-  "epilogue": "The building created locked bicycle storage and stopped sharing workshop credentials among residents. Sera changed her commuting routine again, this time by choice, and joined a support group for technology-assisted abuse. Oris moved the repair business to a commercial unit while family arrangements were reviewed separately. The device manufacturer simplified unwanted-tracking alerts and preserved warning acknowledgements for longer after advocacy groups examined the case.",
+  "epilogue": "Celis Arden was convicted of directing the Grey Quay Circle. The empty-chair ritual ended when members learned that its authority depended on Celis’s private signing key and decision maps, not on a hidden council. Niko Pell entered a supervised witness program and returned criminal proceeds. Traders who had mistaken Celis’s public mediation for protection formed an independent cooperative with no private debt enforcers.",
   "cast": [
-    {
-      "id": "judge",
-      "name": "Judge Iven Saye",
-      "role_label": "the judge",
-      "side": "court"
-    },
-    {
-      "id": "pc",
-      "name": "Nera Quist",
-      "role_label": "prosecuting counsel",
-      "side": "prosecution"
-    },
-    {
-      "id": "dc",
-      "name": "Sol Marr",
-      "role_label": "defence counsel",
-      "side": "defence"
-    },
-    {
-      "id": "acc",
-      "name": "Oris Vale",
-      "role_label": "the accused",
-      "side": "defence"
-    },
-    {
-      "id": "w1",
-      "name": "Sera Noll",
-      "role_label": "complainant and bicycle owner",
-      "side": "prosecution"
-    },
-    {
-      "id": "w2",
-      "name": "Hale Rinn",
-      "role_label": "digital investigations officer",
-      "side": "prosecution"
-    },
-    {
-      "id": "w3",
-      "name": "Pia Dorne",
-      "role_label": "building caretaker",
-      "side": "prosecution"
-    }
+    {"id": "judge", "name": "Judge Asha Venn", "role_label": "the judge", "side": "court"},
+    {"id": "pc", "name": "Ren Oris", "role_label": "prosecuting counsel", "side": "prosecution"},
+    {"id": "dc", "name": "Mila Quen", "role_label": "defence counsel", "side": "defence"},
+    {"id": "acc", "name": "Celis Arden", "role_label": "the accused and financial mediator", "side": "defence"},
+    {"id": "w1", "name": "Tav Rook", "role_label": "undercover investigator", "side": "prosecution"},
+    {"id": "w2", "name": "Niko Pell", "role_label": "cooperating syndicate bookkeeper", "side": "prosecution"},
+    {"id": "w3", "name": "Doctor Ema Korr", "role_label": "digital provenance examiner", "side": "prosecution"}
   ],
   "beats": [
     {
-      "id": "b1",
-      "kind": "exhibit",
-      "speaker": "dc",
-      "text": "Exhibit one is the purchase account record for the year. Four relatives and two workshop devices used the shared household credit. The tracking tag was bought on that account. No receipt, invoice, or delivery name identifies Oris as the purchaser of the tag.",
-      "surface_persuasion": 0.84,
-      "true_weight": 0.18,
-      "direction": "innocence",
-      "reveal_stamp": "misleading",
-      "reveal_note": "The purchase account looked conclusive until shared household use was tested.",
-      "tags": [
-        "identity",
-        "identity"
-      ]
+      "id": "b1", "kind": "exhibit", "speaker": "pc",
+      "text": "Seized meeting records identify six stable roles within the Grey Quay Circle cartel: collections, transport, finance, surveillance, discipline, and recruitment. The records link the group to repeated extortion and planned assaults. Every meeting chart also marks a seventh place as “Chair,” although no person is shown occupying it. The charts span fourteen months of coordinated criminal activity.",
+      "surface_persuasion": 0.76, "true_weight": 0.55, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "The records establish a structured syndicate committing serious offences, but the empty position does not identify its director.",
+      "tags": ["command", "method", "identity"]
     },
     {
-      "id": "b2",
-      "kind": "witness",
-      "speaker": "w1",
-      "mode": "examination",
-      "text": "A friend lent me a phone that alerts when an unknown tracker is nearby. It pinged under my seat; we found a coin-sized tag fixed there. For months Oris had appeared near a new gym, a friend building, and a weekend market I never mentioned. After the third coincidence I stopped telling anyone my plans. I was afraid he already knew them.",
-      "surface_persuasion": 0.6,
-      "true_weight": 0.32,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "Her sightings suggest a pattern but do not alone prove who placed or watched the tag.",
-      "tags": [
-        "identity",
-        "credibility"
-      ]
-    },
-    {
-      "id": "b3",
-      "kind": "witness",
-      "speaker": "w1",
-      "mode": "cross",
-      "text": "You and Oris still exchanged belongings during those months? Yes, through the caretaker when possible. You visited the repair room once with your bicycle? I left it outside while collecting boxes. You never saw Oris attach a tracking device? No. I saw the pattern of appearances before I knew why.",
+      "id": "b2", "kind": "witness", "speaker": "w1", "mode": "examination",
       "turns": [
-        {
-          "speaker": "dc",
-          "text": "You and Oris still exchanged belongings during those months?"
-        },
-        {
-          "speaker": "w1",
-          "text": "Yes, through the caretaker when possible."
-        },
-        {
-          "speaker": "dc",
-          "text": "You visited the repair room once with your bicycle?"
-        },
-        {
-          "speaker": "w1",
-          "text": "I left it outside while collecting boxes."
-        },
-        {
-          "speaker": "dc",
-          "text": "You never saw Oris attach a tracking device?"
-        },
-        {
-          "speaker": "w1",
-          "text": "No. I saw the pattern of appearances before I knew why."
-        }
+        {"speaker": "pc", "text": "What happened when members disagreed at the meetings you observed?"},
+        {"speaker": "w1", "text": "They paused until a written message arrived for the empty chair."},
+        {"speaker": "pc", "text": "What effect did those messages have?"},
+        {"speaker": "w1", "text": "They assigned criminal work, moved proceeds, and settled discipline. Members treated each direction as final. No member treated those orders as negotiable."}
       ],
-      "surface_persuasion": 0.55,
-      "true_weight": 0.55,
-      "direction": "guilt",
-      "reveal_stamp": "minor",
-      "reveal_note": "Exchanging belongings during those months explains shared access, not who maintained the tag.",
-      "tags": [
-        "timeline",
-        "credibility"
-      ]
+      "text": "What happened when members disagreed at the meetings you observed? They paused until a written message arrived for the empty chair. What effect did those messages have? They assigned criminal work, moved proceeds, and settled discipline. Members treated each direction as final. No member treated those orders as negotiable.",
+      "surface_persuasion": 0.82, "true_weight": 0.76, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "The undercover observations prove that one remote authority controlled the syndicate’s criminal decisions rather than merely offering advice.",
+      "tags": ["command", "intent", "method"]
     },
     {
-      "id": "b4",
-      "kind": "exhibit",
-      "speaker": "dc",
-      "text": "Exhibit two is a partial print report. Two usable fingerprint areas are mixed. One could match Oris; one is unknown. That shows someone handled the tag, not who planted or watched it. The tag passed through a household drawer and a communal workshop before recovery.",
-      "surface_persuasion": 0.7899999999999999,
-      "true_weight": 0.22,
-      "direction": "innocence",
-      "reveal_stamp": "misleading",
-      "reveal_note": "The partial prints support handling, not who installed or monitored the tag.",
-      "tags": [
-        "identity",
-        "motive"
-      ]
-    },
-    {
-      "id": "b5",
-      "kind": "witness",
-      "speaker": "w2",
-      "mode": "examination",
-      "text": "The account logged 312 location checks. Most came from a shared tablet, but seventeen were opened remotely after Sera deviated from her usual route. Safety warnings appeared six times and were dismissed. The user then renamed the device Quiet Alarm, language not required by the system and visible only inside settings.",
-      "surface_persuasion": 0.58,
-      "true_weight": 0.42,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "The account logged 312 location checks; volume alone does not prove who watched them.",
-      "tags": [
-        "timeline",
-        "identity"
-      ]
-    },
-    {
-      "id": "b6",
-      "kind": "exhibit",
-      "speaker": "pc",
-      "text": "Exhibit three synchronises the battery compartment log with the repair-room camera. At 19:42 the tag loses power; Oris is already inside on his code. At 19:44 Pia Dorne's code opens the door and she wheels Sera's bicycle to his bench, then leaves. At 19:51 the tag restarts with a fresh battery. Oris remains the only person continuously present.",
-      "surface_persuasion": 0.66,
-      "true_weight": 0.76,
-      "direction": "guilt",
-      "reveal_stamp": "decisive",
-      "reveal_note": "The timed battery restart beside his bench was strong timing evidence of maintenance.",
-      "tags": [
-        "timeline",
-        "timeline"
-      ]
-    },
-    {
-      "id": "b7",
-      "kind": "witness",
-      "speaker": "w2",
-      "mode": "cross",
-      "text": "The camera does not show the underside of the bicycle seat? No. The workbench blocks that view. A caretaker also knew the room's emergency code? Yes, but that code was not used. Could a device restart after an accidental battery movement? No. The log shows a brand-new battery with a new serial number, and a full open-and-close of the battery door — not a bump that knocked power back on.",
+      "id": "b3", "kind": "witness", "speaker": "w1", "mode": "cross",
       "turns": [
-        {
-          "speaker": "dc",
-          "text": "The camera does not show the underside of the bicycle seat?"
-        },
-        {
-          "speaker": "w2",
-          "text": "No. The workbench blocks that view."
-        },
-        {
-          "speaker": "dc",
-          "text": "A caretaker also knew the room's emergency code?"
-        },
-        {
-          "speaker": "w2",
-          "text": "Yes, but that code was not used."
-        },
-        {
-          "speaker": "dc",
-          "text": "Could a device restart after an accidental battery movement?"
-        },
-        {
-          "speaker": "w2",
-          "text": "No. The log shows a brand-new battery with a new serial number, and a full open-and-close of the battery door — not a bump that knocked power back on."
-        }
+        {"speaker": "dc", "text": "Did you ever see Celis send a message to the empty chair?"},
+        {"speaker": "w1", "text": "No. The messages arrived through an anonymous relay."},
+        {"speaker": "dc", "text": "Did any member name Celis as the director in your presence?"},
+        {"speaker": "w1", "text": "No. They referred only to the Chair. No message carried an ordinary personal name."}
       ],
-      "surface_persuasion": 0.62,
-      "true_weight": 0.55,
-      "direction": "guilt",
-      "reveal_stamp": "minor",
-      "reveal_note": "The camera could not see under the seat; the battery log still ruled out an accidental bump restart.",
-      "tags": [
-        "timeline",
-        "procedure"
-      ]
+      "text": "Did you ever see Celis send a message to the empty chair? No. The messages arrived through an anonymous relay. Did any member name Celis as the director in your presence? No. They referred only to the Chair. No message carried an ordinary personal name.",
+      "surface_persuasion": 0.89, "true_weight": 0.2, "direction": "innocence", "reveal_stamp": "misleading",
+      "reveal_note": "The anonymity was real and initially powerful, but later evidence identified the author without requiring an eyewitness to the send action.",
+      "tags": ["identity", "burden", "credibility"]
     },
     {
-      "id": "b8",
-      "kind": "witness",
-      "speaker": "w3",
-      "mode": "examination",
-      "text": "I moved the bicycle into the repair room because the corridor was being cleaned. Oris was inside alone and asked me to leave it near his bench. I used my code at 19:44, left the bicycle, and went out again. I returned about ten minutes later; he said he had adjusted the loose seat. After I left the first time, nobody else entered.",
-      "surface_persuasion": 0.7000000000000001,
-      "true_weight": 0.8300000000000001,
-      "direction": "guilt",
-      "reveal_stamp": "decisive",
-      "reveal_note": "Pia's account put Oris alone with the bicycle in the decisive window after she wheeled it in.",
-      "tags": [
-        "timeline",
-        "credibility"
-      ]
-    },
-    {
-      "id": "b9",
-      "kind": "witness",
-      "speaker": "w3",
-      "mode": "cross",
-      "text": "Your access log shows an occupied room, not what Oris did at the bench? Correct. I did not see the tag or battery change. The bicycle was out of your sight for ten minutes? Yes, and nobody else entered. So you speak from access records, not from seeing the act? Yes. He had the chance. I did not see him touch the tag.",
+      "id": "b4", "kind": "witness", "speaker": "w2", "mode": "examination",
       "turns": [
-        {
-          "speaker": "dc",
-          "text": "Your access log shows an occupied room, not what Oris did at the bench?"
-        },
-        {
-          "speaker": "w3",
-          "text": "Correct. I did not see the tag or battery change."
-        },
-        {
-          "speaker": "dc",
-          "text": "The bicycle was out of your sight for ten minutes?"
-        },
-        {
-          "speaker": "w3",
-          "text": "Yes, and nobody else entered."
-        },
-        {
-          "speaker": "dc",
-          "text": "So you speak from access records, not from seeing the act?"
-        },
-        {
-          "speaker": "w3",
-          "text": "Yes. He had the chance. I did not see him touch the tag."
-        }
+        {"speaker": "pc", "text": "Were the Chair’s directions optional recommendations?"},
+        {"speaker": "w2", "text": "No. I changed the books only after those directions, and crews acted on the assigned offences."},
+        {"speaker": "pc", "text": "What happened if a member refused?"},
+        {"speaker": "w2", "text": "The Chair removed access to money and work until the member complied. Those sanctions took effect on the same day."}
       ],
-      "surface_persuasion": 0.52,
-      "true_weight": 0.3,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "Pia could fix opportunity after she brought the bicycle in; she could not describe the hidden act.",
-      "tags": [
-        "credibility",
-        "identity"
-      ]
+      "text": "Were the Chair’s directions optional recommendations? No. I changed the books only after those directions, and crews acted on the assigned offences. What happened if a member refused? The Chair removed access to money and work until the member complied. Those sanctions took effect on the same day.",
+      "surface_persuasion": 0.84, "true_weight": 0.82, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "The bookkeeper describes practical control over criminal assignments, proceeds, and discipline, satisfying direction rather than mere association.",
+      "tags": ["command", "intent", "credibility"]
     },
     {
-      "id": "b11",
-      "kind": "exhibit",
-      "speaker": "pc",
-      "text": "Exhibit four is a deleted note recovered from Oris's personal tablet. It lists Sera's new gym hours beside the tag's private identifier and the words battery due Sunday. The note was created after the fifth safety warning and edited three minutes after a remote location check, using a profile unavailable to other household members.",
-      "surface_persuasion": 0.74,
-      "true_weight": 0.9,
-      "direction": "guilt",
-      "reveal_stamp": "decisive",
-      "reveal_note": "The deleted note on Oris's personal profile tied gym hours to a battery due date.",
-      "tags": [
-        "timeline",
-        "timeline",
-        "identity"
-      ]
+      "id": "b5", "kind": "witness", "speaker": "w2", "mode": "cross",
+      "turns": [
+        {"speaker": "dc", "text": "You first told investigators that the Circle’s deceased founder remained the Chair, correct?"},
+        {"speaker": "w2", "text": "Yes. That was the story members were ordered to repeat."},
+        {"speaker": "dc", "text": "You received protection after naming Celis?"},
+        {"speaker": "w2", "text": "Yes. I also surrendered the records that investigators later tested independently. Those records existed before my protection agreement."}
+      ],
+      "text": "You first told investigators that the Circle’s deceased founder remained the Chair, correct? Yes. That was the story members were ordered to repeat. You received protection after naming Celis? Yes. I also surrendered the records that investigators later tested independently. Those records existed before my protection agreement.",
+      "surface_persuasion": 0.7, "true_weight": 0.48, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "Niko’s changing account and personal benefit require caution, making independent corroboration essential.",
+      "tags": ["credibility", "identity", "burden"]
     },
     {
-      "id": "b10",
-      "kind": "direction",
-      "speaker": "judge",
-      "text": "The judge directs you that Oris need not show who else could access the purchase account or repair room. The prosecution must prove, beyond reasonable doubt, that Oris intentionally monitored Sera with the tracker and that this caused reasonable fear. Shared access is not enough by itself. Do not search for the device, residence, routes, or people outside the admitted evidence.",
-      "surface_persuasion": 0.45,
-      "true_weight": 0.5,
-      "direction": "innocence",
-      "reveal_stamp": "minor",
-      "reveal_note": "The judge reminded the jury that shared access and suspicion are not enough without proof of knowing monitoring and reasonable fear.",
-      "tags": [
-        "burden",
-        "procedure"
-      ]
+      "id": "b6", "kind": "exhibit", "speaker": "pc",
+      "text": "During a recorded interview, Tav told Celis alone that investigators had found “a violet account with a broken hinge.” The account and phrase were invented as an information test. Twenty-three minutes after Celis left, the empty chair issued a directive repeating those exact words and ordering the Circle to abandon that account. The transmission record shows no intervening message.",
+      "surface_persuasion": 0.93, "true_weight": 0.96, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "The exact private fiction travelled from the sealed interview into the director’s immediate order, identifying Celis as the source of the chair’s knowledge.",
+      "tags": ["identity", "command", "timeline"]
+    },
+    {
+      "id": "b7", "kind": "witness", "speaker": "w3", "mode": "examination",
+      "turns": [
+        {"speaker": "pc", "text": "What authenticated the empty-chair directives?"},
+        {"speaker": "w3", "text": "Each carried a signature from one physical security key, including the violet-account message."},
+        {"speaker": "pc", "text": "Where was that key recovered?"},
+        {"speaker": "w3", "text": "Inside Celis’s locked office cabinet, beside drafts that match four earlier directives. The key’s audit counter matches the recovered message sequence."}
+      ],
+      "text": "What authenticated the empty-chair directives? Each carried a signature from one physical security key, including the violet-account message. Where was that key recovered? Inside Celis’s locked office cabinet, beside drafts that match four earlier directives. The key’s audit counter matches the recovered message sequence.",
+      "surface_persuasion": 0.85, "true_weight": 0.9, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "The recovered physical key and matching drafts independently connect Celis to the authenticated command stream.",
+      "tags": ["digital_forensics", "identity", "command"]
+    },
+    {
+      "id": "b8", "kind": "witness", "speaker": "w3", "mode": "cross",
+      "turns": [
+        {"speaker": "dc", "text": "Can your examination prove whose hand activated the key for every message?"},
+        {"speaker": "w3", "text": "No. The signature identifies the key, not a hand."},
+        {"speaker": "dc", "text": "Could another person use it after obtaining the cabinet key?"},
+        {"speaker": "w3", "text": "Yes, but I found no duplicate cabinet key or unexplained access record. The cabinet showed no damage or forced entry."}
+      ],
+      "text": "Can your examination prove whose hand activated the key for every message? No. The signature identifies the key, not a hand. Could another person use it after obtaining the cabinet key? Yes, but I found no duplicate cabinet key or unexplained access record. The cabinet showed no damage or forced entry.",
+      "surface_persuasion": 0.65, "true_weight": 0.52, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "The examiner states the technical limit fairly. The key evidence is circumstantial and gains force from the private phrase and matching drafts.",
+      "tags": ["digital_forensics", "identity", "burden"]
+    },
+    {
+      "id": "b9", "kind": "exhibit", "speaker": "dc",
+      "text": "Celis’s office held lawful mediation files for fourteen traders, including several Circle members. Those files contain debt schedules, payment disputes, and contact details but no express reference to extortion or violence. The defence says this legitimate work explains Celis’s financial knowledge and the presence of syndicate names. Several recorded settlements were plainly legitimate and completed.",
+      "surface_persuasion": 0.84, "true_weight": 0.28, "direction": "innocence", "reveal_stamp": "misleading",
+      "reveal_note": "The lawful files explain some contacts, but they do not explain the private test phrase, authenticated directives, or criminal decision map.",
+      "tags": ["motive", "credibility", "intent"]
+    },
+    {
+      "id": "b10", "kind": "exhibit", "speaker": "pc",
+      "text": "A document in Celis’s handwriting lists three disputes pending before the empty chair. For each possible member vote, it supplies a final instruction and revised allocation of criminal proceeds. The actual directives follow the matching branches word for word, including an order issued after Niko voted unexpectedly. The document predates each corresponding meeting.",
+      "surface_persuasion": 0.88, "true_weight": 0.93, "direction": "guilt", "reveal_stamp": "decisive",
+      "reveal_note": "The branching document proves advance authorship and decision-making control, including a response to an outcome Celis could not predict by chance.",
+      "tags": ["command", "intent", "method"]
+    },
+    {
+      "id": "b11", "kind": "direction", "speaker": "judge",
+      "text": "You must decide whether a structured syndicate committed serious offences, whether Celis knowingly directed or controlled its criminal activities, and whether Celis intended to advance them. Association, lawful financial work, or possession of a key is not enough alone. Consider the combined force of the private phrase, authenticated messages, and decision map. Assess every link separately and together.",
+      "surface_persuasion": 0.5, "true_weight": 0.56, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "The direction prevents guilt by association and requires the jury to prove identity, knowing control, and criminal purpose from the combined evidence.",
+      "tags": ["burden", "identity", "command"]
     }
   ],
-  "checkins": [
-    "b2",
-    "b4",
-    "b8",
-    "b10"
-  ],
+  "checkins": [],
   "verdict_truth": "Guilty",
-  "twist": "The shared account could not say who bought or first handled the tag. The battery did: it died while Sera's bicycle stood beside Oris's private bench, restarted seven minutes later, and was paired with a note on his tablet naming her gym hours and its next replacement date. The surveillance lasted because he returned to maintain it.",
-  "difficulty_target": 0.68,
+  "twist": "The empty chair concealed a person, not a committee or a dead founder. A phrase invented and disclosed only to Celis appeared immediately in the Chair’s order, while Celis’s physical signing key and branching decision map independently proved control.",
+  "difficulty_target": 0.7,
   "jury": {
     "jurors": [
       {
-        "id": "J-01",
-        "seat": 2,
-        "label": "Juror 2",
-        "persona": "A foreperson who restates disagreements before calling a vote.",
-        "register": "formal",
-        "arc": "foreperson",
-        "initial": {
-          "position": "G",
-          "confidence": 45
-        },
-        "weights": {
-          "timeline": 2,
-          "identity": -1,
-          "burden": 0
-        },
-        "lines": {
-          "agree": [
-            "For me, the anchor is the battery serial, repair-room interval, and private note — they answer the weakness that first divided this room.",
-            "In my notes at seat 2, the battery serial, repair-room interval, and private note agree across sources that did not depend on one another."
-          ],
-          "pushback": [
-            "I will not let the shared purchase account and partial print decide more than their source can support.",
-            "I need the chronology laid out before I choose between those accounts. Here that means shared ownership against private maintenance."
-          ],
-          "concede": [
-            "I admit the shared purchase account and partial print looked damning at first, especially before the underlying record was opened."
-          ],
-          "final": [
-            "My verdict rests on the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
-          ]
-        },
+        "id": "J-01", "seat": 2, "label": "Hotel porter", "persona": "Responds to symbols and initially treats the empty chair as proof that the director could be anyone.", "register": "plain", "arc": "vibes",
+        "initial": {"position": "NG", "confidence": 72}, "weights": {"identity": 2, "command": 1, "credibility": 1},
+        "lines": {"agree": ["An empty chair makes the director feel impossible to identify."], "pushback": ["The chair’s symbolism cannot outweigh records tied to one person."], "concede": ["The invented violet-account phrase leads directly from Celis to the next order."], "burden_drift": ["Celis knew the members, so I want Celis to explain who else directed them."], "burden_correct": ["The prosecution must identify the director without making Celis solve the mystery."], "final": ["The private phrase and decision map identify Celis as the Chair."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "timeline",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "identity",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 6,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "identity", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-02",
-        "seat": 3,
-        "label": "Juror 3",
-        "persona": "A retiree who wants testimony anchored to something independent.",
-        "register": "hesitant",
-        "arc": "steady",
-        "initial": {
-          "position": "G",
-          "confidence": 52
-        },
-        "weights": {
-          "credibility": 2,
-          "motive": 0,
-          "burden": 0
-        },
-        "lines": {
-          "agree": [
-            "I move because of the battery serial, repair-room interval, and private note — they answer the weakness that first divided this room.",
-            "In my notes at seat 3, the battery serial, repair-room interval, and private note agree across sources that did not depend on one another."
-          ],
-          "pushback": [
-            "I keep separating the shared purchase account and partial print from what they can actually prove.",
-            "Two records agreeing matters more to me than one record sounding certain. Here that means shared ownership against private maintenance."
-          ],
-          "concede": [
-            "I can see why the shared purchase account and partial print swayed people, especially before the underlying record was opened."
-          ],
-          "final": [
-            "I finish with the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
-          ]
-        },
+        "id": "J-02", "seat": 3, "label": "Payroll officer", "persona": "Follows authority through records showing who could approve, withhold, and redirect money.", "register": "formal", "arc": "steady",
+        "initial": {"position": "G", "confidence": 58}, "weights": {"command": 2, "intent": 2, "digital_forensics": 1},
+        "lines": {"agree": ["Control of proceeds gave the Chair practical authority over every crew."], "pushback": ["Financial knowledge alone could come from Celis’s lawful mediation work."], "concede": ["The matching decision branches prove more than passive accounting."], "burden_drift": ["The overlap in records makes me expect Celis to separate lawful and criminal work."], "burden_correct": ["The prosecution must prove which records express criminal command."], "final": ["The branch map and signed orders prove knowing control."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "credibility",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 12,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "motive",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 7,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "command", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 6, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
         ]
       },
       {
-        "id": "J-03",
-        "seat": 4,
-        "label": "Juror 4",
-        "persona": "A delivery worker who focuses on custody and physical sequence.",
-        "register": "blunt",
-        "arc": "mind_changer",
-        "initial": {
-          "position": "G",
-          "confidence": 59
-        },
-        "weights": {
-          "identity": 1,
-          "burden": 0
-        },
-        "lines": {
-          "agree": [
-            "The part I cannot explain away is the battery serial, repair-room interval, and private note — they answer the weakness that first divided this room.",
-            "In my notes at seat 4, the battery serial, repair-room interval, and private note agree across sources that did not depend on one another."
-          ],
-          "pushback": [
-            "Before I rely on the shared purchase account and partial print, I need the underlying record opened.",
-            "I am testing which side can explain the missing link without assumption. Here that means shared ownership against private maintenance."
-          ],
-          "concede": [
-            "At first I gave too much weight to the shared purchase account and partial print, especially before the underlying record was opened."
-          ],
-          "final": [
-            "The deciding chain for me is the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
-          ]
-        },
+        "id": "J-03", "seat": 4, "label": "Retired court clerk", "persona": "Guards against guilt by association and insists that circumstantial links form a complete chain.", "register": "formal", "arc": "principled_holdout",
+        "initial": {"position": "NG", "confidence": 78}, "weights": {"burden": 2, "identity": 2, "credibility": 1},
+        "lines": {"agree": ["No eyewitness saw Celis press send, and that gap matters."], "pushback": ["Direct sight is not required if independent circumstances identify the author."], "concede": ["The private phrase closes the central identity gap."], "burden_drift": ["The Circle’s secrecy tempts the room to make Celis disprove every possibility."], "burden_correct": ["The judge requires proof of Celis’s knowing control, not mere proximity."], "final": ["The corroborated chain proves Celis directed the Circle."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "identity",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 14,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "identity",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 8,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 0, "confidence": 3, "line": "burden_correct"}},
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-04",
-        "seat": 5,
-        "label": "Juror 5",
-        "persona": "A volunteer who sometimes asks the accused to fill prosecution gaps.",
-        "register": "plain",
-        "arc": "principled_holdout",
-        "initial": {
-          "position": "G",
-          "confidence": 49
-        },
-        "weights": {
-          "timeline": 2,
-          "motive": -1,
-          "burden": 2
-        },
-        "lines": {
-          "agree": [
-            "I checked the sequence against the battery serial, repair-room interval, and private note — they answer the weakness that first divided this room.",
-            "In my notes at seat 5, the battery serial, repair-room interval, and private note agree across sources that did not depend on one another."
-          ],
-          "pushback": [
-            "I hear the force of the shared purchase account and partial print, but I will not let them decide more than their source can support.",
-            "The burden makes me separate a possible story from a proved one. Here that means shared ownership against private maintenance."
-          ],
-          "concede": [
-            "I concede the surface force of the shared purchase account and partial print, especially before the underlying record was opened."
-          ],
-          "final": [
-            "I return at the end to the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
-          ],
-          "holdout": [
-            "I will hold on shared ownership versus private maintenance until independent records — not pressure from the room — answer it."
-          ]
-        },
+        "id": "J-04", "seat": 5, "label": "Ferry mechanic", "persona": "Trusts physical control evidence when possession, access, and actual use align.", "register": "blunt", "arc": "steady",
+        "initial": {"position": "G", "confidence": 62}, "weights": {"digital_forensics": 2, "method": 2, "command": 1},
+        "lines": {"agree": ["The same physical key signed every binding directive."], "pushback": ["A key proves little if many people could reach it."], "concede": ["No duplicate or unexplained access supports the key’s link to Celis."], "burden_drift": ["Finding the key in Celis’s cabinet makes me want an innocent explanation."], "burden_correct": ["Possession must be weighed with the phrase and drafts, not treated as automatic guilt."], "final": ["All three links point to Celis, so I find direction proved."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "timeline",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "motive",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 6,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "holdout"
-            }
-          }
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
+          {"when": {"theme": "method", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
         ]
       },
       {
-        "id": "J-05",
-        "seat": 6,
-        "label": "Juror 6",
-        "persona": "A blunt sceptic who will not turn probability into certainty.",
-        "register": "formal",
-        "arc": "vibes",
-        "initial": {
-          "position": "G",
-          "confidence": 56
-        },
-        "weights": {
-          "credibility": 2,
-          "identity": 0,
-          "burden": 0
-        },
-        "lines": {
-          "agree": [
-            "What changes my vote is the battery serial, repair-room interval, and private note — they answer the weakness that first divided this room.",
-            "In my notes at seat 6, the battery serial, repair-room interval, and private note agree across sources that did not depend on one another."
-          ],
-          "pushback": [
-            "I am not treating the shared purchase account and partial print as proving more than their source can support.",
-            "I want the source data before I accept the label attached to it. Here that means shared ownership against private maintenance."
-          ],
-          "concede": [
-            "I was initially moved by the shared purchase account and partial print, especially before the underlying record was opened."
-          ],
-          "final": [
-            "My final vote follows the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
-          ]
-        },
+        "id": "J-05", "seat": 6, "label": "Grocer and foreperson", "persona": "Separates proof of the syndicate, proof of the director, and proof of criminal intention.", "register": "plain", "arc": "foreperson",
+        "initial": {"position": "U", "confidence": 42}, "weights": {"burden": 2, "command": 2, "intent": 1},
+        "lines": {"agree": ["The Circle’s structure and serious offences are clearly established."], "pushback": ["We must still identify who controlled those crimes."], "concede": ["The test phrase, key, and map answer identity from separate directions."], "burden_drift": ["The secrecy can make us ask Celis to name the unseen director."], "burden_correct": ["Our task is to test the prosecution’s three links against reasonable doubt."], "final": ["Those links prove both control and criminal purpose."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "credibility",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 12,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "identity",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 7,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "command", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 0, "confidence": 3, "line": "burden_correct"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
         ]
       },
       {
-        "id": "J-06",
-        "seat": 7,
-        "label": "Juror 7",
-        "persona": "A shift worker who notices breaks in chronology.",
-        "register": "hesitant",
-        "arc": "vibes",
-        "initial": {
-          "position": "G",
-          "confidence": 46
-        },
-        "weights": {
-          "identity": 2,
-          "motive": 1,
-          "burden": 0
-        },
-        "lines": {
-          "agree": [
-            "I trust the battery serial, repair-room interval, and private note — they answer the weakness that first divided this room.",
-            "In my notes at seat 7, the battery serial, repair-room interval, and private note agree across sources that did not depend on one another."
-          ],
-          "pushback": [
-            "My problem is letting the shared purchase account and partial print decide more than their source can support.",
-            "A vivid clue will not move me unless the later sequence supports it. Here that means shared ownership against private maintenance."
-          ],
-          "concede": [
-            "The opposing account fairly points to the shared purchase account and partial print, especially before the underlying record was opened."
-          ],
-          "final": [
-            "I resolve the doubt through the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
-          ]
-        },
+        "id": "J-06", "seat": 7, "label": "Art student", "persona": "Reads meaning into the empty-chair ritual and changes position when symbolism meets physical proof.", "register": "hesitant", "arc": "drifter",
+        "initial": {"position": "NG", "confidence": 55}, "weights": {"identity": 2, "method": 1, "command": 1},
+        "lines": {"agree": ["The empty chair initially suggests an idea rather than a specific person."], "pushback": ["A symbol can still be operated by one hidden director."], "concede": ["Celis’s decision map gives the symbol a concrete author."], "burden_drift": ["Because Celis worked around the Circle, I start expecting proof of distance from it."], "burden_correct": ["Association is not enough; the prosecution needs proof of command."], "final": ["The private phrase makes the unseen director visible."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "identity",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 14,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "motive",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 8,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "identity", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 6, "line": "agree"}},
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-07",
-        "seat": 8,
-        "label": "Juror 8",
-        "persona": "A bookkeeper who tests whether separate records truly reconcile.",
-        "register": "blunt",
-        "arc": "steady",
-        "initial": {
-          "position": "NG",
-          "confidence": 53
-        },
-        "weights": {
-          "timeline": 2,
-          "identity": -1,
-          "burden": 0
-        },
-        "lines": {
-          "agree": [
-            "The room should start with the battery serial, repair-room interval, and private note — they answer the weakness that first divided this room.",
-            "In my notes at seat 8, the battery serial, repair-room interval, and private note agree across sources that did not depend on one another."
-          ],
-          "pushback": [
-            "We should test whether the shared purchase account and partial print can decide more than their source can support.",
-            "I am asking whether the physical evidence and the testimony converge. Here that means shared ownership against private maintenance."
-          ],
-          "concede": [
-            "I cannot dismiss the shared purchase account and partial print, especially before the underlying record was opened."
-          ],
-          "final": [
-            "The complete record leaves me with the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
-          ]
-        },
+        "id": "J-07", "seat": 8, "label": "Fraud analyst", "persona": "Changes position when provenance and behavioural records corroborate one another.", "register": "formal", "arc": "mind_changer",
+        "initial": {"position": "NG", "confidence": 67}, "weights": {"digital_forensics": 2, "identity": 2, "timeline": 2},
+        "lines": {"agree": ["Anonymous relays usually weaken attribution."], "pushback": ["The relay cannot explain how the private fiction reached the signed order."], "concede": ["The timing and signing key independently converge on Celis."], "burden_drift": ["Control of financial files makes an inference of control feel easier than it should."], "burden_correct": ["We need proof of authorship, and the canary phrase provides it."], "final": ["The provenance chain changes my verdict to Guilty."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "timeline",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "identity",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 6,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "timeline", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 6, "line": "agree"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
         ]
       },
       {
-        "id": "J-08",
-        "seat": 9,
-        "label": "Juror 9",
-        "persona": "A caregiver who is alert to pressure and unequal power.",
-        "register": "plain",
-        "arc": "principled_holdout",
-        "initial": {
-          "position": "NG",
-          "confidence": 60
-        },
-        "weights": {
-          "credibility": 2,
-          "motive": 0,
-          "burden": 2
-        },
-        "lines": {
-          "agree": [
-            "I needed corroboration, and the battery serial, repair-room interval, and private note provide it — they answer the weakness that first divided this room.",
-            "In my notes at seat 9, the battery serial, repair-room interval, and private note agree across sources that did not depend on one another."
-          ],
-          "pushback": [
-            "I still question whether the shared purchase account and partial print can decide more than their source can support.",
-            "I need to know what this proves about intent, not only opportunity. Here that means shared ownership against private maintenance."
-          ],
-          "concede": [
-            "There is real persuasive force in the shared purchase account and partial print, especially before the underlying record was opened."
-          ],
-          "final": [
-            "I am voting from the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
-          ],
-          "holdout": [
-            "I will hold on shared ownership versus private maintenance until independent records — not pressure from the room — answer it."
-          ]
-        },
+        "id": "J-08", "seat": 9, "label": "Home-care worker", "persona": "Distrusts witnesses who trade information for safety but accepts independently tested records.", "register": "plain", "arc": "steady",
+        "initial": {"position": "NG", "confidence": 58}, "weights": {"credibility": 2, "identity": 1, "burden": 1},
+        "lines": {"agree": ["Niko’s changed story and protection agreement require caution."], "pushback": ["Niko cannot identify Celis without independent support."], "concede": ["The private phrase and recovered key do not depend on Niko’s word."], "burden_drift": ["Niko’s fear makes me want Celis to explain the whole organization."], "burden_correct": ["The records must corroborate Niko before the testimony can carry weight."], "final": ["The independent records supply the corroboration I required."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "credibility",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 12,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "motive",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 7,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "holdout"
-            }
-          }
+          {"when": {"theme": "credibility", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "agree"}},
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 6, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-09",
-        "seat": 10,
-        "label": "Juror 10",
-        "persona": "A technician who distrusts labels without source data.",
-        "register": "formal",
-        "arc": "mind_changer",
-        "initial": {
-          "position": "NG",
-          "confidence": 50
-        },
-        "weights": {
-          "identity": 1,
-          "burden": 0
-        },
-        "lines": {
-          "agree": [
-            "The timing becomes coherent through the battery serial, repair-room interval, and private note — they answer the weakness that first divided this room.",
-            "In my notes at seat 10, the battery serial, repair-room interval, and private note agree across sources that did not depend on one another."
-          ],
-          "pushback": [
-            "I refuse to let the shared purchase account and partial print decide more than their source can support.",
-            "I am checking whether my doubt is evidential or merely speculative. Here that means shared ownership against private maintenance."
-          ],
-          "concede": [
-            "I understand the reliance on the shared purchase account and partial print, especially before the underlying record was opened."
-          ],
-          "final": [
-            "My conclusion turns on the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
-          ]
-        },
+        "id": "J-09", "seat": 10, "label": "Market stallholder", "persona": "Understands coercive debt collection and is vulnerable to treating contact with offenders as guilt.", "register": "blunt", "arc": "burden_drifter",
+        "initial": {"position": "G", "confidence": 65}, "weights": {"motive": 1, "burden": 2, "command": 2},
+        "lines": {"agree": ["Someone who controls money can control frightened crews."], "pushback": ["Lawful mediation with bad clients is not organised crime."], "concede": ["The decision map crosses the line from mediation into command."], "burden_drift": ["Celis worked with these traders, so Celis should prove those dealings were clean."], "burden_correct": ["That reverses the burden; criminal control must be proved by the prosecution."], "final": ["The authenticated orders prove the control that ordinary client files do not."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "identity",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 14,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "identity",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 8,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "motive", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "burden_drift"}},
+          {"when": {"theme": "command", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 0, "confidence": 3, "line": "burden_correct"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-10",
-        "seat": 11,
-        "label": "Juror 11",
-        "persona": "A coach who asks whether conduct matches the claimed motive.",
-        "register": "hesitant",
-        "arc": "drifter",
-        "initial": {
-          "position": "NG",
-          "confidence": 57
-        },
-        "weights": {
-          "timeline": 2,
-          "motive": -1,
-          "burden": 0
-        },
-        "lines": {
-          "agree": [
-            "I am persuaded by the battery serial, repair-room interval, and private note — they answer the weakness that first divided this room.",
-            "In my notes at seat 11, the battery serial, repair-room interval, and private note agree across sources that did not depend on one another."
-          ],
-          "pushback": [
-            "I want a source check before the shared purchase account and partial print decide more than their source can support.",
-            "I am checking whether my doubt is evidential or merely speculative. Here that means shared ownership against private maintenance."
-          ],
-          "concede": [
-            "I began from the shared purchase account and partial print, especially before the underlying record was opened."
-          ],
-          "final": [
-            "After testing both stories, I rely on the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
-          ]
-        },
+        "id": "J-10", "seat": 11, "label": "Junior architect", "persona": "Starts undecided and looks for a coherent structure connecting plans to executed decisions.", "register": "hesitant", "arc": "drifter",
+        "initial": {"position": "U", "confidence": 38}, "weights": {"method": 2, "command": 2, "identity": 1},
+        "lines": {"agree": ["The lawful files offer a possible innocent structure for Celis’s contacts."], "pushback": ["They do not explain a criminal decision tree."], "concede": ["The branches and later orders fit like plan and construction."], "burden_drift": ["The number of contacts makes me expect Celis to explain each relationship."], "burden_correct": ["We should test the charged command, not every association."], "final": ["The matching plan and orders establish that command."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "timeline",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 10,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "motive",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 6,
-              "line": "concede"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "identity", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "agree"}},
+          {"when": {"theme": "command", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
         ]
       },
       {
-        "id": "J-11",
-        "seat": 12,
-        "label": "Juror 12",
-        "persona": "A student who can be swept up by a vivid first impression.",
-        "register": "blunt",
-        "arc": "burden_drifter",
-        "initial": {
-          "position": "G",
-          "confidence": 47
-        },
-        "weights": {
-          "credibility": 2,
-          "identity": 0,
-          "burden": 2
-        },
-        "lines": {
-          "agree": [
-            "My holdout ends with the battery serial, repair-room interval, and private note — they answer the weakness that first divided this room.",
-            "In my notes at seat 12, the battery serial, repair-room interval, and private note agree across sources that did not depend on one another."
-          ],
-          "pushback": [
-            "I am holding against letting the shared purchase account and partial print decide more than their source can support.",
-            "Consensus will not substitute for the independent record I still need. Here that means shared ownership against private maintenance."
-          ],
-          "concede": [
-            "I will grant that the shared purchase account and partial print looked strong, especially before the underlying record was opened."
-          ],
-          "final": [
-            "I can now decide because of the battery serial, repair-room interval, and private note, with the burden left where the judge placed it."
-          ],
-          "burden_drift": [
-            "I catch myself asking for an innocent explanation, even though that is not the accused's burden. From seat 12, that temptation is about shared ownership against private maintenance."
-          ],
-          "burden_correct": [
-            "I am correcting course: the prosecution must close the gap, not the accused. From seat 12, that means shared ownership against private maintenance."
-          ]
-        },
+        "id": "J-11", "seat": 12, "label": "School caretaker", "persona": "Values plain accountability and asks who actually had power to make the group act.", "register": "plain", "arc": "steady",
+        "initial": {"position": "NG", "confidence": 52}, "weights": {"command": 2, "intent": 2, "burden": 1},
+        "lines": {"agree": ["The Circle waited for the Chair before it acted."], "pushback": ["That proves a director existed, not that Celis was the director."], "concede": ["Celis’s private phrase and map identify the person exercising that power."], "burden_drift": ["The Circle’s harm makes me impatient with the remaining uncertainty."], "burden_correct": ["Harm does not remove the need to identify the accused accurately."], "final": ["The evidence proves Celis knowingly directed the crimes."]},
         "reaction_rules": [
-          {
-            "when": {
-              "theme": "credibility",
-              "stance": "proves",
-              "direction": "guilt"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 12,
-              "line": "agree"
-            }
-          },
-          {
-            "when": {
-              "theme": "identity",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 1,
-              "confidence": 8,
-              "line": "burden_drift"
-            }
-          },
-          {
-            "when": {
-              "theme": "burden",
-              "stance": "proves",
-              "direction": "innocence"
-            },
-            "effect": {
-              "delta": 2,
-              "confidence": 12,
-              "line": "burden_correct"
-            }
-          },
-          {
-            "when": {
-              "theme": "any",
-              "stance": "any"
-            },
-            "effect": {
-              "delta": 0,
-              "confidence": 0,
-              "line": "pushback"
-            }
-          }
+          {"when": {"theme": "command", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 6, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
         ]
       }
     ]
   },
   "gen_meta": {
-    "model": "gpt-5.4",
-    "prompt_version": "dd-2026-v2",
-    "reviewer": "codex-content-curator",
-    "batch_pr": "runway-b-qa-fix"
+    "model": "gpt-5",
+    "prompt_version": "dd-2026-v3",
+    "reviewer": "content-curator",
+    "batch_pr": "grave-crime-seven-case-replacement",
+    "language_reviewer": "language-and-clarity-pass",
+    "sensitivity_reviewer": "non-graphic-organised-crime-pass"
   }
 }
