@@ -10,6 +10,7 @@ import {
   normaliseNarrationRate,
   selectLocalVoices,
   setNarrationEnabled,
+  setNarrationEngine,
   setNarrationRate,
   setNarrationSpeakers,
   speak,
@@ -20,6 +21,7 @@ import {
 
 afterEach(() => {
   setNarrationEnabled(false)
+  setNarrationEngine('kokoro')
   clearNarrationSpeakers()
   vi.unstubAllGlobals()
 })
@@ -154,6 +156,67 @@ describe('natural narration', () => {
   })
 })
 
+describe('seamless engine switch', () => {
+  it('resumes the current line under the new engine instead of restarting the phase', async () => {
+    class FakeAudio {
+      static instances: FakeAudio[] = []
+      preload = ''
+      playbackRate = 1
+      onplay: (() => void) | null = null
+      onended: (() => void) | null = null
+      onerror: (() => void) | null = null
+      pause = vi.fn()
+      load = vi.fn()
+      removeAttribute = vi.fn()
+      play = vi.fn().mockResolvedValue(undefined)
+
+      constructor(readonly src: string) {
+        FakeAudio.instances.push(this)
+      }
+    }
+    const values = new Map<string, string>()
+    vi.stubGlobal('Audio', FakeAudio)
+    vi.stubGlobal('localStorage', {
+      getItem: (key: string) => values.get(key) ?? null,
+      setItem: (key: string, value: string) => values.set(key, value),
+    })
+    setNarrationEnabled(true)
+    const onLine = vi.fn()
+    const done = vi.fn()
+
+    speakAll([
+      { text: 'Narrator cue', key: 'narrator' },
+      { text: 'Prosecution opening', key: 'pc' },
+      { text: 'Defence opening', key: 'dc' },
+    ], { onLine, done })
+    expect(onLine).toHaveBeenLastCalledWith('narrator', 0)
+    FakeAudio.instances[0].onended?.()
+    expect(onLine).toHaveBeenLastCalledWith('pc', 1)
+    expect(FakeAudio.instances).toHaveLength(2)
+    expect(FakeAudio.instances[1].src).toBe(naturalVoiceUrlFor('Prosecution opening', 'pc'))
+
+    // Switch engines mid-line: playback must resume from the CURRENT line
+    // ("pc", index 1) under the new engine — not from the top of the phase.
+    setNarrationEngine('scylla')
+    expect(FakeAudio.instances[1].pause).toHaveBeenCalled()
+    expect(onLine).toHaveBeenLastCalledWith('pc', 1)
+    expect(FakeAudio.instances).toHaveLength(3)
+    expect(FakeAudio.instances[2].src).toBe(
+      naturalVoiceUrlFor('Prosecution opening', 'pc', undefined, undefined, 'scylla'),
+    )
+
+    await FakeAudio.instances[2].play()
+    FakeAudio.instances[2].onended?.()
+    expect(onLine).toHaveBeenLastCalledWith('dc', 2)
+    expect(FakeAudio.instances[3].src).toBe(
+      naturalVoiceUrlFor('Defence opening', 'dc', undefined, undefined, 'scylla'),
+    )
+    await FakeAudio.instances[3].play()
+    FakeAudio.instances[3].onended?.()
+    expect(done).toHaveBeenCalledOnce()
+  })
+})
+
 describe('normaliseNarrationRate', () => {
   it('accepts only the designed persisted rates', () => {
     expect(normaliseNarrationRate('0.85')).toBe(0.85)
@@ -185,7 +248,7 @@ describe('normaliseNarrationRate', () => {
 })
 
 describe('speakAll', () => {
-  it('keeps device voices distinct without advancing on speech error', () => {
+  it('keeps device voices distinct and advances past a speech error so later speakers still play', () => {
     class FakeUtterance {
       voice?: SpeechSynthesisVoice
       pitch = 1
@@ -219,33 +282,26 @@ describe('speakAll', () => {
     const onError = vi.fn()
     const done = vi.fn()
 
+    // A narrator cue followed by two lawyers: the first lawyer's line fails
+    // on this device, but the second lawyer must still be heard — one bad
+    // line must never silence every speaker after it.
     speakAll([
-      { text: 'First line', key: 'pc' },
-      { text: 'Second line', key: 'dc' },
+      { text: 'Narrator cue', key: 'narrator' },
+      { text: 'Prosecution opening', key: 'pc' },
+      { text: 'Defence opening', key: 'dc' },
     ], { onLine, onError, done })
-    expect(onLine).toHaveBeenLastCalledWith('pc', 0)
-    expect(done).not.toHaveBeenCalled()
-
-    utterances[0].onerror?.()
-    expect(onError).toHaveBeenCalledOnce()
-    expect(onLine).toHaveBeenCalledOnce()
-    expect(done).not.toHaveBeenCalled()
-    expect(utterances).toHaveLength(1)
-
-    // Restart a clean sequence to assert adjacent speakers stay distinct on success.
-    utterances.length = 0
-    onLine.mockClear()
-    done.mockClear()
-    speakAll([
-      { text: 'First line', key: 'pc' },
-      { text: 'Second line', key: 'dc' },
-    ], { onLine, done })
-    const firstVoice = utterances[0].voice
-    expect(firstVoice?.localService).toBe(true)
+    expect(onLine).toHaveBeenLastCalledWith('narrator', 0)
     utterances[0].onend?.()
-    expect(onLine).toHaveBeenLastCalledWith('dc', 1)
-    expect(utterances[1].voice).not.toBe(firstVoice)
-    utterances[1].onend?.()
+    expect(onLine).toHaveBeenLastCalledWith('pc', 1)
+
+    utterances[1].onerror?.()
+    expect(onError).toHaveBeenCalledOnce()
+    expect(onLine).toHaveBeenLastCalledWith('dc', 2)
+    expect(done).not.toHaveBeenCalled()
+
+    const lastVoice = utterances[2].voice
+    expect(lastVoice?.localService).toBe(true)
+    utterances[2].onend?.()
     expect(done).toHaveBeenCalledOnce()
   })
 
@@ -282,6 +338,10 @@ describe('speakAll', () => {
       { text: 'First line', key: 'pros' },
       { text: 'Second line', key: 'defc' },
     ], { onLine, onError, done })
+    // No Audio API and no local device voice: narration is considered
+    // entirely unsupported on this device, so it no-ops silently (never
+    // sends text to a remote-only voice) but still calls done so the
+    // sequence isn't stuck.
     expect(onError).not.toHaveBeenCalled()
     expect(onLine).not.toHaveBeenCalled()
     expect(done).toHaveBeenCalledOnce()
