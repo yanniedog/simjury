@@ -11,6 +11,70 @@
   background: var(--court-950);
 }
 
+html.entry-gate-open { overflow: hidden; }
+
+.entry-gate {
+  position: fixed;
+  z-index: 100;
+  inset: 50% auto auto 50%;
+  width: min(36rem, calc(100% - 2rem));
+  max-height: calc(100dvh - 2rem);
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  color: #f4f0e8;
+  background: #101619;
+  border: 1px solid rgb(214 185 121 / 42%);
+  border-radius: 1.25rem;
+  box-shadow: 0 0 0 100vmax rgb(5 8 9 / 86%), 0 2rem 6rem rgb(0 0 0 / 55%);
+  transform: translate(-50%, -50%);
+}
+
+.entry-gate::backdrop {
+  background: rgb(5 8 9 / 86%);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+}
+
+.entry-gate-card { padding: clamp(1.5rem, 6vw, 3rem); text-align: center; }
+.entry-gate-eyebrow {
+  margin: 0;
+  color: #d6b979;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.entry-gate h2 {
+  margin: .8rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 8vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -.04em;
+}
+.entry-gate #fiction-disclosure-copy {
+  margin: 1.25rem auto 0;
+  max-width: 31rem;
+  color: #b8c1be;
+  line-height: 1.7;
+}
+.entry-gate form { margin-top: 1.5rem; }
+.entry-gate button {
+  width: 100%;
+  min-height: 3.25rem;
+  padding: .8rem 1.2rem;
+  color: #080b0d;
+  background: #f4f0e8;
+  border: 0;
+  border-radius: .75rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.entry-gate button:hover { background: #d6b979; }
+.entry-gate button:focus-visible { outline: 3px solid #d6b979; outline-offset: 4px; }
+
 .landing .atmosphere {
   background:
     radial-gradient(circle at 18% -8%, rgb(214 185 121 / 16%), transparent 34rem),

@@ -73,8 +73,11 @@ for (const text of [
   'seven-case library',
   'opening statements',
   'item of evidence',
-  'eleven jurors',
-  'final Guilty or Not Guilty verdict',
+  'eleven authored jurors',
+  'private live-human beta room',
+  'Guilty, Not Guilty, or Undecided / No verdict',
+  'Any juror may remain undecided',
+  'unanimous, majority, or hung-jury result',
   'spoiler-safe share card',
   'href="/privacy/"',
 ]) {
@@ -105,6 +108,15 @@ for (const [label, source] of [
   ['llms-full.txt', llmsFull],
   ['Daily Docket fallback', today],
 ]) {
+  for (const stalePromise of [
+    'about ten minutes',
+    '~10 minutes',
+    'single-player: there are no live players or chat',
+    'final Guilty or Not Guilty verdict',
+    'simulations',
+  ]) {
+    forbidText(source, stalePromise, `${label} must not retain the stale promise: ${stalePromise}`)
+  }
   for (const forbidden of [
     'verdict_truth',
     '"twist"',

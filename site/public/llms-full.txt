@@ -4,9 +4,9 @@ This document describes every canonical public page and every phase of the inter
 
 ## Product
 
-SimJury's Daily Docket is a single-player exercise in judgment. Each sitting presents one serious fictional criminal case in a contemporary courtroom. The player occupies Juror 01's seat, hears both sides, tests the evidence with an authored eleven-juror room, and locks a final verdict. A sitting is designed for about eight to ten minutes.
+SimJury's Daily Docket is a static-first exercise in judgment. Each sitting presents one serious criminal case in a contemporary courtroom. The player occupies Juror 01's seat, hears both sides, and tests the evidence with an authored eleven-juror room. When the availability-gated live-jury beta is open, invited people can deliberate in the same room alongside the clearly labelled authored jurors. After about twenty minutes, the player may record Guilty, Not Guilty, or Undecided / No verdict. Any juror may remain undecided, and the room can return a unanimous verdict, majority verdict, or hung jury with no verdict.
 
-There are no public accounts, public leaderboards, or runtime generative AI. Solo play remains local. The reserved live-jury service is disabled by default and will use short-lived room state only for selected human participants.
+There are no public accounts, public leaderboards, or runtime generative AI. Solo play remains local. Optional private live rooms use short-lived room state only for invited human participants.
 
 ## Canonical public routes
 
@@ -24,9 +24,9 @@ The Daily Docket is an interactive JavaScript application. Its raw HTML contains
 4. Openings: hear the prosecution and defence frame the dispute.
 5. Evidence: move through each authored evidence beat in order, read or listen, and write private notes.
 6. Closings: hear both advocates draw their arguments together.
-7. Deliberation: choose evidence and arguments across three rounds while up to four distinct jurors respond in each round. Seat leanings and tallies remain hidden.
-8. Verdict: lock Guilty or Not Guilty after deliberation. The choice is final for that sitting.
-9. Judgment and reveal: hear the room's result, compare it with the player's verdict, inspect the case analysis and reveal, update local statistics, and optionally create a spoiler-safe share card.
+7. Deliberation: choose evidence, ask questions, and raise original concerns across three rounds while authored jurors respond. If the live-jury beta is available, invited humans can exchange messages and stated positions in the same transcript alongside clearly labelled authored replies. Seat leanings and tallies remain hidden.
+8. Individual view and jury result: record Guilty, Not Guilty, or Undecided / No verdict after deliberation. The player, authored jurors, and human jurors may remain undecided; the room can agree unanimously, reach the jurisdiction's permitted majority, or return no verdict because it is hung.
+9. Judgment and reveal: hear the room's unanimous, majority, or hung result; compare it with the player's view; inspect the case analysis and reveal; update local statistics; and optionally create a spoiler-safe share card.
 
 Narration is optional. Authored audio is fetched as static media when available, with browser speech as a fallback. The app supports keyboard navigation, visible focus, semantic headings, transcript text alongside audio, responsive desktop and mobile layouts, and reduced-motion preferences.
 
