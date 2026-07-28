@@ -39,7 +39,7 @@
       "dc": {"src": "/today/media/dd-intro/characters/dc.webp", "alt": "Courtroom portrait of defence counsel Mira Sol.", "caption": "Fictional character portrait: Mira Sol, defence counsel.", "kind": "portrait"},
       "acc": {"src": "/today/media/dd-intro/characters/acc.webp", "alt": "Courtroom portrait of the accused, Lena Voss.", "caption": "Fictional character portrait: Lena Voss, the accused.", "kind": "portrait"},
       "w1": {"src": "/today/media/dd-intro/characters/w1.webp", "alt": "Courtroom portrait of patrol officer Eren Solt.", "caption": "Fictional character portrait: Eren Solt, patrol officer.", "kind": "portrait"},
-      "w2": {"src": "/today/media/dd-intro/characters/w2.webp", "alt": "Courtroom portrait of transit records custodian Sela Rune.", "caption": "Fictional character portrait: Sela Rune, transit records custodian.", "kind": "portrait"},
+      "w2": {"src": "/today/media/dd-intro/characters/w2.webp", "alt": "Courtroom portrait of digital evidence examiner Sela Rune.", "caption": "Fictional character portrait: Sela Rune, digital evidence examiner.", "kind": "portrait"},
       "J-01": {"src": "/today/media/dd-intro/characters/J-01.webp", "alt": "Courtroom portrait of juror 2, the night-shift baker.", "caption": "Fictional character portrait: Juror 2, the night-shift baker.", "kind": "portrait"},
       "J-02": {"src": "/today/media/dd-intro/characters/J-02.webp", "alt": "Courtroom portrait of juror 3, the records clerk.", "caption": "Fictional character portrait: Juror 3, the records clerk.", "kind": "portrait"},
       "J-03": {"src": "/today/media/dd-intro/characters/J-03.webp", "alt": "Courtroom portrait of juror 4, the retired teacher.", "caption": "Fictional character portrait: Juror 4, the retired teacher.", "kind": "portrait"},
@@ -57,214 +57,233 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The accused entered the evidence store after midnight following an angry dispute with Officer Mere. A secure camera then placed her at the scene after his death, and she concealed that visit. The prosecution says the genuine image, her access record, and her own lie identify the person who deliberately killed him."
+        "text": "Officer Dax Mere walked into the archive on a routine alarm call and never came home. Lena Voss had entered secretly, hidden the visit, and appeared on a genuine lobby recording. You will hear the transit and recorder evidence as well. The prosecution says her access, dishonesty, and knowledge of the system identify a planned deception around his killing."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The camera does show Lena Voss, but it does not show her after the killing. An isolated recorder displayed a clock eighteen minutes fast. Independent transit records place Lena across the city when Officer Mere died. The prosecution has mistaken an authentic face beneath a false time for proof of murder."
+        "text": "The recording shows Lena, and she should not have lied about being there. But the clocks do not agree. You will hear how the original files were preserved, which systems used central time, and what the archive recorder recorded when it restarted. The defence says embarrassment explains Lena’s lie, while the reliable sequence prevents the prosecution from placing her with Dax."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Lena entered secretly, argued with Officer Mere, and initially denied being there. The archive camera captured her face and uniform. The defence asks you to treat every awkward fact as coincidence. Taken together, the access, dispute, concealment, and image establish identity, intention, and an unlawful killing beyond reasonable doubt."
+        "text": "Do not ignore the transit evidence; weigh it with everything else. Its gate record does not identify a person, and its camera shows Lena only later. She had entered secretly, denied the visit, and shared access to the credential that disabled the archive clock’s synchronization. Those are real strands of evidence. But if the corrected frame and carriage image leave you unsure, the prosecution has not discharged its burden."
       },
       "defence": {
         "speaker": "dc",
-        "text": "Suspicion cannot repair a broken timeline. The recorder’s own restart log proves its display was eighteen minutes fast, while two independent transit systems place Lena away before the verified time of death. Her lie concealed an unauthorized repair, not murder. The prosecution cannot identify the killer beyond reasonable doubt."
+        "text": "Now the times can be put together. The preserved restart entry makes the displayed 1:31 frame a 1:13 departure. The central gate record begins Lena’s journey three minutes later, and the carriage image confirms her face. Her lie was foolish and damaging, but it concerned an unauthorized repair. It cannot place her in Dax’s unidentified fatal encounter or prove murder beyond reasonable doubt."
       }
     }
   },
-  "epilogue": "Lena Voss was acquitted. An independent inquiry separated the archive recorder from the city time network and reopened the unidentified-offender investigation. Officer Dax Mere’s family received a corrected public account stating that the last clear image of Lena preceded his arrival. Lena returned to alarm work months later, but she no longer accepts solitary night callouts.",
+  "epilogue": "After the proceedings, the city replaced the archive recorder and required independent clock checks for every serious investigation. Dax Mere’s sister kept pressing for answers about the unidentified person on his final recording. Lena Voss left overnight alarm work while the employment inquiry examined her hidden repair. The two families continued living with different parts of the same unresolved night.",
   "cast": [
     {"id": "judge", "name": "Judge Orla Fen", "role_label": "the judge", "side": "court"},
     {"id": "pc", "name": "Tavi Rusk", "role_label": "prosecuting counsel", "side": "prosecution"},
     {"id": "dc", "name": "Mira Sol", "role_label": "defence counsel", "side": "defence"},
     {"id": "acc", "name": "Lena Voss", "role_label": "the accused and municipal alarm technician", "side": "defence"},
     {"id": "w1", "name": "Eren Solt", "role_label": "patrol officer and former partner of the deceased", "side": "prosecution"},
-    {"id": "w2", "name": "Sela Rune", "role_label": "transit records custodian", "side": "defence"}
+    {"id": "w2", "name": "Sela Rune", "role_label": "digital evidence examiner called by the defence", "side": "defence"}
   ],
   "beats": [
     {
       "id": "b1",
+      "kind": "witness",
+      "speaker": "w1",
+      "mode": "examination",
+      "turns": [
+        {"speaker": "pc", "text": "What was Dax Mere like to work with?"},
+        {"speaker": "w1", "text": "Careful and kind. He checked my reports without making me feel small, and he called his sister after every night shift."},
+        {"speaker": "pc", "text": "What happened on his final call?"},
+        {"speaker": "w1", "text": "Dispatch sent him to the archive alarm at 1:16 a.m. His body camera connected at 1:18, and I followed when he stopped answering."}
+      ],
+      "text": "What was Dax Mere like to work with? Careful and kind. He checked my reports without making me feel small, and he called his sister after every night shift. What happened on his final call? Dispatch sent him to the archive alarm at 1:16 a.m. His body camera connected at 1:18, and I followed when he stopped answering.",
+      "surface_persuasion": 0.54,
+      "true_weight": 0.5,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "Eren’s first-hand account established when Dax began the call and treated him as a person, but it did not identify who attacked him.",
+      "tags": ["timeline", "causation"]
+    },
+    {
+      "id": "b2",
+      "kind": "exhibit",
+      "speaker": "judge",
+      "text": "The parties agree that a qualified forensic physician examined Dax Mere and reviewed the emergency records. Dax died between 1:19 and 1:24 a.m. from deliberate force by another person. The findings exclude accident, natural illness, and self-infliction. The parties further agree that the attacker intended to kill or cause really serious injury and acted without lawful justification. Only identity is disputed.",
+      "surface_persuasion": 0.64,
+      "true_weight": 0.58,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The agreed medical evidence proved an unlawful intentional homicide within a defined window. It was deliberately neutral about who committed it.",
+      "tags": ["causation", "intent", "timeline"]
+    },
+    {
+      "id": "b3",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The archive camera displays 1:31 a.m. as Lena Voss crosses the lobby in her orange work coat. The image is clear and unaltered. Prosecutors place Officer Mere’s death at 1:20 a.m., so the displayed time appears to show Lena leaving eleven minutes after the killing. Her face, service bag, and reflective coat stripe all appear plainly in the frame.",
+      "text": "The parties also agree that the city camera custodian exported the original lobby recording in an investigator’s presence and verified its matching hash. The unedited frame displays 1:31 a.m. and clearly shows Lena crossing the lobby in her work coat. Read beside the medical window, the displayed time appears to place her leaving after Dax was attacked.",
       "surface_persuasion": 0.93,
       "true_weight": 0.18,
       "direction": "guilt",
       "reveal_stamp": "misleading",
-      "reveal_note": "The face was genuinely Lena’s, but the recorder clock was eighteen minutes fast. The image was captured at 1:13 a.m., before Officer Mere arrived.",
+      "reveal_note": "The authenticated frame proved Lena’s identity, but not its real capture time. The later restart evidence changed 1:31 to 1:13.",
       "tags": ["identity", "timeline", "digital_forensics"]
     },
     {
-      "id": "b2",
-      "kind": "witness",
-      "speaker": "w1",
-      "mode": "examination",
-      "turns": [
-        {"speaker": "pc", "text": "When did Officer Mere tell you he was going to the archive?"},
-        {"speaker": "w1", "text": "At 1:16 a.m. Dispatch sent him to the silent alarm, and his body camera connected at 1:18 a.m."},
-        {"speaker": "pc", "text": "Had he mentioned Lena Voss that evening?"},
-        {"speaker": "w1", "text": "Yes. He said he intended to question her about an unauthorized repair entry and had sounded unusually concerned."}
-      ],
-      "text": "When did Officer Mere tell you he was going to the archive? At 1:16 a.m. Dispatch sent him to the silent alarm, and his body camera connected at 1:18 a.m. Had he mentioned Lena Voss that evening? Yes. He said he intended to question her about an unauthorized repair entry and had sounded unusually concerned.",
-      "surface_persuasion": 0.72,
-      "true_weight": 0.42,
-      "direction": "guilt",
-      "reveal_stamp": "minor",
-      "reveal_note": "The evidence establishes a reason for questioning Lena, but it does not place her with Officer Mere or identify his killer.",
-      "tags": ["motive", "timeline", "opportunity"]
-    },
-    {
-      "id": "b3",
+      "id": "b4",
       "kind": "witness",
       "speaker": "w1",
       "mode": "cross",
       "turns": [
-        {"speaker": "dc", "text": "Did you hear Officer Mere speak to the person inside?"},
-        {"speaker": "w1", "text": "No. The body-camera sound contains only the alarm and an indistinct voice."},
-        {"speaker": "dc", "text": "Can you identify Lena from that voice or the dark figure?"},
-        {"speaker": "w1", "text": "No. I cannot identify the figure or the voice. The figure’s face is never visible, and the voice contains no name."}
+        {"speaker": "dc", "text": "The body-camera figure never shows a face, does it?"},
+        {"speaker": "w1", "text": "No. I wish it did, but the face stays in shadow."},
+        {"speaker": "dc", "text": "And you cannot identify the voice as Lena’s?"},
+        {"speaker": "w1", "text": "I can’t. The recording proves Dax met someone inside. It doesn’t tell me who that person was."}
       ],
-      "text": "Did you hear Officer Mere speak to the person inside? No. The body-camera sound contains only the alarm and an indistinct voice. Can you identify Lena from that voice or the dark figure? No. I cannot identify the figure or the voice. The figure’s face is never visible, and the voice contains no name.",
-      "surface_persuasion": 0.58,
-      "true_weight": 0.55,
+      "text": "The body-camera figure never shows a face, does it? No. I wish it did, but the face stays in shadow. And you cannot identify the voice as Lena’s? I can’t. The recording proves Dax met someone inside. It doesn’t tell me who that person was.",
+      "surface_persuasion": 0.52,
+      "true_weight": 0.56,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The officer gave a careful and important limitation: the recording of the fatal encounter contains no usable identification.",
+      "reveal_note": "Eren resisted overstating the fatal recording. It established an encounter but supplied no usable identification.",
       "tags": ["identity", "credibility", "burden"]
     },
     {
-      "id": "b4",
+      "id": "b5",
       "kind": "exhibit",
       "speaker": "pc",
-      "text": "The city access register records Lena’s service card opening the archive at 12:47 a.m. She did not record the visit on her work sheet and first told investigators she had stayed home. The entry proves she visited the building and then concealed that visit. No later entry under Lena’s card appears, and the lobby exit required no card.",
-      "surface_persuasion": 0.76,
-      "true_weight": 0.48,
+      "text": "The parties agree that the access-system custodian produced the original register and verified its audit signature. Lena’s service card opened the archive at 12:47 a.m. She omitted that visit and first said she had stayed home. Dax’s signed call note says he planned to question her about the omission. No later entry used her card; lobby exits needed none.",
+      "surface_persuasion": 0.78,
+      "true_weight": 0.5,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "Lena’s concealment damaged her credibility, but the accurate access time still placed her inside more than half an hour before the death.",
-      "tags": ["opportunity", "credibility", "timeline"]
-    },
-    {
-      "id": "b5",
-      "kind": "witness",
-      "speaker": "w2",
-      "mode": "examination",
-      "turns": [
-        {"speaker": "dc", "text": "What do the original transit records show?"},
-        {"speaker": "w2", "text": "Lena’s registered pass opened East Quay gate at 1:16 a.m., and the departing carriage camera shows her face at 1:19 a.m."},
-        {"speaker": "dc", "text": "Are those systems linked to the archive recorder?"},
-        {"speaker": "w2", "text": "No. Both use the central time service. We checked each against the same network record, and neither required a correction."}
-      ],
-      "text": "What do the original transit records show? Lena’s registered pass opened East Quay gate at 1:16 a.m., and the departing carriage camera shows her face at 1:19 a.m. Are those systems linked to the archive recorder? No. Both use the central time service. We checked each against the same network record, and neither required a correction.",
-      "surface_persuasion": 0.75,
-      "true_weight": 0.88,
-      "direction": "innocence",
-      "reveal_stamp": "decisive",
-      "reveal_note": "Two independent records place Lena entering public transport away from the archive immediately before the verified fatal encounter.",
-      "tags": ["alibi", "timeline", "identity"]
+      "reveal_note": "The authenticated register and Lena’s lie established a concealed visit. They did not extend that visit into the medical window.",
+      "tags": ["motive", "credibility", "timeline"]
     },
     {
       "id": "b6",
       "kind": "witness",
       "speaker": "w2",
-      "mode": "cross",
+      "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "A pass can be carried by another person, correct?"},
-        {"speaker": "w2", "text": "Yes, but the carriage image shows Lena using it."},
-        {"speaker": "pc", "text": "Could that image have been recorded earlier?"},
-        {"speaker": "w2", "text": "No. The carriage location and central timestamp agree for that journey. The original file contains continuous footage before and after Lena boarded. No gaps, edits, or clock jumps are present."}
+        {"speaker": "dc", "text": "What transit material did you examine?"},
+        {"speaker": "w2", "text": "I obtained the original gate log and continuous carriage video from their custodians, checked both hashes, and compared their clocks with the central time record."},
+        {"speaker": "dc", "text": "What did those files show?"},
+        {"speaker": "w2", "text": "Lena’s pass opened East Quay gate at 1:16 a.m. The carriage video shows her face at 1:19, with no gap or clock jump."}
       ],
-      "text": "A pass can be carried by another person, correct? Yes, but the carriage image shows Lena using it. Could that image have been recorded earlier? No. The carriage location and central timestamp agree for that journey. The original file contains continuous footage before and after Lena boarded. No gaps, edits, or clock jumps are present.",
-      "surface_persuasion": 0.59,
-      "true_weight": 0.68,
+      "text": "What transit material did you examine? I obtained the original gate log and continuous carriage video from their custodians, checked both hashes, and compared their clocks with the central time record. What did those files show? Lena’s pass opened East Quay gate at 1:16 a.m. The carriage video shows her face at 1:19, with no gap or clock jump.",
+      "surface_persuasion": 0.72,
+      "true_weight": 0.86,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "The cross-examination tested both substitution and timing. The witness gave direct, unqualified answers that preserved the alibi.",
+      "reveal_note": "The examiner established provenance, integrity, identity, and independent central timing for the two transit records.",
       "tags": ["alibi", "digital_forensics", "identity"]
     },
     {
       "id": "b7",
-      "kind": "exhibit",
-      "speaker": "dc",
-      "text": "The archive recorder restarted after a power interruption at 10:04 p.m. Its service log states that the local clock resumed eighteen minutes fast because time synchronization was disabled. Subtracting that offset changes the lobby image from 1:31 a.m. to 1:13 a.m. The machine wrote that entry automatically, several hours before the fatal alarm.",
-      "surface_persuasion": 0.82,
+      "kind": "witness",
+      "speaker": "w2",
+      "mode": "examination",
+      "turns": [
+        {"speaker": "dc", "text": "How did you test the archive recorder itself?"},
+        {"speaker": "w2", "text": "I imaged its original drive in an investigator’s presence, sealed the drive, and verified that the working copy and lobby export kept the same hashes."},
+        {"speaker": "dc", "text": "What did its restart record show?"},
+        {"speaker": "w2", "text": "At 10:04 p.m. it loaded a clock eighteen minutes fast because synchronization was disabled. The displayed 1:31 frame was captured at 1:13."}
+      ],
+      "text": "How did you test the archive recorder itself? I imaged its original drive in an investigator’s presence, sealed the drive, and verified that the working copy and lobby export kept the same hashes. What did its restart record show? At 10:04 p.m. it loaded a clock eighteen minutes fast because synchronization was disabled. The displayed 1:31 frame was captured at 1:13.",
+      "surface_persuasion": 0.8,
       "true_weight": 0.92,
       "direction": "innocence",
       "reveal_stamp": "decisive",
-      "reveal_note": "This contemporaneous machine log resolves the apparent contradiction: Lena left before the officer arrived, and the displayed 1:31 time was false.",
+      "reveal_note": "The examiner authenticated the original drive, its custody, and the automatic restart entry before explaining the exact correction.",
       "tags": ["timeline", "digital_forensics", "identity"]
     },
     {
       "id": "b8",
       "kind": "witness",
-      "speaker": "acc",
-      "mode": "examination",
+      "speaker": "w2",
+      "mode": "cross",
       "turns": [
-        {"speaker": "dc", "text": "Why did you enter the archive without recording the job?"},
-        {"speaker": "acc", "text": "I had caused the alarm fault during an earlier repair and returned to correct it before my supervisor learned."},
-        {"speaker": "dc", "text": "When did you leave?"},
-        {"speaker": "acc", "text": "At about 1:13 a.m. I went directly to East Quay and boarded the next carriage. I was alone, and I kept my coat."}
+        {"speaker": "pc", "text": "The gate log alone does not identify who carried Lena’s pass?"},
+        {"speaker": "w2", "text": "That’s correct. Her face appears on the carriage three minutes later."},
+        {"speaker": "pc", "text": "And the restart entry does not name who disabled synchronization?"},
+        {"speaker": "w2", "text": "No. A shared maintenance credential did that at 9:52 p.m.; four technicians, including Lena, could use it. The restart entry itself was automatic and predates her recorded visit."}
       ],
-      "text": "Why did you enter the archive without recording the job? I had caused the alarm fault during an earlier repair and returned to correct it before my supervisor learned. When did you leave? At about 1:13 a.m. I went directly to East Quay and boarded the next carriage. I was alone, and I kept my coat.",
-      "surface_persuasion": 0.6,
-      "true_weight": 0.66,
-      "direction": "innocence",
-      "reveal_stamp": "decisive",
-      "reveal_note": "Her account is independently matched by the corrected archive time, the gate record, and the carriage image.",
-      "tags": ["credibility", "timeline", "alibi"]
+      "text": "The gate log alone does not identify who carried Lena’s pass? That’s correct. Her face appears on the carriage three minutes later. And the restart entry does not name who disabled synchronization? No. A shared maintenance credential did that at 9:52 p.m.; four technicians, including Lena, could use it. The restart entry itself was automatic and predates her recorded visit.",
+      "surface_persuasion": 0.64,
+      "true_weight": 0.5,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The prosecution exposed real limitations and Lena’s access to a shared credential. The examiner also preserved the independent carriage identification and the restart entry’s timing.",
+      "tags": ["digital_forensics", "credibility", "opportunity"]
     },
     {
       "id": "b9",
       "kind": "witness",
       "speaker": "acc",
-      "mode": "cross",
+      "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "You lied when investigators first asked whether you had visited, did you not?"},
-        {"speaker": "acc", "text": "Yes. I feared losing my job for hiding the faulty repair."},
-        {"speaker": "pc", "text": "Was Officer Mere investigating that misconduct?"},
-        {"speaker": "acc", "text": "Yes, but I had already left before he arrived. The transit records show exactly when and where I departed."}
+        {"speaker": "dc", "text": "Why did you return to the archive that night?"},
+        {"speaker": "acc", "text": "I’d made a mess of an alarm repair and never opened a work ticket. I thought I could fix it before my supervisor found out."},
+        {"speaker": "dc", "text": "What do you remember about leaving?"},
+        {"speaker": "acc", "text": "I didn’t check the archive clock. I walked quickly to East Quay, used my pass, and boarded the waiting carriage."}
       ],
-      "text": "You lied when investigators first asked whether you had visited, did you not? Yes. I feared losing my job for hiding the faulty repair. Was Officer Mere investigating that misconduct? Yes, but I had already left before he arrived. The transit records show exactly when and where I departed.",
-      "surface_persuasion": 0.69,
-      "true_weight": 0.38,
-      "direction": "guilt",
+      "text": "Why did you return to the archive that night? I’d made a mess of an alarm repair and never opened a work ticket. I thought I could fix it before my supervisor found out. What do you remember about leaving? I didn’t check the archive clock. I walked quickly to East Quay, used my pass, and boarded the waiting carriage.",
+      "surface_persuasion": 0.54,
+      "true_weight": 0.5,
+      "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The lie gave Lena a reason to avoid scrutiny, but it did not overcome the independent timeline or identify her as the killer.",
-      "tags": ["credibility", "motive", "burden"]
+      "reveal_note": "Lena gave a human explanation rather than reciting the records. Her account still required independent support, which the jury had already heard.",
+      "tags": ["credibility", "timeline", "alibi"]
     },
     {
       "id": "b10",
+      "kind": "witness",
+      "speaker": "acc",
+      "mode": "cross",
+      "turns": [
+        {"speaker": "pc", "text": "You first told investigators you had stayed home?"},
+        {"speaker": "acc", "text": "Yes. That was a lie, and I corrected it when they showed me the access record."},
+        {"speaker": "pc", "text": "You could use the shared maintenance credential?"},
+        {"speaker": "acc", "text": "For alarm work, yes, like three other technicians. I didn’t disable the clock, and I wasn’t there when Dax arrived."}
+      ],
+      "text": "You first told investigators you had stayed home? Yes. That was a lie, and I corrected it when they showed me the access record. You could use the shared maintenance credential? For alarm work, yes, like three other technicians. I didn’t disable the clock, and I wasn’t there when Dax arrived.",
+      "surface_persuasion": 0.7,
+      "true_weight": 0.46,
+      "direction": "guilt",
+      "reveal_stamp": "minor",
+      "reveal_note": "The cross-examination secured two damaging admissions—Lena lied and had credential access—while leaving both the shared access and independent timeline intact.",
+      "tags": ["credibility", "opportunity", "burden"]
+    },
+    {
+      "id": "b11",
       "kind": "direction",
       "speaker": "judge",
-      "text": "You must decide whether the prosecution has proved that Lena Voss was the person who killed Officer Mere and intended death or really serious injury. Lena does not have to prove where she was. If the corrected timeline leaves a reasonable possibility that she had departed, your verdict must be Not Guilty. That possibility is sufficient.",
+      "text": "The intentional homicide is agreed; identity remains for you to decide. If, after considering all the evidence, you are not sure the prosecution proved every element beyond reasonable doubt, your verdict must be Not Guilty. Lena does not have to explain who killed Dax or prove her journey. Use only the evidence in court, and do not research the case.",
       "surface_persuasion": 0.5,
-      "true_weight": 0.55,
+      "true_weight": 0.56,
       "direction": "innocence",
       "reveal_stamp": "minor",
-      "reveal_note": "The direction keeps the central question precise: an unexplained death and a suspicious lie do not prove the accused’s identity beyond reasonable doubt.",
-      "tags": ["burden", "identity", "timeline"]
+      "reveal_note": "The direction separates the agreed homicide from disputed identity and states the criminal standard without converting any imaginable doubt into reasonable doubt.",
+      "tags": ["burden", "identity", "causation"]
     }
   ],
   "checkins": [],
   "verdict_truth": "Not Guilty",
-  "twist": "The prosecution’s clearest image was authentic but mistimed. It captured Lena leaving before Officer Mere arrived; the recorder alone was eighteen minutes fast, while centrally timed transit records placed her elsewhere during the killing.",
+  "twist": "The authors’ reference resolution is Not Guilty. The authenticated restart entry maps the lobby frame to 1:13, before Dax arrived, and the centrally timed carriage image then identifies Lena away during the fatal window. The strongest prosecution interpretation is that her hidden visit, lie, and access to the shared credential show a planned deception. Those facts are probative, but they do not overcome the verified sequence or identify her in the fatal encounter.",
   "difficulty_target": 0.42,
   "jury": {
     "jurors": [
       {
-        "id": "J-01", "seat": 2, "label": "Night-shift baker", "persona": "Trusts a clear image first, then revises firmly when a clock error is proved.", "register": "plain", "arc": "vibes",
+        "id": "J-01", "seat": 2, "label": "Juror 2 — Anya", "persona": "Starts with the vivid lobby image, then asks whether its timestamp deserves the same confidence.", "register": "plain", "arc": "vibes",
         "initial": {"position": "G", "confidence": 80},
         "weights": {"identity": 2, "timeline": 1, "digital_forensics": 1},
         "lines": {
-          "agree": ["That clear lobby image looks like Lena leaving after the officer died."],
-          "pushback": ["A visible face is not enough if the time printed beneath it is wrong."],
-          "concede": ["The transit image changes my view because it shows Lena elsewhere at the verified time."],
-          "burden_drift": ["Lena should have to explain every minute because she lied about the visit."],
-          "burden_correct": ["Her lie raises suspicion, but the prosecution still has to identify the killer."],
-          "final": ["The corrected clock and the transit record leave me with reasonable doubt."]
+          "agree": ["I saw Lena’s face and stopped there. Doesn’t that image still matter?"],
+          "pushback": ["Wait—which clock are we trusting, and why?"],
+          "concede": ["All right, the carriage image changes it. That clock was independently checked."],
+          "burden_drift": ["She lied first. Why shouldn’t she have to fill every missing minute?"],
+          "burden_correct": ["No, that’s backwards. Her lie is evidence, but the prosecution still has to identify Dax’s attacker."],
+          "final": ["I’m not sure Lena was there for the fatal encounter."]
         },
         "reaction_rules": [
           {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 10, "line": "agree"}},
@@ -273,16 +292,16 @@
         ]
       },
       {
-        "id": "J-02", "seat": 3, "label": "Records clerk", "persona": "Compares source clocks and gives independent records more weight than copied displays.", "register": "formal", "arc": "steady",
+        "id": "J-02", "seat": 3, "label": "Juror 3 — Bram", "persona": "Keeps separating an authenticated file from the inference someone wants drawn from it.", "register": "formal", "arc": "steady",
         "initial": {"position": "G", "confidence": 60},
         "weights": {"timeline": 2, "digital_forensics": 2, "procedure": 1},
         "lines": {
-          "agree": ["The access register reliably proves Lena entered the building that night."],
-          "pushback": ["Entry at 12:47 does not establish presence at 1:20."],
-          "concede": ["The restart log provides a precise correction rather than a speculative one."],
-          "burden_drift": ["The missing work sheet makes me expect a complete account from Lena."],
-          "burden_correct": ["The official records must be tested by the prosecution’s burden, not by suspicion."],
-          "final": ["The centrally timed records place Lena away from the archive when the officer arrived."]
+          "agree": ["The access register proves the secret visit. I don’t think we can minimise that."],
+          "pushback": ["But 12:47 isn’t 1:20. What bridges that gap?"],
+          "concede": ["The restart entry gives us a measured correction, not a guess."],
+          "burden_drift": ["I keep wanting a complete account from Lena because the work ticket is missing."],
+          "burden_correct": ["The records still have to satisfy the prosecution’s burden; suspicion can’t complete them."],
+          "final": ["The reliable timestamps don’t place Lena with Dax."]
         },
         "reaction_rules": [
           {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
@@ -291,16 +310,16 @@
         ]
       },
       {
-        "id": "J-03", "seat": 4, "label": "Retired teacher", "persona": "Keeps the presumption of innocence visible when the room reacts emotionally.", "register": "formal", "arc": "principled_holdout",
+        "id": "J-03", "seat": 4, "label": "Juror 4 — Cora", "persona": "Keeps returning the room to disputed identity when strong feelings pull it toward the agreed homicide.", "register": "formal", "arc": "principled_holdout",
         "initial": {"position": "NG", "confidence": 78},
         "weights": {"burden": 2, "identity": 1, "credibility": 1},
         "lines": {
-          "agree": ["The defence account agrees with records created before anyone was accused."],
-          "pushback": ["No witness can identify Lena in the recording of the fatal encounter."],
-          "concede": ["I accept that her first lie was serious, although it does not prove murder."],
-          "burden_drift": ["Her concealment tempts the room to demand that she prove innocence."],
-          "burden_correct": ["The judge’s direction requires the prosecution to eliminate the reasonable timeline."],
-          "final": ["I remain Not Guilty because identity has not been proved."]
+          "agree": ["The defence timeline is supported by records created before anyone was accused."],
+          "pushback": ["Who can identify Lena in Dax’s final recording? Nobody has."],
+          "concede": ["I accept the lie was serious. I don’t accept that it identifies a murderer."],
+          "burden_drift": ["The concealment is tempting us to demand that Lena prove innocence."],
+          "burden_correct": ["The judge told us what to ask: are we sure the prosecution proved every element?"],
+          "final": ["I’m holding out because identity hasn’t been proved."]
         },
         "reaction_rules": [
           {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": -1, "confidence": 4, "line": "pushback"}},
@@ -309,16 +328,16 @@
         ]
       },
       {
-        "id": "J-04", "seat": 5, "label": "Vehicle mechanic", "persona": "Accepts machine evidence when the fault and its measured effect are plainly demonstrated.", "register": "blunt", "arc": "steady",
+        "id": "J-04", "seat": 5, "label": "Juror 5 — Dev", "persona": "Initially trusts the simple camera story, but changes position when the underlying records are tested.", "register": "blunt", "arc": "steady",
         "initial": {"position": "G", "confidence": 56},
         "weights": {"method": 1, "timeline": 2, "digital_forensics": 2},
         "lines": {
-          "agree": ["A secure camera is useful evidence when its clock is working."],
-          "pushback": ["This recorder restarted badly, so its displayed time cannot be trusted."],
-          "concede": ["Eighteen minutes explains the whole apparent conflict without guesswork."],
-          "burden_drift": ["Lena created the alarm fault, so part of me expects her to solve the case."],
-          "burden_correct": ["Causing a fault is not the same as causing a death."],
-          "final": ["The proved clock error moves me to Not Guilty."]
+          "agree": ["The camera is genuine. That’s why I started on Guilty."],
+          "pushback": ["Genuine picture, wrong time. Why are we treating those as the same thing?"],
+          "concede": ["Eighteen minutes resolves the conflict without inventing a missing event."],
+          "burden_drift": ["Part of me still wants Lena to solve this because she caused the repair mess."],
+          "burden_correct": ["A hidden repair isn’t a killing. We can’t blur them together."],
+          "final": ["I changed my mind once the real capture time was proved."]
         },
         "reaction_rules": [
           {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
@@ -327,16 +346,16 @@
         ]
       },
       {
-        "id": "J-05", "seat": 6, "label": "Shop manager and foreperson", "persona": "Organizes the discussion around what each record proves and does not prove.", "register": "plain", "arc": "foreperson",
+        "id": "J-05", "seat": 6, "label": "Juror 6 — Pax", "persona": "Organises the discussion by proposition and stops the room from treating agreed homicide as agreed identity.", "register": "plain", "arc": "foreperson",
         "initial": {"position": "G", "confidence": 52},
         "weights": {"burden": 2, "timeline": 1, "procedure": 1},
         "lines": {
-          "agree": ["We agree that Lena entered and concealed the unauthorized visit."],
-          "pushback": ["We must separate that misconduct from the later killing."],
-          "concede": ["The sequence is clear once the archive time is corrected."],
-          "burden_drift": ["The room is starting to treat Lena’s lie as a duty to prove innocence."],
-          "burden_correct": ["The judge said the prosecution must prove identity beyond reasonable doubt."],
-          "final": ["Our decision turns on 1:20, and the reliable records place Lena elsewhere."]
+          "agree": ["Let’s mark it clearly: Lena entered, hid the visit, and lied."],
+          "pushback": ["Now the next question: what proves she stayed for Dax’s arrival?"],
+          "concede": ["Once 1:31 becomes 1:13, the records fit together."],
+          "burden_drift": ["We’re starting to make Lena’s lie carry a duty to prove innocence."],
+          "burden_correct": ["Identity is still the prosecution’s element. Has it been proved beyond reasonable doubt?"],
+          "final": ["The homicide is agreed. Lena’s identity as the attacker isn’t."]
         },
         "reaction_rules": [
           {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 5, "line": "burden_correct"}},
@@ -345,16 +364,16 @@
         ]
       },
       {
-        "id": "J-06", "seat": 7, "label": "Apprentice electrician", "persona": "Moves quickly with vivid evidence but understands how power faults disrupt isolated equipment.", "register": "plain", "arc": "drifter",
+        "id": "J-06", "seat": 7, "label": "Juror 7 — Fia", "persona": "Speaks before settling, then corrects herself aloud when another juror exposes a missing step.", "register": "plain", "arc": "drifter",
         "initial": {"position": "U", "confidence": 40},
         "weights": {"identity": 2, "timeline": 2, "digital_forensics": 1},
         "lines": {
-          "agree": ["At first, the face and the printed 1:31 time looked decisive to me."],
-          "pushback": ["A camera can record a true picture while displaying a false clock."],
-          "concede": ["The restart log makes the eighteen-minute error concrete."],
+          "agree": ["I’ll be honest: face plus 1:31 looked decisive to me."],
+          "pushback": ["Hold on. The picture can be true while the printed time is wrong."],
+          "concede": ["Yes, I see it now—the restart entry makes the error concrete."],
           "burden_drift": ["Because Lena hid the repair, I keep wanting her to remove every doubt."],
-          "burden_correct": ["The prosecution must remove reasonable doubt; Lena does not carry that task."],
-          "final": ["I now read the image as proof that Lena left before the killing."]
+          "burden_correct": ["That isn’t her job. The prosecution has to prove the identity element."],
+          "final": ["I was anchored by the first image, and I’ve changed my view."]
         },
         "reaction_rules": [
           {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 8, "line": "agree"}},
@@ -363,16 +382,16 @@
         ]
       },
       {
-        "id": "J-07", "seat": 8, "label": "Network technician", "persona": "Changes position when independent systems expose a mistaken shared assumption.", "register": "formal", "arc": "mind_changer",
+        "id": "J-07", "seat": 8, "label": "Juror 8 — Garen", "persona": "Tests whether independent evidence confirms the same proposition and is willing to reverse an early position.", "register": "formal", "arc": "mind_changer",
         "initial": {"position": "G", "confidence": 72},
         "weights": {"digital_forensics": 2, "timeline": 2, "identity": 1},
         "lines": {
-          "agree": ["The lobby frame is authentic, and that initially supported guilt."],
-          "pushback": ["Authenticity of the image does not authenticate the recorder’s clock."],
-          "concede": ["The independent time sources prove that my first reading was wrong."],
+          "agree": ["The lobby frame is authentic, and I initially treated that as proof of guilt."],
+          "pushback": ["But what authenticated the recorder’s clock? Not the image hash."],
+          "concede": ["The independent sources show my first reading was wrong."],
           "burden_drift": ["Lena’s dishonesty makes an unsupported inference feel safer than it is."],
           "burden_correct": ["The prosecution must prove the fatal encounter, not merely an earlier visit."],
-          "final": ["The verified systems put Lena on the carriage before Officer Mere entered."]
+          "final": ["The verified sequence puts Lena away before Dax met the attacker."]
         },
         "reaction_rules": [
           {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 10, "line": "concede"}},
@@ -382,16 +401,16 @@
         ]
       },
       {
-        "id": "J-08", "seat": 9, "label": "Community nurse", "persona": "Listens closely to witness limits and refuses to turn suspicion into identification.", "register": "plain", "arc": "steady",
+        "id": "J-08", "seat": 9, "label": "Juror 9 — Hali", "persona": "Listens for the limit in each witness’s answer and challenges anyone who quietly goes beyond it.", "register": "plain", "arc": "steady",
         "initial": {"position": "NG", "confidence": 64},
         "weights": {"credibility": 2, "identity": 2, "burden": 1},
         "lines": {
-          "agree": ["Officer Solt was clear that the fatal recording identifies nobody."],
-          "pushback": ["The prosecution is joining an earlier clear face to a later unclear figure."],
-          "concede": ["I accept that Lena’s lie was damaging, but the reason she gave is independently supported."],
-          "burden_drift": ["A terrible death can make any unexplained conduct feel like guilt."],
+          "agree": ["Eren was careful: Dax met someone, but the recording identifies nobody."],
+          "pushback": ["Are we joining an earlier clear face to a later shadow and calling them one person?"],
+          "concede": ["Lena’s lie damages her. The transit records still support why she said she left."],
+          "burden_drift": ["Dax’s death is terrible, and that can make unexplained conduct feel like guilt."],
           "burden_correct": ["The seriousness of the charge makes accurate identification more important, not less."],
-          "final": ["I cannot identify Lena as the person who killed Officer Mere."]
+          "final": ["I can’t identify Lena as Dax’s attacker."]
         },
         "reaction_rules": [
           {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": -1, "confidence": 4, "line": "pushback"}},
@@ -400,16 +419,16 @@
         ]
       },
       {
-        "id": "J-09", "seat": 10, "label": "Warehouse supervisor", "persona": "Dislikes concealed workplace mistakes and is vulnerable to shifting the burden.", "register": "blunt", "arc": "burden_drifter",
+        "id": "J-09", "seat": 10, "label": "Juror 10 — Ivo", "persona": "Reacts strongly to Lena’s lie and has to be challenged when suspicion starts shifting the burden.", "register": "blunt", "arc": "burden_drifter",
         "initial": {"position": "G", "confidence": 62},
         "weights": {"motive": 2, "burden": 2, "timeline": 1},
         "lines": {
-          "agree": ["Lena’s hidden repair gave Officer Mere a reason to question her."],
-          "pushback": ["A workplace cover-up still does not identify a murderer."],
-          "concede": ["The transit sequence is too specific for me to dismiss."],
-          "burden_drift": ["Lena lied first, so I want her to prove who else was inside."],
-          "burden_correct": ["That is the wrong burden; the prosecution must prove Lena was the killer."],
-          "final": ["I dislike her conduct, but I am not satisfied of murder."]
+          "agree": ["Dax planned to question Lena. That gives the lie a sharper edge."],
+          "pushback": ["Still, a workplace cover-up doesn’t identify a murderer."],
+          "concede": ["I can’t brush aside a face on a centrally timed carriage."],
+          "burden_drift": ["Lena lied first, so I want her to tell us who else was inside."],
+          "burden_correct": ["No—that puts it on her. The prosecution has to prove Lena was the attacker."],
+          "final": ["I dislike what she did, but I’m not sure she committed murder."]
         },
         "reaction_rules": [
           {"when": {"theme": "motive", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 6, "line": "burden_drift"}},
@@ -419,15 +438,15 @@
         ]
       },
       {
-        "id": "J-10", "seat": 11, "label": "Music student", "persona": "Notices rhythm and sequence, but initially follows whichever account sounds most immediate.", "register": "hesitant", "arc": "drifter",
+        "id": "J-10", "seat": 11, "label": "Juror 11 — Jessa", "persona": "Voices uncertainty as the sequence develops and corrects her own shorthand when it stops fitting.", "register": "hesitant", "arc": "drifter",
         "initial": {"position": "U", "confidence": 36},
         "weights": {"timeline": 2, "identity": 2, "credibility": 1},
         "lines": {
-          "agree": ["I initially followed the simple story that the camera showed her leaving afterward."],
-          "pushback": ["The simple story uses the wrong time, so it cannot stay simple."],
-          "concede": ["The gate, carriage, and corrected recorder now form one clear sequence."],
+          "agree": ["I followed the simple story: camera means she left afterward."],
+          "pushback": ["But that story uses the displayed time. What happens when it’s corrected?"],
+          "concede": ["The gate, carriage, and restart entry now make one sequence for me."],
           "burden_drift": ["I keep thinking Lena should fill the gap because she was dishonest."],
-          "burden_correct": ["The gap belongs to the prosecution’s case, not Lena’s defence."],
+          "burden_correct": ["Actually, the gap belongs to the prosecution’s case, doesn’t it?"],
           "final": ["The reliable sequence leaves Lena away from the fatal encounter."]
         },
         "reaction_rules": [
@@ -437,16 +456,16 @@
         ]
       },
       {
-        "id": "J-11", "seat": 12, "label": "Library assistant", "persona": "Separates what each source actually says and remains careful about missing proof.", "register": "formal", "arc": "steady",
+        "id": "J-11", "seat": 12, "label": "Juror 12 — Kellan", "persona": "Insists on stating the strongest argument for each side before deciding what remains unproved.", "register": "formal", "arc": "steady",
         "initial": {"position": "NG", "confidence": 55},
         "weights": {"digital_forensics": 2, "burden": 2, "identity": 1},
         "lines": {
-          "agree": ["The service log and transit records support one another without sharing a clock."],
-          "pushback": ["The prosecution’s image proves Lena’s identity but not the alleged time."],
-          "concede": ["I concede that her initial denial was a proper reason for investigation."],
-          "burden_drift": ["It is easy to ask Lena for an answer because the real killer is unknown."],
-          "burden_correct": ["An unknown killer does not reduce the prosecution’s burden of proof."],
-          "final": ["The evidence proves an earlier visit, not the charged murder."]
+          "agree": ["The restart and transit records support one another without sharing a clock."],
+          "pushback": ["The prosecution’s best point is concealment. Which record carries it into the fatal window?"],
+          "concede": ["I agree Lena’s denial made her a proper suspect and deserved investigation."],
+          "burden_drift": ["It’s easy to ask Lena for the answer because Dax’s attacker remains unknown."],
+          "burden_correct": ["An unknown attacker doesn’t reduce the prosecution’s burden."],
+          "final": ["The evidence proves a hidden visit, not the charged murder."]
         },
         "reaction_rules": [
           {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
@@ -459,9 +478,9 @@
   "gen_meta": {
     "model": "gpt-5",
     "prompt_version": "dd-2026-v3",
-    "reviewer": "content-curator",
-    "batch_pr": "grave-crime-seven-case-replacement",
-    "language_reviewer": "language-and-clarity-pass",
-    "sensitivity_reviewer": "non-graphic-serious-violence-pass"
+    "reviewer": "content-curator-legal-fidelity-pass",
+    "batch_pr": "codex/rewrite-dd-intro",
+    "language_reviewer": "read-aloud-dialogue-pass",
+    "sensitivity_reviewer": "victim-humanity-non-graphic-pass"
   }
 }
