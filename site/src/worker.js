@@ -429,13 +429,14 @@ export default {
   async fetch(request, env) {
     const pathname = new URL(request.url).pathname
     if (!isLiveRoute(pathname)) return env.ASSETS.fetch(request)
+    const enabled = liveJuryEnabled(env)
+    const ready = enabled && Boolean(env.POOL_COORDINATOR) && Boolean(env.ROOMS)
 
     if (request.method === 'GET' && pathname === '/api/live/healthz') {
-      const enabled = liveJuryEnabled(env)
       return json({
         ok: true,
         live_jury_enabled: enabled,
-        ready: enabled && Boolean(env.POOL_COORDINATOR) && Boolean(env.ROOMS),
+        ready,
         limits: FREE_BETA_LIMITS,
       })
     }
@@ -446,7 +447,8 @@ export default {
       })
     }
 
-    if (!liveJuryEnabled(env)) return unavailable()
+    if (!enabled) return unavailable()
+    if (!ready) return unavailable('LIVE_JURY_PIPELINE_NOT_READY', 503)
     const socketRoomId = roomSocketRoute(pathname)
     if (socketRoomId) {
       if (request.headers.get('Upgrade')?.toLowerCase() !== 'websocket') {
