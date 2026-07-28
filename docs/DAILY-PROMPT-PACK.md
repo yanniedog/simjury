@@ -7,14 +7,13 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 
 ## Workflow
 
-1. Pick the week's slate: 7 scenario/trap-shape/verdict/difficulty slots that satisfy
-   the queue rules in `DAILY-CASES.md` (verdict mix, no >3-run, difficulty rhythm,
-   scenario variety).
-2. Draft each case with the template below. Set `gen_meta.model`, keep
-   `prompt_version` = the version line at the bottom of this file.
+1. Use one of the seven canonical grave-offence slots in `DAILY-CASES.md`. Never add an
+   eighth active case or reuse an old plot.
+2. Draft each case with the template below. Set every `gen_meta` reviewer and keep
+   `prompt_version` equal to the version line at the bottom of this file.
 3. Run the gates. Fix pacing/design/jury/dynamics failures by editing the case.
-4. Open one batch PR of ~7 cases. The owner spot-checks (reads 1–2 in full, skims the
-   rest for banned content and tone) and merges through the bot gates.
+4. Open one atomic case PR. Every line receives story, language, legal-clarity, and
+   sensitivity review before the bot gates.
 
 ## Template
 
@@ -24,16 +23,19 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 > business names and describe platforms by genre ("a rideshare app"). Set
 > `label: "fiction"`.
 >
-> **Slots:** id **{dd-NNNN}** · publish_date **{YYYY-MM-DD}** · charge **{charge}** ·
+> **Slots:** id **{dd-NNNN}** · publish_date **{YYYY-MM-DD}** · offence_code
+> **{canonical grave profile}** ·
 > true verdict **{Guilty|Not Guilty}** · trap shape **{feels-guilty-is-innocent |
 > feels-innocent-is-guilty | over-trusted-machine | under-trusted-human}** ·
 > difficulty_target **{0.3–0.8}** · scenario family **{from DAILY-CASES.md, 2026}**.
 >
 > **Top-level fields:** `"title"` (invented case title), `"setting"` (contemporary
-> 2026 setting sketch), `"elements"` (array of 2–4 short sentences defining the legal
-> elements of the charge), `"verdict_truth"` (set to the true verdict slot value), and
-> `"gen_meta"` (`{ model: "model-name", prompt_version: "dd-2026-v2", reviewer:
-> "reviewer-name", batch_pr: "pr-number" }`).
+> 2026 setting sketch), `"charge"` and `"elements"` copied exactly from the selected
+> offence profile, `"content_advisories"` containing every profile requirement,
+> `"detail_level": "non_graphic"`, `"verdict_truth"` (set to the true verdict slot),
+> and `"gen_meta"` (`{ model: "model-name", prompt_version: "dd-2026-v3", reviewer:
+> "reviewer-name", batch_pr: "pr-number", language_reviewer: "name",
+> sensitivity_reviewer: "name" }`).
 >
 > **Cast:** 3–4 witnesses, a judge (`side: "court"`), and named prosecuting and
 > defence counsel (ids `pc`/`dc`; there is no clerk). The accused is a defence-side
@@ -59,17 +61,18 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 >
 > **Evidence:** 10–14 beats, each 40–70 words, total 550–1050 words, set in the
 > present day (2026), grouped by speaker with examination/cross `mode` on witness
-> beats. Write the two or three load-bearing cross-examinations as live Q&A dialogue
-> (counsel's question, the witness's answer, the pause before a bad one) rather than
-> reported summary — it is where the drama lands. Each beat carries
+> beats. Every witness beat, examination and cross, uses explicit structured `turns`.
+> Counsel asks a specific complete question and the witness gives a complete answer.
+> Never use a bare yes/no answer or an ambiguous pronoun. Each beat carries
 > 1–3 `tags` from: identity, alibi, digital_forensics, motive, opportunity, method,
-> timeline, credibility, procedure, burden. At least one direction beat tagged
+> timeline, credibility, procedure, burden, knowledge, intent, causation, duress,
+> command, or coercion. At least one direction beat tagged
 > `burden` (plain-English burden/standard + "do not research this case online").
 > Include ≥1 `misleading` beat (surface_persuasion − true_weight ≥ 0.25) pointing
 > away from the true verdict and placed early; ≥1 `decisive` beat (true_weight ≥ 0.6)
 > pointing toward it and placed late; beats arguing both directions; `minor` beats
-> under 0.6 true_weight. 3–5 `checkins` (beat ids, in order), the last one at or
-> after the final misleading beat. Every beat has a `reveal_note` saying what it was
+> under 0.6 true_weight. `checkins` may be empty; if retained, beat ids stay in order
+> and the last check-in is the final beat. Every beat has a `reveal_note` saying what it was
 > really worth and why; write the `twist` (2–4 sentences) explaining why the obvious
 > read was wrong.
 >
@@ -85,7 +88,13 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 > argument their line contradicts. Lines are spoken 2026 English in the juror's
 > register, referencing the case's evidence generically (no real names).
 >
-> Write the whole thing to be *listened to* on a commute: the hook should hook, the
+> **Images:** provide a juror-eye court-sketch cover and one neutral, individual,
+> text-free courtroom portrait for every cast member and juror. Declare portraits under
+> `media.portraits` using `/today/media/<case-id>/characters/<speaker-id>.webp`.
+>
+> Write with the control and fair misdirection of a skilled crime novelist. Plant the
+> twist at least twice before the decisive beat. Write the whole thing to be *listened
+> to* on a commute: the hook should hook, the
 > counsel should sound like rival storytellers, the epilogue should land. Output only
 > the JSON.
 
@@ -109,4 +118,4 @@ G-juror's confidence below 70, or add a themed rule with a real delta — before
 touching the case text.
 
 ---
-prompt_version: dd-2026-v2
+prompt_version: dd-2026-v3

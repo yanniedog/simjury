@@ -1,8 +1,30 @@
 import { describe, expect, it } from 'vitest'
-import { checkDocketCase, checkDocketQueue } from './caseQuality'
-import { makeDocketCase, makeJuror, prose } from './fixtures'
+import { checkDocketCase, checkDocketQueue, checkV3Corpus } from './caseQuality'
+import { makeDocketCase, makeJuror, makeV3DocketCase, prose } from './fixtures'
+import { OFFENCE_CODES, OFFENCE_PROFILES } from './offenceProfiles'
 
 describe('checkDocketCase', () => {
+  it('accepts the grave-crime v3 contract with complete portraits and structured witness dialogue', () => {
+    expect(checkDocketCase(makeV3DocketCase())).toEqual([])
+  })
+
+  it('rejects missing v3 offence, review, portrait, and dialogue metadata', () => {
+    const c = makeDocketCase({
+      gen_meta: {
+        model: 'm',
+        prompt_version: 'dd-2026-v3',
+        reviewer: 'r',
+        batch_pr: 'b',
+      },
+    })
+    const joined = checkDocketCase(c).join()
+    expect(joined).toMatch(/must declare offence_code/)
+    expect(joined).toMatch(/detail_level/)
+    expect(joined).toMatch(/language_reviewer/)
+    expect(joined).toMatch(/sensitivity_reviewer/)
+    expect(joined).toMatch(/missing a courtroom portrait/)
+    expect(joined).toMatch(/must include structured dialogue turns/)
+  })
   it('passes a well-designed docket case', () => {
     expect(checkDocketCase(makeDocketCase())).toEqual([])
   })
@@ -393,6 +415,34 @@ describe('checkDocketCase', () => {
         : b,
     )
     expect(checkDocketCase(c).join()).toMatch(/judge's instruction/)
+  })
+})
+
+describe('checkV3Corpus', () => {
+  const corpus = () =>
+    OFFENCE_CODES.map((offence_code, index) => {
+      const profile = OFFENCE_PROFILES[offence_code]
+      return makeV3DocketCase({
+        id: index === 0 ? 'dd-intro' : `dd-${String(index).padStart(4, '0')}`,
+        publish_date: `2026-08-${String(index + 1).padStart(2, '0')}`,
+        title: `Grave case ${index}`,
+        offence_code,
+        charge: profile.charge,
+        elements: [...profile.elements],
+        content_advisories: [...profile.advisories],
+      })
+    })
+
+  it('accepts exactly one v3 case from every selected offence profile', () => {
+    expect(checkV3Corpus(corpus())).toEqual([])
+  })
+
+  it('rejects a completed v3 corpus that drops a selected case', () => {
+    const issues = checkV3Corpus(corpus().slice(0, -1)).map(
+      (issue) => issue.message,
+    )
+    expect(issues.join()).toMatch(/exactly 7 cases/)
+    expect(issues.join()).toMatch(/missing offence profile/)
   })
 })
 

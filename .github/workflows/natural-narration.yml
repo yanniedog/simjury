@@ -58,8 +58,10 @@ jobs:
             requested="$REQUESTED_CASES"
           else
             changed="$(git diff --name-only HEAD^ HEAD)"
+            deleted_cases="$(git diff --diff-filter=D --name-only HEAD^ HEAD |
+              sed -nE 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p')"
             # Synthesis inputs / spoken cue copy / voice catalog force all.
-            if grep -Eq '^(site/app/src/lib/(narration|narratorCues|castGenders|speakerVoices|narrationVoices)\.(ts|json)|site/app/src/lib/narratorCueCopy\.json|site/narration-requirements\.txt|site/scripts/(generate-kokoro-clips\.py|speaker-voices\.mjs))$' <<< "$changed"; then
+            if [[ -n "$deleted_cases" ]] || grep -Eq '^(site/app/src/lib/(narration|narratorCues|castGenders|speakerVoices|narrationVoices)\.(ts|json)|site/app/src/lib/narratorCueCopy\.json|site/narration-requirements\.txt|site/scripts/(generate-kokoro-clips\.py|speaker-voices\.mjs))$' <<< "$changed"; then
               requested="all"
             else
               requested="$(sed -nE 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p' <<< "$changed" |
