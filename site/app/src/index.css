@@ -102,6 +102,10 @@
   .statement-card { padding: 1.15rem; border: 1px solid rgb(244 240 232 / 11%); border-radius: 1rem; background: rgb(21 29 33 / 70%); }
   .statement-card.prosecution { border-left: 3px solid #f08b7d; }
   .statement-card.defence { border-left: 3px solid #72c7aa; }
+  .speech-turn { transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease; }
+  .speech-turn.speech-turn-active { border-color: var(--brass-400); background-color: rgb(214 185 121 / 12%); box-shadow: 0 0 0 2px rgb(214 185 121 / 34%); }
+  .speaker-heading { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+  .speaker-flag { flex: 0 0 auto; padding: .2rem .5rem; border: 1px solid rgb(214 185 121 / 55%); border-radius: 999px; color: #f5d99a; background: rgb(8 11 13 / 65%); font-size: .58rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 
   .verdict-threshold { border-color: rgb(214 185 121 / 22%); border-radius: 1rem; background: linear-gradient(145deg, rgb(214 185 121 / 9%), rgb(21 29 33 / 72%)); }
   .verdict-choices button { min-height: 7.5rem; border-radius: 1rem; }

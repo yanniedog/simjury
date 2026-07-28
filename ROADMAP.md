@@ -26,7 +26,8 @@ daily docket and is not a shipped product surface.
    banned-token, jury-floor, and deliberation-dynamics gates.
 2. Keep the complete first-time and returning-player journeys listenable,
    accessible, and low-friction.
-3. Preserve the assets-only Cloudflare boundary and local-only player state.
+3. Preserve static delivery for ordinary and solo traffic while keeping the
+   live-jury Worker and its short-lived room state inside the strict allowlist.
 4. Ship small, reviewable PRs through the required CI and bot gates.
 
 ## PR discipline
