@@ -1,0 +1,330 @@
+{
+  "id": "dd-0038",
+  "publish_date": "2026-08-09",
+  "label": "fiction",
+  "title": "The Clean Room",
+  "offence_code": "large_scale_drug_manufacturing",
+  "content_advisories": ["drug_harm"],
+  "detail_level": "non_graphic",
+  "setting": "The present-day fictional city of Halen Ward, where a sealed research suite concealed large-scale illegal drug manufacture behind ordinary climate-service requests.",
+  "charge": "manufacturing a large commercial quantity of a controlled drug",
+  "elements": [
+    "A large commercial quantity of a controlled drug was manufactured.",
+    "The accused knowingly took part in manufacturing that drug.",
+    "The accused intended the manufacturing activity to continue or succeed."
+  ],
+  "hook": "Every illicit production run depended on climate changes entered through Nara Kelm’s service account. The operators had designed those requests so the technician would never know why.",
+  "accused": {
+    "cast_id": "acc",
+    "human": "Nara Kelm is an independent refrigeration technician rebuilding a small business after caring for a sick sibling.",
+    "if_guilty": "A conviction would impose a lengthy prison term and brand routine technical work as knowing participation in industrial drug manufacture."
+  },
+  "media": {
+    "cover": {"src": "/today/media/dd-0038/cover.webp", "alt": "Courtroom sketch of a sealed clean-room door beside an external climate control panel.", "caption": "Fictional court sketch: the sealed production room and the technician’s external control panel.", "kind": "court_sketch"},
+    "accused": {"src": "/today/media/dd-0038/characters/acc.webp", "alt": "Courtroom portrait of the accused, Nara Kelm.", "caption": "Fictional character portrait: Nara Kelm, the accused refrigeration technician.", "kind": "portrait"},
+    "beats": {},
+    "portraits": {
+      "judge": {"src": "/today/media/dd-0038/characters/judge.webp", "alt": "Courtroom portrait of Judge Lio Maren.", "caption": "Fictional character portrait: Judge Lio Maren.", "kind": "portrait"},
+      "pc": {"src": "/today/media/dd-0038/characters/pc.webp", "alt": "Courtroom portrait of prosecuting counsel Dara Venn.", "caption": "Fictional character portrait: Dara Venn, prosecuting counsel.", "kind": "portrait"},
+      "dc": {"src": "/today/media/dd-0038/characters/dc.webp", "alt": "Courtroom portrait of defence counsel Soren Pell.", "caption": "Fictional character portrait: Soren Pell, defence counsel.", "kind": "portrait"},
+      "acc": {"src": "/today/media/dd-0038/characters/acc.webp", "alt": "Courtroom portrait of the accused, Nara Kelm.", "caption": "Fictional character portrait: Nara Kelm, the accused.", "kind": "portrait"},
+      "w1": {"src": "/today/media/dd-0038/characters/w1.webp", "alt": "Courtroom portrait of controlled-substances regulator Ivo Tarn.", "caption": "Fictional character portrait: Ivo Tarn, controlled-substances regulator.", "kind": "portrait"},
+      "w2": {"src": "/today/media/dd-0038/characters/w2.webp", "alt": "Courtroom portrait of control-systems expert Doctor Mina Orrel.", "caption": "Fictional character portrait: Doctor Mina Orrel, control-systems expert.", "kind": "portrait"},
+      "w3": {"src": "/today/media/dd-0038/characters/w3.webp", "alt": "Courtroom portrait of cooperating production chemist Rian Vesk.", "caption": "Fictional character portrait: Rian Vesk, cooperating production chemist.", "kind": "portrait"},
+      "J-01": {"src": "/today/media/dd-0038/characters/J-01.webp", "alt": "Courtroom portrait of juror 2, the laboratory cleaner.", "caption": "Fictional character portrait: Juror 2, the laboratory cleaner.", "kind": "portrait"},
+      "J-02": {"src": "/today/media/dd-0038/characters/J-02.webp", "alt": "Courtroom portrait of juror 3, the building manager.", "caption": "Fictional character portrait: Juror 3, the building manager.", "kind": "portrait"},
+      "J-03": {"src": "/today/media/dd-0038/characters/J-03.webp", "alt": "Courtroom portrait of juror 4, the retired solicitor.", "caption": "Fictional character portrait: Juror 4, the retired solicitor.", "kind": "portrait"},
+      "J-04": {"src": "/today/media/dd-0038/characters/J-04.webp", "alt": "Courtroom portrait of juror 5, the heating technician.", "caption": "Fictional character portrait: Juror 5, the heating technician.", "kind": "portrait"},
+      "J-05": {"src": "/today/media/dd-0038/characters/J-05.webp", "alt": "Courtroom portrait of juror 6, the foreperson and florist.", "caption": "Fictional character portrait: Juror 6, the foreperson and florist.", "kind": "portrait"},
+      "J-06": {"src": "/today/media/dd-0038/characters/J-06.webp", "alt": "Courtroom portrait of juror 7, the delivery rider.", "caption": "Fictional character portrait: Juror 7, the delivery rider.", "kind": "portrait"},
+      "J-07": {"src": "/today/media/dd-0038/characters/J-07.webp", "alt": "Courtroom portrait of juror 8, the data engineer.", "caption": "Fictional character portrait: Juror 8, the data engineer.", "kind": "portrait"},
+      "J-08": {"src": "/today/media/dd-0038/characters/J-08.webp", "alt": "Courtroom portrait of juror 9, the social worker.", "caption": "Fictional character portrait: Juror 9, the social worker.", "kind": "portrait"},
+      "J-09": {"src": "/today/media/dd-0038/characters/J-09.webp", "alt": "Courtroom portrait of juror 10, the accounts assistant.", "caption": "Fictional character portrait: Juror 10, the accounts assistant.", "kind": "portrait"},
+      "J-10": {"src": "/today/media/dd-0038/characters/J-10.webp", "alt": "Courtroom portrait of juror 11, the trainee pharmacist.", "caption": "Fictional character portrait: Juror 11, the trainee pharmacist.", "kind": "portrait"},
+      "J-11": {"src": "/today/media/dd-0038/characters/J-11.webp", "alt": "Courtroom portrait of juror 12, the cinema projectionist.", "caption": "Fictional character portrait: Juror 12, the cinema projectionist.", "kind": "portrait"}
+    }
+  },
+  "statements": {
+    "opening": {
+      "prosecution": {"speaker": "pc", "text": "A large commercial quantity of a controlled drug was manufactured in the sealed suite. Nara entered the site after hours, changed the climate controls before each production run, and received unusually generous payments. The prosecution says those repeated, precise acts were knowing participation intended to keep the illegal manufacture operating successfully."},
+      "defence": {"speaker": "dc", "text": "Nara serviced climate equipment outside a room she could not enter or see into. The operators sent false humidity alarms, copied her account label, and recorded a plan to keep her ignorant. Technical access proves that she performed legitimate corrections; it does not prove knowledge of the concealed drug manufacture or an intention to advance it."}
+    },
+    "closing": {
+      "prosecution": {"speaker": "pc", "text": "Nara’s adjustments were essential, repeated, and well paid. She attended late, deleted messages, and knew the client demanded secrecy. You may infer knowledge from conduct rather than wait for a confession. The manufacturing existed, her technical acts supported it, and the prosecution says the pattern proves she intended the operation to continue."},
+      "defence": {"speaker": "dc", "text": "The operators’ own pre-offence memorandum says, “Keep Nara blind.” Their internal certificate, not Nara’s device, issued the production commands under a copied account label. False alarm tickets caused her to make ordinary external adjustments without seeing the sealed room. The evidence proves exploitation of her skill, not knowing participation beyond reasonable doubt."}
+    }
+  },
+  "epilogue": "Nara Kelm was acquitted. The manufacturing organizers were prosecuted separately using the internal records and Rian Vesk’s evidence. Regulators later required secure device certificates to be displayed beside service-account names so one could not be mistaken for the other. Nara reopened her business with written limits on sealed-site work and declined every contract that withheld the purpose of a critical alarm.",
+  "cast": [
+    {"id": "judge", "name": "Judge Lio Maren", "role_label": "the judge", "side": "court"},
+    {"id": "pc", "name": "Dara Venn", "role_label": "prosecuting counsel", "side": "prosecution"},
+    {"id": "dc", "name": "Soren Pell", "role_label": "defence counsel", "side": "defence"},
+    {"id": "acc", "name": "Nara Kelm", "role_label": "the accused and refrigeration technician", "side": "defence"},
+    {"id": "w1", "name": "Ivo Tarn", "role_label": "controlled-substances regulator", "side": "prosecution"},
+    {"id": "w2", "name": "Doctor Mina Orrel", "role_label": "defence control-systems expert", "side": "defence"},
+    {"id": "w3", "name": "Rian Vesk", "role_label": "cooperating production chemist", "side": "defence"}
+  ],
+  "beats": [
+    {
+      "id": "b1", "kind": "exhibit", "speaker": "pc",
+      "text": "Investigators recovered a large commercial quantity of a controlled drug from the sealed suite, together with records of repeated manufacture over four months. The production area, storage ledger, and completed batches establish that the operation was industrial rather than experimental. The existence and scale of unlawful manufacture are not disputed.",
+      "surface_persuasion": 0.8, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "The exhibit conclusively establishes large-scale manufacture, but it does not identify who knowingly participated.",
+      "tags": ["causation", "method", "burden"]
+    },
+    {
+      "id": "b2", "kind": "witness", "speaker": "w1", "mode": "examination",
+      "turns": [
+        {"speaker": "pc", "text": "What connection did you find between Nara and the production runs?"},
+        {"speaker": "w1", "text": "Her service account recorded climate changes shortly before every run."},
+        {"speaker": "pc", "text": "Did she attend the site?"},
+        {"speaker": "w1", "text": "Yes. Entry records place her in the external plant corridor on nine separate evenings, each after a service alarm. Her pass never entered the inner suite or opened its door."}
+      ],
+      "text": "What connection did you find between Nara and the production runs? Her service account recorded climate changes shortly before every run. Did she attend the site? Yes. Entry records place her in the external plant corridor on nine separate evenings, each after a service alarm. Her pass never entered the inner suite or opened its door.",
+      "surface_persuasion": 0.86, "true_weight": 0.5, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "The records prove technical work and physical attendance, but account labels and corridors do not establish knowledge of the sealed room’s contents.",
+      "tags": ["opportunity", "method", "digital_forensics"]
+    },
+    {
+      "id": "b3", "kind": "witness", "speaker": "w1", "mode": "cross",
+      "turns": [
+        {"speaker": "dc", "text": "Could Nara enter the production suite with her service pass?"},
+        {"speaker": "w1", "text": "No. Her pass opened only the external plant corridor and could not release the inner door."},
+        {"speaker": "dc", "text": "Could she see through the suite wall or door?"},
+        {"speaker": "w1", "text": "No. Both surfaces were opaque, the inspection window was covered internally, and no camera ever showed Nara inside the suite or viewing its contents."}
+      ],
+      "text": "Could Nara enter the production suite with her service pass? No. Her pass opened only the external plant corridor and could not release the inner door. Could she see through the suite wall or door? No. Both surfaces were opaque, the inspection window was covered internally, and no camera ever showed Nara inside the suite or viewing its contents.",
+      "surface_persuasion": 0.64, "true_weight": 0.6, "direction": "innocence", "reveal_stamp": "decisive",
+      "reveal_note": "The physical layout prevented direct observation and sharply limits any inference that attendance itself conveyed knowledge.",
+      "tags": ["opportunity", "intent", "burden"]
+    },
+    {
+      "id": "b4", "kind": "exhibit", "speaker": "pc",
+      "text": "The controller history labels eighteen production-period commands “Nara Kelm Service.” Each command made a climate change later used by the manufacturing team. The label, timing, and operational importance make the history appear to show Nara repeatedly adjusting the room for illegal production. The visible history did not display device certificates.",
+      "surface_persuasion": 0.93, "true_weight": 0.2, "direction": "guilt", "reveal_stamp": "misleading",
+      "reveal_note": "The label was copied by the operators. Device-certificate records show that their internal controller, not Nara’s equipment, issued those eighteen commands.",
+      "tags": ["digital_forensics", "identity", "method"]
+    },
+    {
+      "id": "b5", "kind": "witness", "speaker": "w2", "mode": "examination",
+      "turns": [
+        {"speaker": "dc", "text": "Does the displayed account label identify the device that issued a command?"},
+        {"speaker": "w2", "text": "No. The cryptographic device certificate supplies that identity."},
+        {"speaker": "dc", "text": "Which device issued the eighteen production commands?"},
+        {"speaker": "w2", "text": "An internal controller assigned to the suite operators, not any device registered to Nara."}
+      ],
+      "text": "Does the displayed account label identify the device that issued a command? No. The cryptographic device certificate supplies that identity. Which device issued the eighteen production commands? An internal controller assigned to the suite operators, not any device registered to Nara.",
+      "surface_persuasion": 0.82, "true_weight": 0.94, "direction": "innocence", "reveal_stamp": "decisive",
+      "reveal_note": "The immutable certificate distinguishes the copied account name from the actual operator device and removes the strongest apparent act of participation.",
+      "tags": ["digital_forensics", "identity", "method"]
+    },
+    {
+      "id": "b6", "kind": "witness", "speaker": "w2", "mode": "cross",
+      "turns": [
+        {"speaker": "pc", "text": "Did Nara personally make any climate adjustments at the site?"},
+        {"speaker": "w2", "text": "Yes. She made nine external adjustments in response to service alarms."},
+        {"speaker": "pc", "text": "Could those adjustments benefit production?"},
+        {"speaker": "w2", "text": "They could, although the records show ordinary maintenance values and do not reveal her purpose."}
+      ],
+      "text": "Did Nara personally make any climate adjustments at the site? Yes. She made nine external adjustments in response to service alarms. Could those adjustments benefit production? They could, although the records show ordinary maintenance values and do not reveal her purpose.",
+      "surface_persuasion": 0.71, "true_weight": 0.48, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "Nara’s real work assisted the facility, but technical benefit alone does not prove that she knew of or intended illegal manufacture.",
+      "tags": ["causation", "intent", "method"]
+    },
+    {
+      "id": "b7", "kind": "witness", "speaker": "w3", "mode": "examination",
+      "turns": [
+        {"speaker": "dc", "text": "What were you told about Nara’s role?"},
+        {"speaker": "w3", "text": "The manager said Nara was not to know about production and must remain outside."},
+        {"speaker": "dc", "text": "How were her visits obtained?"},
+        {"speaker": "w3", "text": "We generated ordinary-looking humidity alarms so she would correct the external system without seeing our work."}
+      ],
+      "text": "What were you told about Nara’s role? The manager said Nara was not to know about production and must remain outside. How were her visits obtained? We generated ordinary-looking humidity alarms so she would correct the external system without seeing our work.",
+      "surface_persuasion": 0.8, "true_weight": 0.88, "direction": "innocence", "reveal_stamp": "decisive",
+      "reveal_note": "The cooperating insider describes a deliberate scheme to exploit Nara’s legitimate service work while withholding the criminal purpose.",
+      "tags": ["credibility", "intent", "coercion"]
+    },
+    {
+      "id": "b8", "kind": "witness", "speaker": "w3", "mode": "cross",
+      "turns": [
+        {"speaker": "pc", "text": "You participated in the manufacture and now hope for a reduced sentence, correct?"},
+        {"speaker": "w3", "text": "Yes. I participated in the manufacture and now hope that truthful cooperation will reduce my sentence."},
+        {"speaker": "pc", "text": "You therefore benefit if responsibility shifts away from you?"},
+        {"speaker": "w3", "text": "I benefit from truthful cooperation, but my account should be tested against the earlier records. The concealment memorandum existed before my arrest."}
+      ],
+      "text": "You participated in the manufacture and now hope for a reduced sentence, correct? Yes. I participated in the manufacture and now hope that truthful cooperation will reduce my sentence. You therefore benefit if responsibility shifts away from you? I benefit from truthful cooperation, but my account should be tested against the earlier records. The concealment memorandum existed before my arrest.",
+      "surface_persuasion": 0.72, "true_weight": 0.47, "direction": "guilt", "reveal_stamp": "minor",
+      "reveal_note": "Rian has an obvious interest. The testimony is safe to use only where contemporaneous operator records corroborate it.",
+      "tags": ["credibility", "burden", "motive"]
+    },
+    {
+      "id": "b9", "kind": "exhibit", "speaker": "dc",
+      "text": "A manager’s memorandum created before the first charged run states: “Keep Nara blind. Use routine alarm tickets, keep the inner window covered, and copy her account label on our controller.” It warns operators that telling Nara the product would make her withdraw service immediately. The file predates Nara’s first service visit.",
+      "surface_persuasion": 0.9, "true_weight": 0.96, "direction": "innocence", "reveal_stamp": "decisive",
+      "reveal_note": "The pre-offence memorandum independently confirms concealment, false service requests, copied attribution, and the organizers’ belief that Nara would refuse informed involvement.",
+      "tags": ["credibility", "intent", "digital_forensics"]
+    },
+    {
+      "id": "b10", "kind": "witness", "speaker": "acc", "mode": "examination",
+      "turns": [
+        {"speaker": "dc", "text": "What did the client tell you the sealed suite contained?"},
+        {"speaker": "acc", "text": "Sensitive materials research that required confidentiality and stable humidity."},
+        {"speaker": "dc", "text": "Did you know a controlled drug was being manufactured?"},
+        {"speaker": "acc", "text": "No. I worked only at the external plant and never saw inside."}
+      ],
+      "text": "What did the client tell you the sealed suite contained? Sensitive materials research that required confidentiality and stable humidity. Did you know a controlled drug was being manufactured? No. I worked only at the external plant and never saw inside.",
+      "surface_persuasion": 0.62, "true_weight": 0.58, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "Nara’s account is consistent with her restricted pass, the opaque room, the false tickets, and the operators’ earlier memorandum.",
+      "tags": ["credibility", "intent", "opportunity"]
+    },
+    {
+      "id": "b11", "kind": "witness", "speaker": "acc", "mode": "cross",
+      "turns": [
+        {"speaker": "pc", "text": "You were paid twice your usual evening rate, correct?"},
+        {"speaker": "acc", "text": "Yes. The contract required urgent attendance and confidentiality."},
+        {"speaker": "pc", "text": "You deleted the client’s service messages after the raid?"},
+        {"speaker": "acc", "text": "Yes. I deleted those messages because I panicked when I learned what the site contained. I did not know that deleting them could conceal the organizers’ crime."}
+      ],
+      "text": "You were paid twice your usual evening rate, correct? Yes. The contract required urgent attendance and confidentiality. You deleted the client’s service messages after the raid? Yes. I deleted those messages because I panicked when I learned what the site contained. I did not know that deleting them could conceal the organizers’ crime.",
+      "surface_persuasion": 0.83, "true_weight": 0.3, "direction": "guilt", "reveal_stamp": "misleading",
+      "reveal_note": "The high rate and deletion create suspicion, but they do not overcome the contemporaneous proof that the operators concealed the manufacture from Nara.",
+      "tags": ["motive", "credibility", "intent"]
+    },
+    {
+      "id": "b12", "kind": "direction", "speaker": "judge",
+      "text": "The manufacture and its scale are proved. You must decide whether Nara knowingly took part and intended the activity to continue or succeed. Technical assistance is not enough if she reasonably believed she was performing lawful maintenance. The prosecution must exclude the reasonable possibility that the operators deliberately used her skill while concealing their criminal purpose.",
+      "surface_persuasion": 0.5, "true_weight": 0.57, "direction": "innocence", "reveal_stamp": "minor",
+      "reveal_note": "The direction isolates the disputed elements: knowledge and intention, not mere access, assistance, suspicion, or hindsight.",
+      "tags": ["burden", "credibility", "intent"]
+    }
+  ],
+  "checkins": [],
+  "verdict_truth": "Not Guilty",
+  "twist": "Nara’s account name appeared on the production commands, but immutable device certificates showed the operators had copied that label. Their own earlier memorandum proved they created false alarms and concealed the room because they expected Nara to refuse informed involvement.",
+  "difficulty_target": 0.68,
+  "jury": {
+    "jurors": [
+      {
+        "id": "J-01", "seat": 2, "label": "Laboratory cleaner", "persona": "Recognizes how support workers can be close to restricted work without knowing its purpose.", "register": "plain", "arc": "vibes",
+        "initial": {"position": "G", "confidence": 76}, "weights": {"identity": 2, "intent": 2, "digital_forensics": 1},
+        "lines": {"agree": ["Seeing Nara’s name on every production command initially looks decisive."], "pushback": ["A copied label can make an innocent worker appear responsible."], "concede": ["The device certificate proves the production commands came from the operators."], "burden_drift": ["Nara was nearby so often that I want her to prove ignorance."], "burden_correct": ["Proximity does not shift the burden of proving knowledge."], "final": ["The records show that Nara was used, not informed."]},
+        "reaction_rules": [
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-02", "seat": 3, "label": "Building manager", "persona": "Assumes contractors notice unusual sites but changes position when access boundaries are proved.", "register": "blunt", "arc": "steady",
+        "initial": {"position": "G", "confidence": 62}, "weights": {"opportunity": 2, "intent": 2, "procedure": 1},
+        "lines": {"agree": ["Nine evening visits create a serious question about what Nara noticed."], "pushback": ["Her pass and sightline ended outside the sealed room."], "concede": ["The covered window and false tickets explain how the secret was maintained."], "burden_drift": ["A contractor should explain why a site demanded so much secrecy."], "burden_correct": ["The prosecution must prove she knew the secret, not that she encountered secrecy."], "final": ["The restricted access leaves reasonable doubt about knowledge."]},
+        "reaction_rules": [
+          {"when": {"theme": "opportunity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-03", "seat": 4, "label": "Retired solicitor", "persona": "Keeps knowledge and intention separate from physical assistance and suspicious conduct.", "register": "formal", "arc": "principled_holdout",
+        "initial": {"position": "NG", "confidence": 78}, "weights": {"burden": 2, "credibility": 2, "intent": 2},
+        "lines": {"agree": ["Manufacture and technical assistance are proved, but knowledge remains separate."], "pushback": ["The offence does not punish an unwitting contractor."], "concede": ["The pre-offence memorandum affirmatively supports Nara’s lack of knowledge."], "burden_drift": ["The scale of the crime tempts the room to demand an innocent explanation."], "burden_correct": ["The prosecution must exclude unwitting assistance beyond reasonable doubt."], "final": ["It has not excluded that reasonable possibility."]},
+        "reaction_rules": [
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 5, "line": "burden_correct"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
+        ]
+      },
+      {
+        "id": "J-04", "seat": 5, "label": "Heating technician", "persona": "Understands remote climate work and distinguishes account names from device identity.", "register": "plain", "arc": "mind_changer",
+        "initial": {"position": "G", "confidence": 70}, "weights": {"digital_forensics": 2, "method": 2, "identity": 2},
+        "lines": {"agree": ["The timing of the climate changes first made participation look obvious."], "pushback": ["Controller labels are editable, while device certificates are not."], "concede": ["The certificate changes my view because Nara’s equipment issued none of those commands."], "burden_drift": ["Her technical ability makes me expect her to disprove every system entry."], "burden_correct": ["Ability is not knowing criminal use."], "final": ["The system evidence points away from Nara."]},
+        "reaction_rules": [
+          {"when": {"theme": "method", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
+          {"when": {"theme": "identity", "stance": "unreliable", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 6, "line": "pushback"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
+        ]
+      },
+      {
+        "id": "J-05", "seat": 6, "label": "Florist and foreperson", "persona": "Organizes the room around quantity, knowledge, and intention as distinct elements.", "register": "plain", "arc": "foreperson",
+        "initial": {"position": "G", "confidence": 55}, "weights": {"burden": 2, "credibility": 2, "intent": 1},
+        "lines": {"agree": ["The first element, large-scale manufacture, is not disputed."], "pushback": ["We must not let that certainty spill into knowledge and intent."], "concede": ["The operators’ own memorandum addresses both disputed elements."], "burden_drift": ["The harm can make any assistance feel knowingly criminal."], "burden_correct": ["The judge requires proof that Nara knew and intended assistance."], "final": ["The evidence leaves both disputed elements unproved."]},
+        "reaction_rules": [
+          {"when": {"theme": "intent", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "burden_correct"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
+        ]
+      },
+      {
+        "id": "J-06", "seat": 7, "label": "Delivery rider", "persona": "Is influenced by repeated visits and high payment but understands that clients conceal cargo from contractors.", "register": "blunt", "arc": "vibes",
+        "initial": {"position": "G", "confidence": 72}, "weights": {"motive": 2, "opportunity": 2, "intent": 1},
+        "lines": {"agree": ["Double pay and late visits look like payment for silence."], "pushback": ["Urgency and confidentiality also exist in lawful contract work."], "concede": ["The operators wrote that Nara would leave if told the truth."], "burden_drift": ["The money makes me want Nara to prove why it was innocent."], "burden_correct": ["The prosecution must prove what the payment meant to Nara."], "final": ["The earlier memorandum gives the payment an innocent reasonable meaning."]},
+        "reaction_rules": [
+          {"when": {"theme": "motive", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-07", "seat": 8, "label": "Data engineer", "persona": "Changes position when immutable provenance contradicts a persuasive user-interface label.", "register": "formal", "arc": "mind_changer",
+        "initial": {"position": "G", "confidence": 68}, "weights": {"digital_forensics": 2, "identity": 2, "intent": 1},
+        "lines": {"agree": ["The account label initially attributes the commands to Nara."], "pushback": ["A displayed name is weaker than the certificate beneath it."], "concede": ["The immutable certificate proves an internal operator device issued every production command."], "burden_drift": ["Nara’s account existed, so I start asking her to prove it was copied."], "burden_correct": ["The prosecution’s own logs prove which device actually acted."], "final": ["The technical attribution does not support guilt."]},
+        "reaction_rules": [
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 6, "line": "agree"}},
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 6, "line": "burden_correct"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "final"}}
+        ]
+      },
+      {
+        "id": "J-08", "seat": 9, "label": "Social worker", "persona": "Treats the cooperating insider cautiously and looks for records created before any deal.", "register": "plain", "arc": "steady",
+        "initial": {"position": "NG", "confidence": 58}, "weights": {"credibility": 2, "intent": 2, "burden": 1},
+        "lines": {"agree": ["Rian benefits from cooperation, so the testimony cannot stand alone."], "pushback": ["A witness’s self-interest makes independent corroboration necessary."], "concede": ["The earlier memorandum corroborates concealment before anyone sought leniency."], "burden_drift": ["Rian’s admitted crime can make us demand that Nara prove distance from it."], "burden_correct": ["The prosecution must prove Nara’s knowledge with reliable evidence."], "final": ["The reliable records support ignorance, not knowing participation."]},
+        "reaction_rules": [
+          {"when": {"theme": "credibility", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 4, "line": "agree"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 6, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-09", "seat": 10, "label": "Accounts assistant", "persona": "Is suspicious of premium payments and deleted messages and is prone to shifting the burden.", "register": "formal", "arc": "burden_drifter",
+        "initial": {"position": "G", "confidence": 64}, "weights": {"motive": 2, "burden": 2, "intent": 1},
+        "lines": {"agree": ["The premium rate and deleted messages reasonably attract suspicion."], "pushback": ["Suspicion after discovery does not prove prior knowledge."], "concede": ["The pre-offence memorandum shows the organizers paid for urgent ignorance, not complicity."], "burden_drift": ["Nara deleted evidence, so I want her to prove an innocent state of mind."], "burden_correct": ["The prosecution still must prove what Nara knew before the raid."], "final": ["The contemporaneous records leave that knowledge unproved."]},
+        "reaction_rules": [
+          {"when": {"theme": "motive", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "burden_drift"}},
+          {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "burden_correct"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 6, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-10", "seat": 11, "label": "Trainee pharmacist", "persona": "Starts uncertain because the hidden manufacture required environmental stability.", "register": "hesitant", "arc": "drifter",
+        "initial": {"position": "U", "confidence": 38}, "weights": {"causation": 2, "intent": 2, "method": 1},
+        "lines": {"agree": ["The production plainly benefited from Nara’s adjustments."], "pushback": ["Benefit does not show that Nara understood the concealed process."], "concede": ["False alarms explain how ordinary work could unknowingly support manufacture."], "burden_drift": ["Because the adjustments mattered, I start expecting Nara to prove ignorance."], "burden_correct": ["Knowledge remains the prosecution’s element to prove."], "final": ["The evidence proves causation without proving criminal knowledge."]},
+        "reaction_rules": [
+          {"when": {"theme": "causation", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 6, "line": "agree"}},
+          {"when": {"theme": "intent", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      },
+      {
+        "id": "J-11", "seat": 12, "label": "Cinema projectionist", "persona": "Separates what appears on an interface from the hidden mechanism that produced it.", "register": "plain", "arc": "steady",
+        "initial": {"position": "U", "confidence": 40}, "weights": {"identity": 2, "digital_forensics": 2, "burden": 1},
+        "lines": {"agree": ["The visible account name tells a persuasive guilt story."], "pushback": ["The hidden certificate tells us that story was deliberately staged."], "concede": ["The operators copied Nara’s label to conceal their own commands."], "burden_drift": ["Nara’s real account makes me want proof that she never shared it."], "burden_correct": ["The device evidence already identifies the actual source."], "final": ["The strongest attribution evidence supports Not Guilty."]},
+        "reaction_rules": [
+          {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
+          {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},
+          {"when": {"theme": "any", "stance": "any"}, "effect": {"delta": 0, "confidence": 0, "line": "pushback"}}
+        ]
+      }
+    ]
+  },
+  "gen_meta": {
+    "model": "gpt-5",
+    "prompt_version": "dd-2026-v3",
+    "reviewer": "content-curator",
+    "batch_pr": "grave-crime-seven-case-replacement",
+    "language_reviewer": "language-and-clarity-pass",
+    "sensitivity_reviewer": "non-graphic-drug-harm-pass"
+  }
+}
