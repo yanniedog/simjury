@@ -90,14 +90,14 @@
     {
       "id": "b1", "kind": "witness", "speaker": "w1", "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "Tell the jury what the office was meant to send."},
-        {"speaker": "w1", "text": "Six translation briefs, cleared for an authorised negotiation channel. I checked the signed release sheet against each file."},
-        {"speaker": "pc", "text": "What did you preserve after the security alert?"},
-        {"speaker": "w1", "text": "The sender's package and the receiver's copy. I sealed them, recorded their file hashes, and haven't altered them."},
-        {"speaker": "pc", "text": "What was different in the received copy?"},
+        {"speaker": "pc", "text": "What was the office meant to send?"},
+        {"speaker": "w1", "text": "Six briefs, cleared for the negotiation channel. I checked the signed release sheet against the files."},
+        {"speaker": "pc", "text": "What did you preserve?"},
+        {"speaker": "w1", "text": "Both packages and two earlier support tickets from our service archive. I sealed them, recorded their hashes, and haven't altered them."},
+        {"speaker": "pc", "text": "What differed in the received copy?"},
         {"speaker": "w1", "text": "It had page seven: our confidential negotiating ceiling."}
       ],
-      "text": "Tell the jury what the office was meant to send. Six translation briefs, cleared for an authorised negotiation channel. I checked the signed release sheet against each file. What did you preserve after the security alert? The sender's package and the receiver's copy. I sealed them, recorded their file hashes, and haven't altered them. What was different in the received copy? It had page seven: our confidential negotiating ceiling.",
+      "text": "What was the office meant to send? Six briefs, cleared for the negotiation channel. I checked the signed release sheet against the files. What did you preserve? Both packages and two earlier support tickets from our service archive. I sealed them, recorded their hashes, and haven't altered them. What differed in the received copy? It had page seven: our confidential negotiating ceiling.",
       "surface_persuasion": 0.62, "true_weight": 0.5, "direction": "guilt", "reveal_stamp": "minor",
       "reveal_note": "Halen authenticated the release sheet and both preserved packages. The evidence proves that the protected page arrived, but the cleared package itself listed only six files.",
       "tags": ["method", "procedure", "digital_forensics"]
@@ -153,13 +153,13 @@
       "id": "b5", "kind": "witness", "speaker": "w3", "mode": "examination",
       "turns": [
         {"speaker": "pc", "text": "What material did you examine?"},
-        {"speaker": "w3", "text": "Read-only images of Sela's workstation and the secure gateway, plus two support tickets exported by Halen. I verified their hashes and timestamps against the secure records."},
+        {"speaker": "w3", "text": "Read-only images of Sela's workstation and the secure gateway, made in my presence, plus Halen's two support-ticket exports. I verified their hashes and timestamps against the secure records."},
         {"speaker": "pc", "text": "What could those records reliably show?"},
         {"speaker": "w3", "text": "The account in use, saved file versions, the package manifest, and transmission times."},
         {"speaker": "pc", "text": "What couldn't they show?"},
         {"speaker": "w3", "text": "What a person actually noticed on screen."}
       ],
-      "text": "What material did you examine? Read-only images of Sela's workstation and the secure gateway, plus two support tickets exported by Halen. I verified their hashes and timestamps against the secure records. What could those records reliably show? The account in use, saved file versions, the package manifest, and transmission times. What couldn't they show? What a person actually noticed on screen.",
+      "text": "What material did you examine? Read-only images of Sela's workstation and the secure gateway, made in my presence, plus Halen's two support-ticket exports. I verified their hashes and timestamps against the secure records. What could those records reliably show? The account in use, saved file versions, the package manifest, and transmission times. What couldn't they show? What a person actually noticed on screen.",
       "surface_persuasion": 0.48, "true_weight": 0.45, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "Dr Lell authenticated the digital records, explained their custody and integrity, and qualified the crucial limit: logs cannot reveal what Sela perceived or intended.",
       "tags": ["digital_forensics", "procedure", "burden"]
@@ -243,7 +243,7 @@
     },
     {
       "id": "b11", "kind": "direction", "speaker": "judge",
-      "text": "The parties agree an armed conflict existed and page seven prejudiced security planning. You decide whether Sela knew the protected page was included and intended the assistance. Editing page seven and sending six lawful briefs aren't enough unless the prosecution proves that further link. If, after considering all the evidence, you aren't sure every element was proved beyond reasonable doubt, your verdict must be Not Guilty.",
+      "text": "An armed conflict and the security prejudice are agreed. This charge concerns page seven, not the six cleared briefs. You decide whether Sela knew it was included and intended the assistance. Editing it and sending the lawful package aren't enough without that link. If, after considering all the evidence, you aren't sure every element was proved beyond reasonable doubt, your verdict must be Not Guilty.",
       "surface_persuasion": 0.5, "true_weight": 0.55, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "The fictional statute requires intentional assistance and knowledge of security prejudice. The agreed harm cannot replace proof that Sela knew the seventh page was travelling.",
       "tags": ["burden", "intent", "procedure"]
