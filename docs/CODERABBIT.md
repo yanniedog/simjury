@@ -6,7 +6,7 @@ Repo config: [`.coderabbit.yaml`](../.coderabbit.yaml). Bot presence counts
 
 ## Finish GitHub App install (required once)
 
-Partial UI signup is not enough — CodeRabbit has never posted on `yanniedog/*`
+Partial UI signup is not enough — CodeRabbit will not post on `yanniedog/*`
 until the app can access the repos.
 
 1. Open **https://github.com/apps/coderabbitai/installations/new**
@@ -36,7 +36,7 @@ Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.
 | `scripts/lib/bot-wait-config.mjs` | `coderabbit` alias + default OR-group |
 | `bot-presence-gate` | Env `SIMJURY_BOT_WAIT_REQUIRED=sourcery\|codex\|cursor\|coderabbit` |
 
-Chore / WIP titles are skipped by CodeRabbit (`ignore_title_keywords`) and still
+Chore / WIP titles are skipped by CodeRabbit (`ignore_title_keywords`) and are still
 gate-exempt in SimJury scripts.
 
 ## Other active repos

@@ -17,7 +17,6 @@ reviews:
     - "!**/pilot/local.properties"
     - "!**/*.lock"
     - "!**/package-lock.json"
-    - "!site/public/cases/**"
     - "!site/art/**"
   path_instructions:
     - path: "site/app/**"
@@ -26,7 +25,7 @@ reviews:
         static hosting constraints (no runtime AI). Flag fiction-safety issues:
         player-visible text must not use real names of people, companies, brands,
         or places; cases are labeled fiction.
-    - path: "site/app/public/cases/**"
+    - path: "site/public/cases/**"
       instructions: >-
         Case JSON is pre-authored fiction. Enforce label fiction / banned-token
         hygiene; do not invent testimony as if it were a historical source.
