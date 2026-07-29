@@ -20,9 +20,27 @@ const POLL_MS = Number(process.env.CR_CONTRACT_POLL_MS || 60_000);
 const MAX_ATTEMPTS = Number(process.env.CR_CONTRACT_MAX_ATTEMPTS || 4);
 
 function ghJson(args) {
-  const r = spawnSync('gh', args, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
-  if (r.status !== 0) throw new Error((r.stderr || r.stdout || `gh exit ${r.status}`).trim());
-  return JSON.parse(r.stdout || 'null');
+  let r;
+  try {
+    r = spawnSync('gh', args, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
+  } catch (error) {
+    throw new Error(`gh spawn failed (${args.join(' ')}): ${error?.message || error}`);
+  }
+  if (r.error) {
+    throw new Error(`gh spawn failed (${args.join(' ')}): ${r.error.message}`);
+  }
+  if (r.status !== 0) {
+    throw new Error(
+      `gh failed (${args.join(' ')}): ${(r.stderr || r.stdout || `exit ${r.status}`).trim()}`,
+    );
+  }
+  try {
+    return JSON.parse(r.stdout || 'null');
+  } catch (error) {
+    throw new Error(
+      `gh returned invalid JSON (${args.join(' ')}): ${error?.message || error}`,
+    );
+  }
 }
 
 /** Flatten `gh api --paginate --slurp` page arrays into one list. */
@@ -114,6 +132,10 @@ function postReview(pr, headSha, reason, dryRun) {
     ['api', commentPath, '-f', `body=${body}`],
     { encoding: 'utf8' },
   );
+  if (r.error) {
+    console.warn(`coderabbit-contract: comment spawn failed (${r.error.message}); waiting for status`);
+    return;
+  }
   if (r.status !== 0) {
     // Do not hard-fail: ensure-review / manual @coderabbitai can still satisfy the status contract.
     console.warn(
