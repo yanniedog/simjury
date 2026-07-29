@@ -50,8 +50,8 @@ for (const [body, want] of [
 
 for (const [meta, want] of [
   [{ title: 'fix: replay split', authorLogin: 'yanniedog', authorType: 'User' }, null],
-  [{ title: 'chore: tidy scripts', authorLogin: 'yanniedog', authorType: 'User' }, 'chore'],
-  [{ title: 'feat: from actions', authorLogin: 'github-actions[bot]', authorType: 'Bot' }, 'bot-authored'],
+  [{ title: 'chore: tidy scripts', authorLogin: 'yanniedog', authorType: 'User' }, null],
+  [{ title: 'feat: from actions', authorLogin: 'github-actions[bot]', authorType: 'Bot' }, null],
 ]) {
   const got = gateExemptReasonFromPrMeta(meta);
   if (got !== want) failures.push(`gateExemptReasonFromPrMeta got ${got}, want ${want}`);
@@ -78,4 +78,4 @@ if (failures.length) {
   for (const f of failures) console.error('  -', f);
   process.exit(1);
 }
-console.log(`PASS verify-pr-gate-logic: ${cases.length} live thread checks + exempt policy`);
+console.log(`PASS verify-pr-gate-logic: ${cases.length} live thread checks + no-bypass policy`);
