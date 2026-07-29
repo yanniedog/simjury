@@ -57,7 +57,7 @@ export function assignScyllaVoices(docket) {
   for (const member of ordered) {
     const id = member.id
     const gender = Object.prototype.hasOwnProperty.call(member, 'persona')
-      ? genderForJuror(member.persona, id)
+      ? genderForJuror(member.persona, id, member.gender)
       : genderForCastMember(member)
     genders.set(id, gender)
     const preferred = preferredVoice(id, gender)

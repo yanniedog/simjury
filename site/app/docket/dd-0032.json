@@ -13,7 +13,7 @@
     "The accused knowingly directed or controlled the syndicate’s criminal activities.",
     "The accused intended to advance those criminal activities."
   ],
-  "hook": "Six people met around seven chairs. When trader Sava Merin refused a new payment, a message arrived for the empty seat. Her stock was taken before sunset. The jury must decide whether Celis sent the order or was a lawful mediator caught inside the Circle’s records.",
+  "hook": "Six people met around seven chairs. When trader Sava Merin refused a new payment, a message arrived for the empty seat. His stock was taken before sunset. The jury must decide whether Celis sent the order or was a lawful mediator caught inside the Circle’s records.",
   "accused": {
     "cast_id": "acc",
     "human": "Celis Arden, 47, built a small mediation practice after years keeping accounts for port traders. Clients trusted her with disputed invoices, temporary payment holds, and private settlement keys. That lawful access placed her close to several Circle members, but she had no criminal record and continued serving traders who had complained about them.",
@@ -33,11 +33,11 @@
       "w3": {"src": "/today/media/dd-0032/characters/w3.webp", "alt": "Courtroom portrait of forensic examiner Doctor Ema Korr.", "caption": "Fictional character portrait: Doctor Ema Korr, a forensic examiner.", "kind": "portrait"},
       "J-01": {"src": "/today/media/dd-0032/characters/J-01.webp", "alt": "Courtroom portrait of juror Mara.", "caption": "Fictional character portrait: Mara.", "kind": "portrait"},
       "J-02": {"src": "/today/media/dd-0032/characters/J-02.webp", "alt": "Courtroom portrait of juror Dev.", "caption": "Fictional character portrait: Dev.", "kind": "portrait"},
-      "J-03": {"src": "/today/media/dd-0032/characters/J-03.webp", "alt": "Courtroom portrait of juror Iven.", "caption": "Fictional character portrait: Iven.", "kind": "portrait"},
-      "J-04": {"src": "/today/media/dd-0032/characters/J-04.webp", "alt": "Courtroom portrait of juror Suri.", "caption": "Fictional character portrait: Suri.", "kind": "portrait"},
-      "J-05": {"src": "/today/media/dd-0032/characters/J-05.webp", "alt": "Courtroom portrait of juror Cal, the foreperson.", "caption": "Fictional character portrait: Cal, the foreperson.", "kind": "portrait"},
+      "J-03": {"src": "/today/media/dd-0032/characters/J-03.webp", "alt": "Courtroom portrait of juror Ina.", "caption": "Fictional character portrait: Ina.", "kind": "portrait"},
+      "J-04": {"src": "/today/media/dd-0032/characters/J-04.webp", "alt": "Courtroom portrait of juror Suren.", "caption": "Fictional character portrait: Suren.", "kind": "portrait"},
+      "J-05": {"src": "/today/media/dd-0032/characters/J-05.webp", "alt": "Courtroom portrait of juror Cara, the foreperson.", "caption": "Fictional character portrait: Cara, the foreperson.", "kind": "portrait"},
       "J-06": {"src": "/today/media/dd-0032/characters/J-06.webp", "alt": "Courtroom portrait of juror Lio.", "caption": "Fictional character portrait: Lio.", "kind": "portrait"},
-      "J-07": {"src": "/today/media/dd-0032/characters/J-07.webp", "alt": "Courtroom portrait of juror Nessa.", "caption": "Fictional character portrait: Nessa.", "kind": "portrait"},
+      "J-07": {"src": "/today/media/dd-0032/characters/J-07.webp", "alt": "Courtroom portrait of juror Ned.", "caption": "Fictional character portrait: Ned.", "kind": "portrait"},
       "J-08": {"src": "/today/media/dd-0032/characters/J-08.webp", "alt": "Courtroom portrait of juror Bram.", "caption": "Fictional character portrait: Bram.", "kind": "portrait"},
       "J-09": {"src": "/today/media/dd-0032/characters/J-09.webp", "alt": "Courtroom portrait of juror Orla.", "caption": "Fictional character portrait: Orla.", "kind": "portrait"},
       "J-10": {"src": "/today/media/dd-0032/characters/J-10.webp", "alt": "Courtroom portrait of juror Tavi.", "caption": "Fictional character portrait: Tavi.", "kind": "portrait"},
@@ -55,8 +55,8 @@
   ],
   "statements": {
     "opening": {
-      "prosecution": {"speaker": "pc", "text": "The Circle was not a loose collection of difficult clients. It had continuing roles, common money, and serious offences carried out when an unseen Chair decided. Sava Merin will explain what one decision did to her business and partner. Then Tav Rook and Doctor Korr will take you, step by step, from a controlled interview to the exact signed order and the only recorded person able to reach its physical key. Those circumstances, considered together, identify Celis and reveal criminal purpose."},
-      "defence": {"speaker": "dc", "text": "The prosecution will prove that the Circle hurt Sava. Celis does not dispute her experience. The disputed questions are narrower: who used the key, and did that person mean to direct crime? Celis’s ordinary work required payment holds, confidential keys, and contact with the same traders. Two investigators heard the test phrase. No camera shows an activation. The handwriting opinion is limited, and the complete note says no threats and release stock. The empty chair may therefore still hide someone else."}
+      "prosecution": {"speaker": "pc", "text": "The Circle was not a loose collection of difficult clients. It had continuing roles, common money, and serious offences carried out when an unseen Chair decided. Sava Merin will explain what one decision did to his business and partner. Then Tav Rook and Doctor Korr will take you, step by step, from a controlled interview to the exact signed order and the only recorded person able to reach its physical key. Those circumstances, considered together, identify Celis and reveal criminal purpose."},
+      "defence": {"speaker": "dc", "text": "The prosecution will prove that the Circle hurt Sava. Celis does not dispute his experience. The disputed questions are narrower: who used the key, and did that person mean to direct crime? Celis’s ordinary work required payment holds, confidential keys, and contact with the same traders. Two investigators heard the test phrase. No camera shows an activation. The handwriting opinion is limited, and the complete note says no threats and release stock. The empty chair may therefore still hide someone else."}
     },
     "closing": {
       "prosecution": {"speaker": "pc", "text": "Put the chronology together without improving it or cutting pieces away. Sava told Celis this was protection money. Celis alone then left the controlled interview. Twenty-three minutes later, its invented phrase appeared in an order that enforced the Circle’s rate against Sava’s stock. The exact content was signed by the office signing key in Celis’s locked cabinet, during a period when only her badge entered. That is practical criminal direction, knowledge, and an intention to advance the Circle’s extortion—not mere association."},
@@ -83,7 +83,7 @@
       ],
       "text": "Sava, what was your business like before this dispute? My partner and I supplied dry goods to market stalls. We had four staff, one van, and narrow margins, but we were steady. How did you know Celis? She mediated an earlier invoice dispute and got part of our stock released. I trusted her enough to call again. What had the Circle demanded this time? A monthly “protection” payment we never agreed to. They said our deliveries would stop if I refused.",
       "surface_persuasion": 0.62, "true_weight": 0.52, "direction": "guilt", "reveal_stamp": "minor",
-      "reveal_note": "Sava’s background explains the lawful relationship, the alleged extortion, and why she approached Celis; it does not identify the Chair.",
+      "reveal_note": "Sava’s background explains the lawful relationship, the alleged extortion, and why he approached Celis; it does not identify the Chair.",
       "tags": ["intent", "credibility", "command"]
     },
     {
@@ -96,7 +96,7 @@
       ],
       "text": "Sava, what changed after you refused the Circle’s new payment? Collectors took my delivery stock and blocked the market van. I watched our driver turn back while customers waited. My partner tried to recover the goods and came home with a fractured wrist and a concussion. What did losing that stock do to the business? We missed two trading weeks, paid our staff anyway, and nearly closed. I borrowed from a friend to make wages. Whatever the dispute began as, it wasn’t an accounting disagreement by then.",
       "surface_persuasion": 0.76, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
-      "reveal_note": "Sava humanises and corroborates the Circle’s serious offences, but she cannot identify who directed them.",
+      "reveal_note": "Sava humanises and corroborates the Circle’s serious offences, but he cannot identify who directed them.",
       "tags": ["command", "intent", "credibility"]
     },
     {
@@ -122,9 +122,9 @@
         {"speaker": "pc", "text": "Who heard it in the recorded interview?"},
         {"speaker": "w2", "text": "Celis and two investigators. We recorded the whole interview and sealed every issued device before it began."},
         {"speaker": "pc", "text": "What happened next?"},
-        {"speaker": "w2", "text": "The investigators remained in the secure suite; Celis left alone. Twenty-three minutes later, the Chair’s order repeated the exact phrase and froze Sava’s stock until she accepted the Circle rate."}
+        {"speaker": "w2", "text": "The investigators remained in the secure suite; Celis left alone. Twenty-three minutes later, the Chair’s order repeated the exact phrase and froze Sava’s stock until he accepted the Circle rate."}
       ],
-      "text": "How did you test whether information reached the Chair? I invented “violet account, broken hinge” that morning. Before the interview, only I knew it, and the notebook stayed sealed. Who heard it in the recorded interview? Celis and two investigators. We recorded the whole interview and sealed every issued device before it began. What happened next? The investigators remained in the secure suite; Celis left alone. Twenty-three minutes later, the Chair’s order repeated the exact phrase and froze Sava’s stock until she accepted the Circle rate.",
+      "text": "How did you test whether information reached the Chair? I invented “violet account, broken hinge” that morning. Before the interview, only I knew it, and the notebook stayed sealed. Who heard it in the recorded interview? Celis and two investigators. We recorded the whole interview and sealed every issued device before it began. What happened next? The investigators remained in the secure suite; Celis left alone. Twenty-three minutes later, the Chair’s order repeated the exact phrase and froze Sava’s stock until he accepted the Circle rate.",
       "surface_persuasion": 0.85, "true_weight": 0.9, "direction": "guilt", "reveal_stamp": "decisive",
       "reveal_note": "The authenticated interview and controlled movement contain the invented phrase to three people; Celis was the only one who left before it appeared in a criminal order.",
       "tags": ["identity", "timeline", "command"]
@@ -192,14 +192,14 @@
     {
       "id": "b10", "kind": "witness", "speaker": "acc", "mode": "examination",
       "turns": [
-        {"speaker": "dc", "text": "What did Sava ask when she called you?"},
-        {"speaker": "acc", "text": "She was frightened and wanted the collectors stopped. I said I’d hold disputed money while I checked every invoice. That’s ordinary mediation, and it had helped her before."},
-        {"speaker": "dc", "text": "Did you order anyone to seize her stock?"},
+        {"speaker": "dc", "text": "What did Sava ask when he called you?"},
+        {"speaker": "acc", "text": "He was frightened and wanted the collectors stopped. I said I’d hold disputed money while I checked every invoice. That’s ordinary mediation, and it had helped him before."},
+        {"speaker": "dc", "text": "Did you order anyone to seize his stock?"},
         {"speaker": "acc", "text": "No. My client page says “no threats” and “release stock.” I meant to calm the dispute, not enforce a payment."},
         {"speaker": "dc", "text": "Why was the signing key in your cabinet?"},
         {"speaker": "acc", "text": "I used it to approve confidential settlements for clients. I didn’t send the Chair’s message."}
       ],
-      "text": "What did Sava ask when she called you? She was frightened and wanted the collectors stopped. I said I’d hold disputed money while I checked every invoice. That’s ordinary mediation, and it had helped her before. Did you order anyone to seize her stock? No. My client page says “no threats” and “release stock.” I meant to calm the dispute, not enforce a payment. Why was the signing key in your cabinet? I used it to approve confidential settlements for clients. I didn’t send the Chair’s message.",
+      "text": "What did Sava ask when he called you? He was frightened and wanted the collectors stopped. I said I’d hold disputed money while I checked every invoice. That’s ordinary mediation, and it had helped him before. Did you order anyone to seize his stock? No. My client page says “no threats” and “release stock.” I meant to calm the dispute, not enforce a payment. Why was the signing key in your cabinet? I used it to approve confidential settlements for clients. I didn’t send the Chair’s message.",
       "surface_persuasion": 0.78, "true_weight": 0.58, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "Celis offers a competent innocent account grounded in her actual work and the complete client note, not a last-minute excuse.",
       "tags": ["intent", "command", "credibility"]
@@ -207,14 +207,14 @@
     {
       "id": "b11", "kind": "witness", "speaker": "acc", "mode": "cross",
       "turns": [
-        {"speaker": "pc", "text": "Sava told you the Circle was demanding protection money, didn’t she?"},
-        {"speaker": "acc", "text": "She used those words. I told her I’d stop contact and check whether any debt was real."},
+        {"speaker": "pc", "text": "Sava told you the Circle was demanding protection money, didn’t he?"},
+        {"speaker": "acc", "text": "He used those words. I told him I’d stop contact and check whether any debt was real."},
         {"speaker": "pc", "text": "You alone left the interview before its phrase appeared in the order?"},
         {"speaker": "acc", "text": "Yes, but the investigators heard it too."},
         {"speaker": "pc", "text": "And your sole cabinet key remained on your key ring?"},
         {"speaker": "acc", "text": "It did. I never reported it missing because it wasn’t missing. That doesn’t mean I activated the device or wrote that order."}
       ],
-      "text": "Sava told you the Circle was demanding protection money, didn’t she? She used those words. I told her I’d stop contact and check whether any debt was real. You alone left the interview before its phrase appeared in the order? Yes, but the investigators heard it too. And your sole cabinet key remained on your key ring? It did. I never reported it missing because it wasn’t missing. That doesn’t mean I activated the device or wrote that order.",
+      "text": "Sava told you the Circle was demanding protection money, didn’t he? He used those words. I told him I’d stop contact and check whether any debt was real. You alone left the interview before its phrase appeared in the order? Yes, but the investigators heard it too. And your sole cabinet key remained on your key ring? It did. I never reported it missing because it wasn’t missing. That doesn’t mean I activated the device or wrote that order.",
       "surface_persuasion": 0.76, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
       "reveal_note": "Celis admits prior knowledge of the criminal demand and exclusive custody, while continuing to contest activation.",
       "tags": ["intent", "identity", "credibility"]
@@ -248,7 +248,7 @@
   "jury": {
     "jurors": [
       {
-        "id": "J-01", "seat": 2, "label": "Mara", "persona": "Starts with the human impact but checks whether it proves the accused’s identity.", "register": "plain", "arc": "vibes",
+        "id": "J-01", "gender": "female", "seat": 2, "label": "Mara", "persona": "Starts with the human impact but checks whether it proves the accused’s identity.", "register": "plain", "arc": "vibes",
         "initial": {"position": "G", "confidence": 61}, "weights": {"identity": 2, "credibility": 1, "burden": 1},
         "lines": {"agree": ["Sava’s account is awful, but who actually sent the order? That’s still the question."], "pushback": ["I’m not using the injury to fill an identity gap. Show me the link to Celis."], "concede": ["The phrase and the key answer different parts of my question. Together, they’re hard to dismiss."], "burden_drift": ["Part of me wants Celis to explain how the key moved, because Sava paid the price."], "burden_correct": ["No—that’s backwards. The prosecution has to prove Celis used it beyond reasonable doubt."], "final": ["I think the two authenticated links identify Celis, though Sava’s harm wasn’t what got me there."]},
         "reaction_rules": [
@@ -258,7 +258,7 @@
         ]
       },
       {
-        "id": "J-02", "seat": 3, "label": "Dev", "persona": "Distinguishes proof that the Circle existed from proof that Celis directed it.", "register": "plain", "arc": "steady",
+        "id": "J-02", "gender": "male", "seat": 3, "label": "Dev", "persona": "Distinguishes proof that the Circle existed from proof that Celis directed it.", "register": "plain", "arc": "steady",
         "initial": {"position": "NG", "confidence": 56}, "weights": {"command": 2, "intent": 2, "burden": 1},
         "lines": {"agree": ["The separate convictions settle what the Circle was. They don’t settle who sat behind the chair."], "pushback": ["Does “hold” mean mediation or criminal control here? I need the context, not one word."], "concede": ["The signed order says Circle rate and controls Sava’s stock. That isn’t ordinary escrow language."], "burden_drift": ["Celis knew what protection money meant, so I’m tempted to make her prove a clean purpose."], "burden_correct": ["Knowledge matters, but the Crown still has to prove intentional direction."], "final": ["The exact order, not the client list, persuades me that this crossed into criminal command."]},
         "reaction_rules": [
@@ -268,7 +268,7 @@
         ]
       },
       {
-        "id": "J-03", "seat": 4, "label": "Iven", "persona": "Requires each circumstantial link to be proved without demanding impossible certainty.", "register": "formal", "arc": "principled_holdout",
+        "id": "J-03", "gender": "female", "seat": 4, "label": "Ina", "persona": "Requires each circumstantial link to be proved without demanding impossible certainty.", "register": "formal", "arc": "principled_holdout",
         "initial": {"position": "NG", "confidence": 76}, "weights": {"burden": 2, "identity": 2, "digital_forensics": 1},
         "lines": {"agree": ["No witness saw the activation. Circumstantial proof can suffice, but it must still exclude a reasonable alternative."], "pushback": ["What evidence supports the copied-key theory, beyond its technical possibility?"], "concede": ["Exclusive recorded access removes the obvious alternative user. The contained phrase corroborates it."], "burden_drift": ["The secrecy makes a complete explanation from Celis feel desirable."], "burden_correct": ["Desirable isn’t required. Celis may leave every accusation unanswered."], "final": ["I began as the holdout. The independent records now form a chain I regard as complete."]},
         "reaction_rules": [
@@ -278,7 +278,7 @@
         ]
       },
       {
-        "id": "J-04", "seat": 5, "label": "Suri", "persona": "Trusts records only after understanding what each one cannot establish.", "register": "plain", "arc": "steady",
+        "id": "J-04", "gender": "male", "seat": 5, "label": "Suren", "persona": "Trusts records only after understanding what each one cannot establish.", "register": "plain", "arc": "steady",
         "initial": {"position": "G", "confidence": 59}, "weights": {"digital_forensics": 2, "method": 1, "identity": 1},
         "lines": {"agree": ["The gateway copy authenticates the message. That part isn’t guesswork."], "pushback": ["Wait—authentication isn’t authorship. Ema was careful about that."], "concede": ["Right, but sole office access and the cabinet key add the human connection the gateway lacks."], "burden_drift": ["Twelve signatures from one device look so neat that I stop testing the assumptions."], "burden_correct": ["A neat pattern still has limits. We have to ask who could reach the device."], "final": ["I accept the audit for what it proves, and the access evidence supplies the missing step."]},
         "reaction_rules": [
@@ -288,7 +288,7 @@
         ]
       },
       {
-        "id": "J-05", "seat": 6, "label": "Cal · foreperson", "persona": "Keeps the room on the three elements and invites challenges to every inference.", "register": "plain", "arc": "foreperson",
+        "id": "J-05", "gender": "female", "seat": 6, "label": "Cara · foreperson", "persona": "Keeps the room on the three elements and invites challenges to every inference.", "register": "plain", "arc": "foreperson",
         "initial": {"position": "U", "confidence": 40}, "weights": {"burden": 2, "command": 2, "identity": 1},
         "lines": {"agree": ["Let’s separate this. Circle first, director second, criminal purpose third. Where does each come from?"], "pushback": ["Can anyone explain the defence alternative as a full sequence, not just list possibilities?"], "concede": ["The prosecution’s sequence is contained phrase, exclusive access, exact signed order. I can follow that."], "burden_drift": ["If no one can name another user, it’s easy to treat silence as proof."], "burden_correct": ["Celis needn’t name anyone. We decide whether the proved circumstances leave a reasonable doubt."], "final": ["For me, the exact signed words and Celis’s knowledge prove direction and purpose together."]},
         "reaction_rules": [
@@ -298,7 +298,7 @@
         ]
       },
       {
-        "id": "J-06", "seat": 7, "label": "Lio", "persona": "Initially treats the empty chair as deliberate uncertainty, then tests concrete attribution.", "register": "hesitant", "arc": "drifter",
+        "id": "J-06", "gender": "female", "seat": 7, "label": "Lio", "persona": "Initially treats the empty chair as deliberate uncertainty, then tests concrete attribution.", "register": "hesitant", "arc": "drifter",
         "initial": {"position": "NG", "confidence": 55}, "weights": {"identity": 2, "timeline": 2, "command": 1},
         "lines": {"agree": ["Maybe the chair was meant to make every member sound replaceable. I’m wary of filling it ourselves."], "pushback": ["But how does a general hidden-director theory explain that phrase appearing twenty-three minutes later?"], "concede": ["I’d missed that the two investigators stayed inside. Celis was the person who carried the phrase out."], "burden_drift": ["I keep asking Celis for a better story because the prosecution’s timeline is tidy."], "burden_correct": ["A tidy case can still be wrong. The burden never moves."], "final": ["The timing isn’t proof by itself. With the key record, though, it changes my view."]},
         "reaction_rules": [
@@ -308,7 +308,7 @@
         ]
       },
       {
-        "id": "J-07", "seat": 8, "label": "Nessa", "persona": "Changes position when provenance and human access corroborate one another.", "register": "plain", "arc": "mind_changer",
+        "id": "J-07", "gender": "male", "seat": 8, "label": "Ned", "persona": "Changes position when provenance and human access corroborate one another.", "register": "plain", "arc": "mind_changer",
         "initial": {"position": "NG", "confidence": 67}, "weights": {"digital_forensics": 2, "identity": 2, "timeline": 1},
         "lines": {"agree": ["At first I heard “key signature” as if it meant Celis’s signature. It doesn’t."], "pushback": ["Who else had the badge, cabinet key, and chance to carry that phrase out? I don’t have an evidence-based answer."], "concede": ["The custody record matters. We aren’t relying on a screenshot or a copied message."], "burden_drift": ["The lack of another named user feels like something Celis should fix."], "burden_correct": ["No. The question is whether the Crown’s access proof is strong enough, not whether Celis found a culprit."], "final": ["I’ve moved. The authenticated order and exclusive access reinforce each other beyond coincidence."]},
         "reaction_rules": [
@@ -318,7 +318,7 @@
         ]
       },
       {
-        "id": "J-08", "seat": 9, "label": "Bram", "persona": "Regards official procedures cautiously and presses on contamination and custody.", "register": "blunt", "arc": "steady",
+        "id": "J-08", "gender": "male", "seat": 9, "label": "Bram", "persona": "Regards official procedures cautiously and presses on contamination and custody.", "register": "blunt", "arc": "steady",
         "initial": {"position": "NG", "confidence": 61}, "weights": {"credibility": 2, "method": 2, "burden": 1},
         "lines": {"agree": ["Two officers heard the canary phrase. We can’t edit them out because the test worked nicely."], "pushback": ["Were their phones sealed and movements recorded? Yes. Does that make a leak impossible? No."], "concede": ["I accept the phrase was contained. I don’t accept that containment alone identifies Celis."], "burden_drift": ["I want Celis to show the officers leaked it, which isn’t her burden."], "burden_correct": ["The possibility needs to be reasonable in this evidence, not merely imaginable."], "final": ["The key evidence answers what the phrase test can’t. I’d weigh them together, carefully."]},
         "reaction_rules": [
@@ -328,7 +328,7 @@
         ]
       },
       {
-        "id": "J-09", "seat": 10, "label": "Orla", "persona": "Understands Sava’s loss but corrects an early tendency to decide from sympathy.", "register": "plain", "arc": "burden_drifter",
+        "id": "J-09", "gender": "female", "seat": 10, "label": "Orla", "persona": "Understands Sava’s loss but corrects an early tendency to decide from sympathy.", "register": "plain", "arc": "burden_drifter",
         "initial": {"position": "G", "confidence": 67}, "weights": {"intent": 2, "burden": 2, "credibility": 1},
         "lines": {"agree": ["Sava’s two lost weeks sound painfully real. I felt myself deciding before we reached Celis."], "pushback": ["The harm proves the Circle’s offending. What proves Celis meant to advance it?"], "concede": ["Celis knew this was a protection demand, and the signed order enforced the Circle rate anyway."], "burden_drift": ["After hearing Sava, any uncertainty starts to feel like an excuse."], "burden_correct": ["That’s sympathy doing legal work. I need evidence of Celis’s purpose."], "final": ["I find that purpose in the order’s words and Celis’s admitted knowledge, not in Sava’s injury."]},
         "reaction_rules": [
@@ -339,7 +339,7 @@
         ]
       },
       {
-        "id": "J-10", "seat": 11, "label": "Tavi", "persona": "Takes Celis’s lawful work seriously and resists turning overlap into guilt.", "register": "hesitant", "arc": "drifter",
+        "id": "J-10", "gender": "male", "seat": 11, "label": "Tavi", "persona": "Takes Celis’s lawful work seriously and resists turning overlap into guilt.", "register": "hesitant", "arc": "drifter",
         "initial": {"position": "U", "confidence": 39}, "weights": {"intent": 2, "command": 2, "method": 1},
         "lines": {"agree": ["Celis really did mediate disputes. That’s not a fake background invented for trial."], "pushback": ["Could the words “hold” and “rate” have an ordinary meaning in her work? Sometimes, yes."], "concede": ["But this order controls Sava’s stock for the Circle’s rate. I can’t make that read like escrow."], "burden_drift": ["The mixed client note makes me want Celis to decode every line."], "burden_correct": ["The undated note can’t bear that weight. We should focus on the authenticated order."], "final": ["I accept the lawful-work counterweight. The disputed order still looks like intentional criminal direction."]},
         "reaction_rules": [
@@ -349,7 +349,7 @@
         ]
       },
       {
-        "id": "J-11", "seat": 12, "label": "Luma", "persona": "Tests whether the prosecution has proved control in practice rather than status or reputation.", "register": "plain", "arc": "steady",
+        "id": "J-11", "gender": "female", "seat": 12, "label": "Luma", "persona": "Tests whether the prosecution has proved control in practice rather than status or reputation.", "register": "plain", "arc": "steady",
         "initial": {"position": "G", "confidence": 58}, "weights": {"command": 2, "identity": 1, "intent": 2},
         "lines": {"agree": ["The members acted when the Chair’s order arrived. That proves real control by somebody."], "pushback": ["Somebody isn’t enough. Why Celis, and why a criminal purpose?"], "concede": ["The phrase points from the interview; the key points from the office; the words enforce the illegal payment."], "burden_drift": ["Because no other director appears, I start treating Celis as the default."], "burden_correct": ["There is no default accused. Every step needs evidence."], "final": ["I can state each step without relying on reputation, association, or the empty-chair symbol."]},
         "reaction_rules": [
@@ -360,7 +360,7 @@
       }
     ]
   },
-  "epilogue": "The trial forced Nareth’s traders to separate private mediation from coercive debt collection. Sava and her partner rebuilt their stock through a transparent cooperative fund, while an independent panel reviewed how the Circle had gained influence over commercial disputes. The recovered signing system was retired, and future settlements required named approvals visible to every party. Celis’s client files remained under court control while lawful customers received copies through an independent administrator.",
+  "epilogue": "The trial forced Nareth’s traders to separate private mediation from coercive debt collection. Sava and his partner rebuilt their stock through a transparent cooperative fund, while an independent panel reviewed how the Circle had gained influence over commercial disputes. The recovered signing system was retired, and future settlements required named approvals visible to every party. Celis’s client files remained under court control while lawful customers received copies through an independent administrator.",
   "gen_meta": {
     "model": "gpt-5",
     "prompt_version": "dd-2026-v3-20min",

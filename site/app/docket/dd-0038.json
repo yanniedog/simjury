@@ -277,7 +277,7 @@
   "jury": {
     "jurors": [
       {
-        "id": "J-01", "seat": 2, "label": "Juror 2 — Anya", "persona": "Anya starts with the name on the screen, then asks whether anyone has separated Nara's real work from the added commands.", "register": "plain", "arc": "vibes",
+        "id": "J-01", "gender": "female", "seat": 2, "label": "Juror 2 — Anya", "persona": "Anya starts with the name on the screen, then asks whether anyone has separated Nara's real work from the added commands.", "register": "plain", "arc": "vibes",
         "initial": {"position": "G", "confidence": 76}, "weights": {"identity": 2, "intent": 2, "digital_forensics": 1},
         "lines": {"agree": ["Eighteen commands under her name—how am I meant to ignore that?"], "pushback": ["Wait, are we mixing up the nine real visits and the eighteen other commands?"], "concede": ["All right. Her name was on the screen, but her handset didn't send those eighteen commands."], "burden_drift": ["She kept going back. Shouldn't she have to explain every visit?"], "burden_correct": ["No, I've got that backwards. The Crown has to prove what she knew."], "final": ["The screen has been corrected. For me, the nine real visits are the question now."]},
         "reaction_rules": [
@@ -287,7 +287,7 @@
         ]
       },
       {
-        "id": "J-02", "seat": 3, "label": "Juror 3 — Bram", "persona": "Bram finds repeated night visits hard to explain and keeps testing how much the restricted corridor really concealed.", "register": "blunt", "arc": "steady",
+        "id": "J-02", "gender": "male", "seat": 3, "label": "Juror 3 — Bram", "persona": "Bram finds repeated night visits hard to explain and keeps testing how much the restricted corridor really concealed.", "register": "blunt", "arc": "steady",
         "initial": {"position": "G", "confidence": 62}, "weights": {"opportunity": 2, "intent": 2, "procedure": 1},
         "lines": {"agree": ["Once is a callout. Nine night visits before nine runs? That's a pattern."], "pushback": ["But what could she actually see from that corridor? Nothing, apparently."], "concede": ["The routine tickets and the research story could keep a contractor outside the real business."], "burden_drift": ["If it was innocent, why didn't she walk away when the alarms looked wrong?"], "burden_correct": ["That's a fair question, but it isn't her burden to solve it."], "final": ["I don't like her choices. I have to decide what they prove she knew."]},
         "reaction_rules": [
@@ -297,7 +297,7 @@
         ]
       },
       {
-        "id": "J-03", "seat": 4, "label": "Juror 4 — Cel", "persona": "Cel slows the room down whenever assistance, suspicion, and knowledge begin to blur together.", "register": "formal", "arc": "principled_holdout",
+        "id": "J-03", "gender": "female", "seat": 4, "label": "Juror 4 — Cel", "persona": "Cel slows the room down whenever assistance, suspicion, and knowledge begin to blur together.", "register": "formal", "arc": "principled_holdout",
         "initial": {"position": "NG", "confidence": 78}, "weights": {"burden": 2, "credibility": 2, "intent": 2},
         "lines": {"agree": ["Can we name the step we're taking? Her work helped. That doesn't tell us what she knew."], "pushback": ["Suspicion of secrecy isn't automatically knowledge of controlled-drug manufacture."], "concede": ["The signed device source removes the screen's strongest accusation. We have to reassess the rest."], "burden_drift": ["The scale of this operation makes an innocent explanation feel uncomfortable."], "burden_correct": ["Uncomfortable isn't the standard. Has the Crown excluded unwitting maintenance?"], "final": ["My verdict turns on whether unwitting maintenance remains a reasonable possibility."]},
         "reaction_rules": [
@@ -307,7 +307,7 @@
         ]
       },
       {
-        "id": "J-04", "seat": 5, "label": "Juror 5 — Dev", "persona": "Dev is persuaded by concrete records but gets impatient when either side asks a technical exhibit to answer a human question.", "register": "plain", "arc": "mind_changer",
+        "id": "J-04", "gender": "male", "seat": 5, "label": "Juror 5 — Dev", "persona": "Dev is persuaded by concrete records but gets impatient when either side asks a technical exhibit to answer a human question.", "register": "plain", "arc": "mind_changer",
         "initial": {"position": "G", "confidence": 70}, "weights": {"digital_forensics": 2, "method": 2, "identity": 2},
         "lines": {"agree": ["The timing is hard to brush off. Those changes landed exactly when the suite needed them."], "pushback": ["Which part is fixed: the name we can edit, or the signed device record?"], "concede": ["That changes it for me. The dramatic eighteen-command trail came from inside the suite."], "burden_drift": ["She understands these systems, so surely she'd know what the pattern meant."], "burden_correct": ["Actually, expertise explains the repair. It doesn't identify the hidden product."], "final": ["I won't ask the device signature to decide more than the source of those commands."]},
         "reaction_rules": [
@@ -318,7 +318,7 @@
         ]
       },
       {
-        "id": "J-05", "seat": 6, "label": "Juror 6 — Esra", "persona": "Esra keeps the discussion moving by asking each speaker which disputed element a fact actually bears on.", "register": "plain", "arc": "foreperson",
+        "id": "J-05", "gender": "female", "seat": 6, "label": "Juror 6 — Esra", "persona": "Esra keeps the discussion moving by asking each speaker which disputed element a fact actually bears on.", "register": "plain", "arc": "foreperson",
         "initial": {"position": "G", "confidence": 55}, "weights": {"burden": 2, "credibility": 2, "intent": 1},
         "lines": {"agree": ["We're all agreed the manufacture happened. Which fact proves Nara knew that?"], "pushback": ["One at a time—are we arguing assistance, knowledge, or intention?"], "concede": ["The device signature doesn't answer everything, but it takes eighteen supposed acts off Nara's side of the ledger."], "burden_drift": ["Because the operation was serious, I keep wanting a completely innocent explanation."], "burden_correct": ["Let's reset. We don't need to approve of her conduct; the Crown must prove the elements."], "final": ["I've kept assistance, knowledge, and intention separate. That's how I'll decide."]},
         "reaction_rules": [
@@ -328,7 +328,7 @@
         ]
       },
       {
-        "id": "J-06", "seat": 7, "label": "Juror 7 — Fenn", "persona": "Fenn distrusts premium payments and polished excuses, yet will change course when another juror gives the money an ordinary explanation.", "register": "blunt", "arc": "vibes",
+        "id": "J-06", "gender": "female", "seat": 7, "label": "Juror 7 — Fenn", "persona": "Fenn distrusts premium payments and polished excuses, yet will change course when another juror gives the money an ordinary explanation.", "register": "blunt", "arc": "vibes",
         "initial": {"position": "G", "confidence": 72}, "weights": {"motive": 2, "opportunity": 2, "intent": 1},
         "lines": {"agree": ["Double money, after dark, no site name. That sounds like hush money to me."], "pushback": ["Maybe. But isn't double rate also exactly what an emergency contractor charges at night?"], "concede": ["The agency contract gives the payment a normal explanation. I can't just choose the nastier one."], "burden_drift": ["She took the money, so why shouldn't she prove it was clean?"], "burden_correct": ["No—Dara Venn has to prove what Nara understood the money was for."], "final": ["I have to decide what the payment meant, not just how it looks."]},
         "reaction_rules": [
@@ -338,7 +338,7 @@
         ]
       },
       {
-        "id": "J-07", "seat": 8, "label": "Juror 8 — Gio", "persona": "Gio initially trusts the tidy controller history, then focuses on exactly what its authenticated fields can and cannot show.", "register": "formal", "arc": "mind_changer",
+        "id": "J-07", "gender": "male", "seat": 8, "label": "Juror 8 — Gio", "persona": "Gio initially trusts the tidy controller history, then focuses on exactly what its authenticated fields can and cannot show.", "register": "formal", "arc": "mind_changer",
         "initial": {"position": "G", "confidence": 68}, "weights": {"digital_forensics": 2, "identity": 2, "intent": 1},
         "lines": {"agree": ["On the first screen, I read the label as attribution. I suspect most of us did."], "pushback": ["But the examiner said that field is editable. Why would we rank it above the signed source?"], "concede": ["The copies and signatures check out. Those eighteen commands came from an internal controller."], "burden_drift": ["Nara's name is real, so part of me wants her to prove how it was copied."], "burden_correct": ["The Crown tendered the source record. We don't have to guess who altered the label to use it properly."], "final": ["Whatever my verdict, it will use the signed source rather than the visible label."]},
         "reaction_rules": [
@@ -349,7 +349,7 @@
         ]
       },
       {
-        "id": "J-08", "seat": 9, "label": "Juror 9 — Hale", "persona": "Hale listens closely for what Rian admits against his own interest and what he may be saying to improve his position.", "register": "plain", "arc": "steady",
+        "id": "J-08", "gender": "male", "seat": 9, "label": "Juror 9 — Hale", "persona": "Hale listens closely for what Rian admits against his own interest and what he may be saying to improve his position.", "register": "plain", "arc": "steady",
         "initial": {"position": "NG", "confidence": 58}, "weights": {"credibility": 2, "intent": 2, "burden": 1},
         "lines": {"agree": ["Rian's account of the seventh visit matches Nara's own message. That's hard to dismiss."], "pushback": ["He can remember the cover story and still be guessing about Nara's mind."], "concede": ["His account cuts both ways: she asked a sharp question, but the manager answered with the same research story."], "burden_drift": ["Rian admitted the crime, and I catch myself asking Nara to prove she was different."], "burden_correct": ["That's not fair. His guilt can't fill the gap in proof about her knowledge."], "final": ["I've separated what Rian personally heard from what he hopes or assumes."]},
         "reaction_rules": [
@@ -359,7 +359,7 @@
         ]
       },
       {
-        "id": "J-09", "seat": 10, "label": "Juror 10 — Iri", "persona": "Iri keeps returning to the deleted messages and needs the room to distinguish later panic from earlier knowledge.", "register": "formal", "arc": "burden_drifter",
+        "id": "J-09", "gender": "female", "seat": 10, "label": "Juror 10 — Iri", "persona": "Iri keeps returning to the deleted messages and needs the room to distinguish later panic from earlier knowledge.", "register": "formal", "arc": "burden_drifter",
         "initial": {"position": "G", "confidence": 64}, "weights": {"motive": 2, "burden": 2, "intent": 1},
         "lines": {"agree": ["Why delete the messages if she had nothing to hide? I can't get past that."], "pushback": ["Hold on. The deletion came after the raid told her what the site was. Timing matters."], "concede": ["I accept that panic is possible, especially once the accusing account label appeared."], "burden_drift": ["Still, she deleted them. Doesn't she owe us a convincing innocent reason?"], "burden_correct": ["No. Her explanation can be weak and the prosecution can still fall short on earlier knowledge."], "final": ["I've placed the deletion after the raid and decided how much that timing matters."]},
         "reaction_rules": [
@@ -370,7 +370,7 @@
         ]
       },
       {
-        "id": "J-10", "seat": 11, "label": "Juror 11 — Joss", "persona": "Joss thinks aloud, sometimes confuses benefit with intent, and corrects course when another juror separates the two.", "register": "hesitant", "arc": "drifter",
+        "id": "J-10", "gender": "male", "seat": 11, "label": "Juror 11 — Joss", "persona": "Joss thinks aloud, sometimes confuses benefit with intent, and corrects course when another juror separates the two.", "register": "hesitant", "arc": "drifter",
         "initial": {"position": "U", "confidence": 38}, "weights": {"causation": 2, "intent": 2, "method": 1},
         "lines": {"agree": ["I'm stuck on this: the manufacture needed her adjustments, so doesn't that make her part of it?"], "pushback": ["No, sorry—that proves the work helped. It doesn't prove she understood why."], "concede": ["The routine tickets show how real repairs could feed a hidden operation without the technician seeing it."], "burden_drift": ["Because her work mattered so much, I keep wanting her to prove ignorance."], "burden_correct": ["But knowledge is an element. The prosecution has to prove it."], "final": ["I can now explain the difference between benefit and knowing assistance."]},
         "reaction_rules": [
@@ -380,7 +380,7 @@
         ]
       },
       {
-        "id": "J-11", "seat": 12, "label": "Juror 12 — Kemi", "persona": "Kemi tests both narratives against the same record and resists letting a clean interface settle a messy question.", "register": "plain", "arc": "steady",
+        "id": "J-11", "gender": "female", "seat": 12, "label": "Juror 12 — Kemi", "persona": "Kemi tests both narratives against the same record and resists letting a clean interface settle a messy question.", "register": "plain", "arc": "steady",
         "initial": {"position": "U", "confidence": 40}, "weights": {"identity": 2, "digital_forensics": 2, "burden": 1},
         "lines": {"agree": ["The account name and timing make a neat guilt story. I can see why the Crown starts there."], "pushback": ["The device signature doesn't prove innocence. It does prove the first screen blamed the wrong device."], "concede": ["So we remove eighteen commands, keep nine real visits, and ask what those nine prove."], "burden_drift": ["Do we need Nara to show she never agreed to lend her account name?"], "burden_correct": ["No. The signed source already shows where those commands originated."], "final": ["After correcting the record, I'll decide what the remaining conduct proves."]},
         "reaction_rules": [

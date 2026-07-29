@@ -121,12 +121,28 @@ const JUROR_SHAPE: ReadonlyArray<{
   { arc: 'steady', position: 'NG' },
 ]
 
+/** Portrait genders for seats J-01..J-11 (shared across published dockets). */
+const PORTRAIT_JUROR_GENDER = [
+  'female',
+  'male',
+  'female',
+  'male',
+  'female',
+  'female',
+  'male',
+  'male',
+  'female',
+  'male',
+  'female',
+] as const
+
 export function makeJuror(n: number, overrides: Partial<Juror> = {}): Juror {
   const shape = JUROR_SHAPE[n - 1]
   return {
     id: `J-${String(n).padStart(2, '0')}`,
     seat: n + 1,
     label: `Juror ${n + 1}`,
+    gender: PORTRAIT_JUROR_GENDER[n - 1],
     persona: 'a test juror',
     register: 'plain',
     arc: shape.arc,

@@ -89,15 +89,23 @@ function hash(value: string): number {
   return h >>> 0
 }
 
-/** Infer juror gender from persona self-reference; else stable mix by id. */
-export function genderForJuror(persona: string, id: string): SpeakerGender {
+/**
+ * Resolve juror gender. Explicit authored gender (matched to the portrait)
+ * wins; otherwise infer from persona self-reference, else stable mix by id.
+ */
+export function genderForJuror(
+  persona: string,
+  id: string,
+  explicit?: SpeakerGender | null,
+): SpeakerGender {
+  if (explicit === 'female' || explicit === 'male') return explicit
   const text = persona ?? ''
   const femaleSelf =
-    /\b(distrusts herself|her skin crawl|her religion|argument for her|from her\b|offends her|speak to her|than she distrusts|survives her saying|retired her certainty|her least favourite|her particular attention)\b/i.test(
+    /\b(distrusts herself|her skin crawl|her religion|argument for her|from her\b|offends her|speak to her|than she distrusts|survives her saying|retired her certainty|her least favourite|her particular attention|corrects herself|catches herself|corrects her own)\b/i.test(
       text,
     ) || /\b(she keeps|she wants|she cannot|she will)\b/i.test(text)
   const maleSelf =
-    /\b(on him\b|haunts him|undoing him|prying him|in his head|settles it for him|pulls him|reeling him|has him leaning|gnaws at him|working on him|for him\b|distrusts himself)\b/i.test(
+    /\b(on him\b|haunts him|undoing him|prying him|in his head|settles it for him|pulls him|reeling him|has him leaning|gnaws at him|working on him|for him\b|distrusts himself|corrects himself|catches himself|corrects his own)\b/i.test(
       text,
     ) || /\b(he keeps|he wants|he cannot|he will|he finished|he digs)\b/i.test(text)
   if (femaleSelf && !maleSelf) return 'female'
@@ -165,7 +173,7 @@ export function deviceVoiceGender(name: string): SpeakerGender | 'unknown' {
  */
 export function buildSpeakerVoicePlan(input: {
   cast: Array<{ id: string; name: string; role_label?: string }>
-  jurors?: Array<{ id: string; persona: string }>
+  jurors?: Array<{ id: string; persona: string; gender?: SpeakerGender }>
 }): SpeakerVoicePlan {
   const genderByKey = new Map<string, SpeakerGender>()
   const kokoroByKey = new Map<string, string>()
@@ -179,7 +187,7 @@ export function buildSpeakerVoicePlan(input: {
     genderByKey.set(member.id, genderForCastName(member.name, member.id, member.role_label))
   }
   for (const juror of input.jurors ?? []) {
-    genderByKey.set(juror.id, genderForJuror(juror.persona, juror.id))
+    genderByKey.set(juror.id, genderForJuror(juror.persona, juror.id, juror.gender))
   }
 
   // Walk order must byte-match site/scripts/speaker-voices.mjs's assignKokoroVoices:

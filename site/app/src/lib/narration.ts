@@ -93,7 +93,7 @@ let plannedIndexes: Map<string, number> = new Map()
 /** Register cast/juror genders for the active sitting so fallback voices stay matched. */
 export function setNarrationSpeakers(input: {
   cast: Array<{ id: string; name: string; role_label?: string }>
-  jurors?: Array<{ id: string; persona: string }>
+  jurors?: Array<{ id: string; persona: string; gender?: 'female' | 'male' }>
 }): void {
   activePlan = buildSpeakerVoicePlan(input)
   altVoiceByKey = altVoiceModeAvailable()
