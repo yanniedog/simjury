@@ -113,12 +113,11 @@ cartel/organised-crime syndicate; large-scale illicit drug manufacturing; and mu
 The setting supplies gravity, not spectacle. The jury still decides one contested
 element from admissible evidence. Balance modern records with memory, motive,
 credibility, causation, knowledge, intent, command, coercion, duress, and the
-burden of proof. Prefer evidence that works in spoken dialogue: admissions,
-signed notes, receipts, handwriting, neighbour or colleague recognition, and
-clearly described physical findings. Do not build a sitting around who appears
-on a camera when the player cannot see the footage; if a recording matters,
-have a witness say plainly what they saw or heard. Keep technology simple—one
-quiet timestamp or pass log is enough.
+burden of proof. Prefer dialogue-friendly evidence: admissions, signed notes,
+receipts, handwriting, recognition, and clearly described physical findings. Do
+not build a sitting around who appears on a camera the player cannot see; if a
+recording matters, have a witness say plainly what they saw or heard. Keep
+technology simple—one quiet timestamp or pass log is enough.
 Across seven cases, no two central inferences may depend on the same mechanism.
 
 ### Specificity standard for major crime

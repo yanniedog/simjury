@@ -23,10 +23,8 @@ physical context, or make a person memorable.
   historical courtroom nostalgia.
 - Human context: candid editorial photography with natural skin, ordinary
   clothing, real domestic or work texture, and unstaged expressions.
-- Evidence: believable phone, document, notebook, or scene imagery when needed.
-  Prefer images that support atmosphere; do not rely on an unseen camera frame as
-  the main identity puzzle. If a recording matters in play, a witness should say
-  plainly what they saw or heard.
+- Evidence: believable phone, security-camera, document, or scene imagery.
+  Preserve ambiguity at the point when the jury encounters it.
 - Generate the accused's identity anchor first. Use it as a reference for every
   later image of that character. Do the same for recurring witnesses.
 
