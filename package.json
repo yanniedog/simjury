@@ -25,6 +25,8 @@
     "pr:coderabbit-rate-limit-retry:verify": "node scripts/verify-coderabbit-rate-limit-retry.mjs",
     "pr:coderabbit-review-recovery": "node scripts/pr-coderabbit-review-recovery.mjs",
     "pr:coderabbit-review-recovery:verify": "node scripts/verify-coderabbit-review-recovery.mjs",
+    "pr:coderabbit-ensure-review": "node scripts/pr-coderabbit-ensure-review.mjs",
+    "pr:coderabbit-ensure-review:verify": "node scripts/verify-coderabbit-review-recovery.mjs",
     "coderabbit:rate-limit-retry:install-all": "node scripts/install-coderabbit-rate-limit-retry-all-repos.mjs",
     "branch-protection:apply": "node scripts/apply-branch-protection.mjs",
     "repo-merge-settings:apply": "node scripts/apply-repo-merge-settings.mjs",

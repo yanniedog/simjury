@@ -87,8 +87,15 @@ export function coderabbitReviewedAfter(reviews, comments, afterIso) {
     if (!Number.isFinite(t) || t <= after) continue;
     const body = String(r.body || '');
     if (isRateLimitBody(body)) continue;
-    if (r.state === 'COMMENTED' || r.state === 'APPROVED' || r.state === 'CHANGES_REQUESTED') {
-      return true;
+    if (/review command invocation/i.test(body)) continue;
+    if (/auto-generated reply by CodeRabbit/i.test(body) && /Action performed|I(?:'|’)ll review/i.test(body)) {
+      continue;
+    }
+    // Real review signal
+    if (/Actionable comments posted|Prompt for AI Agents|cr-comment:v1:/i.test(body)) return true;
+    if (r.state === 'APPROVED' || r.state === 'CHANGES_REQUESTED') return true;
+    if ((r.state === 'COMMENTED' || r.state === 'APPROVED' || r.state === 'CHANGES_REQUESTED') && body.trim().length >= 80) {
+      if (!isRateLimitBody(body)) return true;
     }
   }
 
@@ -99,9 +106,8 @@ export function coderabbitReviewedAfter(reviews, comments, afterIso) {
     if (!Number.isFinite(t) || t <= after) continue;
     const body = String(c.body || '');
     if (isRateLimitBody(body)) continue;
-    if (/Review finished|Action performed/i.test(body)) return true;
-    // Successful summarize/walkthrough without rate-limit markers still counts as a run
-    if (/summarize by coderabbit\.ai/i.test(body) && !isRateLimitBody(body)) return true;
+    if (/review command invocation/i.test(body)) continue;
+    if (/Actionable comments posted|Prompt for AI Agents|cr-comment:v1:/i.test(body)) return true;
   }
   return false;
 }

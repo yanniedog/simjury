@@ -22,10 +22,13 @@ const QUOTA_PATTERNS = [
   /\bplease (?:try|come back) (?:again )?later\b/i,
   /couldn'?t (?:review|process|complete)/i,
   /unable to (?:review|process|complete)/i,
-  // CodeRabbit quota — pr-coderabbit-rate-limit-retry owns the ≤120m re-request.
+  // CodeRabbit quota — pr-coderabbit-rate-limit-retry / ensure owns the re-request.
   /\breview limit reached\b/i,
   /\brate limited by coderabbit\.ai\b/i,
   /\breached your pr review limit\b/i,
+  // CodeRabbit command acks are not reviews.
+  /\breview command invocation\b/i,
+  /auto-generated reply by CodeRabbit/i,
   // Gemini Code Assist consumer sunset (posts on every PR; not a real review).
   /\bconsumer version of Gemini Code Assist\b/i,
   /\bcode review activity has officially ceased\b/i,

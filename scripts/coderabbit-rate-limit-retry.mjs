@@ -1,15 +1,13 @@
 #!/usr/bin/env node
 /**
- * After CodeRabbit rate-limits a PR, wait until the stated window clears, then
- * post `@coderabbitai review` so the PR gets reviewed automatically.
+ * After CodeRabbit rate-limits a PR, request review when the wait window is due.
+ * Does not sleep — GHA sleep jobs were cancelled before posting.
  *
  * Usage:
- *   node scripts/coderabbit-rate-limit-retry.mjs --pr 187
- *   node scripts/coderabbit-rate-limit-retry.mjs --pr 187 --dry-run
- *   node scripts/coderabbit-rate-limit-retry.mjs --pr 187 --no-sleep
+ *   node scripts/coderabbit-rate-limit-retry.mjs --pr 187 --if-due
+ *   node scripts/coderabbit-rate-limit-retry.mjs --pr 187 --dry-run --if-due
  */
 import { spawnSync } from 'node:child_process';
-import { setTimeout as sleep } from 'node:timers/promises';
 import { gateExemptReason } from './lib/pr-gate-exempt.mjs';
 import { ghJson } from './lib/gh-pr-review-threads.mjs';
 import {
@@ -27,6 +25,7 @@ function parseArgs(argv) {
     pr: null,
     prError: null,
     dryRun: false,
+    ifDue: false,
     noSleep: false,
     bufferMinutes: 2,
     maxWaitMinutes: 120,
@@ -36,7 +35,8 @@ function parseArgs(argv) {
     const a = argv[i];
     if (a === '--help' || a === '-h') out.help = true;
     else if (a === '--dry-run') out.dryRun = true;
-    else if (a === '--no-sleep') out.noSleep = true;
+    else if (a === '--if-due') out.ifDue = true;
+    else if (a === '--no-sleep') out.noSleep = true; // legacy alias for --if-due
     else if (a === '--pr') {
       const value = argv[i + 1];
       if (!value || value.startsWith('--')) out.prError = '--pr requires a value';
@@ -47,6 +47,7 @@ function parseArgs(argv) {
       out.maxWaitMinutes = Number(argv[++i]);
     }
   }
+  if (out.noSleep) out.ifDue = true;
   return out;
 }
 
@@ -78,7 +79,7 @@ function postRetryTrigger(prNumber, dryRun) {
   return 0;
 }
 
-async function main() {
+function main() {
   const args = parseArgs(process.argv);
   if (args.prError) {
     console.error(`coderabbit-rate-limit-retry: ${args.prError}`);
@@ -86,7 +87,9 @@ async function main() {
   }
   if (args.help || !args.pr) {
     console.log(
-      `Usage: node scripts/coderabbit-rate-limit-retry.mjs --pr <n> [--dry-run] [--no-sleep] [--buffer-minutes 2] [--max-wait-minutes 120]`,
+      `Usage: node scripts/coderabbit-rate-limit-retry.mjs --pr <n> [--if-due] [--dry-run]\n` +
+        `No sleep. Prefer --if-due (post only when quota window elapsed). ` +
+        `Otherwise pr-coderabbit-ensure-review (*/15) owns the wait.`,
     );
     process.exit(args.help ? 0 : 1);
   }
@@ -98,7 +101,7 @@ async function main() {
     process.exit(0);
   }
 
-  let activity = loadPrActivity(prNumber);
+  const activity = loadPrActivity(prNumber);
   if (String(activity.state || '').toUpperCase() !== 'OPEN') {
     console.log(`coderabbit-rate-limit-retry: PR #${prNumber} not open (${activity.state}) — skip`);
     process.exit(0);
@@ -128,48 +131,24 @@ async function main() {
     msUntilRetry(limit.createdAt, limit.waitMinutes, args.bufferMinutes),
     { maxMs: args.maxWaitMinutes * 60_000 },
   );
-  console.log(
-    `coderabbit-rate-limit-retry: PR #${prNumber} rate-limited at ${limit.createdAt}; ` +
-      `waitMinutes=${limit.waitMinutes}; sleeping ${Math.ceil(waitMs / 1000)}s` +
-      (args.noSleep ? ' (skipped --no-sleep)' : ''),
-  );
 
-  if (!args.noSleep && waitMs > 0) {
-    const chunk = 5 * 60_000;
-    let left = waitMs;
-    while (left > 0) {
-      const step = Math.min(chunk, left);
-      await sleep(step);
-      left -= step;
-      if (left > 0) {
-        console.log(`coderabbit-rate-limit-retry: ${Math.ceil(left / 1000)}s remaining…`);
-      }
-    }
-  }
-
-  activity = loadPrActivity(prNumber);
-  if (String(activity.state || '').toUpperCase() !== 'OPEN') {
-    console.log(`coderabbit-rate-limit-retry: PR #${prNumber} closed during wait — skip`);
-    process.exit(0);
-  }
-
-  const limitAfterWait = latestRateLimitEvent(activity.comments);
-  const anchor = limitAfterWait?.createdAt || limit.createdAt;
-  if (coderabbitReviewedAfter(activity.reviews, activity.comments, anchor)) {
+  if (args.ifDue && waitMs > 0) {
     console.log(
-      `coderabbit-rate-limit-retry: CodeRabbit reviewed PR #${prNumber} during wait — skip`,
+      `coderabbit-rate-limit-retry: PR #${prNumber} rate-limited at ${limit.createdAt}; ` +
+        `${Math.ceil(waitMs / 1000)}s remaining — defer to pr-coderabbit-ensure-review scheduler`,
     );
     process.exit(0);
   }
-  if (retryAlreadyArmed(activity.comments, anchor)) {
-    console.log(`coderabbit-rate-limit-retry: retry already armed on PR #${prNumber} — skip`);
+
+  if (!args.ifDue && waitMs > 0) {
+    console.log(
+      `coderabbit-rate-limit-retry: wait ${Math.ceil(waitMs / 1000)}s not elapsed; ` +
+        `refusing to sleep in-process. Re-run with --if-due or wait for ensure-review cron.`,
+    );
     process.exit(0);
   }
 
   process.exit(postRetryTrigger(prNumber, args.dryRun));
 }
 
-main().catch((err) => {
-  console.error(`coderabbit-rate-limit-retry: ${err?.stack || err}`);
-  process.exit(1);
-});
+main();

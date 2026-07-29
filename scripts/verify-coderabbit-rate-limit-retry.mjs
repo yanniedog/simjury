@@ -50,11 +50,33 @@ assert(latest?.waitMinutes === 10, 'latest wait minutes');
 
 assert(
   coderabbitReviewedAfter(
-    [{ author: { login: 'coderabbitai[bot]' }, submittedAt: '2026-07-28T19:00:00Z', state: 'COMMENTED', body: 'bug' }],
+    [
+      {
+        author: { login: 'coderabbitai[bot]' },
+        submittedAt: '2026-07-28T19:00:00Z',
+        state: 'COMMENTED',
+        body: '**Actionable comments posted: 1**\n\n<details><summary>Prompt for AI Agents</summary>\nfix null deref',
+      },
+    ],
     [],
     '2026-07-28T18:50:00Z',
   ),
   'formal review after limit counts',
+);
+assert(
+  !coderabbitReviewedAfter(
+    [
+      {
+        author: { login: 'coderabbitai[bot]' },
+        submittedAt: '2026-07-28T19:00:00Z',
+        state: 'COMMENTED',
+        body: '<!-- CodeRabbit review command invocation: x -->\nAction performed',
+      },
+    ],
+    [],
+    '2026-07-28T18:50:00Z',
+  ),
+  'command ack after limit does not count',
 );
 assert(
   !coderabbitReviewedAfter(

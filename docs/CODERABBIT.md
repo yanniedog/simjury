@@ -36,69 +36,47 @@ Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.
 | `scripts/lib/bot-wait-config.mjs` | `coderabbit` alias + mandatory presence slot |
 | `bot-presence-gate` | Env `SIMJURY_BOT_WAIT_REQUIRED=sourcery\|codex\|cursor,coderabbit` (CodeRabbit mandatory) |
 | `pr-request-bot-reviews` | Posts `@coderabbitai review` when CR has not appeared (defers if rate-limited) |
-| `pr-coderabbit-rate-limit-retry` | On “Review limit reached”, waits ≤120m then `@coderabbitai review` |
-| `pr-coderabbit-review-recovery` | Hourly: reopen closed / recover merged PRs that only got rate-limit or failed CR |
+| `pr-coderabbit-rate-limit-retry` | On rate-limit: **no sleep** — posts immediately only if wait already elapsed |
+| `pr-coderabbit-ensure-review` | Every **15 minutes**: open due retries + closed reopen + merged follow-up until a *proper* CR review |
+| `pr-coderabbit-review-recovery` | Alias of ensure-review (hourly schedule kept for bookmarks) |
 | `pr-bot-close-guard` | Reopens PRs closed with outstanding CR/peer/thread obligations |
 
-Rate-limit notices do **not** satisfy `bot-presence-gate`. Presence stays red until a
-substantive CodeRabbit review lands; the rate-limit Action owns the open-PR retry clock.
-The hourly recovery Action covers **closed/merged** PRs that slipped through with only a
-rate-limit or failed review (at most one `@coderabbitai review` per hour until CR succeeds).
+Rate-limit notices and command acks do **not** satisfy `bot-presence-gate` or ensure-review.
+A proper review means Actionable comments / inline findings / approve-changes — not “I’ll review”.
 
 Chore / WIP titles are skipped by CodeRabbit (`ignore_title_keywords`) and are still
 gate-exempt in SimJury scripts.
 
-## Auto-retry after rate limit
+## Ensure review (no GHA sleep)
 
-CodeRabbit does **not** resume on its own after a rate-limit comment. Workflow
-[`.github/workflows/pr-coderabbit-rate-limit-retry.yml`](../.github/workflows/pr-coderabbit-rate-limit-retry.yml)
-is **self-contained** (no repo scripts). It listens for those comments, sleeps until
-“Next review available in N minutes” (+2m buffer, max 120m), then posts:
+Long sleeps in Actions were cancelled before posting (audit: 0 successful completes).
+Durable path:
+
+1. Rate-limit comment fires `pr-coderabbit-rate-limit-retry` → **if-due only** (no sleep)
+2. `pr-coderabbit-ensure-review` runs every 15 minutes:
+   - **Open:** when quota wait elapsed / ack-only / missing proper review → `@coderabbitai review` (≤1 / 15m)
+   - **Closed:** reopen + request (≤1 / hour)
+   - **Merged:** request on merged PR (≤1 / hour)
+3. Stops only after a proper CR review
 
 ```text
-<!-- simjury-coderabbit-rate-limit-retry -->
+<!-- simjury-coderabbit-ensure-review -->
 @coderabbitai review
 ```
 
-Concurrency uses `cancel-in-progress: false` so ordinary PR comments cannot cancel a
-sleeping waiter. Duplicate rate-limit runs self-skip when a retry is already armed,
-CodeRabbit already reviewed, or a newer rate-limit comment owns the window.
-
-Install on all other active repos (same policy everywhere):
+Local helpers:
 
 ```sh
-npm run coderabbit:rate-limit-retry:install-all
-# or pack:
-# docs/cross-repo-patches/coderabbit-rate-limit-retry/
-```
-
-Local helpers (simjury):
-
-```sh
-npm run pr:coderabbit-rate-limit-retry -- --pr <n>
-npm run pr:coderabbit-rate-limit-retry:verify
-npm run pr:coderabbit-review-recovery -- --dry-run
+npm run pr:coderabbit-rate-limit-retry -- --pr <n> --if-due
+npm run pr:coderabbit-ensure-review -- --dry-run
+npm run pr:coderabbit-ensure-review:verify
 npm run pr:coderabbit-review-recovery:verify
 ```
 
-## Hourly recovery (closed / merged)
+## Hourly recovery alias
 
 Workflow [`.github/workflows/pr-coderabbit-review-recovery.yml`](../.github/workflows/pr-coderabbit-review-recovery.yml)
-runs every hour and on `workflow_dispatch`:
-
-1. Scan recently closed/merged PRs (default 14-day lookback)
-2. Skip PRs that already have a substantive CodeRabbit review
-3. **Closed (unmerged):** reopen the PR
-4. **Merged:** GitHub cannot reopen merged PRs — keep requesting review on the merged PR
-5. Post `@coderabbitai review` at most **once per hour** until CR leaves a proper review
-
-Manual:
-
-```sh
-npm run pr:coderabbit-review-recovery -- --pr 232
-npm run pr:coderabbit-review-recovery -- --lookback-days 14 --dry-run
-```
-
+is an alias of ensure-review (same concurrency group).
 ## Other active repos
 
 **Treat every active repo the same.** Copy `.coderabbit.yaml` (trim

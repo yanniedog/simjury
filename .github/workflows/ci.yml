@@ -56,3 +56,4 @@ jobs:
           npm run pr:bot-wait-or-groups:verify
           npm run pr:arm-and-park:verify
           npm run pr:coderabbit-review-recovery:verify
+          npm run pr:coderabbit-rate-limit-retry:verify

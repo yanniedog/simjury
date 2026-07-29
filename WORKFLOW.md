@@ -125,7 +125,7 @@ npm run branch-protection:apply
 | `npm run pr:bot-feedback-check` | Thread closure gate |
 | `npm run pr:bot-close-guard` | Block/reopen premature PR close |
 | `npm run pr:request-coderabbit-review` | Nudge `@coderabbitai review` if CR missing |
-| `npm run pr:coderabbit-review-recovery` | Hourly recovery for closed/merged PRs missing real CR |
+| `npm run pr:coderabbit-ensure-review` | Every 15m: ensure proper CR review (open+closed+merged) |
 | `npm run pr:gates:check` | All merge gates (single shot) |
 | `npm run pr:merge` | Enable squash auto-merge |
 | `npm run branch-protection:apply` | Apply legacy branch protection |
