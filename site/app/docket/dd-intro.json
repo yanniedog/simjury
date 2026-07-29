@@ -354,16 +354,16 @@
         ]
       },
       {
-        "id": "J-04", "gender": "male", "seat": 5, "label": "Juror 5 — Dev", "persona": "Initially trusts the simple camera story, but changes position when the underlying records are tested.", "register": "blunt", "arc": "steady",
+        "id": "J-04", "gender": "male", "seat": 5, "label": "Juror 5 — Dev", "persona": "Initially trusts the simple lobby-glance story, but changes position when recognition and carriage records are tested.", "register": "blunt", "arc": "steady",
         "initial": {"position": "G", "confidence": 56},
         "weights": {"method": 1, "timeline": 2, "digital_forensics": 2},
         "lines": {
-          "agree": ["The camera is genuine. That’s why I started on Guilty."],
-          "pushback": ["Genuine picture, wrong time. Why are we treating those as the same thing?"],
-          "concede": ["Eighteen minutes resolves the conflict without inventing a missing event."],
+          "agree": ["The secret visit is genuine. That’s why I started on Guilty."],
+          "pushback": ["A hidden repair is real. Why are we treating that as proof she met Dax?"],
+          "concede": ["Sela’s recognition and the carriage ride put Lena away during the fatal window."],
           "burden_drift": ["Part of me still wants Lena to solve this because she caused the repair mess."],
           "burden_correct": ["A hidden repair isn’t a killing. We can’t blur them together."],
-          "final": ["I changed my mind once the real capture time was proved."]
+          "final": ["I changed my mind once the repair note and transit observation lined up."]
         },
         "reaction_rules": [
           {"when": {"theme": "alibi", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
@@ -378,7 +378,7 @@
         "lines": {
           "agree": ["Let’s mark it clearly: Lena entered, hid the visit, and lied."],
           "pushback": ["Now the next question: what proves she stayed for Dax’s arrival?"],
-          "concede": ["Once 1:31 becomes 1:13, the records fit together."],
+          "concede": ["Once the notebook and Sela’s recognition line up, the records fit together."],
           "burden_drift": ["We’re starting to make Lena’s lie carry a duty to prove innocence."],
           "burden_correct": ["Identity is still the prosecution’s element. Has it been proved beyond reasonable doubt?"],
           "final": ["The homicide is agreed. Lena’s identity as the attacker isn’t."]
@@ -394,9 +394,9 @@
         "initial": {"position": "U", "confidence": 40},
         "weights": {"identity": 2, "timeline": 2, "digital_forensics": 1},
         "lines": {
-          "agree": ["I’ll be honest: face plus 1:31 looked decisive to me."],
-          "pushback": ["Hold on. The picture can be true while the printed time is wrong."],
-          "concede": ["Yes, I see it now—the restart entry makes the error concrete."],
+          "agree": ["I’ll be honest: the secret visit plus the lie looked decisive to me."],
+          "pushback": ["Hold on. A hidden repair can be true without placing her in the archive at 1:20."],
+          "concede": ["Yes, I see it now—Sela’s named recognition makes the alibi concrete."],
           "burden_drift": ["Because Lena hid the repair, I keep wanting her to remove every doubt."],
           "burden_correct": ["That isn’t her job. The prosecution has to prove the identity element."],
           "final": ["I was anchored by the first image, and I’ve changed my view."]
@@ -468,9 +468,9 @@
         "initial": {"position": "U", "confidence": 36},
         "weights": {"timeline": 2, "identity": 2, "credibility": 1},
         "lines": {
-          "agree": ["I followed the simple story: camera means she left afterward."],
-          "pushback": ["But that story uses the displayed time. What happens when it’s corrected?"],
-          "concede": ["The gate, carriage, and restart entry now make one sequence for me."],
+          "agree": ["I followed the simple story: she hid the visit, so she must have stayed."],
+          "pushback": ["But that story skips the platform check. What happens when Sela places her on the carriage?"],
+          "concede": ["The repair note, gate, and carriage now make one sequence for me."],
           "burden_drift": ["I keep thinking Lena should fill the gap because she was dishonest."],
           "burden_correct": ["Actually, the gap belongs to the prosecution’s case, doesn’t it?"],
           "final": ["The reliable sequence leaves Lena away from the fatal encounter."]
@@ -486,7 +486,7 @@
         "initial": {"position": "NG", "confidence": 55},
         "weights": {"digital_forensics": 2, "burden": 2, "identity": 1},
         "lines": {
-          "agree": ["The restart and transit records support one another without sharing a clock."],
+          "agree": ["The signed repair note and Sela’s transit observation support one another without inventing a shared clock."],
           "pushback": ["The prosecution’s best point is concealment. Which record carries it into the fatal window?"],
           "concede": ["I agree Lena’s denial made her a proper suspect and deserved investigation."],
           "burden_drift": ["It’s easy to ask Lena for the answer because Dax’s attacker remains unknown."],
