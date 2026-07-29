@@ -95,15 +95,19 @@ export function hash(value) {
   return h >>> 0
 }
 
-/** Infer juror gender from persona self-reference; else stable mix by id. */
-export function genderForJuror(persona, id) {
+/**
+ * Resolve juror gender. Explicit authored gender (matched to the portrait)
+ * wins; otherwise infer from persona self-reference, else stable mix by id.
+ */
+export function genderForJuror(persona, id, explicit) {
+  if (explicit === 'female' || explicit === 'male') return explicit
   const text = String(persona ?? '')
   const femaleSelf =
-    /\b(distrusts herself|her skin crawl|her religion|argument for her|from her\b|offends her|speak to her|than she distrusts|survives her saying|retired her certainty|her least favourite|her particular attention)\b/i.test(
+    /\b(distrusts herself|her skin crawl|her religion|argument for her|from her\b|offends her|speak to her|than she distrusts|survives her saying|retired her certainty|her least favourite|her particular attention|corrects herself|catches herself|corrects her own)\b/i.test(
       text,
     ) || /\b(she keeps|she wants|she cannot|she will)\b/i.test(text)
   const maleSelf =
-    /\b(on him\b|haunts him|undoing him|prying him|in his head|settles it for him|pulls him|reeling him|has him leaning|gnaws at him|working on him|for him\b|distrusts himself)\b/i.test(
+    /\b(on him\b|haunts him|undoing him|prying him|in his head|settles it for him|pulls him|reeling him|has him leaning|gnaws at him|working on him|for him\b|distrusts himself|corrects himself|catches himself|corrects his own)\b/i.test(
       text,
     ) || /\b(he keeps|he wants|he cannot|he will|he finished|he digs)\b/i.test(text)
   if (femaleSelf && !maleSelf) return 'female'
@@ -166,7 +170,7 @@ export function assignKokoroVoices(docket) {
   for (const member of ordered) {
     const id = member.id
     const gender = Object.prototype.hasOwnProperty.call(member, 'persona')
-      ? genderForJuror(member.persona, id)
+      ? genderForJuror(member.persona, id, member.gender)
       : genderForCastMember(member)
     genders.set(id, gender)
     const preferred = preferredVoice(id, gender)

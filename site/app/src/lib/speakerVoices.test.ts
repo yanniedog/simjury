@@ -51,6 +51,36 @@ describe('juror gender cues', () => {
       genderForJuror('Quiet doubter; nine drinks buys very little belief from her.', 'J-08'),
     ).toBe('female')
   })
+
+  it('prefers authored gender over persona inference and id hash', () => {
+    expect(genderForJuror('Practical.', 'J-01', 'female')).toBe('female')
+    expect(genderForJuror('Practical.', 'J-01', 'male')).toBe('male')
+  })
+
+  it('assigns published docket jurors the portrait-matching authored gender', () => {
+    const expected: Record<string, 'female' | 'male'> = {
+      'J-01': 'female',
+      'J-02': 'male',
+      'J-03': 'female',
+      'J-04': 'male',
+      'J-05': 'female',
+      'J-06': 'female',
+      'J-07': 'male',
+      'J-08': 'male',
+      'J-09': 'female',
+      'J-10': 'male',
+      'J-11': 'female',
+    }
+    for (const file of readdirSync(docketDir).filter((f) => /^dd-/.test(f) && f.endsWith('.json'))) {
+      const docket = JSON.parse(readFileSync(join(docketDir, file), 'utf8')) as {
+        jury: { jurors: Array<{ id: string; persona: string; gender?: 'female' | 'male' }> }
+      }
+      for (const juror of docket.jury.jurors) {
+        expect(juror.gender, `${file} ${juror.id}`).toBe(expected[juror.id])
+        expect(genderForJuror(juror.persona, juror.id, juror.gender)).toBe(expected[juror.id])
+      }
+    }
+  })
 })
 
 describe('device voice planning', () => {

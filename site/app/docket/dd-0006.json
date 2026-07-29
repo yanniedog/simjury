@@ -373,7 +373,7 @@
   "jury": {
     "jurors": [
       {
-        "id": "J-01", "seat": 2, "label": "Juror 2 — Anya", "persona": "Anya’s first reaction is that a stolen face must mean a frame, but she can revise a vivid impression.", "register": "plain", "arc": "vibes",
+        "id": "J-01", "gender": "female", "seat": 2, "label": "Juror 2 — Anya", "persona": "Anya’s first reaction is that a stolen face must mean a frame, but she can revise a vivid impression.", "register": "plain", "arc": "vibes",
         "initial": {"position": "NG", "confidence": 76},
         "weights": {"digital_forensics": 2, "identity": 2, "timeline": 1},
         "lines": {
@@ -391,7 +391,7 @@
         ]
       },
       {
-        "id": "J-02", "seat": 3, "label": "Juror 3 — Bex", "persona": "Bex focuses on who gave each instruction and refuses to merge Jori’s conduct with Corin’s.", "register": "blunt", "arc": "steady",
+        "id": "J-02", "gender": "male", "seat": 3, "label": "Juror 3 — Bex", "persona": "Bex focuses on who gave each instruction and refuses to merge Jori’s conduct with Corin’s.", "register": "blunt", "arc": "steady",
         "initial": {"position": "G", "confidence": 62},
         "weights": {"command": 2, "identity": 2, "intent": 1},
         "lines": {
@@ -409,7 +409,7 @@
         ]
       },
       {
-        "id": "J-03", "seat": 4, "label": "Juror 4 — Cora", "persona": "Cora will not let the seriousness of the prevented attack lower the standard or blur personal identity.", "register": "formal", "arc": "principled_holdout",
+        "id": "J-03", "gender": "female", "seat": 4, "label": "Juror 4 — Cora", "persona": "Cora will not let the seriousness of the prevented attack lower the standard or blur personal identity.", "register": "formal", "arc": "principled_holdout",
         "initial": {"position": "NG", "confidence": 72},
         "weights": {"burden": 2, "identity": 2, "intent": 1},
         "lines": {
@@ -427,7 +427,7 @@
         ]
       },
       {
-        "id": "J-04", "seat": 5, "label": "Juror 5 — Dev", "persona": "Dev begins with the shared-access defence and changes only if another record attributes the decisive act.", "register": "formal", "arc": "mind_changer",
+        "id": "J-04", "gender": "male", "seat": 5, "label": "Juror 5 — Dev", "persona": "Dev begins with the shared-access defence and changes only if another record attributes the decisive act.", "register": "formal", "arc": "mind_changer",
         "initial": {"position": "NG", "confidence": 68},
         "weights": {"digital_forensics": 2, "identity": 2, "timeline": 2},
         "lines": {
@@ -445,7 +445,7 @@
         ]
       },
       {
-        "id": "J-05", "seat": 6, "label": "Juror 6 — Eren", "persona": "Eren keeps the discussion on Corin’s alleged personal act and asks the room to name its source.", "register": "plain", "arc": "foreperson",
+        "id": "J-05", "gender": "female", "seat": 6, "label": "Juror 6 — Esra", "persona": "Esra keeps the discussion on Corin’s alleged personal act and asks the room to name its source.", "register": "plain", "arc": "foreperson",
         "initial": {"position": "U", "confidence": 42},
         "weights": {"burden": 2, "intent": 1, "causation": 1, "identity": 1},
         "lines": {
@@ -464,7 +464,7 @@
         ]
       },
       {
-        "id": "J-06", "seat": 7, "label": "Juror 7 — Fia", "persona": "Fia is strongly influenced by Corin’s simultaneous luncheon appearance until the room separates call creation from activation.", "register": "plain", "arc": "vibes",
+        "id": "J-06", "gender": "female", "seat": 7, "label": "Juror 7 — Fia", "persona": "Fia is strongly influenced by Corin’s simultaneous luncheon appearance until the room separates call creation from activation.", "register": "plain", "arc": "vibes",
         "initial": {"position": "NG", "confidence": 65},
         "weights": {"identity": 2, "alibi": 2, "timeline": 1},
         "lines": {
@@ -482,7 +482,7 @@
         ]
       },
       {
-        "id": "J-07", "seat": 8, "label": "Juror 8 — Garen", "persona": "Garen distinguishes the shared synthetic-media work from the later human decision to activate the device.", "register": "formal", "arc": "steady",
+        "id": "J-07", "gender": "male", "seat": 8, "label": "Juror 8 — Garen", "persona": "Garen distinguishes the shared synthetic-media work from the later human decision to activate the device.", "register": "formal", "arc": "steady",
         "initial": {"position": "G", "confidence": 55},
         "weights": {"digital_forensics": 2, "method": 2, "identity": 1},
         "lines": {
@@ -501,7 +501,7 @@
         ]
       },
       {
-        "id": "J-08", "seat": 9, "label": "Juror 9 — Hali", "persona": "Hali distrusts immunity evidence and asks whether independent records confirm the precise part Jori added later.", "register": "hesitant", "arc": "steady",
+        "id": "J-08", "gender": "male", "seat": 9, "label": "Juror 9 — Hale", "persona": "Hale distrusts immunity evidence and asks whether independent records confirm the precise part Jori added later.", "register": "hesitant", "arc": "steady",
         "initial": {"position": "U", "confidence": 44},
         "weights": {"credibility": 2, "command": 2, "procedure": 1},
         "lines": {
@@ -520,7 +520,7 @@
         ]
       },
       {
-        "id": "J-09", "seat": 10, "label": "Juror 10 — Ivo", "persona": "Ivo reacts strongly to the inspection bypass and has to correct a tendency to treat ownership as control.", "register": "blunt", "arc": "burden_drifter",
+        "id": "J-09", "gender": "female", "seat": 10, "label": "Juror 10 — Iri", "persona": "Iri reacts strongly to the inspection bypass and has to correct a tendency to treat ownership as control.", "register": "blunt", "arc": "burden_drifter",
         "initial": {"position": "G", "confidence": 66},
         "weights": {"command": 2, "burden": 2, "identity": 1},
         "lines": {
@@ -540,7 +540,7 @@
         ]
       },
       {
-        "id": "J-10", "seat": 11, "label": "Juror 11 — Jessa", "persona": "Jessa starts undecided and speaks cautiously while comparing the shared archive with the separate key records.", "register": "hesitant", "arc": "drifter",
+        "id": "J-10", "gender": "male", "seat": 11, "label": "Juror 11 — Joss", "persona": "Joss starts undecided and speaks cautiously while comparing the shared archive with the separate key records.", "register": "hesitant", "arc": "drifter",
         "initial": {"position": "U", "confidence": 38},
         "weights": {"intent": 1, "digital_forensics": 2, "identity": 2},
         "lines": {
@@ -558,7 +558,7 @@
         ]
       },
       {
-        "id": "J-11", "seat": 12, "label": "Juror 12 — Kellan", "persona": "Kellan keeps the prevented harm visible while insisting that intervention does not lower the burden on identity or intent.", "register": "plain", "arc": "steady",
+        "id": "J-11", "gender": "female", "seat": 12, "label": "Juror 12 — Kemi", "persona": "Kemi keeps the prevented harm visible while insisting that intervention does not lower the burden on identity or intent.", "register": "plain", "arc": "steady",
         "initial": {"position": "G", "confidence": 60},
         "weights": {"causation": 2, "intent": 2, "identity": 1, "burden": 1},
         "lines": {

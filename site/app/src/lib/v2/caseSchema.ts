@@ -205,6 +205,11 @@ export const jurorSchema = z.object({
   /** Bench seat 2–12; seat 1 is the player. */
   seat: z.number().int().min(2).max(12),
   label: z.string().min(1),
+  /**
+   * Authored gender for narration voice selection. Must match the juror's
+   * courtroom portrait (speech follows the image, not name heuristics).
+   */
+  gender: z.enum(['female', 'male']),
   persona: z.string().min(1),
   register: z.enum(['plain', 'formal', 'blunt', 'hesitant']),
   arc: z.enum(ARCS),
