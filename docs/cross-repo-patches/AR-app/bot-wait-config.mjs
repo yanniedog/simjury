@@ -1,13 +1,12 @@
 /**
- * Required-bot aliases for wait-for-bots and pr-bot-feedback-check.
+ * Required-bot aliases for wait-for-bots and pr-bot-feedback-check (AR-app).
  *
- * Keys are short names (gemini, codex, sourcery, cursor, coderabbit); values are GitHub logins.
+ * AR-app is intentionally NOT the same as simjury:
+ *   - Peer OR is `sourcery|cursor` (no Codex requirement)
+ *   - No hourly `pr-coderabbit-review-recovery` / close-guard stack
+ *   - Presence gate is single-shot; agents use arm-and-park when available
  *
- * Required list supports OR-groups: "sourcery|cursor|codex" means any one of those
- * keys satisfies that slot. Commas separate ALL-of slots.
- *
- * Merge protection: CodeRabbit is a hard ALL-of slot; peer bots stay in an OR-group
- * because Sourcery skips some PRs. Gemini consumer reviews are sunset (noise).
+ * CodeRabbit remains a hard ALL-of slot. Gemini consumer reviews are sunset (noise).
  * See docs/CROSS_REPO_BOT_MATRIX.md.
  */
 export const BOT_ALIASES = {
@@ -27,10 +26,11 @@ export const BOT_ALIASES = {
 };
 
 /**
- * Default: peer OR-group + mandatory CodeRabbit. Gemini optional (sunset).
+ * AR-app default: sourcery|cursor peer OR + mandatory CodeRabbit.
+ * Do not copy simjury's `sourcery|codex|cursor,coderabbit` here.
  */
-export const DEFAULT_REQUIRED_SPEC = 'sourcery|codex|cursor,coderabbit';
-export const DEFAULT_REQUIRED_KEYS = ['sourcery|codex|cursor', 'coderabbit'];
+export const DEFAULT_REQUIRED_SPEC = 'sourcery|cursor,coderabbit';
+export const DEFAULT_REQUIRED_KEYS = ['sourcery|cursor', 'coderabbit'];
 
 export const OPTIONAL_BOT_LOGINS = [
   'claude[bot]',

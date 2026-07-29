@@ -272,6 +272,13 @@ function main() {
       summary.skipped.push(full);
       continue;
     }
+    // AR-app keeps a distinct bot policy; do not auto-mirror simjury CR automation.
+    // Operators may still pass --repos AR-app explicitly.
+    if (name === 'AR-app' && !args.repos) {
+      console.log(`skip ${full} (AR-app opted out of simjury-identical CR install; use --repos AR-app to force)`);
+      summary.skipped.push(full);
+      continue;
+    }
     if (args.skipExisting && remoteHasWorkflow(args.owner, name)) {
       console.log(`skip ${full} (workflow already present on default branch)`);
       summary.skipped.push(full);

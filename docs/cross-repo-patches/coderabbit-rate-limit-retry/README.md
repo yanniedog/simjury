@@ -23,4 +23,7 @@ npm run coderabbit:rate-limit-retry:install-all
 npm run coderabbit:rate-limit-retry:install-all -- --dry-run
 ```
 
+Skips **simjury** (canonical source) and **AR-app** by default — AR-app keeps a
+distinct bot policy and is not auto-mirrored. Force with `--repos AR-app` if needed.
+
 Canonical source: `.github/workflows/pr-coderabbit-rate-limit-retry.yml` in simjury.

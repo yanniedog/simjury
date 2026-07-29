@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Unit tests for required-bot slots (peer OR-group + mandatory CodeRabbit) + Gemini noise.
+ * Unit tests for AR-app required-bot slots (sourcery|cursor + mandatory CodeRabbit).
+ * AR-app defaults must stay distinct from simjury (no Codex in the peer OR).
  */
 import {
   alternativesForSlot,
@@ -23,15 +24,19 @@ function assert(cond, msg) {
 }
 
 assert(
-  JSON.stringify(parseRequiredKeys('')) === JSON.stringify(['sourcery|codex|cursor', 'coderabbit']),
-  'default = peer OR-group + mandatory coderabbit',
+  JSON.stringify(parseRequiredKeys('')) === JSON.stringify(['sourcery|cursor', 'coderabbit']),
+  'AR-app default = sourcery|cursor + mandatory coderabbit (not simjury/codex)',
 );
-assert(JSON.stringify(alternativesForSlot('sourcery|cursor|codex')) === JSON.stringify(['sourcery', 'cursor', 'codex']), 'alts');
+assert(JSON.stringify(alternativesForSlot('sourcery|cursor')) === JSON.stringify(['sourcery', 'cursor']), 'alts');
 assert(loginMatchesRequiredKey('cursor[bot]', 'cursor'), 'cursor[bot] matches cursor');
-assert(loginMatchesRequiredKey('cursor', 'sourcery|cursor|codex'), 'cursor satisfies OR-group');
+assert(loginMatchesRequiredKey('cursor', 'sourcery|cursor'), 'cursor satisfies OR-group');
 assert(loginMatchesRequiredKey('coderabbitai[bot]', 'coderabbit'), 'coderabbitai[bot] matches coderabbit');
 assert(loginMatchesRequiredKey('sourcery-ai[bot]', 'sourcery|cursor'), 'sourcery satisfies OR-group');
-assert(!loginMatchesRequiredKey('gemini-code-assist[bot]', 'sourcery|cursor|codex'), 'gemini does not satisfy review OR-group');
+assert(!loginMatchesRequiredKey('gemini-code-assist[bot]', 'sourcery|cursor'), 'gemini does not satisfy review OR-group');
+assert(
+  !loginMatchesRequiredKey('chatgpt-codex-connector[bot]', 'sourcery|cursor'),
+  'codex is not in AR-app peer OR',
+);
 
 assert(
   missingRequiredKeys(['sourcery|cursor'], ['cursor[bot]']).length === 0,
@@ -44,7 +49,7 @@ assert(
 
 const defaults = parseRequiredKeys('');
 assert(
-  !requiredBotsSatisfied(defaults, ['chatgpt-codex-connector[bot]']),
+  !requiredBotsSatisfied(defaults, ['cursor[bot]']),
   'peer alone insufficient without CodeRabbit',
 );
 assert(
@@ -52,12 +57,16 @@ assert(
   'CodeRabbit alone insufficient without peer',
 );
 assert(
-  requiredBotsSatisfied(defaults, ['chatgpt-codex-connector[bot]', 'coderabbitai[bot]']),
-  'codex + coderabbit satisfies default',
+  !requiredBotsSatisfied(defaults, ['chatgpt-codex-connector[bot]', 'coderabbitai[bot]']),
+  'codex + coderabbit does not satisfy AR-app default (codex not a peer)',
 );
 assert(
   requiredBotsSatisfied(defaults, ['cursor[bot]', 'coderabbitai[bot]']),
-  'cursor + coderabbit satisfies default',
+  'cursor + coderabbit satisfies AR-app default',
+);
+assert(
+  requiredBotsSatisfied(defaults, ['sourcery-ai[bot]', 'coderabbitai[bot]']),
+  'sourcery + coderabbit satisfies AR-app default',
 );
 assert(!requiredBotsSatisfied(defaults, ['gemini-code-assist[bot]']), 'gemini alone insufficient');
 

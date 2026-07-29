@@ -1,8 +1,9 @@
 name: pr-bot-presence-gate
 
-# Hardened presence gate (from simjury / AR-app root-cause fix):
-# - OR-group required bots (sourcery|cursor) — Sourcery skips some PRs; Cursor Automation counts
-# - In-job retries on exit 2 — first-shot race left sticky red required checks
+# Hardened presence gate (AR-app — intentionally not identical to simjury):
+# - OR-group required bots (sourcery|cursor) — no Codex; Sourcery skips some PRs
+# - CodeRabbit mandatory; do not port simjury hourly CR recovery / close-guard
+# - Single-shot wait-for-bots (no sleep-poll); gate re-fires on review/comment
 # - cancel-in-progress: false — cancelled runs must not be the latest required status
 on:
   pull_request:
