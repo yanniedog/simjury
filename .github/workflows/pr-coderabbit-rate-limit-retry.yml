@@ -73,8 +73,11 @@ jobs:
             exit 0
           fi
 
-          STATE="$(gh pr view "$PR" --json state -q .state 2>/dev/null || true)"
-          if [ "${STATE}" != "OPEN" ]; then
+          # Prefer REST (explicit repo). Do not swallow errors as "not open" —
+          # empty STATE previously skipped open PRs when `gh pr view` failed.
+          STATE="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR}" --jq .state)"
+          STATE_UC="$(printf '%s' "$STATE" | tr '[:lower:]' '[:upper:]')"
+          if [ "$STATE_UC" != "OPEN" ]; then
             echo "PR #$PR not open ($STATE); skip"
             exit 0
           fi
@@ -186,9 +189,10 @@ jobs:
             done
           fi
 
-          STATE="$(gh pr view "$PR" --json state -q .state 2>/dev/null || true)"
-          if [ "${STATE}" != "OPEN" ]; then
-            echo "PR #$PR closed during wait; skip"
+          STATE="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR}" --jq .state)"
+          STATE_UC="$(printf '%s' "$STATE" | tr '[:lower:]' '[:upper:]')"
+          if [ "$STATE_UC" != "OPEN" ]; then
+            echo "PR #$PR closed during wait ($STATE); skip"
             exit 0
           fi
 
