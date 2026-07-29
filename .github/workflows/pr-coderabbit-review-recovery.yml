@@ -9,16 +9,16 @@ on:
   workflow_dispatch:
     inputs:
       pr_number:
-        description: Optional single PR number (default: scan lookback window)
+        description: "Optional single PR number (default: scan lookback window)"
         required: false
         type: string
       lookback_days:
-        description: Days of closed/merged history to scan
+        description: "Days of closed/merged history to scan"
         required: false
         type: string
         default: "14"
       dry_run:
-        description: Dry run (no reopen / no comments)
+        description: "Dry run (no reopen / no comments)"
         required: false
         type: boolean
         default: false
