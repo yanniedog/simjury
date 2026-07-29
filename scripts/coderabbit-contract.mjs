@@ -88,9 +88,13 @@ function postReview(pr, headSha, reason, dryRun) {
     console.log(`[dry-run] would request CodeRabbit on #${pr} (${reason})`);
     return;
   }
-  const r = spawnSync('gh', ['pr', 'comment', String(pr), '--body', body], {
-    encoding: 'utf8',
-  });
+  // REST issue comments work with issues:write; `gh pr comment` uses GraphQL
+  // addComment, which can reject an otherwise sufficient Actions token.
+  const r = spawnSync(
+    'gh',
+    ['api', `repos/{owner}/{repo}/issues/${pr}/comments`, '-f', `body=${body}`],
+    { encoding: 'utf8' },
+  );
   if (r.status !== 0) throw new Error((r.stderr || r.stdout || 'comment failed').trim());
   console.log(`coderabbit-contract: requested full review on #${pr} (${reason})`);
 }
