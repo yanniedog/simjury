@@ -1,14 +1,19 @@
 /**
- * Required-bot aliases for wait-for-bots and pr-bot-feedback-check (AR-app).
+ * Required-bot aliases for wait-for-bots and pr-bot-feedback-check.
  *
- * AR-app is intentionally NOT the same as simjury:
- *   - Peer OR is `sourcery|cursor` (no Codex requirement)
- *   - No hourly `pr-coderabbit-review-recovery` / close-guard stack
- *   - Presence gate is single-shot; agents use arm-and-park when available
+ * Keys are short names (gemini, codex, sourcery, cursor, coderabbit); values are GitHub logins.
  *
- * CodeRabbit remains a hard ALL-of slot. Gemini consumer reviews are sunset (noise).
- * See docs/CROSS_REPO_BOT_MATRIX.md.
+ * Required list supports OR-groups: "sourcery|cursor|codex" means any one of those
+ * keys satisfies that slot. Commas separate ALL-of slots.
+ *
+ * Merge protection default: CodeRabbit is a hard ALL-of slot (never OR-skippable).
+ * A second OR-slot (`sourcery|codex|cursor`) still requires one peer review bot so
+ * merge does not race ahead of the rest of the review fleet. See
+ * docs/CROSS_REPO_BOT_MATRIX.md.
  */
+
+/** Canonical env/CLI string for the default required slots. */
+export const DEFAULT_REQUIRED_SPEC = 'sourcery|codex|cursor,coderabbit';
 export const BOT_ALIASES = {
   gemini: [
     'gemini-code-assist',
@@ -26,11 +31,12 @@ export const BOT_ALIASES = {
 };
 
 /**
- * AR-app default: sourcery|cursor peer OR + mandatory CodeRabbit.
- * Do not copy simjury's `sourcery|codex|cursor,coderabbit` here.
+ * Default merge-protection slots:
+ *   1. sourcery|codex|cursor — at least one peer review bot
+ *   2. coderabbit — mandatory (CodeRabbit cannot be skipped via OR)
+ * Gemini remains optional (consumer Code Assist is sunset).
  */
-export const DEFAULT_REQUIRED_SPEC = 'sourcery|cursor,coderabbit';
-export const DEFAULT_REQUIRED_KEYS = ['sourcery|cursor', 'coderabbit'];
+export const DEFAULT_REQUIRED_KEYS = ['sourcery|codex|cursor', 'coderabbit'];
 
 export const OPTIONAL_BOT_LOGINS = [
   'claude[bot]',

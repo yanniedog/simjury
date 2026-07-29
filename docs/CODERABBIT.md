@@ -23,7 +23,7 @@ Verify on any open PR:
 gh pr comment <n> --body "@coderabbitai review"
 
 # Expect author coderabbitai[bot] on a review or walkthrough comment
-gh api repos/yanniedog/simjury/pulls/<n>/reviews --jq '.[].author.login'
+gh api repos/yanniedog/simjury/pulls/<n>/reviews --jq '.[].user.login'
 ```
 
 Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.
@@ -64,15 +64,13 @@ Concurrency uses `cancel-in-progress: false` so ordinary PR comments cannot canc
 sleeping waiter. Duplicate rate-limit runs self-skip when a retry is already armed,
 CodeRabbit already reviewed, or a newer rate-limit comment owns the window.
 
-Install on other repos (one file):
+Install on all other active repos (same policy everywhere):
 
 ```sh
 npm run coderabbit:rate-limit-retry:install-all
 # or pack:
 # docs/cross-repo-patches/coderabbit-rate-limit-retry/
 ```
-
-Skips **AR-app** by default (distinct bot policy — use `--repos AR-app` to force).
 
 Local helpers (simjury):
 
@@ -103,13 +101,12 @@ npm run pr:coderabbit-review-recovery -- --lookback-days 14 --dry-run
 
 ## Other active repos
 
-Copy `.coderabbit.yaml` (trim path_instructions) and set each repo’s
-`*_BOT_WAIT_REQUIRED` per [`CROSS_REPO_BOT_MATRIX.md`](CROSS_REPO_BOT_MATRIX.md).
-**AR-app is not the same as simjury** — use `sourcery|cursor,coderabbit` and the
-[`cross-repo-patches/AR-app/`](cross-repo-patches/AR-app/README.md) pack; do **not**
-port simjury close-guard or hourly CR recovery automation. With **All repositories**
-on the GitHub App, new repos get reviews without re-installing the app; add a local
-`.coderabbit.yaml` when you want repo-specific rules.
+**Treat every active repo the same.** Copy `.coderabbit.yaml` (trim
+path_instructions) and set each repo’s `*_BOT_WAIT_REQUIRED` to
+`sourcery|codex|cursor,coderabbit`. See [`CROSS_REPO_BOT_MATRIX.md`](CROSS_REPO_BOT_MATRIX.md)
+and the [`cross-repo-patches/AR-app/`](cross-repo-patches/AR-app/README.md) pack.
+With **All repositories** on the GitHub App, new repos get reviews without
+re-installing the app; add a local `.coderabbit.yaml` when you want repo-specific rules.
 
 ## Manual commands
 

@@ -2,17 +2,16 @@
 
 `cursor[bot]` cannot push to `yanniedog/AR-app` from simjury cloud agents. Apply this pack on AR-app.
 
-## Not the same as simjury
+## Same policy as every active repo
 
-AR-app merge protection is intentionally narrower:
+Required presence: **`sourcery|codex|cursor,coderabbit`**
 
-| | simjury | AR-app |
-|--|---------|--------|
-| Peer OR | `sourcery\|codex\|cursor` | `sourcery\|cursor` (no Codex) |
-| CodeRabbit | Mandatory | Mandatory |
-| Close-guard / hourly CR recovery | simjury-only | **No — do not port** |
+| Slot | Rule |
+|------|------|
+| `sourcery\|codex\|cursor` | At least one peer review bot |
+| `coderabbit` | Mandatory — never OR-skippable |
 
-Do not copy simjury’s Codex peer slot, close-guard, or hourly CR recovery Action onto AR-app.
+Mirror of simjury / AR-local / jcs2-mod. See [`CROSS_REPO_BOT_MATRIX.md`](../../CROSS_REPO_BOT_MATRIX.md).
 
 ## Root cause (AR-app PR #41)
 
@@ -40,21 +39,25 @@ cp "$PACK/verify-bot-wait-or-groups.mjs" scripts/verify-bot-wait-or-groups.mjs
 #   "pr:bot-wait-or-groups:verify": "node scripts/verify-bot-wait-or-groups.mjs"
 # Wire into CI if present.
 
-# Optional repo variable override (CodeRabbit remains mandatory):
-#   Settings → Variables → AR_BOT_WAIT_REQUIRED = sourcery|cursor,coderabbit
+# Optional repo variable override (same default as simjury):
+#   Settings → Variables → AR_BOT_WAIT_REQUIRED = sourcery|codex|cursor,coderabbit
 
 git add -A
-git commit -m "ci: AR-app merge protection (sourcery|cursor + CodeRabbit)"
+git commit -m "ci: merge protection (peer OR + mandatory CodeRabbit)"
 git push -u origin HEAD
-gh pr create --draft --title "ci: AR-app merge protection (sourcery|cursor + CodeRabbit)"
+gh pr create --draft --title "ci: merge protection (peer OR + mandatory CodeRabbit)"
 ```
 
 Also update `AGENTS.md`: replace `--watch` babysit loops with single-shot `wait-for-bots` / `pr:arm-and-park` when that script is present (see `../cursor-global-workflow/`).
+
+Port the same CodeRabbit rate-limit retry workflow via
+`npm run coderabbit:rate-limit-retry:install-all` (or the
+[`../coderabbit-rate-limit-retry/`](../coderabbit-rate-limit-retry/) pack).
 
 ## Verify
 
 ```sh
 node scripts/verify-bot-wait-or-groups.mjs
-# Needs a peer bot (Sourcery or Cursor) AND CodeRabbit:
+# Needs a peer bot AND CodeRabbit:
 npm run wait-for-bots -- --pr <n>   # exit 0 only when both slots satisfied + quiet
 ```

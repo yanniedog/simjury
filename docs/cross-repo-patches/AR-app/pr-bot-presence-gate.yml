@@ -1,8 +1,8 @@
 name: pr-bot-presence-gate
 
-# Hardened presence gate (AR-app — intentionally not identical to simjury):
-# - OR-group required bots (sourcery|cursor) — no Codex; Sourcery skips some PRs
-# - CodeRabbit mandatory; do not port simjury hourly CR recovery / close-guard
+# Hardened presence gate (same policy as simjury / all active repos):
+# - Peer OR: sourcery|codex|cursor — Sourcery skips some PRs; Codex/Cursor count
+# - CodeRabbit mandatory (never OR-skippable)
 # - Single-shot wait-for-bots (no sleep-poll); gate re-fires on review/comment
 # - cancel-in-progress: false — cancelled runs must not be the latest required status
 on:
@@ -73,9 +73,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          # Sourcery-only was the AR-app root cause: Sourcery skips docs PRs while
-          # Cursor Automation still reviews. OR-group accepts either; CodeRabbit mandatory.
-          AR_BOT_WAIT_REQUIRED: ${{ vars.AR_BOT_WAIT_REQUIRED || 'sourcery|cursor,coderabbit' }}
+          # Same slots as simjury: peer OR + mandatory CodeRabbit.
+          AR_BOT_WAIT_REQUIRED: ${{ vars.AR_BOT_WAIT_REQUIRED || 'sourcery|codex|cursor,coderabbit' }}
           BOT_WAIT_IGNORE_CHECK_NAMES: bot-presence-gate,bot-feedback-gate,pr-bot-presence-gate,pr-bot-feedback-check,mobile-ci
           BOT_WAIT_MAX_MIN: "240"
         run: |
