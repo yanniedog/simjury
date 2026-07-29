@@ -10,6 +10,11 @@ on:
         description: "Docket id, comma-separated ids, or all"
         required: true
         default: "dd-intro"
+      clobber_mp3s:
+        description: "Replace existing release MP3s (true fresh synthesis publish)"
+        type: boolean
+        required: false
+        default: false
   push:
     branches: [main]
     paths:
@@ -66,7 +71,11 @@ jobs:
             fi
           fi
           clobber="false"
-          if [[ "$requested" == "all" && "${{ github.event_name }}" != "workflow_dispatch" ]]; then
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            if [[ "${{ inputs.clobber_mp3s }}" == "true" ]]; then
+              clobber="true"
+            fi
+          elif [[ "$requested" == "all" ]]; then
             clobber="true"
           fi
           if [[ -z "$requested" ]]; then
