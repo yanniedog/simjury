@@ -18,6 +18,8 @@ import {
 const MARKER = '<!-- simjury-coderabbit-contract';
 const POLL_MS = Number(process.env.CR_CONTRACT_POLL_MS || 60_000);
 const MAX_ATTEMPTS = Number(process.env.CR_CONTRACT_MAX_ATTEMPTS || 4);
+/** Wait for vendor auto-review to claim a new head before forcing `@coderabbitai full review`. */
+const AUTO_CLAIM_GRACE_MS = Number(process.env.CR_AUTO_CLAIM_GRACE_MS || 3 * 60_000);
 
 function ghJson(args) {
   let r;
@@ -87,11 +89,16 @@ export function classifyCoderabbitStatuses(statuses = []) {
   const latest = cr[0];
   if (!latest) return { state: 'missing', at: null, statuses: [] };
   const description = String(latest.description || '');
+  // Pending / in-flight must never trigger another full-review comment.
   if (/queued|in progress/i.test(description) || latest.state === 'pending') {
     return { state: 'pending', at: latest.created_at, description, statuses: cr };
   }
   if (/rate limit/i.test(description)) {
     return { state: 'rate_limited', at: latest.created_at, description, statuses: cr };
+  }
+  // Auto-review off / skip statuses look green but do not satisfy the gate.
+  if (/review skipped\b/i.test(description)) {
+    return { state: 'skipped', at: latest.created_at, description, statuses: cr };
   }
   return { state: 'blocked', at: latest.created_at, description, statuses: cr };
 }
@@ -185,18 +192,55 @@ function evaluate(pr, expectedSha, dryRun) {
     };
   }
 
+  // Never re-nudge while CodeRabbit is already working this head.
+  if (contract.state === 'pending') {
+    return {
+      terminal: false,
+      message: `pending; waiting for exact-head Review completed (${contract.description || 'in flight'})`,
+      headSha: view.headRefOid,
+    };
+  }
+
   const statusAt = contract.at ? Date.parse(contract.at) : 0;
   const markerAt = markers.latestAt ? Date.parse(markers.latestAt) : 0;
+  // Cooldown: avoid stacking full-review comments within 12 minutes of a prior ask.
+  const COOLDOWN_MS = 12 * 60_000;
+  const cooled = markerAt && Date.now() - markerAt < COOLDOWN_MS;
+
   if (contract.state === 'missing' && markers.count === 0) {
+    // Auto-review is enabled in .coderabbit.yaml; give it time to publish
+    // Review queued/in progress before agents burn a forced full-review slot.
+    const commit = ghJson(['api', `repos/{owner}/{repo}/commits/${view.headRefOid}`]);
+    const headAt = Date.parse(
+      commit?.commit?.committer?.date || commit?.commit?.author?.date || 0,
+    );
+    const ageMs = headAt ? Date.now() - headAt : AUTO_CLAIM_GRACE_MS;
+    if (ageMs < AUTO_CLAIM_GRACE_MS) {
+      return {
+        terminal: false,
+        message: `missing; waiting ${Math.ceil((AUTO_CLAIM_GRACE_MS - ageMs) / 1000)}s for auto-review to claim head`,
+        headSha: view.headRefOid,
+      };
+    }
     postReview(pr, view.headRefOid, 'missing', dryRun);
-  } else if (contract.state === 'rate_limited' && markerAt <= statusAt) {
+  } else if (contract.state === 'rate_limited' && markerAt <= statusAt && !cooled) {
     const limit = latestRateLimitEvent(view.comments || []);
     const waitMinutes = limit?.waitMinutes ?? 60;
     const waitMs = msUntilRetry(contract.at, waitMinutes, 2);
     if (waitMs <= 0) postReview(pr, view.headRefOid, 'rate-limit-due', dryRun);
     else return { terminal: false, message: `rate limited; retry due in ${Math.ceil(waitMs / 1000)}s` };
-  } else if (contract.state === 'blocked' && markerAt <= statusAt) {
-    postReview(pr, view.headRefOid, 'blocked-status', dryRun);
+  } else if (
+    (contract.state === 'skipped' || contract.state === 'blocked') &&
+    markerAt <= statusAt &&
+    !cooled
+  ) {
+    postReview(pr, view.headRefOid, contract.state === 'skipped' ? 'skipped-status' : 'blocked-status', dryRun);
+  } else if (cooled) {
+    return {
+      terminal: false,
+      message: `${contract.state}; review already requested recently — waiting`,
+      headSha: view.headRefOid,
+    };
   }
   return {
     terminal: false,
