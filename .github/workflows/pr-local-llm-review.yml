@@ -2,7 +2,8 @@ name: pr-local-llm-review
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review, edited]
 
 permissions:
   contents: read
@@ -22,8 +23,10 @@ jobs:
         env:
           HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
           BASE_REPO: ${{ github.repository }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
           set -euo pipefail
+          test "$BASE_REF" = main
           test "$HEAD_REPO" = "$BASE_REPO" || {
             echo "Fork PRs cannot run on the private laptop reviewer."
             exit 1
@@ -47,11 +50,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         shell: powershell
         run: |
           Get-Process ollama -ErrorAction SilentlyContinue |
             ForEach-Object { $_.PriorityClass = 'BelowNormal' }
-          node scripts/local-llm-pr-gate.mjs --pr "$env:PR_NUMBER" --repo "$env:GITHUB_REPOSITORY" --head "$env:PR_HEAD_SHA"
+          node scripts/local-llm-pr-gate.mjs --pr "$env:PR_NUMBER" --repo "$env:GITHUB_REPOSITORY" --head "$env:PR_HEAD_SHA" --base "$env:PR_BASE_SHA"
 
   local-llm-review:
     name: local-llm-review

@@ -34,7 +34,7 @@ function printPolicy() {
 
 Required on merge (human work PRs) — squash blocked until green:
   - validate                authority docs and PR-gate tooling
-  - local-llm-review        local qwen2.5-coder:7b defect gate
+  - local-llm-review        local qwen3.5:4b defect gate
   - bot-presence-gate       sourcery|codex|cursor,coderabbit (peer OR + mandatory CodeRabbit)
   - bot-feedback-gate       review thread resolution on human PRs
 
