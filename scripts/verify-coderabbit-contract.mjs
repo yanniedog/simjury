@@ -14,7 +14,8 @@ assert.equal(classifyCoderabbitStatuses([]).state, 'missing');
 assert.equal(classifyCoderabbitStatuses([cr('Review queued', 'pending')]).state, 'pending');
 assert.equal(classifyCoderabbitStatuses([cr('Review in progress', 'pending')]).state, 'pending');
 assert.equal(classifyCoderabbitStatuses([cr('Review rate limited')]).state, 'rate_limited');
-assert.equal(classifyCoderabbitStatuses([cr('Review skipped: ignored keyword')]).state, 'blocked');
+assert.equal(classifyCoderabbitStatuses([cr('Review skipped: automatic reviews are disabled')]).state, 'skipped');
+assert.equal(classifyCoderabbitStatuses([cr('Review failed: internal error')]).state, 'blocked');
 assert.equal(
   classifyCoderabbitStatuses([
     cr('Review completed', 'success', '2026-07-29T04:00:00Z'),
