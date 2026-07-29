@@ -198,12 +198,37 @@ ${chunk.patch}`;
   return review;
 }
 
+function changedPatchLines(patch) {
+  return new Set(
+    patch.split('\n').filter((line) =>
+      (line.startsWith('+') && !line.startsWith('+++ ')) ||
+      (line.startsWith('-') && !line.startsWith('--- '))),
+  );
+}
+
+function evidenceMatchesChangedLine(patch, code) {
+  const needle = code.trim();
+  if (!needle) return false;
+  const changed = changedPatchLines(patch);
+  if (changed.has(needle) || changed.has(`+${needle}`) || changed.has(`-${needle}`)) return true;
+  // Allow quoting the line body without the +/- prefix when it uniquely matches one changed line.
+  const bodies = [...changed].map((line) => line.slice(1));
+  return bodies.filter((body) => body === needle).length === 1;
+}
+
+async function assertApprovedModel() {
+  const { text: tagsText } = await request(`${OLLAMA}/api/tags`, {}, 15_000);
+  const installed = JSON.parse(tagsText).models?.find((model) => model.name === MODEL);
+  if (!installed) fail(`${MODEL} is not installed`);
+  if (installed.digest !== MODEL_DIGEST) fail(`${MODEL} digest is not approved: ${installed.digest}`);
+}
+
 function markdown(meta, chunks, reviews) {
   const findings = reviews.flatMap((review, i) =>
     review.findings.map((finding) => ({
       ...finding,
       file: chunks[i].file,
-      verified: Boolean(finding.code.trim()) && chunks[i].patch.includes(finding.code.trim()),
+      verified: evidenceMatchesChangedLine(chunks[i].patch, finding.code),
     })));
   const blocking = findings.filter((finding) =>
     finding.severity !== 'minor' &&
@@ -246,17 +271,16 @@ async function main() {
   const chunks = chunksFor(files);
   console.log(`local-llm-review: ${files.length} files, ${changedLines} changed lines, ${chunks.length} chunks`);
   if (input.dryRun) return;
+
+  // Fail closed even for binary/rename-only PRs: an offline or wrong model must not pass.
+  await assertApprovedModel();
+
   if (!chunks.length) {
     const report = markdown(meta, [], []);
     console.log(report.text);
     if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, report.text);
     return;
   }
-
-  const { text: tagsText } = await request(`${OLLAMA}/api/tags`, {}, 15_000);
-  const installed = JSON.parse(tagsText).models?.find((model) => model.name === MODEL);
-  if (!installed) fail(`${MODEL} is not installed`);
-  if (installed.digest !== MODEL_DIGEST) fail(`${MODEL} digest is not approved: ${installed.digest}`);
 
   const reviews = [];
   for (let i = 0; i < chunks.length; i += 1) {
