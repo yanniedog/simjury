@@ -1,7 +1,7 @@
 # CodeRabbit — https://docs.coderabbit.ai/getting-started/yaml-configuration
-# Manual re-review: comment `@coderabbitai full review` on the PR.
+# Prefer vendor auto-review (one pass per open/sync). Agents must NOT spam
+# `@coderabbitai full review` unless status is missing/skipped/rate-limit-due.
 language: en-US
-# Medium profile: chill = balanced (not quiet-only, not assertive/nitpicky).
 tone_instructions: >-
   Balanced medium review: flag real bugs, security issues, data loss, broken player flows,
   fiction-safety risks, and clear maintainability or logic risks. Skip style, formatting,
@@ -9,14 +9,12 @@ tone_instructions: >-
 reviews:
   profile: chill
   request_changes_workflow: false
-  # Light summary is fine; skip decorative spam.
-  high_level_summary: true
+  # Lean output — faster reviews, less quota burn on prose.
+  high_level_summary: false
   high_level_summary_in_walkthrough: false
   poem: false
   review_status: true
   review_details: false
-  # The merge contract consumes exact-head legacy statuses. Vendor errors must
-  # fail outward rather than publishing a misleading green status.
   review_progress: false
   commit_status: true
   fail_commit_status: true
@@ -29,16 +27,20 @@ reviews:
   related_prs: false
   suggested_labels: false
   suggested_reviewers: false
-  enable_prompt_for_ai_agents: true
+  enable_prompt_for_ai_agents: false
   path_filters:
     - "!**/node_modules/**"
     - "!**/dist/**"
     - "!**/build/**"
     - "!**/.gradle/**"
+    - "!**/pilot/**"
+    - "!**/archive/**"
+    - "!**/artifacts/**"
     - "!**/pilot/local.properties"
     - "!**/*.lock"
     - "!**/package-lock.json"
     - "!site/art/**"
+    - "!**/*.{png,jpg,jpeg,gif,webp,ogg,wav,mp3,mp4,webm,ttf,woff,woff2}"
   path_instructions:
     - path: "site/app/**"
       instructions: >-
@@ -50,10 +52,6 @@ reviews:
       instructions: >-
         Flag fiction/case integrity issues (e.g. real-name leaks) and material
         contradictions that would confuse players. Do not nitpick wording polish.
-    - path: "pilot/**"
-      instructions: >-
-        Flag accidental pilot CI/APK re-enablement, invented testimony without
-        sources, and other correctness risks. Ignore style.
     - path: ".github/workflows/**"
       instructions: >-
         Flag CI/gate breakages (e.g. reintroducing agent watch/poll loops),
@@ -62,12 +60,13 @@ reviews:
       instructions: >-
         Flag docs that would cause incorrect operator actions. Skip wording polish.
   auto_review:
-    # The trusted bot-presence controller requests one full review per ready
-    # head. Disabling vendor auto-review prevents duplicate quota consumption.
-    enabled: false
+    # One vendor-owned review on ready PRs. Incremental on later pushes is
+    # cheaper than agents posting repeated `@coderabbitai full review`.
+    # Drafts stay off so WIP burns no quota.
+    enabled: true
     drafts: false
-    auto_incremental_review: false
+    auto_incremental_review: true
     base_branches:
-      - ".*"
+      - main
 chat:
-  auto_reply: true
+  auto_reply: false
