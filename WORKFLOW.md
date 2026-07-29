@@ -74,7 +74,7 @@ npm run pr:bot-close-guard -- --pr <n> [--reopen]
 ## 4c. Local LLM gate (`local-llm-review`)
 
 A private Windows runner reviews the inert GitHub patch with pinned
-`qwen2.5-coder:7b`. It never checks out or executes PR code. Blocker/major
+`qwen3.5:4b` at a 12K context. It never checks out or executes PR code. Blocker/major
 findings, malformed or truncated patches, model mismatch, timeout, fork PRs, and
 an offline runner all fail closed. The laptop must be awake and Ollama running.
 

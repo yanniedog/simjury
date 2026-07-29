@@ -22,7 +22,7 @@ Configure in GitHub **Settings → Rules → Rulesets** (preferred) or **Branche
 | Workflow / job | Check name | Purpose |
 |----------------|------------|---------|
 | `ci` | **validate** | Authority docs and PR-gate tooling |
-| `pr-local-llm-review` | **local-llm-review** | Trusted-base, read-only Qwen 7B defect review on the private Windows runner |
+| `pr-local-llm-review` | **local-llm-review** | Trusted-base, read-only Qwen 3.5 4B defect review on the private Windows runner |
 | `pr-bot-presence-gate` | **bot-presence-gate** | Peer bot (`sourcery\|codex\|cursor`) **and** mandatory CodeRabbit since anchor + quiet window |
 | `pr-bot-feedback-check` | **bot-feedback-gate** | Review threads resolved |
 | `pr-bot-close-guard` | (side-effect) | Reopens PRs closed with outstanding bot obligations |
