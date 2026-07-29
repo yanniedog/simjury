@@ -3,7 +3,7 @@ name: pr-coderabbit-rate-limit-retry
 # When CodeRabbit posts "Review limit reached", do NOT sleep in Actions
 # (long sleeps were cancelled — 0 successful completes in audit).
 # This workflow only validates the event; the 15-minute
-# pr-coderabbit-ensure-review scheduler posts @coderabbitai review when due.
+# pr-coderabbit-ensure-review scheduler posts @coderabbitai full review when due.
 on:
   issue_comment:
     types: [created]
