@@ -9,7 +9,10 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
+  # GitHub returned HTTP 403 for PR issue comments with issues:write alone.
+  # This job executes base-SHA policy and uses write only to post review triggers;
+  # the contract has no merge/update API path.
+  pull-requests: write
   issues: write
 
 concurrency:
@@ -29,17 +32,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-      - name: Detect REST-capable contract on trusted base
-        id: contract
-        shell: bash
-        run: |
-          if grep -Fq 'repos/${repoSlug()}/issues/' scripts/coderabbit-contract.mjs; then
-            echo "rest=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "rest=false" >> "$GITHUB_OUTPUT"
-          fi
       - name: Require exact-head CodeRabbit completion
-        if: steps.contract.outputs.rest == 'true'
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -47,35 +40,6 @@ jobs:
           npm run pr:coderabbit-contract --
           --pr "${{ github.event.pull_request.number }}"
           --watch --timeout-min 220
-      - name: Bootstrap exact-head contract while base lacks REST posting
-        if: steps.contract.outputs.rest != 'true'
-        env:
-          GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
-          REPO: ${{ github.repository }}
-          PR: ${{ github.event.pull_request.number }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          # One serialized bootstrap controller for this migration PR only.
-          # Future bases use coderabbit-contract.mjs and vendor-provided timing.
-          for tick in $(seq 0 219); do
-            if gh api "repos/$REPO/commits/$HEAD_SHA/statuses?per_page=100" \
-              --jq 'any(.[]; .context == "CodeRabbit" and .creator.login == "coderabbitai[bot]" and (.description | startswith("Review completed")))' \
-              | grep -qx true; then
-              echo "CodeRabbit completed exact head $HEAD_SHA"
-              exit 0
-            fi
-            if [ $((tick % 30)) -eq 0 ]; then
-              gh api "repos/$REPO/issues/$PR/comments" -f body="<!-- simjury-coderabbit-contract sha=$HEAD_SHA reason=bootstrap-$tick -->
-          CodeRabbit contract bootstrap requires a complete review of current head \`$HEAD_SHA\`.
-
-          @coderabbitai full review" >/dev/null
-            fi
-            sleep 60
-          done
-          echo "CodeRabbit bootstrap timed out on $HEAD_SHA" >&2
-          exit 1
       - name: Require a current peer bot
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
