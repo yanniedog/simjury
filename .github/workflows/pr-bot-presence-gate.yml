@@ -13,8 +13,11 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
+  # write needed so the contract can post the one SHA-marked full-review nudge
+  # when BOT_GATE_TOKEN is unset (github.token alone with read cannot addComment).
+  pull-requests: write
   issues: write
+  statuses: read
 
 concurrency:
   group: bot-presence-gate-${{ github.event.pull_request.number }}
