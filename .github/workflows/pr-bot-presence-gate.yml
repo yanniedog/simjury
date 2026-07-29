@@ -3,6 +3,10 @@ name: pr-bot-presence-gate
 # One trusted, head-scoped controller. It requests exactly one CodeRabbit full
 # review per head, waits through vendor quota, and accepts only CodeRabbit's
 # "Review completed" commit status on that exact SHA.
+#
+# Bootstrap: workflow YAML comes from the PR, but scripts execute from the base
+# SHA. Until this PR lands, base may lack `pr:coderabbit-contract` — fall back
+# to the legacy wait-for-bots path. Chore / bot-authored PRs stay gate-exempt.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
@@ -29,7 +33,37 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
+      - name: Skip bot wait for non-human / chore PRs
+        id: gate_exempt
+        env:
+          GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+          PR="${{ github.event.pull_request.number }}"
+          EXEMPT="$(node scripts/pr-gate-exempt-reason.mjs "$PR" || true)"
+          if [ -n "$EXEMPT" ]; then
+            echo "gate_exempt=true" >> "$GITHUB_OUTPUT"
+            echo "gate_exempt_reason=$EXEMPT" >> "$GITHUB_OUTPUT"
+            echo "PR #$PR is gate-exempt ($EXEMPT) — bot review not required"
+          else
+            echo "gate_exempt=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Gate exempt — pass (no bot wait)
+        if: steps.gate_exempt.outputs.gate_exempt == 'true'
+        run: |
+          echo "bot-presence-gate: skipped (${{ steps.gate_exempt.outputs.gate_exempt_reason }} — human bot review not required)"
+      - name: Detect CodeRabbit contract script on base
+        if: steps.gate_exempt.outputs.gate_exempt != 'true'
+        id: contract
+        run: |
+          if node -e "const p=require('./package.json'); process.exit(p.scripts&&p.scripts['pr:coderabbit-contract']?0:1)"; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "Base SHA lacks pr:coderabbit-contract; using legacy wait-for-bots"
+          fi
       - name: Require exact-head CodeRabbit completion
+        if: steps.gate_exempt.outputs.gate_exempt != 'true' && steps.contract.outputs.available == 'true'
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -37,7 +71,19 @@ jobs:
           npm run pr:coderabbit-contract --
           --pr "${{ github.event.pull_request.number }}"
           --watch --timeout-min 220
+      - name: Require CodeRabbit (legacy until contract lands on main)
+        if: steps.gate_exempt.outputs.gate_exempt != 'true' && steps.contract.outputs.available != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          SIMJURY_BOT_WAIT_REQUIRED: sourcery|codex|cursor,coderabbit
+          BOT_WAIT_IGNORE_CHECK_NAMES: bot-presence-gate,bot-feedback-gate,pr-bot-presence-gate,pr-bot-feedback-check
+          BOT_WAIT_MAX_MIN: "240"
+        run: >-
+          npm run wait-for-bots --
+          --pr "${{ github.event.pull_request.number }}"
       - name: Require a current peer bot
+        if: steps.gate_exempt.outputs.gate_exempt != 'true' && steps.contract.outputs.available == 'true'
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
