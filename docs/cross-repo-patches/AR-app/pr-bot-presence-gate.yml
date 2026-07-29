@@ -67,13 +67,13 @@ jobs:
         if: steps.gate_exempt.outputs.gate_exempt == 'true'
         run: |
           echo "bot-presence-gate: skipped (${{ steps.gate_exempt.outputs.gate_exempt_reason }})"
-      - name: Required bot wait gate (with retries)
+      - name: Required bot wait gate (single shot)
         if: steps.gate_exempt.outputs.gate_exempt != 'true'
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           # Sourcery-only was the AR-app root cause: Sourcery skips docs PRs while
-          # Cursor Automation still reviews. OR-group accepts either.
+          # Cursor Automation still reviews. OR-group accepts either; CodeRabbit mandatory.
           AR_BOT_WAIT_REQUIRED: ${{ vars.AR_BOT_WAIT_REQUIRED || 'sourcery|cursor,coderabbit' }}
           BOT_WAIT_IGNORE_CHECK_NAMES: bot-presence-gate,bot-feedback-gate,pr-bot-presence-gate,pr-bot-feedback-check,mobile-ci
           BOT_WAIT_MAX_MIN: "240"
@@ -84,23 +84,17 @@ jobs:
             pull_request_review) PR="${{ github.event.pull_request.number }}" ;;
             *)                 PR="${{ github.event.pull_request.number }}" ;;
           esac
-          attempts=0
-          max_attempts=12
-          while [ "$attempts" -lt "$max_attempts" ]; do
-            attempts=$((attempts + 1))
-            set +e
-            npm run wait-for-bots -- --pr "$PR"
-            code=$?
-            set -e
-            if [ "$code" -eq 0 ]; then
-              exit 0
-            fi
-            if [ "$code" -ne 2 ] || [ "$attempts" -ge "$max_attempts" ]; then
-              if [ "$code" -eq 2 ]; then
-                echo "::warning::Bot wait not ready after ${max_attempts} attempts — re-fires on review/comment"
-              fi
-              exit 1
-            fi
-            echo "Bot wait not ready; retry ${attempts}/${max_attempts} in 30s..."
-            sleep 30
-          done
+          # Single-shot only — no sleep-poll. Gate re-fires on review/comment events;
+          # agents park with: npm run pr:arm-and-park -- --pr "$PR"
+          set +e
+          npm run wait-for-bots -- --pr "$PR"
+          code=$?
+          set -e
+          if [ "$code" -eq 0 ]; then
+            exit 0
+          fi
+          if [ "$code" -eq 2 ]; then
+            echo "::warning::Bot wait not ready (bots/CI/quiet) — gate re-fires on review/comment; agents: npm run pr:arm-and-park -- --pr $PR"
+            exit 1
+          fi
+          exit "$code"

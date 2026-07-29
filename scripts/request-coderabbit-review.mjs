@@ -138,9 +138,12 @@ function main() {
   }
 
   if (humanTriggerAlreadyPosted(view)) {
+    // Idempotent: do not spam duplicate @coderabbitai review on every synchronize.
+    // Rate-limit path is owned by pr-coderabbit-rate-limit-retry (≤120m).
     console.log(
-      `request-coderabbit-review: prior @coderabbitai review on PR #${prNumber} with no reply — re-requesting`,
+      `request-coderabbit-review: prior @coderabbitai review on PR #${prNumber} still outstanding — skip`,
     );
+    process.exit(0);
   }
 
   process.exit(postTrigger(prNumber, args.dryRun));

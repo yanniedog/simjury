@@ -213,18 +213,24 @@ Unresolved substantive review threads also block closure.`);
       `Required presence: \`${DEFAULT_REQUIRED_SPEC}\``,
     ].join('\n');
     result.reopened = reopenPr(prNumber, args.dryRun);
-    if (result.reopened) commentOnPr(prNumber, body, args.dryRun);
+    if (result.reopened) {
+      commentOnPr(prNumber, body, args.dryRun);
+    } else {
+      // Distinct from blocked+reopened (exit 1): workflow must fail when reopen fails.
+      if (args.json) console.log(JSON.stringify(result, null, 2));
+      else {
+        console.error(`pr-bot-close-guard: PR #${prNumber} blocked — ${result.detail}`);
+        console.error(`pr-bot-close-guard: failed to reopen PR #${prNumber}`);
+      }
+      process.exit(3);
+    }
   }
 
   if (args.json) console.log(JSON.stringify(result, null, 2));
   else {
     console.error(`pr-bot-close-guard: PR #${prNumber} blocked — ${result.detail}`);
-    if (meta.state === 'CLOSED' && args.reopen) {
-      console.error(
-        result.reopened
-          ? `pr-bot-close-guard: reopened PR #${prNumber}`
-          : `pr-bot-close-guard: failed to reopen PR #${prNumber}`,
-      );
+    if (meta.state === 'CLOSED' && args.reopen && result.reopened) {
+      console.error(`pr-bot-close-guard: reopened PR #${prNumber}`);
     }
   }
   process.exit(1);
