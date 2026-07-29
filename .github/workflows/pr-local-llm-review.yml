@@ -48,7 +48,10 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         shell: powershell
-        run: node scripts/local-llm-pr-gate.mjs --pr "$env:PR_NUMBER" --repo "$env:GITHUB_REPOSITORY" --head "$env:PR_HEAD_SHA"
+        run: |
+          Get-Process ollama -ErrorAction SilentlyContinue |
+            ForEach-Object { $_.PriorityClass = 'BelowNormal' }
+          node scripts/local-llm-pr-gate.mjs --pr "$env:PR_NUMBER" --repo "$env:GITHUB_REPOSITORY" --head "$env:PR_HEAD_SHA"
 
   local-llm-review:
     name: local-llm-review
