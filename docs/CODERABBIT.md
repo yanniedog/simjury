@@ -23,7 +23,7 @@ Verify on any open PR:
 gh pr comment <n> --body "@coderabbitai review"
 
 # Expect author coderabbitai[bot] on a review or walkthrough comment
-gh api repos/yanniedog/simjury/pulls/<n>/reviews --jq '.[].user.login'
+gh api repos/yanniedog/SimJury/pulls/<n>/reviews --jq '.[].user.login'
 ```
 
 Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.

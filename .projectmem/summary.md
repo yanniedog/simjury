@@ -1,4 +1,4 @@
-# Project Summary - simjury
+# Project Summary - SimJury
 
 ## Current direction
 

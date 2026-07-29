@@ -13,7 +13,7 @@ cp docs/cross-repo-patches/coderabbit-rate-limit-retry/pr-coderabbit-rate-limit-
   .github/workflows/
 ```
 
-Or from simjury root after this lands on `main`.
+Or from SimJury root after this lands on `main`.
 
 ## Apply all non-archived repos (owner)
 
@@ -23,7 +23,7 @@ npm run coderabbit:rate-limit-retry:install-all
 npm run coderabbit:rate-limit-retry:install-all -- --dry-run
 ```
 
-Skips **simjury** only (canonical source). Installs the same workflow on AR-app,
+Skips **SimJury** only (canonical source). Installs the same workflow on AR-app,
 AR-local, jcs2-mod, and every other writable non-archived repo under the owner.
 
-Canonical source: `.github/workflows/pr-coderabbit-rate-limit-retry.yml` in simjury.
+Canonical source: `.github/workflows/pr-coderabbit-rate-limit-retry.yml` in SimJury.

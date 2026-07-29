@@ -13,7 +13,7 @@ if [[ -z "${1:-}" || -z "${2:-}" ]]; then
 fi
 
 OWNER="${1:-${DETECTED_OWNER:-yanniedog}}"
-REPO="${2:-${DETECTED_REPO:-simjury}}"
+REPO="${2:-${DETECTED_REPO:-SimJury}}"
 BRANCH="${3:-main}"
 
 echo "Applying branch protection to ${OWNER}/${REPO}:${BRANCH}..."
