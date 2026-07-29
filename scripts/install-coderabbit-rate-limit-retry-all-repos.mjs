@@ -218,7 +218,7 @@ function openPr(owner, name, defaultBranch, workflowBody, dryRun) {
             'Adds portable `.github/workflows/pr-coderabbit-rate-limit-retry.yml`.',
             'When CodeRabbit posts **Review limit reached**, waits for the stated window, then comments `@coderabbitai review`.',
             '',
-            'Self-contained (no repo scripts). Same workflow as simjury.',
+            'Self-contained (no repo scripts). Same workflow as SimJury.',
             '',
             '## Role',
             '',
@@ -267,7 +267,7 @@ function main() {
     const name = r.name;
     const defaultBranch = r.defaultBranchRef?.name || 'main';
     const full = `${args.owner}/${name}`;
-    if (name === 'simjury' && !args.repos) {
+    if (String(name).toLowerCase() === 'simjury' && !args.repos) {
       console.log(`skip ${full} (canonical source — use in-repo PR)`);
       summary.skipped.push(full);
       continue;

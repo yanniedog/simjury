@@ -1,6 +1,6 @@
 # AR-app: PR bot presence hardening
 
-`cursor[bot]` cannot push to `yanniedog/AR-app` from simjury cloud agents. Apply this pack on AR-app.
+`cursor[bot]` cannot push to `yanniedog/AR-app` from SimJury cloud agents. Apply this pack on AR-app.
 
 ## Same policy as every active repo
 
@@ -11,7 +11,7 @@ Required presence: **`sourcery|codex|cursor,coderabbit`**
 | `sourcery\|codex\|cursor` | At least one peer review bot |
 | `coderabbit` | Mandatory — never OR-skippable |
 
-Mirror of simjury / AR-local / jcs2-mod. See [`CROSS_REPO_BOT_MATRIX.md`](../../CROSS_REPO_BOT_MATRIX.md).
+Mirror of SimJury / AR-local / jcs2-mod. See [`CROSS_REPO_BOT_MATRIX.md`](../../CROSS_REPO_BOT_MATRIX.md).
 
 ## Root cause (AR-app PR #41)
 
@@ -27,7 +27,7 @@ git clone https://github.com/yanniedog/AR-app.git
 cd AR-app
 git checkout -b cursor/bot-presence-or-groups
 
-SJ=/path/to/simjury
+SJ=/path/to/SimJury
 PACK=$SJ/docs/cross-repo-patches/AR-app
 
 cp "$PACK/pr-bot-presence-gate.yml" .github/workflows/pr-bot-presence-gate.yml
@@ -39,7 +39,7 @@ cp "$PACK/verify-bot-wait-or-groups.mjs" scripts/verify-bot-wait-or-groups.mjs
 #   "pr:bot-wait-or-groups:verify": "node scripts/verify-bot-wait-or-groups.mjs"
 # Wire into CI if present.
 
-# Optional repo variable override (same default as simjury):
+# Optional repo variable override (same default as SimJury):
 #   Settings → Variables → AR_BOT_WAIT_REQUIRED = sourcery|codex|cursor,coderabbit
 
 git add -A

@@ -1,4 +1,4 @@
-# Project Map - simjury
+# Project Map - SimJury
 
 Status: current as of 2026-07-29
 

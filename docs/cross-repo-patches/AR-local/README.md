@@ -20,9 +20,9 @@ git checkout -b cursor/codex-required-bots-a216
 # Workflow env
 sed -i 's/AR_BOT_WAIT_REQUIRED: gemini/AR_BOT_WAIT_REQUIRED: gemini,codex,sourcery/' .github/workflows/pr-bot-presence-gate.yml
 
-# Auto @codex review (copy from simjury PR #15)
-cp /path/to/simjury/.github/workflows/pr-request-bot-reviews.yml .github/workflows/
-cp /path/to/simjury/scripts/request-codex-review.mjs scripts/
+# Auto @codex review (copy from SimJury PR #15)
+cp /path/to/SimJury/.github/workflows/pr-request-bot-reviews.yml .github/workflows/
+cp /path/to/SimJury/scripts/request-codex-review.mjs scripts/
 
 git add -A
 git commit -m "ci: require Codex on bot-presence-gate (gemini,codex,sourcery)"

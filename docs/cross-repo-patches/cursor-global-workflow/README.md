@@ -1,6 +1,6 @@
 # Cross-repo: act-or-park PR efficiency
 
-`cursor[bot]` cannot push to `cursor-global-workflow`, `jcs2-mod`, or `AR-local` from simjury cloud agents. Apply this pack on each repo (or merge from a fork) so agents stop babysitting PRs with `--watch` / sleep polls.
+`cursor[bot]` cannot push to `cursor-global-workflow`, `jcs2-mod`, or `AR-local` from SimJury cloud agents. Apply this pack on each repo (or merge from a fork) so agents stop babysitting PRs with `--watch` / sleep polls.
 
 ## Problem
 
@@ -31,11 +31,11 @@ git clone https://github.com/yanniedog/cursor-global-workflow.git
 cd cursor-global-workflow
 git checkout -b cursor/pr-arm-and-park-efficiency
 
-# From simjury checkout:
-SJ=/path/to/simjury
+# From SimJury checkout:
+SJ=/path/to/SimJury
 SRC=$SJ/docs/cross-repo-patches/cursor-global-workflow
 
-# Scripts (canonical live copies in simjury scripts/)
+# Scripts (canonical live copies in SimJury scripts/)
 cp "$SJ/scripts/pr-arm-and-park.mjs" scripts/
 cp "$SJ/scripts/verify-pr-arm-and-park.mjs" scripts/
 cp "$SJ/scripts/lib/pr-arm-and-park-lib.mjs" scripts/lib/
@@ -71,8 +71,8 @@ Then run `./install.sh` (or `install.ps1`) so `~/.cursor/skills` and `~/.cursor/
 1. Copy `scripts/pr-arm-and-park.mjs` + `scripts/lib/pr-arm-and-park-lib.mjs` (and `pr-branch-sync.mjs` / `pr-merge.mjs` if missing).
 2. Add npm script `pr:arm-and-park`.
 3. Replace agent babysit instructions in `AGENTS.md` / `WORKFLOW.md` / `HANDOFF.md` with the act-or-park table above.
-4. Keep CI `bot-presence-gate` event-driven (simjury style single-shot retries). Prefer **not** `wait-for-bots --watch` inside Actions either if the workflow already re-fires on review/comment events.
+4. Keep CI `bot-presence-gate` event-driven (SimJury style single-shot retries). Prefer **not** `wait-for-bots --watch` inside Actions either if the workflow already re-fires on review/comment events.
 
 ## Simjury status
 
-Landed in-tree on simjury (`npm run pr:arm-and-park`). This folder is the portable mirror for the other three repos listed in `docs/CROSS_REPO_BOT_MATRIX.md`.
+Landed in-tree on SimJury (`npm run pr:arm-and-park`). This folder is the portable mirror for the other three repos listed in `docs/CROSS_REPO_BOT_MATRIX.md`.

@@ -20,11 +20,11 @@ Syntax: commas = ALL-of slots; `|` = OR within a slot.
 
 | Repository | `*_BOT_WAIT_REQUIRED` | Notes |
 |------------|------------------------|-------|
-| [simjury](https://github.com/yanniedog/simjury) | `sourcery\|codex\|cursor,coderabbit` | Canonical; close-guard + arm-and-park |
+| [SimJury](https://github.com/yanniedog/SimJury) | `sourcery\|codex\|cursor,coderabbit` | Canonical; close-guard + arm-and-park |
 | [AR-app](https://github.com/yanniedog/AR-app) | `sourcery\|codex\|cursor,coderabbit` | Same slots — pack: [`cross-repo-patches/AR-app/`](cross-repo-patches/AR-app/README.md) |
 | [AR-local](https://github.com/yanniedog/AR-local) | `sourcery\|codex\|cursor,coderabbit` | Same |
 | [jcs2-mod](https://github.com/yanniedog/jcs2-mod) | `sourcery\|codex\|cursor,coderabbit` | Same |
-| [cursor-global-workflow](https://github.com/yanniedog/cursor-global-workflow) | template default | Mirror from simjury |
+| [cursor-global-workflow](https://github.com/yanniedog/cursor-global-workflow) | template default | Mirror from SimJury |
 
 ## Presence gate (single-shot)
 
@@ -34,7 +34,7 @@ Evaluate `wait-for-bots` **once** per run (no sleep-poll). Gate re-fires on revi
 
 Agents must not `--watch` bot gates. Portable pack: [`docs/cross-repo-patches/cursor-global-workflow/`](cross-repo-patches/cursor-global-workflow/README.md).
 
-`cursor[bot]` cannot push to the three non-simjury repos from simjury cloud — operator (or a cloud agent with write access on those remotes) applies the pack.
+`cursor[bot]` cannot push to the three non-SimJury repos from SimJury cloud — operator (or a cloud agent with write access on those remotes) applies the pack.
 
 ## Operator: install CodeRabbit GitHub App (all repos)
 
