@@ -29,7 +29,9 @@ product.
   stays on per-clip MP3 URLs via `<audio>` — Release assets are not CORS-readable and the
   static CSP `connect-src` is `'self'`, so client-side zip extraction is not used. After
   merging narration tooling changes, prefer `workflow_dispatch` for `dd-intro` (or a
-  single case) over a full `all` regen unless the corpus itself changed.
+  single case) over a full `all` regen unless the corpus itself changed. For a true
+  site-wide refresh of existing clip bytes, dispatch `case_id=all` with
+  `clobber_mp3s=true` (Kokoro and, when enabled, Scylla).
 - **Experimental alt voice mode (owner-directed, 2026-07-28):** the player may offer an
   optional **Experimental** narration engine (Apache-2.0 Scylla's Band on free CPU ONNX)
   beside the Kokoro default. It is gated by `site/app/src/lib/narrationAltVoice.json`
