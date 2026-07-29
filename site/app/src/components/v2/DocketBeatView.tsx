@@ -4,6 +4,7 @@ import { NOTE_MAX_LEN, noteForBeat, PLAYER_NOTE_OWNER, type SittingNote } from '
 import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { phaseNarratorCue, speakerNarratorCue } from '../../lib/narratorCues'
 import { CaseMedia, StoryText } from './CaseMedia'
+import { EvidenceIndex } from './EvidenceIndex'
 import { NarratorCue } from './NarratorCue'
 import { SpeakerFlag } from './SpeakerFlag'
 import { SpeakerPortrait } from './SpeakerPortrait'
@@ -47,6 +48,7 @@ export function DocketBeatView({
   const [narratorActive, setNarratorActive] = useState(false)
   const [singleSpeakerActive, setSingleSpeakerActive] = useState(false)
   const [notesOpen, setNotesOpen] = useState(false)
+  const [indexOpen, setIndexOpen] = useState(false)
   const activeTurn = activeDialogue?.beatId === beat.id ? activeDialogue.index : null
   const activeSpeakerId = activeTurn === null ? beat.speaker : turns[activeTurn]?.speaker ?? beat.speaker
   const total = trial.beats.length
@@ -59,6 +61,7 @@ export function DocketBeatView({
   // Lock the chosen cue per beat id so speakAll onLine setState cannot flip cueText mid-beat.
   const lockedCue = useRef<{ beatId: string; text: string | null } | null>(null)
   const noteFieldId = useId()
+  const indexRegionId = useId()
   const saved = noteForBeat(notes, PLAYER_NOTE_OWNER, beat.id)?.text ?? ''
   const [draft, setDraft] = useState(saved)
   const hasNote = saved.length > 0
@@ -66,6 +69,7 @@ export function DocketBeatView({
   useEffect(() => {
     setDraft(saved)
     setNotesOpen(false)
+    setIndexOpen(false)
   }, [beat.id, saved])
 
   if (lockedCue.current?.beatId !== beat.id) {
@@ -138,24 +142,46 @@ export function DocketBeatView({
         <p className="text-xs uppercase tracking-[0.15em] text-neutral-500">
           Evidence {beatIndex + 1} of {total} · {modeLabel}
         </p>
-        <button
-          type="button"
-          className={`note-icon-btn${hasNote ? ' has-note' : ''}${notesOpen ? ' open' : ''}`}
-          aria-expanded={notesOpen}
-          aria-controls={noteFieldId}
-          title={hasNote ? 'Edit your note' : 'Jot a short note'}
-          aria-label={hasNote ? 'Edit your recollection note' : 'Jot a short recollection note'}
-          onClick={() => setNotesOpen((open) => !open)}
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true" className="note-icon-svg">
-            <path
-              fill="currentColor"
-              d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm8 1.5V9h4.5L14 4.5zM8 12h8v1.5H8V12zm0 3.5h8V17H8v-1.5z"
-            />
-          </svg>
-          {hasNote && <span className="note-dot" aria-hidden="true" />}
-        </button>
+        <div className="evidence-toolbar-actions">
+          <button
+            type="button"
+            className={`evidence-index-toggle${indexOpen ? ' open' : ''}`}
+            aria-expanded={indexOpen}
+            aria-controls={indexRegionId}
+            onClick={() => setIndexOpen((open) => !open)}
+          >
+            Review your evidence
+          </button>
+          <button
+            type="button"
+            className={`note-icon-btn${hasNote ? ' has-note' : ''}${notesOpen ? ' open' : ''}`}
+            aria-expanded={notesOpen}
+            aria-controls={noteFieldId}
+            title={hasNote ? 'Edit your note' : 'Jot a short note'}
+            aria-label={hasNote ? 'Edit your recollection note' : 'Jot a short recollection note'}
+            onClick={() => setNotesOpen((open) => !open)}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="note-icon-svg">
+              <path
+                fill="currentColor"
+                d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm8 1.5V9h4.5L14 4.5zM8 12h8v1.5H8V12zm0 3.5h8V17H8v-1.5z"
+              />
+            </svg>
+            {hasNote && <span className="note-dot" aria-hidden="true" />}
+          </button>
+        </div>
       </div>
+
+      {indexOpen && (
+        <div id={indexRegionId}>
+          <EvidenceIndex
+            trial={trial}
+            notes={notes}
+            visibleBeatCount={beatIndex + 1}
+            selectedBeatId={beat.id}
+          />
+        </div>
+      )}
 
       {notesOpen && (
         <div className="note-panel" id={noteFieldId}>

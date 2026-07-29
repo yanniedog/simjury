@@ -32,6 +32,27 @@ describe('JuryRoomView', () => {
     expect(markup).not.toContain('Choose evidence, then argue')
   })
 
+  it('keeps the sealed room free of analysis and transcript spoilers', () => {
+    const trial = makeDocketCase()
+    const notes = upsertPlayerNote([], trial.beats[0].id, 'ID felt soft under pressure.')
+    const markup = renderToStaticMarkup(
+      <JuryRoomView
+        trial={trial}
+        narration={false}
+        playbackRate={1}
+        notes={notes}
+        onSeal={() => undefined}
+        onDone={() => undefined}
+      />,
+    )
+
+    expect(markup).toContain('Reload notes')
+    expect(markup).not.toContain(trial.reference_verdict)
+    expect(markup).not.toContain('misleading')
+    expect(markup).not.toContain(trial.beats[0].reveal_note)
+    expect(markup).not.toContain(trial.beats[0].text)
+  })
+
   it('makes narration-off deliberation explicitly user-paced', () => {
     const trial = makeDocketCase()
     const markup = renderToStaticMarkup(

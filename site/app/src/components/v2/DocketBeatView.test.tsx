@@ -27,6 +27,7 @@ describe('DocketBeatView dialogue', () => {
     expect(markup).toContain('Renn Halloway')
     expect(markup).not.toContain('Speaking now')
     expect(markup).toContain('Jot a short recollection note')
+    expect(markup).toContain('Review your evidence')
   })
 
   it('shows a cross-examination cue after direct of the same witness', () => {
