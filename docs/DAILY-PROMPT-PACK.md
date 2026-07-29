@@ -37,7 +37,7 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 > **Slots:** id **{dd-NNNN}** · publish_date **{YYYY-MM-DD}** · offence_code
 > **{canonical grave profile}** ·
 > reference verdict **{Guilty|Not Guilty}** · tension shape **{feels-guilty-is-innocent |
-> feels-innocent-is-guilty | over-trusted-machine | under-trusted-human}** ·
+> feels-innocent-is-guilty | over-trusted-first-impression | under-trusted-human}** ·
 > difficulty_target **{0.3–0.8}** · scenario family **{from DAILY-CASES.md, 2026}**.
 >
 > **Top-level fields:** `"title"` (invented case title), `"setting"` (contemporary
@@ -81,9 +81,9 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 > Direct examination uses open questions and sensory recollection. Cross uses short
 > leading propositions, controlled concessions, occasional resistance, and follow-up.
 > Experts qualify methodology and limits; lay witnesses may contract, hesitate,
-> correct themselves, or admit incomplete memory. Keep digital evidence modern but
-> restrained: prefer “matched the original,” “security key,” or “device signature”
-> over hash/token/certificate lectures. Each beat carries
+> correct themselves, or admit incomplete memory. Prefer dialogue-friendly evidence
+> (admissions, signed notes, recognition, receipts). Keep any modern record simple;
+> do not centre the case on who is visible in unseen camera footage. Each beat carries
 > 1–3 `tags` from: identity, alibi, digital_forensics, motive, opportunity, method,
 > timeline, credibility, procedure, burden, knowledge, intent, causation, duress,
 > command, or coercion. At least one direction beat tagged
