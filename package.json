@@ -1,5 +1,5 @@
 {
-  "name": "simjury",
+  "name": "SimJury",
   "private": true,
   "description": "SimJury Daily Docket web app and repository automation",
   "engines": {
@@ -28,6 +28,7 @@
     "coderabbit:rate-limit-retry:install-all": "node scripts/install-coderabbit-rate-limit-retry-all-repos.mjs",
     "branch-protection:apply": "node scripts/apply-branch-protection.mjs",
     "repo-merge-settings:apply": "node scripts/apply-repo-merge-settings.mjs",
+    "repo-name:apply": "node scripts/apply-repo-name.mjs",
     "site:dev": "npm --prefix site run dev",
     "site:deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File site/deploy.ps1",
     "site:check": "npm --prefix site run check"

@@ -83,7 +83,7 @@ export function naturalVoiceUrlFor(
   const id = narrationIdFor(text, key, gender, voice, engine)
   const shard = Number.parseInt(id.slice(-8, -6), 16) % NARRATION_SHARDS
   const prefix = engine === ALT_VOICE_ENGINE_ID ? ALT_VOICE_RELEASE_PREFIX : 'narration-kokoro'
-  return `https://github.com/yanniedog/simjury/releases/download/${prefix}-${shard}/${id}.mp3`
+  return `https://github.com/yanniedog/SimJury/releases/download/${prefix}-${shard}/${id}.mp3`
 }
 
 let activePlan: SpeakerVoicePlan | null = null

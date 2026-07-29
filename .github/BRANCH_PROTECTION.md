@@ -33,6 +33,7 @@ All three required checks must pass. **Do not squash-merge until `bot-presence-g
 ```bash
 npm run github:bot-gates:operator
 npm run repo-merge-settings:apply
+npm run repo-name:apply
 npm run branch-protection:apply
 ```
 
