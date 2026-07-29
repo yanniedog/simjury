@@ -15,6 +15,7 @@ import { spawnSync } from 'node:child_process';
 import {
   CR_RETRY_MARKER,
   CR_REVIEW_TRIGGER,
+  CR_REVIEW_TRIGGER_PATTERN,
   latestRateLimitEvent,
   retryAlreadyArmed,
 } from './lib/coderabbit-rate-limit.mjs';
@@ -23,7 +24,7 @@ import { gateExemptReason } from './lib/pr-gate-exempt.mjs';
 import { ghJson } from './lib/gh-pr-review-threads.mjs';
 
 const CR_TRIGGER = CR_REVIEW_TRIGGER;
-const CR_TRIGGER_PATTERN = /@coderabbitai\s+review/i;
+const CR_TRIGGER_PATTERN = CR_REVIEW_TRIGGER_PATTERN;
 
 function parseArgs(argv) {
   const out = { pr: null, prError: null, dryRun: false, help: false };

@@ -9,7 +9,8 @@ import { isCoderabbitLogin, isRateLimitBody } from './coderabbit-rate-limit.mjs'
 
 export const CR_RECOVERY_MARKER = '<!-- simjury-coderabbit-review-recovery -->';
 export const CR_ENSURE_MARKER = '<!-- simjury-coderabbit-ensure-review -->';
-export const CR_RECOVERY_TRIGGER = '@coderabbitai review';
+/** Prefer full review — incremental review no-ops when CR thinks commits were already reviewed (rate-limit false start). */
+export const CR_RECOVERY_TRIGGER = '@coderabbitai full review';
 export const CR_RECOVERY_INTERVAL_MS = 60 * 60 * 1000;
 /** Open-PR rate-limit follow-ups can retry every 15 minutes once due. */
 export const CR_OPEN_RETRY_INTERVAL_MS = 15 * 60 * 1000;
@@ -25,12 +26,13 @@ const FAILED_REVIEW_PATTERNS = [
   /\bsomething went wrong\b.{0,40}\breview\b/i,
 ];
 
-/** CR auto-replies that acknowledge @coderabbitai review without reviewing. */
+/** CR auto-replies that acknowledge a review command without posting findings. */
 export function isCoderabbitCommandAck(body) {
   const text = String(body || '');
   if (!text.trim()) return false;
   if (/review command invocation/i.test(text)) return true;
-  if (/auto-generated reply by CodeRabbit/i.test(text) && /I(?:'|’)ll review|Action performed/i.test(text)) {
+  if (/does not re-review already reviewed commits/i.test(text)) return true;
+  if (/auto-generated reply by CodeRabbit/i.test(text) && /I(?:'|’)ll review|Action performed|Review finished/i.test(text)) {
     return true;
   }
   return false;
@@ -254,9 +256,11 @@ export function needsOpenEnsure(activity) {
 /**
  * @param {{ body?: string, createdAt?: string, created_at?: string }[]} comments
  * @param {string} [marker]
+ * @returns {{ at: string|null, isFull: boolean }}
  */
-export function latestEnsureTriggerAt(comments = [], marker = CR_ENSURE_MARKER) {
+export function latestEnsureTrigger(comments = [], marker = CR_ENSURE_MARKER) {
   let best = null;
+  let isFull = false;
   for (const c of comments || []) {
     const body = String(c.body || '');
     const isMarked =
@@ -264,12 +268,23 @@ export function latestEnsureTriggerAt(comments = [], marker = CR_ENSURE_MARKER) 
       body.includes(CR_RECOVERY_MARKER) ||
       body.includes('<!-- simjury-coderabbit-rate-limit-retry -->');
     if (!isMarked) continue;
-    if (!/@coderabbitai\s+review/i.test(body)) continue;
+    if (!/@coderabbitai\s+(?:full\s+)?review\b/i.test(body)) continue;
     const at = c.createdAt || c.created_at;
     if (!at) continue;
-    if (!best || String(at) > best) best = String(at);
+    if (!best || String(at) > best) {
+      best = String(at);
+      isFull = /@coderabbitai\s+full\s+review\b/i.test(body);
+    }
   }
-  return best;
+  return { at: best, isFull };
+}
+
+/**
+ * @param {{ body?: string, createdAt?: string, created_at?: string }[]} comments
+ * @param {string} [marker]
+ */
+export function latestEnsureTriggerAt(comments = [], marker = CR_ENSURE_MARKER) {
+  return latestEnsureTrigger(comments, marker).at;
 }
 
 /** @deprecated alias */

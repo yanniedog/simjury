@@ -112,7 +112,7 @@ assert(
       {
         author: { login: 'github-actions[bot]' },
         createdAt: '2026-07-28T19:05:00Z',
-        body: '<!-- simjury-coderabbit-rate-limit-retry -->\n@coderabbitai review',
+        body: '<!-- simjury-coderabbit-rate-limit-retry -->\n@coderabbitai full review',
       },
     ],
     '2026-07-28T18:50:00Z',
@@ -126,7 +126,7 @@ assert(
       {
         author: { login: 'github-actions[bot]' },
         createdAt: '2026-07-28T19:05:00Z',
-        body: '<!-- simjury-coderabbit-rate-limit-retry -->\n@coderabbitai review',
+        body: '<!-- simjury-coderabbit-rate-limit-retry -->\n@coderabbitai full review',
       },
       {
         author: { login: 'coderabbitai[bot]' },
