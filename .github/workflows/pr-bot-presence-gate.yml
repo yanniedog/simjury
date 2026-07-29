@@ -9,10 +9,7 @@ on:
 
 permissions:
   contents: read
-  # GitHub returned HTTP 403 for PR issue comments with issues:write alone.
-  # This job executes base-SHA policy and uses write only to post review triggers;
-  # the contract has no merge/update API path.
-  pull-requests: write
+  pull-requests: read
   issues: write
 
 concurrency:
@@ -32,19 +29,46 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-      # Base still posts via `gh pr comment` (GraphQL addComment → 403). Overlay the
-      # PR's REST contract script until that fix is on main; only this one file.
-      - name: Overlay REST CodeRabbit contract when base still uses GraphQL
-        if: github.event.pull_request.head.repo.full_name == github.repository
+      # Chicken-egg: main still uses `gh pr comment` (GraphQL addComment → 403).
+      # Apply a hermetic in-workflow patch to the checked-out *base* script only —
+      # do not fetch or execute PR-head JavaScript with the write token.
+      - name: Patch base GraphQL CodeRabbit comment to REST (hermetic)
         run: |
           set -euo pipefail
-          if grep -F "['pr', 'comment'" scripts/coderabbit-contract.mjs >/dev/null; then
-            echo "Base contract uses GraphQL pr comment — overlaying REST script from PR head"
-            git fetch --depth=1 origin "${{ github.event.pull_request.head.sha }}"
-            git checkout "${{ github.event.pull_request.head.sha }}" -- scripts/coderabbit-contract.mjs
-          else
-            echo "Base contract already uses REST issue comments"
-          fi
+          node <<'NODE'
+          const fs = require('fs');
+          const path = 'scripts/coderabbit-contract.mjs';
+          let src = fs.readFileSync(path, 'utf8');
+          if (!src.includes("['pr', 'comment'")) {
+            console.log('Base contract already avoids GraphQL pr comment');
+            process.exit(0);
+          }
+          const needle = `  const r = spawnSync('gh', ['pr', 'comment', String(pr), '--body', body], {
+    encoding: 'utf8',
+  });
+  if (r.status !== 0) throw new Error((r.stderr || r.stdout || 'comment failed').trim());
+  console.log(\`coderabbit-contract: requested full review on #\${pr} (\${reason})\`);`;
+          const replacement = `  const repo = String(process.env.GITHUB_REPOSITORY || '').trim();
+  if (!repo.includes('/')) throw new Error('GITHUB_REPOSITORY required for REST comment');
+  const r = spawnSync(
+    'gh',
+    ['api', \`repos/\${repo}/issues/\${pr}/comments\`, '-f', \`body=\${body}\`],
+    { encoding: 'utf8' },
+  );
+  if (r.status !== 0) {
+    console.warn(
+      \`coderabbit-contract: comment failed (\${(r.stderr || r.stdout || 'comment failed').trim()}); waiting for status\`,
+    );
+    return;
+  }
+  console.log(\`coderabbit-contract: requested full review on #\${pr} (\${reason})\`);`;
+          if (!src.includes(needle)) {
+            console.error('Expected GraphQL postReview block not found; refusing to guess');
+            process.exit(1);
+          }
+          fs.writeFileSync(path, src.replace(needle, replacement));
+          console.log('Patched base postReview to REST issue comments (soft-fail)');
+          NODE
       - name: Require exact-head CodeRabbit completion
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
