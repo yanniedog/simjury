@@ -55,15 +55,19 @@ function main() {
     process.exit(0);
   }
 
-  const next = rows.find((r) => ['missing', 'skipped', 'blocked', 'rate_limited'].includes(r.contract.state));
-  if (!next) {
+  const needy = rows.filter((r) =>
+    ['missing', 'skipped', 'blocked', 'rate_limited'].includes(r.contract.state),
+  );
+  if (!needy.length) {
     console.log('coderabbit-quota-queue: all open PRs have Review completed (or none open)');
     process.exit(0);
   }
 
-  if (next.contract.state === 'rate_limited') {
+  // Do not let an older rate-limited PR block a later skipped/missing head.
+  const next = needy.find((r) => r.contract.state !== 'rate_limited');
+  if (!next) {
     console.log(
-      `coderabbit-quota-queue: #${next.number} is rate-limited — wait for vendor window; no comment`,
+      `coderabbit-quota-queue: only rate-limited heads remain (#${needy.map((r) => r.number).join(',')}) — wait for vendor window; no comment`,
     );
     process.exit(2);
   }
