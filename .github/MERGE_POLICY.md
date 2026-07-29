@@ -42,6 +42,7 @@ npm run repo-merge-settings:apply
 Required checks on `main` (squash merge blocked until green):
 
 - `validate` — authority docs and PR-gate tooling
+- `local-llm-review` — local qwen2.5-coder:7b found no blocker or major defect
 - `bot-presence-gate` — `sourcery|codex|cursor,coderabbit` (peer OR-group **and** mandatory CodeRabbit) posted since wait anchor + quiet window
 - `bot-feedback-gate` — review threads resolved
 

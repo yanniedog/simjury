@@ -5,9 +5,9 @@
  * Usage: npm run branch-protection:apply [-- --branch main] [-- --dry-run]
  */
 import { spawnSync } from 'node:child_process';
-import { PR_CI_CHECK_NAME, BOT_GATE_CHECK_NAMES } from './lib/pr-gates-lib.mjs';
+import { MERGE_REQUIRED_CHECK_NAMES } from './lib/pr-gates-lib.mjs';
 
-const REQUIRED_CHECKS = [PR_CI_CHECK_NAME, ...BOT_GATE_CHECK_NAMES];
+const REQUIRED_CHECKS = MERGE_REQUIRED_CHECK_NAMES;
 const GH_TIMEOUT_MS = 120_000;
 
 function parseArgs(argv) {

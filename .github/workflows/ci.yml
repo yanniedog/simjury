@@ -57,3 +57,4 @@ jobs:
           npm run pr:arm-and-park:verify
           npm run pr:coderabbit-review-recovery:verify
           npm run pr:coderabbit-rate-limit-retry:verify
+          npm run github:bot-gates:operator
