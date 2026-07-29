@@ -55,3 +55,4 @@ jobs:
           npm run pr:gate-exempt-policy:verify
           npm run pr:bot-wait-or-groups:verify
           npm run pr:arm-and-park:verify
+          npm run pr:coderabbit-review-recovery:verify
