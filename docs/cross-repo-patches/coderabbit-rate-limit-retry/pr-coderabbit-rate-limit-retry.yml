@@ -50,9 +50,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 150
     steps:
+      # Checkout so post-sleep `gh pr …` can resolve the repo (no bare-git failure).
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github
+          sparse-checkout-cone-mode: false
       - name: Wait for CodeRabbit quota then re-request review
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
+          GH_REPO: ${{ github.repository }}
           EVENT_NAME: ${{ github.event_name }}
           INPUT_PR: ${{ inputs.pr_number }}
           ISSUE_PR: ${{ github.event.issue.number }}
@@ -82,7 +89,7 @@ jobs:
             exit 0
           fi
 
-          TITLE="$(gh pr view "$PR" --json title -q .title 2>/dev/null || true)"
+          TITLE="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR}" --jq .title)"
           case "$TITLE" in
             chore:*|chore\(*|WIP*|wip*|"do not review"*)
               echo "PR #$PR title looks chore/WIP ($TITLE); skip"
@@ -224,5 +231,6 @@ jobs:
           fi
 
           BODY_OUT="${RETRY_MARKER}"$'\n'"@coderabbitai review"
-          gh pr comment "$PR" --body "$BODY_OUT"
+          # -R / GH_REPO: never require a git remote after the long sleep.
+          gh -R "$GITHUB_REPOSITORY" pr comment "$PR" --body "$BODY_OUT"
           echo "Posted @coderabbitai review on PR #$PR"
