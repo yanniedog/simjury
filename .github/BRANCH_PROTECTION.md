@@ -22,10 +22,11 @@ Configure in GitHub **Settings → Rules → Rulesets** (preferred) or **Branche
 | Workflow / job | Check name | Purpose |
 |----------------|------------|---------|
 | `ci` | **validate** | Authority docs and PR-gate tooling |
-| `pr-bot-presence-gate` | **bot-presence-gate** | Required review bot (`sourcery\|codex\|cursor`) posted since anchor |
+| `pr-bot-presence-gate` | **bot-presence-gate** | Peer bot (`sourcery\|codex\|cursor`) **and** mandatory CodeRabbit since anchor + quiet window |
 | `pr-bot-feedback-check` | **bot-feedback-gate** | Review threads resolved |
+| `pr-bot-close-guard` | (side-effect) | Reopens PRs closed with outstanding bot obligations |
 
-All three must pass. **Do not merge until `bot-presence-gate` and `bot-feedback-gate` are green.**
+All three required checks must pass. **Do not squash-merge until `bot-presence-gate` and `bot-feedback-gate` are green.**
 
 ## Operator setup (one-time)
 

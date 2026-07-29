@@ -352,16 +352,22 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
     }
   }
 
+  // Merge protection: always require the quiet window so peer bots (incl. CodeRabbit)
+  // get a chance to finish posting before presence goes green. CI retries cover the wait.
+  const enforceQuiet = process.env.BOT_WAIT_SKIP_QUIET !== '1';
   if (
     checksReady &&
     (minElapsed || singleShot) &&
     allRequiredPosted &&
-    (quiet || singleShot)
+    (quiet || (!enforceQuiet && singleShot))
   ) {
     const suffix = noiseEventCount > 0
       ? ` Ignored ${noiseEventCount} noise event(s) — quota / trivial replies.`
       : '';
-    const quietNote = singleShot && !quiet ? ' (single-shot; quiet window skipped)' : `; ${QUIET_WINDOW_SEC}s quiet`;
+    const quietNote =
+      !quiet && !enforceQuiet && singleShot
+        ? ' (single-shot; quiet window skipped)'
+        : `; ${QUIET_WINDOW_SEC}s quiet`;
     return {
       status: 'ready',
       message: `Bot wait satisfied (required bots posted since anchor${quietNote}). Clear to sweep threads.${suffix}`,
@@ -458,7 +464,7 @@ Options:
   --watch, -w           Poll every ${POLL_INTERVAL_SEC}s until ready or cap
   --bot-tag             Reset wait anchor to now (after @mentioning bots)
   --since <iso>         Anchor wait window to timestamp (ISO 8601)
-  --require-bots <list> Comma-separated slots; use | for OR (default: sourcery|codex|cursor|coderabbit)
+  --require-bots <list> Comma-separated slots; use | for OR (default: sourcery|codex|cursor,coderabbit)
   --help, -h            Show this help
 
 Exit codes: 0 ready | 2 still waiting | 1 error or required bots missing at cap (DO NOT MERGE)
@@ -467,6 +473,7 @@ Env: BOT_WAIT_POLL_SEC, BOT_WAIT_QUIET_SEC, BOT_WAIT_MIN_SEC, BOT_WAIT_MAX_MIN,
      SIMJURY_BOT_WAIT_REQUIRED (or JCS2_/AR_/BOT_WAIT_REQUIRED) — slots with optional | OR-groups
      SIMJURY_BOT_WAIT_STATE_DIR (or JCS2_/AR_) — per-PR anchor JSON (default: <repo>/.simjury-bot-wait)
      BOT_WAIT_IGNORE_CHECK_NAMES — comma-separated gh pr checks names to ignore (CI self-gate)
+     BOT_WAIT_SKIP_QUIET=1 — allow single-shot to skip quiet window (default: quiet enforced)
 
 Required bots: ${formatRequiredKeys(requiredKeys)}
 `);

@@ -32,19 +32,22 @@ function printPolicy() {
   console.log(`
 === Bot review policy (repo code — NOT in GitHub ruleset) ===
 
-Required on merge (human work PRs):
+Required on merge (human work PRs) — squash blocked until green:
   - validate                authority docs and PR-gate tooling
-  - bot-presence-gate       waits for sourcery|codex|cursor|coderabbit (OR-group) on human PRs
+  - bot-presence-gate       sourcery|codex|cursor,coderabbit (peer OR + mandatory CodeRabbit)
   - bot-feedback-gate       review thread resolution on human PRs
+
+Close protection:
+  - pr-bot-close-guard      reopens unmerged PRs closed with outstanding bot obligations
 
 Optional (not in DEFAULT_REQUIRED_KEYS):
   - gemini-code-assist    consumer reviews are sunset — noise only
   - claude[bot]           only when anthropics/claude-code-action workflow is installed
 
-CodeRabbit (in OR-group when installed):
+CodeRabbit (mandatory presence slot):
   - Install app: https://github.com/apps/coderabbitai/installations/new (All repositories)
   - Repo config: .coderabbit.yaml — see docs/CODERABBIT.md
-  - Manual trigger: comment @coderabbitai review on the PR
+  - Auto/manual trigger: pr-request-bot-reviews or @coderabbitai review on the PR
 
 Skipped automatically (scripts/lib/pr-gate-exempt.mjs):
   - PR author is a GitHub bot (login ends with [bot])

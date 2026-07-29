@@ -80,9 +80,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          # OR-group: any one of sourcery / Codex / Cursor Automation / CodeRabbit.
-          # Sourcery skips some PRs; Gemini consumer reviews are sunset.
-          SIMJURY_BOT_WAIT_REQUIRED: sourcery|codex|cursor|coderabbit
+          # Merge protection: CodeRabbit is mandatory; plus one peer from the OR-group.
+          # Sourcery may skip docs/setup PRs — peer OR covers Codex/Cursor. Gemini is sunset.
+          SIMJURY_BOT_WAIT_REQUIRED: sourcery|codex|cursor,coderabbit
           BOT_WAIT_IGNORE_CHECK_NAMES: bot-presence-gate,bot-feedback-gate,pr-bot-presence-gate,pr-bot-feedback-check
           BOT_WAIT_MAX_MIN: "240"
         run: |

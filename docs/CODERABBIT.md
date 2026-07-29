@@ -1,8 +1,8 @@
 # CodeRabbit setup (SimJury)
 
 Flat-rate PR reviews via the [CodeRabbit GitHub App](https://github.com/apps/coderabbitai).
-Repo config: [`.coderabbit.yaml`](../.coderabbit.yaml). Bot presence counts
-`coderabbit` in the default OR-group (`sourcery|codex|cursor|coderabbit`).
+Repo config: [`.coderabbit.yaml`](../.coderabbit.yaml). Bot presence **requires**
+`coderabbit` as a hard merge-protection slot (`sourcery|codex|cursor,coderabbit`).
 
 ## Finish GitHub App install (required once)
 
@@ -34,7 +34,9 @@ Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.
 |-------|---------|
 | `.coderabbit.yaml` | **Quiet** profile (high-severity only), **no walkthrough/summary**, draft PRs on, incremental review, path filters + SimJury path instructions |
 | `scripts/lib/bot-wait-config.mjs` | `coderabbit` alias + default OR-group |
-| `bot-presence-gate` | Env `SIMJURY_BOT_WAIT_REQUIRED=sourcery\|codex\|cursor\|coderabbit` |
+| `bot-presence-gate` | Env `SIMJURY_BOT_WAIT_REQUIRED=sourcery\|codex\|cursor,coderabbit` (CodeRabbit mandatory) |
+| `pr-request-bot-reviews` | Posts `@coderabbitai review` when CR has not appeared |
+| `pr-bot-close-guard` | Reopens PRs closed with outstanding CR/peer/thread obligations |
 | `pr-coderabbit-rate-limit-retry` | When CR posts “Review limit reached”, wait then `@coderabbitai review` |
 
 Chore / WIP titles are skipped by CodeRabbit (`ignore_title_keywords`) and are still
@@ -73,8 +75,9 @@ npm run pr:coderabbit-rate-limit-retry:verify
 
 ## Other active repos
 
-Copy `.coderabbit.yaml` (trim path_instructions) and add `coderabbit` to each
-repo’s `*_BOT_WAIT_REQUIRED` OR-group. See [`CROSS_REPO_BOT_MATRIX.md`](CROSS_REPO_BOT_MATRIX.md).
+Copy `.coderabbit.yaml` (trim path_instructions) and set each repo’s
+`*_BOT_WAIT_REQUIRED` to include a **mandatory** `coderabbit` slot
+(e.g. `sourcery|codex|cursor,coderabbit`). See [`CROSS_REPO_BOT_MATRIX.md`](CROSS_REPO_BOT_MATRIX.md).
 With **All repositories** on the GitHub App, new repos get reviews without
 re-installing the app; add a local `.coderabbit.yaml` when you want repo-specific rules.
 

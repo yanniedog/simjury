@@ -6,10 +6,14 @@
  * Required list supports OR-groups: "sourcery|cursor|codex" means any one of those
  * keys satisfies that slot. Commas separate ALL-of slots.
  *
- * Why OR-groups: Sourcery skips some PRs (docs/setup); Gemini Code Assist consumer
- * reviews are sunset; CodeRabbit / Cursor Automation often post the real review.
- * Requiring a single flaky bot hard-blocks merge. See docs/CROSS_REPO_BOT_MATRIX.md.
+ * Merge protection default: CodeRabbit is a hard ALL-of slot (never OR-skippable).
+ * A second OR-slot (`sourcery|codex|cursor`) still requires one peer review bot so
+ * merge does not race ahead of the rest of the review fleet. See
+ * docs/CROSS_REPO_BOT_MATRIX.md.
  */
+
+/** Canonical env/CLI string for the default required slots. */
+export const DEFAULT_REQUIRED_SPEC = 'sourcery|codex|cursor,coderabbit';
 export const BOT_ALIASES = {
   gemini: [
     'gemini-code-assist',
@@ -27,10 +31,12 @@ export const BOT_ALIASES = {
 };
 
 /**
- * Default: one review-presence slot. Any of sourcery, Codex, Cursor Automation,
- * or CodeRabbit satisfies. Gemini is optional (consumer Code Assist is sunset).
+ * Default merge-protection slots:
+ *   1. sourcery|codex|cursor — at least one peer review bot
+ *   2. coderabbit — mandatory (CodeRabbit cannot be skipped via OR)
+ * Gemini remains optional (consumer Code Assist is sunset).
  */
-export const DEFAULT_REQUIRED_KEYS = ['sourcery|codex|cursor|coderabbit'];
+export const DEFAULT_REQUIRED_KEYS = ['sourcery|codex|cursor', 'coderabbit'];
 
 export const OPTIONAL_BOT_LOGINS = [
   'claude[bot]',

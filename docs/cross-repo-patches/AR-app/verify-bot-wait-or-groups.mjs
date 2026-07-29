@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Unit tests for OR-group required bots + Gemini sunset noise.
+ * Unit tests for required-bot slots (peer OR-group + mandatory CodeRabbit) + Gemini noise.
  */
 import {
   alternativesForSlot,
@@ -9,8 +9,8 @@ import {
   missingRequiredKeys,
   parseRequiredKeys,
   requiredBotsSatisfied,
-} from './lib/bot-wait-config.mjs';
-import { isBotNoise } from './lib/bot-noise.mjs';
+} from './bot-wait-config.mjs';
+import { isBotNoise } from './bot-noise.mjs';
 
 let failed = 0;
 function assert(cond, msg) {
@@ -22,7 +22,10 @@ function assert(cond, msg) {
   }
 }
 
-assert(JSON.stringify(parseRequiredKeys('')) === JSON.stringify(['sourcery|codex|cursor|coderabbit']), 'default OR-group');
+assert(
+  JSON.stringify(parseRequiredKeys('')) === JSON.stringify(['sourcery|codex|cursor', 'coderabbit']),
+  'default = peer OR-group + mandatory coderabbit',
+);
 assert(JSON.stringify(alternativesForSlot('sourcery|cursor|codex')) === JSON.stringify(['sourcery', 'cursor', 'codex']), 'alts');
 assert(loginMatchesRequiredKey('cursor[bot]', 'cursor'), 'cursor[bot] matches cursor');
 assert(loginMatchesRequiredKey('cursor', 'sourcery|cursor|codex'), 'cursor satisfies OR-group');
@@ -38,9 +41,25 @@ assert(
   missingRequiredKeys(['sourcery'], ['cursor[bot]']).length === 1,
   'cursor alone does not satisfy sourcery-only',
 );
-assert(requiredBotsSatisfied(['sourcery|codex|cursor|coderabbit'], ['chatgpt-codex-connector[bot]']), 'codex satisfies default');
-assert(requiredBotsSatisfied(['sourcery|codex|cursor|coderabbit'], ['coderabbitai[bot]']), 'coderabbit satisfies default');
-assert(!requiredBotsSatisfied(['sourcery|codex|cursor|coderabbit'], ['gemini-code-assist[bot]']), 'gemini alone insufficient');
+
+const defaults = parseRequiredKeys('');
+assert(
+  !requiredBotsSatisfied(defaults, ['chatgpt-codex-connector[bot]']),
+  'peer alone insufficient without CodeRabbit',
+);
+assert(
+  !requiredBotsSatisfied(defaults, ['coderabbitai[bot]']),
+  'CodeRabbit alone insufficient without peer',
+);
+assert(
+  requiredBotsSatisfied(defaults, ['chatgpt-codex-connector[bot]', 'coderabbitai[bot]']),
+  'codex + coderabbit satisfies default',
+);
+assert(
+  requiredBotsSatisfied(defaults, ['cursor[bot]', 'coderabbitai[bot]']),
+  'cursor + coderabbit satisfies default',
+);
+assert(!requiredBotsSatisfied(defaults, ['gemini-code-assist[bot]']), 'gemini alone insufficient');
 
 const formatted = formatRequiredKeys(['sourcery|cursor']);
 assert(/OR/.test(formatted) && /sourcery/.test(formatted) && /cursor/.test(formatted), 'format shows OR');
