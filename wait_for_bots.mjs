@@ -119,12 +119,15 @@ function resolveRepo() {
 
 function resolvePr(prArg, branch) {
   if (prArg) {
-    const r = gh(['pr', 'view', String(prArg), '--json', 'number,createdAt,headRefName'], { json: true });
+    const r = gh(
+      ['pr', 'view', String(prArg), '--json', 'number,createdAt,headRefName,state,mergedAt'],
+      { json: true },
+    );
     if (!r.ok) return { error: r.error };
     return { pr: r.data };
   }
   if (!branch) return { pr: null };
-  const r = gh(['pr', 'list', '--state', 'open', '--head', branch, '--json', 'number,createdAt,headRefName'], {
+  const r = gh(['pr', 'list', '--state', 'open', '--head', branch, '--json', 'number,createdAt,headRefName,state,mergedAt'], {
     json: true,
   });
   if (!r.ok) return { error: r.error };
@@ -502,6 +505,12 @@ async function main() {
   }
 
   const prNumber = resolved.pr.number;
+  // Post-merge workflow_run on main still resolves the squash commit → PR number.
+  // Presence is moot after merge; do not paint a sticky red check for quiet/CI wait.
+  if (resolved.pr.mergedAt || resolved.pr.state === 'MERGED') {
+    console.log(`>>> Bot wait skipped for PR #${prNumber} (already merged).`);
+    process.exit(0);
+  }
   const repo = resolveRepo();
   if (!repo) {
     console.error('>>> BOT WAIT ERROR: Could not resolve repository (gh repo view).');
