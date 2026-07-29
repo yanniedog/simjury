@@ -70,6 +70,39 @@ export function isProperCoderabbitReviewBody(body) {
 }
 
 /**
+ * Presence / quiet-window classifier: CodeRabbit only counts when the event is a
+ * *proper* review (or APPROVED / CHANGES_REQUESTED). Rate-limits, command acks,
+ * and long walkthrough/summarize text without review signals stay noise so merge
+ * protection does not clear early.
+ *
+ * @param {string|null|undefined} login
+ * @param {string|null|undefined} body
+ * @param {{ state?: string|null, forceSubstantive?: boolean, kind?: 'comment'|'review'|'inline' }} [opts]
+ */
+export function isCoderabbitPresenceNoise(login, body, opts = {}) {
+  const { state = null, forceSubstantive = false, kind = 'comment' } = opts;
+  if (!isCoderabbitLogin(login)) {
+    return forceSubstantive ? false : isBotNoise(body);
+  }
+  if (forceSubstantive) return false;
+  if (state === 'APPROVED' || state === 'CHANGES_REQUESTED') return false;
+  if (isProperCoderabbitReviewBody(body)) return false;
+  // Inline thread findings often omit the summary "Actionable comments" banner.
+  if (kind === 'inline') {
+    const text = String(body || '').trim();
+    if (
+      text.length >= 40 &&
+      !isRateLimitBody(text) &&
+      !isCoderabbitCommandAck(text) &&
+      !isBotNoise(text)
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
  * @param {{ author?: { login?: string }, user?: { login?: string }, body?: string, state?: string, submittedAt?: string, createdAt?: string, created_at?: string, submitted_at?: string }[]} reviews
  * @param {{ author?: { login?: string }, user?: { login?: string }, body?: string, createdAt?: string, created_at?: string }[]} comments
  * @param {{ user?: { login?: string }, author?: { login?: string }, body?: string, createdAt?: string, created_at?: string }[]} [inlineComments]

@@ -91,12 +91,10 @@ export function coderabbitReviewedAfter(reviews, comments, afterIso) {
     if (/auto-generated reply by CodeRabbit/i.test(body) && /Action performed|I(?:'|’)ll review/i.test(body)) {
       continue;
     }
-    // Real review signal
-    if (/Actionable comments posted|Prompt for AI Agents|cr-comment:v1:/i.test(body)) return true;
+    // Real review only — do not treat long walkthrough / tip text as a review.
     if (r.state === 'APPROVED' || r.state === 'CHANGES_REQUESTED') return true;
-    if ((r.state === 'COMMENTED' || r.state === 'APPROVED' || r.state === 'CHANGES_REQUESTED') && body.trim().length >= 80) {
-      if (!isRateLimitBody(body)) return true;
-    }
+    if (/Actionable comments posted|Prompt for AI Agents|cr-comment:v1:/i.test(body)) return true;
+    if (/_🟠|_🔴|_🟡/u.test(body) && body.trim().length >= 60) return true;
   }
 
   for (const c of comments || []) {
@@ -107,7 +105,11 @@ export function coderabbitReviewedAfter(reviews, comments, afterIso) {
     const body = String(c.body || '');
     if (isRateLimitBody(body)) continue;
     if (/review command invocation/i.test(body)) continue;
+    if (/auto-generated reply by CodeRabbit/i.test(body) && /Action performed|I(?:'|’)ll review/i.test(body)) {
+      continue;
+    }
     if (/Actionable comments posted|Prompt for AI Agents|cr-comment:v1:/i.test(body)) return true;
+    if (/_🟠|_🔴|_🟡/u.test(body) && body.trim().length >= 60) return true;
   }
   return false;
 }

@@ -17,7 +17,7 @@ import {
 } from './scripts/lib/bot-wait-config.mjs';
 import { readBotWaitStateFile, writeBotWaitStateFile } from './scripts/lib/bot-wait-state.mjs';
 import { isGithubRateLimitError, repoSlugFromEnv } from './scripts/lib/gh-pr-review-threads.mjs';
-import { isBotNoise } from './scripts/lib/bot-noise.mjs';
+import { isCoderabbitPresenceNoise } from './scripts/lib/coderabbit-review-status.mjs';
 import { gateExemptReason } from './scripts/lib/pr-gate-exempt.mjs';
 
 const POLL_INTERVAL_SEC = Number(process.env.BOT_WAIT_POLL_SEC || 45);
@@ -30,7 +30,7 @@ const MAX_WAIT_MIN = Number(process.env.BOT_WAIT_MAX_MIN || 28);
 // otherwise a chatty bot looping on "out of credits" notices holds the cap
 // timeout open until merge gets blocked.
 const COMMENTS_QUERY =
-  'query($owner:String!,$name:String!,$num:Int!){repository(owner:$owner,name:$name){pullRequest(number:$num){reactions(last:100){nodes{user{login}content createdAt}}comments(last:100){nodes{author{login}createdAt body reactions(last:100){nodes{user{login}content createdAt}}}}reviews(last:30){nodes{author{login}submittedAt body}}reviewThreads(last:100){nodes{comments(last:10){nodes{author{login}createdAt body}}}}}}}';
+  'query($owner:String!,$name:String!,$num:Int!){repository(owner:$owner,name:$name){pullRequest(number:$num){reactions(last:100){nodes{user{login}content createdAt}}comments(last:100){nodes{author{login}createdAt body reactions(last:100){nodes{user{login}content createdAt}}}}reviews(last:30){nodes{author{login}submittedAt body state}}reviewThreads(last:100){nodes{comments(last:10){nodes{author{login}createdAt body}}}}}}}';
 
 function sh(cmd) {
   try {
@@ -154,17 +154,18 @@ function fetchBotActivity(owner, name, prNumber) {
   if (!pr) return { error: 'GraphQL: pull request not found', events: [] };
 
   const events = [];
-  const pushEvent = (login, at, body, { forceSubstantive = false } = {}) => {
+  const pushEvent = (login, at, body, { forceSubstantive = false, state = null, kind = 'comment' } = {}) => {
     if (!login || !at) return;
     events.push({
       login,
       at,
-      // Thumbs-up = explicit no-findings signal; never treat as quota/trivial noise.
-      noise: forceSubstantive ? false : isBotNoise(body),
+      // Thumbs-up = explicit no-findings; CodeRabbit needs a *proper* review body
+      // (rate-limit / command-ack / walkthrough-only do not clear presence).
+      noise: isCoderabbitPresenceNoise(login, body, { forceSubstantive, state, kind }),
     });
   };
   for (const c of pr.comments?.nodes || []) {
-    pushEvent(c.author?.login, c.createdAt, c.body);
+    pushEvent(c.author?.login, c.createdAt, c.body, { kind: 'comment' });
     for (const reaction of c.reactions?.nodes || []) {
       if (reaction.content === 'THUMBS_UP') {
         pushEvent(reaction.user?.login, reaction.createdAt, 'thumbs-up', { forceSubstantive: true });
@@ -172,11 +173,11 @@ function fetchBotActivity(owner, name, prNumber) {
     }
   }
   for (const rev of pr.reviews?.nodes || []) {
-    pushEvent(rev.author?.login, rev.submittedAt, rev.body);
+    pushEvent(rev.author?.login, rev.submittedAt, rev.body, { state: rev.state, kind: 'review' });
   }
   for (const t of pr.reviewThreads?.nodes || []) {
     for (const c of t.comments?.nodes || []) {
-      pushEvent(c.author?.login, c.createdAt, c.body);
+      pushEvent(c.author?.login, c.createdAt, c.body, { kind: 'inline' });
     }
   }
   for (const reaction of pr.reactions?.nodes || []) {
@@ -408,7 +409,7 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
     waitParts.push(`waiting for required bot(s): ${missing.join(', ')} (${formatRequiredKeys(missing)})`);
     if (crWaiting && noiseEventCount > 0) {
       waitParts.push(
-        'CodeRabbit quota/noise ignored — pr-coderabbit-rate-limit-retry will @coderabbitai review within ≤120m',
+        'CodeRabbit quota/noise ignored — pr-coderabbit-ensure-review (*/15) posts @coderabbitai review when due',
       );
     }
   }

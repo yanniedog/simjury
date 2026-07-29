@@ -13,6 +13,10 @@ import {
   requiredBotsSatisfied,
 } from './lib/bot-wait-config.mjs';
 import { isBotNoise } from './lib/bot-noise.mjs';
+import {
+  isCoderabbitPresenceNoise,
+  isProperCoderabbitReviewBody,
+} from './lib/coderabbit-review-status.mjs';
 
 let failed = 0;
 function assert(cond, msg) {
@@ -87,6 +91,60 @@ assert(
 assert(isBotNoise('Review limit reached. Next review available in 45 minutes.'), 'CR rate-limit is noise');
 assert(isBotNoise('You are rate limited by coderabbit.ai'), 'CR rate-limit html marker is noise');
 assert(!isBotNoise('High: null deref in parser when list is empty — please add a guard.'), 'real finding not noise');
+
+assert(
+  isCoderabbitPresenceNoise(
+    'coderabbitai[bot]',
+    '<!-- rate limited by coderabbit.ai -->\nReview limit reached. Next review available in 20 minutes.',
+  ),
+  'CR rate-limit is presence noise',
+);
+assert(
+  isCoderabbitPresenceNoise(
+    'coderabbitai',
+    '<!-- review command invocation -->\n<details>\n<summary>Auto reply</summary>\n\nAction performed\n\n</details>\nI\'ll review the changes.',
+  ),
+  'CR command ack is presence noise',
+);
+assert(
+  isCoderabbitPresenceNoise(
+    'coderabbitai[bot]',
+    '## Walkthrough\n\nThis PR rewires the scheduler and updates docs across many files without posting findings yet.\n'.repeat(3),
+  ),
+  'CR walkthrough-only is presence noise (not a proper review)',
+);
+assert(
+  !isCoderabbitPresenceNoise(
+    'coderabbitai[bot]',
+    '## Review\n\n**Actionable comments posted: 2**\n\nPrompt for AI Agents\n\nFix the injection in the workflow inputs.',
+  ),
+  'CR actionable review clears presence noise',
+);
+assert(
+  !isCoderabbitPresenceNoise('coderabbitai[bot]', '', { state: 'APPROVED' }),
+  'CR APPROVED clears presence even with empty body',
+);
+assert(
+  !isCoderabbitPresenceNoise(
+    'coderabbitai[bot]',
+    '_🔴 Critical_\n\n**Command injection in workflow inputs.** Escape `${{ inputs.pr_number }}` before shell use.',
+    { kind: 'inline' },
+  ),
+  'CR inline finding clears presence',
+);
+assert(
+  isProperCoderabbitReviewBody(
+    '**Actionable comments posted: 0**\n\nNo issues found in the ensure-review scheduler.',
+  ),
+  'zero actionable still counts as proper review',
+);
+assert(
+  !isCoderabbitPresenceNoise(
+    'sourcery-ai[bot]',
+    'High: null deref in parser when list is empty — please add a guard.',
+  ),
+  'non-CR bots still use ordinary noise rules',
+);
 
 if (failed) {
   console.error(`\n${failed} assertion(s) failed`);

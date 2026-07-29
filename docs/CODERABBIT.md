@@ -41,7 +41,8 @@ Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.
 | `pr-coderabbit-review-recovery` | Alias of ensure-review (hourly schedule kept for bookmarks) |
 | `pr-bot-close-guard` | Reopens PRs closed with outstanding CR/peer/thread obligations |
 
-Rate-limit notices and command acks do **not** satisfy `bot-presence-gate` or ensure-review.
+Rate-limit notices, command acks, and walkthrough/summarize text without review
+signals do **not** satisfy `bot-presence-gate` or ensure-review.
 A proper review means Actionable comments / inline findings / approve-changes — not “I’ll review”.
 
 Chore / WIP titles are skipped by CodeRabbit (`ignore_title_keywords`) and are still

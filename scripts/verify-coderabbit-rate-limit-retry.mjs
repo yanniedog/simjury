@@ -80,6 +80,24 @@ assert(
 );
 assert(
   !coderabbitReviewedAfter(
+    [
+      {
+        author: { login: 'coderabbitai[bot]' },
+        submittedAt: '2026-07-28T19:00:00Z',
+        state: 'COMMENTED',
+        body:
+          '## Walkthrough\n\nLong summarize text without actionable findings should not clear the retry.\n'.repeat(
+            4,
+          ),
+      },
+    ],
+    [],
+    '2026-07-28T18:50:00Z',
+  ),
+  'long walkthrough-only after limit does not count',
+);
+assert(
+  !coderabbitReviewedAfter(
     [{ author: { login: 'coderabbitai[bot]' }, submittedAt: '2026-07-28T18:40:00Z', state: 'COMMENTED', body: 'bug' }],
     [],
     '2026-07-28T18:50:00Z',
