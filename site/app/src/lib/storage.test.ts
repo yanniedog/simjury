@@ -70,6 +70,41 @@ describe('storage', () => {
     })
   })
 
+  it('round-trips an optional verdict reflection', () => {
+    vi.stubGlobal('localStorage', memoryStorage())
+    savePlay({
+      day: 5,
+      caseId: 'd-0001',
+      convictions: [],
+      verdict: 'Guilty',
+      reflection: { counterargumentBeatId: 'b4' },
+    })
+    expect(loadPlay(5)?.reflection).toEqual({ counterargumentBeatId: 'b4' })
+    savePlay({
+      day: 6,
+      caseId: 'd-0002',
+      convictions: [],
+      verdict: 'Not Guilty',
+      reflection: {},
+    })
+    expect(loadPlay(6)?.reflection).toEqual({})
+  })
+
+  it('still loads older plays without a reflection field', () => {
+    const store = memoryStorage()
+    store.setItem(
+      KEY,
+      JSON.stringify({
+        day: 5,
+        caseId: 'd-0001',
+        convictions: [],
+        verdict: 'Guilty',
+      }),
+    )
+    vi.stubGlobal('localStorage', store)
+    expect(loadPlay(5)?.reflection).toBeUndefined()
+  })
+
   it('returns null when there is no play for that day', () => {
     vi.stubGlobal('localStorage', memoryStorage())
     savePlay({ day: 5, caseId: 'd-0001', convictions: [], verdict: 'Guilty' })

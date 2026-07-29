@@ -72,6 +72,23 @@ describe('JuryRoomView', () => {
     expect(markup).not.toContain('>Pause<')
   })
 
+  it('keeps sealing available without forcing a reflection choice in the initial room', () => {
+    const trial = makeDocketCase()
+    const markup = renderToStaticMarkup(
+      <JuryRoomView
+        trial={trial}
+        narration={false}
+        playbackRate={1}
+        notes={[]}
+        onSeal={() => undefined}
+        onDone={() => undefined}
+      />,
+    )
+
+    expect(markup).not.toContain('Optional · strongest challenge')
+    expect(markup).not.toContain(trial.reference_verdict)
+  })
+
   it('keeps speech playback controls when narration is on', () => {
     const trial = makeDocketCase()
     const markup = renderToStaticMarkup(

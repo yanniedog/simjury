@@ -17,6 +17,16 @@ const storedPlaySchema = z.object({
   verdict: z.enum(['Guilty', 'Not Guilty', 'Undecided']),
   swayedByTraps: z.number().optional(),
   totalTraps: z.number().optional(),
+  /**
+   * Optional pre-seal metacognition. Present when the player engaged the
+   * reflection prompt; `counterargumentBeatId` is omitted when they chose
+   * “no single point.”
+   */
+  reflection: z
+    .object({
+      counterargumentBeatId: z.string().min(1).optional(),
+    })
+    .optional(),
   /** The jury room's own result (docket loop); absent on v1 plays. */
   room: z
     .object({
@@ -30,6 +40,7 @@ const storedPlaySchema = z.object({
 })
 
 export type StoredPlay = z.infer<typeof storedPlaySchema>
+export type VerdictReflection = NonNullable<StoredPlay['reflection']>
 
 const sittingNoteSchema = z.object({
   ownerId: z.string().min(1),
