@@ -409,7 +409,7 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
     waitParts.push(`waiting for required bot(s): ${missing.join(', ')} (${formatRequiredKeys(missing)})`);
     if (crWaiting && noiseEventCount > 0) {
       waitParts.push(
-        'CodeRabbit quota/noise ignored — pr-coderabbit-ensure-review (*/15) posts @coderabbitai review when due',
+        'CodeRabbit quota/noise ignored — pr-coderabbit-ensure-review (*/15) posts @coderabbitai full review when due',
       );
     }
   }

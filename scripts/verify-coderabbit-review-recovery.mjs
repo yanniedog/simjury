@@ -31,6 +31,12 @@ assert(isFailedCoderabbitBody('Review limit reached'), 'rate-limit is failed-ish
 assert(!isFailedCoderabbitBody('High: null deref in parser'), 'real finding not failed');
 
 assert(isCoderabbitCommandAck('<!-- CodeRabbit review command invocation: abc -->\nAction performed'), 'cmd ack');
+assert(
+  isCoderabbitCommandAck(
+    '<!-- auto-generated reply by CodeRabbit -->\n<details><summary>Action performed</summary>\n\nReview finished.\n\n> Note: CodeRabbit is an incremental review system and does not re-review already reviewed commits.\n',
+  ),
+  'incremental already-reviewed noop is ack',
+);
 assert(!isProperCoderabbitReviewBody('<!-- CodeRabbit review command invocation: abc -->\nAction performed'), 'ack not proper');
 assert(
   isProperCoderabbitReviewBody('**Actionable comments posted: 2**\n\n<details>\n<summary>Prompt for AI Agents</summary>'),
@@ -87,10 +93,17 @@ assert(!needsOpenEnsure(proper), 'proper open skips ensure');
 const comments = [
   {
     createdAt: '2026-07-29T03:00:00Z',
-    body: `${CR_RECOVERY_MARKER}\n@coderabbitai review`,
+    body: `${CR_RECOVERY_MARKER}\n@coderabbitai full review`,
   },
 ];
 assert(latestRecoveryTriggerAt(comments) === '2026-07-29T03:00:00Z', 'latest recovery trigger');
+assert(
+  latestRecoveryTriggerAt([
+    { createdAt: '2026-07-29T02:00:00Z', body: `${CR_RECOVERY_MARKER}\n@coderabbitai review` },
+    { createdAt: '2026-07-29T03:00:00Z', body: `${CR_RECOVERY_MARKER}\n@coderabbitai full review` },
+  ]) === '2026-07-29T03:00:00Z',
+  'legacy incremental trigger still detected; latest wins',
+);
 assert(!canPostRecoveryTrigger('2026-07-29T03:00:00Z', Date.parse('2026-07-29T03:30:00Z')), 'within hour blocked');
 assert(canPostRecoveryTrigger('2026-07-29T03:00:00Z', Date.parse('2026-07-29T04:00:00Z')), 'after hour allowed');
 

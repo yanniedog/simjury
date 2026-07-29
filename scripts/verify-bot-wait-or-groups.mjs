@@ -102,9 +102,9 @@ assert(
 assert(
   isCoderabbitPresenceNoise(
     'coderabbitai',
-    '<!-- review command invocation -->\n<details>\n<summary>Auto reply</summary>\n\nAction performed\n\n</details>\nI\'ll review the changes.',
+    '<!-- This is an auto-generated reply by CodeRabbit -->\n<details>\n<summary>Action performed</summary>\n\nReview finished.\n\n> Note: CodeRabbit is an incremental review system and does not re-review already reviewed commits.\n',
   ),
-  'CR command ack is presence noise',
+  'CR incremental already-reviewed noop is presence noise',
 );
 assert(
   isCoderabbitPresenceNoise(

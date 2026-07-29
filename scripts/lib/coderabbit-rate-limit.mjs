@@ -10,7 +10,9 @@ export const CR_RATE_LIMIT_MARKERS = [
 ];
 
 export const CR_RETRY_MARKER = '<!-- simjury-coderabbit-rate-limit-retry -->';
-export const CR_REVIEW_TRIGGER = '@coderabbitai review';
+/** Force a from-scratch review — incremental `@coderabbitai review` no-ops after rate-limit false starts. */
+export const CR_REVIEW_TRIGGER = '@coderabbitai full review';
+export const CR_REVIEW_TRIGGER_PATTERN = /@coderabbitai\s+(?:full\s+)?review\b/i;
 
 export function isCoderabbitLogin(login) {
   const l = String(login || '').toLowerCase();
@@ -88,7 +90,8 @@ export function coderabbitReviewedAfter(reviews, comments, afterIso) {
     const body = String(r.body || '');
     if (isRateLimitBody(body)) continue;
     if (/review command invocation/i.test(body)) continue;
-    if (/auto-generated reply by CodeRabbit/i.test(body) && /Action performed|I(?:'|’)ll review/i.test(body)) {
+    if (/does not re-review already reviewed commits/i.test(body)) continue;
+    if (/auto-generated reply by CodeRabbit/i.test(body) && /Action performed|I(?:'|’)ll review|Review finished/i.test(body)) {
       continue;
     }
     // Real review only — do not treat long walkthrough / tip text as a review.
@@ -105,7 +108,8 @@ export function coderabbitReviewedAfter(reviews, comments, afterIso) {
     const body = String(c.body || '');
     if (isRateLimitBody(body)) continue;
     if (/review command invocation/i.test(body)) continue;
-    if (/auto-generated reply by CodeRabbit/i.test(body) && /Action performed|I(?:'|’)ll review/i.test(body)) {
+    if (/does not re-review already reviewed commits/i.test(body)) continue;
+    if (/auto-generated reply by CodeRabbit/i.test(body) && /Action performed|I(?:'|’)ll review|Review finished/i.test(body)) {
       continue;
     }
     if (/Actionable comments posted|Prompt for AI Agents|cr-comment:v1:/i.test(body)) return true;
@@ -127,7 +131,7 @@ export function retryAlreadyArmed(comments, rateLimitCreatedAt) {
     const body = String(c.body || '');
     const t = Date.parse(c.createdAt || c.created_at || '');
     if (!Number.isFinite(t) || t <= after) continue;
-    if (body.includes(CR_RETRY_MARKER) && /@coderabbitai\s+review/i.test(body)) {
+    if (body.includes(CR_RETRY_MARKER) && CR_REVIEW_TRIGGER_PATTERN.test(body)) {
       if (!latestRetry || t > latestRetry) latestRetry = t;
     }
     const login = c.author?.login || c.user?.login;
