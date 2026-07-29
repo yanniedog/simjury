@@ -3,23 +3,22 @@
  * Post @coderabbitai review on a PR when CodeRabbit has not yet appeared.
  * Idempotent: skips gate-exempt PRs and PRs where coderabbitai already reviewed.
  *
- * Rate limits: do NOT re-request here. `pr-coderabbit-rate-limit-retry` waits up
- * to 120 minutes then posts `@coderabbitai review` with its own marker.
+ * Rate limits: do NOT re-request here. pr-coderabbit-ensure-review (every 15m) and
+ * pr-coderabbit-rate-limit-retry --if-due own posting @coderabbitai review
+ * after the quota window — no GHA sleeps.
  *
  * Usage:
  *   node scripts/request-coderabbit-review.mjs --pr 15
  *   node scripts/request-coderabbit-review.mjs --pr 15 --dry-run
  */
 import { spawnSync } from 'node:child_process';
-import { isBotNoise } from './lib/bot-noise.mjs';
 import {
   CR_RETRY_MARKER,
   CR_REVIEW_TRIGGER,
-  isRateLimitBody,
   latestRateLimitEvent,
   retryAlreadyArmed,
 } from './lib/coderabbit-rate-limit.mjs';
-import { loginMatchesRequiredKey } from './lib/bot-wait-config.mjs';
+import { classifyCoderabbitActivity } from './lib/coderabbit-review-status.mjs';
 import { gateExemptReason } from './lib/pr-gate-exempt.mjs';
 import { ghJson } from './lib/gh-pr-review-threads.mjs';
 
@@ -41,36 +40,21 @@ function parseArgs(argv) {
   return out;
 }
 
-function isCodeRabbitLogin(login) {
-  return loginMatchesRequiredKey(login, 'coderabbit');
-}
-
 function loadPrActivity(prNumber) {
   return ghJson(['pr', 'view', String(prNumber), '--json', 'comments,reviews']);
 }
 
-/** True when CodeRabbit posted a substantive (non-quota) comment or review. */
-function coderabbitSubstantiveOnPr(view) {
-  for (const c of view?.comments || []) {
-    if (!isCodeRabbitLogin(c.author?.login)) continue;
-    const body = String(c.body || '');
-    if (isRateLimitBody(body) || isBotNoise(body)) continue;
-    return true;
-  }
-  for (const r of view?.reviews || []) {
-    if (!isCodeRabbitLogin(r.author?.login)) continue;
-    const body = String(r.body || '');
-    if (isRateLimitBody(body) || isBotNoise(body)) continue;
-    return true;
-  }
-  return false;
+/** True when CodeRabbit posted a *proper* review (not rate-limit / command ack). */
+function coderabbitProperOnPr(view) {
+  const activity = classifyCoderabbitActivity(view?.reviews || [], view?.comments || [], []);
+  return Boolean(activity.hasProperReview);
 }
 
 function rateLimitOwnsRetry(view) {
   const comments = view?.comments || [];
   const latest = latestRateLimitEvent(comments);
   if (!latest) return false;
-  // Retry Action is armed, or rate-limit is the latest CR signal (Action will arm).
+  // Retry Action is armed, or rate-limit is the latest CR signal (scheduler will arm).
   if (retryAlreadyArmed(comments, latest.createdAt)) return true;
   return true;
 }
@@ -122,9 +106,9 @@ function main() {
 
   const view = loadPrActivity(prNumber);
 
-  if (coderabbitSubstantiveOnPr(view)) {
+  if (coderabbitProperOnPr(view)) {
     console.log(
-      `request-coderabbit-review: CodeRabbit substantive review already on PR #${prNumber} — skip`,
+      `request-coderabbit-review: CodeRabbit proper review already on PR #${prNumber} — skip`,
     );
     process.exit(0);
   }
@@ -132,14 +116,13 @@ function main() {
   if (rateLimitOwnsRetry(view)) {
     console.log(
       `request-coderabbit-review: CodeRabbit rate-limited on PR #${prNumber} — ` +
-        `defer to pr-coderabbit-rate-limit-retry (≤120m)`,
+        `defer to pr-coderabbit-ensure-review (*/15) / rate-limit-retry --if-due`,
     );
     process.exit(0);
   }
 
   if (humanTriggerAlreadyPosted(view)) {
     // Idempotent: do not spam duplicate @coderabbitai review on every synchronize.
-    // Rate-limit path is owned by pr-coderabbit-rate-limit-retry (≤120m).
     console.log(
       `request-coderabbit-review: prior @coderabbitai review on PR #${prNumber} still outstanding — skip`,
     );
