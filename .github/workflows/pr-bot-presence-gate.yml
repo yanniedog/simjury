@@ -39,8 +39,11 @@ jobs:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
         run: |
           set -euo pipefail
-          PR="${{ github.event.pull_request.number }}"
-          EXEMPT="$(node scripts/pr-gate-exempt-reason.mjs "$PR" || true)"
+          export PR="${{ github.event.pull_request.number }}"
+          export PR_TITLE="${{ github.event.pull_request.title }}"
+          export PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          export PR_AUTHOR_TYPE="${{ github.event.pull_request.user.type }}"
+          EXEMPT="$(node scripts/pr-gate-exempt-reason.mjs || true)"
           if [ -n "$EXEMPT" ]; then
             echo "gate_exempt=true" >> "$GITHUB_OUTPUT"
             echo "gate_exempt_reason=$EXEMPT" >> "$GITHUB_OUTPUT"
