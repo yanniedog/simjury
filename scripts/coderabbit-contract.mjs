@@ -98,9 +98,13 @@ function postReview(pr, headSha, reason, dryRun) {
   }
   // REST issue comments work with issues:write; `gh pr comment` uses GraphQL
   // addComment, which can reject an otherwise sufficient Actions token.
+  const slug = repoSlug();
+  const [owner, repoName] = slug.split('/');
+  if (!owner || !repoName) throw new Error(`invalid repository slug: ${slug}`);
+  const commentPath = `repos/${owner}/${repoName}/issues/${pr}/comments`;
   const r = spawnSync(
     'gh',
-    ['api', `repos/${repoSlug()}/issues/${pr}/comments`, '-f', `body=${body}`],
+    ['api', commentPath, '-f', `body=${body}`],
     { encoding: 'utf8' },
   );
   if (r.status !== 0) throw new Error((r.stderr || r.stdout || 'comment failed').trim());
