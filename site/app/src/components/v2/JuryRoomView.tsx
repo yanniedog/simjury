@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
 import {
   autoPlayRound,
@@ -30,6 +30,7 @@ import {
 import type { Verdict } from './DocketVerdict'
 import type { LiveJurySession } from '../../lib/liveJury'
 import { EvidenceIndex } from './EvidenceIndex'
+import type { VerdictReflection } from '../../lib/storage'
 import { LiveJuryPanel } from './LiveJuryPanel'
 import { NarratorCue } from './NarratorCue'
 import { SpeakerFlag } from './SpeakerFlag'
@@ -89,7 +90,7 @@ function RoundStepper({
     { key: 'r2', label: '2', title: 'Second point', complete: idx > 1, current: idx === 1 },
     {
       key: 'hands',
-      label: '···',
+      label: 'Â·Â·Â·',
       title: 'Private hands',
       complete: handsDone,
       current: false,
@@ -107,7 +108,7 @@ function RoundStepper({
           aria-current={step.current ? 'step' : undefined}
         >
           <span className="round-step-mark" aria-hidden="true">
-            {step.complete && !step.soft ? '✓' : step.label}
+            {step.complete && !step.soft ? 'âœ“' : step.label}
           </span>
           <span className="sr-only">{step.title}</span>
         </li>
@@ -136,7 +137,7 @@ function Bench({
       : 'border-emerald-800 bg-emerald-950/40 text-emerald-300'
   const playerMark = revealPositions && playerVerdict
     ? (playerVerdict === 'Guilty' ? 'G' : 'NG')
-    : '·'
+    : 'Â·'
   return (
     <div className="jury-table" role="list" aria-label="The twelve jury seats">
       <div role="listitem" className={`jury-seat player ${playerTone}`}>
@@ -161,12 +162,12 @@ function Bench({
                 ? `border-emerald-800 bg-emerald-950/40 text-emerald-300${isActive ? ' active' : ''}`
                 : `border-amber-700 bg-amber-950/30 text-amber-300${isActive ? ' active' : ''}`
           const mark = !revealPositions
-            ? '·'
+            ? 'Â·'
             : j.position > 0
               ? 'G'
               : j.position < 0
                 ? 'NG'
-                : '—'
+                : 'â€”'
           return (
             <div
               key={j.id}
@@ -228,7 +229,7 @@ function FeedLine({
     const note = writtenRecord(notes, e.actor, e.beatId)
     const stance =
       e.type === 'cite'
-        ? `${verb} the judge’s direction from memory.`
+        ? `${verb} the judgeâ€™s direction from memory.`
         : e.stance === 'proves'
           ? `${verb} a point from recollection.`
           : e.stance === 'probe'
@@ -246,17 +247,17 @@ function FeedLine({
         </p>
         {who === 'You' && e.detail && (
           <blockquote className="mt-2 border-l border-amber-700/60 pl-3 text-sm leading-relaxed text-neutral-200">
-            “{e.detail}”
+            â€œ{e.detail}â€
           </blockquote>
         )}
         {note ? (
           <p className="mt-2 border-l border-amber-700/50 pl-3 text-xs leading-relaxed text-neutral-300">
-            Note · #{memory?.number ?? '?'}: “{note.text}”
+            Note Â· #{memory?.number ?? '?'}: â€œ{note.text}â€
           </p>
         ) : (
           <p className="mt-2 border-l border-neutral-600 pl-3 text-xs leading-relaxed text-neutral-500">
-            From memory · #{memory?.number ?? '?'} · {memory?.title ?? 'a sitting point'}
-            {' — no written note'}
+            From memory Â· #{memory?.number ?? '?'} Â· {memory?.title ?? 'a sitting point'}
+            {' â€” no written note'}
           </p>
         )}
       </li>
@@ -267,7 +268,7 @@ function FeedLine({
       <li className="room-pass rounded-lg border border-neutral-800 bg-neutral-900/50 px-3 py-2 text-sm text-neutral-400">
         {e.actor === 'player'
           ? 'You let this point pass.'
-          : 'No new issue raised — the room talks on.'}
+          : 'No new issue raised â€” the room talks on.'}
       </li>
     )
   }
@@ -275,22 +276,22 @@ function FeedLine({
     if (!revealVotes) {
       return (
         <li className="room-hands-sealed rounded-lg border border-neutral-700 bg-neutral-900/70 p-3 text-center text-sm text-neutral-400">
-          A private show of hands — sealed until the judge speaks.
+          A private show of hands â€” sealed until the judge speaks.
         </li>
       )
     }
     return (
       <li className="rounded-lg border border-neutral-700 bg-neutral-900 p-3 text-center text-sm text-neutral-300">
-        A show of hands: <b className="text-red-300">{e.tally.g} guilty</b> ·{' '}
+        A show of hands: <b className="text-red-300">{e.tally.g} guilty</b> Â·{' '}
         <b className="text-emerald-300">{e.tally.ng} not guilty</b>
-        {e.tally.u > 0 && <> · {e.tally.u} undecided</>}
+        {e.tally.u > 0 && <> Â· {e.tally.u} undecided</>}
       </li>
     )
   }
   if (e.type === 'majority_direction' && revealVotes) {
     return (
       <li className="rounded-lg border border-amber-800 bg-amber-950/30 p-3 text-center text-sm text-amber-200">
-        The judge: “{e.detail}”
+        The judge: â€œ{e.detail}â€
       </li>
     )
   }
@@ -325,8 +326,8 @@ function floorCopy({
   if (listening && activeLabel) return `${activeLabel} has the floor`
   if (listening) return 'The room is answering'
   if (awaitingPlayerVote) return 'Your turn to lock a position'
-  if (raising) return 'Raise something if you want — or resume'
-  if (paused) return 'Paused — resume when ready, or raise an issue'
+  if (raising) return 'Raise something if you want â€” or resume'
+  if (paused) return 'Paused â€” resume when ready, or raise an issue'
   if (phase === 'open_1') return 'The room opens a short agenda'
   if (phase === 'open_2') return 'Next point on the agenda'
   if (phase === 'open_3') return 'Last point before the vote'
@@ -347,7 +348,7 @@ export function JuryRoomView({
   playbackRate: NarrationRate
   notes: SittingNote[]
   liveSession?: LiveJurySession | null
-  onSeal: (outcome: Outcome, verdict: Verdict) => void
+  onSeal: (outcome: Outcome, verdict: Verdict, reflection?: VerdictReflection) => void
   onDone: (outcome: Outcome, verdict: Verdict) => void
 }) {
   const stateRef = useRef<DeliberationState | null>(null)
@@ -358,6 +359,8 @@ export function JuryRoomView({
   const [outcome, setOutcome] = useState<Outcome | null>(null)
   const [playerVerdict, setPlayerVerdict] = useState<Verdict | null>(null)
   const [pendingVerdict, setPendingVerdict] = useState<Verdict | null>(null)
+  /** '' = untouched/skip; '__none__' = no single point; else a beat id. */
+  const [reflectionChoice, setReflectionChoice] = useState('')
   const [activeJurorId, setActiveJurorId] = useState<string | null>(null)
   const [activeEventTick, setActiveEventTick] = useState<number | null>(null)
   const [narratorActive, setNarratorActive] = useState(false)
@@ -665,8 +668,15 @@ export function JuryRoomView({
           : 'undecided',
     )
     setOutcome(locked)
-    onSeal(locked, chosen)
+    const reflection: VerdictReflection | undefined =
+      reflectionChoice === ''
+        ? undefined
+        : reflectionChoice === '__none__'
+          ? {}
+          : { counterargumentBeatId: reflectionChoice }
+    onSeal(locked, chosen, reflection)
     setPendingVerdict(null)
+    setReflectionChoice('')
     setStirredIds([])
     setTick((t) => t + 1)
     const judgeLine =
@@ -703,15 +713,15 @@ export function JuryRoomView({
     <div className="phase-view jury-room-view space-y-5">
       <div className="phase-heading space-y-2 text-center">
         <h1 ref={headingRef} id="phase-heading" tabIndex={-1} className="text-xs uppercase tracking-[0.2em] text-neutral-500 focus:outline-none">
-          The jury room · {heading}
+          The jury room Â· {heading}
         </h1>
         <RoundStepper phase={outcome ? 'final_vote' : state.phase} done={Boolean(outcome)} />
         <p className="text-sm text-neutral-400">
           {outcome
-            ? 'The room’s vote is public now.'
+            ? 'The roomâ€™s vote is public now.'
             : awaitingPlayerVote
               ? 'Lock your position. The judge then reads the room.'
-              : 'Discuss from notes and memory — no transcript in this room.'}
+              : 'Discuss from notes and memory â€” no transcript in this room.'}
         </p>
       </div>
 
@@ -781,7 +791,7 @@ export function JuryRoomView({
         <div className="notes-reload panel border p-4">
           <div className="notes-reload-head">
             <p className="text-xs uppercase tracking-wider text-neutral-500">
-              Written notes only · {viewingLabel}
+              Written notes only Â· {viewingLabel}
             </p>
             {ownersWithNotes.length > 1 && (
               <label className="notes-owner-pick">
@@ -811,9 +821,9 @@ export function JuryRoomView({
                 return (
                   <li key={`${note.ownerId}-${note.beatId}`} className="note-recall-card">
                     <p className="text-xs text-neutral-500">
-                      #{memory.number} · {memory.title}
+                      #{memory.number} Â· {memory.title}
                     </p>
-                    <p className="mt-1 text-sm text-neutral-200">“{note.text}”</p>
+                    <p className="mt-1 text-sm text-neutral-200">â€œ{note.text}â€</p>
                   </li>
                 )
               })}
@@ -833,7 +843,7 @@ export function JuryRoomView({
                 <span className="agenda-index" aria-hidden="true">{i + 1}</span>
                 <span>
                   {item.kind === 'direction' ? 'Legal direction' : speaker}
-                  {done ? ' · raised' : ''}
+                  {done ? ' Â· raised' : ''}
                 </span>
               </li>
             )
@@ -904,10 +914,10 @@ export function JuryRoomView({
                   : 'Not guilty'}
             </p>
             <p className="mt-1 text-sm text-neutral-400">
-              G {outcome.tally.g} · NG {outcome.tally.ng} · U {outcome.tally.u}
-              {outcome.kind === 'majority' && ' · by majority'}
-              {outcome.kind === 'unanimous' && ' · unanimous'}
-              {' · your vote: '}
+              G {outcome.tally.g} Â· NG {outcome.tally.ng} Â· U {outcome.tally.u}
+              {outcome.kind === 'majority' && ' Â· by majority'}
+              {outcome.kind === 'unanimous' && ' Â· unanimous'}
+              {' Â· your vote: '}
               {playerVerdict}
             </p>
           </div>
@@ -916,7 +926,7 @@ export function JuryRoomView({
             onClick={() => onDone(outcome, playerVerdict)}
             className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
           >
-            Review the reference verdict →
+            Review the reference verdict â†’
           </button>
         </div>
       ) : awaitingPlayerVote ? (
@@ -962,15 +972,38 @@ export function JuryRoomView({
             </button>
           </div>
           {pendingVerdict && (
-            <p className="text-center text-xs text-neutral-500">
-              Permanent for this sitting · tap the same choice again to seal, or choose another position.
-            </p>
+            <div className="space-y-3 rounded-lg border border-neutral-800 bg-neutral-950/50 p-4">
+              <label className="block space-y-1">
+                <span className="text-xs font-medium uppercase tracking-wider text-neutral-500">
+                  Optional Â· strongest challenge to your position
+                </span>
+                <select
+                  value={reflectionChoice}
+                  onChange={(event) => setReflectionChoice(event.target.value)}
+                  className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm text-neutral-200"
+                >
+                  <option value="">Skip for now</option>
+                  <option value="__none__">No single point</option>
+                  {trial.beats.map((b) => {
+                    const memory = memoryLabel(trial, b.id)
+                    return (
+                      <option key={b.id} value={b.id}>
+                        #{memory.number} Â· {memory.title}
+                      </option>
+                    )
+                  })}
+                </select>
+              </label>
+              <p className="text-center text-xs text-neutral-500">
+                Permanent for this sitting Â· tap the same choice again to seal, or choose another position.
+              </p>
+            </div>
           )}
         </div>
       ) : raising && inOpenRound ? (
         <div className="deliberation-console space-y-3 border p-4">
           <p className="text-xs uppercase tracking-wider text-neutral-500">
-            Your turn · raise your own concern
+            Your turn Â· raise your own concern
           </p>
           <p className="text-sm text-neutral-400">
             Put it in your own words. The room will connect it to the closest
@@ -988,7 +1021,7 @@ export function JuryRoomView({
               <option value="">The whole room</option>
               {trial.jury.jurors.map((juror) => (
                 <option key={juror.id} value={juror.id}>
-                  Seat {juror.seat} · {juror.label}
+                  Seat {juror.seat} Â· {juror.label}
                 </option>
               ))}
             </select>
@@ -1079,7 +1112,7 @@ export function JuryRoomView({
             onClick={cancelRaise}
             className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-xs text-neutral-400 transition hover:bg-neutral-900"
           >
-            Never mind — keep the agenda moving
+            Never mind â€” keep the agenda moving
           </button>
         </div>
       ) : null}

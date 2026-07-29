@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { DocketCase } from '../../lib/v2/caseSchema'
 import type { BeatReveal, DocketAnalysis } from '../../lib/v2/analyze'
-import type { StoredPlay } from '../../lib/storage'
+import type { StoredPlay, VerdictReflection } from '../../lib/storage'
+import { memoryLabel } from '../../lib/jurorNotes'
 import type { Stats } from '../../lib/stats'
 import { buildShareText } from '../../lib/share'
 import { ShareCard } from '../ShareCard'
@@ -52,6 +53,7 @@ export function DocketReveal({
   playbackRate,
   onChooseAnother,
   isIntro = false,
+  reflection,
 }: {
   trial: DocketCase
   analysis: DocketAnalysis
@@ -64,6 +66,7 @@ export function DocketReveal({
   onChooseAnother: () => void
   /** Guided intro is outside the daily queue - no Daily #N share card. */
   isIntro?: boolean
+  reflection?: VerdictReflection
 }) {
   const phaseCue = phaseNarratorCue('reveal')
   const [narratorActive, setNarratorActive] = useState(false)
@@ -137,6 +140,22 @@ export function DocketReveal({
           ))}
         </ul>
       </div>
+
+      {reflection && (
+        <div className="rounded-lg border border-neutral-800 bg-neutral-900/20 p-4">
+          <h2 className="font-semibold text-neutral-200">
+            The challenge you carried into your verdict
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-neutral-400">
+            {reflection.counterargumentBeatId
+              ? (() => {
+                  const memory = memoryLabel(trial, reflection.counterargumentBeatId)
+                  return `#${memory.number} · ${memory.title}`
+                })()
+              : 'No single point stood out as the strongest challenge.'}
+          </p>
+        </div>
+      )}
 
       <div className="record-tools">
         {isIntro ? (
