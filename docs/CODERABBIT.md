@@ -19,7 +19,7 @@ until the app can access the repos.
 Verify on any open PR:
 
 ```sh
-# After the app is installed, either wait for auto-review or:
+# After the app is installed, the contract controller posts this on ready heads:
 gh pr comment <n> --body "@coderabbitai full review"
 
 # Expect author coderabbitai[bot] on a review with Actionable comments / inline findings
@@ -32,55 +32,37 @@ Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.
 
 | Piece | Purpose |
 |-------|---------|
-| `.coderabbit.yaml` | **Chill** profile (medium/balanced — not quiet-only, not assertive/nitpicky), light summary on, draft PRs on, path filters + SimJury path instructions |
-| `scripts/lib/bot-wait-config.mjs` | `coderabbit` alias + mandatory presence slot |
-| `bot-presence-gate` | Env `SIMJURY_BOT_WAIT_REQUIRED=sourcery\|codex\|cursor,coderabbit` (CodeRabbit mandatory) |
-| `pr-request-bot-reviews` | Posts `@coderabbitai full review` when CR has not appeared (defers if rate-limited) |
-| `pr-coderabbit-rate-limit-retry` | On rate-limit: **no sleep** — posts immediately only if wait already elapsed |
-| `pr-coderabbit-ensure-review` | Every **15 minutes**: open due retries + closed reopen + merged follow-up until a *proper* CR review |
-| `pr-coderabbit-review-recovery` | Alias of ensure-review (hourly schedule kept for bookmarks) |
+| `.coderabbit.yaml` | **Chill** profile; automatic/draft/incremental reviews off; exact legacy status on; errors fail outward |
+| `scripts/coderabbit-contract.mjs` | One full request per ready head; exact-SHA status contract; serialized quota retry |
+| `bot-presence-gate` | Runs trusted base code and blocks until exact-head `Review completed` + one current peer |
+| `pr-request-bot-reviews` | Posts `@codex review` only; CodeRabbit has one controller |
+| `pr-coderabbit-ensure-review` | Manual single-open-PR diagnostic; no scheduled fan-out |
 | `pr-bot-close-guard` | Reopens PRs closed with outstanding CR/peer/thread obligations |
 
-Rate-limit notices, command acks (including incremental “already reviewed” / “Review finished” no-ops), and walkthrough/summarize text without review
-signals do **not** satisfy `bot-presence-gate` or ensure-review.
-A proper review means Actionable comments / inline findings / approve-changes — not “I’ll review”.
+The source of truth is CodeRabbit's commit-status history for the current SHA.
+Only `Review completed` passes. Rate limits, skipped reviews, command acks,
+walkthrough text, and reviews of older heads do not pass.
 
-Chore / WIP titles are skipped by CodeRabbit (`ignore_title_keywords`) and are still
-gate-exempt in SimJury scripts.
+No `chore:`/WIP title or bot-author name bypasses protected gates.
 
-## Ensure review (no GHA sleep)
+## Exact-head contract
 
-Long sleeps in Actions were cancelled before posting (audit: 0 successful completes).
-Durable path:
+Previous scheduled fan-out retried clean and merged PRs, exhausted quota, and
+mistook comments for review proof. The replacement is one PR-scoped controller:
 
-1. Rate-limit comment fires `pr-coderabbit-rate-limit-retry` → **if-due only** (no sleep)
-2. `pr-coderabbit-ensure-review` runs every 15 minutes:
-   - **Open:** when quota wait elapsed / ack-only / missing proper review → `@coderabbitai full review` (≤1 / 15m)
-   - **Closed:** reopen + request (≤1 / hour)
-   - **Merged:** request on merged PR (≤1 / hour)
-3. Stops only after a proper CR review
-
-Use **full review**, not incremental `@coderabbitai review`. After a rate-limit false start,
-incremental often replies “does not re-review already reviewed commits” and never posts findings.
-
-```text
-<!-- simjury-coderabbit-ensure-review -->
-@coderabbitai full review
-```
+1. Drafts consume no CodeRabbit quota.
+2. Ready/open or synchronized PRs request one full review for the current SHA.
+3. `Review queued` / `in progress` waits; `rate limited` waits until vendor due time.
+4. A due retry is serialized and SHA-marked; a head change cancels the old controller.
+5. `Review completed` on that exact SHA passes; unresolved findings remain blocked
+   by `bot-feedback-gate` and native conversation resolution.
 
 Local helpers:
 
 ```sh
-npm run pr:coderabbit-rate-limit-retry -- --pr <n> --if-due
-npm run pr:coderabbit-ensure-review -- --dry-run
-npm run pr:coderabbit-ensure-review:verify
-npm run pr:coderabbit-review-recovery:verify
+npm run pr:coderabbit-contract -- --pr <n> --dry-run
+npm run pr:coderabbit-contract:verify
 ```
-
-## Hourly recovery alias
-
-Workflow [`.github/workflows/pr-coderabbit-review-recovery.yml`](../.github/workflows/pr-coderabbit-review-recovery.yml)
-is an alias of ensure-review (same concurrency group).
 ## Other active repos
 
 **Treat every active repo the same.** Copy `.coderabbit.yaml` (trim

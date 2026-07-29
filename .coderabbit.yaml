@@ -15,6 +15,11 @@ reviews:
   poem: false
   review_status: true
   review_details: false
+  # The merge contract consumes exact-head legacy statuses. Vendor errors must
+  # fail outward rather than publishing a misleading green status.
+  review_progress: false
+  commit_status: true
+  fail_commit_status: true
   in_progress_fortune: false
   changed_files_summary: false
   sequence_diagrams: false
@@ -57,15 +62,11 @@ reviews:
       instructions: >-
         Flag docs that would cause incorrect operator actions. Skip wording polish.
   auto_review:
-    enabled: true
-    drafts: true
-    auto_incremental_review: true
-    auto_pause_after_reviewed_commits: 8
-    ignore_title_keywords:
-      - "chore:"
-      - "chore("
-      - "wip"
-      - "do not review"
+    # The trusted bot-presence controller requests one full review per ready
+    # head. Disabling vendor auto-review prevents duplicate quota consumption.
+    enabled: false
+    drafts: false
+    auto_incremental_review: false
     base_branches:
       - ".*"
 chat:

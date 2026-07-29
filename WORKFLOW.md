@@ -8,7 +8,7 @@ Agent contract: **act or park — never poll.** See [Act or park](#act-or-park--
 
 Push a `cursor/*` branch and open a PR to `main`.
 
-Chore PRs (`chore:` / `chore(scope):`) and bot-authored PRs skip bot gates automatically.
+No mutable title or author-name exemption bypasses protected bot gates.
 
 ## 2. PR CI (`validate`)
 
@@ -17,8 +17,8 @@ application checks run in the site workflows.
 
 ## 3. Bot presence gate (`bot-presence-gate`)
 
-Merge protection: waits until **every required slot** has posted since the wait anchor,
-then a quiet window so remaining bots can finish.
+Merge protection requires CodeRabbit's canonical `Review completed` status on the
+**current head SHA**, plus one peer bot since the current PR event anchor.
 
 Default required slots: **`sourcery|codex|cursor,coderabbit`**
 
@@ -37,7 +37,10 @@ Default required slots: **`sourcery|codex|cursor,coderabbit`**
 
 Comma = ALL-of slots. `|` = OR within a slot. Example: `sourcery|cursor,coderabbit` needs (Sourcery or Cursor) **and** CodeRabbit.
 
-The `pr-request-bot-reviews` workflow posts `@codex review` and `@coderabbitai full review` when those bots have not yet appeared. If CodeRabbit posts a rate-limit notice, **`pr-coderabbit-ensure-review`** (every 15m) + **`pr-coderabbit-rate-limit-retry --if-due`** re-request a **full** review — presence stays red until a proper CR review lands (quota noise / incremental no-ops do not clear the gate). Install **ChatGPT Codex Connector** and **CodeRabbit** on the repository (Settings → Integrations → GitHub Apps). Manual: `@codex review` / `@coderabbitai full review`.
+`bot-presence-gate` runs trusted base-branch policy, requests one full CodeRabbit
+review per ready head, waits through the vendor's stated quota window, and retries
+serially. Walkthroughs, command acknowledgements, stale reviews, `Review rate limited`,
+and `Review skipped` never pass. The separate request workflow nudges Codex only.
 
 Local single-shot check (agents):
 
@@ -131,8 +134,9 @@ npm run branch-protection:apply
 | `npm run wait-for-bots` | Single-shot bot presence (CI may `--watch`; agents must not) |
 | `npm run pr:bot-feedback-check` | Thread closure gate |
 | `npm run pr:bot-close-guard` | Block/reopen premature PR close |
-| `npm run pr:request-coderabbit-review` | Nudge `@coderabbitai review` if CR missing |
-| `npm run pr:coderabbit-ensure-review` | Every 15m: ensure proper CR review (open+closed+merged) |
+| `npm run pr:coderabbit-contract` | Require/retry canonical CodeRabbit completion on the exact head SHA |
+| `npm run pr:request-coderabbit-review` | Manual diagnostic nudge only |
+| `npm run pr:coderabbit-ensure-review` | Manual single-open-PR legacy diagnostic only |
 | `npm run pr:gates:check` | All merge gates (single shot) |
 | `npm run pr:merge` | Enable squash auto-merge |
 | `npm run branch-protection:apply` | Apply legacy branch protection |

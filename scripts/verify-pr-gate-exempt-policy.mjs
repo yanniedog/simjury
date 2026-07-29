@@ -28,14 +28,14 @@ check(
   null,
 );
 check(
-  'human chore skips',
+  'human chore requires bots',
   gateExemptReasonFromPrMeta({ title: 'chore: docs', authorLogin: 'yanniedog', authorType: 'User' }),
-  'chore',
+  null,
 );
 check(
-  'bot-authored skips any title',
+  'bot-authored PR still requires protected checks',
   gateExemptReasonFromPrMeta({ title: 'feat: automated', authorLogin: 'github-actions[bot]', authorType: 'Bot' }),
-  'bot-authored',
+  null,
 );
 if (failures.length) {
   console.error('FAIL verify-pr-gate-exempt-policy:');
