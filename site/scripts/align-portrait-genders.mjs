@@ -110,11 +110,14 @@ function alignFile(file) {
         raw = raw.slice(0, altIdx) + updated + raw.slice(altIdx + chunk.length)
       }
     }
+
+    // Other jurors' dialogue may still address the old name.
+    raw = raw.replace(new RegExp(`\\b${escapeRe(oldName)}\\b`, 'g'), newName)
   }
 
-  if (/"id": "J-10"[\s\S]*?"persona": "[^"]*\bcorrects her own\b/.test(raw)) {
+  if (/"id": "J-10"(?:(?!"id": ")[\s\S])*?"persona": "[^"]*\bcorrects her own\b/.test(raw)) {
     raw = raw.replace(
-      /("id": "J-10"[\s\S]*?"persona": "[^"]*)\bcorrects her own\b/,
+      /("id": "J-10"(?:(?!"id": ")[\s\S])*?"persona": "[^"]*)\bcorrects her own\b/,
       '$1corrects his own',
     )
   }
@@ -140,6 +143,12 @@ function alignFile(file) {
     const expected = renames[juror.id]
     if (expected && !juror.label.includes(expected)) {
       throw new Error(`${file} ${juror.id} label missing ${expected}: ${juror.label}`)
+    }
+  }
+  for (const [id, newName] of Object.entries(renames)) {
+    const old = shortNameFromLabel(data.jury.jurors.find((j) => j.id === id)?.label || '')
+    if (old && old !== newName && new RegExp(`\\b${escapeRe(old)}\\b`).test(raw)) {
+      throw new Error(`${file}: stale name ${old} remains after rename to ${newName}`)
     }
   }
   writeFileSync(path, raw, 'utf8')
