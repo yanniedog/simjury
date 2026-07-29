@@ -1,19 +1,19 @@
 # CodeRabbit — https://docs.coderabbit.ai/getting-started/yaml-configuration
-# Manual re-review: comment `@coderabbitai review` on the PR.
+# Manual re-review: comment `@coderabbitai full review` on the PR.
 language: en-US
-# Only high-impact findings — no style/nits (also use reviews.profile: quiet).
+# Medium profile: chill = balanced (not quiet-only, not assertive/nitpicky).
 tone_instructions: >-
-  Report only high-severity issues: correctness bugs, security holes, data loss,
-  broken player flows, or fiction-safety (real names in player-visible text).
-  Skip style, renames, optional refactors, and low-confidence nits.
+  Balanced medium review: flag real bugs, security issues, data loss, broken player flows,
+  fiction-safety risks, and clear maintainability or logic risks. Skip style, formatting,
+  renames, optional refactors, and low-confidence nits.
 reviews:
-  profile: quiet
+  profile: chill
   request_changes_workflow: false
-  # No walkthrough / summary spam — keep inline findings only.
-  high_level_summary: false
+  # Light summary is fine; skip decorative spam.
+  high_level_summary: true
   high_level_summary_in_walkthrough: false
   poem: false
-  review_status: false
+  review_status: true
   review_details: false
   in_progress_fortune: false
   changed_files_summary: false
@@ -37,23 +37,25 @@ reviews:
   path_instructions:
     - path: "site/app/**"
       instructions: >-
-        Only high-severity issues. Flag broken flows, data loss, and
-        fiction-safety (real names of people/companies/brands/places in
-        player-visible text). Ignore style and optional refactors.
+        Balanced review. Flag broken flows, data loss, security issues, logic bugs,
+        and fiction-safety (real names of people/companies/brands/places in
+        player-visible text). Mention clear maintainability risks. Ignore pure
+        style and optional refactors.
     - path: "site/public/cases/**"
       instructions: >-
-        Only high-severity fiction/case integrity issues (e.g. real-name
-        leaks). Do not nitpick wording.
+        Flag fiction/case integrity issues (e.g. real-name leaks) and material
+        contradictions that would confuse players. Do not nitpick wording polish.
     - path: "pilot/**"
       instructions: >-
-        Only high-severity: accidental pilot CI/APK re-enablement or invented
-        testimony without sources. Ignore style.
+        Flag accidental pilot CI/APK re-enablement, invented testimony without
+        sources, and other correctness risks. Ignore style.
     - path: ".github/workflows/**"
       instructions: >-
-        Only high-severity CI/gate breakages (e.g. reintroducing agent
-        watch/poll loops). Ignore cosmetic workflow nits.
+        Flag CI/gate breakages (e.g. reintroducing agent watch/poll loops),
+        permission mistakes, and merge-protection gaps. Ignore cosmetic workflow nits.
     - path: "docs/**"
-      instructions: Only flag docs that would cause incorrect operator actions.
+      instructions: >-
+        Flag docs that would cause incorrect operator actions. Skip wording polish.
   auto_review:
     enabled: true
     drafts: true
