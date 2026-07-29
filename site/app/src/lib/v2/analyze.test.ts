@@ -11,16 +11,12 @@ describe('analyzeDocketPlay', () => {
     expect(a.reveals).toHaveLength(makeDocketCase().beats.length)
   })
 
-  it('lists misleading beats as post-verdict counterweights', () => {
-    const a = analyzeDocketPlay(makeDocketCase(), 'Not Guilty')
-    expect(a.counterweights.length).toBeGreaterThan(0)
-    expect(a.counterweights.every((r) => r.beat.reveal_stamp === 'misleading')).toBe(true)
-  })
-
-  it('lists misleading beats as counterweights for a Guilty verdict', () => {
-    const a = analyzeDocketPlay(makeDocketCase(), 'Guilty')
-    expect(a.counterweights.length).toBeGreaterThan(0)
-    expect(a.counterweights.every((r) => r.beat.reveal_stamp === 'misleading')).toBe(true)
+  it('lists misleading beats as post-verdict counterweights for either verdict', () => {
+    for (const verdict of ['Not Guilty', 'Guilty'] as const) {
+      const a = analyzeDocketPlay(makeDocketCase(), verdict)
+      expect(a.counterweights.length).toBeGreaterThan(0)
+      expect(a.counterweights.every((r) => r.beat.reveal_stamp === 'misleading')).toBe(true)
+    }
   })
 
   it('scores a mismatched verdict as incorrect', () => {

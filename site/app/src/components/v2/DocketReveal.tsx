@@ -12,7 +12,7 @@ import { phaseNarratorCue } from '../../lib/narratorCues'
 import type { Verdict } from './DocketVerdict'
 import { NarratorCue } from './NarratorCue'
 
-function BeatRecap({
+function WhatMatteredCard({
   reveal,
   trial,
   badge = 'Key evidence',
@@ -147,7 +147,7 @@ export function DocketReveal({
         </p>
         <ul className="mt-4 space-y-3">
           {mattered.map((reveal) => (
-            <BeatRecap
+            <WhatMatteredCard
               key={reveal.beat.id}
               reveal={reveal}
               trial={trial}
@@ -183,7 +183,7 @@ export function DocketReveal({
           </p>
           <ul className="mt-4 space-y-3">
             {counterweights.map((reveal) => (
-              <BeatRecap
+              <WhatMatteredCard
                 key={reveal.beat.id}
                 reveal={reveal}
                 trial={trial}
