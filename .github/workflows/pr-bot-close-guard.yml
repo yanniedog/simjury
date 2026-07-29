@@ -64,15 +64,19 @@ jobs:
           npm run pr:bot-close-guard -- --pr "$PR" $REOPEN_FLAG
           code=$?
           set -e
-          # Exit 1 = blocked (and reopened when --reopen). Treat as success for the
-          # workflow so the reopen side-effect is not marked as a failed Actions run;
-          # the protection action itself already ran.
+          # Exit 1 = blocked and reopened successfully — treat as workflow success
+          # (the protection side-effect already ran).
+          # Exit 3 = reopen failed / hard error — must fail the check.
           if [ "$code" -eq 1 ]; then
             echo "Close blocked / PR reopened under bot merge protection."
             exit 0
           fi
           if [ "$code" -eq 2 ]; then
             echo "::warning::GitHub API rate limit — re-run close guard after quota resets"
+            exit 1
+          fi
+          if [ "$code" -eq 3 ]; then
+            echo "::error::Close guard hard error (e.g. reopen failed) — PR may still be closed"
             exit 1
           fi
           exit "$code"
