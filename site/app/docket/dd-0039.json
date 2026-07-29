@@ -102,10 +102,10 @@
     },
     {
       "id": "b2", "kind": "witness", "speaker": "w1", "mode": "examination",
-      "text": "How was the lobby recording preserved? I managed the camera system. The morning after Nera died, I exported the continuous 8:45-to-9:20 file in an investigator’s presence, compared it with the original playback, recorded its system hash, and signed the evidence copy. The hash still matches, and I found no missing interval or edit. What does it show at 9:05? Someone in Iona’s red coat crosses the lobby and leaves through the main doors. The person turns away; the camera never records a face.",
+      "text": "How was the lobby recording preserved? I managed the camera system. The morning after Nera died, I exported the continuous 8:45-to-9:20 file in an investigator’s presence, compared it with the original playback, confirmed the export matched, and signed the evidence copy. The match still holds, and I found no missing interval or edit. What does it show at 9:05? Someone in Iona’s red coat crosses the lobby and leaves through the main doors. The person turns away; the camera never records a face.",
       "turns": [
         { "speaker": "pc", "text": "How was the lobby recording preserved?" },
-        { "speaker": "w1", "text": "I managed the camera system. The morning after Nera died, I exported the continuous 8:45-to-9:20 file in an investigator’s presence, compared it with the original playback, recorded its system hash, and signed the evidence copy. The hash still matches, and I found no missing interval or edit." },
+        { "speaker": "w1", "text": "I managed the camera system. The morning after Nera died, I exported the continuous 8:45-to-9:20 file in an investigator’s presence, compared it with the original playback, confirmed the export matched, and signed the evidence copy. The match still holds, and I found no missing interval or edit." },
         { "speaker": "pc", "text": "What does it show at 9:05?" },
         { "speaker": "w1", "text": "Someone in Iona’s red coat crosses the lobby and leaves through the main doors. The person turns away; the camera never records a face." }
       ],

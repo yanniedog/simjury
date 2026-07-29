@@ -59,7 +59,7 @@
       "defence": {"speaker": "dc", "text": "The prosecution will prove that the Circle hurt Sava. Celis does not dispute her experience. The disputed questions are narrower: who used the key, and did that person mean to direct crime? Celis’s ordinary work required payment holds, confidential keys, and contact with the same traders. Two investigators heard the test phrase. No camera shows an activation. The handwriting opinion is limited, and the complete note says no threats and release stock. The empty chair may therefore still hide someone else."}
     },
     "closing": {
-      "prosecution": {"speaker": "pc", "text": "Put the chronology together without improving it or cutting pieces away. Sava told Celis this was protection money. Celis alone then left the controlled interview. Twenty-three minutes later, its invented phrase appeared in an order that enforced the Circle’s rate against Sava’s stock. The exact content was signed by the hardware key in Celis’s locked cabinet, during a period when only her badge entered. That is practical criminal direction, knowledge, and an intention to advance the Circle’s extortion—not mere association."},
+      "prosecution": {"speaker": "pc", "text": "Put the chronology together without improving it or cutting pieces away. Sava told Celis this was protection money. Celis alone then left the controlled interview. Twenty-three minutes later, its invented phrase appeared in an order that enforced the Circle’s rate against Sava’s stock. The exact content was signed by the office signing key in Celis’s locked cabinet, during a period when only her badge entered. That is practical criminal direction, knowledge, and an intention to advance the Circle’s extortion—not mere association."},
       "defence": {"speaker": "dc", "text": "A chain is only as sound as its disputed links. The phrase was known to two officers as well as Celis. The gateway proves a device signed content, not whose hand used it. A copied cabinet key was technically possible. Celis possessed the device for lawful settlements, helped Sava before, and wrote that threats must stop and stock be released. The prosecution’s chronology creates a real and strong suspicion, but it cannot turn qualified evidence into proof beyond reasonable doubt."}
     }
   },
@@ -148,13 +148,13 @@
       "id": "b7", "kind": "witness", "speaker": "w2", "mode": "examination",
       "turns": [
         {"speaker": "pc", "text": "What did you recover?"},
-        {"speaker": "w2", "text": "The hardware key and her numbered client page. I photographed both there."},
+        {"speaker": "w2", "text": "The office signing key and her numbered client page. I photographed both there."},
         {"speaker": "pc", "text": "How did you preserve them?"},
         {"speaker": "w2", "text": "I filmed removal, recorded the key serial and page number, sealed them separately, signed each custody entry, and delivered both to Ema’s laboratory that evening."},
         {"speaker": "pc", "text": "What did the cabinet records show?"},
         {"speaker": "w2", "text": "The property manager produced the original issue register. It lists one cabinet key, issued to Celis. We recovered it from her ring and found no duplicate or lock damage."}
       ],
-      "text": "What did you recover? The hardware key and her numbered client page. I photographed both there. How did you preserve them? I filmed removal, recorded the key serial and page number, sealed them separately, signed each custody entry, and delivered both to Ema’s laboratory that evening. What did the cabinet records show? The property manager produced the original issue register. It lists one cabinet key, issued to Celis. We recovered it from her ring and found no duplicate or lock damage.",
+      "text": "What did you recover? The office signing key and her numbered client page. I photographed both there. How did you preserve them? I filmed removal, recorded the key serial and page number, sealed them separately, signed each custody entry, and delivered both to Ema’s laboratory that evening. What did the cabinet records show? The property manager produced the original issue register. It lists one cabinet key, issued to Celis. We recovered it from her ring and found no duplicate or lock damage.",
       "surface_persuasion": 0.7, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
       "reveal_note": "Tav supplies the in-place photographs, item identifiers, seals, transfer, and cabinet-key issue record needed for competent custody and access evidence.",
       "tags": ["identity", "method", "digital_forensics"]
@@ -163,13 +163,13 @@
       "id": "b8", "kind": "witness", "speaker": "w3", "mode": "examination",
       "turns": [
         {"speaker": "pc", "text": "What did you receive?"},
-        {"speaker": "w3", "text": "Two intact, numbered seals matching Tav’s custody log: one held the hardware key and one held the client page."},
+        {"speaker": "w3", "text": "Two intact, numbered seals matching Tav’s custody log: one held the office signing key and one held the client page."},
         {"speaker": "pc", "text": "How did you authenticate the disputed order?"},
-        {"speaker": "w3", "text": "The order’s content has a mathematical fingerprint called a hash. That hash, the key serial, and its next counter all match the original write-once gateway record. I independently verified the provider’s certificate and export hash."},
+        {"speaker": "w3", "text": "The order matches the gateway’s sealed original record, including the key ID and its next counter. I independently checked the provider export against that sealed original."},
         {"speaker": "pc", "text": "Who had recorded access?"},
         {"speaker": "w3", "text": "The access provider’s signed server export records only Celis’s badge entering that office. Twelve disputed signatures occurred during those periods, when the sole issued cabinet key remained with her."}
       ],
-      "text": "What did you receive? Two intact, numbered seals matching Tav’s custody log: one held the hardware key and one held the client page. How did you authenticate the disputed order? The order’s content has a mathematical fingerprint called a hash. That hash, the key serial, and its next counter all match the original write-once gateway record. I independently verified the provider’s certificate and export hash. Who had recorded access? The access provider’s signed server export records only Celis’s badge entering that office. Twelve disputed signatures occurred during those periods, when the sole issued cabinet key remained with her.",
+      "text": "What did you receive? Two intact, numbered seals matching Tav’s custody log: one held the office signing key and one held the client page. How did you authenticate the disputed order? The order matches the gateway’s sealed original record, including the key ID and its next counter. I independently checked the provider export against that sealed original. Who had recorded access? The access provider’s signed server export records only Celis’s badge entering that office. Twelve disputed signatures occurred during those periods, when the sole issued cabinet key remained with her.",
       "surface_persuasion": 0.85, "true_weight": 0.86, "direction": "guilt", "reveal_stamp": "decisive",
       "reveal_note": "A documented custody trail authenticates the exact order and ties every disputed activation to the physical key during Celis’s exclusive recorded access.",
       "tags": ["digital_forensics", "identity", "command"]
@@ -280,7 +280,7 @@
       {
         "id": "J-04", "seat": 5, "label": "Suri", "persona": "Trusts records only after understanding what each one cannot establish.", "register": "plain", "arc": "steady",
         "initial": {"position": "G", "confidence": 59}, "weights": {"digital_forensics": 2, "method": 1, "identity": 1},
-        "lines": {"agree": ["The gateway copy and certificate authenticate the message. That part isn’t guesswork."], "pushback": ["Wait—authentication isn’t authorship. Ema was careful about that."], "concede": ["Right, but sole office access and the cabinet key add the human connection the gateway lacks."], "burden_drift": ["Twelve signatures from one device look so neat that I stop testing the assumptions."], "burden_correct": ["A neat pattern still has limits. We have to ask who could reach the device."], "final": ["I accept the audit for what it proves, and the access evidence supplies the missing step."]},
+        "lines": {"agree": ["The gateway copy authenticates the message. That part isn’t guesswork."], "pushback": ["Wait—authentication isn’t authorship. Ema was careful about that."], "concede": ["Right, but sole office access and the cabinet key add the human connection the gateway lacks."], "burden_drift": ["Twelve signatures from one device look so neat that I stop testing the assumptions."], "burden_correct": ["A neat pattern still has limits. We have to ask who could reach the device."], "final": ["I accept the audit for what it proves, and the access evidence supplies the missing step."]},
         "reaction_rules": [
           {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 7, "line": "agree"}},
           {"when": {"theme": "method", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 5, "line": "pushback"}},

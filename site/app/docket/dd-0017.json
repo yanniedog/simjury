@@ -115,11 +115,11 @@
         {"speaker": "pc", "text": "What records were you asked to examine?"},
         {"speaker": "w3", "text": "The access controller, Leda's cloud account, the station call recorder, and two earlier panel-support tickets. I worked from read-only exports made with each custodian present."},
         {"speaker": "pc", "text": "How did you check their integrity?"},
-        {"speaker": "w3", "text": "I calculated a digital fingerprint at export and again at every handover. Each matched. The original controller was sealed after the export."},
+        {"speaker": "w3", "text": "I checked each export against the original at every handover. Each matched. The original controller was sealed after the export."},
         {"speaker": "pc", "text": "Were their clocks aligned?"},
         {"speaker": "w3", "text": "No. The access and cloud clocks matched the provider time. The call recorder ran three to four minutes fast, so it establishes a four-minute call window, not an exact minute."}
       ],
-      "text": "What records were you asked to examine? The access controller, Leda's cloud account, the station call recorder, and two earlier panel-support tickets. I worked from read-only exports made with each custodian present. How did you check their integrity? I calculated a digital fingerprint at export and again at every handover. Each matched. The original controller was sealed after the export. Were their clocks aligned? No. The access and cloud clocks matched the provider time. The call recorder ran three to four minutes fast, so it establishes a four-minute call window, not an exact minute.",
+      "text": "What records were you asked to examine? The access controller, Leda's cloud account, the station call recorder, and two earlier panel-support tickets. I worked from read-only exports made with each custodian present. How did you check their integrity? I checked each export against the original at every handover. Each matched. The original controller was sealed after the export. Were their clocks aligned? No. The access and cloud clocks matched the provider time. The call recorder ran three to four minutes fast, so it establishes a four-minute call window, not an exact minute.",
       "surface_persuasion": 0.45, "true_weight": 0.48, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "Toma established provenance, custody, integrity, and the call-recorder clock correction for the access record and both recordings. Authentication does not decide what the words mean.",
       "tags": ["digital_forensics", "procedure", "timeline"]
