@@ -1,12 +1,86 @@
+// @vitest-environment jsdom
+
+import { act } from 'react'
+import { createRoot, type Root } from 'react-dom/client'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { makeDocketCase } from '../../lib/v2/fixtures'
 import { ensureNpcNotes, recollectionStub, upsertPlayerNote } from '../../lib/jurorNotes'
 import {
   phaseNarratorCue,
   REASONABLE_DOUBT_DIRECTION,
 } from '../../lib/narratorCues'
+import type { Outcome } from '../../engine/deliberation'
 import { JuryRoomView } from './JuryRoomView'
+import type { Verdict } from './DocketVerdict'
+
+vi.mock('../../lib/narration', () => ({
+  speak: vi.fn(),
+  speakAll: vi.fn(),
+  stopSpeech: vi.fn(),
+}))
+
+function buttonByText(container: ParentNode, text: string): HTMLButtonElement {
+  const button = [...container.querySelectorAll('button')].find((node) =>
+    node.textContent?.includes(text),
+  )
+  if (!button) throw new Error(`Button not found: ${text}`)
+  return button
+}
+
+function mountJuryRoom(onSeal = vi.fn()) {
+  const trial = makeDocketCase()
+  const container = document.createElement('div')
+  document.body.appendChild(container)
+  const root = createRoot(container)
+  act(() => {
+    root.render(
+      <JuryRoomView
+        trial={trial}
+        narration={false}
+        playbackRate={1}
+        notes={[]}
+        onSeal={onSeal}
+        onDone={() => undefined}
+      />,
+    )
+  })
+  return { trial, container, root, onSeal }
+}
+
+function advanceToFinalVote(container: ParentNode) {
+  act(() => {
+    buttonByText(container, 'Hear first point').click()
+  })
+  act(() => {
+    buttonByText(container, 'Continue to next point').click()
+  })
+  act(() => {
+    buttonByText(container, 'Hear final point').click()
+  })
+  expect(container.textContent).toContain('Lock your position')
+}
+
+function sealVerdict(
+  container: ParentNode,
+  verdictLabel: string,
+  reflectionValue?: string,
+) {
+  act(() => {
+    buttonByText(container, verdictLabel).click()
+  })
+  if (reflectionValue !== undefined) {
+    const select = container.querySelector('select')
+    if (!select) throw new Error('Reflection select not found')
+    act(() => {
+      select.value = reflectionValue
+      select.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+  }
+  act(() => {
+    buttonByText(container, 'Tap again to seal').click()
+  })
+}
 
 describe('JuryRoomView', () => {
   it('keeps deliberation on notes and memory — never quotes beat text', () => {
@@ -122,6 +196,67 @@ describe('JuryRoomView', () => {
       'If, after considering all the evidence, you are not sure the prosecution proved every element beyond reasonable doubt, your verdict must be Not Guilty.',
     )
     expect(phaseNarratorCue('verdict')).toBe(REASONABLE_DOUBT_DIRECTION)
+  })
+})
+
+describe('JuryRoomView verdict sealing', () => {
+  let roots: Root[] = []
+
+  beforeEach(() => {
+    roots = []
+    document.body.innerHTML = ''
+  })
+
+  afterEach(() => {
+    for (const root of roots) {
+      act(() => {
+        root.unmount()
+      })
+    }
+    document.body.innerHTML = ''
+  })
+
+  function trackRoot(root: Root) {
+    roots.push(root)
+    return root
+  }
+
+  it('reaches final vote and seals with skip, no single point, and a selected beat', () => {
+    const skipSeal = vi.fn()
+    const noneSeal = vi.fn()
+    const beatSeal = vi.fn()
+    const skip = mountJuryRoom(skipSeal)
+    trackRoot(skip.root)
+    advanceToFinalVote(skip.container)
+    sealVerdict(skip.container, 'Not persuaded to convict')
+    expect(skipSeal).toHaveBeenCalledTimes(1)
+    expect(skipSeal.mock.calls[0]?.[2]).toBeUndefined()
+
+    const none = mountJuryRoom(noneSeal)
+    trackRoot(none.root)
+    advanceToFinalVote(none.container)
+    sealVerdict(none.container, 'Not persuaded to convict', '__none__')
+    expect(noneSeal).toHaveBeenCalledTimes(1)
+    expect(noneSeal.mock.calls[0]?.[2]).toEqual({})
+
+    const beat = mountJuryRoom(beatSeal)
+    trackRoot(beat.root)
+    advanceToFinalVote(beat.container)
+    sealVerdict(beat.container, 'Not persuaded to convict', beat.trial.beats[0].id)
+    expect(beatSeal).toHaveBeenCalledTimes(1)
+    expect(beatSeal.mock.calls[0]?.[2]).toEqual({
+      counterargumentBeatId: beat.trial.beats[0].id,
+    })
+
+    for (const [fn, verdict] of [
+      [skipSeal, 'Not Guilty'],
+      [noneSeal, 'Not Guilty'],
+      [beatSeal, 'Not Guilty'],
+    ] as const) {
+      const [outcome, sealedVerdict] = fn.mock.calls[0] as [Outcome, Verdict]
+      expect(outcome).toBeTruthy()
+      expect(sealedVerdict).toBe(verdict)
+    }
   })
 })
 

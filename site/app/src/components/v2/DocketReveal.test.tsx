@@ -63,4 +63,31 @@ describe('DocketReveal', () => {
     expect(markup).not.toMatch(/\bbias\b/i)
     expect(markup).not.toContain('bias score')
   })
+
+  it('shows the no-single-point fallback for a persisted empty reflection', () => {
+    const trial = makeDocketCase()
+    const markup = renderToStaticMarkup(
+      <DocketReveal
+        trial={trial}
+        analysis={analyzeDocketPlay(trial, 'Not Guilty')}
+        verdict="Not Guilty"
+        room={{
+          kind: 'majority',
+          verdict: 'not_guilty',
+          g: 0,
+          ng: 11,
+          u: 1,
+        }}
+        reflection={{}}
+        dayNumber={1}
+        stats={{ played: 1, currentStreak: 1, maxStreak: 1 }}
+        narration={false}
+        playbackRate={1}
+        onChooseAnother={() => undefined}
+      />,
+    )
+
+    expect(markup).toContain('The challenge you carried into your verdict')
+    expect(markup).toContain('No single point stood out as the strongest challenge.')
+  })
 })
