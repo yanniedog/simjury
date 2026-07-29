@@ -12,17 +12,27 @@ import { phaseNarratorCue } from '../../lib/narratorCues'
 import type { Verdict } from './DocketVerdict'
 import { NarratorCue } from './NarratorCue'
 
-function WhatMatteredCard({ reveal, trial }: { reveal: BeatReveal; trial: DocketCase }) {
+function WhatMatteredCard({
+  reveal,
+  trial,
+  badge = 'Key evidence',
+  leanLabel = 'leans toward guilt',
+}: {
+  reveal: BeatReveal
+  trial: DocketCase
+  badge?: string
+  leanLabel?: string
+}) {
   const { beat } = reveal
   const pointsGuilt = beat.direction === 'guilt'
   return (
     <li className="space-y-2 rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
       <div className="flex flex-wrap items-center gap-2">
         <span className="rounded-full border border-emerald-700 px-2 py-0.5 text-xs font-medium text-emerald-300">
-          Author-highlighted
+          {badge}
         </span>
         <span className={`text-xs ${pointsGuilt ? 'text-red-400' : 'text-emerald-400'}`}>
-          Supports {pointsGuilt ? 'convicting' : 'not convicting'}
+          {leanLabel}
         </span>
       </div>
       {beat.turns ? (
@@ -96,6 +106,7 @@ export function DocketReveal({
   const mattered = analysis.whatMattered.length > 0
     ? analysis.whatMattered
     : analysis.reveals.filter((r) => r.beat.reveal_stamp === 'decisive').slice(0, 3)
+  const counterweights = analysis.counterweights
 
   return (
     <div className="phase-view reveal-view space-y-6">
@@ -136,7 +147,13 @@ export function DocketReveal({
         </p>
         <ul className="mt-4 space-y-3">
           {mattered.map((reveal) => (
-            <WhatMatteredCard key={reveal.beat.id} reveal={reveal} trial={trial} />
+            <WhatMatteredCard
+              key={reveal.beat.id}
+              reveal={reveal}
+              trial={trial}
+              badge="Author-highlighted"
+              leanLabel={`Supports ${reveal.beat.direction === 'guilt' ? 'convicting' : 'not convicting'}`}
+            />
           ))}
         </ul>
       </div>
@@ -154,6 +171,33 @@ export function DocketReveal({
                 })()
               : 'No single point stood out as the strongest challenge.'}
           </p>
+        </div>
+      )}
+
+      {counterweights.length > 0 && (
+        <div className="rounded-lg border border-neutral-800 bg-neutral-900/20 p-4">
+          <h2 className="font-semibold text-neutral-200">What deserved more caution</h2>
+          <p className="mt-2 text-sm leading-relaxed text-neutral-500">
+            Evidence that can feel strong in the moment, but the authors treated as
+            weaker once weighed against the whole record.
+          </p>
+          <ul className="mt-4 space-y-3">
+            {counterweights.map((reveal) => (
+              <WhatMatteredCard
+                key={reveal.beat.id}
+                reveal={reveal}
+                trial={trial}
+                badge="Needs caution"
+                leanLabel={
+                  reveal.beat.direction === 'guilt'
+                    ? 'Can push toward convicting'
+                    : reveal.beat.direction === 'innocence'
+                      ? 'Can push toward not convicting'
+                      : 'Can pull either way'
+                }
+              />
+            ))}
+          </ul>
         </div>
       )}
 

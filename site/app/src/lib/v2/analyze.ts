@@ -14,6 +14,8 @@ export interface DocketAnalysis {
   matchesReference: boolean
   /** Decisive beats from case stamps — what the authors say mattered most. */
   whatMattered: BeatReveal[]
+  /** Misleading beats — persuasive on the surface, weaker under the authors’ weight. */
+  counterweights: BeatReveal[]
   reveals: BeatReveal[]
 }
 
@@ -23,10 +25,12 @@ export function analyzeDocketPlay(
 ): DocketAnalysis {
   const reveals: BeatReveal[] = c.beats.map((beat) => ({ beat }))
   const whatMattered = reveals.filter((r) => r.beat.reveal_stamp === 'decisive')
+  const counterweights = reveals.filter((r) => r.beat.reveal_stamp === 'misleading')
 
   return {
     matchesReference: verdict === c.reference_verdict,
     whatMattered,
+    counterweights,
     reveals,
   }
 }
