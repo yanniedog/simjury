@@ -20,9 +20,9 @@ Verify on any open PR:
 
 ```sh
 # After the app is installed, either wait for auto-review or:
-gh pr comment <n> --body "@coderabbitai review"
+gh pr comment <n> --body "@coderabbitai full review"
 
-# Expect author coderabbitai[bot] on a review or walkthrough comment
+# Expect author coderabbitai[bot] on a review with Actionable comments / inline findings
 gh api repos/yanniedog/SimJury/pulls/<n>/reviews --jq '.[].user.login'
 ```
 
@@ -32,16 +32,16 @@ Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.
 
 | Piece | Purpose |
 |-------|---------|
-| `.coderabbit.yaml` | **Quiet** profile (high-severity only), **no walkthrough/summary**, draft PRs on, incremental review, path filters + SimJury path instructions |
+| `.coderabbit.yaml` | **Chill** profile (medium/balanced — not quiet-only, not assertive/nitpicky), light summary on, draft PRs on, path filters + SimJury path instructions |
 | `scripts/lib/bot-wait-config.mjs` | `coderabbit` alias + mandatory presence slot |
 | `bot-presence-gate` | Env `SIMJURY_BOT_WAIT_REQUIRED=sourcery\|codex\|cursor,coderabbit` (CodeRabbit mandatory) |
-| `pr-request-bot-reviews` | Posts `@coderabbitai review` when CR has not appeared (defers if rate-limited) |
+| `pr-request-bot-reviews` | Posts `@coderabbitai full review` when CR has not appeared (defers if rate-limited) |
 | `pr-coderabbit-rate-limit-retry` | On rate-limit: **no sleep** — posts immediately only if wait already elapsed |
 | `pr-coderabbit-ensure-review` | Every **15 minutes**: open due retries + closed reopen + merged follow-up until a *proper* CR review |
 | `pr-coderabbit-review-recovery` | Alias of ensure-review (hourly schedule kept for bookmarks) |
 | `pr-bot-close-guard` | Reopens PRs closed with outstanding CR/peer/thread obligations |
 
-Rate-limit notices, command acks, and walkthrough/summarize text without review
+Rate-limit notices, command acks (including incremental “already reviewed” / “Review finished” no-ops), and walkthrough/summarize text without review
 signals do **not** satisfy `bot-presence-gate` or ensure-review.
 A proper review means Actionable comments / inline findings / approve-changes — not “I’ll review”.
 
@@ -55,14 +55,17 @@ Durable path:
 
 1. Rate-limit comment fires `pr-coderabbit-rate-limit-retry` → **if-due only** (no sleep)
 2. `pr-coderabbit-ensure-review` runs every 15 minutes:
-   - **Open:** when quota wait elapsed / ack-only / missing proper review → `@coderabbitai review` (≤1 / 15m)
+   - **Open:** when quota wait elapsed / ack-only / missing proper review → `@coderabbitai full review` (≤1 / 15m)
    - **Closed:** reopen + request (≤1 / hour)
    - **Merged:** request on merged PR (≤1 / hour)
 3. Stops only after a proper CR review
 
+Use **full review**, not incremental `@coderabbitai review`. After a rate-limit false start,
+incremental often replies “does not re-review already reviewed commits” and never posts findings.
+
 ```text
 <!-- simjury-coderabbit-ensure-review -->
-@coderabbitai review
+@coderabbitai full review
 ```
 
 Local helpers:
@@ -91,7 +94,8 @@ re-installing the app; add a local `.coderabbit.yaml` when you want repo-specifi
 
 | Comment | Effect |
 |---------|--------|
-| `@coderabbitai review` | Full review now |
+| `@coderabbitai full review` | Complete review from scratch (preferred for gates / retries) |
+| `@coderabbitai review` | Incremental review of new commits only |
 | `@coderabbitai summary` | Summary only |
 | `@coderabbitai configuration` | Dump resolved config |
 | `@coderabbitai pause` / `resume` | Pause / resume auto-review on that PR |

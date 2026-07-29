@@ -37,7 +37,7 @@ Default required slots: **`sourcery|codex|cursor,coderabbit`**
 
 Comma = ALL-of slots. `|` = OR within a slot. Example: `sourcery|cursor,coderabbit` needs (Sourcery or Cursor) **and** CodeRabbit.
 
-The `pr-request-bot-reviews` workflow posts `@codex review` and `@coderabbitai review` when those bots have not yet appeared. If CodeRabbit posts a rate-limit notice, **`pr-coderabbit-rate-limit-retry`** waits up to 120 minutes and re-requests review — presence stays red until a substantive CR review lands (quota noise does not clear the gate). Install **ChatGPT Codex Connector** and **CodeRabbit** on the repository (Settings → Integrations → GitHub Apps). Manual: `@codex review` / `@coderabbitai review`.
+The `pr-request-bot-reviews` workflow posts `@codex review` and `@coderabbitai full review` when those bots have not yet appeared. If CodeRabbit posts a rate-limit notice, **`pr-coderabbit-ensure-review`** (every 15m) + **`pr-coderabbit-rate-limit-retry --if-due`** re-request a **full** review — presence stays red until a proper CR review lands (quota noise / incremental no-ops do not clear the gate). Install **ChatGPT Codex Connector** and **CodeRabbit** on the repository (Settings → Integrations → GitHub Apps). Manual: `@codex review` / `@coderabbitai full review`.
 
 Local single-shot check (agents):
 

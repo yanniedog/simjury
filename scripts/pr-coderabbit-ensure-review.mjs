@@ -5,7 +5,7 @@
  * Durable replacement for sleep-based rate-limit retry (GHA cancels long sleeps).
  *
  * - OPEN: if rate-limited / ack-only / missing proper review, and wait window elapsed
- *   (or no rate-limit timing), post @coderabbitai review (≤1 / 15 min)
+ *   (or no rate-limit timing), post @coderabbitai full review (≤1 / 15 min)
  * - CLOSED (unmerged): reopen, then request review (≤1 / hour)
  * - MERGED: cannot reopen — keep requesting on the merged PR (≤1 / hour)
  * - Stops only when a *proper* CR review exists (not rate-limit / command ack)
@@ -23,7 +23,7 @@ import {
   CR_RECOVERY_TRIGGER,
   canPostRecoveryTrigger,
   classifyCoderabbitActivity,
-  latestEnsureTriggerAt,
+  latestEnsureTrigger,
   needsCoderabbitRecovery,
   needsOpenEnsure,
 } from './lib/coderabbit-review-status.mjs';
@@ -161,7 +161,7 @@ function postEnsureTrigger(prNumber, { dryRun, reason, merged, open }) {
       'This PR is **merged** (GitHub cannot reopen). Requesting a proper CodeRabbit review on the merged PR until findings or a clean actionable review land.';
   } else if (open) {
     note =
-      'Open PR still lacks a **proper** CodeRabbit review (rate-limit / command-ack / missing). Scheduler posts `@coderabbitai review` when the quota window is due — no GHA sleep.';
+      'Open PR still lacks a **proper** CodeRabbit review (rate-limit / command-ack / missing). Scheduler posts `@coderabbitai full review` when the quota window is due — no GHA sleep. Incremental `@coderabbitai review` is insufficient after a rate-limit false start.';
   } else {
     note =
       'This PR was **closed** without a proper CodeRabbit review and has been reopened for review.';
@@ -172,7 +172,7 @@ function postEnsureTrigger(prNumber, { dryRun, reason, merged, open }) {
     '',
     note,
     '',
-    'Stops only after a real CR review (Actionable comments / inline findings / approve-changes) — not rate-limit notices or command acks.',
+    'Stops only after a real CR review (Actionable comments / inline findings / approve-changes) — not rate-limit notices, command acks, or incremental “already reviewed” no-ops.',
     '',
     CR_RECOVERY_TRIGGER,
   ].join('\n');
@@ -237,12 +237,13 @@ function processOne(row, { dryRun, owner, name }) {
           ? 'open-failed-review'
           : 'open-missing-proper-review';
 
-    const latestTrigger = latestEnsureTriggerAt(view?.comments || []);
-    if (!canPostRecoveryTrigger(latestTrigger, Date.now(), CR_OPEN_RETRY_INTERVAL_MS)) {
+    const latest = latestEnsureTrigger(view?.comments || []);
+    // Upgrade path: incremental-only triggers must not block an immediate full review.
+    if (latest.isFull && !canPostRecoveryTrigger(latest.at, Date.now(), CR_OPEN_RETRY_INTERVAL_MS)) {
       result.actions.push({
         type: 'request-review',
         ok: true,
-        skipped: `last ensure trigger ${latestTrigger} within 15m window`,
+        skipped: `last ensure trigger ${latest.at} within 15m window`,
       });
       return result;
     }
@@ -286,12 +287,12 @@ function processOne(row, { dryRun, owner, name }) {
     });
   }
 
-  const latestTrigger = latestEnsureTriggerAt(view?.comments || []);
-  if (!canPostRecoveryTrigger(latestTrigger, Date.now(), CR_RECOVERY_INTERVAL_MS)) {
+  const latest = latestEnsureTrigger(view?.comments || []);
+  if (latest.isFull && !canPostRecoveryTrigger(latest.at, Date.now(), CR_RECOVERY_INTERVAL_MS)) {
     result.actions.push({
       type: 'request-review',
       ok: true,
-      skipped: `last recovery trigger ${latestTrigger} within hourly window`,
+      skipped: `last recovery trigger ${latest.at} within hourly window`,
     });
     return result;
   }

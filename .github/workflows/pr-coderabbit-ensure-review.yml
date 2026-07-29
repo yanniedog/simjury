@@ -2,7 +2,7 @@ name: pr-coderabbit-ensure-review
 
 # Durable CodeRabbit ensure: no long sleeps (those get cancelled).
 # Every 15 minutes + on demand:
-#   - OPEN PRs: when rate-limit wait elapsed / ack-only / missing proper review → @coderabbitai review
+#   - OPEN PRs: when rate-limit wait elapsed / ack-only / missing proper review → @coderabbitai full review
 #   - CLOSED: reopen + request
 #   - MERGED: request on merged PR
 # Stops only after a *proper* CR review (not rate-limit or command ack).
