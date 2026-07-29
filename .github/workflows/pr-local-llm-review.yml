@@ -1,0 +1,65 @@
+name: pr-local-llm-review
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: local-llm-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preflight:
+    name: local-llm-preflight
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject untrusted fork execution
+        shell: bash
+        env:
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          test "$HEAD_REPO" = "$BASE_REPO" || {
+            echo "Fork PRs cannot run on the private laptop reviewer."
+            exit 1
+          }
+
+  qwen:
+    name: local-qwen-review
+    needs: preflight
+    runs-on: [self-hosted, Windows, X64, simjury-local-llm]
+    timeout-minutes: 45
+    steps:
+      - name: Check out trusted base revision only
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+          clean: true
+
+      - name: Review inert PR patch with local Qwen
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: powershell
+        run: node scripts/local-llm-pr-gate.mjs --pr "$env:PR_NUMBER" --repo "$env:GITHUB_REPOSITORY" --head "$env:PR_HEAD_SHA"
+
+  local-llm-review:
+    name: local-llm-review
+    if: always()
+    needs: [preflight, qwen]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enforce local review result
+        env:
+          PREFLIGHT_RESULT: ${{ needs.preflight.result }}
+          QWEN_RESULT: ${{ needs.qwen.result }}
+        run: |
+          test "$PREFLIGHT_RESULT" = success
+          test "$QWEN_RESULT" = success
