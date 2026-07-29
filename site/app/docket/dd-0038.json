@@ -50,7 +50,7 @@
       "defence": {"speaker": "dc", "text": "Nara's job began and ended at equipment outside an opaque, access-controlled room. Her client described confidential materials research and sent service tickets that looked ordinary. The records require careful separation: a name displayed on a screen is not necessarily the signed identity of the device underneath it. Rian Vesk brings useful evidence and a reason to help himself. The defence doesn't say Nara asked every question she should have. It says carelessness and suspicion aren't knowing manufacture. Listen for what each fact actually proves."}
     },
     "closing": {
-      "prosecution": {"speaker": "pc", "text": "The device-signature evidence matters, and the prosecution doesn't ask you to ignore it: eighteen commands came from an internal controller. But that correction doesn't erase the nine adjustments Nara really made, the warning in her own words, the premium payments, two further visits, or her deletion after the raid. A research story may explain how she entered the arrangement. You may conclude that the accumulating signs later made the criminal purpose plain enough, and that she deliberately kept the manufacture running."},
+      "prosecution": {"speaker": "pc", "text": "The machine-identity evidence matters, and the prosecution doesn't ask you to ignore it: eighteen commands came from an internal controller. But that correction doesn't erase the nine adjustments Nara really made, the warning in her own words, the premium payments, two further visits, or her deletion after the raid. A research story may explain how she entered the arrangement. You may conclude that the accumulating signs later made the criminal purpose plain enough, and that she deliberately kept the manufacture running."},
       "defence": {"speaker": "dc", "text": "Start by correcting the loudest accusation. The screen put Nara's name beside eighteen commands; the authenticated, signed records put every one on an internal controller available to the operators. What remains is a contractor making nine ordinary-range adjustments after plausible tickets, from outside a room she couldn't see. Her questions, extra pay, and panicked deletion are legitimate concerns. They support a suspicious reading, but also an innocent one. If both remain reasonably possible, knowledge and intention haven't been proved. That is reasonable doubt."}
     }
   },
@@ -90,14 +90,14 @@
     {
       "id": "b3", "kind": "witness", "speaker": "w1", "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "What electronic systems did you secure?"},
-        {"speaker": "w1", "text": "The entry server, the climate server, and two connected controllers. I disconnected them from the network, sealed them, and made read-only forensic images."},
-        {"speaker": "pc", "text": "How did you know later analysis used those same images?"},
-        {"speaker": "w1", "text": "A check recorded at seizure matched each working copy. A changed copy would no longer match."},
+        {"speaker": "pc", "text": "What systems did you secure?"},
+        {"speaker": "w1", "text": "The entry desk computer, the climate console, and two connected controllers. I disconnected them, sealed them, and kept read-only copies."},
+        {"speaker": "pc", "text": "How did you know later analysis used those same copies?"},
+        {"speaker": "w1", "text": "Each sealed copy was marked at seizure and still matched when opened. A changed copy would no longer match."},
         {"speaker": "pc", "text": "What appeared on the ordinary climate-history screen?"},
         {"speaker": "w1", "text": "The name 'Nara Kelm Service' appeared beside eighteen production-period commands. Separately, Nara's pass entered the external plant corridor on nine evenings."}
       ],
-      "text": "What electronic systems did you secure? The entry server, the climate server, and two connected controllers. I disconnected them from the network, sealed them, and made read-only forensic images. How did you know later analysis used those same images? A check recorded at seizure matched each working copy. A changed copy would no longer match. What appeared on the ordinary climate-history screen? The name 'Nara Kelm Service' appeared beside eighteen production-period commands. Separately, Nara's pass entered the external plant corridor on nine evenings.",
+      "text": "What systems did you secure? The entry desk computer, the climate console, and two connected controllers. I disconnected them, sealed them, and kept read-only copies. How did you know later analysis used those same copies? Each sealed copy was marked at seizure and still matched when opened. A changed copy would no longer match. What appeared on the ordinary climate-history screen? The name 'Nara Kelm Service' appeared beside eighteen production-period commands. Separately, Nara's pass entered the external plant corridor on nine evenings.",
       "surface_persuasion": 0.92, "true_weight": 0.37, "direction": "guilt", "reveal_stamp": "misleading",
       "reveal_note": "The screen and access log were authentically preserved, but the displayed account label did not identify which device issued a command.",
       "tags": ["identity", "method", "digital_forensics"]
@@ -221,43 +221,43 @@
       "id": "b11", "kind": "witness", "speaker": "w2", "mode": "examination",
       "turns": [
         {"speaker": "dc", "text": "What is your field, Doctor Orrel?"},
-        {"speaker": "w2", "text": "I examine industrial control systems and signed device records. I was not employed by the company, the regulator, or Nara."},
+        {"speaker": "w2", "text": "I examine industrial control records. I was not employed by the company, the regulator, or Nara."},
         {"speaker": "dc", "text": "What material did you receive?"},
-        {"speaker": "w2", "text": "The regulator's read-only server image and two controllers, each under a numbered seal. The seals were intact when I opened them."},
+        {"speaker": "w2", "text": "The regulator's sealed read-only copies and two controllers under numbered seals. The seals were intact when I opened them."},
         {"speaker": "dc", "text": "How did you test integrity?"},
-        {"speaker": "w2", "text": "My copies matched the sealed seizure originals. I separately checked each device signature against the manufacturer's published verification record."}
+        {"speaker": "w2", "text": "My working copies matched those sealed copies marked at seizure. I then checked which machine actually sent each command."}
       ],
-      "text": "What is your field, Doctor Orrel? I examine industrial control systems and signed device records. I was not employed by the company, the regulator, or Nara. What material did you receive? The regulator's read-only server image and two controllers, each under a numbered seal. The seals were intact when I opened them. How did you test integrity? My copies matched the sealed seizure originals. I separately checked each device signature against the manufacturer's published verification record.",
+      "text": "What is your field, Doctor Orrel? I examine industrial control records. I was not employed by the company, the regulator, or Nara. What material did you receive? The regulator's sealed read-only copies and two controllers under numbered seals. The seals were intact when I opened them. How did you test integrity? My working copies matched those sealed copies marked at seizure. I then checked which machine actually sent each command.",
       "surface_persuasion": 0.48, "true_weight": 0.55, "direction": "innocence", "reveal_stamp": "minor",
-      "reveal_note": "The sealed exhibits, matching copies, and verified signatures establish custody and integrity before the technical conclusion is considered.",
-      "tags": ["digital_forensics", "procedure", "credibility"]
+      "reveal_note": "The sealed exhibits and matching copies establish custody before the source conclusion is considered.",
+      "tags": ["procedure", "credibility", "identity"]
     },
     {
       "id": "b12", "kind": "witness", "speaker": "w2", "mode": "examination",
       "turns": [
         {"speaker": "dc", "text": "Please explain the two identity fields in a command record."},
-        {"speaker": "w2", "text": "The account label is a name shown to users. Anyone with administrator access can edit it. The device signature is a fixed identifier built into the sending device."},
-        {"speaker": "dc", "text": "What did the signed identifiers show here?"},
+        {"speaker": "w2", "text": "The account label is a name shown to users. Anyone with administrator access can edit it. The sending machine has its own fixed identity built in."},
+        {"speaker": "dc", "text": "What did the machine identities show here?"},
         {"speaker": "w2", "text": "All eighteen commands displayed as 'Nara Kelm Service' came from one controller inside the suite. Three operators had access to it."},
         {"speaker": "dc", "text": "And the nine adjustments everyone agrees Nara made?"},
-        {"speaker": "w2", "text": "Those carry her handset's different device signature. The system preserves two separate sets, though the ordinary screen made them look alike."}
+        {"speaker": "w2", "text": "Those came from her handset, a different machine. The system keeps both sets, though the ordinary screen made them look alike."}
       ],
-      "text": "Please explain the two identity fields in a command record. The account label is a name shown to users. Anyone with administrator access can edit it. The device signature is a fixed identifier built into the sending device. What did the signed identifiers show here? All eighteen commands displayed as 'Nara Kelm Service' came from one controller inside the suite. Three operators had access to it. And the nine adjustments everyone agrees Nara made? Those carry her handset's different device signature. The system preserves two separate sets, though the ordinary screen made them look alike.",
+      "text": "Please explain the two identity fields in a command record. The account label is a name shown to users. Anyone with administrator access can edit it. The sending machine has its own fixed identity built in. What did the machine identities show here? All eighteen commands displayed as 'Nara Kelm Service' came from one controller inside the suite. Three operators had access to it. And the nine adjustments everyone agrees Nara made? Those came from her handset, a different machine. The system keeps both sets, though the ordinary screen made them look alike.",
       "surface_persuasion": 0.8, "true_weight": 0.84, "direction": "innocence", "reveal_stamp": "decisive",
-      "reveal_note": "The authenticated device-signature evidence removes eighteen apparently incriminating commands from Nara while leaving her nine genuine adjustments for the jury to assess.",
+      "reveal_note": "The machine-source evidence removes eighteen apparently incriminating commands from Nara while leaving her nine genuine adjustments for the jury to assess.",
       "tags": ["digital_forensics", "identity", "knowledge"]
     },
     {
       "id": "b13", "kind": "witness", "speaker": "w2", "mode": "cross",
       "turns": [
-        {"speaker": "pc", "text": "A device signature identifies a device, not the person using it?"},
+        {"speaker": "pc", "text": "A machine identity identifies a device, not the person using it?"},
         {"speaker": "w2", "text": "Correct. I can't identify which operator used the internal controller."},
         {"speaker": "pc", "text": "Can your examination tell us who changed the displayed account label, or why?"},
         {"speaker": "w2", "text": "No. The audit retained the final label, not the administrator's identity or purpose."},
-        {"speaker": "pc", "text": "Nor can a device signature tell us what Nara knew?"},
+        {"speaker": "pc", "text": "Nor can a machine identity tell us what Nara knew?"},
         {"speaker": "w2", "text": "No. It proves source, not state of mind. Her handset made nine other adjustments, and each benefited the suite's operation."}
       ],
-      "text": "A device signature identifies a device, not the person using it? Correct. I can't identify which operator used the internal controller. Can your examination tell us who changed the displayed account label, or why? No. The audit retained the final label, not the administrator's identity or purpose. Nor can a device signature tell us what Nara knew? No. It proves source, not state of mind. Her handset made nine other adjustments, and each benefited the suite's operation.",
+      "text": "A machine identity identifies a device, not the person using it? Correct. I can't identify which operator used the internal controller. Can your examination tell us who changed the displayed account label, or why? No. The audit retained the final label, not the administrator's identity or purpose. Nor can a machine identity tell us what Nara knew? No. It proves source, not state of mind. Her handset made nine other adjustments, and each benefited the suite's operation.",
       "surface_persuasion": 0.65, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
       "reveal_note": "The prosecution fairly confines the exculpatory record: it corrects attribution but does not decide knowledge or explain Nara's genuine conduct.",
       "tags": ["digital_forensics", "knowledge", "causation"]
@@ -272,7 +272,7 @@
   ],
   "checkins": [],
   "reference_verdict": "Not Guilty",
-  "twist": "The authors' reference resolution is Not Guilty. The authenticated device-signature records show that an internal suite controller—not Nara's handset—issued the eighteen commands carrying her displayed account name, while restricted access and the research cover story leave a reasonable possibility that her nine real visits were unwitting. The strongest prosecution interpretation remains substantial: Nara recognised abnormal demand, returned twice, accepted premium pay, and deleted messages after the raid. Those facts support suspicion, but do not prove beyond reasonable doubt that she knew about controlled-drug manufacture.",
+  "twist": "The authors' reference resolution is Not Guilty. The authenticated machine-identity records show that an internal suite controller—not Nara's handset—issued the eighteen commands carrying her displayed account name, while restricted access and the research cover story leave a reasonable possibility that her nine real visits were unwitting. The strongest prosecution interpretation remains substantial: Nara recognised abnormal demand, returned twice, accepted premium pay, and deleted messages after the raid. Those facts support suspicion, but do not prove beyond reasonable doubt that she knew about controlled-drug manufacture.",
   "difficulty_target": 0.68,
   "jury": {
     "jurors": [
