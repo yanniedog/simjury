@@ -9,7 +9,10 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
+  # Bootstrap compatibility: #252's base script posts via GraphQL addComment,
+  # which requires PR write. The script in this PR switches to issues REST;
+  # the immediate follow-up removes this temporary permission.
+  pull-requests: write
   issues: write
 
 concurrency:
