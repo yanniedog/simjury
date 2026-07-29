@@ -119,12 +119,15 @@ function resolveRepo() {
 
 function resolvePr(prArg, branch) {
   if (prArg) {
-    const r = gh(['pr', 'view', String(prArg), '--json', 'number,createdAt,headRefName'], { json: true });
+    const r = gh(
+      ['pr', 'view', String(prArg), '--json', 'number,createdAt,headRefName,state,mergedAt'],
+      { json: true },
+    );
     if (!r.ok) return { error: r.error };
     return { pr: r.data };
   }
   if (!branch) return { pr: null };
-  const r = gh(['pr', 'list', '--state', 'open', '--head', branch, '--json', 'number,createdAt,headRefName'], {
+  const r = gh(['pr', 'list', '--state', 'open', '--head', branch, '--json', 'number,createdAt,headRefName,state,mergedAt'], {
     json: true,
   });
   if (!r.ok) return { error: r.error };
@@ -351,11 +354,12 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
     }
   }
 
-  // Merge protection: always require the quiet window so peer bots (incl. CodeRabbit)
-  // get a chance to finish posting before presence goes green. CI retries cover the wait.
+  // Merge protection: require the quiet window so peer bots (incl. CodeRabbit)
+  // finish posting before presence goes green. Do NOT require other CI checks —
+  // validate is a separate required status, and workflow_run/issue_comment check
+  // runs attach to the default-branch SHA so they never clear a PR-head failure.
   const enforceQuiet = process.env.BOT_WAIT_SKIP_QUIET !== '1';
   if (
-    checksReady &&
     (minElapsed || singleShot) &&
     allRequiredPosted &&
     (quiet || (!enforceQuiet && singleShot))
@@ -367,9 +371,10 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
       !quiet && !enforceQuiet && singleShot
         ? ' (single-shot; quiet window skipped)'
         : `; ${QUIET_WINDOW_SEC}s quiet`;
+    const pendingNote = !checksReady ? ' (CI still settling — not blocking presence)' : '';
     return {
       status: 'ready',
-      message: `Bot wait satisfied (required bots posted since anchor${quietNote}). Clear to sweep threads.${suffix}`,
+      message: `Bot wait satisfied (required bots posted since anchor${quietNote}). Clear to sweep threads.${suffix}${pendingNote}`,
       lastBotAt: lastBotAt?.toISOString() || null,
       botsSeen: seenLogins,
       missing: [],
@@ -387,20 +392,6 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
         botsSeen: seenLogins,
       };
     }
-    // Aged PR with bots present but CI still settling: keep waiting (exit 2) so
-    // the presence gate can re-fire on workflow_run instead of sticky-red forever.
-    if (allRequiredPosted && !checksReady) {
-      return {
-        status: 'waiting',
-        message:
-          `Required bots posted since aged anchor; waiting for CI to settle before clearing presence gate.`,
-        elapsedMs,
-        remainingCapMs: 0,
-        lastBotAt: lastBotAt?.toISOString() || null,
-        botsSeen: seenLogins,
-        missing: [],
-      };
-    }
     // Never green at the safety cap without the quiet window — a late bot event
     // must still wait QUIET_WINDOW_SEC before merge protection clears.
     return {
@@ -412,7 +403,6 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
   }
 
   const waitParts = [];
-  if (!checksReady) waitParts.push('CI checks still pending');
   if (missing.length) {
     const crWaiting = missing.some((slot) => alternativesForSlot(slot).includes('coderabbit'));
     waitParts.push(`waiting for required bot(s): ${missing.join(', ')} (${formatRequiredKeys(missing)})`);
@@ -502,6 +492,12 @@ async function main() {
   }
 
   const prNumber = resolved.pr.number;
+  // Post-merge workflow_run on main still resolves the squash commit → PR number.
+  // Presence is moot after merge; do not paint a sticky red check for quiet/CI wait.
+  if (resolved.pr.mergedAt || resolved.pr.state === 'MERGED') {
+    console.log(`>>> Bot wait skipped for PR #${prNumber} (already merged).`);
+    process.exit(0);
+  }
   const repo = resolveRepo();
   if (!repo) {
     console.error('>>> BOT WAIT ERROR: Could not resolve repository (gh repo view).');
