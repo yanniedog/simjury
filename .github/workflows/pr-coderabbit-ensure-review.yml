@@ -1,32 +1,17 @@
 name: pr-coderabbit-ensure-review
 
-# Durable CodeRabbit ensure: no long sleeps (those get cancelled).
-# Every 15 minutes + on demand:
-#   - OPEN PRs: when rate-limit wait elapsed / ack-only / missing proper review → @coderabbitai full review
-#   - CLOSED: reopen + request
-#   - MERGED: request on merged PR
-# Stops only after a *proper* CR review (not rate-limit or command ack).
+# Legacy diagnostic only. Scheduled fan-out was removed because it repeatedly
+# re-reviewed clean/merged PRs and exhausted CodeRabbit quota. The exact-head
+# bot-presence contract now owns all automatic requests.
 on:
-  schedule:
-    - cron: "*/15 * * * *"
   workflow_dispatch:
     inputs:
       pr_number:
-        description: "Optional single PR number"
-        required: false
+        description: "Single open PR number"
+        required: true
         type: string
-      lookback_days:
-        description: "Days of closed/merged history to scan"
-        required: false
-        type: string
-        default: "14"
       dry_run:
         description: "Dry run"
-        required: false
-        type: boolean
-        default: false
-      open_only:
-        description: "Only scan open PRs"
         required: false
         type: boolean
         default: false
@@ -53,21 +38,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          CR_RECOVERY_LOOKBACK_DAYS: ${{ inputs.lookback_days || '14' }}
           CR_ENSURE_PR_NUMBER: ${{ inputs.pr_number }}
           CR_ENSURE_DRY_RUN: ${{ inputs.dry_run }}
-          CR_ENSURE_OPEN_ONLY: ${{ inputs.open_only }}
-          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
-          ARGS=(--lookback-days "${CR_RECOVERY_LOOKBACK_DAYS}")
-          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ -n "${CR_ENSURE_PR_NUMBER:-}" ]; then
-            ARGS+=(--pr "${CR_ENSURE_PR_NUMBER}")
-          fi
+          ARGS=(--pr "${CR_ENSURE_PR_NUMBER}" --open-only)
           if [ "${CR_ENSURE_DRY_RUN:-false}" = "true" ]; then
             ARGS+=(--dry-run)
-          fi
-          if [ "${CR_ENSURE_OPEN_ONLY:-false}" = "true" ]; then
-            ARGS+=(--open-only)
           fi
           npm run pr:coderabbit-ensure-review -- "${ARGS[@]}"

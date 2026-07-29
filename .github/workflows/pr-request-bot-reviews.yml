@@ -1,6 +1,7 @@
 name: pr-request-bot-reviews
 
-# Nudge review bots that may not auto-fire (Codex) or may lag (CodeRabbit).
+# CodeRabbit is owned exclusively by pr-bot-presence-gate to avoid duplicate
+# quota consumption. This workflow only nudges the peer Codex bot.
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review]
@@ -24,44 +25,32 @@ jobs:
   request-bot-reviews:
     if: >-
       github.event_name == 'workflow_dispatch'
-      || github.event.pull_request != null
+      || (github.event.pull_request != null && github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha || 'main' }}
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-      - name: Skip gate-exempt PRs
-        id: gate_exempt
+      - name: Resolve PR
+        id: pr
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-          PR_AUTHOR_TYPE: ${{ github.event.pull_request.user.type }}
         run: |
           case "${{ github.event_name }}" in
             workflow_dispatch) PR="${{ inputs.pr_number }}" ;;
             *)                 PR="${{ github.event.pull_request.number }}" ;;
           esac
           if [ -z "$PR" ] || [ "$PR" = "null" ]; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            exit 0
+            exit 1
           fi
-          export PR
-          EXEMPT=$(node scripts/pr-gate-exempt-reason.mjs || true)
-          if [ -n "$EXEMPT" ]; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "PR #$PR gate-exempt ($EXEMPT)"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-            echo "pr=$PR" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Request Codex + CodeRabbit reviews
-        if: steps.gate_exempt.outputs.skip != 'true'
+          echo "number=$PR" >> "$GITHUB_OUTPUT"
+      - name: Request Codex review
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
         run: |
-          PR="${{ steps.gate_exempt.outputs.pr }}"
+          PR="${{ steps.pr.outputs.number }}"
           node scripts/request-codex-review.mjs --pr "$PR"
-          node scripts/request-coderabbit-review.mjs --pr "$PR"

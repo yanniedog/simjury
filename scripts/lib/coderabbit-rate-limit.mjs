@@ -61,7 +61,9 @@ export function latestRateLimitEvent(comments) {
     if (!isCoderabbitLogin(login)) continue;
     const body = String(c.body || '');
     if (!isRateLimitBody(body)) continue;
-    const createdAt = c.createdAt || c.created_at;
+    // CodeRabbit edits one long-lived rate-limit comment after later attempts.
+    // Use its update time so retry timing follows the latest vendor response.
+    const createdAt = c.updatedAt || c.updated_at || c.createdAt || c.created_at;
     if (!createdAt) continue;
     const parsed = parseAvailableInMinutes(body);
     const waitMinutes = parsed == null ? 60 : parsed;

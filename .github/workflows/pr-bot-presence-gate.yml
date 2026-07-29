@@ -1,45 +1,35 @@
 name: pr-bot-presence-gate
 
-# Single-shot bot presence check. Re-fires on PR lifecycle + bot review/comment events.
-# Also re-runs after ci/validate completes so the gate does not fail while CI is still pending.
+# One trusted, head-scoped controller. It requests exactly one CodeRabbit full
+# review per head, waits through vendor quota, and accepts only CodeRabbit's
+# "Review completed" commit status on that exact SHA.
+#
+# Bootstrap: workflow YAML comes from the PR, but scripts execute from the base
+# SHA. Until this PR lands, base may lack `pr:coderabbit-contract` — fall back
+# to the legacy wait-for-bots path. Chore / bot-authored PRs stay gate-exempt.
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-  pull_request_review:
-    types: [submitted]
-  issue_comment:
-    types: [created]
-  workflow_run:
-    workflows: [ci]
-    types: [completed]
-  workflow_dispatch:
-    inputs:
-      pr_number:
-        description: Pull request number
-        required: true
-        type: string
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
 
 permissions:
   contents: read
   pull-requests: read
-  issues: read
+  issues: write
 
 concurrency:
-  group: bot-presence-gate-${{ github.event.pull_request.number || github.event.issue.number || inputs.pr_number || github.run_id }}
-  cancel-in-progress: false
+  group: bot-presence-gate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
   bot-presence-gate:
-    if: >-
-      github.event_name == 'workflow_dispatch'
-      || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
-      || github.event.pull_request != null
-      || github.event.review != null
-      || (github.event_name == 'issue_comment' && github.event.issue.pull_request != null)
+    if: github.event.pull_request.draft == false && github.event.action != 'converted_to_draft'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 240
     steps:
+      # Execute trusted policy from the base SHA, never PR-controlled scripts.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
@@ -47,23 +37,10 @@ jobs:
         id: gate_exempt
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-          PR_AUTHOR_TYPE: ${{ github.event.pull_request.user.type }}
         run: |
-          case "${{ github.event_name }}" in
-            workflow_dispatch) PR="${{ inputs.pr_number }}" ;;
-            workflow_run) PR="$(gh api "repos/${{ github.repository }}/commits/${{ github.event.workflow_run.head_sha }}/pulls" --jq '.[0].number')" ;;
-            issue_comment)     PR="${{ github.event.issue.number }}" ;;
-            pull_request_review) PR="${{ github.event.pull_request.number }}" ;;
-            *)                 PR="${{ github.event.pull_request.number }}" ;;
-          esac
-          if [ -z "$PR" ] || [ "$PR" = "null" ]; then
-            echo "No PR associated with this event; skipping bot-presence-gate."
-            exit 0
-          fi
-          export PR
-          EXEMPT=$(node scripts/pr-gate-exempt-reason.mjs || true)
+          set -euo pipefail
+          PR="${{ github.event.pull_request.number }}"
+          EXEMPT="$(node scripts/pr-gate-exempt-reason.mjs "$PR" || true)"
           if [ -n "$EXEMPT" ]; then
             echo "gate_exempt=true" >> "$GITHUB_OUTPUT"
             echo "gate_exempt_reason=$EXEMPT" >> "$GITHUB_OUTPUT"
@@ -75,40 +52,46 @@ jobs:
         if: steps.gate_exempt.outputs.gate_exempt == 'true'
         run: |
           echo "bot-presence-gate: skipped (${{ steps.gate_exempt.outputs.gate_exempt_reason }} — human bot review not required)"
-      - name: Required bot wait gate (single shot)
+      - name: Detect CodeRabbit contract script on base
         if: steps.gate_exempt.outputs.gate_exempt != 'true'
+        id: contract
+        run: |
+          if node -e "const p=require('./package.json'); process.exit(p.scripts&&p.scripts['pr:coderabbit-contract']?0:1)"; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "Base SHA lacks pr:coderabbit-contract; using legacy wait-for-bots"
+          fi
+      - name: Require exact-head CodeRabbit completion
+        if: steps.gate_exempt.outputs.gate_exempt != 'true' && steps.contract.outputs.available == 'true'
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          # Merge protection: CodeRabbit is mandatory; plus one peer from the OR-group.
-          # Sourcery may skip docs/setup PRs — peer OR covers Codex/Cursor. Gemini is sunset.
-          # Cap ≥120m so CodeRabbit rate-limit retry Action can re-request before timeout.
+        run: >-
+          npm run pr:coderabbit-contract --
+          --pr "${{ github.event.pull_request.number }}"
+          --watch --timeout-min 220
+      - name: Require CodeRabbit (legacy until contract lands on main)
+        if: steps.gate_exempt.outputs.gate_exempt != 'true' && steps.contract.outputs.available != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
           SIMJURY_BOT_WAIT_REQUIRED: sourcery|codex|cursor,coderabbit
           BOT_WAIT_IGNORE_CHECK_NAMES: bot-presence-gate,bot-feedback-gate,pr-bot-presence-gate,pr-bot-feedback-check
           BOT_WAIT_MAX_MIN: "240"
-        run: |
-          case "${{ github.event_name }}" in
-            workflow_dispatch) PR="${{ inputs.pr_number }}" ;;
-            workflow_run) PR="$(gh api "repos/${{ github.repository }}/commits/${{ github.event.workflow_run.head_sha }}/pulls" --jq '.[0].number')" ;;
-            issue_comment)     PR="${{ github.event.issue.number }}" ;;
-            pull_request_review) PR="${{ github.event.pull_request.number }}" ;;
-            *)                 PR="${{ github.event.pull_request.number }}" ;;
-          esac
-          if [ -z "$PR" ] || [ "$PR" = "null" ]; then
-            echo "No PR associated with this event; skipping bot-presence-gate."
-            exit 0
-          fi
-          # Single-shot only — no sleep-poll. Gate re-fires on review/comment/ci
-          # events; agents park with: npm run pr:arm-and-park -- --pr "$PR"
-          set +e
-          npm run wait-for-bots -- --pr "$PR"
-          code=$?
-          set -e
-          if [ "$code" -eq 0 ]; then
-            exit 0
-          fi
-          if [ "$code" -eq 2 ]; then
-            echo "::warning::Bot wait not ready (bots/CI/quiet) — gate re-fires on review/comment/ci; agents: npm run pr:arm-and-park -- --pr $PR"
-            exit 1
-          fi
-          exit "$code"
+        run: >-
+          npm run wait-for-bots --
+          --pr "${{ github.event.pull_request.number }}"
+      - name: Require a current peer bot
+        if: steps.gate_exempt.outputs.gate_exempt != 'true' && steps.contract.outputs.available == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          BOT_WAIT_IGNORE_CHECK_NAMES: bot-presence-gate,bot-feedback-gate
+          BOT_WAIT_MAX_MIN: "220"
+        run: >-
+          npm run wait-for-bots --
+          --pr "${{ github.event.pull_request.number }}"
+          --since "${{ github.event.pull_request.updated_at }}"
+          --require-bots "sourcery|codex|cursor"
+          --watch

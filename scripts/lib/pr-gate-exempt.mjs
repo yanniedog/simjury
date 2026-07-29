@@ -1,10 +1,8 @@
 /**
  * PRs that skip bot-presence-gate, bot-feedback-gate, and wait-for-bots.
  *
- * Policy: Gemini / Codex / Sourcery are required only on human-initiated work PRs.
- * Skip for:
- *   - PRs opened by GitHub bots (github-actions[bot], dependabot, …)
- *   - Conventional chore PRs (chore: / chore(scope):)
+ * Policy: protected PRs are never exempt based on mutable titles or author
+ * naming. A `chore:` rename previously let human PRs bypass required reviews.
  */
 import { ghJson } from './gh-pr-review-threads.mjs';
 
@@ -33,18 +31,10 @@ export function isChorePrTitle(title) {
 
 /**
  * @param {{ title?: string, authorLogin?: string, authorType?: string, author?: object }} meta
- * @returns {'bot-authored'|'chore'|null}
+ * @returns {null}
  */
 export function gateExemptReasonFromPrMeta(meta = {}) {
-  const title = String(meta.title || '').trim();
-  const author = meta.author || {
-    login: meta.authorLogin,
-    __typename: meta.authorType,
-    type: meta.authorType,
-  };
-
-  if (isBotPrAuthor(author)) return 'bot-authored';
-  if (isChorePrTitle(title)) return 'chore';
+  void meta;
   return null;
 }
 
@@ -63,7 +53,7 @@ export function isGateExemptPr(prNumber) {
 
 /**
  * @param {number|string} prNumber
- * @returns {'bot-authored'|'chore'|null}
+ * @returns {null}
  */
 export function gateExemptReason(prNumber) {
   const view = ghJson(['pr', 'view', String(prNumber), '--json', 'title,author']);
