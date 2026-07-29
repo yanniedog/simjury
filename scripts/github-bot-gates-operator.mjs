@@ -11,11 +11,11 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { PR_CI_CHECK_NAME, BOT_GATE_CHECK_NAMES } from './lib/pr-gates-lib.mjs';
+import { MERGE_REQUIRED_CHECK_NAMES } from './lib/pr-gates-lib.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const RULESET_JSON = join(repoRoot, '.github', 'rulesets', 'main-bot-gates.json');
-const REQUIRED_CHECKS = [PR_CI_CHECK_NAME, ...BOT_GATE_CHECK_NAMES];
+const REQUIRED_CHECKS = MERGE_REQUIRED_CHECK_NAMES;
 
 function parseArgs(argv) {
   const out = { verifyPr: null, dryRunProtection: false, help: false };
@@ -34,6 +34,7 @@ function printPolicy() {
 
 Required on merge (human work PRs) — squash blocked until green:
   - validate                authority docs and PR-gate tooling
+  - local-llm-review        local qwen2.5-coder:7b defect gate
   - bot-presence-gate       sourcery|codex|cursor,coderabbit (peer OR + mandatory CodeRabbit)
   - bot-feedback-gate       review thread resolution on human PRs
 

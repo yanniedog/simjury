@@ -13,6 +13,8 @@ export const REPO_ROOT = path.resolve(__dirname, '../..');
 
 export const BOT_GATE_CHECK_NAMES = ['bot-presence-gate', 'bot-feedback-gate'];
 export const PR_CI_CHECK_NAME = 'validate';
+export const LOCAL_LLM_REVIEW_CHECK_NAME = 'local-llm-review';
+export const MERGE_REQUIRED_CHECK_NAMES = [PR_CI_CHECK_NAME, ...BOT_GATE_CHECK_NAMES, LOCAL_LLM_REVIEW_CHECK_NAME];
 
 const DEFAULT_TIMEOUT_MIN = 35;
 const DEFAULT_POLL_SEC = 45;

@@ -47,7 +47,7 @@ async function main() {
 
 Gates enforced:
   branch-fresh             PR branch up to date with main
-  ci-required              Required GitHub checks green (validate + bot gates when protection active)
+  ci-required              Required GitHub checks green (validate + local LLM + bot gates)
   github-bot-gates         bot-presence-gate + bot-feedback-gate when reported
   wait-for-bots            npm run wait-for-bots -- --pr N (exit 0)
   pr-bot-feedback-check    npm run pr:bot-feedback-check -- --pr N (exit 0)`);

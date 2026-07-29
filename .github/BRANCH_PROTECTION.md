@@ -12,7 +12,7 @@ Configure in GitHub **Settings → Rules → Rulesets** (preferred) or **Branche
 | Require a pull request before merging | Yes |
 | Require approvals | 0 for solo operator (PR still required) |
 | Require status checks to pass | Yes |
-| Required checks | `validate`, `bot-presence-gate`, `bot-feedback-gate` |
+| Required checks | `validate`, `local-llm-review`, `bot-presence-gate`, `bot-feedback-gate` |
 | Require conversation resolution before merging | Yes |
 | Do not allow bypassing | **Required** |
 | Allow squash merging | Yes (only) |
@@ -22,11 +22,12 @@ Configure in GitHub **Settings → Rules → Rulesets** (preferred) or **Branche
 | Workflow / job | Check name | Purpose |
 |----------------|------------|---------|
 | `ci` | **validate** | Authority docs and PR-gate tooling |
+| `pr-local-llm-review` | **local-llm-review** | Trusted-base, read-only Qwen 7B defect review on the private Windows runner |
 | `pr-bot-presence-gate` | **bot-presence-gate** | Peer bot (`sourcery\|codex\|cursor`) **and** mandatory CodeRabbit since anchor + quiet window |
 | `pr-bot-feedback-check` | **bot-feedback-gate** | Review threads resolved |
 | `pr-bot-close-guard` | (side-effect) | Reopens PRs closed with outstanding bot obligations |
 
-All three required checks must pass. **Do not squash-merge until `bot-presence-gate` and `bot-feedback-gate` are green.**
+All four required checks must pass. **Do not squash-merge until the local review and both bot gates are green.**
 
 ## Operator setup (one-time)
 
