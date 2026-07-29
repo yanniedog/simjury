@@ -285,7 +285,7 @@
   "jury": {
     "jurors": [
       {
-        "id": "J-01", "seat": 2, "label": "Juror 2 — Anya", "persona": "Anya listens for what a witness personally observed and resists filling gaps with confidence.", "register": "formal", "arc": "principled_holdout",
+        "id": "J-01", "gender": "female", "seat": 2, "label": "Juror 2 — Anya", "persona": "Anya listens for what a witness personally observed and resists filling gaps with confidence.", "register": "formal", "arc": "principled_holdout",
         "initial": { "position": "NG", "confidence": 76 }, "weights": { "credibility": 2, "burden": 2, "timeline": 1 },
         "lines": { "agree": ["Can we separate what Elia saw from what she assumed?", "The rear-door record doesn’t prove Iona left, but it means she may have."], "pushback": ["I disagree. The transit record confirms Elia’s journey, not Iona’s location.", "Elia lied twice; why would her unconfirmed assumption make us sure?"], "concede": ["I accept the coat request is real prosecution evidence. I still need the missing location link."], "holdout": ["I’m not crossing that gap just because Iona’s explanation is awkward."], "final": ["For me, the prosecution proved concealment, not who killed Nera."] },
         "reaction_rules": [
@@ -295,7 +295,7 @@
         ]
       },
       {
-        "id": "J-02", "seat": 3, "label": "Juror 3 — Bram", "persona": "Bram keeps replaying the vivid coat footage and needs prompting to name what it does not show.", "register": "blunt", "arc": "vibes",
+        "id": "J-02", "gender": "male", "seat": 3, "label": "Juror 3 — Bram", "persona": "Bram keeps replaying the vivid coat footage and needs prompting to name what it does not show.", "register": "blunt", "arc": "vibes",
         "initial": { "position": "G", "confidence": 58 }, "weights": { "identity": 2, "alibi": 2, "digital_forensics": 1 },
         "lines": { "agree": ["Right, the camera misses both the face and the rear door.", "If Elia’s in the coat, why did I keep seeing Iona when I watched it?"], "pushback": ["But Iona arranged the trick. Doesn’t that count for something?", "I can’t just shrug off Nera holding Iona’s clasp."], "concede": ["Wait—I was treating the coat like a face. The recording never gave us one."], "final": ["The picture looked complete before we asked what was outside its frame."] },
         "reaction_rules": [
@@ -305,7 +305,7 @@
         ]
       },
       {
-        "id": "J-03", "seat": 4, "label": "Juror 4 — Cora", "persona": "Cora writes down every time, then checks which person each timestamp actually locates.", "register": "plain", "arc": "steady",
+        "id": "J-03", "gender": "female", "seat": 4, "label": "Juror 4 — Cora", "persona": "Cora writes down every time, then checks which person each timestamp actually locates.", "register": "plain", "arc": "steady",
         "initial": { "position": "NG", "confidence": 74 }, "weights": { "timeline": 2, "causation": 2 },
         "lines": { "agree": ["At 8:52 the rear door opens; at 9:05 Elia leaves; at 9:12 Nera calls. Where’s Iona in that sequence?", "The medical window starts after the only record consistent with Iona leaving."], "pushback": ["No, the 9:12 call proves Nera was alive. It doesn’t place Iona beside her.", "Which timestamp actually closes the rear-door possibility?"], "concede": ["I’ll accept that the coat plan looks bad. It still doesn’t answer the location question."], "final": ["The times establish a homicide, but they don’t complete the identification."] },
         "reaction_rules": [
@@ -315,7 +315,7 @@
         ]
       },
       {
-        "id": "J-04", "seat": 5, "label": "Juror 5 — Dev", "persona": "Dev begins on the prosecution side but changes course when independent records do not support the same inference.", "register": "formal", "arc": "mind_changer",
+        "id": "J-04", "gender": "male", "seat": 5, "label": "Juror 5 — Dev", "persona": "Dev begins on the prosecution side but changes course when independent records do not support the same inference.", "register": "formal", "arc": "mind_changer",
         "initial": { "position": "G", "confidence": 52 }, "weights": { "identity": 2, "timeline": 2, "method": 1 },
         "lines": { "agree": ["The records are independent, but they don’t converge on Iona staying.", "The rear audit and the fracture limit point away from the prosecution’s completed timeline."], "pushback": ["I started with guilt because the coat request looked planned. What independent item takes the next step?", "Are we combining gaps, or combining proof?"], "concede": ["I’ve changed my view. The clasp and transit evidence corroborate details, not the alleged killing."], "final": ["Separate records matter only if they prove the proposition we’re deciding."] },
         "reaction_rules": [
@@ -325,7 +325,7 @@
         ]
       },
       {
-        "id": "J-05", "seat": 6, "label": "Juror 6 — Eren", "persona": "Eren asks experts to translate ranges and limits before giving scientific language extra weight.", "register": "plain", "arc": "steady",
+        "id": "J-05", "gender": "female", "seat": 6, "label": "Juror 6 — Esra", "persona": "Esra asks experts to translate ranges and limits before giving scientific language extra weight.", "register": "plain", "arc": "steady",
         "initial": { "position": "U", "confidence": 38 }, "weights": { "method": 2, "identity": 1 },
         "lines": { "agree": ["‘Recent’ sounded precise until Dr Sann said it meant a whole day.", "The match tells us whose bracelet it came from. It doesn’t tell us when it broke."], "pushback": ["Can someone point to a test that separates four o’clock from nine fifteen?", "I’m not ignoring the clasp. I’m refusing to give it a timestamp it doesn’t have."], "concede": ["All right, I’d been treating possession at death as contact at death. They aren’t the same."], "final": ["The science supports a match, not the prosecution’s time of contact."] },
         "reaction_rules": [
@@ -335,7 +335,7 @@
         ]
       },
       {
-        "id": "J-06", "seat": 7, "label": "Juror 7 — Fia", "persona": "Fia distrusts bargains and sometimes catches herself demanding answers from the accused.", "register": "blunt", "arc": "burden_drifter",
+        "id": "J-06", "gender": "female", "seat": 7, "label": "Juror 7 — Fia", "persona": "Fia distrusts bargains and sometimes catches herself demanding answers from the accused.", "register": "blunt", "arc": "burden_drifter",
         "initial": { "position": "NG", "confidence": 75 }, "weights": { "credibility": 2, "procedure": 2, "burden": 1 },
         "lines": { "agree": ["Elia told the truth about travelling only after immunity. Why should I trust the part no record confirms?", "Yes, the bargain doesn’t erase her evidence; it means we test every piece."], "pushback": ["Hold on. Iona arranged the coat trick, and I want an honest reason why.", "Elia’s account isn’t clean just because one travel record matches it."], "concede": ["The transit card confirms Elia left. I agree it stops there."], "burden_drift": ["I was about to say Iona should prove the rear-door user. That’s backwards, isn’t it?"], "final": ["Once I put the burden back, Elia’s assumption couldn’t carry the missing step."] },
         "reaction_rules": [
@@ -345,7 +345,7 @@
         ]
       },
       {
-        "id": "J-07", "seat": 8, "label": "Juror 8 — Garen", "persona": "Garen sees the coat request as planning, yet keeps asking what that planning was intended to achieve.", "register": "formal", "arc": "steady",
+        "id": "J-07", "gender": "male", "seat": 8, "label": "Juror 8 — Garen", "persona": "Garen sees the coat request as planning, yet keeps asking what that planning was intended to achieve.", "register": "formal", "arc": "steady",
         "initial": { "position": "G", "confidence": 54 }, "weights": { "intent": 2, "identity": 1, "timeline": 1 },
         "lines": { "agree": ["The request was deliberate, but was it a plan to avoid Nera or a plan to kill her?", "Planning a false appearance is probative. It still needs a connection to the homicide."], "pushback": ["I’m not comfortable dismissing a carefully arranged deception as childish.", "If the coat wasn’t about the killing, what was it about?"], "concede": ["I accept the rear-door timing gives the lesser explanation real support."], "final": ["The prosecution proved a deception, but not the murderous purpose it alleged."] },
         "reaction_rules": [
@@ -355,7 +355,7 @@
         ]
       },
       {
-        "id": "J-08", "seat": 9, "label": "Juror 9 — Hali", "persona": "Hali speaks tentatively, revisits first impressions, and distinguishes an understandable lie from a reliable account.", "register": "hesitant", "arc": "drifter",
+        "id": "J-08", "gender": "male", "seat": 9, "label": "Juror 9 — Hale", "persona": "Hale speaks tentatively, revisits first impressions, and distinguishes an understandable lie from a reliable account.", "register": "hesitant", "arc": "drifter",
         "initial": { "position": "NG", "confidence": 72 }, "weights": { "credibility": 2, "alibi": 1, "timeline": 1 },
         "lines": { "agree": ["Maybe Elia was frightened. But that explains the lie; it doesn’t verify the accusation, does it?", "I think the rear-door record matters because it supports something other than Elia’s assumption."], "pushback": ["I’m still bothered that Iona asked Elia to hide her face.", "Could the clasp in Nera’s hand really be only coincidence? I’m not sure."], "concede": ["Yes—I was letting the strange coat request answer a different question."], "final": ["I can believe parts of Elia’s account without being sure Iona killed Nera."] },
         "reaction_rules": [
@@ -365,7 +365,7 @@
         ]
       },
       {
-        "id": "J-09", "seat": 10, "label": "Juror 10 — Ivo", "persona": "Ivo keeps the discussion orderly by asking the room to test one element and one inference at a time.", "register": "formal", "arc": "foreperson",
+        "id": "J-09", "gender": "female", "seat": 10, "label": "Juror 10 — Iri", "persona": "Iri keeps the discussion orderly by asking the room to test one element and one inference at a time.", "register": "formal", "arc": "foreperson",
         "initial": { "position": "U", "confidence": 34 }, "weights": { "burden": 2, "causation": 2, "timeline": 1 },
         "lines": { "agree": ["Let’s mark what is agreed: Nera was murdered after 9:12. Identity remains separate.", "The rear-door record does not establish an alibi, but it prevents us from assuming continued presence."], "pushback": ["Which element are we addressing with that point?", "We can consider the strands together only after stating what each strand proves."], "concede": ["I accept the prosecution’s evidence establishes a deliberate killing. It still has to establish Iona caused it."], "burden_correct": ["Fia, you caught it: Iona doesn’t have to identify the rear-door user. The prosecution has to exclude the reasonable possibility."], "final": ["I’m not sure the identity element was proved, so the legal direction determines my verdict."] },
         "reaction_rules": [
@@ -375,7 +375,7 @@
         ]
       },
       {
-        "id": "J-10", "seat": 11, "label": "Juror 11 — Jessa", "persona": "Jessa notices changed accounts quickly, but will revise a sharp first reaction when the actual words are read back.", "register": "blunt", "arc": "steady",
+        "id": "J-10", "gender": "male", "seat": 11, "label": "Juror 11 — Joss", "persona": "Joss notices changed accounts quickly, but will revise a sharp first reaction when the actual words are read back.", "register": "blunt", "arc": "steady",
         "initial": { "position": "G", "confidence": 58 }, "weights": { "credibility": 2, "timeline": 1, "method": 2 },
         "lines": { "agree": ["Read Iona’s first words again. She denied a struggle, not every bit of contact.", "The lab can’t time the break. That knocks out the point I thought was strongest."], "pushback": ["She left out the rear door. I’m allowed to think that looks bad.", "Why should we accept Iona’s correction when we reject Elia’s?"], "concede": ["All right, I overstated the first interview. The omission hurts credibility; it isn’t a contradiction on the clasp."], "final": ["The changed account raised suspicion, but the expert couldn’t give it a time link."] },
         "reaction_rules": [
@@ -385,7 +385,7 @@
         ]
       },
       {
-        "id": "J-11", "seat": 12, "label": "Juror 12 — Kellan", "persona": "Kellan tests every proposed verdict against the judge’s words and invites corrections when the room shifts the burden.", "register": "plain", "arc": "steady",
+        "id": "J-11", "gender": "female", "seat": 12, "label": "Juror 12 — Kemi", "persona": "Kemi tests every proposed verdict against the judge’s words and invites corrections when the room shifts the burden.", "register": "plain", "arc": "steady",
         "initial": { "position": "G", "confidence": 52 }, "weights": { "burden": 2, "procedure": 2, "identity": 1, "alibi": 2 },
         "lines": { "agree": ["We don’t have to decide who used the rear door. We have to decide whether that possibility is reasonably open.", "The coat evidence proves a deception, not the identity of Nera’s attacker."], "pushback": ["Can we say exactly which evidence makes us sure Iona stayed?", "Elia’s bargain doesn’t make her evidence worthless, but what confirms her assumption?"], "concede": ["I came in leaning guilty. The rear record means I can’t simply place Iona upstairs."], "burden_correct": ["Not so fast—asking Iona to solve the missing minutes puts the burden on the wrong person."], "final": ["The direction answers it: I’m not sure Iona caused Nera’s death."] },
         "reaction_rules": [

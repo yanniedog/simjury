@@ -276,7 +276,7 @@ function DocketApp({
     }
     setNarrationSpeakers({
       cast: trial.cast.map((m) => ({ id: m.id, name: m.name, role_label: m.role_label })),
-      jurors: trial.jury.jurors.map((j) => ({ id: j.id, persona: j.persona })),
+      jurors: trial.jury.jurors.map((j) => ({ id: j.id, persona: j.persona, gender: j.gender })),
     })
     return clearNarrationSpeakers
   }, [trial])

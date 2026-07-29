@@ -41,14 +41,14 @@
       "w1": {"src": "/today/media/dd-0017/characters/w1.webp", "alt": "Courtroom portrait of finance manager Leda Vos.", "caption": "Fictional character portrait: Leda Vos, finance manager.", "kind": "portrait"},
       "w2": {"src": "/today/media/dd-0017/characters/w2.webp", "alt": "Courtroom portrait of station director Arin Pell.", "caption": "Fictional character portrait: Arin Pell, station director.", "kind": "portrait"},
       "w3": {"src": "/today/media/dd-0017/characters/w3.webp", "alt": "Courtroom portrait of digital systems examiner Toma Nerr.", "caption": "Fictional character portrait: Toma Nerr, digital systems examiner.", "kind": "portrait"},
-      "J-01": {"src": "/today/media/dd-0017/characters/J-01.webp", "alt": "Courtroom portrait of juror 2, Kian.", "caption": "Fictional character portrait: Kian, juror 2.", "kind": "portrait"},
+      "J-01": {"src": "/today/media/dd-0017/characters/J-01.webp", "alt": "Courtroom portrait of juror 2, Nia.", "caption": "Fictional character portrait: Nia, juror 2.", "kind": "portrait"},
       "J-02": {"src": "/today/media/dd-0017/characters/J-02.webp", "alt": "Courtroom portrait of juror 3, Vale.", "caption": "Fictional character portrait: Vale, juror 3.", "kind": "portrait"},
       "J-03": {"src": "/today/media/dd-0017/characters/J-03.webp", "alt": "Courtroom portrait of juror 4, June.", "caption": "Fictional character portrait: June, juror 4.", "kind": "portrait"},
-      "J-04": {"src": "/today/media/dd-0017/characters/J-04.webp", "alt": "Courtroom portrait of juror 5, Piri.", "caption": "Fictional character portrait: Piri, juror 5.", "kind": "portrait"},
+      "J-04": {"src": "/today/media/dd-0017/characters/J-04.webp", "alt": "Courtroom portrait of juror 5, Bren.", "caption": "Fictional character portrait: Bren, juror 5.", "kind": "portrait"},
       "J-05": {"src": "/today/media/dd-0017/characters/J-05.webp", "alt": "Courtroom portrait of juror 6, Etta.", "caption": "Fictional character portrait: Etta, juror 6.", "kind": "portrait"},
       "J-06": {"src": "/today/media/dd-0017/characters/J-06.webp", "alt": "Courtroom portrait of juror 7, Sol.", "caption": "Fictional character portrait: Sol, juror 7.", "kind": "portrait"},
-      "J-07": {"src": "/today/media/dd-0017/characters/J-07.webp", "alt": "Courtroom portrait of juror 8, Dana.", "caption": "Fictional character portrait: Dana, juror 8.", "kind": "portrait"},
-      "J-08": {"src": "/today/media/dd-0017/characters/J-08.webp", "alt": "Courtroom portrait of juror 9, Rhea.", "caption": "Fictional character portrait: Rhea, juror 9.", "kind": "portrait"},
+      "J-07": {"src": "/today/media/dd-0017/characters/J-07.webp", "alt": "Courtroom portrait of juror 8, Dane.", "caption": "Fictional character portrait: Dane, juror 8.", "kind": "portrait"},
+      "J-08": {"src": "/today/media/dd-0017/characters/J-08.webp", "alt": "Courtroom portrait of juror 9, Rami.", "caption": "Fictional character portrait: Rami, juror 9.", "kind": "portrait"},
       "J-09": {"src": "/today/media/dd-0017/characters/J-09.webp", "alt": "Courtroom portrait of juror 10, Tomi.", "caption": "Fictional character portrait: Tomi, juror 10.", "kind": "portrait"},
       "J-10": {"src": "/today/media/dd-0017/characters/J-10.webp", "alt": "Courtroom portrait of juror 11, Fen.", "caption": "Fictional character portrait: Fen, juror 11.", "kind": "portrait"},
       "J-11": {"src": "/today/media/dd-0017/characters/J-11.webp", "alt": "Courtroom portrait of juror 12, foreperson Aro.", "caption": "Fictional character portrait: Aro, foreperson and juror 12.", "kind": "portrait"}
@@ -299,7 +299,7 @@
   "jury": {
     "jurors": [
       {
-        "id": "J-01", "seat": 2, "label": "Kian", "persona": "Keeps the room focused on which person controlled the detention rather than treating every bad remark as the act itself.", "register": "formal", "arc": "principled_holdout",
+        "id": "J-01", "gender": "female", "seat": 2, "label": "Nia", "persona": "Keeps the room focused on which person controlled the detention rather than treating every bad remark as the act itself.", "register": "formal", "arc": "principled_holdout",
         "initial": {"position": "NG", "confidence": 68},
         "weights": {"procedure": 2, "coercion": 2, "burden": 1},
         "lines": {"agree": ["Yes, the first lock was lawful. The disputed act has to come later."], "pushback": ["Vale, where is the evidence that Niko could release that hold?"], "concede": ["His 'before anyone comes down' phrase is troubling. I don't dismiss it."], "burden_drift": ["Leda was plainly distressed, and that makes every uncertainty feel like guilt."], "burden_correct": ["We need proof of control and conditional purpose. Niko doesn't have to disprove either."], "final": ["My decision turns on whether the evidence proves who controlled the continuing detention."]},
@@ -310,7 +310,7 @@
         ]
       },
       {
-        "id": "J-02", "seat": 3, "label": "Vale", "persona": "Begins from Niko's recorded words, then tests whether the director's interpretation is the only one the words permit.", "register": "plain", "arc": "steady",
+        "id": "J-02", "gender": "male", "seat": 3, "label": "Vale", "persona": "Begins from Niko's recorded words, then tests whether the director's interpretation is the only one the words permit.", "register": "plain", "arc": "steady",
         "initial": {"position": "G", "confidence": 62},
         "weights": {"coercion": 2, "credibility": 2, "intent": 1},
         "lines": {"agree": ["He put the report first and people coming down second. That's real evidence."], "pushback": ["But did he answer Arin's question about Leda? No—he dodged it."], "concede": ["All right, Kian. The call sounds conditional, but it never actually states the condition charged."], "burden_drift": ["I keep wanting Niko to explain why he chose those exact words."], "burden_correct": ["An explanation would help, but the prosecution still has to prove what he intended."], "final": ["I have to decide whether Niko's phrasing is a condition or an angry sequence of topics."]},
@@ -321,7 +321,7 @@
         ]
       },
       {
-        "id": "J-03", "seat": 4, "label": "June", "persona": "Refuses to turn a shared system event into a personal act unless the attribution survives cross-examination.", "register": "blunt", "arc": "steady",
+        "id": "J-03", "gender": "female", "seat": 4, "label": "June", "persona": "Refuses to turn a shared system event into a personal act unless the attribution survives cross-examination.", "register": "blunt", "arc": "steady",
         "initial": {"position": "NG", "confidence": 55},
         "weights": {"method": 2, "identity": 1, "intent": 2},
         "lines": {"agree": ["RF-2 is a credential, not a person. The log can't choose between its two users."], "pushback": ["No, Piri—standing by a panel isn't the same as entering a code."], "concede": ["I accept Niko had access. That makes the prosecution's inference possible."], "burden_drift": ["Because he was floor controller, I catch myself treating the whole system as his."], "burden_correct": ["The charge needs intentional help with detention, not merely a job title."], "final": ["I won't turn shared RF-2 access into a named user without evidence."]},
@@ -332,7 +332,7 @@
         ]
       },
       {
-        "id": "J-04", "seat": 5, "label": "Piri", "persona": "Feels Leda's fear strongly, but can separate what Leda experienced from what she learned only after the event.", "register": "plain", "arc": "vibes",
+        "id": "J-04", "gender": "male", "seat": 5, "label": "Bren", "persona": "Feels Leda's fear strongly, but can separate what Leda experienced from what she learned only after the event.", "register": "plain", "arc": "vibes",
         "initial": {"position": "G", "confidence": 68},
         "weights": {"credibility": 2, "coercion": 2, "method": 1},
         "lines": {"agree": ["Leda asked to leave and the door stayed shut. I can't lose sight of that."], "pushback": ["June, she saw Niko at the panel. Doesn't that count for something?"], "concede": ["Wait—Leda didn't hear the finance demand. Arin told her about it the next day."], "burden_drift": ["Her fear makes me want to join every later fact into one story."], "burden_correct": ["Fear proves her experience was real. It doesn't identify the person controlling the hold."], "final": ["I believe Leda's account; I still have to decide what it proves about Niko."]},
@@ -343,7 +343,7 @@
         ]
       },
       {
-        "id": "J-05", "seat": 6, "label": "Etta", "persona": "Changes position when the room distinguishes a reprehensible workplace threat from the exact conditional leverage in the statute.", "register": "formal", "arc": "mind_changer",
+        "id": "J-05", "gender": "female", "seat": 6, "label": "Etta", "persona": "Changes position when the room distinguishes a reprehensible workplace threat from the exact conditional leverage in the statute.", "register": "formal", "arc": "mind_changer",
         "initial": {"position": "U", "confidence": 38},
         "weights": {"identity": 2, "coercion": 2, "intent": 2},
         "lines": {"agree": ["The call gives Niko a motive to use the lock. It doesn't prove that he did."], "pushback": ["Can someone point to the actual condition? I hear an implication, not an answer."], "concede": ["The shared credential changes this for me. I had treated RF-2 as Niko's signature."], "burden_drift": ["His grievance is so personal that I start assuming the hold must be personal too."], "burden_correct": ["The statute asks whether release was the leverage, not whether the argument was unacceptable."], "final": ["My verdict will keep the workplace demand separate from the statutory release condition."]},
@@ -354,7 +354,7 @@
         ]
       },
       {
-        "id": "J-06", "seat": 7, "label": "Sol", "persona": "Gives emergency uncertainty genuine weight without accepting it as a blanket excuse for what followed.", "register": "blunt", "arc": "drifter",
+        "id": "J-06", "gender": "female", "seat": 7, "label": "Sol", "persona": "Gives emergency uncertainty genuine weight without accepting it as a blanket excuse for what followed.", "register": "blunt", "arc": "drifter",
         "initial": {"position": "NG", "confidence": 60},
         "weights": {"procedure": 2, "timeline": 2, "coercion": 1},
         "lines": {"agree": ["The system may have cleared at 4:18. That doesn't tell us when the panel told Niko."], "pushback": ["Arin told him during the call. The safety explanation gets weaker after that."], "concede": ["I accept the call put Niko on notice somewhere in that four-minute window."], "burden_drift": ["Once Arin says 'all-clear,' I want Niko to justify every second afterward."], "burden_correct": ["A late warning can prove knowledge, but it still doesn't prove who set or controlled the hold."], "final": ["I won't make the four-minute window exact by guessing."]},
@@ -365,7 +365,7 @@
         ]
       },
       {
-        "id": "J-07", "seat": 8, "label": "Dana", "persona": "Initially trusts the apparent precision of the access record, then attends to what its attribution field actually means.", "register": "formal", "arc": "steady",
+        "id": "J-07", "gender": "male", "seat": 8, "label": "Dane", "persona": "Initially trusts the apparent precision of the access record, then attends to what its attribution field actually means.", "register": "formal", "arc": "steady",
         "initial": {"position": "G", "confidence": 55},
         "weights": {"method": 2, "timeline": 2, "intent": 1},
         "lines": {"agree": ["A local hold after an all-clear is powerful evidence that someone made a choice."], "pushback": ["I called RF-2 Niko's code at first. It wasn't; two people could use it."], "concede": ["Toma's answer is precise: the audit identifies the credential, not the operator."], "burden_drift": ["A timestamp looks exact, so I forget the display and call clocks weren't exact."], "burden_correct": ["A reliable log can still be reliable evidence of less than the prosecution needs."], "final": ["The audit proves a hold, and I'll give its missing attribution full weight."]},
@@ -376,7 +376,7 @@
         ]
       },
       {
-        "id": "J-08", "seat": 9, "label": "Rhea", "persona": "Separates moral judgment about Niko's demand from the prosecution's burden on each statutory element.", "register": "plain", "arc": "principled_holdout",
+        "id": "J-08", "gender": "male", "seat": 9, "label": "Rami", "persona": "Separates moral judgment about Niko's demand from the prosecution's burden on each statutory element.", "register": "plain", "arc": "principled_holdout",
         "initial": {"position": "NG", "confidence": 52},
         "weights": {"coercion": 2, "intent": 1, "burden": 2},
         "lines": {"agree": ["The charged leverage is Leda's release. That's the proposition we have to find."], "pushback": ["I think Niko's demand was disgraceful. That isn't a substitute for an element."], "concede": ["The phrase 'before anyone comes down' does connect the grievance to timing. I accept that."], "burden_drift": ["Because the demand was wrong, I start treating every doubtful fact as part of it."], "burden_correct": ["We aren't deciding the employment dispute. We need detention, release leverage, and knowledge."], "final": ["I can condemn the demand and still test every hostage-taking element."]},
@@ -387,7 +387,7 @@
         ]
       },
       {
-        "id": "J-09", "seat": 10, "label": "Tomi", "persona": "Trusts authenticated recordings while remaining alert to the difference between a clear voice and an ambiguous proposition.", "register": "hesitant", "arc": "drifter",
+        "id": "J-09", "gender": "female", "seat": 10, "label": "Tomi", "persona": "Trusts authenticated recordings while remaining alert to the difference between a clear voice and an ambiguous proposition.", "register": "hesitant", "arc": "drifter",
         "initial": {"position": "U", "confidence": 34},
         "weights": {"digital_forensics": 2, "credibility": 2, "timeline": 1},
         "lines": {"agree": ["Both files are authentic. That means we should hear their actual words, not summaries."], "pushback": ["Sorry—where does Niko say Leda's release depends on withdrawal? He never finishes that thought."], "concede": ["I had trusted the displayed call time. Toma's clock correction makes the sequence less exact."], "burden_drift": ["A clean recording sounds definitive even when the sentence itself is ambiguous."], "burden_correct": ["Authentication proves the file wasn't changed. It doesn't prove one interpretation of the words."], "final": ["The recordings are reliable; their meaning remains ours to decide."]},
@@ -398,7 +398,7 @@
         ]
       },
       {
-        "id": "J-10", "seat": 11, "label": "Fen", "persona": "Begins from Leda's fear and Niko's proximity, but listens when another juror distinguishes experience from attribution.", "register": "plain", "arc": "vibes",
+        "id": "J-10", "gender": "male", "seat": 11, "label": "Fen", "persona": "Begins from Leda's fear and Niko's proximity, but listens when another juror distinguishes experience from attribution.", "register": "plain", "arc": "vibes",
         "initial": {"position": "G", "confidence": 68},
         "weights": {"credibility": 2, "coercion": 1, "procedure": 1},
         "lines": {"agree": ["Leda wanted out and Niko was right there. That feels important to me."], "pushback": ["Why tell her to wait for Arin if the finance argument was completely separate?"], "concede": ["Piri's right: Leda learned about that argument the next morning, not in the room."], "burden_drift": ["I believe Leda, so I keep wanting every part of her later understanding to be firsthand."], "burden_correct": ["Believing her doesn't mean she could see the code entry or hear the director's call."], "final": ["Leda's fear and Niko's proximity matter, but they aren't the whole chain."]},
@@ -409,7 +409,7 @@
         ]
       },
       {
-        "id": "J-11", "seat": 12, "label": "Aro · foreperson", "persona": "Keeps distinct questions distinct and does not force agreement when a juror remains genuinely undecided.", "register": "plain", "arc": "foreperson",
+        "id": "J-11", "gender": "female", "seat": 12, "label": "Aro · foreperson", "persona": "Keeps distinct questions distinct and does not force agreement when a juror remains genuinely undecided.", "register": "plain", "arc": "foreperson",
         "initial": {"position": "G", "confidence": 57},
         "weights": {"burden": 2, "timeline": 2, "intent": 2},
         "lines": {"agree": ["Let's put the prosecution's chain on the table: role, panel, warning, demand, locked door."], "pushback": ["Now the gaps: shared credential, delayed display, no release condition. Which gap can evidence close?"], "concede": ["I had treated those five facts as one event. The clocks and witnesses don't make them one."], "burden_drift": ["A locked floor is serious enough that the room may rush past who caused it."], "burden_correct": ["We need all three elements, and each must be beyond reasonable doubt."], "final": ["We have named the prosecution's chain and its gaps. Nobody has to pretend certainty."]},

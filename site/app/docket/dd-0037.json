@@ -42,16 +42,16 @@
       "w2": {"src": "/today/media/dd-0037/characters/w2.webp", "alt": "Courtroom portrait of negotiation language lead Neri Sann.", "caption": "Fictional character portrait: Neri Sann, negotiation language lead.", "kind": "portrait"},
       "w3": {"src": "/today/media/dd-0037/characters/w3.webp", "alt": "Courtroom portrait of digital document examiner Dr Pava Lell.", "caption": "Fictional character portrait: Dr Pava Lell, digital document examiner.", "kind": "portrait"},
       "J-01": {"src": "/today/media/dd-0037/characters/J-01.webp", "alt": "Courtroom portrait of juror 2, Ari.", "caption": "Fictional character portrait: Ari, juror 2.", "kind": "portrait"},
-      "J-02": {"src": "/today/media/dd-0037/characters/J-02.webp", "alt": "Courtroom portrait of juror 3, Maren.", "caption": "Fictional character portrait: Maren, juror 3.", "kind": "portrait"},
-      "J-03": {"src": "/today/media/dd-0037/characters/J-03.webp", "alt": "Courtroom portrait of juror 4, Dev.", "caption": "Fictional character portrait: Dev, juror 4.", "kind": "portrait"},
+      "J-02": {"src": "/today/media/dd-0037/characters/J-02.webp", "alt": "Courtroom portrait of juror 3, Maro.", "caption": "Fictional character portrait: Maro, juror 3.", "kind": "portrait"},
+      "J-03": {"src": "/today/media/dd-0037/characters/J-03.webp", "alt": "Courtroom portrait of juror 4, Dara.", "caption": "Fictional character portrait: Dara, juror 4.", "kind": "portrait"},
       "J-04": {"src": "/today/media/dd-0037/characters/J-04.webp", "alt": "Courtroom portrait of juror 5, Lio.", "caption": "Fictional character portrait: Lio, juror 5.", "kind": "portrait"},
       "J-05": {"src": "/today/media/dd-0037/characters/J-05.webp", "alt": "Courtroom portrait of juror 6, Caro.", "caption": "Fictional character portrait: Caro, juror 6.", "kind": "portrait"},
       "J-06": {"src": "/today/media/dd-0037/characters/J-06.webp", "alt": "Courtroom portrait of juror 7, Tess.", "caption": "Fictional character portrait: Tess, juror 7.", "kind": "portrait"},
       "J-07": {"src": "/today/media/dd-0037/characters/J-07.webp", "alt": "Courtroom portrait of juror 8, Rami.", "caption": "Fictional character portrait: Rami, juror 8.", "kind": "portrait"},
-      "J-08": {"src": "/today/media/dd-0037/characters/J-08.webp", "alt": "Courtroom portrait of juror 9, Noa.", "caption": "Fictional character portrait: Noa, juror 9.", "kind": "portrait"},
-      "J-09": {"src": "/today/media/dd-0037/characters/J-09.webp", "alt": "Courtroom portrait of juror 10, Iven.", "caption": "Fictional character portrait: Iven, juror 10.", "kind": "portrait"},
+      "J-08": {"src": "/today/media/dd-0037/characters/J-08.webp", "alt": "Courtroom portrait of juror 9, Noel.", "caption": "Fictional character portrait: Noel, juror 9.", "kind": "portrait"},
+      "J-09": {"src": "/today/media/dd-0037/characters/J-09.webp", "alt": "Courtroom portrait of juror 10, Ina.", "caption": "Fictional character portrait: Ina, juror 10.", "kind": "portrait"},
       "J-10": {"src": "/today/media/dd-0037/characters/J-10.webp", "alt": "Courtroom portrait of juror 11, Mika.", "caption": "Fictional character portrait: Mika, juror 11.", "kind": "portrait"},
-      "J-11": {"src": "/today/media/dd-0037/characters/J-11.webp", "alt": "Courtroom portrait of juror 12, foreperson Sorin.", "caption": "Fictional character portrait: Sorin, foreperson and juror 12.", "kind": "portrait"}
+      "J-11": {"src": "/today/media/dd-0037/characters/J-11.webp", "alt": "Courtroom portrait of juror 12, foreperson Sora.", "caption": "Fictional character portrait: Sora, foreperson and juror 12.", "kind": "portrait"}
     }
   },
   "statements": {
@@ -270,7 +270,7 @@
   "jury": {
     "jurors": [
       {
-        "id": "J-01", "seat": 2, "label": "Ari", "persona": "Keeps returning to the element that is least securely proved, even when the consequences are unsettling.", "register": "formal", "arc": "principled_holdout",
+        "id": "J-01", "gender": "female", "seat": 2, "label": "Ari", "persona": "Keeps returning to the element that is least securely proved, even when the consequences are unsettling.", "register": "formal", "arc": "principled_holdout",
         "initial": {"position": "NG", "confidence": 72},
         "weights": {"burden": 2, "intent": 2, "procedure": 1},
         "lines": {"agree": ["Yes, that's the gap: did she know page seven was in there?"], "pushback": ["Caro, I'm not ignoring the timing. I'm asking what it proves."], "concede": ["I accept that clicking send was deliberate. The package contents are the harder question."], "burden_drift": ["The harm makes an accident feel impossible, even when it isn't."], "burden_correct": ["We don't have to explain the accident. The prosecution has to exclude it."], "final": ["I'm still not sure Sela knew the seventh page travelled. That means Not Guilty for me."]},
@@ -281,7 +281,7 @@
         ]
       },
       {
-        "id": "J-02", "seat": 3, "label": "Maren", "persona": "Starts with the suspicious sequence but changes course when a record cannot support the inference placed on it.", "register": "plain", "arc": "steady",
+        "id": "J-02", "gender": "male", "seat": 3, "label": "Maro", "persona": "Starts with the suspicious sequence but changes course when a record cannot support the inference placed on it.", "register": "plain", "arc": "steady",
         "initial": {"position": "G", "confidence": 58},
         "weights": {"digital_forensics": 2, "procedure": 2, "identity": 1},
         "lines": {"agree": ["Eleven minutes is close. Why should I treat that as coincidence?"], "pushback": ["Hang on—does the audit show a seventh selection, or are we adding one?"], "concede": ["All right, Dev. The same log appears when the fault fires. I'd missed that."], "burden_drift": ["The page arrived, so part of me wants Sela to prove she didn't see it."], "burden_correct": ["A system record isn't a mind-reading device. Dr Lell was clear about that."], "final": ["I began at Guilty. The six-file screen and identical fault pattern have moved me."]},
@@ -292,7 +292,7 @@
         ]
       },
       {
-        "id": "J-03", "seat": 4, "label": "Dev", "persona": "Tests each confident claim against the witness's actual words and is comfortable correcting an early impression.", "register": "hesitant", "arc": "mind_changer",
+        "id": "J-03", "gender": "female", "seat": 4, "label": "Dara", "persona": "Tests each confident claim against the witness's actual words and is comfortable correcting an early impression.", "register": "hesitant", "arc": "mind_changer",
         "initial": {"position": "U", "confidence": 35},
         "weights": {"intent": 2, "credibility": 1, "procedure": 2},
         "lines": {"agree": ["The timing does support the prosecution. I don't think we can wave it away."], "pushback": ["Sorry, can someone show me where the screen displayed seven files? I can't find it."], "concede": ["Wait—I had the sequence backwards. Neri requested the edit before Halen's package was opened."], "burden_drift": ["Maybe I'm treating a terrible outcome as proof of a terrible intention."], "burden_correct": ["Ari's right about one thing: possibility isn't proof, but a reasonable possibility matters."], "final": ["I've changed my view. The records leave me unsure about knowledge, not about the harm."]},
@@ -303,7 +303,7 @@
         ]
       },
       {
-        "id": "J-04", "seat": 5, "label": "Lio", "persona": "Reacts strongly to the human story, then checks that reaction against the manifest and the judge's direction.", "register": "plain", "arc": "vibes",
+        "id": "J-04", "gender": "male", "seat": 5, "label": "Lio", "persona": "Reacts strongly to the human story, then checks that reaction against the manifest and the judge's direction.", "register": "plain", "arc": "vibes",
         "initial": {"position": "NG", "confidence": 62},
         "weights": {"procedure": 2, "digital_forensics": 1, "intent": 1},
         "lines": {"agree": ["Six names on the screen and seven files sent—that's not a small detail."], "pushback": ["But why edit only that page right before sending? I keep coming back to that."], "concede": ["No, Maren, you're right—the edit request explains the timing better than I first allowed."], "burden_drift": ["I want a clean answer from Sela, and real mistakes don't usually give us one."], "burden_correct": ["The judge didn't say she must prove a mistake. We decide whether the state disproved it."], "final": ["The system hid the extra page. I can't say Sela somehow saw what the screen didn't show."]},
@@ -314,7 +314,7 @@
         ]
       },
       {
-        "id": "J-05", "seat": 6, "label": "Caro", "persona": "Trusts the close sequence of deliberate acts more than Sela's account, but accepts that carelessness is not treason.", "register": "blunt", "arc": "steady",
+        "id": "J-05", "gender": "female", "seat": 6, "label": "Caro", "persona": "Trusts the close sequence of deliberate acts more than Sela's account, but accepts that carelessness is not treason.", "register": "blunt", "arc": "steady",
         "initial": {"position": "G", "confidence": 65},
         "weights": {"credibility": 2, "intent": 2, "procedure": 1},
         "lines": {"agree": ["She knew the destination, fixed the useful page, then sent it. That's a real chain."], "pushback": ["Why are we treating an experienced specialist as though she never checks her work?"], "concede": ["Fine, the warning proves who owned the account. It doesn't prove she knew every attachment."], "burden_drift": ["If this was a mistake, it was an appalling one. I know that's not the legal test."], "burden_correct": ["Carelessness, even serious carelessness, isn't the intention this charge requires."], "final": ["I still read the timing as deliberate. I think the prosecution has proved Guilty."]},
@@ -325,7 +325,7 @@
         ]
       },
       {
-        "id": "J-06", "seat": 7, "label": "Tess", "persona": "Separates a person's politics from their conduct and challenges the room when either side overstates a witness.", "register": "plain", "arc": "principled_holdout",
+        "id": "J-06", "gender": "female", "seat": 7, "label": "Tess", "persona": "Separates a person's politics from their conduct and challenges the room when either side overstates a witness.", "register": "plain", "arc": "principled_holdout",
         "initial": {"position": "NG", "confidence": 62},
         "weights": {"credibility": 1, "intent": 2, "burden": 2},
         "lines": {"agree": ["Knowing the destination matters. It just doesn't answer knowledge of page seven."], "pushback": ["Can we stop using her peace views as shorthand for what she did?"], "concede": ["Caro has a point about the timing. I give it weight—just not enough weight."], "burden_drift": ["In wartime, criticism can start sounding like a confession. It isn't one."], "burden_correct": ["Sela doesn't have to prove loyalty. The prosecution has to prove intentional assistance."], "final": ["I believe the disclosure caused harm. I don't believe intention was proved beyond reasonable doubt."]},
@@ -336,7 +336,7 @@
         ]
       },
       {
-        "id": "J-07", "seat": 8, "label": "Rami", "persona": "Begins sceptical of the defence but follows the examiner's limitations even when they complicate a neat story.", "register": "formal", "arc": "steady",
+        "id": "J-07", "gender": "male", "seat": 8, "label": "Rami", "persona": "Begins sceptical of the defence but follows the examiner's limitations even when they complicate a neat story.", "register": "formal", "arc": "steady",
         "initial": {"position": "G", "confidence": 58},
         "weights": {"digital_forensics": 2, "intent": 2, "procedure": 1},
         "lines": {"agree": ["The manual edit and the send were both hers. The dispute is the link between them."], "pushback": ["No, Lio—the fault doesn't excuse everything. It explains one specific hidden attachment."], "concede": ["Dr Lell couldn't distinguish the charged log from the reproduced fault. That changes my view."], "burden_drift": ["I'm tempted to assume expertise means she must have noticed. The records don't say that."], "burden_correct": ["We can infer knowledge, but the inference still has to exclude the documented alternative."], "final": ["The technical evidence is stronger for reasonable doubt than I expected at the start."]},
@@ -347,7 +347,7 @@
         ]
       },
       {
-        "id": "J-08", "seat": 9, "label": "Noa", "persona": "Voices the uncomfortable assumption beneath the room's argument, then revises it when another juror identifies the burden error.", "register": "hesitant", "arc": "drifter",
+        "id": "J-08", "gender": "male", "seat": 9, "label": "Noel", "persona": "Voices the uncomfortable assumption beneath the room's argument, then revises it when another juror identifies the burden error.", "register": "hesitant", "arc": "drifter",
         "initial": {"position": "U", "confidence": 32},
         "weights": {"credibility": 1, "method": 2, "burden": 2},
         "lines": {"agree": ["They used the limit four days later. Doesn't that make deliberate help more likely?"], "pushback": ["I'm lost—are we deciding whether Sela caused harm, or whether she knew?"], "concede": ["Right. Neri proved the harm, not Sela's state of mind. I was merging those."], "burden_drift": ["But if Sela didn't know, shouldn't she be able to tell us exactly how it happened?"], "burden_correct": ["No—sorry. Ari's right. She doesn't carry that burden."], "final": ["I needed the two questions separated. Once they are, I'm not sure about intention."]},
@@ -358,7 +358,7 @@
         ]
       },
       {
-        "id": "J-09", "seat": 10, "label": "Iven", "persona": "Accepts official evidence only after its source, purpose, and limits have each been tested in court.", "register": "formal", "arc": "steady",
+        "id": "J-09", "gender": "female", "seat": 10, "label": "Ina", "persona": "Accepts official evidence only after its source, purpose, and limits have each been tested in court.", "register": "formal", "arc": "steady",
         "initial": {"position": "NG", "confidence": 54},
         "weights": {"procedure": 2, "method": 2, "burden": 1},
         "lines": {"agree": ["Neri heard the precise ceiling used. I accept material assistance and actual prejudice."], "pushback": ["Mika, which authenticated record shows that Sela selected page seven? There isn't one."], "concede": ["I concede the short timing supports an inference. It just isn't the only reasonable one."], "burden_drift": ["A protected label can make us assume intention before we examine the transmission."], "burden_correct": ["Proof that information mattered is separate from proof that Sela knowingly sent it."], "final": ["The custody is sound. The inference about Sela's knowledge is not sound enough for conviction."]},
@@ -369,7 +369,7 @@
         ]
       },
       {
-        "id": "J-10", "seat": 11, "label": "Mika", "persona": "Finds the prosecution's chronology compelling and keeps testing whether the fault truly explains that coincidence.", "register": "blunt", "arc": "vibes",
+        "id": "J-10", "gender": "male", "seat": 11, "label": "Mika", "persona": "Finds the prosecution's chronology compelling and keeps testing whether the fault truly explains that coincidence.", "register": "blunt", "arc": "vibes",
         "initial": {"position": "G", "confidence": 64},
         "weights": {"intent": 2, "identity": 1, "credibility": 2},
         "lines": {"agree": ["She made the useful information current and sent it minutes later. That's not nothing."], "pushback": ["Iven, there may be no seventh click, but do we really need one to infer knowledge?"], "concede": ["The six-file confirmation is stronger than I thought. I'll give the defence that."], "burden_drift": ["Maybe I'm filling the blank in the log with what happened afterward."], "burden_correct": ["We can't turn suspicious timing into a presumption, but we can still weigh it."], "final": ["For me, the sequence is too tight to be accidental. I remain at Guilty."]},
@@ -380,7 +380,7 @@
         ]
       },
       {
-        "id": "J-11", "seat": 12, "label": "Sorin · foreperson", "persona": "Keeps the discussion organised without pretending disagreement has disappeared or forcing an undecided juror to choose.", "register": "plain", "arc": "foreperson",
+        "id": "J-11", "gender": "female", "seat": 12, "label": "Sora · foreperson", "persona": "Keeps the discussion organised without pretending disagreement has disappeared or forcing an undecided juror to choose.", "register": "plain", "arc": "foreperson",
         "initial": {"position": "G", "confidence": 56},
         "weights": {"burden": 2, "intent": 2, "procedure": 1},
         "lines": {"agree": ["Let's write down the prosecution's chain: edit, warning, send, then use of the limit."], "pushback": ["One at a time. Caro, what evidence answers the six-file confirmation screen?"], "concede": ["I was joining two deliberate acts together. The fault means that link needs its own proof."], "burden_drift": ["The consequences are pulling us toward a result before we've finished the elements."], "burden_correct": ["We can agree on harm and still disagree on knowledge. The prosecution must prove both."], "final": ["We have honest disagreement. My own doubt is whether Sela knew the hidden page was attached."]},

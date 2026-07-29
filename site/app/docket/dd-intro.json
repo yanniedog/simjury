@@ -300,7 +300,7 @@
   "jury": {
     "jurors": [
       {
-        "id": "J-01", "seat": 2, "label": "Juror 2 — Anya", "persona": "Starts with the vivid lobby image, then asks whether its timestamp deserves the same confidence.", "register": "plain", "arc": "vibes",
+        "id": "J-01", "gender": "female", "seat": 2, "label": "Juror 2 — Anya", "persona": "Starts with the vivid lobby image, then asks whether its timestamp deserves the same confidence.", "register": "plain", "arc": "vibes",
         "initial": {"position": "G", "confidence": 80},
         "weights": {"identity": 2, "timeline": 1, "digital_forensics": 1},
         "lines": {
@@ -318,7 +318,7 @@
         ]
       },
       {
-        "id": "J-02", "seat": 3, "label": "Juror 3 — Bram", "persona": "Keeps separating an authenticated file from the inference someone wants drawn from it.", "register": "formal", "arc": "steady",
+        "id": "J-02", "gender": "male", "seat": 3, "label": "Juror 3 — Bram", "persona": "Keeps separating an authenticated file from the inference someone wants drawn from it.", "register": "formal", "arc": "steady",
         "initial": {"position": "G", "confidence": 60},
         "weights": {"timeline": 2, "digital_forensics": 2, "procedure": 1},
         "lines": {
@@ -336,7 +336,7 @@
         ]
       },
       {
-        "id": "J-03", "seat": 4, "label": "Juror 4 — Cora", "persona": "Keeps returning the room to disputed identity when strong feelings pull it toward the agreed homicide.", "register": "formal", "arc": "principled_holdout",
+        "id": "J-03", "gender": "female", "seat": 4, "label": "Juror 4 — Cora", "persona": "Keeps returning the room to disputed identity when strong feelings pull it toward the agreed homicide.", "register": "formal", "arc": "principled_holdout",
         "initial": {"position": "NG", "confidence": 78},
         "weights": {"burden": 2, "identity": 1, "credibility": 1},
         "lines": {
@@ -354,7 +354,7 @@
         ]
       },
       {
-        "id": "J-04", "seat": 5, "label": "Juror 5 — Dev", "persona": "Initially trusts the simple camera story, but changes position when the underlying records are tested.", "register": "blunt", "arc": "steady",
+        "id": "J-04", "gender": "male", "seat": 5, "label": "Juror 5 — Dev", "persona": "Initially trusts the simple camera story, but changes position when the underlying records are tested.", "register": "blunt", "arc": "steady",
         "initial": {"position": "G", "confidence": 56},
         "weights": {"method": 1, "timeline": 2, "digital_forensics": 2},
         "lines": {
@@ -372,7 +372,7 @@
         ]
       },
       {
-        "id": "J-05", "seat": 6, "label": "Juror 6 — Pax", "persona": "Organises the discussion by proposition and stops the room from treating agreed homicide as agreed identity.", "register": "plain", "arc": "foreperson",
+        "id": "J-05", "gender": "female", "seat": 6, "label": "Juror 6 — Pax", "persona": "Organises the discussion by proposition and stops the room from treating agreed homicide as agreed identity.", "register": "plain", "arc": "foreperson",
         "initial": {"position": "G", "confidence": 52},
         "weights": {"burden": 2, "timeline": 1, "procedure": 1},
         "lines": {
@@ -390,7 +390,7 @@
         ]
       },
       {
-        "id": "J-06", "seat": 7, "label": "Juror 7 — Fia", "persona": "Speaks before settling, then corrects herself aloud when another juror exposes a missing step.", "register": "plain", "arc": "drifter",
+        "id": "J-06", "gender": "female", "seat": 7, "label": "Juror 7 — Fia", "persona": "Speaks before settling, then corrects herself aloud when another juror exposes a missing step.", "register": "plain", "arc": "drifter",
         "initial": {"position": "U", "confidence": 40},
         "weights": {"identity": 2, "timeline": 2, "digital_forensics": 1},
         "lines": {
@@ -408,7 +408,7 @@
         ]
       },
       {
-        "id": "J-07", "seat": 8, "label": "Juror 8 — Garen", "persona": "Tests whether independent evidence confirms the same proposition and is willing to reverse an early position.", "register": "formal", "arc": "mind_changer",
+        "id": "J-07", "gender": "male", "seat": 8, "label": "Juror 8 — Garen", "persona": "Tests whether independent evidence confirms the same proposition and is willing to reverse an early position.", "register": "formal", "arc": "mind_changer",
         "initial": {"position": "G", "confidence": 72},
         "weights": {"digital_forensics": 2, "timeline": 2, "identity": 1},
         "lines": {
@@ -427,7 +427,7 @@
         ]
       },
       {
-        "id": "J-08", "seat": 9, "label": "Juror 9 — Hali", "persona": "Listens for the limit in each witness’s answer and challenges anyone who quietly goes beyond it.", "register": "plain", "arc": "steady",
+        "id": "J-08", "gender": "male", "seat": 9, "label": "Juror 9 — Hale", "persona": "Listens for the limit in each witness’s answer and challenges anyone who quietly goes beyond it.", "register": "plain", "arc": "steady",
         "initial": {"position": "NG", "confidence": 64},
         "weights": {"credibility": 2, "identity": 2, "burden": 1},
         "lines": {
@@ -445,7 +445,7 @@
         ]
       },
       {
-        "id": "J-09", "seat": 10, "label": "Juror 10 — Ivo", "persona": "Reacts strongly to Lena’s lie and has to be challenged when suspicion starts shifting the burden.", "register": "blunt", "arc": "burden_drifter",
+        "id": "J-09", "gender": "female", "seat": 10, "label": "Juror 10 — Iri", "persona": "Reacts strongly to Lena’s lie and has to be challenged when suspicion starts shifting the burden.", "register": "blunt", "arc": "burden_drifter",
         "initial": {"position": "G", "confidence": 62},
         "weights": {"motive": 2, "burden": 2, "timeline": 1},
         "lines": {
@@ -464,7 +464,7 @@
         ]
       },
       {
-        "id": "J-10", "seat": 11, "label": "Juror 11 — Jessa", "persona": "Voices uncertainty as the sequence develops and corrects her own shorthand when it stops fitting.", "register": "hesitant", "arc": "drifter",
+        "id": "J-10", "gender": "male", "seat": 11, "label": "Juror 11 — Joss", "persona": "Voices uncertainty as the sequence develops and corrects his own shorthand when it stops fitting.", "register": "hesitant", "arc": "drifter",
         "initial": {"position": "U", "confidence": 36},
         "weights": {"timeline": 2, "identity": 2, "credibility": 1},
         "lines": {
@@ -482,7 +482,7 @@
         ]
       },
       {
-        "id": "J-11", "seat": 12, "label": "Juror 12 — Kellan", "persona": "Insists on stating the strongest argument for each side before deciding what remains unproved.", "register": "formal", "arc": "steady",
+        "id": "J-11", "gender": "female", "seat": 12, "label": "Juror 12 — Kemi", "persona": "Insists on stating the strongest argument for each side before deciding what remains unproved.", "register": "formal", "arc": "steady",
         "initial": {"position": "NG", "confidence": 55},
         "weights": {"digital_forensics": 2, "burden": 2, "identity": 1},
         "lines": {
