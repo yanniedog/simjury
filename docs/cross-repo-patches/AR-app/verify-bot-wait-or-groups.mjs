@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 /**
  * Unit tests for required-bot slots (peer OR-group + mandatory CodeRabbit) + Gemini noise.
+ * Same defaults as simjury — all repos share sourcery|codex|cursor,coderabbit.
  */
 import {
+  DEFAULT_REQUIRED_KEYS,
+  DEFAULT_REQUIRED_SPEC,
   alternativesForSlot,
   formatRequiredKeys,
   loginMatchesRequiredKey,
@@ -24,7 +27,11 @@ function assert(cond, msg) {
 
 assert(
   JSON.stringify(parseRequiredKeys('')) === JSON.stringify(['sourcery|codex|cursor', 'coderabbit']),
-  'default = peer OR-group + mandatory coderabbit',
+  'default = peer OR-group + mandatory coderabbit (same as simjury)',
+);
+assert(
+  JSON.stringify(DEFAULT_REQUIRED_KEYS) === JSON.stringify(parseRequiredKeys(DEFAULT_REQUIRED_SPEC)),
+  'DEFAULT_REQUIRED_SPEC matches DEFAULT_REQUIRED_KEYS',
 );
 assert(JSON.stringify(alternativesForSlot('sourcery|cursor|codex')) === JSON.stringify(['sourcery', 'cursor', 'codex']), 'alts');
 assert(loginMatchesRequiredKey('cursor[bot]', 'cursor'), 'cursor[bot] matches cursor');
@@ -42,7 +49,7 @@ assert(
   'cursor alone does not satisfy sourcery-only',
 );
 
-const defaults = parseRequiredKeys('');
+const defaults = DEFAULT_REQUIRED_KEYS;
 assert(
   !requiredBotsSatisfied(defaults, ['chatgpt-codex-connector[bot]']),
   'peer alone insufficient without CodeRabbit',
@@ -59,7 +66,15 @@ assert(
   requiredBotsSatisfied(defaults, ['cursor[bot]', 'coderabbitai[bot]']),
   'cursor + coderabbit satisfies default',
 );
+assert(
+  requiredBotsSatisfied(defaults, ['sourcery-ai[bot]', 'coderabbitai[bot]']),
+  'sourcery + coderabbit satisfies default',
+);
 assert(!requiredBotsSatisfied(defaults, ['gemini-code-assist[bot]']), 'gemini alone insufficient');
+assert(
+  !requiredBotsSatisfied(defaults, ['gemini-code-assist[bot]', 'coderabbitai[bot]']),
+  'gemini does not count as peer slot',
+);
 
 const formatted = formatRequiredKeys(['sourcery|cursor']);
 assert(/OR/.test(formatted) && /sourcery/.test(formatted) && /cursor/.test(formatted), 'format shows OR');
@@ -70,6 +85,8 @@ assert(
   ),
   'gemini sunset is noise',
 );
+assert(isBotNoise('Review limit reached. Next review available in 45 minutes.'), 'CR rate-limit is noise');
+assert(isBotNoise('You are rate limited by coderabbit.ai'), 'CR rate-limit html marker is noise');
 assert(!isBotNoise('High: null deref in parser when list is empty — please add a guard.'), 'real finding not noise');
 
 if (failed) {

@@ -23,4 +23,7 @@ npm run coderabbit:rate-limit-retry:install-all
 npm run coderabbit:rate-limit-retry:install-all -- --dry-run
 ```
 
+Skips **simjury** only (canonical source). Installs the same workflow on AR-app,
+AR-local, jcs2-mod, and every other writable non-archived repo under the owner.
+
 Canonical source: `.github/workflows/pr-coderabbit-rate-limit-retry.yml` in simjury.

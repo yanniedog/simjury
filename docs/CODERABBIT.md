@@ -64,7 +64,7 @@ Concurrency uses `cancel-in-progress: false` so ordinary PR comments cannot canc
 sleeping waiter. Duplicate rate-limit runs self-skip when a retry is already armed,
 CodeRabbit already reviewed, or a newer rate-limit comment owns the window.
 
-Install on other repos (one file):
+Install on all other active repos (same policy everywhere):
 
 ```sh
 npm run coderabbit:rate-limit-retry:install-all
@@ -101,9 +101,10 @@ npm run pr:coderabbit-review-recovery -- --lookback-days 14 --dry-run
 
 ## Other active repos
 
-Copy `.coderabbit.yaml` (trim path_instructions) and set each repo’s
-`*_BOT_WAIT_REQUIRED` to include a **mandatory** `coderabbit` slot
-(e.g. `sourcery|codex|cursor,coderabbit`). See [`CROSS_REPO_BOT_MATRIX.md`](CROSS_REPO_BOT_MATRIX.md).
+**Treat every active repo the same.** Copy `.coderabbit.yaml` (trim
+path_instructions) and set each repo’s `*_BOT_WAIT_REQUIRED` to
+`sourcery|codex|cursor,coderabbit`. See [`CROSS_REPO_BOT_MATRIX.md`](CROSS_REPO_BOT_MATRIX.md)
+and the [`cross-repo-patches/AR-app/`](cross-repo-patches/AR-app/README.md) pack.
 With **All repositories** on the GitHub App, new repos get reviews without
 re-installing the app; add a local `.coderabbit.yaml` when you want repo-specific rules.
 

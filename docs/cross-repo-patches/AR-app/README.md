@@ -2,10 +2,21 @@
 
 `cursor[bot]` cannot push to `yanniedog/AR-app` from simjury cloud agents. Apply this pack on AR-app.
 
+## Same policy as every active repo
+
+Required presence: **`sourcery|codex|cursor,coderabbit`**
+
+| Slot | Rule |
+|------|------|
+| `sourcery\|codex\|cursor` | At least one peer review bot |
+| `coderabbit` | Mandatory — never OR-skippable |
+
+Mirror of simjury / AR-local / jcs2-mod. See [`CROSS_REPO_BOT_MATRIX.md`](../../CROSS_REPO_BOT_MATRIX.md).
+
 ## Root cause (AR-app PR #41)
 
 1. **Sourcery-only required** (`AR_BOT_WAIT_REQUIRED: sourcery`) — Sourcery skips some PRs (docs/setup). PR #41 had Cursor Automation review but **no Sourcery**, so `bot-presence-gate` could never pass.
-2. **No in-job retries** — gate failed on the first `wait-for-bots` exit 2 (bots still in flight), leaving a sticky red required check.
+2. **Sleep-poll / sticky fail** — prefer single-shot evaluation; gate re-fires on review/comment.
 3. **Gemini sunset noise** — `gemini-code-assist` posts a sunset caution on every PR; not a real review (filter as noise).
 4. Agents were instructed to `--watch` babysit (token burn); prefer act-or-park when available.
 
@@ -28,8 +39,8 @@ cp "$PACK/verify-bot-wait-or-groups.mjs" scripts/verify-bot-wait-or-groups.mjs
 #   "pr:bot-wait-or-groups:verify": "node scripts/verify-bot-wait-or-groups.mjs"
 # Wire into CI if present.
 
-# Optional repo variable override (CodeRabbit remains mandatory):
-#   Settings → Variables → AR_BOT_WAIT_REQUIRED = sourcery|cursor,coderabbit
+# Optional repo variable override (same default as simjury):
+#   Settings → Variables → AR_BOT_WAIT_REQUIRED = sourcery|codex|cursor,coderabbit
 
 git add -A
 git commit -m "ci: merge protection (peer OR + mandatory CodeRabbit)"
@@ -38,6 +49,10 @@ gh pr create --draft --title "ci: merge protection (peer OR + mandatory CodeRabb
 ```
 
 Also update `AGENTS.md`: replace `--watch` babysit loops with single-shot `wait-for-bots` / `pr:arm-and-park` when that script is present (see `../cursor-global-workflow/`).
+
+Port the same CodeRabbit rate-limit retry workflow via
+`npm run coderabbit:rate-limit-retry:install-all` (or the
+[`../coderabbit-rate-limit-retry/`](../coderabbit-rate-limit-retry/) pack).
 
 ## Verify
 

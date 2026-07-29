@@ -2,7 +2,7 @@
 
 ## Required presence (merge protection)
 
-Default: **`sourcery|codex|cursor,coderabbit`**
+**All active repos use the same default:** **`sourcery|codex|cursor,coderabbit`**
 
 | Slot | Rule |
 |------|------|
@@ -20,15 +20,15 @@ Syntax: commas = ALL-of slots; `|` = OR within a slot.
 
 | Repository | `*_BOT_WAIT_REQUIRED` | Notes |
 |------------|------------------------|-------|
-| [simjury](https://github.com/yanniedog/simjury) | `sourcery\|codex\|cursor,coderabbit` | Mandatory CR + peer; close-guard + arm-and-park |
-| [AR-app](https://github.com/yanniedog/AR-app) | `sourcery\|cursor,coderabbit` (recommended) | Apply pack: [`cross-repo-patches/AR-app/`](cross-repo-patches/AR-app/README.md) |
-| [AR-local](https://github.com/yanniedog/AR-local) | `sourcery\|codex\|cursor,coderabbit` | Same merge-protection slots + retries |
+| [simjury](https://github.com/yanniedog/simjury) | `sourcery\|codex\|cursor,coderabbit` | Canonical; close-guard + arm-and-park |
+| [AR-app](https://github.com/yanniedog/AR-app) | `sourcery\|codex\|cursor,coderabbit` | Same slots — pack: [`cross-repo-patches/AR-app/`](cross-repo-patches/AR-app/README.md) |
+| [AR-local](https://github.com/yanniedog/AR-local) | `sourcery\|codex\|cursor,coderabbit` | Same |
 | [jcs2-mod](https://github.com/yanniedog/jcs2-mod) | `sourcery\|codex\|cursor,coderabbit` | Same |
 | [cursor-global-workflow](https://github.com/yanniedog/cursor-global-workflow) | template default | Mirror from simjury |
 
-## Presence gate retries (required)
+## Presence gate (single-shot)
 
-Do **not** fail the required check on the first `wait-for-bots` exit 2. Race: gate runs on `opened` before bots post → sticky red check. Use in-job retries (simjury: 12×30s) and keep event re-fires on review/comment. `cancel-in-progress: false` on concurrency groups.
+Evaluate `wait-for-bots` **once** per run (no sleep-poll). Gate re-fires on review/comment/ci; agents park with `npm run pr:arm-and-park -- --pr <n>`. `cancel-in-progress: false` on concurrency groups.
 
 ## Act-or-park (token efficiency)
 
