@@ -600,6 +600,7 @@ export default function App() {
         phase="intro"
         caseTitle="SimJury"
         entryMode
+        hideNarration
         narration={narration}
         playbackRate={playbackRate}
         voiceEngine={voiceEngine}

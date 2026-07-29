@@ -112,6 +112,34 @@ describe('DocketShell', () => {
     expect(markup).not.toContain('Saved only in this browser')
   })
 
+  it('can hide narration controls on the age gate', () => {
+    vi.stubGlobal('window', {
+      speechSynthesis: {
+        getVoices: () => [
+          { name: 'Desktop English', lang: 'en-US', localService: true },
+        ],
+      },
+    })
+    vi.stubGlobal('localStorage', writableStorage())
+    const markup = renderToStaticMarkup(
+      <DocketShell
+        phase="intro"
+        caseTitle="SimJury"
+        entryMode
+        hideNarration
+        narration={false}
+        playbackRate={1}
+        onToggleNarration={() => undefined}
+        onRateChange={() => undefined}
+      >
+        <h1 id="phase-heading">A fictional courtroom for adults</h1>
+      </DocketShell>,
+    )
+
+    expect(markup).not.toContain('aria-label="Toggle narration"')
+    expect(markup).not.toContain('narration-controls')
+  })
+
   it('warns without blocking the sitting when browser storage rejects writes', () => {
     vi.stubGlobal('localStorage', {
       getItem: () => null,

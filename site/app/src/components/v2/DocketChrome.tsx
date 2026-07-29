@@ -40,6 +40,8 @@ export function DocketShell({
   onVoiceEngineChange,
   /** Quieter chrome for pre-sitting gates (no false phase progress or empty sidebar). */
   entryMode = false,
+  /** Hide narration controls (e.g. age/fiction gate before any spoken cue). */
+  hideNarration = false,
 }: {
   children: ReactNode
   sidebar?: ReactNode
@@ -54,6 +56,7 @@ export function DocketShell({
   onRateChange: (rate: NarrationRate) => void
   onVoiceEngineChange?: (engine: NarrationEngineId) => void
   entryMode?: boolean
+  hideNarration?: boolean
 }) {
   const currentPhaseIndex = PHASES.findIndex((step) => step.id === phase)
   const phaseLabel = PHASES[currentPhaseIndex]?.label ?? 'Briefing'
@@ -61,6 +64,7 @@ export function DocketShell({
   const showVoiceMode = altVoiceModeAvailable() && typeof onVoiceEngineChange === 'function'
   const [canPersist] = useState(canPersistSitting)
   const showAside = !entryMode
+  const showNarration = !hideNarration && narrationSupported()
   return (
     <main className={`docket-shell min-h-screen text-neutral-100${entryMode ? ' docket-entry' : ''}`}>
       <a href="#phase-heading" className="docket-skip">Skip to the case</a>
@@ -83,7 +87,7 @@ export function DocketShell({
             <i aria-hidden="true" style={{ width: `${(stageNumber / PHASES.length) * 100}%` }} />
           </div>
         )}
-        {narrationSupported() && (
+        {showNarration && (
           <div className="narration-controls">
             {showVoiceMode && (
               <select
