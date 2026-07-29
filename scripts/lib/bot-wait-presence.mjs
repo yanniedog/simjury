@@ -5,7 +5,7 @@ import {
   missingRequiredKeys,
   resolveRequiredKeys,
 } from './bot-wait-config.mjs';
-import { isBotNoise } from './bot-noise.mjs';
+import { isCoderabbitPresenceNoise } from './coderabbit-review-status.mjs';
 import { gitRepoRoot, readBotWaitStateFile } from './bot-wait-state.mjs';
 
 export function readBotWaitState(prNumber, cwd) {
@@ -27,7 +27,7 @@ export function resolveAnchorIso(anchorIso, fallbackIso) {
 }
 
 const COMMENTS_QUERY =
-  'query($owner:String!,$name:String!,$num:Int!){repository(owner:$owner,name:$name){pullRequest(number:$num){createdAt comments(last:100){nodes{author{login}createdAt body}}reviews(last:30){nodes{author{login}submittedAt body}}reviewThreads(last:100){nodes{comments(last:10){nodes{author{login}createdAt body}}}}}}}';
+  'query($owner:String!,$name:String!,$num:Int!){repository(owner:$owner,name:$name){pullRequest(number:$num){createdAt comments(last:100){nodes{author{login}createdAt body}}reviews(last:30){nodes{author{login}submittedAt body state}}reviewThreads(last:100){nodes{comments(last:10){nodes{author{login}createdAt body}}}}}}}';
 
 function ghGraphql(owner, name, prNumber) {
   const r = spawnSync(
@@ -67,8 +67,9 @@ function ghGraphql(owner, name, prNumber) {
 
 /**
  * Collect bot events since anchor. Quota/trivial bodies are marked noise and
- * excluded from presence satisfaction (CodeRabbit rate-limit notices must not
- * clear merge protection — pr-coderabbit-rate-limit-retry owns ≤120m retry).
+ * excluded from presence satisfaction. CodeRabbit rate-limits, command acks,
+ * and walkthrough-only text do not clear merge protection — only a *proper*
+ * CodeRabbit review does (pr-coderabbit-ensure-review owns retries).
  */
 export function collectBotEvents(prPayload, knownBots, anchorIso, fallbackIso) {
   const anchorMs = new Date(resolveAnchorIso(anchorIso, fallbackIso)).getTime();
@@ -78,7 +79,7 @@ export function collectBotEvents(prPayload, knownBots, anchorIso, fallbackIso) {
       events.push({
         login: c.author.login,
         at: c.createdAt,
-        noise: isBotNoise(c.body),
+        noise: isCoderabbitPresenceNoise(c.author.login, c.body, { kind: 'comment' }),
       });
     }
   }
@@ -87,7 +88,10 @@ export function collectBotEvents(prPayload, knownBots, anchorIso, fallbackIso) {
       events.push({
         login: rev.author.login,
         at: rev.submittedAt,
-        noise: isBotNoise(rev.body),
+        noise: isCoderabbitPresenceNoise(rev.author.login, rev.body, {
+          state: rev.state,
+          kind: 'review',
+        }),
       });
     }
   }
@@ -97,7 +101,7 @@ export function collectBotEvents(prPayload, knownBots, anchorIso, fallbackIso) {
         events.push({
           login: c.author.login,
           at: c.createdAt,
-          noise: isBotNoise(c.body),
+          noise: isCoderabbitPresenceNoise(c.author.login, c.body, { kind: 'inline' }),
         });
       }
     }

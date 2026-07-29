@@ -1,8 +1,9 @@
 name: pr-coderabbit-rate-limit-retry
 
-# Portable / self-contained: no repo scripts required.
-# CodeRabbit does not auto-resume after rate limits. When it posts
-# "Review limit reached", wait for the stated window then @coderabbitai review.
+# When CodeRabbit posts "Review limit reached", do NOT sleep in Actions
+# (long sleeps were cancelled — 0 successful completes in audit).
+# This workflow only validates the event; the 15-minute
+# pr-coderabbit-ensure-review scheduler posts @coderabbitai review when due.
 on:
   issue_comment:
     types: [created]
@@ -12,27 +13,18 @@ on:
         description: Pull request number
         required: true
         type: string
-      no_sleep:
-        description: Skip wait (test only)
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: read
   pull-requests: write
   issues: write
 
-# Do not cancel-in-progress: ordinary PR comments also fire issue_comment and
-# would kill a sleeping rate-limit waiter before the replacement job's `if`
-# filter skips. Keep the sleeper; duplicate rate-limit runs self-skip via the
-# "already armed / already reviewed" checks below.
 concurrency:
-  group: pr-coderabbit-rate-limit-retry-${{ github.event.issue.number || inputs.pr_number || github.run_id }}
+  group: pr-coderabbit-rate-limit-note-${{ github.event.issue.number || inputs.pr_number || github.run_id }}
   cancel-in-progress: false
 
 jobs:
-  retry-after-rate-limit:
+  note-rate-limit-for-scheduler:
     if: >-
       github.event_name == 'workflow_dispatch'
       || (
@@ -48,28 +40,21 @@ jobs:
         )
       )
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 5
     steps:
-      # Checkout so post-sleep `gh pr …` can resolve the repo (no bare-git failure).
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          sparse-checkout: |
-            .github
-          sparse-checkout-cone-mode: false
-      - name: Wait for CodeRabbit quota then re-request review
+          node-version: "24"
+      - name: Arm scheduler (post now only if wait already elapsed)
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
-          GH_REPO: ${{ github.repository }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
           EVENT_NAME: ${{ github.event_name }}
           INPUT_PR: ${{ inputs.pr_number }}
           ISSUE_PR: ${{ github.event.issue.number }}
-          COMMENT_BODY: ${{ github.event.comment.body }}
-          COMMENT_CREATED_AT: ${{ github.event.comment.created_at }}
-          NO_SLEEP: ${{ inputs.no_sleep }}
-          RETRY_MARKER: "<!-- simjury-coderabbit-rate-limit-retry -->"
         run: |
           set -euo pipefail
-
           if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             PR="${INPUT_PR}"
           else
@@ -79,158 +64,6 @@ jobs:
             echo "No PR number; skip"
             exit 0
           fi
-
-          # Prefer REST (explicit repo). Do not swallow errors as "not open" —
-          # empty STATE previously skipped open PRs when `gh pr view` failed.
-          STATE="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR}" --jq .state)"
-          STATE_UC="$(printf '%s' "$STATE" | tr '[:lower:]' '[:upper:]')"
-          if [ "$STATE_UC" != "OPEN" ]; then
-            echo "PR #$PR not open ($STATE); skip"
-            exit 0
-          fi
-
-          TITLE="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR}" --jq .title)"
-          case "$TITLE" in
-            chore:*|chore\(*|WIP*|wip*|"do not review"*)
-              echo "PR #$PR title looks chore/WIP ($TITLE); skip"
-              exit 0
-              ;;
-          esac
-
-          BODY="${COMMENT_BODY:-}"
-          CREATED="${COMMENT_CREATED_AT:-}"
-          if [ "$EVENT_NAME" = "workflow_dispatch" ] || [ -z "$BODY" ]; then
-            META="$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" --paginate \
-              --jq '[.[] | select((.user.login=="coderabbitai[bot]" or .user.login=="coderabbitai")
-                and (.body|test("Review limit reached|rate limited by coderabbit|reached your PR review limit";"i")))]
-                | sort_by(.created_at) | reverse | .[0] // empty | {body, created_at}')"
-            if [ -z "$META" ] || [ "$META" = "null" ]; then
-              echo "No CodeRabbit rate-limit comment on PR #$PR; skip"
-              exit 0
-            fi
-            BODY="$(printf '%s' "$META" | jq -r .body)"
-            CREATED="$(printf '%s' "$META" | jq -r .created_at)"
-          fi
-
-          # gh api --jq does not accept jq --arg flags ("accepts 1 arg(s), received 4").
-          export CR_AFTER="$CREATED" CR_MARKER="$RETRY_MARKER"
-          REVIEWED_AFTER="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR}/reviews" --paginate \
-            --jq '
-              [.[] | select((.user.login=="coderabbitai[bot]" or .user.login=="coderabbitai")
-                and .submitted_at > env.CR_AFTER
-                and (.state=="COMMENTED" or .state=="APPROVED" or .state=="CHANGES_REQUESTED")
-                and ((.body // "") | test("Review limit reached|rate limited by coderabbit";"i") | not))]
-              | length')"
-          if [ "${REVIEWED_AFTER:-0}" != "0" ]; then
-            echo "CodeRabbit already reviewed PR #$PR after rate-limit; skip"
-            exit 0
-          fi
-
-          ARMED="$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" --paginate \
-            --jq '
-              ( [.[] | select(.created_at > env.CR_AFTER and (.body|contains(env.CR_MARKER)) and (.body|test("@coderabbitai\\s+review";"i")))]
-                | map(.created_at) | max ) as $retry
-              | ( [.[] | select(.created_at > env.CR_AFTER
-                    and (.user.login=="coderabbitai[bot]" or .user.login=="coderabbitai")
-                    and (.body|test("Review limit reached|rate limited by coderabbit";"i")))]
-                  | map(.created_at) | max ) as $newer
-              | if $retry == null then false
-                elif $newer != null and $newer > $retry then false
-                else true end')"
-          if [ "$ARMED" = "true" ]; then
-            echo "Retry already armed on PR #$PR; skip"
-            exit 0
-          fi
-
-          WAIT_MIN="$(
-            BODY="$BODY" python3 -c "
-          import os, re
-          text = os.environ.get('BODY') or ''
-          patterns = [
-              r'next review available in[:\s*]*\*?\*?(\d+)\s*minutes?',
-              r'more reviews will be available in\s+(\d+)\s*minutes?',
-              r'available in[:\s*]*\*?\*?(\d+)\s*minutes?',
-              r'next review available in[:\s*]*\*?\*?(\d+)\s*hours?',
-              r'more reviews will be available in\s+(\d+)\s*hours?',
-              r'available in[:\s*]*\*?\*?(\d+)\s*hours?',
-          ]
-          for pat in patterns:
-              m = re.search(pat, text, re.I)
-              if not m:
-                  continue
-              n = int(m.group(1))
-              if re.search(r'hours?', m.group(0), re.I) and not re.search(r'minutes?', m.group(0), re.I):
-                  print(n * 60)
-              else:
-                  print(n)
-              raise SystemExit
-          print(60)
-          "
-          )"
-
-          BUFFER_MIN=2
-          MAX_WAIT_MIN=120
-          SLEEP_SEC="$(
-            CREATED="$CREATED" WAIT_MIN="$WAIT_MIN" BUFFER_MIN="$BUFFER_MIN" MAX_WAIT_MIN="$MAX_WAIT_MIN" python3 -c "
-          import os, datetime
-          created = os.environ['CREATED']
-          wait = int(os.environ['WAIT_MIN'])
-          buf = int(os.environ['BUFFER_MIN'])
-          max_wait = int(os.environ['MAX_WAIT_MIN'])
-          ts = datetime.datetime.fromisoformat(created.replace('Z', '+00:00'))
-          ready = ts + datetime.timedelta(minutes=wait + buf)
-          now = datetime.datetime.now(datetime.timezone.utc)
-          sec = max(0, int((ready - now).total_seconds()))
-          print(min(sec, max_wait * 60))
-          "
-          )"
-
-          echo "PR #$PR rate-limited at ${CREATED}; wait_min=${WAIT_MIN}; sleep_sec=${SLEEP_SEC}"
-          if [ "${NO_SLEEP:-false}" != "true" ] && [ "${SLEEP_SEC}" -gt 0 ]; then
-            LEFT="$SLEEP_SEC"
-            while [ "$LEFT" -gt 0 ]; do
-              STEP=$(( LEFT > 300 ? 300 : LEFT ))
-              sleep "$STEP"
-              LEFT=$(( LEFT - STEP ))
-              if [ "$LEFT" -gt 0 ]; then
-                echo "… ${LEFT}s remaining"
-              fi
-            done
-          fi
-
-          STATE="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR}" --jq .state)"
-          STATE_UC="$(printf '%s' "$STATE" | tr '[:lower:]' '[:upper:]')"
-          if [ "$STATE_UC" != "OPEN" ]; then
-            echo "PR #$PR closed during wait ($STATE); skip"
-            exit 0
-          fi
-
-          META_AFTER="$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" --paginate \
-            --jq '[.[] | select((.user.login=="coderabbitai[bot]" or .user.login=="coderabbitai")
-              and (.body|test("Review limit reached|rate limited by coderabbit|reached your PR review limit";"i")))]
-              | sort_by(.created_at) | reverse | .[0] // empty | {body, created_at}')"
-          if [ -n "$META_AFTER" ] && [ "$META_AFTER" != "null" ]; then
-            CREATED_AFTER="$(printf '%s' "$META_AFTER" | jq -r .created_at)"
-            if [ -n "$CREATED_AFTER" ] && [ "$CREATED_AFTER" \> "$CREATED" ]; then
-              echo "Newer rate-limit at ${CREATED_AFTER} (was ${CREATED}); skip so that window owns the retry"
-              exit 0
-            fi
-          fi
-
-          export CR_AFTER="$CREATED"
-          REVIEWED_AFTER="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR}/reviews" --paginate \
-            --jq '
-              [.[] | select((.user.login=="coderabbitai[bot]" or .user.login=="coderabbitai")
-                and .submitted_at > env.CR_AFTER
-                and (.state=="COMMENTED" or .state=="APPROVED" or .state=="CHANGES_REQUESTED")
-                and ((.body // "") | test("Review limit reached|rate limited by coderabbit";"i") | not))]
-              | length')"
-          if [ "${REVIEWED_AFTER:-0}" != "0" ]; then
-            echo "CodeRabbit reviewed during wait; skip"
-            exit 0
-          fi
-
-          BODY_OUT="${RETRY_MARKER}"$'\n'"@coderabbitai review"
-          # -R / GH_REPO: never require a git remote after the long sleep.
-          gh -R "$GITHUB_REPOSITORY" pr comment "$PR" --body "$BODY_OUT"
-          echo "Posted @coderabbitai review on PR #$PR"
+          # --if-due: post immediately when quota window already elapsed; otherwise
+          # exit 0 and let pr-coderabbit-ensure-review (*/15) fire later. No sleep.
+          npm run pr:coderabbit-rate-limit-retry -- --pr "$PR" --if-due
