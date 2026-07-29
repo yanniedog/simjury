@@ -23,7 +23,7 @@ import {
   CR_RECOVERY_TRIGGER,
   canPostRecoveryTrigger,
   classifyCoderabbitActivity,
-  latestEnsureTriggerAt,
+  latestEnsureTrigger,
   needsCoderabbitRecovery,
   needsOpenEnsure,
 } from './lib/coderabbit-review-status.mjs';
@@ -237,12 +237,13 @@ function processOne(row, { dryRun, owner, name }) {
           ? 'open-failed-review'
           : 'open-missing-proper-review';
 
-    const latestTrigger = latestEnsureTriggerAt(view?.comments || []);
-    if (!canPostRecoveryTrigger(latestTrigger, Date.now(), CR_OPEN_RETRY_INTERVAL_MS)) {
+    const latest = latestEnsureTrigger(view?.comments || []);
+    // Upgrade path: incremental-only triggers must not block an immediate full review.
+    if (latest.isFull && !canPostRecoveryTrigger(latest.at, Date.now(), CR_OPEN_RETRY_INTERVAL_MS)) {
       result.actions.push({
         type: 'request-review',
         ok: true,
-        skipped: `last ensure trigger ${latestTrigger} within 15m window`,
+        skipped: `last ensure trigger ${latest.at} within 15m window`,
       });
       return result;
     }
@@ -286,12 +287,12 @@ function processOne(row, { dryRun, owner, name }) {
     });
   }
 
-  const latestTrigger = latestEnsureTriggerAt(view?.comments || []);
-  if (!canPostRecoveryTrigger(latestTrigger, Date.now(), CR_RECOVERY_INTERVAL_MS)) {
+  const latest = latestEnsureTrigger(view?.comments || []);
+  if (latest.isFull && !canPostRecoveryTrigger(latest.at, Date.now(), CR_RECOVERY_INTERVAL_MS)) {
     result.actions.push({
       type: 'request-review',
       ok: true,
-      skipped: `last recovery trigger ${latestTrigger} within hourly window`,
+      skipped: `last recovery trigger ${latest.at} within hourly window`,
     });
     return result;
   }

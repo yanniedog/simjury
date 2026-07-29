@@ -256,9 +256,11 @@ export function needsOpenEnsure(activity) {
 /**
  * @param {{ body?: string, createdAt?: string, created_at?: string }[]} comments
  * @param {string} [marker]
+ * @returns {{ at: string|null, isFull: boolean }}
  */
-export function latestEnsureTriggerAt(comments = [], marker = CR_ENSURE_MARKER) {
+export function latestEnsureTrigger(comments = [], marker = CR_ENSURE_MARKER) {
   let best = null;
+  let isFull = false;
   for (const c of comments || []) {
     const body = String(c.body || '');
     const isMarked =
@@ -269,9 +271,20 @@ export function latestEnsureTriggerAt(comments = [], marker = CR_ENSURE_MARKER) 
     if (!/@coderabbitai\s+(?:full\s+)?review\b/i.test(body)) continue;
     const at = c.createdAt || c.created_at;
     if (!at) continue;
-    if (!best || String(at) > best) best = String(at);
+    if (!best || String(at) > best) {
+      best = String(at);
+      isFull = /@coderabbitai\s+full\s+review\b/i.test(body);
+    }
   }
-  return best;
+  return { at: best, isFull };
+}
+
+/**
+ * @param {{ body?: string, createdAt?: string, created_at?: string }[]} comments
+ * @param {string} [marker]
+ */
+export function latestEnsureTriggerAt(comments = [], marker = CR_ENSURE_MARKER) {
+  return latestEnsureTrigger(comments, marker).at;
 }
 
 /** @deprecated alias */

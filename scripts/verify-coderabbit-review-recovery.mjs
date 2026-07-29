@@ -9,6 +9,7 @@ import {
   isCoderabbitCommandAck,
   isFailedCoderabbitBody,
   isProperCoderabbitReviewBody,
+  latestEnsureTrigger,
   latestRecoveryTriggerAt,
   needsCoderabbitRecovery,
   needsOpenEnsure,
@@ -103,6 +104,24 @@ assert(
     { createdAt: '2026-07-29T03:00:00Z', body: `${CR_RECOVERY_MARKER}\n@coderabbitai full review` },
   ]) === '2026-07-29T03:00:00Z',
   'legacy incremental trigger still detected; latest wins',
+);
+assert(
+  latestEnsureTrigger([
+    {
+      createdAt: '2026-07-29T03:58:00Z',
+      body: '<!-- simjury-coderabbit-ensure-review -->\n@coderabbitai review',
+    },
+  ]).isFull === false,
+  'incremental ensure trigger is not full',
+);
+assert(
+  latestEnsureTrigger([
+    {
+      createdAt: '2026-07-29T03:58:00Z',
+      body: '<!-- simjury-coderabbit-ensure-review -->\n@coderabbitai full review',
+    },
+  ]).isFull === true,
+  'full ensure trigger marked full',
 );
 assert(!canPostRecoveryTrigger('2026-07-29T03:00:00Z', Date.parse('2026-07-29T03:30:00Z')), 'within hour blocked');
 assert(canPostRecoveryTrigger('2026-07-29T03:00:00Z', Date.parse('2026-07-29T04:00:00Z')), 'after hour allowed');
