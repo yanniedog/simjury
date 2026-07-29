@@ -74,7 +74,7 @@ export function EvidenceIndex({
                 </button>
               ) : (
                 <div
-                  className={`evidence-index-row static${mine ? ' noted' : ''}${raised ? ' raised' : ''}`}
+                  className={`evidence-index-row static${selected ? ' selected' : ''}${mine ? ' noted' : ''}${raised ? ' raised' : ''}`}
                   aria-label={label}
                 >
                   {body}

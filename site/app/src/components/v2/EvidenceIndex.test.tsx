@@ -51,4 +51,20 @@ describe('EvidenceIndex', () => {
     expect(markup).toContain('<button')
     expect(markup).toContain(memoryLabel(trial, second.id).title)
   })
+
+  it('applies selected class on read-only static rows', () => {
+    const trial = makeDocketCase()
+    const selected = trial.beats[1]
+    const markup = renderToStaticMarkup(
+      <EvidenceIndex
+        trial={trial}
+        notes={[]}
+        visibleBeatCount={trial.beats.length}
+        selectedBeatId={selected.id}
+      />,
+    )
+
+    expect(markup).toContain('evidence-index-row static selected')
+    expect(markup).not.toContain('<button')
+  })
 })
