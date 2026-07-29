@@ -32,8 +32,9 @@ Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.
 
 | Piece | Purpose |
 |-------|---------|
-| `.coderabbit.yaml` | **Chill** profile; automatic/draft/incremental reviews off; exact legacy status on; errors fail outward |
-| `scripts/coderabbit-contract.mjs` | One full request per ready head; exact-SHA status contract; serialized quota retry |
+| `.coderabbit.yaml` | **Chill** profile; lean output; auto-review on ready PRs with **incremental** follow-ups; drafts off; exact legacy status on |
+| `scripts/coderabbit-contract.mjs` | One full request per ready head when missing/skipped/rate-limit-due; never re-nudge in-flight reviews |
+| `scripts/coderabbit-quota-queue.mjs` | Serialize open-PR full-review asks — at most one active request across the repo |
 | `bot-presence-gate` | Runs trusted base code and blocks until exact-head `Review completed` + one current peer |
 | `pr-request-bot-reviews` | Posts `@codex review` only; CodeRabbit has one controller |
 | `pr-coderabbit-ensure-review` | Manual single-open-PR diagnostic; no scheduled fan-out |
@@ -51,10 +52,13 @@ Previous scheduled fan-out retried clean and merged PRs, exhausted quota, and
 mistook comments for review proof. The replacement is one PR-scoped controller:
 
 1. Drafts consume no CodeRabbit quota.
-2. Ready/open or synchronized PRs request one full review for the current SHA.
-3. `Review queued` / `in progress` waits; `rate limited` waits until vendor due time.
-4. A due retry is serialized and SHA-marked; a head change cancels the old controller.
-5. `Review completed` on that exact SHA passes; unresolved findings remain blocked
+2. Ready/open PRs get one vendor auto-review (incremental on later pushes).
+3. Controllers only post `@coderabbitai full review` for missing/skipped/rate-limit-due heads.
+4. `Review queued` / `in progress` waits with **no** extra comments; `rate limited` waits until vendor due time.
+5. On a brand-new head with **no** CodeRabbit status yet, wait ~3 minutes for vendor auto-review to claim the head before posting `@coderabbitai full review` (avoids double-spend when auto_review is on).
+6. Player media under `site/app/public/media/**` stays reviewable so media-only PRs can still earn `Review completed`.
+5. Across open PRs, `npm run pr:coderabbit-quota-queue` requests at most one full review at a time.
+6. `Review completed` on that exact SHA passes; unresolved findings remain blocked
    by `bot-feedback-gate` and native conversation resolution.
 
 Local helpers:
@@ -62,6 +66,7 @@ Local helpers:
 ```sh
 npm run pr:coderabbit-contract -- --pr <n> --dry-run
 npm run pr:coderabbit-contract:verify
+npm run pr:coderabbit-quota-queue -- --dry-run
 ```
 ## Other active repos
 

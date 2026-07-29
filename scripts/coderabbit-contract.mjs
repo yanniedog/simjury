@@ -18,11 +18,46 @@ import {
 const MARKER = '<!-- simjury-coderabbit-contract';
 const POLL_MS = Number(process.env.CR_CONTRACT_POLL_MS || 60_000);
 const MAX_ATTEMPTS = Number(process.env.CR_CONTRACT_MAX_ATTEMPTS || 4);
+/** Wait for vendor auto-review to claim a new head before forcing `@coderabbitai full review`. */
+const AUTO_CLAIM_GRACE_MS = Number(process.env.CR_AUTO_CLAIM_GRACE_MS || 3 * 60_000);
 
 function ghJson(args) {
-  const r = spawnSync('gh', args, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
-  if (r.status !== 0) throw new Error((r.stderr || r.stdout || `gh exit ${r.status}`).trim());
-  return JSON.parse(r.stdout || 'null');
+  let r;
+  try {
+    r = spawnSync('gh', args, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
+  } catch (error) {
+    throw new Error(`gh spawn failed (${args.join(' ')}): ${error?.message || error}`);
+  }
+  if (r.error) {
+    throw new Error(`gh spawn failed (${args.join(' ')}): ${r.error.message}`);
+  }
+  if (r.status !== 0) {
+    throw new Error(
+      `gh failed (${args.join(' ')}): ${(r.stderr || r.stdout || `exit ${r.status}`).trim()}`,
+    );
+  }
+  try {
+    return JSON.parse(r.stdout || 'null');
+  } catch (error) {
+    throw new Error(
+      `gh returned invalid JSON (${args.join(' ')}): ${error?.message || error}`,
+    );
+  }
+}
+
+/** Flatten `gh api --paginate --slurp` page arrays into one list. */
+function ghApiPages(path) {
+  const pages = ghJson(['api', '--paginate', '--slurp', path]);
+  if (!Array.isArray(pages)) return [];
+  return pages.flatMap((page) => (Array.isArray(page) ? page : [page]));
+}
+
+function repoSlug() {
+  const env = String(process.env.GITHUB_REPOSITORY || '').trim();
+  if (env) return env;
+  const view = ghJson(['repo', 'view', '--json', 'nameWithOwner']);
+  if (!view?.nameWithOwner) throw new Error('could not resolve repository');
+  return view.nameWithOwner;
 }
 
 function parseArgs(argv) {
@@ -54,11 +89,16 @@ export function classifyCoderabbitStatuses(statuses = []) {
   const latest = cr[0];
   if (!latest) return { state: 'missing', at: null, statuses: [] };
   const description = String(latest.description || '');
+  // Pending / in-flight must never trigger another full-review comment.
   if (/queued|in progress/i.test(description) || latest.state === 'pending') {
     return { state: 'pending', at: latest.created_at, description, statuses: cr };
   }
   if (/rate limit/i.test(description)) {
     return { state: 'rate_limited', at: latest.created_at, description, statuses: cr };
+  }
+  // Auto-review off / skip statuses look green but do not satisfy the gate.
+  if (/review skipped\b/i.test(description)) {
+    return { state: 'skipped', at: latest.created_at, description, statuses: cr };
   }
   return { state: 'blocked', at: latest.created_at, description, statuses: cr };
 }
@@ -88,14 +128,33 @@ function postReview(pr, headSha, reason, dryRun) {
     console.log(`[dry-run] would request CodeRabbit on #${pr} (${reason})`);
     return;
   }
-  const r = spawnSync('gh', ['pr', 'comment', String(pr), '--body', body], {
-    encoding: 'utf8',
-  });
-  if (r.status !== 0) throw new Error((r.stderr || r.stdout || 'comment failed').trim());
+  // REST issue comments work with issues:write; `gh pr comment` uses GraphQL
+  // addComment, which can reject an otherwise sufficient Actions token.
+  const slug = repoSlug();
+  const [owner, repoName] = slug.split('/');
+  if (!owner || !repoName) throw new Error(`invalid repository slug: ${slug}`);
+  const commentPath = `repos/${owner}/${repoName}/issues/${pr}/comments`;
+  const r = spawnSync(
+    'gh',
+    ['api', commentPath, '-f', `body=${body}`],
+    { encoding: 'utf8' },
+  );
+  if (r.error) {
+    console.warn(`coderabbit-contract: comment spawn failed (${r.error.message}); waiting for status`);
+    return;
+  }
+  if (r.status !== 0) {
+    // Do not hard-fail: ensure-review / manual @coderabbitai can still satisfy the status contract.
+    console.warn(
+      `coderabbit-contract: comment failed (${(r.stderr || r.stdout || 'comment failed').trim()}); waiting for status`,
+    );
+    return;
+  }
   console.log(`coderabbit-contract: requested full review on #${pr} (${reason})`);
 }
 
 function load(pr) {
+  const repo = repoSlug();
   const view = ghJson([
     'pr',
     'view',
@@ -103,14 +162,8 @@ function load(pr) {
     '--json',
     'state,isDraft,headRefOid,comments,url',
   ]);
-  const statuses = ghJson([
-    'api',
-    `repos/{owner}/{repo}/commits/${view.headRefOid}/statuses?per_page=100`,
-  ]);
-  view.comments = ghJson([
-    'api',
-    `repos/{owner}/{repo}/issues/${pr}/comments?per_page=100`,
-  ]);
+  const statuses = ghApiPages(`repos/${repo}/commits/${view.headRefOid}/statuses?per_page=100`);
+  view.comments = ghApiPages(`repos/${repo}/issues/${pr}/comments?per_page=100`);
   return { view, contract: classifyCoderabbitStatuses(statuses || []) };
 }
 
@@ -139,18 +192,55 @@ function evaluate(pr, expectedSha, dryRun) {
     };
   }
 
+  // Never re-nudge while CodeRabbit is already working this head.
+  if (contract.state === 'pending') {
+    return {
+      terminal: false,
+      message: `pending; waiting for exact-head Review completed (${contract.description || 'in flight'})`,
+      headSha: view.headRefOid,
+    };
+  }
+
   const statusAt = contract.at ? Date.parse(contract.at) : 0;
   const markerAt = markers.latestAt ? Date.parse(markers.latestAt) : 0;
+  // Cooldown: avoid stacking full-review comments within 12 minutes of a prior ask.
+  const COOLDOWN_MS = 12 * 60_000;
+  const cooled = markerAt && Date.now() - markerAt < COOLDOWN_MS;
+
   if (contract.state === 'missing' && markers.count === 0) {
+    // Auto-review is enabled in .coderabbit.yaml; give it time to publish
+    // Review queued/in progress before agents burn a forced full-review slot.
+    const commit = ghJson(['api', `repos/{owner}/{repo}/commits/${view.headRefOid}`]);
+    const headAt = Date.parse(
+      commit?.commit?.committer?.date || commit?.commit?.author?.date || 0,
+    );
+    const ageMs = headAt ? Date.now() - headAt : AUTO_CLAIM_GRACE_MS;
+    if (ageMs < AUTO_CLAIM_GRACE_MS) {
+      return {
+        terminal: false,
+        message: `missing; waiting ${Math.ceil((AUTO_CLAIM_GRACE_MS - ageMs) / 1000)}s for auto-review to claim head`,
+        headSha: view.headRefOid,
+      };
+    }
     postReview(pr, view.headRefOid, 'missing', dryRun);
-  } else if (contract.state === 'rate_limited' && markerAt <= statusAt) {
+  } else if (contract.state === 'rate_limited' && markerAt <= statusAt && !cooled) {
     const limit = latestRateLimitEvent(view.comments || []);
     const waitMinutes = limit?.waitMinutes ?? 60;
     const waitMs = msUntilRetry(contract.at, waitMinutes, 2);
     if (waitMs <= 0) postReview(pr, view.headRefOid, 'rate-limit-due', dryRun);
     else return { terminal: false, message: `rate limited; retry due in ${Math.ceil(waitMs / 1000)}s` };
-  } else if (contract.state === 'blocked' && markerAt <= statusAt) {
-    postReview(pr, view.headRefOid, 'blocked-status', dryRun);
+  } else if (
+    (contract.state === 'skipped' || contract.state === 'blocked') &&
+    markerAt <= statusAt &&
+    !cooled
+  ) {
+    postReview(pr, view.headRefOid, contract.state === 'skipped' ? 'skipped-status' : 'blocked-status', dryRun);
+  } else if (cooled) {
+    return {
+      terminal: false,
+      message: `${contract.state}; review already requested recently — waiting`,
+      headSha: view.headRefOid,
+    };
   }
   return {
     terminal: false,

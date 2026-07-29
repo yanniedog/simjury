@@ -3,18 +3,17 @@ name: pr-bot-presence-gate
 # One trusted, head-scoped controller. It requests exactly one CodeRabbit full
 # review per head, waits through vendor quota, and accepts only CodeRabbit's
 # "Review completed" commit status on that exact SHA.
-#
-# Bootstrap: workflow YAML comes from the PR, but scripts execute from the base
-# SHA. Until this PR lands, base may lack `pr:coderabbit-contract` — fall back
-# to the legacy wait-for-bots path. Chore / bot-authored PRs stay gate-exempt.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
 
 permissions:
   contents: read
-  pull-requests: read
+  # write needed so the contract can post the one SHA-marked full-review nudge
+  # when BOT_GATE_TOKEN is unset (github.token alone with read cannot addComment).
+  pull-requests: write
   issues: write
+  statuses: read
 
 concurrency:
   group: bot-presence-gate-${{ github.event.pull_request.number }}
@@ -33,37 +32,51 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-      - name: Skip bot wait for non-human / chore PRs
-        id: gate_exempt
-        env:
-          GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
+      # Chicken-egg: main still uses `gh pr comment` (GraphQL addComment → 403).
+      # Apply a hermetic in-workflow patch to the checked-out *base* script only —
+      # do not fetch or execute PR-head JavaScript with the write token.
+      - name: Patch base GraphQL CodeRabbit comment to REST (hermetic)
         run: |
           set -euo pipefail
-          PR="${{ github.event.pull_request.number }}"
-          EXEMPT="$(node scripts/pr-gate-exempt-reason.mjs "$PR" || true)"
-          if [ -n "$EXEMPT" ]; then
-            echo "gate_exempt=true" >> "$GITHUB_OUTPUT"
-            echo "gate_exempt_reason=$EXEMPT" >> "$GITHUB_OUTPUT"
-            echo "PR #$PR is gate-exempt ($EXEMPT) — bot review not required"
-          else
-            echo "gate_exempt=false" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Gate exempt — pass (no bot wait)
-        if: steps.gate_exempt.outputs.gate_exempt == 'true'
-        run: |
-          echo "bot-presence-gate: skipped (${{ steps.gate_exempt.outputs.gate_exempt_reason }} — human bot review not required)"
-      - name: Detect CodeRabbit contract script on base
-        if: steps.gate_exempt.outputs.gate_exempt != 'true'
-        id: contract
-        run: |
-          if node -e "const p=require('./package.json'); process.exit(p.scripts&&p.scripts['pr:coderabbit-contract']?0:1)"; then
-            echo "available=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "Base SHA lacks pr:coderabbit-contract; using legacy wait-for-bots"
-          fi
+          node <<'NODE'
+          const fs = require('fs');
+          const path = 'scripts/coderabbit-contract.mjs';
+          let src = fs.readFileSync(path, 'utf8');
+          if (!src.includes("['pr', 'comment'")) {
+            console.log('Base contract already avoids GraphQL pr comment');
+            process.exit(0);
+          }
+          const needle = [
+            "  const r = spawnSync('gh', ['pr', 'comment', String(pr), '--body', body], {",
+            "    encoding: 'utf8',",
+            "  });",
+            "  if (r.status !== 0) throw new Error((r.stderr || r.stdout || 'comment failed').trim());",
+            "  console.log(`coderabbit-contract: requested full review on #${pr} (${reason})`);",
+          ].join('\n');
+          const replacement = [
+            "  const repo = String(process.env.GITHUB_REPOSITORY || '').trim();",
+            "  if (!repo.includes('/')) throw new Error('GITHUB_REPOSITORY required for REST comment');",
+            "  const r = spawnSync(",
+            "    'gh',",
+            '    [\'api\', `repos/${repo}/issues/${pr}/comments`, \'-f\', `body=${body}`],',
+            "    { encoding: 'utf8' },",
+            "  );",
+            "  if (r.status !== 0) {",
+            "    console.warn(",
+            '      `coderabbit-contract: comment failed (${(r.stderr || r.stdout || \'comment failed\').trim()}); waiting for status`,',
+            "    );",
+            "    return;",
+            "  }",
+            '  console.log(`coderabbit-contract: requested full review on #${pr} (${reason})`);',
+          ].join('\n');
+          if (!src.includes(needle)) {
+            console.error('Expected GraphQL postReview block not found; refusing to guess');
+            process.exit(1);
+          }
+          fs.writeFileSync(path, src.replace(needle, replacement));
+          console.log('Patched base postReview to REST issue comments (soft-fail)');
+          NODE
       - name: Require exact-head CodeRabbit completion
-        if: steps.gate_exempt.outputs.gate_exempt != 'true' && steps.contract.outputs.available == 'true'
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -71,19 +84,7 @@ jobs:
           npm run pr:coderabbit-contract --
           --pr "${{ github.event.pull_request.number }}"
           --watch --timeout-min 220
-      - name: Require CodeRabbit (legacy until contract lands on main)
-        if: steps.gate_exempt.outputs.gate_exempt != 'true' && steps.contract.outputs.available != 'true'
-        env:
-          GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          SIMJURY_BOT_WAIT_REQUIRED: sourcery|codex|cursor,coderabbit
-          BOT_WAIT_IGNORE_CHECK_NAMES: bot-presence-gate,bot-feedback-gate,pr-bot-presence-gate,pr-bot-feedback-check
-          BOT_WAIT_MAX_MIN: "240"
-        run: >-
-          npm run wait-for-bots --
-          --pr "${{ github.event.pull_request.number }}"
       - name: Require a current peer bot
-        if: steps.gate_exempt.outputs.gate_exempt != 'true' && steps.contract.outputs.available == 'true'
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
