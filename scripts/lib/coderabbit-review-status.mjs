@@ -14,8 +14,12 @@ const FAILED_REVIEW_PATTERNS = [
   /\bfailed to (?:review|analyze|process)\b/i,
   /\berror (?:while|during) (?:review|analysis)\b/i,
   /\bcould not (?:complete|generate) (?:the )?review\b/i,
-  /\binternal error\b/i,
-  /\bsomething went wrong\b/i,
+  // Keep "internal error" / "something went wrong" scoped to review/analysis —
+  // bare phrases appear in legitimate finding text and must not mark a review as failed.
+  /\breview\b.{0,40}\binternal error\b/i,
+  /\binternal error\b.{0,40}\breview\b/i,
+  /\breview\b.{0,40}\bsomething went wrong\b/i,
+  /\bsomething went wrong\b.{0,40}\breview\b/i,
 ];
 
 /**

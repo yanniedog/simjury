@@ -46,13 +46,17 @@ jobs:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           CR_RECOVERY_LOOKBACK_DAYS: ${{ inputs.lookback_days || '14' }}
+          # Route dispatch inputs through env (never expand ${{ inputs.* }} in the script).
+          CR_RECOVERY_PR_NUMBER: ${{ inputs.pr_number }}
+          CR_RECOVERY_DRY_RUN: ${{ inputs.dry_run }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
           ARGS=(--lookback-days "${CR_RECOVERY_LOOKBACK_DAYS}")
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.pr_number }}" ]; then
-            ARGS+=(--pr "${{ inputs.pr_number }}")
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ -n "${CR_RECOVERY_PR_NUMBER:-}" ]; then
+            ARGS+=(--pr "${CR_RECOVERY_PR_NUMBER}")
           fi
-          if [ "${{ inputs.dry_run }}" = "true" ]; then
+          if [ "${CR_RECOVERY_DRY_RUN:-false}" = "true" ]; then
             ARGS+=(--dry-run)
           fi
           npm run pr:coderabbit-review-recovery -- "${ARGS[@]}"
