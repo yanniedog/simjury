@@ -11,6 +11,12 @@ describe('analyzeDocketPlay', () => {
     expect(a.reveals).toHaveLength(makeDocketCase().beats.length)
   })
 
+  it('lists misleading beats as post-verdict counterweights', () => {
+    const a = analyzeDocketPlay(makeDocketCase(), 'Not Guilty')
+    expect(a.counterweights.length).toBeGreaterThan(0)
+    expect(a.counterweights.every((r) => r.beat.reveal_stamp === 'misleading')).toBe(true)
+  })
+
   it('scores a mismatched verdict as incorrect', () => {
     const a = analyzeDocketPlay(makeDocketCase(), 'Guilty')
     expect(a.matchesReference).toBe(false)

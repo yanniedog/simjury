@@ -90,4 +90,33 @@ describe('DocketReveal', () => {
     expect(markup).toContain('The challenge you carried into your verdict')
     expect(markup).toContain('No single point stood out as the strongest challenge.')
   })
+
+  it('surfaces misleading evidence as caution, not falsehood', () => {
+    const trial = makeDocketCase()
+    const markup = renderToStaticMarkup(
+      <DocketReveal
+        trial={trial}
+        analysis={analyzeDocketPlay(trial, 'Not Guilty')}
+        verdict="Not Guilty"
+        room={{
+          kind: 'majority',
+          verdict: 'not_guilty',
+          g: 0,
+          ng: 11,
+          u: 1,
+        }}
+        dayNumber={1}
+        stats={{ played: 1, currentStreak: 1, maxStreak: 1 }}
+        narration={false}
+        playbackRate={1}
+        onChooseAnother={() => undefined}
+      />,
+    )
+
+    expect(markup).toContain('What deserved more caution')
+    expect(markup).toContain('Needs caution')
+    expect(markup).not.toContain('tainted')
+    expect(markup).not.toContain('false evidence')
+    expect(markup).not.toMatch(/\bbias\b/i)
+  })
 })
