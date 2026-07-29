@@ -25,6 +25,7 @@ import {
   saveProgress,
   type StoredProgress,
   type StoredPlay,
+  type VerdictReflection,
 } from './lib/storage'
 import {
   ensureNpcNotes,
@@ -229,6 +230,9 @@ function DocketApp({
   const [room, setRoom] = useState<StoredPlay['room'] | null>(
     validStored?.room ?? null,
   )
+  const [reflection, setReflection] = useState<VerdictReflection | undefined>(
+    validStored?.reflection,
+  )
   const [revealStats, setRevealStats] = useState<Stats | null>(() =>
     validStored?.room ? statsFromStorage() : null,
   )
@@ -367,6 +371,7 @@ function DocketApp({
     setBeatIndex(0)
     setNotes([])
     setRoom(null)
+    setReflection(undefined)
     setRevealStats(null)
     setPhase('intro')
   }
@@ -401,7 +406,12 @@ function DocketApp({
     })
   }
 
-  function persistRoomResult(outcome: Outcome, chosen: Verdict) {
+  function persistRoomResult(
+    outcome: Outcome,
+    chosen: Verdict,
+    nextReflection?: VerdictReflection,
+    opts?: { preserveReflection?: boolean },
+  ) {
     const roomRecord: NonNullable<StoredPlay['room']> = {
       kind: outcome.kind,
       verdict: outcome.verdict,
@@ -409,14 +419,17 @@ function DocketApp({
       ng: outcome.tally.ng,
       u: outcome.tally.u,
     }
+    const reflectionToStore = opts?.preserveReflection ? reflection : nextReflection
     setVerdict(chosen)
     setRoom(roomRecord)
+    setReflection(reflectionToStore)
     completePlay({
       day,
       caseId: caseStorageId(activeTrial),
       convictions: [],
       verdict: chosen,
       room: roomRecord,
+      ...(reflectionToStore ? { reflection: reflectionToStore } : {}),
     })
     if (isIntro) markIntroComplete()
   }
@@ -424,7 +437,7 @@ function DocketApp({
   function roomDone(outcome: Outcome, chosen: Verdict) {
     // Repeating the persistence is intentional: the seal callback normally
     // committed this exact keyed play, while this keeps direct callers safe.
-    persistRoomResult(outcome, chosen)
+    persistRoomResult(outcome, chosen, undefined, { preserveReflection: true })
     setRevealStats(statsFromStorage())
     setPhase('reveal')
   }
@@ -547,6 +560,7 @@ function DocketApp({
           analysis={analysis}
           verdict={verdict}
           room={room}
+          reflection={reflection}
           dayNumber={dayNumber}
           stats={revealStats}
           narration={narration}
