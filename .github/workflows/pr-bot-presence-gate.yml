@@ -43,25 +43,29 @@ jobs:
             console.log('Base contract already avoids GraphQL pr comment');
             process.exit(0);
           }
-          const needle = `  const r = spawnSync('gh', ['pr', 'comment', String(pr), '--body', body], {
-    encoding: 'utf8',
-  });
-  if (r.status !== 0) throw new Error((r.stderr || r.stdout || 'comment failed').trim());
-  console.log(\`coderabbit-contract: requested full review on #\${pr} (\${reason})\`);`;
-          const replacement = `  const repo = String(process.env.GITHUB_REPOSITORY || '').trim();
-  if (!repo.includes('/')) throw new Error('GITHUB_REPOSITORY required for REST comment');
-  const r = spawnSync(
-    'gh',
-    ['api', \`repos/\${repo}/issues/\${pr}/comments\`, '-f', \`body=\${body}\`],
-    { encoding: 'utf8' },
-  );
-  if (r.status !== 0) {
-    console.warn(
-      \`coderabbit-contract: comment failed (\${(r.stderr || r.stdout || 'comment failed').trim()}); waiting for status\`,
-    );
-    return;
-  }
-  console.log(\`coderabbit-contract: requested full review on #\${pr} (\${reason})\`);`;
+          const needle = [
+            "  const r = spawnSync('gh', ['pr', 'comment', String(pr), '--body', body], {",
+            "    encoding: 'utf8',",
+            "  });",
+            "  if (r.status !== 0) throw new Error((r.stderr || r.stdout || 'comment failed').trim());",
+            "  console.log(`coderabbit-contract: requested full review on #${pr} (${reason})`);",
+          ].join('\n');
+          const replacement = [
+            "  const repo = String(process.env.GITHUB_REPOSITORY || '').trim();",
+            "  if (!repo.includes('/')) throw new Error('GITHUB_REPOSITORY required for REST comment');",
+            "  const r = spawnSync(",
+            "    'gh',",
+            '    [\'api\', `repos/${repo}/issues/${pr}/comments`, \'-f\', `body=${body}`],',
+            "    { encoding: 'utf8' },",
+            "  );",
+            "  if (r.status !== 0) {",
+            "    console.warn(",
+            '      `coderabbit-contract: comment failed (${(r.stderr || r.stdout || \'comment failed\').trim()}); waiting for status`,',
+            "    );",
+            "    return;",
+            "  }",
+            '  console.log(`coderabbit-contract: requested full review on #${pr} (${reason})`);',
+          ].join('\n');
           if (!src.includes(needle)) {
             console.error('Expected GraphQL postReview block not found; refusing to guess');
             process.exit(1);
