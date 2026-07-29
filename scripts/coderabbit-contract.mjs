@@ -25,6 +25,14 @@ function ghJson(args) {
   return JSON.parse(r.stdout || 'null');
 }
 
+function repoSlug() {
+  const env = String(process.env.GITHUB_REPOSITORY || '').trim();
+  if (env) return env;
+  const view = ghJson(['repo', 'view', '--json', 'nameWithOwner']);
+  if (!view?.nameWithOwner) throw new Error('could not resolve repository');
+  return view.nameWithOwner;
+}
+
 function parseArgs(argv) {
   const out = { pr: null, watch: false, dryRun: false, timeoutMin: 220 };
   for (let i = 2; i < argv.length; i += 1) {
@@ -92,7 +100,7 @@ function postReview(pr, headSha, reason, dryRun) {
   // addComment, which can reject an otherwise sufficient Actions token.
   const r = spawnSync(
     'gh',
-    ['api', `repos/{owner}/{repo}/issues/${pr}/comments`, '-f', `body=${body}`],
+    ['api', `repos/${repoSlug()}/issues/${pr}/comments`, '-f', `body=${body}`],
     { encoding: 'utf8' },
   );
   if (r.status !== 0) throw new Error((r.stderr || r.stdout || 'comment failed').trim());
@@ -100,6 +108,7 @@ function postReview(pr, headSha, reason, dryRun) {
 }
 
 function load(pr) {
+  const repo = repoSlug();
   const view = ghJson([
     'pr',
     'view',
@@ -109,11 +118,11 @@ function load(pr) {
   ]);
   const statuses = ghJson([
     'api',
-    `repos/{owner}/{repo}/commits/${view.headRefOid}/statuses?per_page=100`,
+    `repos/${repo}/commits/${view.headRefOid}/statuses?per_page=100`,
   ]);
   view.comments = ghJson([
     'api',
-    `repos/{owner}/{repo}/issues/${pr}/comments?per_page=100`,
+    `repos/${repo}/issues/${pr}/comments?per_page=100`,
   ]);
   return { view, contract: classifyCoderabbitStatuses(statuses || []) };
 }
