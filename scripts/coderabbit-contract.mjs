@@ -22,9 +22,42 @@ const MAX_ATTEMPTS = Number(process.env.CR_CONTRACT_MAX_ATTEMPTS || 4);
 const AUTO_CLAIM_GRACE_MS = Number(process.env.CR_AUTO_CLAIM_GRACE_MS || 3 * 60_000);
 
 function ghJson(args) {
-  const r = spawnSync('gh', args, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
-  if (r.status !== 0) throw new Error((r.stderr || r.stdout || `gh exit ${r.status}`).trim());
-  return JSON.parse(r.stdout || 'null');
+  let r;
+  try {
+    r = spawnSync('gh', args, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
+  } catch (error) {
+    throw new Error(`gh spawn failed (${args.join(' ')}): ${error?.message || error}`);
+  }
+  if (r.error) {
+    throw new Error(`gh spawn failed (${args.join(' ')}): ${r.error.message}`);
+  }
+  if (r.status !== 0) {
+    throw new Error(
+      `gh failed (${args.join(' ')}): ${(r.stderr || r.stdout || `exit ${r.status}`).trim()}`,
+    );
+  }
+  try {
+    return JSON.parse(r.stdout || 'null');
+  } catch (error) {
+    throw new Error(
+      `gh returned invalid JSON (${args.join(' ')}): ${error?.message || error}`,
+    );
+  }
+}
+
+/** Flatten `gh api --paginate --slurp` page arrays into one list. */
+function ghApiPages(path) {
+  const pages = ghJson(['api', '--paginate', '--slurp', path]);
+  if (!Array.isArray(pages)) return [];
+  return pages.flatMap((page) => (Array.isArray(page) ? page : [page]));
+}
+
+function repoSlug() {
+  const env = String(process.env.GITHUB_REPOSITORY || '').trim();
+  if (env) return env;
+  const view = ghJson(['repo', 'view', '--json', 'nameWithOwner']);
+  if (!view?.nameWithOwner) throw new Error('could not resolve repository');
+  return view.nameWithOwner;
 }
 
 function parseArgs(argv) {
@@ -95,14 +128,33 @@ function postReview(pr, headSha, reason, dryRun) {
     console.log(`[dry-run] would request CodeRabbit on #${pr} (${reason})`);
     return;
   }
-  const r = spawnSync('gh', ['pr', 'comment', String(pr), '--body', body], {
-    encoding: 'utf8',
-  });
-  if (r.status !== 0) throw new Error((r.stderr || r.stdout || 'comment failed').trim());
+  // REST issue comments work with issues:write; `gh pr comment` uses GraphQL
+  // addComment, which can reject an otherwise sufficient Actions token.
+  const slug = repoSlug();
+  const [owner, repoName] = slug.split('/');
+  if (!owner || !repoName) throw new Error(`invalid repository slug: ${slug}`);
+  const commentPath = `repos/${owner}/${repoName}/issues/${pr}/comments`;
+  const r = spawnSync(
+    'gh',
+    ['api', commentPath, '-f', `body=${body}`],
+    { encoding: 'utf8' },
+  );
+  if (r.error) {
+    console.warn(`coderabbit-contract: comment spawn failed (${r.error.message}); waiting for status`);
+    return;
+  }
+  if (r.status !== 0) {
+    // Do not hard-fail: ensure-review / manual @coderabbitai can still satisfy the status contract.
+    console.warn(
+      `coderabbit-contract: comment failed (${(r.stderr || r.stdout || 'comment failed').trim()}); waiting for status`,
+    );
+    return;
+  }
   console.log(`coderabbit-contract: requested full review on #${pr} (${reason})`);
 }
 
 function load(pr) {
+  const repo = repoSlug();
   const view = ghJson([
     'pr',
     'view',
@@ -110,14 +162,8 @@ function load(pr) {
     '--json',
     'state,isDraft,headRefOid,comments,url',
   ]);
-  const statuses = ghJson([
-    'api',
-    `repos/{owner}/{repo}/commits/${view.headRefOid}/statuses?per_page=100`,
-  ]);
-  view.comments = ghJson([
-    'api',
-    `repos/{owner}/{repo}/issues/${pr}/comments?per_page=100`,
-  ]);
+  const statuses = ghApiPages(`repos/${repo}/commits/${view.headRefOid}/statuses?per_page=100`);
+  view.comments = ghApiPages(`repos/${repo}/issues/${pr}/comments?per_page=100`);
   return { view, contract: classifyCoderabbitStatuses(statuses || []) };
 }
 
