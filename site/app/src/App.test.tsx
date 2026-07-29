@@ -12,6 +12,8 @@ describe('FictionDisclosureGate', () => {
     expect(markup).toContain('cases, people, places, evidence')
     expect(markup).toContain('adults aged 18 and over')
     expect(markup).toContain('I’m 18 or older')
+    expect(markup).toContain('I’m under 18 — leave')
+    expect(markup).toContain('href="https://www.google.com/"')
     expect(markup).not.toContain('correct')
   })
 })

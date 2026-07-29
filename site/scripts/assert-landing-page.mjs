@@ -55,6 +55,8 @@ requireText(html, 'aria-modal="true"', 'landing entry disclosure must be modal')
 requireText(html, 'Everything in SimJury is fictional', 'landing entry must contain the single fiction disclosure')
 requireText(html, 'adults aged 18 and over', 'landing entry must contain the 18+ condition')
 requireText(html, 'id="fiction-disclosure-accept"', 'landing entry must provide an explicit acknowledgement')
+requireText(html, 'id="fiction-disclosure-leave"', 'landing entry must offer an under-18 leave path')
+requireText(html, 'I’m under 18 — leave', 'landing entry must label the under-18 leave path')
 if (html.split('Everything in SimJury is fictional').length !== 2) {
   failures.push('landing must state the fiction disclosure exactly once')
 }
