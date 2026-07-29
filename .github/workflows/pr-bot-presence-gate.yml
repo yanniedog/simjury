@@ -32,6 +32,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
+      # Base still posts via `gh pr comment` (GraphQL addComment → 403). Overlay the
+      # PR's REST contract script until that fix is on main; only this one file.
+      - name: Overlay REST CodeRabbit contract when base still uses GraphQL
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          set -euo pipefail
+          if grep -F "['pr', 'comment'" scripts/coderabbit-contract.mjs >/dev/null; then
+            echo "Base contract uses GraphQL pr comment — overlaying REST script from PR head"
+            git fetch --depth=1 origin "${{ github.event.pull_request.head.sha }}"
+            git checkout "${{ github.event.pull_request.head.sha }}" -- scripts/coderabbit-contract.mjs
+          else
+            echo "Base contract already uses REST issue comments"
+          fi
       - name: Require exact-head CodeRabbit completion
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}

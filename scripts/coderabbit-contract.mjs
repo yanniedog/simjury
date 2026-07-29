@@ -25,6 +25,13 @@ function ghJson(args) {
   return JSON.parse(r.stdout || 'null');
 }
 
+/** Flatten `gh api --paginate --slurp` page arrays into one list. */
+function ghApiPages(path) {
+  const pages = ghJson(['api', '--paginate', '--slurp', path]);
+  if (!Array.isArray(pages)) return [];
+  return pages.flatMap((page) => (Array.isArray(page) ? page : [page]));
+}
+
 function repoSlug() {
   const env = String(process.env.GITHUB_REPOSITORY || '').trim();
   if (env) return env;
@@ -107,7 +114,13 @@ function postReview(pr, headSha, reason, dryRun) {
     ['api', commentPath, '-f', `body=${body}`],
     { encoding: 'utf8' },
   );
-  if (r.status !== 0) throw new Error((r.stderr || r.stdout || 'comment failed').trim());
+  if (r.status !== 0) {
+    // Do not hard-fail: ensure-review / manual @coderabbitai can still satisfy the status contract.
+    console.warn(
+      `coderabbit-contract: comment failed (${(r.stderr || r.stdout || 'comment failed').trim()}); waiting for status`,
+    );
+    return;
+  }
   console.log(`coderabbit-contract: requested full review on #${pr} (${reason})`);
 }
 
@@ -120,14 +133,8 @@ function load(pr) {
     '--json',
     'state,isDraft,headRefOid,comments,url',
   ]);
-  const statuses = ghJson([
-    'api',
-    `repos/${repo}/commits/${view.headRefOid}/statuses?per_page=100`,
-  ]);
-  view.comments = ghJson([
-    'api',
-    `repos/${repo}/issues/${pr}/comments?per_page=100`,
-  ]);
+  const statuses = ghApiPages(`repos/${repo}/commits/${view.headRefOid}/statuses?per_page=100`);
+  view.comments = ghApiPages(`repos/${repo}/issues/${pr}/comments?per_page=100`);
   return { view, contract: classifyCoderabbitStatuses(statuses || []) };
 }
 
