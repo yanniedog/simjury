@@ -84,6 +84,8 @@ assert(
   ),
   'gemini sunset is noise',
 );
+assert(isBotNoise('Review limit reached. Next review available in 45 minutes.'), 'CR rate-limit is noise');
+assert(isBotNoise('You are rate limited by coderabbit.ai'), 'CR rate-limit html marker is noise');
 assert(!isBotNoise('High: null deref in parser when list is empty — please add a guard.'), 'real finding not noise');
 
 if (failed) {

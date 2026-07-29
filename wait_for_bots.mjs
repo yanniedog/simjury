@@ -9,6 +9,7 @@ import { execSync, spawnSync } from 'node:child_process';
 import { setTimeout as sleepMs } from 'node:timers/promises';
 import {
   allKnownBotLogins,
+  alternativesForSlot,
   formatRequiredKeys,
   missingRequiredKeys,
   parseRequiredKeys,
@@ -150,15 +151,20 @@ function fetchBotActivity(owner, name, prNumber) {
   if (!pr) return { error: 'GraphQL: pull request not found', events: [] };
 
   const events = [];
-  const pushEvent = (login, at, body) => {
+  const pushEvent = (login, at, body, { forceSubstantive = false } = {}) => {
     if (!login || !at) return;
-    events.push({ login, at, noise: isBotNoise(body) });
+    events.push({
+      login,
+      at,
+      // Thumbs-up = explicit no-findings signal; never treat as quota/trivial noise.
+      noise: forceSubstantive ? false : isBotNoise(body),
+    });
   };
   for (const c of pr.comments?.nodes || []) {
     pushEvent(c.author?.login, c.createdAt, c.body);
     for (const reaction of c.reactions?.nodes || []) {
       if (reaction.content === 'THUMBS_UP') {
-        pushEvent(reaction.user?.login, reaction.createdAt, 'thumbs-up no-findings reaction');
+        pushEvent(reaction.user?.login, reaction.createdAt, 'thumbs-up', { forceSubstantive: true });
       }
     }
   }
@@ -172,7 +178,7 @@ function fetchBotActivity(owner, name, prNumber) {
   }
   for (const reaction of pr.reactions?.nodes || []) {
     if (reaction.content === 'THUMBS_UP') {
-      pushEvent(reaction.user?.login, reaction.createdAt, 'thumbs-up no-findings reaction');
+      pushEvent(reaction.user?.login, reaction.createdAt, 'thumbs-up', { forceSubstantive: true });
     }
   }
   events.sort((a, b) => new Date(a.at) - new Date(b.at));
@@ -292,30 +298,23 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
   const botEventsSinceAnchor = activity.events.filter(
     (e) => isKnownBotLogin(e.login, knownBots) && new Date(e.at).getTime() >= anchorMs,
   );
-  // Bot presence counts ANY event (so a quota notice still proves the bot is
-  // wired up to the PR), but the quiet window only looks at substantive
-  // events. Otherwise a bot stuck in a quota / "useful?" loop pegs lastBotAt
-  // forever and the 28-minute safety cap fires while the human has nothing
-  // actionable to respond to.
+  // Merge protection: only SUBSTANTIVE bot events satisfy required presence.
+  // CodeRabbit "Review limit reached" is noise — pr-coderabbit-rate-limit-retry
+  // re-requests within ≤120m; presence stays red until a real review lands.
   const substantiveBotEvents = botEventsSinceAnchor.filter((e) => !e.noise);
   const noiseEventCount = botEventsSinceAnchor.length - substantiveBotEvents.length;
-  const seenLogins = [...new Set(botEventsSinceAnchor.map((e) => e.login))];
+  const seenLogins = [...new Set(substantiveBotEvents.map((e) => e.login))];
   const missing = missingRequiredKeys(requiredKeys, seenLogins);
   const allRequiredPosted =
-    requiredKeys.length > 0 && botEventsSinceAnchor.length > 0 && missing.length === 0;
+    requiredKeys.length > 0 && substantiveBotEvents.length > 0 && missing.length === 0;
   const lastBotAt =
     substantiveBotEvents.length > 0
       ? new Date(substantiveBotEvents[substantiveBotEvents.length - 1].at)
       : null;
-  const lastQuietAnchorAt =
-    lastBotAt ||
-    (botEventsSinceAnchor.length > 0
-      ? new Date(botEventsSinceAnchor[botEventsSinceAnchor.length - 1].at)
-      : null);
   const quiet =
     allRequiredPosted &&
-    lastQuietAnchorAt !== null &&
-    Date.now() - lastQuietAnchorAt.getTime() >= QUIET_WINDOW_SEC * 1000;
+    lastBotAt !== null &&
+    Date.now() - lastBotAt.getTime() >= QUIET_WINDOW_SEC * 1000;
 
   const checks = fetchChecks(prNumber);
   if (checks.error && !checks.failed) {
@@ -428,7 +427,13 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
   const waitParts = [];
   if (!checksReady) waitParts.push('CI checks still pending');
   if (missing.length) {
+    const crWaiting = missing.some((slot) => alternativesForSlot(slot).includes('coderabbit'));
     waitParts.push(`waiting for required bot(s): ${missing.join(', ')} (${formatRequiredKeys(missing)})`);
+    if (crWaiting && noiseEventCount > 0) {
+      waitParts.push(
+        'CodeRabbit quota/noise ignored — pr-coderabbit-rate-limit-retry will @coderabbitai review within ≤120m',
+      );
+    }
   }
   if (allRequiredPosted && !quiet) {
     if (lastBotAt) {

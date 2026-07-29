@@ -35,8 +35,12 @@ Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.
 | `.coderabbit.yaml` | **Quiet** profile (high-severity only), **no walkthrough/summary**, draft PRs on, incremental review, path filters + SimJury path instructions |
 | `scripts/lib/bot-wait-config.mjs` | `coderabbit` alias + default OR-group |
 | `bot-presence-gate` | Env `SIMJURY_BOT_WAIT_REQUIRED=sourcery\|codex\|cursor,coderabbit` (CodeRabbit mandatory) |
-| `pr-request-bot-reviews` | Posts `@coderabbitai review` when CR has not appeared |
+| `pr-request-bot-reviews` | Posts `@coderabbitai review` when CR has not appeared (defers if rate-limited) |
+| `pr-coderabbit-rate-limit-retry` | On “Review limit reached”, waits ≤120m then `@coderabbitai review` |
 | `pr-bot-close-guard` | Reopens PRs closed with outstanding CR/peer/thread obligations |
+
+Rate-limit notices do **not** satisfy `bot-presence-gate`. Presence stays red until a
+substantive CodeRabbit review lands; the rate-limit Action owns the retry clock.
 | `pr-coderabbit-rate-limit-retry` | When CR posts “Review limit reached”, wait then `@coderabbitai review` |
 
 Chore / WIP titles are skipped by CodeRabbit (`ignore_title_keywords`) and are still

@@ -5,6 +5,7 @@ import {
   missingRequiredKeys,
   resolveRequiredKeys,
 } from './bot-wait-config.mjs';
+import { isBotNoise } from './bot-noise.mjs';
 import { gitRepoRoot, readBotWaitStateFile } from './bot-wait-state.mjs';
 
 export function readBotWaitState(prNumber, cwd) {
@@ -26,7 +27,7 @@ export function resolveAnchorIso(anchorIso, fallbackIso) {
 }
 
 const COMMENTS_QUERY =
-  'query($owner:String!,$name:String!,$num:Int!){repository(owner:$owner,name:$name){pullRequest(number:$num){createdAt comments(last:100){nodes{author{login}createdAt}}reviews(last:30){nodes{author{login}submittedAt}}reviewThreads(last:100){nodes{comments(last:10){nodes{author{login}createdAt}}}}}}}';
+  'query($owner:String!,$name:String!,$num:Int!){repository(owner:$owner,name:$name){pullRequest(number:$num){createdAt comments(last:100){nodes{author{login}createdAt body}}reviews(last:30){nodes{author{login}submittedAt body}}reviewThreads(last:100){nodes{comments(last:10){nodes{author{login}createdAt body}}}}}}}';
 
 function ghGraphql(owner, name, prNumber) {
   const r = spawnSync(
@@ -64,18 +65,41 @@ function ghGraphql(owner, name, prNumber) {
   return data;
 }
 
+/**
+ * Collect bot events since anchor. Quota/trivial bodies are marked noise and
+ * excluded from presence satisfaction (CodeRabbit rate-limit notices must not
+ * clear merge protection — pr-coderabbit-rate-limit-retry owns ≤120m retry).
+ */
 export function collectBotEvents(prPayload, knownBots, anchorIso, fallbackIso) {
   const anchorMs = new Date(resolveAnchorIso(anchorIso, fallbackIso)).getTime();
   const events = [];
   for (const c of prPayload.comments?.nodes || []) {
-    if (c.author?.login && c.createdAt) events.push({ login: c.author.login, at: c.createdAt });
+    if (c.author?.login && c.createdAt) {
+      events.push({
+        login: c.author.login,
+        at: c.createdAt,
+        noise: isBotNoise(c.body),
+      });
+    }
   }
   for (const rev of prPayload.reviews?.nodes || []) {
-    if (rev.author?.login && rev.submittedAt) events.push({ login: rev.author.login, at: rev.submittedAt });
+    if (rev.author?.login && rev.submittedAt) {
+      events.push({
+        login: rev.author.login,
+        at: rev.submittedAt,
+        noise: isBotNoise(rev.body),
+      });
+    }
   }
   for (const t of prPayload.reviewThreads?.nodes || []) {
     for (const c of t.comments?.nodes || []) {
-      if (c.author?.login && c.createdAt) events.push({ login: c.author.login, at: c.createdAt });
+      if (c.author?.login && c.createdAt) {
+        events.push({
+          login: c.author.login,
+          at: c.createdAt,
+          noise: isBotNoise(c.body),
+        });
+      }
     }
   }
   events.sort((a, b) => new Date(a.at) - new Date(b.at));
@@ -94,7 +118,8 @@ export function checkRequiredBotsOnPr(owner, name, prNumber, { requiredKeys, anc
   if (!pr) throw new Error('GraphQL: pull request not found');
   const anchor = resolveAnchorIso(anchorIso || state?.anchor, pr.createdAt);
   const events = collectBotEvents(pr, knownBots, anchor, pr.createdAt);
-  const seenLogins = [...new Set(events.map((e) => e.login))];
+  const substantive = events.filter((e) => !e.noise);
+  const seenLogins = [...new Set(substantive.map((e) => e.login))];
   const missing = missingRequiredKeys(keys, seenLogins);
   return {
     requiredKeys: keys,

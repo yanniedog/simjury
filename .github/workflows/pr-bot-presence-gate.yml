@@ -82,6 +82,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           # Merge protection: CodeRabbit is mandatory; plus one peer from the OR-group.
           # Sourcery may skip docs/setup PRs — peer OR covers Codex/Cursor. Gemini is sunset.
+          # Cap ≥120m so CodeRabbit rate-limit retry Action can re-request before timeout.
           SIMJURY_BOT_WAIT_REQUIRED: sourcery|codex|cursor,coderabbit
           BOT_WAIT_IGNORE_CHECK_NAMES: bot-presence-gate,bot-feedback-gate,pr-bot-presence-gate,pr-bot-feedback-check
           BOT_WAIT_MAX_MIN: "240"
