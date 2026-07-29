@@ -37,7 +37,7 @@ per-case slots filled) into the drafting LLM, one case per run. Design authority
 > **Slots:** id **{dd-NNNN}** · publish_date **{YYYY-MM-DD}** · offence_code
 > **{canonical grave profile}** ·
 > reference verdict **{Guilty|Not Guilty}** · tension shape **{feels-guilty-is-innocent |
-> feels-innocent-is-guilty | over-trusted-machine | under-trusted-human}** ·
+> feels-innocent-is-guilty | over-trusted-first-impression | under-trusted-human}** ·
 > difficulty_target **{0.3–0.8}** · scenario family **{from DAILY-CASES.md, 2026}**.
 >
 > **Top-level fields:** `"title"` (invented case title), `"setting"` (contemporary
