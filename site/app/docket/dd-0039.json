@@ -2,18 +2,18 @@
   "id": "dd-0039",
   "publish_date": "2026-08-18",
   "label": "fiction",
-  "title": "The Woman in the Red Coat",
+  "title": "The Borrowed Coat",
   "offence_code": "murder",
   "content_advisories": ["death", "serious_violence"],
   "detail_level": "non_graphic",
-  "setting": "The Halden Cooperative Gallery occupies a converted warehouse in the fictional city of Oris. Co-founders Nera Vale and Iona Venn built it over twelve years, but a dispute over finances and control had divided them by the night Nera died. The public lobby has a camera; a staff corridor and alarmed rear door do not. Three staff members remained during the final exhibition setup.",
+  "setting": "The Halden Cooperative Gallery occupies a converted warehouse in the fictional city of Oris. Co-founders Nera Vale and Iona Venn built it over twelve years, but a dispute over finances and control had divided them by the night Nera died. Reception faces the lobby; a staff corridor and alarmed rear door are out of sight from the desk. Three staff members remained during the final exhibition setup.",
   "charge": "murder",
   "elements": [
     "The accused caused the victim’s death.",
     "The accused intended to kill or cause really serious injury.",
     "The killing was not legally justified or excused."
   ],
-  "hook": "Nera Vale stays late to finish the community exhibition she has promised young artists for months. At 9:05, a lobby camera shows Iona Venn’s red coat leaving the gallery. Seven minutes later, Nera calls reception. The camera never captures the departing person’s face.",
+  "hook": "After a bitter argument, Iona Venn asks assistant Elia Marr to walk out wearing Iona’s red coat. Elia does it. Seven minutes later, Nera Vale calls reception from upstairs—and is dead soon after. The jury must decide whether Iona stayed to kill her, or left by the rear stairs before that call.",
   "accused": {
     "cast_id": "acc",
     "human": "Iona Venn, 47, co-founded the gallery with Nera Vale and managed its building and apprentices. Their professional partnership had become bitter, though both still planned to finish the community exhibition. Iona’s sister and former apprentices sit behind the defence table. That history explains relationships and possible motive; it does not prove identity.",
@@ -23,21 +23,21 @@
     "opening": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Nera Vale was deliberately killed after her 9:12 call. The prosecution must prove Iona Venn caused that death and intended death or really serious injury. Its case is circumstantial: Iona arranged for Elia Marr to leave in her red coat while Iona’s dispute with Nera reached its end upstairs. Elia requires caution, so test her against the camera, transit record, rear-door audit, bracelet clasp, and Iona’s first interview. The prosecution says those independent strands prove Iona stayed and created a false departure."
+        "text": "Nera Vale was deliberately killed after her 9:12 call. The prosecution must prove Iona Venn caused that death and intended death or really serious injury. Its case is circumstantial: Iona arranged for Elia to leave in her coat while Iona’s dispute with Nera reached its end upstairs. Elia requires caution, so test her against the transit card in the coat, the rear-door times, the bracelet clasp, and Iona’s first interview. The prosecution says those independent strands prove Iona stayed and created a false departure."
       },
       "defence": {
         "speaker": "dc",
-        "text": "The defence accepts Nera was murdered and that Iona foolishly asked Elia to wear the coat. But the evidence must prove the killer’s identity, not merely expose a lie. Elia lied twice, received immunity, and never saw Iona after 8:45. The authenticated rear door opened before nine beyond the camera’s view. The bracelet broke within a day, not necessarily near the death. Follow the chronology and ask whether the prosecution could ever reasonably exclude Iona leaving before Nera’s final call."
+        "text": "The defence accepts Nera was murdered and that Iona foolishly asked Elia to wear the coat. But the evidence must prove the killer’s identity, not merely expose a lie. Elia lied twice, received immunity, and never saw Iona after 8:45. The rear door opened before nine. A neighbour saw Iona in the alley around that time. The bracelet broke within a day, not necessarily near the death. Ask whether the prosecution could ever reasonably exclude Iona leaving before Nera’s final call."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "Elia’s immunity requires caution, but it doesn’t erase Iona’s own request: wear the distinctive coat, avoid facing the lobby camera, and take it home. The transit record independently confirms Elia carried out that deception. Nera was killed afterwards while holding part of Iona’s recently broken bracelet. Iona’s recorded first account omitted both the rear door and the folder struggle. The prosecution says the pieces reinforce one another: motive, a staged departure, physical contact, and concealment leave no reasonable innocent explanation."
+        "text": "Elia’s immunity requires caution, but it doesn’t erase Iona’s own request: wear the distinctive coat, leave by the front, and take it home. The transit card independently confirms Elia carried out that deception while Nera was still alive upstairs. Nera was killed afterwards while holding part of Iona’s recently broken bracelet. Iona’s recorded first account omitted both the rear door and the folder struggle. The prosecution says motive, a staged departure, physical contact, and concealment leave no reasonable innocent explanation."
       },
       "defence": {
         "speaker": "dc",
-        "text": "Separate suspicion from proof. The transit record proves Elia travelled in the coat; it does not locate Iona. The rear door opened at a time consistent with Iona leaving, and no camera covered it. The clasp matches Iona’s bracelet, but the expert cannot distinguish the witnessed afternoon folder dispute from the time of death. Iona’s omissions can damage credibility without supplying the missing identity evidence. The prosecution carries every element. If the reasonable possibility remains that Iona left before Nera’s 9:12 call, the verdict must be Not Guilty."
+        "text": "Separate suspicion from proof. The transit card proves Elia travelled in the coat; it does not locate Iona. The rear door opened at a time consistent with Iona leaving, and a neighbour’s recollection supports that route. The clasp matches Iona’s bracelet, but the expert cannot distinguish the witnessed afternoon folder dispute from the time of death. Iona’s omissions can damage credibility without supplying the missing identity evidence. If the reasonable possibility remains that Iona left before Nera’s 9:12 call, the verdict must be Not Guilty."
       }
     }
   },
@@ -102,32 +102,32 @@
     },
     {
       "id": "b2", "kind": "witness", "speaker": "w1", "mode": "examination",
-      "text": "How was the lobby recording preserved? I managed the camera system. The morning after Nera died, I exported the continuous 8:45-to-9:20 file in an investigator’s presence, compared it with the original playback, confirmed the export matched, and signed the evidence copy. The match still holds, and I found no missing interval or edit. What does it show at 9:05? Someone in Iona’s red coat crosses the lobby and leaves through the main doors. The person turns away; the camera never records a face.",
+      "text": "What did you see from reception at 9:05? Someone in Iona’s red coat left through the main doors. I waved because of the colour and brass buttons. The person did not stop to talk. Did you recognise the wearer’s face? No. I only saw the coat from behind as they turned toward the street. Later Elia admitted she was the one wearing it.",
       "turns": [
-        { "speaker": "pc", "text": "How was the lobby recording preserved?" },
-        { "speaker": "w1", "text": "I managed the camera system. The morning after Nera died, I exported the continuous 8:45-to-9:20 file in an investigator’s presence, compared it with the original playback, confirmed the export matched, and signed the evidence copy. The match still holds, and I found no missing interval or edit." },
-        { "speaker": "pc", "text": "What does it show at 9:05?" },
-        { "speaker": "w1", "text": "Someone in Iona’s red coat crosses the lobby and leaves through the main doors. The person turns away; the camera never records a face." }
+        { "speaker": "pc", "text": "What did you see from reception at 9:05?" },
+        { "speaker": "w1", "text": "Someone in Iona’s red coat left through the main doors. I waved because of the colour and brass buttons. The person did not stop to talk." },
+        { "speaker": "pc", "text": "Did you recognise the wearer’s face?" },
+        { "speaker": "w1", "text": "No. I only saw the coat from behind as they turned toward the street. Later Elia admitted she was the one wearing it." }
       ],
       "surface_persuasion": 0.62, "true_weight": 0.36, "direction": "innocence", "reveal_stamp": "minor",
-      "reveal_note": "Soren authenticated the continuous recording and its export. It reliably showed the coat leaving, while leaving the wearer’s identity unresolved.",
-      "tags": ["identity", "timeline", "procedure"]
+      "reveal_note": "Soren saw the coat leave and later accepted Elia’s admission. The departure itself no longer posed a face-identification puzzle.",
+      "tags": ["identity", "timeline", "credibility"]
     },
     {
       "id": "b3", "kind": "witness", "speaker": "w1", "mode": "cross",
-      "text": "You waved because you recognised the coat, not the face? That’s right. I saw its colour and brass buttons, then the wearer’s back. I couldn’t identify a face, height, or build. The camera doesn’t cover the staff corridor or rear door, does it? No. A solid wall places both beyond its view. Seven staff members held keys or knew the shared alarm credential? Yes. So the recording cannot show whether Iona—or anyone else—used that rear route before 9:05? It can’t show that.",
+      "text": "You cannot say from that glimpse whether Iona was still upstairs? That’s right. Seeing the coat leave does not tell me who remained in the building. Staff can leave by the rear stairs without passing your desk? Yes. The corridor and rear door are behind a solid wall from reception. Seven staff members held keys or knew the shared rear alarm code? Yes. So your desk cannot show whether Iona used that rear route before 9:05? It can’t show that.",
       "turns": [
-        { "speaker": "dc", "text": "You waved because you recognised the coat, not the face?" },
-        { "speaker": "w1", "text": "That’s right. I saw its colour and brass buttons, then the wearer’s back. I couldn’t identify a face, height, or build." },
-        { "speaker": "dc", "text": "The camera doesn’t cover the staff corridor or rear door, does it?" },
-        { "speaker": "w1", "text": "No. A solid wall places both beyond its view." },
-        { "speaker": "dc", "text": "Seven staff members held keys or knew the shared alarm credential?" },
+        { "speaker": "dc", "text": "You cannot say from that glimpse whether Iona was still upstairs?" },
+        { "speaker": "w1", "text": "That’s right. Seeing the coat leave does not tell me who remained in the building." },
+        { "speaker": "dc", "text": "Staff can leave by the rear stairs without passing your desk?" },
+        { "speaker": "w1", "text": "Yes. The corridor and rear door are behind a solid wall from reception." },
+        { "speaker": "dc", "text": "Seven staff members held keys or knew the shared rear alarm code?" },
         { "speaker": "w1", "text": "Yes." },
-        { "speaker": "dc", "text": "So the recording cannot show whether Iona—or anyone else—used that rear route before 9:05?" },
+        { "speaker": "dc", "text": "So your desk cannot show whether Iona used that rear route before 9:05?" },
         { "speaker": "w1", "text": "It can’t show that." }
       ],
       "surface_persuasion": 0.5, "true_weight": 0.56, "direction": "innocence", "reveal_stamp": "minor",
-      "reveal_note": "The camera’s two blind spots mattered separately: it did not identify the coat’s wearer, and it could not test Iona’s account of using the rear door.",
+      "reveal_note": "Reception could not test Iona’s rear-exit account. The coat departure and upstairs presence were separate questions.",
       "tags": ["identity", "alibi", "credibility"]
     },
     {
@@ -162,12 +162,12 @@
     },
     {
       "id": "b6", "kind": "witness", "speaker": "w2", "mode": "examination",
-      "text": "Describe your role and what happened with the coat. I was a paid gallery assistant working under both founders. Around 8:45, after they had argued, Iona handed me her red coat and said, “Leave through the lobby, don’t face the camera, and take the coat home.” She looked angry, not frightened. What did you understand? That she wanted Nera and anyone watching the lobby to think Iona had left. I followed the instruction at 9:05, used my own transit card, and didn’t see Iona again.",
+      "text": "Describe your role and what happened with the coat. I was a paid gallery assistant working under both founders. Around 8:45, after they had argued, Iona handed me her red coat and said, “Leave through the front so Nera sees you’ve gone, and take the coat home.” She looked angry, not frightened. What did you understand? That she wanted Nera to think Iona had left. I followed the instruction at 9:05, used my own transit card, and didn’t see Iona again.",
       "turns": [
         { "speaker": "pc", "text": "Describe your role and what happened with the coat." },
-        { "speaker": "w2", "text": "I was a paid gallery assistant working under both founders. Around 8:45, after they had argued, Iona handed me her red coat and said, “Leave through the lobby, don’t face the camera, and take the coat home.” She looked angry, not frightened." },
+        { "speaker": "w2", "text": "I was a paid gallery assistant working under both founders. Around 8:45, after they had argued, Iona handed me her red coat and said, “Leave through the front so Nera sees you’ve gone, and take the coat home.” She looked angry, not frightened." },
         { "speaker": "pc", "text": "What did you understand?" },
-        { "speaker": "w2", "text": "That she wanted Nera and anyone watching the lobby to think Iona had left. I followed the instruction at 9:05, used my own transit card, and didn’t see Iona again." }
+        { "speaker": "w2", "text": "That she wanted Nera to think Iona had left. I followed the instruction at 9:05, used my own transit card, and didn’t see Iona again." }
       ],
       "surface_persuasion": 0.66, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
       "reveal_note": "Elia described a suspicious request in Iona’s own words. Even if accepted, her evidence stopped at Elia’s departure and did not establish that Iona remained.",
@@ -198,10 +198,10 @@
     },
     {
       "id": "b8", "kind": "exhibit", "speaker": "judge",
-      "text": "The parties agree that the transit operator’s custodian exported the original journey record, verified its system signature, and matched it to the card later recovered from the red coat’s inner pocket. The card began a journey near the gallery at 9:08 and continued away from the district. Elia admits carrying that card and wearing the coat, so you may accept that she travelled away in it. The record independently supports that part of her account. It identifies the card’s movement; it does not identify the lobby figure by face or locate Iona.",
+      "text": "The parties agree that Elia’s transit card began a journey near the gallery at 9:08 and continued away from the district. The same card was later recovered from the red coat’s inner pocket. Elia admits carrying that card and wearing the coat, so you may accept that she travelled away in it. The record supports that part of her account. It does not locate Iona.",
       "surface_persuasion": 0.52, "true_weight": 0.5, "direction": "guilt", "reveal_stamp": "minor",
-      "reveal_note": "The authenticated transit record independently confirmed Elia’s journey and part of her account, but supplied no evidence about Iona’s location.",
-      "tags": ["identity", "timeline", "digital_forensics"]
+      "reveal_note": "The transit card independently confirmed Elia’s journey and part of her account, but supplied no evidence about Iona’s location.",
+      "tags": ["identity", "timeline", "credibility"]
     },
     {
       "id": "b9", "kind": "witness", "speaker": "acc", "mode": "examination",
@@ -218,10 +218,10 @@
     },
     {
       "id": "b10", "kind": "exhibit", "speaker": "judge",
-      "text": "By agreement, the rear-door contractor’s custodian certified the original audit, its export, the clock’s daily synchronization, and the uninterrupted evidence copy. It records the alarm being disarmed with the gallery’s shared staff credential at 8:50, the door opening at 8:52 for eleven seconds, and relocking. Seven staff members knew that credential; the system recorded no individual name or key. No camera covered the corridor. The audit therefore proves that someone used the rear exit at a time consistent with Iona’s account, but it cannot prove that person was Iona or exclude another authorised user.",
-      "surface_persuasion": 0.62, "true_weight": 0.82, "direction": "innocence", "reveal_stamp": "decisive",
-      "reveal_note": "The authenticated rear-door audit independently supported the timing of Iona’s account. Because the credential was shared and the corridor unfilmed, it did not prove she left, but it left that reasonable possibility open.",
-      "tags": ["alibi", "timeline", "digital_forensics"]
+      "text": "By agreement, the rear-door log shows the shared staff code used at 8:50, the door opening at 8:52 for eleven seconds, then relocking. Seven staff members knew that code; the log names no individual. Neighbour Tavi Lorin, who was walking a dog, told investigators she saw Iona step into the alley around that time and hurry toward the side street without looking back. Tavi had known Iona for years from gallery openings. The log and neighbour together support a rear exit near 8:52; neither proves Iona stayed away until after Nera’s death.",
+      "surface_persuasion": 0.62, "true_weight": 0.84, "direction": "innocence", "reveal_stamp": "decisive",
+      "reveal_note": "The rear-door timing and neighbour recognition independently supported Iona’s exit account without proving she remained gone.",
+      "tags": ["alibi", "timeline", "credibility"]
     },
     {
       "id": "b11", "kind": "witness", "speaker": "acc", "mode": "cross",
@@ -280,7 +280,7 @@
   ],
   "checkins": [],
   "reference_verdict": "Not Guilty",
-  "twist": "The coat switch was proved, but the prosecution’s completed inference was not. The transit record located Elia, not Iona; the authenticated rear-door audit was compatible with Iona leaving; and the clasp testing could not distinguish the afternoon dispute from the time of death. The strongest prosecution reading remains that Iona arranged an apparent departure, concealed the rear exit, and left Nera holding her clasp—but those suspicious facts do not prove beyond reasonable doubt that Iona stayed and killed Nera.",
+  "twist": "The authors’ reference resolution is Not Guilty. Elia’s admission resolves who wore the coat; the contested question is whether Iona remained upstairs. The rear-door timing and neighbour recognition leave a reasonable possibility that Iona left before Nera’s 9:12 call. The strongest prosecution interpretation combines the staged departure, omitted interview details, and bracelet clasp. Those facts support suspicion, but do not prove identity beyond reasonable doubt.",
   "difficulty_target": 0.64,
   "jury": {
     "jurors": [

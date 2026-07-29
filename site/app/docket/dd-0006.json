@@ -62,17 +62,17 @@
       },
       "defence": {
         "speaker": "dc",
-        "text": "A dangerous event occurred, and Jori wrongly bypassed inspection. Neither fact identifies Corin. Four people could use Second Presence and its administrator account. Daro Quill had carried the stage bag and knew the approval routine. A key record identifies a device, not the hand touching it. Jori first denied receiving an instruction and changed that account after immunity. Corin’s writing describes a risk for a proposed safety exercise. Keep each record within its proved limits and ask whether another authorised collaborator remains reasonably possible."
+        "text": "A dangerous event occurred, and Jori wrongly bypassed inspection. Neither fact identifies Corin. Four people could use Second Presence and its administrator account. Daro Quill had carried the stage bag and knew the approval routine. A token record identifies a device, not the hand touching it. Jori first denied receiving an instruction and changed that account after immunity. Corin’s writing describes a risk for a proposed safety exercise. Keep each record within its proved limits and ask whether another authorised collaborator remains reasonably possible."
       }
     },
     "closing": {
       "prosecution": {
         "speaker": "pc",
-        "text": "The shared archive cannot identify its operator; the prosecution accepts that. Now assemble the independent chronology. Jori says Corin arranged the false approval and bypass. At 2:06 the provider issued a fresh prompt, Corin’s key confirmed it, and the command followed. Certified footage places Corin with the bag from 2:04 to 2:07. The device was real, the exercise unapproved, and Corin’s admitted scenario contemplated public fear forcing a change in government power. Those circumstances prove Corin personally attempted the ideologically motivated killing."
+        "text": "The shared archive cannot identify its operator; the prosecution accepts that. Now assemble the independent chronology. Jori says Corin arranged the false approval and bypass. At 2:06 the provider issued a fresh challenge, Corin’s token confirmed it, and the command followed. Certified footage places Corin with the bag from 2:04 to 2:07. The device was real, the exercise unapproved, and Corin’s admitted scenario contemplated public fear forcing a change in government power. Those circumstances prove Corin personally attempted the ideologically motivated killing."
       },
       "defence": {
         "speaker": "dc",
-        "text": "That chronology contains a human gap. The key records no fingerprint, the side entrance was unfilmed, and Daro had carried the bag and knew its approval routine. The project, deletion queue, recordings, and code were shared. Jori changed accounts after immunity and never heard Corin mention violence or politics. Corin’s draft warns what a borrowed face might cause; it does not request an attack. The defence need not prove Daro acted. Unless the prosecution excludes that reasonable access and proves Corin’s lethal and ideological intent, the verdict is Not Guilty."
+        "text": "That chronology contains a human gap. The token records no fingerprint, the side entrance was unfilmed, and Daro had carried the bag and knew its approval routine. The project, deletion queue, recordings, and code were shared. Jori changed accounts after immunity and never heard Corin mention violence or politics. Corin’s draft warns what a borrowed face might cause; it does not request an attack. The defence need not prove Daro acted. Unless the prosecution excludes that reasonable access and proves Corin’s lethal and ideological intent, the verdict is Not Guilty."
       }
     }
   },
@@ -139,10 +139,10 @@
         {"speaker": "w1", "text": "Correct. The package itself identified no sender."},
         {"speaker": "dc", "text": "Nor did the label and courier record identify who packed it?"},
         {"speaker": "w1", "text": "No. They showed how it entered, not who prepared it."},
-        {"speaker": "dc", "text": "And the first provider record named an account, not a human sender?"},
-        {"speaker": "w1", "text": "Yes. It recorded the studio account and time. Separate records were needed about its key and physical access."}
+        {"speaker": "dc", "text": "And the first provider certificate named an account, not a human sender?"},
+        {"speaker": "w1", "text": "Yes. It recorded the studio account and time. Separate records were needed about its hardware token and physical access."}
       ],
-      "text": "You found no fingerprint or biological material from Corin on the package? Correct. The package itself identified no sender. Nor did the label and courier record identify who packed it? No. They showed how it entered, not who prepared it. And the first provider record named an account, not a human sender? Yes. It recorded the studio account and time. Separate records were needed about its key and physical access.",
+      "text": "You found no fingerprint or biological material from Corin on the package? Correct. The package itself identified no sender. Nor did the label and courier record identify who packed it? No. They showed how it entered, not who prepared it. And the first provider certificate named an account, not a human sender? Yes. It recorded the studio account and time. Separate records were needed about its hardware token and physical access.",
       "surface_persuasion": 0.68,
       "true_weight": 0.5,
       "direction": "innocence",
@@ -156,20 +156,20 @@
       "speaker": "w2",
       "mode": "examination",
       "turns": [
-        {"speaker": "pc", "text": "What material did you examine from the authorization call?"},
-        {"speaker": "w2", "text": "The provider supplied its original stream and connection record with custodian certification. The verified copy matches that original."},
+        {"speaker": "pc", "text": "What material did you examine from the authorisation call?"},
+        {"speaker": "w2", "text": "The provider supplied the original call recording with a signed custodian note. The copy matches that original."},
         {"speaker": "pc", "text": "How did you test it?"},
-        {"speaker": "w2", "text": "I compared image transitions, voice timing, and source characteristics with authenticated Corin recordings. Independent inconsistencies showed synthetic generation."},
+        {"speaker": "w2", "text": "I compared the voice and face movement with recordings of Corin speaking that same afternoon. The timing and texture did not match a live person."},
         {"speaker": "pc", "text": "What could you conclude—and what could you not conclude?"},
-        {"speaker": "w2", "text": "The face and voice were synthetic. The stream has no reliable creator marker. It proves Corin wasn’t live, not who made it or that Corin was framed."}
+        {"speaker": "w2", "text": "The call used a copied face and voice. It proves Corin was not live on that line. It does not prove who arranged the copy."}
       ],
-      "text": "What material did you examine from the authorization call? The provider supplied its original stream and connection record with custodian certification. The verified copy matches that original. How did you test it? I compared image transitions, voice timing, and source characteristics with authenticated Corin recordings. Independent inconsistencies showed synthetic generation. What could you conclude—and what could you not conclude? The face and voice were synthetic. The stream has no reliable creator marker. It proves Corin wasn’t live, not who made it or that Corin was framed.",
+      "text": "What material did you examine from the authorisation call? The provider supplied the original call recording with a signed custodian note. The copy matches that original. How did you test it? I compared the voice and face movement with recordings of Corin speaking that same afternoon. The timing and texture did not match a live person. What could you conclude—and what could you not conclude? The call used a copied face and voice. It proves Corin was not live on that line. It does not prove who arranged the copy.",
       "surface_persuasion": 0.94,
       "true_weight": 0.22,
       "direction": "innocence",
       "reveal_stamp": "misleading",
-      "reveal_note": "The authenticated expert analysis proved the call was synthetic. It did not prove that Corin was framed or identify the creator.",
-      "tags": ["digital_forensics", "identity", "alibi"]
+      "reveal_note": "The examiner showed the clearing call was fake without turning the case into a creator-attribution tech puzzle.",
+      "tags": ["identity", "credibility", "alibi"]
     },
     {
       "id": "b5",
@@ -180,11 +180,11 @@
         {"speaker": "dc", "text": "Who could access the Second Presence source archive?"},
         {"speaker": "w2", "text": "Corin, two employees, and contractor Daro Quill. They ordinarily made demonstration scenarios from client or studio recordings."},
         {"speaker": "dc", "text": "How did the archive reach your examination?"},
-        {"speaker": "w2", "text": "A studio custodian made a read-only forensic image under the search authority. I verified its log and that the image matched the sealed original."},
+        {"speaker": "w2", "text": "A studio custodian made a read-only forensic image under the search authority. I verified its log and hashes."},
         {"speaker": "dc", "text": "Could its activity log distinguish those four people?"},
         {"speaker": "w2", "text": "No. They shared one administrator credential. The image preserves files, actions, and times accurately, but cannot identify which authorised person created the project or queued an action."}
       ],
-      "text": "Who could access the Second Presence source archive? Corin, two employees, and contractor Daro Quill. They ordinarily made demonstration scenarios from client or studio recordings. How did the archive reach your examination? A studio custodian made a read-only forensic image under the search authority. I verified its log and that the image matched the sealed original. Could its activity log distinguish those four people? No. They shared one administrator credential. The image preserves files, actions, and times accurately, but cannot identify which authorised person created the project or queued an action.",
+      "text": "Who could access the Second Presence source archive? Corin, two employees, and contractor Daro Quill. They ordinarily made demonstration scenarios from client or studio recordings. How did the archive reach your examination? A studio custodian made a read-only forensic image under the search authority. I verified its log and hashes. Could its activity log distinguish those four people? No. They shared one administrator credential. The image preserves files, actions, and times accurately, but cannot identify which authorised person created the project or queued an action.",
       "surface_persuasion": 0.62,
       "true_weight": 0.7,
       "direction": "innocence",
@@ -262,19 +262,19 @@
       "mode": "examination",
       "turns": [
         {"speaker": "pc", "text": "What separate records concerned the activation?"},
-        {"speaker": "w1", "text": "The provider sent its original certified log. A fresh 2:06 prompt was confirmed by Corin’s registered key; the command followed within seconds."},
+        {"speaker": "w1", "text": "The provider’s signed log shows a fresh 2:06 prompt confirmed by Corin’s registered key; the command followed within seconds."},
         {"speaker": "pc", "text": "How did you identify and preserve that key?"},
-        {"speaker": "w1", "text": "The studio register linked that key to Corin. We found the key in Corin’s bag, photographed and sealed it, then logged its transfer."},
-        {"speaker": "pc", "text": "What did the venue record show about the bag?"},
-        {"speaker": "w1", "text": "Verified corridor footage shows Corin carry the bag into a greenroom at 2:04 and emerge at 2:07. No one else appears there then."}
+        {"speaker": "w1", "text": "The studio register linked that key to Corin. We found it in Corin’s bag, photographed and sealed it, then logged its transfer."},
+        {"speaker": "pc", "text": "Who saw Corin with the bag at that time?"},
+        {"speaker": "w1", "text": "Greenroom attendant Miri Solt. She saw Corin carry the bag in at 2:04, remain alone, and leave at 2:07. No one else used that door then."}
       ],
-      "text": "What separate records concerned the activation? The provider sent its original certified log. A fresh 2:06 prompt was confirmed by Corin’s registered key; the command followed within seconds. How did you identify and preserve that key? The studio register linked that key to Corin. We found the key in Corin’s bag, photographed and sealed it, then logged its transfer. What did the venue record show about the bag? Verified corridor footage shows Corin carry the bag into a greenroom at 2:04 and emerge at 2:07. No one else appears there then.",
+      "text": "What separate records concerned the activation? The provider’s signed log shows a fresh 2:06 prompt confirmed by Corin’s registered key; the command followed within seconds. How did you identify and preserve that key? The studio register linked that key to Corin. We found it in Corin’s bag, photographed and sealed it, then logged its transfer. Who saw Corin with the bag at that time? Greenroom attendant Miri Solt. She saw Corin carry the bag in at 2:04, remain alone, and leave at 2:07. No one else used that door then.",
       "surface_persuasion": 0.76,
       "true_weight": 0.88,
       "direction": "guilt",
       "reveal_stamp": "decisive",
-      "reveal_note": "The independently certified provider, seizure, and venue records put Corin’s physical key with Corin during the fresh confirmation window. This was the prosecution’s central attribution evidence.",
-      "tags": ["identity", "digital_forensics", "timeline"]
+      "reveal_note": "The provider log, sealed key, and attendant’s observation put Corin with the key during the confirmation window.",
+      "tags": ["identity", "timeline", "digital_forensics"]
     },
     {
       "id": "b10",
@@ -282,21 +282,21 @@
       "speaker": "w2",
       "mode": "cross",
       "turns": [
-        {"speaker": "dc", "text": "Could this approval be copied onto another device in advance?"},
-        {"speaker": "w2", "text": "No. Someone had to press confirm on Corin’s registered key before the prompt expired."},
-        {"speaker": "dc", "text": "Does that key identify the person who touched it?"},
-        {"speaker": "w2", "text": "No. It proves that key confirmed, not a fingerprint or face."},
+        {"speaker": "dc", "text": "What does ‘non-exportable’ mean here?"},
+        {"speaker": "w2", "text": "Its secret cannot normally be copied. A fresh provider prompt must be physically approved before expiry."},
+        {"speaker": "dc", "text": "Does the hardware token identify the person who touched it?"},
+        {"speaker": "w2", "text": "No. It proves that token confirmed, not a fingerprint or face."},
         {"speaker": "dc", "text": "Could Daro prepare this confirmation before Corin entered?"},
-        {"speaker": "w2", "text": "No. It was issued at 2:06 and expired thirty seconds later. Someone near the key had to confirm it."},
+        {"speaker": "w2", "text": "No. It was issued at 2:06 and expired thirty seconds later. Someone near the token had to confirm it."},
         {"speaker": "dc", "text": "Can you exclude someone reaching the bag through an unfilmed entrance then?"},
-        {"speaker": "w2", "text": "No. The log excludes advance confirmation, but not another person beside the key."}
+        {"speaker": "w2", "text": "No. The log excludes advance confirmation, but not another person beside the token."}
       ],
-      "text": "Could this approval be copied onto another device in advance? No. Someone had to press confirm on Corin’s registered key before the prompt expired. Does that key identify the person who touched it? No. It proves that key confirmed, not a fingerprint or face. Could Daro prepare this confirmation before Corin entered? No. It was issued at 2:06 and expired thirty seconds later. Someone near the key had to confirm it. Can you exclude someone reaching the bag through an unfilmed entrance then? No. The log excludes advance confirmation, but not another person beside the key.",
+      "text": "What does ‘non-exportable’ mean here? Its secret cannot normally be copied. A fresh provider prompt must be physically approved before expiry. Does the hardware token identify the person who touched it? No. It proves that token confirmed, not a fingerprint or face. Could Daro prepare this confirmation before Corin entered? No. It was issued at 2:06 and expired thirty seconds later. Someone near the token had to confirm it. Can you exclude someone reaching the bag through an unfilmed entrance then? No. The log excludes advance confirmation, but not another person beside the token.",
       "surface_persuasion": 0.5,
       "true_weight": 0.56,
       "direction": "guilt",
       "reveal_stamp": "minor",
-      "reveal_note": "The expert resisted overclaiming identity but excluded advance use. The key had to be physically confirmed during Corin’s unobserved greenroom interval.",
+      "reveal_note": "The expert resisted overclaiming identity but excluded advance use. The token had to be physically confirmed during Corin’s unobserved greenroom interval.",
       "tags": ["identity", "digital_forensics", "timeline"]
     },
     {
@@ -328,12 +328,12 @@
       "turns": [
         {"speaker": "pc", "text": "You wrote that public failure could force transfer of authentication power to a civic network?"},
         {"speaker": "acc", "text": "Yes, as a warning. I favoured civic oversight, but described a danger, not a method of achieving it."},
-        {"speaker": "pc", "text": "At 2:06, your registered key was inside the bag you had taken into the greenroom?"},
+        {"speaker": "pc", "text": "At 2:06, your registered token was inside the bag you had taken into the greenroom?"},
         {"speaker": "acc", "text": "It should have been. I didn’t check every pocket after leaving the stage."},
-        {"speaker": "pc", "text": "You were alone in that room when the key confirmed the prompt?"},
+        {"speaker": "pc", "text": "You were alone in that room when the token confirmed the challenge?"},
         {"speaker": "acc", "text": "The corridor shows me alone, but not the side entrance. Daro carried the bag earlier and knew the routine. I didn’t send the command."}
       ],
-      "text": "You wrote that public failure could force transfer of authentication power to a civic network? Yes, as a warning. I favoured civic oversight, but described a danger, not a method of achieving it. At 2:06, your registered key was inside the bag you had taken into the greenroom? It should have been. I didn’t check every pocket after leaving the stage. You were alone in that room when the key confirmed the prompt? The corridor shows me alone, but not the side entrance. Daro carried the bag earlier and knew the routine. I didn’t send the command.",
+      "text": "You wrote that public failure could force transfer of authentication power to a civic network? Yes, as a warning. I favoured civic oversight, but described a danger, not a method of achieving it. At 2:06, your registered token was inside the bag you had taken into the greenroom? It should have been. I didn’t check every pocket after leaving the stage. You were alone in that room when the token confirmed the challenge? The corridor shows me alone, but not the side entrance. Daro carried the bag earlier and knew the routine. I didn’t send the command.",
       "surface_persuasion": 0.66,
       "true_weight": 0.58,
       "direction": "guilt",
@@ -345,7 +345,7 @@
       "id": "b13",
       "kind": "exhibit",
       "speaker": "judge",
-      "text": "The parties agree no Orinth office authorised Second Presence that day. Corin’s proposal remained unapproved, venue staff received no exercise notice, and the package was a real device, not a training item. They also agree the call used the studio project, four people shared its account, and Corin’s key confirmed the later prompt. Those matters are proved. The parties dispute who operated the project, who touched the key, what Corin intended, and whether someone else could reach the bag. The agreements do not decide those questions.",
+      "text": "The parties agree no Orinth office authorised Second Presence that day. Corin’s proposal remained unapproved, venue staff received no exercise notice, and the package was a real device, not a training item. They also agree the call used the studio project, four people shared its account, and Corin’s token confirmed the later challenge. Those matters are proved. The parties dispute who operated the project, who touched the token, what Corin intended, and whether someone else could reach the bag. The agreements do not decide those questions.",
       "surface_persuasion": 0.56,
       "true_weight": 0.58,
       "direction": "guilt",

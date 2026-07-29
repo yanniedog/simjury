@@ -113,7 +113,12 @@ cartel/organised-crime syndicate; large-scale illicit drug manufacturing; and mu
 The setting supplies gravity, not spectacle. The jury still decides one contested
 element from admissible evidence. Balance modern records with memory, motive,
 credibility, causation, knowledge, intent, command, coercion, duress, and the
-burden of proof.
+burden of proof. Prefer evidence that works in spoken dialogue: admissions,
+signed notes, receipts, handwriting, neighbour or colleague recognition, and
+clearly described physical findings. Do not build a sitting around who appears
+on a camera when the player cannot see the footage; if a recording matters,
+have a witness say plainly what they saw or heard. Keep technology simple—one
+quiet timestamp or pass log is enough.
 Across seven cases, no two central inferences may depend on the same mechanism.
 
 ### Specificity standard for major crime
@@ -129,11 +134,6 @@ Across seven cases, no two central inferences may depend on the same mechanism.
 - **National security and digital evidence:** identify the fictional information,
   recipient, system event, prejudice, custody, and verification method precisely.
   Never disclose a real exploitable weakness or teach access, concealment, or evasion.
-  Prefer plain modern English: say a copy matched the original, a security key
-  confirmed a prompt, or a device signature identified a machine. Do not lecture
-  jurors on hashes, tokens, public keys, certificates, write-once stores, or other
-  crypto jargon unless a single short phrase is essential to the contested inference,
-  and never let digital-auth vocabulary dominate a sitting.
 
 Specificity must serve proof, comprehension, character, or consequence. It must not
 be inserted merely for shock value.
@@ -153,18 +153,15 @@ be inserted merely for shock value.
 
 ## Trap shapes (alternate; the gate enforces variety of verdicts, you enforce variety of shape)
 
-1. **Feels guilty, is innocent** — loud motive/ID/digital trail, quiet exoneration.
+1. **Feels guilty, is innocent** — loud motive/ID/suspicious trail, quiet exoneration.
 2. **Feels innocent, is guilty** — sympathetic defendant, decisive record convicts.
-3. **Over-trusted machine** — the flag/match/log feels decisive, means little.
+3. **Over-trusted first impression** — a vivid record or glance feels decisive, means little.
 4. **Under-trusted human** — the shaky-sounding witness is the one telling the truth.
 
 ## Voice and process (2026)
 
 - Witnesses speak like real 2026 people under stress: plain, specific, no
   Victorianisms, no lawyer-speak from lay witnesses. Experts are precise and hedged.
-- Keep modern records in proportion. Phone logs, cameras, passes, and security keys
-  belong in 2026 cases; repeated hash/token/certificate lectures do not. If integrity
-  matters, one plain sentence that the copy matched the sealed original is enough.
 - The judge gives modern plain-English directions and at least one beat carries the
   `burden` theme (the gate requires it): burden and standard, plus contemporary
   process realism — "you must not research this case online" earns its place.
