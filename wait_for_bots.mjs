@@ -302,8 +302,8 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
     (e) => isKnownBotLogin(e.login, knownBots) && new Date(e.at).getTime() >= anchorMs,
   );
   // Merge protection: only SUBSTANTIVE bot events satisfy required presence.
-  // CodeRabbit "Review limit reached" is noise — pr-coderabbit-rate-limit-retry
-  // re-requests within ≤120m; presence stays red until a real review lands.
+  // CodeRabbit "Review limit reached" is noise — pr-coderabbit-ensure-review
+  // (*/15) re-requests when due; presence stays red until a real review lands.
   const substantiveBotEvents = botEventsSinceAnchor.filter((e) => !e.noise);
   const noiseEventCount = botEventsSinceAnchor.length - substantiveBotEvents.length;
   const seenLogins = [...new Set(substantiveBotEvents.map((e) => e.login))];
