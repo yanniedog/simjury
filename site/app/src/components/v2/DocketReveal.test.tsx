@@ -154,6 +154,6 @@ describe('DocketReveal', () => {
     )
 
     expect(analyzeDocketPlay(trial, 'Undecided').counterweights.length).toBeGreaterThan(0)
-    expect(markup).not.toContain('What deserved more caution')
+    expect(markup).toContain('What deserved more caution')
   })
 })

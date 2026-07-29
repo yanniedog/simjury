@@ -174,7 +174,7 @@ export function DocketReveal({
         </div>
       )}
 
-      {verdict !== 'Undecided' && counterweights.length > 0 && (
+      {counterweights.length > 0 && (
         <div className="rounded-lg border border-neutral-800 bg-neutral-900/20 p-4">
           <h2 className="font-semibold text-neutral-200">What deserved more caution</h2>
           <p className="mt-2 text-sm leading-relaxed text-neutral-500">
