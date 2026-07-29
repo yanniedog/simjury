@@ -90,4 +90,70 @@ describe('DocketReveal', () => {
     expect(markup).toContain('The challenge you carried into your verdict')
     expect(markup).toContain('No single point stood out as the strongest challenge.')
   })
+
+  it('surfaces misleading evidence as caution, not falsehood', () => {
+    const trial = makeDocketCase()
+    const caution = analyzeDocketPlay(trial, 'Not Guilty').counterweights[0]
+    const markup = renderToStaticMarkup(
+      <DocketReveal
+        trial={trial}
+        analysis={analyzeDocketPlay(trial, 'Not Guilty')}
+        verdict="Not Guilty"
+        room={{
+          kind: 'majority',
+          verdict: 'not_guilty',
+          g: 0,
+          ng: 11,
+          u: 1,
+        }}
+        dayNumber={1}
+        stats={{ played: 1, currentStreak: 1, maxStreak: 1 }}
+        narration={false}
+        playbackRate={1}
+        onChooseAnother={() => undefined}
+      />,
+    )
+
+    expect(caution).toBeDefined()
+    expect(markup).toContain('What deserved more caution')
+    expect(markup).toContain('Needs caution')
+    expect(markup).toContain(caution.beat.reveal_note)
+    expect(markup).toContain(caution.beat.text)
+    expect(markup).toContain(
+      caution.beat.direction === 'guilt'
+        ? 'Can push toward convicting'
+        : caution.beat.direction === 'innocence'
+          ? 'Can push toward not convicting'
+          : 'Can pull either way',
+    )
+    expect(markup).not.toMatch(/\btainted\b/i)
+    expect(markup).not.toMatch(/\bfalse\b/i)
+    expect(markup).not.toMatch(/\bbias\b/i)
+  })
+
+  it('hides caution counterweights until a verdict is locked', () => {
+    const trial = makeDocketCase()
+    const markup = renderToStaticMarkup(
+      <DocketReveal
+        trial={trial}
+        analysis={analyzeDocketPlay(trial, 'Undecided')}
+        verdict="Undecided"
+        room={{
+          kind: 'majority',
+          verdict: 'not_guilty',
+          g: 0,
+          ng: 11,
+          u: 1,
+        }}
+        dayNumber={1}
+        stats={{ played: 1, currentStreak: 1, maxStreak: 1 }}
+        narration={false}
+        playbackRate={1}
+        onChooseAnother={() => undefined}
+      />,
+    )
+
+    expect(analyzeDocketPlay(trial, 'Undecided').counterweights.length).toBeGreaterThan(0)
+    expect(markup).toContain('What deserved more caution')
+  })
 })
