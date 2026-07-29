@@ -6,9 +6,9 @@
  * Required list supports OR-groups: "sourcery|cursor|codex" means any one of those
  * keys satisfies that slot. Commas separate ALL-of slots.
  *
- * Why OR-groups: Sourcery skips some PRs (docs/setup); Gemini Code Assist consumer
- * reviews are sunset; CodeRabbit / Cursor Automation often post the real review.
- * Requiring a single flaky bot hard-blocks merge. See docs/CROSS_REPO_BOT_MATRIX.md.
+ * Merge protection: CodeRabbit is a hard ALL-of slot; peer bots stay in an OR-group
+ * because Sourcery skips some PRs. Gemini consumer reviews are sunset (noise).
+ * See docs/CROSS_REPO_BOT_MATRIX.md.
  */
 export const BOT_ALIASES = {
   gemini: [
@@ -27,10 +27,10 @@ export const BOT_ALIASES = {
 };
 
 /**
- * Default: one review-presence slot. Any of sourcery, Codex, Cursor Automation,
- * or CodeRabbit satisfies. Gemini is optional (consumer Code Assist is sunset).
+ * Default: peer OR-group + mandatory CodeRabbit. Gemini optional (sunset).
  */
-export const DEFAULT_REQUIRED_KEYS = ['sourcery|codex|cursor|coderabbit'];
+export const DEFAULT_REQUIRED_SPEC = 'sourcery|codex|cursor,coderabbit';
+export const DEFAULT_REQUIRED_KEYS = ['sourcery|codex|cursor', 'coderabbit'];
 
 export const OPTIONAL_BOT_LOGINS = [
   'claude[bot]',

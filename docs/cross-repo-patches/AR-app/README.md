@@ -28,13 +28,13 @@ cp "$PACK/verify-bot-wait-or-groups.mjs" scripts/verify-bot-wait-or-groups.mjs
 #   "pr:bot-wait-or-groups:verify": "node scripts/verify-bot-wait-or-groups.mjs"
 # Wire into CI if present.
 
-# Optional repo variable override:
-#   Settings → Variables → AR_BOT_WAIT_REQUIRED = sourcery|cursor
+# Optional repo variable override (CodeRabbit remains mandatory):
+#   Settings → Variables → AR_BOT_WAIT_REQUIRED = sourcery|cursor,coderabbit
 
 git add -A
-git commit -m "ci: harden bot-presence (sourcery|cursor OR-group + retries)"
+git commit -m "ci: merge protection (peer OR + mandatory CodeRabbit)"
 git push -u origin HEAD
-gh pr create --draft --title "ci: harden bot-presence (sourcery|cursor OR-group + retries)"
+gh pr create --draft --title "ci: merge protection (peer OR + mandatory CodeRabbit)"
 ```
 
 Also update `AGENTS.md`: replace `--watch` babysit loops with single-shot `wait-for-bots` / `pr:arm-and-park` when that script is present (see `../cursor-global-workflow/`).
@@ -43,6 +43,6 @@ Also update `AGENTS.md`: replace `--watch` babysit loops with single-shot `wait-
 
 ```sh
 node scripts/verify-bot-wait-or-groups.mjs
-# On a PR where Cursor reviewed but Sourcery did not:
-npm run wait-for-bots -- --pr <n>   # should exit 0 once cursor posted + quiet
+# Needs a peer bot AND CodeRabbit:
+npm run wait-for-bots -- --pr <n>   # exit 0 only when both slots satisfied + quiet
 ```

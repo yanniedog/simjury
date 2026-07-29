@@ -37,7 +37,7 @@ jobs:
       || github.event.review != null
       || (github.event_name == 'issue_comment' && github.event.issue.pull_request != null)
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -80,9 +80,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          # OR-group: any one of sourcery / Codex / Cursor Automation / CodeRabbit.
-          # Sourcery skips some PRs; Gemini consumer reviews are sunset.
-          SIMJURY_BOT_WAIT_REQUIRED: sourcery|codex|cursor|coderabbit
+          # Merge protection: CodeRabbit is mandatory; plus one peer from the OR-group.
+          # Sourcery may skip docs/setup PRs — peer OR covers Codex/Cursor. Gemini is sunset.
+          # Cap ≥120m so CodeRabbit rate-limit retry Action can re-request before timeout.
+          SIMJURY_BOT_WAIT_REQUIRED: sourcery|codex|cursor,coderabbit
           BOT_WAIT_IGNORE_CHECK_NAMES: bot-presence-gate,bot-feedback-gate,pr-bot-presence-gate,pr-bot-feedback-check
           BOT_WAIT_MAX_MIN: "240"
         run: |
@@ -97,25 +98,17 @@ jobs:
             echo "No PR associated with this event; skipping bot-presence-gate."
             exit 0
           fi
-          # Retries cover the race where the gate fires before review bots post.
-          # AR-app previously failed on the first exit-2 and left a sticky red check.
-          attempts=0
-          max_attempts=12
-          while [ "$attempts" -lt "$max_attempts" ]; do
-            attempts=$((attempts + 1))
-            set +e
-            npm run wait-for-bots -- --pr "$PR"
-            code=$?
-            set -e
-            if [ "$code" -eq 0 ]; then
-              exit 0
-            fi
-            if [ "$code" -ne 2 ] || [ "$attempts" -ge "$max_attempts" ]; then
-              if [ "$code" -eq 2 ]; then
-                echo "::warning::Bot wait not ready after ${max_attempts} attempts — bots may still be in flight; gate re-fires on review/comment events"
-              fi
-              exit 1
-            fi
-            echo "Bot wait not ready (bots/CI/quiet); retry ${attempts}/${max_attempts} in 30s..."
-            sleep 30
-          done
+          # Single-shot only — no sleep-poll. Gate re-fires on review/comment/ci
+          # events; agents park with: npm run pr:arm-and-park -- --pr "$PR"
+          set +e
+          npm run wait-for-bots -- --pr "$PR"
+          code=$?
+          set -e
+          if [ "$code" -eq 0 ]; then
+            exit 0
+          fi
+          if [ "$code" -eq 2 ]; then
+            echo "::warning::Bot wait not ready (bots/CI/quiet) — gate re-fires on review/comment/ci; agents: npm run pr:arm-and-park -- --pr $PR"
+            exit 1
+          fi
+          exit "$code"

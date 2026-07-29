@@ -9,6 +9,7 @@ import { execSync, spawnSync } from 'node:child_process';
 import { setTimeout as sleepMs } from 'node:timers/promises';
 import {
   allKnownBotLogins,
+  alternativesForSlot,
   formatRequiredKeys,
   missingRequiredKeys,
   parseRequiredKeys,
@@ -150,15 +151,20 @@ function fetchBotActivity(owner, name, prNumber) {
   if (!pr) return { error: 'GraphQL: pull request not found', events: [] };
 
   const events = [];
-  const pushEvent = (login, at, body) => {
+  const pushEvent = (login, at, body, { forceSubstantive = false } = {}) => {
     if (!login || !at) return;
-    events.push({ login, at, noise: isBotNoise(body) });
+    events.push({
+      login,
+      at,
+      // Thumbs-up = explicit no-findings signal; never treat as quota/trivial noise.
+      noise: forceSubstantive ? false : isBotNoise(body),
+    });
   };
   for (const c of pr.comments?.nodes || []) {
     pushEvent(c.author?.login, c.createdAt, c.body);
     for (const reaction of c.reactions?.nodes || []) {
       if (reaction.content === 'THUMBS_UP') {
-        pushEvent(reaction.user?.login, reaction.createdAt, 'thumbs-up no-findings reaction');
+        pushEvent(reaction.user?.login, reaction.createdAt, 'thumbs-up', { forceSubstantive: true });
       }
     }
   }
@@ -172,7 +178,7 @@ function fetchBotActivity(owner, name, prNumber) {
   }
   for (const reaction of pr.reactions?.nodes || []) {
     if (reaction.content === 'THUMBS_UP') {
-      pushEvent(reaction.user?.login, reaction.createdAt, 'thumbs-up no-findings reaction');
+      pushEvent(reaction.user?.login, reaction.createdAt, 'thumbs-up', { forceSubstantive: true });
     }
   }
   events.sort((a, b) => new Date(a.at) - new Date(b.at));
@@ -292,30 +298,23 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
   const botEventsSinceAnchor = activity.events.filter(
     (e) => isKnownBotLogin(e.login, knownBots) && new Date(e.at).getTime() >= anchorMs,
   );
-  // Bot presence counts ANY event (so a quota notice still proves the bot is
-  // wired up to the PR), but the quiet window only looks at substantive
-  // events. Otherwise a bot stuck in a quota / "useful?" loop pegs lastBotAt
-  // forever and the 28-minute safety cap fires while the human has nothing
-  // actionable to respond to.
+  // Merge protection: only SUBSTANTIVE bot events satisfy required presence.
+  // CodeRabbit "Review limit reached" is noise — pr-coderabbit-rate-limit-retry
+  // re-requests within ≤120m; presence stays red until a real review lands.
   const substantiveBotEvents = botEventsSinceAnchor.filter((e) => !e.noise);
   const noiseEventCount = botEventsSinceAnchor.length - substantiveBotEvents.length;
-  const seenLogins = [...new Set(botEventsSinceAnchor.map((e) => e.login))];
+  const seenLogins = [...new Set(substantiveBotEvents.map((e) => e.login))];
   const missing = missingRequiredKeys(requiredKeys, seenLogins);
   const allRequiredPosted =
-    requiredKeys.length > 0 && botEventsSinceAnchor.length > 0 && missing.length === 0;
+    requiredKeys.length > 0 && substantiveBotEvents.length > 0 && missing.length === 0;
   const lastBotAt =
     substantiveBotEvents.length > 0
       ? new Date(substantiveBotEvents[substantiveBotEvents.length - 1].at)
       : null;
-  const lastQuietAnchorAt =
-    lastBotAt ||
-    (botEventsSinceAnchor.length > 0
-      ? new Date(botEventsSinceAnchor[botEventsSinceAnchor.length - 1].at)
-      : null);
   const quiet =
     allRequiredPosted &&
-    lastQuietAnchorAt !== null &&
-    Date.now() - lastQuietAnchorAt.getTime() >= QUIET_WINDOW_SEC * 1000;
+    lastBotAt !== null &&
+    Date.now() - lastBotAt.getTime() >= QUIET_WINDOW_SEC * 1000;
 
   const checks = fetchChecks(prNumber);
   if (checks.error && !checks.failed) {
@@ -352,16 +351,22 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
     }
   }
 
+  // Merge protection: always require the quiet window so peer bots (incl. CodeRabbit)
+  // get a chance to finish posting before presence goes green. CI retries cover the wait.
+  const enforceQuiet = process.env.BOT_WAIT_SKIP_QUIET !== '1';
   if (
     checksReady &&
     (minElapsed || singleShot) &&
     allRequiredPosted &&
-    (quiet || singleShot)
+    (quiet || (!enforceQuiet && singleShot))
   ) {
     const suffix = noiseEventCount > 0
       ? ` Ignored ${noiseEventCount} noise event(s) — quota / trivial replies.`
       : '';
-    const quietNote = singleShot && !quiet ? ' (single-shot; quiet window skipped)' : `; ${QUIET_WINDOW_SEC}s quiet`;
+    const quietNote =
+      !quiet && !enforceQuiet && singleShot
+        ? ' (single-shot; quiet window skipped)'
+        : `; ${QUIET_WINDOW_SEC}s quiet`;
     return {
       status: 'ready',
       message: `Bot wait satisfied (required bots posted since anchor${quietNote}). Clear to sweep threads.${suffix}`,
@@ -382,23 +387,8 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
         botsSeen: seenLogins,
       };
     }
-    if (allRequiredPosted && checksReady) {
-      const suffix =
-        noiseEventCount > 0
-          ? ` Ignored ${noiseEventCount} noise event(s) — quota / trivial replies.`
-          : '';
-      return {
-        status: 'ready',
-        message:
-          `Bot wait satisfied (required bots present since anchor; ` +
-          `safety cap skipped for aged PR anchor).${suffix}`,
-        lastBotAt: lastBotAt?.toISOString() || null,
-        botsSeen: seenLogins,
-        missing: [],
-      };
-    }
     // Aged PR with bots present but CI still settling: keep waiting (exit 2) so
-    // the presence gate can retry instead of painting a sticky red check.
+    // the presence gate can re-fire on workflow_run instead of sticky-red forever.
     if (allRequiredPosted && !checksReady) {
       return {
         status: 'waiting',
@@ -411,6 +401,8 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
         missing: [],
       };
     }
+    // Never green at the safety cap without the quiet window — a late bot event
+    // must still wait QUIET_WINDOW_SEC before merge protection clears.
     return {
       status: 'timeout',
       message:
@@ -422,7 +414,13 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
   const waitParts = [];
   if (!checksReady) waitParts.push('CI checks still pending');
   if (missing.length) {
+    const crWaiting = missing.some((slot) => alternativesForSlot(slot).includes('coderabbit'));
     waitParts.push(`waiting for required bot(s): ${missing.join(', ')} (${formatRequiredKeys(missing)})`);
+    if (crWaiting && noiseEventCount > 0) {
+      waitParts.push(
+        'CodeRabbit quota/noise ignored — pr-coderabbit-rate-limit-retry will @coderabbitai review within ≤120m',
+      );
+    }
   }
   if (allRequiredPosted && !quiet) {
     if (lastBotAt) {
@@ -458,7 +456,7 @@ Options:
   --watch, -w           Poll every ${POLL_INTERVAL_SEC}s until ready or cap
   --bot-tag             Reset wait anchor to now (after @mentioning bots)
   --since <iso>         Anchor wait window to timestamp (ISO 8601)
-  --require-bots <list> Comma-separated slots; use | for OR (default: sourcery|codex|cursor|coderabbit)
+  --require-bots <list> Comma-separated slots; use | for OR (default: sourcery|codex|cursor,coderabbit)
   --help, -h            Show this help
 
 Exit codes: 0 ready | 2 still waiting | 1 error or required bots missing at cap (DO NOT MERGE)
@@ -467,6 +465,7 @@ Env: BOT_WAIT_POLL_SEC, BOT_WAIT_QUIET_SEC, BOT_WAIT_MIN_SEC, BOT_WAIT_MAX_MIN,
      SIMJURY_BOT_WAIT_REQUIRED (or JCS2_/AR_/BOT_WAIT_REQUIRED) — slots with optional | OR-groups
      SIMJURY_BOT_WAIT_STATE_DIR (or JCS2_/AR_) — per-PR anchor JSON (default: <repo>/.simjury-bot-wait)
      BOT_WAIT_IGNORE_CHECK_NAMES — comma-separated gh pr checks names to ignore (CI self-gate)
+     BOT_WAIT_SKIP_QUIET=1 — allow single-shot to skip quiet window (default: quiet enforced)
 
 Required bots: ${formatRequiredKeys(requiredKeys)}
 `);

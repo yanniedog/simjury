@@ -62,8 +62,11 @@ if (isBotPrAuthor('sourcery-ai[bot]') !== true) failures.push('isBotPrAuthor(sou
 if (isBotPrAuthor('chatgpt-codex-connector[bot]') !== true) failures.push('isBotPrAuthor(codex) !== true');
 if (!loginMatchesRequiredKey('chatgpt-codex-connector[bot]', 'codex')) failures.push('codex alias mismatch');
 if (!loginMatchesRequiredKey('cursor[bot]', 'sourcery|cursor|codex')) failures.push('cursor OR-group mismatch');
+if (!loginMatchesRequiredKey('coderabbitai[bot]', 'coderabbit')) {
+  failures.push('coderabbit alias mismatch');
+}
 if (!loginMatchesRequiredKey('coderabbitai[bot]', 'sourcery|codex|cursor|coderabbit')) {
-  failures.push('coderabbit OR-group mismatch');
+  failures.push('coderabbit still matches legacy single OR-group string');
 }
 
 const sunset =

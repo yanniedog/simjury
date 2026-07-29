@@ -39,11 +39,14 @@ npm run repo-merge-settings:apply
 
 ## Branch protection / ruleset
 
-Required checks on `main`:
+Required checks on `main` (squash merge blocked until green):
 
 - `validate` — authority docs and PR-gate tooling
-- `bot-presence-gate` — `sourcery|codex|cursor|coderabbit` (OR-group) posted since wait anchor
+- `bot-presence-gate` — `sourcery|codex|cursor,coderabbit` (peer OR-group **and** mandatory CodeRabbit) posted since wait anchor + quiet window
 - `bot-feedback-gate` — review threads resolved
+
+Premature **close** (unmerged) with outstanding bot obligations is reversed by
+`pr-bot-close-guard` (reopen + comment).
 
 Enable via:
 

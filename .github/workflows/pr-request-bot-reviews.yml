@@ -1,6 +1,6 @@
 name: pr-request-bot-reviews
 
-# Codex does not auto-review like Gemini/Sourcery; post @codex review once per PR.
+# Nudge review bots that may not auto-fire (Codex) or may lag (CodeRabbit).
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review]
@@ -21,7 +21,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  request-codex-review:
+  request-bot-reviews:
     if: >-
       github.event_name == 'workflow_dispatch'
       || github.event.pull_request != null
@@ -57,10 +57,11 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
             echo "pr=$PR" >> "$GITHUB_OUTPUT"
           fi
-      - name: Request Codex review
+      - name: Request Codex + CodeRabbit reviews
         if: steps.gate_exempt.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
         run: |
           PR="${{ steps.gate_exempt.outputs.pr }}"
           node scripts/request-codex-review.mjs --pr "$PR"
+          node scripts/request-coderabbit-review.mjs --pr "$PR"

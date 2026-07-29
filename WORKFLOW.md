@@ -17,23 +17,27 @@ application checks run in the site workflows.
 
 ## 3. Bot presence gate (`bot-presence-gate`)
 
-Waits until **at least one** configured review bot has posted since the wait anchor.
+Merge protection: waits until **every required slot** has posted since the wait anchor,
+then a quiet window so remaining bots can finish.
 
-Default required slot (OR-group): **`sourcery|codex|cursor|coderabbit`**
+Default required slots: **`sourcery|codex|cursor,coderabbit`**
+
+| Slot | Meaning |
+|------|---------|
+| `sourcery\|codex\|cursor` | At least one peer review bot |
+| `coderabbit` | **Mandatory** — CodeRabbit cannot be skipped via OR |
 
 | Key | GitHub logins | Notes |
 |-----|---------------|-------|
 | sourcery | `sourcery-ai[bot]` | Skips some docs/setup PRs |
 | codex | `chatgpt-codex-connector[bot]` | Needs ChatGPT Codex Connector app |
 | cursor | `cursor`, `cursor[bot]` | Cursor Automation reviews |
-| coderabbit | `coderabbitai[bot]` | CodeRabbit — see [`docs/CODERABBIT.md`](docs/CODERABBIT.md) |
+| coderabbit | `coderabbitai[bot]` | Required — see [`docs/CODERABBIT.md`](docs/CODERABBIT.md) |
 | gemini | `gemini-code-assist[bot]`, … | **Optional** — consumer Code Assist is sunset (noise) |
 
-Comma = ALL-of slots. `|` = OR within a slot. Example: `sourcery|cursor` passes if either posted.
+Comma = ALL-of slots. `|` = OR within a slot. Example: `sourcery|cursor,coderabbit` needs (Sourcery or Cursor) **and** CodeRabbit.
 
-Codex does not auto-review on every repo. The `pr-request-bot-reviews` workflow posts `@codex review` once when Codex has not yet appeared. Install **ChatGPT Codex Connector** on the repository (Settings → Integrations → GitHub Apps). Manual fallback: comment `@codex review` on the PR.
-
-CodeRabbit auto-reviews when the GitHub App is installed on the repo. Finish install with **All repositories** if needed ([`docs/CODERABBIT.md`](docs/CODERABBIT.md)). Manual: `@coderabbitai review`.
+The `pr-request-bot-reviews` workflow posts `@codex review` and `@coderabbitai review` when those bots have not yet appeared. If CodeRabbit posts a rate-limit notice, **`pr-coderabbit-rate-limit-retry`** waits up to 120 minutes and re-requests review — presence stays red until a substantive CR review lands (quota noise does not clear the gate). Install **ChatGPT Codex Connector** and **CodeRabbit** on the repository (Settings → Integrations → GitHub Apps). Manual: `@codex review` / `@coderabbitai review`.
 
 Local single-shot check (agents):
 
@@ -44,14 +48,24 @@ npm run pr:arm-and-park -- --pr <n>      # preferred — arms auto-merge + class
 
 **Do not** run `wait-for-bots --watch` inside an agent session. CI may poll; agents park.
 
-Env: `SIMJURY_BOT_WAIT_REQUIRED=sourcery|codex|cursor|coderabbit` (fallback: `JCS2_BOT_WAIT_REQUIRED`, `AR_BOT_WAIT_REQUIRED`, `BOT_WAIT_REQUIRED`).
+Env: `SIMJURY_BOT_WAIT_REQUIRED=sourcery|codex|cursor,coderabbit` (fallback: `JCS2_BOT_WAIT_REQUIRED`, `AR_BOT_WAIT_REQUIRED`, `BOT_WAIT_REQUIRED`).
 
 ## 4. Bot feedback gate (`bot-feedback-gate`)
 
-All substantive review threads must be **resolved** on GitHub before merge.
+All substantive review threads must be **resolved** on GitHub before squash merge.
+Branch protection on `main` requires this check; auto-merge will not land while it is red.
 
 ```sh
 npm run pr:bot-feedback-check -- --pr <n>
+```
+
+## 4b. Close guard (`pr-bot-close-guard`)
+
+Closing a PR without merging while required bots are still outstanding (or threads are
+unresolved) is blocked: the workflow reopens the PR and comments. Manual check:
+
+```sh
+npm run pr:bot-close-guard -- --pr <n> [--reopen]
 ```
 
 ## 5. Act or park — never poll
@@ -109,6 +123,8 @@ npm run branch-protection:apply
 | `npm run pr:arm-and-park` | **Preferred agent entry** — arm auto-merge + classify (no poll) |
 | `npm run wait-for-bots` | Single-shot bot presence (CI may `--watch`; agents must not) |
 | `npm run pr:bot-feedback-check` | Thread closure gate |
+| `npm run pr:bot-close-guard` | Block/reopen premature PR close |
+| `npm run pr:request-coderabbit-review` | Nudge `@coderabbitai review` if CR missing |
 | `npm run pr:gates:check` | All merge gates (single shot) |
 | `npm run pr:merge` | Enable squash auto-merge |
 | `npm run branch-protection:apply` | Apply legacy branch protection |
