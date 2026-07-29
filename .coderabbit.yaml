@@ -3,11 +3,9 @@
 language: en-US
 # Medium profile: chill = balanced (not quiet-only, not assertive/nitpicky).
 tone_instructions: >-
-  Aim for a balanced, medium review. Flag real bugs, security issues, data loss,
-  broken player flows, fiction-safety (real names of people/companies/brands/places
-  in player-visible text), and clear maintainability or logic risks that would
-  mislead operators or players. Skip pure style, formatting, renames, optional
-  refactors, and low-confidence nits.
+  Balanced medium review: flag real bugs, security issues, data loss, broken player flows,
+  fiction-safety risks, and clear maintainability or logic risks. Skip style, formatting,
+  renames, optional refactors, and low-confidence nits.
 reviews:
   profile: chill
   request_changes_workflow: false
