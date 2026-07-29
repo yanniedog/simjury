@@ -15,13 +15,13 @@ import { NarratorCue } from './NarratorCue'
 function BeatRecap({
   reveal,
   trial,
-  badge,
-  leanLabel,
+  badge = 'Key evidence',
+  leanLabel = 'leans toward guilt',
 }: {
   reveal: BeatReveal
   trial: DocketCase
-  badge: string
-  leanLabel: string
+  badge?: string
+  leanLabel?: string
 }) {
   const { beat } = reveal
   const pointsGuilt = beat.direction === 'guilt'
