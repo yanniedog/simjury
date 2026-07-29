@@ -29,6 +29,7 @@ import {
 } from '../../lib/narratorCues'
 import type { Verdict } from './DocketVerdict'
 import type { LiveJurySession } from '../../lib/liveJury'
+import { EvidenceIndex } from './EvidenceIndex'
 import { LiveJuryPanel } from './LiveJuryPanel'
 import { NarratorCue } from './NarratorCue'
 import { SpeakerFlag } from './SpeakerFlag'
@@ -1019,46 +1020,18 @@ export function JuryRoomView({
               {concernFeedback}
             </div>
           )}
-          <div className="evidence-chips" role="group" aria-label="Points you can raise from memory">
-            {trial.beats.map((b, i) => {
-              const memory = memoryLabel(trial, b.id)
-              const selected = b.id === selectedBeat
-              const hasPlayerNote = Boolean(noteForBeat(notes, PLAYER_NOTE_OWNER, b.id))
-              const already = state.raisedBeatIds.includes(b.id)
-              return (
-                <button
-                  key={b.id}
-                  type="button"
-                  aria-pressed={selected}
-                  aria-label={`${memory.title}${hasPlayerNote ? ', has your note' : ', memory only'}${already ? ', already raised' : ''}`}
-                  onClick={() => setSelectedBeat(b.id)}
-                  className={`evidence-chip${selected ? ' selected' : ''}${already ? ' used' : ''}${hasPlayerNote ? ' noted' : ''}`}
-                >
-                  <span aria-hidden="true">{i + 1}</span>
-                </button>
-              )
-            })}
-          </div>
-          <div className="evidence-preview rounded-lg border border-neutral-800 bg-neutral-950/70 p-3">
-            {(() => {
-              const memory = memoryLabel(trial, beat.id)
-              const mine = noteForBeat(notes, PLAYER_NOTE_OWNER, beat.id)
-              return (
-                <>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                    #{memory.number} · {memory.title}
-                    {mine ? ' · your note' : ' · memory only'}
-                  </p>
-                  {mine ? (
-                    <p className="mt-2 text-sm leading-relaxed text-neutral-200">“{mine.text}”</p>
-                  ) : (
-                    <p className="mt-2 text-sm leading-relaxed text-neutral-500">
-                      You did not jot a note on this point. Raise it only from recollection.
-                    </p>
-                  )}
-                </>
-              )
-            })()}
+          <div className="space-y-2">
+            <p className="text-xs font-medium uppercase tracking-wider text-neutral-500">
+              Pick the recollection this hangs on
+            </p>
+            <EvidenceIndex
+              trial={trial}
+              notes={notes}
+              visibleBeatCount={trial.beats.length}
+              selectedBeatId={selectedBeat}
+              raisedBeatIds={state.raisedBeatIds}
+              onSelectBeat={setSelectedBeat}
+            />
           </div>
           {concernFeedback ? (
             <button

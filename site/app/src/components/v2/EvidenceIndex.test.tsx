@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import { upsertPlayerNote } from '../../lib/jurorNotes'
+import { memoryLabel, upsertPlayerNote } from '../../lib/jurorNotes'
 import { makeDocketCase } from '../../lib/v2/fixtures'
 import { EvidenceIndex } from './EvidenceIndex'
 
@@ -31,12 +31,14 @@ describe('EvidenceIndex', () => {
   it('marks selection and already-raised states for keyboardable buttons', () => {
     const trial = makeDocketCase()
     const first = trial.beats[0]
+    const second = trial.beats[1]
+    const notes = upsertPlayerNote([], first.id, 'ID felt soft under pressure.')
     const markup = renderToStaticMarkup(
       <EvidenceIndex
         trial={trial}
-        notes={[]}
-        visibleBeatCount={3}
-        selectedBeatId={first.id}
+        notes={notes}
+        visibleBeatCount={trial.beats.length}
+        selectedBeatId={second.id}
         raisedBeatIds={[first.id]}
         onSelectBeat={() => undefined}
       />,
@@ -45,6 +47,8 @@ describe('EvidenceIndex', () => {
     expect(markup).toContain('aria-pressed="true"')
     expect(markup).toContain('Already raised')
     expect(markup).toContain('already raised')
+    expect(markup).toContain('ID felt soft under pressure.')
     expect(markup).toContain('<button')
+    expect(markup).toContain(memoryLabel(trial, second.id).title)
   })
 })
