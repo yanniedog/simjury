@@ -18,6 +18,8 @@ import {
 const MARKER = '<!-- simjury-coderabbit-contract';
 const POLL_MS = Number(process.env.CR_CONTRACT_POLL_MS || 60_000);
 const MAX_ATTEMPTS = Number(process.env.CR_CONTRACT_MAX_ATTEMPTS || 4);
+/** Wait for vendor auto-review to claim a new head before forcing `@coderabbitai full review`. */
+const AUTO_CLAIM_GRACE_MS = Number(process.env.CR_AUTO_CLAIM_GRACE_MS || 3 * 60_000);
 
 function ghJson(args) {
   const r = spawnSync('gh', args, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
@@ -160,6 +162,20 @@ function evaluate(pr, expectedSha, dryRun) {
   const cooled = markerAt && Date.now() - markerAt < COOLDOWN_MS;
 
   if (contract.state === 'missing' && markers.count === 0) {
+    // Auto-review is enabled in .coderabbit.yaml; give it time to publish
+    // Review queued/in progress before agents burn a forced full-review slot.
+    const commit = ghJson(['api', `repos/{owner}/{repo}/commits/${view.headRefOid}`]);
+    const headAt = Date.parse(
+      commit?.commit?.committer?.date || commit?.commit?.author?.date || 0,
+    );
+    const ageMs = headAt ? Date.now() - headAt : AUTO_CLAIM_GRACE_MS;
+    if (ageMs < AUTO_CLAIM_GRACE_MS) {
+      return {
+        terminal: false,
+        message: `missing; waiting ${Math.ceil((AUTO_CLAIM_GRACE_MS - ageMs) / 1000)}s for auto-review to claim head`,
+        headSha: view.headRefOid,
+      };
+    }
     postReview(pr, view.headRefOid, 'missing', dryRun);
   } else if (contract.state === 'rate_limited' && markerAt <= statusAt && !cooled) {
     const limit = latestRateLimitEvent(view.comments || []);

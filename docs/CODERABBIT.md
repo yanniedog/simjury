@@ -55,6 +55,8 @@ mistook comments for review proof. The replacement is one PR-scoped controller:
 2. Ready/open PRs get one vendor auto-review (incremental on later pushes).
 3. Controllers only post `@coderabbitai full review` for missing/skipped/rate-limit-due heads.
 4. `Review queued` / `in progress` waits with **no** extra comments; `rate limited` waits until vendor due time.
+5. On a brand-new head with **no** CodeRabbit status yet, wait ~3 minutes for vendor auto-review to claim the head before posting `@coderabbitai full review` (avoids double-spend when auto_review is on).
+6. Player media under `site/app/public/media/**` stays reviewable so media-only PRs can still earn `Review completed`.
 5. Across open PRs, `npm run pr:coderabbit-quota-queue` requests at most one full review at a time.
 6. `Review completed` on that exact SHA passes; unresolved findings remain blocked
    by `bot-feedback-gate` and native conversation resolution.
