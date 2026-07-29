@@ -131,7 +131,7 @@ Orchestrator **must** synthesize subagent output; never merge unreviewed subagen
 No squash merge to `main` unless:
 
 1. CI `validate` — **success**
-2. CI `local-llm-review` — **success** (pinned local Qwen 7B review)
+2. CI `local-llm-review` — **success** (pinned local Qwen 3.5 4B review)
 3. CI `bot-presence-gate` — **success** (required bots posted)
 4. CI `bot-feedback-gate` — **success** (review threads resolved)
 5. Bot comments read and **fixed in code** (or explicitly acknowledged as N/A with reply)
