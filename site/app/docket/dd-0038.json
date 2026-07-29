@@ -223,11 +223,11 @@
         {"speaker": "dc", "text": "What is your field, Doctor Orrel?"},
         {"speaker": "w2", "text": "I examine industrial control records. I was not employed by the company, the regulator, or Nara."},
         {"speaker": "dc", "text": "What material did you receive?"},
-        {"speaker": "w2", "text": "The regulator's sealed server copy and two controllers under numbered seals. The seals were intact when I opened them."},
+        {"speaker": "w2", "text": "The regulator's sealed read-only copies and two controllers under numbered seals. The seals were intact when I opened them."},
         {"speaker": "dc", "text": "How did you test integrity?"},
-        {"speaker": "w2", "text": "My copies matched the sealed originals. I then checked which machine actually sent each command."}
+        {"speaker": "w2", "text": "My working copies matched those sealed copies marked at seizure. I then checked which machine actually sent each command."}
       ],
-      "text": "What is your field, Doctor Orrel? I examine industrial control records. I was not employed by the company, the regulator, or Nara. What material did you receive? The regulator's sealed server copy and two controllers under numbered seals. The seals were intact when I opened them. How did you test integrity? My copies matched the sealed originals. I then checked which machine actually sent each command.",
+      "text": "What is your field, Doctor Orrel? I examine industrial control records. I was not employed by the company, the regulator, or Nara. What material did you receive? The regulator's sealed read-only copies and two controllers under numbered seals. The seals were intact when I opened them. How did you test integrity? My working copies matched those sealed copies marked at seizure. I then checked which machine actually sent each command.",
       "surface_persuasion": 0.48, "true_weight": 0.55, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "The sealed exhibits and matching copies establish custody before the source conclusion is considered.",
       "tags": ["procedure", "credibility", "identity"]
