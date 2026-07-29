@@ -52,12 +52,15 @@
   .docket-case-title span, .chrome-label { display: block; color: var(--brass-400); font-size: .6rem; font-weight: 750; letter-spacing: .16em; text-transform: uppercase; }
   .docket-case-title strong { display: block; overflow: hidden; color: var(--steel-300); font-size: .75rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
   .docket-phase { color: var(--paper-50); font-size: .7rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
+  .docket-phase span { display: inline-flex; align-items: baseline; gap: .45rem; }
+  .docket-phase em { color: var(--brass-400); font-style: normal; font-family: ui-monospace, monospace; letter-spacing: .08em; }
   .docket-phase i { display: block; max-width: 100%; height: 2px; margin-top: .4rem; background: var(--brass-400); transition: width 220ms cubic-bezier(.22, 1, .36, 1); }
   .narration-controls { display: flex; gap: .5rem; }
   .narration-controls select, .narration-controls button { border: 1px solid rgb(244 240 232 / 15%); border-radius: 999px; background: var(--court-900); color: var(--steel-300); font-size: .68rem; }
   .narration-controls select { padding: .45rem .7rem; }
-  .narration-controls button { padding: .45rem .85rem; }
+  .narration-controls button { display: inline-flex; align-items: center; gap: .35rem; padding: .45rem .85rem; }
   .narration-controls button[aria-pressed="true"] { border-color: rgb(214 185 121 / 45%); color: var(--paper-50); background: rgb(214 185 121 / 10%); }
+  .narration-label-short { display: none; }
 
   .docket-workspace {
     display: grid; grid-template-columns: minmax(0, 42rem) 14rem;
@@ -86,6 +89,44 @@
   .briefing-view #phase-heading { font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 400; letter-spacing: -.035em; line-height: 1.05; }
   .phase-view > button { min-height: 52px; border-radius: 999px; background: var(--paper-50); color: var(--court-950); box-shadow: 0 .75rem 2.5rem rgb(0 0 0 / 18%); }
   .phase-view > button:hover { background: var(--brass-400); }
+
+  .docket-workspace-entry { grid-template-columns: minmax(0, 42rem); justify-content: center; }
+  .entry-gate-view { max-width: 36rem; margin-inline: auto; padding-top: clamp(1rem, 4vh, 2.5rem); }
+  .entry-gate-copy { color: var(--steel-300); }
+  .entry-gate-actions { margin-top: .25rem; }
+  .entry-gate-accept,
+  .entry-gate-secondary {
+    width: 100%;
+    min-height: 3.25rem;
+    padding: .8rem 1.2rem;
+    border-radius: 999px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color .18s ease, border-color .18s ease, color .18s ease;
+  }
+  .entry-gate-accept {
+    border: 0;
+    color: var(--court-950);
+    background: var(--paper-50);
+    box-shadow: 0 .75rem 2.5rem rgb(0 0 0 / 18%);
+  }
+  .entry-gate-accept:hover { background: var(--brass-400); }
+  .entry-gate-secondary {
+    border: 1px solid rgb(244 240 232 / 18%);
+    color: var(--paper-50);
+    background: transparent;
+  }
+  .entry-gate-secondary:hover { border-color: rgb(214 185 121 / 45%); background: rgb(214 185 121 / 10%); }
+  .entry-gate-leave {
+    display: inline-block;
+    margin-top: .35rem;
+    color: var(--steel-500);
+    font-size: .85rem;
+    text-decoration: underline;
+    text-underline-offset: .2em;
+  }
+  .entry-gate-leave:hover { color: var(--steel-300); }
 
   .case-media { overflow: hidden; margin: 0; border: 1px solid rgb(244 240 232 / 12%); border-radius: 1rem; background: var(--court-850); box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 25%); }
   .case-media img { display: block; width: 100%; object-fit: cover; filter: saturate(.86) contrast(1.04) brightness(.96); }
@@ -182,21 +223,29 @@
 
 @media (max-width: 68rem) {
   .docket-topbar { grid-template-columns: auto minmax(10rem, 1fr) auto; }
-  .docket-phase { display: none; }
+  .docket-phase {
+    grid-column: 1 / -1;
+    order: 5;
+    padding-top: .15rem;
+  }
   .docket-workspace { grid-template-columns: minmax(0, 42rem); justify-content: center; }
   .juror-docket { position: static; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 1rem; }
   .local-note { grid-column: 1 / -1; }
 }
 
 @media (max-width: 46rem) {
-  .docket-topbar { grid-template-columns: auto minmax(0, 1fr); gap: .75rem; padding-inline: 1rem; }
+  .docket-topbar { grid-template-columns: auto minmax(0, 1fr); gap: .55rem .75rem; padding-inline: 1rem; }
   .docket-case-title { padding-left: .75rem; }
-  .narration-controls { grid-column: 1 / -1; justify-content: flex-end; padding-top: .5rem; border-top: 1px solid rgb(244 240 232 / 8%); }
+  .docket-phase { order: 4; padding-top: 0; }
+  .narration-controls { grid-column: 1 / -1; order: 6; justify-content: flex-end; flex-wrap: wrap; padding-top: .45rem; border-top: 1px solid rgb(244 240 232 / 8%); }
+  .narration-label-full { display: none; }
+  .narration-label-short { display: inline; }
   .docket-workspace { display: flex; flex-direction: column; width: min(100% - 2rem, 42rem); padding-top: 1.5rem; }
   .docket-stage { width: 100%; }
   .juror-docket { order: 2; width: 100%; }
   .verdict-choices, .verdict-dialog > div { grid-template-columns: 1fr; }
   .jury-table { grid-template-columns: repeat(4, 1fr); border-radius: 1.5rem; padding: 1rem; }
+  .docket-entry .narration-controls { justify-content: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {

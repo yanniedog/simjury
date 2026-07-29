@@ -87,27 +87,26 @@ type Phase = 'intro' | 'openings' | 'beats' | 'closings' | 'juryroom' | 'reveal'
 
 export function FictionDisclosureGate({ onContinue }: { onContinue: () => void }) {
   return (
-    <div className="phase-view space-y-6 text-center">
+    <div className="phase-view entry-gate-view space-y-6 text-center">
       <div className="phase-heading space-y-2">
-        <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
-          Before you enter
-        </p>
+        <p className="chrome-label">Before you enter</p>
         <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">
           A fictional courtroom for adults
         </h1>
       </div>
-      <p className="mx-auto max-w-xl text-base leading-relaxed text-neutral-300">
+      <p className="entry-gate-copy mx-auto max-w-xl text-base leading-relaxed">
         Everything in SimJury is fictional. The cases, people, places, evidence,
         and jury-room dialogue are created for this experience. SimJury is for
         adults aged 18 and over and deals directly with serious crime.
       </p>
-      <button
-        type="button"
-        onClick={onContinue}
-        className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
-      >
-        I’m 18 or older — enter SimJury
-      </button>
+      <div className="entry-gate-actions space-y-3">
+        <button type="button" onClick={onContinue} className="entry-gate-accept">
+          I’m 18 or older — enter SimJury
+        </button>
+        <a className="entry-gate-leave" href="https://www.google.com/">
+          I’m under 18 — leave
+        </a>
+      </div>
     </div>
   )
 }
@@ -153,32 +152,22 @@ export function IntroGate({
   }, [cue, narration, playbackRate])
 
   return (
-    <div className="phase-view space-y-6 text-center">
+    <div className="phase-view entry-gate-view space-y-6 text-center">
       <div className="phase-heading space-y-2">
-        <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
-          The Daily Docket
-        </p>
+        <p className="chrome-label">The Daily Docket</p>
         <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">
           Start with a guided intro?
         </h1>
       </div>
       <NarratorCue text={cue} active={narratorActive} />
-      <p className="text-sm leading-relaxed text-neutral-400">
+      <p className="entry-gate-copy mx-auto max-w-xl text-sm leading-relaxed">
         About five minutes. The guided sitting is a complete murder case with direct discussion of death and serious violence. You can skip it or reopen it later from the case library.
       </p>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <button
-          type="button"
-          onClick={onStartIntro}
-          className="rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
-        >
+      <div className="entry-gate-actions grid gap-3 sm:grid-cols-2">
+        <button type="button" onClick={onStartIntro} className="entry-gate-accept">
           Take the guided intro
         </button>
-        <button
-          type="button"
-          onClick={onSkip}
-          className="rounded-lg border border-neutral-700 px-4 py-3 font-semibold text-neutral-200 transition hover:bg-neutral-800"
-        >
+        <button type="button" onClick={onSkip} className="entry-gate-secondary">
           Skip to today’s case
         </button>
       </div>
@@ -610,6 +599,8 @@ export default function App() {
       <DocketShell
         phase="intro"
         caseTitle="SimJury"
+        entryMode
+        hideNarration
         narration={narration}
         playbackRate={playbackRate}
         voiceEngine={voiceEngine}
@@ -636,6 +627,7 @@ export default function App() {
       <DocketShell
         phase="intro"
         caseTitle="Guided intro"
+        entryMode
         narration={narration}
         playbackRate={playbackRate}
         voiceEngine={voiceEngine}

@@ -5,6 +5,7 @@ document.documentElement.classList.add('ready');
 const FICTION_DISCLOSURE_KEY = 'simjury:fiction-disclosure:v2';
 const disclosure = document.getElementById('fiction-disclosure');
 const disclosureAccept = document.getElementById('fiction-disclosure-accept');
+const disclosureLeave = document.getElementById('fiction-disclosure-leave');
 
 function fictionDisclosureSeen() {
   try {
@@ -37,13 +38,18 @@ if (disclosure && disclosureAccept) {
       disclosure.removeAttribute('open');
       disclosure.showModal();
     }
+    const focusables = [disclosureAccept, disclosureLeave].filter(Boolean);
     disclosure.addEventListener('cancel', (event) => event.preventDefault());
     disclosure.addEventListener('keydown', (event) => {
-      // There is one intentional action in the gate; keep fallback-dialog focus there.
-      if (event.key === 'Tab') {
-        event.preventDefault();
-        disclosureAccept.focus();
-      }
+      // Keep Tab cycling inside the gate's two intentional actions.
+      if (event.key !== 'Tab' || focusables.length === 0) return;
+      event.preventDefault();
+      const active = document.activeElement;
+      const index = focusables.indexOf(active);
+      const next = event.shiftKey
+        ? (index <= 0 ? focusables.length - 1 : index - 1)
+        : (index >= focusables.length - 1 || index < 0 ? 0 : index + 1);
+      focusables[next].focus();
     });
     disclosureAccept.addEventListener('click', dismissFictionDisclosure);
     disclosureAccept.focus();

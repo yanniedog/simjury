@@ -38,6 +38,10 @@ export function DocketShell({
   onToggleNarration,
   onRateChange,
   onVoiceEngineChange,
+  /** Quieter chrome for pre-sitting gates (no false phase progress or empty sidebar). */
+  entryMode = false,
+  /** Hide narration controls (e.g. age/fiction gate before any spoken cue). */
+  hideNarration = false,
 }: {
   children: ReactNode
   sidebar?: ReactNode
@@ -51,19 +55,39 @@ export function DocketShell({
   onToggleNarration: () => void
   onRateChange: (rate: NarrationRate) => void
   onVoiceEngineChange?: (engine: NarrationEngineId) => void
+  entryMode?: boolean
+  hideNarration?: boolean
 }) {
   const currentPhaseIndex = PHASES.findIndex((step) => step.id === phase)
   const phaseLabel = PHASES[currentPhaseIndex]?.label ?? 'Briefing'
+  const stageNumber = currentPhaseIndex + 1
   const showVoiceMode = altVoiceModeAvailable() && typeof onVoiceEngineChange === 'function'
   const [canPersist] = useState(canPersistSitting)
+  const showAside = !entryMode
+  const showNarration = !hideNarration && narrationSupported()
   return (
-    <main className="docket-shell min-h-screen text-neutral-100">
+    <main className={`docket-shell min-h-screen text-neutral-100${entryMode ? ' docket-entry' : ''}`}>
       <a href="#phase-heading" className="docket-skip">Skip to the case</a>
       <header className="docket-topbar">
         <a href="/" className="docket-brand" aria-label="SimJury home">Sim<span>Jury</span></a>
         <div className="docket-case-title"><span>{dayNumber ? `Docket ${String(dayNumber).padStart(4, '0')}` : 'Daily Docket'}</span><strong>{caseTitle}</strong></div>
-        <div className="docket-phase" role="progressbar" aria-valuenow={currentPhaseIndex + 1} aria-valuemin={1} aria-valuemax={PHASES.length} aria-valuetext={`${phaseLabel}, stage ${currentPhaseIndex + 1} of ${PHASES.length}`}><span>{phaseLabel}</span><i aria-hidden="true" style={{ width: `${((currentPhaseIndex + 1) / PHASES.length) * 100}%` }} /></div>
-        {narrationSupported() && (
+        {!entryMode && (
+          <div
+            className="docket-phase"
+            role="progressbar"
+            aria-valuenow={stageNumber}
+            aria-valuemin={1}
+            aria-valuemax={PHASES.length}
+            aria-valuetext={`${phaseLabel}, stage ${stageNumber} of ${PHASES.length}`}
+          >
+            <span>
+              <em aria-hidden="true">{String(stageNumber).padStart(2, '0')}</em>
+              {phaseLabel}
+            </span>
+            <i aria-hidden="true" style={{ width: `${(stageNumber / PHASES.length) * 100}%` }} />
+          </div>
+        )}
+        {showNarration && (
           <div className="narration-controls">
             {showVoiceMode && (
               <select
@@ -78,18 +102,24 @@ export function DocketShell({
             <select aria-label="Narration speed" value={playbackRate} onChange={(event) => onRateChange(normaliseNarrationRate(event.target.value))}>
               <option value={0.85}>Relaxed</option><option value={1}>Standard</option><option value={1.15}>Brisk</option>
             </select>
-            <button type="button" aria-pressed={narration} aria-label="Toggle narration" onClick={onToggleNarration}><span aria-hidden="true">◉</span> Narration {narration ? 'on' : 'off'}</button>
+            <button type="button" aria-pressed={narration} aria-label="Toggle narration" onClick={onToggleNarration}>
+              <span aria-hidden="true">◉</span>
+              <span className="narration-label-full">Narration {narration ? 'on' : 'off'}</span>
+              <span className="narration-label-short">{narration ? 'On' : 'Off'}</span>
+            </button>
           </div>
         )}
       </header>
-      <div className="docket-workspace">
-        <section className="docket-stage" aria-label={`${phaseLabel}: ${caseTitle}`}>{children}</section>
-        <aside className="juror-docket" aria-label="Juror docket">
-          {charge && <div className="docket-context"><p className="chrome-label">Charge before the court</p><p>{charge}</p></div>}
-          {sidebar}
-          {!canPersist && <p className="storage-warning" role="status">Storage is unavailable. This sitting will not resume after closing.</p>}
-          <p className="local-note"><span aria-hidden="true">◆</span> Saved only in this browser. There is no sync; switching browser or device, or clearing site data, removes access to progress, notes, verdicts and stats. <a href="/privacy/">Privacy details</a></p>
-        </aside>
+      <div className={`docket-workspace${entryMode ? ' docket-workspace-entry' : ''}`}>
+        <section className="docket-stage" aria-label={entryMode ? caseTitle : `${phaseLabel}: ${caseTitle}`}>{children}</section>
+        {showAside && (
+          <aside className="juror-docket" aria-label="Juror docket">
+            {charge && <div className="docket-context"><p className="chrome-label">Charge before the court</p><p>{charge}</p></div>}
+            {sidebar}
+            {!canPersist && <p className="storage-warning" role="status">Storage is unavailable. This sitting will not resume after closing.</p>}
+            <p className="local-note"><span aria-hidden="true">◆</span> Saved only in this browser. There is no sync; switching browser or device, or clearing site data, removes access to progress, notes, verdicts and stats. <a href="/privacy/">Privacy details</a></p>
+          </aside>
+        )}
       </div>
     </main>
   )

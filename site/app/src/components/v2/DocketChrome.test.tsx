@@ -82,6 +82,64 @@ describe('DocketShell', () => {
     expect(markup).toContain('Default')
   })
 
+  it('quiets phase progress and the empty sidebar in entry mode', () => {
+    vi.stubGlobal('window', {
+      speechSynthesis: {
+        getVoices: () => [
+          { name: 'Desktop English', lang: 'en-US', localService: true },
+        ],
+      },
+    })
+    vi.stubGlobal('localStorage', writableStorage())
+    const markup = renderToStaticMarkup(
+      <DocketShell
+        phase="intro"
+        caseTitle="Guided intro"
+        entryMode
+        narration={false}
+        playbackRate={1}
+        onToggleNarration={() => undefined}
+        onRateChange={() => undefined}
+      >
+        <h1 id="phase-heading">Start with a guided intro?</h1>
+      </DocketShell>,
+    )
+
+    expect(markup).toContain('docket-entry')
+    expect(markup).toContain('Start with a guided intro?')
+    expect(markup).not.toContain('role="progressbar"')
+    expect(markup).not.toContain('Juror docket')
+    expect(markup).not.toContain('Saved only in this browser')
+  })
+
+  it('can hide narration controls on the age gate', () => {
+    vi.stubGlobal('window', {
+      speechSynthesis: {
+        getVoices: () => [
+          { name: 'Desktop English', lang: 'en-US', localService: true },
+        ],
+      },
+    })
+    vi.stubGlobal('localStorage', writableStorage())
+    const markup = renderToStaticMarkup(
+      <DocketShell
+        phase="intro"
+        caseTitle="SimJury"
+        entryMode
+        hideNarration
+        narration={false}
+        playbackRate={1}
+        onToggleNarration={() => undefined}
+        onRateChange={() => undefined}
+      >
+        <h1 id="phase-heading">A fictional courtroom for adults</h1>
+      </DocketShell>,
+    )
+
+    expect(markup).not.toContain('aria-label="Toggle narration"')
+    expect(markup).not.toContain('narration-controls')
+  })
+
   it('warns without blocking the sitting when browser storage rejects writes', () => {
     vi.stubGlobal('localStorage', {
       getItem: () => null,
