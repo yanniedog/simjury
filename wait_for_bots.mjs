@@ -387,23 +387,8 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
         botsSeen: seenLogins,
       };
     }
-    if (allRequiredPosted && checksReady) {
-      const suffix =
-        noiseEventCount > 0
-          ? ` Ignored ${noiseEventCount} noise event(s) — quota / trivial replies.`
-          : '';
-      return {
-        status: 'ready',
-        message:
-          `Bot wait satisfied (required bots present since anchor; ` +
-          `safety cap skipped for aged PR anchor).${suffix}`,
-        lastBotAt: lastBotAt?.toISOString() || null,
-        botsSeen: seenLogins,
-        missing: [],
-      };
-    }
     // Aged PR with bots present but CI still settling: keep waiting (exit 2) so
-    // the presence gate can retry instead of painting a sticky red check.
+    // the presence gate can re-fire on workflow_run instead of sticky-red forever.
     if (allRequiredPosted && !checksReady) {
       return {
         status: 'waiting',
@@ -416,6 +401,8 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
         missing: [],
       };
     }
+    // Never green at the safety cap without the quiet window — a late bot event
+    // must still wait QUIET_WINDOW_SEC before merge protection clears.
     return {
       status: 'timeout',
       message:
