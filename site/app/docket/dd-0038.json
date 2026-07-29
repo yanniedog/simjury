@@ -50,7 +50,7 @@
       "defence": {"speaker": "dc", "text": "Nara's job began and ended at equipment outside an opaque, access-controlled room. Her client described confidential materials research and sent service tickets that looked ordinary. The records require careful separation: a name displayed on a screen is not necessarily the signed identity of the device underneath it. Rian Vesk brings useful evidence and a reason to help himself. The defence doesn't say Nara asked every question she should have. It says carelessness and suspicion aren't knowing manufacture. Listen for what each fact actually proves."}
     },
     "closing": {
-      "prosecution": {"speaker": "pc", "text": "The certificate evidence matters, and the prosecution doesn't ask you to ignore it: eighteen commands came from an internal controller. But that correction doesn't erase the nine adjustments Nara really made, the warning in her own words, the premium payments, two further visits, or her deletion after the raid. A research story may explain how she entered the arrangement. You may conclude that the accumulating signs later made the criminal purpose plain enough, and that she deliberately kept the manufacture running."},
+      "prosecution": {"speaker": "pc", "text": "The device-signature evidence matters, and the prosecution doesn't ask you to ignore it: eighteen commands came from an internal controller. But that correction doesn't erase the nine adjustments Nara really made, the warning in her own words, the premium payments, two further visits, or her deletion after the raid. A research story may explain how she entered the arrangement. You may conclude that the accumulating signs later made the criminal purpose plain enough, and that she deliberately kept the manufacture running."},
       "defence": {"speaker": "dc", "text": "Start by correcting the loudest accusation. The screen put Nara's name beside eighteen commands; the authenticated, signed records put every one on an internal controller available to the operators. What remains is a contractor making nine ordinary-range adjustments after plausible tickets, from outside a room she couldn't see. Her questions, extra pay, and panicked deletion are legitimate concerns. They support a suspicious reading, but also an innocent one. If both remain reasonably possible, knowledge and intention haven't been proved. That is reasonable doubt."}
     }
   },
@@ -93,11 +93,11 @@
         {"speaker": "pc", "text": "What electronic systems did you secure?"},
         {"speaker": "w1", "text": "The entry server, the climate server, and two connected controllers. I disconnected them from the network, sealed them, and made read-only forensic images."},
         {"speaker": "pc", "text": "How did you know later analysis used those same images?"},
-        {"speaker": "w1", "text": "A mathematical hash recorded at seizure matched each working copy. A changed copy would produce a different hash."},
+        {"speaker": "w1", "text": "A check recorded at seizure matched each working copy. A changed copy would no longer match."},
         {"speaker": "pc", "text": "What appeared on the ordinary climate-history screen?"},
         {"speaker": "w1", "text": "The name 'Nara Kelm Service' appeared beside eighteen production-period commands. Separately, Nara's pass entered the external plant corridor on nine evenings."}
       ],
-      "text": "What electronic systems did you secure? The entry server, the climate server, and two connected controllers. I disconnected them from the network, sealed them, and made read-only forensic images. How did you know later analysis used those same images? A mathematical hash recorded at seizure matched each working copy. A changed copy would produce a different hash. What appeared on the ordinary climate-history screen? The name 'Nara Kelm Service' appeared beside eighteen production-period commands. Separately, Nara's pass entered the external plant corridor on nine evenings.",
+      "text": "What electronic systems did you secure? The entry server, the climate server, and two connected controllers. I disconnected them from the network, sealed them, and made read-only forensic images. How did you know later analysis used those same images? A check recorded at seizure matched each working copy. A changed copy would no longer match. What appeared on the ordinary climate-history screen? The name 'Nara Kelm Service' appeared beside eighteen production-period commands. Separately, Nara's pass entered the external plant corridor on nine evenings.",
       "surface_persuasion": 0.92, "true_weight": 0.37, "direction": "guilt", "reveal_stamp": "misleading",
       "reveal_note": "The screen and access log were authentically preserved, but the displayed account label did not identify which device issued a command.",
       "tags": ["identity", "method", "digital_forensics"]
@@ -225,39 +225,39 @@
         {"speaker": "dc", "text": "What material did you receive?"},
         {"speaker": "w2", "text": "The regulator's read-only server image and two controllers, each under a numbered seal. The seals were intact when I opened them."},
         {"speaker": "dc", "text": "How did you test integrity?"},
-        {"speaker": "w2", "text": "My copies matched the seizure hashes. I separately obtained the manufacturer's public key and used it to verify the signature on every device certificate."}
+        {"speaker": "w2", "text": "My copies matched the sealed seizure originals. I separately checked each device signature against the manufacturer's published verification record."}
       ],
-      "text": "What is your field, Doctor Orrel? I examine industrial control systems and signed device records. I was not employed by the company, the regulator, or Nara. What material did you receive? The regulator's read-only server image and two controllers, each under a numbered seal. The seals were intact when I opened them. How did you test integrity? My copies matched the seizure hashes. I separately obtained the manufacturer's public key and used it to verify the signature on every device certificate.",
+      "text": "What is your field, Doctor Orrel? I examine industrial control systems and signed device records. I was not employed by the company, the regulator, or Nara. What material did you receive? The regulator's read-only server image and two controllers, each under a numbered seal. The seals were intact when I opened them. How did you test integrity? My copies matched the sealed seizure originals. I separately checked each device signature against the manufacturer's published verification record.",
       "surface_persuasion": 0.48, "true_weight": 0.55, "direction": "innocence", "reveal_stamp": "minor",
-      "reveal_note": "The sealed exhibits, matching hashes, and verified signatures establish custody and integrity before the technical conclusion is considered.",
+      "reveal_note": "The sealed exhibits, matching copies, and verified signatures establish custody and integrity before the technical conclusion is considered.",
       "tags": ["digital_forensics", "procedure", "credibility"]
     },
     {
       "id": "b12", "kind": "witness", "speaker": "w2", "mode": "examination",
       "turns": [
         {"speaker": "dc", "text": "Please explain the two identity fields in a command record."},
-        {"speaker": "w2", "text": "The account label is a name shown to users. Anyone with administrator access can edit it. The certificate is a signed identifier fixed to the sending device."},
+        {"speaker": "w2", "text": "The account label is a name shown to users. Anyone with administrator access can edit it. The device signature is a fixed identifier built into the sending device."},
         {"speaker": "dc", "text": "What did the signed identifiers show here?"},
         {"speaker": "w2", "text": "All eighteen commands displayed as 'Nara Kelm Service' came from one controller inside the suite. Three operators had access to it."},
         {"speaker": "dc", "text": "And the nine adjustments everyone agrees Nara made?"},
-        {"speaker": "w2", "text": "Those carry her handset's different certificate. The system preserves two separate sets, though the ordinary screen made them look alike."}
+        {"speaker": "w2", "text": "Those carry her handset's different device signature. The system preserves two separate sets, though the ordinary screen made them look alike."}
       ],
-      "text": "Please explain the two identity fields in a command record. The account label is a name shown to users. Anyone with administrator access can edit it. The certificate is a signed identifier fixed to the sending device. What did the signed identifiers show here? All eighteen commands displayed as 'Nara Kelm Service' came from one controller inside the suite. Three operators had access to it. And the nine adjustments everyone agrees Nara made? Those carry her handset's different certificate. The system preserves two separate sets, though the ordinary screen made them look alike.",
+      "text": "Please explain the two identity fields in a command record. The account label is a name shown to users. Anyone with administrator access can edit it. The device signature is a fixed identifier built into the sending device. What did the signed identifiers show here? All eighteen commands displayed as 'Nara Kelm Service' came from one controller inside the suite. Three operators had access to it. And the nine adjustments everyone agrees Nara made? Those carry her handset's different device signature. The system preserves two separate sets, though the ordinary screen made them look alike.",
       "surface_persuasion": 0.8, "true_weight": 0.84, "direction": "innocence", "reveal_stamp": "decisive",
-      "reveal_note": "The authenticated certificate evidence removes eighteen apparently incriminating commands from Nara while leaving her nine genuine adjustments for the jury to assess.",
+      "reveal_note": "The authenticated device-signature evidence removes eighteen apparently incriminating commands from Nara while leaving her nine genuine adjustments for the jury to assess.",
       "tags": ["digital_forensics", "identity", "knowledge"]
     },
     {
       "id": "b13", "kind": "witness", "speaker": "w2", "mode": "cross",
       "turns": [
-        {"speaker": "pc", "text": "A certificate identifies a device, not the person using it?"},
+        {"speaker": "pc", "text": "A device signature identifies a device, not the person using it?"},
         {"speaker": "w2", "text": "Correct. I can't identify which operator used the internal controller."},
         {"speaker": "pc", "text": "Can your examination tell us who changed the displayed account label, or why?"},
         {"speaker": "w2", "text": "No. The audit retained the final label, not the administrator's identity or purpose."},
-        {"speaker": "pc", "text": "Nor can a certificate tell us what Nara knew?"},
+        {"speaker": "pc", "text": "Nor can a device signature tell us what Nara knew?"},
         {"speaker": "w2", "text": "No. It proves source, not state of mind. Her handset made nine other adjustments, and each benefited the suite's operation."}
       ],
-      "text": "A certificate identifies a device, not the person using it? Correct. I can't identify which operator used the internal controller. Can your examination tell us who changed the displayed account label, or why? No. The audit retained the final label, not the administrator's identity or purpose. Nor can a certificate tell us what Nara knew? No. It proves source, not state of mind. Her handset made nine other adjustments, and each benefited the suite's operation.",
+      "text": "A device signature identifies a device, not the person using it? Correct. I can't identify which operator used the internal controller. Can your examination tell us who changed the displayed account label, or why? No. The audit retained the final label, not the administrator's identity or purpose. Nor can a device signature tell us what Nara knew? No. It proves source, not state of mind. Her handset made nine other adjustments, and each benefited the suite's operation.",
       "surface_persuasion": 0.65, "true_weight": 0.58, "direction": "guilt", "reveal_stamp": "minor",
       "reveal_note": "The prosecution fairly confines the exculpatory record: it corrects attribution but does not decide knowledge or explain Nara's genuine conduct.",
       "tags": ["digital_forensics", "knowledge", "causation"]
@@ -272,7 +272,7 @@
   ],
   "checkins": [],
   "reference_verdict": "Not Guilty",
-  "twist": "The authors' reference resolution is Not Guilty. The authenticated certificate records show that an internal suite controller—not Nara's handset—issued the eighteen commands carrying her displayed account name, while restricted access and the research cover story leave a reasonable possibility that her nine real visits were unwitting. The strongest prosecution interpretation remains substantial: Nara recognised abnormal demand, returned twice, accepted premium pay, and deleted messages after the raid. Those facts support suspicion, but do not prove beyond reasonable doubt that she knew about controlled-drug manufacture.",
+  "twist": "The authors' reference resolution is Not Guilty. The authenticated device-signature records show that an internal suite controller—not Nara's handset—issued the eighteen commands carrying her displayed account name, while restricted access and the research cover story leave a reasonable possibility that her nine real visits were unwitting. The strongest prosecution interpretation remains substantial: Nara recognised abnormal demand, returned twice, accepted premium pay, and deleted messages after the raid. Those facts support suspicion, but do not prove beyond reasonable doubt that she knew about controlled-drug manufacture.",
   "difficulty_target": 0.68,
   "jury": {
     "jurors": [
@@ -309,7 +309,7 @@
       {
         "id": "J-04", "seat": 5, "label": "Juror 5 — Dev", "persona": "Dev is persuaded by concrete records but gets impatient when either side asks a technical exhibit to answer a human question.", "register": "plain", "arc": "mind_changer",
         "initial": {"position": "G", "confidence": 70}, "weights": {"digital_forensics": 2, "method": 2, "identity": 2},
-        "lines": {"agree": ["The timing is hard to brush off. Those changes landed exactly when the suite needed them."], "pushback": ["Which part is fixed: the name we can edit, or the signed device record?"], "concede": ["That changes it for me. The dramatic eighteen-command trail came from inside the suite."], "burden_drift": ["She understands these systems, so surely she'd know what the pattern meant."], "burden_correct": ["Actually, expertise explains the repair. It doesn't identify the hidden product."], "final": ["I won't ask the certificate to decide more than the source of those commands."]},
+        "lines": {"agree": ["The timing is hard to brush off. Those changes landed exactly when the suite needed them."], "pushback": ["Which part is fixed: the name we can edit, or the signed device record?"], "concede": ["That changes it for me. The dramatic eighteen-command trail came from inside the suite."], "burden_drift": ["She understands these systems, so surely she'd know what the pattern meant."], "burden_correct": ["Actually, expertise explains the repair. It doesn't identify the hidden product."], "final": ["I won't ask the device signature to decide more than the source of those commands."]},
         "reaction_rules": [
           {"when": {"theme": "method", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
           {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
@@ -320,7 +320,7 @@
       {
         "id": "J-05", "seat": 6, "label": "Juror 6 — Esra", "persona": "Esra keeps the discussion moving by asking each speaker which disputed element a fact actually bears on.", "register": "plain", "arc": "foreperson",
         "initial": {"position": "G", "confidence": 55}, "weights": {"burden": 2, "credibility": 2, "intent": 1},
-        "lines": {"agree": ["We're all agreed the manufacture happened. Which fact proves Nara knew that?"], "pushback": ["One at a time—are we arguing assistance, knowledge, or intention?"], "concede": ["The certificate doesn't answer everything, but it takes eighteen supposed acts off Nara's side of the ledger."], "burden_drift": ["Because the operation was serious, I keep wanting a completely innocent explanation."], "burden_correct": ["Let's reset. We don't need to approve of her conduct; the Crown must prove the elements."], "final": ["I've kept assistance, knowledge, and intention separate. That's how I'll decide."]},
+        "lines": {"agree": ["We're all agreed the manufacture happened. Which fact proves Nara knew that?"], "pushback": ["One at a time—are we arguing assistance, knowledge, or intention?"], "concede": ["The device signature doesn't answer everything, but it takes eighteen supposed acts off Nara's side of the ledger."], "burden_drift": ["Because the operation was serious, I keep wanting a completely innocent explanation."], "burden_correct": ["Let's reset. We don't need to approve of her conduct; the Crown must prove the elements."], "final": ["I've kept assistance, knowledge, and intention separate. That's how I'll decide."]},
         "reaction_rules": [
           {"when": {"theme": "intent", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 7, "line": "concede"}},
           {"when": {"theme": "burden", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 1, "confidence": 4, "line": "burden_correct"}},
@@ -340,7 +340,7 @@
       {
         "id": "J-07", "seat": 8, "label": "Juror 8 — Gio", "persona": "Gio initially trusts the tidy controller history, then focuses on exactly what its authenticated fields can and cannot show.", "register": "formal", "arc": "mind_changer",
         "initial": {"position": "G", "confidence": 68}, "weights": {"digital_forensics": 2, "identity": 2, "intent": 1},
-        "lines": {"agree": ["On the first screen, I read the label as attribution. I suspect most of us did."], "pushback": ["But the examiner said that field is editable. Why would we rank it above the signed source?"], "concede": ["The hashes and signatures check out. Those eighteen commands came from an internal controller."], "burden_drift": ["Nara's name is real, so part of me wants her to prove how it was copied."], "burden_correct": ["The Crown tendered the source record. We don't have to guess who altered the label to use it properly."], "final": ["Whatever my verdict, it will use the signed source rather than the visible label."]},
+        "lines": {"agree": ["On the first screen, I read the label as attribution. I suspect most of us did."], "pushback": ["But the examiner said that field is editable. Why would we rank it above the signed source?"], "concede": ["The copies and signatures check out. Those eighteen commands came from an internal controller."], "burden_drift": ["Nara's name is real, so part of me wants her to prove how it was copied."], "burden_correct": ["The Crown tendered the source record. We don't have to guess who altered the label to use it properly."], "final": ["Whatever my verdict, it will use the signed source rather than the visible label."]},
         "reaction_rules": [
           {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 2, "confidence": 6, "line": "agree"}},
           {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 9, "line": "concede"}},
@@ -382,7 +382,7 @@
       {
         "id": "J-11", "seat": 12, "label": "Juror 12 — Kemi", "persona": "Kemi tests both narratives against the same record and resists letting a clean interface settle a messy question.", "register": "plain", "arc": "steady",
         "initial": {"position": "U", "confidence": 40}, "weights": {"identity": 2, "digital_forensics": 2, "burden": 1},
-        "lines": {"agree": ["The account name and timing make a neat guilt story. I can see why the Crown starts there."], "pushback": ["The certificate doesn't prove innocence. It does prove the first screen blamed the wrong device."], "concede": ["So we remove eighteen commands, keep nine real visits, and ask what those nine prove."], "burden_drift": ["Do we need Nara to show she never agreed to lend her account name?"], "burden_correct": ["No. The signed source already shows where those commands originated."], "final": ["After correcting the record, I'll decide what the remaining conduct proves."]},
+        "lines": {"agree": ["The account name and timing make a neat guilt story. I can see why the Crown starts there."], "pushback": ["The device signature doesn't prove innocence. It does prove the first screen blamed the wrong device."], "concede": ["So we remove eighteen commands, keep nine real visits, and ask what those nine prove."], "burden_drift": ["Do we need Nara to show she never agreed to lend her account name?"], "burden_correct": ["No. The signed source already shows where those commands originated."], "final": ["After correcting the record, I'll decide what the remaining conduct proves."]},
         "reaction_rules": [
           {"when": {"theme": "identity", "stance": "proves", "direction": "guilt"}, "effect": {"delta": 1, "confidence": 5, "line": "agree"}},
           {"when": {"theme": "digital_forensics", "stance": "proves", "direction": "innocence"}, "effect": {"delta": 2, "confidence": 8, "line": "concede"}},

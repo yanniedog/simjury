@@ -93,11 +93,11 @@
         {"speaker": "pc", "text": "What was the language office authorised to send that afternoon?"},
         {"speaker": "w1", "text": "Six ceasefire briefs. I assembled them, compared their filenames with the signed release sheet, and approved that package for the negotiation channel."},
         {"speaker": "pc", "text": "How did you preserve the records after the disclosure?"},
-        {"speaker": "w1", "text": "I exported both packages and two older support tickets, recorded their system hashes, sealed read-only copies, and transferred them through the evidence register. The hashes still match."},
+        {"speaker": "w1", "text": "I exported both packages and two older support tickets, confirmed each export matched its source, sealed read-only copies, and transferred them through the evidence register. The matches still hold."},
         {"speaker": "pc", "text": "What differed between the authorised and received packages?"},
         {"speaker": "w1", "text": "The received copy contained page seven, Orinth’s confidential negotiating ceiling. It appeared nowhere on my release sheet."}
       ],
-      "text": "What was the language office authorised to send that afternoon? Six ceasefire briefs. I assembled them, compared their filenames with the signed release sheet, and approved that package for the negotiation channel. How did you preserve the records after the disclosure? I exported both packages and two older support tickets, recorded their system hashes, sealed read-only copies, and transferred them through the evidence register. The hashes still match. What differed between the authorised and received packages? The received copy contained page seven, Orinth’s confidential negotiating ceiling. It appeared nowhere on my release sheet.",
+      "text": "What was the language office authorised to send that afternoon? Six ceasefire briefs. I assembled them, compared their filenames with the signed release sheet, and approved that package for the negotiation channel. How did you preserve the records after the disclosure? I exported both packages and two older support tickets, confirmed each export matched its source, sealed read-only copies, and transferred them through the evidence register. The matches still hold. What differed between the authorised and received packages? The received copy contained page seven, Orinth’s confidential negotiating ceiling. It appeared nowhere on my release sheet.",
       "surface_persuasion": 0.62, "true_weight": 0.5, "direction": "guilt", "reveal_stamp": "minor",
       "reveal_note": "Halen authenticated the release sheet and both preserved packages. The evidence proves that the protected page arrived, but the cleared package itself listed only six files.",
       "tags": ["method", "procedure", "digital_forensics"]
@@ -157,13 +157,13 @@
       "id": "b5", "kind": "witness", "speaker": "w3", "mode": "examination",
       "turns": [
         {"speaker": "pc", "text": "What material did you receive, and how did you check its integrity?"},
-        {"speaker": "w3", "text": "Read-only images of Sela’s workstation and the gateway, plus Halen’s ticket exports. I compared their hashes with the sealed evidence copies, checked the gateway clock, and found no alteration or relevant drift."},
+        {"speaker": "w3", "text": "Read-only images of Sela’s workstation and the gateway, plus Halen’s ticket exports. I compared each image with the sealed evidence copies, checked the gateway clock, and found no alteration or relevant drift."},
         {"speaker": "pc", "text": "What can those records reliably establish?"},
         {"speaker": "w3", "text": "The signed-in account, saved versions, filenames displayed, the destination shown, and transmission time."},
         {"speaker": "pc", "text": "What can they not answer?"},
         {"speaker": "w3", "text": "They cannot reveal what the user actually noticed, knew, or intended. Those are inferences for the jury, not forensic outputs."}
       ],
-      "text": "What material did you receive, and how did you check its integrity? Read-only images of Sela’s workstation and the gateway, plus Halen’s ticket exports. I compared their hashes with the sealed evidence copies, checked the gateway clock, and found no alteration or relevant drift. What can those records reliably establish? The signed-in account, saved versions, filenames displayed, the destination shown, and transmission time. What can they not answer? They cannot reveal what the user actually noticed, knew, or intended. Those are inferences for the jury, not forensic outputs.",
+      "text": "What material did you receive, and how did you check its integrity? Read-only images of Sela’s workstation and the gateway, plus Halen’s ticket exports. I compared each image with the sealed evidence copies, checked the gateway clock, and found no alteration or relevant drift. What can those records reliably establish? The signed-in account, saved versions, filenames displayed, the destination shown, and transmission time. What can they not answer? They cannot reveal what the user actually noticed, knew, or intended. Those are inferences for the jury, not forensic outputs.",
       "surface_persuasion": 0.48, "true_weight": 0.45, "direction": "innocence", "reveal_stamp": "minor",
       "reveal_note": "Dr Lell authenticated the digital records, explained their custody and integrity, and qualified the crucial limit: logs cannot reveal what Sela perceived or intended.",
       "tags": ["digital_forensics", "procedure", "burden"]

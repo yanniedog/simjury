@@ -129,6 +129,11 @@ Across seven cases, no two central inferences may depend on the same mechanism.
 - **National security and digital evidence:** identify the fictional information,
   recipient, system event, prejudice, custody, and verification method precisely.
   Never disclose a real exploitable weakness or teach access, concealment, or evasion.
+  Prefer plain modern English: say a copy matched the original, a security key
+  confirmed a prompt, or a device signature identified a machine. Do not lecture
+  jurors on hashes, tokens, public keys, certificates, write-once stores, or other
+  crypto jargon unless a single short phrase is essential to the contested inference,
+  and never let digital-auth vocabulary dominate a sitting.
 
 Specificity must serve proof, comprehension, character, or consequence. It must not
 be inserted merely for shock value.
@@ -157,6 +162,9 @@ be inserted merely for shock value.
 
 - Witnesses speak like real 2026 people under stress: plain, specific, no
   Victorianisms, no lawyer-speak from lay witnesses. Experts are precise and hedged.
+- Keep modern records in proportion. Phone logs, cameras, passes, and security keys
+  belong in 2026 cases; repeated hash/token/certificate lectures do not. If integrity
+  matters, one plain sentence that the copy matched the sealed original is enough.
 - The judge gives modern plain-English directions and at least one beat carries the
   `burden` theme (the gate requires it): burden and standard, plus contemporary
   process realism — "you must not research this case online" earns its place.
