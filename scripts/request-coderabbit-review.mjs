@@ -3,8 +3,8 @@
  * Post @coderabbitai review on a PR when CodeRabbit has not yet appeared.
  * Idempotent: skips gate-exempt PRs and PRs where coderabbitai already reviewed.
  *
- * Rate limits: do NOT re-request here. `pr-coderabbit-ensure-review` (*/15) and
- * `pr-coderabbit-rate-limit-retry --if-due` own posting `@coderabbitai review`
+ * Rate limits: do NOT re-request here. pr-coderabbit-ensure-review (every 15m) and
+ * pr-coderabbit-rate-limit-retry --if-due own posting @coderabbitai review
  * after the quota window — no GHA sleeps.
  *
  * Usage:
