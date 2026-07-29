@@ -105,10 +105,12 @@ jobs:
             CREATED="$(printf '%s' "$META" | jq -r .created_at)"
           fi
 
+          # gh api --jq does not accept jq --arg flags ("accepts 1 arg(s), received 4").
+          export CR_AFTER="$CREATED" CR_MARKER="$RETRY_MARKER"
           REVIEWED_AFTER="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR}/reviews" --paginate \
-            --jq --arg after "$CREATED" '
+            --jq '
               [.[] | select((.user.login=="coderabbitai[bot]" or .user.login=="coderabbitai")
-                and .submitted_at > $after
+                and .submitted_at > env.CR_AFTER
                 and (.state=="COMMENTED" or .state=="APPROVED" or .state=="CHANGES_REQUESTED")
                 and ((.body // "") | test("Review limit reached|rate limited by coderabbit";"i") | not))]
               | length')"
@@ -118,10 +120,10 @@ jobs:
           fi
 
           ARMED="$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" --paginate \
-            --jq --arg after "$CREATED" --arg marker "$RETRY_MARKER" '
-              ( [.[] | select(.created_at > $after and (.body|contains($marker)) and (.body|test("@coderabbitai\\s+review";"i")))]
+            --jq '
+              ( [.[] | select(.created_at > env.CR_AFTER and (.body|contains(env.CR_MARKER)) and (.body|test("@coderabbitai\\s+review";"i")))]
                 | map(.created_at) | max ) as $retry
-              | ( [.[] | select(.created_at > $after
+              | ( [.[] | select(.created_at > env.CR_AFTER
                     and (.user.login=="coderabbitai[bot]" or .user.login=="coderabbitai")
                     and (.body|test("Review limit reached|rate limited by coderabbit";"i")))]
                   | map(.created_at) | max ) as $newer
@@ -208,10 +210,11 @@ jobs:
             fi
           fi
 
+          export CR_AFTER="$CREATED"
           REVIEWED_AFTER="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR}/reviews" --paginate \
-            --jq --arg after "$CREATED" '
+            --jq '
               [.[] | select((.user.login=="coderabbitai[bot]" or .user.login=="coderabbitai")
-                and .submitted_at > $after
+                and .submitted_at > env.CR_AFTER
                 and (.state=="COMMENTED" or .state=="APPROVED" or .state=="CHANGES_REQUESTED")
                 and ((.body // "") | test("Review limit reached|rate limited by coderabbit";"i") | not))]
               | length')"
