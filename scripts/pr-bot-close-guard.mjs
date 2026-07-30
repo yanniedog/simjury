@@ -70,6 +70,67 @@ export function isEmptyDiff(meta) {
   return counts.every((n) => n === 0);
 }
 
+/**
+ * Has every file this PR touches already reached the base branch?
+ *
+ * `isEmptyDiff` is not enough on its own. GitHub counts additions and deletions
+ * against the **merge base**, not against the current tip, so a PR whose work
+ * landed inside another PR still reports a diff. PR #263 read `+22/-13` while
+ * its one file was byte-identical to `main`, because #267 had squash-merged a
+ * commit carrying the same change. The guard reopened it on every close.
+ *
+ * Comparing blob SHAs answers the question the counters cannot: if each changed
+ * file already has this exact content on the base branch, merging would be a
+ * no-op and there is nothing left for a reviewer to look at.
+ *
+ * Fails closed. An unreadable path yields null, which matches no blob SHA, so a
+ * transient API error makes the PR look un-superseded rather than waving it
+ * through.
+ *
+ * @param {Array<{filename: string, sha: string, status: string}>} files
+ * @param {(path: string) => string|null} blobShaOnBase
+ */
+export function filesAreSuperseded(files, blobShaOnBase) {
+  if (!Array.isArray(files) || files.length === 0) return false;
+  return files.every((file) => {
+    if (!file?.filename) return false;
+    const onBase = blobShaOnBase(file.filename);
+    // A deletion is superseded only once the file is actually gone from base.
+    if (file.status === 'removed') return onBase === null;
+    return Boolean(file.sha) && onBase === file.sha;
+  });
+}
+
+/** Read a file's blob SHA on a ref, or null when it is absent or unreadable. */
+function blobShaOnRef(repo, ref, path) {
+  const r = spawnSync(
+    'gh',
+    ['api', `repos/${repo}/contents/${encodeURI(path)}?ref=${encodeURIComponent(ref)}`, '--jq', '.sha'],
+    { encoding: 'utf8' },
+  );
+  if (r.status !== 0) return null;
+  const sha = (r.stdout || '').trim();
+  return sha || null;
+}
+
+/** Wire filesAreSuperseded up to the compare and contents APIs. */
+function prIsSuperseded(owner, name, meta) {
+  const repo = `${owner}/${name}`;
+  const base = meta?.baseRefName;
+  const head = meta?.headRefOid;
+  if (!base || !head) return false;
+  let files;
+  try {
+    files = ghJson(['api', `repos/${repo}/compare/${base}...${head}`, '--jq', '.files']);
+  } catch {
+    return false;
+  }
+  // Bail on very large PRs rather than spend a request per file; a PR this size
+  // is not the superseded-chain-link case this exists for.
+  if (!Array.isArray(files) || files.length > 40) return false;
+  return filesAreSuperseded(files, (path) => blobShaOnRef(repo, base, path));
+}
+
 function reopenPr(prNumber, dryRun) {
   if (dryRun) {
     console.log(`[dry-run] would reopen PR #${prNumber}`);
@@ -138,7 +199,7 @@ Unresolved substantive review threads also block closure.`);
       'view',
       String(prNumber),
       '--json',
-      'number,title,state,mergedAt,closedAt,author,additions,deletions,changedFiles',
+      'number,title,state,mergedAt,closedAt,author,additions,deletions,changedFiles,baseRefName,headRefOid',
     ]);
   } catch (e) {
     console.error(`pr-bot-close-guard: ${e.message}`);
@@ -177,11 +238,11 @@ Unresolved substantive review threads also block closure.`);
   // a parent lands carrying a child's commit as an ancestor, the child rebases
   // to empty. PR #263 was closed for exactly that reason and the guard reopened
   // it, leaving a permanently unmergeable PR that no bot could ever satisfy.
-  if (isEmptyDiff(meta)) {
+  if (isEmptyDiff(meta) || prIsSuperseded(owner, name, meta)) {
     result.ok = true;
-    result.detail = 'empty diff — nothing to review';
+    result.detail = 'nothing left to review — the base already has this content';
     if (args.json) console.log(JSON.stringify(result, null, 2));
-    else console.log(`pr-bot-close-guard: PR #${prNumber} changes nothing — ok`);
+    else console.log(`pr-bot-close-guard: PR #${prNumber} adds nothing to ${meta.baseRefName} — ok`);
     process.exit(0);
   }
 

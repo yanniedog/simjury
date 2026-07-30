@@ -11,7 +11,7 @@ import {
 } from './lib/pr-gate-exempt.mjs';
 import { isKnownBotLogin, loginMatchesRequiredKey } from './lib/bot-wait-config.mjs';
 import { isBotNoise } from './lib/bot-noise.mjs';
-import { isEmptyDiff } from './pr-bot-close-guard.mjs';
+import { filesAreSuperseded, isEmptyDiff } from './pr-bot-close-guard.mjs';
 
 const BOT = { login: 'gemini-code-assist[bot]', __typename: 'Bot' };
 const HUMAN = { login: 'yanniedog', __typename: 'User' };
@@ -96,6 +96,58 @@ for (const [label, meta] of [
   // Absent counts mean the question went unanswered, not that the answer is
   // "empty" — an API hiccup must never wave a real PR past the close guard.
   if (isEmptyDiff(meta)) failures.push(`${label} must not count as an empty diff`);
+}
+
+// GitHub counts a PR's diff against the merge base, not the current tip, so a
+// PR whose work already landed elsewhere still reports additions. PR #263 read
+// +22/-13 while its one file was byte-identical to main, because #267 had
+// squash-merged a commit carrying the same change — and the close guard
+// reopened it every time. Blob SHAs answer what the counters cannot.
+const BLOB = '1c52d9f3fa39266a48e702d54c77553ec9cee07c';
+const onBase = (map) => (path) => (path in map ? map[path] : null);
+
+if (!filesAreSuperseded(
+  [{ filename: 'site/app/src/engine/deliberation.test.ts', sha: BLOB, status: 'modified' }],
+  onBase({ 'site/app/src/engine/deliberation.test.ts': BLOB }),
+)) {
+  failures.push('a PR whose files already match the base should count as superseded');
+}
+
+for (const [label, files, base] of [
+  [
+    'a file that still differs on base',
+    [{ filename: 'a.ts', sha: 'aaa', status: 'modified' }],
+    { 'a.ts': 'bbb' },
+  ],
+  [
+    'one of several files still differing',
+    [
+      { filename: 'a.ts', sha: 'aaa', status: 'modified' },
+      { filename: 'b.ts', sha: 'bbb', status: 'modified' },
+    ],
+    { 'a.ts': 'aaa', 'b.ts': 'zzz' },
+  ],
+  [
+    'a deletion whose file is still on base',
+    [{ filename: 'gone.ts', sha: '', status: 'removed' }],
+    { 'gone.ts': 'aaa' },
+  ],
+  ['an unreadable path (API failure must fail closed)', [{ filename: 'a.ts', sha: 'aaa', status: 'modified' }], {}],
+  ['a file entry with no blob sha', [{ filename: 'a.ts', sha: '', status: 'modified' }], { 'a.ts': '' }],
+  ['an empty file list', [], {}],
+  ['a non-array file list', null, {}],
+]) {
+  if (filesAreSuperseded(files, onBase(base))) {
+    failures.push(`${label} must not count as superseded`);
+  }
+}
+
+// A deletion is superseded once the file is genuinely gone from the base.
+if (!filesAreSuperseded(
+  [{ filename: 'gone.ts', sha: '', status: 'removed' }],
+  onBase({}),
+)) {
+  failures.push('a deletion already applied on base should count as superseded');
 }
 
 if (failures.length) {
