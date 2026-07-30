@@ -10,6 +10,7 @@
     "binding": "ASSETS",
     "run_worker_first": [
       "/api/live/*",
+      "/api/waitlist",
       "/discord/interactions"
     ],
     "html_handling": "auto-trailing-slash",
@@ -46,5 +47,12 @@
   },
   "observability": {
     "enabled": false
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "WAITLIST",
+      "database_name": "simjury-waitlist",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+    }
+  ]
 }

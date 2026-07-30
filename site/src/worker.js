@@ -4,7 +4,11 @@ import {
   decodeOpaqueId,
   bearerCapability,
   isLiveRoute,
+  isWaitlistRoute,
   liveJuryEnabled,
+  parseWaitlistEmail,
+  waitlistUtcDay,
+  WAITLIST_CONSENT_TEXT,
   parseCapability,
   parseCaseId,
   parseDerivationRevision,
@@ -500,9 +504,55 @@ export class RoomDO {
   }
 }
 
+/**
+ * Record a waitlist signup.
+ *
+ * Single opt-in, so the consent text and the moment it was agreed to are stored
+ * beside the address — that record, not the current wording of the page, is
+ * what proves what someone signed up for.
+ *
+ * The response never distinguishes "new" from "already on the list": that
+ * difference would turn the endpoint into an oracle for whether a given address
+ * has signed up.
+ */
+async function handleWaitlist(request, env) {
+  if (request.method !== 'POST') {
+    return new Response(null, {
+      status: 405,
+      headers: { Allow: 'POST', 'Cache-Control': 'no-store' },
+    })
+  }
+  if (!env.WAITLIST) return unavailable('WAITLIST_NOT_READY', 503)
+
+  const body = await bodyOf(request)
+  const email = parseWaitlistEmail(body?.email)
+  if (!email) return json({ ok: false, error: 'INVALID_EMAIL' }, 400)
+  if (body?.consent !== true) return json({ ok: false, error: 'CONSENT_REQUIRED' }, 400)
+
+  // Hashed, never stored raw: enough to rate-limit a flood, useless as a
+  // location record afterwards.
+  const source = await digest(
+    `${request.headers.get('CF-Connecting-IP') ?? ''}:${waitlistUtcDay()}`,
+  )
+
+  try {
+    await env.WAITLIST.prepare(
+      `INSERT INTO waitlist (email, consent_text, consented_at, source_day_hash)
+       VALUES (?1, ?2, ?3, ?4)
+       ON CONFLICT(email) DO NOTHING`,
+    )
+      .bind(email, WAITLIST_CONSENT_TEXT, new Date().toISOString(), source)
+      .run()
+  } catch {
+    return unavailable('WAITLIST_WRITE_FAILED', 503)
+  }
+  return json({ ok: true })
+}
+
 export default {
   async fetch(request, env) {
     const pathname = new URL(request.url).pathname
+    if (isWaitlistRoute(pathname)) return handleWaitlist(request, env)
     if (!isLiveRoute(pathname)) return env.ASSETS.fetch(request)
     const enabled = liveJuryEnabled(env)
     const ready = enabled && Boolean(env.POOL_COORDINATOR) && Boolean(env.ROOMS)

@@ -8,6 +8,7 @@ import {
   bearerCapability,
   decodeOpaqueId,
   isLiveRoute,
+  isWaitlistRoute,
   parseCapability,
   parseCaseId,
   parseDerivationRevision,
@@ -20,6 +21,10 @@ import {
   roomExpiryCutoff,
   seatMaySend,
   socketCredentialsFromProtocols,
+  parseWaitlistEmail,
+  waitlistUtcDay,
+  WAITLIST_CONSENT_TEXT,
+  WAITLIST_ROUTE,
 } from '../src/live-policy.js'
 import worker, { RoomDO } from '../src/worker.js'
 
@@ -27,13 +32,21 @@ const config = JSON.parse(readFileSync(new URL('../wrangler.json', import.meta.u
 const expectedClasses = ['PoolCoordinatorDO', 'FairnessDO', 'RoomDO']
 const REVISION = 'hybrid-v1-1234abcd'
 
-test('only live endpoints execute the Worker', () => {
-  assert.deepEqual(config.assets.run_worker_first, LIVE_ROUTE_PATTERNS)
+test('only live and waitlist endpoints execute the Worker', () => {
+  assert.deepEqual(
+    config.assets.run_worker_first,
+    [...LIVE_ROUTE_PATTERNS, WAITLIST_ROUTE].sort(),
+  )
   assert.equal(isLiveRoute('/api/live/healthz'), true)
   assert.equal(isLiveRoute('/discord/interactions'), true)
   for (const path of ['/', '/today/', '/privacy/', '/media/case.webp']) {
     assert.equal(isLiveRoute(path), false)
+    assert.equal(isWaitlistRoute(path), false)
   }
+  // The waitlist is not a live route, so it never reaches live-jury handling.
+  assert.equal(isLiveRoute(WAITLIST_ROUTE), false)
+  assert.equal(isWaitlistRoute(WAITLIST_ROUTE), true)
+  assert.equal(isWaitlistRoute('/api/waitlist/export'), false)
 })
 
 test('configuration allowlists only the three SQLite Durable Objects', () => {
@@ -45,9 +58,18 @@ test('configuration allowlists only the three SQLite Durable Objects', () => {
     ['ROOMS', 'RoomDO'],
   ])
   assert.deepEqual(config.migrations[0].new_sqlite_classes, expectedClasses)
-  for (const product of ['d1_databases', 'kv_namespaces', 'r2_buckets', 'queues', 'ai']) {
+  // The live-jury migration must never grow a class for an unrelated feature —
+  // the waitlist uses D1 precisely so this list stays exactly the live-jury set.
+  for (const product of ['kv_namespaces', 'r2_buckets', 'queues', 'ai']) {
     assert.equal(product in config, false)
   }
+})
+
+test('D1 is bound to the waitlist alone', () => {
+  assert.deepEqual(
+    config.d1_databases.map(({ binding, database_name: name }) => [binding, name]),
+    [['WAITLIST', 'simjury-waitlist']],
+  )
 })
 
 test('non-live requests retain the static asset fallback', async () => {
@@ -551,4 +573,127 @@ test('a seat out of message budget cannot keep announcing stages', async () => {
   }
   await room.webSocketMessage(socket, JSON.stringify({ type: 'stage', stage: 'juryroom' }))
   assert.deepEqual(socket.closed, { code: 1008, reason: 'Message limit reached' })
+// --- Waitlist ---------------------------------------------------------------
+
+function waitlistEnv() {
+  const rows = []
+  return {
+    rows,
+    ASSETS: { fetch: () => new Response('static', { status: 200 }) },
+    WAITLIST: {
+      prepare(sql) {
+        return {
+          bind(...args) {
+            return {
+              run() {
+                // ON CONFLICT DO NOTHING: a repeat address is not a second row.
+                if (!sql.includes('ON CONFLICT(email) DO NOTHING')) {
+                  throw new Error('waitlist insert must be idempotent')
+                }
+                if (!rows.some((row) => row[0] === args[0])) rows.push(args)
+                return { success: true }
+              },
+            }
+          },
+        }
+      },
+    },
+  }
+}
+
+function signup(body, init = {}) {
+  return new Request('https://simjury.com/api/waitlist', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...(init.headers ?? {}) },
+    body: JSON.stringify(body),
+  })
+}
+
+test('waitlist accepts a consented address and stores what was agreed', async () => {
+  const env = waitlistEnv()
+  const response = await worker.fetch(signup({ email: 'Juror@Example.com ', consent: true }), env)
+
+  assert.equal(response.status, 200)
+  assert.deepEqual(await response.json(), { ok: true })
+  assert.equal(env.rows.length, 1)
+
+  const [email, consentText, consentedAt, sourceHash] = env.rows[0]
+  assert.equal(email, 'juror@example.com', 'address is normalised before storage')
+  assert.equal(consentText, WAITLIST_CONSENT_TEXT)
+  assert.ok(!Number.isNaN(Date.parse(consentedAt)), 'consent timestamp is recorded')
+  assert.match(sourceHash, /^[0-9a-f]{64}$/, 'the source is hashed, never stored raw')
+})
+
+test('waitlist refuses an address with no consent', async () => {
+  const env = waitlistEnv()
+  const response = await worker.fetch(signup({ email: 'juror@example.com' }), env)
+
+  assert.equal(response.status, 400)
+  assert.deepEqual(await response.json(), { ok: false, error: 'CONSENT_REQUIRED' })
+  assert.equal(env.rows.length, 0)
+})
+
+test('waitlist refuses malformed addresses', async () => {
+  const env = waitlistEnv()
+  for (const email of [
+    'not-an-email', 'no@domain', 'two@@at.com', 'sp ace@example.com',
+    'a@b.c', '', null, 42, `${'x'.repeat(250)}@example.com`,
+    'juror@example.com, other@example.com',
+    '"Display Name" <juror@example.com>',
+  ]) {
+    const response = await worker.fetch(signup({ email, consent: true }), env)
+    assert.equal(response.status, 400, `should refuse ${JSON.stringify(email)}`)
+    assert.deepEqual(await response.json(), { ok: false, error: 'INVALID_EMAIL' })
+  }
+  assert.equal(env.rows.length, 0)
+})
+
+test('waitlist does not reveal whether an address is already on the list', async () => {
+  const env = waitlistEnv()
+  const first = await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
+  const second = await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
+
+  assert.equal(first.status, second.status)
+  assert.deepEqual(await first.json(), await second.json())
+  assert.equal(env.rows.length, 1, 'a repeat signup is idempotent')
+})
+
+test('waitlist rejects methods other than POST without touching the database', async () => {
+  const env = waitlistEnv()
+  const response = await worker.fetch(
+    new Request('https://simjury.com/api/waitlist', { method: 'GET' }),
+    env,
+  )
+  assert.equal(response.status, 405)
+  assert.equal(response.headers.get('Allow'), 'POST')
+  assert.equal(env.rows.length, 0)
+})
+
+test('waitlist reports unavailable rather than failing when D1 is unbound', async () => {
+  const env = { ...waitlistEnv(), WAITLIST: undefined }
+  const response = await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
+  assert.equal(response.status, 503)
+})
+
+test('waitlist does not require the live-jury flag', async () => {
+  // The docket must keep collecting addresses even with live jury switched off.
+  const env = { ...waitlistEnv(), LIVE_JURY_ENABLED: 'false' }
+  const response = await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
+  assert.equal(response.status, 200)
+})
+
+test('waitlist email parsing normalises and bounds input', () => {
+  assert.equal(parseWaitlistEmail('  Juror@Example.COM '), 'juror@example.com')
+  assert.equal(parseWaitlistEmail('juror+docket@example.co.uk'), 'juror+docket@example.co.uk')
+  assert.equal(parseWaitlistEmail('juror@example.com\n'), 'juror@example.com')
+  assert.equal(parseWaitlistEmail(undefined), null)
+  assert.equal(waitlistUtcDay(Date.UTC(2026, 6, 30, 23, 59)), '2026-07-30')
+})
+
+test('the waitlist consent text on the landing page matches what is stored', () => {
+  const landing = readFileSync(new URL('../public/index.html', import.meta.url), 'utf8')
+  assert.ok(
+    landing.includes(WAITLIST_CONSENT_TEXT),
+    'the page must show the exact wording recorded against the address',
+  )
 })

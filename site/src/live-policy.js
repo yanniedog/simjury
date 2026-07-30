@@ -1,5 +1,21 @@
 export const LIVE_ROUTE_PATTERNS = ['/api/live/*', '/discord/interactions']
 
+/** The only non-live path the Worker may answer. Everything else is static. */
+export const WAITLIST_ROUTE = '/api/waitlist'
+
+export const WAITLIST_LIMITS = Object.freeze({
+  emailCharacters: 254, // RFC 5321 maximum length of a forward path
+  signupsPerIpPerDay: 5,
+})
+
+/**
+ * Consent recorded verbatim beside every address. The landing page renders this
+ * exact string, so what someone agreed to can always be reproduced from the
+ * row itself rather than from whatever the page happens to say later.
+ */
+export const WAITLIST_CONSENT_TEXT =
+  'I want email updates about The Daily Docket. I can unsubscribe at any time.'
+
 export const FREE_BETA_LIMITS = Object.freeze({
   admissionsPerUtcDay: 1_000,
   concurrentRooms: 64,
@@ -22,8 +38,40 @@ export function isLiveRoute(pathname) {
     || pathname.startsWith('/api/live/')
 }
 
+export function isWaitlistRoute(pathname) {
+  return pathname === WAITLIST_ROUTE
+}
+
 export function liveJuryEnabled(env) {
   return env.LIVE_JURY_ENABLED === 'true'
+}
+
+/**
+ * Validate and normalise a submitted address.
+ *
+ * Deliberately conservative: one `@`, a dot-bearing domain, no whitespace, no
+ * angle brackets or commas that would let a display name or a second recipient
+ * ride along. Anything unusual is refused rather than stored and puzzled over
+ * later — a waitlist address that cannot be mailed is worthless anyway.
+ *
+ * Returns the lowercased address, or null.
+ */
+export function parseWaitlistEmail(value) {
+  if (typeof value !== 'string') return null
+  const email = value.trim().toLowerCase()
+  if (email.length < 6 || email.length > WAITLIST_LIMITS.emailCharacters) return null
+  // Domain may carry several labels (example.co.uk); the TLD must be letters.
+  if (!/^[^\s@<>,;"]+@[^\s@<>,;"]+\.[a-z]{2,}$/.test(email)) return null
+  if (email.includes('..')) return null
+  return email
+}
+
+/**
+ * Bucket a signup by UTC day so a repeat submission is an idempotent update
+ * rather than a duplicate row.
+ */
+export function waitlistUtcDay(now = Date.now()) {
+  return new Date(now).toISOString().slice(0, 10)
 }
 
 export function parseOpaqueId(value) {
