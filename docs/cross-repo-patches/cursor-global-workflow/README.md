@@ -76,3 +76,19 @@ Then run `./install.sh` (or `install.ps1`) so `~/.cursor/skills` and `~/.cursor/
 ## Simjury status
 
 Landed in-tree on SimJury (`npm run pr:arm-and-park`). This folder is the portable mirror for the other three repos listed in `docs/CROSS_REPO_BOT_MATRIX.md`.
+
+## Rule 3: PRs target the default branch, and run in parallel
+
+`rules/pr-base-must-be-gated.mdc`
+
+Required checks attach to a branch, not to a pull request, so a PR stacked on a
+feature branch merges unreviewed the moment auto-merge is armed (`simjury` #264,
+2026-07-30). A ruleset cannot fix it: gating a ref for merges also blocks pushes to
+it, locking agents out of their own branches — tried on `simjury` and reverted.
+
+Port `scripts/lib/pr-base-guard.mjs` and `scripts/verify-pr-base-guard.mjs`
+alongside the rule. The guard makes `pr-arm-and-park` fail closed (exit 3,
+`base-unprotected`) on any base weaker than the default branch.
+
+Many PRs may be open against the default branch concurrently — that, not
+serialising, is how multiple agents share one repo.

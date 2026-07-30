@@ -30,6 +30,10 @@ to the current web product.
   fully migrated; do not weaken either contract.
 - **Preserve provenance** — `archive/daily-v1/` is retained verbatim and is not a
   shipped case source.
+- **PRs target the default branch, and run in parallel** — never stack a PR onto a
+  feature branch (it merges unreviewed) and never hand-roll `gh pr merge --auto`;
+  `pr:arm-and-park` fails closed with `base-unprotected`. Many PRs may be open
+  against `main` at once. See `.cursor/rules/pr-base-must-be-gated.mdc`.
 - **One concern per PR, about 400 lines, squash merge.** Agents use
   `npm run pr:arm-and-park`; never `--watch` babysitting.
 

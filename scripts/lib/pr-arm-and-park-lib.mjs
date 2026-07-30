@@ -2,7 +2,18 @@
  * Classify PR merge-gate failures as actionable (agent must work) vs waiting
  * (GitHub/bots own the clock). Used by pr-arm-and-park to stop agent poll loops.
  */
-import { evaluateGates } from './pr-gates-lib.mjs';
+import { evaluateGates, repoSlug } from './pr-gates-lib.mjs';
+
+/** repoSlug() yields { owner, name }; API paths need "owner/name". */
+function repoSlugString() {
+  const slug = repoSlug();
+  return typeof slug === 'string' ? slug : `${slug.owner}/${slug.name}`;
+}
+import {
+  BASE_GUARD_GATE_ID,
+  checkBaseProtected,
+} from './pr-base-guard.mjs';
+import { ghJson } from './gh-pr-review-threads.mjs';
 import {
   fetchPrMergeMeta,
   isAutoMergeEnabled,
@@ -10,7 +21,7 @@ import {
 } from './pr-branch-sync.mjs';
 
 /** Gate ids that mean "agent must edit code / resolve threads / fix CI". */
-const ALWAYS_ACTIONABLE = new Set(['gh-auth', 'pr-bot-feedback-check']);
+const ALWAYS_ACTIONABLE = new Set(['gh-auth', 'pr-bot-feedback-check', BASE_GUARD_GATE_ID]);
 
 /**
  * @param {{ id: string, pass: boolean, detail?: string, exitCode?: number, action?: string }} gate
@@ -84,6 +95,34 @@ export function armAndParkOnce(prNumber, opts = {}) {
   const skipArm = Boolean(opts.skipArm);
   const skipSync = Boolean(opts.skipSync);
 
+  // Resolve the base first: arming auto-merge against a base the gates do not
+  // cover would merge this PR unreviewed within seconds.
+  let baseMeta = null;
+  try {
+    baseMeta = fetchPrMergeMeta(prNumber);
+  } catch {
+    baseMeta = null;
+  }
+  const baseGuard = opts.baseGuard
+    ?? checkBaseProtected(repoSlugString(), baseMeta?.baseRefName, ghJson);
+  if (!baseGuard.covered) {
+    return {
+      prNumber,
+      ok: false,
+      mode: 'actionable',
+      error: baseGuard.detail,
+      progression: null,
+      autoMergeArmed: false,
+      baseGuard,
+      classification: {
+        mode: 'actionable',
+        actionable: [{ id: BASE_GUARD_GATE_ID, pass: false, detail: baseGuard.detail }],
+        waiting: [],
+      },
+      gates: null,
+    };
+  }
+
   let progression = null;
   if (!skipArm || !skipSync) {
     progression = progressPullRequest(prNumber, {
@@ -143,6 +182,7 @@ export function armAndParkOnce(prNumber, opts = {}) {
     progression,
     autoMergeArmed,
     headRefName: meta.headRefName,
+    baseGuard,
   };
 }
 
