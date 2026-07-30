@@ -96,10 +96,16 @@ Never use `--watch` inside an agent session.
 
 All substantive review threads must be **resolved** on GitHub before squash merge.
 Branch protection on `main` requires this check; auto-merge will not land while it is red.
+Each event runs the audit once with a five-minute cap. A reply, push, or explicit
+re-run evaluates it again; the workflow does not occupy a runner in a sleep loop.
 
 ```sh
 npm run pr:bot-feedback-check -- --pr <n>
 ```
+
+The gate audit discovers required contexts from live protection/rules and
+evaluates the newest observations attached to the exact current PR head.
+Missing required contexts are waiting, never an implicit pass.
 
 ## 4b. Close guard (`pr-bot-close-guard`)
 

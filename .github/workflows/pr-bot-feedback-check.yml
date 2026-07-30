@@ -1,7 +1,7 @@
 name: pr-bot-feedback-check
 
-# Required thread-closure gate. It remains pending and self-heals when threads
-# are resolved; GitHub emits no dedicated thread-resolution event.
+# Required thread-closure gate. Each event evaluates once; unresolved feedback
+# fails promptly and a reply/push/re-run evaluates it again.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -21,19 +21,19 @@ permissions:
   pull-requests: read
 
 concurrency:
-  # Serialize each PR's feedback events. Cancelling a sibling review/reply run
-  # can leave CANCELLED selected as the required context even when another run
-  # passed, so let the PR-only group finish in order.
+  # Duplicate same-name required checks all count in native protection. Keep
+  # short sibling runs serialized so none becomes a CANCELLED blocker.
   group: bot-feedback-gate-${{ github.event.pull_request.number || inputs.pr_number || github.run_id }}
   cancel-in-progress: false
 
 jobs:
   bot-feedback-gate:
     if: >-
-      (github.event.pull_request != null && github.event.pull_request.state == 'open')
+      github.event.pull_request != null
+      || github.event.review != null
       || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 5
     steps:
       # Execute protected base policy, never JavaScript supplied by the PR.
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -47,6 +47,7 @@ jobs:
         id: gate_exempt
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             PR="${{ inputs.pr_number }}"
@@ -54,6 +55,13 @@ jobs:
             PR="${{ github.event.pull_request.number }}"
           fi
           [[ "$PR" =~ ^[0-9]+$ ]] || { echo "::error::Pull request number must be numeric"; exit 1; }
+          PR_STATE=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .state)
+          if [ "$PR_STATE" != "open" ]; then
+            echo "gate_exempt=true" >> "$GITHUB_OUTPUT"
+            echo "gate_exempt_reason=pull-request-$PR_STATE" >> "$GITHUB_OUTPUT"
+            echo "PR #$PR is $PR_STATE - stale event skipped"
+            exit 0
+          fi
           export PR
           EXEMPT=$(node scripts/pr-gate-exempt-reason.mjs || true)
           if [ -n "$EXEMPT" ]; then
@@ -65,7 +73,7 @@ jobs:
       - name: Gate exempt - pass
         if: steps.gate_exempt.outputs.gate_exempt == 'true'
         run: echo "bot-feedback-gate skipped (${{ steps.gate_exempt.outputs.gate_exempt_reason }})"
-      - name: Keep thread-closure gate pending until resolved
+      - name: Review thread closure gate
         if: steps.gate_exempt.outputs.gate_exempt != 'true'
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
@@ -77,16 +85,16 @@ jobs:
             PR="${{ github.event.pull_request.number }}"
           fi
           [[ "$PR" =~ ^[0-9]+$ ]] || { echo "::error::Pull request number must be numeric"; exit 1; }
-          for attempt in $(seq 1 40); do
-            set +e
-            npm run pr:bot-feedback-check -- --pr "$PR" --skip-bot-presence
-            code=$?
-            set -e
-            if [ "$code" -eq 0 ]; then
-              exit 0
-            fi
-            echo "Review feedback remains open (attempt $attempt/40); keeping this check pending."
-            sleep 60
-          done
-          echo "::error::Substantive review feedback remained open for 40 minutes."
-          exit 1
+          set +e
+          npm run pr:bot-feedback-check -- --pr "$PR" --skip-bot-presence
+          code=$?
+          set -e
+          if [ "$code" -eq 0 ]; then
+            exit 0
+          fi
+          if [ "$code" -eq 2 ]; then
+            echo "::error::GitHub API rate limit prevented the feedback audit; rerun this check."
+          else
+            echo "::error::Substantive review feedback remains open. Reply and resolve it; the reply event will re-run this gate."
+          fi
+          exit "$code"
