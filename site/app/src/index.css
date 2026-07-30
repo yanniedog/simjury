@@ -226,6 +226,83 @@
   .agenda-index { display: grid; place-items: center; min-width: 1.4rem; min-height: 1.4rem; border-radius: .4rem; border: 1px solid rgb(214 185 121 / 30%); color: var(--brass-400); font-size: .7rem; font-weight: 700; }
   .verdict-pending { box-shadow: inset 0 0 0 2px currentColor; animation: verdict-pulse 1.4s ease infinite; }
 
+  /* Juror dossiers — who the eleven are, and how to reach them. */
+  .dossier-panel-wrap { padding: 1rem 1.1rem; border: 1px solid rgb(244 240 232 / 11%); border-radius: 1rem; background: rgb(21 29 33 / 72%); }
+  .dossier-intro { margin: 0 0 .75rem; color: var(--steel-500); font-size: .75rem; line-height: 1.5; }
+  .dossier-list { display: grid; gap: .4rem; margin: 0; padding: 0; list-style: none; }
+  .dossier { border: 1px solid rgb(244 240 232 / 10%); border-radius: .8rem; background: rgb(8 11 13 / 45%); }
+  .dossier.expanded { border-color: rgb(214 185 121 / 35%); background: rgb(8 11 13 / 65%); }
+  .dossier-head { display: flex; align-items: center; gap: .7rem; width: 100%; min-height: 3.25rem; padding: .55rem .7rem; border: 0; border-radius: .8rem; background: transparent; text-align: left; }
+  .dossier-portrait { flex: 0 0 auto; width: 2.4rem; height: 2.9rem; border-radius: .45rem; }
+  .dossier-head-body { display: grid; gap: .1rem; min-width: 0; flex: 1; }
+  .dossier-name { overflow: hidden; color: var(--paper-50); font-size: .82rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+  .dossier-style { color: var(--brass-400); font-size: .65rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .dossier-standing { flex: 0 0 auto; padding: .2rem .55rem; border: 1px solid rgb(244 240 232 / 16%); border-radius: 999px; font-size: .62rem; font-weight: 600; }
+  .dossier-standing.warm { border-color: rgb(114 199 170 / 55%); color: #9fd9c4; }
+  .dossier-standing.mild { border-color: rgb(114 199 170 / 32%); color: #8fc9b6; }
+  .dossier-standing.flat { color: var(--steel-500); }
+  .dossier-standing.cool { border-color: rgb(240 139 125 / 35%); color: #e6a79c; }
+  .dossier-standing.cold { border-color: rgb(240 139 125 / 60%); color: #f08b7d; }
+  .dossier-panel { padding: 0 .8rem .8rem; }
+  .dossier-persona { margin: 0 0 .6rem; color: var(--steel-300); font-size: .82rem; line-height: 1.55; }
+  .dossier-facts { display: grid; gap: .45rem; margin: 0; }
+  .dossier-facts dt { color: var(--steel-500); font-size: .62rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+  .dossier-facts dd { margin: .1rem 0 0; color: var(--paper-50); font-size: .8rem; line-height: 1.45; }
+  .dossier-tell { margin: .7rem 0 0; padding-left: .7rem; border-left: 2px solid rgb(214 185 121 / 45%); color: var(--steel-300); font-size: .78rem; font-style: italic; line-height: 1.45; }
+  .dossier-notes { margin-top: .7rem; padding-top: .6rem; border-top: 1px solid rgb(244 240 232 / 9%); }
+  .dossier-notes-label { margin: 0 0 .35rem; color: var(--steel-500); font-size: .62rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+  .dossier-notes ul { display: grid; gap: .3rem; margin: 0; padding: 0; list-style: none; }
+  .dossier-notes li { color: var(--steel-300); font-size: .78rem; line-height: 1.45; }
+  .dossier-notes li span { margin-right: .3rem; color: var(--brass-400); font-family: ui-monospace, monospace; font-size: .7rem; }
+
+  /* The composer — technique and direction as separate choices. */
+  .composer { display: grid; gap: 1rem; padding: 1.1rem; border: 1px solid rgb(214 185 121 / 20%); border-radius: 1rem; background: rgb(21 29 33 / 88%); box-shadow: 0 1.25rem 3rem rgb(0 0 0 / 18%); }
+  .composer-head { display: grid; gap: .15rem; }
+  .composer-step { margin: 0; color: var(--brass-400); font-size: .62rem; font-weight: 750; letter-spacing: .16em; text-transform: uppercase; }
+  .composer-title { margin: 0; color: var(--paper-50); font-family: Georgia, serif; font-size: 1.35rem; font-weight: 400; }
+  .composer-field { display: grid; gap: .4rem; margin: 0; padding: 0; border: 0; }
+  .composer-label { color: var(--steel-300); font-size: .68rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+  .composer-textarea { width: 100%; min-height: 4.5rem; padding: .7rem .8rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .7rem; color: var(--paper-50); background: rgb(8 11 13 / 65%); font-size: .9rem; line-height: 1.5; resize: vertical; }
+  .composer-count { color: var(--steel-500); font-size: .7rem; text-align: right; }
+  .composer-select { width: 100%; min-height: 2.75rem; padding: .5rem .7rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .65rem; color: var(--paper-50); background: rgb(8 11 13 / 70%); font-size: .85rem; }
+  .composer-note { color: var(--steel-500); font-size: .75rem; line-height: 1.45; }
+  .composer-feedback { padding: .7rem .8rem; border: 1px solid rgb(214 185 121 / 45%); border-radius: .7rem; color: #f5e3bd; background: rgb(214 185 121 / 12%); font-size: .82rem; line-height: 1.5; }
+  .move-grid { display: grid; gap: .45rem; }
+  .move-card { display: grid; gap: .2rem; min-height: 3.5rem; padding: .65rem .8rem; border: 1px solid rgb(244 240 232 / 12%); border-radius: .75rem; background: rgb(8 11 13 / 50%); text-align: left; transition: border-color .18s ease, background-color .18s ease; }
+  .move-card:hover { border-color: rgb(214 185 121 / 40%); }
+  .move-card.selected { border-color: var(--brass-400); background: rgb(214 185 121 / 12%); box-shadow: inset 0 0 0 1px rgb(214 185 121 / 30%); }
+  .move-card-label { color: var(--paper-50); font-size: .85rem; font-weight: 650; }
+  .move-card-hint { color: var(--steel-500); font-size: .74rem; line-height: 1.45; }
+  .move-card.selected .move-card-hint { color: var(--steel-300); }
+  .claim-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .45rem; }
+  .claim-btn { min-height: 3rem; padding: .5rem .6rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .7rem; color: var(--steel-300); background: rgb(8 11 13 / 50%); font-size: .78rem; font-weight: 600; }
+  .claim-btn.selected { border-color: var(--brass-400); color: var(--paper-50); background: rgb(214 185 121 / 14%); }
+  .composer-actions { display: grid; gap: .5rem; }
+  .composer-send { min-height: 3rem; border: 0; border-radius: .75rem; color: var(--court-950); background: var(--paper-50); font-size: .9rem; font-weight: 700; }
+  .composer-send:hover { background: var(--brass-400); }
+  .composer-cancel { min-height: 2.5rem; border: 1px solid rgb(244 240 232 / 12%); border-radius: .7rem; color: var(--steel-500); background: transparent; font-size: .78rem; }
+  .composer-cancel:hover { color: var(--steel-300); background: rgb(8 11 13 / 40%); }
+
+  /* The read of the room — engagement only, never a leaning or a tally. */
+  .room-read { display: grid; gap: .6rem; padding: .9rem 1rem; border: 1px solid rgb(214 185 121 / 22%); border-radius: 1rem; background: rgb(214 185 121 / 7%); animation: room-line-in .35s ease; }
+  .room-read-summary { margin: 0; color: var(--paper-50); font-size: .85rem; font-weight: 600; }
+  .room-read-list { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+  .room-read-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem; padding-left: .65rem; border-left: 2px solid rgb(244 240 232 / 18%); color: var(--steel-300); font-size: .78rem; line-height: 1.5; }
+  .room-read-item.open { border-left-color: #72c7aa; }
+  .room-read-item.listening { border-left-color: rgb(114 199 170 / 50%); }
+  .room-read-item.resistant { border-left-color: rgb(240 139 125 / 55%); }
+  .room-read-item.shut { border-left-color: #f08b7d; }
+  .room-read-who { color: var(--paper-50); font-weight: 650; }
+  .room-read-flags { display: inline-flex; flex-wrap: wrap; gap: .3rem; }
+  .room-read-flag { padding: .1rem .4rem; border: 1px solid rgb(244 240 232 / 18%); border-radius: 999px; font-size: .6rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .room-read-flag.own { border-color: rgb(214 185 121 / 50%); color: var(--brass-400); }
+  .room-read-flag.discount { color: var(--steel-500); }
+  .room-read-flag.backfire { border-color: rgb(240 139 125 / 55%); color: #f08b7d; }
+
+  .jury-seat-cell { display: grid; }
+  .jury-seat.interactive { width: 100%; cursor: pointer; }
+  .jury-seat.interactive:hover { border-color: var(--brass-400); transform: translateY(-1px); }
+
   .judgment-record { border-color: rgb(214 185 121 / 28%); border-radius: 1.25rem; background: linear-gradient(145deg, rgb(214 185 121 / 12%), rgb(21 29 33 / 72%)); }
   .judgment-record h1 { font-family: Georgia, serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; }
   .reveal-view details { border-color: rgb(244 240 232 / 12%); border-radius: 1rem; background: rgb(21 29 33 / 56%); }
@@ -248,7 +325,16 @@
   .local-note { grid-column: 1 / -1; }
 }
 
+@media (min-width: 34rem) {
+  /* Two technique cards abreast once the hints still fit on two lines. */
+  .move-grid { grid-template-columns: 1fr 1fr; }
+  .composer-actions { grid-template-columns: 1fr auto; align-items: center; }
+  .composer-cancel { order: -1; }
+}
+
 @media (max-width: 46rem) {
+  .claim-row { grid-template-columns: 1fr; }
+  .dossier-standing { font-size: .58rem; }
   .docket-topbar { grid-template-columns: auto minmax(0, 1fr); gap: .55rem .75rem; padding-inline: 1rem; }
   .docket-case-title { padding-left: .75rem; }
   .docket-phase { order: 4; padding-top: 0; }
