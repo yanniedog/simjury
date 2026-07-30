@@ -77,6 +77,18 @@ Orchestrator (Lead)
 
 **Bot feedback is never optional.** Agents must address every actionable bot review comment and resolve every thread — without waiting for the user to ask. Treat open bot threads as a merge blocker equal to CI failure.
 
+**PRs target the default branch, and run in parallel (rigid — every repo, every agent).**
+Required checks attach to a branch, not to a pull request, so a PR stacked on a
+feature branch merges unreviewed the instant auto-merge is armed (`simjury` #264,
+2026-07-30). A ruleset cannot fix this: gating a ref for merges also blocks pushes
+to it (`GH013`), which locks agents out of their own branches — tried and reverted.
+
+- Always `gh pr create --base <default-branch>`; never stack onto a feature branch.
+- Never hand-roll `gh pr merge --auto`. `pr:arm-and-park` refuses a base weaker
+  than the default branch and exits 3 (`base-unprotected`); never route around it.
+- Open many PRs against the default branch **concurrently** — that is how several
+  agents work one repo. Only a dependency chain serialises, and only at merge time.
+
 **Act or park — never poll.** Agents must not run `wait-for-bots --watch`, `pr:gates:check --watch`, `gh pr checks --watch`, or sleep-until-bots loops. Those burn tokens while GitHub owns the clock. Use one-shot `npm run pr:arm-and-park`.
 
 On every open PR the Orchestrator must automatically:

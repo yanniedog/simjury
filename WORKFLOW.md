@@ -4,9 +4,50 @@ Human workflows: **PR → CI + bot QA gates → squash merge**.
 
 Agent contract: **act or park — never poll.** See [Act or park](#act-or-park--never-poll).
 
+## 0. PRs target the default branch, and run in parallel (rigid)
+
+Required status checks attach to a **branch**, not to a pull request. A PR based
+on a feature branch is therefore armed and **merged within seconds, unreviewed** —
+how PR #264 landed on 2026-07-30 and doubled the scope of #263 beneath it.
+
+**This cannot be fixed with a ruleset.** A branch ruleset that gates merges into a
+ref also gates pushes to it: `required_status_checks` rejects a push with
+`GH013: 4 of 4 required status checks are expected`, and a `pull_request` rule
+requires a PR to update the branch at all. Applying either to `~ALL` locked every
+agent out of pushing its own topic branch. It was tried here and reverted. Gating a
+feature branch as a base and working on it are mutually exclusive on GitHub.
+
+So the rule lives in the tooling every agent goes through:
+
+```sh
+npm run pr:base-guard:verify   # prove the guard fails closed
+```
+
+`pr:arm-and-park` resolves the PR base and **refuses to arm auto-merge** on a base
+that requires less than the default branch, reporting exit 3 with
+`base-unprotected`. Never disable or route around it.
+
+### Many PRs at once — the actual answer to concurrency
+
+Opening one PR at a time never was required, and does not survive several agents
+(Cursor, Codex, Claude and their cloud agents) on one repo. Open them **all**
+against `main`:
+
+- each is reviewed concurrently by the bots on its own diff;
+- each lands as soon as its own gates go green;
+- only a genuine dependency chain serialises, and only at *merge* time — its PRs
+  are still reviewed in parallel. Keep such a chain as local branches so each link
+  stays verifiable, point every PR at `main`, and rebase as each parent lands
+  (`arm-and-park` reports "behind base" as actionable).
+
+Agent-facing copies: `.cursor/rules/pr-base-must-be-gated.mdc`, `AGENTS.md`,
+`CLAUDE.md`, the global Claude instructions, and
+`docs/cross-repo-patches/cursor-global-workflow/`.
+
 ## 1. Open a PR
 
-Push a `cursor/*` branch and open a PR to `main`.
+Push a branch and open a PR **against `main`**. Any other base merges unreviewed
+and is refused by the base guard (see §0). Several PRs may be open at once.
 
 No mutable title or author-name exemption bypasses protected bot gates.
 
@@ -139,6 +180,7 @@ npm run branch-protection:apply
 | `npm run pr:coderabbit-ensure-review` | Manual single-open-PR legacy diagnostic only |
 | `npm run pr:gates:check` | All merge gates (single shot) |
 | `npm run pr:merge` | Enable squash auto-merge |
+| `npm run pr:base-guard:verify` | Prove the base guard fails closed |
 | `npm run branch-protection:apply` | Apply legacy branch protection |
 | `npm run repo-merge-settings:apply` | Squash-only repo settings |
 | `npm run github:bot-gates:operator` | Setup helper + local verify |
