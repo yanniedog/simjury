@@ -32,7 +32,9 @@ Evaluate advisory `wait-for-bots` **once** per run (no sleep-poll). Presence
 diagnostics use `cancel-in-progress: false`. The required feedback-closure
 workflow also uses one PR-only concurrency group with
 `cancel-in-progress: false` and no queue cap. Serializing sibling review/reply
-events avoids leaving a cancelled run selected as the required context.
+events avoids creating a cancelled duplicate required context. Each feedback
+run is single-shot and capped at five minutes, so serialization does not hold a
+runner in a retry loop.
 
 ## Act-or-park (token efficiency)
 
