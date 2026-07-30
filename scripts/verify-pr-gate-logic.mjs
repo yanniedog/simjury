@@ -11,7 +11,7 @@ import {
 } from './lib/pr-gate-exempt.mjs';
 import { isKnownBotLogin, loginMatchesRequiredKey } from './lib/bot-wait-config.mjs';
 import { isBotNoise } from './lib/bot-noise.mjs';
-import { filesAreSuperseded, isEmptyDiff } from './pr-bot-close-guard.mjs';
+import { encodeContentsPath, filesAreSuperseded, isEmptyDiff } from './pr-bot-close-guard.mjs';
 
 const BOT = { login: 'gemini-code-assist[bot]', __typename: 'Bot' };
 const HUMAN = { login: 'yanniedog', __typename: 'User' };
@@ -104,36 +104,58 @@ for (const [label, meta] of [
 // squash-merged a commit carrying the same change — and the close guard
 // reopened it every time. Blob SHAs answer what the counters cannot.
 const BLOB = '1c52d9f3fa39266a48e702d54c77553ec9cee07c';
-const onBase = (map) => (path) => (path in map ? map[path] : null);
+const present = (sha) => ({ state: 'present', sha });
+const ABSENT = { state: 'absent' };
+const UNKNOWN = { state: 'unknown' };
+const onBase = (map) => (path) => (path in map ? map[path] : ABSENT);
+const mod = (over = {}) => ({ status: 'modified', additions: 3, deletions: 1, ...over });
 
 if (!filesAreSuperseded(
-  [{ filename: 'site/app/src/engine/deliberation.test.ts', sha: BLOB, status: 'modified' }],
-  onBase({ 'site/app/src/engine/deliberation.test.ts': BLOB }),
+  [mod({ filename: 'site/app/src/engine/deliberation.test.ts', sha: BLOB })],
+  onBase({ 'site/app/src/engine/deliberation.test.ts': present(BLOB) }),
 )) {
   failures.push('a PR whose files already match the base should count as superseded');
 }
 
 for (const [label, files, base] of [
-  [
-    'a file that still differs on base',
-    [{ filename: 'a.ts', sha: 'aaa', status: 'modified' }],
-    { 'a.ts': 'bbb' },
-  ],
+  ['a file that still differs on base', [mod({ filename: 'a.ts', sha: 'aaa' })], { 'a.ts': present('bbb') }],
   [
     'one of several files still differing',
-    [
-      { filename: 'a.ts', sha: 'aaa', status: 'modified' },
-      { filename: 'b.ts', sha: 'bbb', status: 'modified' },
-    ],
-    { 'a.ts': 'aaa', 'b.ts': 'zzz' },
+    [mod({ filename: 'a.ts', sha: 'aaa' }), mod({ filename: 'b.ts', sha: 'bbb' })],
+    { 'a.ts': present('aaa'), 'b.ts': present('zzz') },
   ],
   [
     'a deletion whose file is still on base',
-    [{ filename: 'gone.ts', sha: '', status: 'removed' }],
-    { 'gone.ts': 'aaa' },
+    [{ filename: 'gone.ts', status: 'removed', additions: 0, deletions: 9 }],
+    { 'gone.ts': present('aaa') },
   ],
-  ['an unreadable path (API failure must fail closed)', [{ filename: 'a.ts', sha: 'aaa', status: 'modified' }], {}],
-  ['a file entry with no blob sha', [{ filename: 'a.ts', sha: '', status: 'modified' }], { 'a.ts': '' }],
+  [
+    // A transient 5xx must never read as "already deleted", or the guard waves
+    // through a PR whose deletion has not landed.
+    'a deletion whose lookup failed',
+    [{ filename: 'gone.ts', status: 'removed', additions: 0, deletions: 9 }],
+    { 'gone.ts': UNKNOWN },
+  ],
+  ['an unreadable path on an edit', [mod({ filename: 'a.ts', sha: 'aaa' })], { 'a.ts': UNKNOWN }],
+  ['a file entry with no blob sha', [mod({ filename: 'a.ts', sha: '' })], { 'a.ts': present('') }],
+  [
+    // Blob SHAs cannot see a chmod: the content is identical while the tree
+    // still changes. The compare entry gives it away with an empty diff.
+    'a mode-only change with no content diff',
+    [mod({ filename: 'script.sh', sha: 'aaa', additions: 0, deletions: 0 })],
+    { 'script.sh': present('aaa') },
+  ],
+  [
+    // A rename also deletes the source; matching the destination is not enough.
+    'a rename whose source is still on base',
+    [{ filename: 'new.ts', previous_filename: 'old.ts', status: 'renamed', additions: 1, deletions: 1, sha: 'aaa' }],
+    { 'new.ts': present('aaa'), 'old.ts': present('aaa') },
+  ],
+  [
+    'a rename with no recorded source',
+    [{ filename: 'new.ts', status: 'renamed', additions: 1, deletions: 1, sha: 'aaa' }],
+    { 'new.ts': present('aaa') },
+  ],
   ['an empty file list', [], {}],
   ['a non-array file list', null, {}],
 ]) {
@@ -144,10 +166,31 @@ for (const [label, files, base] of [
 
 // A deletion is superseded once the file is genuinely gone from the base.
 if (!filesAreSuperseded(
-  [{ filename: 'gone.ts', sha: '', status: 'removed' }],
+  [{ filename: 'gone.ts', status: 'removed', additions: 0, deletions: 9 }],
   onBase({}),
 )) {
   failures.push('a deletion already applied on base should count as superseded');
+}
+
+// A rename is superseded once the destination matches and the source is gone.
+if (!filesAreSuperseded(
+  [{ filename: 'new.ts', previous_filename: 'old.ts', status: 'renamed', additions: 1, deletions: 1, sha: 'aaa' }],
+  onBase({ 'new.ts': present('aaa') }),
+)) {
+  failures.push('a fully-applied rename should count as superseded');
+}
+
+// `?` and `#` are legal in Git filenames and encodeURI leaves them alone, so an
+// unescaped path addressed a truncated filename and answered about the wrong file.
+for (const [path, want] of [
+  ['docs/what?.md', 'docs/what%3F.md'],
+  ['docs/c#/notes.md', 'docs/c%23/notes.md'],
+  ['a b/c.ts', 'a%20b/c.ts'],
+  ['plain/path.ts', 'plain/path.ts'],
+]) {
+  if (encodeContentsPath(path) !== want) {
+    failures.push(`encodeContentsPath(${path}) === ${encodeContentsPath(path)}, want ${want}`);
+  }
 }
 
 if (failures.length) {

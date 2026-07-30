@@ -90,27 +90,73 @@ export function isEmptyDiff(meta) {
  * @param {Array<{filename: string, sha: string, status: string}>} files
  * @param {(path: string) => string|null} blobShaOnBase
  */
-export function filesAreSuperseded(files, blobShaOnBase) {
+export function filesAreSuperseded(files, lookup) {
   if (!Array.isArray(files) || files.length === 0) return false;
   return files.every((file) => {
     if (!file?.filename) return false;
-    const onBase = blobShaOnBase(file.filename);
-    // A deletion is superseded only once the file is actually gone from base.
-    if (file.status === 'removed') return onBase === null;
-    return Boolean(file.sha) && onBase === file.sha;
+
+    // A mode or type change — making a script executable, say — leaves the blob
+    // identical, so comparing SHAs would call a real change superseded. The
+    // compare entry gives it away: it is listed, but has no content diff.
+    if (file.additions === 0 && file.deletions === 0 && file.status !== 'removed') return false;
+
+    if (file.status === 'removed') {
+      // Only a confirmed not-found proves the deletion already landed. An API
+      // failure must not read as "already gone".
+      return lookup(file.filename).state === 'absent';
+    }
+
+    // A rename also deletes the source. The destination matching is not enough:
+    // if another PR added that destination while the source still exists,
+    // merging this one would still remove it.
+    if (file.status === 'renamed') {
+      if (!file.previous_filename) return false;
+      if (lookup(file.previous_filename).state !== 'absent') return false;
+    }
+
+    const onBase = lookup(file.filename);
+    return onBase.state === 'present' && Boolean(file.sha) && onBase.sha === file.sha;
   });
 }
 
-/** Read a file's blob SHA on a ref, or null when it is absent or unreadable. */
-function blobShaOnRef(repo, ref, path) {
+/**
+ * Escape a path for the contents API without destroying its separators.
+ *
+ * `encodeURI` leaves `?` and `#` alone, and both are legal in a Git filename —
+ * so a file called `what?.md` addressed a truncated path and the lookup quietly
+ * answered about the wrong file.
+ */
+export function encodeContentsPath(path) {
+  return String(path).split('/').map(encodeURIComponent).join('/');
+}
+
+/**
+ * What does this path look like on a ref?
+ *
+ * Tri-state on purpose. Collapsing a failed request into the same answer as a
+ * genuine 404 would let a transient 5xx read as "the file is already gone", and
+ * a deletion would count as superseded when nothing of the sort had happened.
+ *
+ * @returns {{state: 'present', sha: string} | {state: 'absent'} | {state: 'unknown'}}
+ */
+function blobOnRef(repo, ref, path) {
   const r = spawnSync(
     'gh',
-    ['api', `repos/${repo}/contents/${encodeURI(path)}?ref=${encodeURIComponent(ref)}`, '--jq', '.sha'],
+    [
+      'api',
+      `repos/${repo}/contents/${encodeContentsPath(path)}?ref=${encodeURIComponent(ref)}`,
+      '--jq',
+      '.sha',
+    ],
     { encoding: 'utf8' },
   );
-  if (r.status !== 0) return null;
-  const sha = (r.stdout || '').trim();
-  return sha || null;
+  if (r.status === 0) {
+    const sha = (r.stdout || '').trim();
+    return sha ? { state: 'present', sha } : { state: 'unknown' };
+  }
+  const stderr = `${r.stderr || ''}${r.stdout || ''}`;
+  // gh reports a missing path as HTTP 404; anything else is a failure to answer.
+  return /HTTP 404|Not Found/i.test(stderr) ? { state: 'absent' } : { state: 'unknown' };
 }
 
 /** Wire filesAreSuperseded up to the compare and contents APIs. */
@@ -128,7 +174,12 @@ function prIsSuperseded(owner, name, meta) {
   // Bail on very large PRs rather than spend a request per file; a PR this size
   // is not the superseded-chain-link case this exists for.
   if (!Array.isArray(files) || files.length > 40) return false;
-  return filesAreSuperseded(files, (path) => blobShaOnRef(repo, base, path));
+  const cache = new Map();
+  return filesAreSuperseded(files, (path) => {
+    // A rename asks about two paths, and chains often touch the same file twice.
+    if (!cache.has(path)) cache.set(path, blobOnRef(repo, base, path));
+    return cache.get(path);
+  });
 }
 
 function reopenPr(prNumber, dryRun) {
