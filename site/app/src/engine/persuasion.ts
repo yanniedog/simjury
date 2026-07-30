@@ -352,12 +352,13 @@ export function applyAppeal(
     if (targeted) relation.pressed += 1
     // Asking a juror to explain themselves restores attention rather than
     // spending it — being invited to speak is not being talked at.
-    const patienceCost = MOVES[appeal.move].invitation
-      ? -PATIENCE_PER_APPEAL
+    // Positive delta restores attention; negative spends it.
+    const patienceDelta = MOVES[appeal.move].invitation
+      ? PATIENCE_PER_APPEAL
       : targeted
-        ? PATIENCE_PER_PRESS
-        : PATIENCE_PER_APPEAL
-    relation.patience = clamp(relation.patience - patienceCost, 0, PATIENCE_START)
+        ? -PATIENCE_PER_PRESS
+        : -PATIENCE_PER_APPEAL
+    relation.patience = clamp(relation.patience + patienceDelta, 0, PATIENCE_START)
     return reception
   })
   return receptions
@@ -372,12 +373,14 @@ export function roomReadout(receptions: readonly JurorReception[]): string {
     receptions.filter((item) => item.reception === reception).length
   const open = count('open')
   const listening = count('listening')
+  const guarded = count('guarded')
   const resistant = count('resistant') + count('shut')
 
   const parts: string[] = []
   const jurors = (n: number) => (n === 1 ? '1 juror' : `${n} jurors`)
   if (open > 0) parts.push(`${jurors(open)} turned toward you`)
   if (listening > 0) parts.push(`${jurors(listening)} stayed with it`)
+  if (guarded > 0) parts.push(`${jurors(guarded)} not moving yet`)
   if (resistant > 0) parts.push(`${jurors(resistant)} closed off`)
   if (parts.length === 0) return 'The room heard it and moved on.'
   return `${parts.join(' · ')}.`
