@@ -193,7 +193,9 @@ export function scoreAppeal(
   // Credit needs the appeal's own supportBeatId; a bare flag cannot invent one.
   const supportOk = Boolean(appeal.supportBeatId) && options.supportResolved !== false
   if (spec.needsSupport && !supportOk) multiplier *= 0.7
-  if (invite) multiplier = 0
+  // Invitations never push a position — not even for bystanders overhearing
+  // a targeted ask. Rapport/open tells stay scoped via `invite` below.
+  if (spec.invitation) multiplier = 0
 
   let rapportDelta = invite
     ? spec.rapport

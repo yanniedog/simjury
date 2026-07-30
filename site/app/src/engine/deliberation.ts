@@ -10,6 +10,15 @@ import {
   MAJORITY_DIRECTION,
   MAJORITY_THRESHOLD,
 } from './juryProcedure'
+import { jurorProfiles, type JurorProfile } from './jurorProfile'
+import {
+  applyAppeal,
+  roomReadout,
+  startPersuasion,
+  type JurorReception,
+  type PersuasionState,
+  type PlayerMove,
+} from './persuasion'
 import { pick, rngFor, type Rng } from './rng'
 
 /**
@@ -34,6 +43,18 @@ export type PlayerVerdict = 'guilty' | 'not_guilty' | 'undecided'
 type RoomVerdict = Exclude<PlayerVerdict, 'undecided'>
 export type DiscussionPush = 'guilt' | 'innocence' | 'neutral'
 
+/**
+ * The technique the player used, as distinct from the direction they argued.
+ * Optional: an action without an appeal behaves exactly as it did before the
+ * persuasion layer existed, which keeps the CI dynamics gate and every
+ * determinism fixture byte-identical.
+ */
+export interface PlayerAppeal {
+  move: PlayerMove
+  /** Second recollection, for `connect_evidence`. */
+  supportBeatId?: string
+}
+
 export type PlayerAction =
   | {
       type: 'argue'
@@ -42,6 +63,7 @@ export type PlayerAction =
       push?: DiscussionPush
       summary?: string
       targetJurorId?: string
+      appeal?: PlayerAppeal
     }
   | {
       type: 'cite_direction'
@@ -49,6 +71,7 @@ export type PlayerAction =
       push?: DiscussionPush
       summary?: string
       targetJurorId?: string
+      appeal?: PlayerAppeal
     }
   | { type: 'pass' }
 
@@ -85,6 +108,7 @@ export interface RoomEvent {
     | 'vote'
     | 'majority_direction'
     | 'outcome'
+    | 'read'
   beatId?: string
   stance?: Stance
   push?: DiscussionPush
@@ -94,6 +118,10 @@ export interface RoomEvent {
   position?: number
   tally?: { g: number; ng: number; u: number }
   detail?: string
+  /** How each juror received the player's last appeal (`read` events only). */
+  receptions?: JurorReception[]
+  /** The technique the player chose, when they chose one. */
+  move?: PlayerMove
 }
 
 export interface Outcome {
@@ -125,6 +153,10 @@ export interface DeliberationState {
   agenda: string[]
   /** Beat ids already raised this sitting (player or room). */
   raisedBeatIds: string[]
+  /** Derived personality per juror — a pure projection of the case file. */
+  profiles: JurorProfile[]
+  /** How the player stands with each juror: rapport, patience, what they have heard. */
+  persuasion: PersuasionState
 }
 
 export const SPEAKERS_PER_ROUND = 4
@@ -233,6 +265,8 @@ export function startDeliberation(caseData: DocketCase): DeliberationState {
     outcome: null,
     agenda: buildAgenda(caseData),
     raisedBeatIds: [],
+    profiles: jurorProfiles(caseData.jury.jurors),
+    persuasion: startPersuasion(caseData.jury.jurors.map(({ id }) => id)),
   }
   emit(state, { actor: 'room', type: 'positions', tally: tallyOf(state.jurors) })
   return state
@@ -270,6 +304,13 @@ function respond(
   stance: Stance,
   push: DiscussionPush,
   speaks = true,
+  /**
+   * How receptive this juror was to the player's technique (1 = the flat
+   * pre-persuasion behaviour). A multiplier of 0 means they engaged with the
+   * point without their position moving — which is what being *asked* a
+   * question, rather than argued at, should do.
+   */
+  reception = 1,
 ): void {
   const rule = matchRule(juror, beat, stance, push)
   if (!rule) return
@@ -287,13 +328,22 @@ function respond(
   const weight = tagWeights.length > 0 ? Math.max(...tagWeights) : 0
   // Floor at 0 so a strongly-resisted beat dampens toward "no reaction"
   // rather than reversing the argument's direction.
-  const raw = Math.abs(rule.effect.delta) * Math.max(0, 0.4 + q + 0.2 * weight)
+  const raw =
+    Math.abs(rule.effect.delta) * Math.max(0, 0.4 + q + 0.2 * weight) * reception
   const steps = rule.effect.delta === 0 ? 0 : Math.min(3, Math.ceil(raw))
   const pushSign = push === 'guilt' ? 1 : push === 'innocence' ? -1 : 0
   const moveSign = pushSign * sign(rule.effect.delta)
 
   js.position = clamp(js.position + moveSign * steps, -2, 2)
-  js.confidence = clamp(js.confidence + rule.effect.confidence, 0, 100)
+  // Reception scales conviction as well as position. This is the lever that
+  // makes technique matter after a position saturates at ±2: confidence is
+  // what decides whether a juror is still open to the room's drift, so an
+  // argument that truly landed hardens them and one that bounced does not.
+  js.confidence = clamp(
+    js.confidence + Math.round(rule.effect.confidence * reception),
+    0,
+    100,
+  )
 
   const fn = rule.effect.line
   if (speaks) {
@@ -396,6 +446,7 @@ function raiseBeat(
   summary?: string,
   targetJurorId?: string,
   explicitPush?: DiscussionPush,
+  appeal?: PlayerAppeal,
 ): void {
   const push: DiscussionPush =
     explicitPush ??
@@ -414,8 +465,43 @@ function raiseBeat(
     stance,
     push,
     detail: summary,
+    ...(appeal ? { move: appeal.move } : {}),
   })
   markRaised(state, beat.id)
+
+  // Score the technique against each juror's personality before anyone
+  // answers, so the authored reaction rule fires at the strength this
+  // particular person was willing to grant this particular approach.
+  // RNG-free, so an appeal never shifts the deterministic speech stream.
+  let receptions: JurorReception[] = []
+  if (appeal) {
+    const supportBeat = appeal.supportBeatId
+      ? state.caseData.beats.find(({ id }) => id === appeal.supportBeatId)
+      : undefined
+    receptions = applyAppeal(
+      state.persuasion,
+      state.profiles,
+      {
+        move: appeal.move,
+        beatId: beat.id,
+        beatTags: beat.tags,
+        supportBeatId: appeal.supportBeatId,
+        targetJurorId,
+      },
+      {
+        // A chain is only a chain if the second recollection is real, distinct,
+        // and shares a theme with the first.
+        supportResolved: Boolean(
+          supportBeat
+          && supportBeat.id !== beat.id
+          && supportBeat.tags.some((tag) => beat.tags.includes(tag)),
+        ),
+      },
+    )
+  }
+  const receptionFor = new Map(
+    receptions.map((item) => [item.jurorId, item.multiplier]),
+  )
 
   const driftActiveBeforeResponse = state.driftActive
   const jurors = state.caseData.jury.jurors
@@ -445,8 +531,29 @@ function raiseBeat(
   const speakerIds = new Set(speakers.map(({ id }) => id))
   for (const juror of jurors) {
     if (juror.id !== actor) {
-      respond(state, juror, beat, stance, push, speakerIds.has(juror.id))
+      respond(
+        state,
+        juror,
+        beat,
+        stance,
+        push,
+        speakerIds.has(juror.id),
+        receptionFor.get(juror.id) ?? 1,
+      )
     }
+  }
+
+  // The read of the room: how the last exchange landed, in engagement terms
+  // only. Seat leanings and tallies stay sealed until the judge speaks.
+  if (receptions.length > 0) {
+    emit(state, {
+      actor: 'room',
+      type: 'read',
+      beatId: beat.id,
+      move: appeal?.move,
+      detail: roomReadout(receptions),
+      receptions,
+    })
   }
 
   if (
@@ -516,6 +623,7 @@ export function playRound(state: DeliberationState, action: PlayerAction): void 
       action.summary,
       action.targetJurorId,
       action.push,
+      action.appeal,
     )
   }
 
