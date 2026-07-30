@@ -353,6 +353,10 @@
   .invite-link input { width: 100%; min-height: 2.75rem; padding: .5rem .7rem; border: 1px solid rgb(244 240 232 / 16%); border-radius: .65rem; color: var(--paper-50); background: rgb(8 11 13 / 75%); font-family: ui-monospace, monospace; font-size: .72rem; }
   .invite-note { margin: 0; color: var(--steel-500); font-size: .74rem; line-height: 1.5; }
 
+  .jury-seat-cell { display: grid; }
+  .jury-seat.interactive { width: 100%; cursor: pointer; }
+  .jury-seat.interactive:hover { border-color: var(--brass-400); transform: translateY(-1px); }
+
   .judgment-record { border-color: rgb(214 185 121 / 28%); border-radius: 1.25rem; background: linear-gradient(145deg, rgb(214 185 121 / 12%), rgb(21 29 33 / 72%)); }
   .judgment-record h1 { font-family: Georgia, serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; }
   .reveal-view details { border-color: rgb(244 240 232 / 12%); border-radius: 1rem; background: rgb(21 29 33 / 56%); }

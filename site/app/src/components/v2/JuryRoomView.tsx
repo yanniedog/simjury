@@ -25,11 +25,13 @@ import {
   phaseNarratorCue,
   REASONABLE_DOUBT_DIRECTION,
 } from '../../lib/narratorCues'
-import type { PlayerMove } from '../../engine/persuasion'
+import type { JurorReception, PlayerMove } from '../../engine/persuasion'
 import { claimApplies, movesForBeatKind } from '../../lib/moveCopy'
 import type { Verdict } from './DocketVerdict'
 import { DeliberationComposer } from './DeliberationComposer'
 import { JuryBench } from './JuryBench'
+import { JuryDossierPanel } from './JurorDossier'
+import { RoomRead } from './RoomRead'
 import { FeedLine } from './RoomTranscript'
 import { RoundStepper } from './RoundStepper'
 import type { LiveJurySession } from '../../lib/liveJury'
@@ -120,6 +122,8 @@ export function JuryRoomView({
   const [move, setMove] = useState<PlayerMove>('assert')
   const [claim, setClaim] = useState<ClaimedPosition>('NG')
   const [supportBeatId, setSupportBeatId] = useState('')
+  const [dossierOpen, setDossierOpen] = useState(false)
+  const [expandedJurorId, setExpandedJurorId] = useState<string | null>(null)
   const transcriptRef = useRef<HTMLUListElement>(null)
   const followTranscriptRef = useRef(true)
   const headingRef = useRef<HTMLHeadingElement>(null)
@@ -461,6 +465,14 @@ export function JuryRoomView({
   const agendaBeats = state.agenda
     .map((id) => trial.beats.find((b) => b.id === id))
     .filter((b): b is NonNullable<typeof b> => Boolean(b))
+
+  // The most recent read of the room, so the player can see what their last
+  // technique won or cost before choosing the next one.
+  const lastRead = [...state.log].reverse().find((e) => e.type === 'read') ?? null
+  const lastReceptions: JurorReception[] = lastRead?.receptions ?? []
+  const tellsByJuror = Object.fromEntries(
+    lastReceptions.map((item) => [item.jurorId, item.tell]),
+  )
   const composerMoves = movesForBeatKind(beat.kind)
   const composerMove = composerMoves.includes(move) ? move : composerMoves[0]
 
@@ -518,6 +530,14 @@ export function JuryRoomView({
             className="transport-btn transport-secondary"
           >
             Raise an issue
+          </button>
+          <button
+            type="button"
+            onClick={() => setDossierOpen((open) => !open)}
+            className="transport-btn transport-secondary"
+            aria-pressed={dossierOpen}
+          >
+            {dossierOpen ? 'Hide the room' : 'Know the room'}
           </button>
           {canReloadNotes && (
             <button
@@ -606,12 +626,36 @@ export function JuryRoomView({
         </ol>
       )}
 
+      {dossierOpen && !outcome && (
+        <JuryDossierPanel
+          trial={trial}
+          profiles={state.profiles}
+          relations={state.persuasion.byJuror}
+          tells={tellsByJuror}
+          notes={notes}
+          expandedId={expandedJurorId}
+          onExpand={setExpandedJurorId}
+        />
+      )}
+
       <JuryBench
         state={state}
         playerVerdict={playerVerdict}
         activeJurorId={activeJurorId}
         stirredIds={revealVotes ? [] : stirredIds}
         revealPositions={revealVotes}
+        // Sealing the verdict removes the dossier panel, so the seats must stop
+        // being buttons too. Left wired up they stayed in the tab order and were
+        // announced as opening a dossier that no longer renders — a control that
+        // only sets hidden state and shows the player nothing.
+        onOpenJuror={
+          outcome
+            ? undefined
+            : (jurorId) => {
+                setDossierOpen(true)
+                setExpandedJurorId(jurorId)
+              }
+        }
       />
       <p aria-live="polite" className="speaker-focus text-xs text-amber-200/80">
         {floorCopy({
@@ -649,6 +693,14 @@ export function JuryRoomView({
           />
         ))}
       </ul>
+
+      {lastRead && !outcome && lastReceptions.length > 0 && (
+        <RoomRead
+          summary={lastRead.detail ?? ''}
+          receptions={lastReceptions}
+          profiles={state.profiles}
+        />
+      )}
 
       {outcome && playerVerdict ? (
         <div className="space-y-4">
