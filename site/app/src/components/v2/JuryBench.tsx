@@ -11,12 +11,15 @@ export function JuryBench({
   activeJurorId,
   stirredIds,
   revealPositions,
+  onOpenJuror,
 }: {
   state: DeliberationState
   playerVerdict: Verdict | null
   activeJurorId: string | null
   stirredIds: readonly string[]
   revealPositions: boolean
+  /** Opens that juror's dossier — the seats are how you learn who these people are. */
+  onOpenJuror?: (jurorId: string) => void
 }) {
   const playerTone = !revealPositions || !playerVerdict
     ? 'border-neutral-700 bg-neutral-900/60 text-neutral-300'
@@ -56,19 +59,35 @@ export function JuryBench({
               : j.position < 0
                 ? 'NG'
                 : '—'
+          const caption = `Seat ${j.seat}, ${j.label}${revealPositions ? `, ${lean}` : ''}${isActive ? ', speaking now' : ''}`
+          if (!onOpenJuror) {
+            return (
+              <div
+                key={j.id}
+                role="listitem"
+                aria-current={isActive ? 'true' : undefined}
+                className={`jury-seat ${tone}`}
+                title={j.label}
+              >
+                <span className="sr-only">{caption}</span>
+                <span aria-hidden="true">{j.seat}</span>
+                <small aria-hidden="true">{mark}</small>
+              </div>
+            )
+          }
           return (
-            <div
-              key={j.id}
-              role="listitem"
-              aria-current={isActive ? 'true' : undefined}
-              className={`jury-seat ${tone}`}
-              title={j.label}
-            >
-              <span className="sr-only">
-                {`Seat ${j.seat}, ${j.label}${revealPositions ? `, ${lean}` : ''}${isActive ? ', speaking now' : ''}`}
-              </span>
-              <span aria-hidden="true">{j.seat}</span>
-              <small aria-hidden="true">{mark}</small>
+            <div key={j.id} role="listitem" className="jury-seat-cell">
+              <button
+                type="button"
+                aria-current={isActive ? 'true' : undefined}
+                className={`jury-seat interactive ${tone}`}
+                title={j.label}
+                onClick={() => onOpenJuror(j.id)}
+              >
+                <span className="sr-only">{`${caption}. Open their dossier.`}</span>
+                <span aria-hidden="true">{j.seat}</span>
+                <small aria-hidden="true">{mark}</small>
+              </button>
             </div>
           )
         })}
