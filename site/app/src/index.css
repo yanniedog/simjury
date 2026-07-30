@@ -226,6 +226,22 @@
   .agenda-index { display: grid; place-items: center; min-width: 1.4rem; min-height: 1.4rem; border-radius: .4rem; border: 1px solid rgb(214 185 121 / 30%); color: var(--brass-400); font-size: .7rem; font-weight: 700; }
   .verdict-pending { box-shadow: inset 0 0 0 2px currentColor; animation: verdict-pulse 1.4s ease infinite; }
 
+  /* The read of the room — engagement only, never a leaning or a tally. */
+  .room-read { display: grid; gap: .6rem; padding: .9rem 1rem; border: 1px solid rgb(214 185 121 / 22%); border-radius: 1rem; background: rgb(214 185 121 / 7%); animation: room-line-in .35s ease; }
+  .room-read-summary { margin: 0; color: var(--paper-50); font-size: .85rem; font-weight: 600; }
+  .room-read-list { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+  .room-read-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem; padding-left: .65rem; border-left: 2px solid rgb(244 240 232 / 18%); color: var(--steel-300); font-size: .78rem; line-height: 1.5; }
+  .room-read-item.open { border-left-color: #72c7aa; }
+  .room-read-item.listening { border-left-color: rgb(114 199 170 / 50%); }
+  .room-read-item.resistant { border-left-color: rgb(240 139 125 / 55%); }
+  .room-read-item.shut { border-left-color: #f08b7d; }
+  .room-read-who { color: var(--paper-50); font-weight: 650; }
+  .room-read-flags { display: inline-flex; flex-wrap: wrap; gap: .3rem; }
+  .room-read-flag { padding: .1rem .4rem; border: 1px solid rgb(244 240 232 / 18%); border-radius: 999px; font-size: .6rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .room-read-flag.own { border-color: rgb(214 185 121 / 50%); color: var(--brass-400); }
+  .room-read-flag.discount { color: var(--steel-500); }
+  .room-read-flag.backfire { border-color: rgb(240 139 125 / 55%); color: #f08b7d; }
+
   .judgment-record { border-color: rgb(214 185 121 / 28%); border-radius: 1.25rem; background: linear-gradient(145deg, rgb(214 185 121 / 12%), rgb(21 29 33 / 72%)); }
   .judgment-record h1 { font-family: Georgia, serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; }
   .reveal-view details { border-color: rgb(244 240 232 / 12%); border-radius: 1rem; background: rgb(21 29 33 / 56%); }
