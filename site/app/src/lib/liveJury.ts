@@ -97,12 +97,26 @@ export function liveInviteFromHash(hash: string): LiveInvite | null {
 export function liveInviteFromText(value: string): LiveInvite | null {
   const text = value.trim()
   if (!text) return null
-  const fragment = text.slice(text.indexOf('#live-jury='))
-  const direct = text.includes('#live-jury=')
-    ? liveInviteFromHash(fragment)
+
+  // Cut the invitation out of the surrounding message rather than assuming it
+  // ends the paste. Chat apps wrap links in punctuation and people paste whole
+  // sentences, so taking everything after the marker used to drag a trailing
+  // `)` or a following word into the token and fail a perfectly good link.
+  // The token alphabet is base64url plus the two dots, so stopping at the first
+  // character outside it ends the match exactly where the invitation does.
+  const marked = text.match(/#live-jury=([A-Za-z0-9_.-]+)/)
+  if (marked) {
+    const direct = liveInviteFromHash(`#live-jury=${marked[1]}`)
+    if (direct) return direct
+  }
+
+  // A bare triple, pasted without the URL around it. Anchored to the whole
+  // paste on purpose: searching for a triple inside arbitrary text would find
+  // one in strings that are not invitations at all, such as `room/12.<token>.
+  // dd-0039`, whose rejection is the point.
+  return /^#?[A-Za-z0-9_.-]+$/.test(text)
+    ? liveInviteFromHash(`#live-jury=${text.replace(/^#/, '')}`)
     : null
-  if (direct) return direct
-  return liveInviteFromHash(`#live-jury=${text.replace(/^#?/, '')}`)
 }
 
 /**

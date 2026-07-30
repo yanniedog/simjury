@@ -74,16 +74,18 @@ export function LiveJuryLobby({
   const [seats, setSeats] = useState<LiveSeat[]>([])
   const [capacity, setCapacity] = useState(12)
   const [expanded, setExpanded] = useState(false)
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const refreshRoster = useCallback(async (active: LiveJurySession) => {
     try {
       const status = await liveJuryRoomStatus(active.roomId, active.inviteToken)
       setSeats(status.seats)
       setCapacity(status.capacity)
+      return status
     } catch {
       // A roster read failing is not worth interrupting the sitting over; the
       // room itself reports its own health when it matters.
+      return null
     }
   }, [])
 
@@ -144,14 +146,31 @@ export function LiveJuryLobby({
 
   // Poll the roster while a session is live, so a host actually watches people
   // arrive instead of guessing whether their invitation worked.
+  //
+  // Two things the plain interval got wrong. It kept firing while a slow read
+  // was still in flight, so a struggling Worker got a pile of overlapping
+  // requests exactly when it could least serve them — `inFlight` drops a tick
+  // rather than stacking on one. And this component stays mounted for the whole
+  // sitting, so it went on polling long after the room stopped changing; once
+  // every seat is taken there is nothing left to watch and the timer stops.
   useEffect(() => {
     if (!session || !sessionReady) return
-    void refreshRoster(session)
-    pollRef.current = setInterval(() => void refreshRoster(session), ROSTER_POLL_MS)
-    return () => {
+    let inFlight = false
+    const stop = () => {
       if (pollRef.current !== null) clearInterval(pollRef.current)
       pollRef.current = null
     }
+    const tick = () => {
+      if (inFlight) return
+      inFlight = true
+      void refreshRoster(session).then((status) => {
+        inFlight = false
+        if (status && status.seats.length >= status.capacity) stop()
+      })
+    }
+    tick()
+    pollRef.current = setInterval(tick, ROSTER_POLL_MS)
+    return stop
   }, [session, sessionReady, refreshRoster])
 
   async function connect(target: LiveInvite | null) {
@@ -320,6 +339,24 @@ export function LiveJuryLobby({
                 ? 'Take my seat'
                 : 'Open a jury room'}
           </button>
+          {invite && (
+            // An accepted invitation can still turn out to be unusable — the
+            // room may be full, expired, or already closed. Without a way back
+            // out, the lobby offers only a button that keeps failing and hides
+            // the option to host a room instead.
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                setInvite(null)
+                history.replaceState(null, '', `${location.pathname}${location.search}`)
+                setMessage('Invitation discarded. You can open your own room instead.')
+              }}
+              className="live-lobby-secondary"
+            >
+              Use a different invitation
+            </button>
+          )}
           {!invite && (
             <div className="live-lobby-paste">
               {showPaste ? (

@@ -150,6 +150,25 @@ describe('accepting an invitation that was pasted in', () => {
     expect(liveInviteFromText(`  ${url}  `)).toEqual(invite)
   })
 
+  it('finds the invitation inside a real chat message', () => {
+    // People paste sentences, and chat apps wrap links in punctuation. Taking
+    // everything after the marker used to drag the trailing character into the
+    // token and reject a perfectly good invitation.
+    expect(liveInviteFromText(`Here you go (${url}).`)).toEqual(invite)
+    expect(liveInviteFromText(`${url},`)).toEqual(invite)
+    expect(liveInviteFromText(`Join me: ${url} — starts in ten minutes`)).toEqual(invite)
+    expect(liveInviteFromText(`${url}
+see you there`)).toEqual(invite)
+    expect(liveInviteFromText(`<${url}>`)).toEqual(invite)
+  })
+
+  it('refuses text with no invitation in it', () => {
+    expect(liveInviteFromText('see you at eight')).toBeNull()
+    expect(liveInviteFromText('#live-jury=')).toBeNull()
+    expect(liveInviteFromText('')).toBeNull()
+    expect(liveInviteFromText('room_12.short.dd-0039')).toBeNull()
+  })
+
   it('rejects anything that is not an invitation', () => {
     expect(liveInviteFromText('')).toBeNull()
     expect(liveInviteFromText('https://simjury.com/today/')).toBeNull()
