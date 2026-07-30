@@ -2,8 +2,8 @@
 /**
  * Merge/close protection helper.
  *
- * Exit 0 — PR may stay closed (merged, gate-exempt, or no outstanding bot work)
- * Exit 1 — PR was closed with outstanding bot review obligations; reopen required
+ * Exit 0 — PR may stay closed (merged, gate-exempt, or no outstanding feedback)
+ * Exit 1 — PR was closed with unresolved review feedback; reopen required
  * Exit 2 — waiting / rate-limit soft failure
  * Exit 3 — hard tooling error
  *
@@ -103,8 +103,8 @@ function main() {
   if (args.help) {
     console.log(`Usage: node scripts/pr-bot-close-guard.mjs --pr <n> [--reopen] [--dry-run] [--json]
 
-Blocks premature PR closure while bot merge protection still applies.
-Required presence default: ${DEFAULT_REQUIRED_SPEC}
+Blocks premature PR closure while review feedback remains unresolved.
+Required presence default: ${DEFAULT_REQUIRED_SPEC} (advisory)
 Unresolved substantive review threads also block closure.`);
     process.exit(0);
   }
@@ -217,7 +217,7 @@ Unresolved substantive review threads also block closure.`);
 
   if (!result.blockClose) {
     result.ok = true;
-    result.detail = 'no outstanding bot obligations';
+    result.detail = 'no outstanding review feedback';
     if (args.json) console.log(JSON.stringify(result, null, 2));
     else console.log(`pr-bot-close-guard: PR #${prNumber} clear to close`);
     process.exit(0);
@@ -229,14 +229,12 @@ Unresolved substantive review threads also block closure.`);
   if (meta.state === 'CLOSED' && args.reopen) {
     const body = [
       '<!-- simjury-bot-close-guard -->',
-      '**Bot merge protection:** this PR was closed while review obligations remained.',
+      '**Review protection:** this PR was closed while review obligations remained.',
       '',
       ...result.reasons.map((r) => `- ${r}`),
       '',
-      'Reopened automatically. Squash merge stays blocked until `bot-presence-gate` and',
-      '`bot-feedback-gate` are green (CodeRabbit + peer review bots, threads resolved).',
-      '',
-      `Required presence: \`${DEFAULT_REQUIRED_SPEC}\``,
+      'Reopened automatically. Squash merge stays blocked until',
+      '`bot-feedback-gate` is green (all substantive threads resolved).',
     ].join('\n');
     result.reopened = reopenPr(prNumber, args.dryRun);
     if (result.reopened) {

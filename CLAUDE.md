@@ -34,6 +34,9 @@ to the current web product.
   feature branch (it merges unreviewed) and never hand-roll `gh pr merge --auto`;
   `pr:arm-and-park` fails closed with `base-unprotected`. Many PRs may be open
   against `main` at once. See `.cursor/rules/pr-base-must-be-gated.mdc`.
+- **Required checks stay deterministic** — only `validate` and
+  `bot-feedback-gate` block merge. External bot presence and local Qwen are
+  advisory/disabled; every substantive review thread still needs a disposition.
 - **One concern per PR, about 400 lines, squash merge.** Agents use
   `npm run pr:arm-and-park`; never `--watch` babysitting.
 

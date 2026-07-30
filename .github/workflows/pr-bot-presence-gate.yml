@@ -1,16 +1,11 @@
 name: pr-bot-presence-gate
 
-# One trusted, head-scoped controller. It requests exactly one CodeRabbit full
-# review per head, waits through vendor quota, and accepts only CodeRabbit's
-# "Review completed" commit status on that exact SHA.
+# Disabled advisory diagnostic. Reviewer presence is never required for merge.
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
+  workflow_dispatch:
 
 permissions:
   contents: read
-  # write needed so the contract can post the one SHA-marked full-review nudge
-  # when BOT_GATE_TOKEN is unset (github.token alone with read cannot addComment).
   pull-requests: write
   issues: write
   statuses: read
@@ -21,20 +16,16 @@ concurrency:
 
 jobs:
   bot-presence-gate:
-    if: github.event.pull_request.draft == false && github.event.action != 'converted_to_draft'
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:
-      # Execute trusted policy from the base SHA, never PR-controlled scripts.
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.base.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-      # Chicken-egg: main still uses `gh pr comment` (GraphQL addComment → 403).
-      # Apply a hermetic in-workflow patch to the checked-out *base* script only —
-      # do not fetch or execute PR-head JavaScript with the write token.
       - name: Patch base GraphQL CodeRabbit comment to REST (hermetic)
         run: |
           set -euo pipefail

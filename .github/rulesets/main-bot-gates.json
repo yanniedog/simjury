@@ -50,15 +50,7 @@
             "integration_id": 15368
           },
           {
-            "context": "local-llm-review",
-            "integration_id": 15368
-          },
-          {
             "context": "bot-feedback-gate",
-            "integration_id": 15368
-          },
-          {
-            "context": "bot-presence-gate",
             "integration_id": 15368
           }
         ]

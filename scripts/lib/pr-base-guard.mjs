@@ -15,9 +15,7 @@
  * base and letting agents work on it are mutually exclusive on GitHub.
  *
  * The workable rule is therefore enforced here, in the tooling every agent goes
- * through: a PR's base must not require less than the default branch does. In
- * practice that means PRs target the default branch, which is also what lets
- * many of them be open and reviewed in parallel.
+ * through: every PR must target the repository's exact default branch.
  */
 import { MERGE_REQUIRED_CHECK_NAMES } from './pr-gates-lib.mjs';
 
@@ -60,8 +58,8 @@ export function requiredChecksFor(sources = {}) {
  *
  * The invariant is comparative — a base may never require less than the default
  * branch — so it calibrates to each repository instead of hard-coding one
- * project's workflow names. A repo gating four checks on its default branch
- * demands all four of any other base; a repo that gates nothing has nothing to
+ * project's workflow names. A repo gating checks on its default branch
+ * demands all of them of any other base; a repo that gates nothing has nothing to
  * bypass and is not blocked.
  *
  * @param {string} baseRefName
@@ -135,9 +133,9 @@ export function fetchBaseSources(repo, baseRefName, ghJson) {
 export function resolveDefaultBranch(repo, ghJson) {
   try {
     const info = ghJson(['api', `repos/${repo}`]);
-    return typeof info?.default_branch === 'string' ? info.default_branch : 'main';
+    return typeof info?.default_branch === 'string' ? info.default_branch : null;
   } catch {
-    return 'main';
+    return null;
   }
 }
 
@@ -159,10 +157,20 @@ export function checkBaseProtected(repo, baseRefName, ghJson, defaultBranch) {
     };
   }
   const floor = defaultBranch ?? resolveDefaultBranch(repo, ghJson);
-  return evaluateBaseCoverage(
-    baseRefName,
-    fetchBaseSources(repo, baseRefName, ghJson),
-    fetchBaseSources(repo, floor, ghJson),
-    { defaultBranch: floor },
-  );
+  if (!floor || baseRefName !== floor) {
+    return {
+      covered: false,
+      missing: [...BASE_REQUIRED_CHECKS],
+      required: [...BASE_REQUIRED_CHECKS],
+      detail: floor
+        ? `base ${baseRefName} is not the default branch ${floor} — retarget it; open PRs in parallel instead`
+        : 'repository default branch is unknown, so the PR base cannot be trusted',
+    };
+  }
+  return {
+    covered: true,
+    missing: [],
+    required: [...BASE_REQUIRED_CHECKS],
+    detail: `base ${baseRefName} is the default branch`,
+  };
 }

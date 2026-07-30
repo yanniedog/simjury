@@ -27,7 +27,7 @@ assert(
     pass: false,
     detail: 'bot-presence-gate: fail; bot-feedback-gate: not reported yet',
   }) === 'waiting',
-  'presence fail while feedback missing = waiting',
+  'optional presence failure remains waiting when explicitly enabled',
 );
 assert(
   classifyGateFailure({

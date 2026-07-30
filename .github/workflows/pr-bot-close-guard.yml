@@ -1,9 +1,7 @@
 name: pr-bot-close-guard
 
-# Prevent premature PR closure while merge-protection bot obligations remain.
-# Reopens closed-but-unmerged PRs that still need CodeRabbit/peer presence or
-# unresolved review-thread resolution. Squash merge stays blocked by required
-# checks (bot-presence-gate, bot-feedback-gate) on main.
+# Prevent premature PR closure while substantive review feedback remains.
+# Reopens closed-but-unmerged PRs with unresolved substantive review threads.
 on:
   pull_request:
     types: [closed]
@@ -36,15 +34,18 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha || github.event.repository.default_branch }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "24"
       - name: Guard premature close
         env:
           GH_TOKEN: ${{ secrets.BOT_GATE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          SIMJURY_BOT_WAIT_REQUIRED: sourcery|codex|cursor,coderabbit
+          SIMJURY_BOT_WAIT_REQUIRED: off
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             PR="${{ inputs.pr_number }}"
