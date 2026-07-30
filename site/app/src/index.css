@@ -226,6 +226,35 @@
   .agenda-index { display: grid; place-items: center; min-width: 1.4rem; min-height: 1.4rem; border-radius: .4rem; border: 1px solid rgb(214 185 121 / 30%); color: var(--brass-400); font-size: .7rem; font-weight: 700; }
   .verdict-pending { box-shadow: inset 0 0 0 2px currentColor; animation: verdict-pulse 1.4s ease infinite; }
 
+  /* Juror dossiers — who the eleven are, and how to reach them. */
+  .dossier-panel-wrap { padding: 1rem 1.1rem; border: 1px solid rgb(244 240 232 / 11%); border-radius: 1rem; background: rgb(21 29 33 / 72%); }
+  .dossier-intro { margin: 0 0 .75rem; color: var(--steel-500); font-size: .75rem; line-height: 1.5; }
+  .dossier-list { display: grid; gap: .4rem; margin: 0; padding: 0; list-style: none; }
+  .dossier { border: 1px solid rgb(244 240 232 / 10%); border-radius: .8rem; background: rgb(8 11 13 / 45%); }
+  .dossier.expanded { border-color: rgb(214 185 121 / 35%); background: rgb(8 11 13 / 65%); }
+  .dossier-head { display: flex; align-items: center; gap: .7rem; width: 100%; min-height: 3.25rem; padding: .55rem .7rem; border: 0; border-radius: .8rem; background: transparent; text-align: left; }
+  .dossier-portrait { flex: 0 0 auto; width: 2.4rem; height: 2.9rem; border-radius: .45rem; }
+  .dossier-head-body { display: grid; gap: .1rem; min-width: 0; flex: 1; }
+  .dossier-name { overflow: hidden; color: var(--paper-50); font-size: .82rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+  .dossier-style { color: var(--brass-400); font-size: .65rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .dossier-standing { flex: 0 0 auto; padding: .2rem .55rem; border: 1px solid rgb(244 240 232 / 16%); border-radius: 999px; font-size: .62rem; font-weight: 600; }
+  .dossier-standing.warm { border-color: rgb(114 199 170 / 55%); color: #9fd9c4; }
+  .dossier-standing.mild { border-color: rgb(114 199 170 / 32%); color: #8fc9b6; }
+  .dossier-standing.flat { color: var(--steel-500); }
+  .dossier-standing.cool { border-color: rgb(240 139 125 / 35%); color: #e6a79c; }
+  .dossier-standing.cold { border-color: rgb(240 139 125 / 60%); color: #f08b7d; }
+  .dossier-panel { padding: 0 .8rem .8rem; }
+  .dossier-persona { margin: 0 0 .6rem; color: var(--steel-300); font-size: .82rem; line-height: 1.55; }
+  .dossier-facts { display: grid; gap: .45rem; margin: 0; }
+  .dossier-facts dt { color: var(--steel-500); font-size: .62rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+  .dossier-facts dd { margin: .1rem 0 0; color: var(--paper-50); font-size: .8rem; line-height: 1.45; }
+  .dossier-tell { margin: .7rem 0 0; padding-left: .7rem; border-left: 2px solid rgb(214 185 121 / 45%); color: var(--steel-300); font-size: .78rem; font-style: italic; line-height: 1.45; }
+  .dossier-notes { margin-top: .7rem; padding-top: .6rem; border-top: 1px solid rgb(244 240 232 / 9%); }
+  .dossier-notes-label { margin: 0 0 .35rem; color: var(--steel-500); font-size: .62rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+  .dossier-notes ul { display: grid; gap: .3rem; margin: 0; padding: 0; list-style: none; }
+  .dossier-notes li { color: var(--steel-300); font-size: .78rem; line-height: 1.45; }
+  .dossier-notes li span { margin-right: .3rem; color: var(--brass-400); font-family: ui-monospace, monospace; font-size: .7rem; }
+
   /* The read of the room — engagement only, never a leaning or a tally. */
   .room-read { display: grid; gap: .6rem; padding: .9rem 1rem; border: 1px solid rgb(214 185 121 / 22%); border-radius: 1rem; background: rgb(214 185 121 / 7%); animation: room-line-in .35s ease; }
   .room-read-summary { margin: 0; color: var(--paper-50); font-size: .85rem; font-weight: 600; }
@@ -265,6 +294,7 @@
 }
 
 @media (max-width: 46rem) {
+  .dossier-standing { font-size: .58rem; }
   .docket-topbar { grid-template-columns: auto minmax(0, 1fr); gap: .55rem .75rem; padding-inline: 1rem; }
   .docket-case-title { padding-left: .75rem; }
   .docket-phase { order: 4; padding-top: 0; }
