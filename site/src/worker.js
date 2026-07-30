@@ -7,8 +7,10 @@ import {
   isWaitlistRoute,
   liveJuryEnabled,
   parseWaitlistEmail,
+  waitlistEmailKey,
   waitlistUtcDay,
   WAITLIST_CONSENT_TEXT,
+  WAITLIST_LIMITS,
   parseCapability,
   parseCaseId,
   parseDerivationRevision,
@@ -524,29 +526,92 @@ async function handleWaitlist(request, env) {
   }
   if (!env.WAITLIST) return unavailable('WAITLIST_NOT_READY', 503)
 
-  const body = await bodyOf(request)
+  const body = await waitlistSubmission(request)
   const email = parseWaitlistEmail(body?.email)
   if (!email) return json({ ok: false, error: 'INVALID_EMAIL' }, 400)
   if (body?.consent !== true) return json({ ok: false, error: 'CONSENT_REQUIRED' }, 400)
 
-  // Hashed, never stored raw: enough to rate-limit a flood, useless as a
-  // location record afterwards.
-  const source = await digest(
-    `${request.headers.get('CF-Connecting-IP') ?? ''}:${waitlistUtcDay()}`,
-  )
+  const source = await sourceFingerprint(request, env)
 
   try {
+    // The declared per-IP cap has to be enforced where the rows are, or it is
+    // just a comment. Without a salt there is no usable fingerprint, so the cap
+    // is skipped rather than applied to a value every client shares.
+    if (source) {
+      const seen = await env.WAITLIST.prepare(
+        'SELECT COUNT(*) AS count FROM waitlist WHERE source_day_hash = ?1',
+      ).bind(source).first()
+      if ((seen?.count ?? 0) >= WAITLIST_LIMITS.signupsPerIpPerDay) {
+        // Same shape as success: a distinct response would tell a flooder
+        // exactly when they hit the cap.
+        return json({ ok: true })
+      }
+    }
+
     await env.WAITLIST.prepare(
-      `INSERT INTO waitlist (email, consent_text, consented_at, source_day_hash)
-       VALUES (?1, ?2, ?3, ?4)
-       ON CONFLICT(email) DO NOTHING`,
+      `INSERT INTO waitlist (email_key, email, consent_text, consented_at, source_day_hash)
+       VALUES (?1, ?2, ?3, ?4, ?5)
+       ON CONFLICT(email_key) DO NOTHING`,
     )
-      .bind(email, WAITLIST_CONSENT_TEXT, new Date().toISOString(), source)
+      .bind(waitlistEmailKey(email), email, WAITLIST_CONSENT_TEXT, new Date().toISOString(), source)
       .run()
   } catch {
     return unavailable('WAITLIST_WRITE_FAILED', 503)
   }
   return json({ ok: true })
+}
+
+/**
+ * Accept both the JSON the page sends and the `application/x-www-form-urlencoded`
+ * body a browser posts when JavaScript never loads. The form is a real <form>
+ * with a real action precisely so it still works then, which only holds if the
+ * Worker reads what a plain browser actually sends.
+ */
+async function waitlistSubmission(request) {
+  const contentType = request.headers.get('Content-Type') ?? ''
+  if (!contentType.includes('form-urlencoded')) return bodyOf(request)
+  try {
+    const form = await request.formData()
+    const consent = form.get('consent')
+    return {
+      email: form.get('email'),
+      // An unchecked box is absent entirely; a checked one sends "on".
+      consent: consent !== null && consent !== 'false',
+    }
+  } catch {
+    return null
+  }
+}
+
+/**
+ * A per-day, per-client fingerprint that cannot be reversed into an address.
+ *
+ * A plain SHA-256 of an IP is not anonymous: IPv4 is only 2^32 values, so the
+ * whole space can be hashed in minutes and the digest looked up. Keying it with
+ * a secret removes that — without the key there is no table to build.
+ *
+ * Returns null when no key is configured, which disables the cap rather than
+ * storing a value that only looks protective. Set it with:
+ *   wrangler secret put WAITLIST_SALT
+ */
+async function sourceFingerprint(request, env) {
+  const salt = env.WAITLIST_SALT
+  if (typeof salt !== 'string' || salt.length < 16) return null
+  const ip = request.headers.get('CF-Connecting-IP') ?? ''
+  if (!ip) return null
+  const key = await crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(salt),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign'],
+  )
+  const mac = await crypto.subtle.sign(
+    'HMAC',
+    key,
+    new TextEncoder().encode(`${ip}:${waitlistUtcDay()}`),
+  )
+  return [...new Uint8Array(mac)].map((byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
 export default {

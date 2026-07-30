@@ -35,13 +35,20 @@ Copy the printed `database_id` into `wrangler.json`, replacing
 
 ```powershell
 wrangler d1 execute simjury-waitlist --remote --file=./schema/waitlist.sql
+wrangler secret put WAITLIST_SALT   # any long random string
 npm run check
 ```
 
-Until that is done, `guard:cloudflare` prints a reminder rather than failing, so
-CI stays green before the database exists. Shipping without it fails safely
-anyway: an unbound `WAITLIST` makes the route answer `503 WAITLIST_NOT_READY`
-instead of accepting signups into nothing.
+`guard:cloudflare` **fails** while the placeholder id is in `wrangler.json`, and
+that is deliberate. A push to `main` runs a real `wrangler deploy`, which
+rejects a `database_id` that is not a UUID — so a placeholder would not merely
+leave the waitlist unbound, it would fail the deployment of the whole site.
+`wrangler deploy --dry-run` does not catch it, because it never contacts the
+API. Failing in CI makes this a visible prerequisite instead of a landmine.
+
+`WAITLIST_SALT` is a secret, so it lives outside `wrangler.json` entirely and
+needs no allowlist change. Without it the per-IP cap is skipped and no
+fingerprint is stored — see below for why an unkeyed one would be worthless.
 
 ## Reading the list
 
@@ -54,11 +61,19 @@ wrangler d1 execute simjury-waitlist --remote `
 
 | Column | Why |
 |---|---|
-| `email` | Primary key, lowercased. A repeat signup updates nothing and adds no row. |
+| `email_key` | Primary key: the lowercased address. A repeat signup adds no row, whatever case it arrives in. |
+| `email` | The address as typed. RFC 5321 local-parts are case-sensitive, so this is what gets mailed; only `email_key` decides who is the same person. |
 | `consent_text` | The exact wording agreed to, so the record stands even after the page copy changes. |
 | `consented_at` | When it was agreed. |
-| `source_day_hash` | SHA-256 of `<ip>:<utc day>` — enough to spot a flood, useless as a location record. The raw address is never written down. |
+| `source_day_hash` | HMAC-SHA-256 of `<ip>:<utc day>` under `WAITLIST_SALT`, or NULL when no salt is set. Enough to enforce the daily cap, useless as a location record. |
 | `unsubscribed_at` | Set on unsubscribe; the row is kept so a later signup is not treated as fresh consent. |
+
+The fingerprint is **keyed**, not a plain digest. A bare SHA-256 of an IP is not
+anonymous: IPv4 is only 2³² values, so the whole space can be hashed and the
+digest looked up. Without the secret there is no such table to build. If no salt
+is configured the column stays NULL rather than holding a value that only looks
+protective, and the per-IP cap is skipped rather than applied to a constant
+every client shares.
 
 No progress, notes, verdicts or case history are stored, and none of them are
 linked to an address.
@@ -72,9 +87,13 @@ year. Export the list and send from wherever you normally send mail.
 
 Every update must carry a working unsubscribe path. When someone unsubscribes:
 
+Bind the address rather than pasting it into the statement — an apostrophe
+(`o'connor@example.com`) would otherwise break the SQL:
+
 ```powershell
 wrangler d1 execute simjury-waitlist --remote `
-  --command="UPDATE waitlist SET unsubscribed_at = datetime('now') WHERE email = 'them@example.com'"
+  --command="UPDATE waitlist SET unsubscribed_at = datetime('now') WHERE email_key = ?1" `
+  --param="them@example.com"
 ```
 
 ## Deliberately not included

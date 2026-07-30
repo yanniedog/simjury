@@ -19,7 +19,7 @@
     "check:landing": "node scripts/assert-landing-page.mjs",
     "check:crawl": "node scripts/assert-crawl-surface.mjs",
     "guard:cloudflare": "node scripts/assert-cloudflare-static-only.mjs",
-    "test:runtime": "node --test tests/cloudflare-runtime.test.mjs tests/landing-disclosure.test.mjs tests/narration-jobs.test.mjs"
+    "test:runtime": "node --test tests/cloudflare-runtime.test.mjs tests/waitlist.test.mjs tests/landing-disclosure.test.mjs tests/narration-jobs.test.mjs"
   },
   "devDependencies": {
     "wrangler": "4.113.0"

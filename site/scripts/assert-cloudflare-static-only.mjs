@@ -64,17 +64,24 @@ if (config.migrations?.length !== 1 || migration?.tag !== 'live-jury-v1'
 }
 // D1 holds the waitlist only. It is bounded the same way the Durable Objects
 // are: an exact binding list, no extra fields, and no second database.
-const D1_ID_PLACEHOLDER = 'REPLACE_WITH_D1_DATABASE_ID'
-const pendingD1 = []
+// A real deploy runs on every push to main, and `wrangler deploy` rejects a
+// database_id that is not a UUID — so a placeholder does not merely leave the
+// waitlist unbound, it fails the deployment of the whole site. The guard fails
+// closed here so the one-time `wrangler d1 create` in docs/WAITLIST.md is a
+// visible prerequisite rather than a landmine that lands on main.
+// `wrangler deploy --dry-run` does not catch this: it never contacts the API.
+const D1_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const actualD1 = (config.d1_databases ?? []).map(
   ({ binding, database_name: databaseName, database_id: databaseId, ...extra }) => {
     if (Object.keys(extra).length) failures.push(`Unexpected D1 fields on ${binding}`)
-    if (!databaseId) failures.push(`D1 binding ${binding} needs a database_id`)
-    // The placeholder is not a failure: the id only exists once the operator
-    // runs `wrangler d1 create`, and CI must stay green before that. Shipping
-    // with it still fails safely — an unbound WAITLIST returns 503 rather than
-    // accepting signups into nothing. See docs/WAITLIST.md.
-    else if (databaseId === D1_ID_PLACEHOLDER) pendingD1.push(binding)
+    if (!databaseId) {
+      failures.push(`D1 binding ${binding} needs a database_id`)
+    } else if (!D1_ID.test(databaseId)) {
+      failures.push(
+        `D1 binding ${binding} has database_id "${databaseId}", which is not a UUID — `
+        + 'run the one-time setup in docs/WAITLIST.md; deploying this would fail',
+      )
+    }
     return [binding, databaseName]
   },
 )
@@ -92,8 +99,5 @@ for (const file of ['_headers', '_redirects']) {
 if (failures.length) {
   console.error(`Cloudflare live-runtime guard failed:\n- ${failures.join('\n- ')}`)
   process.exit(1)
-}
-for (const binding of pendingD1) {
-  console.warn(`Note: ${binding} still holds the placeholder database_id — run the one-time setup in docs/WAITLIST.md before signups can be stored.`)
 }
 console.log('Cloudflare guard passed: static-first with only bounded live-jury routes, the waitlist route, SQLite Durable Objects and one D1 database.')

@@ -54,16 +54,29 @@ export function liveJuryEnabled(env) {
  * ride along. Anything unusual is refused rather than stored and puzzled over
  * later — a waitlist address that cannot be mailed is worthless anyway.
  *
- * Returns the lowercased address, or null.
+ * Only the domain is lowercased. Local-parts are case-sensitive under RFC 5321,
+ * so `Juror@example.com` is mailed back exactly as it was typed; deduplication
+ * uses `waitlistEmailKey` instead, which is case-insensitive because in
+ * practice no provider treats those as two different people.
+ *
+ * @returns {string|null} the address as it should be mailed
  */
 export function parseWaitlistEmail(value) {
   if (typeof value !== 'string') return null
-  const email = value.trim().toLowerCase()
-  if (email.length < 6 || email.length > WAITLIST_LIMITS.emailCharacters) return null
+  const trimmed = value.trim()
+  if (trimmed.length < 6 || trimmed.length > WAITLIST_LIMITS.emailCharacters) return null
+  const at = trimmed.lastIndexOf('@')
+  if (at < 1) return null
+  const email = `${trimmed.slice(0, at)}@${trimmed.slice(at + 1).toLowerCase()}`
   // Domain may carry several labels (example.co.uk); the TLD must be letters.
   if (!/^[^\s@<>,;"]+@[^\s@<>,;"]+\.[a-z]{2,}$/.test(email)) return null
   if (email.includes('..')) return null
   return email
+}
+
+/** Case-insensitive identity for an address, used as the primary key. */
+export function waitlistEmailKey(email) {
+  return typeof email === 'string' ? email.toLowerCase() : null
 }
 
 /**
