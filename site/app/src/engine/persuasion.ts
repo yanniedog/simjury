@@ -297,16 +297,29 @@ export function scoreAppeal(
   if (targeted && relation.pressed >= 2) multiplier *= 0.85
 
   // A move that needs a second recollection and does not have one is just an
-  // assertion wearing a better name.
-  if (spec.needsSupport && !options.supportResolved) multiplier *= 0.7
+  // assertion wearing a better name. Credit requires the appeal's own
+  // supportBeatId; a bare supportResolved flag cannot invent one.
+  const supportOk =
+    Boolean(appeal.supportBeatId) && options.supportResolved !== false
+  if (spec.needsSupport && !supportOk) multiplier *= 0.7
 
-  // An invitation pushes no position at all; it buys standing to be heard.
-  if (spec.invitation) multiplier = 0
+  // Invitations buy standing only with the addressee (or the whole room when
+  // untargeted). Bystanders overhear; they do not "finally speak up."
+  const invitationApplies =
+    spec.invitation && (!appeal.targetJurorId || targeted)
 
-  let rapportDelta = spec.rapport * (targeted ? 1 : 0.5)
+  if (invitationApplies) multiplier = 0
+
+  let rapportDelta = invitationApplies
+    ? spec.rapport
+    : spec.rapport * (targeted ? 1 : 0.5)
+  if (!invitationApplies && spec.invitation && appeal.targetJurorId) {
+    // Targeted ask overheard by the rest of the room: no rapport swing.
+    rapportDelta = 0
+  }
   if (backfired) rapportDelta -= 1
   if (targeted && relation.pressed >= 2) rapportDelta -= 0.5
-  if (repeats > 0 && !spec.invitation) rapportDelta -= 0.25 * repeats
+  if (repeats > 0 && !invitationApplies) rapportDelta -= 0.25 * repeats
 
   const nextRapport = clamp(
     relation.rapport + rapportDelta,
@@ -314,9 +327,11 @@ export function scoreAppeal(
     RAPPORT_MAX,
   )
   const effective = round2(clamp(multiplier, 0, 2.5))
-  const reception = spec.invitation
+  const reception = invitationApplies
     ? (backfired ? 'shut' : nextRapport > relation.rapport ? 'open' : 'listening')
-    : receptionFor(effective, backfired)
+    : spec.invitation && appeal.targetJurorId && !targeted
+      ? 'listening'
+      : receptionFor(effective, backfired)
 
   return {
     jurorId: profile.id,
@@ -348,16 +363,25 @@ export function applyAppeal(
     const targeted = appeal.targetJurorId === profile.id
 
     relation.rapport = reception.rapport
-    relation.heard = [...relation.heard, appeal.beatId]
+    // Invitations earn the right to answer; they must not consume the beat's
+    // repeat budget, or the follow-up answer takes the 0.6 falloff immediately.
+    const invitationApplies =
+      MOVES[appeal.move].invitation && (!appeal.targetJurorId || targeted)
+    if (!invitationApplies) {
+      relation.heard = [...relation.heard, appeal.beatId]
+    }
     if (targeted) relation.pressed += 1
     // Asking a juror to explain themselves restores attention rather than
     // spending it — being invited to speak is not being talked at.
-    // Positive delta restores attention; negative spends it.
-    const patienceDelta = MOVES[appeal.move].invitation
+    // Positive delta restores attention; negative spends it. Bystanders to a
+    // targeted invitation are not talked at either; leave their patience alone.
+    const patienceDelta = invitationApplies
       ? PATIENCE_PER_APPEAL
-      : targeted
-        ? -PATIENCE_PER_PRESS
-        : -PATIENCE_PER_APPEAL
+      : MOVES[appeal.move].invitation && appeal.targetJurorId && !targeted
+        ? 0
+        : targeted
+          ? -PATIENCE_PER_PRESS
+          : -PATIENCE_PER_APPEAL
     relation.patience = clamp(relation.patience + patienceDelta, 0, PATIENCE_START)
     return reception
   })

@@ -110,4 +110,71 @@ describe('persuasion', () => {
     expect(text).toContain('stayed with it')
     expect(text).not.toBe('The room heard it and moved on.')
   })
+
+  it('honors supportBeatId on connect_evidence without a bare supportResolved flag', () => {
+    const state = startPersuasion([holdout.id])
+    const base = {
+      move: 'connect_evidence' as const,
+      beatId: 'b-main',
+      beatTags: ['identity' as const],
+      targetJurorId: holdout.id,
+    }
+    const without = scoreAppeal(holdout, state.byJuror[holdout.id], base)
+    const withBeat = scoreAppeal(holdout, state.byJuror[holdout.id], {
+      ...base,
+      supportBeatId: 'b-support',
+    })
+    const flagAlone = scoreAppeal(
+      holdout,
+      state.byJuror[holdout.id],
+      base,
+      { supportResolved: true },
+    )
+    expect(withBeat.multiplier).toBeGreaterThan(without.multiplier)
+    expect(flagAlone.multiplier).toBe(without.multiplier)
+  })
+
+  it('does not treat an invitation as a heard repeat of its answer beat', () => {
+    const state = startPersuasion([holdout.id])
+    applyAppeal(state, [holdout], {
+      move: 'ask_reason',
+      beatId: 'b-answer',
+      beatTags: ['identity'],
+      targetJurorId: holdout.id,
+    })
+    expect(state.byJuror[holdout.id].heard).toEqual([])
+
+    const answer = scoreAppeal(holdout, state.byJuror[holdout.id], {
+      move: 'assert',
+      beatId: 'b-answer',
+      beatTags: ['identity'],
+      targetJurorId: holdout.id,
+    })
+    const fresh = scoreAppeal(
+      holdout,
+      { rapport: state.byJuror[holdout.id].rapport, patience: 100, pressed: 0, heard: [] },
+      {
+        move: 'assert',
+        beatId: 'b-answer',
+        beatTags: ['identity'],
+        targetJurorId: holdout.id,
+      },
+    )
+    expect(answer.multiplier).toBe(fresh.multiplier)
+  })
+
+  it('limits invitation open reactions to the addressed juror', () => {
+    const state = startPersuasion([holdout.id, vibes.id])
+    const receptions = applyAppeal(state, [holdout, vibes], {
+      move: 'ask_reason',
+      beatId: 'b-ask',
+      beatTags: ['identity'],
+      targetJurorId: holdout.id,
+    })
+    const byId = Object.fromEntries(receptions.map((r) => [r.jurorId, r]))
+    expect(byId[holdout.id].reception).toBe('open')
+    expect(byId[vibes.id].reception).toBe('listening')
+    expect(byId[vibes.id].rapportDelta).toBe(0)
+    expect(roomReadout(receptions)).not.toMatch(/2 jurors turned toward you/)
+  })
 })
