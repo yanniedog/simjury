@@ -15,7 +15,6 @@
  *   node scripts/pr-coderabbit-review-recovery.mjs …   # alias entry
  */
 import { spawnSync } from 'node:child_process';
-import { pathToFileURL } from 'node:url';
 import {
   CR_ENSURE_MARKER,
   CR_OPEN_RETRY_INTERVAL_MS,
@@ -29,6 +28,7 @@ import {
   needsOpenEnsure,
 } from './lib/coderabbit-review-status.mjs';
 import { latestRateLimitEvent, msUntilRetry } from './lib/coderabbit-rate-limit.mjs';
+import { isCoderabbitPresenceNoise } from './lib/coderabbit-review-status.mjs';
 import { hasGh, repoSlug } from './lib/gh-pr-review-threads.mjs';
 import { gateExemptReasonFromPrMeta } from './lib/pr-gate-exempt.mjs';
 
@@ -143,7 +143,21 @@ function listCandidatePrs({ lookbackDays, maxPrs, pr, includeOpen, includeClosed
  */
 export function reviewCoversHead(reviews, headSha) {
   if (!headSha) return true;
-  const withSha = (reviews || []).filter((review) => review?.commit?.oid || review?.commit_id);
+  // Only reviews that are themselves substantive can answer this. A newer
+  // rate-limit notice or command acknowledgement naming the head would
+  // otherwise vouch for an older proper review of a superseded commit, and
+  // recovery would stop while the gate kept waiting.
+  const substantive = (reviews || []).filter(
+    (review) =>
+      !isCoderabbitPresenceNoise(review?.author?.login || review?.user?.login, review?.body, {
+        state: review?.state,
+        kind: 'review',
+      }),
+  );
+  const withSha = substantive.filter((review) => review?.commit?.oid || review?.commit_id);
+  // No substantive review carries a sha — either none exists yet, or the proper
+  // review arrived as a comment, which has no commit to compare. Treat that as
+  // current so recovery does not re-request on every run.
   if (withSha.length === 0) return true;
   return withSha.some((review) => (review.commit?.oid || review.commit_id) === headSha);
 }
@@ -292,7 +306,9 @@ function processOne(row, { dryRun, owner, name }) {
   }
 
   // Closed / merged recovery path
-  if (!needsCoderabbitRecovery(meta, activity)) {
+  // A closed PR force-pushed after its review needs the same override: this
+  // decision is otherwise made purely on `hasProperReview`.
+  if (!staleHead && !needsCoderabbitRecovery(meta, activity)) {
     result.skipped = 'not closed/merged or no recovery needed';
     return result;
   }
@@ -415,8 +431,25 @@ Schedule: .github/workflows/pr-coderabbit-ensure-review.yml (every 15 minutes)`)
   process.exit(failed.length ? 1 : 0);
 }
 
-// Only run as a CLI, so reviewCoversHead can be unit-tested by importing this
-// module without it reaching for the network.
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+export { main };
+
+// Run as a CLI, but not on a bare import, so the helpers above can be
+// unit-tested without the module reaching for the network. The alias
+// pr-coderabbit-review-recovery.mjs delegates by importing this file, so
+// guarding on this module's own path alone silently turned that command — and
+// the scheduled job behind it — into a no-op.
+const ENTRY_SCRIPTS = ['pr-coderabbit-ensure-review.mjs', 'pr-coderabbit-review-recovery.mjs'];
+export function isCliEntry(argvPath) {
+  if (!argvPath) return false;
+  const path = String(argvPath);
+  return ENTRY_SCRIPTS.some((name) => {
+    if (!path.endsWith(name)) return false;
+    // Match on a whole path segment, so `my-pr-coderabbit-ensure-review.mjs`
+    // does not count. Works for either separator without naming one.
+    const boundary = path[path.length - name.length - 1];
+    return boundary === undefined || boundary === '/' || boundary === String.fromCharCode(92);
+  });
+}
+if (isCliEntry(process.argv[1])) {
   main();
 }
