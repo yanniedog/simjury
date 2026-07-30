@@ -15,13 +15,16 @@ import {
 } from './deliberation'
 import { MAJORITY_DIRECTION } from './juryProcedure'
 
+type ArgueAction = Extract<PlayerAction, { type: 'argue' }>
+type CiteAction = Extract<PlayerAction, { type: 'cite_direction' }>
+
 const pass: PlayerAction = { type: 'pass' }
-const argue = (beatId: string, stance: 'proves' | 'unreliable'): PlayerAction => ({
+const argue = (beatId: string, stance: 'proves' | 'unreliable'): ArgueAction => ({
   type: 'argue',
   beatId,
   stance,
 })
-const cite = (beatId: string): PlayerAction => ({ type: 'cite_direction', beatId })
+const cite = (beatId: string): CiteAction => ({ type: 'cite_direction', beatId })
 
 /** The factory case's decisive innocence beats and its loud guilt trap. */
 const DECISIVE = [argue('b4', 'proves'), argue('b7', 'proves'), argue('b4', 'proves')]
@@ -411,7 +414,7 @@ describe('persuasion appeals', () => {
       ...argue(beat.id, 'proves'),
       appeal: { move: 'ask_reason' },
       targetJurorId: trial.jury.jurors[0].id,
-    } as PlayerAction)
+    })
 
     const responded = state.log.filter((e) => e.type === 'respond' && e.line)
     // The room still speaks — the player just does not push anyone with it.
@@ -431,7 +434,7 @@ describe('persuasion appeals', () => {
       ...argue(beat.id, 'proves'),
       appeal: { move: 'distinguish' },
       targetJurorId: target.id,
-    } as PlayerAction)
+    })
 
     const addressed = state.persuasion.byJuror[target.id]
     const bystander = state.persuasion.byJuror[trial.jury.jurors[1].id]
