@@ -340,15 +340,28 @@ test('socket capabilities are verified at the public boundary and not put in the
 function fakeRoom() {
   const events = []
   const usage = new Map([['1', 0], ['2', 0]])
+  // Per-seat stage bookkeeping, which bounds the message-budget exemption.
+  const stages = new Map()
+  const stageChanges = new Map()
   const sockets = []
   const sql = {
     exec(statement, ...bindings) {
-      if (statement.includes('SELECT messages FROM seat_usage')) {
-        return [{ messages: usage.get(String(bindings[0])) ?? 0 }]
+      if (statement.includes('FROM seat_usage WHERE seat_id')) {
+        const seat = String(bindings[0])
+        return [{
+          messages: usage.get(seat) ?? 0,
+          stage: stages.get(seat) ?? null,
+          stage_changes: stageChanges.get(seat) ?? 0,
+        }]
       }
       if (statement.includes('UPDATE seat_usage SET messages')) {
         const seat = String(bindings[0])
         usage.set(seat, (usage.get(seat) ?? 0) + 1)
+      }
+      if (statement.includes('UPDATE seat_usage SET stage')) {
+        const [stage, seat] = [bindings[0], String(bindings[1])]
+        stages.set(seat, stage)
+        stageChanges.set(seat, (stageChanges.get(seat) ?? 0) + 1)
       }
       if (statement.includes('INSERT INTO room_events')) events.push(bindings)
       if (statement.includes('last_insert_rowid')) return [{ sequence: events.length }]
@@ -359,7 +372,9 @@ function fakeRoom() {
     storage: { sql },
     getWebSockets: () => sockets.filter((socket) => !socket.closed),
   }
-  return { events, room: new RoomDO(state, { LIVE_JURY_ENABLED: 'true' }), sockets, usage }
+  return {
+    events, room: new RoomDO(state, { LIVE_JURY_ENABLED: 'true' }), sockets, usage, stages, stageChanges,
+  }
 }
 
 function fakeSocket(seatId) {
@@ -446,6 +461,7 @@ test('health exposes readiness and immutable free-beta limits', async () => {
     concurrentRooms: 64,
     seatsPerRoom: 12,
     messagesPerSeat: 40,
+    stageChangesPerSeat: 12,
     messageCharacters: 500,
     frameCharacters: 1_024,
     historyEvents: 120,
@@ -480,4 +496,59 @@ test('health exposes readiness and immutable free-beta limits', async () => {
   )
   assert.equal(invalidMethod.status, 405)
   assert.equal(invalidMethod.headers.get('Allow'), 'GET')
+})
+
+test('a stage ping is free, but only for a genuine change', async () => {
+  const { events, room, sockets, usage } = fakeRoom()
+  const socket = fakeSocket('1')
+  sockets.push(socket)
+
+  await room.webSocketMessage(socket, JSON.stringify({ type: 'stage', stage: 'juryroom' }))
+  assert.equal(usage.get('1'), 0, 'moving through the sitting must not spend the message budget')
+  assert.equal(events.length, 1)
+
+  // Repeating the stage the seat is already on reaches nobody and costs nothing.
+  for (let i = 0; i < 50; i += 1) {
+    await room.webSocketMessage(socket, JSON.stringify({ type: 'stage', stage: 'juryroom' }))
+  }
+  assert.equal(events.length, 1, 'a no-op stage ping is dropped, not broadcast')
+  assert.equal(usage.get('1'), 0)
+  assert.equal(socket.closed, null)
+})
+
+test('free stage changes are bounded, so they cannot be farmed', async () => {
+  // Every accepted frame stores an event and broadcasts to every peer, so an
+  // unbounded exemption would be an amplification channel.
+  const { events, room, sockets, usage } = fakeRoom()
+  const socket = fakeSocket('1')
+  sockets.push(socket)
+
+  for (let i = 0; i < FREE_BETA_LIMITS.stageChangesPerSeat; i += 1) {
+    await room.webSocketMessage(
+      socket,
+      JSON.stringify({ type: 'stage', stage: SITTING_STAGES[i % SITTING_STAGES.length] }),
+    )
+  }
+  assert.equal(usage.get('1'), 0, 'the allowance itself is free')
+  assert.equal(events.length, FREE_BETA_LIMITS.stageChangesPerSeat)
+
+  // Past the allowance a stage change costs the ordinary budget like any frame.
+  await room.webSocketMessage(socket, JSON.stringify({ type: 'stage', stage: SITTING_STAGES[0] }))
+  assert.equal(usage.get('1'), 1)
+})
+
+test('a seat out of message budget cannot keep announcing stages', async () => {
+  const { room, sockets, usage } = fakeRoom()
+  const socket = fakeSocket('1')
+  sockets.push(socket)
+  usage.set('1', FREE_BETA_LIMITS.messagesPerSeat)
+
+  for (let i = 0; i < FREE_BETA_LIMITS.stageChangesPerSeat; i += 1) {
+    await room.webSocketMessage(
+      socket,
+      JSON.stringify({ type: 'stage', stage: SITTING_STAGES[i % SITTING_STAGES.length] }),
+    )
+  }
+  await room.webSocketMessage(socket, JSON.stringify({ type: 'stage', stage: 'juryroom' }))
+  assert.deepEqual(socket.closed, { code: 1008, reason: 'Message limit reached' })
 })

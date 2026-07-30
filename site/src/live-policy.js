@@ -5,6 +5,10 @@ export const FREE_BETA_LIMITS = Object.freeze({
   concurrentRooms: 64,
   seatsPerRoom: 12,
   messagesPerSeat: 40,
+  // A sitting has three stages, so a seat needs only a handful of genuine
+  // transitions. The allowance is generous enough for a reread or a reconnect
+  // and small enough that free frames cannot be farmed.
+  stageChangesPerSeat: 12,
   messageCharacters: 500,
   frameCharacters: 1_024,
   historyEvents: 120,
@@ -138,6 +142,20 @@ export function admissionDecision({ admissions, activeRooms, duplicateRoomId, ro
 export function seatMaySend(messages) {
   return Number.isInteger(messages) && messages >= 0
     && messages < FREE_BETA_LIMITS.messagesPerSeat
+}
+
+/**
+ * May this seat announce another stage change for free?
+ *
+ * Stage pings are exempt from the message budget so that moving through the
+ * sitting cannot exhaust it. Left unbounded that is an amplification channel:
+ * every frame stores an event and broadcasts to every peer at no cost. A seat
+ * that has spent its stage allowance falls back to the ordinary budget, so the
+ * exemption stays a convenience rather than a free channel.
+ */
+export function seatMayAnnounceStage(stageChanges) {
+  return Number.isInteger(stageChanges) && stageChanges >= 0
+    && stageChanges < FREE_BETA_LIMITS.stageChangesPerSeat
 }
 
 export function unavailable(reason = 'LIVE_JURY_DISABLED', status = 503) {

@@ -16,6 +16,7 @@ import {
   roomSocketRoute,
   roomExpiryCutoff,
   socketCredentialsFromProtocols,
+  seatMayAnnounceStage,
   seatMaySend,
   unavailable,
 } from './live-policy.js'
@@ -190,12 +191,24 @@ export class RoomDO {
       );
       CREATE TABLE IF NOT EXISTS seat_usage (
         seat_id TEXT PRIMARY KEY,
-        messages INTEGER NOT NULL DEFAULT 0 CHECK (messages >= 0)
+        messages INTEGER NOT NULL DEFAULT 0 CHECK (messages >= 0),
+        -- The stage this seat last announced. A ping repeating it is dropped,
+        -- so a client looping on one stage costs nothing and reaches nobody.
+        stage TEXT,
+        -- How many genuine changes it has made. Bounds the budget exemption.
+        stage_changes INTEGER NOT NULL DEFAULT 0 CHECK (stage_changes >= 0)
       );
     `)
     const metaColumns = [...state.storage.sql.exec('PRAGMA table_info(room_meta)')]
     if (!metaColumns.some(({ name }) => name === 'derivation_revision')) {
       state.storage.sql.exec('ALTER TABLE room_meta ADD COLUMN derivation_revision TEXT')
+    }
+    const usageColumns = [...state.storage.sql.exec('PRAGMA table_info(seat_usage)')]
+    if (!usageColumns.some(({ name }) => name === 'stage')) {
+      state.storage.sql.exec('ALTER TABLE seat_usage ADD COLUMN stage TEXT')
+      state.storage.sql.exec(
+        'ALTER TABLE seat_usage ADD COLUMN stage_changes INTEGER NOT NULL DEFAULT 0',
+      )
     }
   }
 
@@ -389,22 +402,41 @@ export class RoomDO {
       return
     }
     const event = parseLiveEvent(message)
+    const usageRow = [...this.state.storage.sql.exec(
+      'SELECT messages, stage, stage_changes FROM seat_usage WHERE seat_id = ?',
+      seatId,
+    )][0]
+
     // Stage announcements are automatic progress pings rather than jury-room
-    // contributions, so they must not consume a seat's message budget. An
-    // unparseable frame still costs the sender, so this cannot be used to send
-    // unlimited garbage.
-    if (!event || event.type !== 'stage') {
-      const usage = [...this.state.storage.sql.exec(
-        'SELECT messages FROM seat_usage WHERE seat_id = ?',
-        seatId,
-      )][0]?.messages ?? 0
-      if (!seatMaySend(usage)) {
+    // contributions, so they must not consume a seat's message budget — moving
+    // through the sitting would otherwise exhaust it.
+    //
+    // That exemption has to be bounded, or it is a free amplification channel:
+    // every accepted frame stores an event and broadcasts to every peer. Two
+    // bounds apply. A ping that repeats the stage the seat is already on is
+    // dropped outright, so a client looping on one stage costs nothing and
+    // reaches nobody. Genuine changes are free only up to a small allowance;
+    // past that a seat pays the ordinary message budget like any other frame.
+    let freeStageChange = false
+    if (event?.type === 'stage') {
+      if (usageRow?.stage === event.stage) return
+      freeStageChange = seatMayAnnounceStage(usageRow?.stage_changes ?? 0)
+    }
+
+    if (!freeStageChange) {
+      if (!seatMaySend(usageRow?.messages ?? 0)) {
         socket.close(1008, 'Message limit reached')
         return
       }
       this.state.storage.sql.exec(
         'UPDATE seat_usage SET messages = messages + 1 WHERE seat_id = ?',
         seatId,
+      )
+    }
+    if (event?.type === 'stage') {
+      this.state.storage.sql.exec(
+        'UPDATE seat_usage SET stage = ?, stage_changes = stage_changes + 1 WHERE seat_id = ?',
+        event.stage, seatId,
       )
     }
     if (!event) {
