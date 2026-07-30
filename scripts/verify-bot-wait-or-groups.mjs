@@ -14,7 +14,11 @@ import {
   requiredBotsSatisfied,
 } from './lib/bot-wait-config.mjs';
 import { isBotNoise } from './lib/bot-noise.mjs';
-import { collectBotEvents, isCurrentBotEvent } from './lib/bot-wait-presence.mjs';
+import {
+  collectBotEvents,
+  effectiveRequiredKeys,
+  isCurrentBotEvent,
+} from './lib/bot-wait-presence.mjs';
 import {
   isCoderabbitPresenceNoise,
   isProperCoderabbitReviewBody,
@@ -35,6 +39,14 @@ assert(
   'bot presence is disabled by default',
 );
 assert(JSON.stringify(parseRequiredKeys('off')) === JSON.stringify([]), 'off disables presence');
+assert(
+  JSON.stringify(effectiveRequiredKeys([], ['coderabbit'])) === JSON.stringify([]),
+  'explicit off overrides stale per-PR wait state',
+);
+assert(
+  JSON.stringify(effectiveRequiredKeys(undefined, ['coderabbit'])) === JSON.stringify(['coderabbit']),
+  'omitted presence inherits active per-PR wait state',
+);
 assert(
   JSON.stringify(DEFAULT_REQUIRED_KEYS) === JSON.stringify(parseRequiredKeys(DEFAULT_REQUIRED_SPEC)),
   'DEFAULT_REQUIRED_SPEC matches DEFAULT_REQUIRED_KEYS',

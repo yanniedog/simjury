@@ -134,10 +134,20 @@ export function isCurrentBotEvent(event, anchorMs, headSha) {
   return new Date(event.at).getTime() >= anchorMs;
 }
 
+/**
+ * Resolve reviewer-presence slots without letting stale wait state override an
+ * explicit empty list. `[]` means the caller deliberately disabled presence;
+ * only an omitted value may inherit a prior wait configuration.
+ */
+export function effectiveRequiredKeys(explicitKeys, stateKeys) {
+  if (Array.isArray(explicitKeys)) return [...explicitKeys];
+  if (Array.isArray(stateKeys) && stateKeys.length) return [...stateKeys];
+  return resolveRequiredKeys();
+}
+
 export function checkRequiredBotsOnPr(owner, name, prNumber, { requiredKeys, anchorIso, repoRoot } = {}) {
   const state = readBotWaitState(prNumber, repoRoot);
-  const keys =
-    requiredKeys?.length ? requiredKeys : state?.requiredKeys?.length ? state.requiredKeys : resolveRequiredKeys();
+  const keys = effectiveRequiredKeys(requiredKeys, state?.requiredKeys);
   const knownBots = allKnownBotLogins(keys);
   const data = ghGraphql(owner, name, prNumber);
   const pr = data?.data?.repository?.pullRequest;
