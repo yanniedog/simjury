@@ -23,7 +23,17 @@ rows written per day. A waitlist writes one row per signup and reads the table
 only when an update is sent, so this stays inside the free tier indefinitely.
 No paid Cloudflare product is introduced.
 
-## Operator setup (one time)
+## Operator setup — already done
+
+The database exists (`simjury-waitlist`, id in `wrangler.json`), the schema is
+applied, and `WAITLIST_SALT` is set. Nothing below needs running again unless
+the database is recreated. It is recorded so the setup is reproducible.
+
+The salt is a Worker secret and cannot be read back. Losing it is not a data
+loss: only the per-IP fingerprints rotate, which resets the daily cap and
+leaves every stored address and consent record untouched.
+
+## How it was set up
 
 ```powershell
 cd site
