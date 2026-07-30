@@ -21,9 +21,11 @@ permissions:
   pull-requests: read
 
 concurrency:
-  group: bot-feedback-gate-${{ github.event.pull_request.number || inputs.pr_number || github.run_id }}-${{ github.event.pull_request.head.sha || github.sha }}
+  # Serialize each PR's feedback events. Cancelling a sibling review/reply run
+  # can leave CANCELLED selected as the required context even when another run
+  # passed, so let the PR-only group finish in order.
+  group: bot-feedback-gate-${{ github.event.pull_request.number || inputs.pr_number || github.run_id }}
   cancel-in-progress: false
-  queue: max
 
 jobs:
   bot-feedback-gate:

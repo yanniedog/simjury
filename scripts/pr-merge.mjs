@@ -60,7 +60,12 @@ Prefer: npm run pr:arm-and-park -- --pr <n> (arms merge + classifies; no watch l
   }
 
   const syncBranch = !args.noSync && !args.enableOnly;
-  const r = progressPullRequest(args.pr, { dryRun: args.dryRun, syncBranch, enableAuto: true });
+  const r = progressPullRequest(args.pr, {
+    dryRun: args.dryRun,
+    syncBranch,
+    enableAuto: true,
+    allowDraftPromotion: true,
+  });
   if (r.sync && syncBranch) console.log(`sync ${r.sync.action}: ${r.sync.detail}`);
   if (r.autoMerge) console.log(`auto-merge ${r.autoMerge.action}: ${r.autoMerge.detail}`);
   if (r.blocked) process.exit(r.sync?.exitCode === 2 ? 2 : 1);

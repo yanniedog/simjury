@@ -2,11 +2,17 @@
 /**
  * Unit tests for actionable-vs-waiting classification (no network).
  */
+import { readFileSync } from 'node:fs';
 import {
   classifyGateFailure,
+  classifyProgressionOutcome,
   classifyTerminalPrState,
   classifyWorkMode,
 } from './lib/pr-arm-and-park-lib.mjs';
+import {
+  draftAutoMergeDecision,
+  enableSquashAutoMerge,
+} from './lib/pr-branch-sync.mjs';
 import {
   fetchRequiredCi,
   gateCiRequired,
@@ -78,18 +84,103 @@ assert(closed.terminal && closed.mode === 'actionable', 'closed without merge = 
 const openDraft = classifyTerminalPrState({ state: 'OPEN', isDraft: true });
 assert(!openDraft.terminal && openDraft.mode === null, 'open draft remains non-terminal');
 
+assert(
+  !draftAutoMergeDecision({ isDraft: true }).allowed,
+  'background progression cannot publish a draft',
+);
+assert(
+  draftAutoMergeDecision({ isDraft: true }, { allowDraftPromotion: true }).promote,
+  'explicit arm/merge may publish a draft',
+);
+
+let backgroundMarkedReady = false;
+const backgroundDraft = enableSquashAutoMerge(277, {
+  fetchMeta: () => ({ state: 'OPEN', isDraft: true }),
+  markReady: () => {
+    backgroundMarkedReady = true;
+    return { ok: true, exitCode: 0 };
+  },
+  merge: () => ({ ok: true, exitCode: 0 }),
+});
+assert(
+  !backgroundDraft.ok && !backgroundMarkedReady,
+  'default auto-merge path leaves drafts unpublished',
+);
+assert(
+  /allowDraftPromotion:\s*!skipArm/.test(readFileSync('scripts/lib/pr-arm-and-park-lib.mjs', 'utf8')),
+  'arm-and-park explicitly opts into draft publication',
+);
+assert(
+  /allowDraftPromotion:\s*true/.test(readFileSync('scripts/pr-merge.mjs', 'utf8')),
+  'merge command explicitly opts into draft publication',
+);
+
+const readyFailure = enableSquashAutoMerge(277, {
+  allowDraftPromotion: true,
+  fetchMeta: () => ({ state: 'OPEN', isDraft: true }),
+  markReady: () => ({ ok: false, stdout: '', stderr: '', exitCode: 7 }),
+  merge: () => {
+    throw new Error('merge must not run after ready failure');
+  },
+});
+assert(
+  !readyFailure.ok &&
+    readyFailure.hardError === true &&
+    /gh pr ready exited 7/.test(readyFailure.detail),
+  'ready failure is a diagnostic hard error',
+);
+
+const terminalWins = classifyProgressionOutcome(
+  { state: 'MERGED' },
+  { ok: false, blocked: true },
+  new Error('local progression failed'),
+);
+assert(terminalWins.kind === 'merged', 'terminal merge wins over progression error and block');
+
+const progressionFailure = classifyProgressionOutcome(
+  { state: 'OPEN' },
+  { ok: false, autoMerge: { detail: 'ready failed' } },
+);
+assert(
+  progressionFailure.kind === 'error' && progressionFailure.detail === 'ready failed',
+  'non-terminal progression failure remains a hard error',
+);
+
 for (const message of ['no checks reported', 'no required checks reported']) {
   const ci = fetchRequiredCi(276, () => ({ status: 1, stdout: '', stderr: message }));
-  assert(ci.ok && ci.pending && !ci.failed, `${message} = pending`);
+  assert(ci.ok && ci.pending && ci.unreported && !ci.failed, `${message} = pending`);
   const gate = gateCiRequired(276, () => ci);
   assert(
-    !gate.pass && classifyGateFailure(gate) === 'waiting',
+    !gate.pass && gate.pending && gate.unreported && classifyGateFailure(gate) === 'waiting',
     `${message} gate = waiting`,
   );
 }
 
 const emptyChecks = fetchRequiredCi(276, () => ({ status: 0, stdout: '[]', stderr: '' }));
-assert(emptyChecks.ok && emptyChecks.pending, 'empty required-check list = pending');
+assert(
+  emptyChecks.ok && emptyChecks.pending && emptyChecks.unreported,
+  'empty required-check list = structurally pending',
+);
+assert(
+  classifyGateFailure({
+    id: 'ci-required',
+    pass: false,
+    pending: true,
+    unreported: true,
+    detail: 'checks absent',
+  }) === 'waiting',
+  'unreported required checks classify structurally as waiting',
+);
+
+const feedbackWorkflow = readFileSync('.github/workflows/pr-bot-feedback-check.yml', 'utf8');
+const feedbackGroup = feedbackWorkflow.match(/^\s*group:\s*(.+)$/m)?.[1] || '';
+assert(/pull_request\.number/.test(feedbackGroup), 'feedback concurrency is grouped by PR');
+assert(!/head\.sha|github\.sha/.test(feedbackGroup), 'feedback concurrency excludes head SHA');
+assert(
+  /^\s*cancel-in-progress:\s*false\s*$/m.test(feedbackWorkflow),
+  'feedback events serialize without cancelled required contexts',
+);
+assert(!/^\s*queue:/m.test(feedbackWorkflow), 'feedback concurrency has no queue cap');
 
 if (failed) {
   console.error(`\n${failed} assertion(s) failed`);

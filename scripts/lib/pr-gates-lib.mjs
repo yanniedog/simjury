@@ -125,7 +125,14 @@ export function fetchRequiredCi(prNumber, spawnGh = spawnSync) {
       const raw = JSON.parse(stdout);
       const checks = Array.isArray(raw) ? preferLatestCheck(raw) : [];
       if (!checks.length) {
-        return { ok: true, pending: true, failed: false, failedNames: [], checks };
+        return {
+          ok: true,
+          pending: true,
+          unreported: true,
+          failed: false,
+          failedNames: [],
+          checks,
+        };
       }
       let pending = false;
       let failed = false;
@@ -143,22 +150,43 @@ export function fetchRequiredCi(prNumber, spawnGh = spawnSync) {
           failedNames.push(c.name);
         }
       }
-      return { ok: true, pending, failed, failedNames, checks };
+      return { ok: true, pending, unreported: false, failed, failedNames, checks };
     } catch {
       // fall through to status-based handling
     }
   }
   if (r.status === 8) {
-    return { ok: true, pending: true, failed: false, failedNames: [], checks: [] };
+    return {
+      ok: true,
+      pending: true,
+      unreported: true,
+      failed: false,
+      failedNames: [],
+      checks: [],
+    };
   }
   if (r.status !== 0) {
     const msg = (r.stderr || '').trim() || `gh pr checks exit ${r.status}`;
     if (/no checks reported/i.test(msg) || /no required checks reported/i.test(msg)) {
-      return { ok: true, pending: true, failed: false, failedNames: [], checks: [] };
+      return {
+        ok: true,
+        pending: true,
+        unreported: true,
+        failed: false,
+        failedNames: [],
+        checks: [],
+      };
     }
     return { ok: false, error: msg };
   }
-  return { ok: true, pending: true, failed: false, failedNames: [], checks: [] };
+  return {
+    ok: true,
+    pending: true,
+    unreported: true,
+    failed: false,
+    failedNames: [],
+    checks: [],
+  };
 }
 
 export function fetchNamedChecks(prNumber, names) {
@@ -220,7 +248,9 @@ export function gateCiRequired(prNumber, fetchCi = fetchRequiredCi) {
     return {
       id: 'ci-required',
       pass: false,
-      detail: 'Required checks still pending',
+      pending: true,
+      unreported: ci.unreported === true,
+      detail: ci.unreported ? 'Required checks not reported yet' : 'Required checks still pending',
       action: 'Park — npm run pr:arm-and-park -- --pr <n> (do not --watch in agents)',
     };
   }

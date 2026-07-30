@@ -32,6 +32,11 @@ Gemini, and local Qwen output remain advisory, but every substantive finding
 still needs a reply and resolution. Automatic Qwen and bot-presence workflows
 are disabled.
 
+The feedback workflow serializes events in one PR-only concurrency group. It
+does not cancel in-progress sibling runs because a cancelled review/reply event
+can become GitHub's selected required context even when another run passed. The
+group must not include the head SHA or a non-standard queue cap.
+
 ## Operator setup (one-time)
 
 ```bash
@@ -55,6 +60,9 @@ See also `WORKFLOW.md` and `.github/MERGE_POLICY.md`.
 4. Run `npm run pr:arm-and-park -- --pr <n>` (single shot) — **never** `--watch` in agents
 5. On exit 2, park; on exit 3, fix feedback/CI, push, and re-arm
 6. Squash auto-merge is armed by arm-and-park; do not babysit-poll until merge
+
+Only explicit arm/merge commands may promote a draft. Background helper calls
+default to leaving drafts unpublished, and a ready failure is a hard error.
 
 **Agents must never wait for the user to ask before addressing review feedback.**
 **Agents must never sleep-poll gates** — use `pr:arm-and-park`.
