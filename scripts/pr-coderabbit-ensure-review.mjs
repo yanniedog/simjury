@@ -15,6 +15,7 @@
  *   node scripts/pr-coderabbit-review-recovery.mjs …   # alias entry
  */
 import { spawnSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 import {
   CR_ENSURE_MARKER,
   CR_OPEN_RETRY_INTERVAL_MS,
@@ -128,13 +129,32 @@ function listCandidatePrs({ lookbackDays, maxPrs, pr, includeOpen, includeClosed
   return [...byNum.values()];
 }
 
+/**
+ * Is this CodeRabbit review of the code as it stands now?
+ *
+ * The presence gate accepts a review only when it names the current head SHA,
+ * so recovery has to ask the same question. Judging on presence alone meant a
+ * force-push left the gate waiting for a review of the new head while this
+ * script reported "already present" and never re-requested it — the PR simply
+ * sat until the 220-minute timeout.
+ *
+ * A review with no commit id is treated as current: that is how the data looked
+ * before this check existed, and refusing it would re-request on every run.
+ */
+export function reviewCoversHead(reviews, headSha) {
+  if (!headSha) return true;
+  const withSha = (reviews || []).filter((review) => review?.commit?.oid || review?.commit_id);
+  if (withSha.length === 0) return true;
+  return withSha.some((review) => (review.commit?.oid || review.commit_id) === headSha);
+}
+
 function loadActivity(prNumber, owner, name) {
   const view = ghJson([
     'pr',
     'view',
     String(prNumber),
     '--json',
-    'comments,reviews,state,mergedAt,closedAt,title,author',
+    'comments,reviews,state,mergedAt,closedAt,title,author,headRefOid',
   ]);
   let inline = [];
   try {
@@ -214,13 +234,20 @@ function processOne(row, { dryRun, owner, name }) {
   };
   const open = String(meta.state || '').toUpperCase() === 'OPEN' && !meta.merged;
 
-  if (activity.hasProperReview) {
+  const coderabbitReviews = (view?.reviews || []).filter((review) =>
+    String(review?.author?.login || '').toLowerCase().startsWith('coderabbit'));
+  const staleHead =
+    activity.hasProperReview && !reviewCoversHead(coderabbitReviews, view?.headRefOid);
+
+  if (activity.hasProperReview && !staleHead) {
     result.skipped = 'proper CodeRabbit review already present';
     return result;
   }
 
   if (open) {
-    if (!needsOpenEnsure(activity)) {
+    // A review of a superseded head is not a review of this code, so it needs
+    // re-requesting even though `activity` counts it as proper.
+    if (!staleHead && !needsOpenEnsure(activity)) {
       result.skipped = 'open PR does not need ensure';
       return result;
     }
@@ -229,7 +256,9 @@ function processOne(row, { dryRun, owner, name }) {
       result.skipped = `rate-limit wait not due (${Math.ceil(waitMs / 1000)}s remaining; available≈${limit.waitMinutes}m)`;
       return result;
     }
-    result.reason = activity.hasRateLimitOnly
+    result.reason = staleHead
+      ? 'open-review-predates-head'
+      : activity.hasRateLimitOnly
       ? 'open-rate-limit-due'
       : activity.hasCommandAckOnly
         ? 'open-ack-only'
@@ -386,4 +415,8 @@ Schedule: .github/workflows/pr-coderabbit-ensure-review.yml (every 15 minutes)`)
   process.exit(failed.length ? 1 : 0);
 }
 
-main();
+// Only run as a CLI, so reviewCoversHead can be unit-tested by importing this
+// module without it reaching for the network.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main();
+}

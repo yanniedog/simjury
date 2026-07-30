@@ -3,6 +3,7 @@
  * Unit tests for CodeRabbit proper-review classifier + ensure helpers.
  * Run: npm run pr:coderabbit-review-recovery:verify
  */
+import { reviewCoversHead } from './pr-coderabbit-ensure-review.mjs';
 import {
   canPostRecoveryTrigger,
   classifyCoderabbitActivity,
@@ -125,6 +126,24 @@ assert(
 );
 assert(!canPostRecoveryTrigger('2026-07-29T03:00:00Z', Date.parse('2026-07-29T03:30:00Z')), 'within hour blocked');
 assert(canPostRecoveryTrigger('2026-07-29T03:00:00Z', Date.parse('2026-07-29T04:00:00Z')), 'after hour allowed');
+
+
+// --- Head freshness -------------------------------------------------------
+// The presence gate accepts a review only when it names the current head SHA,
+// so recovery must ask the same question. Judging on presence alone meant a
+// force-push left the gate waiting for a review of the new head while this
+// script reported "already present" and never re-requested one — observed on
+// PR #273, where both bot reviews sat on the superseded head c020ab6.
+assert(reviewCoversHead([{ commit: { oid: 'abc' } }], 'abc'), 'a review of the head is current');
+assert(!reviewCoversHead([{ commit: { oid: 'old' } }], 'abc'), 'a review of a superseded head is stale');
+assert(
+  reviewCoversHead([{ commit: { oid: 'old' } }, { commit: { oid: 'abc' } }], 'abc'),
+  'any review naming the head counts',
+);
+assert(reviewCoversHead([{ commit_id: 'abc' }], 'abc'), 'the legacy commit_id field is read too');
+assert(reviewCoversHead([{}], 'abc'), 'reviews with no sha count as current, not stale');
+assert(reviewCoversHead([], 'abc'), 'no reviews at all is not a stale-head problem');
+assert(reviewCoversHead([{ commit: { oid: 'old' } }], null), 'an unknown head does not force a re-request');
 
 if (failed) {
   console.error(`\n${failed} assertion(s) failed`);
