@@ -11,6 +11,7 @@
  *   node scripts/pr-bot-close-guard.mjs --pr <n> [--reopen] [--dry-run] [--json]
  */
 import { spawnSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 import {
   DEFAULT_REQUIRED_SPEC,
   resolveRequiredKeys,
@@ -55,6 +56,18 @@ function ghJson(args) {
   }
   const text = (r.stdout || '').trim();
   return text ? JSON.parse(text) : null;
+}
+
+/**
+ * Does this PR change nothing at all relative to its base?
+ *
+ * Requires all three counters to be present and zero. A missing field means the
+ * question was not answered, not that the answer is "empty" — treating an
+ * absent count as zero would let an API hiccup wave a real PR through.
+ */
+export function isEmptyDiff(meta) {
+  const counts = [meta?.additions, meta?.deletions, meta?.changedFiles];
+  return counts.every((n) => n === 0);
 }
 
 function reopenPr(prNumber, dryRun) {
@@ -125,7 +138,7 @@ Unresolved substantive review threads also block closure.`);
       'view',
       String(prNumber),
       '--json',
-      'number,title,state,mergedAt,closedAt,author',
+      'number,title,state,mergedAt,closedAt,author,additions,deletions,changedFiles',
     ]);
   } catch (e) {
     console.error(`pr-bot-close-guard: ${e.message}`);
@@ -156,6 +169,19 @@ Unresolved substantive review threads also block closure.`);
     result.detail = `gate-exempt (${exempt})`;
     if (args.json) console.log(JSON.stringify(result, null, 2));
     else console.log(`pr-bot-close-guard: PR #${prNumber} gate-exempt (${exempt}) — ok`);
+    process.exit(0);
+  }
+
+  // A PR that changes nothing cannot launder anything past review, so closing
+  // it is never an evasion. This happens routinely in a dependency chain: when
+  // a parent lands carrying a child's commit as an ancestor, the child rebases
+  // to empty. PR #263 was closed for exactly that reason and the guard reopened
+  // it, leaving a permanently unmergeable PR that no bot could ever satisfy.
+  if (isEmptyDiff(meta)) {
+    result.ok = true;
+    result.detail = 'empty diff — nothing to review';
+    if (args.json) console.log(JSON.stringify(result, null, 2));
+    else console.log(`pr-bot-close-guard: PR #${prNumber} changes nothing — ok`);
     process.exit(0);
   }
 
@@ -236,4 +262,8 @@ Unresolved substantive review threads also block closure.`);
   process.exit(1);
 }
 
-main();
+// Only run as a CLI, so the helpers above can be unit-tested by importing this
+// module without it exiting on a missing --pr.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main();
+}

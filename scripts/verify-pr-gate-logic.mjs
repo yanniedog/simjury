@@ -11,6 +11,7 @@ import {
 } from './lib/pr-gate-exempt.mjs';
 import { isKnownBotLogin, loginMatchesRequiredKey } from './lib/bot-wait-config.mjs';
 import { isBotNoise } from './lib/bot-noise.mjs';
+import { isEmptyDiff } from './pr-bot-close-guard.mjs';
 
 const BOT = { login: 'gemini-code-assist[bot]', __typename: 'Bot' };
 const HUMAN = { login: 'yanniedog', __typename: 'User' };
@@ -76,6 +77,25 @@ if (isKnownBotLogin('gemini-code-assist[bot]')) {
 }
 if (!isBotNoise('Review limit reached. Next review available in 45 minutes.')) {
   failures.push('vendor rate-limit notices should still be noise');
+}
+
+// A PR that changes nothing cannot bypass review, so the close guard must let
+// it stay closed. Regression cover for PR #263: it rebased to empty once #267
+// landed carrying its commit, and the guard reopened it into a permanently
+// unmergeable state that no bot could ever satisfy.
+if (!isEmptyDiff({ additions: 0, deletions: 0, changedFiles: 0 })) {
+  failures.push('an all-zero diff should count as empty');
+}
+for (const [label, meta] of [
+  ['a real PR', { additions: 22, deletions: 13, changedFiles: 1 }],
+  ['a deletion-only PR', { additions: 0, deletions: 9, changedFiles: 1 }],
+  ['missing counters', {}],
+  ['absent metadata', undefined],
+  ['null counters', { additions: null, deletions: null, changedFiles: null }],
+]) {
+  // Absent counts mean the question went unanswered, not that the answer is
+  // "empty" — an API hiccup must never wave a real PR past the close guard.
+  if (isEmptyDiff(meta)) failures.push(`${label} must not count as an empty diff`);
 }
 
 if (failures.length) {
