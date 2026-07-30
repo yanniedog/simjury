@@ -31,16 +31,24 @@ export function RoomRead({
   profiles: readonly JurorProfile[]
 }) {
   const byId = new Map(profiles.map((profile) => [profile.id, profile]))
-  // Lead with whoever moved most, so the player sees what their technique won
-  // or cost before the detail.
-  const notable = [...receptions]
-    .filter((item) => item.reception !== 'guarded')
-    .sort(
-      (a, b) =>
-        ORDER[a.reception] - ORDER[b.reception]
-        || (byId.get(a.jurorId)?.seat ?? 0) - (byId.get(b.jurorId)?.seat ?? 0),
-    )
-    .slice(0, 4)
+  const seat = (item: JurorReception) => byId.get(item.jurorId)?.seat ?? 0
+  const worthShowing = receptions.filter((item) => item.reception !== 'guarded')
+
+  // A backfire is the whole point of the read: it is the cost of the technique
+  // the player just chose. Ordering purely by reception buried it — a challenge
+  // that landed well with four jurors and blew up on its target pushed the one
+  // item carrying "Took it personally" past the four-entry cut, leaving a
+  // summary that said someone closed off and no way to see who or why.
+  // Backfires come first, and the rest fill the remaining slots.
+  const backfired = worthShowing
+    .filter((item) => item.backfired)
+    .sort((a, b) => seat(a) - seat(b))
+  // Lead the rest with whoever moved most, so the player sees what the
+  // technique won before the detail.
+  const rest = worthShowing
+    .filter((item) => !item.backfired)
+    .sort((a, b) => ORDER[a.reception] - ORDER[b.reception] || seat(a) - seat(b))
+  const notable = [...backfired, ...rest].slice(0, 4)
 
   return (
     <section role="status" className="room-read" aria-label="How the room received that">

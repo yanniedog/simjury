@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { JurorProfile } from '../../engine/jurorProfile'
 import type { JurorRelation } from '../../engine/persuasion'
 import type { PlayerClaim, PlayerMove } from '../../engine/persuasion'
@@ -94,6 +94,16 @@ export function DeliberationComposer({
       ),
     [trial.beats, beat],
   )
+
+  // Changing the primary recollection recomputes the options, so a support
+  // chosen against the old one can silently stop sharing a theme — or become
+  // the primary itself. The select would still hold it, the form would still
+  // submit it, and the engine would score the chain as unsupported and dock the
+  // appeal 0.7x for a mistake the player cannot see. Drop it instead.
+  useEffect(() => {
+    if (!supportBeatId) return
+    if (!supportOptions.some((option) => option.id === supportBeatId)) onSupportChange('')
+  }, [supportBeatId, supportOptions, onSupportChange])
 
   const memory = memoryLabel(trial, beat.id)
 

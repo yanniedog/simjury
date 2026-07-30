@@ -3,7 +3,7 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { jurorProfiles } from '../../engine/jurorProfile'
-import { applyAppeal, startPersuasion } from '../../engine/persuasion'
+import { applyAppeal, startPersuasion, type JurorReception } from '../../engine/persuasion'
 import { makeDocketCase } from '../../lib/v2/fixtures'
 import { ensureNpcNotes } from '../../lib/jurorNotes'
 import { MOVE_LABEL } from '../../lib/moveCopy'
@@ -177,5 +177,60 @@ describe('RoomRead', () => {
 
     if (owned.length > 0) expect(markup).toContain('Their subject')
     expect(markup).not.toMatch(LEAK)
+  })
+})
+
+describe('RoomRead keeps the cost of a technique visible', () => {
+  const profiles = jurorProfiles(makeDocketCase().jury.jurors)
+
+  const base: JurorReception = {
+    jurorId: '',
+    reception: 'open',
+    tell: 'Leans in.',
+    multiplier: 1,
+    rapport: 0,
+    rapportDelta: 0,
+    ownSubject: false,
+    discounts: false,
+    backfired: false,
+  }
+
+  function reception(index: number, over: Partial<JurorReception> = {}): JurorReception {
+    return { ...base, jurorId: profiles[index].id, ...over }
+  }
+
+  it('shows a backfire even when four other jurors moved further', () => {
+    // The read is capped at four entries. Ordering purely by reception put every
+    // positive response ahead of the one that blew up, so the player was told
+    // someone closed off and never shown who or why.
+    const html = renderToStaticMarkup(
+      <RoomRead
+        summary="The room split."
+        profiles={profiles}
+        receptions={[
+          reception(0),
+          reception(1),
+          reception(2),
+          reception(3),
+          reception(4, { reception: 'shut', tell: 'Folds their arms.', backfired: true }),
+        ]}
+      />,
+    )
+    expect(html).toContain('Took it personally')
+    expect(html).toContain('Folds their arms.')
+  })
+
+  it('still leads with the strongest reception when nothing backfired', () => {
+    const html = renderToStaticMarkup(
+      <RoomRead
+        summary="It landed."
+        profiles={profiles}
+        receptions={[
+          reception(0, { reception: 'resistant', tell: 'Pushes back.' }),
+          reception(1, { reception: 'open', tell: 'Leans in.' }),
+        ]}
+      />,
+    )
+    expect(html.indexOf('Leans in.')).toBeLessThan(html.indexOf('Pushes back.'))
   })
 })
