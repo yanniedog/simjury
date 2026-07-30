@@ -51,7 +51,7 @@ reviews:
         and fiction-safety (real names of people/companies/brands/places in
         player-visible text). Mention clear maintainability risks. Ignore pure
         style and optional refactors.
-    - path: "site/public/cases/**"
+    - path: "site/app/docket/**"
       instructions: >-
         Flag fiction/case integrity issues (e.g. real-name leaks) and material
         contradictions that would confuse players. Do not nitpick wording polish.
