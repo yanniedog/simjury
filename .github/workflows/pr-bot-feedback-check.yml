@@ -25,9 +25,12 @@ concurrency:
 
 jobs:
   bot-feedback-gate:
+    # A merged PR cannot be gated, but bots keep posting review comments for
+    # minutes afterwards. Each one re-triggered this workflow, which then failed
+    # on threads nobody can resolve on a closed PR — PR #265 alone produced six
+    # such red runs after it landed. Only gate PRs that are still open.
     if: >-
-      github.event.pull_request != null
-      || github.event.review != null
+      (github.event.pull_request != null && github.event.pull_request.state == 'open')
       || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 10

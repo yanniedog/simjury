@@ -42,8 +42,14 @@ Close protection:
   - pr-bot-close-guard      reopens unmerged PRs closed with outstanding bot obligations
 
 Optional (not in DEFAULT_REQUIRED_KEYS):
-  - gemini-code-assist    consumer reviews are sunset — noise only
-  - claude[bot]           only when anthropics/claude-code-action workflow is installed
+  - Automated Gemini Code Review   API-keyed workflow (GEMINI_API_KEY); advisory,
+                                   continue-on-error so free-tier 429s never block
+  - claude[bot]                    only when anthropics/claude-code-action workflow is installed
+
+Removed from the fleet:
+  - gemini-code-assist    the consumer Code Assist app is sunset and posts only a
+                          caution banner. Uninstall it from the org so it stops
+                          commenting: https://github.com/settings/installations
 
 CodeRabbit (mandatory presence slot):
   - Install app: https://github.com/apps/coderabbitai/installations/new (All repositories)

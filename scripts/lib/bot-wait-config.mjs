@@ -15,12 +15,13 @@
 /** Canonical env/CLI string for the default required slots. */
 export const DEFAULT_REQUIRED_SPEC = 'sourcery|codex|cursor,coderabbit';
 export const BOT_ALIASES = {
-  gemini: [
-    'gemini-code-assist',
-    'gemini-code-assist[bot]',
-    'google-github-actions-bot[bot]',
-    'google-github-actions[bot]',
-  ],
+  /**
+   * Gemini reviews arrive from the API-keyed `Automated Gemini Code Review`
+   * workflow, which posts as the Actions bot. The consumer Code Assist GitHub
+   * App is **not** listed: it was sunset and now posts only a caution banner,
+   * so it is not a reviewer and its comments are not bot events at all.
+   */
+  gemini: ['google-github-actions-bot[bot]', 'google-github-actions[bot]'],
   codex: ['chatgpt-codex-connector', 'chatgpt-codex-connector[bot]'],
   sourcery: ['sourcery-ai', 'sourcery-ai[bot]'],
   /** Cursor Automation / Bugbot-style reviews (login is often `cursor` or `cursor[bot]`). */
@@ -34,7 +35,8 @@ export const BOT_ALIASES = {
  * Default merge-protection slots:
  *   1. sourcery|codex|cursor — at least one peer review bot
  *   2. coderabbit — mandatory (CodeRabbit cannot be skipped via OR)
- * Gemini remains optional (consumer Code Assist is sunset).
+ * Gemini is advisory: its workflow is `continue-on-error` and free-tier 429s
+ * must never block merge.
  */
 export const DEFAULT_REQUIRED_KEYS = ['sourcery|codex|cursor', 'coderabbit'];
 
@@ -43,8 +45,6 @@ export const OPTIONAL_BOT_LOGINS = [
   'claude-code[bot]',
   'copilot-pull-request-reviewer[bot]',
   'greptile-apps[bot]',
-  'gemini-code-assist[bot]',
-  'gemini-code-assist',
 ];
 
 /**
