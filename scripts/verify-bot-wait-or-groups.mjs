@@ -10,9 +10,11 @@ import {
   loginMatchesRequiredKey,
   missingRequiredKeys,
   parseRequiredKeys,
+  isKnownBotLogin,
   requiredBotsSatisfied,
 } from './lib/bot-wait-config.mjs';
 import { isBotNoise } from './lib/bot-noise.mjs';
+import { collectBotEvents, isCurrentBotEvent } from './lib/bot-wait-presence.mjs';
 import {
   isCoderabbitPresenceNoise,
   isProperCoderabbitReviewBody,
@@ -82,11 +84,13 @@ assert(
 const formatted = formatRequiredKeys(['sourcery|cursor']);
 assert(/OR/.test(formatted) && /sourcery/.test(formatted) && /cursor/.test(formatted), 'format shows OR');
 
+// The sunset consumer Code Assist app is no longer a recognised bot at all, so
+// its caution banner never becomes a bot event and needs no noise special case.
+assert(!isKnownBotLogin('gemini-code-assist[bot]'), 'sunset Code Assist app is not a reviewer');
+assert(!isKnownBotLogin('gemini-code-assist'), 'sunset Code Assist app is not a reviewer (bare login)');
 assert(
-  isBotNoise(
-    '> [!CAUTION]\n> The consumer version of Gemini Code Assist on GitHub has been sunset. All code review activity has officially ceased.\n',
-  ),
-  'gemini sunset is noise',
+  isKnownBotLogin('google-github-actions-bot[bot]'),
+  'the API-keyed Gemini review workflow is still recognised',
 );
 assert(isBotNoise('Review limit reached. Next review available in 45 minutes.'), 'CR rate-limit is noise');
 assert(isBotNoise('You are rate limited by coderabbit.ai'), 'CR rate-limit html marker is noise');
@@ -144,6 +148,75 @@ assert(
     'High: null deref in parser when list is empty — please add a guard.',
   ),
   'non-CR bots still use ordinary noise rules',
+);
+
+// --- Review freshness: a review of the current head is never stale ----------
+// Regression cover for the deadlock on PR #263. Sourcery reviewed head SHA
+// cb8eebf at 12:52:06; marking the PR ready for review then advanced the
+// anchor to 12:54:01, so the timestamp filter discarded a current review and
+// the gate waited out its full 220-minute timeout for one that would never be
+// repeated — Sourcery does not re-review a SHA it has already reviewed.
+const HEAD = 'cb8eebf0a27ef8b108ace32cb7f2107536650a6c';
+const anchorAfterReview = new Date('2026-07-30T12:54:01Z').getTime();
+
+assert(
+  isCurrentBotEvent(
+    { login: 'sourcery-ai[bot]', at: '2026-07-30T12:52:06Z', sha: HEAD },
+    anchorAfterReview,
+    HEAD,
+  ),
+  'a review of the current head counts even when it predates the anchor',
+);
+assert(
+  !isCurrentBotEvent(
+    { login: 'sourcery-ai[bot]', at: '2026-07-30T12:52:06Z', sha: 'deadbeef' },
+    anchorAfterReview,
+    HEAD,
+  ),
+  'a review of a superseded SHA is still stale',
+);
+assert(
+  isCurrentBotEvent({ login: 'cursor[bot]', at: '2026-07-30T12:56:00Z', sha: null }, anchorAfterReview, HEAD),
+  'SHA-less events (comments, reactions) still use the anchor window',
+);
+assert(
+  !isCurrentBotEvent({ login: 'cursor[bot]', at: '2026-07-30T12:52:06Z', sha: null }, anchorAfterReview, HEAD),
+  'SHA-less events before the anchor remain stale',
+);
+assert(
+  !isCurrentBotEvent(
+    { login: 'sourcery-ai[bot]', at: '2026-07-30T12:52:06Z', sha: HEAD },
+    anchorAfterReview,
+    null,
+  ),
+  'an unknown head SHA falls back to the anchor rather than passing everything',
+);
+
+// End to end through the collector: the required peer slot is satisfied.
+const collected = collectBotEvents(
+  {
+    headRefOid: HEAD,
+    createdAt: '2026-07-30T12:45:00Z',
+    reviews: {
+      nodes: [
+        {
+          author: { login: 'sourcery-ai[bot]' },
+          submittedAt: '2026-07-30T12:52:06Z',
+          state: 'COMMENTED',
+          body: 'High: this drops the error path on an empty list.',
+          commit: { oid: HEAD },
+        },
+      ],
+    },
+  },
+  new Set(['sourcery-ai[bot]']),
+  '2026-07-30T12:54:01Z',
+  '2026-07-30T12:45:00Z',
+);
+assert(collected.length === 1, 'collectBotEvents keeps a current-head review past the anchor');
+assert(
+  requiredBotsSatisfied(['sourcery|codex|cursor'], collected.map((e) => e.login)),
+  'the peer-bot slot is satisfied, so the presence gate no longer deadlocks',
 );
 
 if (failed) {

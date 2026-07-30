@@ -27,7 +27,7 @@ export function resolveAnchorIso(anchorIso, fallbackIso) {
 }
 
 const COMMENTS_QUERY =
-  'query($owner:String!,$name:String!,$num:Int!){repository(owner:$owner,name:$name){pullRequest(number:$num){createdAt comments(last:100){nodes{author{login}createdAt body}}reviews(last:30){nodes{author{login}submittedAt body state}}reviewThreads(last:100){nodes{comments(last:10){nodes{author{login}createdAt body}}}}}}}';
+  'query($owner:String!,$name:String!,$num:Int!){repository(owner:$owner,name:$name){pullRequest(number:$num){createdAt headRefOid comments(last:100){nodes{author{login}createdAt body}}reviews(last:30){nodes{author{login}submittedAt body state commit{oid}}}reviewThreads(last:100){nodes{comments(last:10){nodes{author{login}createdAt body}}}}}}}';
 
 function ghGraphql(owner, name, prNumber) {
   const r = spawnSync(
@@ -73,6 +73,7 @@ function ghGraphql(owner, name, prNumber) {
  */
 export function collectBotEvents(prPayload, knownBots, anchorIso, fallbackIso) {
   const anchorMs = new Date(resolveAnchorIso(anchorIso, fallbackIso)).getTime();
+  const headSha = prPayload.headRefOid || null;
   const events = [];
   for (const c of prPayload.comments?.nodes || []) {
     if (c.author?.login && c.createdAt) {
@@ -88,6 +89,7 @@ export function collectBotEvents(prPayload, knownBots, anchorIso, fallbackIso) {
       events.push({
         login: rev.author.login,
         at: rev.submittedAt,
+        sha: rev.commit?.oid || null,
         noise: isCoderabbitPresenceNoise(rev.author.login, rev.body, {
           state: rev.state,
           kind: 'review',
@@ -108,8 +110,28 @@ export function collectBotEvents(prPayload, knownBots, anchorIso, fallbackIso) {
   }
   events.sort((a, b) => new Date(a.at) - new Date(b.at));
   return events.filter(
-    (e) => knownBots.has(e.login.toLowerCase()) && new Date(e.at).getTime() >= anchorMs,
+    (e) => knownBots.has(e.login.toLowerCase()) && isCurrentBotEvent(e, anchorMs, headSha),
   );
+}
+
+/**
+ * Is this bot event a review of the code as it stands now?
+ *
+ * The anchor is a timestamp, and timestamps date a review badly: the presence
+ * gate anchors on the PR's `updated_at`, which advances on *any* activity —
+ * including the gate's own nudge comments. That moved the goalpost past reviews
+ * the gate was waiting for. On PR #263 Sourcery reviewed the exact head SHA at
+ * 12:52:06, two `github-actions[bot]` comments then pushed `updated_at` to
+ * 12:55:10, and the gate discarded the review as stale and waited out its full
+ * 220-minute timeout for one that had already happened.
+ *
+ * A review that names the current head SHA is current by definition, so accept
+ * it whatever the clock says. Events carrying no SHA (issue comments,
+ * reactions) still fall back to the anchor window.
+ */
+export function isCurrentBotEvent(event, anchorMs, headSha) {
+  if (headSha && event?.sha && event.sha === headSha) return true;
+  return new Date(event.at).getTime() >= anchorMs;
 }
 
 export function checkRequiredBotsOnPr(owner, name, prNumber, { requiredKeys, anchorIso, repoRoot } = {}) {

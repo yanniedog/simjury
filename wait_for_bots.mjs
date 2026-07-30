@@ -30,7 +30,7 @@ const MAX_WAIT_MIN = Number(process.env.BOT_WAIT_MAX_MIN || 28);
 // otherwise a chatty bot looping on "out of credits" notices holds the cap
 // timeout open until merge gets blocked.
 const COMMENTS_QUERY =
-  'query($owner:String!,$name:String!,$num:Int!){repository(owner:$owner,name:$name){pullRequest(number:$num){reactions(last:100){nodes{user{login}content createdAt}}comments(last:100){nodes{author{login}createdAt body reactions(last:100){nodes{user{login}content createdAt}}}}reviews(last:30){nodes{author{login}submittedAt body state}}reviewThreads(last:100){nodes{comments(last:10){nodes{author{login}createdAt body}}}}}}}';
+  'query($owner:String!,$name:String!,$num:Int!){repository(owner:$owner,name:$name){pullRequest(number:$num){headRefOid reactions(last:100){nodes{user{login}content createdAt}}comments(last:100){nodes{author{login}createdAt body reactions(last:100){nodes{user{login}content createdAt}}}}reviews(last:30){nodes{author{login}submittedAt body state commit{oid}}}reviewThreads(last:100){nodes{comments(last:10){nodes{author{login}createdAt body}}}}}}}';
 
 function sh(cmd) {
   try {
@@ -154,11 +154,19 @@ function fetchBotActivity(owner, name, prNumber) {
   if (!pr) return { error: 'GraphQL: pull request not found', events: [] };
 
   const events = [];
-  const pushEvent = (login, at, body, { forceSubstantive = false, state = null, kind = 'comment' } = {}) => {
+  const pushEvent = (
+    login,
+    at,
+    body,
+    { forceSubstantive = false, state = null, kind = 'comment', sha = null } = {},
+  ) => {
     if (!login || !at) return;
     events.push({
       login,
       at,
+      // A review carries the SHA it reviewed, which dates it far more reliably
+      // than its timestamp does. See isCurrentBotEvent.
+      sha,
       // Thumbs-up = explicit no-findings; CodeRabbit needs a *proper* review body
       // (rate-limit / command-ack / walkthrough-only do not clear presence).
       noise: isCoderabbitPresenceNoise(login, body, { forceSubstantive, state, kind }),
@@ -173,7 +181,11 @@ function fetchBotActivity(owner, name, prNumber) {
     }
   }
   for (const rev of pr.reviews?.nodes || []) {
-    pushEvent(rev.author?.login, rev.submittedAt, rev.body, { state: rev.state, kind: 'review' });
+    pushEvent(rev.author?.login, rev.submittedAt, rev.body, {
+      state: rev.state,
+      kind: 'review',
+      sha: rev.commit?.oid || null,
+    });
   }
   for (const t of pr.reviewThreads?.nodes || []) {
     for (const c of t.comments?.nodes || []) {
@@ -186,7 +198,28 @@ function fetchBotActivity(owner, name, prNumber) {
     }
   }
   events.sort((a, b) => new Date(a.at) - new Date(b.at));
-  return { events };
+  return { events, headSha: pr.headRefOid || null };
+}
+
+/**
+ * Is this bot event a review of the code as it stands now?
+ *
+ * Timestamp alone is the wrong test. The anchor the gate is given is the PR's
+ * `updated_at`, which advances on *any* activity — including the presence
+ * gate's own nudge comments. That moved the goalpost past reviews the gate was
+ * waiting for and deadlocked it for the full timeout: on PR #263 Sourcery
+ * reviewed the exact head SHA at 12:52:06, then two `github-actions[bot]`
+ * comments pushed `updated_at` to 12:55:10, so the review was filtered out as
+ * "stale" and the gate waited 220 minutes for a review that had already
+ * happened and would never be repeated.
+ *
+ * A review that names the current head SHA is current by definition, whatever
+ * the clock says, so accept it directly. Events without a SHA (issue comments,
+ * reactions) still fall back to the anchor window.
+ */
+export function isCurrentBotEvent(event, anchorMs, headSha) {
+  if (headSha && event?.sha && event.sha === headSha) return true;
+  return new Date(event.at).getTime() >= anchorMs;
 }
 
 const DEFAULT_IGNORED_CHECK_NAMES = [
@@ -300,7 +333,7 @@ function evaluate({ prNumber, anchorIso, state, repo: repoIn, requiredKeys, sing
 
   const anchorMs = anchor.getTime();
   const botEventsSinceAnchor = activity.events.filter(
-    (e) => isKnownBotLogin(e.login, knownBots) && new Date(e.at).getTime() >= anchorMs,
+    (e) => isKnownBotLogin(e.login, knownBots) && isCurrentBotEvent(e, anchorMs, activity.headSha),
   );
   // Merge protection: only SUBSTANTIVE bot events satisfy required presence.
   // CodeRabbit "Review limit reached" is noise — pr-coderabbit-ensure-review

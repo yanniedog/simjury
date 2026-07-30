@@ -29,10 +29,6 @@ const QUOTA_PATTERNS = [
   // CodeRabbit command acks are not reviews.
   /\breview command invocation\b/i,
   /auto-generated reply by CodeRabbit/i,
-  // Gemini Code Assist consumer sunset (posts on every PR; not a real review).
-  /\bconsumer version of Gemini Code Assist\b/i,
-  /\bcode review activity has officially ceased\b/i,
-  /\bGemini Code Assist on GitHub has been sunset\b/i,
 ];
 
 const TRIVIAL_PATTERNS = [
