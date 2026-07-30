@@ -70,6 +70,132 @@ export function isEmptyDiff(meta) {
   return counts.every((n) => n === 0);
 }
 
+/**
+ * Has every file this PR touches already reached the base branch?
+ *
+ * `isEmptyDiff` is not enough on its own. GitHub counts additions and deletions
+ * against the **merge base**, not against the current tip, so a PR whose work
+ * landed inside another PR still reports a diff. PR #263 read `+22/-13` while
+ * its one file was byte-identical to `main`, because #267 had squash-merged a
+ * commit carrying the same change. The guard reopened it on every close.
+ *
+ * Comparing complete tree entries answers the question the counters cannot: if
+ * each changed path already has the head commit's object, mode, and type on the
+ * base branch, merging would be a no-op and there is nothing left to review.
+ *
+ * Fails closed. Callers must provide complete base and head tree lookups; an
+ * unreadable or truncated tree therefore makes the PR look un-superseded.
+ *
+ * @param {Array<{filename: string, sha: string, status: string}>} files
+ * @param {(path: string) => {state: string, sha?: string, mode?: string, type?: string}} onBase
+ * @param {(path: string) => {state: string, sha?: string, mode?: string, type?: string}} onHead
+ */
+export function filesAreSuperseded(files, onBase, onHead) {
+  if (
+    !Array.isArray(files) ||
+    files.length === 0 ||
+    typeof onBase !== 'function' ||
+    typeof onHead !== 'function'
+  ) {
+    return false;
+  }
+  return files.every((file) => {
+    if (!file?.filename) return false;
+
+    const baseEntry = onBase(file.filename);
+    const headEntry = onHead(file.filename);
+
+    if (file.status === 'removed') {
+      // Both complete trees must confirm absence. An unknown lookup must not
+      // read as "already gone".
+      return baseEntry.state === 'absent' && headEntry.state === 'absent';
+    }
+
+    // A rename also deletes the source. The destination matching is not enough:
+    // if another PR added that destination while the source still exists,
+    // merging this one would still remove it.
+    if (file.status === 'renamed') {
+      if (!file.previous_filename) return false;
+      if (
+        onBase(file.previous_filename).state !== 'absent' ||
+        onHead(file.previous_filename).state !== 'absent'
+      ) {
+        return false;
+      }
+    }
+
+    // Blob equality alone misses executable-bit, symlink, and submodule changes.
+    // Require the complete base tree entry to match the complete head entry.
+    return (
+      baseEntry.state === 'present' &&
+      headEntry.state === 'present' &&
+      Boolean(file.sha) &&
+      headEntry.sha === file.sha &&
+      baseEntry.sha === headEntry.sha &&
+      Boolean(headEntry.mode) &&
+      baseEntry.mode === headEntry.mode &&
+      Boolean(headEntry.type) &&
+      baseEntry.type === headEntry.type
+    );
+  });
+}
+
+/**
+ * Load a complete recursive Git tree for an immutable commit OID.
+ *
+ * Paths are returned by GitHub and used as exact map keys, so legal filename
+ * characters such as `?` and `#` are never interpolated into request URLs.
+ * A failed or truncated response returns null so callers fail closed.
+ */
+function treeEntriesOnRef(repo, ref) {
+  let payload;
+  try {
+    payload = ghJson(['api', `repos/${repo}/git/trees/${ref}?recursive=1`]);
+  } catch {
+    return null;
+  }
+  if (payload?.truncated || !Array.isArray(payload?.tree)) return null;
+
+  const entries = new Map();
+  for (const entry of payload.tree) {
+    if (
+      typeof entry?.path !== 'string' ||
+      !entry.sha ||
+      !entry.mode ||
+      !entry.type
+    ) {
+      return null;
+    }
+    entries.set(entry.path, {
+      state: 'present',
+      sha: entry.sha,
+      mode: entry.mode,
+      type: entry.type,
+    });
+  }
+  return (path) => entries.get(path) || { state: 'absent' };
+}
+
+/** Wire filesAreSuperseded up to immutable compare and Git-tree snapshots. */
+function prIsSuperseded(owner, name, meta) {
+  const repo = `${owner}/${name}`;
+  const base = meta?.baseRefOid;
+  const head = meta?.headRefOid;
+  if (!base || !head) return false;
+  let files;
+  try {
+    files = ghJson(['api', `repos/${repo}/compare/${base}...${head}`, '--jq', '.files']);
+  } catch {
+    return false;
+  }
+  // A PR this size is not the superseded-chain-link case this exists for.
+  if (!Array.isArray(files) || files.length > 40) return false;
+  const onBase = treeEntriesOnRef(repo, base);
+  const onHead = treeEntriesOnRef(repo, head);
+  if (!onBase || !onHead) return false;
+  return filesAreSuperseded(files, onBase, onHead);
+}
+
 function reopenPr(prNumber, dryRun) {
   if (dryRun) {
     console.log(`[dry-run] would reopen PR #${prNumber}`);
@@ -138,7 +264,7 @@ Unresolved substantive review threads also block closure.`);
       'view',
       String(prNumber),
       '--json',
-      'number,title,state,mergedAt,closedAt,author,additions,deletions,changedFiles',
+      'number,title,state,mergedAt,closedAt,author,additions,deletions,changedFiles,baseRefName,baseRefOid,headRefOid',
     ]);
   } catch (e) {
     console.error(`pr-bot-close-guard: ${e.message}`);
@@ -177,11 +303,11 @@ Unresolved substantive review threads also block closure.`);
   // a parent lands carrying a child's commit as an ancestor, the child rebases
   // to empty. PR #263 was closed for exactly that reason and the guard reopened
   // it, leaving a permanently unmergeable PR that no bot could ever satisfy.
-  if (isEmptyDiff(meta)) {
+  if (isEmptyDiff(meta) || prIsSuperseded(owner, name, meta)) {
     result.ok = true;
-    result.detail = 'empty diff — nothing to review';
+    result.detail = 'nothing left to review — the base already has this content';
     if (args.json) console.log(JSON.stringify(result, null, 2));
-    else console.log(`pr-bot-close-guard: PR #${prNumber} changes nothing — ok`);
+    else console.log(`pr-bot-close-guard: PR #${prNumber} adds nothing to ${meta.baseRefName} — ok`);
     process.exit(0);
   }
 
