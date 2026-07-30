@@ -79,31 +79,36 @@ export function isEmptyDiff(meta) {
  * its one file was byte-identical to `main`, because #267 had squash-merged a
  * commit carrying the same change. The guard reopened it on every close.
  *
- * Comparing blob SHAs answers the question the counters cannot: if each changed
- * file already has this exact content on the base branch, merging would be a
- * no-op and there is nothing left for a reviewer to look at.
+ * Comparing complete tree entries answers the question the counters cannot: if
+ * each changed path already has the head commit's object, mode, and type on the
+ * base branch, merging would be a no-op and there is nothing left to review.
  *
- * Fails closed. An unreadable path yields null, which matches no blob SHA, so a
- * transient API error makes the PR look un-superseded rather than waving it
- * through.
+ * Fails closed. Callers must provide complete base and head tree lookups; an
+ * unreadable or truncated tree therefore makes the PR look un-superseded.
  *
  * @param {Array<{filename: string, sha: string, status: string}>} files
- * @param {(path: string) => string|null} blobShaOnBase
+ * @param {(path: string) => {state: string, sha?: string, mode?: string, type?: string}} onBase
+ * @param {(path: string) => {state: string, sha?: string, mode?: string, type?: string}} onHead
  */
-export function filesAreSuperseded(files, lookup) {
-  if (!Array.isArray(files) || files.length === 0) return false;
+export function filesAreSuperseded(files, onBase, onHead) {
+  if (
+    !Array.isArray(files) ||
+    files.length === 0 ||
+    typeof onBase !== 'function' ||
+    typeof onHead !== 'function'
+  ) {
+    return false;
+  }
   return files.every((file) => {
     if (!file?.filename) return false;
 
-    // A mode or type change — making a script executable, say — leaves the blob
-    // identical, so comparing SHAs would call a real change superseded. The
-    // compare entry gives it away: it is listed, but has no content diff.
-    if (file.additions === 0 && file.deletions === 0 && file.status !== 'removed') return false;
+    const baseEntry = onBase(file.filename);
+    const headEntry = onHead(file.filename);
 
     if (file.status === 'removed') {
-      // Only a confirmed not-found proves the deletion already landed. An API
-      // failure must not read as "already gone".
-      return lookup(file.filename).state === 'absent';
+      // Both complete trees must confirm absence. An unknown lookup must not
+      // read as "already gone".
+      return baseEntry.state === 'absent' && headEntry.state === 'absent';
     }
 
     // A rename also deletes the source. The destination matching is not enough:
@@ -111,58 +116,70 @@ export function filesAreSuperseded(files, lookup) {
     // merging this one would still remove it.
     if (file.status === 'renamed') {
       if (!file.previous_filename) return false;
-      if (lookup(file.previous_filename).state !== 'absent') return false;
+      if (
+        onBase(file.previous_filename).state !== 'absent' ||
+        onHead(file.previous_filename).state !== 'absent'
+      ) {
+        return false;
+      }
     }
 
-    const onBase = lookup(file.filename);
-    return onBase.state === 'present' && Boolean(file.sha) && onBase.sha === file.sha;
+    // Blob equality alone misses executable-bit, symlink, and submodule changes.
+    // Require the complete base tree entry to match the complete head entry.
+    return (
+      baseEntry.state === 'present' &&
+      headEntry.state === 'present' &&
+      Boolean(file.sha) &&
+      headEntry.sha === file.sha &&
+      baseEntry.sha === headEntry.sha &&
+      Boolean(headEntry.mode) &&
+      baseEntry.mode === headEntry.mode &&
+      Boolean(headEntry.type) &&
+      baseEntry.type === headEntry.type
+    );
   });
 }
 
 /**
- * Escape a path for the contents API without destroying its separators.
+ * Load a complete recursive Git tree for an immutable commit OID.
  *
- * `encodeURI` leaves `?` and `#` alone, and both are legal in a Git filename —
- * so a file called `what?.md` addressed a truncated path and the lookup quietly
- * answered about the wrong file.
+ * Paths are returned by GitHub and used as exact map keys, so legal filename
+ * characters such as `?` and `#` are never interpolated into request URLs.
+ * A failed or truncated response returns null so callers fail closed.
  */
-export function encodeContentsPath(path) {
-  return String(path).split('/').map(encodeURIComponent).join('/');
-}
-
-/**
- * What does this path look like on a ref?
- *
- * Tri-state on purpose. Collapsing a failed request into the same answer as a
- * genuine 404 would let a transient 5xx read as "the file is already gone", and
- * a deletion would count as superseded when nothing of the sort had happened.
- *
- * @returns {{state: 'present', sha: string} | {state: 'absent'} | {state: 'unknown'}}
- */
-function blobOnRef(repo, ref, path) {
-  const r = spawnSync(
-    'gh',
-    [
-      'api',
-      `repos/${repo}/contents/${encodeContentsPath(path)}?ref=${encodeURIComponent(ref)}`,
-      '--jq',
-      '.sha',
-    ],
-    { encoding: 'utf8' },
-  );
-  if (r.status === 0) {
-    const sha = (r.stdout || '').trim();
-    return sha ? { state: 'present', sha } : { state: 'unknown' };
+function treeEntriesOnRef(repo, ref) {
+  let payload;
+  try {
+    payload = ghJson(['api', `repos/${repo}/git/trees/${ref}?recursive=1`]);
+  } catch {
+    return null;
   }
-  const stderr = `${r.stderr || ''}${r.stdout || ''}`;
-  // gh reports a missing path as HTTP 404; anything else is a failure to answer.
-  return /HTTP 404|Not Found/i.test(stderr) ? { state: 'absent' } : { state: 'unknown' };
+  if (payload?.truncated || !Array.isArray(payload?.tree)) return null;
+
+  const entries = new Map();
+  for (const entry of payload.tree) {
+    if (
+      typeof entry?.path !== 'string' ||
+      !entry.sha ||
+      !entry.mode ||
+      !entry.type
+    ) {
+      return null;
+    }
+    entries.set(entry.path, {
+      state: 'present',
+      sha: entry.sha,
+      mode: entry.mode,
+      type: entry.type,
+    });
+  }
+  return (path) => entries.get(path) || { state: 'absent' };
 }
 
-/** Wire filesAreSuperseded up to the compare and contents APIs. */
+/** Wire filesAreSuperseded up to immutable compare and Git-tree snapshots. */
 function prIsSuperseded(owner, name, meta) {
   const repo = `${owner}/${name}`;
-  const base = meta?.baseRefName;
+  const base = meta?.baseRefOid;
   const head = meta?.headRefOid;
   if (!base || !head) return false;
   let files;
@@ -171,15 +188,12 @@ function prIsSuperseded(owner, name, meta) {
   } catch {
     return false;
   }
-  // Bail on very large PRs rather than spend a request per file; a PR this size
-  // is not the superseded-chain-link case this exists for.
+  // A PR this size is not the superseded-chain-link case this exists for.
   if (!Array.isArray(files) || files.length > 40) return false;
-  const cache = new Map();
-  return filesAreSuperseded(files, (path) => {
-    // A rename asks about two paths, and chains often touch the same file twice.
-    if (!cache.has(path)) cache.set(path, blobOnRef(repo, base, path));
-    return cache.get(path);
-  });
+  const onBase = treeEntriesOnRef(repo, base);
+  const onHead = treeEntriesOnRef(repo, head);
+  if (!onBase || !onHead) return false;
+  return filesAreSuperseded(files, onBase, onHead);
 }
 
 function reopenPr(prNumber, dryRun) {
@@ -250,7 +264,7 @@ Unresolved substantive review threads also block closure.`);
       'view',
       String(prNumber),
       '--json',
-      'number,title,state,mergedAt,closedAt,author,additions,deletions,changedFiles,baseRefName,headRefOid',
+      'number,title,state,mergedAt,closedAt,author,additions,deletions,changedFiles,baseRefName,baseRefOid,headRefOid',
     ]);
   } catch (e) {
     console.error(`pr-bot-close-guard: ${e.message}`);
