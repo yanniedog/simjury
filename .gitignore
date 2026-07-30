@@ -2,3 +2,15 @@
 .projectmem/watch.log
 .simjury-bot-wait/
 node_modules/
+
+# Local agent scratch (screenshots, benches, one-off scripts)
+artifacts/
+
+# Removed Android/JVM surface — do not reintroduce (#178)
+pilot/
+
+# Local art source dumps (not shipped media; product media lives under site/app/public/media)
+site/art/
+
+# Removed historical case track — provenance is archive/daily-v1/ only
+site/public/cases/
