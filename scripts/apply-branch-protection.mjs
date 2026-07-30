@@ -11,11 +11,12 @@ const REQUIRED_CHECKS = MERGE_REQUIRED_CHECK_NAMES;
 const GH_TIMEOUT_MS = 120_000;
 
 function parseArgs(argv) {
-  const out = { branch: 'main', dryRun: false, help: false };
+  const out = { branch: 'main', dryRun: false, check: false, help: false };
   for (let i = 2; i < argv.length; i += 1) {
     const a = argv[i];
     if (a === '--help' || a === '-h') out.help = true;
     else if (a === '--dry-run') out.dryRun = true;
+    else if (a === '--check') out.check = true;
     else if (a === '--branch' && argv[i + 1]) out.branch = argv[++i];
     else if (a.startsWith('--branch=')) out.branch = a.slice('--branch='.length);
   }
@@ -33,24 +34,19 @@ function ghJson(args, { allow404 = false } = {}) {
   return r.stdout.trim() ? JSON.parse(r.stdout) : null;
 }
 
-function mergeCheckContexts(existingContexts, requiredChecks) {
-  const merged = [...(existingContexts || []), ...requiredChecks];
-  return [...new Set(merged.filter(Boolean))];
+function sameSet(left, right) {
+  return JSON.stringify([...(left || [])].sort()) === JSON.stringify([...(right || [])].sort());
 }
 
 function buildProtectionPayload(existing, mergedContexts) {
-  const strict = existing?.required_status_checks?.strict ?? true;
-  const enforceAdmins =
-    typeof existing?.enforce_admins?.enabled === 'boolean' ? existing.enforce_admins.enabled : true;
-
   const payload = {
-    required_status_checks: { strict, contexts: mergedContexts },
-    enforce_admins: enforceAdmins,
+    required_status_checks: { strict: true, contexts: mergedContexts },
+    enforce_admins: true,
     required_pull_request_reviews: null,
     restrictions: existing?.restrictions ?? null,
-    required_conversation_resolution: existing?.required_conversation_resolution?.enabled ?? true,
-    allow_force_pushes: existing?.allow_force_pushes?.enabled ?? false,
-    allow_deletions: existing?.allow_deletions?.enabled ?? false,
+    required_conversation_resolution: true,
+    allow_force_pushes: false,
+    allow_deletions: false,
   };
 
   const reviews = existing?.required_pull_request_reviews;
@@ -79,8 +75,8 @@ Manual GitHub UI steps for ${repo} → Settings → Branches → Branch protecti
 ${checks.map((c) => `     - \`${c}\``).join('\n')}
 4. Require conversation resolution before merging: ON
 
-Alternative (recommended): import ruleset from .github/rulesets/main-bot-gates.json
-  → see docs/GITHUB_RULESET_IMPORT.md
+Alternative: import ruleset from .github/rulesets/main-bot-gates.json
+  → see .github/BRANCH_PROTECTION.md
 
 Repo merge method: npm run repo-merge-settings:apply (squash only, auto-merge ON)
 `);
@@ -89,7 +85,7 @@ Repo merge method: npm run repo-merge-settings:apply (squash only, auto-merge ON
 function main() {
   const args = parseArgs(process.argv);
   if (args.help) {
-    console.log('Usage: npm run branch-protection:apply [-- --branch main] [-- --dry-run]');
+    console.log('Usage: npm run branch-protection:apply [-- --branch main] [-- --dry-run|--check]');
     process.exit(0);
   }
 
@@ -116,13 +112,27 @@ function main() {
   }
 
   const existingContexts = existing?.required_status_checks?.contexts || [];
-  const mergedContexts = mergeCheckContexts(existingContexts, REQUIRED_CHECKS);
-  const payload = buildProtectionPayload(existing, mergedContexts);
+  const desiredContexts = [...REQUIRED_CHECKS];
+  const payload = buildProtectionPayload(existing, desiredContexts);
+  const drift = {
+    requiredChecks: !sameSet(existingContexts, desiredContexts),
+    strict: existing?.required_status_checks?.strict !== true,
+    enforceAdmins: existing?.enforce_admins?.enabled !== true,
+    conversationResolution: existing?.required_conversation_resolution?.enabled !== true,
+    forcePushes: existing?.allow_force_pushes?.enabled !== false,
+    deletions: existing?.allow_deletions?.enabled !== false,
+  };
+  const drifted = Object.values(drift).some(Boolean);
+
+  if (args.check) {
+    console.log(JSON.stringify({ repo, branch: args.branch, existingContexts, desiredContexts, drift }, null, 2));
+    process.exit(drifted ? 1 : 0);
+  }
 
   if (args.dryRun) {
     console.log(
       JSON.stringify(
-        { repo, branch: args.branch, existingContexts, mergedContexts, requiredChecks: REQUIRED_CHECKS, payload },
+        { repo, branch: args.branch, existingContexts, desiredContexts, drift, payload },
         null,
         2,
       ),
@@ -137,14 +147,14 @@ function main() {
   });
   if (r.status === 0) {
     console.log(`Branch protection applied on ${repo}:${args.branch}`);
-    console.log(`Required checks (${mergedContexts.length}): ${mergedContexts.join(', ')}`);
+    console.log(`Required checks (${desiredContexts.length}): ${desiredContexts.join(', ')}`);
     console.log(`required_conversation_resolution: ${payload.required_conversation_resolution}`);
     process.exit(0);
   }
 
   console.error(`apply-branch-protection: API failed (exit ${r.status})`);
   if (r.stderr) console.error(r.stderr.trim());
-  printManualSteps(repo, args.branch, mergedContexts);
+  printManualSteps(repo, args.branch, desiredContexts);
   const hasAuthError = r.stderr && (r.stderr.includes('403') || r.stderr.includes('404'));
   process.exit(hasAuthError ? 2 : 1);
 }

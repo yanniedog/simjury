@@ -4,8 +4,13 @@
  */
 import {
   classifyGateFailure,
+  classifyTerminalPrState,
   classifyWorkMode,
 } from './lib/pr-arm-and-park-lib.mjs';
+import {
+  fetchRequiredCi,
+  gateCiRequired,
+} from './lib/pr-gates-lib.mjs';
 
 let failed = 0;
 function assert(cond, msg) {
@@ -27,7 +32,7 @@ assert(
     pass: false,
     detail: 'bot-presence-gate: fail; bot-feedback-gate: not reported yet',
   }) === 'waiting',
-  'presence fail while feedback missing = waiting',
+  'optional presence failure remains waiting when explicitly enabled',
 );
 assert(
   classifyGateFailure({
@@ -63,6 +68,28 @@ const act = classifyWorkMode({
   ],
 });
 assert(act.mode === 'actionable', 'any actionable gate wins');
+
+const merged = classifyTerminalPrState({ state: 'MERGED' });
+assert(merged.terminal && merged.mode === 'ready', 'merged during progression = ready success');
+
+const closed = classifyTerminalPrState({ state: 'CLOSED' });
+assert(closed.terminal && closed.mode === 'actionable', 'closed without merge = actionable');
+
+const openDraft = classifyTerminalPrState({ state: 'OPEN', isDraft: true });
+assert(!openDraft.terminal && openDraft.mode === null, 'open draft remains non-terminal');
+
+for (const message of ['no checks reported', 'no required checks reported']) {
+  const ci = fetchRequiredCi(276, () => ({ status: 1, stdout: '', stderr: message }));
+  assert(ci.ok && ci.pending && !ci.failed, `${message} = pending`);
+  const gate = gateCiRequired(276, () => ci);
+  assert(
+    !gate.pass && classifyGateFailure(gate) === 'waiting',
+    `${message} gate = waiting`,
+  );
+}
+
+const emptyChecks = fetchRequiredCi(276, () => ({ status: 0, stdout: '[]', stderr: '' }));
+assert(emptyChecks.ok && emptyChecks.pending, 'empty required-check list = pending');
 
 if (failed) {
   console.error(`\n${failed} assertion(s) failed`);

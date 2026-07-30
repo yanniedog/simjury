@@ -63,5 +63,6 @@ Use Node 24 and `npm run cloud:bootstrap -- --check` for checkout preflight.
 3. Run the checks documented in `CLAUDE.md`.
 4. Resolve CI and all review threads; squash merge only.
 
-`main` requires `validate`, `bot-presence-gate`, and `bot-feedback-gate`. See
+`main` requires deterministic `validate` and `bot-feedback-gate`. Reviewer
+presence and local Qwen are advisory. See
 `.github/BRANCH_PROTECTION.md` and `WORKFLOW.md`.

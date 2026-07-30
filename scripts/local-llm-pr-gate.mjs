@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Mandatory, read-only PR review gate backed by local qwen3.5:4b.
+ * Optional, read-only PR review diagnostic backed by local qwen3.5:4b.
  * The PR diff is treated only as inert text; no PR code is checked out or run.
  */
 import { appendFileSync } from 'node:fs';

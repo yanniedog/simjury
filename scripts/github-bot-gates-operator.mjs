@@ -34,14 +34,14 @@ function printPolicy() {
 
 Required on merge (human work PRs) — squash blocked until green:
   - validate                authority docs and PR-gate tooling
-  - local-llm-review        local qwen3.5:4b defect gate
-  - bot-presence-gate       sourcery|codex|cursor,coderabbit (peer OR + mandatory CodeRabbit)
   - bot-feedback-gate       review thread resolution on human PRs
 
 Close protection:
-  - pr-bot-close-guard      reopens unmerged PRs closed with outstanding bot obligations
+  - pr-bot-close-guard      reopens unmerged PRs with unresolved feedback
 
-Optional (not in DEFAULT_REQUIRED_KEYS):
+Advisory only (never required for merge):
+  - local Qwen review              manual local diagnostic; no automatic workflow
+  - CodeRabbit / Codex / Cursor    findings remain actionable, presence never blocks
   - Automated Gemini Code Review   API-keyed workflow (GEMINI_API_KEY); advisory,
                                    continue-on-error so free-tier 429s never block
   - claude[bot]                    only when anthropics/claude-code-action workflow is installed
@@ -51,14 +51,10 @@ Removed from the fleet:
                           caution banner. Uninstall it from the org so it stops
                           commenting: https://github.com/settings/installations
 
-CodeRabbit (mandatory presence slot):
+CodeRabbit (advisory):
   - Install app: https://github.com/apps/coderabbitai/installations/new (All repositories)
   - Repo config: .coderabbit.yaml — see docs/CODERABBIT.md
-  - Auto/manual trigger: pr-request-bot-reviews or @coderabbitai review on the PR
-
-Skipped automatically (scripts/lib/pr-gate-exempt.mjs):
-  - PR author is a GitHub bot (login ends with [bot])
-  - Title is conventional chore (chore: or chore(scope):)
+  - Manual trigger: @coderabbitai review on the PR
 `);
 }
 
@@ -76,7 +72,7 @@ Steps:
   4. Save → Enforcement: Active
   5. Or run: npm run branch-protection:apply (legacy API; no Actions bypass)
 
-Full doc: docs/GITHUB_RULESET_IMPORT.md
+Full doc: .github/BRANCH_PROTECTION.md
 `);
 }
 
@@ -87,9 +83,10 @@ function validateRulesetJson() {
     ruleset.rules
       ?.find((r) => r.type === 'required_status_checks')
       ?.parameters?.required_status_checks?.map((c) => c.context) || [];
-  const missing = REQUIRED_CHECKS.filter((c) => !checks.includes(c));
-  if (missing.length) {
-    throw new Error(`ruleset JSON missing checks: ${missing.join(', ')}`);
+  const expected = [...REQUIRED_CHECKS].sort();
+  const actual = [...checks].sort();
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+    throw new Error(`ruleset checks ${actual.join(', ')} do not exactly match ${expected.join(', ')}`);
   }
   console.log('OK ruleset JSON:', RULESET_JSON);
   console.log('   required checks:', checks.join(', '));
@@ -128,7 +125,7 @@ function verifyPrExemption(prNumber) {
     console.log(`PR #${prNumber}: gate-exempt (${reason}) — bot review NOT required for merge`);
     return;
   }
-  console.log(`PR #${prNumber}: NOT gate-exempt — gemini + codex + sourcery + thread closure required`);
+  console.log(`PR #${prNumber}: NOT gate-exempt — thread closure required`);
 }
 
 function dryRunBranchProtection() {
@@ -186,6 +183,7 @@ function main() {
 === After protection is active — verify ===
 
   npm run pr:gate-logic:verify
+  npm run branch-protection:apply -- --check
   npm run github:bot-gates:operator
   npm run pr:gates:check -- --pr <n>
   npm run repo-merge-settings:apply

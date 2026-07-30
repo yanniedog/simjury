@@ -13,9 +13,7 @@
 ## Checklist
 
 - [ ] CI `validate` passes
-- [ ] CI `local-llm-review` passes
 - [ ] `npm run pr:arm-and-park -- --pr <n>` run (exit 0 ready / exit 2 parked OK / exit 3 fix then re-run)
-- [ ] CI `bot-presence-gate` passes (do **not** agent `--watch`)
 - [ ] CI `bot-feedback-gate` passes (all review threads resolved)
 - [ ] **All bot review comments fixed in code** (do not wait for user to ask)
 - [ ] Reply posted on each bot thread confirming fix or N/A

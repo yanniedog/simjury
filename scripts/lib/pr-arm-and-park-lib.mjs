@@ -84,6 +84,33 @@ export function classifyWorkMode(gatesResult) {
 }
 
 /**
+ * Classify terminal state observed by the final metadata refresh. GitHub can
+ * merge a PR immediately while `gh pr merge --auto` is still in progress, so
+ * MERGED is successful completion rather than an "is not open" error.
+ *
+ * @param {{ state?: string }} meta
+ * @returns {{ terminal: boolean, mode: 'ready'|'actionable'|null, detail: string|null }}
+ */
+export function classifyTerminalPrState(meta) {
+  const state = String(meta?.state || '').toUpperCase();
+  if (state === 'MERGED') {
+    return {
+      terminal: true,
+      mode: 'ready',
+      detail: 'PR merged during arm-and-park progression',
+    };
+  }
+  if (state === 'CLOSED') {
+    return {
+      terminal: true,
+      mode: 'actionable',
+      detail: 'PR closed without merging during arm-and-park progression',
+    };
+  }
+  return { terminal: false, mode: null, detail: null };
+}
+
+/**
  * One-shot: sync branch, arm squash auto-merge, classify gate state.
  * Never polls. Exit semantics for CLI live in pr-arm-and-park.mjs.
  *
@@ -134,7 +161,7 @@ export function armAndParkOnce(prNumber, opts = {}) {
 
   let meta = null;
   try {
-    meta = fetchPrMergeMeta(prNumber);
+    meta = fetchPrMergeMeta(prNumber, { requireOpen: false });
   } catch (e) {
     return {
       prNumber,
@@ -143,6 +170,51 @@ export function armAndParkOnce(prNumber, opts = {}) {
       error: e.message,
       progression,
       autoMergeArmed: false,
+    };
+  }
+
+  const terminal = classifyTerminalPrState(meta);
+  if (terminal.mode === 'ready') {
+    return {
+      prNumber,
+      ok: true,
+      mode: 'ready',
+      merged: true,
+      progression,
+      autoMergeArmed: false,
+      headRefName: meta.headRefName,
+      baseGuard,
+      classification: {
+        mode: 'ready',
+        actionable: [],
+        waiting: [],
+        gates: [],
+      },
+      gates: null,
+    };
+  }
+  if (terminal.mode === 'actionable') {
+    const gate = {
+      id: 'pr-state',
+      pass: false,
+      detail: terminal.detail,
+    };
+    return {
+      prNumber,
+      ok: false,
+      mode: 'actionable',
+      error: terminal.detail,
+      progression,
+      autoMergeArmed: false,
+      headRefName: meta.headRefName,
+      baseGuard,
+      classification: {
+        mode: 'actionable',
+        actionable: [gate],
+        waiting: [],
+        gates: [gate],
+      },
+      gates: null,
     };
   }
 

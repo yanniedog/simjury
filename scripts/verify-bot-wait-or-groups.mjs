@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Unit tests for required-bot slots (peer OR-group + mandatory CodeRabbit) + Gemini noise.
+ * Unit tests for advisory bot slots, explicit opt-in groups, and bot noise.
  */
 import {
   DEFAULT_REQUIRED_KEYS,
@@ -31,9 +31,10 @@ function assert(cond, msg) {
 }
 
 assert(
-  JSON.stringify(parseRequiredKeys('')) === JSON.stringify(['sourcery|codex|cursor', 'coderabbit']),
-  'default = peer OR-group + mandatory coderabbit',
+  JSON.stringify(parseRequiredKeys('')) === JSON.stringify([]),
+  'bot presence is disabled by default',
 );
+assert(JSON.stringify(parseRequiredKeys('off')) === JSON.stringify([]), 'off disables presence');
 assert(
   JSON.stringify(DEFAULT_REQUIRED_KEYS) === JSON.stringify(parseRequiredKeys(DEFAULT_REQUIRED_SPEC)),
   'DEFAULT_REQUIRED_SPEC matches DEFAULT_REQUIRED_KEYS',
@@ -54,7 +55,7 @@ assert(
   'cursor alone does not satisfy sourcery-only',
 );
 
-const defaults = DEFAULT_REQUIRED_KEYS;
+const defaults = ['sourcery|codex|cursor', 'coderabbit'];
 assert(
   !requiredBotsSatisfied(defaults, ['chatgpt-codex-connector[bot]']),
   'peer alone insufficient without CodeRabbit',
@@ -65,15 +66,15 @@ assert(
 );
 assert(
   requiredBotsSatisfied(defaults, ['chatgpt-codex-connector[bot]', 'coderabbitai[bot]']),
-  'codex + coderabbit satisfies default',
+  'codex + coderabbit satisfies explicit opt-in',
 );
 assert(
   requiredBotsSatisfied(defaults, ['cursor[bot]', 'coderabbitai[bot]']),
-  'cursor + coderabbit satisfies default',
+  'cursor + coderabbit satisfies explicit opt-in',
 );
 assert(
   requiredBotsSatisfied(defaults, ['sourcery-ai[bot]', 'coderabbitai[bot]']),
-  'sourcery + coderabbit satisfies default',
+  'sourcery + coderabbit satisfies explicit opt-in',
 );
 assert(!requiredBotsSatisfied(defaults, ['gemini-code-assist[bot]']), 'gemini alone insufficient');
 assert(

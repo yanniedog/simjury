@@ -6,14 +6,12 @@
  * Required list supports OR-groups: "sourcery|cursor|codex" means any one of those
  * keys satisfies that slot. Commas separate ALL-of slots.
  *
- * Merge protection default: CodeRabbit is a hard ALL-of slot (never OR-skippable).
- * A second OR-slot (`sourcery|codex|cursor`) still requires one peer review bot so
- * merge does not race ahead of the rest of the review fleet. See
- * docs/CROSS_REPO_BOT_MATRIX.md.
+ * Bot presence is advisory by default. Operators may opt into an explicit
+ * reviewer set for diagnostics, but vendor availability never blocks merge.
  */
 
 /** Canonical env/CLI string for the default required slots. */
-export const DEFAULT_REQUIRED_SPEC = 'sourcery|codex|cursor,coderabbit';
+export const DEFAULT_REQUIRED_SPEC = 'off';
 export const BOT_ALIASES = {
   /**
    * Gemini reviews arrive from the API-keyed `Automated Gemini Code Review`
@@ -38,7 +36,7 @@ export const BOT_ALIASES = {
  * Gemini is advisory: its workflow is `continue-on-error` and free-tier 429s
  * must never block merge.
  */
-export const DEFAULT_REQUIRED_KEYS = ['sourcery|codex|cursor', 'coderabbit'];
+export const DEFAULT_REQUIRED_KEYS = [];
 
 export const OPTIONAL_BOT_LOGINS = [
   'claude[bot]',
@@ -57,6 +55,7 @@ export const OPTIONAL_BOT_LOGINS = [
  */
 export function parseRequiredKeys(raw) {
   if (!raw || !String(raw).trim()) return [...DEFAULT_REQUIRED_KEYS];
+  if (/^(off|none)$/i.test(String(raw).trim())) return [];
   return String(raw)
     .split(',')
     .map((s) => s.trim().toLowerCase())
