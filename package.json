@@ -33,6 +33,7 @@
     "pr:coderabbit-ensure-review:verify": "node scripts/verify-coderabbit-review-recovery.mjs",
     "coderabbit:rate-limit-retry:install-all": "node scripts/install-coderabbit-rate-limit-retry-all-repos.mjs",
     "pr:base-guard:verify": "node scripts/verify-pr-base-guard.mjs",
+    "pr:coderabbit-filters:verify": "node scripts/verify-coderabbit-path-filters.mjs",
     "branch-protection:apply": "node scripts/apply-branch-protection.mjs",
     "repo-merge-settings:apply": "node scripts/apply-repo-merge-settings.mjs",
     "repo-name:apply": "node scripts/apply-repo-name.mjs",

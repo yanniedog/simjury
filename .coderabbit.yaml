@@ -40,12 +40,14 @@ reviews:
     - "!**/*.lock"
     - "!**/package-lock.json"
     - "!site/art/**"
-    - "!**/*.{png,jpg,jpeg,gif,webp,ogg,wav,mp3,mp4,webm,ttf,woff,woff2}"
-    # Re-include player media so media-only Daily Docket PRs stay reviewable
-    # (otherwise CR skips → presence gate cannot get Review completed).
-    - "site/app/public/media/**"
-    # Repository automation is reviewable source, not generated output.
-    - "scripts/**"
+    # Exclusions only. A single positive pattern would switch CodeRabbit into
+    # allowlist mode, where everything not named is "included by none" — which
+    # is exactly how every source file stopped being reviewed.
+    # The directory and lockfile exclusions above are the complete permitted
+    # set. New exclusions fail pr:coderabbit-filters:verify until reviewed, so a
+    # nested player-media path cannot silently make a media-only PR unreviewable.
+    # Source art is excluded by directory; player media and scripts stay
+    # reviewable by default.
   path_instructions:
     - path: "site/app/**"
       instructions: >-
