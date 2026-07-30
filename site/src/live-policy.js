@@ -5,6 +5,10 @@ export const FREE_BETA_LIMITS = Object.freeze({
   concurrentRooms: 64,
   seatsPerRoom: 12,
   messagesPerSeat: 40,
+  // A sitting has three stages, so a seat needs only a handful of genuine
+  // transitions. The allowance is generous enough for a reread or a reconnect
+  // and small enough that free frames cannot be farmed.
+  stageChangesPerSeat: 12,
   messageCharacters: 500,
   frameCharacters: 1_024,
   historyEvents: 120,
@@ -87,6 +91,13 @@ function safeText(value) {
   return clean && clean.length <= FREE_BETA_LIMITS.messageCharacters ? clean : null
 }
 
+/**
+ * Where a juror has reached in the sitting. Jurors in a shared room arrive at
+ * the jury room minutes apart, and nothing used to tell the others whether to
+ * wait or start, so a room announces its progress.
+ */
+export const SITTING_STAGES = Object.freeze(['trial', 'juryroom', 'verdict'])
+
 export function parseLiveEvent(value) {
   if (typeof value !== 'string' || value.length > FREE_BETA_LIMITS.frameCharacters) return null
   try {
@@ -94,6 +105,11 @@ export function parseLiveEvent(value) {
     if (event?.type === 'message') {
       const text = safeText(event.text)
       return text ? { type: 'message', text } : null
+    }
+    if (event?.type === 'stage') {
+      return SITTING_STAGES.includes(event.stage)
+        ? { type: 'stage', stage: event.stage }
+        : null
     }
     if (event?.type === 'position' && ['G', 'NG', 'U'].includes(event.position)) {
       const reason = event.reason === undefined ? undefined : safeText(event.reason)
@@ -126,6 +142,20 @@ export function admissionDecision({ admissions, activeRooms, duplicateRoomId, ro
 export function seatMaySend(messages) {
   return Number.isInteger(messages) && messages >= 0
     && messages < FREE_BETA_LIMITS.messagesPerSeat
+}
+
+/**
+ * May this seat announce another stage change for free?
+ *
+ * Stage pings are exempt from the message budget so that moving through the
+ * sitting cannot exhaust it. Left unbounded that is an amplification channel:
+ * every frame stores an event and broadcasts to every peer at no cost. A seat
+ * that has spent its stage allowance falls back to the ordinary budget, so the
+ * exemption stays a convenience rather than a free channel.
+ */
+export function seatMayAnnounceStage(stageChanges) {
+  return Number.isInteger(stageChanges) && stageChanges >= 0
+    && stageChanges < FREE_BETA_LIMITS.stageChangesPerSeat
 }
 
 export function unavailable(reason = 'LIVE_JURY_DISABLED', status = 503) {

@@ -314,6 +314,8 @@
   .roster-dot { flex: 0 0 auto; width: .45rem; height: .45rem; border: 1px solid rgb(244 240 232 / 25%); border-radius: 999px; }
   .roster-dot.on { border-color: #72c7aa; background: #72c7aa; }
 
+  .live-arrivals { margin: 0; padding: .5rem .7rem; border-left: 2px solid rgb(214 185 121 / 45%); color: var(--steel-300); font-size: .78rem; line-height: 1.5; }
+
   .invite { display: grid; gap: .6rem; }
   .invite-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
   .invite-primary { flex: 1 1 12rem; min-height: 3rem; border: 0; border-radius: .75rem; color: var(--court-950); background: var(--brass-400); font-size: .88rem; font-weight: 700; }

@@ -5,15 +5,20 @@ import {
 
 export type LivePosition = 'G' | 'NG' | 'U'
 
+/** Where a juror has reached in the sitting. Mirrors the Worker's enum. */
+export type SittingStage = 'trial' | 'juryroom' | 'verdict'
+export const SITTING_STAGES: readonly SittingStage[] = ['trial', 'juryroom', 'verdict']
+
 export interface LiveRoomEvent {
   type: 'event'
-  event_type: 'message' | 'position'
+  event_type: 'message' | 'position' | 'stage'
   sequence: number
   seat_id: number
   display_name: string
   text?: string
   position?: LivePosition
   reason?: string
+  stage?: SittingStage
   created_at?: number
 }
 
@@ -21,6 +26,8 @@ export interface LiveRoomSnapshot {
   status: 'connecting' | 'open' | 'reconnecting' | 'closed' | 'superseded'
   events: LiveRoomEvent[]
   connectedSeats: number[]
+  /** The furthest stage each seat has announced reaching. */
+  stageBySeat: Record<number, SittingStage>
   error?: string
 }
 
@@ -46,7 +53,7 @@ function eventFrom(value: unknown): LiveRoomEvent | null {
   const event = value as Partial<LiveRoomEvent>
   if (
     event.type !== 'event'
-    || !['message', 'position'].includes(event.event_type ?? '')
+    || !['message', 'position', 'stage'].includes(event.event_type ?? '')
     || !Number.isInteger(event.sequence)
     || (event.sequence ?? 0) < 1
     || !Number.isInteger(event.seat_id)
@@ -65,6 +72,10 @@ function eventFrom(value: unknown): LiveRoomEvent | null {
       typeof event.reason !== 'string' || event.reason.length > 500
     )) return null
   }
+  if (
+    event.event_type === 'stage'
+    && !SITTING_STAGES.includes(event.stage as SittingStage)
+  ) return null
   return event as LiveRoomEvent
 }
 
@@ -84,6 +95,7 @@ export class LiveJuryConnection {
     status: 'connecting',
     events: [],
     connectedSeats: [],
+    stageBySeat: {},
   }
 
   private readonly origin: string
@@ -133,6 +145,20 @@ export class LiveJuryConnection {
     if (!['G', 'NG', 'U'].includes(position)) throw new Error('Unknown jury position.')
     if (clean && clean.length > 500) throw new Error('A reason must be at most 500 characters.')
     this.send({ type: 'position', position, ...(clean ? { reason: clean } : {}) })
+  }
+
+  /**
+   * Announce how far this juror has reached. Best-effort: a room that is still
+   * connecting will simply not hear it, and progress is not worth surfacing an
+   * error to the player over.
+   */
+  announceStage(stage: SittingStage): void {
+    if (!SITTING_STAGES.includes(stage)) return
+    try {
+      this.send({ type: 'stage', stage })
+    } catch {
+      // Not connected yet; the next announcement will carry the same state.
+    }
   }
 
   private send(value: object): void {
@@ -235,15 +261,21 @@ export class LiveJuryConnection {
   }
 
   private publish(change: Partial<LiveRoomSnapshot> = {}): void {
-    this.snapshot = {
-      ...this.snapshot,
-      ...change,
-      events: [...this.events.values()].sort((a, b) => a.sequence - b.sequence),
+    const events = [...this.events.values()].sort((a, b) => a.sequence - b.sequence)
+    // Later announcements win, so replaying in sequence order leaves each seat
+    // on the furthest stage it has reported.
+    const stageBySeat: Record<number, SittingStage> = {}
+    for (const event of events) {
+      if (event.event_type === 'stage' && event.stage) {
+        stageBySeat[event.seat_id] = event.stage
+      }
     }
+    this.snapshot = { ...this.snapshot, ...change, events, stageBySeat }
     this.onUpdate({
       ...this.snapshot,
       events: [...this.snapshot.events],
       connectedSeats: [...this.snapshot.connectedSeats],
+      stageBySeat: { ...this.snapshot.stageBySeat },
     })
   }
 }
