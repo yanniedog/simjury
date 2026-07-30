@@ -32,6 +32,10 @@ Gemini, and local Qwen output remain advisory, but every substantive finding
 still needs a reply and resolution. Automatic Qwen and bot-presence workflows
 are disabled.
 
+The feedback workflow allows one active loop per PR. A new head cancels the
+obsolete head's loop and starts the required check for the current revision;
+the concurrency group must not include the head SHA or a queue cap.
+
 ## Operator setup (one-time)
 
 ```bash

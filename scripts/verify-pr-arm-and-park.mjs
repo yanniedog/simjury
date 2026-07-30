@@ -2,6 +2,7 @@
 /**
  * Unit tests for actionable-vs-waiting classification (no network).
  */
+import { readFileSync } from 'node:fs';
 import {
   classifyGateFailure,
   classifyTerminalPrState,
@@ -90,6 +91,13 @@ for (const message of ['no checks reported', 'no required checks reported']) {
 
 const emptyChecks = fetchRequiredCi(276, () => ({ status: 0, stdout: '[]', stderr: '' }));
 assert(emptyChecks.ok && emptyChecks.pending, 'empty required-check list = pending');
+
+const feedbackWorkflow = readFileSync('.github/workflows/pr-bot-feedback-check.yml', 'utf8');
+const feedbackGroup = feedbackWorkflow.match(/^\s*group:\s*(.+)$/m)?.[1] || '';
+assert(/pull_request\.number/.test(feedbackGroup), 'feedback concurrency is grouped by PR');
+assert(!/head\.sha|github\.sha/.test(feedbackGroup), 'feedback concurrency excludes head SHA');
+assert(/^\s*cancel-in-progress:\s*true\s*$/m.test(feedbackWorkflow), 'new head cancels obsolete feedback loop');
+assert(!/^\s*queue:/m.test(feedbackWorkflow), 'feedback concurrency has no queue cap');
 
 if (failed) {
   console.error(`\n${failed} assertion(s) failed`);

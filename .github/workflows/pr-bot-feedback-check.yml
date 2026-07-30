@@ -21,9 +21,10 @@ permissions:
   pull-requests: read
 
 concurrency:
-  group: bot-feedback-gate-${{ github.event.pull_request.number || inputs.pr_number || github.run_id }}-${{ github.event.pull_request.head.sha || github.sha }}
-  cancel-in-progress: false
-  queue: max
+  # One loop owns each PR. A newer head cancels the obsolete head's 40-minute
+  # loop immediately so the required check can start on the current revision.
+  group: bot-feedback-gate-${{ github.event.pull_request.number || inputs.pr_number || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   bot-feedback-gate:
