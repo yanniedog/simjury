@@ -44,6 +44,8 @@ reviews:
     # Re-include player media so media-only Daily Docket PRs stay reviewable
     # (otherwise CR skips → presence gate cannot get Review completed).
     - "site/app/public/media/**"
+    # Repository automation is reviewable source, not generated output.
+    - "scripts/**"
   path_instructions:
     - path: "site/app/**"
       instructions: >-
