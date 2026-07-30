@@ -86,6 +86,118 @@ export function liveInviteFromHash(hash: string): LiveInvite | null {
     : null
 }
 
+/**
+ * Parse an invitation the player pasted in.
+ *
+ * Clicking a link only works when the app is not already open; anyone who
+ * already has today's docket on screen had no way to accept an invitation at
+ * all. This accepts a full URL, a bare `#live-jury=` fragment, or the raw
+ * triple, so pasting from any chat app works.
+ */
+export function liveInviteFromText(value: string): LiveInvite | null {
+  const text = value.trim()
+  if (!text) return null
+  const fragment = text.slice(text.indexOf('#live-jury='))
+  const direct = text.includes('#live-jury=')
+    ? liveInviteFromHash(fragment)
+    : null
+  if (direct) return direct
+  return liveInviteFromHash(`#live-jury=${text.replace(/^#?/, '')}`)
+}
+
+/**
+ * Code points a display name may not contain: the C0/C1 control characters and
+ * the bidirectional overrides, which would let a name reorder the text around
+ * it in another juror's transcript. Expressed as ranges rather than a regular
+ * expression so the control characters never appear literally in source.
+ */
+const FORBIDDEN_NAME_RANGES: readonly (readonly [number, number])[] = [
+  [0x00, 0x1f],
+  [0x7f, 0x7f],
+  [0x202a, 0x202e],
+  [0x2066, 0x2069],
+]
+
+/** Mirrors the Worker's `parseDisplayName`, so the UI rejects what it would. */
+export function sanitizeDisplayName(value: string): string | null {
+  for (const character of value) {
+    const code = character.codePointAt(0) ?? 0
+    if (FORBIDDEN_NAME_RANGES.some(([lo, hi]) => code >= lo && code <= hi)) {
+      return null
+    }
+  }
+  const clean = value.trim().replace(/\s+/g, ' ')
+  return clean && clean.length <= 32 ? clean : null
+}
+
+
+export interface LiveSeat {
+  seatId: number
+  displayName: string
+}
+
+export interface LiveRoomStatus {
+  caseId: string
+  seats: LiveSeat[]
+  capacity: number
+}
+
+function seatsFrom(value: unknown): LiveSeat[] {
+  if (!Array.isArray(value)) return []
+  return value
+    .map((row) => row as { seat_id?: unknown; display_name?: unknown })
+    .filter(
+      (row) =>
+        Number.isInteger(row.seat_id)
+        && (row.seat_id as number) >= 1
+        && (row.seat_id as number) <= 12
+        && typeof row.display_name === 'string'
+        && row.display_name.trim().length > 0,
+    )
+    .map((row) => ({
+      seatId: row.seat_id as number,
+      displayName: (row.display_name as string).slice(0, 32),
+    }))
+    .sort((a, b) => a.seatId - b.seatId)
+}
+
+/**
+ * Who is in the room, before any socket is open. The Worker has always
+ * returned the roster from this endpoint; the client used to discard it, so a
+ * host had no way to see whether anyone had accepted their invitation.
+ */
+export async function liveJuryRoomStatus(
+  roomId: string,
+  inviteToken: string,
+): Promise<LiveRoomStatus> {
+  const status = await api<{
+    case_id: string
+    seats?: unknown
+    capacity?: unknown
+  }>(`/api/live/rooms/${encodeURIComponent(roomId)}`, {
+    headers: { Authorization: `Bearer ${inviteToken}` },
+  })
+  return {
+    caseId: status.case_id,
+    seats: seatsFrom(status.seats),
+    capacity:
+      Number.isInteger(status.capacity) && (status.capacity as number) > 0
+        ? (status.capacity as number)
+        : 12,
+  }
+}
+
+/** Pre-written invitation text, so a host does not have to compose one. */
+export function liveInviteMessage(url: string, caseTitle?: string): string {
+  const subject = caseTitle ? `today’s case, “${caseTitle}”` : 'today’s case'
+  return [
+    `I’ve got a seat for you on the jury for ${subject} on SimJury.`,
+    'We watch the same trial, then deliberate together and return a verdict.',
+    'About 20 minutes. Your seat link:',
+    url,
+  ].join('\n')
+}
+
 export function liveInviteUrl(
   invite: LiveInvite,
   base = `${window.location.origin}/today/`,

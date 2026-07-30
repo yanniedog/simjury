@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   clearLiveJurySession,
   closeLiveJury,
@@ -7,20 +7,57 @@ import {
   isRoomGoneError,
   joinLiveJury,
   liveInviteFromHash,
-  liveInviteUrl,
+  liveInviteFromText,
   liveJuryHealth,
+  liveJuryRoomStatus,
+  sanitizeDisplayName,
   saveLiveJurySession,
   verifyLiveJurySession,
+  type LiveInvite,
   type LiveJurySession,
+  type LiveSeat,
 } from '../../lib/liveJury'
+import { LiveJuryInvite, LiveJuryRoster } from './LiveJuryInvite'
+
+/**
+ * The live-jury lobby: matching and onboarding.
+ *
+ * What used to happen here was a name box and one button. A host could not see
+ * whether anyone joined, an invitee got no explanation of what they had been
+ * invited to, and anyone who already had the app open could not accept an
+ * invitation at all because the link only worked as a cold page load.
+ *
+ * Now: an invitee sees what the sitting is and how long it takes before they
+ * commit; a host sees the roster fill in; and an invitation can be pasted.
+ */
+
+/** How often to re-read the roster while the room is still filling. */
+const ROSTER_POLL_MS = 5_000
+
+function ExpectationList({ hosting }: { hosting: boolean }) {
+  return (
+    <ul className="live-expect">
+      <li>You each watch the same trial — about 20 minutes.</li>
+      <li>The jury room opens after closing arguments, once you get there.</li>
+      <li>You deliberate together, then everyone locks their own verdict.</li>
+      <li>
+        {hosting
+          ? 'Anyone you invite can arrive late and catch up — nobody is blocked.'
+          : 'You can start the trial now; the room will be waiting.'}
+      </li>
+    </ul>
+  )
+}
 
 export function LiveJuryLobby({
   caseId,
+  caseTitle,
   derivationRevision,
   session,
   onSession,
 }: {
   caseId: string
+  caseTitle?: string
   derivationRevision: string
   session: LiveJurySession | null
   onSession: (session: LiveJurySession | null) => void
@@ -30,9 +67,25 @@ export function LiveJuryLobby({
   const [invite, setInvite] = useState(() =>
     typeof window === 'undefined' ? null : liveInviteFromHash(window.location.hash))
   const [name, setName] = useState('')
+  const [pasted, setPasted] = useState('')
+  const [showPaste, setShowPaste] = useState(false)
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
-  const [fallbackUrl, setFallbackUrl] = useState<string | null>(null)
+  const [seats, setSeats] = useState<LiveSeat[]>([])
+  const [capacity, setCapacity] = useState(12)
+  const [expanded, setExpanded] = useState(false)
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const refreshRoster = useCallback(async (active: LiveJurySession) => {
+    try {
+      const status = await liveJuryRoomStatus(active.roomId, active.inviteToken)
+      setSeats(status.seats)
+      setCapacity(status.capacity)
+    } catch {
+      // A roster read failing is not worth interrupting the sitting over; the
+      // room itself reports its own health when it matters.
+    }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -89,21 +142,40 @@ export function LiveJuryLobby({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional mount-only check
   }, [caseId])
 
-  async function connect(host: boolean) {
-    if (!name.trim()) return setMessage('Enter the name the other jurors should see.')
+  // Poll the roster while a session is live, so a host actually watches people
+  // arrive instead of guessing whether their invitation worked.
+  useEffect(() => {
+    if (!session || !sessionReady) return
+    void refreshRoster(session)
+    pollRef.current = setInterval(() => void refreshRoster(session), ROSTER_POLL_MS)
+    return () => {
+      if (pollRef.current !== null) clearInterval(pollRef.current)
+      pollRef.current = null
+    }
+  }, [session, sessionReady, refreshRoster])
+
+  async function connect(target: LiveInvite | null) {
+    const clean = sanitizeDisplayName(name)
+    if (!clean) {
+      setMessage(
+        name.trim()
+          ? 'That name cannot be shown to the room. Use up to 32 ordinary characters.'
+          : 'Enter the name the other jurors should see.',
+      )
+      return
+    }
     setBusy(true)
     setMessage('')
-    setFallbackUrl(null)
     try {
-      const next = host
-        ? await hostLiveJury(caseId, name.trim(), derivationRevision)
-        : await joinLiveJury(invite!, caseId, name.trim(), derivationRevision)
+      const next = target
+        ? await joinLiveJury(target, caseId, clean, derivationRevision)
+        : await hostLiveJury(caseId, clean, derivationRevision)
       saveLiveJurySession(next)
       onSession(next)
       setSessionReady(true)
-      if (!host) history.replaceState(null, '', `${location.pathname}${location.search}`)
+      if (target) history.replaceState(null, '', `${location.pathname}${location.search}`)
     } catch (error) {
-      if (isLiveJuryRevisionError(error) && invite) {
+      if (isLiveJuryRevisionError(error) && target) {
         history.replaceState(null, '', `${location.pathname}${location.search}`)
         setInvite(null)
       }
@@ -111,6 +183,22 @@ export function LiveJuryLobby({
     } finally {
       setBusy(false)
     }
+  }
+
+  function acceptPasted() {
+    const parsed = liveInviteFromText(pasted)
+    if (!parsed) {
+      setMessage('That does not look like a SimJury invitation link.')
+      return
+    }
+    if (parsed.caseId !== caseId) {
+      setMessage('That invitation is for a different Daily Docket case.')
+      return
+    }
+    setInvite(parsed)
+    setShowPaste(false)
+    setPasted('')
+    setMessage('Invitation accepted — choose the name the room will see.')
   }
 
   async function leave() {
@@ -121,12 +209,12 @@ export function LiveJuryLobby({
       await closeLiveJury(session)
       clearLiveJurySession(caseId)
       onSession(null)
-      setFallbackUrl(null)
+      setSeats([])
     } catch (error) {
       if (isRoomGoneError(error) || !session.hostToken) {
         clearLiveJurySession(caseId)
         onSession(null)
-        setFallbackUrl(null)
+        setSeats([])
       } else {
         setMessage(
           error instanceof Error
@@ -139,104 +227,144 @@ export function LiveJuryLobby({
     }
   }
 
-  async function copyInvite() {
-    if (!session?.hostToken) return
-    const url = liveInviteUrl(session)
-    try {
-      await navigator.clipboard.writeText(url)
-      setFallbackUrl(null)
-      setMessage('Invitation copied.')
-    } catch {
-      const fragment = `#live-jury=${session.roomId}.${session.inviteToken}.${session.caseId}`
-      history.replaceState(null, '', `${location.pathname}${location.search}${fragment}`)
-      setFallbackUrl(url)
-      setMessage('Copy was blocked. Select and copy the invitation link below.')
-    }
-  }
-
   const activeSession = sessionReady ? session : null
   const checkingSession = Boolean(session) && !sessionReady
 
   return (
-    <section className="rounded-lg border border-neutral-700 bg-neutral-900/70 p-4">
-      <p className="text-xs font-semibold uppercase tracking-wider text-amber-400">
-        Live jury beta
-      </p>
-      <h2 className="mt-1 font-semibold text-neutral-100">
-        Deliberate with real people
-      </h2>
+    <section className="live-lobby">
+      <div className="live-lobby-head">
+        <div>
+          <p className="live-lobby-kicker">Live jury beta</p>
+          <h2 className="live-lobby-title">
+            {activeSession
+              ? 'Your jury room'
+              : invite
+                ? 'You have a seat on this jury'
+                : 'Deliberate with real people'}
+          </h2>
+        </div>
+        {activeSession && (
+          <p className="live-lobby-seat">Seat {activeSession.seatId}</p>
+        )}
+      </div>
+
       {checkingSession ? (
-        <p className="mt-2 text-sm text-neutral-500">Confirming your live room…</p>
+        <p className="live-lobby-muted">Confirming your live room…</p>
       ) : activeSession ? (
-        <div className="mt-3 space-y-3 text-sm text-neutral-300">
-          <p>
-            You have seat {activeSession.seatId}. The live room opens after closing
-            arguments so its human jurors can discuss the same case together.
-          </p>
+        <div className="live-lobby-body">
+          <LiveJuryRoster
+            seats={seats.length > 0 ? seats : [{
+              seatId: activeSession.seatId,
+              displayName: activeSession.displayName,
+            }]}
+            capacity={capacity}
+            mySeatId={activeSession.seatId}
+          />
           {activeSession.hostToken && (
-            <button
-              type="button"
-              onClick={copyInvite}
-              className="w-full rounded-md border border-amber-700 px-3 py-2 font-medium text-amber-100 hover:bg-amber-950/40"
-            >
-              Copy private invitation
-            </button>
+            <LiveJuryInvite
+              session={activeSession}
+              caseTitle={caseTitle}
+              onMessage={setMessage}
+            />
           )}
-          {fallbackUrl && (
-            <label className="block space-y-1">
-              <span className="text-xs uppercase tracking-wider text-neutral-500">
-                Invitation link
-              </span>
-              <input
-                readOnly
-                value={fallbackUrl}
-                onFocus={(event) => event.currentTarget.select()}
-                aria-label="Invitation link"
-                className="w-full rounded-md border border-neutral-700 bg-neutral-950 px-3 py-2 font-mono text-xs text-neutral-100"
-              />
-            </label>
-          )}
+          <details
+            className="live-lobby-more"
+            open={expanded}
+            onToggle={(event) => setExpanded(event.currentTarget.open)}
+          >
+            <summary>How a shared sitting runs</summary>
+            <ExpectationList hosting={Boolean(activeSession.hostToken)} />
+          </details>
           <button
             type="button"
             disabled={busy}
             onClick={leave}
-            className="w-full rounded-md border border-neutral-700 px-3 py-2 text-neutral-300 hover:bg-neutral-800 disabled:opacity-50"
+            className="live-lobby-leave"
           >
-            {activeSession.hostToken ? 'Close live room' : 'Leave live room'}
+            {activeSession.hostToken ? 'Close this room' : 'Leave this room'}
           </button>
         </div>
       ) : available === false ? (
-        <p className="mt-2 text-sm text-neutral-400">
+        <p className="live-lobby-muted">
           Live rooms aren’t open right now. The solo jury remains fully available.
         </p>
       ) : available === null ? (
-        <p className="mt-2 text-sm text-neutral-500">Checking live-room availability…</p>
+        <p className="live-lobby-muted">Checking live-room availability…</p>
       ) : (
-        <div className="mt-3 space-y-3">
-          <p className="text-sm text-neutral-400">
+        <div className="live-lobby-body">
+          <p className="live-lobby-lede">
             {invite
-              ? 'You’ve been invited to this sitting. Choose the name shown to the room.'
-              : 'Start a private room, then share its invitation with up to eleven people.'}
+              ? 'Someone kept a seat for you on this jury. You will watch the same trial, then argue it out together.'
+              : 'Open a private room and share its invitation with up to eleven people. You watch the same trial, then deliberate together.'}
           </p>
-          <input
-            value={name}
-            maxLength={32}
-            onChange={(event) => setName(event.target.value)}
-            placeholder="Name shown to jurors"
-            aria-label="Name shown to jurors"
-            className="w-full rounded-md border border-neutral-700 bg-neutral-950 px-3 py-2 text-neutral-100"
-          />
+          <ExpectationList hosting={!invite} />
+          <label className="live-lobby-field">
+            <span className="live-lobby-label">Name the other jurors will see</span>
+            <input
+              value={name}
+              maxLength={32}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="First name is plenty"
+              aria-label="Name shown to jurors"
+            />
+          </label>
           <button
             type="button"
-            disabled={busy || (!invite && !caseId)}
-            onClick={() => connect(!invite)}
-            className="w-full rounded-md border border-amber-700 px-3 py-2 font-semibold text-amber-100 hover:bg-amber-950/40 disabled:opacity-50"
+            disabled={busy}
+            onClick={() => connect(invite)}
+            className="live-lobby-primary"
           >
-            {busy ? 'Connecting…' : invite ? 'Join this jury' : 'Host a live jury'}
+            {busy
+              ? 'Connecting…'
+              : invite
+                ? 'Take my seat'
+                : 'Open a jury room'}
           </button>
+          {!invite && (
+            <div className="live-lobby-paste">
+              {showPaste ? (
+                <>
+                  <label className="live-lobby-field">
+                    <span className="live-lobby-label">Paste an invitation</span>
+                    <input
+                      value={pasted}
+                      onChange={(event) => setPasted(event.target.value)}
+                      placeholder="Paste the link someone sent you"
+                      aria-label="Paste an invitation link"
+                    />
+                  </label>
+                  <div className="live-lobby-paste-actions">
+                    <button type="button" onClick={acceptPasted} className="live-lobby-secondary">
+                      Use this invitation
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowPaste(false)}
+                      className="live-lobby-quiet"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowPaste(true)}
+                  className="live-lobby-quiet"
+                >
+                  Someone sent me an invitation
+                </button>
+              )}
+            </div>
+          )}
         </div>
       )}
-      {message && <p role="status" className="mt-3 text-sm text-amber-200">{message}</p>}
+
+      {message && (
+        <p role="status" className="live-lobby-message">
+          {message}
+        </p>
+      )}
     </section>
   )
 }

@@ -4,7 +4,11 @@ import {
   joinLiveJury,
   liveJuryDerivationRevision,
   liveInviteFromHash,
+  liveInviteFromText,
+  liveInviteMessage,
   liveInviteUrl,
+  liveJuryRoomStatus,
+  sanitizeDisplayName,
   loadLiveJurySession,
   verifyLiveJurySession,
 } from './liveJury'
@@ -132,5 +136,89 @@ describe('live jury browser client', () => {
     expect(liveJuryDerivationRevision(trial)).toMatch(/^hybrid-v1-[0-9a-f]{8}$/)
     expect(liveJuryDerivationRevision(revised))
       .not.toBe(liveJuryDerivationRevision(trial))
+  })
+})
+
+describe('accepting an invitation that was pasted in', () => {
+  const invite = { roomId: 'room_12', inviteToken: TOKEN, caseId: 'dd-0039' }
+  const url = `https://simjury.com/today/#live-jury=room_12.${TOKEN}.dd-0039`
+
+  it('accepts a full url, a bare fragment, and the raw triple', () => {
+    expect(liveInviteFromText(url)).toEqual(invite)
+    expect(liveInviteFromText(`#live-jury=room_12.${TOKEN}.dd-0039`)).toEqual(invite)
+    expect(liveInviteFromText(`room_12.${TOKEN}.dd-0039`)).toEqual(invite)
+    expect(liveInviteFromText(`  ${url}  `)).toEqual(invite)
+  })
+
+  it('rejects anything that is not an invitation', () => {
+    expect(liveInviteFromText('')).toBeNull()
+    expect(liveInviteFromText('https://simjury.com/today/')).toBeNull()
+    expect(liveInviteFromText(`room_12.${TOKEN}`)).toBeNull()
+    expect(liveInviteFromText(`room/12.${TOKEN}.dd-0039`)).toBeNull()
+  })
+})
+
+describe('display names shown to the room', () => {
+  it('accepts ordinary names and normalises whitespace', () => {
+    expect(sanitizeDisplayName('  Ada   Vance ')).toBe('Ada Vance')
+    expect(sanitizeDisplayName('Jo')).toBe('Jo')
+  })
+
+  it('rejects what the Worker would reject, so the UI fails early', () => {
+    expect(sanitizeDisplayName('')).toBeNull()
+    expect(sanitizeDisplayName('   ')).toBeNull()
+    expect(sanitizeDisplayName('a'.repeat(33))).toBeNull()
+    expect(sanitizeDisplayName('Ada\u0007Vance')).toBeNull()
+    // A bidirectional override could reorder the text around a name in
+    // another juror's transcript.
+    expect(sanitizeDisplayName('Ada\u202eVance')).toBeNull()
+  })
+})
+
+describe('the room roster', () => {
+  it('reads the seats the Worker already returns, sorted and bounded', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      case_id: 'dd-0039',
+      capacity: 12,
+      seats: [
+        { seat_id: 3, display_name: 'Cam' },
+        { seat_id: 1, display_name: 'Ada' },
+        { seat_id: 99, display_name: 'Out of range' },
+        { seat_id: 2, display_name: '   ' },
+      ],
+    }), { status: 200 }))
+    vi.stubGlobal('fetch', fetchMock)
+
+    const status = await liveJuryRoomStatus('room_12', TOKEN)
+
+    expect(status.caseId).toBe('dd-0039')
+    expect(status.capacity).toBe(12)
+    expect(status.seats).toEqual([
+      { seatId: 1, displayName: 'Ada' },
+      { seatId: 3, displayName: 'Cam' },
+    ])
+    expect(fetchMock.mock.calls[0]?.[0]).toBe('/api/live/rooms/room_12')
+  })
+
+  it('falls back to the beta seat cap when the room omits one', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(
+      JSON.stringify({ case_id: 'dd-0039', seats: [] }),
+      { status: 200 },
+    )))
+
+    expect((await liveJuryRoomStatus('room_12', TOKEN)).capacity).toBe(12)
+  })
+})
+
+describe('the written invitation', () => {
+  it('explains the sitting and never leaks the verdict', () => {
+    const link = `https://simjury.com/today/#live-jury=room_12.${TOKEN}.dd-0039`
+    const message = liveInviteMessage(link, 'The Quiet Handover')
+
+    expect(message).toContain(link)
+    expect(message).toContain('The Quiet Handover')
+    expect(message).toContain('20 minutes')
+    expect(message).not.toMatch(/guilty|not guilty|verdict is/i)
+    expect(liveInviteMessage(link)).toContain('case')
   })
 })
