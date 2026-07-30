@@ -43,12 +43,12 @@ reviews:
     # Exclusions only. A single positive pattern would switch CodeRabbit into
     # allowlist mode, where everything not named is "included by none" — which
     # is exactly how every source file stopped being reviewed.
-    - "!**/*.{ttf,woff,woff2}"
-    # Player media under site/app/public/media/** is deliberately NOT excluded.
-    # Source art lives in site/art/** and is excluded above; leaving shipped
-    # media in scope means a media-only Daily Docket PR still has files to
-    # review, instead of CodeRabbit skipping and the presence gate never
-    # getting "Review completed".
+    # Every exclusion above is scoped by directory, never by file extension.
+    # An extension rule reaches into site/app/public/media/**, and excluding
+    # player media is what makes a media-only Daily Docket PR skip entirely:
+    # CodeRabbit reviews nothing, so the presence gate never sees "Review
+    # completed". Source art is excluded by directory (site/art/**) instead.
+    # pr:coderabbit-filters:verify enforces both halves of this.
   path_instructions:
     - path: "site/app/**"
       instructions: >-

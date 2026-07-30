@@ -68,11 +68,40 @@ if (!filters) {
     'site/src/worker.js',
     '.github/workflows/ci.yml',
     'scripts/pr-arm-and-park.mjs',
-    'site/app/public/media/cover.webp',
   ];
   for (const path of mustBeReviewable) {
     if (!isReviewable(path, filters)) {
       failures.push(`${path} would not be reviewed by CodeRabbit`);
+    }
+  }
+
+  // Player media is the case that produced the bad config in the first place:
+  // a media-only PR whose every file is excluded gets skipped, and the presence
+  // gate then never sees "Review completed". Naming a couple of extensions here
+  // would leave the same hole one extension over — `!**/*.mp4` would pass while
+  // re-breaking a video-only PR. Assert the invariant instead: *no* exclusion
+  // may match anything under the player-media directory.
+  const PLAYER_MEDIA = 'site/app/public/media/';
+  // Probe a fixed list of shipped media types rather than the extensions a
+  // pattern happens to name. Deriving them from the pattern misses a bare
+  // `!**/*.webp` unless the parser understands both `{a,b}` groups and plain
+  // suffixes, and it also makes every extension rule flag itself — `!**/*.lock`
+  // is a perfectly good exclusion. Naming what counts as player media is the
+  // honest version of the question.
+  const MEDIA_TYPES = [
+    'webp', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'avif',
+    'mp3', 'ogg', 'wav', 'm4a', 'aac', 'flac',
+    'mp4', 'webm', 'mov', 'vtt',
+  ];
+  for (const pattern of filters.filter((p) => p.startsWith('!'))) {
+    const probe = `${PLAYER_MEDIA}sample`;
+    const candidates = [probe, ...MEDIA_TYPES.map((ext) => `${probe}.${ext}`)];
+    const hit = candidates.find((path) => globMatches(pattern.slice(1), path));
+    if (hit) {
+      failures.push(
+        `${pattern} excludes ${hit} — player media must stay reviewable so a `
+        + 'media-only PR is not skipped entirely',
+      );
     }
   }
 
