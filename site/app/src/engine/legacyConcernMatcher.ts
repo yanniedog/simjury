@@ -1,4 +1,4 @@
-import type { PlayerAction } from './deliberation'
+import type { PlayerAction, PlayerAppeal } from './deliberation'
 import {
   understandContribution,
   type DeliberationLanguagePack,
@@ -118,6 +118,12 @@ export function actionForConcern(
   concern: ConcernInterpretation,
   claimedPosition: ClaimedPosition,
   targetJurorId?: string,
+  /**
+   * The technique the player chose. Omitted, the round behaves exactly as it
+   * did before the persuasion layer — which is what keeps the CI dynamics gate
+   * and the determinism fixtures byte-identical.
+   */
+  appeal?: PlayerAppeal,
 ): PlayerAction {
   const beat = trial.beats.find(({ id }) => id === concern.beatId)
   if (!beat) throw new Error(`Unknown concern beat ${concern.beatId}`)
@@ -125,6 +131,7 @@ export function actionForConcern(
     beatId: beat.id,
     summary: concern.understanding.playerText.replace(/\s+/g, ' ').trim().slice(0, 500),
     targetJurorId,
+    ...(appeal ? { appeal } : {}),
   }
   // Legal directions stay neutral cites — never invert a burden/doubt
   // direction into a guilt or innocence push from the claimed button.

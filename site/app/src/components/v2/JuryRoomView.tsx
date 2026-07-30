@@ -25,12 +25,14 @@ import {
   phaseNarratorCue,
   REASONABLE_DOUBT_DIRECTION,
 } from '../../lib/narratorCues'
+import type { PlayerMove } from '../../engine/persuasion'
+import { claimApplies, movesForBeatKind } from '../../lib/moveCopy'
 import type { Verdict } from './DocketVerdict'
+import { DeliberationComposer } from './DeliberationComposer'
 import { JuryBench } from './JuryBench'
 import { FeedLine } from './RoomTranscript'
 import { RoundStepper } from './RoundStepper'
 import type { LiveJurySession } from '../../lib/liveJury'
-import { EvidenceIndex } from './EvidenceIndex'
 import type { VerdictReflection } from '../../lib/storage'
 import { LiveJuryPanel } from './LiveJuryPanel'
 import { NarratorCue } from './NarratorCue'
@@ -112,9 +114,12 @@ export function JuryRoomView({
   const [notesOwner, setNotesOwner] = useState<string | null>(null)
   const [concernText, setConcernText] = useState('')
   const [concernFeedback, setConcernFeedback] = useState<string | null>(null)
-  const [pendingClaim, setPendingClaim] = useState<ClaimedPosition | null>(null)
   const [targetJurorId, setTargetJurorId] = useState('')
   const [stirredIds, setStirredIds] = useState<readonly string[]>([])
+  /** How the player wants to put the point, as distinct from which way it cuts. */
+  const [move, setMove] = useState<PlayerMove>('assert')
+  const [claim, setClaim] = useState<ClaimedPosition>('NG')
+  const [supportBeatId, setSupportBeatId] = useState('')
   const transcriptRef = useRef<HTMLUListElement>(null)
   const followTranscriptRef = useRef(true)
   const headingRef = useRef<HTMLHeadingElement>(null)
@@ -337,15 +342,13 @@ export function JuryRoomView({
     setRaising(false)
     raisingRef.current = false
     setConcernFeedback(null)
-    setPendingClaim(null)
   }
 
-  function submitConcern(position: ClaimedPosition, useSelected = false) {
+  function submitConcern(useSelected = false) {
     if (!concernText.trim()) {
       setConcernFeedback('Put your concern in your own words first.')
       return
     }
-    const claimed = useSelected ? (pendingClaim ?? position) : position
     const targetSeat = trial.jury.jurors.find(({ id }) => id === targetJurorId)?.seat
     const interpreted = interpretLegacyConcern(
       trial,
@@ -355,7 +358,6 @@ export function JuryRoomView({
       targetSeat,
     )
     if (interpreted.clarification && !useSelected) {
-      setPendingClaim(position)
       setSelectedBeat(interpreted.beatId)
       setConcernFeedback(interpreted.clarification)
       return
@@ -363,16 +365,27 @@ export function JuryRoomView({
     const concern = useSelected
       ? { ...interpreted, beatId: selectedBeat, clarification: null }
       : interpreted
+    // The room may resolve the point onto a different beat than the one
+    // showing, so re-validate the technique against what is actually raised.
+    const resolved = trial.beats.find(({ id }) => id === concern.beatId) ?? beat
+    const allowed = movesForBeatKind(resolved.kind)
+    const chosenMove = allowed.includes(move) ? move : allowed[0]
     setSelectedBeat(concern.beatId)
     runRound(actionForConcern(
       trial,
       concern,
-      claimed,
+      claimApplies(chosenMove) ? claim : 'U',
       targetJurorId || undefined,
+      {
+        move: chosenMove,
+        ...(chosenMove === 'connect_evidence' && supportBeatId
+          ? { supportBeatId }
+          : {}),
+      },
     ))
     setConcernText('')
     setConcernFeedback(null)
-    setPendingClaim(null)
+    setSupportBeatId('')
   }
 
   function skipListening() {
@@ -448,6 +461,8 @@ export function JuryRoomView({
   const agendaBeats = state.agenda
     .map((id) => trial.beats.find((b) => b.id === id))
     .filter((b): b is NonNullable<typeof b> => Boolean(b))
+  const composerMoves = movesForBeatKind(beat.kind)
+  const composerMove = composerMoves.includes(move) ? move : composerMoves[0]
 
   return (
     <div className="phase-view jury-room-view space-y-5">
@@ -741,120 +756,32 @@ export function JuryRoomView({
           )}
         </div>
       ) : raising && inOpenRound ? (
-        <div className="deliberation-console space-y-3 border p-4">
-          <p className="text-xs uppercase tracking-wider text-neutral-500">
-            Your turn · raise your own concern
-          </p>
-          <p className="text-sm text-neutral-400">
-            Put it in your own words. The room will connect it to the closest
-            issue or recollection, ask if it is unsure, and answer the point.
-          </p>
-          <label className="block space-y-1">
-            <span className="text-xs font-medium text-neutral-400">
-              Address the room or one juror
-            </span>
-            <select
-              value={targetJurorId}
-              onChange={(event) => setTargetJurorId(event.target.value)}
-              className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm text-neutral-200"
-            >
-              <option value="">The whole room</option>
-              {trial.jury.jurors.map((juror) => (
-                <option key={juror.id} value={juror.id}>
-                  Seat {juror.seat} · {juror.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="block space-y-1">
-            <span className="text-xs font-medium text-neutral-400">
-              What do you want them to consider?
-            </span>
-            <textarea
-              value={concernText}
-              maxLength={500}
-              rows={3}
-              onChange={(event) => {
-                setConcernText(event.target.value)
-                setConcernFeedback(null)
-              }}
-              placeholder="For example: I don't think the access log proves who held the device."
-              className="w-full resize-y rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm leading-relaxed text-neutral-100"
-            />
-            <span className="block text-right text-xs text-neutral-600">
-              {concernText.length}/500
-            </span>
-          </label>
-          {concernFeedback && (
-            <div
-              role="status"
-              className="rounded-lg border border-amber-800/70 bg-amber-950/30 p-3 text-sm text-amber-100"
-            >
-              {concernFeedback}
-            </div>
-          )}
-          <div className="space-y-2">
-            <p className="text-xs font-medium uppercase tracking-wider text-neutral-500">
-              Pick the recollection this hangs on
-            </p>
-            <EvidenceIndex
-              trial={trial}
-              notes={notes}
-              visibleBeatCount={trial.beats.length}
-              selectedBeatId={selectedBeat}
-              raisedBeatIds={state.raisedBeatIds}
-              onSelectBeat={setSelectedBeat}
-            />
-          </div>
-          {concernFeedback ? (
-            <button
-              type="button"
-              onClick={() => submitConcern(pendingClaim ?? 'U', true)}
-              className="w-full rounded-lg bg-neutral-100 px-4 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
-            >
-              Use selected recollection anyway
-            </button>
-          ) : beat.kind === 'direction' ? (
-            <button
-              type="button"
-              onClick={() => submitConcern('U')}
-              className="w-full rounded-lg bg-neutral-100 px-4 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
-            >
-              Raise this legal direction
-            </button>
-          ) : (
-            <div className="grid gap-2 sm:grid-cols-3">
-              <button
-                type="button"
-                onClick={() => submitConcern('NG')}
-                className="rounded-lg bg-neutral-100 px-3 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-white"
-              >
-                This raises doubt
-              </button>
-              <button
-                type="button"
-                onClick={() => submitConcern('G')}
-                className="rounded-lg border border-neutral-600 px-3 py-2.5 text-sm font-semibold text-neutral-200 transition hover:bg-neutral-800"
-              >
-                This supports guilt
-              </button>
-              <button
-                type="button"
-                onClick={() => submitConcern('U')}
-                className="rounded-lg border border-neutral-600 px-3 py-2.5 text-sm font-semibold text-neutral-200 transition hover:bg-neutral-800"
-              >
-                Ask the room to test it
-              </button>
-            </div>
-          )}
-          <button
-            type="button"
-            onClick={cancelRaise}
-            className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-xs text-neutral-400 transition hover:bg-neutral-900"
-          >
-            Never mind — keep the agenda moving
-          </button>
-        </div>
+        <DeliberationComposer
+          trial={trial}
+          notes={notes}
+          profiles={state.profiles}
+          relations={state.persuasion.byJuror}
+          selectedBeatId={selectedBeat}
+          raisedBeatIds={state.raisedBeatIds}
+          move={composerMove}
+          claim={claim}
+          targetJurorId={targetJurorId}
+          supportBeatId={supportBeatId}
+          concernText={concernText}
+          feedback={concernFeedback}
+          overrideBeat={Boolean(concernFeedback)}
+          onSelectBeat={setSelectedBeat}
+          onMoveChange={setMove}
+          onClaimChange={setClaim}
+          onTargetChange={setTargetJurorId}
+          onSupportChange={setSupportBeatId}
+          onConcernChange={(text) => {
+            setConcernText(text)
+            setConcernFeedback(null)
+          }}
+          onSubmit={() => submitConcern(Boolean(concernFeedback))}
+          onCancel={cancelRaise}
+        />
       ) : null}
     </div>
   )

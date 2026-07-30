@@ -255,6 +255,34 @@
   .dossier-notes li { color: var(--steel-300); font-size: .78rem; line-height: 1.45; }
   .dossier-notes li span { margin-right: .3rem; color: var(--brass-400); font-family: ui-monospace, monospace; font-size: .7rem; }
 
+  /* The composer — technique and direction as separate choices. */
+  .composer { display: grid; gap: 1rem; padding: 1.1rem; border: 1px solid rgb(214 185 121 / 20%); border-radius: 1rem; background: rgb(21 29 33 / 88%); box-shadow: 0 1.25rem 3rem rgb(0 0 0 / 18%); }
+  .composer-head { display: grid; gap: .15rem; }
+  .composer-step { margin: 0; color: var(--brass-400); font-size: .62rem; font-weight: 750; letter-spacing: .16em; text-transform: uppercase; }
+  .composer-title { margin: 0; color: var(--paper-50); font-family: Georgia, serif; font-size: 1.35rem; font-weight: 400; }
+  .composer-field { display: grid; gap: .4rem; margin: 0; padding: 0; border: 0; }
+  .composer-label { color: var(--steel-300); font-size: .68rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+  .composer-textarea { width: 100%; min-height: 4.5rem; padding: .7rem .8rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .7rem; color: var(--paper-50); background: rgb(8 11 13 / 65%); font-size: .9rem; line-height: 1.5; resize: vertical; }
+  .composer-count { color: var(--steel-500); font-size: .7rem; text-align: right; }
+  .composer-select { width: 100%; min-height: 2.75rem; padding: .5rem .7rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .65rem; color: var(--paper-50); background: rgb(8 11 13 / 70%); font-size: .85rem; }
+  .composer-note { color: var(--steel-500); font-size: .75rem; line-height: 1.45; }
+  .composer-feedback { padding: .7rem .8rem; border: 1px solid rgb(214 185 121 / 45%); border-radius: .7rem; color: #f5e3bd; background: rgb(214 185 121 / 12%); font-size: .82rem; line-height: 1.5; }
+  .move-grid { display: grid; gap: .45rem; }
+  .move-card { display: grid; gap: .2rem; min-height: 3.5rem; padding: .65rem .8rem; border: 1px solid rgb(244 240 232 / 12%); border-radius: .75rem; background: rgb(8 11 13 / 50%); text-align: left; transition: border-color .18s ease, background-color .18s ease; }
+  .move-card:hover { border-color: rgb(214 185 121 / 40%); }
+  .move-card.selected { border-color: var(--brass-400); background: rgb(214 185 121 / 12%); box-shadow: inset 0 0 0 1px rgb(214 185 121 / 30%); }
+  .move-card-label { color: var(--paper-50); font-size: .85rem; font-weight: 650; }
+  .move-card-hint { color: var(--steel-500); font-size: .74rem; line-height: 1.45; }
+  .move-card.selected .move-card-hint { color: var(--steel-300); }
+  .claim-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .45rem; }
+  .claim-btn { min-height: 3rem; padding: .5rem .6rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .7rem; color: var(--steel-300); background: rgb(8 11 13 / 50%); font-size: .78rem; font-weight: 600; }
+  .claim-btn.selected { border-color: var(--brass-400); color: var(--paper-50); background: rgb(214 185 121 / 14%); }
+  .composer-actions { display: grid; gap: .5rem; }
+  .composer-send { min-height: 3rem; border: 0; border-radius: .75rem; color: var(--court-950); background: var(--paper-50); font-size: .9rem; font-weight: 700; }
+  .composer-send:hover { background: var(--brass-400); }
+  .composer-cancel { min-height: 2.5rem; border: 1px solid rgb(244 240 232 / 12%); border-radius: .7rem; color: var(--steel-500); background: transparent; font-size: .78rem; }
+  .composer-cancel:hover { color: var(--steel-300); background: rgb(8 11 13 / 40%); }
+
   /* The read of the room — engagement only, never a leaning or a tally. */
   .room-read { display: grid; gap: .6rem; padding: .9rem 1rem; border: 1px solid rgb(214 185 121 / 22%); border-radius: 1rem; background: rgb(214 185 121 / 7%); animation: room-line-in .35s ease; }
   .room-read-summary { margin: 0; color: var(--paper-50); font-size: .85rem; font-weight: 600; }
@@ -347,7 +375,15 @@
   .local-note { grid-column: 1 / -1; }
 }
 
+@media (min-width: 34rem) {
+  /* Two technique cards abreast once the hints still fit on two lines. */
+  .move-grid { grid-template-columns: 1fr 1fr; }
+  .composer-actions { grid-template-columns: 1fr auto; align-items: center; }
+  .composer-cancel { order: -1; }
+}
+
 @media (max-width: 46rem) {
+  .claim-row { grid-template-columns: 1fr; }
   .dossier-standing { font-size: .58rem; }
   .invite-actions > button { flex: 1 1 100%; }
   .docket-topbar { grid-template-columns: auto minmax(0, 1fr); gap: .55rem .75rem; padding-inline: 1rem; }
