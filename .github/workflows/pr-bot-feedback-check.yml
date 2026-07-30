@@ -1,14 +1,14 @@
 name: pr-bot-feedback-check
 
-# Required thread-closure gate. Each event evaluates once; unresolved feedback
-# fails promptly and a reply/push/re-run evaluates it again.
+# Required thread-closure gate. Each event evaluates once, with only a short
+# bounded retry to cover the reply-before-resolution race.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
   pull_request_review:
     types: [submitted]
   pull_request_review_comment:
-    types: [created]
+    types: [created, edited, deleted]
   workflow_dispatch:
     inputs:
       pr_number:
@@ -19,12 +19,6 @@ on:
 permissions:
   contents: read
   pull-requests: read
-
-concurrency:
-  # Duplicate same-name required checks all count in native protection. Keep
-  # short sibling runs serialized so none becomes a CANCELLED blocker.
-  group: bot-feedback-gate-${{ github.event.pull_request.number || inputs.pr_number || github.run_id }}
-  cancel-in-progress: false
 
 jobs:
   bot-feedback-gate:
@@ -55,7 +49,10 @@ jobs:
             PR="${{ github.event.pull_request.number }}"
           fi
           [[ "$PR" =~ ^[0-9]+$ ]] || { echo "::error::Pull request number must be numeric"; exit 1; }
-          PR_STATE=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .state)
+          if ! PR_STATE=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .state); then
+            echo "::error::GitHub API could not read PR state; retry this check."
+            exit 2
+          fi
           if [ "$PR_STATE" != "open" ]; then
             echo "gate_exempt=true" >> "$GITHUB_OUTPUT"
             echo "gate_exempt_reason=pull-request-$PR_STATE" >> "$GITHUB_OUTPUT"
@@ -85,13 +82,21 @@ jobs:
             PR="${{ github.event.pull_request.number }}"
           fi
           [[ "$PR" =~ ^[0-9]+$ ]] || { echo "::error::Pull request number must be numeric"; exit 1; }
-          set +e
-          npm run pr:bot-feedback-check -- --pr "$PR" --skip-bot-presence
-          code=$?
-          set -e
-          if [ "$code" -eq 0 ]; then
-            exit 0
-          fi
+          code=1
+          for attempt in 1 2 3 4; do
+            set +e
+            npm run pr:bot-feedback-check -- --pr "$PR" --skip-bot-presence
+            code=$?
+            set -e
+            if [ "$code" -eq 0 ]; then
+              exit 0
+            fi
+            if [ "$code" -ne 1 ] || [ "$attempt" -eq 4 ]; then
+              break
+            fi
+            echo "Feedback still open; retrying shortly in case a reply-triggered run preceded thread resolution."
+            sleep 5
+          done
           if [ "$code" -eq 2 ]; then
             echo "::error::GitHub API rate limit prevented the feedback audit; rerun this check."
           else

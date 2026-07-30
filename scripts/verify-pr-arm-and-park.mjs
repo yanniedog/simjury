@@ -179,6 +179,14 @@ assert(
   }).names.join(',') === 'validate,bot-feedback-gate',
   'policy API failure preserves validate plus feedback fallback',
 );
+assert(
+  combineRequiredCheckPolicy({
+    protection: { ok: false },
+    rules: { ok: true, data: [] },
+    fallbackRequiredNames: ['validate', 'bot-feedback-gate'],
+  }).names.join(',') === 'validate,bot-feedback-gate',
+  'partial policy API access preserves configured fallback checks',
+);
 
 const exactHeadState = evaluateRequiredCheckState({
   requiredNames: livePolicy.names,
@@ -205,6 +213,32 @@ assert(
     !exactHeadState.failed &&
     exactHeadState.pendingNames.join(',') === 'validate',
   'newest exact-head observation wins across checks and statuses',
+);
+assert(
+  evaluateRequiredCheckState({
+    requiredChecks: [{ context: 'validate', appId: 100 }],
+    headCheckRuns: [{
+      id: 24,
+      name: 'validate',
+      app: { id: 200 },
+      conclusion: 'success',
+      completed_at: '2026-07-31T00:02:00Z',
+    }],
+  }).pending,
+  'a different GitHub App cannot satisfy an app-bound required check',
+);
+assert(
+  !evaluateRequiredCheckState({
+    requiredChecks: [{ context: 'validate', appId: 100 }],
+    headCheckRuns: [{
+      id: 25,
+      name: 'validate',
+      app: { id: 100 },
+      conclusion: 'success',
+      completed_at: '2026-07-31T00:02:00Z',
+    }],
+  }).pending,
+  'the bound GitHub App can satisfy its required check',
 );
 
 const missingState = evaluateRequiredCheckState({
@@ -239,19 +273,18 @@ assert(
 );
 
 const feedbackWorkflow = readFileSync('.github/workflows/pr-bot-feedback-check.yml', 'utf8');
-const feedbackGroup = feedbackWorkflow.match(/^\s*group:\s*(.+)$/m)?.[1] || '';
-assert(/pull_request\.number/.test(feedbackGroup), 'feedback concurrency is grouped by PR');
-assert(!/head\.sha|github\.sha/.test(feedbackGroup), 'feedback concurrency excludes head SHA');
 assert(
-  /^\s*cancel-in-progress:\s*false\s*$/m.test(feedbackWorkflow),
-  'feedback events serialize without cancelled required contexts',
+  !/^concurrency:/m.test(feedbackWorkflow),
+  'feedback events retain every pending and running required-check result',
 );
-assert(!/^\s*queue:/m.test(feedbackWorkflow), 'feedback concurrency has no queue cap');
 assert(/^\s*timeout-minutes:\s*5\s*$/m.test(feedbackWorkflow), 'feedback run is capped at five minutes');
 assert(/PR_STATE=\$\(gh api/.test(feedbackWorkflow), 'stale closed-PR events are skipped');
+assert(/types:\s*\[created, edited, deleted\]/.test(feedbackWorkflow), 'comment edits and deletes refresh feedback');
+assert(/for attempt in 1 2 3 4/.test(feedbackWorkflow), 'reply-resolution race has a bounded retry');
+assert(/sleep 5/.test(feedbackWorkflow), 'bounded retry uses a short delay');
 assert(
   !/seq 1 40|sleep 60|40 minutes/.test(feedbackWorkflow),
-  'feedback workflow is single-shot without a retry loop',
+  'feedback workflow has no long-lived polling loop',
 );
 
 if (failed) {
