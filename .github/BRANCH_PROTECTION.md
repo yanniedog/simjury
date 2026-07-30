@@ -32,10 +32,15 @@ Gemini, and local Qwen output remain advisory, but every substantive finding
 still needs a reply and resolution. Automatic Qwen and bot-presence workflows
 are disabled.
 
-The feedback workflow serializes events in one PR-only concurrency group. It
-does not cancel in-progress sibling runs because a cancelled review/reply event
-can become GitHub's selected required context even when another run passed. The
-group must not include the head SHA or a non-standard queue cap.
+The feedback workflow is single-shot and capped at five minutes. It serializes
+events in one PR-only concurrency group without cancelling siblings because
+every duplicate same-name required check must pass under native protection.
+The group must not include the head SHA or a non-standard queue cap.
+
+Gate tooling reads the required contexts from live protection/rules and
+evaluates their newest check-run or status on the exact current PR head.
+Missing contexts remain pending; the fallback policy is still exactly
+`validate` plus `bot-feedback-gate`.
 
 ## Operator setup (one-time)
 

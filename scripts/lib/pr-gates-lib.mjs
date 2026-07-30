@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { readBotWaitStateFile } from './bot-wait-state.mjs';
 import { hasGh, ghJson, repoSlug } from './gh-pr-review-threads.mjs';
 import { gateExemptReason } from './pr-gate-exempt.mjs';
+import { fetchRequiredCheckState } from './required-ci-checks.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = path.resolve(__dirname, '../..');
@@ -113,80 +114,36 @@ function preferLatestCheck(checks) {
   }
   return [...byName.values()];
 }
-export function fetchRequiredCi(prNumber, spawnGh = spawnSync) {
-  const r = spawnGh(
-    'gh',
-    ['pr', 'checks', String(prNumber), '--required', '--json', 'name,bucket,state,completedAt'],
-    { encoding: 'utf8' },
-  );
-  const stdout = (r.stdout || '').trim();
-  if (stdout) {
-    try {
-      const raw = JSON.parse(stdout);
-      const checks = Array.isArray(raw) ? preferLatestCheck(raw) : [];
-      if (!checks.length) {
-        return {
-          ok: true,
-          pending: true,
-          unreported: true,
-          failed: false,
-          failedNames: [],
-          checks,
-        };
-      }
-      let pending = false;
-      let failed = false;
-      const failedNames = [];
-      for (const c of checks) {
-        if (c.bucket === 'pending') pending = true;
-        if (
-          c.bucket === 'fail' ||
-          c.bucket === 'cancel' ||
-          c.state === 'FAILURE' ||
-          c.state === 'ERROR' ||
-          c.state === 'CANCELLED'
-        ) {
-          failed = true;
-          failedNames.push(c.name);
-        }
-      }
-      return { ok: true, pending, unreported: false, failed, failedNames, checks };
-    } catch {
-      // fall through to status-based handling
-    }
+export function fetchRequiredCi(
+  prNumber,
+  {
+    fetchPr = ghJson,
+    resolveRepo = repoSlug,
+    fetchState = fetchRequiredCheckState,
+  } = {},
+) {
+  try {
+    const pr = fetchPr([
+      'pr',
+      'view',
+      String(prNumber),
+      '--json',
+      'headRefOid,baseRefName',
+    ]);
+    const slug = resolveRepo();
+    const repo = typeof slug === 'string' ? slug : `${slug.owner}/${slug.name}`;
+    const result = fetchState({
+      prNumber,
+      repo,
+      headSha: pr.headRefOid,
+      baseRefName: pr.baseRefName,
+      fallbackRequiredNames: MERGE_REQUIRED_CHECK_NAMES,
+    });
+    if (result.error) return { ok: false, error: result.error };
+    return { ok: true, ...result };
+  } catch (error) {
+    return { ok: false, error: error.message };
   }
-  if (r.status === 8) {
-    return {
-      ok: true,
-      pending: true,
-      unreported: true,
-      failed: false,
-      failedNames: [],
-      checks: [],
-    };
-  }
-  if (r.status !== 0) {
-    const msg = (r.stderr || '').trim() || `gh pr checks exit ${r.status}`;
-    if (/no checks reported/i.test(msg) || /no required checks reported/i.test(msg)) {
-      return {
-        ok: true,
-        pending: true,
-        unreported: true,
-        failed: false,
-        failedNames: [],
-        checks: [],
-      };
-    }
-    return { ok: false, error: msg };
-  }
-  return {
-    ok: true,
-    pending: true,
-    unreported: true,
-    failed: false,
-    failedNames: [],
-    checks: [],
-  };
 }
 
 export function fetchNamedChecks(prNumber, names) {

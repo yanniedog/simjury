@@ -17,6 +17,10 @@ import {
   fetchRequiredCi,
   gateCiRequired,
 } from './lib/pr-gates-lib.mjs';
+import {
+  combineRequiredCheckPolicy,
+  evaluateRequiredCheckState,
+} from './lib/required-ci-checks.mjs';
 
 let failed = 0;
 function assert(cond, msg) {
@@ -136,6 +140,10 @@ const terminalWins = classifyProgressionOutcome(
   new Error('local progression failed'),
 );
 assert(terminalWins.kind === 'merged', 'terminal merge wins over progression error and block');
+assert(
+  classifyProgressionOutcome({ state: 'MERGED' }, null, null).kind === 'merged',
+  'merged-terminal progression is null-safe',
+);
 
 const progressionFailure = classifyProgressionOutcome(
   { state: 'OPEN' },
@@ -146,30 +154,88 @@ assert(
   'non-terminal progression failure remains a hard error',
 );
 
-for (const message of ['no checks reported', 'no required checks reported']) {
-  const ci = fetchRequiredCi(276, () => ({ status: 1, stdout: '', stderr: message }));
-  assert(ci.ok && ci.pending && ci.unreported && !ci.failed, `${message} = pending`);
-  const gate = gateCiRequired(276, () => ci);
-  assert(
-    !gate.pass && gate.pending && gate.unreported && classifyGateFailure(gate) === 'waiting',
-    `${message} gate = waiting`,
-  );
-}
-
-const emptyChecks = fetchRequiredCi(276, () => ({ status: 0, stdout: '[]', stderr: '' }));
+const livePolicy = combineRequiredCheckPolicy({
+  protection: {
+    ok: true,
+    data: { required_status_checks: { contexts: ['validate'] } },
+  },
+  rules: {
+    ok: true,
+    data: [{
+      type: 'required_status_checks',
+      parameters: { required_status_checks: [{ context: 'bot-feedback-gate' }] },
+    }],
+  },
+});
 assert(
-  emptyChecks.ok && emptyChecks.pending && emptyChecks.unreported,
-  'empty required-check list = structurally pending',
+  livePolicy.names.join(',') === 'validate,bot-feedback-gate',
+  'required contexts come from live protection and rules',
 );
 assert(
-  classifyGateFailure({
-    id: 'ci-required',
-    pass: false,
-    pending: true,
-    unreported: true,
-    detail: 'checks absent',
-  }) === 'waiting',
-  'unreported required checks classify structurally as waiting',
+  combineRequiredCheckPolicy({
+    protection: { ok: false },
+    rules: { ok: false },
+    fallbackRequiredNames: ['validate', 'bot-feedback-gate'],
+  }).names.join(',') === 'validate,bot-feedback-gate',
+  'policy API failure preserves validate plus feedback fallback',
+);
+
+const exactHeadState = evaluateRequiredCheckState({
+  requiredNames: livePolicy.names,
+  prChecks: [{
+    name: 'validate',
+    bucket: 'pass',
+    startedAt: '2026-07-31T00:00:00Z',
+  }],
+  headCheckRuns: [{
+    id: 22,
+    name: 'validate',
+    status: 'in_progress',
+    started_at: '2026-07-31T00:01:00Z',
+  }],
+  commitStatuses: [{
+    id: 23,
+    context: 'bot-feedback-gate',
+    state: 'success',
+    updated_at: '2026-07-31T00:01:30Z',
+  }],
+});
+assert(
+  exactHeadState.pending &&
+    !exactHeadState.failed &&
+    exactHeadState.pendingNames.join(',') === 'validate',
+  'newest exact-head observation wins across checks and statuses',
+);
+
+const missingState = evaluateRequiredCheckState({
+  requiredNames: ['validate', 'bot-feedback-gate'],
+});
+assert(
+  missingState.pending &&
+    missingState.unreported &&
+    missingState.missingNames.join(',') === 'validate,bot-feedback-gate',
+  'missing required contexts remain pending',
+);
+const missingGate = gateCiRequired(279, () => ({ ok: true, ...missingState }));
+assert(
+  missingGate.pending && classifyGateFailure(missingGate) === 'waiting',
+  'missing required contexts classify structurally as waiting',
+);
+
+let exactHeadRequest = null;
+const wrappedState = fetchRequiredCi(279, {
+  fetchPr: () => ({ headRefOid: 'current-head-279', baseRefName: 'main' }),
+  resolveRepo: () => ({ owner: 'yanniedog', name: 'simjury' }),
+  fetchState: (request) => {
+    exactHeadRequest = request;
+    return missingState;
+  },
+});
+assert(
+  wrappedState.ok &&
+    exactHeadRequest?.headSha === 'current-head-279' &&
+    exactHeadRequest?.fallbackRequiredNames?.join(',') === 'validate,bot-feedback-gate',
+  'gate evaluation is bound to the current PR head and canonical fallback',
 );
 
 const feedbackWorkflow = readFileSync('.github/workflows/pr-bot-feedback-check.yml', 'utf8');
@@ -181,6 +247,12 @@ assert(
   'feedback events serialize without cancelled required contexts',
 );
 assert(!/^\s*queue:/m.test(feedbackWorkflow), 'feedback concurrency has no queue cap');
+assert(/^\s*timeout-minutes:\s*5\s*$/m.test(feedbackWorkflow), 'feedback run is capped at five minutes');
+assert(/PR_STATE=\$\(gh api/.test(feedbackWorkflow), 'stale closed-PR events are skipped');
+assert(
+  !/seq 1 40|sleep 60|40 minutes/.test(feedbackWorkflow),
+  'feedback workflow is single-shot without a retry loop',
+);
 
 if (failed) {
   console.error(`\n${failed} assertion(s) failed`);
