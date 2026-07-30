@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { buildHybridTranscript } from '../../engine/liveJurorBridge'
-import type { LiveJurySession } from '../../lib/liveJury'
+import { liveJuryRoomStatus, type LiveJurySession } from '../../lib/liveJury'
 import type { DocketCase } from '../../lib/v2/caseSchema'
 import {
   LiveJuryConnection,
@@ -85,6 +85,26 @@ export function LiveJuryPanel({
     if (room.status === 'open') connectionRef.current?.announceStage('juryroom')
   }, [room.status])
 
+  // Everyone who accepted the invitation, whether or not they have reached the
+  // jury room. Sockets and stage events only ever describe people who are
+  // already here, so counting from those alone tells a host who arrived first
+  // that they are the only juror in the room — the one moment this feature
+  // exists to speak to. The roster is the denominator instead.
+  const [roster, setRoster] = useState<number[]>([])
+  useEffect(() => {
+    let cancelled = false
+    liveJuryRoomStatus(session.roomId, session.inviteToken)
+      .then((status) => {
+        if (!cancelled) setRoster(status.seats.map((seat) => seat.seatId))
+      })
+      // The roster is an enrichment: without it the count falls back to who is
+      // demonstrably present, which is never wrong, only less complete.
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [session.inviteToken, session.roomId])
+
   const knownNames = useMemo(() => {
     const names = new Map<number, string>()
     for (const event of room.events) names.set(event.seat_id, event.display_name)
@@ -92,7 +112,11 @@ export function LiveJuryPanel({
     return names
   }, [room.events, session.displayName, session.seatId])
   const transcript = useMemo(
-    () => buildHybridTranscript(trial, room.events),
+    // Stage pings are presence, not deliberation. buildHybridTranscript renders
+    // every event it is given as a human contribution, and humanEventText only
+    // knows messages and positions — so an arrival used to appear in the room
+    // transcript as "Position: undefined".
+    () => buildHybridTranscript(trial, room.events.filter((event) => event.event_type !== 'stage')),
     [room.events, trial],
   )
 
@@ -120,6 +144,7 @@ export function LiveJuryPanel({
   // Anyone who has announced the jury room (or beyond) is here to deliberate;
   // the rest are still in the trial.
   const seatsKnown = new Set([
+    ...roster,
     ...room.connectedSeats,
     ...Object.keys(room.stageBySeat).map(Number),
     session.seatId,
