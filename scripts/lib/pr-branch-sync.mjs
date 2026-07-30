@@ -54,9 +54,9 @@ export function isAutoMergeEnabled(meta) {
   return Boolean(meta?.autoMergeRequest?.enabledAt);
 }
 
-export function fetchPrMergeMeta(prNumber) {
+export function fetchPrMergeMeta(prNumber, { requireOpen = true } = {}) {
   const view = ghJson(['pr', 'view', String(prNumber), '--json', PR_VIEW_FIELDS]);
-  if (view.state !== 'OPEN') {
+  if (requireOpen && view.state !== 'OPEN') {
     throw new Error(`PR #${prNumber} is not open (state=${view.state})`);
   }
   return view;

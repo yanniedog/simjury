@@ -110,9 +110,13 @@ GitHub Actions re-fire bot gates; auto-merge merges when green. Exit 2 is not a 
 
   if (mode === 'ready') {
     if (!args.quiet && !args.json) {
-      console.log(
-        `pr:arm-and-park: PR #${prNumber} READY — all gates pass; auto-merge ${armed}`,
-      );
+      if (result.merged) {
+        console.log(`pr:arm-and-park: PR #${prNumber} MERGED — completed during progression`);
+      } else {
+        console.log(
+          `pr:arm-and-park: PR #${prNumber} READY — all gates pass; auto-merge ${armed}`,
+        );
+      }
       if (result.progression?.autoMerge) {
         console.log(`  auto-merge: ${result.progression.autoMerge.action} — ${result.progression.autoMerge.detail}`);
       }

@@ -4,6 +4,7 @@
  */
 import {
   classifyGateFailure,
+  classifyTerminalPrState,
   classifyWorkMode,
 } from './lib/pr-arm-and-park-lib.mjs';
 
@@ -63,6 +64,15 @@ const act = classifyWorkMode({
   ],
 });
 assert(act.mode === 'actionable', 'any actionable gate wins');
+
+const merged = classifyTerminalPrState({ state: 'MERGED' });
+assert(merged.terminal && merged.mode === 'ready', 'merged during progression = ready success');
+
+const closed = classifyTerminalPrState({ state: 'CLOSED' });
+assert(closed.terminal && closed.mode === 'actionable', 'closed without merge = actionable');
+
+const openDraft = classifyTerminalPrState({ state: 'OPEN', isDraft: true });
+assert(!openDraft.terminal && openDraft.mode === null, 'open draft remains non-terminal');
 
 if (failed) {
   console.error(`\n${failed} assertion(s) failed`);
