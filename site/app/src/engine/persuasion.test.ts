@@ -1,0 +1,63 @@
+import { describe, expect, it } from 'vitest'
+import type { Juror } from '../lib/v2/caseSchema'
+import { jurorProfile } from './jurorProfile'
+import {
+  applyAppeal,
+  roomReadout,
+  scoreAppeal,
+  startPersuasion,
+} from './persuasion'
+
+const holdout = jurorProfile({
+  id: 'J-03',
+  seat: 4,
+  label: 'Juror 4 — Cora',
+  persona: 'Keeps returning the room to disputed identity.',
+  register: 'formal',
+  arc: 'principled_holdout',
+  weights: { identity: 2, procedure: 1, motive: -1 },
+  initial: { position: 'NG', confidence: 80 },
+} as Juror)
+
+const vibes = jurorProfile({
+  id: 'J-01',
+  seat: 2,
+  label: 'Juror 2 — Anya',
+  persona: 'Starts with the vivid lobby image.',
+  register: 'plain',
+  arc: 'vibes',
+  weights: { identity: 1, timeline: 2 },
+  initial: { position: 'U', confidence: 40 },
+} as Juror)
+
+describe('persuasion', () => {
+  it('scores the same appeal identically across runs', () => {
+    const state = startPersuasion([holdout.id])
+    const appeal = {
+      move: 'assert' as const,
+      beatId: 'b1',
+      beatTags: ['identity' as const],
+      targetJurorId: holdout.id,
+    }
+    const a = scoreAppeal(holdout, state.byJuror[holdout.id], appeal)
+    const b = scoreAppeal(holdout, state.byJuror[holdout.id], appeal)
+    expect(a).toEqual(b)
+    expect(a.tell.length).toBeGreaterThan(0)
+    expect(['open', 'listening', 'guarded', 'resistant', 'shut']).toContain(
+      a.reception,
+    )
+  })
+
+  it('never leaks leanings in the room readout', () => {
+    const state = startPersuasion([holdout.id, vibes.id])
+    const receptions = applyAppeal(state, [holdout, vibes], {
+      move: 'ask_reason',
+      beatId: 'b2',
+      beatTags: ['identity'],
+      targetJurorId: holdout.id,
+    })
+    const text = roomReadout(receptions)
+    expect(text.toLowerCase()).not.toMatch(/\b(guilt|innocent|not guilty|tally|vote)\b/)
+    expect(text.length).toBeGreaterThan(0)
+  })
+})
