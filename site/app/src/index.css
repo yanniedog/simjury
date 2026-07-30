@@ -271,6 +271,58 @@
   .room-read-flag.discount { color: var(--steel-500); }
   .room-read-flag.backfire { border-color: rgb(240 139 125 / 55%); color: #f08b7d; }
 
+  /* The live-jury lobby: matching, inviting, and who is actually here. */
+  .live-lobby { display: grid; gap: .9rem; padding: 1.1rem; border: 1px solid rgb(214 185 121 / 24%); border-radius: 1rem; background: linear-gradient(145deg, rgb(214 185 121 / 8%), rgb(21 29 33 / 78%)); }
+  .live-lobby-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: .75rem; }
+  .live-lobby-kicker { margin: 0; color: var(--brass-400); font-size: .62rem; font-weight: 750; letter-spacing: .16em; text-transform: uppercase; }
+  .live-lobby-title { margin: .2rem 0 0; color: var(--paper-50); font-family: Georgia, serif; font-size: 1.3rem; font-weight: 400; }
+  .live-lobby-seat { margin: 0; padding: .3rem .7rem; border: 1px solid rgb(214 185 121 / 45%); border-radius: 999px; color: var(--brass-400); font-size: .7rem; font-weight: 700; }
+  .live-lobby-body { display: grid; gap: .85rem; }
+  .live-lobby-lede { margin: 0; color: var(--steel-300); font-size: .88rem; line-height: 1.6; }
+  .live-lobby-muted { margin: 0; color: var(--steel-500); font-size: .85rem; }
+  .live-expect { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+  .live-expect li { position: relative; padding-left: 1.1rem; color: var(--steel-300); font-size: .8rem; line-height: 1.5; }
+  .live-expect li::before { content: ""; position: absolute; top: .55rem; left: .1rem; width: .32rem; height: .32rem; border-radius: 999px; background: var(--brass-400); }
+  .live-lobby-field { display: grid; gap: .3rem; }
+  .live-lobby-label { color: var(--steel-500); font-size: .65rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+  .live-lobby-field input { width: 100%; min-height: 2.9rem; padding: .55rem .75rem; border: 1px solid rgb(244 240 232 / 16%); border-radius: .7rem; color: var(--paper-50); background: rgb(8 11 13 / 70%); font-size: .9rem; }
+  .live-lobby-primary { min-height: 3rem; border: 0; border-radius: .75rem; color: var(--court-950); background: var(--paper-50); font-size: .9rem; font-weight: 700; }
+  .live-lobby-primary:hover { background: var(--brass-400); }
+  .live-lobby-primary:disabled { opacity: .55; }
+  .live-lobby-secondary { min-height: 2.75rem; padding: .5rem 1rem; border: 1px solid rgb(214 185 121 / 45%); border-radius: .7rem; color: #f5e3bd; background: rgb(214 185 121 / 10%); font-size: .82rem; font-weight: 600; }
+  .live-lobby-quiet { min-height: 2.5rem; padding: .4rem .2rem; border: 0; background: transparent; color: var(--steel-300); font-size: .8rem; text-decoration: underline; text-underline-offset: .25em; text-align: left; }
+  .live-lobby-quiet:hover { color: var(--paper-50); }
+  .live-lobby-paste { display: grid; gap: .5rem; padding-top: .3rem; border-top: 1px solid rgb(244 240 232 / 9%); }
+  .live-lobby-paste-actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+  .live-lobby-more summary { color: var(--steel-300); cursor: pointer; font-size: .78rem; list-style: none; }
+  .live-lobby-more summary::-webkit-details-marker { display: none; }
+  .live-lobby-more summary::before { content: "› "; color: var(--brass-400); }
+  .live-lobby-more[open] summary::before { content: "⌄ "; }
+  .live-lobby-more > *:not(summary) { margin-top: .5rem; }
+  .live-lobby-leave { min-height: 2.75rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .7rem; color: var(--steel-300); background: transparent; font-size: .82rem; }
+  .live-lobby-leave:hover { color: var(--paper-50); background: rgb(8 11 13 / 45%); }
+  .live-lobby-message { margin: 0; padding: .6rem .75rem; border: 1px solid rgb(214 185 121 / 35%); border-radius: .7rem; color: #f5e3bd; background: rgb(214 185 121 / 10%); font-size: .82rem; line-height: 1.5; }
+
+  .roster { display: grid; gap: .5rem; padding: .8rem .9rem; border: 1px solid rgb(244 240 232 / 11%); border-radius: .85rem; background: rgb(8 11 13 / 45%); }
+  .roster-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; margin: 0; color: var(--paper-50); font-size: .8rem; font-weight: 650; }
+  .roster-hint { color: var(--steel-500); font-size: .74rem; font-weight: 400; }
+  .roster-list { display: grid; gap: .3rem; margin: 0; padding: 0; list-style: none; }
+  .roster-seat { display: flex; align-items: center; gap: .55rem; color: var(--steel-300); font-size: .82rem; }
+  .roster-seat.mine { color: var(--paper-50); }
+  .roster-seat-no { display: grid; place-items: center; min-width: 1.5rem; min-height: 1.5rem; border: 1px solid rgb(244 240 232 / 16%); border-radius: .4rem; color: var(--brass-400); font-family: ui-monospace, monospace; font-size: .66rem; }
+  .roster-seat-name { overflow: hidden; flex: 1; text-overflow: ellipsis; white-space: nowrap; }
+  .roster-dot { flex: 0 0 auto; width: .45rem; height: .45rem; border: 1px solid rgb(244 240 232 / 25%); border-radius: 999px; }
+  .roster-dot.on { border-color: #72c7aa; background: #72c7aa; }
+
+  .invite { display: grid; gap: .6rem; }
+  .invite-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .invite-primary { flex: 1 1 12rem; min-height: 3rem; border: 0; border-radius: .75rem; color: var(--court-950); background: var(--brass-400); font-size: .88rem; font-weight: 700; }
+  .invite-primary:hover { background: var(--paper-50); }
+  .invite-secondary { min-height: 3rem; padding: .5rem .9rem; border: 1px solid rgb(244 240 232 / 16%); border-radius: .75rem; color: var(--steel-300); background: rgb(8 11 13 / 50%); font-size: .8rem; }
+  .invite-secondary:hover { border-color: rgb(214 185 121 / 45%); color: var(--paper-50); }
+  .invite-link input { width: 100%; min-height: 2.75rem; padding: .5rem .7rem; border: 1px solid rgb(244 240 232 / 16%); border-radius: .65rem; color: var(--paper-50); background: rgb(8 11 13 / 75%); font-family: ui-monospace, monospace; font-size: .72rem; }
+  .invite-note { margin: 0; color: var(--steel-500); font-size: .74rem; line-height: 1.5; }
+
   .judgment-record { border-color: rgb(214 185 121 / 28%); border-radius: 1.25rem; background: linear-gradient(145deg, rgb(214 185 121 / 12%), rgb(21 29 33 / 72%)); }
   .judgment-record h1 { font-family: Georgia, serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; }
   .reveal-view details { border-color: rgb(244 240 232 / 12%); border-radius: 1rem; background: rgb(21 29 33 / 56%); }
@@ -295,6 +347,7 @@
 
 @media (max-width: 46rem) {
   .dossier-standing { font-size: .58rem; }
+  .invite-actions > button { flex: 1 1 100%; }
   .docket-topbar { grid-template-columns: auto minmax(0, 1fr); gap: .55rem .75rem; padding-inline: 1rem; }
   .docket-case-title { padding-left: .75rem; }
   .docket-phase { order: 4; padding-top: 0; }
