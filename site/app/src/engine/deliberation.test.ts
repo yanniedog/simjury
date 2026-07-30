@@ -350,3 +350,102 @@ describe('serious-crime case integration', () => {
     expect(seen.size).toBeGreaterThanOrEqual(2)
   })
 })
+
+describe('persuasion appeals', () => {
+  const evidenceBeat = (trial: DocketCase) =>
+    trial.beats.find((b) => b.kind !== 'direction')!
+
+  it('leaves the room byte-identical when the player names no technique', () => {
+    const trial = makeDocketCase()
+    const beat = evidenceBeat(trial)
+    const plain = runDeliberation(trial, 'guilty', [argue(beat.id, 'proves')])
+    const again = runDeliberation(trial, 'guilty', [argue(beat.id, 'proves')])
+
+    expect(JSON.stringify(again.log)).toBe(JSON.stringify(plain.log))
+    expect(plain.log.some((e) => e.type === 'read')).toBe(false)
+  })
+
+  it('reads the room back to the player without a leaning or a tally', () => {
+    const trial = makeDocketCase()
+    const beat = evidenceBeat(trial)
+    const { log } = runDeliberation(trial, 'guilty', [
+      { ...argue(beat.id, 'proves'), appeal: { move: 'challenge_inference' } },
+    ])
+    const read = log.find((e) => e.type === 'read')
+
+    expect(read).toBeTruthy()
+    expect(read!.receptions).toHaveLength(trial.jury.jurors.length)
+    expect(read!.move).toBe('challenge_inference')
+    expect(read!.detail).not.toMatch(/guilt|not guilty|undecided/i)
+    for (const reception of read!.receptions!) {
+      expect(reception.tell).not.toMatch(/guilt|innocen|convict|acquit/i)
+    }
+  })
+
+  it('scales reaction strength by technique, with ask_reason pushing nobody', () => {
+    const trial = makeDocketCase()
+    const beat = evidenceBeat(trial)
+    const readFor = (move: 'assert' | 'ask_reason') => {
+      const { log } = runDeliberation(trial, 'guilty', [
+        { ...argue(beat.id, 'proves'), appeal: { move } },
+      ])
+      return log.find((e) => e.type === 'read')
+    }
+
+    const asserted = readFor('assert')
+    const asked = readFor('ask_reason')
+    expect(asserted?.receptions?.some((r) => r.multiplier > 0)).toBe(true)
+    expect(asked?.receptions?.every((r) => r.multiplier === 0)).toBe(true)
+    expect(
+      runDeliberation(trial, 'guilty', [
+        { ...argue(beat.id, 'proves'), appeal: { move: 'ask_reason' } },
+      ]).log.filter((e) => e.type === 'respond' && e.delta !== 0),
+    ).toHaveLength(0)
+  })
+
+  it('moves no authored reaction when a juror is asked to explain rather than argued at', () => {
+    const trial = makeDocketCase()
+    const beat = evidenceBeat(trial)
+    const state = startDeliberation(trial)
+    playRound(state, {
+      ...argue(beat.id, 'proves'),
+      appeal: { move: 'ask_reason' },
+      targetJurorId: trial.jury.jurors[0].id,
+    } as PlayerAction)
+
+    const responded = state.log.filter((e) => e.type === 'respond' && e.line)
+    // The room still speaks — the player just does not push anyone with it.
+    expect(responded.length).toBeGreaterThan(0)
+    expect(state.log.filter((e) => e.type === 'respond' && e.delta !== 0)).toHaveLength(0)
+    expect(state.log.find((e) => e.type === 'read')?.receptions?.every((r) => r.multiplier === 0)).toBe(
+      true,
+    )
+  })
+
+  it('records rapport and spent attention against the jurors addressed', () => {
+    const trial = makeDocketCase()
+    const beat = evidenceBeat(trial)
+    const target = trial.jury.jurors[0]
+    const state = startDeliberation(trial)
+    playRound(state, {
+      ...argue(beat.id, 'proves'),
+      appeal: { move: 'distinguish' },
+      targetJurorId: target.id,
+    } as PlayerAction)
+
+    const addressed = state.persuasion.byJuror[target.id]
+    const bystander = state.persuasion.byJuror[trial.jury.jurors[1].id]
+    expect(addressed.pressed).toBe(1)
+    expect(addressed.rapport).toBeGreaterThan(0)
+    expect(addressed.patience).toBeLessThan(bystander.patience)
+    expect(addressed.heard).toEqual([beat.id])
+  })
+
+  it('gives every juror a derived profile at the start of the sitting', () => {
+    const trial = makeDocketCase()
+    const state = startDeliberation(trial)
+
+    expect(state.profiles).toHaveLength(trial.jury.jurors.length)
+    expect(Object.keys(state.persuasion.byJuror)).toHaveLength(trial.jury.jurors.length)
+  })
+})
