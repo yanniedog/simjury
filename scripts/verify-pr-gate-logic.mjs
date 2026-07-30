@@ -11,7 +11,7 @@ import {
 } from './lib/pr-gate-exempt.mjs';
 import { isKnownBotLogin, loginMatchesRequiredKey } from './lib/bot-wait-config.mjs';
 import { isBotNoise } from './lib/bot-noise.mjs';
-import { isEmptyDiff } from './pr-bot-close-guard.mjs';
+import { filesAreSuperseded, isEmptyDiff } from './pr-bot-close-guard.mjs';
 
 const BOT = { login: 'gemini-code-assist[bot]', __typename: 'Bot' };
 const HUMAN = { login: 'yanniedog', __typename: 'User' };
@@ -96,6 +96,139 @@ for (const [label, meta] of [
   // Absent counts mean the question went unanswered, not that the answer is
   // "empty" — an API hiccup must never wave a real PR past the close guard.
   if (isEmptyDiff(meta)) failures.push(`${label} must not count as an empty diff`);
+}
+
+// GitHub counts a PR's diff against the merge base, not the current tip, so a
+// PR whose work already landed elsewhere still reports additions. PR #263 read
+// +22/-13 while its one file was byte-identical to main, because #267 had
+// squash-merged a commit carrying the same change — and the close guard
+// reopened it every time. Complete tree entries answer what the counters cannot.
+const BLOB = '1c52d9f3fa39266a48e702d54c77553ec9cee07c';
+const present = (sha, mode = '100644', type = 'blob') => ({ state: 'present', sha, mode, type });
+const ABSENT = { state: 'absent' };
+const UNKNOWN = { state: 'unknown' };
+const onTree = (map) => (path) => (path in map ? map[path] : ABSENT);
+const mod = (over = {}) => ({ status: 'modified', additions: 3, deletions: 1, ...over });
+
+if (!filesAreSuperseded(
+  [mod({ filename: 'site/app/src/engine/deliberation.test.ts', sha: BLOB })],
+  onTree({ 'site/app/src/engine/deliberation.test.ts': present(BLOB) }),
+  onTree({ 'site/app/src/engine/deliberation.test.ts': present(BLOB) }),
+)) {
+  failures.push('a PR whose files already match the base should count as superseded');
+}
+
+for (const [label, files, base, head] of [
+  [
+    'a file that still differs on base',
+    [mod({ filename: 'a.ts', sha: 'aaa' })],
+    { 'a.ts': present('bbb') },
+    { 'a.ts': present('aaa') },
+  ],
+  [
+    'one of several files still differing',
+    [mod({ filename: 'a.ts', sha: 'aaa' }), mod({ filename: 'b.ts', sha: 'bbb' })],
+    { 'a.ts': present('aaa'), 'b.ts': present('zzz') },
+    { 'a.ts': present('aaa'), 'b.ts': present('bbb') },
+  ],
+  [
+    'a deletion whose file is still on base',
+    [{ filename: 'gone.ts', status: 'removed', additions: 0, deletions: 9 }],
+    { 'gone.ts': present('aaa') },
+    {},
+  ],
+  [
+    'a deletion whose base lookup failed',
+    [{ filename: 'gone.ts', status: 'removed', additions: 0, deletions: 9 }],
+    { 'gone.ts': UNKNOWN },
+    {},
+  ],
+  [
+    'a deletion whose head lookup failed',
+    [{ filename: 'gone.ts', status: 'removed', additions: 0, deletions: 9 }],
+    {},
+    { 'gone.ts': UNKNOWN },
+  ],
+  [
+    'an unreadable path on an edit',
+    [mod({ filename: 'a.ts', sha: 'aaa' })],
+    { 'a.ts': UNKNOWN },
+    { 'a.ts': present('aaa') },
+  ],
+  [
+    'a file entry with no blob sha',
+    [mod({ filename: 'a.ts', sha: '' })],
+    { 'a.ts': present('') },
+    { 'a.ts': present('') },
+  ],
+  [
+    'a pure mode change',
+    [mod({ filename: 'script.sh', sha: 'aaa', additions: 0, deletions: 0 })],
+    { 'script.sh': present('aaa', '100644') },
+    { 'script.sh': present('aaa', '100755') },
+  ],
+  [
+    // Another PR may land the same content but not the executable-bit change.
+    'a combined content and mode change whose content already landed',
+    [mod({ filename: 'script.sh', sha: 'aaa', additions: 1, deletions: 1 })],
+    { 'script.sh': present('aaa', '100644') },
+    { 'script.sh': present('aaa', '100755') },
+  ],
+  [
+    'a tree type change',
+    [mod({ filename: 'link', sha: 'aaa' })],
+    { link: present('aaa', '100644', 'blob') },
+    { link: present('aaa', '160000', 'commit') },
+  ],
+  [
+    // A rename also deletes the source; matching the destination is not enough.
+    'a rename whose source is still on base',
+    [{ filename: 'new.ts', previous_filename: 'old.ts', status: 'renamed', additions: 1, deletions: 1, sha: 'aaa' }],
+    { 'new.ts': present('aaa'), 'old.ts': present('aaa') },
+    { 'new.ts': present('aaa') },
+  ],
+  [
+    'a rename with no recorded source',
+    [{ filename: 'new.ts', status: 'renamed', additions: 1, deletions: 1, sha: 'aaa' }],
+    { 'new.ts': present('aaa') },
+    { 'new.ts': present('aaa') },
+  ],
+  ['an empty file list', [], {}, {}],
+  ['a non-array file list', null, {}, {}],
+]) {
+  if (filesAreSuperseded(files, onTree(base), onTree(head))) {
+    failures.push(`${label} must not count as superseded`);
+  }
+}
+
+// A deletion is superseded once the file is genuinely gone from the base.
+if (!filesAreSuperseded(
+  [{ filename: 'gone.ts', status: 'removed', additions: 0, deletions: 9 }],
+  onTree({}),
+  onTree({}),
+)) {
+  failures.push('a deletion already applied on base should count as superseded');
+}
+
+// A rename is superseded once the destination matches and the source is gone.
+if (!filesAreSuperseded(
+  [{ filename: 'new.ts', previous_filename: 'old.ts', status: 'renamed', additions: 1, deletions: 1, sha: 'aaa' }],
+  onTree({ 'new.ts': present('aaa') }),
+  onTree({ 'new.ts': present('aaa') }),
+)) {
+  failures.push('a fully-applied rename should count as superseded');
+}
+
+// Tree entries are keyed by the exact paths returned by GitHub, so reserved
+// filename characters never enter a request URL.
+for (const path of ['docs/what?.md', 'docs/c#/notes.md', 'a b/c.ts']) {
+  if (!filesAreSuperseded(
+    [mod({ filename: path, sha: 'aaa' })],
+    onTree({ [path]: present('aaa') }),
+    onTree({ [path]: present('aaa') }),
+  )) {
+    failures.push(`a superseded path containing reserved characters should match: ${path}`);
+  }
 }
 
 if (failures.length) {

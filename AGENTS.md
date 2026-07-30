@@ -75,7 +75,7 @@ Orchestrator (Lead)
 
 ### PR automation (mandatory — no user prompt)
 
-**Bot feedback is never optional.** Agents must address every actionable bot review comment and resolve every thread — without waiting for the user to ask. Treat open bot threads as a merge blocker equal to CI failure.
+**Bot feedback is never optional.** Agents must address every actionable review comment and resolve every substantive thread without waiting for the user. `validate` and `bot-feedback-gate` are the only required checks. Qwen and bot-presence checks are disabled/advisory: vendor or laptop availability never blocks merge.
 
 **PRs target the default branch, and run in parallel (rigid — every repo, every agent).**
 Required checks attach to a branch, not to a pull request, so a PR stacked on a
@@ -103,7 +103,7 @@ On every open PR the Orchestrator must automatically:
 5. Squash auto-merge is armed by arm-and-park (`gh pr merge --auto --squash --delete-branch`); stay owned until merge completes
 6. Rebase stacked PRs onto `main` after upstream merge (actionable when behind)
 
-**Never merge immediately after `validate` passes.** `local-llm-review`, `bot-presence-gate`, and `bot-feedback-gate` must also be green. See `WORKFLOW.md`.
+**Never merge immediately after `validate` passes.** `bot-feedback-gate` must also be green. See `WORKFLOW.md`.
 
 **Forbidden agent loops:** `npm run wait-for-bots -- --watch`, `npm run pr:gates:check -- --watch`, `while sleep; do wait-for-bots; done`. CI workflows may poll; agents must not.
 
@@ -143,13 +143,11 @@ Orchestrator **must** synthesize subagent output; never merge unreviewed subagen
 No squash merge to `main` unless:
 
 1. CI `validate` — **success**
-2. CI `local-llm-review` — **success** (pinned local Qwen 3.5 4B review)
-3. CI `bot-presence-gate` — **success** (required bots posted)
-4. CI `bot-feedback-gate` — **success** (review threads resolved)
-5. Bot comments read and **fixed in code** (or explicitly acknowledged as N/A with reply)
-6. `npm run pr:arm-and-park -- --pr <n>` exits **0** (or exit **2** parked with auto-merge armed while waiting — not a merge claim)
-7. Case content PRs include harness checklist (if applicable)
-8. PR size ≤ ~400 lines (split if larger)
+2. CI `bot-feedback-gate` — **success** (review threads resolved)
+3. Review comments read and **fixed in code** (or explicitly acknowledged as N/A with reply)
+4. `npm run pr:arm-and-park -- --pr <n>` exits **0** (or exit **2** parked with auto-merge armed while waiting — not a merge claim)
+5. Case content PRs include harness checklist (if applicable)
+6. PR size ≤ ~400 lines (split if larger)
 
 Single-shot audits (no agent watch): `npm run pr:gates:check -- --pr <n>` and `.github/scripts/assert-pr-mergeable.sh <pr>`.
 

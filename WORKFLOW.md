@@ -23,8 +23,8 @@ So the rule lives in the tooling every agent goes through:
 npm run pr:base-guard:verify   # prove the guard fails closed
 ```
 
-`pr:arm-and-park` resolves the PR base and **refuses to arm auto-merge** on a base
-that requires less than the default branch, reporting exit 3 with
+`pr:arm-and-park` and `pr:merge` resolve the PR base and **refuse to arm
+auto-merge** unless it is the exact default branch, reporting exit 3 with
 `base-unprotected`. Never disable or route around it.
 
 ### Many PRs at once — the actual answer to concurrency
@@ -49,6 +49,11 @@ Agent-facing copies: `.cursor/rules/pr-base-must-be-gated.mdc`, `AGENTS.md`,
 Push a branch and open a PR **against `main`**. Any other base merges unreviewed
 and is refused by the base guard (see §0). Several PRs may be open at once.
 
+Draft publication is opt-in. Background progression helpers leave drafts
+untouched; only the explicit `pr:arm-and-park` and `pr:merge` commands may mark
+a draft ready. If `gh pr ready` fails, the command stops with a diagnostic hard
+error and does not continue as though auto-merge were armed.
+
 No mutable title or author-name exemption bypasses protected bot gates.
 
 ## 2. PR CI (`validate`)
@@ -56,43 +61,36 @@ No mutable title or author-name exemption bypasses protected bot gates.
 The `ci` workflow runs repository-policy and PR gate script checks. Daily Docket
 application checks run in the site workflows.
 
-## 3. Bot presence gate (`bot-presence-gate`)
+## 3. Advisory reviewers
 
-Merge protection requires CodeRabbit's canonical `Review completed` status on the
-**current head SHA**, plus one peer bot since the current PR event anchor.
+CodeRabbit, Codex, Cursor, Sourcery, Gemini, and local Qwen may review a PR.
+Their findings are handled under the feedback policy below, but presence is not
+required and vendor, quota, runner, or laptop availability never blocks merge.
+Automatic Qwen and bot-presence workflows are disabled.
 
-Default required slots: **`sourcery|codex|cursor,coderabbit`**
+Optional explicit presence diagnostics still support OR-groups:
 
 | Slot | Meaning |
 |------|---------|
 | `sourcery\|codex\|cursor` | At least one peer review bot |
-| `coderabbit` | **Mandatory** — CodeRabbit cannot be skipped via OR |
+| `coderabbit` | A CodeRabbit review |
 
-| Key | GitHub logins | Notes |
-|-----|---------------|-------|
-| sourcery | `sourcery-ai[bot]` | Skips some docs/setup PRs |
-| codex | `chatgpt-codex-connector[bot]` | Needs ChatGPT Codex Connector app |
-| cursor | `cursor`, `cursor[bot]` | Cursor Automation reviews |
-| coderabbit | `coderabbitai[bot]` | Required — see [`docs/CODERABBIT.md`](docs/CODERABBIT.md) |
-| gemini | `gemini-code-assist[bot]`, … | **Optional** — consumer Code Assist is sunset (noise) |
+| Key | GitHub logins |
+|-----|---------------|
+| sourcery | `sourcery-ai[bot]` |
+| codex | `chatgpt-codex-connector[bot]` |
+| cursor | `cursor`, `cursor[bot]` |
+| coderabbit | `coderabbitai[bot]` |
 
-Comma = ALL-of slots. `|` = OR within a slot. Example: `sourcery|cursor,coderabbit` needs (Sourcery or Cursor) **and** CodeRabbit.
-
-`bot-presence-gate` runs trusted base-branch policy, requests one full CodeRabbit
-review per ready head, waits through the vendor's stated quota window, and retries
-serially. Walkthroughs, command acknowledgements, stale reviews, `Review rate limited`,
-and `Review skipped` never pass. The separate request workflow nudges Codex only.
-
-Local single-shot check (agents):
+Comma = ALL-of slots. `|` = OR within a slot. These slots are opt-in
+diagnostics, not branch protection.
 
 ```sh
-npm run wait-for-bots -- --pr <n>          # exit 0 ready | 2 waiting | 1 error
-npm run pr:arm-and-park -- --pr <n>      # preferred — arms auto-merge + classifies
+npm run wait-for-bots -- --pr <n> --require-bots "sourcery|codex|cursor,coderabbit"
+npm run pr:local-llm-review -- --pr <n>
 ```
 
-**Do not** run `wait-for-bots --watch` inside an agent session. CI may poll; agents park.
-
-Env: `SIMJURY_BOT_WAIT_REQUIRED=sourcery|codex|cursor,coderabbit` (fallback: `JCS2_BOT_WAIT_REQUIRED`, `AR_BOT_WAIT_REQUIRED`, `BOT_WAIT_REQUIRED`).
+Never use `--watch` inside an agent session.
 
 ## 4. Bot feedback gate (`bot-feedback-gate`)
 
@@ -105,19 +103,17 @@ npm run pr:bot-feedback-check -- --pr <n>
 
 ## 4b. Close guard (`pr-bot-close-guard`)
 
-Closing a PR without merging while required bots are still outstanding (or threads are
-unresolved) is blocked: the workflow reopens the PR and comments. Manual check:
+Closing a PR without merging while substantive threads are unresolved is blocked:
+the workflow reopens the PR and comments. Manual check:
 
 ```sh
 npm run pr:bot-close-guard -- --pr <n> [--reopen]
 ```
 
-## 4c. Local LLM gate (`local-llm-review`)
+## 4c. Advisory local review
 
-A private Windows runner reviews the inert GitHub patch with pinned
-`qwen3.5:4b` at a 12K context. It never checks out or executes PR code. Blocker/major
-findings, malformed or truncated patches, model mismatch, timeout, fork PRs, and
-an offline runner all fail closed. The laptop must be awake and Ollama running.
+The optional local script reviews an inert GitHub patch with pinned
+`qwen3.5:4b`. It is not automatic or required.
 
 ## 5. Act or park — never poll
 
@@ -137,7 +133,8 @@ npm run pr:arm-and-park -- --pr <n>
 What arm-and-park does (one shot, no loops):
 
 1. Sync branch when behind (`gh pr update-branch`)
-2. Enable squash auto-merge (`gh pr merge --auto --squash --delete-branch`)
+2. Explicitly mark a draft ready when needed, then enable squash auto-merge
+   through the exact-default-base guard
 3. Classify merge gates as ready / waiting / actionable
 
 Aggregate single-shot audit (no watch in agents):
@@ -150,12 +147,9 @@ npm run pr:gates:check -- --pr <n>
 
 ## 6. Merge
 
-When gates are green, auto-merge (armed by `pr:arm-and-park`) lands the squash. Manual:
-
-```sh
-gh pr merge <n> --auto --squash --delete-branch
-# or: npm run pr:merge -- --pr <n>
-```
+When gates are green, auto-merge (armed by `pr:arm-and-park`) lands the squash.
+Manual: `npm run pr:merge -- --pr <n>`. Do not bypass its base guard with a
+bare `gh pr merge` command.
 
 See [`.github/MERGE_POLICY.md`](.github/MERGE_POLICY.md).
 
@@ -172,10 +166,10 @@ npm run branch-protection:apply
 | Script | Purpose |
 |--------|---------|
 | `npm run pr:arm-and-park` | **Preferred agent entry** — arm auto-merge + classify (no poll) |
-| `npm run wait-for-bots` | Single-shot bot presence (CI may `--watch`; agents must not) |
+| `npm run wait-for-bots` | Optional single-shot reviewer diagnostic; advisory by default |
 | `npm run pr:bot-feedback-check` | Thread closure gate |
 | `npm run pr:bot-close-guard` | Block/reopen premature PR close |
-| `npm run pr:coderabbit-contract` | Require/retry canonical CodeRabbit completion on the exact head SHA |
+| `npm run pr:coderabbit-contract` | Optional exact-head CodeRabbit diagnostic |
 | `npm run pr:request-coderabbit-review` | Manual diagnostic nudge only |
 | `npm run pr:coderabbit-ensure-review` | Manual single-open-PR legacy diagnostic only |
 | `npm run pr:gates:check` | All merge gates (single shot) |

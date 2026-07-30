@@ -4,8 +4,10 @@
  * Prefer `npm run pr:arm-and-park` — it arms merge and classifies wait vs actionable.
  */
 import { progressPullRequest } from './lib/pr-branch-sync.mjs';
+import { fetchPrMergeMeta } from './lib/pr-branch-sync.mjs';
+import { checkBaseProtected } from './lib/pr-base-guard.mjs';
 import { mergeCommandLine, PR_MERGE_FLAGS } from './lib/pr-merge.mjs';
-import { hasGh } from './lib/gh-pr-review-threads.mjs';
+import { ghJson, hasGh, repoSlug } from './lib/gh-pr-review-threads.mjs';
 
 function parseArgs(argv) {
   const out = { pr: null, dryRun: false, enableOnly: false, noSync: false, help: false };
@@ -48,8 +50,22 @@ Prefer: npm run pr:arm-and-park -- --pr <n> (arms merge + classifies; no watch l
     process.exit(1);
   }
 
+  const slug = repoSlug();
+  const repo = typeof slug === 'string' ? slug : `${slug.owner}/${slug.name}`;
+  const meta = fetchPrMergeMeta(args.pr);
+  const baseGuard = checkBaseProtected(repo, meta.baseRefName, ghJson);
+  if (!baseGuard.covered) {
+    console.error(`pr-merge: base-unprotected: ${baseGuard.detail}`);
+    process.exit(3);
+  }
+
   const syncBranch = !args.noSync && !args.enableOnly;
-  const r = progressPullRequest(args.pr, { dryRun: args.dryRun, syncBranch, enableAuto: true });
+  const r = progressPullRequest(args.pr, {
+    dryRun: args.dryRun,
+    syncBranch,
+    enableAuto: true,
+    allowDraftPromotion: true,
+  });
   if (r.sync && syncBranch) console.log(`sync ${r.sync.action}: ${r.sync.detail}`);
   if (r.autoMerge) console.log(`auto-merge ${r.autoMerge.action}: ${r.autoMerge.detail}`);
   if (r.blocked) process.exit(r.sync?.exitCode === 2 ? 2 : 1);

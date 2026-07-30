@@ -27,8 +27,6 @@ gh api \
     "strict": true,
     "checks": [
       { "context": "validate" },
-      { "context": "local-llm-review" },
-      { "context": "bot-presence-gate" },
       { "context": "bot-feedback-gate" }
     ]
   },
@@ -49,5 +47,5 @@ gh api \
 EOF
 
 echo ""
-echo "Branch protection applied. Required checks: validate, local-llm-review, bot-presence-gate, bot-feedback-gate"
+echo "Branch protection applied. Required checks: validate, bot-feedback-gate"
 echo "Verify at: https://github.com/${OWNER}/${REPO}/settings/branches"

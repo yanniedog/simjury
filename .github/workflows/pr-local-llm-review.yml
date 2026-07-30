@@ -1,9 +1,8 @@
 name: pr-local-llm-review
 
+# Disabled advisory diagnostic. Laptop or Ollama availability never blocks merge.
 on:
-  pull_request_target:
-    branches: [main]
-    types: [opened, synchronize, reopened, ready_for_review, edited]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -15,6 +14,7 @@ concurrency:
 
 jobs:
   preflight:
+    if: ${{ false }}
     name: local-llm-preflight
     runs-on: ubuntu-latest
     steps:
@@ -33,6 +33,7 @@ jobs:
           }
 
   qwen:
+    if: ${{ false }}
     name: local-qwen-review
     needs: preflight
     runs-on: [self-hosted, Windows, X64, simjury-local-llm]
@@ -58,15 +59,9 @@ jobs:
           node scripts/local-llm-pr-gate.mjs --pr "$env:PR_NUMBER" --repo "$env:GITHUB_REPOSITORY" --head "$env:PR_HEAD_SHA" --base "$env:PR_BASE_SHA"
 
   local-llm-review:
+    if: ${{ false }}
     name: local-llm-review
-    if: always()
     needs: [preflight, qwen]
     runs-on: ubuntu-latest
     steps:
-      - name: Enforce local review result
-        env:
-          PREFLIGHT_RESULT: ${{ needs.preflight.result }}
-          QWEN_RESULT: ${{ needs.qwen.result }}
-        run: |
-          test "$PREFLIGHT_RESULT" = success
-          test "$QWEN_RESULT" = success
+      - run: echo "Local Qwen review is advisory and disabled."

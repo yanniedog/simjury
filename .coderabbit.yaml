@@ -43,12 +43,11 @@ reviews:
     # Exclusions only. A single positive pattern would switch CodeRabbit into
     # allowlist mode, where everything not named is "included by none" — which
     # is exactly how every source file stopped being reviewed.
-    # Every exclusion above is scoped by directory, never by file extension.
-    # An extension rule reaches into site/app/public/media/**, and excluding
-    # player media is what makes a media-only Daily Docket PR skip entirely:
-    # CodeRabbit reviews nothing, so the presence gate never sees "Review
-    # completed". Source art is excluded by directory (site/art/**) instead.
-    # pr:coderabbit-filters:verify enforces both halves of this.
+    # The directory and lockfile exclusions above are the complete permitted
+    # set. New exclusions fail pr:coderabbit-filters:verify until reviewed, so a
+    # nested player-media path cannot silently make a media-only PR unreviewable.
+    # Source art is excluded by directory; player media and scripts stay
+    # reviewable by default.
   path_instructions:
     - path: "site/app/**"
       instructions: >-

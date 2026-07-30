@@ -1,6 +1,8 @@
 # Branch Protection for `main`
 
-SimJury uses the **jcs2-mod / AR-local bot gate template**: dynamic bot presence + thread closure gates (not a fixed sleep).
+SimJury uses the AR-app liveness profile: deterministic CI plus substantive
+review-thread resolution. Reviewer presence and local model availability do not
+block merge.
 
 Configure in GitHub **Settings → Rules → Rulesets** (preferred) or **Branches → Branch protection rules**.
 
@@ -12,7 +14,7 @@ Configure in GitHub **Settings → Rules → Rulesets** (preferred) or **Branche
 | Require a pull request before merging | Yes |
 | Require approvals | 0 for solo operator (PR still required) |
 | Require status checks to pass | Yes |
-| Required checks | `validate`, `local-llm-review`, `bot-presence-gate`, `bot-feedback-gate` |
+| Required checks | `validate`, `bot-feedback-gate` |
 | Require conversation resolution before merging | Yes |
 | Do not allow bypassing | **Required** |
 | Allow squash merging | Yes (only) |
@@ -22,12 +24,18 @@ Configure in GitHub **Settings → Rules → Rulesets** (preferred) or **Branche
 | Workflow / job | Check name | Purpose |
 |----------------|------------|---------|
 | `ci` | **validate** | Authority docs and PR-gate tooling |
-| `pr-local-llm-review` | **local-llm-review** | Trusted-base, read-only Qwen 3.5 4B defect review on the private Windows runner |
-| `pr-bot-presence-gate` | **bot-presence-gate** | Peer bot (`sourcery\|codex\|cursor`) **and** mandatory CodeRabbit since anchor + quiet window |
 | `pr-bot-feedback-check` | **bot-feedback-gate** | Review threads resolved |
-| `pr-bot-close-guard` | (side-effect) | Reopens PRs closed with outstanding bot obligations |
+| `pr-bot-close-guard` | (side-effect) | Reopens PRs closed with unresolved feedback |
 
-All four required checks must pass. **Do not squash-merge until the local review and both bot gates are green.**
+These are the only required checks. CodeRabbit, Codex, Cursor, Sourcery,
+Gemini, and local Qwen output remain advisory, but every substantive finding
+still needs a reply and resolution. Automatic Qwen and bot-presence workflows
+are disabled.
+
+The feedback workflow serializes events in one PR-only concurrency group. It
+does not cancel in-progress sibling runs because a cancelled review/reply event
+can become GitHub's selected required context even when another run passed. The
+group must not include the head SHA or a non-standard queue cap.
 
 ## Operator setup (one-time)
 
@@ -35,21 +43,26 @@ All four required checks must pass. **Do not squash-merge until the local review
 npm run github:bot-gates:operator
 npm run repo-merge-settings:apply
 npm run repo-name:apply
+npm run branch-protection:apply -- --check
 npm run branch-protection:apply
 ```
 
-Or import `.github/rulesets/main-bot-gates.json` via GitHub UI.
+`branch-protection:apply` reconciles the exact required contexts and removes
+retired checks. Or import `.github/rulesets/main-bot-gates.json` via GitHub UI.
 
 See also `WORKFLOW.md` and `.github/MERGE_POLICY.md`.
 
 ## Agent responsibility
 
 1. Never `git push origin main`
-2. Open PR from `cursor/*` branches
+2. Open PR against the exact default branch
 3. Fix CI failures in the same branch
 4. Run `npm run pr:arm-and-park -- --pr <n>` (single shot) — **never** `--watch` in agents
-5. On exit 2 (parked): end turn; on exit 3: fix bots/threads/CI, push, re-arm
+5. On exit 2, park; on exit 3, fix feedback/CI, push, and re-arm
 6. Squash auto-merge is armed by arm-and-park; do not babysit-poll until merge
 
-**Agents must never wait for the user to ask before addressing bot feedback.**
-**Agents must never sleep-poll bot gates** — use `pr:arm-and-park`.
+Only explicit arm/merge commands may promote a draft. Background helper calls
+default to leaving drafts unpublished, and a ready failure is a hard error.
+
+**Agents must never wait for the user to ask before addressing review feedback.**
+**Agents must never sleep-poll gates** — use `pr:arm-and-park`.

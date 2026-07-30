@@ -26,9 +26,13 @@ Syntax: commas = ALL-of slots; `|` = OR within a slot.
 | [jcs2-mod](https://github.com/yanniedog/jcs2-mod) | `sourcery\|codex\|cursor,coderabbit` | Same |
 | [cursor-global-workflow](https://github.com/yanniedog/cursor-global-workflow) | template default | Mirror from SimJury |
 
-## Presence gate (single-shot)
+## Gate concurrency
 
-Evaluate `wait-for-bots` **once** per run (no sleep-poll). Gate re-fires on review/comment/ci; agents park with `npm run pr:arm-and-park -- --pr <n>`. `cancel-in-progress: false` on concurrency groups.
+Evaluate advisory `wait-for-bots` **once** per run (no sleep-poll). Presence
+diagnostics use `cancel-in-progress: false`. The required feedback-closure
+workflow also uses one PR-only concurrency group with
+`cancel-in-progress: false` and no queue cap. Serializing sibling review/reply
+events avoids leaving a cancelled run selected as the required context.
 
 ## Act-or-park (token efficiency)
 

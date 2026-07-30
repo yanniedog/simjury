@@ -9,8 +9,8 @@
  * That happened here. A single `site/app/public/media/**` entry — added so that
  * media-only PRs stayed reviewable — silently made *only* media reviewable.
  * CodeRabbit answered every PR with "Review skipped ... due to path filters",
- * and because it is the mandatory presence slot, `bot-presence-gate` could
- * never go green. The gates looked broken; the config was.
+ * suppressing the automated feedback the configuration was meant to request.
+ * The reviewers looked unavailable; the config was.
  *
  * Run: npm run pr:coderabbit-filters:verify
  */
@@ -22,6 +22,19 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const raw = readFileSync(join(repoRoot, '.coderabbit.yaml'), 'utf8');
 
 const failures = [];
+const PERMITTED_EXCLUSIONS = new Set([
+  '!**/node_modules/**',
+  '!**/dist/**',
+  '!**/build/**',
+  '!**/.gradle/**',
+  '!**/pilot/**',
+  '!**/archive/**',
+  '!**/artifacts/**',
+  '!**/pilot/local.properties',
+  '!**/*.lock',
+  '!**/package-lock.json',
+  '!site/art/**',
+]);
 
 /**
  * Read the `path_filters:` list without a YAML dependency. Returns the quoted
@@ -45,6 +58,18 @@ export function readPathFilters(text) {
   return filters;
 }
 
+/**
+ * Keep the denylist fail closed. Every allowed exclusion is audited here;
+ * adding a new glob to the configuration fails until this contract is updated.
+ * That is stronger than probing representative filenames: a nested glob such
+ * as `!site/app/public/media/trailers/**` cannot hide behind an unprobed path.
+ */
+export function unpermittedExclusions(patterns) {
+  return patterns.filter(
+    (pattern) => pattern.startsWith('!') && !PERMITTED_EXCLUSIONS.has(pattern),
+  );
+}
+
 const filters = readPathFilters(raw);
 
 if (!filters) {
@@ -60,8 +85,30 @@ if (!filters) {
     );
   }
 
-  // The product surface must stay reviewable: CodeRabbit is the mandatory
-  // presence slot, so anything excluded here can never clear merge protection.
+  const unpermitted = unpermittedExclusions(filters);
+  if (unpermitted.length) {
+    failures.push(
+      `path_filters contains unpermitted exclusions — ${unpermitted.join(', ')}; `
+      + 'new exclusions must be audited before they can make source unreviewable',
+    );
+  }
+
+  // Regression contract: nested directories, direct media exclusions and broad
+  // media-extension rules must all be rejected. Finite direct-child probes
+  // missed the first of these and allowed the original failure to return.
+  const forbiddenRegressions = [
+    '!site/app/public/media/trailers/**',
+    '!site/app/public/media/**',
+    '!**/*.{mp3,mp4}',
+  ];
+  for (const pattern of forbiddenRegressions) {
+    if (!unpermittedExclusions([...filters, pattern]).includes(pattern)) {
+      failures.push(`fail-closed exclusion contract did not reject ${pattern}`);
+    }
+  }
+
+  // The product and automation surfaces must stay reviewable. Anything
+  // excluded here silently loses the feedback this configuration requests.
   const mustBeReviewable = [
     'site/app/src/App.tsx',
     'site/app/src/engine/deliberation.ts',
@@ -72,36 +119,6 @@ if (!filters) {
   for (const path of mustBeReviewable) {
     if (!isReviewable(path, filters)) {
       failures.push(`${path} would not be reviewed by CodeRabbit`);
-    }
-  }
-
-  // Player media is the case that produced the bad config in the first place:
-  // a media-only PR whose every file is excluded gets skipped, and the presence
-  // gate then never sees "Review completed". Naming a couple of extensions here
-  // would leave the same hole one extension over — `!**/*.mp4` would pass while
-  // re-breaking a video-only PR. Assert the invariant instead: *no* exclusion
-  // may match anything under the player-media directory.
-  const PLAYER_MEDIA = 'site/app/public/media/';
-  // Probe a fixed list of shipped media types rather than the extensions a
-  // pattern happens to name. Deriving them from the pattern misses a bare
-  // `!**/*.webp` unless the parser understands both `{a,b}` groups and plain
-  // suffixes, and it also makes every extension rule flag itself — `!**/*.lock`
-  // is a perfectly good exclusion. Naming what counts as player media is the
-  // honest version of the question.
-  const MEDIA_TYPES = [
-    'webp', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'avif',
-    'mp3', 'ogg', 'wav', 'm4a', 'aac', 'flac',
-    'mp4', 'webm', 'mov', 'vtt',
-  ];
-  for (const pattern of filters.filter((p) => p.startsWith('!'))) {
-    const probe = `${PLAYER_MEDIA}sample`;
-    const candidates = [probe, ...MEDIA_TYPES.map((ext) => `${probe}.${ext}`)];
-    const hit = candidates.find((path) => globMatches(pattern.slice(1), path));
-    if (hit) {
-      failures.push(
-        `${pattern} excludes ${hit} — player media must stay reviewable so a `
-        + 'media-only PR is not skipped entirely',
-      );
     }
   }
 
