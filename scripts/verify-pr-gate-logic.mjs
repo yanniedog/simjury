@@ -9,7 +9,7 @@ import {
   isBotPrAuthor,
   isChorePrTitle,
 } from './lib/pr-gate-exempt.mjs';
-import { loginMatchesRequiredKey } from './lib/bot-wait-config.mjs';
+import { isKnownBotLogin, loginMatchesRequiredKey } from './lib/bot-wait-config.mjs';
 import { isBotNoise } from './lib/bot-noise.mjs';
 
 const BOT = { login: 'gemini-code-assist[bot]', __typename: 'Bot' };
@@ -69,9 +69,14 @@ if (!loginMatchesRequiredKey('coderabbitai[bot]', 'sourcery|codex|cursor|coderab
   failures.push('coderabbit still matches legacy single OR-group string');
 }
 
-const sunset =
-  'The consumer version of Gemini Code Assist on GitHub has been sunset. All code review activity has officially ceased.';
-if (!isBotNoise(sunset)) failures.push('gemini sunset should be noise');
+// The sunset consumer Code Assist app was dropped from the fleet, so its
+// caution banner is not a bot event and needs no noise special case.
+if (isKnownBotLogin('gemini-code-assist[bot]')) {
+  failures.push('sunset Gemini Code Assist app should not be a recognised reviewer');
+}
+if (!isBotNoise('Review limit reached. Next review available in 45 minutes.')) {
+  failures.push('vendor rate-limit notices should still be noise');
+}
 
 if (failures.length) {
   console.error('FAIL verify-pr-gate-logic:');

@@ -12,7 +12,7 @@
 | Why | Detail |
 |-----|--------|
 | Sourcery flaky | Skips some docs/setup PRs (seen on AR-app #37/#38/#41) — keep in peer OR only |
-| Gemini sunset | Consumer Code Assist posts a sunset notice only — treated as **noise**, not required |
+| Gemini | API-keyed `Automated Gemini Code Review` workflow — advisory, `continue-on-error`, never required. The consumer Code Assist **app** is sunset and has been removed from the fleet entirely, so its caution banner is not a bot event |
 | Cursor Automation | Peer review (`cursor` / `cursor[bot]`) |
 | CodeRabbit | Hard merge gate (`coderabbitai[bot]`) — [`CODERABBIT.md`](CODERABBIT.md) |
 
