@@ -16,6 +16,7 @@ import {
   requiredChecksFor,
 } from './lib/pr-base-guard.mjs';
 import { classifyGateFailure } from './lib/pr-arm-and-park-lib.mjs';
+import { readFileSync } from 'node:fs';
 
 const checks = [...MERGE_REQUIRED_CHECK_NAMES];
 const gated = {
@@ -72,7 +73,7 @@ test('the refusal explains that stacking is unavailable, not merely wrong', () =
   assert.match(result.detail, /parallel/);
 });
 
-test('a base missing only the bot gates is still refused', () => {
+test('a base missing the feedback gate is still refused', () => {
   const ciOnly = {
     rules: [{
       type: 'required_status_checks',
@@ -81,7 +82,7 @@ test('a base missing only the bot gates is still refused', () => {
   };
   const result = evaluateBaseCoverage('feat/x', ciOnly, gated);
   assert.equal(result.covered, false);
-  assert.ok(result.missing.includes('bot-presence-gate'));
+  assert.ok(result.missing.includes('bot-feedback-gate'));
 });
 
 test('the default branch is always its own floor', () => {
@@ -103,6 +104,26 @@ test('an unreadable base with a gated floor is refused', () => {
 
 test('fails closed when the base ref is unknown', () => {
   assert.equal(checkBaseProtected('o/r', undefined, () => null).covered, false);
+});
+
+test('fails closed when the repository default branch is unreadable', () => {
+  assert.equal(checkBaseProtected('o/r', 'main', () => { throw new Error('offline'); }).covered, false);
+});
+
+test('refuses a non-default base even when it has equivalent protection', () => {
+  const gh = (args) => args.at(-1) === 'repos/o/r' ? { default_branch: 'main' } : gated;
+  assert.equal(checkBaseProtected('o/r', 'feat/x', gh).covered, false);
+});
+
+test('accepts the exact default branch without protection API lookups', () => {
+  const gh = () => ({ default_branch: 'main' });
+  assert.equal(checkBaseProtected('o/r', 'main', gh).covered, true);
+});
+
+test('both merge wrappers invoke the exact-base guard', () => {
+  for (const file of ['scripts/pr-merge.mjs', 'scripts/lib/pr-arm-and-park-lib.mjs']) {
+    assert.match(readFileSync(file, 'utf8'), /checkBaseProtected/);
+  }
 });
 
 test('an unguarded base is actionable, never a wait', () => {

@@ -1,5 +1,5 @@
 /**
- * PRs that skip bot-presence-gate, bot-feedback-gate, and wait-for-bots.
+ * PRs that skip bot-feedback-gate.
  *
  * Policy: protected PRs are never exempt based on mutable titles or author
  * naming. A `chore:` rename previously let human PRs bypass required reviews.

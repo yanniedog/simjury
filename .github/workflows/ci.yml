@@ -38,8 +38,8 @@ jobs:
         run: |
           grep -q "Daily Docket" AGENTS.md
           grep -q "Daily Docket" ROADMAP.md
-          grep -q "bot-presence-gate" AGENTS.md
-          grep -q "bot-presence-gate" .github/BRANCH_PROTECTION.md
+          grep -q "only required checks" AGENTS.md
+          grep -q "validate.*bot-feedback-gate" .github/BRANCH_PROTECTION.md
           test -f WORKFLOW.md
           test -f .github/MERGE_POLICY.md
           test -f .github/rulesets/main-bot-gates.json
@@ -54,6 +54,7 @@ jobs:
           npm run pr:gate-logic:verify
           npm run pr:gate-exempt-policy:verify
           npm run pr:bot-wait-or-groups:verify
+          npm run pr:base-guard:verify
           npm run pr:arm-and-park:verify
           npm run pr:coderabbit-contract:verify
           npm run pr:coderabbit-review-recovery:verify

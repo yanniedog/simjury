@@ -50,7 +50,7 @@ if [[ "$STATE" != "OPEN" ]]; then
   exit 1
 fi
 
-for CHECK in validate local-llm-review bot-presence-gate bot-feedback-gate; do
+for CHECK in validate bot-feedback-gate; do
   RESULT=$(jq -r --arg c "$CHECK" '
     .statusCheckRollup[]? | select(.name == $c or .context == $c) | .conclusion // .state
   ' <<< "$PR_JSON" | head -1)

@@ -11,10 +11,10 @@ import { gateExemptReason } from './pr-gate-exempt.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = path.resolve(__dirname, '../..');
 
-export const BOT_GATE_CHECK_NAMES = ['bot-presence-gate', 'bot-feedback-gate'];
+export const BOT_GATE_CHECK_NAMES = ['bot-feedback-gate'];
 export const PR_CI_CHECK_NAME = 'validate';
 export const LOCAL_LLM_REVIEW_CHECK_NAME = 'local-llm-review';
-export const MERGE_REQUIRED_CHECK_NAMES = [PR_CI_CHECK_NAME, ...BOT_GATE_CHECK_NAMES, LOCAL_LLM_REVIEW_CHECK_NAME];
+export const MERGE_REQUIRED_CHECK_NAMES = [PR_CI_CHECK_NAME, ...BOT_GATE_CHECK_NAMES];
 
 const DEFAULT_TIMEOUT_MIN = 35;
 const DEFAULT_POLL_SEC = 45;
@@ -113,8 +113,8 @@ function preferLatestCheck(checks) {
   }
   return [...byName.values()];
 }
-export function fetchRequiredCi(prNumber) {
-  const r = spawnSync(
+export function fetchRequiredCi(prNumber, spawnGh = spawnSync) {
+  const r = spawnGh(
     'gh',
     ['pr', 'checks', String(prNumber), '--required', '--json', 'name,bucket,state,completedAt'],
     { encoding: 'utf8' },
@@ -124,6 +124,9 @@ export function fetchRequiredCi(prNumber) {
     try {
       const raw = JSON.parse(stdout);
       const checks = Array.isArray(raw) ? preferLatestCheck(raw) : [];
+      if (!checks.length) {
+        return { ok: true, pending: true, failed: false, failedNames: [], checks };
+      }
       let pending = false;
       let failed = false;
       const failedNames = [];
@@ -151,11 +154,11 @@ export function fetchRequiredCi(prNumber) {
   if (r.status !== 0) {
     const msg = (r.stderr || '').trim() || `gh pr checks exit ${r.status}`;
     if (/no checks reported/i.test(msg) || /no required checks reported/i.test(msg)) {
-      return { ok: true, pending: false, failed: false, failedNames: [], checks: [] };
+      return { ok: true, pending: true, failed: false, failedNames: [], checks: [] };
     }
     return { ok: false, error: msg };
   }
-  return { ok: true, pending: false, failed: false, failedNames: [], checks: [] };
+  return { ok: true, pending: true, failed: false, failedNames: [], checks: [] };
 }
 
 export function fetchNamedChecks(prNumber, names) {
@@ -200,8 +203,8 @@ function checkBucketPass(c) {
   return false;
 }
 
-export function gateCiRequired(prNumber) {
-  const ci = fetchRequiredCi(prNumber);
+export function gateCiRequired(prNumber, fetchCi = fetchRequiredCi) {
+  const ci = fetchCi(prNumber);
   if (!ci.ok) {
     return { id: 'ci-required', pass: false, detail: ci.error, action: 'Fix gh auth or repo access; run gh pr checks <n>' };
   }
@@ -231,7 +234,7 @@ export function gateGithubBotChecks(prNumber) {
       id: 'github-bot-gates',
       pass: false,
       detail: error,
-      action: 'Ensure GitHub Actions workflows pr-bot-presence-gate and pr-bot-feedback-check ran',
+      action: 'Ensure the GitHub Actions workflow pr-bot-feedback-check ran',
     };
   }
   if (skipped || !BOT_GATE_CHECK_NAMES.some((name) => found[name])) {
@@ -244,8 +247,6 @@ export function gateGithubBotChecks(prNumber) {
   }
   const parts = [];
   let pass = true;
-  let botPresencePass = false;
-  let botPresenceCompletedAt = null;
   for (const name of BOT_GATE_CHECK_NAMES) {
     const c = found[name];
     if (!c) {
@@ -256,10 +257,6 @@ export function gateGithubBotChecks(prNumber) {
     const ok = checkBucketPass(c);
     if (ok === true) {
       parts.push(`${name}: pass`);
-      if (name === 'bot-presence-gate') {
-        botPresencePass = true;
-        botPresenceCompletedAt = c.completedAt || null;
-      }
     } else if (ok === false) {
       parts.push(`${name}: ${c.bucket || c.state}`);
       pass = false;
@@ -272,11 +269,9 @@ export function gateGithubBotChecks(prNumber) {
     id: 'github-bot-gates',
     pass,
     detail: parts.join('; '),
-    botPresencePass,
-    botPresenceCompletedAt,
     action: pass
       ? undefined
-      : 'Wait for bot-presence-gate and bot-feedback-gate on GitHub (branch protection)',
+      : 'Resolve review feedback and wait for bot-feedback-gate to pass',
   };
 }
 
@@ -430,7 +425,6 @@ export function evaluateGates(prNumber) {
   const branchFresh = gateBranchFresh(prNumber);
   const ci = gateCiRequired(prNumber);
   const ghBot = gateGithubBotChecks(prNumber);
-  const wait = gateWaitForBots(prNumber, ghBot);
   const feedback = gateBotFeedback(prNumber);
 
   const gates = [
@@ -438,7 +432,6 @@ export function evaluateGates(prNumber) {
     branchFresh,
     ci,
     ghBot,
-    wait,
     feedback,
   ];
 

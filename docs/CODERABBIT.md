@@ -35,7 +35,7 @@ Reconfigure / dump resolved YAML on a PR: comment `@coderabbitai configuration`.
 | `.coderabbit.yaml` | **Chill** profile; lean output; auto-review on ready PRs with **incremental** follow-ups; drafts off; exact legacy status on |
 | `scripts/coderabbit-contract.mjs` | One full request per ready head when missing/skipped/rate-limit-due; never re-nudge in-flight reviews |
 | `scripts/coderabbit-quota-queue.mjs` | Serialize open-PR full-review asks — at most one active request across the repo |
-| `bot-presence-gate` | Runs trusted base code and blocks until exact-head `Review completed` + one current peer |
+| CodeRabbit presence | Advisory only; quota or availability never blocks merge |
 | `pr-request-bot-reviews` | Posts `@codex review` only; CodeRabbit has one controller |
 | `pr-coderabbit-ensure-review` | Manual single-open-PR diagnostic; no scheduled fan-out |
 | `pr-bot-close-guard` | Reopens PRs closed with outstanding CR/peer/thread obligations |
