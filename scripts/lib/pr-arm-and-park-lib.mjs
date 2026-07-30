@@ -39,6 +39,7 @@ export function classifyGateFailure(gate) {
   }
 
   if (id === 'ci-required') {
+    if (gate.pending === true || gate.unreported === true) return 'waiting';
     if (/pending/i.test(detail)) return 'waiting';
     return 'actionable';
   }
@@ -111,6 +112,38 @@ export function classifyTerminalPrState(meta) {
 }
 
 /**
+ * A final GitHub state wins over local progression failures. Auto-merge may
+ * complete while the command that armed it reports or throws an error.
+ */
+export function classifyProgressionOutcome(meta, progression, progressionError = null) {
+  const terminal = classifyTerminalPrState(meta);
+  if (terminal.mode === 'ready') return { kind: 'merged', detail: terminal.detail };
+  if (terminal.mode === 'actionable') return { kind: 'closed', detail: terminal.detail };
+  if (progressionError) {
+    return {
+      kind: 'error',
+      detail: progressionError.message || String(progressionError),
+    };
+  }
+  if (progression?.blocked) {
+    return {
+      kind: 'blocked',
+      detail: progression.sync?.detail || progression.branchState?.detail || 'branch blocked',
+    };
+  }
+  if (progression && !progression.ok) {
+    return {
+      kind: 'error',
+      detail:
+        progression.autoMerge?.detail ||
+        progression.sync?.detail ||
+        'PR progression failed without a diagnostic',
+    };
+  }
+  return { kind: 'continue', detail: null };
+}
+
+/**
  * One-shot: sync branch, arm squash auto-merge, classify gate state.
  * Never polls. Exit semantics for CLI live in pr-arm-and-park.mjs.
  *
@@ -151,12 +184,18 @@ export function armAndParkOnce(prNumber, opts = {}) {
   }
 
   let progression = null;
+  let progressionError = null;
   if (!skipArm || !skipSync) {
-    progression = progressPullRequest(prNumber, {
-      dryRun,
-      syncBranch: !skipSync,
-      enableAuto: !skipArm,
-    });
+    try {
+      progression = progressPullRequest(prNumber, {
+        dryRun,
+        syncBranch: !skipSync,
+        enableAuto: !skipArm,
+        allowDraftPromotion: !skipArm,
+      });
+    } catch (e) {
+      progressionError = e;
+    }
   }
 
   let meta = null;
@@ -173,8 +212,8 @@ export function armAndParkOnce(prNumber, opts = {}) {
     };
   }
 
-  const terminal = classifyTerminalPrState(meta);
-  if (terminal.mode === 'ready') {
+  const outcome = classifyProgressionOutcome(meta, progression, progressionError);
+  if (outcome.kind === 'merged') {
     return {
       prNumber,
       ok: true,
@@ -193,17 +232,17 @@ export function armAndParkOnce(prNumber, opts = {}) {
       gates: null,
     };
   }
-  if (terminal.mode === 'actionable') {
+  if (outcome.kind === 'closed') {
     const gate = {
       id: 'pr-state',
       pass: false,
-      detail: terminal.detail,
+      detail: outcome.detail,
     };
     return {
       prNumber,
       ok: false,
       mode: 'actionable',
-      error: terminal.detail,
+      error: outcome.detail,
       progression,
       autoMergeArmed: false,
       headRefName: meta.headRefName,
@@ -218,12 +257,25 @@ export function armAndParkOnce(prNumber, opts = {}) {
     };
   }
 
-  if (progression?.blocked) {
+  if (outcome.kind === 'error') {
+    return {
+      prNumber,
+      ok: false,
+      mode: 'error',
+      error: outcome.detail,
+      progression,
+      autoMergeArmed: isAutoMergeEnabled(meta),
+      headRefName: meta.headRefName,
+      baseGuard,
+    };
+  }
+
+  if (outcome.kind === 'blocked') {
     return {
       prNumber,
       ok: false,
       mode: 'actionable',
-      error: progression.sync?.detail || progression.branchState?.detail || 'branch blocked',
+      error: outcome.detail,
       progression,
       autoMergeArmed: isAutoMergeEnabled(meta),
       classification: {
@@ -232,7 +284,7 @@ export function armAndParkOnce(prNumber, opts = {}) {
           {
             id: 'branch-fresh',
             pass: false,
-            detail: progression.sync?.detail || progression.branchState?.detail,
+            detail: outcome.detail,
           },
         ],
         waiting: [],

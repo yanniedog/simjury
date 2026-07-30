@@ -49,6 +49,11 @@ Agent-facing copies: `.cursor/rules/pr-base-must-be-gated.mdc`, `AGENTS.md`,
 Push a branch and open a PR **against `main`**. Any other base merges unreviewed
 and is refused by the base guard (see §0). Several PRs may be open at once.
 
+Draft publication is opt-in. Background progression helpers leave drafts
+untouched; only the explicit `pr:arm-and-park` and `pr:merge` commands may mark
+a draft ready. If `gh pr ready` fails, the command stops with a diagnostic hard
+error and does not continue as though auto-merge were armed.
+
 No mutable title or author-name exemption bypasses protected bot gates.
 
 ## 2. PR CI (`validate`)
@@ -128,7 +133,8 @@ npm run pr:arm-and-park -- --pr <n>
 What arm-and-park does (one shot, no loops):
 
 1. Sync branch when behind (`gh pr update-branch`)
-2. Enable squash auto-merge through the exact-default-base guard
+2. Explicitly mark a draft ready when needed, then enable squash auto-merge
+   through the exact-default-base guard
 3. Classify merge gates as ready / waiting / actionable
 
 Aggregate single-shot audit (no watch in agents):

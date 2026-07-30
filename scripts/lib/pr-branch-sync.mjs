@@ -129,8 +129,23 @@ function ghMarkReady(prNumber, { dryRun = false } = {}) {
   return runGh(['pr', 'ready', String(prNumber)], { dryRun });
 }
 
-export function enableSquashAutoMerge(prNumber, { dryRun = false } = {}) {
-  let meta = fetchPrMergeMeta(prNumber);
+export function draftAutoMergeDecision(meta, { allowDraftPromotion = false } = {}) {
+  if (!meta?.isDraft) return { allowed: true, promote: false };
+  if (allowDraftPromotion) return { allowed: true, promote: true };
+  return { allowed: false, promote: false };
+}
+
+export function enableSquashAutoMerge(
+  prNumber,
+  {
+    dryRun = false,
+    allowDraftPromotion = false,
+    fetchMeta = fetchPrMergeMeta,
+    markReady = ghMarkReady,
+    merge = mergePullRequest,
+  } = {},
+) {
+  let meta = fetchMeta(prNumber);
   if (isAutoMergeEnabled(meta)) {
     return {
       ok: true,
@@ -139,24 +154,37 @@ export function enableSquashAutoMerge(prNumber, { dryRun = false } = {}) {
       exitCode: 0,
     };
   }
-  // Draft PRs cannot arm auto-merge — mark ready first (AGENTS.md step after CI starts).
-  if (meta.isDraft) {
-    const ready = ghMarkReady(prNumber, { dryRun });
+  const draftDecision = draftAutoMergeDecision(meta, { allowDraftPromotion });
+  if (!draftDecision.allowed) {
+    return {
+      ok: false,
+      action: 'blocked',
+      detail: 'PR is draft; only an explicit arm/merge command may mark it ready',
+      exitCode: 3,
+    };
+  }
+  const wasDraft = draftDecision.promote;
+  if (wasDraft) {
+    const ready = markReady(prNumber, { dryRun });
     if (!ready.ok && !dryRun) {
+      const diagnostic =
+        ready.stderr || ready.stdout || `gh pr ready exited ${ready.exitCode ?? 'without a status'}`;
       return {
         ok: false,
         action: 'failed',
-        detail: `PR is draft and gh pr ready failed: ${ready.stderr || ready.stdout}`,
+        hardError: true,
+        detail: `failed to mark draft PR #${prNumber} ready: ${diagnostic}`,
         exitCode: ready.exitCode || 1,
       };
     }
-    if (!dryRun) meta = fetchPrMergeMeta(prNumber);
+    if (!dryRun) meta = fetchMeta(prNumber);
   }
-  const result = mergePullRequest(prNumber, { dryRun });
+  const result = merge(prNumber, { dryRun });
   if (!result.ok) {
     return {
       ok: false,
       action: 'failed',
+      hardError: true,
       detail: result.stderr || result.stdout || `gh pr merge exit ${result.exitCode}`,
       exitCode: result.exitCode || 1,
     };
@@ -166,14 +194,22 @@ export function enableSquashAutoMerge(prNumber, { dryRun = false } = {}) {
     action: dryRun ? 'skipped' : 'enabled',
     detail: dryRun
       ? result.stdout
-      : meta.isDraft
+      : wasDraft
         ? 'marked ready + squash auto-merge enabled'
         : 'squash auto-merge enabled',
     exitCode: 0,
   };
 }
 
-export function progressPullRequest(prNumber, { dryRun = false, syncBranch = true, enableAuto = true } = {}) {
+export function progressPullRequest(
+  prNumber,
+  {
+    dryRun = false,
+    syncBranch = true,
+    enableAuto = true,
+    allowDraftPromotion = false,
+  } = {},
+) {
   const meta = fetchPrMergeMeta(prNumber);
   const state = classifyBranchState(meta);
   const out = {
@@ -202,7 +238,7 @@ export function progressPullRequest(prNumber, { dryRun = false, syncBranch = tru
     out.sync = { ok: true, action: 'skipped', detail: state.detail, exitCode: 0 };
   }
   if (enableAuto) {
-    out.autoMerge = enableSquashAutoMerge(prNumber, { dryRun });
+    out.autoMerge = enableSquashAutoMerge(prNumber, { dryRun, allowDraftPromotion });
     if (!out.autoMerge.ok) out.ok = false;
   }
   return out;

@@ -21,10 +21,11 @@ permissions:
   pull-requests: read
 
 concurrency:
-  # One loop owns each PR. A newer head cancels the obsolete head's 40-minute
-  # loop immediately so the required check can start on the current revision.
+  # Serialize each PR's feedback events. Cancelling a sibling review/reply run
+  # can leave CANCELLED selected as the required context even when another run
+  # passed, so let the PR-only group finish in order.
   group: bot-feedback-gate-${{ github.event.pull_request.number || inputs.pr_number || github.run_id }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   bot-feedback-gate:

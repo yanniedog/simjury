@@ -30,9 +30,9 @@ Syntax: commas = ALL-of slots; `|` = OR within a slot.
 
 Evaluate advisory `wait-for-bots` **once** per run (no sleep-poll). Presence
 diagnostics use `cancel-in-progress: false`. The required feedback-closure
-workflow instead uses one PR-only concurrency group with
-`cancel-in-progress: true` and no queue cap, so a synchronize event cancels an
-obsolete-head 40-minute loop and immediately starts the current head.
+workflow also uses one PR-only concurrency group with
+`cancel-in-progress: false` and no queue cap. Serializing sibling review/reply
+events avoids leaving a cancelled run selected as the required context.
 
 ## Act-or-park (token efficiency)
 
