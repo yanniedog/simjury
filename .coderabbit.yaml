@@ -40,10 +40,15 @@ reviews:
     - "!**/*.lock"
     - "!**/package-lock.json"
     - "!site/art/**"
-    - "!**/*.{png,jpg,jpeg,gif,webp,ogg,wav,mp3,mp4,webm,ttf,woff,woff2}"
-    # Re-include player media so media-only Daily Docket PRs stay reviewable
-    # (otherwise CR skips → presence gate cannot get Review completed).
-    - "site/app/public/media/**"
+    # Exclusions only. A single positive pattern would switch CodeRabbit into
+    # allowlist mode, where everything not named is "included by none" — which
+    # is exactly how every source file stopped being reviewed.
+    - "!**/*.{ttf,woff,woff2}"
+    # Player media under site/app/public/media/** is deliberately NOT excluded.
+    # Source art lives in site/art/** and is excluded above; leaving shipped
+    # media in scope means a media-only Daily Docket PR still has files to
+    # review, instead of CodeRabbit skipping and the presence gate never
+    # getting "Review completed".
   path_instructions:
     - path: "site/app/**"
       instructions: >-
