@@ -491,6 +491,7 @@ function DocketApp({
         <div className="mb-6">
           <LiveJuryLobby
             caseId={activeTrial.id}
+            caseTitle={activeTrial.title}
             derivationRevision={liveDerivationRevision!}
             session={liveSession}
             onSession={setLiveSession}
