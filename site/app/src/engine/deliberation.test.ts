@@ -12,6 +12,7 @@ import {
   runDeliberation,
   startDeliberation,
   type PlayerAction,
+  type PlayerAppeal,
 } from './deliberation'
 import { MAJORITY_DIRECTION } from './juryProcedure'
 
@@ -355,6 +356,22 @@ describe('persuasion appeals', () => {
   const evidenceBeat = (trial: DocketCase) =>
     trial.beats.find((b) => b.kind !== 'direction')!
 
+  /**
+   * Spreading `argue()` widens to the whole PlayerAction union, which has no
+   * `appeal` on its `pass` member — so build the argue action directly.
+   */
+  const appealTo = (
+    beatId: string,
+    move: PlayerAppeal['move'],
+    targetJurorId?: string,
+  ): PlayerAction => ({
+    type: 'argue',
+    beatId,
+    stance: 'proves',
+    appeal: { move },
+    ...(targetJurorId ? { targetJurorId } : {}),
+  })
+
   it('leaves the room byte-identical when the player names no technique', () => {
     const trial = makeDocketCase()
     const beat = evidenceBeat(trial)
@@ -369,7 +386,7 @@ describe('persuasion appeals', () => {
     const trial = makeDocketCase()
     const beat = evidenceBeat(trial)
     const { log } = runDeliberation(trial, 'guilty', [
-      { ...argue(beat.id, 'proves'), appeal: { move: 'challenge_inference' } },
+      appealTo(beat.id, 'challenge_inference'),
     ])
     const read = log.find((e) => e.type === 'read')
 
@@ -387,7 +404,7 @@ describe('persuasion appeals', () => {
     const beat = evidenceBeat(trial)
     const readFor = (move: 'assert' | 'ask_reason') => {
       const { log } = runDeliberation(trial, 'guilty', [
-        { ...argue(beat.id, 'proves'), appeal: { move } },
+        appealTo(beat.id, move),
       ])
       return log.find((e) => e.type === 'read')
     }
@@ -398,7 +415,7 @@ describe('persuasion appeals', () => {
     expect(asked?.receptions?.every((r) => r.multiplier === 0)).toBe(true)
     expect(
       runDeliberation(trial, 'guilty', [
-        { ...argue(beat.id, 'proves'), appeal: { move: 'ask_reason' } },
+        appealTo(beat.id, 'ask_reason'),
       ]).log.filter((e) => e.type === 'respond' && e.delta !== 0),
     ).toHaveLength(0)
   })
@@ -407,11 +424,7 @@ describe('persuasion appeals', () => {
     const trial = makeDocketCase()
     const beat = evidenceBeat(trial)
     const state = startDeliberation(trial)
-    playRound(state, {
-      ...argue(beat.id, 'proves'),
-      appeal: { move: 'ask_reason' },
-      targetJurorId: trial.jury.jurors[0].id,
-    } as PlayerAction)
+    playRound(state, appealTo(beat.id, 'ask_reason', trial.jury.jurors[0].id))
 
     const responded = state.log.filter((e) => e.type === 'respond' && e.line)
     // The room still speaks — the player just does not push anyone with it.
@@ -427,11 +440,7 @@ describe('persuasion appeals', () => {
     const beat = evidenceBeat(trial)
     const target = trial.jury.jurors[0]
     const state = startDeliberation(trial)
-    playRound(state, {
-      ...argue(beat.id, 'proves'),
-      appeal: { move: 'distinguish' },
-      targetJurorId: target.id,
-    } as PlayerAction)
+    playRound(state, appealTo(beat.id, 'distinguish', target.id))
 
     const addressed = state.persuasion.byJuror[target.id]
     const bystander = state.persuasion.byJuror[trial.jury.jurors[1].id]
