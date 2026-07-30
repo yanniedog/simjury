@@ -87,6 +87,13 @@ function safeText(value) {
   return clean && clean.length <= FREE_BETA_LIMITS.messageCharacters ? clean : null
 }
 
+/**
+ * Where a juror has reached in the sitting. Jurors in a shared room arrive at
+ * the jury room minutes apart, and nothing used to tell the others whether to
+ * wait or start, so a room announces its progress.
+ */
+export const SITTING_STAGES = Object.freeze(['trial', 'juryroom', 'verdict'])
+
 export function parseLiveEvent(value) {
   if (typeof value !== 'string' || value.length > FREE_BETA_LIMITS.frameCharacters) return null
   try {
@@ -94,6 +101,11 @@ export function parseLiveEvent(value) {
     if (event?.type === 'message') {
       const text = safeText(event.text)
       return text ? { type: 'message', text } : null
+    }
+    if (event?.type === 'stage') {
+      return SITTING_STAGES.includes(event.stage)
+        ? { type: 'stage', stage: event.stage }
+        : null
     }
     if (event?.type === 'position' && ['G', 'NG', 'U'].includes(event.position)) {
       const reason = event.reason === undefined ? undefined : safeText(event.reason)

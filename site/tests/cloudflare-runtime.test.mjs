@@ -13,6 +13,7 @@ import {
   parseDerivationRevision,
   parseDisplayName,
   parseLiveEvent,
+  SITTING_STAGES,
   parseSeatId,
   roomRoute,
   roomSocketRoute,
@@ -267,6 +268,22 @@ test('human deliberation events have a small explicit protocol', () => {
   assert.equal(parseLiveEvent(JSON.stringify({ type: 'position', position: 'maybe' })), null)
   assert.equal(parseLiveEvent(JSON.stringify({ type: 'message', text: '' })), null)
   assert.equal(parseLiveEvent('x'.repeat(1_025)), null)
+})
+
+test('a juror can announce how far through the sitting they are', () => {
+  for (const stage of SITTING_STAGES) {
+    assert.deepEqual(
+      parseLiveEvent(JSON.stringify({ type: 'stage', stage })),
+      { type: 'stage', stage },
+    )
+  }
+  assert.equal(parseLiveEvent(JSON.stringify({ type: 'stage', stage: 'lunch' })), null)
+  assert.equal(parseLiveEvent(JSON.stringify({ type: 'stage' })), null)
+  // A stage carries nothing a juror wrote, so it cannot smuggle prose.
+  assert.deepEqual(
+    parseLiveEvent(JSON.stringify({ type: 'stage', stage: 'juryroom', text: 'x' })),
+    { type: 'stage', stage: 'juryroom' },
+  )
 })
 
 test('socket capabilities are verified at the public boundary and not put in the URL', async () => {

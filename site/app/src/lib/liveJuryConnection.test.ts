@@ -163,3 +163,68 @@ describe('LiveJuryConnection', () => {
     expect(sockets[0].closed).toEqual({ code: 1000, reason: 'Leaving live jury' })
   })
 })
+
+describe('announcing progress through the sitting', () => {
+  it('sends a stage without erroring when the room is not connected yet', () => {
+    const { connection, sockets } = harness()
+    connection.start()
+
+    // Not open yet: a progress ping must not surface an error to the player.
+    expect(() => connection.announceStage('juryroom')).not.toThrow()
+    expect(sockets[0].sent).toEqual([])
+
+    sockets[0].open()
+    connection.announceStage('juryroom')
+    expect(JSON.parse(sockets[0].sent[0])).toEqual({ type: 'stage', stage: 'juryroom' })
+  })
+
+  it('ignores a stage it does not recognise', () => {
+    const { connection, sockets } = harness()
+    connection.start()
+    sockets[0].open()
+
+    connection.announceStage('lunch' as 'juryroom')
+    expect(sockets[0].sent).toEqual([])
+  })
+
+  it('tracks the furthest stage each seat has reached', () => {
+    const { connection, sockets, updates } = harness()
+    connection.start()
+    sockets[0].open()
+
+    for (const [sequence, seat_id, stage] of [
+      [1, 2, 'trial'],
+      [2, 3, 'juryroom'],
+      [3, 2, 'juryroom'],
+      [4, 3, 'verdict'],
+    ] as const) {
+      sockets[0].message({
+        type: 'event',
+        event_type: 'stage',
+        sequence,
+        seat_id,
+        display_name: `Juror ${seat_id}`,
+        stage,
+      })
+    }
+
+    expect(updates.at(-1)?.stageBySeat).toEqual({ 2: 'juryroom', 3: 'verdict' })
+  })
+
+  it('rejects a malformed stage event off the wire', () => {
+    const { connection, sockets, updates } = harness()
+    connection.start()
+    sockets[0].open()
+    sockets[0].message({
+      type: 'event',
+      event_type: 'stage',
+      sequence: 1,
+      seat_id: 2,
+      display_name: 'Juror 2',
+      stage: 'lunch',
+    })
+
+    expect(updates.at(-1)?.stageBySeat).toEqual({})
+    expect(updates.at(-1)?.events).toEqual([])
+  })
+})

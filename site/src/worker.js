@@ -388,19 +388,25 @@ export class RoomDO {
       socket.close(1009, 'Message exceeds the live-jury beta limit')
       return
     }
-    const usage = [...this.state.storage.sql.exec(
-      'SELECT messages FROM seat_usage WHERE seat_id = ?',
-      seatId,
-    )][0]?.messages ?? 0
-    if (!seatMaySend(usage)) {
-      socket.close(1008, 'Message limit reached')
-      return
-    }
-    this.state.storage.sql.exec(
-      'UPDATE seat_usage SET messages = messages + 1 WHERE seat_id = ?',
-      seatId,
-    )
     const event = parseLiveEvent(message)
+    // Stage announcements are automatic progress pings rather than jury-room
+    // contributions, so they must not consume a seat's message budget. An
+    // unparseable frame still costs the sender, so this cannot be used to send
+    // unlimited garbage.
+    if (!event || event.type !== 'stage') {
+      const usage = [...this.state.storage.sql.exec(
+        'SELECT messages FROM seat_usage WHERE seat_id = ?',
+        seatId,
+      )][0]?.messages ?? 0
+      if (!seatMaySend(usage)) {
+        socket.close(1008, 'Message limit reached')
+        return
+      }
+      this.state.storage.sql.exec(
+        'UPDATE seat_usage SET messages = messages + 1 WHERE seat_id = ?',
+        seatId,
+      )
+    }
     if (!event) {
       socket.send(JSON.stringify({ type: 'error', code: 'INVALID_EVENT' }))
       return
