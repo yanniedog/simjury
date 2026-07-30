@@ -644,10 +644,18 @@ export function JuryRoomView({
         activeJurorId={activeJurorId}
         stirredIds={revealVotes ? [] : stirredIds}
         revealPositions={revealVotes}
-        onOpenJuror={(jurorId) => {
-          setDossierOpen(true)
-          setExpandedJurorId(jurorId)
-        }}
+        // Sealing the verdict removes the dossier panel, so the seats must stop
+        // being buttons too. Left wired up they stayed in the tab order and were
+        // announced as opening a dossier that no longer renders — a control that
+        // only sets hidden state and shows the player nothing.
+        onOpenJuror={
+          outcome
+            ? undefined
+            : (jurorId) => {
+                setDossierOpen(true)
+                setExpandedJurorId(jurorId)
+              }
+        }
       />
       <p aria-live="polite" className="speaker-focus text-xs text-amber-200/80">
         {floorCopy({
