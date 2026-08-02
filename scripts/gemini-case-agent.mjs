@@ -4,9 +4,10 @@ import { basename, join } from 'node:path'
 import { spawnSync } from 'node:child_process'
 
 const API = 'https://generativelanguage.googleapis.com/v1/models'
+const STORY_REVIEW_KEYS = ['hook', 'both_sides', 'fair_reversal', 'specificity', 'listenability', 'discussion', 'originality', 'sensitivity']
 const REVIEW_KEYS = {
-  legal_review: ['legal_coherence', 'admissibility', 'burden', 'competent_record', 'sensitivity'],
-  story_review: ['hook', 'both_sides', 'fair_reversal', 'specificity', 'listenability', 'discussion', 'originality', 'sensitivity'],
+  legal_review: ['legal_coherence', 'admissibility', 'burden', 'competent_record', ...STORY_REVIEW_KEYS, 'read_aloud', 'blind_test'],
+  story_review: STORY_REVIEW_KEYS,
 }
 // Standard paid-tier USD per million tokens, checked against ai.google.dev/gemini-api/docs/pricing on 2026-08-02.
 const TEXT_PRICES = {
@@ -114,7 +115,7 @@ function promptFor(request, root) {
   const role = request.phase === 'draft'
     ? 'Create a wholly original, serious and enthralling fictional criminal trial. Do not copy the reference story.'
     : request.phase === 'legal_review'
-      ? 'Independently audit and revise every legal, evidential, admissibility, burden and sensitivity detail.'
+      ? 'Independently audit and revise every legal, evidential, admissibility, burden and sensitivity detail, then perform final story, read-aloud and blind-balance checks on the revised bundle.'
       : request.phase === 'story_review'
         ? 'Independently audit and revise hook, fairness, specificity, listenability, originality and discussion value.'
         : 'Implement or explicitly disposition every supplied review thread without weakening any gate.'
@@ -183,6 +184,8 @@ function rebind(files, request, config) {
   trialPaths.forEach((trialPath, index) => {
     const root = trialPath.slice(0, -'/trial.json'.length)
     const id = basename(root)
+    const expectedId = caseIdForDate(request.dates[index])
+    if (id !== expectedId) throw new Error(`Gemini bundle ${id} does not match commissioned date ${request.dates[index]} (${expectedId})`)
     const expectedPaths = ['trial', 'analysis', 'legal-sheet', 'deliberation-pack'].map((name) => `${root}/${name}.json`)
     if (expectedPaths.some((path) => !byName.has(path))) throw new Error(`incomplete Gemini bundle for ${id}`)
     const trial = byName.get(trialPath)
