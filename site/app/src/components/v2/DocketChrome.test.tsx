@@ -223,7 +223,13 @@ describe('DocketSittingChooser', () => {
     expect(new Set(optionIds)).toHaveLength(expectedCount)
     expect(optionIds).not.toContain('dd-intro')
     expect(markup).toContain('class="docket-intro-link"')
-    expect(markup).toContain('Today — The Alibi That Spoke (in progress)')
+    const featuredLabel = `Today — ${featured!.trial.title} (in progress)`
+    const selectableIds = new Set(sittings.slice(-7).map(({ trial }) => trial.id))
+    if (selectableIds.has(featured!.trial.id)) {
+      expect(markup).toContain(featuredLabel)
+    } else {
+      expect(markup).not.toContain(featuredLabel)
+    }
     expect(markup).toContain(intro!.trial.title)
     for (const trial of sittings.slice(-7).map(({ trial }) => trial)) {
       expect(markup).toContain(trial.title)
