@@ -4,6 +4,8 @@
  * Run: npm run pr:gate-logic:verify
  */
 import { classifyThreads, isClosureReply } from './lib/gh-pr-review-threads.mjs';
+import { reviewsInFlight } from './lib/pr-gates-lib.mjs';
+import { classifyGateFailure } from './lib/pr-arm-and-park-lib.mjs';
 import {
   gateExemptReasonFromPrMeta,
   isBotPrAuthor,
@@ -229,6 +231,42 @@ for (const path of ['docs/what?.md', 'docs/c#/notes.md', 'a b/c.ts']) {
   )) {
     failures.push(`a superseded path containing reserved characters should match: ${path}`);
   }
+}
+
+
+// --- Racing an in-flight review ------------------------------------------
+// Reviewer presence is advisory on this repository, so nothing requires a bot
+// to have looked before merge. Auto-merge only waits for *required* checks, and
+// `validate` plus `bot-feedback-gate` both go green in seconds while no threads
+// exist yet — so a PR could merge while CodeRabbit was still writing, and the
+// thread gate would have nothing left to block on. Arming waits for a review
+// already in progress; it never demands one.
+const NOW = Date.parse('2026-08-02T04:10:00Z');
+const check = (over) => ({ name: 'CodeRabbit', bucket: 'pending', startedAt: '2026-08-02T04:05:00Z', ...over });
+
+if (reviewsInFlight([check()], NOW).length !== 1) {
+  failures.push('a review in progress should hold the merge');
+}
+if (reviewsInFlight([check({ name: 'Sourcery review', bucket: undefined, state: 'IN_PROGRESS' })], NOW).length !== 1) {
+  failures.push('other reviewers count too');
+}
+for (const [label, checks] of [
+  ['a finished review', [check({ bucket: 'pass' })]],
+  ['a skipped review', [check({ bucket: 'skipping', state: 'SKIPPED' })]],
+  // A reviewer that hangs must not block merges forever.
+  ['a reviewer stuck past the window', [check({ startedAt: '2026-08-02T03:00:00Z' })]],
+  ['a pending non-reviewer check', [check({ name: 'validate' })]],
+  // Presence stays advisory: no reviewer running is not something to wait for.
+  ['no checks at all', []],
+  ['unreadable checks', null],
+]) {
+  if (reviewsInFlight(checks, NOW).length !== 0) {
+    failures.push(`${label} must not hold the merge`);
+  }
+}
+
+if (classifyGateFailure({ id: 'reviews-in-flight', pass: false, detail: 'x' }) !== 'waiting') {
+  failures.push('an in-flight review is a wait, never agent work');
 }
 
 if (failures.length) {

@@ -149,7 +149,7 @@ export function fetchRequiredCi(
 export function fetchNamedChecks(prNumber, names) {
   const r = spawnSync(
     'gh',
-    ['pr', 'checks', String(prNumber), '--json', 'name,bucket,state,completedAt'],
+    ['pr', 'checks', String(prNumber), '--json', 'name,bucket,state,completedAt,startedAt'],
     { encoding: 'utf8' },
   );
   const stdout = (r.stdout || '').trim();
@@ -179,6 +179,56 @@ export function fetchNamedChecks(prNumber, names) {
     return { found: {}, error: msg };
   }
   return { found: {} };
+}
+
+
+/**
+ * Reviewer checks that mean "a review of this head is being written right now".
+ *
+ * Not the same thing as requiring a review. Presence is deliberately advisory
+ * on this repository, and nothing here reinstates it: if a reviewer never
+ * starts, this never waits.
+ */
+export const REVIEWER_CHECK_NAMES = ['coderabbit', 'sourcery review', 'cursor', 'codex'];
+
+/** How long a reviewer may hold the merge before it is treated as stuck. */
+const REVIEW_IN_FLIGHT_MAX_MIN = Number(process.env.PR_REVIEW_IN_FLIGHT_MAX_MIN || 20);
+
+function minutesSince(iso, nowMs) {
+  const started = Date.parse(iso || '');
+  if (!Number.isFinite(started)) return 0;
+  return (nowMs - started) / 60_000;
+}
+
+/**
+ * Is a reviewer still mid-review on this head?
+ *
+ * Auto-merge only waits for *required* checks, and reviewer checks are not
+ * required here, so a PR whose `validate` and `bot-feedback-gate` both go green
+ * in seconds merges while CodeRabbit is still typing. The thread gate then has
+ * nothing to block on, because the findings arrive after the merge.
+ *
+ * This does not add a gate a PR must satisfy; it declines to *arm* while a
+ * review is visibly in progress. A reviewer that hangs stops mattering after
+ * REVIEW_IN_FLIGHT_MAX_MIN, so a stuck vendor cannot block merges indefinitely.
+ *
+ * @param {Array<{name?: string, bucket?: string, state?: string, startedAt?: string}>} checks
+ * @param {number} [nowMs]
+ */
+export function reviewsInFlight(checks, nowMs = Date.now()) {
+  if (!Array.isArray(checks)) return [];
+  return checks
+    .filter((check) => {
+      const name = String(check?.name || '').toLowerCase();
+      if (!REVIEWER_CHECK_NAMES.some((reviewer) => name.includes(reviewer))) return false;
+      const pending = check?.bucket === 'pending'
+        || check?.state === 'PENDING'
+        || check?.state === 'IN_PROGRESS'
+        || check?.state === 'QUEUED';
+      if (!pending) return false;
+      return minutesSince(check?.startedAt, nowMs) < REVIEW_IN_FLIGHT_MAX_MIN;
+    })
+    .map((check) => check.name);
 }
 
 function checkBucketPass(c) {
@@ -393,6 +443,43 @@ export function gateBranchFresh(prNumber) {
   }
 }
 
+
+/**
+ * Decline to arm while a reviewer is mid-review on this head.
+ *
+ * Reviewer presence is advisory here, so this never demands a review — it only
+ * refuses to race one that has already started. Passes when nothing is in
+ * flight, when no reviewer runs at all, and when the checks cannot be read.
+ */
+export function gateReviewsInFlight(prNumber) {
+  const r = spawnSync(
+    'gh',
+    ['pr', 'checks', String(prNumber), '--json', 'name,bucket,state,startedAt'],
+    { encoding: 'utf8' },
+  );
+  const stdout = (r.stdout || '').trim();
+  if (!stdout) {
+    return { id: 'reviews-in-flight', pass: true, detail: 'no checks reported', skipped: true };
+  }
+  let checks;
+  try {
+    checks = JSON.parse(stdout);
+  } catch {
+    return { id: 'reviews-in-flight', pass: true, detail: 'checks unreadable; not blocking' };
+  }
+  const busy = reviewsInFlight(checks);
+  if (busy.length === 0) {
+    return { id: 'reviews-in-flight', pass: true, detail: 'no review in progress' };
+  }
+  return {
+    id: 'reviews-in-flight',
+    pass: false,
+    pending: true,
+    detail: `review in progress: ${busy.join(', ')}`,
+    action: 'Let the in-flight review land, then re-run pr:arm-and-park',
+  };
+}
+
 export function evaluateGates(prNumber) {
   if (!hasGh()) {
     return {
@@ -413,6 +500,7 @@ export function evaluateGates(prNumber) {
   const ci = gateCiRequired(prNumber);
   const ghBot = gateGithubBotChecks(prNumber);
   const feedback = gateBotFeedback(prNumber);
+  const inFlight = gateReviewsInFlight(prNumber);
 
   const gates = [
     { id: 'gh-auth', pass: true, detail: 'gh available' },
@@ -420,6 +508,7 @@ export function evaluateGates(prNumber) {
     ci,
     ghBot,
     feedback,
+    inFlight,
   ];
 
   return {
