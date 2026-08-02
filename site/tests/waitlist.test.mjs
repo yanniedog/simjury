@@ -382,6 +382,7 @@ test('signing up again after unsubscribing puts you back on the list', async () 
   const env = waitlistEnv()
   await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
   env.unsubscribed.add('juror@example.com')
+  env.rows[0][2] = 'the wording they agreed to last time'
   const before = env.rows[0][3]
 
   const again = await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
@@ -389,7 +390,13 @@ test('signing up again after unsubscribing puts you back on the list', async () 
   assert.equal(again.status, 200)
   assert.equal(env.unsubscribed.has('juror@example.com'), false, 'the unsubscribe is cleared')
   assert.equal(env.rows.length, 1, 'and no duplicate row appears')
-  assert.notEqual(env.rows[0][3], before, 'the renewed consent is dated')
+
+  // Not `notEqual` on the timestamp: both writes can land in the same
+  // millisecond on a fast runner, and re-dating to the same instant is still
+  // correct. Assert the record was rewritten and never moves backwards.
+  assert.equal(env.rows[0][2], WAITLIST_CONSENT_TEXT, 'the current wording is recorded')
+  assert.ok(env.rows[0][3] >= before, 'consent is re-dated, never backdated')
+  assert.ok(!Number.isNaN(Date.parse(env.rows[0][3])), 'and it is a real timestamp')
 })
 
 test('a still-subscribed address is not disturbed by signing up again', async () => {
