@@ -91,7 +91,12 @@ assert.ok(workflow.includes("github.event.pull_request.head.repo.full_name == gi
 assert.ok(workflow.includes("contains(github.event.pull_request.labels.*.name, 'docket-generation')"), 'review events must require the docket-generation label')
 assert.equal(workflow.includes('actions: write'), false, 'controller must not request unused Actions write permission')
 const narration = readFileSync(new URL('../site/scripts/build-kokoro-jobs.mjs', import.meta.url), 'utf8')
-assert.ok(narration.includes("join(docketDir, entry.name, 'trial.json')"), 'Kokoro must discover V4 trial bundles')
+const narrationDiscovery = readFileSync(new URL('../site/scripts/docket-trials.mjs', import.meta.url), 'utf8')
+assert.ok(
+  narration.includes('listDocketTrialIds(docketDir)') &&
+    narrationDiscovery.includes("join(docketDir, entry.name, 'trial.json')"),
+  'Kokoro must discover V4 trial bundles',
+)
 await assert.rejects(() => boundedJson(new Response('{"too":"large"}'), 4), /exceeds byte cap/)
 assert.deepEqual(await boundedJson(new Response('{"ok":true}'), 64), { ok: true })
 
