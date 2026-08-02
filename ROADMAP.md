@@ -104,10 +104,22 @@ Recorded so they are not rediscovered as ideas:
 
 ## PR discipline
 
+Merge through the one entry point:
+
+```sh
+npm run pr:arm-and-park -- --pr <n>
+```
+
+It refuses a base weaker than the default branch, waits for a review already in
+progress, and parks instead of polling. Never hand-roll `gh pr merge --auto`:
+that skips both checks, and the table below is only a description of what the
+command already enforces.
+
 | Rule | Rationale |
 | --- | --- |
 | About 400 changed lines per PR | Reviewable; CI fast |
 | One concern per PR | Clear rollback |
 | Squash merge to `main` | Linear history |
-| Target the default branch, always | A PR based on a feature branch merges unreviewed |
+| Target the default branch, always | A PR based on a feature branch can merge unreviewed |
+| Many PRs open at once, never stacked | Each is reviewed on its own diff and lands on its own gates |
 | Let an in-flight review land before merging | Auto-merge waits only for *required* checks, so an armed PR can outrun the review |
