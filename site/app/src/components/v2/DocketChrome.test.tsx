@@ -161,7 +161,99 @@ describe('DocketShell', () => {
     )
 
     expect(markup).not.toContain('aria-label="Toggle narration"')
-    expect(markup).not.toContain('narration-controls')
+    expect(markup).not.toContain('audio-menu')
+  })
+
+  // Finding 05: four always-visible audio controls wrapped onto a second row
+  // at 390px and held 21% of the viewport permanently. They now live in the
+  // popover one button opens.
+  it('puts every audio control behind a single labelled button', () => {
+    vi.stubGlobal('window', {
+      speechSynthesis: {
+        getVoices: () => [
+          { name: 'Desktop English', lang: 'en-US', localService: true },
+        ],
+      },
+    })
+    vi.stubGlobal('localStorage', writableStorage())
+    const markup = renderToStaticMarkup(
+      <DocketShell
+        phase="beats"
+        caseTitle="The Quiet Platform"
+        narration={false}
+        ambience={false}
+        playbackRate={1}
+        voiceEngine="kokoro"
+        onToggleNarration={() => undefined}
+        onToggleAmbience={() => undefined}
+        onRateChange={() => undefined}
+        onVoiceEngineChange={() => undefined}
+      >
+        <h1 id="phase-heading">Case briefing</h1>
+      </DocketShell>,
+    )
+
+    // One control on the bar itself...
+    expect(markup).toContain('aria-label="Audio settings"')
+    // ...and the four it replaced are inside the panel it opens.
+    const panel = markup.slice(markup.indexOf('audio-menu-panel'))
+    for (const control of [
+      'aria-label="Toggle narration"',
+      'aria-label="Narration speed"',
+      'aria-label="Narration voice mode"',
+      'aria-label="Toggle courtroom ambience"',
+    ]) {
+      expect(panel).toContain(control)
+    }
+  })
+
+  // Finding 01: rewind was a permanent, unconfirmed, full-width banner above
+  // every phase — a control that destroys the player's work in the top-left
+  // position the eye lands on first.
+  it('offers rewind only from the overflow menu, and only behind a confirm', () => {
+    vi.stubGlobal('window', {})
+    vi.stubGlobal('localStorage', writableStorage())
+    const markup = renderToStaticMarkup(
+      <DocketShell
+        phase="beats"
+        caseTitle="The Quiet Platform"
+        narration={false}
+        playbackRate={1}
+        onToggleNarration={() => undefined}
+        onRateChange={() => undefined}
+        onRewind={() => undefined}
+      >
+        <h1 id="phase-heading">Case briefing</h1>
+      </DocketShell>,
+    )
+
+    expect(markup).toContain('aria-label="Sitting options"')
+    expect(markup).toContain('Rewind to beginning')
+    expect(markup).not.toContain('Restarting clears this sitting')
+    // The destructive action is not reachable in one click: it is the confirm
+    // step that carries the aria-label, and it is not rendered until asked for.
+    expect(markup).not.toContain('Yes, rewind and clear')
+    expect(markup).not.toContain('aria-label="Rewind The Quiet Platform to the beginning"')
+  })
+
+  it('omits the overflow menu entirely once a verdict is recorded', () => {
+    vi.stubGlobal('window', {})
+    vi.stubGlobal('localStorage', writableStorage())
+    const markup = renderToStaticMarkup(
+      <DocketShell
+        phase="reveal"
+        caseTitle="The Quiet Platform"
+        narration={false}
+        playbackRate={1}
+        onToggleNarration={() => undefined}
+        onRateChange={() => undefined}
+      >
+        <h1 id="phase-heading">The record</h1>
+      </DocketShell>,
+    )
+
+    expect(markup).not.toContain('aria-label="Sitting options"')
+    expect(markup).not.toContain('Rewind to beginning')
   })
 
   it('warns without blocking the sitting when browser storage rejects writes', () => {
