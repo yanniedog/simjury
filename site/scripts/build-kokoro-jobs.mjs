@@ -1,4 +1,4 @@
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { assignKokoroVoices } from './speaker-voices.mjs'
@@ -116,15 +116,26 @@ function clipsFor(docket) {
 
 /** Numeric daily dockets plus the guided intro case. */
 const DOCKET_FILE_RE = /^(dd-\d{4}|dd-intro)\.json$/
-const allCases = readdirSync(docketDir)
-  .filter((file) => DOCKET_FILE_RE.test(file))
-  .map((file) => file.replace(/\.json$/, ''))
+const docketSources = new Map()
+for (const entry of readdirSync(docketDir, { withFileTypes: true })) {
+  const caseId = entry.name.replace(/\.json$/, '')
+  const source = entry.isFile() && DOCKET_FILE_RE.test(entry.name)
+    ? join(docketDir, entry.name)
+    : entry.isDirectory() && /^dd-\d{4}$/.test(entry.name) && existsSync(join(docketDir, entry.name, 'trial.json'))
+      ? join(docketDir, entry.name, 'trial.json')
+      : null
+  if (!source) continue
+  if (docketSources.has(caseId)) throw new Error(`Duplicate docket source: ${caseId}`)
+  docketSources.set(caseId, source)
+}
+const allCases = [...docketSources.keys()]
   .sort((a, b) => {
     // Keep dd-intro after the numbered runway so "all" matrices stay stable.
     if (a === 'dd-intro') return 1
     if (b === 'dd-intro') return -1
     return a.localeCompare(b)
-  })
+})
+const readDocket = (caseId) => JSON.parse(readFileSync(docketSources.get(caseId), 'utf8'))
 const selected = requested === 'all'
   ? allCases
   : requested.split(',').map((item) => item.trim()).filter(Boolean)
@@ -134,7 +145,7 @@ for (const caseId of selected) {
 }
 const corpusIds = new Map()
 for (const caseId of allCases) {
-  const docket = JSON.parse(readFileSync(join(docketDir, `${caseId}.json`), 'utf8'))
+  const docket = readDocket(caseId)
   for (const [id, clip] of clipsFor(docket)) {
     const prior = corpusIds.get(id)
     if (prior && JSON.stringify(prior) !== JSON.stringify(clip)) {
@@ -150,7 +161,7 @@ if (args.includes('--list')) {
 
 mkdirSync(outputDir, { recursive: true })
 for (const caseId of selected) {
-  const docket = JSON.parse(readFileSync(join(docketDir, `${caseId}.json`), 'utf8'))
+  const docket = readDocket(caseId)
   const clips = clipsFor(docket)
   const job = {
     caseId,

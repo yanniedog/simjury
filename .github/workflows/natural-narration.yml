@@ -11,6 +11,7 @@ on:
     branches: [main]
     paths:
       - "site/app/docket/*.json"
+      - "site/app/docket/*/trial.json"
       - "site/app/src/lib/narration.ts"
       - "site/app/src/lib/narratorCues.ts"
       - "site/app/src/lib/narratorCueCopy.json"
@@ -59,13 +60,13 @@ jobs:
           else
             changed="$(git diff --name-only HEAD^ HEAD)"
             deleted_cases="$(git diff --diff-filter=D --name-only HEAD^ HEAD |
-              sed -nE 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p')"
+              sed -nE -e 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p' -e 's#^site/app/docket/(dd-[0-9]{4})/trial\.json$#\1#p')"
             # Synthesis inputs / spoken cue copy / voice catalog force all.
             if [[ -n "$deleted_cases" ]] || grep -Eq '^(site/app/src/lib/(narration|narratorCues|castGenders|speakerVoices|narrationVoices)\.(ts|json)|site/app/src/lib/narratorCueCopy\.json|site/narration-requirements\.txt|site/scripts/(generate-kokoro-clips\.py|speaker-voices\.mjs))$' <<< "$changed"; then
               requested="all"
             else
-              requested="$(sed -nE 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p' <<< "$changed" |
-                sort -u | paste -sd, -)"
+            requested="$(sed -nE -e 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p' -e 's#^site/app/docket/(dd-[0-9]{4})/trial\.json$#\1#p' <<< "$changed" |
+              sort -u | paste -sd, -)"
             fi
           fi
           clobber="false"
