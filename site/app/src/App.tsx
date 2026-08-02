@@ -66,6 +66,7 @@ import {
   DocketSittingChooser,
 } from './components/v2/DocketChrome'
 import { NarratorCue } from './components/v2/NarratorCue'
+import { V4DocketApp } from './components/v2/V4DocketApp'
 import {
   courtroomAmbienceEnabled,
   setCourtroomAmbienceEnabled,
@@ -182,7 +183,7 @@ export function IntroGate({
   )
 }
 
-function DocketApp({
+function LegacyDocketApp({
   sitting,
   sittings,
   todayDay,
@@ -190,7 +191,7 @@ function DocketApp({
   onSelect,
   intro,
 }: {
-  sitting: DocketSitting | null
+  sitting: Extract<DocketSitting, { schemaVersion: 3 }> | null
   sittings: DocketSitting[]
   todayDay: number
   featuredSitting: DocketSitting | null
@@ -591,6 +592,28 @@ function DocketApp({
       )}
     </DocketShell>
   )
+}
+
+function DocketApp(props: {
+  sitting: DocketSitting | null
+  sittings: DocketSitting[]
+  todayDay: number
+  featuredSitting: DocketSitting | null
+  onSelect: (day: number) => void
+  intro: DocketSitting | null
+}) {
+  if (props.sitting?.schemaVersion === 4) {
+    return (
+      <V4DocketApp
+        sitting={props.sitting}
+        sittings={props.sittings}
+        featuredSitting={props.featuredSitting}
+        onSelect={props.onSelect}
+        intro={props.intro}
+      />
+    )
+  }
+  return <LegacyDocketApp {...props} sitting={props.sitting} />
 }
 
 export default function App() {

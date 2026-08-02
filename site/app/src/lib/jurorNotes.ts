@@ -1,4 +1,4 @@
-import type { DocketBeat, DocketCase, Juror } from './v2/caseSchema'
+import type { CourtroomBeat, CourtroomTrial, DocketBeat, DocketCase, Juror } from './v2/caseSchema'
 import { rngFor } from '../engine/rng'
 
 /** Max length for a single recollection note (player or NPC). */
@@ -44,7 +44,7 @@ export function upsertPlayerNote(
   return [...without, { ownerId: PLAYER_NOTE_OWNER, beatId, text: clipped }]
 }
 
-function speakerName(trial: DocketCase, beat: DocketBeat): string {
+function speakerName(trial: CourtroomTrial, beat: CourtroomBeat): string {
   return trial.cast.find((m) => m.id === beat.speaker)?.name ?? 'the witness'
 }
 
@@ -141,7 +141,7 @@ export function ensureNpcNotes(
 
 /** Evidence label without primary-source text — for raise chips / agenda. */
 export function memoryLabel(
-  trial: DocketCase,
+  trial: CourtroomTrial,
   beatId: string,
 ): { number: number; title: string; kind: string } {
   const index = trial.beats.findIndex((b) => b.id === beatId)

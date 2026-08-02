@@ -615,6 +615,10 @@ export const docketCaseV4Schema = docketCaseV4ObjectSchema.superRefine(
 )
 export type DocketCaseV4 = z.infer<typeof docketCaseV4Schema>
 
+/** Fields that are competent and playable before a verdict in either format. */
+export type CourtroomTrial = DocketCase | DocketCaseV4
+export type CourtroomBeat = DocketBeat | DocketBeatV4
+
 export const analysisRoleSchema = z.enum([
   'central',
   'counterweight',

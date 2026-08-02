@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { DocketCase, Statement } from '../../lib/v2/caseSchema'
+import type { CourtroomTrial, Statement } from '../../lib/v2/caseSchema'
 import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { phaseNarratorCue } from '../../lib/narratorCues'
 import { StoryText } from './CaseMedia'
@@ -18,7 +18,7 @@ export function StatementCard({
   side,
   active = false,
 }: {
-  trial: DocketCase
+  trial: CourtroomTrial
   statement: Statement
   side: 'prosecution' | 'defence'
   active?: boolean
@@ -61,7 +61,7 @@ export function OpeningStatements({
   playbackRate,
   onDone,
 }: {
-  trial: DocketCase
+  trial: CourtroomTrial
   narration: boolean
   playbackRate: NarrationRate
   onDone: () => void

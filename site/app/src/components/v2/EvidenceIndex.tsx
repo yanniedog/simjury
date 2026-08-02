@@ -1,4 +1,4 @@
-import type { DocketCase } from '../../lib/v2/caseSchema'
+import type { CourtroomTrial } from '../../lib/v2/caseSchema'
 import {
   memoryLabel,
   noteForBeat,
@@ -14,7 +14,7 @@ export function EvidenceIndex({
   raisedBeatIds = [],
   onSelectBeat,
 }: {
-  trial: DocketCase
+  trial: CourtroomTrial
   notes: SittingNote[]
   /** Inclusive count of beats the player has already reached. */
   visibleBeatCount: number

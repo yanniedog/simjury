@@ -1,4 +1,4 @@
-import type { DocketBeat, DocketCase } from './v2/caseSchema'
+import type { CourtroomBeat, CourtroomTrial } from './v2/caseSchema'
 import cueCopy from './narratorCueCopy.json'
 
 /** Plain-language cues for first-time jurors — on screen and via narrator voice. */
@@ -25,7 +25,7 @@ export function allPhaseNarratorCues(): string[] {
 export const REASONABLE_DOUBT_DIRECTION =
   'If, after considering all the evidence, you are not sure the prosecution proved every element beyond reasonable doubt, your verdict must be Not Guilty.'
 
-function speakerOf(trial: DocketCase, id: string) {
+function speakerOf(trial: CourtroomTrial, id: string) {
   return trial.cast.find((m) => m.id === id)
 }
 
@@ -36,7 +36,7 @@ function sentenceFragment(text: string): string {
 }
 
 /** A restrained, case-specific introduction assembled from authenticated case fields. */
-export function introSceneNarratorCue(trial: DocketCase): string {
+export function introSceneNarratorCue(trial: CourtroomTrial): string {
   const accused = speakerOf(trial, trial.accused.cast_id)
   const accusedName = accused?.name ?? 'The accused'
   return `We begin in ${sentenceFragment(trial.setting)}. ${accusedName} is the accused, charged with ${sentenceFragment(trial.charge)}.`
@@ -59,8 +59,8 @@ function stableTemplate(templates: string[], seed: string): string {
 
 /** First-appearance (or speaker-change) intro for evidence beats. */
 export function speakerNarratorCue(
-  trial: DocketCase,
-  beat: DocketBeat,
+  trial: CourtroomTrial,
+  beat: CourtroomBeat,
 ): string | null {
   const member = speakerOf(trial, beat.speaker)
   if (!member) return null
