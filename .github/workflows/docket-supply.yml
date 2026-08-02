@@ -1,0 +1,112 @@
+name: docket-supply
+
+# Keeps a fortnight of cases queued.
+#
+# Runs every morning, works out which of the next fourteen days open no case,
+# and raises a commission for exactly those dates. It never writes a case to
+# `main`: DAILY-PIVOT.md requires human spot-checks on generated content, so the
+# most this may do unattended is prepare work and ask for it to be reviewed.
+
+on:
+  schedule:
+    # 18:10 UTC — early morning in Australia/Melbourne, so a shortfall is on the
+    # owner's desk at the start of their day rather than overnight.
+    - cron: "10 18 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: docket-supply
+  cancel-in-progress: false
+
+jobs:
+  supply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: site/app/package-lock.json
+
+      - name: Install
+        working-directory: site/app
+        run: npm ci
+
+      - name: Work out what the docket needs
+        id: plan
+        working-directory: site/app
+        run: |
+          set -euo pipefail
+          npx tsx scripts/docket-supply.ts | tee supply.txt
+          npx tsx scripts/docket-supply.ts --json > supply.json
+          {
+            echo "needed=$(node -p "require('./supply.json').needed.length")"
+            echo "dates=$(node -p "require('./supply.json').needed.join(', ')")"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "### Docket supply"
+            echo
+            echo '```text'
+            cat supply.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Raise or update the commission
+        if: steps.plan.outputs.needed != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEEDED: ${{ steps.plan.outputs.needed }}
+          DATES: ${{ steps.plan.outputs.dates }}
+        run: |
+          set -euo pipefail
+          TITLE="Docket supply: $NEEDED day(s) in the next fortnight open no case"
+          BODY=$(cat <<'INTRO'
+The Daily Docket is short. Each date below opens no case, so a returning player
+is re-served a trial they have already finished.
+
+INTRO
+          )
+          BODY="${BODY}"$'\n'"**Commission one case for each of:** ${DATES}"$'\n\n'
+          BODY="${BODY}$(cat <<'HOW'
+Each case must arrive complete — text, narration and images together. A case
+without its media is not shippable, and half a case in the docket is worse than
+an honest gap. `docs/DOCKET-SUPPLY.md` carries the full contract; the short
+version is that every commissioned case passes `npm run validate:cases`,
+carries `cover.webp` and its character portraits, and gets narration from the
+existing Kokoro pipeline with distinct, gender-appropriate voices.
+
+Generated cases are opened as a pull request for human spot-check. They are
+never written to `main` unattended — DAILY-PIVOT.md is explicit that the gates
+are the primary defence but not the only one.
+
+_Raised automatically by `docket-supply`. It updates this issue rather than
+opening another, and closes it once the fortnight is covered._
+HOW
+          )"
+
+          EXISTING=$(gh issue list --label docket-supply --state open \
+            --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh issue edit "$EXISTING" --title "$TITLE" --body "$BODY"
+            echo "updated issue #$EXISTING"
+          else
+            gh label create docket-supply --color B60205 \
+              --description "The docket is short of cases" 2>/dev/null || true
+            gh issue create --title "$TITLE" --body "$BODY" --label docket-supply
+          fi
+
+      - name: Close the commission once the fortnight is covered
+        if: steps.plan.outputs.needed == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for number in $(gh issue list --label docket-supply --state open --json number --jq '.[].number'); do
+            gh issue close "$number" --comment "The next fortnight is fully covered. Closing automatically."
+          done
