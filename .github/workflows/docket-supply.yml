@@ -15,7 +15,9 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: docket-supply
+  # A review repair is isolated to its PR. Scheduled/manual commissioning stays
+  # single-flight so two measurements cannot reserve the same newly open date.
+  group: docket-supply-${{ github.event.pull_request.number || 'commission' }}
   cancel-in-progress: false
 
 jobs:
@@ -71,17 +73,24 @@ jobs:
       - name: Check kill switch, credentials, models and caps
         id: config
         env:
-          BOT_CLIENT_ID: ${{ vars.CASE_BOT_CLIENT_ID }}
+          BOT_APP_ID: ${{ vars.CASE_BOT_APP_ID }}
           BOT_PRIVATE_KEY: ${{ secrets.CASE_BOT_PRIVATE_KEY }}
         run: |
           set +e
-          node scripts/docket-case-agent.mjs config > config.json
+          node scripts/docket-case-agent.mjs config > config.json 2> config-error.txt
           result=$?
           set -e
-          missing=$(node -e "const c=require('./config.json'); const m=[...c.missing]; if(!c.enabled)m.push('CASE_GENERATION_ENABLED'); if(!process.env.BOT_CLIENT_ID)m.push('CASE_BOT_CLIENT_ID'); if(!process.env.BOT_PRIVATE_KEY)m.push('CASE_BOT_PRIVATE_KEY'); process.stdout.write(m.join(','))")
+          if jq -e '.missing | type == "array"' config.json >/dev/null 2>&1; then
+            missing=$(node -e "const c=require('./config.json'); const m=[...c.missing]; if(!c.enabled)m.push('CASE_GENERATION_ENABLED'); if(!process.env.BOT_APP_ID)m.push('CASE_BOT_APP_ID'); if(!process.env.BOT_PRIVATE_KEY)m.push('CASE_BOT_PRIVATE_KEY'); process.stdout.write(m.join(','))")
+            error=""
+          else
+            missing=INVALID_CASE_CONFIGURATION
+            error=$(tr '\r\n,' '   ' < config-error.txt | head -c 500)
+          fi
           if [ "$result" -eq 0 ] && [ -z "$missing" ]; then ready=true; else ready=false; fi
           echo "ready=$ready" >> "$GITHUB_OUTPUT"
           echo "missing=$missing" >> "$GITHUB_OUTPUT"
+          echo "error=$error" >> "$GITHUB_OUTPUT"
 
       - name: Create or update the machine-readable supply record
         id: issue
@@ -91,6 +100,7 @@ jobs:
           DATES: ${{ steps.plan.outputs.dates }}
           READY: ${{ steps.config.outputs.ready }}
           MISSING: ${{ steps.config.outputs.missing }}
+          CONFIG_ERROR: ${{ steps.config.outputs.error }}
         run: |
           set -euo pipefail
           gh label create docket-supply --color B60205 --description "The docket is short of cases" 2>/dev/null || true
@@ -102,8 +112,8 @@ jobs:
           fi
           status=commissioned
           [ "$READY" = true ] || status=blocked_configuration
-          json=$(jq -cn --arg status "$status" --arg dates "$DATES" --arg missing "$MISSING" \
-            '{schema:"simjury.docket-supply/v1",status:$status,dates:($dates|split(",")),missing_configuration:(if $missing=="" then [] else ($missing|split(",")) end)}')
+          json=$(jq -cn --arg status "$status" --arg dates "$DATES" --arg missing "$MISSING" --arg error "$CONFIG_ERROR" \
+            '{schema:"simjury.docket-supply/v1",status:$status,dates:($dates|split(",")),missing_configuration:(if $missing=="" then [] else ($missing|split(",")) end),configuration_error:(if $error=="" then null else $error end)}')
           body=$(printf 'Automation owns complete cases for the named UTC dates.\n\n```json\n%s\n```\n\nNo partial case may merge; required CI and resolved bot feedback remain mandatory.' "$json")
           if [ -n "$existing" ]; then
             gh issue edit "$existing" --title "Docket supply: $NEEDED uncovered day(s)" --body "$body"
@@ -119,7 +129,7 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@v3
         with:
-          client-id: ${{ vars.CASE_BOT_CLIENT_ID }}
+          app-id: ${{ vars.CASE_BOT_APP_ID }}
           private-key: ${{ secrets.CASE_BOT_PRIVATE_KEY }}
 
       - name: Reserve or resume one draft PR
@@ -128,18 +138,43 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           DATES: ${{ steps.plan.outputs.dates }}
+          EVENT_PR: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
           git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          active=$(gh pr list --state open --label docket-generation --json number,headRefName --jq '.[0] // empty')
-          if [ -n "$active" ]; then
-            number=$(jq -r .number <<<"$active")
+          if [ -n "$EVENT_PR" ]; then
+            active=$(gh pr view "$EVENT_PR" --json number,headRefName,baseRefName,isCrossRepository)
+            test "$(jq -r .baseRefName <<<"$active")" = main
+            test "$(jq -r .isCrossRepository <<<"$active")" = false
+            number=$EVENT_PR
             branch=$(jq -r .headRefName <<<"$active")
-            git fetch origin "$branch"
+            [[ "$branch" =~ ^automation/docket-[A-Za-z0-9._/-]+$ ]]
+            git fetch origin "refs/heads/$branch:refs/remotes/origin/$branch"
             git checkout -B "$branch" "origin/$branch"
             fresh=false
           else
-            branch="automation/docket-${DATES%%,*}"
+            states="$RUNNER_TEMP/active-docket-states.json"
+            echo '[]' > "$states"
+            gh pr list --state open --base main --label docket-generation \
+              --json number,headRefOid,isCrossRepository > "$RUNNER_TEMP/active-docket-prs.json"
+            while read -r active; do
+              [ "$(jq -r .isCrossRepository <<<"$active")" = false ] || continue
+              sha=$(jq -r .headRefOid <<<"$active")
+              state=$(gh api "repos/$GITHUB_REPOSITORY/contents/.automation/docket-case-generation.json?ref=$sha" \
+                --jq .content | base64 --decode)
+              jq --argjson state "$state" '. + [$state]' "$states" > "$RUNNER_TEMP/states.next"
+              mv "$RUNNER_TEMP/states.next" "$states"
+            done < <(jq -c '.[]' "$RUNNER_TEMP/active-docket-prs.json")
+            DATES=$(node scripts/docket-commission-plan.mjs --needed "$DATES" --states "$states")
+            if [ -z "$DATES" ]; then
+              echo "number=" >> "$GITHUB_OUTPUT"
+              echo "branch=" >> "$GITHUB_OUTPUT"
+              echo "fresh=false" >> "$GITHUB_OUTPUT"
+              echo "phase=idle" >> "$GITHUB_OUTPUT"
+              echo "dates=" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            branch="automation/docket-${DATES%%,*}-${GITHUB_RUN_ID}"
             git checkout -b "$branch"
             mkdir -p .automation
             jq -n --arg dates "$DATES" '{schema:1,phase:"reserved",dates:($dates|split(",")),repair_attempts:0}' > .automation/docket-case-generation.json
@@ -171,8 +206,13 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/docket-case-agent.mjs generate --dates "$DATES" --pr "$PR" --root "$GITHUB_WORKSPACE" > "$RUNNER_TEMP/generation-result.json"
-          unsafe=$(git status --porcelain | awk '{print $2}' | grep -Ev '^(\.automation/docket-case-generation\.json|site/app/docket/dd-[0-9]{4}(\.json|/[^/]+\.json)|site/app/public/media/dd-[0-9]{4}/)' || true)
+          unsafe=$(git status --porcelain=v1 --untracked-files=all | awk '{print $2}' | grep -Ev '^(\.automation/docket-case-generation\.json|site/app/docket/dd-[0-9]{4}(\.json|/[^/]+\.json)|site/app/public/media/dd-[0-9]{4}/)' || true)
           test -z "$unsafe" || { echo "generated change escaped the allowlist: $unsafe" >&2; exit 1; }
+
+      - name: Run the complete deterministic merge bar
+        if: steps.pr.outputs.phase == 'reserved'
+        working-directory: site/app
+        run: npm run lint && npm run typecheck && npm test && npm run validate:cases && npm run build
 
       - name: Generate and publish Kokoro narration
         if: steps.pr.outputs.phase == 'reserved'
@@ -189,11 +229,6 @@ jobs:
           node site/scripts/build-kokoro-jobs.mjs --case "$ids" --output .narration-jobs
           for job in .narration-jobs/*.json; do python site/scripts/generate-kokoro-clips.py "$job" narration-clips; done
           node site/scripts/publish-kokoro-clips.mjs --clips narration-clips
-
-      - name: Run the complete deterministic merge bar
-        if: steps.pr.outputs.phase == 'reserved'
-        working-directory: site/app
-        run: npm run lint && npm run typecheck && npm test && npm run validate:cases && npm run build
 
       - name: Commit the complete sitting and request reviews
         if: steps.pr.outputs.phase == 'reserved'
