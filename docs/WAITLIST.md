@@ -33,6 +33,12 @@ The rate-limit counters are local and eventually consistent, so they are an
 abuse circuit breaker rather than accounting; the indexed upsert remains the
 data-integrity boundary.
 
+The pre-rate-limit database had an index on `source_day_hash`. Removing its
+declaration from the setup schema does not remove an index already in D1, so
+`.github/workflows/d1-maintenance.yml` applies the fixed, idempotent
+`waitlist-v2-drop-source-index.sql` migration. Re-running it is safe and never
+deletes waitlist data.
+
 Ordinary use is nowhere near either limit — sending an update reads the table
 once — and no paid Cloudflare product is introduced.
 

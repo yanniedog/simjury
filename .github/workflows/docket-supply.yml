@@ -181,6 +181,7 @@ jobs:
               echo "dates=" >> "$GITHUB_OUTPUT"
               exit 0
             else
+              DATES="${DATES%%,*}"
               branch="automation/docket-${DATES%%,*}-${GITHUB_RUN_ID}"
               git checkout -b "$branch"
               mkdir -p .automation
@@ -256,6 +257,7 @@ jobs:
           git add .automation/docket-case-generation.json site/app/docket site/app/public/media
           git commit -m "feat(docket): add complete commissioned sittings"
           git push origin HEAD
+          gh pr update-branch "$PR"
           gh workflow run ci.yml --ref "$BRANCH"
           gh workflow run pr-bot-feedback-check.yml --ref "$BRANCH" -f pr_number="$PR"
           gh workflow run pr-request-bot-reviews.yml --ref "$BRANCH" -f pr_number="$PR"
@@ -266,6 +268,7 @@ jobs:
           [ "$result" -eq 0 ] || [ "$result" -eq 2 ]
           node scripts/request-codex-review.mjs --pr "$PR" || true
           node scripts/request-coderabbit-review.mjs --pr "$PR" || true
+          gh workflow run docket-supply.yml --ref main
 
       - name: Collect unresolved review threads for an existing case PR
         if: steps.pr.outputs.phase == 'awaiting_review'
@@ -337,8 +340,8 @@ jobs:
           git add .automation/docket-case-generation.json site/app/docket site/app/public/media
           git commit -m "fix(docket): address automated review feedback"
           git push origin HEAD
+          gh pr update-branch "$PR"
           gh workflow run ci.yml --ref "$BRANCH"
-          gh workflow run pr-bot-feedback-check.yml --ref "$BRANCH" -f pr_number="$PR"
           gh workflow run pr-request-bot-reviews.yml --ref "$BRANCH" -f pr_number="$PR"
           jq -c '.dispositions[]' "$RUNNER_TEMP/repair-result.json" | while read -r item; do
             id=$(jq -r .thread_id <<<"$item")
@@ -347,11 +350,23 @@ jobs:
             gh api graphql -F id="$id" -F body="$body" -f query='mutation($id:ID!,$body:String!){addPullRequestReviewThreadReply(input:{pullRequestReviewThreadId:$id,body:$body}){comment{id}}}'
             [ "$status" = Deferred ] || gh api graphql -F id="$id" -f query='mutation($id:ID!){resolveReviewThread(input:{threadId:$id}){thread{id isResolved}}}'
           done
+          gh workflow run pr-bot-feedback-check.yml --ref "$BRANCH" -f pr_number="$PR"
           set +e
           npm run pr:arm-and-park -- --pr "$PR"
           result=$?
           set -e
           [ "$result" -eq 0 ] || [ "$result" -eq 2 ]
+
+      - name: Persist billed fail-closed attempts on the reserved branch
+        if: failure() && steps.pr.outputs.branch != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .automation/docket-case-generation.json
+          git diff --cached --quiet || { git commit -m "chore(docket): record failed generation spend"; git push origin HEAD; }
 
       - name: Record a fail-closed automation blocker
         if: failure() && steps.issue.outputs.number != ''
