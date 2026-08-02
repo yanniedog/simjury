@@ -52,7 +52,9 @@ describe('docket queue', () => {
     ).toBe(later)
     expect(
       docketCaseForDate(
-        new Date(`${later.publish_date}T00:00:00.000Z`).valueOf() - 1,
+        new Date(
+          new Date(`${later.publish_date}T00:00:00.000Z`).valueOf() - 1,
+        ),
         [prior, later],
       ),
     ).toBe(prior)
