@@ -10,7 +10,6 @@ on:
     types: [created]
 
 permissions:
-  actions: write
   contents: write
   issues: write
   pull-requests: write
@@ -21,6 +20,15 @@ concurrency:
 
 jobs:
   supply:
+    if: >-
+      github.event_name == 'schedule'
+      || github.event_name == 'workflow_dispatch'
+      || (
+        (github.event_name == 'pull_request_review'
+          || github.event_name == 'pull_request_review_comment')
+        && github.event.pull_request.head.repo.full_name == github.repository
+        && contains(github.event.pull_request.labels.*.name, 'docket-generation')
+      )
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
