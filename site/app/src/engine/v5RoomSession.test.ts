@@ -24,6 +24,7 @@ function pack(): ClientDeliberationPack {
       label: 'Access log',
       aliases: ['door log', 'entry record'],
       issueIds: ['access'],
+      beatIds: ['beat-log'],
     }],
     propositions: [{
       id: 'accused-access',
