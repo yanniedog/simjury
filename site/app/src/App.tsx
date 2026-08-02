@@ -66,6 +66,12 @@ import {
   DocketSittingChooser,
 } from './components/v2/DocketChrome'
 import { NarratorCue } from './components/v2/NarratorCue'
+import {
+  courtroomAmbienceEnabled,
+  setCourtroomAmbienceEnabled,
+  setCourtroomAmbiencePhase,
+  stopCourtroomAmbience,
+} from './lib/ambience'
 
 function dayForLiveInviteCase(
   caseId: string,
@@ -194,6 +200,7 @@ function DocketApp({
   const [narration, setNarration] = useState(narrationEnabled())
   const [playbackRate, setPlaybackRate] = useState(narrationRate())
   const [voiceEngine, setVoiceEngine] = useState(narrationEngine())
+  const [ambience, setAmbience] = useState(courtroomAmbienceEnabled())
   const day = sitting?.day ?? todayDay
   const trial = sitting?.trial ?? null
   const storageCaseId = trial ? caseStorageId(trial) : null
@@ -222,6 +229,12 @@ function DocketApp({
       ? (validStored.room ? 'reveal' : 'juryroom')
       : (validProgress?.phase ?? 'intro'),
   )
+
+  useEffect(() => {
+    setCourtroomAmbiencePhase(phase)
+  }, [phase])
+
+  useEffect(() => stopCourtroomAmbience, [])
   const [beatIndex, setBeatIndex] = useState(validProgress?.beatIndex ?? 0)
   const [notes, setNotes] = useState<SittingNote[]>(validProgress?.notes ?? [])
   const [verdict, setVerdict] = useState<Verdict | null>(
@@ -315,6 +328,10 @@ function DocketApp({
     const next = !narration
     setNarrationEnabled(next)
     setNarration(next)
+  }
+
+  function toggleAmbience() {
+    setAmbience(setCourtroomAmbienceEnabled(!ambience, phase))
   }
 
   function changeNarrationRate(rate: NarrationRate) {
@@ -459,9 +476,11 @@ function DocketApp({
       dayNumber={isIntro ? undefined : dayNumber}
       charge={activeTrial.charge}
       narration={narration}
+      ambience={ambience}
       playbackRate={playbackRate}
       voiceEngine={voiceEngine}
       onToggleNarration={toggleNarration}
+      onToggleAmbience={toggleAmbience}
       onRateChange={changeNarrationRate}
       onVoiceEngineChange={changeVoiceEngine}
       sidebar={(
