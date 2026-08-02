@@ -82,6 +82,30 @@ describe('DocketShell', () => {
     expect(markup).toContain('Default')
   })
 
+  it('offers a separate, explicit courtroom ambience control', () => {
+    vi.stubGlobal('window', {})
+    vi.stubGlobal('localStorage', writableStorage())
+    const markup = renderToStaticMarkup(
+      <DocketShell
+        phase="juryroom"
+        caseTitle="The Quiet Platform"
+        narration={false}
+        ambience={true}
+        playbackRate={1}
+        onToggleNarration={() => undefined}
+        onToggleAmbience={() => undefined}
+        onRateChange={() => undefined}
+      >
+        <h1 id="phase-heading">Jury room</h1>
+      </DocketShell>,
+    )
+
+    expect(markup).toContain('aria-label="Toggle courtroom ambience"')
+    expect(markup).toContain('Room tone on')
+    expect(markup).toContain('aria-pressed="true"')
+    expect(markup).not.toContain('aria-label="Narration speed"')
+  })
+
   it('quiets phase progress and the empty sidebar in entry mode', () => {
     vi.stubGlobal('window', {
       speechSynthesis: {
