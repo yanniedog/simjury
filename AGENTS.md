@@ -52,6 +52,8 @@ Orchestrator (Lead)
 ### Engineer
 
 - Implements **simjury.com** / `site/app/` per `DAILY-PIVOT.md` and site decisions
+- Interface work follows `docs/DESIGN-PROTOCOL.md` — the binding rules from the
+  design and UX audit. Breaking one is a regression even in a feature PR.
 - Matches existing conventions; minimal diffs
 - **Reports to:** Architect for design; Orchestrator for delivery
 - **Deliverables:** code + tests per PR
