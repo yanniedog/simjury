@@ -9,6 +9,8 @@ import {
 } from '../../engine/v5RoomSession'
 import { REQUIRED_DISCUSSION_ROUNDS, type VotePosition } from '../../engine/deliberationV5'
 import { loadV5Room, saveV5Room } from '../../lib/v5RoomStorage'
+import { jurorSeats } from '../../lib/v2/jurorSeats'
+import { JuryBench } from './JuryBench'
 import type { Verdict } from './DocketVerdict'
 
 function verdictPosition(verdict: Verdict): VotePosition {
@@ -41,6 +43,7 @@ export function V4JuryRoom({
     () => [...pack.reasoning_profiles].sort((a, b) => a.seat - b.seat),
     [pack],
   )
+  const seats = useMemo(() => jurorSeats(trial), [trial])
   const readyToSeal = session.acceptedContributions >= REQUIRED_DISCUSSION_ROUNDS
 
   useEffect(() => {
@@ -87,17 +90,15 @@ export function V4JuryRoom({
         </p>
       </header>
 
-      <section aria-labelledby="jury-panel-title" className="rounded-lg border border-neutral-800 p-4">
+      <section aria-labelledby="jury-panel-title" className="space-y-3">
         <h2 id="jury-panel-title" className="text-sm font-semibold text-neutral-200">
-          This case's 12-person jury
+          This case&apos;s 12-person jury
         </h2>
-        <ol className="mt-3 grid grid-cols-2 gap-2 text-xs text-neutral-400 sm:grid-cols-3">
-          {profiles.map((profile) => (
-            <li key={profile.seat} className="rounded border border-neutral-800 px-2 py-1.5">
-              Seat {profile.seat}: {profile.display_name}
-            </li>
-          ))}
-        </ol>
+        {/* The eleven have authored portraits, names and persuasion styles. The
+            bench used to render them as "Seat 3: Nima" in a bordered box, so
+            the most engaging asset in the case was not on screen at the moment
+            it mattered. No leaning or tally is shown before the result. */}
+        <JuryBench seats={seats} activeJurorId={null} />
       </section>
 
       {session.transcript.length > 0 && (

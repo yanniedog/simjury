@@ -54,9 +54,18 @@ describe('V4 jury and reveal views', () => {
       />,
     )
     expect(markup).toContain("This case&#x27;s 12-person jury")
-    expect(markup).toContain('Seat 12: Juror 12')
+    // Finding 02: the room is twelve people, not twelve rows of "Seat 12:".
+    // Each seat carries the name the transcript uses and how that juror is
+    // reached; the seat number stays in the accessible caption.
+    expect(markup).toContain('aria-label="The twelve jury seats"')
+    expect(markup).toContain('Seat 12, Juror 12')
+    expect(markup).toContain('jury-seat-name')
     expect(markup).toContain('0/3 discussed')
+
+    // Nothing about position, before the judge reads the result.
     expect(markup).not.toMatch(/\d+ guilty, \d+ not guilty/i)
+    expect(markup).not.toContain('jury-seat-mark')
+    expect(markup).not.toMatch(/lean-(guilty|not|undecided)/)
   })
 
   it('renders the complete analysis and result-branched epilogue', () => {
