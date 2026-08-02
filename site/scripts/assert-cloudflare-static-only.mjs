@@ -7,6 +7,11 @@ const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 const config = JSON.parse(readFileSync(join(siteRoot, 'wrangler.json'), 'utf8'))
 const workerPath = join(siteRoot, 'src', 'worker.js')
 const waitlistSchemaPath = join(siteRoot, 'schema', 'waitlist.sql')
+const waitlistCostMigrationPath = join(
+  siteRoot,
+  'schema',
+  'waitlist-v2-drop-source-index.sql',
+)
 const workerSource = existsSync(workerPath) ? readFileSync(workerPath, 'utf8') : ''
 const waitlistSchema = existsSync(waitlistSchemaPath) ? readFileSync(waitlistSchemaPath, 'utf8') : ''
 const failures = []
@@ -111,6 +116,14 @@ if (JSON.stringify(actualD1) !== JSON.stringify(expectedD1)) {
 }
 if (!existsSync(waitlistSchemaPath)) {
   failures.push('schema/waitlist.sql is required so the D1 table is reproducible')
+}
+if (!existsSync(waitlistCostMigrationPath)) {
+  failures.push('The idempotent waitlist source-index migration is required')
+} else {
+  const migration = readFileSync(waitlistCostMigrationPath, 'utf8')
+  if (!/^\s*(?:--[^\n]*\n\s*)*DROP INDEX IF EXISTS waitlist_source_day;\s*$/i.test(migration)) {
+    failures.push('The waitlist cost migration may only drop waitlist_source_day')
+  }
 }
 const waitlistHandler = workerSource.match(
   /async function handleWaitlist[\s\S]*?async function waitlistSubmission/,
