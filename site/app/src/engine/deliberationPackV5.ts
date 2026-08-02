@@ -45,6 +45,8 @@ const issue = concept.extend({
 
 const evidence = concept.extend({
   issueIds: z.array(id).min(1).max(6),
+  /** Trial beats from which this concept is derived; checked against rulings on load. */
+  beatIds: z.array(id).min(1).max(8),
 }).strict()
 
 const proposition = concept.extend({

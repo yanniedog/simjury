@@ -73,6 +73,7 @@ function makePack(trial: DocketCaseV4): DeliberationPackV5 {
     label: `Evidence item ${index}`,
     aliases: [`record number ${index}`, `exhibit item ${index}`],
     issueIds: [`issue-${index % 25}`],
+    beatIds: [trial.beats[index % trial.beats.length].id],
   }))
   return {
     schema_version: 5,
@@ -245,6 +246,49 @@ describe('V4 case bundle loading', () => {
       analysis: { case_id: trial.id },
     })
     expect(setup.analysisLoad).toHaveBeenCalledTimes(2)
+  })
+
+  it('fails closed when deliberation evidence derives from an excluded beat', async () => {
+    let trial = makeTrial()
+    trial.beats[0].interjections = [
+      {
+        id: 'objection-one',
+        after_turn: 0,
+        speaker: 'pros',
+        type: 'objection',
+        ground: 'relevance',
+        text: 'Objection, relevance.',
+      },
+      {
+        id: 'ruling-one',
+        after_turn: 0,
+        speaker: 'judge',
+        type: 'sustained',
+        resolves: 'objection-one',
+        admissibility: { effect: 'exclude_beat' },
+        text: 'Sustained. Disregard that evidence.',
+      },
+    ]
+    trial = docketCaseV4Schema.parse(trial)
+    const [bundle] = loadV4CaseBundles(modulesFor(trial).modules)
+
+    await expect(bundle.loadDeliberationPack()).rejects.toThrow(
+      new RegExp(`references excluded beat ${trial.beats[0].id}`),
+    )
+  })
+
+  it('fails closed when deliberation evidence cites an unknown trial beat', async () => {
+    const trial = makeTrial()
+    const setup = modulesFor(trial)
+    const packPath = `/docket/${trial.id}/deliberation-pack.json`
+    const pack = makePack(trial)
+    pack.evidence[0].beatIds = ['missing-beat']
+    setup.modules.deliberationPacks[packPath] = async () => pack
+    const [bundle] = loadV4CaseBundles(setup.modules)
+
+    await expect(bundle.loadDeliberationPack()).rejects.toThrow(
+      /references unknown beat missing-beat/,
+    )
   })
 
   it('fails closed when any bundle member targets another revision', async () => {
