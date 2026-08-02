@@ -118,8 +118,12 @@ export function DocketBeatView({
     lines.push(...events.map((event) => ({ text: event.text, key: event.speaker })))
 
     if (lines.length === 1) {
-      setSingleSpeakerActive(lines[0].key !== 'narrator')
-      setNarratorActive(lines[0].key === 'narrator')
+      const isNarrator = lines[0].key === 'narrator'
+      setSingleSpeakerActive(!hasTranscript && !isNarrator)
+      setNarratorActive(isNarrator)
+      if (hasTranscript && !isNarrator) {
+        setActiveDialogue({ beatId: beat.id, index: 0 })
+      }
       speak(lines[0].text, lines[0].key, resetSpeakingState, playbackRate)
     } else {
       speakAll(lines, {
