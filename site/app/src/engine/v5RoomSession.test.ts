@@ -62,12 +62,11 @@ function discuss(position = 'The access log proves the accused is guilty') {
 }
 
 describe('V5 player session', () => {
-  it('allows at most one clarification before accepting plain language', () => {
+  it('allows at most one clarification for each plain-language contribution', () => {
     const authored = pack()
     const session = createV5Session(authored.case_revision, authored)
     const first = contributeToV5Session(session, 'The blue curtains matter', authored)
     expect(first.accepted).toBe(false)
-    expect(first.session.clarificationUsed).toBe(true)
     expect(first.session.pendingClarification?.question).toContain("don't want to put words")
 
     const second = contributeToV5Session(first.session, 'I mean the access record', authored)
@@ -75,6 +74,11 @@ describe('V5 player session', () => {
     expect(second.session.pendingClarification).toBeNull()
     expect(second.session.acceptedContributions).toBe(1)
     expect(second.session.transcript.filter(({ kind }) => kind === 'clarification')).toHaveLength(1)
+
+    const nextPoint = contributeToV5Session(second.session, 'The red wallpaper matters', authored)
+    expect(nextPoint.accepted).toBe(false)
+    expect(nextPoint.session.pendingClarification).not.toBeNull()
+    expect(nextPoint.session.transcript.filter(({ kind }) => kind === 'clarification')).toHaveLength(2)
   })
 
   it('produces deterministic replies and revision-bound resumable snapshots', () => {

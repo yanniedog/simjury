@@ -33,7 +33,6 @@ export interface V5RoomSession {
   caseRevision: string
   room: RoomSnapshot
   acceptedContributions: number
-  clarificationUsed: boolean
   pendingClarification: { originalText: string; question: string } | null
   recentMoveIds: string[]
   transcript: V5TranscriptLine[]
@@ -93,7 +92,6 @@ export function createV5Session(
     caseRevision,
     room: snapshot(room),
     acceptedContributions: 0,
-    clarificationUsed: false,
     pendingClarification: null,
     recentMoveIds: [],
     transcript: [],
@@ -158,13 +156,12 @@ export function contributeToV5Session(
     pending ? `${pending.originalText} ${clean}` : clean,
     runtime,
   )
-  if (understanding.needsClarification && !previous.clarificationUsed) {
+  if (understanding.needsClarification && !pending) {
     const question = understanding.clarification ?? 'Which issue do you mean?'
     return {
       accepted: false,
       session: {
         ...previous,
-        clarificationUsed: true,
         pendingClarification: { originalText: clean, question },
         transcript: [...previous.transcript, {
           id: `clarification-${previous.transcript.length + 1}`,
@@ -285,7 +282,6 @@ export function restoreV5Session(
     candidate.caseRevision !== caseRevision ||
     !candidate.room ||
     !Number.isInteger(candidate.acceptedContributions) ||
-    typeof candidate.clarificationUsed !== 'boolean' ||
     !Array.isArray(candidate.recentMoveIds) ||
     !Array.isArray(candidate.transcript)
   ) return null
