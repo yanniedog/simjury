@@ -114,27 +114,37 @@ export function DeliberationComposer({
         <h2 className="composer-title">Raise a point</h2>
       </div>
 
-      <label className="composer-field">
-        <span className="composer-label">In your own words</span>
-        <textarea
-          value={concernText}
-          maxLength={500}
-          rows={3}
-          onChange={(event) => onConcernChange(event.target.value)}
-          placeholder="For example: the access log shows the device, not who was holding it."
-          className="composer-textarea"
-        />
-        <span className="composer-count">{concernText.length}/500</span>
-      </label>
-
       {feedback && (
         <div role="status" className="composer-feedback">
           {feedback}
         </div>
       )}
 
+      {/* Decision one: what you are pointing at. */}
+      <div className="composer-field">
+        <span className="composer-label">
+          <em className="composer-ordinal">1</em>
+          What are you pointing at?
+        </span>
+        <EvidenceIndex
+          trial={trial}
+          notes={notes}
+          visibleBeatCount={trial.beats.length}
+          selectedBeatId={selectedBeatId}
+          raisedBeatIds={raisedBeatIds}
+          onSelectBeat={onSelectBeat}
+        />
+      </div>
+
+      {/* Decision two: how you put it. These cards are the mechanic — the
+          persuasion model scores the technique against each juror's
+          personality — so they get the room, rather than being the third of
+          five fields. */}
       <fieldset className="composer-field">
-        <legend className="composer-label">How do you want to put it?</legend>
+        <legend className="composer-label">
+          <em className="composer-ordinal">2</em>
+          How do you want to put it?
+        </legend>
         <div className="move-grid">
           {available.map((option) => (
             <button
@@ -179,66 +189,83 @@ export function DeliberationComposer({
         </label>
       )}
 
-      {showClaim && (
-        <fieldset className="composer-field">
-          <legend className="composer-label">Which way does it cut?</legend>
-          <div className="claim-row">
-            {(['NG', 'G', 'U'] as const).map((option) => (
-              <button
-                key={option}
-                type="button"
-                aria-pressed={claim === option}
-                onClick={() => onClaimChange(option)}
-                className={`claim-btn${claim === option ? ' selected' : ''}`}
-              >
-                {CLAIM_COPY[option]}
-              </button>
-            ))}
-          </div>
-        </fieldset>
-      )}
-
-      <label className="composer-field">
-        <span className="composer-label">
-          {move === 'ask_reason' ? 'Ask which juror?' : 'Address'}
-        </span>
-        <select
-          value={targetJurorId}
-          onChange={(event) => onTargetChange(event.target.value)}
-          className="composer-select"
-        >
-          <option value="">The whole room</option>
-          {[...profiles]
-            .sort((a, b) => a.seat - b.seat)
-            .map((profile) => (
-              <option key={profile.id} value={profile.id}>
-                Seat {profile.seat} · {profile.label}
-              </option>
-            ))}
-        </select>
-        {target && (
-          <span className="composer-note">
-            {target.persona}
-            {relations[target.id]?.pressed >= 2
-              ? ' You have already pressed them twice — another direct push will cost you.'
-              : ''}
+      {/* Everything else has a sensible default and stays out of the way.
+          Direction defaults to doubt, the address defaults to the whole room,
+          and the free-text box is a refinement rather than the first thing the
+          player meets. Three rounds in a twenty-minute sitting cannot afford a
+          five-field form — it costs more time than the deliberation it serves,
+          and it feels like filing rather than speaking. */}
+      <details className="composer-refine">
+        <summary>
+          Refine this point
+          <span className="composer-refine-hint">
+            {showClaim ? `${CLAIM_COPY[claim]} · ` : ''}
+            {target ? `to ${target.label}` : 'to the whole room'}
           </span>
-        )}
-      </label>
+        </summary>
 
-      <div className="composer-field">
-        <span className="composer-label">
-          Which recollection does this hang on?
-        </span>
-        <EvidenceIndex
-          trial={trial}
-          notes={notes}
-          visibleBeatCount={trial.beats.length}
-          selectedBeatId={selectedBeatId}
-          raisedBeatIds={raisedBeatIds}
-          onSelectBeat={onSelectBeat}
-        />
-      </div>
+        <div className="composer-refine-body">
+          {showClaim && (
+            <fieldset className="composer-field">
+              <legend className="composer-label">Which way does it cut?</legend>
+              <div className="claim-row">
+                {(['NG', 'G', 'U'] as const).map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    aria-pressed={claim === option}
+                    onClick={() => onClaimChange(option)}
+                    className={`claim-btn${claim === option ? ' selected' : ''}`}
+                  >
+                    {CLAIM_COPY[option]}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+          )}
+
+          <label className="composer-field">
+            <span className="composer-label">
+              {move === 'ask_reason' ? 'Ask which juror?' : 'Address'}
+            </span>
+            <select
+              value={targetJurorId}
+              onChange={(event) => onTargetChange(event.target.value)}
+              className="composer-select"
+            >
+              <option value="">The whole room</option>
+              {[...profiles]
+                .sort((a, b) => a.seat - b.seat)
+                .map((profile) => (
+                  <option key={profile.id} value={profile.id}>
+                    Seat {profile.seat} · {profile.label}
+                  </option>
+                ))}
+            </select>
+            {target && (
+              <span className="composer-note">
+                {target.persona}
+                {relations[target.id]?.pressed >= 2
+                  ? ' You have already pressed them twice — another direct push will cost you.'
+                  : ''}
+              </span>
+            )}
+          </label>
+
+          <label className="composer-field">
+            <span className="composer-label">In your own words — optional</span>
+            <textarea
+              value={concernText}
+              maxLength={500}
+              rows={3}
+              onChange={(event) => onConcernChange(event.target.value)}
+              placeholder="For example: the access log shows the device, not who was holding it."
+              className="composer-textarea"
+            />
+            <span className="composer-count">{concernText.length}/500</span>
+          </label>
+        </div>
+      </details>
 
       <div className="composer-actions">
         <button type="button" onClick={onSubmit} className="composer-send">

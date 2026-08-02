@@ -98,4 +98,46 @@ describe('DeliberationComposer', () => {
     const markup = composer()
     expect(markup).not.toContain(trial.beats[0].text)
   })
+
+  /**
+   * Finding 07. To make one point the player supplied free text, a technique,
+   * a direction, an address and a recollection, then scrolled to a submit
+   * control smaller than most of the fields above it. At three rounds in a
+   * twenty-minute sitting, the form cost more time than the deliberation it
+   * served, and it felt like filing rather than speaking.
+   */
+  it('puts what you are pointing at first, and how you put it second', () => {
+    const markup = composer()
+
+    const pointingAt = markup.indexOf('What are you pointing at?')
+    const howYouPutIt = markup.indexOf('How do you want to put it?')
+    const send = markup.indexOf('composer-send')
+
+    expect(pointingAt).toBeGreaterThan(-1)
+    expect(pointingAt).toBeLessThan(howYouPutIt)
+    expect(howYouPutIt).toBeLessThan(send)
+  })
+
+  it('leaves direction, address and free text as refinements with defaults', () => {
+    const markup = composer()
+
+    // Present, but inside the disclosure rather than in the way.
+    const refine = markup.indexOf('composer-refine')
+    expect(refine).toBeGreaterThan(-1)
+    expect(refine).toBeLessThan(markup.indexOf('composer-send'))
+
+    for (const field of ['Which way does it cut?', 'Address', 'In your own words']) {
+      expect(markup.indexOf(field)).toBeGreaterThan(refine)
+    }
+
+    // The free-text box is no longer the first thing the player meets, and
+    // says it is optional.
+    expect(markup).toContain('In your own words — optional')
+    expect(markup.indexOf('In your own words')).toBeGreaterThan(
+      markup.indexOf('How do you want to put it?'),
+    )
+
+    // The summary states the current defaults, so nothing is silently hidden.
+    expect(markup).toContain('to the whole room')
+  })
 })
