@@ -30,8 +30,10 @@ const expectedClasses = ['PoolCoordinatorDO', 'FairnessDO', 'RoomDO']
 const REVISION = 'hybrid-v1-1234abcd'
 
 test('only live and waitlist endpoints execute the Worker', () => {
+  // Compare as sorted sets: the allowlist is about *which* paths reach the
+  // Worker, not the order they happen to sit in the config.
   assert.deepEqual(
-    config.assets.run_worker_first,
+    [...config.assets.run_worker_first].sort(),
     [...LIVE_ROUTE_PATTERNS, WAITLIST_ROUTE].sort(),
   )
   assert.equal(isLiveRoute('/api/live/healthz'), true)

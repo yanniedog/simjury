@@ -58,10 +58,15 @@
           return
         }
         submit.disabled = false
+        var error = result && result.error
         say(
-          result && result.error === 'INVALID_EMAIL'
+          error === 'INVALID_EMAIL'
             ? 'That address does not look right — check it and try again.'
-            : 'That did not go through. Please try again in a moment.',
+            // The box is checked before sending, so this means it came
+            // unticked in a native form post or was cleared mid-request.
+            : error === 'CONSENT_REQUIRED'
+              ? 'Please tick the box so we know you want these emails.'
+              : 'That did not go through. Please try again in a moment.',
           'error',
         )
       })

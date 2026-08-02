@@ -237,3 +237,45 @@ test('the documented unsubscribe command is parameterised', () => {
     'docs/WAITLIST.md must bind the address rather than interpolate it',
   )
 })
+
+test('a malformed body is refused rather than throwing', async () => {
+  // Both parsers can fail on input a client never intended to send: JSON that
+  // does not parse, and a form body the runtime cannot read. Each returns null,
+  // which must surface as an ordinary refusal, not a 500.
+  const env = waitlistEnv()
+
+  const badJson = await worker.fetch(new Request('https://simjury.com/api/waitlist', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'CF-Connecting-IP': '203.0.113.7' },
+    body: '{"email": "juror@example.com", consent',
+  }), env)
+  assert.equal(badJson.status, 400)
+  assert.deepEqual(await badJson.json(), { ok: false, error: 'INVALID_EMAIL' })
+
+  const emptyBody = await worker.fetch(new Request('https://simjury.com/api/waitlist', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: '',
+  }), env)
+  assert.equal(emptyBody.status, 400)
+
+  const notAnObject = await worker.fetch(signup('juror@example.com'), env)
+  assert.equal(notAnObject.status, 400)
+
+  assert.equal(env.rows.length, 0, 'nothing is written for any malformed body')
+})
+
+test('an oversized body is rejected before it is parsed', async () => {
+  const env = waitlistEnv()
+  const response = await worker.fetch(new Request('https://simjury.com/api/waitlist', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': '9000',
+      'CF-Connecting-IP': '203.0.113.7',
+    },
+    body: JSON.stringify({ email: `${'x'.repeat(4000)}@example.com`, consent: true }),
+  }), env)
+  assert.equal(response.status, 400)
+  assert.equal(env.rows.length, 0)
+})
