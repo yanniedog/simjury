@@ -28,6 +28,11 @@ const response = {
 assert.equal(config.enabled, true)
 assert.deepEqual(config.missing, [])
 assert.equal(readConfig({ CASE_GENERATION_ENABLED: 'false' }).missing.length, 14)
+assert.equal(readConfig({
+  CASE_GENERATION_ENABLED: 'false',
+  CASE_MAX_ATTEMPTS: '', CASE_MAX_REPAIR_ATTEMPTS: '', CASE_MAX_IMAGES_PER_CASE: '',
+  CASE_MAX_OUTPUT_BYTES: '', CASE_MAX_COST_USD: '', CASE_MAX_TOKENS: '',
+}).missing.length, 14, 'empty GitHub variables must be reported as missing, not parsed as zero')
 assert.throws(() => readConfig({ ...env, CASE_STORY_REVIEW_MODEL: 'legal-1' }), /must be distinct/)
 assert.throws(() => readConfig({ ...env, CASE_AGENT_ENDPOINT: 'http://agent.invalid' }), /must use HTTPS/)
 assert.deepEqual(assertSafeResponse(response, expected, config).paths, response.files.map((file) => file.path))
