@@ -101,6 +101,7 @@ describe('V5 player session', () => {
 
     const sealed = sealV5Session(session, 'G')
     expect(sealed.room.stage).toBe('complete')
+    expect(sealed.sealedPlayerPosition).toBe('G')
     expect(sealed.room.outcome).toEqual({
       kind: 'unanimous',
       verdict: 'G',

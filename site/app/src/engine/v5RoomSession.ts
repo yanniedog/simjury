@@ -36,6 +36,7 @@ export interface V5RoomSession {
   pendingClarification: { originalText: string; question: string } | null
   recentMoveIds: string[]
   transcript: V5TranscriptLine[]
+  sealedPlayerPosition: VotePosition | null
 }
 
 function languagePack(pack: ClientDeliberationPack): DeliberationLanguagePack {
@@ -95,6 +96,7 @@ export function createV5Session(
     pendingClarification: null,
     recentMoveIds: [],
     transcript: [],
+    sealedPlayerPosition: null,
   }
 }
 
@@ -268,7 +270,12 @@ export function sealV5Session(
     room = restore(castBallot(snapshot(room), 'final', playerPosition))
   }
   if (!room.outcome) throw new Error('The sealed ballot did not produce an outcome')
-  return { ...previous, room: snapshot(room), transcript }
+  return {
+    ...previous,
+    room: snapshot(room),
+    transcript,
+    sealedPlayerPosition: playerPosition,
+  }
 }
 
 export function restoreV5Session(
@@ -283,11 +290,15 @@ export function restoreV5Session(
     !candidate.room ||
     !Number.isInteger(candidate.acceptedContributions) ||
     !Array.isArray(candidate.recentMoveIds) ||
-    !Array.isArray(candidate.transcript)
+    !Array.isArray(candidate.transcript) ||
+    ![null, 'G', 'NG', 'U'].includes(candidate.sealedPlayerPosition ?? null)
   ) return null
   try {
     restore(candidate.room)
-    return structuredClone(candidate as V5RoomSession)
+    return structuredClone({
+      ...candidate,
+      sealedPlayerPosition: candidate.sealedPlayerPosition ?? null,
+    } as V5RoomSession)
   } catch {
     return null
   }
