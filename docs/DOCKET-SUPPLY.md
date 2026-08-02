@@ -93,42 +93,40 @@ Court images are charcoal and ink with selective watercolour and contemporary
 dress — no wigs, gavels, or sepia. Evidence images preserve the ambiguity the
 jury meets them with.
 
-## Provider choice
+## Provider and checked-in defaults
 
-The measure-and-commission loop above runs today with no configuration. Drafting
-and image generation need a model, and that is an operator decision because it
-costs money and picks a vendor:
+The scheduled controller uses the repository's existing `GEMINI_API_KEY` with
+checked-in Google Gemini models and conservative hard caps. No case-generation
+variables or GitHub App are required. The built-in `GITHUB_TOKEN` creates the
+draft PR, then explicitly dispatches required CI, the thread gate and advisory
+review requests because token-authored GitHub events do not recurse.
 
-- **Drafting.** A capable model is the right choice for cases this size — they
-  carry a twenty-minute script, eleven juror personas, and deliberation
-  dynamics that have to survive simulation. The repo has a self-hosted Ollama
-  runner (`simjury-local-llm`) used for PR review; it is available and free, but
-  a small local model is not the tool for authoring a shippable case, and
-  pretending otherwise would just produce work the gates reject.
-- **Images.** No image pipeline exists in the repo. The current slate's art was
-  produced outside it. Wiring one needs a chosen provider and a key.
+- **Drafting.** `gemini-3.5-flash` drafts; `gemini-2.5-pro` performs the
+  independent legal pass; `gemini-3.1-pro-preview` performs the independent
+  story pass. Rejected JSON, bundle structure, hashes or review checklists are
+  re-prompted within the two-attempt cap with the trusted validation error.
+- **Images.** `gemini-3.1-flash-image` produces every declared portrait, cover
+  and selected beat image. Trusted `ffmpeg` converts provider bytes to bounded
+  WebP assets before the existing media validator accepts them.
 
-Until those are configured, the daily job does the honest thing: it creates one
-machine-readable commission naming the missing dates. Missing configuration is
-an actionable automation failure, never permission to ship a partial case.
+If the key is absent, lacks paid image access, exceeds the USD cap, or any model
+or validator rejects a sitting, the issue records the blocker and no partial
+case is published.
 
-## Enabling autonomous drafting
+## Autonomous drafting configuration
 
-The controller is off by default. Configure all repository values below, then
-set the dedicated kill switch `CASE_GENERATION_ENABLED=true`.
+The workflow pins these values in source and runs with the existing secret:
 
 | Kind | Names |
 | --- | --- |
-| Secrets | `CASE_AGENT_TOKEN`, `CASE_BOT_PRIVATE_KEY` |
-| Provider | `CASE_AGENT_ENDPOINT` (HTTPS), `CASE_AGENT_PROVIDER`, `CASE_DRAFT_MODEL`, `CASE_LEGAL_REVIEW_MODEL`, `CASE_STORY_REVIEW_MODEL`, `CASE_IMAGE_MODEL`, `CASE_IMAGE_LICENSE` |
-| GitHub App | `CASE_BOT_APP_ID` |
-| Hard caps | `CASE_MAX_ATTEMPTS` (1-4), `CASE_MAX_REPAIR_ATTEMPTS` (0-3), `CASE_MAX_IMAGES_PER_CASE` (2-30), `CASE_MAX_OUTPUT_BYTES` (1-80 MB), `CASE_MAX_COST_USD` per case (0.01-500), `CASE_MAX_TOKENS` (1,000-200,000) |
+| Secret | `GEMINI_API_KEY` |
+| Provider | trusted in-workflow Gemini adapter and the three distinct models above |
+| Hard caps | 2 generation attempts, 2 repair attempts, 24 images, 12 MB, USD 8 and 64,000 output tokens per case |
 
-The three model ids must be distinct. The GitHub App needs repository contents,
-issues, pull requests and Actions write access; its token ensures case-bot pushes
-start the ordinary protected PR workflows.
+The three model ids remain distinct. The workflow grants its short-lived
+repository token only contents, issues, pull requests and Actions write access.
 
-`CASE_AGENT_ENDPOINT` implements `simjury.case-agent/v1`. It receives the exact
+The adapter implements `simjury.case-agent/v1`. It receives the exact
 UTC dates, reserved draft-PR number, authority documents, phase, pinned model and
 remaining caps. It returns only regular files plus actual model, cost and review
 metadata. The controller permits docket JSON and case WebP assets only, rejects

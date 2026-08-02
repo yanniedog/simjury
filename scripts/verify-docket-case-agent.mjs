@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { assertDispositions, assertGenerationMetadata, assertSafeResponse, assertWebpStructure, boundedJson, readConfig, requestIdempotencyKey, writeSafeFiles } from './docket-case-agent.mjs'
 import { resumeCandidate, unreservedDates } from './docket-commission-plan.mjs'
-import { callGeminiCaseAgent } from './gemini-case-agent.mjs'
+import { callGeminiCaseAgent, estimateImageCost, estimateTextCost } from './gemini-case-agent.mjs'
 
 const env = {
   CASE_GENERATION_ENABLED: 'true', CASE_AGENT_ENDPOINT: 'https://agent.invalid/generate', CASE_AGENT_TOKEN: 'secret',
@@ -36,6 +36,7 @@ assert.equal(readConfig({
 }).missing.length, 14, 'empty GitHub variables must be reported as missing, not parsed as zero')
 assert.throws(() => readConfig({ ...env, CASE_STORY_REVIEW_MODEL: 'legal-1' }), /must be distinct/)
 assert.throws(() => readConfig({ ...env, CASE_AGENT_ENDPOINT: 'http://agent.invalid' }), /must use HTTPS/)
+assert.doesNotThrow(() => readConfig({ ...env, CASE_AGENT_ENDPOINT: 'gemini://generateContent' }))
 assert.deepEqual(assertSafeResponse(response, expected, config).paths, response.files.map((file) => file.path))
 
 const root = mkdtempSync(join(tmpdir(), 'simjury-case-agent-'))
@@ -94,26 +95,31 @@ assert.throws(() => assertGenerationMetadata(response, { dates: ['2026-08-08'], 
 const workflow = readFileSync(new URL('../.github/workflows/docket-supply.yml', import.meta.url), 'utf8')
 for (const contract of [
   'schedule:', 'workflow_dispatch:', 'pull_request_review:', 'pull_request_review_comment:',
-  'CASE_GENERATION_ENABLED', 'actions/create-github-app-token@v3', 'gh pr create --draft',
+  'CASE_GENERATION_ENABLED', 'gemini://generateContent', 'secrets.GEMINI_API_KEY', 'gh pr create --draft',
   'docket-case-agent.mjs generate', 'docket-case-agent.mjs repair', 'synthesize-kokoro-clips.sh',
   'npm run lint && npm run typecheck && npm test && npm run validate:cases && npm run build',
   'blocked_configuration', 'blocked_automation',
 ]) assert.ok(workflow.includes(contract), `workflow contract missing: ${contract}`)
+assert.ok(workflow.includes('CASE_MAX_TOKENS: "64000"'), 'checked-in output cap must fit every pinned text model')
+assert.equal(/\b(?:D1|KV|R2|wrangler|cloudflare)\b/i.test(workflow), false, 'case automation must remain GitHub-only and static')
 assert.ok(workflow.includes("if $missing==\"\" then []"), 'configured issue state must still emit valid JSON')
-assert.ok(workflow.includes('app-id: ${{ vars.CASE_BOT_APP_ID }}'), 'GitHub App token action must receive its required app-id')
+assert.equal(workflow.includes('CASE_BOT_APP_ID'), false, 'GitHub App setup must not block the built-in token path')
 assert.ok(workflow.includes('INVALID_CASE_CONFIGURATION'), 'malformed configuration must produce a durable blocked record')
 assert.ok(workflow.includes('git status --porcelain=v1 --untracked-files=all'), 'V4 bundle containment must inspect individual untracked files')
 assert.ok(workflow.includes('pageInfo{hasNextPage endCursor}'), 'review thread collection must paginate')
 assert.ok(workflow.includes('[ "$status" = Deferred ] || gh api graphql'), 'deferred repair work must remain unresolved and blocking')
 assert.ok(workflow.includes('Synthesize repaired Kokoro narration'), 'repairs to spoken content must regenerate narration')
-assert.ok(workflow.indexOf('Synthesize Kokoro narration') < workflow.indexOf('id: publish-token'), 'a fresh App token must be minted after long-running synthesis')
+assert.ok(workflow.includes('command -v ffmpeg'), 'trusted WebP conversion must be installed and verified')
 assert.ok(workflow.indexOf('gh pr create --draft') < workflow.indexOf('docket-case-agent.mjs generate'), 'draft PR must be reserved before generation')
 assert.ok(workflow.indexOf('Run the complete deterministic merge bar') < workflow.indexOf('Publish validated Kokoro narration'), 'deterministic validation must precede narration publication')
 assert.equal(workflow.includes('--watch'), false, 'controller must never busy-poll')
 assert.equal(/gh pr merge/.test(workflow), false, 'controller must not bypass arm-and-park')
 assert.ok(workflow.includes("github.event.pull_request.head.repo.full_name == github.repository"), 'review events must fail closed for fork PRs')
 assert.ok(workflow.includes("contains(github.event.pull_request.labels.*.name, 'docket-generation')"), 'review events must require the docket-generation label')
-assert.equal(workflow.includes('actions: write'), false, 'controller must not request unused Actions write permission')
+assert.ok(workflow.includes('actions: write'), 'built-in token must be able to dispatch suppressed PR checks')
+for (const dispatched of ['ci.yml', 'pr-bot-feedback-check.yml', 'pr-request-bot-reviews.yml']) {
+  assert.ok(workflow.includes(`gh workflow run ${dispatched} --ref \"$BRANCH\"`), `built-in token must dispatch ${dispatched}`)
+}
 assert.ok(workflow.includes("group: docket-supply-${{ github.event.pull_request.number || 'commission' }}"), 'unrelated PR repairs must not share a global concurrency lock')
 assert.ok(workflow.includes('gh pr view "$EVENT_PR"'), 'review events must resume their triggering PR')
 assert.ok(workflow.includes('gh pr list --state open --base main --label docket-generation'), 'scheduled commissions must inspect only default-branch generation PRs')
@@ -148,30 +154,47 @@ const geminiReply = (phase, model, withReview = false) => new Response(JSON.stri
     ...(withReview ? { review: { approved: true, checks: Object.fromEntries((phase === 'story_review' ? ['hook', 'both_sides', 'fair_reversal', 'specificity', 'listenability', 'discussion', 'originality', 'sensitivity'] : []).map((key) => [key, true])) } } : {}),
   }) }] } }], usageMetadata: { promptTokenCount: 100, candidatesTokenCount: 200 },
 }), { status: 200, headers: { 'content-type': 'application/json' } })
-const geminiConfig = { ...config, endpoint: 'gemini://generateContent', token: 'gemini-secret', provider: 'google-gemini', imageModel: 'gemini-image', imageLicense: 'Google Gemini API output terms' }
+const geminiConfig = { ...config, endpoint: 'gemini://generateContent', token: 'gemini-secret', provider: 'google-gemini', imageModel: 'gemini-image', imageLicense: 'Google Gemini API output terms', models: ['gemini-3.5-flash', 'gemini-2.5-pro', 'gemini-3.1-pro-preview'] }
+let textRequest
 const draftResult = await callGeminiCaseAgent(geminiConfig, {
-  phase: 'draft', dates: ['2026-08-09'], draft_pr: 400, model: config.models[0],
+  phase: 'draft', dates: ['2026-08-09'], draft_pr: 400, model: geminiConfig.models[0],
   limits: { remaining_cost_usd: 25 }, authority_documents: {},
-}, geminiRoot, { fetchImpl: async () => geminiReply('draft', config.models[0]) })
+}, geminiRoot, { fetchImpl: async (...args) => { textRequest = args; return geminiReply('draft', geminiConfig.models[0]) } })
+assert.equal(textRequest[0], 'https://generativelanguage.googleapis.com/v1/models/gemini-3.5-flash:generateContent')
+const textBody = JSON.parse(textRequest[1].body)
+assert.equal(textBody.generationConfig.responseMimeType, 'application/json')
+assert.equal(textBody.generationConfig.maxOutputTokens, config.maxTokens)
 const reboundTrial = JSON.parse(draftResult.files.find(({ path }) => path.endsWith('/trial.json')).content)
 assert.equal(reboundTrial.id, 'dd-0043')
 assert.equal(reboundTrial.publish_date, '2026-08-09')
 assert.equal(reboundTrial.gen_meta.batch_pr, '400')
 assert.match(JSON.parse(draftResult.files.find(({ path }) => path.endsWith('/analysis.json')).content).case_revision, /^dd-0043@[a-f0-9]{8}$/)
 let semanticCalls = 0
+let correctionPrompt = ''
 await assert.doesNotReject(() => callGeminiCaseAgent(geminiConfig, {
-  phase: 'draft', dates: ['2026-08-09'], draft_pr: 400, model: config.models[0],
+  phase: 'draft', dates: ['2026-08-09'], draft_pr: 400, model: geminiConfig.models[0],
   limits: { remaining_cost_usd: 25 }, authority_documents: {},
-}, geminiRoot, { fetchImpl: async () => (++semanticCalls === 1 ? new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: '{broken' }] } }] }), { status: 200 }) : geminiReply('draft', config.models[0])) }))
+}, geminiRoot, { fetchImpl: async (_url, options) => { semanticCalls += 1; if (semanticCalls === 1) return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: '{"files":[]}' }] } }] }), { status: 200 }); correctionPrompt = JSON.parse(options.body).contents[0].parts[0].text; return geminiReply('draft', geminiConfig.models[0]) } }))
 assert.equal(semanticCalls, 2, 'semantic validation errors must consume a bounded correction attempt')
+assert.match(correctionPrompt, /trusted validation: Gemini returned no case files/)
 
 let geminiCalls = 0
+let imageRequest
 const storyResult = await callGeminiCaseAgent(geminiConfig, {
-  phase: 'story_review', dates: ['2026-08-09'], draft_pr: 400, model: config.models[2], prior_files: geminiFiles,
+  phase: 'story_review', dates: ['2026-08-09'], draft_pr: 400, model: geminiConfig.models[2], prior_files: geminiFiles,
   limits: { remaining_cost_usd: 25 }, authority_documents: {},
-}, geminiRoot, { fetchImpl: async () => (++geminiCalls === 1 ? geminiReply('story_review', config.models[2], true) : new Response(JSON.stringify({ candidates: [{ content: { parts: [{ inlineData: { data: 'aW1hZ2U=' } }] } }] }), { status: 200 })), convert: () => Buffer.from(response.files[1].content, 'base64') })
+}, geminiRoot, { fetchImpl: async (...args) => { geminiCalls += 1; if (geminiCalls === 1) return geminiReply('story_review', geminiConfig.models[2], true); imageRequest = args; return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ inlineData: { data: 'aW1hZ2U=' } }] } }] }), { status: 200 }) }, convert: () => Buffer.from(response.files[1].content, 'base64') })
 assert.equal(storyResult.files.filter(({ encoding }) => encoding === 'base64').length, 1)
 assert.equal(geminiCalls, 2)
+assert.equal(imageRequest[0], 'https://generativelanguage.googleapis.com/v1/models/gemini-image:generateContent')
+const imageBody = JSON.parse(imageRequest[1].body)
+assert.deepEqual(imageBody.generationConfig.responseModalities, ['IMAGE'])
+assert.equal(imageBody.generationConfig.responseFormat.image.imageSize, '1K')
 assert.doesNotThrow(() => assertWebpStructure(Buffer.from(storyResult.files.find(({ encoding }) => encoding === 'base64').content, 'base64')))
+assert.equal(estimateTextCost('gemini-3.5-flash', { promptTokenCount: 1_000_000 }), 1.875)
+assert.equal(estimateTextCost('gemini-2.5-pro', { candidatesTokenCount: 1_000_000 }), 12.5)
+assert.equal(estimateTextCost('gemini-3.1-pro-preview', { thoughtsTokenCount: 1_000_000 }), 15)
+assert.equal(estimateImageCost({}), 0.09)
+assert.ok(Math.abs(estimateImageCost({ candidatesTokenCount: 1120 }) - 0.084) < 1e-9)
 
 console.log('docket-case-agent: all contract and containment assertions passed')

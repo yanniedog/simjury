@@ -3,10 +3,31 @@ import { tmpdir } from 'node:os'
 import { basename, join } from 'node:path'
 import { spawnSync } from 'node:child_process'
 
-const API = 'https://generativelanguage.googleapis.com/v1beta/models'
+const API = 'https://generativelanguage.googleapis.com/v1/models'
 const REVIEW_KEYS = {
   legal_review: ['legal_coherence', 'admissibility', 'burden', 'competent_record', 'sensitivity'],
   story_review: ['hook', 'both_sides', 'fair_reversal', 'specificity', 'listenability', 'discussion', 'originality', 'sensitivity'],
+}
+// Standard paid-tier USD per million tokens, checked against ai.google.dev/gemini-api/docs/pricing on 2026-08-02.
+const TEXT_PRICES = {
+  'gemini-3.5-flash': { input: 1.50, output: 9.00 },
+  'gemini-2.5-pro': { input: 1.25, output: 10.00, largeInput: 2.50, largeOutput: 15.00 },
+  'gemini-3.1-pro-preview': { input: 2.00, output: 12.00, largeInput: 4.00, largeOutput: 18.00 },
+}
+const SAFETY_MARGIN = 1.25
+
+export function estimateTextCost(model, usage = {}) {
+  const price = TEXT_PRICES[model]
+  if (!price) throw new Error(`no conservative price is pinned for ${model}`)
+  const input = usage.promptTokenCount ?? 0
+  const output = (usage.candidatesTokenCount ?? 0) + (usage.thoughtsTokenCount ?? 0)
+  const large = input > 200_000
+  return ((input * (large ? price.largeInput ?? price.input : price.input) + output * (large ? price.largeOutput ?? price.output : price.output)) / 1_000_000) * SAFETY_MARGIN
+}
+
+export function estimateImageCost(usage = {}) {
+  if (!usage.promptTokenCount && !usage.candidatesTokenCount) return 0.09
+  return (((usage.promptTokenCount ?? 0) * 0.50 + (usage.candidatesTokenCount ?? 0) * 60) / 1_000_000) * SAFETY_MARGIN
 }
 
 function stableHash(value) {
@@ -102,16 +123,21 @@ async function geminiJson(key, model, prompt, maxTokens, attempts, fetchImpl) {
   const text = body.candidates?.[0]?.content?.parts?.map((part) => part.text ?? '').join('')
   if (!text) throw new Error(`Gemini ${model} returned no JSON text`)
   const usage = body.usageMetadata ?? {}
-  return { value: parseModelJson(text), cost: ((usage.promptTokenCount ?? 0) + (usage.candidatesTokenCount ?? 0)) * 0.00003 }
+  const cost = estimateTextCost(model, usage)
+  try { return { value: parseModelJson(text), cost } }
+  catch (error) { error.estimatedCost = cost; throw error }
 }
 
 function rebind(files, request, config) {
   const byName = new Map(files.map((file) => [file.path, JSON.parse(file.content)]))
   const trialPaths = [...byName.keys()].filter((path) => path.endsWith('/trial.json')).sort()
   if (trialPaths.length !== request.dates.length) throw new Error('Gemini must return one trial bundle per date')
+  if (byName.size !== files.length) throw new Error('Gemini returned duplicate file paths')
   trialPaths.forEach((trialPath, index) => {
     const root = trialPath.slice(0, -'/trial.json'.length)
     const id = basename(root)
+    const expectedPaths = ['trial', 'analysis', 'legal-sheet', 'deliberation-pack'].map((name) => `${root}/${name}.json`)
+    if (expectedPaths.some((path) => !byName.has(path))) throw new Error(`incomplete Gemini bundle for ${id}`)
     const trial = byName.get(trialPath)
     trial.id = id
     trial.publish_date = request.dates[index]
@@ -120,13 +146,21 @@ function rebind(files, request, config) {
     const analysis = byName.get(`${root}/analysis.json`)
     const legal = byName.get(`${root}/legal-sheet.json`)
     const pack = byName.get(`${root}/deliberation-pack.json`)
-    if (!analysis || !legal || !pack) throw new Error(`incomplete Gemini bundle for ${id}`)
+    const mediaPaths = []
+    const collect = (node) => {
+      if (!node || typeof node !== 'object') return
+      if (typeof node.src === 'string') mediaPaths.push(node.src)
+      for (const child of Object.values(node)) collect(child)
+    }
+    collect(trial.media)
+    if (!mediaPaths.length || mediaPaths.some((path) => !path.startsWith(`/today/media/${id}/`))) throw new Error(`Gemini media paths do not match ${id}`)
     for (const value of [analysis, legal, pack]) { value.case_id = id; value.case_revision = revision }
     const legalContent = Object.fromEntries(Object.entries(legal).filter(([key]) => key !== 'approvals'))
     const approvalHash = `${revision}@legal-${stableHash(legalContent)}`
     const approvedAt = new Date().toISOString()
     legal.approvals = Object.fromEntries(['legal', 'read_aloud', 'blind_test'].map((name) => [name, { status: 'approved', reviewer: name === 'legal' ? config.models[1] : config.models[2], approved_at: approvedAt, content_hash: approvalHash }]))
   })
+  if (byName.size !== trialPaths.length * 4) throw new Error('Gemini returned unexpected bundle files')
   return [...byName].map(([path, value]) => ({ type: 'file', path, encoding: 'utf8', content: `${JSON.stringify(value, null, 2)}\n` }))
 }
 
@@ -146,10 +180,13 @@ async function imageFile(key, model, asset, attempts, fetchImpl, convert) {
   const response = await postGemini(key, model, { contents: [{ parts: [{ text: `Fictional people and events. ${style}. ${asset.prompt} No logo, watermark, public figure, wig, gavel, gore, sepia, or verdict signalling.` }] }], generationConfig: { responseModalities: ['IMAGE'], responseFormat: { image: { aspectRatio: '3:2', imageSize: '1K' } } } }, attempts, fetchImpl)
   if (!response.ok) throw new Error(`Gemini image model returned HTTP ${response.status}`)
   const body = await response.json()
+  const cost = estimateImageCost(body.usageMetadata)
   const part = body.candidates?.[0]?.content?.parts?.find((item) => item.inlineData?.data)
-  if (!part) throw new Error('Gemini image model returned no image')
-  const webp = convert(Buffer.from(part.inlineData.data, 'base64'))
-  return { type: 'file', path: asset.path, encoding: 'base64', content: webp.toString('base64') }
+  if (!part) { const error = new Error('Gemini image model returned no image'); error.estimatedCost = cost; throw error }
+  try {
+    const webp = convert(Buffer.from(part.inlineData.data, 'base64'))
+    return { file: { type: 'file', path: asset.path, encoding: 'base64', content: webp.toString('base64') }, cost }
+  } catch (error) { error.estimatedCost = cost; throw error }
 }
 
 export function convertToWebp(input) {
@@ -167,15 +204,19 @@ export async function callGeminiCaseAgent(config, request, root, { fetchImpl = f
   const basePrompt = promptFor(request, root)
   let generated
   let correction = ''
+  let attemptedCost = 0
   for (let attempt = 1; attempt <= config.maxAttempts; attempt += 1) {
+    let result
     try {
-      const result = await geminiJson(config.token, request.model, `${basePrompt}${correction}`, config.maxTokens, 1, fetchImpl)
+      result = await geminiJson(config.token, request.model, `${basePrompt}${correction}`, config.maxTokens, 1, fetchImpl)
       const files = rebind(result.value.files, request, config)
       if (REVIEW_KEYS[request.phase]?.some((key) => result.value.review?.approved !== true || result.value.review.checks?.[key] !== true)) throw new Error(`${request.phase} must approve every required check`)
       if (Buffer.byteLength(JSON.stringify(files)) > config.maxOutputBytes) throw new Error('Gemini text bundle exceeds output byte cap')
-      generated = { ...result, files }
+      generated = { ...result, cost: attemptedCost + result.cost, files }
       break
     } catch (error) {
+      attemptedCost += result?.cost ?? error.estimatedCost ?? 0
+      if (attemptedCost >= request.limits.remaining_cost_usd) throw new Error('Gemini semantic retries exhausted the cost cap')
       if (attempt === config.maxAttempts) throw error
       correction = `\nYour previous response was rejected by trusted validation: ${error.message}. Return a complete corrected response.`
     }
@@ -185,21 +226,24 @@ export async function callGeminiCaseAgent(config, request, root, { fetchImpl = f
   if (request.phase === 'story_review' || request.phase === 'repair') {
     const assets = mediaManifest(files)
     if (assets.length > config.maxImagesPerCase * request.dates.length) throw new Error('Gemini media manifest exceeds image cap')
-    if (totalCost + assets.length * 0.25 > request.limits.remaining_cost_usd) throw new Error('Gemini generation would exceed cost cap')
+    if (totalCost + assets.length * 0.09 > request.limits.remaining_cost_usd) throw new Error('Gemini generation would exceed cost cap')
     const images = []
     for (const asset of assets) {
       let image
       for (let attempt = 1; attempt <= config.maxAttempts; attempt += 1) {
         try { image = await imageFile(config.token, config.imageModel, asset, 1, fetchImpl, convert); break }
         catch (error) {
+          totalCost += error.estimatedCost ?? 0
+          if (totalCost >= request.limits.remaining_cost_usd) throw new Error('Gemini image retries exhausted the cost cap')
           if (attempt === config.maxAttempts) throw error
           asset.prompt += ` Previous output was rejected: ${error.message}. Return one valid image.`
         }
       }
-      images.push(image)
+      images.push(image.file)
+      totalCost += image.cost
+      if (totalCost > request.limits.remaining_cost_usd) throw new Error('Gemini generation exceeded cost cap')
     }
     files = [...files, ...images]
-    totalCost += assets.length * 0.25
   }
   return { schema: 'simjury.case-agent/v1', phase: request.phase, model: request.model, provider: config.provider, image_model: config.imageModel, image_license: config.imageLicense, draft_pr: request.draft_pr, dates: request.dates, request_id: `gemini-${request.draft_pr}-${request.phase}`, cost_usd: totalCost, files, review: generated.value.review, dispositions: generated.value.dispositions }
 }
