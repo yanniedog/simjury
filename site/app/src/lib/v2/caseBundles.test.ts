@@ -229,6 +229,24 @@ describe('V4 case bundle loading', () => {
     expect(analysisLoad).toHaveBeenCalledOnce()
   })
 
+  it('clears rejected lazy promises so an explicit retry can recover', async () => {
+    const trial = makeTrial()
+    const setup = modulesFor(trial)
+    setup.packLoad.mockRejectedValueOnce(new Error('temporary pack failure'))
+    const [bundle] = loadV4CaseBundles(setup.modules)
+
+    await expect(bundle.loadDeliberationPack()).rejects.toThrow('temporary pack failure')
+    await expect(bundle.loadDeliberationPack()).resolves.toMatchObject({ case_id: trial.id })
+    expect(setup.packLoad).toHaveBeenCalledTimes(2)
+
+    setup.analysisLoad.mockRejectedValueOnce(new Error('temporary analysis failure'))
+    await expect(bundle.loadPostVerdict()).rejects.toThrow('temporary analysis failure')
+    await expect(bundle.loadPostVerdict()).resolves.toMatchObject({
+      analysis: { case_id: trial.id },
+    })
+    expect(setup.analysisLoad).toHaveBeenCalledTimes(2)
+  })
+
   it('fails closed when any bundle member targets another revision', async () => {
     const trial = makeTrial()
     const early = modulesFor(trial)
