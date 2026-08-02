@@ -46,12 +46,23 @@ async function digest(value) {
   return [...new Uint8Array(hash)].map((byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
-async function bodyOf(request) {
+/** Read a request body, refusing anything over the bound before parsing it. */
+async function boundedText(request) {
   const contentLength = Number(request.headers.get('Content-Length'))
   if (Number.isFinite(contentLength) && contentLength > 2_048) return null
   try {
     const text = await request.text()
-    return text.length <= 2_048 ? JSON.parse(text) : null
+    return text.length <= 2_048 ? text : null
+  } catch {
+    return null
+  }
+}
+
+async function bodyOf(request) {
+  const text = await boundedText(request)
+  if (text === null) return null
+  try {
+    return JSON.parse(text)
   } catch {
     return null
   }
@@ -534,30 +545,40 @@ async function handleWaitlist(request, env) {
   const source = await sourceFingerprint(request, env)
 
   try {
-    // The declared per-IP cap has to be enforced where the rows are, or it is
-    // just a comment. Without a salt there is no usable fingerprint, so the cap
-    // is skipped rather than applied to a value every client shares.
-    if (source) {
-      const seen = await env.WAITLIST.prepare(
-        'SELECT COUNT(*) AS count FROM waitlist WHERE source_day_hash = ?1',
-      ).bind(source).first()
-      if ((seen?.count ?? 0) >= WAITLIST_LIMITS.signupsPerIpPerDay) {
-        // Same shape as success: a distinct response would tell a flooder
-        // exactly when they hit the cap.
-        return json({ ok: true })
-      }
-    }
-
+    // One statement, so the cap is decided and applied together. Counting in a
+    // separate round trip and then inserting is a race: several concurrent
+    // signups from one client each see a count below the limit and every one
+    // of them lands. The conditional SELECT settles both questions atomically.
+    //
+    // NOT EXISTS rather than ON CONFLICT: a repeat address must still be a
+    // no-op, and SQLite's upsert clause is ambiguous after an INSERT…SELECT.
+    //
+    // A null fingerprint means no salt is configured, so there is nothing to
+    // count and the cap is skipped rather than applied to a value every client
+    // would share.
     await env.WAITLIST.prepare(
       `INSERT INTO waitlist (email_key, email, consent_text, consented_at, source_day_hash)
-       VALUES (?1, ?2, ?3, ?4, ?5)
-       ON CONFLICT(email_key) DO NOTHING`,
+       SELECT ?1, ?2, ?3, ?4, ?5
+       WHERE NOT EXISTS (SELECT 1 FROM waitlist WHERE email_key = ?1)
+         AND (
+           ?5 IS NULL
+           OR (SELECT COUNT(*) FROM waitlist WHERE source_day_hash = ?5) < ?6
+         )`,
     )
-      .bind(waitlistEmailKey(email), email, WAITLIST_CONSENT_TEXT, new Date().toISOString(), source)
+      .bind(
+        waitlistEmailKey(email),
+        email,
+        WAITLIST_CONSENT_TEXT,
+        new Date().toISOString(),
+        source,
+        WAITLIST_LIMITS.signupsPerIpPerDay,
+      )
       .run()
   } catch {
     return unavailable('WAITLIST_WRITE_FAILED', 503)
   }
+  // Always the same answer, whether the row was written, already existed, or
+  // was refused by the cap — anything else is an oracle.
   return json({ ok: true })
 }
 
@@ -571,7 +592,12 @@ async function waitlistSubmission(request) {
   const contentType = request.headers.get('Content-Type') ?? ''
   if (!contentType.includes('form-urlencoded')) return bodyOf(request)
   try {
-    const form = await request.formData()
+    // The same byte bound as JSON, applied *before* parsing. `request.formData()`
+    // buffers and decodes the whole public request first, so a large body would
+    // cost memory and CPU on its way to being rejected anyway.
+    const text = await boundedText(request)
+    if (text === null) return null
+    const form = new URLSearchParams(text)
     const consent = form.get('consent')
     return {
       email: form.get('email'),

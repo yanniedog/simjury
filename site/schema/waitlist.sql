@@ -9,6 +9,11 @@
 --
 -- Single opt-in: consent_text stores what the person actually agreed to, so the
 -- record stands on its own even after the landing page copy changes.
+--
+-- Rows are kept until someone asks to be removed. An unsubscribe is recorded
+-- rather than deleted, because that record is what stops a later signup being
+-- treated as fresh consent — so the table only grows. See docs/WAITLIST.md for
+-- the size check; there is no automatic purge by design.
 
 CREATE TABLE IF NOT EXISTS waitlist (
   -- Lowercased address: the case-insensitive identity used for dedupe.

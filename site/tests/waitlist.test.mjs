@@ -28,18 +28,23 @@ function waitlistEnv(overrides = {}) {
         return {
           bind(...args) {
             return {
-              first() {
-                if (!/COUNT\(\*\)/.test(sql)) throw new Error(`unexpected first(): ${sql}`)
-                const [fingerprint] = args
-                return { count: rows.filter((row) => row[4] === fingerprint).length }
-              },
               run() {
-                // ON CONFLICT DO NOTHING keyed on the case-insensitive column:
-                // a repeat address must not become a second row.
-                if (!sql.includes('ON CONFLICT(email_key) DO NOTHING')) {
+                // The cap and the insert must be one statement: counting first
+                // and inserting after lets concurrent signups all pass the
+                // count. This mirrors that single conditional INSERT.
+                if (!/NOT EXISTS \(SELECT 1 FROM waitlist WHERE email_key/.test(sql)) {
                   throw new Error('waitlist insert must be idempotent on email_key')
                 }
-                if (!rows.some((row) => row[0] === args[0])) rows.push(args)
+                if (!/SELECT COUNT\(\*\) FROM waitlist WHERE source_day_hash/.test(sql)) {
+                  throw new Error('waitlist insert must apply the per-source cap in the same statement')
+                }
+                const [key, , , , source, cap] = args
+                if (rows.some((row) => row[0] === key)) return { success: true }
+                if (source !== null && source !== undefined) {
+                  const seen = rows.filter((row) => row[4] === source).length
+                  if (seen >= cap) return { success: true }
+                }
+                rows.push(args)
                 return { success: true }
               },
             }
@@ -290,4 +295,42 @@ test('an oversized body is rejected before it is parsed', async () => {
   }), env)
   assert.equal(response.status, 400)
   assert.equal(env.rows.length, 0)
+})
+
+test('concurrent signups from one client cannot exceed the cap', async () => {
+  // The earlier version counted rows in one round trip and inserted in another,
+  // so requests issued together each saw a count below the limit and every one
+  // of them landed. Firing them concurrently is the only way to catch that; a
+  // sequential loop passes either way.
+  const env = waitlistEnv()
+  const burst = Array.from(
+    { length: WAITLIST_LIMITS.signupsPerIpPerDay * 4 },
+    (_, i) => worker.fetch(signup({ email: `flood${i}@example.com`, consent: true }), env),
+  )
+  const responses = await Promise.all(burst)
+
+  for (const response of responses) assert.equal(response.status, 200)
+  assert.equal(
+    env.rows.length,
+    WAITLIST_LIMITS.signupsPerIpPerDay,
+    'the cap holds under concurrency, not just in sequence',
+  )
+})
+
+test('the cap and the insert are decided in a single statement', async () => {
+  // Guard the shape, not just the outcome: a future refactor that splits the
+  // count back out would reintroduce the race while the totals still looked right.
+  const statements = []
+  const env = waitlistEnv({
+    WAITLIST: {
+      prepare(sql) {
+        statements.push(sql)
+        return { bind: () => ({ run: () => ({ success: true }), first: () => ({ count: 0 }) }) }
+      },
+    },
+  })
+  await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
+  assert.equal(statements.length, 1, 'one round trip, so there is no window between them')
+  assert.match(statements[0], /INSERT INTO waitlist/)
+  assert.match(statements[0], /COUNT\(\*\) FROM waitlist WHERE source_day_hash/)
 })

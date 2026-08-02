@@ -20,8 +20,23 @@ out.
 
 D1's free tier covers 5 GB of storage, 5 million rows read per day, and 100,000
 rows written per day. A waitlist writes one row per signup and reads the table
-only when an update is sent, so this stays inside the free tier indefinitely.
-No paid Cloudflare product is introduced.
+only when an update is sent, so a list of any plausible size sits far inside
+those limits. No paid Cloudflare product is introduced.
+
+There is deliberately **no automatic purge**. Rows are kept until someone asks
+to be removed, because an unsubscribe record is what stops a later signup being
+treated as fresh consent. That means the table only grows, so this is an
+operational boundary rather than an unlimited one — Cloudflare stops writes once
+the storage limit is reached. Check the size before a large import:
+
+```powershell
+cd site
+wrangler d1 execute simjury-waitlist --remote `
+  --command="SELECT COUNT(*) AS rows, SUM(unsubscribed_at IS NOT NULL) AS unsubscribed FROM waitlist"
+```
+
+At roughly 150 bytes a row, 5 GB is tens of millions of addresses; if the list
+ever approaches that, it needs a retention policy, not a bigger plan.
 
 ## Operator setup — already done
 
