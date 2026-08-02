@@ -1,24 +1,26 @@
 /**
  * Deterministic daily-case selection.
  *
- * The case shown on a given day is a pure function of the local calendar date,
- * so every player worldwide sees the same case that day with no server — the
- * same trick Wordle uses. Selection is by *local* calendar day (midnight
- * rollover in the player's own timezone).
+ * The case shown on a given day is a pure function of the UTC calendar date,
+ * so every player worldwide sees the same case at the same time with no server.
  */
 
-/** Local midnight of the first daily. Advancing this shifts day 1. */
-export const DAILY_EPOCH = new Date(2026, 0, 1)
+/** UTC midnight of the first daily. Advancing this shifts day 1. */
+export const DAILY_EPOCH = new Date(Date.UTC(2026, 0, 1))
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000
 
 /**
- * Whole calendar days from [epoch] to [date], counted at local midnight so the
+ * Whole calendar days from [epoch] to [date], counted at UTC midnight so the
  * result is independent of the time of day.
  */
 export function dayIndex(date: Date, epoch: Date = DAILY_EPOCH): number {
-  const d = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-  const e = Date.UTC(epoch.getFullYear(), epoch.getMonth(), epoch.getDate())
+  const d = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
+  const e = Date.UTC(
+    epoch.getUTCFullYear(),
+    epoch.getUTCMonth(),
+    epoch.getUTCDate(),
+  )
   return Math.floor((d - e) / MS_PER_DAY)
 }
 
