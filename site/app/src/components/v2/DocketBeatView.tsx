@@ -1,5 +1,9 @@
-import { useEffect, useId, useRef, useState } from 'react'
-import type { DocketBeat, DocketCase } from '../../lib/v2/caseSchema'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
+import type { CourtroomBeat, CourtroomTrial, DocketInterjection } from '../../lib/v2/caseSchema'
+import {
+  admissibilityEffectForBeat,
+  courtroomEventsForBeat,
+} from '../../lib/v2/courtroomEvents'
 import { NOTE_MAX_LEN, noteForBeat, PLAYER_NOTE_OWNER, type SittingNote } from '../../lib/jurorNotes'
 import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { phaseNarratorCue, speakerNarratorCue } from '../../lib/narratorCues'
@@ -9,11 +13,11 @@ import { NarratorCue } from './NarratorCue'
 import { SpeakerFlag } from './SpeakerFlag'
 import { SpeakerPortrait } from './SpeakerPortrait'
 
-function speakerOf(trial: DocketCase, id: string) {
+function speakerOf(trial: CourtroomTrial, id: string) {
   return trial.cast.find((m) => m.id === id)
 }
 
-function modeLabelFor(beat: DocketBeat): string {
+function modeLabelFor(beat: CourtroomBeat): string {
   if (beat.kind === 'witness') {
     return beat.mode === 'cross' ? 'Cross-examination' : 'Examination'
   }
@@ -21,8 +25,18 @@ function modeLabelFor(beat: DocketBeat): string {
   return 'Judge’s direction'
 }
 
-function beatModeKey(beat: DocketBeat): string {
+function beatModeKey(beat: CourtroomBeat): string {
   return `${beat.kind}:${beat.mode ?? ''}`
+}
+
+function interjectionLabel(interjection: DocketInterjection): string {
+  if (interjection.type === 'objection') {
+    return `Objection · ${interjection.ground}`
+  }
+  if (interjection.type === 'sustained') return 'Sustained'
+  if (interjection.type === 'overruled') return 'Overruled'
+  if (interjection.type === 'ruling') return `Ruling · ${interjection.ground}`
+  return 'Court admonition'
 }
 
 export function DocketBeatView({
@@ -34,7 +48,7 @@ export function DocketBeatView({
   onNoteChange,
   onNext,
 }: {
-  trial: DocketCase
+  trial: CourtroomTrial
   beatIndex: number
   narration: boolean
   playbackRate: NarrationRate
@@ -43,14 +57,16 @@ export function DocketBeatView({
   onNext: () => void
 }) {
   const beat = trial.beats[beatIndex]
-  const turns = beat.turns ?? [{ speaker: beat.speaker, text: beat.text }]
+  const events = useMemo(() => courtroomEventsForBeat(beat), [beat])
+  const effect = useMemo(() => admissibilityEffectForBeat(beat), [beat])
+  const hasTranscript = Boolean(beat.turns || events.some(({ kind }) => kind === 'interjection'))
   const [activeDialogue, setActiveDialogue] = useState<{ beatId: string; index: number } | null>(null)
   const [narratorActive, setNarratorActive] = useState(false)
   const [singleSpeakerActive, setSingleSpeakerActive] = useState(false)
   const [notesOpen, setNotesOpen] = useState(false)
   const [indexOpen, setIndexOpen] = useState(false)
   const activeTurn = activeDialogue?.beatId === beat.id ? activeDialogue.index : null
-  const activeSpeakerId = activeTurn === null ? beat.speaker : turns[activeTurn]?.speaker ?? beat.speaker
+  const activeSpeakerId = activeTurn === null ? beat.speaker : events[activeTurn]?.speaker ?? beat.speaker
   const total = trial.beats.length
   const speaker = speakerOf(trial, activeSpeakerId)
   const isLast = beatIndex === total - 1
@@ -99,22 +115,22 @@ export function DocketBeatView({
 
     const lines: Array<{ text: string; key: string }> = []
     if (cueText) lines.push({ text: cueText, key: 'narrator' })
-    if (beat.turns) {
-      lines.push(...beat.turns.map((turn) => ({ text: turn.text, key: turn.speaker })))
-    } else {
-      lines.push({ text: beat.text, key: beat.speaker })
-    }
+    lines.push(...events.map((event) => ({ text: event.text, key: event.speaker })))
 
     if (lines.length === 1) {
-      setSingleSpeakerActive(lines[0].key !== 'narrator')
-      setNarratorActive(lines[0].key === 'narrator')
+      const isNarrator = lines[0].key === 'narrator'
+      setSingleSpeakerActive(!hasTranscript && !isNarrator)
+      setNarratorActive(isNarrator)
+      if (hasTranscript && !isNarrator) {
+        setActiveDialogue({ beatId: beat.id, index: 0 })
+      }
       speak(lines[0].text, lines[0].key, resetSpeakingState, playbackRate)
     } else {
       speakAll(lines, {
         rate: playbackRate,
         onLine: (key, index) => {
           setNarratorActive(key === 'narrator')
-          setSingleSpeakerActive(!beat.turns && key !== 'narrator')
+          setSingleSpeakerActive(!hasTranscript && key !== 'narrator')
           if (key === 'narrator') {
             setActiveDialogue(null)
             return
@@ -127,7 +143,7 @@ export function DocketBeatView({
       })
     }
     return stopSpeech
-  }, [beat, cueText, narration, playbackRate])
+  }, [beat, cueText, events, hasTranscript, narration, playbackRate])
 
   const modeLabel = modeLabelFor(beat)
   const subtitle = [speaker?.role_label, modeLabel].filter(Boolean).join(' · ')
@@ -219,30 +235,51 @@ export function DocketBeatView({
           </span>
         </h1>
         {media && <div className="mt-4"><CaseMedia asset={media} /></div>}
-        {beat.turns ? (
+        {hasTranscript ? (
           <section aria-label={`${modeLabel} transcript`} className="mt-4 grid gap-3">
-            {turns.map((turn, index) => {
-              const member = speakerOf(trial, turn.speaker)
-              const witness = turn.speaker === beat.speaker
+            {events.map((event, index) => {
+              const member = speakerOf(trial, event.speaker)
+              if (event.kind === 'interjection') {
+                const judicial = event.interjection.type !== 'objection'
+                return (
+                  <article
+                    key={event.interjection.id}
+                    aria-current={activeTurn === index ? 'true' : undefined}
+                    className={`court-interjection rounded-lg border p-4 ${judicial ? 'judicial' : 'objection'}${activeTurn === index ? ' speech-turn-active' : ''}`}
+                  >
+                    <div className="flex items-start gap-4">
+                      <SpeakerPortrait trial={trial} speakerId={event.speaker} />
+                      <div className="min-w-0 flex-1">
+                        <p className="mb-2 flex items-center justify-between gap-3 text-sm font-semibold text-amber-200">
+                          <span>{interjectionLabel(event.interjection)} · {member?.name ?? event.speaker}</span>
+                          <SpeakerFlag active={activeTurn === index} />
+                        </p>
+                        <StoryText text={event.text} className="text-lg leading-relaxed text-neutral-100" />
+                      </div>
+                    </div>
+                  </article>
+                )
+              }
+              const witness = event.speaker === beat.speaker
               return (
                 <article
-                  key={`${turn.speaker}-${index}`}
+                  key={`${event.speaker}-${event.turnIndex}`}
                   aria-current={activeTurn === index ? 'true' : undefined}
                   className={`speech-turn rounded-lg border p-4 ${witness ? 'ml-6 border-emerald-900/60 bg-emerald-950/20' : 'mr-6 border-red-900/60 bg-red-950/20'}${activeTurn === index ? ' speech-turn-active' : ''}`}
                 >
                   <div className="flex items-start gap-4">
-                    <SpeakerPortrait trial={trial} speakerId={turn.speaker} />
+                    <SpeakerPortrait trial={trial} speakerId={event.speaker} />
                     <div className="min-w-0 flex-1">
                       <p className="mb-2 flex items-center justify-between gap-3 text-sm font-semibold text-neutral-300">
                         <span>
-                          {member?.name ?? turn.speaker}
+                          {member?.name ?? event.speaker}
                           {member?.role_label && (
                             <span className="font-normal text-neutral-500"> · {member.role_label}</span>
                           )}
                         </span>
                         <SpeakerFlag active={activeTurn === index} />
                       </p>
-                      <StoryText text={turn.text} className="text-lg leading-relaxed text-neutral-100" />
+                      <StoryText text={event.text} className="text-lg leading-relaxed text-neutral-100" />
                     </div>
                   </div>
                 </article>
@@ -265,6 +302,16 @@ export function DocketBeatView({
               <StoryText text={beat.text} className="min-h-[6rem] text-lg leading-relaxed text-neutral-100" />
             </div>
           </div>
+        )}
+        {effect && (
+          <aside className="admissibility-notice mt-4" role="note">
+            <strong>{effect.effect === 'exclude_beat' ? 'Excluded from your deliberations' : 'Limited purpose only'}</strong>
+            <span>
+              {effect.effect === 'exclude_beat'
+                ? ' The court has directed you to disregard this evidence.'
+                : ` ${effect.purpose}`}
+            </span>
+          </aside>
         )}
       </div>
 

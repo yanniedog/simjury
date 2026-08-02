@@ -1,0 +1,26 @@
+{
+  "schema_version": 4,
+  "case_id": "dd-0038",
+  "case_revision": "dd-0038@4ecfc36b",
+  "reference_verdict": "Not Guilty",
+  "reference_reasoning": "The admissible machine-identity records attribute the eighteen disputed commands to an internal suite controller, not Nara’s handset. Her nine genuine visits, warning, premium rate and deletion support suspicion, but the opaque work boundary, realistic tickets and research cover story leave a reasonable possibility that her assistance was unwitting.",
+  "strongest_opposing_interpretation": "Nara recognised abnormal demand, returned twice, accepted premium after-hours pay and deleted the client thread after the raid. Considered together, those choices can support an inference that an initially innocent contract became knowing assistance.",
+  "sentencing_context": "Any sentence would be determined by the judge only after a conviction and has no place in deciding guilt.",
+  "epilogue": {"mode":"outcome_neutral","text":"After the trial, the sealed suite remained closed while separate proceedings concerning its operators continued. The regulator changed its reports so a displayed account name appeared beside, not instead of, the signed device identity. Rian Vesk still faced sentence for his own conduct. Nara returned to refrigeration work under contracts requiring a named safety contact and written reasons for restricted access. None of those later steps answered what she had known during the charged months."},
+  "beats": [
+    {"beat_id":"b1","editorial_weight":0.4,"analysis_role":"context","analysis_note":"The chronology and plan orient the jury. They prove repeated proximity while preserving the physical boundary around Nara’s work."},
+    {"beat_id":"b2","editorial_weight":0.55,"analysis_role":"context","analysis_note":"The agreed sampling and custody evidence proves large-scale manufacture, but not Nara’s knowing participation."},
+    {"beat_id":"b3","editorial_weight":0,"analysis_role":"context","analysis_note":"The ordinary screen label lacked machine attribution when offered. The judge excluded the whole item, so it has no weight in the reference assessment or deliberation.","admissibility":{"effect":"exclude_beat"}},
+    {"beat_id":"b4","editorial_weight":0.72,"analysis_role":"central","analysis_note":"Nine authenticated handset adjustments, premium after-hours payments, and Nara’s warning create a substantial inference of knowledge, though the warning never identifies drugs."},
+    {"beat_id":"b5","editorial_weight":0.64,"analysis_role":"counterweight","analysis_note":"The opaque inner room, separate pass, and clean searches leave a concrete innocent possibility: Nara serviced exterior equipment without seeing the manufacture."},
+    {"beat_id":"b6","editorial_weight":0.54,"analysis_role":"counterweight","analysis_note":"The established booking channel and confidential-research explanation give Nara’s entry into the work an ordinary origin, subject to later warning signs."},
+    {"beat_id":"b7","editorial_weight":0.67,"analysis_role":"counterweight","analysis_note":"Nara’s explanation fits the visible readings and cover story. Returning after recognising abnormal demand remains open to the prosecution interpretation."},
+    {"beat_id":"b8","editorial_weight":0.7,"analysis_role":"central","analysis_note":"The later visits and deletion are genuinely probative of consciousness of guilt, but panic and recovery from backup prevent deletion from becoming an admission."},
+    {"beat_id":"b9","editorial_weight":0.56,"analysis_role":"context","analysis_note":"Rian confirms Nara voiced concern and returned after receiving the research explanation; the same account supports both rival inferences."},
+    {"beat_id":"b10","editorial_weight":0.8,"analysis_role":"counterweight","analysis_note":"Rian admits operators created realistic tickets and used the research cover story with outsiders. His incentive and limited presence constrain his account but do not erase it."},
+    {"beat_id":"b11","editorial_weight":0.56,"analysis_role":"context","analysis_note":"The expert’s independent receipt of sealed copies establishes a reliable foundation for the source analysis that follows."},
+    {"beat_id":"b12","editorial_weight":0.9,"analysis_role":"central","analysis_note":"The signed machine identities attribute all eighteen disputed commands to an internal controller while separating Nara’s nine genuine handset adjustments."},
+    {"beat_id":"b13","editorial_weight":0.63,"analysis_role":"counterweight","analysis_note":"Machine identity proves source rather than user or state of mind. That limit preserves the prosecution case based on Nara’s genuine conduct but prevents false attribution."},
+    {"beat_id":"b14","editorial_weight":0.52,"analysis_role":"context","analysis_note":"The direction correctly confines the verdict to knowing participation and intention, with the prosecution bearing the burden on every element."}
+  ]
+}

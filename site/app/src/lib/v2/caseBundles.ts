@@ -80,6 +80,30 @@ function clientPack(pack: DeliberationPackV5): ClientDeliberationPack {
   return copy as ClientDeliberationPack
 }
 
+function assertAdmissiblePack(
+  trial: DocketCaseV4,
+  pack: DeliberationPackV5,
+): void {
+  const knownBeatIds = new Set(trial.beats.map(({ id }) => id))
+  const excludedBeatIds = new Set(
+    trial.beats
+      .filter((beat) => beat.interjections?.some((interjection) =>
+        (interjection.type === 'sustained' || interjection.type === 'ruling') &&
+        interjection.admissibility.effect === 'exclude_beat'))
+      .map(({ id }) => id),
+  )
+  for (const evidence of pack.evidence) {
+    for (const beatId of evidence.beatIds) {
+      if (!knownBeatIds.has(beatId)) {
+        throw new Error(`V4 deliberation evidence ${evidence.id} references unknown beat ${beatId}`)
+      }
+      if (excludedBeatIds.has(beatId)) {
+        throw new Error(`V4 deliberation evidence ${evidence.id} references excluded beat ${beatId}`)
+      }
+    }
+  }
+}
+
 function siblingPath(trialPath: string, filename: string): string {
   if (!trialPath.endsWith('/trial.json')) {
     throw new Error(`Invalid V4 trial path ${trialPath}`)
@@ -141,20 +165,26 @@ export function loadV4CaseBundles(modules: V4CaseModuleMaps): V4CaseBundle[] {
 
     let deliberationPack: Promise<ClientDeliberationPack> | undefined
     const loadDeliberationPack = () => {
-      deliberationPack ??= deliberationModule().then((raw) => {
-        const pack = deliberationPackV5Schema.parse(moduleValue(raw))
-        if (pack.case_id !== trial.id || pack.case_revision !== revision) {
-          throw new Error(
-            `V4 deliberation pack must match current revision ${revision}`,
-          )
-        }
-        if (!evaluateDeliberationPack(pack).passes) {
-          throw new Error(`V4 deliberation pack failed its language quality gate`)
-        }
-        const payload = clientPack(pack)
-        assertSpoilerSafe(payload)
-        return payload
-      })
+      deliberationPack ??= deliberationModule()
+        .then((raw) => {
+          const pack = deliberationPackV5Schema.parse(moduleValue(raw))
+          if (pack.case_id !== trial.id || pack.case_revision !== revision) {
+            throw new Error(
+              `V4 deliberation pack must match current revision ${revision}`,
+            )
+          }
+          assertAdmissiblePack(trial, pack)
+          if (!evaluateDeliberationPack(pack).passes) {
+            throw new Error(`V4 deliberation pack failed its language quality gate`)
+          }
+          const payload = clientPack(pack)
+          assertSpoilerSafe(payload)
+          return payload
+        })
+        .catch((error) => {
+          deliberationPack = undefined
+          throw error
+        })
       return deliberationPack
     }
 
@@ -178,7 +208,10 @@ export function loadV4CaseBundles(modules: V4CaseModuleMaps): V4CaseBundle[] {
           }
           return { analysis }
         },
-      )
+      ).catch((error) => {
+        postVerdict = undefined
+        throw error
+      })
       return postVerdict
     }
 

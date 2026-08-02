@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { DocketCase } from '../../lib/v2/caseSchema'
+import type { CourtroomTrial } from '../../lib/v2/caseSchema'
 import { speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { introSceneNarratorCue, phaseNarratorCue } from '../../lib/narratorCues'
 import { contentAdvisoryText } from '../../lib/v2/offenceProfiles'
@@ -15,7 +15,7 @@ export function DocketIntro({
   onBegin,
   liveSession,
 }: {
-  trial: DocketCase
+  trial: CourtroomTrial
   dayNumber: number
   narration: boolean
   playbackRate: NarrationRate

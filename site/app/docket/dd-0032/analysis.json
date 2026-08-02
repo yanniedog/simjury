@@ -1,0 +1,103 @@
+{
+  "schema_version": 4,
+  "case_id": "dd-0032",
+  "case_revision": "dd-0032@7f603616",
+  "reference_verdict": "Guilty",
+  "reference_reasoning": "The contained phrase appeared in an authenticated criminal order signed by the physical key kept in Celis's cabinet, after she learned the demand was protection money and entered the office before transmission. The visitor sheet cannot prove exclusive entry, so the editorial reference depends on the combined phrase, key custody, badge chronology, order wording, and Celis's knowledge rather than that excluded inference.",
+  "strongest_opposing_interpretation": "Two investigators also heard the phrase; the gateway identifies a key rather than a hand; Celis used the key for lawful mediations; the visitor sheet cannot prove exclusive access; and the complete undated client note includes instructions against threats and for stock release. Those facts support a reasonable innocent explanation if the jury is not sure who activated the key or what Celis intended.",
+  "sentencing_context": "If convicted, sentencing would be decided separately by the judge. The jury's task is limited to deciding whether the prosecution proved the charge.",
+  "epilogue": {
+    "mode": "outcome_neutral",
+    "text": "The trial forced Nareth’s traders to separate private mediation from coercive debt collection. Sava and his partner rebuilt their stock through a transparent cooperative fund, while an independent panel reviewed how the Circle had gained influence over commercial disputes. The recovered signing system was retired, and future settlements required named approvals visible to every party. Celis’s client files remained under court control while lawful customers received copies through an independent administrator."
+  },
+  "beats": [
+    {
+      "beat_id": "b1",
+      "editorial_weight": 0.58,
+      "analysis_role": "context",
+      "analysis_note": "Agreed records prove the Circle and its serious offending without using the members’ admissions to identify Celis."
+    },
+    {
+      "beat_id": "b2",
+      "editorial_weight": 0.52,
+      "analysis_role": "context",
+      "analysis_note": "Sava’s background explains the lawful relationship, the alleged extortion, and why he approached Celis; it does not identify the Chair."
+    },
+    {
+      "beat_id": "b3",
+      "editorial_weight": 0.58,
+      "analysis_role": "context",
+      "analysis_note": "Sava humanises and corroborates the Circle’s serious offences, but he cannot identify who directed them."
+    },
+    {
+      "beat_id": "b4",
+      "editorial_weight": 0.54,
+      "analysis_role": "counterweight",
+      "analysis_note": "Celis’s earlier lawful help is genuinely probative of the defence account, and Sava cannot supply identity evidence."
+    },
+    {
+      "beat_id": "b5",
+      "editorial_weight": 0.9,
+      "analysis_role": "central",
+      "analysis_note": "The authenticated interview and controlled movement contain the invented phrase to three people; Celis was the only one who left before it appeared in a criminal order."
+    },
+    {
+      "beat_id": "b6",
+      "editorial_weight": 0.57,
+      "analysis_role": "counterweight",
+      "analysis_note": "The phrase was tightly contained, not magically exclusive; the jury must combine it with independent access evidence."
+    },
+    {
+      "beat_id": "b7",
+      "editorial_weight": 0.58,
+      "analysis_role": "context",
+      "analysis_note": "Tav supplies the in-place photographs, item identifiers, seals, transfer, and cabinet-key issue record needed for competent custody and access evidence."
+    },
+    {
+      "beat_id": "b8",
+      "editorial_weight": 0.62,
+      "analysis_role": "central",
+      "analysis_note": "The authenticated gateway copy still proves that Celis's physical key signed the exact criminal order. The visitor-sheet entries explain the examiner's testing only and cannot prove that Celis was the sole person in the office.",
+      "admissibility": {
+        "effect": "limited_purpose",
+        "purpose": "Use the visitor-sheet entries only to understand why the examiner narrowed her testing, not as proof that Celis alone entered the office."
+      }
+    },
+    {
+      "beat_id": "b9",
+      "editorial_weight": 0.59,
+      "analysis_role": "counterweight",
+      "analysis_note": "The examiner gives real limitations: the key evidence remains circumstantial, and the handwriting opinion cannot carry identity or timing on its own."
+    },
+    {
+      "beat_id": "b10",
+      "editorial_weight": 0.58,
+      "analysis_role": "counterweight",
+      "analysis_note": "Celis offers a competent innocent account grounded in her actual work and the complete client note, not a last-minute excuse."
+    },
+    {
+      "beat_id": "b11",
+      "editorial_weight": 0.72,
+      "analysis_role": "central",
+      "analysis_note": "Celis admits knowing the demand was criminal and retaining the only issued cabinet key, while denying that she activated it; the admission bears on knowledge and custody, not authorship by itself."
+    },
+    {
+      "beat_id": "b12",
+      "editorial_weight": 0.32,
+      "analysis_role": "counterweight",
+      "analysis_note": "The first line sounds incriminating when isolated. Properly authenticated and read whole, the undated note is ambiguous and cannot replace proof from the signed order."
+    },
+    {
+      "beat_id": "b13",
+      "editorial_weight": 0.78,
+      "analysis_role": "central",
+      "analysis_note": "The agreed chronology connects Celis's knowledge and badge entry to the later signature, receipt, and seizure. It proves sequence and opportunity without converting the limited visitor sheet into proof of exclusive access."
+    },
+    {
+      "beat_id": "b14",
+      "editorial_weight": 0.58,
+      "analysis_role": "context",
+      "analysis_note": "The direction keeps the predicate offences, technical attribution, criminal purpose, and burden in their proper compartments."
+    }
+  ]
+}

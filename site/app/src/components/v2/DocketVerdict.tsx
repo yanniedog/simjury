@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import type { DocketCase } from '../../lib/v2/caseSchema'
+import type { CourtroomTrial } from '../../lib/v2/caseSchema'
 import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { phaseNarratorCue } from '../../lib/narratorCues'
 import { StatementCard } from './OpeningStatements'
 import { NarratorCue } from './NarratorCue'
 
-export type Verdict = DocketCase['reference_verdict'] | 'Undecided'
+export type Verdict = 'Guilty' | 'Not Guilty' | 'Undecided'
 
 /** Closing arguments before the jury retires. The player's lock happens after deliberation. */
 export function DocketVerdict({
@@ -14,7 +14,7 @@ export function DocketVerdict({
   playbackRate,
   onContinue,
 }: {
-  trial: DocketCase
+  trial: CourtroomTrial
   narration: boolean
   playbackRate: NarrationRate
   onContinue: () => void

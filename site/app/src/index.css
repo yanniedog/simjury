@@ -61,6 +61,11 @@
   .narration-controls button { display: inline-flex; align-items: center; gap: .35rem; padding: .45rem .85rem; }
   .narration-controls button[aria-pressed="true"] { border-color: rgb(214 185 121 / 45%); color: var(--paper-50); background: rgb(214 185 121 / 10%); }
   .narration-label-short { display: none; }
+  .court-interjection { border-color: rgb(214 185 121 / 30%); background: rgb(57 45 24 / 24%); }
+  .court-interjection.objection { margin-right: 1.5rem; border-left: 3px solid rgb(214 185 121 / 70%); }
+  .court-interjection.judicial { margin-left: 1.5rem; border-left: 3px solid rgb(244 240 232 / 45%); background: rgb(36 42 44 / 65%); }
+  .admissibility-notice { border: 1px solid rgb(214 185 121 / 38%); border-radius: .7rem; padding: .85rem 1rem; color: var(--steel-300); background: rgb(57 45 24 / 22%); font-size: .85rem; line-height: 1.5; }
+  .admissibility-notice strong { color: var(--brass-400); }
 
   .docket-workspace {
     display: grid; grid-template-columns: minmax(0, 42rem) 14rem;
@@ -79,6 +84,8 @@
   .docket-archive summary::-webkit-details-marker { display: none; }
   .docket-archive label { display: block; margin: .6rem 0 .35rem; color: var(--steel-500); font-size: .65rem; }
   .docket-archive select { width: 100%; padding: .5rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .5rem; color: var(--paper-50); background: var(--court-950); font-size: .72rem; }
+  .docket-intro-link { width: 100%; margin-top: .45rem; padding: .5rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .5rem; color: var(--steel-300); background: transparent; font-size: .72rem; text-align: left; }
+  .docket-intro-link:hover { border-color: rgb(214 185 121 / 45%); color: var(--paper-50); }
   .local-note { margin: 1rem 0 0; color: var(--steel-500); font-size: .75rem; line-height: 1.55; }
   .local-note span { margin-right: .35rem; color: #72c7aa; }
   .local-note a { color: var(--steel-300); text-decoration: underline; text-underline-offset: .2em; }
