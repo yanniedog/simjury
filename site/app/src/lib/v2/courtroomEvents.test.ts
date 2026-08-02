@@ -9,12 +9,11 @@ function beat(): DocketBeatV4 {
   return {
     id: 'cross-one',
     kind: 'witness',
-    title: 'Cross of the records officer',
     text: 'Fallback text.',
     speaker: 'witness',
     mode: 'cross',
     direction: 'innocence',
-    salience: 0.5,
+    surface_persuasion: 0.5,
     tags: ['credibility'],
     turns: [
       { speaker: 'defence', text: 'Who supplied that name?' },
