@@ -27,20 +27,58 @@ describe('docket queue', () => {
     expect(docketQueue.map((trial) => trial.id)).toEqual([
       'dd-0006',
       'dd-0017',
-      'dd-0032',
       'dd-0038',
+      'dd-0040',
       'dd-0037',
+      'dd-0032',
+      'dd-0041',
       'dd-0039',
+      'dd-0042',
     ])
     expect(docketQueue.every((c) => c.id !== INTRO_CASE_ID)).toBe(true)
     expect(introCase?.id).toBe(INTRO_CASE_ID)
     const commissioned = [introCase, ...docketQueue]
-    expect(commissioned).toHaveLength(7)
-    expect(new Set(commissioned.map((trial) => trial?.id))).toHaveLength(7)
+    expect(commissioned).toHaveLength(10)
+    expect(new Set(commissioned.map((trial) => trial?.id))).toHaveLength(10)
     expect(commissioned.every((c) =>
       ['dd-2026-v3', 'dd-2026-v3-20min'].includes(
         c?.gen_meta.prompt_version ?? '',
       ),
+    )).toBe(true)
+  })
+
+  it('opens the commissioned bootstrap week on seven consecutive UTC dates', () => {
+    const bootstrap = docketQueue.filter(
+      ({ publish_date }) =>
+        publish_date >= '2026-08-02' && publish_date <= '2026-08-08',
+    )
+
+    expect(bootstrap.map((trial) => ({
+      id: trial.id,
+      publish_date: trial.publish_date,
+      reference_verdict:
+        'reference_verdict' in trial ? trial.reference_verdict : 'V4',
+    }))).toEqual([
+      { id: 'dd-0038', publish_date: '2026-08-02', reference_verdict: 'Not Guilty' },
+      { id: 'dd-0040', publish_date: '2026-08-03', reference_verdict: 'Guilty' },
+      { id: 'dd-0037', publish_date: '2026-08-04', reference_verdict: 'Not Guilty' },
+      { id: 'dd-0032', publish_date: '2026-08-05', reference_verdict: 'Guilty' },
+      { id: 'dd-0041', publish_date: '2026-08-06', reference_verdict: 'Guilty' },
+      { id: 'dd-0039', publish_date: '2026-08-07', reference_verdict: 'Not Guilty' },
+      { id: 'dd-0042', publish_date: '2026-08-08', reference_verdict: 'Guilty' },
+    ])
+
+    const cancelledDrill = bootstrap.find(({ id }) => id === 'dd-0040')!
+    const secondImpact = bootstrap.find(({ id }) => id === 'dd-0041')!
+    const openDoor = bootstrap.find(({ id }) => id === 'dd-0042')!
+    expect(cancelledDrill.beats.some(({ text }) =>
+      text.includes('General speeches, lawful advocacy, associations, and opinions have been excluded'),
+    )).toBe(true)
+    expect(secondImpact.beats.some(({ text }) =>
+      text.includes('two sharp metallic events'),
+    )).toBe(true)
+    expect(openDoor.beats.some(({ text }) =>
+      text.includes('admitted only to help you assess Nela\'s state of mind'),
     )).toBe(true)
   })
 
@@ -194,8 +232,8 @@ describe('docket queue', () => {
     expect(sittings.map(({ trial }) => trial.id)).toEqual(
       docketQueue.map(({ id }) => id),
     )
-    expect(new Set(sittings.map(({ trial }) => trial.id))).toHaveLength(6)
-    expect(new Set(sittings.map(({ day }) => day))).toHaveLength(6)
+    expect(new Set(sittings.map(({ trial }) => trial.id))).toHaveLength(9)
+    expect(new Set(sittings.map(({ day }) => day))).toHaveLength(9)
     for (const sitting of sittings) {
       expect(sitting.day).toBe(dayIndex(sitting.date))
       expect(selectDocketSitting(sittings, sitting.day)).toBe(sitting)
