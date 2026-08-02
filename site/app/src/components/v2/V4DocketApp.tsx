@@ -3,7 +3,6 @@ import type { DocketSitting, DocketSittingV4 } from '../../lib/v2/cases'
 import type { ClientDeliberationPack, V4PostVerdictPayload } from '../../lib/v2/caseBundles'
 import type { RoomOutcome } from '../../engine/deliberationV5'
 import type { V5RoomSession } from '../../engine/v5RoomSession'
-import { v4CourtroomCompatibilityIssue } from '../../lib/v2/v4CourtroomCompatibility'
 import { caseStorageId } from '../../lib/v2/caseRevision'
 import {
   clearNarrationSpeakers,
@@ -103,7 +102,6 @@ export function V4DocketApp({
   intro: DocketSitting | null
 }) {
   const { trial } = sitting
-  const compatibilityIssue = v4CourtroomCompatibilityIssue(trial)
   const caseId = caseStorageId(trial)
   const storedPlay = useMemo(
     () => loadPlayForSitting(sitting.day, caseId),
@@ -149,7 +147,7 @@ export function V4DocketApp({
   }, [trial])
 
   useEffect(() => {
-    if (compatibilityIssue || phase !== 'juryroom') return
+    if (phase !== 'juryroom') return
     let current = true
     setPackStatus('loading')
     void sitting.loadDeliberationPack().then(
@@ -162,10 +160,10 @@ export function V4DocketApp({
       () => { if (current) setPackStatus('error') },
     )
     return () => { current = false }
-  }, [compatibilityIssue, packAttempt, phase, sitting])
+  }, [packAttempt, phase, sitting])
 
   useEffect(() => {
-    if (compatibilityIssue || phase !== 'reveal') return
+    if (phase !== 'reveal') return
     let current = true
     setPostStatus('loading')
     void sitting.loadPostVerdict().then(
@@ -178,7 +176,7 @@ export function V4DocketApp({
       () => { if (current) setPostStatus('error') },
     )
     return () => { current = false }
-  }, [compatibilityIssue, phase, postAttempt, sitting])
+  }, [phase, postAttempt, sitting])
 
   function persist(nextPhase: PersistedV4Phase, nextBeat = beatIndex, nextNotes = notes) {
     saveProgress({ day: sitting.day, caseId, phase: nextPhase, beatIndex: nextBeat, notes: nextNotes })
@@ -235,33 +233,6 @@ export function V4DocketApp({
     setPlayerVerdict(verdict)
     setRoomOutcome(outcome)
     setPhase('reveal')
-  }
-
-  if (compatibilityIssue) {
-    return (
-      <DocketShell
-        phase="intro"
-        caseTitle={trial.title}
-        dayNumber={sitting.day + 1}
-        charge={trial.charge}
-        narration={narration}
-        playbackRate={playbackRate}
-        voiceEngine={voiceEngine}
-        onToggleNarration={toggleNarration}
-        onRateChange={changeRate}
-        onVoiceEngineChange={changeEngine}
-        sidebar={<DocketSittingChooser sittings={sittings} selectedCaseId={trial.id} featuredSitting={featuredSitting} onSelect={onSelect} introSitting={intro} />}
-      >
-        <div className="phase-view space-y-5 text-center">
-          <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">
-            This sitting cannot open safely
-          </h1>
-          <p role="alert" className="mx-auto max-w-xl leading-relaxed text-neutral-300">
-            {compatibilityIssue}
-          </p>
-        </div>
-      </DocketShell>
-    )
   }
 
   return (
