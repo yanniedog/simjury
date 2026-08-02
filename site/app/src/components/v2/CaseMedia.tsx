@@ -1,5 +1,6 @@
 import type { MediaAsset } from '../../lib/v2/caseSchema'
 import { storyParagraphs } from '../../lib/storyText'
+import { mediaAssetSrc } from '../../lib/v2/mediaAssets'
 
 /** Authoring captions must start with a fiction label; players see the label stripped. */
 export function playerMediaCaption(caption: string): string {
@@ -18,14 +19,16 @@ export function CaseMedia({
   asset: MediaAsset
   priority?: boolean
 }) {
-  const src = asset.src.replace(/^\/today\//, import.meta.env.BASE_URL)
   return (
     <figure className={`case-media ${asset.kind}`}>
       <img
-        src={src}
+        src={mediaAssetSrc(asset.src)}
         alt={asset.alt}
         loading={priority ? 'eager' : 'lazy'}
-        fetchPriority={priority ? 'high' : 'auto'}
+        // Lowercase: React 18 does not recognise the camelCase `fetchPriority`
+        // and warns on every render; React 19 accepts it. This spelling is
+        // passed through untouched by both.
+        fetchpriority={priority ? 'high' : 'auto'}
         className={asset.kind === 'evidence' ? 'aspect-video' : 'aspect-[3/2]'}
       />
       <figcaption>
