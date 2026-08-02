@@ -111,12 +111,15 @@ text, the gate and its tests in one PR, covering mixed V3/V4 queues explicitly.
 
 ## Then: the daily loop
 
-`.github/workflows/docket-supply.yml` already runs every morning, works out which
-of the next days open no case, and raises a single issue naming those dates.
-Change its window to seven days and extend the loop so an available drafting
-agent produces complete cases for exactly those dates in a draft pull request.
-The issue is a machine-readable work record, not a request for a person to take
-over. Preserve these properties:
+`.github/workflows/docket-supply.yml` runs every morning, works out which of the
+next seven days open no case, and maintains a single issue naming those dates.
+The controller reserves and generates one complete case per draft pull request,
+then queues another run until every uncovered date has its own reservation. This
+keeps the output, image and spend ceilings exact per case while allowing several
+case PRs to progress independently. Billed attempts are recorded in the
+reservation state even when generation fails, so a resumed run cannot reset the
+budget. The issue is a machine-readable work record, not a request for a person
+to take over. Preserve these properties:
 
 - It **names dates, not a quantity.** Three cases filed on one day leave the
   docket exactly as thin as before.
