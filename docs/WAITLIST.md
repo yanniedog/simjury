@@ -19,9 +19,16 @@ out.
 ## Cost
 
 D1's free tier covers 5 GB of storage, 5 million rows read per day, and 100,000
-rows written per day. A waitlist writes one row per signup and reads the table
-only when an update is sent, so a list of any plausible size sits far inside
-those limits. No paid Cloudflare product is introduced.
+rows written per day.
+
+Each signup is one statement that both counts the rows sharing its daily
+fingerprint and inserts — so a signup reads as well as writes, including the
+ones the cap refuses. That is the load to watch: a flood of refused requests
+still spends read allowance even though it stores nothing. The per-source cap
+bounds how much any one client can write, not how often it can ask.
+
+Ordinary use is nowhere near either limit — sending an update reads the table
+once — and no paid Cloudflare product is introduced.
 
 There is deliberately **no automatic purge**. Rows are kept until someone asks
 to be removed, because an unsubscribe record is what stops a later signup being

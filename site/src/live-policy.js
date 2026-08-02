@@ -65,13 +65,33 @@ export function parseWaitlistEmail(value) {
   if (typeof value !== 'string') return null
   const trimmed = value.trim()
   if (trimmed.length < 6 || trimmed.length > WAITLIST_LIMITS.emailCharacters) return null
+
+  // Control characters are not whitespace, so trimming and a `\s` class both
+  // let them through. An address is text that ends up in a mail header; none of
+  // these belong in one.
+  for (const character of trimmed) {
+    const code = character.codePointAt(0) ?? 0
+    if (code <= 0x1f || code === 0x7f) return null
+  }
+
   const at = trimmed.lastIndexOf('@')
   if (at < 1) return null
-  const email = `${trimmed.slice(0, at)}@${trimmed.slice(at + 1).toLowerCase()}`
-  // Domain may carry several labels (example.co.uk); the TLD must be letters.
-  if (!/^[^\s@<>,;"]+@[^\s@<>,;"]+\.[a-z]{2,}$/.test(email)) return null
-  if (email.includes('..')) return null
-  return email
+  const local = trimmed.slice(0, at)
+  const domain = trimmed.slice(at + 1).toLowerCase()
+
+  // RFC 5321 caps the local part at 64 octets. Dots separate atoms, so one
+  // cannot lead, trail, or double up.
+  if (local.length > 64) return null
+  if (!/^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*$/.test(local)) {
+    return null
+  }
+
+  // Each domain label is alphanumeric with internal hyphens only — no leading
+  // or trailing hyphen, no underscore — and the TLD is letters.
+  if (domain.length > 253) return null
+  if (!/^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/.test(domain)) return null
+
+  return `${local}@${domain}`
 }
 
 /** Case-insensitive identity for an address, used as the primary key. */

@@ -553,6 +553,11 @@ async function handleWaitlist(request, env) {
     // NOT EXISTS rather than ON CONFLICT: a repeat address must still be a
     // no-op, and SQLite's upsert clause is ambiguous after an INSERT…SELECT.
     //
+    // Someone who unsubscribed and then signed up again is a separate case,
+    // handled below: the insert cannot touch their row, so without that update
+    // they would be told "You are on the list" while every export kept leaving
+    // them out. They just consented again; the record should say so.
+    //
     // A null fingerprint means no salt is configured, so there is nothing to
     // count and the cap is skipped rather than applied to a value every client
     // would share.
@@ -573,6 +578,17 @@ async function handleWaitlist(request, env) {
         source,
         WAITLIST_LIMITS.signupsPerIpPerDay,
       )
+      .run()
+
+    // Re-subscribing. Only ever clears an unsubscribe — it cannot revive a row
+    // that was never there, and it does not touch anyone still subscribed. The
+    // consent wording and date are refreshed because this is new consent.
+    await env.WAITLIST.prepare(
+      `UPDATE waitlist
+          SET unsubscribed_at = NULL, consent_text = ?2, consented_at = ?3, email = ?4
+        WHERE email_key = ?1 AND unsubscribed_at IS NOT NULL`,
+    )
+      .bind(waitlistEmailKey(email), WAITLIST_CONSENT_TEXT, new Date().toISOString(), email)
       .run()
   } catch {
     return unavailable('WAITLIST_WRITE_FAILED', 503)

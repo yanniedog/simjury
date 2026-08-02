@@ -18,9 +18,13 @@ const SALT = 'test-salt-at-least-16-chars'
  * assertions can look at exactly what would be written.
  */
 function waitlistEnv(overrides = {}) {
+  // Rows are the bound parameter arrays, so assertions see exactly what would
+  // be written: [email_key, email, consent_text, consented_at, source_day_hash].
   const rows = []
+  const unsubscribed = new Set()
   return {
     rows,
+    unsubscribed,
     WAITLIST_SALT: SALT,
     ASSETS: { fetch: () => new Response('static', { status: 200 }) },
     WAITLIST: {
@@ -29,9 +33,21 @@ function waitlistEnv(overrides = {}) {
           bind(...args) {
             return {
               run() {
+                if (/^\s*UPDATE waitlist/.test(sql)) {
+                  // Re-subscribing clears an unsubscribe and nothing else.
+                  const [key, consentText, consentedAt] = args
+                  if (!/unsubscribed_at IS NOT NULL/.test(sql)) {
+                    throw new Error('re-subscribe must only touch unsubscribed rows')
+                  }
+                  if (unsubscribed.has(key)) {
+                    unsubscribed.delete(key)
+                    const row = rows.find((r) => r[0] === key)
+                    if (row) { row[2] = consentText; row[3] = consentedAt }
+                  }
+                  return { success: true }
+                }
                 // The cap and the insert must be one statement: counting first
-                // and inserting after lets concurrent signups all pass the
-                // count. This mirrors that single conditional INSERT.
+                // and inserting after lets concurrent signups all pass.
                 if (!/NOT EXISTS \(SELECT 1 FROM waitlist WHERE email_key/.test(sql)) {
                   throw new Error('waitlist insert must be idempotent on email_key')
                 }
@@ -330,9 +346,9 @@ test('the cap and the insert are decided in a single statement', async () => {
     },
   })
   await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
-  assert.equal(statements.length, 1, 'one round trip, so there is no window between them')
-  assert.match(statements[0], /INSERT INTO waitlist/)
-  assert.match(statements[0], /COUNT\(\*\) FROM waitlist WHERE source_day_hash/)
+  const conditional = statements.filter((sql) => /INSERT INTO waitlist/.test(sql))
+  assert.equal(conditional.length, 1, 'one insert, so there is no window between count and write')
+  assert.match(conditional[0], /COUNT\(\*\) FROM waitlist WHERE source_day_hash/)
 })
 
 test('an address with shell metacharacters never reaches a command line', () => {
@@ -356,5 +372,64 @@ test('an address with shell metacharacters never reaches a command line', () => 
   for (const email of ['a&b@example.com', 'a|b@example.com', 'a^b@example.com', 'a%b@example.com']) {
     assert.equal(parseWaitlistEmail(email), email)
     assert.match(unsubscribeStatement(email), /^UPDATE waitlist SET/)
+  }
+})
+
+test('signing up again after unsubscribing puts you back on the list', async () => {
+  // The insert cannot touch an existing row, so without the follow-up update a
+  // returning person was told "You are on the list" while every export kept
+  // leaving them out — the page said one thing and the data said another.
+  const env = waitlistEnv()
+  await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
+  env.unsubscribed.add('juror@example.com')
+  const before = env.rows[0][3]
+
+  const again = await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
+
+  assert.equal(again.status, 200)
+  assert.equal(env.unsubscribed.has('juror@example.com'), false, 'the unsubscribe is cleared')
+  assert.equal(env.rows.length, 1, 'and no duplicate row appears')
+  assert.notEqual(env.rows[0][3], before, 'the renewed consent is dated')
+})
+
+test('a still-subscribed address is not disturbed by signing up again', async () => {
+  const env = waitlistEnv()
+  await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
+  const original = [...env.rows[0]]
+
+  await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
+
+  assert.equal(env.rows.length, 1)
+  assert.deepEqual(env.rows[0], original, 'the original consent record is left alone')
+})
+
+test('addresses that cannot be delivered are refused', () => {
+  // These all passed the earlier broad character classes and would have been
+  // stored and reported as successful, polluting the exported list.
+  for (const email of [
+    '.leading@example.com',
+    'trailing.@example.com',
+    'two..dots@example.com',
+    `${'x'.repeat(65)}@example.com`,
+    'juror@under_score.com',
+    'juror@-leading.com',
+    'juror@trailing-.com',
+    'juror@example.c',
+    `juror${String.fromCharCode(0)}@example.com`,
+    `juror${String.fromCharCode(9)}@example.com`,
+    'juror@example',
+  ]) {
+    assert.equal(parseWaitlistEmail(email), null, `should refuse ${JSON.stringify(email)}`)
+  }
+
+  // Still accepts what real addresses look like.
+  for (const email of [
+    'juror+docket@example.co.uk',
+    "o'connor@example.com",
+    'first.last@sub.example.com',
+    'a-b@ex-ample.com',
+    'juror%tag@example.com',
+  ]) {
+    assert.equal(parseWaitlistEmail(email), email, `should accept ${email}`)
   }
 })
