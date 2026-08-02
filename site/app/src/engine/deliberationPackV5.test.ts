@@ -18,6 +18,7 @@ function fixture(): DeliberationPackV5 {
     label: `Evidence item ${index}`,
     aliases: [`record number ${index}`, `exhibit item ${index}`],
     issueIds: [`issue-${index % 25}`],
+    beatIds: [`beat-${index % 12}`],
   }))
   return {
     schema_version: 5,
