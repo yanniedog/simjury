@@ -25,6 +25,155 @@ const PHASES: Array<{ id: DocketPhase; label: string; short: string }> = [
   { id: 'reveal', label: 'Record', short: '06' },
 ]
 
+/**
+ * Audio settings behind one button.
+ *
+ * Four always-visible controls — voice mode, speed, narration, room tone —
+ * wrapped onto a second row at 390px and gave the sticky header about 178px,
+ * 21% of the viewport, held permanently on a screen whose job is reading.
+ * A <details> keeps this keyboard-reachable and working before hydration.
+ */
+function AudioMenu({
+  narration,
+  ambience,
+  playbackRate,
+  voiceEngine,
+  showVoiceMode,
+  showNarration,
+  onToggleNarration,
+  onToggleAmbience,
+  onRateChange,
+  onVoiceEngineChange,
+}: {
+  narration: boolean
+  ambience?: boolean
+  playbackRate: NarrationRate
+  voiceEngine: NarrationEngineId
+  showVoiceMode: boolean
+  showNarration: boolean
+  onToggleNarration: () => void
+  onToggleAmbience?: () => void
+  onRateChange: (rate: NarrationRate) => void
+  onVoiceEngineChange?: (engine: NarrationEngineId) => void
+}) {
+  const showAmbience = typeof ambience === 'boolean' && Boolean(onToggleAmbience)
+  const active = (showNarration && narration) || (showAmbience && ambience)
+  return (
+    <details className="audio-menu">
+      <summary aria-label="Audio settings" title="Audio settings">
+        <span aria-hidden="true">{active ? '◉' : '◎'}</span>
+        <span className="audio-menu-label">Audio</span>
+      </summary>
+      <div className="audio-menu-panel">
+        {showNarration && (
+          <>
+            <label className="audio-menu-row">
+              <span>Narration</span>
+              <button
+                type="button"
+                aria-pressed={narration}
+                aria-label="Toggle narration"
+                onClick={onToggleNarration}
+              >
+                {narration ? 'On' : 'Off'}
+              </button>
+            </label>
+            <label className="audio-menu-row">
+              <span>Speed</span>
+              <select
+                aria-label="Narration speed"
+                value={playbackRate}
+                onChange={(event) => onRateChange(normaliseNarrationRate(event.target.value))}
+              >
+                <option value={0.85}>Relaxed</option>
+                <option value={1}>Standard</option>
+                <option value={1.15}>Brisk</option>
+              </select>
+            </label>
+            {showVoiceMode && onVoiceEngineChange && (
+              <label className="audio-menu-row">
+                <span>Voice</span>
+                <select
+                  aria-label="Narration voice mode"
+                  value={voiceEngine}
+                  onChange={(event) => onVoiceEngineChange(normaliseNarrationEngine(event.target.value))}
+                >
+                  <option value="kokoro">{DEFAULT_VOICE_LABEL}</option>
+                  <option value="scylla">{ALT_VOICE_LABEL}</option>
+                </select>
+              </label>
+            )}
+          </>
+        )}
+        {showAmbience && (
+          <label className="audio-menu-row">
+            <span>Room tone</span>
+            <button
+              type="button"
+              aria-pressed={ambience}
+              aria-label="Toggle courtroom ambience"
+              onClick={onToggleAmbience}
+            >
+              Room tone {ambience ? 'on' : 'off'}
+            </button>
+          </label>
+        )}
+      </div>
+    </details>
+  )
+}
+
+/**
+ * Destructive sitting controls, behind a menu and a confirm.
+ *
+ * Rewind used to be a full-width banner above every phase, permanent,
+ * unconfirmed, and styled close to a primary control in the top-left position
+ * the eye lands on first — while the thing it does is unrecoverable.
+ */
+function SittingMenu({ caseTitle, onRewind }: { caseTitle: string; onRewind: () => void }) {
+  const [confirming, setConfirming] = useState(false)
+  return (
+    <details
+      className="sitting-menu"
+      onToggle={(event) => {
+        if (!event.currentTarget.open) setConfirming(false)
+      }}
+    >
+      <summary aria-label="Sitting options" title="Sitting options">
+        <span aria-hidden="true">⋯</span>
+      </summary>
+      <div className="sitting-menu-panel">
+        {confirming ? (
+          <>
+            <p className="sitting-menu-warning">
+              Rewinding clears this sitting’s progress and notes. It cannot be undone.
+            </p>
+            <button
+              type="button"
+              aria-label={`Rewind ${caseTitle} to the beginning`}
+              onClick={onRewind}
+              className="sitting-menu-danger"
+            >
+              Yes, rewind and clear
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirming(false)}
+              className="sitting-menu-quiet"
+            >
+              Keep my progress
+            </button>
+          </>
+        ) : (
+          <button type="button" onClick={() => setConfirming(true)} className="sitting-menu-item">
+            Rewind to beginning
+          </button>
+        )}
+      </div>
+    </details>
+  )
+}
+
 export function DocketShell({
   children,
   sidebar,
@@ -44,6 +193,8 @@ export function DocketShell({
   entryMode = false,
   /** Hide narration controls (e.g. age/fiction gate before any spoken cue). */
   hideNarration = false,
+  /** Clears this sitting's progress. Offered behind the overflow menu and a confirm. */
+  onRewind,
 }: {
   children: ReactNode
   sidebar?: ReactNode
@@ -61,6 +212,7 @@ export function DocketShell({
   onVoiceEngineChange?: (engine: NarrationEngineId) => void
   entryMode?: boolean
   hideNarration?: boolean
+  onRewind?: () => void
 }) {
   const currentPhaseIndex = PHASES.findIndex((step) => step.id === phase)
   const phaseLabel = PHASES[currentPhaseIndex]?.label ?? 'Briefing'
@@ -69,6 +221,7 @@ export function DocketShell({
   const [canPersist] = useState(canPersistSitting)
   const showAside = !entryMode
   const showNarration = !hideNarration && narrationSupported()
+  const showAmbience = !entryMode && typeof ambience === 'boolean' && Boolean(onToggleAmbience)
   return (
     <main className={`docket-shell min-h-screen text-neutral-100${entryMode ? ' docket-entry' : ''}`}>
       <a href="#phase-heading" className="docket-skip">Skip to the case</a>
@@ -91,39 +244,26 @@ export function DocketShell({
             <i aria-hidden="true" style={{ width: `${(stageNumber / PHASES.length) * 100}%` }} />
           </div>
         )}
-        {(showNarration ||
-          (!entryMode &&
-            typeof ambience === 'boolean' &&
-            onToggleAmbience)) && (
-          <div className="narration-controls">
-            {showNarration && showVoiceMode && (
-              <select
-                aria-label="Narration voice mode"
-                value={voiceEngine}
-                onChange={(event) => onVoiceEngineChange(normaliseNarrationEngine(event.target.value))}
-              >
-                <option value="kokoro">{DEFAULT_VOICE_LABEL}</option>
-                <option value="scylla">{ALT_VOICE_LABEL}</option>
-              </select>
+        {/* One button each. The chrome budget is the top bar and nothing else,
+            so secondary controls live in the popover they open rather than on
+            the bar itself. */}
+        {(showNarration || showAmbience || onRewind) && (
+          <div className="chrome-menus">
+            {(showNarration || showAmbience) && (
+              <AudioMenu
+                narration={narration}
+                ambience={showAmbience ? ambience : undefined}
+                playbackRate={playbackRate}
+                voiceEngine={voiceEngine}
+                showVoiceMode={showVoiceMode}
+                showNarration={showNarration}
+                onToggleNarration={onToggleNarration}
+                onToggleAmbience={showAmbience ? onToggleAmbience : undefined}
+                onRateChange={onRateChange}
+                onVoiceEngineChange={onVoiceEngineChange}
+              />
             )}
-            {showNarration && <select aria-label="Narration speed" value={playbackRate} onChange={(event) => onRateChange(normaliseNarrationRate(event.target.value))}>
-              <option value={0.85}>Relaxed</option><option value={1}>Standard</option><option value={1.15}>Brisk</option>
-            </select>}
-            {showNarration && <button type="button" aria-pressed={narration} aria-label="Toggle narration" onClick={onToggleNarration}>
-              <span aria-hidden="true">◉</span>
-              <span className="narration-label-full">Narration {narration ? 'on' : 'off'}</span>
-              <span className="narration-label-short">{narration ? 'On' : 'Off'}</span>
-            </button>}
-            {!entryMode && typeof ambience === 'boolean' && onToggleAmbience && (
-              <button
-                type="button"
-                aria-pressed={ambience}
-                aria-label="Toggle courtroom ambience"
-                onClick={onToggleAmbience}
-              >
-                Room tone {ambience ? 'on' : 'off'}
-              </button>
-            )}
+            {onRewind && <SittingMenu caseTitle={caseTitle} onRewind={onRewind} />}
           </div>
         )}
       </header>

@@ -249,6 +249,19 @@ export function LiveJuryLobby({
   const activeSession = sessionReady ? session : null
   const checkingSession = Boolean(session) && !sessionReady
 
+  /**
+   * An unavailable feature renders nothing — not a panel explaining the
+   * absence. The lobby used to occupy the top of every screen announcing
+   * "Live rooms aren't open right now", which is an advertisement for a
+   * feature the player cannot use. The solo jury is the product, not a
+   * fallback to apologise for.
+   *
+   * `available === null` is the pre-answer state, so it stays silent too;
+   * appearing only once rooms are confirmed open avoids a panel that flashes
+   * in and then explains itself away.
+   */
+  if (available !== true && !activeSession && !checkingSession) return null
+
   return (
     <section className="live-lobby">
       <div className="live-lobby-head">
@@ -303,12 +316,6 @@ export function LiveJuryLobby({
             {activeSession.hostToken ? 'Close this room' : 'Leave this room'}
           </button>
         </div>
-      ) : available === false ? (
-        <p className="live-lobby-muted">
-          Live rooms aren’t open right now. The solo jury remains fully available.
-        </p>
-      ) : available === null ? (
-        <p className="live-lobby-muted">Checking live-room availability…</p>
       ) : (
         <div className="live-lobby-body">
           <p className="live-lobby-lede">
