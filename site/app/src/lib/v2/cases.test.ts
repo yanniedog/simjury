@@ -42,6 +42,31 @@ describe('docket queue', () => {
     )).toBe(true)
   })
 
+  it('publishes an exact seven-case V4 slate from August 2 through August 8', () => {
+    const expected = [
+      ['2026-08-02', 'dd-0038'],
+      ['2026-08-03', 'dd-0040'],
+      ['2026-08-04', 'dd-0037'],
+      ['2026-08-05', 'dd-0032'],
+      ['2026-08-06', 'dd-0041'],
+      ['2026-08-07', 'dd-0039'],
+      ['2026-08-08', 'dd-0042'],
+    ]
+    const slate = docketQueue.filter(
+      ({ publish_date }) =>
+        publish_date >= '2026-08-02' && publish_date <= '2026-08-08',
+    )
+
+    expect(slate.map(({ publish_date, id }) => [publish_date, id])).toEqual(expected)
+    expect(slate.every(({ gen_meta }) => gen_meta.prompt_version === 'dd-2026-v4')).toBe(true)
+    expect(docketLibrarySittings().slice(-7).map(({ trial }) => trial.id)).toEqual(
+      expected.map(([, id]) => id),
+    )
+    expect(introCase?.id).toBe(INTRO_CASE_ID)
+    expect(docketQueue.find(({ id }) => id === 'dd-0006')?.publish_date).toBe('2026-07-28')
+    expect(docketQueue.find(({ id }) => id === 'dd-0017')?.publish_date).toBe('2026-08-01')
+  })
+
   it('serves each launch case on its canonical publish date', () => {
     for (const trial of docketQueue) {
       expect(
