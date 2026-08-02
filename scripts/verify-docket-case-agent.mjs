@@ -86,5 +86,7 @@ for (const contract of [
 assert.ok(workflow.indexOf('gh pr create --draft') < workflow.indexOf('docket-case-agent.mjs generate'), 'draft PR must be reserved before generation')
 assert.equal(workflow.includes('--watch'), false, 'controller must never busy-poll')
 assert.equal(/gh pr merge/.test(workflow), false, 'controller must not bypass arm-and-park')
+const narration = readFileSync(new URL('../site/scripts/build-kokoro-jobs.mjs', import.meta.url), 'utf8')
+assert.ok(narration.includes("join(docketDir, entry.name, 'trial.json')"), 'Kokoro must discover V4 trial bundles')
 
 console.log('docket-case-agent: all contract and containment assertions passed')
