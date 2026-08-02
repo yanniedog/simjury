@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "dd-0041",
+  "case_revision": "dd-0041@73e68a9e",
+  "jurisdiction": "State of Orinth",
+  "statute": {
+    "name": "Orinth Criminal Code 2026",
+    "section": "s 19",
+    "elements": [
+      "The accused caused the on-duty officer’s death.",
+      "The accused intended to kill or cause really serious injury.",
+      "The killing was not legally justified or excused."
+    ]
+  },
+  "agreed_facts": ["Officer Lio Dann was on duty and died from a severe head injury caused through the barrier arm.","Rovan drove the van into the barrier before the barrier struck Officer Dann.","The barrier had failed a rebound-speed check six days earlier."],
+  "disputed_facts": ["Whether Rovan intended to kill or cause really serious injury.","Whether panic or a trapped boot reasonably explains the acceleration.","Whether Rovan's driving remained a substantial and operating cause despite the barrier fault."],
+  "best_case": {"prosecution":"Rovan deliberately forced passage after repeated stop cues, and his sustained acceleration caused the two-impact sequence that killed Officer Dann.","defence":"Rain, glare, panic, a late avoidance turn, and a defective barrier create reasonable doubt about murderous intention and legal causation."},
+  "foundations": [{"beat_id":"b3","provenance":"Mera personally heard Rovan and watched the van approach.","authentication":"She identified her position, the warning cues, and the words she heard.","custody_and_integrity":"Her account is direct testimony rather than a stored exhibit.","admissibility":"First-hand observations and Rovan's own words are admitted.","limitations":"Rain, distance, alarm noise, and ambiguous phrasing affect weight."},{"beat_id":"b7","provenance":"Doctor Var examined the van data and physical marks.","authentication":"The witness explained the recorded pedal, brake, steering, and damage measurements.","custody_and_integrity":"The recorder and vehicle were secured after the collision and the extraction was documented.","admissibility":"The qualified mechanical opinion and recorded commands are admitted.","limitations":"The data records commanded position, not why Rovan made the movement."},{"beat_id":"b9","provenance":"Doctor Var reviewed the maintenance entry and modelled the barrier response.","authentication":"The maintenance record identified the failed unit and recorded its return speed.","custody_and_integrity":"The entry predated the collision and the barrier remained available for inspection.","admissibility":"The defect evidence is admitted on causation, foreseeability, and intention.","limitations":"The defect contributed materially but does not itself answer whether the van impact remained an operating cause."},{"beat_id":"b4-hearsay","provenance":"Mera repeated a clinic dispatcher's alleged words.","authentication":"The dispatcher did not testify and the statement was not authenticated.","custody_and_integrity":"No original message or record was tendered.","admissibility":"The court excluded the entire exchange as hearsay.","admissibility_effect":{"effect":"exclude_beat"},"limitations":"The jury must give the exchange no weight for intention, character, or prior conduct."}],
+  "alternative_innocent_inference": "Rovan misread the officer's gesture through rain and glare, accelerated before the barrier unexpectedly descended, then panicked as a wet boot caught while he turned away; the defective rebound transformed a non-murderous driving error into a fatal event.",
+  "required_directions": ["The prosecution must prove beyond reasonable doubt that Rovan voluntarily caused death and intended to kill or cause really serious injury.","A concurrent mechanical fault breaks legal causation only if Rovan's act was no longer a substantial and operating cause.","Anger, impatience, speeding, or negligence alone is not murderous intention.","The excluded dispatcher exchange must not be used for intention, character, or propensity.","Rovan need not prove a trapped boot, panic, or public-authority fault."],
+  "epilogue_strategy": "outcome_neutral",
+  "checks": {"victim_humanity":"Officer Dann is presented through duty, family, colleagues, and practical safety consequences rather than graphic injury.","accused_prejudice":"The jury is directed away from occupation, impatience, excluded hearsay, and punishment consequences."},
+  "approvals": {"legal":{"status":"approved","reviewer":"Codex GPT-5 editorial review","approved_at":"2026-08-02T11:15:00.000Z","content_hash":"dd-0041@73e68a9e@legal-34b85845"},"read_aloud":{"status":"approved","reviewer":"Codex GPT-5 editorial review","approved_at":"2026-08-02T11:15:00.000Z","content_hash":"dd-0041@73e68a9e@legal-34b85845"},"blind_test":{"status":"approved","reviewer":"Codex GPT-5 editorial review","approved_at":"2026-08-02T11:15:00.000Z","content_hash":"dd-0041@73e68a9e@legal-34b85845"}}
+}
