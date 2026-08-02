@@ -5,13 +5,13 @@ import { createRoot } from 'react-dom/client'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { makeDocketCase } from '../../lib/v2/fixtures'
 
-const narration = vi.hoisted(() => ({
+const narrationMocks = vi.hoisted(() => ({
   speak: vi.fn(),
   speakAll: vi.fn(),
   stopSpeech: vi.fn(),
 }))
 
-vi.mock('../../lib/narration', () => narration)
+vi.mock('../../lib/narration', () => narrationMocks)
 
 import { DocketBeatView } from './DocketBeatView'
 
@@ -39,7 +39,7 @@ describe('DocketBeatView narration highlighting', () => {
       <DocketBeatView
         trial={trial}
         beatIndex={beatIndex}
-        narration
+        narration={true}
         playbackRate={1}
         notes={[]}
         onNoteChange={() => undefined}
@@ -50,7 +50,7 @@ describe('DocketBeatView narration highlighting', () => {
     act(() => root.render(renderBeat(0)))
     act(() => root.render(renderBeat(1)))
 
-    expect(narration.speak).toHaveBeenLastCalledWith(
+    expect(narrationMocks.speak).toHaveBeenLastCalledWith(
       'Second answer.',
       'w1',
       expect.any(Function),
