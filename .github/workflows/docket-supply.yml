@@ -1,11 +1,11 @@
 name: docket-supply
 
-# Keeps a fortnight of cases queued.
+# Keeps a rolling seven days of cases queued.
 #
-# Runs every morning, works out which of the next fourteen days open no case,
+# Runs every morning, works out which of the next seven days open no case,
 # and raises a commission for exactly those dates. It never writes a case to
-# `main`: DAILY-PIVOT.md requires human spot-checks on generated content, so the
-# most this may do unattended is prepare work and ask for it to be reviewed.
+# `main`: the commission is machine-readable work for the drafting agent and
+# every generated change still lands through the repository's PR gates.
 
 on:
   schedule:
@@ -65,7 +65,7 @@ jobs:
           DATES: ${{ steps.plan.outputs.dates }}
         run: |
           set -euo pipefail
-          TITLE="Docket supply: $NEEDED day(s) in the next fortnight open no case"
+          TITLE="Docket supply: $NEEDED day(s) in the rolling week open no case"
           BODY=$(cat <<'INTRO'
 The Daily Docket is short. Each date below opens no case, so a returning player
 is re-served a trial they have already finished.
@@ -81,12 +81,13 @@ version is that every commissioned case passes `npm run validate:cases`,
 carries `cover.webp` and its character portraits, and gets narration from the
 existing Kokoro pipeline with distinct, gender-appropriate voices.
 
-Generated cases are opened as a pull request for human spot-check. They are
-never written to `main` unattended — DAILY-PIVOT.md is explicit that the gates
-are the primary defence but not the only one.
+The drafting agent owns each case end to end: story, independent editorial
+passes, legal clarity, sensitivity, media, narration, verification and review
+feedback. Generated cases are opened as pull requests and never written
+directly to `main`; `validate` and `bot-feedback-gate` remain mandatory.
 
 _Raised automatically by `docket-supply`. It updates this issue rather than
-opening another, and closes it once the fortnight is covered._
+opening another, and closes it once the rolling week is covered._
 HOW
           )"
 
@@ -101,12 +102,12 @@ HOW
             gh issue create --title "$TITLE" --body "$BODY" --label docket-supply
           fi
 
-      - name: Close the commission once the fortnight is covered
+      - name: Close the commission once the rolling week is covered
         if: steps.plan.outputs.needed == '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           for number in $(gh issue list --label docket-supply --state open --json number --jq '.[].number'); do
-            gh issue close "$number" --comment "The next fortnight is fully covered. Closing automatically."
+            gh issue close "$number" --comment "The rolling seven-day window is fully covered. Closing automatically."
           done
