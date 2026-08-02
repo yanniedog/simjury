@@ -10,7 +10,9 @@ The repository's only product surface is **The Daily Docket** on
 2. Read [`docs/DAILY-CASES.md`](docs/DAILY-CASES.md) for case-authoring rules,
    and [`docs/DOCKET-SUPPLY.md`](docs/DOCKET-SUPPLY.md) for how the docket stays
    a rolling week ahead and what "complete" means for a case.
-3. Use [`ROADMAP.md`](ROADMAP.md), [`WORKFLOW.md`](WORKFLOW.md), and
+3. Read [`docs/DESIGN-PROTOCOL.md`](docs/DESIGN-PROTOCOL.md) before changing the
+   interface. It is the binding rule set from the design and UX audit.
+4. Use [`ROADMAP.md`](ROADMAP.md), [`WORKFLOW.md`](WORKFLOW.md), and
    [`site/DECISIONS.md`](site/DECISIONS.md) as needed.
 
 On 2026-07-29 the owner removed the former Android/JVM app and real historical-case
@@ -30,6 +32,11 @@ to the current web product.
   19–21 minute window. The playable V3 slate keeps its existing pacing gates
   only until each case is expanded under the transitional 20-minute gate or
   fully migrated; do not weaken either contract.
+- **The interface follows the design protocol** —
+  [`docs/DESIGN-PROTOCOL.md`](docs/DESIGN-PROTOCOL.md) binds `site/app/` and the
+  landing page: nothing above the phase heading but the top bar, colour never
+  carries meaning alone, one string has one home, surfaces are opaque, and juror
+  leanings stay sealed until the judge reads the result.
 - **Preserve provenance** — `archive/daily-v1/` is retained verbatim and is not a
   shipped case source.
 - **PRs target the default branch, and run in parallel** — never stack a PR onto a
