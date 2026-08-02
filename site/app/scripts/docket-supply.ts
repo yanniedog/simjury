@@ -8,7 +8,7 @@
  */
 import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { formatPlan, planSupply } from '../src/lib/v2/docketSupply'
 import { discoverDocketFiles } from './docket-files'
 
@@ -32,5 +32,10 @@ export function publishedDates(docketDir: string = DOCKET_DIR): string[] {
     .filter((date): date is string => date !== null)
 }
 
-const plan = planSupply(publishedDates())
-console.log(process.argv.includes('--json') ? JSON.stringify(plan, null, 2) : formatPlan(plan))
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+  const plan = planSupply(publishedDates())
+  console.log(process.argv.includes('--json') ? JSON.stringify(plan, null, 2) : formatPlan(plan))
+}
