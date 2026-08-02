@@ -6,7 +6,7 @@ export function courtroomLines(beat) {
   const appendAt = (afterTurn) => {
     for (const interjection of interjections) {
       if (interjection.after_turn === afterTurn) {
-        lines.push({ speaker: interjection.speaker, text: interjection.text })
+        lines.push({ ...interjection })
       }
     }
   }

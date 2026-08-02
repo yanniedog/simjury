@@ -5,20 +5,25 @@ const FLAT_DOCKET_RE = /^(dd-\d{4}|dd-intro)\.json$/
 const CASE_ID_RE = /^(dd-\d{4}|dd-intro)$/
 
 export function listDocketTrialIds(docketDir) {
-  const ids = readdirSync(docketDir, { withFileTypes: true }).flatMap((entry) => {
+  const ids = new Set()
+  for (const entry of readdirSync(docketDir, { withFileTypes: true })) {
+    let caseId = null
     if (entry.isFile() && FLAT_DOCKET_RE.test(entry.name)) {
-      return [entry.name.replace(/\.json$/, '')]
-    }
-    if (
+      caseId = entry.name.replace(/\.json$/, '')
+    } else if (
       entry.isDirectory() &&
       CASE_ID_RE.test(entry.name) &&
       existsSync(join(docketDir, entry.name, 'trial.json'))
     ) {
-      return [entry.name]
+      caseId = entry.name
     }
-    return []
-  })
-  return [...new Set(ids)].sort((a, b) => {
+    if (!caseId) continue
+    if (ids.has(caseId)) {
+      throw new Error(`Docket ${caseId} exists in both flat and bundled form`)
+    }
+    ids.add(caseId)
+  }
+  return [...ids].sort((a, b) => {
     if (a === 'dd-intro') return 1
     if (b === 'dd-intro') return -1
     return a.localeCompare(b)
