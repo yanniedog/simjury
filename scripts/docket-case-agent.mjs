@@ -86,9 +86,8 @@ export function assertSafeResponse(response, expected, config) {
       inspectJson(data.toString('utf8'), normalized)
     }
     if (MEDIA_PATH.test(normalized)) {
-      if (encoding !== 'base64' || data.length < 12 || data.toString('ascii', 0, 4) !== 'RIFF' || data.toString('ascii', 8, 12) !== 'WEBP') {
-        throw new Error(`media is not a base64 WebP file: ${normalized}`)
-      }
+      if (encoding !== 'base64') throw new Error(`media is not a base64 WebP file: ${normalized}`)
+      assertWebpStructure(data, normalized)
       const caseId = normalized.split('/')[4]
       imagesByCase.set(caseId, (imagesByCase.get(caseId) ?? 0) + 1)
     }
@@ -98,6 +97,33 @@ export function assertSafeResponse(response, expected, config) {
     if (count > config.maxImagesPerCase) throw new Error(`${caseId} has ${count} images; cap is ${config.maxImagesPerCase}`)
   }
   return { bytes, paths: [...paths] }
+}
+
+export function assertWebpStructure(data, path = 'generated image') {
+  if (data.length < 26 || data.toString('ascii', 0, 4) !== 'RIFF' || data.toString('ascii', 8, 12) !== 'WEBP') {
+    throw new Error(`media is not a structured WebP file: ${path}`)
+  }
+  if (data.readUInt32LE(4) + 8 !== data.length) throw new Error(`WebP RIFF length is invalid: ${path}`)
+  let offset = 12
+  let imageChunk = false
+  while (offset + 8 <= data.length) {
+    const type = data.toString('ascii', offset, offset + 4)
+    const size = data.readUInt32LE(offset + 4)
+    const end = offset + 8 + size
+    if (end > data.length) throw new Error(`WebP chunk is truncated: ${path}`)
+    if (type === 'VP8L') {
+      if (size < 5 || data[offset + 8] !== 0x2f) throw new Error(`WebP VP8L chunk is invalid: ${path}`)
+      imageChunk = true
+    } else if (type === 'VP8 ') {
+      if (size < 10 || data.toString('hex', offset + 11, offset + 14) !== '9d012a') throw new Error(`WebP VP8 chunk is invalid: ${path}`)
+      imageChunk = true
+    } else if (type === 'ANMF') {
+      if (size < 16) throw new Error(`WebP animation frame is invalid: ${path}`)
+      imageChunk = true
+    }
+    offset = end + (size % 2)
+  }
+  if (offset !== data.length || !imageChunk) throw new Error(`WebP has no complete image chunk: ${path}`)
 }
 
 function assertEditorialApproval(response, phase) {
@@ -202,7 +228,7 @@ async function callAgent(config, request) {
       const response = await fetch(config.endpoint, {
         method: 'POST', signal: controller.signal,
         headers: { authorization: `Bearer ${config.token}`, 'content-type': 'application/json' },
-        body: JSON.stringify({ ...request, attempt, idempotency_key: `${process.env.GITHUB_REPOSITORY}:${request.draft_pr}:${request.phase}` }),
+        body: JSON.stringify({ ...request, attempt, idempotency_key: requestIdempotencyKey(request) }),
       })
       if (!response.ok) {
         if (attempt < config.maxAttempts && response.status >= 500) continue
@@ -214,6 +240,11 @@ async function callAgent(config, request) {
     } finally { clearTimeout(timer) }
   }
   throw new Error('case agent exhausted bounded attempts')
+}
+
+export function requestIdempotencyKey(request, repository = process.env.GITHUB_REPOSITORY) {
+  const revision = request.phase === 'repair' ? `:${request.repair_attempt}` : ''
+  return `${repository}:${request.draft_pr}:${request.phase}${revision}`
 }
 
 export async function boundedJson(response, limit) {
@@ -264,6 +295,7 @@ async function run() {
     if (!Number.isFinite(alreadySpent) || alreadySpent < 0 || alreadySpent >= totalBudget) throw new Error('case budget is exhausted')
     const response = await callAgent(config, {
       schema: 'simjury.case-agent/v1', phase: 'repair', dates, draft_pr: draftPr, model, feedback,
+      repair_attempt: attempt,
       provider: config.provider, image_model: config.imageModel, image_license: config.imageLicense,
       limits: { attempt, tokens: config.maxTokens, images_per_case: config.maxImagesPerCase, output_bytes: config.maxOutputBytes, remaining_cost_usd: totalBudget - alreadySpent },
       authorities: ['CLAUDE.md', 'DAILY-PIVOT.md', 'docs/COMMISSION-BRIEF.md', 'docs/DAILY-CASES.md'],
