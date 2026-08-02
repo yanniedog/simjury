@@ -85,7 +85,7 @@ const workflow = readFileSync(new URL('../.github/workflows/docket-supply.yml', 
 for (const contract of [
   'schedule:', 'workflow_dispatch:', 'pull_request_review:', 'pull_request_review_comment:',
   'CASE_GENERATION_ENABLED', 'actions/create-github-app-token@v3', 'gh pr create --draft',
-  'docket-case-agent.mjs generate', 'docket-case-agent.mjs repair', 'generate-kokoro-clips.py',
+  'docket-case-agent.mjs generate', 'docket-case-agent.mjs repair', 'synthesize-kokoro-clips.sh',
   'npm run lint && npm run typecheck && npm test && npm run validate:cases && npm run build',
   'blocked_configuration', 'blocked_automation',
 ]) assert.ok(workflow.includes(contract), `workflow contract missing: ${contract}`)
@@ -93,8 +93,12 @@ assert.ok(workflow.includes("if $missing==\"\" then []"), 'configured issue stat
 assert.ok(workflow.includes('app-id: ${{ vars.CASE_BOT_APP_ID }}'), 'GitHub App token action must receive its required app-id')
 assert.ok(workflow.includes('INVALID_CASE_CONFIGURATION'), 'malformed configuration must produce a durable blocked record')
 assert.ok(workflow.includes('git status --porcelain=v1 --untracked-files=all'), 'V4 bundle containment must inspect individual untracked files')
+assert.ok(workflow.includes('pageInfo{hasNextPage endCursor}'), 'review thread collection must paginate')
+assert.ok(workflow.includes('[ "$status" = Deferred ] || gh api graphql'), 'deferred repair work must remain unresolved and blocking')
+assert.ok(workflow.includes('Synthesize repaired Kokoro narration'), 'repairs to spoken content must regenerate narration')
+assert.ok(workflow.indexOf('Synthesize Kokoro narration') < workflow.indexOf('id: publish-token'), 'a fresh App token must be minted after long-running synthesis')
 assert.ok(workflow.indexOf('gh pr create --draft') < workflow.indexOf('docket-case-agent.mjs generate'), 'draft PR must be reserved before generation')
-assert.ok(workflow.indexOf('Run the complete deterministic merge bar') < workflow.indexOf('Generate and publish Kokoro narration'), 'deterministic validation must precede narration publication')
+assert.ok(workflow.indexOf('Run the complete deterministic merge bar') < workflow.indexOf('Publish validated Kokoro narration'), 'deterministic validation must precede narration publication')
 assert.equal(workflow.includes('--watch'), false, 'controller must never busy-poll')
 assert.equal(/gh pr merge/.test(workflow), false, 'controller must not bypass arm-and-park')
 assert.ok(workflow.includes("github.event.pull_request.head.repo.full_name == github.repository"), 'review events must fail closed for fork PRs')
