@@ -18,6 +18,9 @@ const DOCKET_DIR = join(APP_ROOT, 'docket')
 /** Publish dates of every commissioned case, excluding the guided intro. */
 export function publishedDates(docketDir: string = DOCKET_DIR): string[] {
   const files = discoverDocketFiles(docketDir)
+  if (files.errors.length) {
+    throw new Error(`docket discovery failed:\n${files.errors.join('\n')}`)
+  }
   return [...files.flatCases, ...files.bundles.map((bundle) => bundle.trial)]
     .filter((path) => !path.endsWith('dd-intro.json'))
     .map((path) => {

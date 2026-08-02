@@ -104,13 +104,19 @@ export function assertWebpStructure(data, path = 'generated image') {
     throw new Error(`media is not a structured WebP file: ${path}`)
   }
   if (data.readUInt32LE(4) + 8 !== data.length) throw new Error(`WebP RIFF length is invalid: ${path}`)
-  let offset = 12
+  if (!inspectWebpChunks(data, 12, data.length, path, true)) {
+    throw new Error(`WebP has no complete image chunk: ${path}`)
+  }
+}
+
+function inspectWebpChunks(data, start, limit, path, allowAnimation) {
+  let offset = start
   let imageChunk = false
-  while (offset + 8 <= data.length) {
+  while (offset + 8 <= limit) {
     const type = data.toString('ascii', offset, offset + 4)
     const size = data.readUInt32LE(offset + 4)
     const end = offset + 8 + size
-    if (end > data.length) throw new Error(`WebP chunk is truncated: ${path}`)
+    if (end > limit) throw new Error(`WebP chunk is truncated: ${path}`)
     if (type === 'VP8L') {
       if (size < 5 || data[offset + 8] !== 0x2f) throw new Error(`WebP VP8L chunk is invalid: ${path}`)
       imageChunk = true
@@ -118,12 +124,15 @@ export function assertWebpStructure(data, path = 'generated image') {
       if (size < 10 || data.toString('hex', offset + 11, offset + 14) !== '9d012a') throw new Error(`WebP VP8 chunk is invalid: ${path}`)
       imageChunk = true
     } else if (type === 'ANMF') {
-      if (size < 16) throw new Error(`WebP animation frame is invalid: ${path}`)
+      if (!allowAnimation || size < 24 || !inspectWebpChunks(data, offset + 24, end, path, false)) {
+        throw new Error(`WebP animation frame has no complete image data: ${path}`)
+      }
       imageChunk = true
     }
     offset = end + (size % 2)
   }
-  if (offset !== data.length || !imageChunk) throw new Error(`WebP has no complete image chunk: ${path}`)
+  if (offset !== limit) throw new Error(`WebP chunk layout is invalid: ${path}`)
+  return imageChunk
 }
 
 function assertEditorialApproval(response, phase) {
