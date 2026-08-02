@@ -16,9 +16,9 @@ enforce the hard rules; this file holds the taste. Companion: the drafting promp
 3. **The V4 target is 20 minutes.** Every new V4 case must pass the computed
    19–21 minute window. The commissioned V3 slate retains its existing pacing
    floors only until a content-first `dd-2026-v3-20min` repair or full migration.
-4. **Exactly seven active cases.** The guided intro plus six dated sittings form one
-   deliberately small, fully authored slate. Old daily, archived, and prototype cases
-   are not part of the product.
+4. **A rolling seven-date runway.** Today and the next six UTC dates each open a
+   distinct fully authored sitting. The guided intro is separate, published dates
+   remain canonical, and older sittings stay in the case library.
 5. **The charge carries the highest stakes.** Every active case uses one canonical
    grave-offence profile from `offenceProfiles.ts`. Do not combine counts merely to
    make a premise sound larger.
@@ -182,16 +182,17 @@ be inserted merely for shock value.
 
 ## Queue and review rules
 
-- The v3 corpus gate requires exactly seven active cases, including exactly one
-  `dd-intro`, and one case from every selected offence profile.
+- The active corpus gate permits the library to grow, requires exactly one
+  `dd-intro`, and keeps every selected offence profile represented across mixed
+  supported case revisions.
 - Verdicts remain mixed; never more than three identical truths in date order.
 - Every case receives full line-by-line story, language, legal-clarity, sensitivity,
   portrait, dynamics, and narration review. Sample-only review is not sufficient.
 - `gen_meta` records the model, prompt version, PR, content reviewer, language reviewer,
   and sensitivity reviewer.
-- Keep the final dated case at least 14 days ahead of the UTC date. Publication dates
-  select the featured daily; all seven commissioned cases remain immediately playable
-  once bundled through the case library.
+- Keep every UTC date from today through today + 6 covered. Publication dates
+  select the featured daily; commissioned cases remain playable through the case
+  library after their featured date.
 
 ## Character art
 

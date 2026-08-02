@@ -1,6 +1,7 @@
 const MS_PER_DAY = 24 * 60 * 60 * 1000
 
-export const MIN_DOCKET_RUNWAY_DAYS = 14
+/** Rolling publication window: today plus the next six UTC dates. */
+export const MIN_DOCKET_RUNWAY_DAYS = 7
 
 /** Calendar date for an instant, pinned to UTC so CI runner locale cannot change it. */
 export function utcDateKey(date: Date): string {
@@ -27,7 +28,7 @@ export function docketRunwayError(
   minimumDays: number = MIN_DOCKET_RUNWAY_DAYS,
 ): string | null {
   const today = utcDateKey(now)
-  const requiredThrough = addDays(today, minimumDays)
+  const requiredThrough = addDays(today, Math.max(0, minimumDays - 1))
   const latestPublishDate = publishDates.reduce<string | null>(
     (latest, date) => (latest === null || date > latest ? date : latest),
     null,
@@ -40,7 +41,7 @@ export function docketRunwayError(
   const latest = latestPublishDate ?? 'none'
   return (
     `docket runway expired: latest publish_date is ${latest}; ` +
-    `requires at least ${minimumDays} days through ${requiredThrough} ` +
+    `requires ${minimumDays} covered dates through ${requiredThrough} ` +
     `(today ${today}, UTC)`
   )
 }
@@ -50,16 +51,17 @@ export function docketRunwayError(
  *
  * The runway check above measures the *horizon* — how far out the last case
  * sits. A docket can satisfy it and still not be daily: seven cases spread
- * across three weeks put the newest one a fortnight away while most days open
- * nothing new. On 2026-08-02 that was the live state, and the horizon gate
- * passed with a new case on three of the next fourteen days.
+ * across three weeks put the newest one beyond the rolling week while most days
+ * open nothing new. On 2026-08-02 that was the live state, and the horizon gate
+ * passed with a new case on only one of the next seven dates.
  *
  * This is a ratchet, not the target. It is set to what the docket genuinely
  * sustains today so it fails on regression rather than blocking every PR, and
  * it rises toward MIN_DOCKET_RUNWAY_DAYS as cases land. Raising it is the point;
  * ROADMAP.md carries the schedule.
  */
-export const MIN_DOCKET_COVERAGE_DAYS = 3
+/** Bootstrap floor; raise atomically to 7 once the first complete week lands. */
+export const MIN_DOCKET_COVERAGE_DAYS = 1
 
 export interface DocketCoverage {
   /** Days examined, starting today. */

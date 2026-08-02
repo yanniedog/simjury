@@ -22,7 +22,7 @@ daily docket and is not a shipped product surface.
 
 ## Current priorities
 
-1. Maintain at least a fourteen-day fictional case runway behind schema, design,
+1. Maintain a rolling seven-date fictional case runway behind schema, design,
    banned-token, jury-floor, and deliberation-dynamics gates.
 2. Keep the complete first-time and returning-player journeys listenable,
    accessible, and low-friction.
