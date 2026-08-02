@@ -30,6 +30,7 @@ import { claimApplies, movesForBeatKind } from '../../lib/moveCopy'
 import type { Verdict } from './DocketVerdict'
 import { DeliberationComposer } from './DeliberationComposer'
 import { JuryBench } from './JuryBench'
+import { jurorSeats } from '../../lib/v2/jurorSeats'
 import { JuryDossierPanel } from './JurorDossier'
 import { RoomRead } from './RoomRead'
 import { FeedLine } from './RoomTranscript'
@@ -137,6 +138,7 @@ export function JuryRoomView({
   narrationRef.current = narration
 
   const revealVotes = outcome !== null
+  const seats = jurorSeats(trial)
   const logLength = state.log.length
   const inOpenRound = state.phase.startsWith('open')
   const awaitingPlayerVote = state.phase === 'final_vote' && !outcome
@@ -639,11 +641,12 @@ export function JuryRoomView({
       )}
 
       <JuryBench
-        state={state}
+        seats={seats}
         playerVerdict={playerVerdict}
         activeJurorId={activeJurorId}
         stirredIds={revealVotes ? [] : stirredIds}
         revealPositions={revealVotes}
+        positionOf={(jurorId) => state.jurors.find((j) => j.id === jurorId)?.position ?? 0}
         // Sealing the verdict removes the dossier panel, so the seats must stop
         // being buttons too. Left wired up they stayed in the tab order and were
         // announced as opening a dossier that no longer renders — a control that
