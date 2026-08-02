@@ -44,6 +44,10 @@ export function classifyGateFailure(gate) {
     return 'actionable';
   }
 
+  // A review that is already being written is worth waiting for, never a task
+  // for the agent — parking lets it land.
+  if (id === 'reviews-in-flight') return 'waiting';
+
   if (id === 'github-bot-gates') {
     if (/not reported yet|pending|in_progress|queued/i.test(detail)) return 'waiting';
     // Presence often fails while bots have not posted — treat as wait unless feedback failed.
