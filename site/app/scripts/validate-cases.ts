@@ -17,7 +17,7 @@ import { docketCaseSchema, type DocketCase } from '../src/lib/v2/caseSchema'
 import {
   checkDocketCase,
   checkDocketQueue,
-  checkV3Corpus,
+  checkActiveCorpus,
 } from '../src/lib/v2/caseQuality'
 import {
   docketCoverage,
@@ -170,7 +170,7 @@ function main(): void {
           ...(coverageError
             ? [{ caseId: 'docket', message: coverageError, kind: 'design' as const }]
             : []),
-          ...checkV3Corpus(cases),
+          ...checkActiveCorpus(cases),
           ...checkV3MediaFiles(cases),
           ...checkDocketQueue(dailyCases),
           ...introCases.flatMap((c) =>

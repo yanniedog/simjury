@@ -786,31 +786,21 @@ export function checkDocketQueue(cases: DocketCase[]): QualityIssue[] {
 }
 
 /**
- * Final v3 corpus contract. Transitional mixed queues are allowed while the
- * seven atomic replacements land; once every active file is v3, the docket is
- * exactly the owner-selected seven cases (guided intro plus six dated cases)
- * with one case from every grave-offence profile.
+ * Active corpus contract across every supported case revision.
+ *
+ * Queue length follows the rolling publication window, not the number of
+ * offence profiles. Mixed V3/V4 queues must retain exactly one guided intro and
+ * exercise every selected profile; adding a new revision must never disable
+ * corpus safety checks.
  */
-export function checkV3Corpus(cases: DocketCase[]): QualityIssue[] {
-  if (
-    cases.length === 0 ||
-    cases.some((c) => !c.gen_meta.prompt_version.startsWith('dd-2026-v3'))
-  ) {
-    return []
-  }
+export function checkActiveCorpus(cases: DocketCase[]): QualityIssue[] {
+  if (cases.length === 0) return []
 
   const issues: QualityIssue[] = []
-  if (cases.length !== OFFENCE_CODES.length) {
-    issues.push({
-      caseId: 'queue',
-      message: `v3 docket must contain exactly ${OFFENCE_CODES.length} cases including dd-intro (has ${cases.length})`,
-      kind: 'variety',
-    })
-  }
   if (cases.filter((c) => c.id === 'dd-intro').length !== 1) {
     issues.push({
       caseId: 'queue',
-      message: 'v3 docket must contain exactly one dd-intro case',
+      message: 'active docket must contain exactly one dd-intro case',
       kind: 'variety',
     })
   }
@@ -819,7 +809,7 @@ export function checkV3Corpus(cases: DocketCase[]): QualityIssue[] {
     if (!present.has(code)) {
       issues.push({
         caseId: 'queue',
-        message: `v3 docket is missing offence profile '${code}'`,
+        message: `active docket is missing offence profile '${code}'`,
         kind: 'variety',
       })
     }

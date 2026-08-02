@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { checkDocketCase, checkDocketQueue, checkV3Corpus } from './caseQuality'
+import { checkActiveCorpus, checkDocketCase, checkDocketQueue } from './caseQuality'
 import { makeDocketCase, makeJuror, makeV3DocketCase, prose } from './fixtures'
 import { OFFENCE_CODES, OFFENCE_PROFILES } from './offenceProfiles'
 
@@ -446,7 +446,7 @@ describe('checkDocketCase', () => {
   })
 })
 
-describe('checkV3Corpus', () => {
+describe('checkActiveCorpus', () => {
   const corpus = () =>
     OFFENCE_CODES.map((offence_code, index) => {
       const profile = OFFENCE_PROFILES[offence_code]
@@ -461,31 +461,41 @@ describe('checkV3Corpus', () => {
       })
     })
 
-  it('accepts exactly one v3 case from every selected offence profile', () => {
-    expect(checkV3Corpus(corpus())).toEqual([])
+  it('accepts one case from every selected offence profile', () => {
+    expect(checkActiveCorpus(corpus())).toEqual([])
   })
 
-  it('rejects a completed v3 corpus that drops a selected case', () => {
-    const issues = checkV3Corpus(corpus().slice(0, -1)).map(
+  it('accepts a queue longer than the profile list', () => {
+    const cases = corpus()
+    cases.push({
+      ...cases[1],
+      id: 'dd-0100',
+      publish_date: '2026-09-01',
+      title: 'Another grave case',
+    })
+    expect(checkActiveCorpus(cases)).toEqual([])
+  })
+
+  it('rejects an active corpus that drops a selected profile', () => {
+    const issues = checkActiveCorpus(corpus().slice(0, -1)).map(
       (issue) => issue.message,
     )
-    expect(issues.join()).toMatch(/exactly 7 cases/)
     expect(issues.join()).toMatch(/missing offence profile/)
   })
 
-  it('keeps the corpus gate active for the twenty-minute v3 revision', () => {
-    const twentyMinute = corpus()
-      .slice(0, -1)
-      .map((trial) => ({
-        ...trial,
-        gen_meta: {
-          ...trial.gen_meta,
-          prompt_version: 'dd-2026-v3-20min',
-        },
-      }))
-    const issues = checkV3Corpus(twentyMinute).map((issue) => issue.message)
-    expect(issues.join()).toMatch(/exactly 7 cases/)
+  it('keeps the corpus gate active across mixed revisions', () => {
+    const mixed = corpus().slice(0, -1)
+    Object.assign(mixed[1].gen_meta, { prompt_version: 'dd-2026-v4' })
+    const issues = checkActiveCorpus(mixed).map((issue) => issue.message)
     expect(issues.join()).toMatch(/missing offence profile/)
+  })
+
+  it('requires exactly one guided intro independently of queue length', () => {
+    const withoutIntro = corpus().map((trial, index) =>
+      index === 0 ? { ...trial, id: 'dd-0999' } : trial,
+    )
+    expect(checkActiveCorpus(withoutIntro).map((issue) => issue.message).join())
+      .toMatch(/exactly one dd-intro/)
   })
 })
 
