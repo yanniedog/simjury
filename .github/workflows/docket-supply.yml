@@ -70,7 +70,7 @@ jobs:
           node scripts/docket-case-agent.mjs config > config.json
           result=$?
           set -e
-          missing=$(node -e "const c=require('./config.json'); const m=[...c.missing]; if(!process.env.BOT_CLIENT_ID)m.push('CASE_BOT_CLIENT_ID'); if(!process.env.BOT_PRIVATE_KEY)m.push('CASE_BOT_PRIVATE_KEY'); process.stdout.write(m.join(','))")
+          missing=$(node -e "const c=require('./config.json'); const m=[...c.missing]; if(!c.enabled)m.push('CASE_GENERATION_ENABLED'); if(!process.env.BOT_CLIENT_ID)m.push('CASE_BOT_CLIENT_ID'); if(!process.env.BOT_PRIVATE_KEY)m.push('CASE_BOT_PRIVATE_KEY'); process.stdout.write(m.join(','))")
           if [ "$result" -eq 0 ] && [ -z "$missing" ]; then ready=true; else ready=false; fi
           echo "ready=$ready" >> "$GITHUB_OUTPUT"
           echo "missing=$missing" >> "$GITHUB_OUTPUT"
@@ -95,7 +95,7 @@ jobs:
           status=commissioned
           [ "$READY" = true ] || status=blocked_configuration
           json=$(jq -cn --arg status "$status" --arg dates "$DATES" --arg missing "$MISSING" \
-            '{schema:"simjury.docket-supply/v1",status:$status,dates:($dates|split(",")),missing_configuration:($missing|select(length>0)|split(","))}')
+            '{schema:"simjury.docket-supply/v1",status:$status,dates:($dates|split(",")),missing_configuration:(if $missing=="" then [] else ($missing|split(",")) end)}')
           body=$(printf 'Automation owns complete cases for the named UTC dates.\n\n```json\n%s\n```\n\nNo partial case may merge; required CI and resolved bot feedback remain mandatory.' "$json")
           if [ -n "$existing" ]; then
             gh issue edit "$existing" --title "Docket supply: $NEEDED uncovered day(s)" --body "$body"

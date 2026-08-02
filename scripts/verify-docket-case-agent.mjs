@@ -83,6 +83,7 @@ for (const contract of [
   'npm run lint && npm run typecheck && npm test && npm run validate:cases && npm run build',
   'blocked_configuration', 'blocked_automation',
 ]) assert.ok(workflow.includes(contract), `workflow contract missing: ${contract}`)
+assert.ok(workflow.includes("if $missing==\"\" then []"), 'configured issue state must still emit valid JSON')
 assert.ok(workflow.indexOf('gh pr create --draft') < workflow.indexOf('docket-case-agent.mjs generate'), 'draft PR must be reserved before generation')
 assert.equal(workflow.includes('--watch'), false, 'controller must never busy-poll')
 assert.equal(/gh pr merge/.test(workflow), false, 'controller must not bypass arm-and-park')
