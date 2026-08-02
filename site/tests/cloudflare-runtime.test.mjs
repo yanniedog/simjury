@@ -21,6 +21,7 @@ import {
   roomExpiryCutoff,
   seatMaySend,
   socketCredentialsFromProtocols,
+  WAITLIST_LIMITS,
   WAITLIST_ROUTE,
 } from '../src/live-policy.js'
 import worker, { RoomDO } from '../src/worker.js'
@@ -69,6 +70,21 @@ test('D1 is bound to the waitlist alone', () => {
     config.d1_databases.map(({ binding, database_name: name }) => [binding, name]),
     [['WAITLIST', 'simjury-waitlist']],
   )
+})
+
+test('waitlist traffic is bounded before it can reach D1', () => {
+  assert.deepEqual(config.ratelimits, [
+    {
+      name: 'WAITLIST_SOURCE_LIMITER',
+      namespace_id: '52710431',
+      simple: { limit: WAITLIST_LIMITS.requestsPerSourcePerMinute, period: 60 },
+    },
+    {
+      name: 'WAITLIST_GLOBAL_LIMITER',
+      namespace_id: '52710432',
+      simple: { limit: WAITLIST_LIMITS.requestsPerLocationPerMinute, period: 60 },
+    },
+  ])
 })
 
 test('non-live requests retain the static asset fallback', async () => {

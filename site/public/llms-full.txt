@@ -55,7 +55,7 @@ The static privacy page explains:
 
 ## Architecture and cost boundary
 
-GitHub-authored site and solo-case assets deploy through Cloudflare Static Assets and bypass compute. Only `/api/live/*`, `/api/waitlist` and `/discord/interactions` invoke a bounded Worker. Live-jury coordination and short-lived room state use three SQLite Durable Objects; the optional email waitlist uses a single D1 database holding addresses, the consent wording and date, and a daily keyed fingerprint used only to limit signups per source. The service uses no KV, R2, Queues, runtime AI, analytics, or dynamic rendering. Case text and the deterministic deliberation engine remain bundled at build time. This guide is served identically to browsers and crawlers; there is no user-agent branching or bot-only content.
+GitHub-authored site and solo-case assets deploy through Cloudflare Static Assets and bypass compute. Only `/api/live/*`, `/api/waitlist` and `/discord/interactions` invoke a bounded Worker. Live-jury coordination and short-lived room state use three SQLite Durable Objects. Cloudflare's in-memory rate limiter rejects excess waitlist traffic before storage; a permitted signup uses one indexed D1 upsert without a count or table scan. The service uses no KV, R2, Queues, runtime AI, analytics, or dynamic rendering. Case text and the deterministic deliberation engine remain bundled at build time. This guide is served identically to browsers and crawlers; there is no user-agent branching or bot-only content.
 
 ## Spoiler and publication boundary
 
