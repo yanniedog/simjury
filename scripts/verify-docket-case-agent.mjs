@@ -3,7 +3,7 @@ import { mkdtempSync, mkdirSync, readFileSync, symlinkSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { assertDispositions, assertGenerationMetadata, assertSafeResponse, assertWebpStructure, boundedJson, readConfig, requestIdempotencyKey, writeSafeFiles } from './docket-case-agent.mjs'
-import { unreservedDates } from './docket-commission-plan.mjs'
+import { resumeCandidate, unreservedDates } from './docket-commission-plan.mjs'
 
 const env = {
   CASE_GENERATION_ENABLED: 'true', CASE_AGENT_ENDPOINT: 'https://agent.invalid/generate', CASE_AGENT_TOKEN: 'secret',
@@ -56,6 +56,10 @@ rejected({ files: Array.from({ length: 25 }, (_, index) => ({
 
 assert.doesNotThrow(() => assertWebpStructure(Buffer.from(response.files[1].content, 'base64')))
 assert.throws(() => assertWebpStructure(Buffer.from('RIFF0000WEBP')), /structured WebP/)
+const emptyAnimation = Buffer.alloc(36)
+emptyAnimation.write('RIFF'); emptyAnimation.writeUInt32LE(28, 4); emptyAnimation.write('WEBP', 8)
+emptyAnimation.write('ANMF', 12); emptyAnimation.writeUInt32LE(16, 16)
+assert.throws(() => assertWebpStructure(emptyAnimation), /no complete image data/)
 assert.equal(requestIdempotencyKey({ draft_pr: 321, phase: 'repair', repair_attempt: 1 }, 'repo'), 'repo:321:repair:1')
 assert.equal(requestIdempotencyKey({ draft_pr: 321, phase: 'repair', repair_attempt: 2 }, 'repo'), 'repo:321:repair:2')
 
@@ -111,6 +115,12 @@ assert.deepEqual(unreservedDates(
   ['2026-08-08', '2026-08-09', '2026-08-10'],
   [{ dates: ['2026-08-08'] }, { dates: ['2026-08-09', '2026-08-09'] }],
 ), ['2026-08-10'], 'new UTC dates must remain commissionable while older PRs wait')
+assert.deepEqual(resumeCandidate([
+  { phase: 'awaiting_review', pull_request: 20 },
+  { phase: 'reserved', pull_request: 19 },
+]), { phase: 'reserved', pull_request: 19 }, 'a stranded reservation must resume on a later supply run')
+const supply = readFileSync(new URL('../site/app/scripts/docket-supply.ts', import.meta.url), 'utf8')
+assert.ok(supply.includes('if (files.errors.length)'), 'supply measurement must fail on malformed or incomplete V4 bundles')
 const narration = readFileSync(new URL('../site/scripts/build-kokoro-jobs.mjs', import.meta.url), 'utf8')
 assert.ok(narration.includes("join(docketDir, entry.name, 'trial.json')"), 'Kokoro must discover V4 trial bundles')
 await assert.rejects(() => boundedJson(new Response('{"too":"large"}'), 4), /exceeds byte cap/)
