@@ -32,10 +32,12 @@
   }
   .docket-skip:focus { transform: none; }
 
+  /* Capped and single-row by contract: 4.5rem on desktop, 3.5rem on mobile.
+     It never wraps — see docs/DESIGN-PROTOCOL.md rule 2. */
   .docket-topbar {
     position: sticky; top: 0; z-index: 40; display: grid;
-    grid-template-columns: auto minmax(12rem, 1fr) minmax(9rem, .7fr) auto;
-    min-height: 4.25rem; padding: .65rem clamp(1rem, 3vw, 2.5rem); align-items: center; gap: 1.5rem;
+    grid-template-columns: auto minmax(8rem, 1fr) minmax(7rem, .6fr) auto;
+    height: 4.5rem; padding: 0 clamp(1rem, 3vw, 2.5rem); align-items: center; gap: clamp(.75rem, 2vw, 1.5rem);
     /* The bar is above the page, so it is lighter than it — elevation by
        lightness. Opaque, so no backdrop blur is needed to keep it legible
        over scrolling content. */
@@ -50,12 +52,43 @@
   .docket-phase span { display: inline-flex; align-items: baseline; gap: .45rem; }
   .docket-phase em { color: var(--brass); font-style: normal; font-family: var(--font-mono); letter-spacing: .08em; }
   .docket-phase i { display: block; max-width: 100%; height: 2px; margin-top: .4rem; background: var(--brass); transition: width var(--motion-base) var(--ease); }
-  .narration-controls { display: flex; gap: .5rem; }
-  .narration-controls select, .narration-controls button { border: 1px solid var(--hairline); border-radius: 999px; background: var(--surface-1); color: var(--ink-2); font-size: .68rem; }
-  .narration-controls select { padding: .45rem .7rem; }
-  .narration-controls button { display: inline-flex; align-items: center; gap: .35rem; padding: .45rem .85rem; }
-  .narration-controls button[aria-pressed="true"] { border-color: rgb(214 185 121 / 45%); color: var(--ink); background: rgb(214 185 121 / 10%); }
-  .narration-label-short { display: none; }
+  /* One audio button and one overflow button. Everything they used to show
+     inline now lives in the popover they open, so the bar cannot wrap. */
+  .chrome-menus { display: flex; align-items: center; gap: .4rem; }
+  .audio-menu, .sitting-menu { position: relative; }
+  .audio-menu > summary, .sitting-menu > summary {
+    display: inline-flex; align-items: center; gap: .35rem; min-height: 2.5rem; padding: .35rem .8rem;
+    border: 1px solid var(--hairline); border-radius: 999px; background: var(--surface-2);
+    color: var(--ink-2); cursor: pointer; font-size: .68rem; list-style: none; white-space: nowrap;
+  }
+  .audio-menu > summary::-webkit-details-marker,
+  .sitting-menu > summary::-webkit-details-marker { display: none; }
+  .audio-menu[open] > summary, .sitting-menu[open] > summary,
+  .audio-menu > summary:hover, .sitting-menu > summary:hover {
+    border-color: rgb(214 185 121 / 45%); color: var(--ink); background: rgb(214 185 121 / 10%);
+  }
+  /* The panel floats above the bar, so it is the highest surface in the app. */
+  .audio-menu-panel, .sitting-menu-panel {
+    position: absolute; z-index: 50; top: calc(100% + .45rem); right: 0; display: grid; gap: .5rem;
+    width: max-content; min-width: 13rem; padding: .8rem; border: 1px solid var(--rule);
+    border-radius: var(--radius-md); background: var(--surface-3); box-shadow: 0 1.25rem 3rem rgb(0 0 0 / 45%);
+  }
+  .audio-menu-row { display: flex; align-items: center; justify-content: space-between; gap: .9rem; color: var(--ink-2); font-size: .75rem; }
+  .audio-menu-row select, .audio-menu-row button {
+    min-height: 2.25rem; padding: .35rem .7rem; border: 1px solid var(--hairline);
+    border-radius: var(--radius-xs); background: var(--sunken); color: var(--ink-2); font-size: .72rem;
+  }
+  .audio-menu-row button[aria-pressed="true"] { border-color: rgb(214 185 121 / 45%); color: var(--ink); background: rgb(214 185 121 / 12%); }
+  .sitting-menu-item, .sitting-menu-danger, .sitting-menu-quiet {
+    min-height: 2.5rem; padding: .45rem .75rem; border-radius: var(--radius-sm); font-size: .78rem; text-align: left;
+  }
+  .sitting-menu-item { border: 1px solid var(--hairline); color: var(--ink-2); background: transparent; }
+  .sitting-menu-item:hover { border-color: rgb(214 185 121 / 45%); color: var(--ink); }
+  .sitting-menu-warning { margin: 0; max-width: 15rem; color: var(--ink-2); font-size: .74rem; line-height: 1.45; }
+  .sitting-menu-danger { border: 1px solid rgb(240 139 125 / 55%); color: #f5c9c1; background: rgb(240 139 125 / 12%); font-weight: 600; }
+  .sitting-menu-danger:hover { background: rgb(240 139 125 / 20%); }
+  .sitting-menu-quiet { border: 0; color: var(--ink-3); background: transparent; }
+  .sitting-menu-quiet:hover { color: var(--ink-2); }
   .court-interjection { border-color: rgb(214 185 121 / 30%); background: rgb(57 45 24 / 24%); }
   .court-interjection.objection { margin-right: 1.5rem; border-left: 3px solid rgb(214 185 121 / 70%); }
   .court-interjection.judicial { margin-left: 1.5rem; border-left: 3px solid rgb(244 240 232 / 45%); background: var(--surface-3); }
@@ -66,7 +99,7 @@
     display: grid; grid-template-columns: minmax(0, 42rem) 14rem;
     width: min(62rem, calc(100% - 3rem)); margin: 0 auto; padding: clamp(2rem, 5vw, 4.5rem) 0 6rem; gap: clamp(1.5rem, 4vw, 3rem); align-items: start;
   }
-  .juror-docket { position: sticky; top: 6.5rem; }
+  .juror-docket { position: sticky; top: 5.5rem; }
 
   .docket-stage { min-width: 0; animation: stage-enter 360ms var(--ease) both; }
   .juror-docket { padding: 1.1rem; border: 1px solid var(--hairline); border-radius: var(--radius-md); background: var(--surface-1); box-shadow: 0 1.25rem 4rem rgb(0 0 0 / 18%); }
@@ -384,12 +417,10 @@
 @keyframes verdict-pulse { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.12); } }
 
 @media (max-width: 68rem) {
-  .docket-topbar { grid-template-columns: auto minmax(10rem, 1fr) auto; }
-  .docket-phase {
-    grid-column: 1 / -1;
-    order: 5;
-    padding-top: .15rem;
-  }
+  /* The phase indicator drops out of the bar rather than pushing it to a
+     second row; it is restated in the beat toolbar beneath. */
+  .docket-topbar { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .docket-phase { display: none; }
   .docket-workspace { grid-template-columns: minmax(0, 42rem); justify-content: center; }
   .juror-docket { position: static; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 1rem; }
   .local-note { grid-column: 1 / -1; }
@@ -406,18 +437,18 @@
   .claim-row { grid-template-columns: 1fr; }
   .dossier-standing { font-size: .58rem; }
   .invite-actions > button { flex: 1 1 100%; }
-  .docket-topbar { grid-template-columns: auto minmax(0, 1fr); gap: .55rem .75rem; padding-inline: 1rem; }
+  /* 3.5rem, one row, on the screen whose job is reading. The audio and
+     overflow controls collapse to icons; nothing wraps below the bar. */
+  .docket-topbar { grid-template-columns: auto minmax(0, 1fr) auto; height: 3.5rem; gap: .6rem; padding-inline: 1rem; }
   .docket-case-title { padding-left: .75rem; }
-  .docket-phase { order: 4; padding-top: 0; }
-  .narration-controls { grid-column: 1 / -1; order: 6; justify-content: flex-end; flex-wrap: wrap; padding-top: .45rem; border-top: 1px solid var(--hairline); }
-  .narration-label-full { display: none; }
-  .narration-label-short { display: inline; }
+  .audio-menu-label { display: none; }
+  .audio-menu > summary, .sitting-menu > summary { padding-inline: .65rem; }
+  .audio-menu-panel, .sitting-menu-panel { right: -.25rem; max-width: calc(100vw - 2rem); }
   .docket-workspace { display: flex; flex-direction: column; width: min(100% - 2rem, 42rem); padding-top: 1.5rem; }
   .docket-stage { width: 100%; }
   .juror-docket { order: 2; width: 100%; }
   .verdict-choices, .verdict-dialog > div { grid-template-columns: 1fr; }
   .jury-table { grid-template-columns: repeat(4, 1fr); border-radius: var(--radius-lg); padding: 1rem; }
-  .docket-entry .narration-controls { justify-content: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {

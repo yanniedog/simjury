@@ -484,6 +484,7 @@ function LegacyDocketApp({
       onToggleAmbience={toggleAmbience}
       onRateChange={changeNarrationRate}
       onVoiceEngineChange={changeVoiceEngine}
+      onRewind={phase !== 'intro' && verdict === null ? rewind : undefined}
       sidebar={(
         <DocketSittingChooser
           sittings={sittings}
@@ -494,20 +495,11 @@ function LegacyDocketApp({
         />
       )}
     >
-      {phase !== 'intro' && verdict === null && (
-        <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-neutral-800 bg-neutral-900/40 p-3 text-sm">
-          <span className="text-neutral-400">Restarting clears this sitting’s progress.</span>
-          <button
-            type="button"
-            aria-label={`Rewind ${activeTrial.title} to the beginning`}
-            onClick={rewind}
-            className="shrink-0 rounded-md border border-neutral-700 px-3 py-2 font-medium text-neutral-200 hover:bg-neutral-800"
-          >
-            Rewind to beginning
-          </button>
-        </div>
-      )}
-      {trial && (
+      {/* The lobby belongs to the briefing, where you decide who you are sitting
+          with — and to the jury room once a session is actually running. It
+          used to render outside the phase switch, so it was paid for on all
+          fourteen evidence beats as well. */}
+      {(phase === 'intro' || (phase === 'juryroom' && liveSession)) && (
         <div className="mb-6">
           <LiveJuryLobby
             caseId={activeTrial.id}
