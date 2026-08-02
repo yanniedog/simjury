@@ -43,13 +43,30 @@ export const SEAT_STYLE_MARK: Record<PersuasionStyle, { label: string; glyph: st
 }
 
 /**
- * Labels are authored as `Vela · foreperson`. The bench shows the given name,
- * which is what the transcript attributes lines to, and carries the role
- * separately rather than running the two together in one string.
+ * The given name, and the role, out of an authored label.
+ *
+ * Cases author labels in two shapes, and both are in the live slate:
+ *
+ *   Yara                     — a bare given name
+ *   Vela · foreperson        — a given name and a role
+ *   Juror 2 — Anya           — a seat number and a given name
+ *   Juror 2 — Anya · foreperson
+ *
+ * The `Juror N —` prefix has to come off. The seat already shows its position
+ * in the accessible caption, so leaving it in the label printed the number
+ * twice and put a number back on the bench — which is the thing the bench was
+ * rebuilt to stop doing. Four of the ten live cases use that shape, including
+ * the guided intro every new player meets.
  */
 export function splitJurorLabel(label: string): { name: string; role: string | null } {
-  const [name, ...rest] = label.split('·').map((part) => part.trim())
-  return { name: name || label, role: rest.length > 0 ? rest.join(' · ') : null }
+  const [beforeRole, ...rest] = label.split('·').map((part) => part.trim())
+  // Em dash, en dash or hyphen, after a "Juror <n>" prefix only — a name that
+  // genuinely contains a dash keeps it.
+  const name = beforeRole.replace(/^juror\s*\d+\s*[—–-]\s*/i, '').trim()
+  return {
+    name: name || beforeRole || label,
+    role: rest.length > 0 ? rest.join(' · ') : null,
+  }
 }
 
 export function jurorSeats(trial: CourtroomTrial): JurorSeat[] {
