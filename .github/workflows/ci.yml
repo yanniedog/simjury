@@ -48,6 +48,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
+          cache: npm
+          cache-dependency-path: site/app/package-lock.json
 
       - name: Verify PR gate scripts
         run: |
@@ -61,3 +63,27 @@ jobs:
           npm run pr:coderabbit-review-recovery:verify
           npm run pr:coderabbit-rate-limit-retry:verify
           npm run github:bot-gates:operator
+
+      - name: Install Daily Docket dependencies
+        working-directory: site/app
+        run: npm ci
+
+      - name: Lint Daily Docket
+        working-directory: site/app
+        run: npm run lint
+
+      - name: Typecheck Daily Docket
+        working-directory: site/app
+        run: npm run typecheck
+
+      - name: Test Daily Docket
+        working-directory: site/app
+        run: npm test
+
+      - name: Validate Daily Docket cases
+        working-directory: site/app
+        run: npm run validate:cases
+
+      - name: Build Daily Docket
+        working-directory: site/app
+        run: npm run build
