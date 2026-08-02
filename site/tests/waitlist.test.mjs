@@ -334,3 +334,27 @@ test('the cap and the insert are decided in a single statement', async () => {
   assert.match(statements[0], /INSERT INTO waitlist/)
   assert.match(statements[0], /COUNT\(\*\) FROM waitlist WHERE source_day_hash/)
 })
+
+test('an address with shell metacharacters never reaches a command line', () => {
+  // `npx` is a .cmd on Windows and needs shell:true, and with a shell Node joins
+  // argv into a cmd.exe line without escaping. A local part may legally contain
+  // & | ^ and %, all of which parseWaitlistEmail accepts, so passing the address
+  // as an argument would let a stored signup run commands on the operator's
+  // machine the moment someone honoured their unsubscribe request.
+  const source = readFileSync(
+    new URL('../scripts/waitlist-unsubscribe.mjs', import.meta.url),
+    'utf8',
+  )
+  assert.ok(
+    !/'--command',\s*statement/.test(source),
+    'the statement must not be passed as a command-line argument',
+  )
+  assert.match(source, /'--file', file/, 'it is written to a file this script created')
+
+  // The dangerous characters still parse as valid addresses, which is why the
+  // argv route had to go rather than be filtered.
+  for (const email of ['a&b@example.com', 'a|b@example.com', 'a^b@example.com', 'a%b@example.com']) {
+    assert.equal(parseWaitlistEmail(email), email)
+    assert.match(unsubscribeStatement(email), /^UPDATE waitlist SET/)
+  }
+})

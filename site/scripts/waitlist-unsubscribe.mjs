@@ -13,6 +13,9 @@
  *   node scripts/waitlist-unsubscribe.mjs them@example.com [--dry-run]
  */
 import { spawnSync } from 'node:child_process';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { parseWaitlistEmail, waitlistEmailKey } from '../src/live-policy.js';
 
 /**
@@ -53,12 +56,28 @@ function main() {
     return;
   }
 
-  const result = spawnSync(
-    'npx',
-    ['wrangler', 'd1', 'execute', 'simjury-waitlist', '--remote', '--command', statement],
-    { encoding: 'utf8', stdio: 'inherit', shell: process.platform === 'win32' },
-  );
-  process.exit(result.status ?? 1);
+  // The statement goes in a file, never on the command line.
+  //
+  // `npx` is a `.cmd` on Windows, which needs `shell: true` to spawn — and with
+  // a shell, Node joins the argument array into a `cmd.exe` command line
+  // without escaping it. A local part may legally contain `&`, `|`, `^` and
+  // `%`, all of which `parseWaitlistEmail` accepts, so passing the address as
+  // an argument would let a stored signup run commands on the operator's
+  // machine the moment someone honoured their unsubscribe request. Only paths
+  // this script created are ever passed as arguments.
+  const dir = mkdtempSync(join(tmpdir(), 'simjury-waitlist-'));
+  const file = join(dir, 'unsubscribe.sql');
+  try {
+    writeFileSync(file, `${statement};\n`, 'utf8');
+    const result = spawnSync(
+      'npx',
+      ['wrangler', 'd1', 'execute', 'simjury-waitlist', '--remote', '--file', file],
+      { encoding: 'utf8', stdio: 'inherit', shell: process.platform === 'win32' },
+    );
+    process.exitCode = result.status ?? 1;
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 }
 
 if (process.argv[1] && process.argv[1].endsWith('waitlist-unsubscribe.mjs')) main();
