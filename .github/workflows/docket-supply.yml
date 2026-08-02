@@ -156,40 +156,52 @@ jobs:
             states="$RUNNER_TEMP/active-docket-states.json"
             echo '[]' > "$states"
             gh pr list --state open --base main --label docket-generation \
-              --json number,headRefOid,isCrossRepository > "$RUNNER_TEMP/active-docket-prs.json"
+              --json number,headRefName,headRefOid,isCrossRepository > "$RUNNER_TEMP/active-docket-prs.json"
             while read -r active; do
               [ "$(jq -r .isCrossRepository <<<"$active")" = false ] || continue
+              pr=$(jq -r .number <<<"$active")
+              active_branch=$(jq -r .headRefName <<<"$active")
               sha=$(jq -r .headRefOid <<<"$active")
               state=$(gh api "repos/$GITHUB_REPOSITORY/contents/.automation/docket-case-generation.json?ref=$sha" \
                 --jq .content | base64 --decode)
-              jq --argjson state "$state" '. + [$state]' "$states" > "$RUNNER_TEMP/states.next"
+              jq --argjson state "$state" --argjson pr "$pr" --arg branch "$active_branch" \
+                '. + [$state + {pull_request:$pr,branch:$branch}]' "$states" > "$RUNNER_TEMP/states.next"
               mv "$RUNNER_TEMP/states.next" "$states"
             done < <(jq -c '.[]' "$RUNNER_TEMP/active-docket-prs.json")
             DATES=$(node scripts/docket-commission-plan.mjs --needed "$DATES" --states "$states")
-            if [ -z "$DATES" ]; then
+            resume=$(node scripts/docket-commission-plan.mjs --resume --states "$states")
+            if [ -n "$resume" ]; then
+              number=$(jq -r .pull_request <<<"$resume")
+              branch=$(jq -r .branch <<<"$resume")
+              [[ "$branch" =~ ^automation/docket-[A-Za-z0-9._/-]+$ ]]
+              git fetch origin "refs/heads/$branch:refs/remotes/origin/$branch"
+              git checkout -B "$branch" "origin/$branch"
+              fresh=false
+            elif [ -z "$DATES" ]; then
               echo "number=" >> "$GITHUB_OUTPUT"
               echo "branch=" >> "$GITHUB_OUTPUT"
               echo "fresh=false" >> "$GITHUB_OUTPUT"
               echo "phase=idle" >> "$GITHUB_OUTPUT"
               echo "dates=" >> "$GITHUB_OUTPUT"
               exit 0
+            else
+              branch="automation/docket-${DATES%%,*}-${GITHUB_RUN_ID}"
+              git checkout -b "$branch"
+              mkdir -p .automation
+              jq -n --arg dates "$DATES" '{schema:1,phase:"reserved",dates:($dates|split(",")),repair_attempts:0}' > .automation/docket-case-generation.json
+              git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
+              git config user.email "${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
+              git add .automation/docket-case-generation.json
+              git commit -m "chore(docket): reserve automated case commission"
+              git push -u origin "$branch"
+              gh label create docket-generation --color 5319E7 --description "Autonomous case-generation PR" 2>/dev/null || true
+              number=$(gh pr create --draft --base main --head "$branch" --title "feat(docket): commission ${DATES//,/, }" \
+                --body "Role: Engineer (autonomous docket supply)\n\nReserved before final case hashes and generation metadata. Covers UTC dates: $DATES." --label docket-generation)
+              number=${number##*/}
+              jq --argjson pr "$number" '.draft_pr=$pr' .automation/docket-case-generation.json > state.json
+              mv state.json .automation/docket-case-generation.json
+              fresh=true
             fi
-            branch="automation/docket-${DATES%%,*}-${GITHUB_RUN_ID}"
-            git checkout -b "$branch"
-            mkdir -p .automation
-            jq -n --arg dates "$DATES" '{schema:1,phase:"reserved",dates:($dates|split(",")),repair_attempts:0}' > .automation/docket-case-generation.json
-            git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
-            git config user.email "${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
-            git add .automation/docket-case-generation.json
-            git commit -m "chore(docket): reserve automated case commission"
-            git push -u origin "$branch"
-            gh label create docket-generation --color 5319E7 --description "Autonomous case-generation PR" 2>/dev/null || true
-            number=$(gh pr create --draft --base main --head "$branch" --title "feat(docket): commission ${DATES//,/, }" \
-              --body "Role: Engineer (autonomous docket supply)\n\nReserved before final case hashes and generation metadata. Covers UTC dates: $DATES." --label docket-generation)
-            number=${number##*/}
-            jq --argjson pr "$number" '.draft_pr=$pr' .automation/docket-case-generation.json > state.json
-            mv state.json .automation/docket-case-generation.json
-            fresh=true
           fi
           echo "number=$number" >> "$GITHUB_OUTPUT"
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
@@ -214,29 +226,39 @@ jobs:
         working-directory: site/app
         run: npm run lint && npm run typecheck && npm test && npm run validate:cases && npm run build
 
-      - name: Generate and publish Kokoro narration
+      - name: Synthesize Kokoro narration
+        if: steps.pr.outputs.phase == 'reserved'
+        run: |
+          set -euo pipefail
+          ids=$(git status --porcelain=v1 --untracked-files=all | sed -nE 's#.*site/app/docket/(dd-[0-9]{4})(\.json|/.*)$#\1#p' | sort -u | paste -sd, -)
+          test -n "$ids"
+          bash site/scripts/synthesize-kokoro-clips.sh "$ids"
+
+      - name: Refresh case bot token for publication
+        if: steps.pr.outputs.phase == 'reserved'
+        id: publish-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.CASE_BOT_APP_ID }}
+          private-key: ${{ secrets.CASE_BOT_PRIVATE_KEY }}
+
+      - name: Publish validated Kokoro narration
         if: steps.pr.outputs.phase == 'reserved'
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.publish-token.outputs.token }}
           GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          ids=$(git status --porcelain | sed -nE 's#.*site/app/docket/(dd-[0-9]{4})(\.json|/.*)$#\1#p' | sort -u | paste -sd, -)
-          test -n "$ids"
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg espeak-ng
-          python -m pip install -r site/narration-requirements.txt
-          node site/scripts/build-kokoro-jobs.mjs --case "$ids" --output .narration-jobs
-          for job in .narration-jobs/*.json; do python site/scripts/generate-kokoro-clips.py "$job" narration-clips; done
           node site/scripts/publish-kokoro-clips.mjs --clips narration-clips
 
       - name: Commit the complete sitting and request reviews
         if: steps.pr.outputs.phase == 'reserved'
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.publish-token.outputs.token }}
           PR: ${{ steps.pr.outputs.number }}
         run: |
           set -euo pipefail
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           spent=$(jq .spent_usd "$RUNNER_TEMP/generation-result.json")
           jq --argjson spent "$spent" '.phase="awaiting_review"|.spent_usd=$spent' .automation/docket-case-generation.json > state.json
           mv state.json .automation/docket-case-generation.json
@@ -261,15 +283,23 @@ jobs:
           PR: ${{ steps.pr.outputs.number }}
         run: |
           set -euo pipefail
-          gh api graphql -F owner='${{ github.repository_owner }}' -F name='${{ github.event.repository.name }}' -F number="$PR" -f query='query($owner:String!,$name:String!,$number:Int!){repository(owner:$owner,name:$name){pullRequest(number:$number){reviewThreads(first:100){nodes{id isResolved comments(first:20){nodes{body path line author{login}}}}}}}}' > threads.json
-          jq '{threads:[.data.repository.pullRequest.reviewThreads.nodes[]|select(.isResolved==false)|{id,comments:.comments.nodes}]}' threads.json > feedback.json
+          echo '{"threads":[]}' > feedback.json
+          cursor=""
+          while true; do
+            args=(-F owner='${{ github.repository_owner }}' -F name='${{ github.event.repository.name }}' -F number="$PR")
+            [ -z "$cursor" ] || args+=(-f after="$cursor")
+            gh api graphql "${args[@]}" -f query='query($owner:String!,$name:String!,$number:Int!,$after:String){repository(owner:$owner,name:$name){pullRequest(number:$number){reviewThreads(first:100,after:$after){pageInfo{hasNextPage endCursor} nodes{id isResolved comments(first:20){nodes{body path line author{login}}}}}}}}' > threads.json
+            jq -s '{threads:([.[0].threads[], (.[1].data.repository.pullRequest.reviewThreads.nodes[]|select(.isResolved==false)|{id,comments:.comments.nodes)])}' feedback.json threads.json > feedback.next
+            mv feedback.next feedback.json
+            [ "$(jq -r '.data.repository.pullRequest.reviewThreads.pageInfo.hasNextPage' threads.json)" = true ] || break
+            cursor=$(jq -r '.data.repository.pullRequest.reviewThreads.pageInfo.endCursor' threads.json)
+          done
           echo "count=$(jq '.threads|length' feedback.json)" >> "$GITHUB_OUTPUT"
           echo "attempt=$(jq '.repair_attempts+1' .automation/docket-case-generation.json)" >> "$GITHUB_OUTPUT"
 
-      - name: Repair every actionable review thread within the cap
+      - name: Repair and validate every actionable review thread within the cap
         if: steps.pr.outputs.phase == 'awaiting_review' && steps.feedback.outputs.count != '0'
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           DATES: ${{ steps.pr.outputs.dates }}
           PR: ${{ steps.pr.outputs.number }}
           ATTEMPT: ${{ steps.feedback.outputs.attempt }}
@@ -283,19 +313,51 @@ jobs:
           npm --prefix site/app test
           npm --prefix site/app run validate:cases
           npm --prefix site/app run build
+
+      - name: Synthesize repaired Kokoro narration
+        if: steps.pr.outputs.phase == 'awaiting_review' && steps.feedback.outputs.count != '0'
+        id: repair-narration
+        run: |
+          set -euo pipefail
+          ids=$(git status --porcelain=v1 --untracked-files=all | sed -nE 's#.*site/app/docket/(dd-[0-9]{4})(\.json|/.*)$#\1#p' | sort -u | paste -sd, -)
+          if [ -z "$ids" ]; then echo "needed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          echo "needed=true" >> "$GITHUB_OUTPUT"
+          bash site/scripts/synthesize-kokoro-clips.sh "$ids"
+
+      - name: Refresh case bot token after repair
+        if: steps.pr.outputs.phase == 'awaiting_review' && steps.feedback.outputs.count != '0'
+        id: repair-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.CASE_BOT_APP_ID }}
+          private-key: ${{ secrets.CASE_BOT_PRIVATE_KEY }}
+
+      - name: Publish narration and commit the validated repair
+        if: steps.pr.outputs.phase == 'awaiting_review' && steps.feedback.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ steps.repair-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+          ATTEMPT: ${{ steps.feedback.outputs.attempt }}
+          NARRATION_NEEDED: ${{ steps.repair-narration.outputs.needed }}
+        run: |
+          set -euo pipefail
+          [ "$NARRATION_NEEDED" != true ] || node site/scripts/publish-kokoro-clips.mjs --clips narration-clips
           spent=$(jq .spent_usd "$RUNNER_TEMP/repair-result.json")
           jq --argjson n "$ATTEMPT" --argjson spent "$spent" '.repair_attempts=$n|.spent_usd=$spent' .automation/docket-case-generation.json > state.json
           mv state.json .automation/docket-case-generation.json
           git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
           git config user.email "${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git add .automation/docket-case-generation.json site/app/docket site/app/public/media
           git commit -m "fix(docket): address automated review feedback"
           git push origin HEAD
           jq -c '.dispositions[]' "$RUNNER_TEMP/repair-result.json" | while read -r item; do
             id=$(jq -r .thread_id <<<"$item")
+            status=$(jq -r .status <<<"$item")
             body=$(jq -r '(.status + ": " + .reason)' <<<"$item")
             gh api graphql -F id="$id" -F body="$body" -f query='mutation($id:ID!,$body:String!){addPullRequestReviewThreadReply(input:{pullRequestReviewThreadId:$id,body:$body}){comment{id}}}'
-            gh api graphql -F id="$id" -f query='mutation($id:ID!){resolveReviewThread(input:{threadId:$id}){thread{id isResolved}}}'
+            [ "$status" = Deferred ] || gh api graphql -F id="$id" -f query='mutation($id:ID!){resolveReviewThread(input:{threadId:$id}){thread{id isResolved}}}'
           done
           set +e
           npm run pr:arm-and-park -- --pr "$PR"
