@@ -194,10 +194,11 @@ describe('DocketShell', () => {
 })
 
 describe('DocketSittingChooser', () => {
-  it('offers exactly seven unique commissioned cases', () => {
+  it('offers every unique commissioned case, including the guided intro', () => {
     vi.stubGlobal('localStorage', writableStorage())
     const sittings = docketLibrarySittings()
     const intro = introSitting()
+    const expectedCount = sittings.length + (intro ? 1 : 0)
     const featured = featuredDocketSitting(new Date(2026, 6, 29))
     saveProgress({
       day: featured!.day,
@@ -216,11 +217,11 @@ describe('DocketSittingChooser', () => {
     )
 
     expect(markup).toContain('Case library')
-    expect(markup).toContain('Choose one of 7 cases')
-    expect(markup.match(/<option/g)).toHaveLength(7)
+    expect(markup).toContain(`Choose one of ${expectedCount} cases`)
+    expect(markup.match(/<option/g)).toHaveLength(expectedCount)
     expect(new Set(
       [...markup.matchAll(/<option value="([^"]+)"/g)].map((match) => match[1]),
-    )).toHaveLength(7)
+    )).toHaveLength(expectedCount)
     expect(markup).toContain('Today — The Alibi That Spoke (in progress)')
     for (const trial of [intro!.trial, ...sittings.map(({ trial }) => trial)]) {
       expect(markup).toContain(trial.title)
