@@ -122,7 +122,12 @@ assert.deepEqual(resumeCandidate([
 const supply = readFileSync(new URL('../site/app/scripts/docket-supply.ts', import.meta.url), 'utf8')
 assert.ok(supply.includes('if (files.errors.length)'), 'supply measurement must fail on malformed or incomplete V4 bundles')
 const narration = readFileSync(new URL('../site/scripts/build-kokoro-jobs.mjs', import.meta.url), 'utf8')
-assert.ok(narration.includes("join(docketDir, entry.name, 'trial.json')"), 'Kokoro must discover V4 trial bundles')
+const narrationDiscovery = readFileSync(new URL('../site/scripts/docket-trials.mjs', import.meta.url), 'utf8')
+assert.ok(
+  narration.includes('listDocketTrialIds(docketDir)') &&
+    narrationDiscovery.includes("join(docketDir, entry.name, 'trial.json')"),
+  'Kokoro must discover V4 trial bundles',
+)
 await assert.rejects(() => boundedJson(new Response('{"too":"large"}'), 4), /exceeds byte cap/)
 assert.deepEqual(await boundedJson(new Response('{"ok":true}'), 64), { ok: true })
 

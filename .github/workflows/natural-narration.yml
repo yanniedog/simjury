@@ -20,6 +20,8 @@ on:
       - "site/app/src/lib/narrationVoices.json"
       - "site/narration-requirements.txt"
       - "site/scripts/build-kokoro-jobs.mjs"
+      - "site/scripts/courtroom-lines.mjs"
+      - "site/scripts/docket-trials.mjs"
       - "site/scripts/speaker-voices.mjs"
       - "site/scripts/generate-kokoro-clips.py"
       - "site/scripts/publish-kokoro-clips.mjs"
@@ -60,12 +62,12 @@ jobs:
           else
             changed="$(git diff --name-only HEAD^ HEAD)"
             deleted_cases="$(git diff --diff-filter=D --name-only HEAD^ HEAD |
-              sed -nE -e 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p' -e 's#^site/app/docket/(dd-[0-9]{4})/trial\.json$#\1#p')"
+              sed -nE -e 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p' -e 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)/trial\.json$#\1#p')"
             # Synthesis inputs / spoken cue copy / voice catalog force all.
-            if [[ -n "$deleted_cases" ]] || grep -Eq '^(site/app/src/lib/(narration|narratorCues|castGenders|speakerVoices|narrationVoices)\.(ts|json)|site/app/src/lib/narratorCueCopy\.json|site/narration-requirements\.txt|site/scripts/(generate-kokoro-clips\.py|speaker-voices\.mjs))$' <<< "$changed"; then
+            if [[ -n "$deleted_cases" ]] || grep -Eq '^(site/app/src/lib/(narration|narratorCues|castGenders|speakerVoices|narrationVoices)\.(ts|json)|site/app/src/lib/narratorCueCopy\.json|site/narration-requirements\.txt|site/scripts/(build-kokoro-jobs|courtroom-lines|docket-trials|speaker-voices)\.mjs|site/scripts/generate-kokoro-clips\.py)$' <<< "$changed"; then
               requested="all"
             else
-            requested="$(sed -nE -e 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p' -e 's#^site/app/docket/(dd-[0-9]{4})/trial\.json$#\1#p' <<< "$changed" |
+            requested="$(sed -nE -e 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p' -e 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)/trial\.json$#\1#p' <<< "$changed" |
               sort -u | paste -sd, -)"
             fi
           fi

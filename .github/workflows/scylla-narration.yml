@@ -14,6 +14,7 @@ on:
     branches: [main]
     paths:
       - "site/app/docket/*.json"
+      - "site/app/docket/*/trial.json"
       - "site/app/src/lib/narrationAltVoice.ts"
       - "site/app/src/lib/narrationAltVoice.json"
       - "site/app/src/lib/narratorCues.ts"
@@ -21,6 +22,8 @@ on:
       - "site/app/src/lib/castGenders.json"
       - "site/scylla-narration-requirements.txt"
       - "site/scripts/build-scylla-jobs.mjs"
+      - "site/scripts/courtroom-lines.mjs"
+      - "site/scripts/docket-trials.mjs"
       - "site/scripts/scylla-voices.mjs"
       - "site/scripts/generate-scylla-clips.py"
       - "site/scripts/publish-kokoro-clips.mjs"
@@ -57,11 +60,11 @@ jobs:
           else
             changed="$(git diff --name-only HEAD^ HEAD)"
             deleted_cases="$(git diff --diff-filter=D --name-only HEAD^ HEAD |
-              sed -nE 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p')"
-            if [[ -n "$deleted_cases" ]] || grep -Eq '^(site/app/src/lib/(narrationAltVoice|narratorCues|castGenders)\.(ts|json)|site/app/src/lib/narratorCueCopy\.json|site/scylla-narration-requirements\.txt|site/scripts/(generate-scylla-clips\.py|scylla-voices\.mjs))$' <<< "$changed"; then
+              sed -nE 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)(\.json|/trial\.json)$#\1#p')"
+            if [[ -n "$deleted_cases" ]] || grep -Eq '^(site/app/src/lib/(narrationAltVoice|narratorCues|castGenders)\.(ts|json)|site/app/src/lib/narratorCueCopy\.json|site/scylla-narration-requirements\.txt|site/scripts/(build-scylla-jobs|courtroom-lines|docket-trials|scylla-voices)\.mjs|site/scripts/generate-scylla-clips\.py)$' <<< "$changed"; then
               requested="all"
             else
-              requested="$(sed -nE 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)\.json$#\1#p' <<< "$changed" |
+              requested="$(sed -nE 's#^site/app/docket/(dd-[0-9]{4}|dd-intro)(\.json|/trial\.json)$#\1#p' <<< "$changed" |
                 sort -u | paste -sd, -)"
             fi
           fi
