@@ -101,9 +101,9 @@ variables or GitHub App are required. The built-in `GITHUB_TOKEN` creates the
 draft PR, then explicitly dispatches required CI, the thread gate and advisory
 review requests because token-authored GitHub events do not recurse.
 
-- **Drafting.** `gemini-3.5-flash` drafts; `gemini-2.5-pro` performs the
-  independent legal pass; `gemini-3.1-pro-preview` performs the independent
-  story pass. Rejected JSON, bundle structure, hashes or review checklists are
+- **Drafting.** `gemini-3.5-flash` drafts; `gemini-3.1-pro-preview` performs the
+  independent story pass; `gemini-2.5-pro` performs the final independent legal
+  pass over that revised bundle. Rejected JSON, structure, hashes or checklists are
   re-prompted within the two-attempt cap with the trusted validation error.
 - **Images.** `gemini-3.1-flash-image` produces every declared portrait, cover
   and selected beat image. Trusted `ffmpeg` converts provider bytes to bounded

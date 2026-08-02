@@ -1,9 +1,9 @@
-import { lstatSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs'
+import { lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, extname, isAbsolute, relative, resolve, sep } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { callGeminiCaseAgent } from './gemini-case-agent.mjs'
 
-const PHASES = ['draft', 'legal_review', 'story_review', 'repair']
+const PHASES = ['draft', 'story_review', 'legal_review', 'repair']
 const TEXT_PATH = /^site\/app\/docket\/dd-\d{4}(?:\.json|\/(?:trial|analysis|legal-sheet|deliberation-pack)\.json)$/
 const MEDIA_PATH = /^site\/app\/public\/media\/dd-\d{4}\/(?:cover|characters\/[a-z0-9-]+|beats\/[a-z0-9-]+|context\/[a-z0-9-]+)\.webp$/
 const FORBIDDEN_KEYS = /^(?:cmd|command|commands|exec|executable|hook|hooks|run|script|shell)$/i
@@ -188,7 +188,7 @@ function inspectJson(text, path) {
   visit(value)
 }
 
-export function writeSafeFiles(response, root, expected, config, { overwrite = true } = {}) {
+export function writeSafeFiles(response, root, expected, config, { overwrite = true, pruneMedia = false } = {}) {
   assertSafeResponse(response, expected, config)
   const rootReal = realpathSync(root)
   const targets = []
@@ -201,9 +201,31 @@ export function writeSafeFiles(response, root, expected, config, { overwrite = t
     if (!overwrite && exists(destination)) throw new Error(`generation may not overwrite an existing artifact: ${file.path}`)
     targets.push({ file, destination })
   }
+  if (pruneMedia) pruneObsoleteMedia(response, rootReal)
   for (const { file, destination } of targets) {
     mkdirSync(dirname(destination), { recursive: true })
     writeFileSync(destination, Buffer.from(file.content, file.encoding ?? 'utf8'), { flag: 'w', mode: 0o600 })
+  }
+}
+
+function pruneObsoleteMedia(response, root) {
+  const returned = new Set(response.files.filter(({ path }) => MEDIA_PATH.test(path)).map(({ path }) => path))
+  const caseIds = new Set([...returned].map((path) => path.split('/')[4]))
+  for (const caseId of caseIds) {
+    const start = resolve(root, 'site/app/public/media', caseId)
+    const pending = [start]
+    while (pending.length) {
+      const directory = pending.pop()
+      for (const entry of readdirSync(directory, { withFileTypes: true })) {
+        const diskPath = resolve(directory, entry.name)
+        if (entry.isSymbolicLink()) throw new Error(`symlink media entry rejected: ${diskPath}`)
+        if (entry.isDirectory()) pending.push(diskPath)
+        else {
+          const path = relative(root, diskPath).replaceAll('\\', '/')
+          if (MEDIA_PATH.test(path) && !returned.has(path)) unlinkSync(diskPath)
+        }
+      }
+    }
   }
 }
 
@@ -301,7 +323,7 @@ async function run() {
     }
     const feedback = JSON.parse(readFileSync(feedbackPath, 'utf8'))
     if (!Array.isArray(feedback.threads) || feedback.threads.length === 0) throw new Error('repair requires unresolved review threads')
-    const model = config.models[2]
+    const model = config.models[1]
     const totalBudget = config.maxCostUsd * dates.length
     if (!Number.isFinite(alreadySpent) || alreadySpent < 0 || alreadySpent >= totalBudget) throw new Error('case budget is exhausted')
     const response = await callAgent(config, {
@@ -315,7 +337,7 @@ async function run() {
     if (alreadySpent + response.cost_usd > totalBudget) throw new Error('repair exceeds the per-case budget cap')
     assertDispositions(response, feedback)
     assertGenerationMetadata(response, { dates, draftPr, models: config.models })
-    writeSafeFiles(response, root, { phase: 'repair', model, draftPr, dates }, config)
+    writeSafeFiles(response, root, { phase: 'repair', model, draftPr, dates }, config, { pruneMedia: true })
     process.stdout.write(`${JSON.stringify({ spent_usd: alreadySpent + response.cost_usd, dispositions: response.dispositions })}\n`)
     return
   }
@@ -325,7 +347,7 @@ async function run() {
   let prior
   let spent = 0
   const totalBudget = config.maxCostUsd * dates.length
-  const models = [config.models[0], config.models[1], config.models[2]]
+  const models = [config.models[0], config.models[2], config.models[1]]
   for (let index = 0; index < 3; index += 1) {
     const phase = PHASES[index]
     const request = {
@@ -344,7 +366,7 @@ async function run() {
     prior = response
   }
   assertGenerationMetadata(prior, { dates, draftPr, models })
-  writeSafeFiles(prior, root, { phase: 'story_review', model: models[2], draftPr, dates }, config, { overwrite: false })
+  writeSafeFiles(prior, root, { phase: 'legal_review', model: models[2], draftPr, dates }, config, { overwrite: false })
   process.stdout.write(`${JSON.stringify({ request_id: prior.request_id, spent_usd: spent, files: prior.files.length })}\n`)
 }
 
