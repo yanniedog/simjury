@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react'
-import type { DocketBeat, DocketCase } from '../../lib/v2/caseSchema'
+import type { CourtroomBeat, CourtroomTrial } from '../../lib/v2/caseSchema'
 import { NOTE_MAX_LEN, noteForBeat, PLAYER_NOTE_OWNER, type SittingNote } from '../../lib/jurorNotes'
 import { speak, speakAll, stopSpeech, type NarrationRate } from '../../lib/narration'
 import { phaseNarratorCue, speakerNarratorCue } from '../../lib/narratorCues'
@@ -9,11 +9,11 @@ import { NarratorCue } from './NarratorCue'
 import { SpeakerFlag } from './SpeakerFlag'
 import { SpeakerPortrait } from './SpeakerPortrait'
 
-function speakerOf(trial: DocketCase, id: string) {
+function speakerOf(trial: CourtroomTrial, id: string) {
   return trial.cast.find((m) => m.id === id)
 }
 
-function modeLabelFor(beat: DocketBeat): string {
+function modeLabelFor(beat: CourtroomBeat): string {
   if (beat.kind === 'witness') {
     return beat.mode === 'cross' ? 'Cross-examination' : 'Examination'
   }
@@ -21,7 +21,7 @@ function modeLabelFor(beat: DocketBeat): string {
   return 'Judge’s direction'
 }
 
-function beatModeKey(beat: DocketBeat): string {
+function beatModeKey(beat: CourtroomBeat): string {
   return `${beat.kind}:${beat.mode ?? ''}`
 }
 
@@ -34,7 +34,7 @@ export function DocketBeatView({
   onNoteChange,
   onNext,
 }: {
-  trial: DocketCase
+  trial: CourtroomTrial
   beatIndex: number
   narration: boolean
   playbackRate: NarrationRate

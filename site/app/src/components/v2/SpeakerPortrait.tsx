@@ -1,11 +1,11 @@
-import type { DocketCase } from '../../lib/v2/caseSchema'
+import type { CourtroomTrial } from '../../lib/v2/caseSchema'
 
 export function SpeakerPortrait({
   trial,
   speakerId,
   className = '',
 }: {
-  trial: DocketCase
+  trial: CourtroomTrial
   speakerId: string
   className?: string
 }) {
