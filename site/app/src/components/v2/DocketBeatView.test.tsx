@@ -90,9 +90,14 @@ describe('DocketBeatView dialogue', () => {
 
     expect(markup).toContain('id="phase-heading"')
     expect(markup).toMatch(/id="phase-heading"[^>]*>Evidence 2 of \d+ · Cross-examination</)
-    // Each speaker is named exactly once — on their own card.
-    expect(markup.match(/Counsel Maddox/g)).toHaveLength(1)
-    expect(markup.match(/Renn Halloway/g)).toHaveLength(1)
+
+    // Each speaker is named exactly once inside the beat itself — on their own
+    // card. The advance button below names the *next* beat's speaker, which is
+    // a different string doing a different job, so the count stops at the
+    // transcript.
+    const beatBody = markup.slice(0, markup.lastIndexOf('<button'))
+    expect(beatBody.match(/Counsel Maddox/g)).toHaveLength(1)
+    expect(beatBody.match(/Renn Halloway/g)).toHaveLength(1)
   })
 
   it('renders an objection and exclusion in exact courtroom order', () => {

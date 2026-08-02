@@ -241,6 +241,8 @@ export function V4DocketApp({
       caseTitle={trial.title}
       dayNumber={sitting.day + 1}
       charge={trial.charge}
+      elements={trial.elements}
+      phaseProgress={phase === 'beats' && trial.beats.length > 0 ? (beatIndex + 1) / trial.beats.length : 1}
       narration={narration}
       playbackRate={playbackRate}
       voiceEngine={voiceEngine}
