@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { caseStorageId, stableContentHash } from './caseRevision'
 import {
+  admissibilityEffectSchema,
   docketCaseIdSchema,
   docketCaseRevisionSchema,
   type DocketCaseAnalysisV4,
@@ -48,6 +49,7 @@ export const legalSheetSchema = z
             authentication: text,
             custody_and_integrity: text,
             admissibility: text,
+            admissibility_effect: admissibilityEffectSchema.optional(),
             limitations: text,
           })
           .strict(),
@@ -127,11 +129,49 @@ export function checkV4EditorialBundle(
   }
 
   const foundationIds = new Set<string>()
+  const foundationsByBeat = new Map<string, LegalSheet['foundations'][number]>()
   for (const item of sheet.foundations) {
     if (foundationIds.has(item.beat_id)) {
       issues.push(`foundation lists beat '${item.beat_id}' more than once`)
     }
     foundationIds.add(item.beat_id)
+    foundationsByBeat.set(item.beat_id, item)
+  }
+  const analysisByBeat = new Map(
+    analysis.beats.map((beat) => [beat.beat_id, beat]),
+  )
+  for (const beat of trial.beats) {
+    const rulings = (beat.interjections ?? []).filter(
+      (item) => item.type === 'sustained' || item.type === 'ruling',
+    )
+    if (rulings.length > 1) {
+      issues.push(`beat '${beat.id}' has more than one admissibility effect`)
+      continue
+    }
+    const authored = rulings[0]?.admissibility
+    const analyzed = analysisByBeat.get(beat.id)
+    const foundation = foundationsByBeat.get(beat.id)
+    if (!authored) {
+      if (analyzed?.admissibility || foundation?.admissibility_effect) {
+        issues.push(`beat '${beat.id}' claims an admissibility effect with no authored ruling`)
+      }
+      continue
+    }
+    if (JSON.stringify(analyzed?.admissibility) !== JSON.stringify(authored)) {
+      issues.push(`beat '${beat.id}' analysis must match its authored admissibility effect`)
+    }
+    if (
+      JSON.stringify(foundation?.admissibility_effect) !==
+      JSON.stringify(authored)
+    ) {
+      issues.push(`beat '${beat.id}' legal sheet must match its authored admissibility effect`)
+    }
+    if (
+      authored.effect === 'exclude_beat' &&
+      (analyzed?.analysis_role !== 'context' || analyzed.editorial_weight !== 0)
+    ) {
+      issues.push(`excluded beat '${beat.id}' cannot carry editorial weight`)
+    }
   }
   const materialIds = analysis.beats
     .filter((beat) => beat.analysis_role !== 'context')

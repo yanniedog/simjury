@@ -9,7 +9,10 @@ import {
   type DocketCaseV4,
 } from './caseSchema'
 import { makeDocketCase, prose } from './fixtures'
+import { checkV4Interjections } from './caseQuality'
+import { scanDocketCaseTokens } from './bannedTokens'
 import {
+  durationWordCount,
   estimateV4Duration,
   V4_DURATION_MINUTES_MAX,
   V4_DURATION_MINUTES_MIN,
@@ -62,6 +65,28 @@ function makeV4Case(): DocketCaseV4 {
     }
   }
   return docketCaseV4Schema.parse(raw)
+}
+
+function addSustainedObjection(trial: DocketCaseV4): void {
+  trial.beats[1].interjections = [
+    {
+      id: 'hearsay-objection',
+      after_turn: 1,
+      speaker: 'pros',
+      type: 'objection',
+      ground: 'hearsay',
+      text: 'Objection, hearsay.',
+    },
+    {
+      id: 'hearsay-sustained',
+      after_turn: 1,
+      speaker: 'judge',
+      type: 'sustained',
+      resolves: 'hearsay-objection',
+      admissibility: { effect: 'exclude_beat' },
+      text: 'Sustained. The jury must disregard this entire item.',
+    },
+  ]
 }
 
 function makeBundle(trial: DocketCaseV4) {
@@ -224,6 +249,82 @@ describe('Docket Case V4 editorial contract', () => {
     expect(docketCaseSchema.safeParse(makeDocketCase()).success).toBe(true)
   })
 
+  it('orders and resolves earned objections while counting every spoken word', () => {
+    const trial = makeV4Case()
+    const before = estimateV4Duration(trial)
+    addSustainedObjection(trial)
+    const parsed = docketCaseV4Schema.parse(trial)
+    const interjections = parsed.beats[1].interjections ?? []
+
+    expect(interjections.map((item) => item.type)).toEqual([
+      'objection',
+      'sustained',
+    ])
+    expect(checkV4Interjections(parsed)).toEqual([])
+    expect(estimateV4Duration(parsed).evidenceWords - before.evidenceWords).toBe(
+      interjections.reduce(
+        (total, item) => total + durationWordCount(item.text),
+        0,
+      ),
+    )
+    expect(docketCaseSchema.safeParse(makeDocketCase()).success).toBe(true)
+  })
+
+  it('rejects broken turn anchors and objection references', () => {
+    const unknownGround = makeV4Case()
+    addSustainedObjection(unknownGround)
+    Object.assign(unknownGround.beats[1].interjections?.[0] ?? {}, {
+      ground: 'foundation',
+    })
+    expect(docketCaseV4Schema.safeParse(unknownGround).success).toBe(false)
+
+    const unresolved = makeV4Case()
+    addSustainedObjection(unresolved)
+    unresolved.beats[1].interjections?.pop()
+    const unresolvedResult = docketCaseV4Schema.safeParse(unresolved)
+    expect(unresolvedResult.success).toBe(false)
+    if (!unresolvedResult.success) {
+      expect(unresolvedResult.error.issues).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          message: "objection 'hearsay-objection' has no authored resolution",
+        }),
+      ]))
+    }
+
+    const misplaced = makeV4Case()
+    addSustainedObjection(misplaced)
+    const resolution = misplaced.beats[1].interjections?.[1]
+    if (resolution) resolution.after_turn = 3
+    const misplacedResult = docketCaseV4Schema.safeParse(misplaced)
+    expect(misplacedResult.success).toBe(false)
+    if (!misplacedResult.success) {
+      expect(misplacedResult.error.issues).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          message: expect.stringContaining('exceeds 2 authored turn'),
+        }),
+        expect.objectContaining({
+          message: expect.stringContaining('must share objection'),
+        }),
+      ]))
+    }
+  })
+
+  it('quality-checks courtroom roles, recognized usage, and banned text', () => {
+    const trial = makeV4Case()
+    addSustainedObjection(trial)
+    const objection = trial.beats[1].interjections?.[0]
+    if (objection?.type === 'objection') {
+      objection.ground = 'leading'
+      objection.speaker = 'defc'
+      objection.text = 'Objection. Google supplied the record.'
+    }
+    const issues = checkV4Interjections(trial).join('\n')
+    expect(issues).toMatch(/cannot use leading as its ground on cross-examination/)
+    expect(issues).toMatch(/must come from opposing counsel/)
+    expect(issues).toMatch(/banned token "google" in beats\[1\]\.interjections\[0\]\.text/)
+    expect(scanDocketCaseTokens(trial).join()).toMatch(/interjections\[0\]\.text/)
+  })
+
   it('rejects a duration-compliant case that starves public-juror context', () => {
     const trial = makeV4Case()
     const originalWords = estimateV4Duration(trial).spokenWords
@@ -270,5 +371,61 @@ describe('Docket Case V4 editorial contract', () => {
       'post-verdict analysis must cover every playable beat exactly once',
       `foundation lists beat '${trial.beats[0].id}' more than once`,
     ]))
+  })
+
+  it('binds limited-purpose rulings to analysis and the legal sheet', () => {
+    const trial = makeV4Case()
+    trial.beats[0].interjections = [{
+      id: 'purpose-ruling',
+      after_turn: 1,
+      speaker: 'judge',
+      type: 'ruling',
+      ground: 'hearsay',
+      admissibility: {
+        effect: 'limited_purpose',
+        purpose: 'Use the statement only to assess the witnessâ€™s state of mind.',
+      },
+      text: 'You may use that statement only to assess the witnessâ€™s state of mind.',
+    }]
+    const parsed = docketCaseV4Schema.parse(trial)
+    const { analysis, sheet } = makeBundle(parsed)
+    expect(checkV4EditorialBundle(parsed, analysis, sheet)).toEqual(
+      expect.arrayContaining([
+        "beat 'b1' analysis must match its authored admissibility effect",
+        "beat 'b1' legal sheet must match its authored admissibility effect",
+      ]),
+    )
+
+    const effect = parsed.beats[0].interjections?.[0]
+    if (effect?.type !== 'ruling') throw new Error('Expected authored ruling')
+    analysis.beats[0].admissibility = effect.admissibility
+    sheet.foundations[0].admissibility_effect = effect.admissibility
+    const approvalHash = legalSheetContentHash(sheet)
+    Object.values(sheet.approvals).forEach((approval) => {
+      approval.content_hash = approvalHash
+    })
+    expect(checkV4EditorialBundle(parsed, analysis, sheet)).toEqual([])
+
+    analysis.beats[0].admissibility = {
+      effect: 'limited_purpose',
+      purpose: 'Use it for a different purpose.',
+    }
+    expect(checkV4EditorialBundle(parsed, analysis, sheet)).toContain(
+      "beat 'b1' analysis must match its authored admissibility effect",
+    )
+
+    const excluded = makeV4Case()
+    addSustainedObjection(excluded)
+    const excludedBundle = makeBundle(excluded)
+    excludedBundle.analysis.beats[1].admissibility = {
+      effect: 'exclude_beat',
+    }
+    expect(
+      checkV4EditorialBundle(
+        excluded,
+        excludedBundle.analysis,
+        excludedBundle.sheet,
+      ),
+    ).toContain("excluded beat 'b2' cannot carry editorial weight")
   })
 })
