@@ -210,10 +210,28 @@ async function callAgent(config, request) {
       }
       const length = Number(response.headers.get('content-length') ?? 0)
       if (length > config.maxOutputBytes * 1.4) throw new Error('case agent response exceeds byte cap')
-      return await response.json()
+      return await boundedJson(response, Math.ceil(config.maxOutputBytes * 1.4))
     } finally { clearTimeout(timer) }
   }
   throw new Error('case agent exhausted bounded attempts')
+}
+
+export async function boundedJson(response, limit) {
+  const reader = response.body?.getReader()
+  if (!reader) throw new Error('case agent returned no response body')
+  const chunks = []
+  let size = 0
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    size += value.byteLength
+    if (size > limit) {
+      await reader.cancel()
+      throw new Error('case agent streamed response exceeds byte cap')
+    }
+    chunks.push(value)
+  }
+  return JSON.parse(Buffer.concat(chunks).toString('utf8'))
 }
 
 async function run() {

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { mkdtempSync, mkdirSync, readFileSync, symlinkSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { assertDispositions, assertGenerationMetadata, assertSafeResponse, readConfig, writeSafeFiles } from './docket-case-agent.mjs'
+import { assertDispositions, assertGenerationMetadata, assertSafeResponse, boundedJson, readConfig, writeSafeFiles } from './docket-case-agent.mjs'
 
 const env = {
   CASE_GENERATION_ENABLED: 'true', CASE_AGENT_ENDPOINT: 'https://agent.invalid/generate', CASE_AGENT_TOKEN: 'secret',
@@ -88,5 +88,7 @@ assert.equal(workflow.includes('--watch'), false, 'controller must never busy-po
 assert.equal(/gh pr merge/.test(workflow), false, 'controller must not bypass arm-and-park')
 const narration = readFileSync(new URL('../site/scripts/build-kokoro-jobs.mjs', import.meta.url), 'utf8')
 assert.ok(narration.includes("join(docketDir, entry.name, 'trial.json')"), 'Kokoro must discover V4 trial bundles')
+await assert.rejects(() => boundedJson(new Response('{"too":"large"}'), 4), /exceeds byte cap/)
+assert.deepEqual(await boundedJson(new Response('{"ok":true}'), 64), { ok: true })
 
 console.log('docket-case-agent: all contract and containment assertions passed')
