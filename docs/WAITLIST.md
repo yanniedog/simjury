@@ -40,8 +40,8 @@ cd site
 wrangler d1 create simjury-waitlist
 ```
 
-Copy the printed `database_id` into `wrangler.json`, replacing
-`REPLACE_WITH_D1_DATABASE_ID`, then create the table:
+Copy the printed `database_id` over the existing one in `wrangler.json` —
+there is a real id committed now, not a placeholder — then create the table:
 
 ```powershell
 wrangler d1 execute simjury-waitlist --remote --file=./schema/waitlist.sql
@@ -97,13 +97,15 @@ year. Export the list and send from wherever you normally send mail.
 
 Every update must carry a working unsubscribe path. When someone unsubscribes:
 
-Bind the address rather than pasting it into the statement — an apostrophe
-(`o'connor@example.com`) would otherwise break the SQL:
+`wrangler d1 execute` accepts only `--command` or `--file` — it cannot bind a
+parameter. An address may legally contain an apostrophe
+(`o'connor@example.com`), which would end the SQL string early, so the quoting
+is done in a script rather than left to whoever is honouring the request:
 
 ```powershell
-wrangler d1 execute simjury-waitlist --remote `
-  --command="UPDATE waitlist SET unsubscribed_at = datetime('now') WHERE email_key = ?1" `
-  --param="them@example.com"
+cd site
+npm run waitlist:unsubscribe -- them@example.com
+npm run waitlist:unsubscribe -- them@example.com -- --dry-run   # print the SQL only
 ```
 
 ## Deliberately not included

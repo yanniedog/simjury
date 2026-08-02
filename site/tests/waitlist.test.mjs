@@ -9,6 +9,7 @@ import {
   WAITLIST_LIMITS,
 } from '../src/live-policy.js'
 import worker from '../src/worker.js'
+import { sqlQuote, unsubscribeStatement } from '../scripts/waitlist-unsubscribe.mjs'
 
 const SALT = 'test-salt-at-least-16-chars'
 
@@ -227,15 +228,26 @@ test('the consent text on the landing page matches what is stored', () => {
   )
 })
 
-test('the documented unsubscribe command is parameterised', () => {
-  // An address may contain an apostrophe (o'connor@example.com); pasting one
-  // into a quoted SQL literal breaks the statement at best.
+test('the documented unsubscribe escapes the address instead of interpolating it', () => {
+  // `wrangler d1 execute` has no --param, so an earlier version of this doc
+  // documented a flag that does not exist and a ?1 nothing ever bound. The
+  // quoting lives in a script now, and this asserts the rule it implements:
+  // SQLite escapes a single quote by doubling it.
+  assert.equal(sqlQuote("o'connor@example.com"), "'o''connor@example.com'")
+  assert.equal(sqlQuote('plain@example.com'), "'plain@example.com'")
+
+  const statement = unsubscribeStatement("O'Connor@Example.COM")
+  assert.match(statement, /WHERE email_key = 'o''connor@example\.com'$/)
+  assert.ok(!statement.includes('?1'), 'no unbound placeholder survives')
+
+  assert.throws(() => unsubscribeStatement('not-an-email'), /Not a valid address/)
+
   const doc = readFileSync(new URL('../../docs/WAITLIST.md', import.meta.url), 'utf8')
-  const unsubscribe = doc.slice(doc.indexOf('UPDATE waitlist'))
   assert.ok(
-    /--param|\?1/.test(unsubscribe.slice(0, 400)),
-    'docs/WAITLIST.md must bind the address rather than interpolate it',
+    doc.includes('waitlist:unsubscribe'),
+    'the doc must point at the script that does the quoting',
   )
+  assert.ok(!doc.includes('--param'), 'wrangler has no --param flag')
 })
 
 test('a malformed body is refused rather than throwing', async () => {
