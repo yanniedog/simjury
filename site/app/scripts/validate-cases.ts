@@ -19,7 +19,12 @@ import {
   checkDocketQueue,
   checkV3Corpus,
 } from '../src/lib/v2/caseQuality'
-import { docketRunwayError } from '../src/lib/v2/runway'
+import {
+  docketCoverage,
+  docketCoverageError,
+  docketRunwayError,
+  formatDocketCoverage,
+} from '../src/lib/v2/runway'
 import { checkDynamics } from '../src/engine/dynamics'
 
 // Resolve relative to this script, not the process cwd, so it works the same
@@ -154,10 +159,17 @@ function main(): void {
         // and dynamics gates as every featured docket case.
         const dailyCases = cases.filter((c) => c.id !== 'dd-intro')
         const introCases = cases.filter((c) => c.id === 'dd-intro')
-        const runwayError = docketRunwayError(
-          dailyCases.map((c) => c.publish_date),
-        )
+        const publishDates = dailyCases.map((c) => c.publish_date)
+        const runwayError = docketRunwayError(publishDates)
+        const coverageError = docketCoverageError(publishDates)
+        // Print it whether or not it fails. The horizon gate can pass while
+        // most days open nothing new, and a number nobody sees is a number
+        // nobody acts on.
+        console.log(formatDocketCoverage(docketCoverage(publishDates)))
         return [
+          ...(coverageError
+            ? [{ caseId: 'docket', message: coverageError, kind: 'design' as const }]
+            : []),
           ...checkV3Corpus(cases),
           ...checkV3MediaFiles(cases),
           ...checkDocketQueue(dailyCases),
