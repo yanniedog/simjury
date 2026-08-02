@@ -200,8 +200,11 @@ describe('DocketSittingChooser', () => {
     // 2026-07-29 opens no case of its own, so the docket re-serves the one
     // filed on the 28th. Calling that "Today" told a returning player it was
     // new; the label carries the real filing date instead.
-    expect(markup).toContain('Today’s sitting, filed')
-    expect(markup).toContain('The Alibi That Spoke (in progress)')
+    // The whole filing date is asserted, not just the prefix: `new Date(iso)`
+    // parses a publish date as UTC midnight, so a zone west of UTC rendered the
+    // day before — a case filed on the 28th showed as filed on the 27th.
+    expect(markup).toContain('Today’s sitting, filed Tue, 28 July — The Alibi That Spoke')
+    expect(markup).not.toContain('27 July')
     expect(markup).not.toContain('Today — The Alibi That Spoke')
     for (const trial of [intro!.trial, ...sittings.map(({ trial }) => trial)]) {
       expect(markup).toContain(trial.title)

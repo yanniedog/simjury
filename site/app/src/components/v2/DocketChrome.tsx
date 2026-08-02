@@ -153,12 +153,29 @@ function featuredLabel(
 ): string {
   if (sitting !== featuredSitting) return dateFormatter.format(sitting.date)
   const filed = sitting.trial.publish_date
-  const featuredOn = `${sitting.date.getFullYear()}-`
-    + `${String(sitting.date.getMonth() + 1).padStart(2, '0')}-`
-    + `${String(sitting.date.getDate()).padStart(2, '0')}`
-  return filed === featuredOn
+  return filed === localDateKey(sitting.date)
     ? 'Today'
-    : `Today’s sitting, filed ${dateFormatter.format(new Date(sitting.trial.publish_date))}`
+    : `Today’s sitting, filed ${dateFormatter.format(localDateFromIso(filed))}`
+}
+
+/** `YYYY-MM-DD` for a local date, without crossing into UTC. */
+function localDateKey(date: Date): string {
+  return `${date.getFullYear()}-`
+    + `${String(date.getMonth() + 1).padStart(2, '0')}-`
+    + `${String(date.getDate()).padStart(2, '0')}`
+}
+
+/**
+ * Parse `YYYY-MM-DD` as a local calendar date.
+ *
+ * `new Date('2026-07-28')` is parsed as UTC midnight, so formatting it in a zone
+ * west of UTC renders the previous day — the library would have shown a case
+ * filed on the 28th as filed on the 27th. Publish dates are calendar dates, not
+ * instants, so they are built from their parts like every other date here.
+ */
+function localDateFromIso(value: string): Date {
+  const [year, month, day] = value.split('-').map(Number)
+  return new Date(year, month - 1, day)
 }
 
 export function DocketSittingChooser({ sittings, selectedCaseId, featuredSitting, onSelect, introSitting }: {
