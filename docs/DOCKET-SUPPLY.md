@@ -121,7 +121,7 @@ set the dedicated kill switch `CASE_GENERATION_ENABLED=true`.
 | --- | --- |
 | Secrets | `CASE_AGENT_TOKEN`, `CASE_BOT_PRIVATE_KEY` |
 | Provider | `CASE_AGENT_ENDPOINT` (HTTPS), `CASE_AGENT_PROVIDER`, `CASE_DRAFT_MODEL`, `CASE_LEGAL_REVIEW_MODEL`, `CASE_STORY_REVIEW_MODEL`, `CASE_IMAGE_MODEL`, `CASE_IMAGE_LICENSE` |
-| GitHub App | `CASE_BOT_CLIENT_ID` |
+| GitHub App | `CASE_BOT_APP_ID` |
 | Hard caps | `CASE_MAX_ATTEMPTS` (1-4), `CASE_MAX_REPAIR_ATTEMPTS` (0-3), `CASE_MAX_IMAGES_PER_CASE` (2-30), `CASE_MAX_OUTPUT_BYTES` (1-80 MB), `CASE_MAX_COST_USD` per case (0.01-500), `CASE_MAX_TOKENS` (1,000-200,000) |
 
 The three model ids must be distinct. The GitHub App needs repository contents,
