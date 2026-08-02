@@ -1,6 +1,13 @@
 import { dayIndex } from '../daily'
-import { docketCaseSchema, type DocketCase } from './caseSchema'
-import { loadV4CaseBundles } from './caseBundles'
+import {
+  docketCaseSchema,
+  type DocketCase,
+  type DocketCaseV4,
+} from './caseSchema'
+import {
+  loadV4CaseBundles,
+  type V4CaseBundle,
+} from './caseBundles'
 
 /**
  * Runtime docket queue. Every JSON file in `docket/` is bundled at build time,
@@ -36,10 +43,8 @@ const v4DeliberationModules = import.meta.glob(
 )
 
 /**
- * V4 is discovered through the active case module now, while the commissioned
- * V3 queue remains the selectable player surface during migration. The V5
- * jury/reveal consumer can add these validated bundles to DocketSitting
- * without changing the file boundary or loading editorial data early.
+ * V4 trials join the selectable catalogue, while their deliberation and
+ * answer-key files remain lazy chunks behind the bundle methods below.
  */
 export const v4CaseBundles = loadV4CaseBundles({
   trials: v4TrialModules,
@@ -82,15 +87,30 @@ if (duplicateV4Id) {
 export const introCase: DocketCase | null =
   allCases.find((c) => c.id === INTRO_CASE_ID) ?? null
 
-export const docketQueue: DocketCase[] = allCases.filter(
-  (c) => c.id !== INTRO_CASE_ID,
+export type DocketTrial = DocketCase | DocketCaseV4
+
+export const docketQueue: DocketTrial[] = [
+  ...allCases.filter((c) => c.id !== INTRO_CASE_ID),
+  ...v4CaseBundles.map(({ trial }) => trial),
+].sort((a, b) =>
+  a.publish_date === b.publish_date
+    ? a.id.localeCompare(b.id)
+    : a.publish_date.localeCompare(b.publish_date),
 )
 
-export interface DocketSitting {
+interface DocketSittingBase {
   day: number
   date: Date
+}
+
+export interface DocketSittingV3 extends DocketSittingBase {
+  schemaVersion: 3
   trial: DocketCase
 }
+
+export interface DocketSittingV4 extends DocketSittingBase, V4CaseBundle {}
+
+export type DocketSitting = DocketSittingV3 | DocketSittingV4
 
 function utcDateString(date: Date): string {
   return date.toISOString().slice(0, 10)
@@ -103,10 +123,10 @@ function utcDateString(date: Date): string {
  */
 export function docketCaseForDate(
   date: Date,
-  queue: DocketCase[] = docketQueue,
-): DocketCase | null {
+  queue: DocketTrial[] = docketQueue,
+): DocketTrial | null {
   const today = utcDateString(date)
-  return queue.reduce<DocketCase | null>((latest, trial) => {
+  return queue.reduce<DocketTrial | null>((latest, trial) => {
     if (trial.publish_date > today) return latest
     if (latest === null || trial.publish_date > latest.publish_date) return trial
     return latest
@@ -125,12 +145,27 @@ function utcDateFromIso(value: string): Date {
  * lets a player choose any bundled case without duplicating gap-day fallbacks.
  */
 export function docketLibrarySittings(
-  queue: DocketCase[] = docketQueue,
+  queue: DocketTrial[] = docketQueue,
+  bundles: V4CaseBundle[] = v4CaseBundles,
 ): DocketSitting[] {
   return queue.map((trial) => {
     const date = utcDateFromIso(trial.publish_date)
-    return { day: dayIndex(date), date, trial }
+    return sittingForTrial(trial, date, dayIndex(date), bundles)
   })
+}
+
+function sittingForTrial(
+  trial: DocketTrial,
+  date: Date,
+  day: number,
+  bundles: V4CaseBundle[],
+): DocketSitting {
+  const bundle = bundles.find((candidate) => candidate.trial.id === trial.id)
+  if (bundle) return { day, date, ...bundle }
+  if (!('reference_verdict' in trial)) {
+    throw new Error(`V4 case ${trial.id} has no revision-bound runtime bundle`)
+  }
+  return { day, date, schemaVersion: 3, trial }
 }
 
 /** Exact library sitting only; an unknown day must not duplicate another case. */
@@ -144,10 +179,13 @@ export function selectDocketSitting(
 /** Date-gated featured sitting, retaining the actual day as its storage key. */
 export function featuredDocketSitting(
   date: Date,
-  queue: DocketCase[] = docketQueue,
+  queue: DocketTrial[] = docketQueue,
+  bundles: V4CaseBundle[] = v4CaseBundles,
 ): DocketSitting | null {
   const trial = docketCaseForDate(date, queue)
-  return trial ? { day: dayIndex(date), date, trial } : null
+  return trial
+    ? sittingForTrial(trial, date, dayIndex(date), bundles)
+    : null
 }
 
 export function introSitting(): DocketSitting | null {
@@ -155,6 +193,7 @@ export function introSitting(): DocketSitting | null {
   return {
     day: INTRO_SITTING_DAY,
     date: utcDateFromIso(introCase.publish_date),
+    schemaVersion: 3,
     trial: introCase,
   }
 }

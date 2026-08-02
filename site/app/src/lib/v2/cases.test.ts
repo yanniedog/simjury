@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import {
   docketLibrarySittings,
   docketCaseForDate,
@@ -9,6 +9,18 @@ import {
   selectDocketSitting,
 } from './cases'
 import { dayIndex } from '../daily'
+import type { DocketCaseV4 } from './caseSchema'
+import type { V4CaseBundle } from './caseBundles'
+
+function fakeV4(publishDate: string): DocketCaseV4 {
+  const trial = structuredClone(docketQueue[0]) as unknown as Record<string, unknown>
+  trial.id = 'dd-v4-runtime'
+  trial.publish_date = publishDate
+  delete trial.reference_verdict
+  delete trial.twist
+  delete trial.epilogue
+  return trial as unknown as DocketCaseV4
+}
 
 describe('docket queue', () => {
   it('bundles featured cases and keeps the intro separate', () => {
@@ -101,6 +113,79 @@ describe('docket queue', () => {
 
     expect(docketCaseForDate(playDate, queueAsOfDate)?.id).toBe(first.id)
     expect(docketCaseForDate(playDate, docketQueue)?.id).toBe(first.id)
+  })
+
+  it('selects V4 sittings without loading either lazy boundary', async () => {
+    const prior = docketQueue[0]
+    const trial = fakeV4('2026-07-29')
+    const loadDeliberationPack = vi.fn(async () => ({} as never))
+    const loadPostVerdict = vi.fn(async () => ({} as never))
+    const bundle: V4CaseBundle = {
+      schemaVersion: 4,
+      trial,
+      loadDeliberationPack,
+      loadPostVerdict,
+    }
+    const queue = [prior, trial]
+
+    const featured = featuredDocketSitting(
+      new Date('2026-07-29T12:00:00.000Z'),
+      queue,
+      [bundle],
+    )
+    const library = docketLibrarySittings(queue, [bundle])
+
+    expect(featured?.schemaVersion).toBe(4)
+    expect(featured?.trial).toBe(trial)
+    expect(library.map(({ trial: item }) => item.id)).toEqual([
+      prior.id,
+      trial.id,
+    ])
+    expect(loadDeliberationPack).not.toHaveBeenCalled()
+    expect(loadPostVerdict).not.toHaveBeenCalled()
+
+    if (featured?.schemaVersion !== 4) throw new Error('expected V4 sitting')
+    await featured.loadDeliberationPack()
+    expect(loadDeliberationPack).toHaveBeenCalledOnce()
+    expect(loadPostVerdict).not.toHaveBeenCalled()
+
+    // The route remains available for the reveal consumer, but only an
+    // explicit post-verdict call crosses this second lazy boundary.
+    await featured.loadPostVerdict()
+    expect(loadPostVerdict).toHaveBeenCalledOnce()
+  })
+
+  it('retains V3 compatibility and does not remap its past UTC sitting', () => {
+    const prior = docketQueue[0]
+    const trial = fakeV4('2026-07-29')
+    const bundle = {
+      schemaVersion: 4,
+      trial,
+      loadDeliberationPack: vi.fn(async () => ({} as never)),
+      loadPostVerdict: vi.fn(async () => ({} as never)),
+    } satisfies V4CaseBundle
+
+    const before = featuredDocketSitting(
+      new Date(`${prior.publish_date}T23:59:59.999Z`),
+      [prior],
+      [],
+    )
+    const after = featuredDocketSitting(
+      new Date(`${prior.publish_date}T23:59:59.999Z`),
+      [prior, trial],
+      [bundle],
+    )
+
+    expect(before?.schemaVersion).toBe(3)
+    expect(after?.schemaVersion).toBe(3)
+    expect(after?.trial.id).toBe(prior.id)
+  })
+
+  it('fails closed when a V4 trial loses its bundle', () => {
+    const trial = fakeV4('2026-07-29')
+    expect(() => docketLibrarySittings([trial], [])).toThrow(
+      /has no revision-bound runtime bundle/,
+    )
   })
 
   it('lists every commissioned daily case once, including future features', () => {

@@ -58,6 +58,7 @@ jobs:
           npm run pr:bot-wait-or-groups:verify
           npm run pr:base-guard:verify
           npm run pr:arm-and-park:verify
+          npm run docket:agent:verify
           npm run pr:coderabbit-filters:verify
           npm run pr:coderabbit-contract:verify
           npm run pr:coderabbit-review-recovery:verify
