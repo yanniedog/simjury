@@ -8,6 +8,7 @@ import {
   bearerCapability,
   decodeOpaqueId,
   isLiveRoute,
+  isWaitlistRoute,
   parseCapability,
   parseCaseId,
   parseDerivationRevision,
@@ -20,6 +21,7 @@ import {
   roomExpiryCutoff,
   seatMaySend,
   socketCredentialsFromProtocols,
+  WAITLIST_ROUTE,
 } from '../src/live-policy.js'
 import worker, { RoomDO } from '../src/worker.js'
 
@@ -27,13 +29,23 @@ const config = JSON.parse(readFileSync(new URL('../wrangler.json', import.meta.u
 const expectedClasses = ['PoolCoordinatorDO', 'FairnessDO', 'RoomDO']
 const REVISION = 'hybrid-v1-1234abcd'
 
-test('only live endpoints execute the Worker', () => {
-  assert.deepEqual(config.assets.run_worker_first, LIVE_ROUTE_PATTERNS)
+test('only live and waitlist endpoints execute the Worker', () => {
+  // Compare as sorted sets: the allowlist is about *which* paths reach the
+  // Worker, not the order they happen to sit in the config.
+  assert.deepEqual(
+    [...config.assets.run_worker_first].sort(),
+    [...LIVE_ROUTE_PATTERNS, WAITLIST_ROUTE].sort(),
+  )
   assert.equal(isLiveRoute('/api/live/healthz'), true)
   assert.equal(isLiveRoute('/discord/interactions'), true)
   for (const path of ['/', '/today/', '/privacy/', '/media/case.webp']) {
     assert.equal(isLiveRoute(path), false)
+    assert.equal(isWaitlistRoute(path), false)
   }
+  // The waitlist is not a live route, so it never reaches live-jury handling.
+  assert.equal(isLiveRoute(WAITLIST_ROUTE), false)
+  assert.equal(isWaitlistRoute(WAITLIST_ROUTE), true)
+  assert.equal(isWaitlistRoute('/api/waitlist/export'), false)
 })
 
 test('configuration allowlists only the three SQLite Durable Objects', () => {
@@ -45,9 +57,18 @@ test('configuration allowlists only the three SQLite Durable Objects', () => {
     ['ROOMS', 'RoomDO'],
   ])
   assert.deepEqual(config.migrations[0].new_sqlite_classes, expectedClasses)
-  for (const product of ['d1_databases', 'kv_namespaces', 'r2_buckets', 'queues', 'ai']) {
+  // The live-jury migration must never grow a class for an unrelated feature —
+  // the waitlist uses D1 precisely so this list stays exactly the live-jury set.
+  for (const product of ['kv_namespaces', 'r2_buckets', 'queues', 'ai']) {
     assert.equal(product in config, false)
   }
+})
+
+test('D1 is bound to the waitlist alone', () => {
+  assert.deepEqual(
+    config.d1_databases.map(({ binding, database_name: name }) => [binding, name]),
+    [['WAITLIST', 'simjury-waitlist']],
+  )
 })
 
 test('non-live requests retain the static asset fallback', async () => {

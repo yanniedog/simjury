@@ -18,8 +18,9 @@
     "check": "npm run guard:cloudflare && npm run test:runtime && npm run check:landing && npm run check:crawl && wrangler deploy --dry-run",
     "check:landing": "node scripts/assert-landing-page.mjs",
     "check:crawl": "node scripts/assert-crawl-surface.mjs",
+    "waitlist:unsubscribe": "node scripts/waitlist-unsubscribe.mjs",
     "guard:cloudflare": "node scripts/assert-cloudflare-static-only.mjs",
-    "test:runtime": "node --test tests/cloudflare-runtime.test.mjs tests/landing-disclosure.test.mjs tests/narration-jobs.test.mjs"
+    "test:runtime": "node --test tests/cloudflare-runtime.test.mjs tests/waitlist.test.mjs tests/landing-disclosure.test.mjs tests/narration-jobs.test.mjs"
   },
   "devDependencies": {
     "wrangler": "4.113.0"

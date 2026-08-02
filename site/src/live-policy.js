@@ -1,5 +1,21 @@
 export const LIVE_ROUTE_PATTERNS = ['/api/live/*', '/discord/interactions']
 
+/** The only non-live path the Worker may answer. Everything else is static. */
+export const WAITLIST_ROUTE = '/api/waitlist'
+
+export const WAITLIST_LIMITS = Object.freeze({
+  emailCharacters: 254, // RFC 5321 maximum length of a forward path
+  signupsPerIpPerDay: 5,
+})
+
+/**
+ * Consent recorded verbatim beside every address. The landing page renders this
+ * exact string, so what someone agreed to can always be reproduced from the
+ * row itself rather than from whatever the page happens to say later.
+ */
+export const WAITLIST_CONSENT_TEXT =
+  'I want email updates about The Daily Docket. I can unsubscribe at any time.'
+
 export const FREE_BETA_LIMITS = Object.freeze({
   admissionsPerUtcDay: 1_000,
   concurrentRooms: 64,
@@ -22,8 +38,73 @@ export function isLiveRoute(pathname) {
     || pathname.startsWith('/api/live/')
 }
 
+export function isWaitlistRoute(pathname) {
+  return pathname === WAITLIST_ROUTE
+}
+
 export function liveJuryEnabled(env) {
   return env.LIVE_JURY_ENABLED === 'true'
+}
+
+/**
+ * Validate and normalise a submitted address.
+ *
+ * Deliberately conservative: one `@`, a dot-bearing domain, no whitespace, no
+ * angle brackets or commas that would let a display name or a second recipient
+ * ride along. Anything unusual is refused rather than stored and puzzled over
+ * later — a waitlist address that cannot be mailed is worthless anyway.
+ *
+ * Only the domain is lowercased. Local-parts are case-sensitive under RFC 5321,
+ * so `Juror@example.com` is mailed back exactly as it was typed; deduplication
+ * uses `waitlistEmailKey` instead, which is case-insensitive because in
+ * practice no provider treats those as two different people.
+ *
+ * @returns {string|null} the address as it should be mailed
+ */
+export function parseWaitlistEmail(value) {
+  if (typeof value !== 'string') return null
+  const trimmed = value.trim()
+  if (trimmed.length < 6 || trimmed.length > WAITLIST_LIMITS.emailCharacters) return null
+
+  // Control characters are not whitespace, so trimming and a `\s` class both
+  // let them through. An address is text that ends up in a mail header; none of
+  // these belong in one.
+  for (const character of trimmed) {
+    const code = character.codePointAt(0) ?? 0
+    if (code <= 0x1f || code === 0x7f) return null
+  }
+
+  const at = trimmed.lastIndexOf('@')
+  if (at < 1) return null
+  const local = trimmed.slice(0, at)
+  const domain = trimmed.slice(at + 1).toLowerCase()
+
+  // RFC 5321 caps the local part at 64 octets. Dots separate atoms, so one
+  // cannot lead, trail, or double up.
+  if (local.length > 64) return null
+  if (!/^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*$/.test(local)) {
+    return null
+  }
+
+  // Each domain label is alphanumeric with internal hyphens only — no leading
+  // or trailing hyphen, no underscore — and the TLD is letters.
+  if (domain.length > 253) return null
+  if (!/^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/.test(domain)) return null
+
+  return `${local}@${domain}`
+}
+
+/** Case-insensitive identity for an address, used as the primary key. */
+export function waitlistEmailKey(email) {
+  return typeof email === 'string' ? email.toLowerCase() : null
+}
+
+/**
+ * Bucket a signup by UTC day so a repeat submission is an idempotent update
+ * rather than a duplicate row.
+ */
+export function waitlistUtcDay(now = Date.now()) {
+  return new Date(now).toISOString().slice(0, 10)
 }
 
 export function parseOpaqueId(value) {

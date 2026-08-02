@@ -307,3 +307,25 @@ html.entry-gate-open { overflow: hidden; }
 }
 
 @keyframes juror-enter { from { opacity: 0; transform: translateY(.75rem); } }
+
+/* Waitlist ---------------------------------------------------------------- */
+.landing .waitlist { display: grid; grid-template-columns: 1fr .9fr; align-items: start; gap: clamp(2rem, 7vw, 5rem); }
+.landing .waitlist-copy > p:not(.eyebrow) { max-width: 34rem; color: var(--steel-300); font-size: 1.08rem; }
+.landing .waitlist-form { display: grid; gap: 1rem; padding: clamp(1.5rem, 4vw, 2.25rem); border: 1px solid rgb(214 185 121 / 28%); border-radius: 1.25rem; background: linear-gradient(145deg, rgb(27 37 42 / 95%), rgb(16 22 25 / 95%)); box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 25%); }
+.landing .waitlist-field { display: grid; gap: .45rem; }
+.landing .waitlist-field > span { color: var(--brass-400); font-size: .65rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+.landing .waitlist-field input { width: 100%; padding: .8rem .9rem; border: 1px solid rgb(244 240 232 / 18%); border-radius: .6rem; background: rgb(10 14 16 / 70%); color: var(--paper-50); font: inherit; }
+.landing .waitlist-field input:focus-visible { border-color: var(--brass-400); outline: 2px solid var(--brass-400); outline-offset: 1px; }
+.landing .waitlist-consent { display: grid; grid-template-columns: auto 1fr; gap: .6rem; align-items: start; color: var(--steel-300); font-size: .9rem; line-height: 1.45; }
+.landing .waitlist-consent input { margin-top: .2rem; accent-color: var(--brass-400); }
+.landing .waitlist-form .btn.primary { justify-content: center; }
+.landing .waitlist-form .btn.primary[disabled] { opacity: .6; cursor: progress; }
+.landing .waitlist-status { margin: 0; min-height: 1.35rem; font-size: .92rem; }
+.landing .waitlist-status[data-kind="ok"] { color: #8fd8a8; }
+.landing .waitlist-status[data-kind="error"] { color: #f0a894; }
+.landing .waitlist-status[data-kind="pending"] { color: var(--steel-300); }
+.landing .waitlist-fineprint { margin: 0; color: var(--steel-300); font-size: .8rem; line-height: 1.5; }
+
+@media (max-width: 60rem) {
+  .landing .waitlist { grid-template-columns: 1fr; }
+}

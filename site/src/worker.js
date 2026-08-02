@@ -4,7 +4,13 @@ import {
   decodeOpaqueId,
   bearerCapability,
   isLiveRoute,
+  isWaitlistRoute,
   liveJuryEnabled,
+  parseWaitlistEmail,
+  waitlistEmailKey,
+  waitlistUtcDay,
+  WAITLIST_CONSENT_TEXT,
+  WAITLIST_LIMITS,
   parseCapability,
   parseCaseId,
   parseDerivationRevision,
@@ -40,12 +46,23 @@ async function digest(value) {
   return [...new Uint8Array(hash)].map((byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
-async function bodyOf(request) {
+/** Read a request body, refusing anything over the bound before parsing it. */
+async function boundedText(request) {
   const contentLength = Number(request.headers.get('Content-Length'))
   if (Number.isFinite(contentLength) && contentLength > 2_048) return null
   try {
     const text = await request.text()
-    return text.length <= 2_048 ? JSON.parse(text) : null
+    return text.length <= 2_048 ? text : null
+  } catch {
+    return null
+  }
+}
+
+async function bodyOf(request) {
+  const text = await boundedText(request)
+  if (text === null) return null
+  try {
+    return JSON.parse(text)
   } catch {
     return null
   }
@@ -500,9 +517,149 @@ export class RoomDO {
   }
 }
 
+/**
+ * Record a waitlist signup.
+ *
+ * Single opt-in, so the consent text and the moment it was agreed to are stored
+ * beside the address — that record, not the current wording of the page, is
+ * what proves what someone signed up for.
+ *
+ * The response never distinguishes "new" from "already on the list": that
+ * difference would turn the endpoint into an oracle for whether a given address
+ * has signed up.
+ */
+async function handleWaitlist(request, env) {
+  if (request.method !== 'POST') {
+    return new Response(null, {
+      status: 405,
+      headers: { Allow: 'POST', 'Cache-Control': 'no-store' },
+    })
+  }
+  if (!env.WAITLIST) return unavailable('WAITLIST_NOT_READY', 503)
+
+  const body = await waitlistSubmission(request)
+  const email = parseWaitlistEmail(body?.email)
+  if (!email) return json({ ok: false, error: 'INVALID_EMAIL' }, 400)
+  if (body?.consent !== true) return json({ ok: false, error: 'CONSENT_REQUIRED' }, 400)
+
+  const source = await sourceFingerprint(request, env)
+
+  try {
+    // One statement, so the cap is decided and applied together. Counting in a
+    // separate round trip and then inserting is a race: several concurrent
+    // signups from one client each see a count below the limit and every one
+    // of them lands. The conditional SELECT settles both questions atomically.
+    //
+    // NOT EXISTS rather than ON CONFLICT: a repeat address must still be a
+    // no-op, and SQLite's upsert clause is ambiguous after an INSERT…SELECT.
+    //
+    // Someone who unsubscribed and then signed up again is a separate case,
+    // handled below: the insert cannot touch their row, so without that update
+    // they would be told "You are on the list" while every export kept leaving
+    // them out. They just consented again; the record should say so.
+    //
+    // A null fingerprint means no salt is configured, so there is nothing to
+    // count and the cap is skipped rather than applied to a value every client
+    // would share.
+    await env.WAITLIST.prepare(
+      `INSERT INTO waitlist (email_key, email, consent_text, consented_at, source_day_hash)
+       SELECT ?1, ?2, ?3, ?4, ?5
+       WHERE NOT EXISTS (SELECT 1 FROM waitlist WHERE email_key = ?1)
+         AND (
+           ?5 IS NULL
+           OR (SELECT COUNT(*) FROM waitlist WHERE source_day_hash = ?5) < ?6
+         )`,
+    )
+      .bind(
+        waitlistEmailKey(email),
+        email,
+        WAITLIST_CONSENT_TEXT,
+        new Date().toISOString(),
+        source,
+        WAITLIST_LIMITS.signupsPerIpPerDay,
+      )
+      .run()
+
+    // Re-subscribing. Only ever clears an unsubscribe — it cannot revive a row
+    // that was never there, and it does not touch anyone still subscribed. The
+    // consent wording and date are refreshed because this is new consent.
+    await env.WAITLIST.prepare(
+      `UPDATE waitlist
+          SET unsubscribed_at = NULL, consent_text = ?2, consented_at = ?3, email = ?4
+        WHERE email_key = ?1 AND unsubscribed_at IS NOT NULL`,
+    )
+      .bind(waitlistEmailKey(email), WAITLIST_CONSENT_TEXT, new Date().toISOString(), email)
+      .run()
+  } catch {
+    return unavailable('WAITLIST_WRITE_FAILED', 503)
+  }
+  // Always the same answer, whether the row was written, already existed, or
+  // was refused by the cap — anything else is an oracle.
+  return json({ ok: true })
+}
+
+/**
+ * Accept both the JSON the page sends and the `application/x-www-form-urlencoded`
+ * body a browser posts when JavaScript never loads. The form is a real <form>
+ * with a real action precisely so it still works then, which only holds if the
+ * Worker reads what a plain browser actually sends.
+ */
+async function waitlistSubmission(request) {
+  const contentType = request.headers.get('Content-Type') ?? ''
+  if (!contentType.includes('form-urlencoded')) return bodyOf(request)
+  try {
+    // The same byte bound as JSON, applied *before* parsing. `request.formData()`
+    // buffers and decodes the whole public request first, so a large body would
+    // cost memory and CPU on its way to being rejected anyway.
+    const text = await boundedText(request)
+    if (text === null) return null
+    const form = new URLSearchParams(text)
+    const consent = form.get('consent')
+    return {
+      email: form.get('email'),
+      // An unchecked box is absent entirely; a checked one sends "on".
+      consent: consent !== null && consent !== 'false',
+    }
+  } catch {
+    return null
+  }
+}
+
+/**
+ * A per-day, per-client fingerprint that cannot be reversed into an address.
+ *
+ * A plain SHA-256 of an IP is not anonymous: IPv4 is only 2^32 values, so the
+ * whole space can be hashed in minutes and the digest looked up. Keying it with
+ * a secret removes that — without the key there is no table to build.
+ *
+ * Returns null when no key is configured, which disables the cap rather than
+ * storing a value that only looks protective. Set it with:
+ *   wrangler secret put WAITLIST_SALT
+ */
+async function sourceFingerprint(request, env) {
+  const salt = env.WAITLIST_SALT
+  if (typeof salt !== 'string' || salt.length < 16) return null
+  const ip = request.headers.get('CF-Connecting-IP') ?? ''
+  if (!ip) return null
+  const key = await crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(salt),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign'],
+  )
+  const mac = await crypto.subtle.sign(
+    'HMAC',
+    key,
+    new TextEncoder().encode(`${ip}:${waitlistUtcDay()}`),
+  )
+  return [...new Uint8Array(mac)].map((byte) => byte.toString(16).padStart(2, '0')).join('')
+}
+
 export default {
   async fetch(request, env) {
     const pathname = new URL(request.url).pathname
+    if (isWaitlistRoute(pathname)) return handleWaitlist(request, env)
     if (!isLiveRoute(pathname)) return env.ASSETS.fetch(request)
     const enabled = liveJuryEnabled(env)
     const ready = enabled && Boolean(env.POOL_COORDINATOR) && Boolean(env.ROOMS)
