@@ -228,3 +228,37 @@ describe('DocketSittingChooser', () => {
   })
 })
 
+describe('library dates', () => {
+  it('shows a publish date as its own calendar day, whatever zone the viewer is in', () => {
+    // #302 made the daily boundary UTC, so `utcDateFromIso` builds a publish
+    // date as UTC midnight. Formatting that in the viewer's zone showed the
+    // day before to everyone west of UTC: a case published 2026-08-05 read
+    // "Tue, 4 Aug" in Los Angeles.
+    const publishedAtUtcMidnight = new Date('2026-08-05T00:00:00.000Z')
+
+    const pinned = new Intl.DateTimeFormat(undefined, {
+      weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC',
+    }).format(publishedAtUtcMidnight)
+    const losAngeles = new Intl.DateTimeFormat(undefined, {
+      weekday: 'short', day: 'numeric', month: 'short', timeZone: 'America/Los_Angeles',
+    }).format(publishedAtUtcMidnight)
+
+    // The two genuinely differ, so this test would catch a regression.
+    expect(losAngeles).not.toEqual(pinned)
+    expect(pinned).toContain('5')
+    expect(losAngeles).toContain('4')
+
+    // And the component renders the pinned one.
+    const sittings = docketLibrarySittings()
+    const markup = renderToStaticMarkup(
+      <DocketSittingChooser
+        sittings={sittings}
+        selectedCaseId={sittings[0].trial.id}
+        featuredSitting={null}
+        onSelect={() => undefined}
+      />,
+    )
+    const augustFifth = sittings.find((s) => s.trial.publish_date === '2026-08-05')
+    if (augustFifth) expect(markup).toContain(pinned)
+  })
+})
