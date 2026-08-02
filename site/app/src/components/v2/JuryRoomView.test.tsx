@@ -197,6 +197,15 @@ describe('JuryRoomView', () => {
     )
     expect(phaseNarratorCue('verdict')).toBe(REASONABLE_DOUBT_DIRECTION)
   })
+
+  /**
+   * Finding 04. The three verdict cards were filled emerald, red and amber.
+   * Beyond the red/green separability problem, green-for-acquit and
+   * red-for-convict paint a moral valence onto a threshold the case asks the
+   * player to apply honestly — and contradict the reveal, which says of its
+   * own answer that it is "an editorial comparison, not an objectively correct
+   * answer".
+   */
 })
 
 describe('JuryRoomView verdict sealing', () => {
@@ -257,6 +266,41 @@ describe('JuryRoomView verdict sealing', () => {
       expect(outcome).toBeTruthy()
       expect(sealedVerdict).toBe(verdict)
     }
+  })
+
+  /**
+   * Finding 04. The three verdict cards were filled emerald, red and amber.
+   * Beyond the red/green separability problem, green-for-acquit and
+   * red-for-convict paint a moral valence onto a threshold the case asks the
+   * player to apply honestly — and contradict the reveal, which says of its
+   * own answer that it is "an editorial comparison, not an objectively correct
+   * answer".
+   *
+   * Asserted at final vote, because that is the only phase in which the cards
+   * are rendered at all.
+   */
+  it('offers the three verdicts as identical neutral surfaces', () => {
+    const { root, container } = mountJuryRoom(vi.fn())
+    trackRoot(root)
+    advanceToFinalVote(container)
+
+    const choices = [...container.querySelectorAll('.verdict-choices button')]
+    expect(choices).toHaveLength(3)
+
+    // Every card is the same surface; none carries a verdict-specific colour.
+    const classNames = choices.map((node) => node.className.replace(/ verdict-pending/, ''))
+    expect(new Set(classNames).size).toBe(1)
+    for (const node of choices) {
+      expect(node.className).not.toMatch(/emerald|red|green/)
+      expect(node.getAttribute('aria-pressed')).toBe('false')
+    }
+
+    // The label carries the meaning, and selection is announced rather than
+    // signalled by fill alone.
+    const text = container.textContent ?? ''
+    expect(text).toContain('Not persuaded to convict')
+    expect(text).toContain('Persuaded beyond reasonable doubt')
+    expect(text).toContain('Unable to decide')
   })
 })
 

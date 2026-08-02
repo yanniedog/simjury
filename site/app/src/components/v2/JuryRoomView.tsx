@@ -762,7 +762,7 @@ export function JuryRoomView({
               type="button"
               aria-pressed={pendingVerdict === 'Not Guilty'}
               onClick={() => chooseVerdict('Not Guilty')}
-              className={`rounded-lg border border-emerald-700 bg-emerald-950/40 px-4 py-4 font-semibold text-emerald-300 transition hover:bg-emerald-900/40${pendingVerdict === 'Not Guilty' ? ' verdict-pending' : ''}`}
+              className={`verdict-choice${pendingVerdict === 'Not Guilty' ? ' verdict-pending' : ''}`}
             >
               <span className="block">
                 {pendingVerdict === 'Not Guilty' ? 'Tap again to seal' : 'Not persuaded to convict'}
@@ -773,7 +773,7 @@ export function JuryRoomView({
               type="button"
               aria-pressed={pendingVerdict === 'Guilty'}
               onClick={() => chooseVerdict('Guilty')}
-              className={`rounded-lg border border-red-800 bg-red-950/40 px-4 py-4 font-semibold text-red-300 transition hover:bg-red-900/40${pendingVerdict === 'Guilty' ? ' verdict-pending' : ''}`}
+              className={`verdict-choice${pendingVerdict === 'Guilty' ? ' verdict-pending' : ''}`}
             >
               <span className="block">
                 {pendingVerdict === 'Guilty' ? 'Tap again to seal' : 'Persuaded beyond reasonable doubt'}
@@ -784,7 +784,7 @@ export function JuryRoomView({
               type="button"
               aria-pressed={pendingVerdict === 'Undecided'}
               onClick={() => chooseVerdict('Undecided')}
-              className={`rounded-lg border border-amber-800 bg-amber-950/30 px-4 py-4 font-semibold text-amber-200 transition hover:bg-amber-900/30${pendingVerdict === 'Undecided' ? ' verdict-pending' : ''}`}
+              className={`verdict-choice${pendingVerdict === 'Undecided' ? ' verdict-pending' : ''}`}
             >
               <span className="block">
                 {pendingVerdict === 'Undecided' ? 'Tap again to seal' : 'Unable to decide'}
