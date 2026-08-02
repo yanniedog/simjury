@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
@@ -121,4 +121,21 @@ test('narration trial discovery and reads fail closed', () => {
   } finally {
     rmSync(root, { recursive: true })
   }
+})
+
+test('narration workflows rebuild for shared helpers and bundled intro trials', () => {
+  for (const workflow of ['natural-narration.yml', 'scylla-narration.yml']) {
+    const source = readFileSync(join(siteRoot, '..', '.github', 'workflows', workflow), 'utf8')
+    assert.match(source, /site\/scripts\/courtroom-lines\.mjs/)
+    assert.match(source, /site\/scripts\/docket-trials\.mjs/)
+    assert.match(source, /build-(kokoro|scylla)-jobs\|courtroom-lines\|docket-trials/)
+  }
+  const natural = readFileSync(
+    join(siteRoot, '..', '.github', 'workflows', 'natural-narration.yml'),
+    'utf8',
+  )
+  assert.equal(
+    natural.match(/\(dd-\[0-9\]\{4\}\|dd-intro\)\/trial\\\.json/g)?.length,
+    2,
+  )
 })
