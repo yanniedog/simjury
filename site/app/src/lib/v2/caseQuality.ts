@@ -793,7 +793,9 @@ export function checkDocketQueue(cases: DocketCase[]): QualityIssue[] {
  * exercise every selected profile; adding a new revision must never disable
  * corpus safety checks.
  */
-export function checkActiveCorpus(cases: DocketCase[]): QualityIssue[] {
+export function checkActiveCorpus(
+  cases: Array<Pick<DocketCase, 'id' | 'offence_code'>>,
+): QualityIssue[] {
   if (cases.length === 0) return []
 
   const issues: QualityIssue[] = []

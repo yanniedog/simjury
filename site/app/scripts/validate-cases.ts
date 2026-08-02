@@ -7,13 +7,12 @@
  * designed case can never reach a queue. An empty-but-present directory is a
  * legitimate pre-content state; a missing directory is a broken checkout.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
-import { dirname, join, resolve, sep } from 'node:path'
+import { readdirSync, readFileSync } from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { ZodType } from 'zod'
 import { caseSchema, type TrialCase } from '../src/lib/caseSchema'
 import { checkQueue, type QualityIssue } from '../src/lib/caseQuality'
-import { docketCaseSchema, type DocketCase } from '../src/lib/v2/caseSchema'
 import {
   checkDocketCase,
   checkDocketQueue,
@@ -26,54 +25,12 @@ import {
   formatDocketCoverage,
 } from '../src/lib/v2/runway'
 import { checkDynamics } from '../src/engine/dynamics'
+import { checkActiveMediaFiles, loadDocketFiles } from './docket-files'
 
 // Resolve relative to this script, not the process cwd, so it works the same
 // from CI (repo root) and from anywhere locally.
 const APP_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const PUBLIC_ROOT = resolve(APP_ROOT, 'public')
-
-function checkV3MediaFiles(
-  cases: DocketCase[],
-): Pick<QualityIssue, 'caseId' | 'message'>[] {
-  const issues: Pick<QualityIssue, 'caseId' | 'message'>[] = []
-
-  for (const trial of cases.filter(
-    (candidate) => candidate.gen_meta.prompt_version === 'dd-2026-v3',
-  )) {
-    if (!trial.media) {
-      issues.push({
-        caseId: trial.id,
-        message: 'v3 case is missing its media manifest',
-      })
-      continue
-    }
-    const media = [
-      ['cover', trial.media.cover.src],
-      ...Object.entries(trial.media.portraits ?? {}).map(([speakerId, asset]) => [
-        `portrait ${speakerId}`,
-        asset.src,
-      ]),
-    ]
-
-    for (const [label, src] of media) {
-      const publicPath = src.startsWith('/today/')
-        ? src.slice('/today/'.length)
-        : src.replace(/^\/+/, '')
-      const diskPath = resolve(PUBLIC_ROOT, publicPath)
-      if (
-        !diskPath.startsWith(`${PUBLIC_ROOT}${sep}`) ||
-        !existsSync(diskPath)
-      ) {
-        issues.push({
-          caseId: trial.id,
-          message: `${label} media file is missing: ${src}`,
-        })
-      }
-    }
-  }
-
-  return issues
-}
 
 interface Queue<T> {
   name: string
@@ -146,55 +103,49 @@ function main(): void {
     { name: 'cases', dir: join(APP_ROOT, 'cases'), schema: caseSchema, gate: checkQueue },
     errors,
   )
-  total += validateQueue<DocketCase>(
-    {
-      name: 'docket',
-      dir: join(APP_ROOT, 'docket'),
-      schema: docketCaseSchema,
-      // Design gate, then the deliberation-dynamics simulation: a docket case
-      // only ships if its room is alive (see src/engine/dynamics.ts).
-      gate: (cases) => {
-        // dd-intro stays off the daily publish/runway calendar and queue
-        // variety checks, but it must pass the same per-case design-quality
-        // and dynamics gates as every featured docket case.
-        const dailyCases = cases.filter((c) => c.id !== 'dd-intro')
-        const introCases = cases.filter((c) => c.id === 'dd-intro')
-        const publishDates = dailyCases.map((c) => c.publish_date)
-        const runwayError = docketRunwayError(publishDates)
-        const coverageError = docketCoverageError(publishDates)
-        // Print it whether or not it fails. The horizon gate can pass while
-        // most days open nothing new, and a number nobody sees is a number
-        // nobody acts on.
-        console.log(formatDocketCoverage(docketCoverage(publishDates)))
-        return [
-          ...(coverageError
-            ? [{ caseId: 'docket', message: coverageError, kind: 'design' as const }]
-            : []),
-          ...checkActiveCorpus(cases),
-          ...checkV3MediaFiles(cases),
-          ...checkDocketQueue(dailyCases),
-          ...introCases.flatMap((c) =>
-            checkDocketCase(c).map((message) => ({
-              caseId: c.id,
-              message,
-              kind: 'design' as const,
-            })),
-          ),
-          ...cases.flatMap((c) =>
-            checkDynamics(c).map((message) => ({
-              caseId: c.id,
-              message,
-              kind: 'design' as const,
-            })),
-          ),
-          ...(runwayError
-            ? [{ caseId: 'queue', message: runwayError }]
-            : []),
-        ]
-      },
-    },
-    errors,
-  )
+  const docket = loadDocketFiles(join(APP_ROOT, 'docket'))
+  errors.push(...docket.errors)
+  total += docket.v3Cases.length + docket.v4Cases.length
+  if (docket.errors.length === 0) {
+    const cases = docket.v3Cases
+    const activeCases = [...cases, ...docket.v4Cases]
+    // dd-intro stays off the daily publish/runway calendar and queue variety
+    // checks, but still passes per-case quality and dynamics gates.
+    const dailyCases = cases.filter((c) => c.id !== 'dd-intro')
+    const introCases = cases.filter((c) => c.id === 'dd-intro')
+    const publishDates = activeCases
+      .filter((c) => c.id !== 'dd-intro')
+      .map((c) => c.publish_date)
+    const runwayError = docketRunwayError(publishDates)
+    const coverageError = docketCoverageError(publishDates)
+    console.log(formatDocketCoverage(docketCoverage(publishDates)))
+    const issues = [
+      ...(coverageError
+        ? [{ caseId: 'docket', message: coverageError, kind: 'design' as const }]
+        : []),
+      ...checkActiveCorpus(activeCases),
+      ...checkActiveMediaFiles(activeCases, PUBLIC_ROOT),
+      ...checkDocketQueue(dailyCases),
+      ...introCases.flatMap((c) =>
+        checkDocketCase(c).map((message) => ({
+          caseId: c.id,
+          message,
+          kind: 'design' as const,
+        })),
+      ),
+      ...cases.flatMap((c) =>
+        checkDynamics(c).map((message) => ({
+          caseId: c.id,
+          message,
+          kind: 'design' as const,
+        })),
+      ),
+      ...(runwayError ? [{ caseId: 'queue', message: runwayError }] : []),
+    ]
+    issues.forEach((issue) =>
+      errors.push(`docket/${issue.caseId}: ${issue.message}`),
+    )
+  }
 
   if (errors.length > 0) {
     console.error(`Case validation failed (${errors.length} problem(s)):`)
