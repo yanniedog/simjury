@@ -181,7 +181,7 @@ describe('active media completeness', () => {
       [...loaded.v3Cases, ...loaded.v4Cases],
       join(APP_ROOT, 'public'),
     )).toEqual([])
-  })
+  }, 30_000)
 
   it('rejects cross-case traversal and a missing required portrait', () => {
     const loaded = loadDocketFiles(join(APP_ROOT, 'docket'))
@@ -194,5 +194,5 @@ describe('active media completeness', () => {
       expect.objectContaining({ message: expect.stringContaining('outside its case') }),
       expect.objectContaining({ message: expect.stringContaining('missing portrait') }),
     ]))
-  })
+  }, 30_000)
 })

@@ -1,8 +1,7 @@
-import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { docketCaseSchema } from '../lib/v2/caseSchema'
+import { loadDocketFiles } from '../../scripts/docket-files'
 import { makeDocketCase } from '../lib/v2/fixtures'
 import { checkDynamics, strategies } from './dynamics'
 
@@ -22,16 +21,19 @@ describe('checkDynamics', () => {
     expect(checkDynamics(makeDocketCase())).toEqual([])
   })
 
-  it.each(['dd-0006.json', 'dd-0032.json'])(
-    'passes authored serious-crime case %s',
-    (filename) => {
-      const raw = readFileSync(
-        join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'docket', filename),
-        'utf8',
-      )
-      expect(checkDynamics(docketCaseSchema.parse(JSON.parse(raw)))).toEqual([])
-    },
-  )
+  it('passes every discoverable authored V3 case', () => {
+    const docketDir = join(
+      dirname(fileURLToPath(import.meta.url)),
+      '..',
+      '..',
+      'docket',
+    )
+    const docket = loadDocketFiles(docketDir)
+    expect(docket.errors).toEqual([])
+    for (const trial of docket.v3Cases) {
+      expect(checkDynamics(trial), trial.id).toEqual([])
+    }
+  }, 30_000)
 
   it('flags a foregone-conclusion room', () => {
     const c = makeDocketCase()
