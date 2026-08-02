@@ -142,7 +142,20 @@ export function DocketShell({
   )
 }
 
-const dateFormatter = new Intl.DateTimeFormat(undefined, { weekday: 'short', day: 'numeric', month: 'short' })
+/**
+ * Sitting dates are UTC calendar dates, so they are formatted in UTC.
+ *
+ * `utcDateFromIso` builds a publish date as UTC midnight. Rendering that in the
+ * viewer's own zone shows the previous day to everyone west of UTC: a case
+ * published 2026-08-05 appeared in the library as "Tue, 4 Aug" in Los Angeles.
+ * A publish date is a calendar date, not an instant, so the zone is pinned.
+ */
+export const dateFormatter = new Intl.DateTimeFormat(undefined, {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+  timeZone: 'UTC',
+})
 
 function sittingStatus(sitting: DocketSitting): string {
   if (sitting.trial.id === INTRO_CASE_ID) {
