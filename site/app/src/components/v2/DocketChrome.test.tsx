@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { docketLibrarySittings, featuredDocketSitting, introSitting } from '../../lib/v2/cases'
 import { saveProgress } from '../../lib/storage'
 import { caseStorageId } from '../../lib/v2/caseRevision'
-import { DocketShell, DocketSittingChooser } from './DocketChrome'
+import { DocketShell, DocketSittingChooser, formatFilingDate } from './DocketChrome'
 
 function writableStorage() {
   const values = new Map<string, string>()
@@ -203,8 +203,13 @@ describe('DocketSittingChooser', () => {
     // The whole filing date is asserted, not just the prefix: `new Date(iso)`
     // parses a publish date as UTC midnight, so a zone west of UTC rendered the
     // day before — a case filed on the 28th showed as filed on the 27th.
-    expect(markup).toContain('Today’s sitting, filed Tue, 28 July — The Alibi That Spoke')
-    expect(markup).not.toContain('27 July')
+    expect(markup).toContain(
+      `Today’s sitting, filed ${formatFilingDate('2026-07-28')} — The Alibi That Spoke`,
+    )
+    // The day itself is what the UTC-parsing bug moved, so pin it directly
+    // rather than trusting a locale-specific rendering of the whole date.
+    expect(formatFilingDate('2026-07-28')).toContain('28')
+    expect(formatFilingDate('2026-07-28')).not.toContain('27')
     expect(markup).not.toContain('Today — The Alibi That Spoke')
     for (const trial of [intro!.trial, ...sittings.map(({ trial }) => trial)]) {
       expect(markup).toContain(trial.title)

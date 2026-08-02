@@ -155,7 +155,18 @@ function featuredLabel(
   const filed = sitting.trial.publish_date
   return filed === localDateKey(sitting.date)
     ? 'Today'
-    : `Today’s sitting, filed ${dateFormatter.format(localDateFromIso(filed))}`
+    : `Today’s sitting, filed ${formatFilingDate(filed)}`
+}
+
+/**
+ * The filing date as the library renders it.
+ *
+ * Exported so tests can assert the whole label without hard-coding a locale —
+ * `Intl` renders "Tue, 28 July" or "Tue, Jul 28" depending on the host, and an
+ * assertion on one of those spellings fails on the other machine.
+ */
+export function formatFilingDate(publishDate: string): string {
+  return dateFormatter.format(localDateFromIso(publishDate))
 }
 
 /** `YYYY-MM-DD` for a local date, without crossing into UTC. */
