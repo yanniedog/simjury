@@ -27,6 +27,7 @@ const REQUIRED_TOKENS = [
   '--ground', '--surface-1', '--surface-2', '--surface-3', '--sunken',
   '--ink', '--ink-2', '--ink-3',
   '--brass', '--brass-ink', '--focus-ring',
+  '--crown', '--defence',
   '--hairline', '--rule',
   '--radius-xs', '--radius-sm', '--radius-md', '--radius-lg',
   '--motion-fast', '--motion-base', '--ease',

@@ -42,6 +42,19 @@
   --brass-ink: #f5e3bd;
   --focus-ring: #f5d67a;
 
+  /* --- The two sides -----------------------------------------------------
+   * Prosecution and defence used to be salmon and emerald. Red against green
+   * is the pairing protanopes and deuteranopes cannot separate, and here the
+   * colour was doing real work — it was the fastest way to tell one advocate
+   * from the other.
+   *
+   * Amber against blue: thematically a warm Crown against a cool defence, and
+   * separable under every common form of colour vision. Colour is still never
+   * the only channel — the printed role label carries it too.
+   */
+  --crown: #d99a4e;
+  --defence: #82afc6;
+
   /* --- Lines -------------------------------------------------------------
    * One hairline for panel edges, one rule for stronger divisions.
    */

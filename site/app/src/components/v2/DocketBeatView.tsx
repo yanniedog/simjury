@@ -281,7 +281,7 @@ export function DocketBeatView({
                 <article
                   key={`${event.speaker}-${event.turnIndex}`}
                   aria-current={activeTurn === index ? 'true' : undefined}
-                  className={`speech-turn rounded-lg border p-4 ${witness ? 'ml-6 border-emerald-900/60 bg-emerald-950/20' : 'mr-6 border-red-900/60 bg-red-950/20'}${activeTurn === index ? ' speech-turn-active' : ''}`}
+                  className={`speech-turn rounded-lg border p-4 ${witness ? 'ml-6 turn-defence' : 'mr-6 turn-crown'}${activeTurn === index ? ' speech-turn-active' : ''}`}
                 >
                   <div className="flex items-start gap-4">
                     <SpeakerPortrait trial={trial} speakerId={event.speaker} />
