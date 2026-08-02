@@ -5,7 +5,7 @@ import { callGeminiCaseAgent } from './gemini-case-agent.mjs'
 
 const PHASES = ['draft', 'story_review', 'legal_review', 'repair']
 const TEXT_PATH = /^site\/app\/docket\/dd-\d{4}(?:\.json|\/(?:trial|analysis|legal-sheet|deliberation-pack)\.json)$/
-const MEDIA_PATH = /^site\/app\/public\/media\/dd-\d{4}\/(?:cover|characters\/[a-z0-9-]+|beats\/[a-z0-9-]+|context\/[a-z0-9-]+)\.webp$/
+const MEDIA_PATH = /^site\/app\/public\/media\/dd-\d{4}\/(?:cover|characters\/[A-Za-z0-9-]+|beats\/[A-Za-z0-9-]+|context\/[A-Za-z0-9-]+)\.webp$/
 const FORBIDDEN_KEYS = /^(?:cmd|command|commands|exec|executable|hook|hooks|run|script|shell)$/i
 const REVIEW_CHECKS = {
   legal_review: ['legal_coherence', 'admissibility', 'burden', 'competent_record', 'sensitivity'],
@@ -345,7 +345,8 @@ async function run() {
   const authorityPaths = ['CLAUDE.md', 'DAILY-PIVOT.md', 'docs/COMMISSION-BRIEF.md', 'docs/DAILY-CASES.md', 'docs/DAILY-PROMPT-PACK.md']
   const authorityDocuments = Object.fromEntries(authorityPaths.map((path) => [path, readFileSync(resolve(root, path), 'utf8')]))
   let prior
-  let spent = 0
+  const statePath = resolve(root, '.automation/docket-case-generation.json')
+  let spent = exists(statePath) ? Number(JSON.parse(readFileSync(statePath, 'utf8')).spent_usd ?? 0) : 0
   const totalBudget = config.maxCostUsd * dates.length
   const models = [config.models[0], config.models[2], config.models[1]]
   for (let index = 0; index < 3; index += 1) {

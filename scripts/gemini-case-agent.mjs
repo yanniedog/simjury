@@ -16,6 +16,15 @@ const TEXT_PRICES = {
 }
 const SAFETY_MARGIN = 1.25
 
+export function persistAttemptCost(root, cost) {
+  if (!Number.isFinite(cost) || cost <= 0) return
+  const path = join(root, '.automation/docket-case-generation.json')
+  let state
+  try { state = JSON.parse(readFileSync(path, 'utf8')) } catch (error) { if (error.code === 'ENOENT') return; throw error }
+  state.spent_usd = Number(state.spent_usd ?? 0) + cost
+  writeFileSync(path, `${JSON.stringify(state, null, 2)}\n`)
+}
+
 export function estimateTextCost(model, usage = {}) {
   const price = TEXT_PRICES[model]
   if (!price) throw new Error(`no conservative price is pinned for ${model}`)
@@ -131,7 +140,7 @@ async function postGemini(key, model, body, attempts, fetchImpl) {
   }
 }
 
-async function boundedResponseJson(response, limit) {
+export async function boundedResponseJson(response, limit) {
   const reader = response.body?.getReader()
   if (!reader) throw new Error('Gemini returned no response body')
   const chunks = []
@@ -140,7 +149,7 @@ async function boundedResponseJson(response, limit) {
     const { done, value } = await reader.read()
     if (done) break
     bytes += value.byteLength
-    if (bytes > limit) { await reader.cancel(); throw new Error('Gemini response exceeds output byte cap') }
+    if (bytes > limit) { await reader.cancel(); const error = new Error('Gemini response exceeds output byte cap'); error.nonRetryable = true; throw error }
     chunks.push(value)
   }
   return JSON.parse(Buffer.concat(chunks).toString('utf8'))
@@ -151,11 +160,17 @@ async function geminiJson(key, model, prompt, maxTokens, maxBytes, attempts, fet
     contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: 'application/json', maxOutputTokens: maxTokens },
   }, attempts, fetchImpl)
   if (!response.ok) throw new Error(`Gemini ${model} returned HTTP ${response.status}`)
-  const body = await boundedResponseJson(response, maxBytes)
+  let body
+  try { body = await boundedResponseJson(response, maxBytes) }
+  catch (error) {
+    error.estimatedCost = estimateTextCost(model, { promptTokenCount: Math.ceil(prompt.length / 4), candidatesTokenCount: maxTokens })
+    throw error
+  }
   const text = body.candidates?.[0]?.content?.parts?.map((part) => part.text ?? '').join('')
-  if (!text) throw new Error(`Gemini ${model} returned no JSON text`)
   const usage = body.usageMetadata ?? {}
-  const cost = estimateTextCost(model, usage)
+  const hasUsage = Object.values(usage).some((value) => Number.isFinite(Number(value)) && Number(value) > 0)
+  const cost = estimateTextCost(model, hasUsage ? usage : { promptTokenCount: Math.ceil(prompt.length / 4), candidatesTokenCount: maxTokens })
+  if (!text) { const error = new Error(`Gemini ${model} returned no JSON text`); error.estimatedCost = cost; throw error }
   try { return { value: parseModelJson(text), cost } }
   catch (error) { error.estimatedCost = cost; throw error }
 }
@@ -211,7 +226,9 @@ async function imageFile(key, model, asset, maxBytes, attempts, fetchImpl, conve
   const style = asset.path.includes('/beats/') ? 'ambiguous contemporary evidence reconstruction, no readable text' : asset.path.endsWith('/cover.webp') ? 'juror-eye contemporary charcoal and ink court sketch, selective watercolor' : 'individual contemporary courtroom portrait, charcoal and ink, natural expression'
   const response = await postGemini(key, model, { contents: [{ parts: [{ text: `Fictional people and events. ${style}. ${asset.prompt} No logo, watermark, public figure, wig, gavel, gore, sepia, or verdict signalling.` }] }], generationConfig: { responseModalities: ['IMAGE'], responseFormat: { image: { aspectRatio: '3:2', imageSize: '1K' } } } }, attempts, fetchImpl)
   if (!response.ok) throw new Error(`Gemini image model returned HTTP ${response.status}`)
-  const body = await boundedResponseJson(response, maxBytes)
+  let body
+  try { body = await boundedResponseJson(response, maxBytes) }
+  catch (error) { error.estimatedCost = 0.09; throw error }
   const cost = estimateImageCost(body.usageMetadata)
   const part = body.candidates?.[0]?.content?.parts?.find((item) => item.inlineData?.data)
   if (!part) { const error = new Error('Gemini image model returned no image'); error.estimatedCost = cost; throw error }
@@ -239,8 +256,11 @@ export async function callGeminiCaseAgent(config, request, root, { fetchImpl = f
   let attemptedCost = 0
   for (let attempt = 1; attempt <= config.maxAttempts; attempt += 1) {
     let result
+    let recorded = false
     try {
       result = await geminiJson(config.token, request.model, `${basePrompt}${correction}`, config.maxTokens, config.maxOutputBytes, 1, fetchImpl)
+      persistAttemptCost(root, result.cost)
+      recorded = true
       const files = rebind(result.value.files, request, config)
       if (REVIEW_KEYS[request.phase]?.some((key) => result.value.review?.approved !== true || result.value.review.checks?.[key] !== true)) throw new Error(`${request.phase} must approve every required check`)
       if (request.phase === 'repair') assertRepairDispositions(result.value, request.feedback)
@@ -248,8 +268,10 @@ export async function callGeminiCaseAgent(config, request, root, { fetchImpl = f
       generated = { ...result, cost: attemptedCost + result.cost, files }
       break
     } catch (error) {
+      if (!recorded) persistAttemptCost(root, error.estimatedCost ?? 0)
       attemptedCost += result?.cost ?? error.estimatedCost ?? 0
       if (attemptedCost >= request.limits.remaining_cost_usd) throw new Error('Gemini semantic retries exhausted the cost cap')
+      if (error.nonRetryable) throw error
       if (attempt === config.maxAttempts) throw error
       correction = `\nYour previous response was rejected by trusted validation: ${error.message}. Return a complete corrected response.`
     }
@@ -264,10 +286,12 @@ export async function callGeminiCaseAgent(config, request, root, { fetchImpl = f
     for (const asset of assets) {
       let image
       for (let attempt = 1; attempt <= config.maxAttempts; attempt += 1) {
-        try { image = await imageFile(config.token, config.imageModel, asset, config.maxOutputBytes, 1, fetchImpl, convert); break }
+        try { image = await imageFile(config.token, config.imageModel, asset, config.maxOutputBytes, 1, fetchImpl, convert); persistAttemptCost(root, image.cost); break }
         catch (error) {
+          persistAttemptCost(root, error.estimatedCost ?? 0)
           totalCost += error.estimatedCost ?? 0
           if (totalCost >= request.limits.remaining_cost_usd) throw new Error('Gemini image retries exhausted the cost cap')
+          if (error.nonRetryable) throw error
           if (attempt === config.maxAttempts) throw error
           asset.prompt += ` Previous output was rejected: ${error.message}. Return one valid image.`
         }

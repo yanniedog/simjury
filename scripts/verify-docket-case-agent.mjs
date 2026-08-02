@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { assertDispositions, assertGenerationMetadata, assertSafeResponse, assertWebpStructure, boundedJson, readConfig, requestIdempotencyKey, writeSafeFiles } from './docket-case-agent.mjs'
 import { resumeCandidate, unreservedDates } from './docket-commission-plan.mjs'
-import { assertRepairDispositions, callGeminiCaseAgent, caseIdForDate, estimateImageCost, estimateTextCost, stableHash } from './gemini-case-agent.mjs'
+import { assertRepairDispositions, boundedResponseJson, callGeminiCaseAgent, caseIdForDate, estimateImageCost, estimateTextCost, persistAttemptCost, stableHash } from './gemini-case-agent.mjs'
 
 const env = {
   CASE_GENERATION_ENABLED: 'true', CASE_AGENT_ENDPOINT: 'https://agent.invalid/generate', CASE_AGENT_TOKEN: 'secret',
@@ -38,6 +38,10 @@ assert.throws(() => readConfig({ ...env, CASE_STORY_REVIEW_MODEL: 'legal-1' }), 
 assert.throws(() => readConfig({ ...env, CASE_AGENT_ENDPOINT: 'http://agent.invalid' }), /must use HTTPS/)
 assert.doesNotThrow(() => readConfig({ ...env, CASE_AGENT_ENDPOINT: 'gemini://generateContent' }))
 assert.deepEqual(assertSafeResponse(response, expected, config).paths, response.files.map((file) => file.path))
+assert.doesNotThrow(() => assertSafeResponse({
+  ...response,
+  files: [{ ...response.files[1], path: 'site/app/public/media/dd-0042/characters/J-01.webp' }],
+}, expected, config), 'current uppercase juror IDs must remain valid media filenames')
 
 const root = mkdtempSync(join(tmpdir(), 'simjury-case-agent-'))
 writeSafeFiles(response, root, expected, config)
@@ -128,6 +132,15 @@ for (const dispatched of ['ci.yml', 'pr-bot-feedback-check.yml', 'pr-request-bot
 assert.ok(workflow.includes("group: docket-supply-${{ github.event.pull_request.number || 'commission' }}"), 'unrelated PR repairs must not share a global concurrency lock')
 assert.ok(workflow.includes('gh pr view "$EVENT_PR"'), 'review events must resume their triggering PR')
 assert.ok(workflow.includes('gh pr list --state open --base main --label docket-generation'), 'scheduled commissions must inspect only default-branch generation PRs')
+assert.ok(workflow.includes('DATES="${DATES%%,*}"'), 'each PR must reserve one case so per-case output and cost caps remain exact')
+assert.ok(workflow.includes('gh workflow run docket-supply.yml --ref main'), 'a completed commission must queue the next uncovered date')
+const firstUpdate = workflow.indexOf('gh pr update-branch "$PR"')
+const firstCiDispatch = workflow.indexOf('gh workflow run ci.yml --ref "$BRANCH"')
+assert.ok(firstUpdate !== -1 && firstUpdate < firstCiDispatch, 'generated branches must be synchronized with main before required checks are dispatched')
+const repairDisposition = workflow.indexOf('[ "$status" = Deferred ] || gh api graphql')
+const repairFeedbackDispatch = workflow.lastIndexOf('gh workflow run pr-bot-feedback-check.yml --ref "$BRANCH"')
+assert.ok(repairDisposition !== -1 && repairDisposition < repairFeedbackDispatch, 'the repair feedback gate must run after thread replies and resolutions')
+assert.ok(workflow.includes('record failed generation spend'), 'billed fail-closed attempts must be committed for later resumptions')
 assert.deepEqual(unreservedDates(
   ['2026-08-08', '2026-08-09', '2026-08-10'],
   [{ dates: ['2026-08-08'] }, { dates: ['2026-08-09', '2026-08-09'] }],
@@ -147,6 +160,17 @@ assert.ok(
 )
 await assert.rejects(() => boundedJson(new Response('{"too":"large"}'), 4), /exceeds byte cap/)
 assert.deepEqual(await boundedJson(new Response('{"ok":true}'), 64), { ok: true })
+await assert.rejects(
+  () => boundedResponseJson(new Response('{"too":"large"}'), 4),
+  (error) => error.nonRetryable === true && /output byte cap/.test(error.message),
+  'an oversized paid provider response must stop instead of being retried without usage metadata',
+)
+
+const spendRoot = mkdtempSync(join(tmpdir(), 'simjury-case-spend-'))
+mkdirSync(join(spendRoot, '.automation'), { recursive: true })
+writeFileSync(join(spendRoot, '.automation/docket-case-generation.json'), '{"phase":"reserved","spent_usd":1.25}\n')
+persistAttemptCost(spendRoot, 0.75)
+assert.equal(JSON.parse(readFileSync(join(spendRoot, '.automation/docket-case-generation.json'), 'utf8')).spent_usd, 2, 'billed attempt cost must survive a failed workflow run')
 
 const geminiRoot = join(import.meta.dirname, '..')
 const geminiFiles = [
