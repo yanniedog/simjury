@@ -1,40 +1,113 @@
 # SimJury Rollout Roadmap
 
-## The Daily Docket
-
 The Daily Docket is SimJury's only product track: fictional, contemporary cases
-targeting a 20-minute sitting (19–21 minutes for V4) at `simjury.com/today`,
-with a deterministic, client-side interactive jury room.
+at `simjury.com/today`, played end to end in about twenty minutes with a
+deterministic, client-side jury room.
 
-The delivery ladder and product constraints are recorded in
-[`DAILY-PIVOT.md`](DAILY-PIVOT.md). Case design and validation live in
-[`docs/DAILY-CASES.md`](docs/DAILY-CASES.md).
+Product constraints and the owner decision record live in
+[`DAILY-PIVOT.md`](DAILY-PIVOT.md); case design and validation in
+[`docs/DAILY-CASES.md`](docs/DAILY-CASES.md). This file is the rollout plan: what
+is true now, what is next, and how each item is known to be done.
 
-## Removed tracks
+## Where the product actually is (2026-08-02)
 
-Owner decision, 2026-07-29: the Android/JVM application and real
-historical-case track were removed from the repository. They are not parked or
-deferred and must not be reintroduced. Old `/play` and `/install` routes redirect
-to the Daily Docket landing path.
+The delivery ladder D0–D9 in `DAILY-PIVOT.md` is complete except its last content
+step. Everything the ladder promised mechanically is shipped and live: the case
+pipeline and gates, the deliberation engine, the courtroom reader, the jury room
+with persuasion, reveal and sharing, the live-jury rooms, the site cutover, and
+the email waitlist.
 
-`archive/daily-v1/` remains as provenance for the retired fictional Victorian
-daily docket and is not a shipped product surface.
+The content did not follow.
 
-## Current priorities
+| Measure | Value |
+| --- | --- |
+| Cases in the docket | 7 (one is the intro) |
+| Days in the next 14 that open a new case | **3** |
+| Longest run on a single case | **4 days**, rising to 5 later in the month |
+| Last case in the docket | **2026-08-18**, after which nothing new is ever shown |
+| Cases on the V4 schema | **0 of 7** |
 
-1. Maintain at least a fourteen-day fictional case runway behind schema, design,
-   banned-token, jury-floor, and deliberation-dynamics gates.
-2. Keep the complete first-time and returning-player journeys listenable,
-   accessible, and low-friction.
-3. Preserve static delivery for ordinary and solo traffic while keeping the
-   live-jury Worker and its short-lived room state inside the strict allowlist.
-4. Ship small, reviewable PRs through the required CI and bot gates.
+`caseForDate` serves the newest case published on or before today, so a docket
+with gaps re-serves a trial the player has already sat through. The product is
+named The Daily Docket and currently opens a new case roughly twice a week.
+
+This is the plan's central problem. Everything below is ordered by it.
+
+## Priorities
+
+### 1. Case supply — the only thing currently blocking the product
+
+Nothing else changes the experience while the docket opens a new case on three
+days in fourteen. A returning player finds the trial they finished yesterday,
+and on 2026-08-19 every player finds the same case indefinitely.
+
+It is also now a promise. The landing page invites people to *"Hear when a new
+case is filed"*, and the waitlist that collects those addresses is live. Asking
+people to come back is only reasonable if there is something to come back to.
+
+**Done looks like:** a new case every day, fourteen days ahead, sustained — the
+`dd-0001…dd-0014` launch docket D7 called for, and a working cadence that
+replenishes it.
+
+**Enforced by:** `validate:cases` prints coverage on every run and fails on
+regression. The floor is a ratchet: raise `MIN_DOCKET_COVERAGE_DAYS` toward 14 as
+cases land, so the docket cannot quietly thin out again.
+
+```text
+docket coverage: 3/14 days open a new case — 4 day(s) in a row on the same case at worst
+```
+
+### 2. Migrate the slate to V4
+
+`DAILY-PIVOT.md` is explicit that V3 compatibility is transitional and not the
+target for new cases, yet every shipped case is V3. The 19–21 minute budget is a
+hard design constraint that no case in the docket is currently held to.
+
+**Done looks like:** new cases are authored V4 only, and the V3 slate is either
+repaired under `dd-2026-v3-20min` or migrated.
+
+**Enforced by:** the computed 19–21 minute window; authors cannot declare a
+duration.
+
+### 3. Make the repeat day honest
+
+Until (1) is solved, some days re-serve yesterday's case. The page currently
+presents it as though it were new. A player who has already returned a verdict
+should be told what they are looking at and offered the case library, rather
+than left to work out that nothing changed.
+
+**Done looks like:** a returning player on a repeat day sees that it is a repeat,
+and has somewhere to go.
+
+This is a stopgap. It stops being needed the moment (1) is true, and it must not
+become the reason (1) feels less urgent.
+
+### 4. Keep the surface honest and bounded
+
+Standing work rather than a milestone: ordinary and solo traffic stays static;
+only `/api/live/*`, `/api/waitlist` and `/discord/interactions` reach the Worker;
+player-facing claims match what the code stores. `guard:cloudflare` pins the
+route list, the D1 binding and the schema file.
+
+## Not being done
+
+Recorded so they are not rediscovered as ideas:
+
+- **Android/JVM and real historical cases** — removed by the owner on 2026-07-29.
+  Not parked, not deferred. `archive/daily-v1/` is provenance, not a case source.
+- **Accounts and login** — the waitlist deliberately neither creates nor implies
+  one. A separate track if it ever happens.
+- **Sending mail from the Worker** — export the list instead. A mail credential
+  in the Worker that serves the site widens the blast radius of the whole
+  deployment for a job that runs a few times a year.
+- **Runtime AI** — case generation happens in PRs, never during play.
 
 ## PR discipline
 
 | Rule | Rationale |
-|------|-----------|
-| Max about 400 changed lines per PR | Reviewable; CI fast |
+| --- | --- |
+| About 400 changed lines per PR | Reviewable; CI fast |
 | One concern per PR | Clear rollback |
 | Squash merge to `main` | Linear history |
-| Wait for all required gates | No unresolved review feedback |
+| Target the default branch, always | A PR based on a feature branch merges unreviewed |
+| Let an in-flight review land before merging | Auto-merge waits only for *required* checks, so an armed PR can outrun the review |
