@@ -53,7 +53,7 @@ export function DocketVerdict({
         </h1>
       </div>
 
-      <NarratorCue text={phaseCue} active={activeSpeaker === 'narrator'} />
+      <NarratorCue text={phaseCue} narration={narration} active={activeSpeaker === 'narrator'} />
 
       {activeSpeaker && (
         <p className="speaker-focus text-xs text-amber-200/80" aria-live="polite">

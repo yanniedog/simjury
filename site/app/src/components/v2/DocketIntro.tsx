@@ -55,7 +55,11 @@ export function DocketIntro({
         <p className="text-sm text-neutral-400">{trial.setting}</p>
       </div>
 
-      <NarratorCue text={`${phaseCue} ${sceneCue}`} active={narratorActive} />
+      {/* The narrator still speaks the scene — it is spoken above — but the
+          caption shows only the phase cue. `sceneCue` restates the setting
+          paragraph directly above it and the charge that sits in the rail, and
+          a cue never repeats text already on screen. */}
+      <NarratorCue text={phaseCue} narration={narration} active={narratorActive} />
 
       {advisory && (
         <aside
@@ -85,13 +89,8 @@ export function DocketIntro({
         </div>
       </div>
 
-      <div className="briefing-charge rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
-        <p className="text-xs uppercase tracking-wider text-neutral-500">
-          The charge
-        </p>
-        <p className="mt-1 text-neutral-200">{trial.charge}</p>
-      </div>
-
+      {/* The charge is not repeated here. It lives in the rail, where it stays
+          visible for the whole sitting rather than only on the briefing. */}
       <div className="proof-elements">
         <p className="text-xs uppercase tracking-wider text-neutral-500">
           To convict, the prosecution must prove
