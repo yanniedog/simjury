@@ -11,24 +11,24 @@ import {
 describe('docketRunwayError', () => {
   const today = new Date('2026-07-23T12:00:00Z')
 
-  it('accepts the exact 14-day boundary', () => {
+  it('accepts the exact end of the seven-date window', () => {
     expect(
-      docketRunwayError(['2026-08-05', '2026-08-06'], today),
+      docketRunwayError(['2026-07-29'], today),
     ).toBeNull()
-    expect(MIN_DOCKET_RUNWAY_DAYS).toBe(14)
+    expect(MIN_DOCKET_RUNWAY_DAYS).toBe(7)
   })
 
   it('rejects an expired runway with an actionable date', () => {
-    expect(docketRunwayError(['2026-07-15', '2026-08-05'], today)).toBe(
-      'docket runway expired: latest publish_date is 2026-08-05; ' +
-        'requires at least 14 days through 2026-08-06 (today 2026-07-23, UTC)',
+    expect(docketRunwayError(['2026-07-15', '2026-07-28'], today)).toBe(
+      'docket runway expired: latest publish_date is 2026-07-28; ' +
+        'requires 7 covered dates through 2026-07-29 (today 2026-07-23, UTC)',
     )
   })
 
   it('rejects an empty docket', () => {
     expect(docketRunwayError([], today)).toBe(
       'docket runway expired: latest publish_date is none; ' +
-        'requires at least 14 days through 2026-08-06 (today 2026-07-23, UTC)',
+        'requires 7 covered dates through 2026-07-29 (today 2026-07-23, UTC)',
     )
   })
 
@@ -50,14 +50,14 @@ describe('docket coverage', () => {
 
   it('counts the days that open a new case, not the days that render one', () => {
     // The horizon gate passes on this exact input, because the newest case sits
-    // sixteen days out. A player still meets a new trial on three days in
-    // fourteen — that difference is the whole reason this exists.
+    // sixteen days out. A player still meets a new trial on one day in the
+    // rolling week — that difference is the whole reason this exists.
     expect(docketRunwayError(LIVE, on('2026-08-02'))).toBeNull()
 
     const coverage = docketCoverage(LIVE, on('2026-08-02'))
-    expect(coverage.covered).toBe(3)
-    expect(coverage.window).toBe(14)
-    expect(coverage.uncovered).toHaveLength(11)
+    expect(coverage.covered).toBe(1)
+    expect(coverage.window).toBe(7)
+    expect(coverage.uncovered).toHaveLength(6)
   })
 
   it('reports how long a returning player is served the same case', () => {
@@ -69,8 +69,8 @@ describe('docket coverage', () => {
     // Past the last case the run just keeps going, which is the more important
     // number: after 2026-08-18 the docket has nothing further to show at all.
     const pastTheEnd = docketCoverage(LIVE, on('2026-08-13'))
-    expect(pastTheEnd.longestRepeat).toBe(9)
-    expect(formatDocketCoverage(pastTheEnd)).toContain('9 day(s) in a row')
+    expect(pastTheEnd.longestRepeat).toBe(5)
+    expect(formatDocketCoverage(pastTheEnd)).toContain('5 day(s) in a row')
   })
 
   it('calls a genuinely daily docket daily', () => {
@@ -79,27 +79,27 @@ describe('docket coverage', () => {
       return day.toISOString().slice(0, 10)
     })
     const coverage = docketCoverage(daily, on('2026-08-02'))
-    expect(coverage.covered).toBe(14)
+    expect(coverage.covered).toBe(7)
     expect(coverage.uncovered).toEqual([])
     expect(coverage.longestRepeat).toBe(1)
     expect(formatDocketCoverage(coverage)).toContain('a new case every day')
   })
 
   it('fails only when coverage gets worse, so a backlog does not block every PR', () => {
-    // Three covered days clears the current floor of three.
+    // One covered date clears the temporary bootstrap floor.
     expect(docketCoverageError(LIVE, on('2026-08-02'))).toBeNull()
 
     // Losing one is a regression and must be caught.
     const dropped = LIVE.filter((date) => date !== '2026-08-05')
     const error = docketCoverageError(dropped, on('2026-08-02'))
-    expect(error).toContain('fell to 2 of the next 14 days')
+    expect(error).toContain('fell to 0 of the next 7 days')
     expect(error).toContain('2026-08-05')
   })
 
   it('treats an empty docket as no coverage at all', () => {
     const coverage = docketCoverage([], on('2026-08-02'))
     expect(coverage.covered).toBe(0)
-    expect(coverage.longestRepeat).toBe(14)
+    expect(coverage.longestRepeat).toBe(7)
     expect(docketCoverageError([], on('2026-08-02'))).toContain('fell to 0')
   })
 

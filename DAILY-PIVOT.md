@@ -28,11 +28,13 @@ Owner decisions, recorded verbatim:
     tallies stay hidden until the judge reads the result. The room's verdict is earned,
     not scripted. Deliberation and narration use no runtime AI. Solo state stays
     on-device; live human rooms may retain short-lived room state.
-3. **Case supply is LLM-drafted batches behind hardened CI gates, with human
-   spot-checks.** This deliberately relaxes simjury-daily's "a human reads every case"
-   rule (owner decision, 2026-07-13). The gates — schema, design-quality, jury floors,
-   deliberation-dynamics simulation, banned-token scan, queue rules, ≥14-day runway —
-   are the primary defence; `gen_meta` records model, prompt version, and reviewer.
+3. **Case supply is agent-drafted behind hardened CI gates.** Owner decision
+   2026-08-02 supersedes the earlier mandatory human spot-check: drafting,
+   independent editorial passes, legal clarity, sensitivity, media, narration
+   and review-feedback fixes are agent-owned. Generated work still lands only
+   through pull requests; deterministic validation and resolved bot feedback are
+   the merge bar. A rolling seven-date window covers today through today + 6 UTC;
+   `gen_meta` records the real model, prompt version and review passes.
 4. **Android/JVM and real historical-case tracks removed (owner, 2026-07-29).**
    Their code, content, sourcing material, build/release automation, and installer
    were deleted and must not be reintroduced. Old `/play` and `/install` URLs
