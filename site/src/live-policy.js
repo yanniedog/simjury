@@ -5,7 +5,8 @@ export const WAITLIST_ROUTE = '/api/waitlist'
 
 export const WAITLIST_LIMITS = Object.freeze({
   emailCharacters: 254, // RFC 5321 maximum length of a forward path
-  signupsPerIpPerDay: 5,
+  requestsPerSourcePerMinute: 2,
+  requestsPerLocationPerMinute: 5,
 })
 
 /**

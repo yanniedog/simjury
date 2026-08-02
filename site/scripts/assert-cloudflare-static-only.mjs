@@ -1,13 +1,19 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { WAITLIST_LIMITS } from '../src/live-policy.js'
 
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 const config = JSON.parse(readFileSync(join(siteRoot, 'wrangler.json'), 'utf8'))
+const workerPath = join(siteRoot, 'src', 'worker.js')
+const waitlistSchemaPath = join(siteRoot, 'schema', 'waitlist.sql')
+const workerSource = existsSync(workerPath) ? readFileSync(workerPath, 'utf8') : ''
+const waitlistSchema = existsSync(waitlistSchemaPath) ? readFileSync(waitlistSchemaPath, 'utf8') : ''
 const failures = []
 const allowedTopLevel = new Set([
   '$schema', 'name', 'main', 'compatibility_date', 'workers_dev', 'preview_urls',
-  'assets', 'durable_objects', 'migrations', 'vars', 'observability', 'd1_databases',
+  'assets', 'durable_objects', 'migrations', 'vars', 'observability', 'ratelimits',
+  'd1_databases',
 ])
 const allowedAssets = new Set([
   'directory', 'binding', 'run_worker_first', 'html_handling', 'not_found_handling',
@@ -17,6 +23,18 @@ const allowedAssets = new Set([
 // under the amended allowlist in DAILY-PIVOT.md.
 const expectedRoutes = ['/api/live/*', '/api/waitlist', '/discord/interactions']
 const expectedD1 = [['WAITLIST', 'simjury-waitlist']]
+const expectedRateLimits = [
+  {
+    name: 'WAITLIST_SOURCE_LIMITER',
+    namespace_id: '52710431',
+    simple: { limit: WAITLIST_LIMITS.requestsPerSourcePerMinute, period: 60 },
+  },
+  {
+    name: 'WAITLIST_GLOBAL_LIMITER',
+    namespace_id: '52710432',
+    simple: { limit: WAITLIST_LIMITS.requestsPerLocationPerMinute, period: 60 },
+  },
+]
 const expectedBindings = [
   ['POOL_COORDINATOR', 'PoolCoordinatorDO'],
   ['FAIRNESS', 'FairnessDO'],
@@ -44,6 +62,9 @@ if (JSON.stringify(config.assets?.run_worker_first) !== JSON.stringify(expectedR
 if (JSON.stringify(Object.keys(config.vars ?? {})) !== '["LIVE_JURY_ENABLED"]'
   || !['true', 'false'].includes(config.vars?.LIVE_JURY_ENABLED)) {
   failures.push('LIVE_JURY_ENABLED must be the only plain-text Worker variable')
+}
+if (JSON.stringify(config.ratelimits) !== JSON.stringify(expectedRateLimits)) {
+  failures.push('Waitlist rate limits must match the bounded source and location allowlist')
 }
 const actualBindings = (config.durable_objects?.bindings ?? [])
   .map(({ name, class_name: className, ...extra }) => {
@@ -88,10 +109,19 @@ const actualD1 = (config.d1_databases ?? []).map(
 if (JSON.stringify(actualD1) !== JSON.stringify(expectedD1)) {
   failures.push('D1 bindings do not match the waitlist allowlist')
 }
-if (!existsSync(join(siteRoot, 'schema', 'waitlist.sql'))) {
+if (!existsSync(waitlistSchemaPath)) {
   failures.push('schema/waitlist.sql is required so the D1 table is reproducible')
 }
-if (!existsSync(join(siteRoot, 'src', 'worker.js'))) failures.push('Worker source is required')
+const waitlistHandler = workerSource.match(
+  /async function handleWaitlist[\s\S]*?async function waitlistSubmission/,
+)?.[0] ?? ''
+if (/\bSELECT\b|COUNT\s*\(/i.test(waitlistHandler)) {
+  failures.push('The public waitlist handler must not scan or count D1 rows')
+}
+if (/CREATE\s+INDEX[^;]*source_day_hash/i.test(waitlistSchema)) {
+  failures.push('source_day_hash must not have a write-amplifying D1 index')
+}
+if (!existsSync(workerPath)) failures.push('Worker source is required')
 for (const file of ['_headers', '_redirects']) {
   if (!existsSync(join(siteRoot, 'public', file))) failures.push(`public/${file} is required`)
 }
@@ -100,4 +130,4 @@ if (failures.length) {
   console.error(`Cloudflare live-runtime guard failed:\n- ${failures.join('\n- ')}`)
   process.exit(1)
 }
-console.log('Cloudflare guard passed: static-first with only bounded live-jury routes, the waitlist route, SQLite Durable Objects and one D1 database.')
+console.log('Cloudflare guard passed: static-first with bounded live-jury routes, a rate-limited waitlist, SQLite Durable Objects and one D1 database.')
