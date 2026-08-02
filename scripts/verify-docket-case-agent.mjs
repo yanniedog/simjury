@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { assertDispositions, assertGenerationMetadata, assertSafeResponse, assertWebpStructure, boundedJson, readConfig, requestIdempotencyKey, writeSafeFiles } from './docket-case-agent.mjs'
 import { resumeCandidate, unreservedDates } from './docket-commission-plan.mjs'
+import { callGeminiCaseAgent } from './gemini-case-agent.mjs'
 
 const env = {
   CASE_GENERATION_ENABLED: 'true', CASE_AGENT_ENDPOINT: 'https://agent.invalid/generate', CASE_AGENT_TOKEN: 'secret',
@@ -135,5 +136,42 @@ assert.ok(
 )
 await assert.rejects(() => boundedJson(new Response('{"too":"large"}'), 4), /exceeds byte cap/)
 assert.deepEqual(await boundedJson(new Response('{"ok":true}'), 64), { ok: true })
+
+const geminiRoot = join(import.meta.dirname, '..')
+const geminiFiles = [
+  ['trial', { id: 'placeholder', publish_date: '2000-01-01', media: { cover: { src: '/today/media/dd-0043/cover.webp', alt: 'A neutral courtroom scene', caption: 'Fictional court sketch', kind: 'court_sketch' } } }],
+  ['analysis', {}], ['legal-sheet', { approvals: {} }], ['deliberation-pack', {}],
+].map(([name, value]) => ({ path: `site/app/docket/dd-0043/${name}.json`, content: JSON.stringify(value) }))
+const geminiReply = (phase, model, withReview = false) => new Response(JSON.stringify({
+  candidates: [{ content: { parts: [{ text: JSON.stringify({
+    files: geminiFiles,
+    ...(withReview ? { review: { approved: true, checks: Object.fromEntries((phase === 'story_review' ? ['hook', 'both_sides', 'fair_reversal', 'specificity', 'listenability', 'discussion', 'originality', 'sensitivity'] : []).map((key) => [key, true])) } } : {}),
+  }) }] } }], usageMetadata: { promptTokenCount: 100, candidatesTokenCount: 200 },
+}), { status: 200, headers: { 'content-type': 'application/json' } })
+const geminiConfig = { ...config, endpoint: 'gemini://generateContent', token: 'gemini-secret', provider: 'google-gemini', imageModel: 'gemini-image', imageLicense: 'Google Gemini API output terms' }
+const draftResult = await callGeminiCaseAgent(geminiConfig, {
+  phase: 'draft', dates: ['2026-08-09'], draft_pr: 400, model: config.models[0],
+  limits: { remaining_cost_usd: 25 }, authority_documents: {},
+}, geminiRoot, { fetchImpl: async () => geminiReply('draft', config.models[0]) })
+const reboundTrial = JSON.parse(draftResult.files.find(({ path }) => path.endsWith('/trial.json')).content)
+assert.equal(reboundTrial.id, 'dd-0043')
+assert.equal(reboundTrial.publish_date, '2026-08-09')
+assert.equal(reboundTrial.gen_meta.batch_pr, '400')
+assert.match(JSON.parse(draftResult.files.find(({ path }) => path.endsWith('/analysis.json')).content).case_revision, /^dd-0043@[a-f0-9]{8}$/)
+let semanticCalls = 0
+await assert.doesNotReject(() => callGeminiCaseAgent(geminiConfig, {
+  phase: 'draft', dates: ['2026-08-09'], draft_pr: 400, model: config.models[0],
+  limits: { remaining_cost_usd: 25 }, authority_documents: {},
+}, geminiRoot, { fetchImpl: async () => (++semanticCalls === 1 ? new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: '{broken' }] } }] }), { status: 200 }) : geminiReply('draft', config.models[0])) }))
+assert.equal(semanticCalls, 2, 'semantic validation errors must consume a bounded correction attempt')
+
+let geminiCalls = 0
+const storyResult = await callGeminiCaseAgent(geminiConfig, {
+  phase: 'story_review', dates: ['2026-08-09'], draft_pr: 400, model: config.models[2], prior_files: geminiFiles,
+  limits: { remaining_cost_usd: 25 }, authority_documents: {},
+}, geminiRoot, { fetchImpl: async () => (++geminiCalls === 1 ? geminiReply('story_review', config.models[2], true) : new Response(JSON.stringify({ candidates: [{ content: { parts: [{ inlineData: { data: 'aW1hZ2U=' } }] } }] }), { status: 200 })), convert: () => Buffer.from(response.files[1].content, 'base64') })
+assert.equal(storyResult.files.filter(({ encoding }) => encoding === 'base64').length, 1)
+assert.equal(geminiCalls, 2)
+assert.doesNotThrow(() => assertWebpStructure(Buffer.from(storyResult.files.find(({ encoding }) => encoding === 'base64').content, 'base64')))
 
 console.log('docket-case-agent: all contract and containment assertions passed')
