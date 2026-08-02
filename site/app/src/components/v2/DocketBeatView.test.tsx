@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { makeDocketCase } from '../../lib/v2/fixtures'
+import type { DocketInterjection } from '../../lib/v2/caseSchema'
 import { DocketBeatView } from './DocketBeatView'
 
 describe('DocketBeatView dialogue', () => {
@@ -45,6 +46,52 @@ describe('DocketBeatView dialogue', () => {
       />,
     )
     expect(markup).toMatch(/cross-examination of/i)
+  })
+
+  it('renders an objection and exclusion in exact courtroom order', () => {
+    const trial = makeDocketCase()
+    const beat = trial.beats[1] as typeof trial.beats[number] & {
+      interjections: DocketInterjection[]
+    }
+    beat.interjections = [
+      {
+        id: 'hearsay-objection',
+        after_turn: 1,
+        speaker: 'pros',
+        type: 'objection',
+        ground: 'hearsay',
+        text: 'Objection, hearsay.',
+      },
+      {
+        id: 'hearsay-ruling',
+        after_turn: 1,
+        speaker: 'judge',
+        type: 'sustained',
+        resolves: 'hearsay-objection',
+        admissibility: { effect: 'exclude_beat' },
+        text: 'Sustained. Disregard that answer.',
+      },
+    ]
+    const markup = renderToStaticMarkup(
+      <DocketBeatView
+        trial={trial}
+        beatIndex={1}
+        narration={false}
+        playbackRate={1}
+        notes={[]}
+        onNoteChange={() => undefined}
+        onNext={() => undefined}
+      />,
+    )
+
+    expect(markup.indexOf('Where were you')).toBeLessThan(
+      markup.indexOf('Objection · hearsay'),
+    )
+    expect(markup.indexOf('Objection · hearsay')).toBeLessThan(
+      markup.indexOf('Sustained'),
+    )
+    expect(markup).toContain('Excluded from your deliberations')
+    expect(markup).toContain('The court has directed you to disregard')
   })
 
 })
