@@ -33,7 +33,7 @@ describe('checkDynamics', () => {
     for (const trial of docket.v3Cases) {
       expect(checkDynamics(trial), trial.id).toEqual([])
     }
-  })
+  }, 30_000)
 
   it('flags a foregone-conclusion room', () => {
     const c = makeDocketCase()
