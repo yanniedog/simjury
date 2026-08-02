@@ -192,8 +192,8 @@ describe('docket queue', () => {
     expect(sittings.map(({ trial }) => trial.id)).toEqual(
       docketQueue.map(({ id }) => id),
     )
-    expect(new Set(sittings.map(({ trial }) => trial.id))).toHaveLength(6)
-    expect(new Set(sittings.map(({ day }) => day))).toHaveLength(6)
+    expect(new Set(sittings.map(({ trial }) => trial.id))).toHaveLength(docketQueue.length)
+    expect(new Set(sittings.map(({ day }) => day))).toHaveLength(docketQueue.length)
     for (const sitting of sittings) {
       expect(sitting.day).toBe(dayIndex(sitting.date))
       expect(selectDocketSitting(sittings, sitting.day)).toBe(sitting)
