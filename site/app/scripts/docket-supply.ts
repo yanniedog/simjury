@@ -1,5 +1,5 @@
 /**
- * Print what the docket needs to stay daily for the next fortnight.
+ * Print what the docket needs to stay daily for the rolling seven-day window.
  *
  * Run by the daily supply workflow: `--json` feeds the commissioning step, and
  * the default summary keeps a failed run legible without parsing anything.

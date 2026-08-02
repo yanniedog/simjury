@@ -1,8 +1,7 @@
-# Docket supply — keeping a fortnight of cases queued
+# Docket supply — keeping a rolling seven days queued
 
 The Daily Docket promises a new case every day. This is how that promise is
-kept, what "complete" means for a case, and what is automated versus what still
-needs a person.
+kept, what "complete" means for a case, and what the drafting agent owns.
 
 `ROADMAP.md` makes case supply priority one. This file is the operational
 contract behind it.
@@ -11,7 +10,8 @@ contract behind it.
 
 `.github/workflows/docket-supply.yml` runs every morning at 18:10 UTC.
 
-1. **Measure.** `scripts/docket-supply.ts` lists which of the next fourteen days
+1. **Measure.** `scripts/docket-supply.ts` lists which of the next seven days,
+   including today,
    open no case. It names dates rather than a quantity, because "commission
    three cases" says nothing about when they publish, and three filed on one day
    leave the docket exactly as thin as before.
@@ -26,25 +26,26 @@ contract behind it.
 5. **Prove it.** `npm run validate:cases` must pass.
 6. **Propose it.** The case arrives as a pull request and goes through the
    ordinary gates. **Never written to `main` unattended.**
-7. **Close.** Once the fortnight is covered the workflow closes the issue.
+7. **Close.** Once the rolling week is covered the workflow closes the issue.
 
 `validate:cases` also prints coverage on every run, so the gap is visible in any
 CI log rather than only in the scheduled job:
 
 ```text
-docket coverage: 3/14 days open a new case — 4 day(s) in a row on the same case at worst
+docket coverage: 7/7 days open a new case — a new case every day
 ```
 
-## Why step 6 is not automated
+## Automated editorial ownership
 
-`DAILY-PIVOT.md` permits LLM-drafted batches behind hardened CI gates **with
-human spot-checks**. The gates are the primary defence and they are strong —
-schema, design quality, jury floors, deliberation dynamics, banned tokens, queue
-rules, the computed 19–21 minute budget — but the owner decision names a person
-as part of the loop, and this workflow does not get to remove them.
+The 2026-08-02 owner decision removes the mandatory human approval checkpoint.
+The drafting agent owns story, legal clarity, language, sensitivity, media,
+narration, verification and review-feedback fixes. A second independent agent
+pass challenges the case before its PR is marked ready. Record the real
+agent/model in `gen_meta`; never invent a human reviewer.
 
-So the automation prepares work and asks. Anything that writes a case straight
-to `main` is outside this contract.
+The safety boundary remains firm: automation creates pull requests, never direct
+`main` writes. Deterministic `validate`, `bot-feedback-gate`, and resolved review
+threads remain the merge bar.
 
 ## What complete means
 
@@ -107,13 +108,14 @@ costs money and picks a vendor:
 - **Images.** No image pipeline exists in the repo. The current slate's art was
   produced outside it. Wiring one needs a chosen provider and a key.
 
-Until those are configured, the daily job does the honest thing: it says exactly
-what is missing and asks for it, every morning, until the docket is covered.
+Until those are configured, the daily job does the honest thing: it creates one
+machine-readable commission naming the missing dates. Missing configuration is
+an actionable automation failure, never permission to ship a partial case.
 
 ## Guardrails this must never cross
 
 - **No runtime AI.** Generation happens in PRs. Player-facing text is
   pre-authored JSON by the time anyone plays it.
-- **No unattended writes to `main`.** Human spot-check is part of the contract.
+- **No direct writes to `main`.** Generated work lands through required PR gates.
 - **No real names**, and `label: "fiction"` on every case.
 - **No case without its media.** Text, audio and images ship together.

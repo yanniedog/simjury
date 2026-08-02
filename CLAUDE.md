@@ -9,7 +9,7 @@ The repository's only product surface is **The Daily Docket** on
    constraints.
 2. Read [`docs/DAILY-CASES.md`](docs/DAILY-CASES.md) for case-authoring rules,
    and [`docs/DOCKET-SUPPLY.md`](docs/DOCKET-SUPPLY.md) for how the docket stays
-   a fortnight ahead and what "complete" means for a case.
+   a rolling week ahead and what "complete" means for a case.
 3. Use [`ROADMAP.md`](ROADMAP.md), [`WORKFLOW.md`](WORKFLOW.md), and
    [`site/DECISIONS.md`](site/DECISIONS.md) as needed.
 

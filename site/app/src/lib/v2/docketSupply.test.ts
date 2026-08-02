@@ -10,14 +10,14 @@ describe('docket supply plan', () => {
     // "Commission three cases" says nothing about when they publish, and three
     // filed on one day leave the docket exactly as thin as before.
     const plan = planSupply(LIVE, on('2026-08-02'))
-    expect(plan.needed).toHaveLength(11)
+    expect(plan.needed).toHaveLength(6)
     expect(plan.needed[0]).toBe('2026-08-02')
     expect(plan.needed).not.toContain('2026-08-05')
-    expect(plan.filled).toEqual(['2026-08-05', '2026-08-09', '2026-08-13'])
+    expect(plan.filled).toEqual(['2026-08-05'])
   })
 
-  it('asks for nothing once the fortnight is covered', () => {
-    const daily = Array.from({ length: 14 }, (_, i) =>
+  it('asks for nothing once the rolling week is covered', () => {
+    const daily = Array.from({ length: 7 }, (_, i) =>
       new Date(Date.UTC(2026, 7, 2) + i * 86_400_000).toISOString().slice(0, 10))
     const plan = planSupply(daily, on('2026-08-02'))
     expect(plan.needed).toEqual([])
@@ -25,13 +25,13 @@ describe('docket supply plan', () => {
   })
 
   it('counts today itself as needing a case when nothing opens', () => {
-    expect(planSupply([], on('2026-08-02')).needed).toHaveLength(14)
+    expect(planSupply([], on('2026-08-02')).needed).toHaveLength(7)
   })
 
   it('ignores cases behind us and beyond the window', () => {
     const plan = planSupply(['2026-07-01', '2026-09-30'], on('2026-08-02'))
     expect(plan.filled).toEqual([])
-    expect(plan.needed).toHaveLength(14)
+    expect(plan.needed).toHaveLength(7)
   })
 
   it('pins the window to UTC so a runner locale cannot shift it', () => {
