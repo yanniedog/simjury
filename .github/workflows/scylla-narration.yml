@@ -13,7 +13,8 @@ on:
   push:
     branches: [main]
     paths:
-      - "site/app/docket/**"
+      - "site/app/docket/*.json"
+      - "site/app/docket/*/trial.json"
       - "site/app/src/lib/narrationAltVoice.ts"
       - "site/app/src/lib/narrationAltVoice.json"
       - "site/app/src/lib/narratorCues.ts"
