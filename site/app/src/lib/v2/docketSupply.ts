@@ -1,13 +1,14 @@
 /**
- * What the docket needs to stay daily for the next fortnight.
+ * What the docket needs to stay daily for a rolling seven-day window.
  *
  * `runway.ts` answers whether the docket is thin. This answers what to do about
  * it: exactly which dates open no case, so a commission names days rather than
  * a quantity.
  */
-import { MIN_DOCKET_RUNWAY_DAYS, utcDateKey } from './runway'
+import { utcDateKey } from './runway'
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000
+export const DOCKET_SUPPLY_WINDOW_DAYS = 7
 
 export interface SupplyPlan {
   /** Today, UTC, so a runner's locale cannot shift the window. */
@@ -36,7 +37,7 @@ function addDays(dateKey: string, days: number): string {
 export function planSupply(
   publishDates: readonly string[],
   now: Date = new Date(),
-  windowDays: number = MIN_DOCKET_RUNWAY_DAYS,
+  windowDays: number = DOCKET_SUPPLY_WINDOW_DAYS,
 ): SupplyPlan {
   const today = utcDateKey(now)
   const published = new Set(publishDates)
