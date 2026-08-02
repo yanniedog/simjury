@@ -25,7 +25,7 @@ The content did not follow.
 | Days in the next 14 that open a new case | **3** |
 | Longest run on a single case | **4 days**, rising to 5 later in the month |
 | Last case in the docket | **2026-08-18**, after which nothing new is ever shown |
-| Cases on the V4 schema | **0 of 7** |
+| Cases on the V4 schema | **0 of 7** — the V4 consumer does not exist yet |
 
 `caseForDate` serves the newest case published on or before today, so a docket
 with gaps re-serves a trial the player has already sat through. The product is
@@ -57,17 +57,27 @@ cases land, so the docket cannot quietly thin out again.
 docket coverage: 3/14 days open a new case — 4 day(s) in a row on the same case at worst
 ```
 
-### 2. Migrate the slate to V4
+### 2. Build the V4 consumer, then migrate the slate
 
-`DAILY-PIVOT.md` is explicit that V3 compatibility is transitional and not the
-target for new cases, yet every shipped case is V3. The 19–21 minute budget is a
-hard design constraint that no case in the docket is currently held to.
+`DAILY-PIVOT.md` is explicit that V3 compatibility is transitional, and every
+shipped case is still on the V3 schema.
 
-**Done looks like:** new cases are authored V4 only, and the V3 slate is either
-repaired under `dd-2026-v3-20min` or migrated.
+Pacing is not the gap. All seven cases carry `dd-2026-v3-20min`, and
+`checkDocketCase` runs `estimateV4Duration` against that profile, so the slate
+is already held to the computed 19–21 minute window and the section floors.
 
-**Enforced by:** the computed 19–21 minute window; authors cannot declare a
-duration.
+The gap is the consumer. `cases.ts` validates V4 bundles but builds `allCases`,
+`docketQueue` and every `DocketSitting` from flat V3 JSON only, so a V4 case
+cannot reach `featuredDocketSitting` or the library. **Migrating or retiring the
+V3 slate before that consumer exists would leave the app with no playable
+case at all.**
+
+**Done looks like, in this order:** V4 bundles become selectable sittings; then
+new cases are authored V4 only; then the V3 slate is migrated. Not before.
+
+**Enforced by:** the computed duration window on both profiles — authors cannot
+declare a duration — and by the docket never being empty, which the coverage
+gate above now measures.
 
 ### 3. Make the repeat day honest
 
