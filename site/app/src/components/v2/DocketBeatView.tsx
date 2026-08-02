@@ -10,6 +10,7 @@ import { phaseNarratorCue, speakerNarratorCue } from '../../lib/narratorCues'
 import { CaseMedia, StoryText } from './CaseMedia'
 import { EvidenceIndex } from './EvidenceIndex'
 import { NarratorCue } from './NarratorCue'
+import { nextBeatLabel } from '../../lib/v2/beatCopy'
 import { SpeakerFlag } from './SpeakerFlag'
 import { SpeakerPortrait } from './SpeakerPortrait'
 
@@ -159,13 +160,26 @@ export function DocketBeatView({
             below it; the card is the speaker's one home. Making this the
             heading also means focus lands at the top of the phase on every
             beat, and announces where you are rather than who is talking. */}
-        <h1
-          id="phase-heading"
-          tabIndex={-1}
-          className="text-xs uppercase tracking-[0.15em] text-neutral-500 focus:outline-none"
-        >
-          Evidence {beatIndex + 1} of {total} · {modeLabel}
-        </h1>
+        <div className="evidence-position">
+          <h1
+            id="phase-heading"
+            tabIndex={-1}
+            className="text-xs uppercase tracking-[0.15em] text-neutral-500 focus:outline-none"
+          >
+            Evidence {beatIndex + 1} of {total} · {modeLabel}
+          </h1>
+          {/* Evidence is fourteen beats inside one of six stages, so the top
+              bar moves only a little across all of them. Each beat visibly
+              lands here instead. */}
+          <ol className="beat-segments" aria-hidden="true">
+            {trial.beats.map((each, index) => (
+              <li
+                key={each.id}
+                className={index < beatIndex ? 'done' : index === beatIndex ? 'current' : ''}
+              />
+            ))}
+          </ol>
+        </div>
         <div className="evidence-toolbar-actions">
           <button
             type="button"
@@ -328,7 +342,7 @@ export function DocketBeatView({
         }}
         className="w-full rounded-lg bg-neutral-100 px-4 py-3 font-semibold text-neutral-900 transition hover:bg-white"
       >
-        {isLast ? 'Reach a verdict' : 'Next →'}
+        {isLast ? 'Hear the closing arguments' : nextBeatLabel(trial, beat, trial.beats[beatIndex + 1])}
       </button>
     </div>
   )

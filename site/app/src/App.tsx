@@ -485,6 +485,8 @@ function LegacyDocketApp({
       onRateChange={changeNarrationRate}
       onVoiceEngineChange={changeVoiceEngine}
       onRewind={phase !== 'intro' && verdict === null ? rewind : undefined}
+      elements={activeTrial.elements}
+      phaseProgress={phase === 'beats' && beatCount > 0 ? (beatIndex + 1) / beatCount : 1}
       sidebar={(
         <DocketSittingChooser
           sittings={sittings}

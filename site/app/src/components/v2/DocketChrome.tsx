@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react'
+import { PHASES, sittingProgress, type DocketPhase } from '../../lib/v2/sittingProgress'
 import {
   ALT_VOICE_LABEL,
   DEFAULT_VOICE_LABEL,
@@ -14,16 +15,7 @@ import { caseStorageId } from '../../lib/v2/caseRevision'
 import type { DocketSitting } from '../../lib/v2/cases'
 import { INTRO_CASE_ID } from '../../lib/v2/cases'
 
-export type DocketPhase = 'intro' | 'openings' | 'beats' | 'closings' | 'juryroom' | 'reveal'
-
-const PHASES: Array<{ id: DocketPhase; label: string; short: string }> = [
-  { id: 'intro', label: 'Briefing', short: '01' },
-  { id: 'openings', label: 'Openings', short: '02' },
-  { id: 'beats', label: 'Evidence', short: '03' },
-  { id: 'closings', label: 'Closings', short: '04' },
-  { id: 'juryroom', label: 'Jury room', short: '05' },
-  { id: 'reveal', label: 'Record', short: '06' },
-]
+export type { DocketPhase } from '../../lib/v2/sittingProgress'
 
 /**
  * Audio settings behind one button.
@@ -195,6 +187,10 @@ export function DocketShell({
   hideNarration = false,
   /** Clears this sitting's progress. Offered behind the overflow menu and a confirm. */
   onRewind,
+  /** Progress inside the current phase, 0–1, so evidence beats move the bar. */
+  phaseProgress = 1,
+  /** What the prosecution must prove — a juror keeps this in front of them. */
+  elements,
 }: {
   children: ReactNode
   sidebar?: ReactNode
@@ -213,10 +209,13 @@ export function DocketShell({
   entryMode?: boolean
   hideNarration?: boolean
   onRewind?: () => void
+  phaseProgress?: number
+  elements?: readonly string[]
 }) {
   const currentPhaseIndex = PHASES.findIndex((step) => step.id === phase)
   const phaseLabel = PHASES[currentPhaseIndex]?.label ?? 'Briefing'
   const stageNumber = currentPhaseIndex + 1
+  const percentThrough = Math.round(sittingProgress(phase, phaseProgress) * 100)
   const showVoiceMode = altVoiceModeAvailable() && typeof onVoiceEngineChange === 'function'
   const [canPersist] = useState(canPersistSitting)
   const showAside = !entryMode
@@ -232,16 +231,16 @@ export function DocketShell({
           <div
             className="docket-phase"
             role="progressbar"
-            aria-valuenow={stageNumber}
-            aria-valuemin={1}
-            aria-valuemax={PHASES.length}
-            aria-valuetext={`${phaseLabel}, stage ${stageNumber} of ${PHASES.length}`}
+            aria-valuenow={percentThrough}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuetext={`${phaseLabel}, stage ${stageNumber} of ${PHASES.length}, about ${percentThrough}% through the sitting`}
           >
             <span>
               <em aria-hidden="true">{String(stageNumber).padStart(2, '0')}</em>
               {phaseLabel}
             </span>
-            <i aria-hidden="true" style={{ width: `${(stageNumber / PHASES.length) * 100}%` }} />
+            <i aria-hidden="true" style={{ width: `${percentThrough}%` }} />
           </div>
         )}
         {/* One button each. The chrome budget is the top bar and nothing else,
@@ -270,14 +269,36 @@ export function DocketShell({
       <div className={`docket-workspace${entryMode ? ' docket-workspace-entry' : ''}`}>
         <section className="docket-stage" aria-label={entryMode ? caseTitle : `${phaseLabel}: ${caseTitle}`}>{children}</section>
         {showAside && (
+          // The juror's desk: what a real juror keeps in front of them for the
+          // whole sitting. It used to hold one line of charge text, a collapsed
+          // library and a four-line notice about browser storage — and on
+          // mobile it reflowed below the primary button, so the last thing on
+          // an evidence screen was a privacy note.
           <aside className="juror-docket" aria-label="Juror docket">
             {charge && <div className="docket-context"><p className="chrome-label">Charge before the court</p><p>{charge}</p></div>}
+            {elements && elements.length > 0 && (
+              <div className="desk-elements">
+                <p className="chrome-label">To convict, the prosecution must prove</p>
+                <ol>
+                  {elements.map((element, index) => (
+                    <li key={index}><span aria-hidden="true">{index + 1}</span>{element}</li>
+                  ))}
+                </ol>
+              </div>
+            )}
             {sidebar}
             {!canPersist && <p className="storage-warning" role="status">Storage is unavailable. This sitting will not resume after closing.</p>}
-            <p className="local-note"><span aria-hidden="true">◆</span> Saved only in this browser. There is no sync; switching browser or device, or clearing site data, removes access to progress, notes, verdicts and stats. <a href="/privacy/">Privacy details</a></p>
           </aside>
         )}
       </div>
+      {showAside && (
+        // The storage notice is a footnote about the product, not part of the
+        // case. It belongs at the end of the page rather than holding a quarter
+        // of the rail for twenty minutes.
+        <footer className="docket-footnote">
+          <p className="local-note"><span aria-hidden="true">◆</span> Saved only in this browser. There is no sync; switching browser or device, or clearing site data, removes access to progress, notes, verdicts and stats. <a href="/privacy/">Privacy details</a></p>
+        </footer>
+      )}
     </main>
   )
 }
