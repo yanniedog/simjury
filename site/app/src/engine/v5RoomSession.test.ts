@@ -103,4 +103,16 @@ describe('V5 player session', () => {
       tally: { g: 12, ng: 0, u: 0 },
     })
   })
+
+  it('lets the player’s reasoning change the deterministic room result', () => {
+    const guilty = sealV5Session(discuss().session, 'G').room.outcome
+    const notGuilty = sealV5Session(
+      discuss('The access record leaves reasonable doubt and does not prove guilt').session,
+      'NG',
+    ).room.outcome
+
+    expect(guilty?.verdict).toBe('G')
+    expect(notGuilty?.verdict).toBe('NG')
+    expect(notGuilty).not.toEqual(guilty)
+  })
 })
