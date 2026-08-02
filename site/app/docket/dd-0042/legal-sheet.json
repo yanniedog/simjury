@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "case_id": "dd-0042",
-  "case_revision": "dd-0042@ed583a06",
+  "case_revision": "dd-0042@c1c7a794",
   "jurisdiction": "State of Orinth",
   "statute": {
     "name": "Orinth Criminal Code 2026",
@@ -20,5 +20,5 @@
   "required_directions": ["The prosecution must prove intentional detention, conditional compulsion, and knowledge of unlawfulness beyond reasonable doubt.","Initial consent may be withdrawn; detention may arise through coercion or obstruction without a lock or injury.","A firm safety request is not detention if the adult retains a practical and understood freedom to leave.","Use the anonymous warning and the phone explanation only for their permitted state-of-mind purposes, not as proof of external danger.","Nela need not prove the warning was genuine or identify its sender."],
   "epilogue_strategy": "outcome_neutral",
   "checks": {"victim_humanity":"Oren has work, family, fear, agency, and later community involvement beyond his role in the alleged detention.","accused_prejudice":"Nela's shelter history, advocacy, and protective instincts are neither guilt proof nor punishment material."},
-  "approvals": {"legal":{"status":"approved","reviewer":"Codex GPT-5 editorial review","approved_at":"2026-08-02T11:30:00.000Z","content_hash":"dd-0042@ed583a06@legal-527fcab5"},"read_aloud":{"status":"approved","reviewer":"Codex GPT-5 editorial review","approved_at":"2026-08-02T11:30:00.000Z","content_hash":"dd-0042@ed583a06@legal-527fcab5"},"blind_test":{"status":"approved","reviewer":"Codex GPT-5 editorial review","approved_at":"2026-08-02T11:30:00.000Z","content_hash":"dd-0042@ed583a06@legal-527fcab5"}}
+  "approvals": {"legal":{"status":"approved","reviewer":"Codex GPT-5 editorial review","approved_at":"2026-08-02T11:30:00.000Z","content_hash":"dd-0042@c1c7a794@legal-f19fc1a6"},"read_aloud":{"status":"approved","reviewer":"Codex GPT-5 editorial review","approved_at":"2026-08-02T11:30:00.000Z","content_hash":"dd-0042@c1c7a794@legal-f19fc1a6"},"blind_test":{"status":"approved","reviewer":"Codex GPT-5 editorial review","approved_at":"2026-08-02T11:30:00.000Z","content_hash":"dd-0042@c1c7a794@legal-f19fc1a6"}}
 }
