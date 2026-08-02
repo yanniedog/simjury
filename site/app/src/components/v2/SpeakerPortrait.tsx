@@ -1,4 +1,5 @@
 import type { CourtroomTrial } from '../../lib/v2/caseSchema'
+import { mediaAssetSrc } from '../../lib/v2/mediaAssets'
 
 export function SpeakerPortrait({
   trial,
@@ -17,7 +18,7 @@ export function SpeakerPortrait({
 
   return (
     <img
-      src={asset.src}
+      src={mediaAssetSrc(asset.src)}
       alt={alt}
       className={`h-20 w-16 shrink-0 rounded-md border border-neutral-700 object-cover shadow-sm ${className}`}
       loading="lazy"
