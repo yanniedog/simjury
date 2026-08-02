@@ -21,12 +21,12 @@ export function readConfig(env = process.env) {
   const missing = required.filter((key) => !env[key]?.trim())
   const enabled = env.CASE_GENERATION_ENABLED === 'true'
   const numbers = {
-    maxAttempts: integer(env.CASE_MAX_ATTEMPTS ?? '1', 1, 4, 'CASE_MAX_ATTEMPTS'),
-    maxRepairAttempts: integer(env.CASE_MAX_REPAIR_ATTEMPTS ?? '0', 0, 3, 'CASE_MAX_REPAIR_ATTEMPTS'),
-    maxImagesPerCase: integer(env.CASE_MAX_IMAGES_PER_CASE ?? '2', 2, 30, 'CASE_MAX_IMAGES_PER_CASE'),
-    maxOutputBytes: integer(env.CASE_MAX_OUTPUT_BYTES ?? '1000000', 1_000_000, 80_000_000, 'CASE_MAX_OUTPUT_BYTES'),
-    maxCostUsd: decimal(env.CASE_MAX_COST_USD ?? '0.01', 0.01, 500, 'CASE_MAX_COST_USD'),
-    maxTokens: integer(env.CASE_MAX_TOKENS ?? '1000', 1000, 200_000, 'CASE_MAX_TOKENS'),
+    maxAttempts: integer(env.CASE_MAX_ATTEMPTS?.trim() || '1', 1, 4, 'CASE_MAX_ATTEMPTS'),
+    maxRepairAttempts: integer(env.CASE_MAX_REPAIR_ATTEMPTS?.trim() || '0', 0, 3, 'CASE_MAX_REPAIR_ATTEMPTS'),
+    maxImagesPerCase: integer(env.CASE_MAX_IMAGES_PER_CASE?.trim() || '2', 2, 30, 'CASE_MAX_IMAGES_PER_CASE'),
+    maxOutputBytes: integer(env.CASE_MAX_OUTPUT_BYTES?.trim() || '1000000', 1_000_000, 80_000_000, 'CASE_MAX_OUTPUT_BYTES'),
+    maxCostUsd: decimal(env.CASE_MAX_COST_USD?.trim() || '0.01', 0.01, 500, 'CASE_MAX_COST_USD'),
+    maxTokens: integer(env.CASE_MAX_TOKENS?.trim() || '1000', 1000, 200_000, 'CASE_MAX_TOKENS'),
   }
   const models = [env.CASE_DRAFT_MODEL, env.CASE_LEGAL_REVIEW_MODEL, env.CASE_STORY_REVIEW_MODEL]
   if (models.every(Boolean) && new Set(models).size !== models.length) {
