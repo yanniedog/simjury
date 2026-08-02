@@ -1,11 +1,11 @@
 {
   "schema_version": 4,
   "case_id": "dd-0032",
-  "case_revision": "dd-0032@e83595c8",
+  "case_revision": "dd-0032@bb397aa0",
   "reference_verdict": "Guilty",
-  "reference_reasoning": "The contained phrase appeared in an authenticated criminal order signed by the physical key kept in Celis?s cabinet, after she learned the demand was protection money and entered the office before transmission. The visitor sheet cannot prove exclusive entry, so the editorial reference depends on the combined phrase, key custody, badge chronology, order wording, and Celis?s knowledge rather than that excluded inference.",
+  "reference_reasoning": "The contained phrase appeared in an authenticated criminal order signed by the physical key kept in Celis's cabinet, after she learned the demand was protection money and entered the office before transmission. The visitor sheet cannot prove exclusive entry, so the editorial reference depends on the combined phrase, key custody, badge chronology, order wording, and Celis's knowledge rather than that excluded inference.",
   "strongest_opposing_interpretation": "Two investigators also heard the phrase; the gateway identifies a key rather than a hand; Celis used the key for lawful mediations; the visitor sheet cannot prove exclusive access; and the complete undated client note includes instructions against threats and for stock release. Those facts support a reasonable innocent explanation if the jury is not sure who activated the key or what Celis intended.",
-  "sentencing_context": "If convicted, sentencing would be decided separately by the judge. The jury?s task is limited to deciding whether the prosecution proved the charge.",
+  "sentencing_context": "If convicted, sentencing would be decided separately by the judge. The jury's task is limited to deciding whether the prosecution proved the charge.",
   "epilogue": {
     "mode": "outcome_neutral",
     "text": "The trial forced Nareth’s traders to separate private mediation from coercive debt collection. Sava and his partner rebuilt their stock through a transparent cooperative fund, while an independent panel reviewed how the Circle had gained influence over commercial disputes. The recovered signing system was retired, and future settlements required named approvals visible to every party. Celis’s client files remained under court control while lawful customers received copies through an independent administrator."
@@ -57,7 +57,7 @@
       "beat_id": "b8",
       "editorial_weight": 0.62,
       "analysis_role": "central",
-      "analysis_note": "The authenticated gateway copy still proves that Celis?s physical key signed the exact criminal order. The visitor-sheet entries explain the examiner?s testing only and cannot prove that Celis was the sole person in the office.",
+      "analysis_note": "The authenticated gateway copy still proves that Celis's physical key signed the exact criminal order. The visitor-sheet entries explain the examiner's testing only and cannot prove that Celis was the sole person in the office.",
       "admissibility": {
         "effect": "limited_purpose",
         "purpose": "Use the visitor-sheet entries only to understand why the examiner narrowed her testing, not as proof that Celis alone entered the office."
@@ -91,7 +91,7 @@
       "beat_id": "b13",
       "editorial_weight": 0.78,
       "analysis_role": "central",
-      "analysis_note": "The agreed chronology connects Celis?s knowledge and badge entry to the later signature, receipt, and seizure. It proves sequence and opportunity without converting the limited visitor sheet into proof of exclusive access."
+      "analysis_note": "The agreed chronology connects Celis's knowledge and badge entry to the later signature, receipt, and seizure. It proves sequence and opportunity without converting the limited visitor sheet into proof of exclusive access."
     },
     {
       "beat_id": "b14",
