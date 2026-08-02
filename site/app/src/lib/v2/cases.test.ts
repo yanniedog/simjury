@@ -34,36 +34,57 @@ describe('docket queue', () => {
 
   it('serves each launch case on its canonical publish date', () => {
     for (const trial of docketQueue) {
-      const [year, month, day] = trial.publish_date.split('-').map(Number)
-      expect(docketCaseForDate(new Date(year, month - 1, day))).toBe(trial)
+      expect(
+        docketCaseForDate(new Date(`${trial.publish_date}T00:00:00.000Z`)),
+      ).toBe(trial)
     }
   })
 
+  it('switches the featured case at one shared UTC boundary', () => {
+    const later = docketQueue[1]
+    const prior = docketQueue[0]
+
+    expect(
+      docketCaseForDate(
+        new Date(`${later.publish_date}T00:00:00.000Z`),
+        [prior, later],
+      ),
+    ).toBe(later)
+    expect(
+      docketCaseForDate(
+        new Date(`${later.publish_date}T00:00:00.000Z`).valueOf() - 1,
+        [prior, later],
+      ),
+    ).toBe(prior)
+  })
+
   it('returns null for an empty queue', () => {
-    const date = new Date(2026, 7, 15)
+    const date = new Date('2026-08-15T00:00:00Z')
     expect(docketCaseForDate(date, [])).toBeNull()
   })
 
   it('never leaks a future case', () => {
-    const beforeFirst = new Date(2026, 6, 23)
+    const beforeFirst = new Date('2026-07-23T00:00:00Z')
     expect(docketCaseForDate(beforeFirst, docketQueue)).toBeNull()
   })
 
   it('uses the newest earlier case for gaps and after the queue ends', () => {
     const newest = docketQueue[docketQueue.length - 1]
-    const [year, month, day] = newest.publish_date.split('-').map(Number)
-    const afterQueueEnd = new Date(year, month - 1, day + 1)
+    const afterQueueEnd = new Date(
+      new Date(`${newest.publish_date}T00:00:00Z`).valueOf() + 86_400_000,
+    )
     expect(docketCaseForDate(afterQueueEnd, docketQueue)).toBe(newest)
 
     const first = docketQueue[0]
     const second = docketQueue[1]
     const gapQueue = [first, second]
-    const [fy, fm, fd] = first.publish_date.split('-').map(Number)
-    const gapDate = new Date(fy, fm - 1, fd + 1)
+    const gapDate = new Date(
+      new Date(`${first.publish_date}T00:00:00Z`).valueOf() + 86_400_000,
+    )
     // With contiguous dates, the day after first is second's publish day when present.
     expect(docketCaseForDate(gapDate, gapQueue)?.id).toBe(
       second.publish_date ===
-        `${gapDate.getFullYear()}-${String(gapDate.getMonth() + 1).padStart(2, '0')}-${String(gapDate.getDate()).padStart(2, '0')}`
+        gapDate.toISOString().slice(0, 10)
         ? second.id
         : first.id,
     )
@@ -71,8 +92,7 @@ describe('docket queue', () => {
 
   it('keeps a past sitting stable when later cases are added', () => {
     const first = docketQueue[0]
-    const [year, month, day] = first.publish_date.split('-').map(Number)
-    const playDate = new Date(year, month - 1, day)
+    const playDate = new Date(`${first.publish_date}T00:00:00Z`)
     const queueAsOfDate = docketQueue.filter(
       (c) => c.publish_date <= first.publish_date,
     )
@@ -104,13 +124,18 @@ describe('docket queue', () => {
   })
 
   it('keeps the featured default date-gated on a gap day', () => {
-    const gapDate = new Date(2026, 6, 29)
+    const gapDate = new Date('2026-07-29T00:00:00Z')
     const featured = featuredDocketSitting(gapDate, docketQueue)
 
     expect(featured?.trial).toBe(docketCaseForDate(gapDate, docketQueue))
     expect(featured?.trial.id).toBe('dd-0006')
     expect(featured?.day).toBe(dayIndex(gapDate))
     expect(featured?.date).toBe(gapDate)
-    expect(featuredDocketSitting(new Date(2026, 6, 23), docketQueue)).toBeNull()
+    expect(
+      featuredDocketSitting(
+        new Date('2026-07-23T00:00:00Z'),
+        docketQueue,
+      ),
+    ).toBeNull()
   })
 })
