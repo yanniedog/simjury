@@ -142,6 +142,77 @@ export const dialogueTurnSchema = z.object({
   text: z.string().min(1),
 })
 
+export const OBJECTION_GROUNDS = [
+  'leading',
+  'hearsay',
+  'relevance',
+  'speculation',
+  'argumentative',
+] as const
+export const objectionGroundSchema = z.enum(OBJECTION_GROUNDS)
+
+/** The authored ruling's effect on the whole beat presented to the jury. */
+export const admissibilityEffectSchema = z.discriminatedUnion('effect', [
+  z.object({ effect: z.literal('exclude_beat') }).strict(),
+  z
+    .object({
+      effect: z.literal('limited_purpose'),
+      purpose: z.string().trim().min(1),
+    })
+    .strict(),
+])
+export type AdmissibilityEffect = z.infer<typeof admissibilityEffectSchema>
+
+const interjectionPlacement = {
+  id: z
+    .string()
+    .regex(/^[a-z][a-z0-9_-]*$/, 'interjection id must be a lowercase slug'),
+  /** 0 = before the first turn; N = immediately after authored turn N. */
+  after_turn: z.number().int().min(0),
+  speaker: z.string().min(1),
+  text: z.string().trim().min(1),
+}
+
+export const docketInterjectionSchema = z.discriminatedUnion('type', [
+  z
+    .object({
+      ...interjectionPlacement,
+      type: z.literal('objection'),
+      ground: objectionGroundSchema,
+    })
+    .strict(),
+  z
+    .object({
+      ...interjectionPlacement,
+      type: z.literal('sustained'),
+      resolves: z.string().min(1),
+      admissibility: admissibilityEffectSchema,
+    })
+    .strict(),
+  z
+    .object({
+      ...interjectionPlacement,
+      type: z.literal('overruled'),
+      resolves: z.string().min(1),
+    })
+    .strict(),
+  z
+    .object({
+      ...interjectionPlacement,
+      type: z.literal('ruling'),
+      ground: objectionGroundSchema,
+      admissibility: admissibilityEffectSchema,
+    })
+    .strict(),
+  z
+    .object({
+      ...interjectionPlacement,
+      type: z.literal('admonition'),
+    })
+    .strict(),
+])
+export type DocketInterjection = z.infer<typeof docketInterjectionSchema>
+
 /**
  * A v2 beat: the v1 hidden-weight beat plus who speaks it and which themes it
  * touches. `mode` distinguishes examination from cross for witness beats.
@@ -163,6 +234,10 @@ export const docketBeatV4Schema = docketBeatSchema
     true_weight: true,
     reveal_stamp: true,
     reveal_note: true,
+  })
+  .extend({
+    /** Same-anchor entries play in array order. V3 deliberately has no field. */
+    interjections: z.array(docketInterjectionSchema).max(8).optional(),
   })
   .strict()
 export type DocketBeatV4 = z.infer<typeof docketBeatV4Schema>
@@ -419,6 +494,83 @@ export type DocketCase = z.infer<typeof docketCaseSchema>
 export const docketCaseV4Schema = docketCaseV4ObjectSchema.superRefine(
   (trial, ctx) => {
     refineDocketReferences(trial, ctx)
+    const addInterjectionIssue = (message: string, path: (string | number)[]) =>
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message, path })
+    const interjectionIds = new Set<string>()
+    for (const [beatIndex, beat] of trial.beats.entries()) {
+      const objections = new Map<string, { afterTurn: number; index: number }>()
+      const resolved = new Set<string>()
+      const turnCount = beat.turns?.length ?? 1
+      let priorAnchor = -1
+      for (const [index, interjection] of (beat.interjections ?? []).entries()) {
+        const path = ['beats', beatIndex, 'interjections', index]
+        if (interjectionIds.has(interjection.id)) {
+          addInterjectionIssue(
+            `duplicate interjection id: ${interjection.id}`,
+            [...path, 'id'],
+          )
+        }
+        interjectionIds.add(interjection.id)
+        if (!trial.cast.some((member) => member.id === interjection.speaker)) {
+          addInterjectionIssue(
+            `interjection speaker '${interjection.speaker}' is not in the cast`,
+            [...path, 'speaker'],
+          )
+        }
+        if (interjection.after_turn > turnCount) {
+          addInterjectionIssue(
+            `after_turn ${interjection.after_turn} exceeds ${turnCount} authored turn(s)`,
+            [...path, 'after_turn'],
+          )
+        }
+        if (interjection.after_turn < priorAnchor) {
+          addInterjectionIssue(
+            'interjections must follow authored turn order',
+            [...path, 'after_turn'],
+          )
+        }
+        priorAnchor = interjection.after_turn
+
+        if (interjection.type === 'objection') {
+          objections.set(interjection.id, {
+            afterTurn: interjection.after_turn,
+            index,
+          })
+        } else if (
+          interjection.type === 'sustained' ||
+          interjection.type === 'overruled'
+        ) {
+          const objection = objections.get(interjection.resolves)
+          if (!objection) {
+            addInterjectionIssue(
+              `resolution must reference a preceding objection in beat ${beat.id}`,
+              [...path, 'resolves'],
+            )
+          } else if (resolved.has(interjection.resolves)) {
+            addInterjectionIssue(
+              `objection '${interjection.resolves}' is resolved more than once`,
+              [...path, 'resolves'],
+            )
+          } else {
+            resolved.add(interjection.resolves)
+            if (objection.afterTurn !== interjection.after_turn) {
+              addInterjectionIssue(
+                `resolution must share objection '${interjection.resolves}' turn anchor`,
+                [...path, 'after_turn'],
+              )
+            }
+          }
+        }
+      }
+      for (const [id, objection] of objections) {
+        if (!resolved.has(id)) {
+          addInterjectionIssue(
+            `objection '${id}' has no authored resolution`,
+            ['beats', beatIndex, 'interjections', objection.index],
+          )
+        }
+      }
+    }
     const estimate = estimateV4Duration(trial)
     if (
       estimate.totalMinutes < V4_DURATION_MINUTES_MIN ||
@@ -502,6 +654,7 @@ export const docketCaseAnalysisV4Schema = z
             editorial_weight: z.number().min(0).max(1),
             analysis_role: analysisRoleSchema,
             analysis_note: analysisTextSchema,
+            admissibility: admissibilityEffectSchema.optional(),
           })
           .strict(),
       )

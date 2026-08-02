@@ -1,4 +1,4 @@
-import type { DocketCase } from './caseSchema'
+import type { DocketCase, DocketCaseV4 } from './caseSchema'
 
 /**
  * Banned-token scan for the Daily Docket fiction boundary: no real names of
@@ -111,7 +111,7 @@ function collectStrings(
  * Scan every player-visible string of a docket case for banned tokens.
  * Returns one issue message per (field, token) hit; empty array = clean.
  */
-export function scanDocketCaseTokens(c: DocketCase): string[] {
+export function scanDocketCaseTokens(c: DocketCase | DocketCaseV4): string[] {
   const strings: Array<{ path: string; text: string }> = []
   collectStrings(c, '', strings)
   const issues: string[] = []

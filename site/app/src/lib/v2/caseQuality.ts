@@ -3,6 +3,7 @@ import { scanDocketCaseTokens } from './bannedTokens'
 import {
   LINE_FUNCTIONS,
   type DocketCase,
+  type DocketCaseV4,
   type Juror,
   type Theme,
 } from './caseSchema'
@@ -147,6 +148,80 @@ export const NARRATED_WORDS_MAX = 1250
 export function wordCount(text: string): number {
   const words = text.trim().split(/\s+/)
   return words[0] === '' ? 0 : words.length
+}
+
+/** Semantic V4 courtroom gate; schema handles ordering/reference integrity. */
+export function checkV4Interjections(c: DocketCaseV4): string[] {
+  const issues = [...scanDocketCaseTokens(c)]
+  const cast = new Map(c.cast.map((member) => [member.id, member]))
+
+  for (const beat of c.beats) {
+    const interjections = beat.interjections ?? []
+    const materialRulings = interjections.filter(
+      (item) => item.type === 'sustained' || item.type === 'ruling',
+    )
+    if (materialRulings.length > 1) {
+      issues.push(
+        `beat ${beat.id} has multiple admissibility effects; author one whole-beat ruling`,
+      )
+    }
+
+    for (const item of interjections) {
+      const mechanics = languageMechanicsIssue(
+        `beat ${beat.id} interjection ${item.id}.text`,
+        item.text,
+      )
+      if (mechanics) issues.push(mechanics)
+      if (
+        (item.type === 'sustained' || item.type === 'ruling') &&
+        item.admissibility.effect === 'limited_purpose'
+      ) {
+        const purposeMechanics = languageMechanicsIssue(
+          `beat ${beat.id} interjection ${item.id}.admissibility.purpose`,
+          item.admissibility.purpose,
+        )
+        if (purposeMechanics) issues.push(purposeMechanics)
+      }
+
+      const speaker = cast.get(item.speaker)
+      if (item.type === 'objection') {
+        if (!speaker || speaker.side === 'court' || !/counsel/i.test(speaker.role_label)) {
+          issues.push(`beat ${beat.id} objection ${item.id} must be spoken by counsel`)
+        }
+        if (!beat.turns?.length || item.after_turn === 0) {
+          issues.push(
+            `beat ${beat.id} objection ${item.id} must follow an authored courtroom turn`,
+          )
+        } else {
+          const examiningCounsel = beat.turns
+            .slice(0, item.after_turn)
+            .reverse()
+            .map((turn) => cast.get(turn.speaker))
+            .find((member) => member && /counsel/i.test(member.role_label))
+          if (!examiningCounsel) {
+            issues.push(
+              `beat ${beat.id} objection ${item.id} has no preceding examining counsel`,
+            )
+          } else if (speaker?.side === examiningCounsel.side) {
+            issues.push(
+              `beat ${beat.id} objection ${item.id} must come from opposing counsel`,
+            )
+          }
+        }
+        if (item.ground === 'leading' && beat.mode === 'cross') {
+          issues.push(
+            `beat ${beat.id} objection ${item.id} cannot use leading as its ground on cross-examination`,
+          )
+        }
+      } else {
+        if (!speaker || speaker.side !== 'court' || !/judge/i.test(speaker.role_label)) {
+          issues.push(`beat ${beat.id} ${item.type} ${item.id} must be spoken by the judge`)
+        }
+      }
+    }
+  }
+
+  return issues
 }
 
 function beatSpokenWordCount(beat: DocketCase['beats'][number]): number {

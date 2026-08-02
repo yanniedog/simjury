@@ -37,6 +37,7 @@ export interface V4DurationSource {
   beats: Array<{
     text: string
     turns?: Array<DurationText>
+    interjections?: Array<DurationText>
   }>
 }
 
@@ -78,7 +79,11 @@ export function estimateV4Duration(
       beat.turns && beat.turns.length > 0
         ? beat.turns.map((turn) => turn.text).join(' ')
         : beat.text
-    return total + durationWordCount(spokenText)
+    const interjections = (beat.interjections ?? []).reduce(
+      (words, interjection) => words + durationWordCount(interjection.text),
+      0,
+    )
+    return total + durationWordCount(spokenText) + interjections
   }, 0)
   const spokenWords = sceneWords + statementWords + evidenceWords
   const spokenMinutes = spokenWords / V4_SPOKEN_WORDS_PER_MINUTE

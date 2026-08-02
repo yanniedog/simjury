@@ -19,6 +19,7 @@ import {
   type DocketCaseV4,
 } from '../src/lib/v2/caseSchema'
 import { caseStorageId } from '../src/lib/v2/caseRevision'
+import { checkV4Interjections } from '../src/lib/v2/caseQuality'
 import {
   checkV4EditorialBundle,
   legalSheetSchema,
@@ -165,6 +166,11 @@ export function loadDocketFiles(docketDir: string): LoadedDocket {
       deliberationPackV5Schema,
       errors,
     )
+    if (trial) {
+      for (const issue of checkV4Interjections(trial)) {
+        errors.push(`${prefix}/trial.json: ${issue}`)
+      }
+    }
     if (!trial || !analysis || !sheet || !pack) continue
     if (trial.id !== bundle.id) {
       errors.push(`${prefix}/trial.json: case id '${trial.id}' does not match its directory`)
