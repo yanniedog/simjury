@@ -8,7 +8,7 @@ const TEXT_PATH = /^site\/app\/docket\/dd-\d{4}(?:\.json|\/(?:trial|analysis|leg
 const MEDIA_PATH = /^site\/app\/public\/media\/dd-\d{4}\/(?:cover|characters\/[A-Za-z0-9-]+|beats\/[A-Za-z0-9-]+|context\/[A-Za-z0-9-]+)\.webp$/
 const FORBIDDEN_KEYS = /^(?:cmd|command|commands|exec|executable|hook|hooks|run|script|shell)$/i
 const REVIEW_CHECKS = {
-  legal_review: ['legal_coherence', 'admissibility', 'burden', 'competent_record', 'sensitivity'],
+  legal_review: ['legal_coherence', 'admissibility', 'burden', 'competent_record', 'hook', 'both_sides', 'fair_reversal', 'specificity', 'listenability', 'discussion', 'originality', 'sensitivity', 'read_aloud', 'blind_test'],
   story_review: ['hook', 'both_sides', 'fair_reversal', 'specificity', 'listenability', 'discussion', 'originality', 'sensitivity'],
 }
 

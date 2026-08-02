@@ -180,7 +180,7 @@ const geminiFiles = [
 const geminiReply = (phase, model, withReview = false) => new Response(JSON.stringify({
   candidates: [{ content: { parts: [{ text: JSON.stringify({
     files: geminiFiles,
-    ...(withReview ? { review: { approved: true, checks: Object.fromEntries((phase === 'legal_review' ? ['legal_coherence', 'admissibility', 'burden', 'competent_record', 'sensitivity'] : []).map((key) => [key, true])) } } : {}),
+    ...(withReview ? { review: { approved: true, checks: Object.fromEntries((phase === 'legal_review' ? ['legal_coherence', 'admissibility', 'burden', 'competent_record', 'hook', 'both_sides', 'fair_reversal', 'specificity', 'listenability', 'discussion', 'originality', 'sensitivity', 'read_aloud', 'blind_test'] : []).map((key) => [key, true])) } } : {}),
   }) }] } }], usageMetadata: { promptTokenCount: 100, candidatesTokenCount: 200 },
 }), { status: 200, headers: { 'content-type': 'application/json' } })
 const geminiConfig = { ...config, endpoint: 'gemini://generateContent', token: 'gemini-secret', provider: 'google-gemini', imageModel: 'gemini-image', imageLicense: 'Google Gemini API output terms', models: ['gemini-3.5-flash', 'gemini-2.5-pro', 'gemini-3.1-pro-preview'] }
@@ -206,6 +206,15 @@ await assert.doesNotReject(() => callGeminiCaseAgent(geminiConfig, {
 }, geminiRoot, { fetchImpl: async (_url, options) => { semanticCalls += 1; if (semanticCalls === 1) return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: '{"files":[]}' }] } }] }), { status: 200 }); correctionPrompt = JSON.parse(options.body).contents[0].parts[0].text; return geminiReply('draft', geminiConfig.models[0]) } }))
 assert.equal(semanticCalls, 2, 'semantic validation errors must consume a bounded correction attempt')
 assert.match(correctionPrompt, /trusted validation: Gemini returned no case files/)
+
+const wrongIdFiles = geminiFiles.map((file) => ({ ...file, path: file.path.replace('dd-0043', 'dd-0044') }))
+await assert.rejects(() => callGeminiCaseAgent(geminiConfig, {
+  phase: 'draft', dates: ['2026-08-09'], draft_pr: 400, model: geminiConfig.models[0],
+  limits: { remaining_cost_usd: 25 }, authority_documents: {},
+}, geminiRoot, { fetchImpl: async () => new Response(JSON.stringify({
+  candidates: [{ content: { parts: [{ text: JSON.stringify({ files: wrongIdFiles }) }] } }],
+  usageMetadata: { promptTokenCount: 100, candidatesTokenCount: 200 },
+}), { status: 200 }) }), /does not match commissioned date/, 'model output must not override the date-derived case ID')
 
 let geminiCalls = 0
 let imageRequest
