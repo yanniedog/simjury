@@ -24,22 +24,21 @@ function fakeV4(publishDate: string): DocketCaseV4 {
 
 describe('docket queue', () => {
   it('bundles featured cases and keeps the intro separate', () => {
-    const ids = docketQueue.map((trial) => trial.id)
-    expect(new Set(ids)).toHaveLength(docketQueue.length)
-    expect(docketQueue).toEqual([...docketQueue].sort((a, b) =>
-      a.publish_date === b.publish_date
-        ? a.id.localeCompare(b.id)
-        : a.publish_date.localeCompare(b.publish_date),
-    ))
+    expect(docketQueue.map((trial) => trial.id)).toEqual([
+      'dd-0006',
+      'dd-0017',
+      'dd-0032',
+      'dd-0038',
+      'dd-0037',
+      'dd-0039',
+    ])
     expect(docketQueue.every((c) => c.id !== INTRO_CASE_ID)).toBe(true)
     expect(introCase?.id).toBe(INTRO_CASE_ID)
     const commissioned = [introCase, ...docketQueue]
-    expect(commissioned).toHaveLength(docketQueue.length + 1)
-    expect(new Set(commissioned.map((trial) => trial?.id))).toHaveLength(
-      docketQueue.length + 1,
-    )
+    expect(commissioned).toHaveLength(7)
+    expect(new Set(commissioned.map((trial) => trial?.id))).toHaveLength(7)
     expect(commissioned.every((c) =>
-      ['dd-2026-v3', 'dd-2026-v3-20min', 'dd-2026-v4'].includes(
+      ['dd-2026-v3', 'dd-2026-v3-20min'].includes(
         c?.gen_meta.prompt_version ?? '',
       ),
     )).toBe(true)
@@ -195,12 +194,8 @@ describe('docket queue', () => {
     expect(sittings.map(({ trial }) => trial.id)).toEqual(
       docketQueue.map(({ id }) => id),
     )
-    expect(new Set(sittings.map(({ trial }) => trial.id))).toHaveLength(
-      docketQueue.length,
-    )
-    expect(new Set(sittings.map(({ day }) => day))).toHaveLength(
-      docketQueue.length,
-    )
+    expect(new Set(sittings.map(({ trial }) => trial.id))).toHaveLength(6)
+    expect(new Set(sittings.map(({ day }) => day))).toHaveLength(6)
     for (const sitting of sittings) {
       expect(sitting.day).toBe(dayIndex(sitting.date))
       expect(selectDocketSitting(sittings, sitting.day)).toBe(sitting)
