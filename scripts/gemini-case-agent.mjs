@@ -114,12 +114,27 @@ async function postGemini(key, model, body, attempts, fetchImpl) {
   }
 }
 
-async function geminiJson(key, model, prompt, maxTokens, attempts, fetchImpl) {
+async function boundedResponseJson(response, limit) {
+  const reader = response.body?.getReader()
+  if (!reader) throw new Error('Gemini returned no response body')
+  const chunks = []
+  let bytes = 0
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    bytes += value.byteLength
+    if (bytes > limit) { await reader.cancel(); throw new Error('Gemini response exceeds output byte cap') }
+    chunks.push(value)
+  }
+  return JSON.parse(Buffer.concat(chunks).toString('utf8'))
+}
+
+async function geminiJson(key, model, prompt, maxTokens, maxBytes, attempts, fetchImpl) {
   const response = await postGemini(key, model, {
     contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: 'application/json', maxOutputTokens: maxTokens },
   }, attempts, fetchImpl)
   if (!response.ok) throw new Error(`Gemini ${model} returned HTTP ${response.status}`)
-  const body = await response.json()
+  const body = await boundedResponseJson(response, maxBytes)
   const text = body.candidates?.[0]?.content?.parts?.map((part) => part.text ?? '').join('')
   if (!text) throw new Error(`Gemini ${model} returned no JSON text`)
   const usage = body.usageMetadata ?? {}
@@ -175,11 +190,11 @@ function mediaManifest(files) {
   return [...new Map(output.map((item) => [item.path, item])).values()]
 }
 
-async function imageFile(key, model, asset, attempts, fetchImpl, convert) {
+async function imageFile(key, model, asset, maxBytes, attempts, fetchImpl, convert) {
   const style = asset.path.includes('/beats/') ? 'ambiguous contemporary evidence reconstruction, no readable text' : asset.path.endsWith('/cover.webp') ? 'juror-eye contemporary charcoal and ink court sketch, selective watercolor' : 'individual contemporary courtroom portrait, charcoal and ink, natural expression'
   const response = await postGemini(key, model, { contents: [{ parts: [{ text: `Fictional people and events. ${style}. ${asset.prompt} No logo, watermark, public figure, wig, gavel, gore, sepia, or verdict signalling.` }] }], generationConfig: { responseModalities: ['IMAGE'], responseFormat: { image: { aspectRatio: '3:2', imageSize: '1K' } } } }, attempts, fetchImpl)
   if (!response.ok) throw new Error(`Gemini image model returned HTTP ${response.status}`)
-  const body = await response.json()
+  const body = await boundedResponseJson(response, maxBytes)
   const cost = estimateImageCost(body.usageMetadata)
   const part = body.candidates?.[0]?.content?.parts?.find((item) => item.inlineData?.data)
   if (!part) { const error = new Error('Gemini image model returned no image'); error.estimatedCost = cost; throw error }
@@ -208,7 +223,7 @@ export async function callGeminiCaseAgent(config, request, root, { fetchImpl = f
   for (let attempt = 1; attempt <= config.maxAttempts; attempt += 1) {
     let result
     try {
-      result = await geminiJson(config.token, request.model, `${basePrompt}${correction}`, config.maxTokens, 1, fetchImpl)
+      result = await geminiJson(config.token, request.model, `${basePrompt}${correction}`, config.maxTokens, config.maxOutputBytes, 1, fetchImpl)
       const files = rebind(result.value.files, request, config)
       if (REVIEW_KEYS[request.phase]?.some((key) => result.value.review?.approved !== true || result.value.review.checks?.[key] !== true)) throw new Error(`${request.phase} must approve every required check`)
       if (Buffer.byteLength(JSON.stringify(files)) > config.maxOutputBytes) throw new Error('Gemini text bundle exceeds output byte cap')
@@ -231,7 +246,7 @@ export async function callGeminiCaseAgent(config, request, root, { fetchImpl = f
     for (const asset of assets) {
       let image
       for (let attempt = 1; attempt <= config.maxAttempts; attempt += 1) {
-        try { image = await imageFile(config.token, config.imageModel, asset, 1, fetchImpl, convert); break }
+        try { image = await imageFile(config.token, config.imageModel, asset, config.maxOutputBytes, 1, fetchImpl, convert); break }
         catch (error) {
           totalCost += error.estimatedCost ?? 0
           if (totalCost >= request.limits.remaining_cost_usd) throw new Error('Gemini image retries exhausted the cost cap')
