@@ -1,22 +1,19 @@
 name: docket-supply
 
-# Keeps a rolling seven days of cases queued.
-#
-# Runs every morning, works out which of the next seven days open no case,
-# and raises a commission for exactly those dates. It never writes a case to
-# `main`: the commission is machine-readable work for the drafting agent and
-# every generated change still lands through the repository's PR gates.
-
 on:
   schedule:
-    # 18:10 UTC — early morning in Australia/Melbourne, so a shortfall is on the
-    # owner's desk at the start of their day rather than overnight.
     - cron: "10 18 * * *"
   workflow_dispatch:
+  pull_request_review:
+    types: [submitted]
+  pull_request_review_comment:
+    types: [created]
 
 permissions:
-  contents: read
+  actions: write
+  contents: write
   issues: write
+  pull-requests: write
 
 concurrency:
   group: docket-supply
@@ -25,7 +22,23 @@ concurrency:
 jobs:
   supply:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 360
+    env:
+      CASE_GENERATION_ENABLED: ${{ vars.CASE_GENERATION_ENABLED }}
+      CASE_AGENT_ENDPOINT: ${{ vars.CASE_AGENT_ENDPOINT }}
+      CASE_AGENT_TOKEN: ${{ secrets.CASE_AGENT_TOKEN }}
+      CASE_AGENT_PROVIDER: ${{ vars.CASE_AGENT_PROVIDER }}
+      CASE_IMAGE_MODEL: ${{ vars.CASE_IMAGE_MODEL }}
+      CASE_IMAGE_LICENSE: ${{ vars.CASE_IMAGE_LICENSE }}
+      CASE_DRAFT_MODEL: ${{ vars.CASE_DRAFT_MODEL }}
+      CASE_LEGAL_REVIEW_MODEL: ${{ vars.CASE_LEGAL_REVIEW_MODEL }}
+      CASE_STORY_REVIEW_MODEL: ${{ vars.CASE_STORY_REVIEW_MODEL }}
+      CASE_MAX_ATTEMPTS: ${{ vars.CASE_MAX_ATTEMPTS }}
+      CASE_MAX_REPAIR_ATTEMPTS: ${{ vars.CASE_MAX_REPAIR_ATTEMPTS }}
+      CASE_MAX_IMAGES_PER_CASE: ${{ vars.CASE_MAX_IMAGES_PER_CASE }}
+      CASE_MAX_OUTPUT_BYTES: ${{ vars.CASE_MAX_OUTPUT_BYTES }}
+      CASE_MAX_COST_USD: ${{ vars.CASE_MAX_COST_USD }}
+      CASE_MAX_TOKENS: ${{ vars.CASE_MAX_TOKENS }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -33,81 +46,230 @@ jobs:
           node-version: "24"
           cache: npm
           cache-dependency-path: site/app/package-lock.json
-
       - name: Install
         working-directory: site/app
         run: npm ci
 
-      - name: Work out what the docket needs
+      - name: Measure the UTC rolling week
         id: plan
         working-directory: site/app
         run: |
           set -euo pipefail
-          npx tsx scripts/docket-supply.ts | tee supply.txt
           npx tsx scripts/docket-supply.ts --json > supply.json
-          {
-            echo "needed=$(node -p "require('./supply.json').needed.length")"
-            echo "dates=$(node -p "require('./supply.json').needed.join(', ')")"
-          } >> "$GITHUB_OUTPUT"
-          {
-            echo "### Docket supply"
-            echo
-            echo '```text'
-            cat supply.txt
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+          echo "needed=$(node -p "require('./supply.json').needed.length")" >> "$GITHUB_OUTPUT"
+          echo "dates=$(node -p "require('./supply.json').needed.join(',')")" >> "$GITHUB_OUTPUT"
+          cat supply.json >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Raise or update the commission
-        if: steps.plan.outputs.needed != '0'
+      - name: Check kill switch, credentials, models and caps
+        id: config
+        env:
+          BOT_CLIENT_ID: ${{ vars.CASE_BOT_CLIENT_ID }}
+          BOT_PRIVATE_KEY: ${{ secrets.CASE_BOT_PRIVATE_KEY }}
+        run: |
+          set +e
+          node scripts/docket-case-agent.mjs config > config.json
+          result=$?
+          set -e
+          missing=$(node -e "const c=require('./config.json'); const m=[...c.missing]; if(!process.env.BOT_CLIENT_ID)m.push('CASE_BOT_CLIENT_ID'); if(!process.env.BOT_PRIVATE_KEY)m.push('CASE_BOT_PRIVATE_KEY'); process.stdout.write(m.join(','))")
+          if [ "$result" -eq 0 ] && [ -z "$missing" ]; then ready=true; else ready=false; fi
+          echo "ready=$ready" >> "$GITHUB_OUTPUT"
+          echo "missing=$missing" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update the machine-readable supply record
+        id: issue
         env:
           GH_TOKEN: ${{ github.token }}
           NEEDED: ${{ steps.plan.outputs.needed }}
           DATES: ${{ steps.plan.outputs.dates }}
+          READY: ${{ steps.config.outputs.ready }}
+          MISSING: ${{ steps.config.outputs.missing }}
         run: |
           set -euo pipefail
-          TITLE="Docket supply: $NEEDED day(s) in the rolling week open no case"
-          BODY=$(cat <<'INTRO'
-The Daily Docket is short. Each date below opens no case, so a returning player
-is re-served a trial they have already finished.
-
-INTRO
-          )
-          BODY="${BODY}"$'\n'"**Commission one case for each of:** ${DATES}"$'\n\n'
-          BODY="${BODY}$(cat <<'HOW'
-Each case must arrive complete — text, narration and images together. A case
-without its media is not shippable, and half a case in the docket is worse than
-an honest gap. `docs/DOCKET-SUPPLY.md` carries the full contract; the short
-version is that every commissioned case passes `npm run validate:cases`,
-carries `cover.webp` and its character portraits, and gets narration from the
-existing Kokoro pipeline with distinct, gender-appropriate voices.
-
-The drafting agent owns each case end to end: story, independent editorial
-passes, legal clarity, sensitivity, media, narration, verification and review
-feedback. Generated cases are opened as pull requests and never written
-directly to `main`; `validate` and `bot-feedback-gate` remain mandatory.
-
-_Raised automatically by `docket-supply`. It updates this issue rather than
-opening another, and closes it once the rolling week is covered._
-HOW
-          )"
-
-          EXISTING=$(gh issue list --label docket-supply --state open \
-            --json number --jq '.[0].number // empty')
-          if [ -n "$EXISTING" ]; then
-            gh issue edit "$EXISTING" --title "$TITLE" --body "$BODY"
-            echo "updated issue #$EXISTING"
-          else
-            gh label create docket-supply --color B60205 \
-              --description "The docket is short of cases" 2>/dev/null || true
-            gh issue create --title "$TITLE" --body "$BODY" --label docket-supply
+          gh label create docket-supply --color B60205 --description "The docket is short of cases" 2>/dev/null || true
+          existing=$(gh issue list --label docket-supply --state open --json number --jq '.[0].number // empty')
+          if [ "$NEEDED" = 0 ]; then
+            [ -z "$existing" ] || gh issue close "$existing" --comment "The rolling UTC week is fully covered."
+            echo "number=" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+          status=commissioned
+          [ "$READY" = true ] || status=blocked_configuration
+          json=$(jq -cn --arg status "$status" --arg dates "$DATES" --arg missing "$MISSING" \
+            '{schema:"simjury.docket-supply/v1",status:$status,dates:($dates|split(",")),missing_configuration:($missing|select(length>0)|split(","))}')
+          body=$(printf 'Automation owns complete cases for the named UTC dates.\n\n```json\n%s\n```\n\nNo partial case may merge; required CI and resolved bot feedback remain mandatory.' "$json")
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --title "Docket supply: $NEEDED uncovered day(s)" --body "$body"
+            number=$existing
+          else
+            url=$(gh issue create --title "Docket supply: $NEEDED uncovered day(s)" --body "$body" --label docket-supply)
+            number=${url##*/}
+          fi
+          echo "number=$number" >> "$GITHUB_OUTPUT"
 
-      - name: Close the commission once the rolling week is covered
-        if: steps.plan.outputs.needed == '0'
+      - name: Mint the case bot token
+        if: steps.plan.outputs.needed != '0' && steps.config.outputs.ready == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.CASE_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.CASE_BOT_PRIVATE_KEY }}
+
+      - name: Reserve or resume one draft PR
+        if: steps.plan.outputs.needed != '0' && steps.config.outputs.ready == 'true'
+        id: pr
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          DATES: ${{ steps.plan.outputs.dates }}
+        run: |
+          set -euo pipefail
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          active=$(gh pr list --state open --label docket-generation --json number,headRefName --jq '.[0] // empty')
+          if [ -n "$active" ]; then
+            number=$(jq -r .number <<<"$active")
+            branch=$(jq -r .headRefName <<<"$active")
+            git fetch origin "$branch"
+            git checkout -B "$branch" "origin/$branch"
+            fresh=false
+          else
+            branch="automation/docket-${DATES%%,*}"
+            git checkout -b "$branch"
+            mkdir -p .automation
+            jq -n --arg dates "$DATES" '{schema:1,phase:"reserved",dates:($dates|split(",")),repair_attempts:0}' > .automation/docket-case-generation.json
+            git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
+            git config user.email "${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
+            git add .automation/docket-case-generation.json
+            git commit -m "chore(docket): reserve automated case commission"
+            git push -u origin "$branch"
+            gh label create docket-generation --color 5319E7 --description "Autonomous case-generation PR" 2>/dev/null || true
+            number=$(gh pr create --draft --base main --head "$branch" --title "feat(docket): commission ${DATES//,/, }" \
+              --body "Role: Engineer (autonomous docket supply)\n\nReserved before final case hashes and generation metadata. Covers UTC dates: $DATES." --label docket-generation)
+            number=${number##*/}
+            jq --argjson pr "$number" '.draft_pr=$pr' .automation/docket-case-generation.json > state.json
+            mv state.json .automation/docket-case-generation.json
+            fresh=true
+          fi
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "fresh=$fresh" >> "$GITHUB_OUTPUT"
+          echo "phase=$(jq -r .phase .automation/docket-case-generation.json)" >> "$GITHUB_OUTPUT"
+          echo "dates=$(jq -r '.dates|join(",")' .automation/docket-case-generation.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Draft, legally review, story-review and write safe artifacts
+        if: steps.pr.outputs.phase == 'reserved'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          DATES: ${{ steps.pr.outputs.dates }}
+          PR: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+          node scripts/docket-case-agent.mjs generate --dates "$DATES" --pr "$PR" --root "$GITHUB_WORKSPACE" > "$RUNNER_TEMP/generation-result.json"
+          unsafe=$(git status --porcelain | awk '{print $2}' | grep -Ev '^(\.automation/docket-case-generation\.json|site/app/docket/dd-[0-9]{4}(\.json|/[^/]+\.json)|site/app/public/media/dd-[0-9]{4}/)' || true)
+          test -z "$unsafe" || { echo "generated change escaped the allowlist: $unsafe" >&2; exit 1; }
+
+      - name: Generate and publish Kokoro narration
+        if: steps.pr.outputs.phase == 'reserved'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          ids=$(git status --porcelain | sed -nE 's#.*site/app/docket/(dd-[0-9]{4})(\.json|/.*)$#\1#p' | sort -u | paste -sd, -)
+          test -n "$ids"
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg espeak-ng
+          python -m pip install -r site/narration-requirements.txt
+          node site/scripts/build-kokoro-jobs.mjs --case "$ids" --output .narration-jobs
+          for job in .narration-jobs/*.json; do python site/scripts/generate-kokoro-clips.py "$job" narration-clips; done
+          node site/scripts/publish-kokoro-clips.mjs --clips narration-clips
+
+      - name: Run the complete deterministic merge bar
+        if: steps.pr.outputs.phase == 'reserved'
+        working-directory: site/app
+        run: npm run lint && npm run typecheck && npm test && npm run validate:cases && npm run build
+
+      - name: Commit the complete sitting and request reviews
+        if: steps.pr.outputs.phase == 'reserved'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+          spent=$(jq .spent_usd "$RUNNER_TEMP/generation-result.json")
+          jq --argjson spent "$spent" '.phase="awaiting_review"|.spent_usd=$spent' .automation/docket-case-generation.json > state.json
+          mv state.json .automation/docket-case-generation.json
+          git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
+          git config user.email "${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
+          git add .automation/docket-case-generation.json site/app/docket site/app/public/media
+          git commit -m "feat(docket): add complete commissioned sittings"
+          git push origin HEAD
+          set +e
+          npm run pr:arm-and-park -- --pr "$PR"
+          result=$?
+          set -e
+          [ "$result" -eq 0 ] || [ "$result" -eq 2 ]
+          node scripts/request-codex-review.mjs --pr "$PR" || true
+          node scripts/request-coderabbit-review.mjs --pr "$PR" || true
+
+      - name: Collect unresolved review threads for an existing case PR
+        if: steps.pr.outputs.phase == 'awaiting_review'
+        id: feedback
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+          gh api graphql -F owner='${{ github.repository_owner }}' -F name='${{ github.event.repository.name }}' -F number="$PR" -f query='query($owner:String!,$name:String!,$number:Int!){repository(owner:$owner,name:$name){pullRequest(number:$number){reviewThreads(first:100){nodes{id isResolved comments(first:20){nodes{body path line author{login}}}}}}}}' > threads.json
+          jq '{threads:[.data.repository.pullRequest.reviewThreads.nodes[]|select(.isResolved==false)|{id,comments:.comments.nodes}]}' threads.json > feedback.json
+          echo "count=$(jq '.threads|length' feedback.json)" >> "$GITHUB_OUTPUT"
+          echo "attempt=$(jq '.repair_attempts+1' .automation/docket-case-generation.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Repair every actionable review thread within the cap
+        if: steps.pr.outputs.phase == 'awaiting_review' && steps.feedback.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          DATES: ${{ steps.pr.outputs.dates }}
+          PR: ${{ steps.pr.outputs.number }}
+          ATTEMPT: ${{ steps.feedback.outputs.attempt }}
+        run: |
+          set -euo pipefail
+          node scripts/docket-case-agent.mjs repair --dates "$DATES" --pr "$PR" --root "$GITHUB_WORKSPACE" \
+            --feedback feedback.json --repair-attempt "$ATTEMPT" \
+            --spent-usd "$(jq -r '.spent_usd // 0' .automation/docket-case-generation.json)" > "$RUNNER_TEMP/repair-result.json"
+          npm --prefix site/app run lint
+          npm --prefix site/app run typecheck
+          npm --prefix site/app test
+          npm --prefix site/app run validate:cases
+          npm --prefix site/app run build
+          spent=$(jq .spent_usd "$RUNNER_TEMP/repair-result.json")
+          jq --argjson n "$ATTEMPT" --argjson spent "$spent" '.repair_attempts=$n|.spent_usd=$spent' .automation/docket-case-generation.json > state.json
+          mv state.json .automation/docket-case-generation.json
+          git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
+          git config user.email "${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
+          git add .automation/docket-case-generation.json site/app/docket site/app/public/media
+          git commit -m "fix(docket): address automated review feedback"
+          git push origin HEAD
+          jq -c '.dispositions[]' "$RUNNER_TEMP/repair-result.json" | while read -r item; do
+            id=$(jq -r .thread_id <<<"$item")
+            body=$(jq -r '(.status + ": " + .reason)' <<<"$item")
+            gh api graphql -F id="$id" -F body="$body" -f query='mutation($id:ID!,$body:String!){addPullRequestReviewThreadReply(input:{pullRequestReviewThreadId:$id,body:$body}){comment{id}}}'
+            gh api graphql -F id="$id" -f query='mutation($id:ID!){resolveReviewThread(input:{threadId:$id}){thread{id isResolved}}}'
+          done
+          set +e
+          npm run pr:arm-and-park -- --pr "$PR"
+          result=$?
+          set -e
+          [ "$result" -eq 0 ] || [ "$result" -eq 2 ]
+
+      - name: Record a fail-closed automation blocker
+        if: failure() && steps.issue.outputs.number != ''
         env:
           GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ steps.issue.outputs.number }}
+          DATES: ${{ steps.plan.outputs.dates }}
         run: |
-          set -euo pipefail
-          for number in $(gh issue list --label docket-supply --state open --json number --jq '.[].number'); do
-            gh issue close "$number" --comment "The rolling seven-day window is fully covered. Closing automatically."
-          done
+          json=$(jq -cn --arg dates "$DATES" --arg run "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            '{schema:"simjury.docket-supply/v1",status:"blocked_automation",dates:($dates|split(",")),run:$run}')
+          gh issue comment "$ISSUE" --body "\`\`\`json
+          $json
+          \`\`\`
+          Automation stopped without weakening any gate or publishing a partial case."
