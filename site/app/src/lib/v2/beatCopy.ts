@@ -18,9 +18,10 @@ export function nextBeatLabel(
   if (next.kind !== 'witness') return 'Hear the judge’s direction'
   const name = speaker?.name
   if (!name) return 'Call the next witness'
-  // A cross of the same witness continues with them rather than calling them.
-  if (next.speaker === beat.speaker && next.mode === 'cross') {
-    return `Cross-examine ${name}`
-  }
-  return next.mode === 'cross' ? `Cross-examine ${name}` : `Hear ${name}`
+  if (next.mode === 'cross') return `Cross-examine ${name}`
+  // Long examinations run several beats with the same witness. "Hear Ivo Tarn"
+  // three times in a row is only marginally better than "Next →" three times:
+  // it names who, but not that you are staying with them.
+  if (next.speaker === beat.speaker) return `Continue with ${name}`
+  return `Hear ${name}`
 }

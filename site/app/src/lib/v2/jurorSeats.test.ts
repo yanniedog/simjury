@@ -13,6 +13,37 @@ describe('splitJurorLabel', () => {
   it('leaves a plain name without a role', () => {
     expect(splitJurorLabel('Yara')).toEqual({ name: 'Yara', role: null })
   })
+
+  /**
+   * Four of the ten live cases — including the guided intro every new player
+   * meets — author labels as "Juror 2 — Anya". Left whole, the bench printed a
+   * number and a name, and the seat's caption already carries the number, so
+   * it said it twice and put a number back on the bench.
+   */
+  it('drops a Juror-number prefix and keeps the given name', () => {
+    expect(splitJurorLabel('Juror 2 — Anya')).toEqual({ name: 'Anya', role: null })
+    expect(splitJurorLabel('Juror 11 – Cora')).toEqual({ name: 'Cora', role: null })
+    expect(splitJurorLabel('Juror 3 - Bram')).toEqual({ name: 'Bram', role: null })
+  })
+
+  it('handles a numbered label that also carries a role', () => {
+    expect(splitJurorLabel('Juror 5 — Vela · foreperson')).toEqual({
+      name: 'Vela',
+      role: 'foreperson',
+    })
+  })
+
+  it('keeps a dash that belongs to the name itself', () => {
+    expect(splitJurorLabel('Anne-Marie')).toEqual({ name: 'Anne-Marie', role: null })
+    expect(splitJurorLabel('Juror 4 — Anne-Marie')).toEqual({
+      name: 'Anne-Marie',
+      role: null,
+    })
+  })
+
+  it('never returns an empty name', () => {
+    expect(splitJurorLabel('Juror 7 —').name).not.toBe('')
+  })
 })
 
 describe('jurorSeats', () => {
