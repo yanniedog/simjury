@@ -205,7 +205,7 @@ jobs:
           echo "phase=$(jq -r .phase .automation/docket-case-generation.json)" >> "$GITHUB_OUTPUT"
           echo "dates=$(jq -r '.dates|join(",")' .automation/docket-case-generation.json)" >> "$GITHUB_OUTPUT"
 
-      - name: Draft, legally review, story-review and write safe artifacts
+      - name: Draft, story-review, final legal review and write safe artifacts
         if: steps.pr.outputs.phase == 'reserved'
         env:
           GH_TOKEN: ${{ github.token }}

@@ -30,13 +30,21 @@ export function estimateImageCost(usage = {}) {
   return (((usage.promptTokenCount ?? 0) * 0.50 + (usage.candidatesTokenCount ?? 0) * 60) / 1_000_000) * SAFETY_MARGIN
 }
 
-function stableHash(value) {
+export function stableHash(value) {
   let hash = 0x811c9dc5
-  for (const char of JSON.stringify(value)) {
-    hash ^= char.charCodeAt(0)
+  const content = JSON.stringify(value)
+  for (let index = 0; index < content.length; index += 1) {
+    hash ^= content.charCodeAt(index)
     hash = Math.imul(hash, 0x01000193)
   }
   return (hash >>> 0).toString(16).padStart(8, '0')
+}
+
+export function caseIdForDate(date) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error(`invalid commissioned date ${date}`)
+  const ordinal = Math.round((Date.parse(`${date}T00:00:00Z`) - Date.UTC(2026, 5, 28)) / 86_400_000) + 1
+  if (ordinal < 1 || ordinal > 9999) throw new Error(`commissioned date is outside the case-id epoch: ${date}`)
+  return `dd-${String(ordinal).padStart(4, '0')}`
 }
 
 function parseModelJson(text) {
@@ -46,12 +54,21 @@ function parseModelJson(text) {
   return value
 }
 
-function generatedIds(root, count) {
-  const docket = join(root, 'site/app/docket')
-  const maximum = Math.max(0, ...readdirSync(docket, { withFileTypes: true })
-    .map(({ name }) => /^dd-(\d{4})(?:\.json)?$/.exec(name)?.[1])
-    .filter(Boolean).map(Number))
-  return Array.from({ length: count }, (_, index) => `dd-${String(maximum + index + 1).padStart(4, '0')}`)
+function generatedIds(root, dates) {
+  return dates.map((date) => {
+    const id = caseIdForDate(date)
+    const path = join(root, 'site/app/docket', id)
+    try { readFileSync(join(path, 'trial.json')); throw new Error(`${id} is already committed for another commission`) } catch (error) { if (error.code !== 'ENOENT') throw error }
+    return id
+  })
+}
+
+export function assertRepairDispositions(value, feedback) {
+  const expected = new Set(feedback?.threads?.map(({ id }) => id) ?? [])
+  for (const item of value.dispositions ?? []) {
+    if (!expected.delete(item.thread_id) || !['Implemented', 'Deferred', 'Declined'].includes(item.status) || !item.reason?.trim()) throw new Error('repair returned an invalid thread disposition')
+  }
+  if (expected.size) throw new Error('repair must disposition every unresolved thread')
 }
 
 function templateFiles(root) {
@@ -84,7 +101,7 @@ function promptFor(request, root) {
   const prior = request.prior_files ?? (request.phase === 'repair' ? currentFiles(root, request.dates) : undefined)
   const reference = prior ?? templateFiles(root)
   const priorIds = [...new Set(prior?.map(({ path }) => /^site\/app\/docket\/(dd-\d{4})\//.exec(path)?.[1]).filter(Boolean) ?? [])].sort()
-  const ids = priorIds.length === request.dates.length ? priorIds : generatedIds(root, request.dates.length)
+  const ids = priorIds.length === request.dates.length ? priorIds : generatedIds(root, request.dates)
   const role = request.phase === 'draft'
     ? 'Create a wholly original, serious and enthralling fictional criminal trial. Do not copy the reference story.'
     : request.phase === 'legal_review'
@@ -94,7 +111,7 @@ function promptFor(request, root) {
         : 'Implement or explicitly disposition every supplied review thread without weakening any gate.'
   return `${role}
 
-Return JSON only: {"files":[{"path":"...","content":"complete JSON text"}],"review":{"approved":true,"checks":{...}}}.
+Return JSON only: {"files":[{"path":"...","content":"complete JSON text"}],"review":{"approved":true,"checks":{...}},"dispositions":[{"thread_id":"...","status":"Implemented|Deferred|Declined","reason":"specific rationale"}]}.
 Return exactly four UTF-8 files per sitting: trial.json, analysis.json, legal-sheet.json and deliberation-pack.json. No media bytes.
 Targets: ${request.dates.map((date, i) => `${ids[i]}=${date}`).join(', ')}. Reserved PR: ${request.draft_pr}.
 Preserve the reference bundle's exact schemas and depth, but replace every case-specific fact, name, issue and utterance tests. Use State of Orinth. Every trial must be V4, fiction-labelled, non-graphic, balanced, current, and computed for 19-21 minutes. Include complete media declarations for cover, accused, every cast member, all 11 jurors, and 2-3 useful beats. Use only /today/media/<target-id>/ paths. Leave revision and approval hashes as placeholders; trusted code rebinds them.
@@ -173,7 +190,7 @@ function rebind(files, request, config) {
     const legalContent = Object.fromEntries(Object.entries(legal).filter(([key]) => key !== 'approvals'))
     const approvalHash = `${revision}@legal-${stableHash(legalContent)}`
     const approvedAt = new Date().toISOString()
-    legal.approvals = Object.fromEntries(['legal', 'read_aloud', 'blind_test'].map((name) => [name, { status: 'approved', reviewer: name === 'legal' ? config.models[1] : config.models[2], approved_at: approvedAt, content_hash: approvalHash }]))
+    legal.approvals = Object.fromEntries(['legal', 'read_aloud', 'blind_test'].map((name) => [name, { status: 'approved', reviewer: request.model, approved_at: approvedAt, content_hash: approvalHash }]))
   })
   if (byName.size !== trialPaths.length * 4) throw new Error('Gemini returned unexpected bundle files')
   return [...byName].map(([path, value]) => ({ type: 'file', path, encoding: 'utf8', content: `${JSON.stringify(value, null, 2)}\n` }))
@@ -226,6 +243,7 @@ export async function callGeminiCaseAgent(config, request, root, { fetchImpl = f
       result = await geminiJson(config.token, request.model, `${basePrompt}${correction}`, config.maxTokens, config.maxOutputBytes, 1, fetchImpl)
       const files = rebind(result.value.files, request, config)
       if (REVIEW_KEYS[request.phase]?.some((key) => result.value.review?.approved !== true || result.value.review.checks?.[key] !== true)) throw new Error(`${request.phase} must approve every required check`)
+      if (request.phase === 'repair') assertRepairDispositions(result.value, request.feedback)
       if (Buffer.byteLength(JSON.stringify(files)) > config.maxOutputBytes) throw new Error('Gemini text bundle exceeds output byte cap')
       generated = { ...result, cost: attemptedCost + result.cost, files }
       break
@@ -238,7 +256,7 @@ export async function callGeminiCaseAgent(config, request, root, { fetchImpl = f
   }
   let files = generated.files
   let totalCost = generated.cost
-  if (request.phase === 'story_review' || request.phase === 'repair') {
+  if (request.phase === 'legal_review' || request.phase === 'repair') {
     const assets = mediaManifest(files)
     if (assets.length > config.maxImagesPerCase * request.dates.length) throw new Error('Gemini media manifest exceeds image cap')
     if (totalCost + assets.length * 0.09 > request.limits.remaining_cost_usd) throw new Error('Gemini generation would exceed cost cap')
