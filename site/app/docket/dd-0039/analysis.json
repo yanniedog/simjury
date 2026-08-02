@@ -1,0 +1,26 @@
+{
+  "schema_version": 4,
+  "case_id": "dd-0039",
+  "case_revision": "dd-0039@fc4a7591",
+  "reference_verdict": "Not Guilty",
+  "reference_reasoning": "Elia’s admission resolves who wore the coat; the disputed question is whether Iona remained upstairs. The 8:52 rear-door event and neighbour recognition leave a reasonable possibility that Iona departed before Nera’s 9:12 call. The clasp cannot be timed more narrowly than a day, so the prosecution does not exclude the afternoon folder dispute as its source.",
+  "strongest_opposing_interpretation": "Iona deliberately staged a public departure, omitted the rear route and folder contact from her first account, and Nera held part of Iona’s recently broken bracelet at death. Those strands can support guilt if their limitations are resolved against Iona.",
+  "sentencing_context": "Any sentence would be determined by the judge only after a conviction and has no place in deciding guilt.",
+  "epilogue": {"mode":"outcome_neutral","text":"Nera Vale’s family asked the gallery to finish the community exhibition she had planned, but without turning her work into a memorial attraction. It reopened for one season under shared financial control. Elia Marr left the arts sector and declined every interview request. Former apprentices completed Nera’s unfinished display from her notes and kept one wall empty for new artists. Iona’s sister continued attending every hearing, while the cooperative’s members lived with questions the trial record could not answer."},
+  "beats": [
+    {"beat_id":"b1","editorial_weight":0.52,"analysis_role":"context","analysis_note":"Soren’s direct recollection establishes that Nera was alive and speaking normally at 9:12, but does not identify who was upstairs."},
+    {"beat_id":"b2","editorial_weight":0,"analysis_role":"context","analysis_note":"The receptionist never saw the wearer’s face. The judge excluded the entire coat-based identification, so it carries no weight in the reference assessment or deliberation.","admissibility":{"effect":"exclude_beat"}},
+    {"beat_id":"b3","editorial_weight":0.64,"analysis_role":"counterweight","analysis_note":"Reception could not observe the rear route, and seven staff members could use it. The desk evidence cannot place Iona upstairs after 8:52."},
+    {"beat_id":"b4","editorial_weight":0.57,"analysis_role":"context","analysis_note":"The medical evidence proves deliberate homicide after the 9:12 call and supports intent, while remaining neutral on the attacker’s identity."},
+    {"beat_id":"b5","editorial_weight":0.54,"analysis_role":"context","analysis_note":"The expert’s responsible fifteen-minute range cannot resolve who was upstairs or whether Iona had already left."},
+    {"beat_id":"b6","editorial_weight":0.68,"analysis_role":"central","analysis_note":"Elia gives a suspicious coat instruction in Iona’s own words. Her direct knowledge stops at 8:45 and cannot establish that Iona remained."},
+    {"beat_id":"b7","editorial_weight":0.72,"analysis_role":"counterweight","analysis_note":"Elia’s two denials, immunity and concession that she never saw Iona after 8:45 require caution and expose her continued-presence claim as inference."},
+    {"beat_id":"b8","editorial_weight":0.5,"analysis_role":"context","analysis_note":"The transit record independently confirms Elia travelled in the coat but supplies no information about Iona’s location."},
+    {"beat_id":"b9","editorial_weight":0.56,"analysis_role":"central","analysis_note":"Iona admits the coat deception and gives an innocent reason tied to avoiding conflict. Her account requires testing against independent timing and physical evidence."},
+    {"beat_id":"b10","editorial_weight":0.9,"analysis_role":"counterweight","analysis_note":"The 8:52 rear-door event and recognition by a neighbour who knew Iona independently support her exit account, although neither proves she stayed away."},
+    {"beat_id":"b11","editorial_weight":0.5,"analysis_role":"central","analysis_note":"Iona’s omissions reasonably damage credibility, but her first words do not deny the afternoon folder contact or claim a lobby exit, so they do not fill the identity gap."},
+    {"beat_id":"b12","editorial_weight":0.62,"analysis_role":"central","analysis_note":"Documented custody and the agreed comparison reliably connect the clasp to Iona’s bracelet, but the broad fracture window cannot place the break near death."},
+    {"beat_id":"b13","editorial_weight":0.84,"analysis_role":"counterweight","analysis_note":"The examiner cannot distinguish the afternoon folder dispute from the time of death and found no trace timing the contact. The clasp does not identify the killer."},
+    {"beat_id":"b14","editorial_weight":0.52,"analysis_role":"context","analysis_note":"The direction correctly keeps the identity element and burden distinct from proof that a deliberate homicide occurred."}
+  ]
+}
