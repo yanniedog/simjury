@@ -396,7 +396,7 @@
     "model": "gpt-5",
     "prompt_version": "dd-2026-v3-20min",
     "reviewer": "autonomous-content-curator-agent",
-    "batch_pr": "pending",
+    "batch_pr": "313",
     "language_reviewer": "autonomous-language-editor-agent",
     "sensitivity_reviewer": "autonomous-legal-sensitivity-agent"
   }
