@@ -33,9 +33,11 @@ export function DocketShell({
   dayNumber,
   charge,
   narration,
+  ambience,
   playbackRate,
   voiceEngine = 'kokoro',
   onToggleNarration,
+  onToggleAmbience,
   onRateChange,
   onVoiceEngineChange,
   /** Quieter chrome for pre-sitting gates (no false phase progress or empty sidebar). */
@@ -50,9 +52,11 @@ export function DocketShell({
   dayNumber?: number
   charge?: string
   narration: boolean
+  ambience?: boolean
   playbackRate: NarrationRate
   voiceEngine?: NarrationEngineId
   onToggleNarration: () => void
+  onToggleAmbience?: () => void
   onRateChange: (rate: NarrationRate) => void
   onVoiceEngineChange?: (engine: NarrationEngineId) => void
   entryMode?: boolean
@@ -87,9 +91,12 @@ export function DocketShell({
             <i aria-hidden="true" style={{ width: `${(stageNumber / PHASES.length) * 100}%` }} />
           </div>
         )}
-        {showNarration && (
+        {(showNarration ||
+          (!entryMode &&
+            typeof ambience === 'boolean' &&
+            onToggleAmbience)) && (
           <div className="narration-controls">
-            {showVoiceMode && (
+            {showNarration && showVoiceMode && (
               <select
                 aria-label="Narration voice mode"
                 value={voiceEngine}
@@ -99,14 +106,24 @@ export function DocketShell({
                 <option value="scylla">{ALT_VOICE_LABEL}</option>
               </select>
             )}
-            <select aria-label="Narration speed" value={playbackRate} onChange={(event) => onRateChange(normaliseNarrationRate(event.target.value))}>
+            {showNarration && <select aria-label="Narration speed" value={playbackRate} onChange={(event) => onRateChange(normaliseNarrationRate(event.target.value))}>
               <option value={0.85}>Relaxed</option><option value={1}>Standard</option><option value={1.15}>Brisk</option>
-            </select>
-            <button type="button" aria-pressed={narration} aria-label="Toggle narration" onClick={onToggleNarration}>
+            </select>}
+            {showNarration && <button type="button" aria-pressed={narration} aria-label="Toggle narration" onClick={onToggleNarration}>
               <span aria-hidden="true">◉</span>
               <span className="narration-label-full">Narration {narration ? 'on' : 'off'}</span>
               <span className="narration-label-short">{narration ? 'On' : 'Off'}</span>
-            </button>
+            </button>}
+            {!entryMode && typeof ambience === 'boolean' && onToggleAmbience && (
+              <button
+                type="button"
+                aria-pressed={ambience}
+                aria-label="Toggle courtroom ambience"
+                onClick={onToggleAmbience}
+              >
+                Room tone {ambience ? 'on' : 'off'}
+              </button>
+            )}
           </div>
         )}
       </header>
