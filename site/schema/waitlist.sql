@@ -23,11 +23,9 @@ CREATE TABLE IF NOT EXISTS waitlist (
   email            TEXT NOT NULL,
   consent_text     TEXT NOT NULL,
   consented_at     TEXT NOT NULL,
-  -- SHA-256 of "<ip>:<utc day>". Enough to spot a flood, useless as a location
-  -- record: the raw address is never written down.
-  -- HMAC-SHA-256 of "<ip>:<utc day>" under WAITLIST_SALT. NULL when no salt
-  -- is configured. A plain digest would not be anonymous: IPv4 is only 2^32
-  -- values, so an unkeyed hash can be reversed by exhausting the space.
+  -- HMAC-SHA-256 of "<ip>:<utc day>" under WAITLIST_SALT. It keys the source
+  -- rate limiter and is retained for abuse investigation; the raw address is
+  -- never written. A plain digest would be reversible across the IPv4 space.
   source_day_hash  TEXT,
   unsubscribed_at  TEXT
 );
@@ -37,6 +35,6 @@ CREATE INDEX IF NOT EXISTS waitlist_active
   ON waitlist (unsubscribed_at)
   WHERE unsubscribed_at IS NULL;
 
--- The per-IP-per-day cap counts rows by fingerprint on every signup.
-CREATE INDEX IF NOT EXISTS waitlist_source_day
-  ON waitlist (source_day_hash);
+-- Abuse limits are enforced before D1 by the Worker rate-limit bindings. Do
+-- not index source_day_hash: the signup path never queries it, and indexing it
+-- would add a second billed row write to every signup.

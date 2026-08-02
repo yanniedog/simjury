@@ -6,7 +6,6 @@ import {
   waitlistEmailKey,
   waitlistUtcDay,
   WAITLIST_CONSENT_TEXT,
-  WAITLIST_LIMITS,
 } from '../src/live-policy.js'
 import worker from '../src/worker.js'
 import { sqlQuote, unsubscribeStatement } from '../scripts/waitlist-unsubscribe.mjs'
@@ -26,6 +25,8 @@ function waitlistEnv(overrides = {}) {
     rows,
     unsubscribed,
     WAITLIST_SALT: SALT,
+    WAITLIST_SOURCE_LIMITER: { limit: async () => ({ success: true }) },
+    WAITLIST_GLOBAL_LIMITER: { limit: async () => ({ success: true }) },
     ASSETS: { fetch: () => new Response('static', { status: 200 }) },
     WAITLIST: {
       prepare(sql) {
@@ -33,34 +34,19 @@ function waitlistEnv(overrides = {}) {
           bind(...args) {
             return {
               run() {
-                if (/^\s*UPDATE waitlist/.test(sql)) {
-                  // Re-subscribing clears an unsubscribe and nothing else.
-                  const [key, consentText, consentedAt] = args
-                  if (!/unsubscribed_at IS NOT NULL/.test(sql)) {
-                    throw new Error('re-subscribe must only touch unsubscribed rows')
-                  }
-                  if (unsubscribed.has(key)) {
-                    unsubscribed.delete(key)
-                    const row = rows.find((r) => r[0] === key)
-                    if (row) { row[2] = consentText; row[3] = consentedAt }
-                  }
-                  return { success: true }
+                if (!/ON CONFLICT\(email_key\) DO UPDATE/.test(sql)) {
+                  throw new Error('waitlist write must be one idempotent upsert')
                 }
-                // The cap and the insert must be one statement: counting first
-                // and inserting after lets concurrent signups all pass.
-                if (!/NOT EXISTS \(SELECT 1 FROM waitlist WHERE email_key/.test(sql)) {
-                  throw new Error('waitlist insert must be idempotent on email_key')
+                if (/\bSELECT\b|COUNT\s*\(/i.test(sql)) {
+                  throw new Error('waitlist write must not scan or count rows')
                 }
-                if (!/SELECT COUNT\(\*\) FROM waitlist WHERE source_day_hash/.test(sql)) {
-                  throw new Error('waitlist insert must apply the per-source cap in the same statement')
+                const [key] = args
+                const existing = rows.find((row) => row[0] === key)
+                if (!existing) rows.push(args)
+                else if (unsubscribed.has(key)) {
+                  existing.splice(0, existing.length, ...args)
+                  unsubscribed.delete(key)
                 }
-                const [key, , , , source, cap] = args
-                if (rows.some((row) => row[0] === key)) return { success: true }
-                if (source !== null && source !== undefined) {
-                  const seen = rows.filter((row) => row[4] === source).length
-                  if (seen >= cap) return { success: true }
-                }
-                rows.push(args)
                 return { success: true }
               },
             }
@@ -123,37 +109,21 @@ test('the source fingerprint is keyed, not a reversible hash of the IP', async (
   assert.notEqual(first.rows[0][4], second.rows[0][4])
 
   const unsalted = waitlistEnv({ WAITLIST_SALT: undefined })
-  await worker.fetch(signup({ email: 'juror@example.com', consent: true }), unsalted)
-  assert.equal(unsalted.rows[0][4], null, 'with no key configured, nothing is stored')
+  const response = await worker.fetch(signup({ email: 'juror@example.com', consent: true }), unsalted)
+  assert.equal(response.status, 503, 'missing privacy key fails closed before D1')
+  assert.equal(unsalted.rows.length, 0)
 })
 
-test('enforces the per-IP daily cap it declares', async () => {
-  const env = waitlistEnv()
-  for (let i = 0; i < WAITLIST_LIMITS.signupsPerIpPerDay + 3; i += 1) {
-    const response = await worker.fetch(
-      signup({ email: `juror${i}@example.com`, consent: true }),
-      env,
-    )
-    // A capped request answers exactly like an accepted one, so a flooder
-    // cannot detect where the limit sits.
-    assert.equal(response.status, 200)
-  }
-  assert.equal(env.rows.length, WAITLIST_LIMITS.signupsPerIpPerDay)
-})
-
-test('one client hitting the cap does not block another', async () => {
-  const env = waitlistEnv()
-  for (let i = 0; i < WAITLIST_LIMITS.signupsPerIpPerDay; i += 1) {
-    await worker.fetch(signup({ email: `juror${i}@example.com`, consent: true }), env)
-  }
-  await worker.fetch(
-    signup(
-      { email: 'elsewhere@example.com', consent: true },
-      { headers: { 'CF-Connecting-IP': '198.51.100.9' } },
-    ),
-    env,
-  )
-  assert.equal(env.rows.length, WAITLIST_LIMITS.signupsPerIpPerDay + 1)
+test('rate limiting rejects traffic before D1', async () => {
+  let prepared = 0
+  const env = waitlistEnv({
+    WAITLIST_SOURCE_LIMITER: { limit: async () => ({ success: false }) },
+    WAITLIST: { prepare: () => { prepared += 1; throw new Error('D1 must not run') } },
+  })
+  const response = await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
+  assert.equal(response.status, 429)
+  assert.deepEqual(await response.json(), { ok: false, error: 'TRY_LATER' })
+  assert.equal(prepared, 0)
 })
 
 test('accepts the native form post a browser sends when the script never loads', async () => {
@@ -223,6 +193,13 @@ test('reports unavailable rather than failing when D1 is unbound', async () => {
   const env = waitlistEnv({ WAITLIST: undefined })
   const response = await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
   assert.equal(response.status, 503)
+})
+
+test('reports unavailable rather than bypassing a missing rate limiter', async () => {
+  const env = waitlistEnv({ WAITLIST_GLOBAL_LIMITER: undefined })
+  const response = await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
+  assert.equal(response.status, 503)
+  assert.equal(env.rows.length, 0)
 })
 
 test('does not require the live-jury flag', async () => {
@@ -313,29 +290,7 @@ test('an oversized body is rejected before it is parsed', async () => {
   assert.equal(env.rows.length, 0)
 })
 
-test('concurrent signups from one client cannot exceed the cap', async () => {
-  // The earlier version counted rows in one round trip and inserted in another,
-  // so requests issued together each saw a count below the limit and every one
-  // of them landed. Firing them concurrently is the only way to catch that; a
-  // sequential loop passes either way.
-  const env = waitlistEnv()
-  const burst = Array.from(
-    { length: WAITLIST_LIMITS.signupsPerIpPerDay * 4 },
-    (_, i) => worker.fetch(signup({ email: `flood${i}@example.com`, consent: true }), env),
-  )
-  const responses = await Promise.all(burst)
-
-  for (const response of responses) assert.equal(response.status, 200)
-  assert.equal(
-    env.rows.length,
-    WAITLIST_LIMITS.signupsPerIpPerDay,
-    'the cap holds under concurrency, not just in sequence',
-  )
-})
-
-test('the cap and the insert are decided in a single statement', async () => {
-  // Guard the shape, not just the outcome: a future refactor that splits the
-  // count back out would reintroduce the race while the totals still looked right.
+test('an accepted signup performs one upsert without a read query', async () => {
   const statements = []
   const env = waitlistEnv({
     WAITLIST: {
@@ -346,9 +301,9 @@ test('the cap and the insert are decided in a single statement', async () => {
     },
   })
   await worker.fetch(signup({ email: 'juror@example.com', consent: true }), env)
-  const conditional = statements.filter((sql) => /INSERT INTO waitlist/.test(sql))
-  assert.equal(conditional.length, 1, 'one insert, so there is no window between count and write')
-  assert.match(conditional[0], /COUNT\(\*\) FROM waitlist WHERE source_day_hash/)
+  assert.equal(statements.length, 1)
+  assert.match(statements[0], /ON CONFLICT\(email_key\) DO UPDATE/)
+  assert.doesNotMatch(statements[0], /\bSELECT\b|COUNT\s*\(/i)
 })
 
 test('an address with shell metacharacters never reaches a command line', () => {

@@ -55,7 +55,9 @@ Owner decisions, recorded verbatim:
   the docket stays fully playable with no account and no address. It uses D1 rather
   than a fourth Durable Object so the `live-jury-v1` migration keeps covering
   exactly the live-jury classes. `npm run guard:cloudflare` pins the route list,
-  the D1 binding and the schema file, so a second route or database fails the build.
+  the D1 binding, schema file and pre-database rate limits, so a second route or
+  database — or a weakened limiter — fails the build. The limiter replaces the
+  former per-request D1 count; permitted signups use one indexed upsert only.
 - **No generative runtime AI** — all player-facing text is pre-authored JSON, case
   generation happens in PRs, and Apache-2.0 Kokoro-82M narration is generated in GitHub
   Actions rather than synthesized during play.

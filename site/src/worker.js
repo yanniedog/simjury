@@ -10,7 +10,6 @@ import {
   waitlistEmailKey,
   waitlistUtcDay,
   WAITLIST_CONSENT_TEXT,
-  WAITLIST_LIMITS,
   parseCapability,
   parseCaseId,
   parseDerivationRevision,
@@ -535,7 +534,9 @@ async function handleWaitlist(request, env) {
       headers: { Allow: 'POST', 'Cache-Control': 'no-store' },
     })
   }
-  if (!env.WAITLIST) return unavailable('WAITLIST_NOT_READY', 503)
+  if (!env.WAITLIST || !env.WAITLIST_SOURCE_LIMITER || !env.WAITLIST_GLOBAL_LIMITER) {
+    return unavailable('WAITLIST_NOT_READY', 503)
+  }
 
   const body = await waitlistSubmission(request)
   const email = parseWaitlistEmail(body?.email)
@@ -543,32 +544,36 @@ async function handleWaitlist(request, env) {
   if (body?.consent !== true) return json({ ok: false, error: 'CONSENT_REQUIRED' }, 400)
 
   const source = await sourceFingerprint(request, env)
+  if (!source) return unavailable('WAITLIST_NOT_READY', 503)
+
+  let permitted
+  try {
+    const [sourceLimit, globalLimit] = await Promise.all([
+      env.WAITLIST_SOURCE_LIMITER.limit({ key: source }),
+      env.WAITLIST_GLOBAL_LIMITER.limit({ key: 'waitlist-signup' }),
+    ])
+    permitted = sourceLimit.success && globalLimit.success
+  } catch {
+    return unavailable('WAITLIST_RATE_LIMIT_FAILED', 503)
+  }
+  if (!permitted) return json({ ok: false, error: 'TRY_LATER' }, 429)
 
   try {
-    // One statement, so the cap is decided and applied together. Counting in a
-    // separate round trip and then inserting is a race: several concurrent
-    // signups from one client each see a count below the limit and every one
-    // of them lands. The conditional SELECT settles both questions atomically.
-    //
-    // NOT EXISTS rather than ON CONFLICT: a repeat address must still be a
-    // no-op, and SQLite's upsert clause is ambiguous after an INSERT…SELECT.
-    //
-    // Someone who unsubscribed and then signed up again is a separate case,
-    // handled below: the insert cannot touch their row, so without that update
-    // they would be told "You are on the list" while every export kept leaving
-    // them out. They just consented again; the record should say so.
-    //
-    // A null fingerprint means no salt is configured, so there is nothing to
-    // count and the cap is skipped rather than applied to a value every client
-    // would share.
+    // Abuse control happens in Cloudflare's local in-memory rate-limit binding,
+    // before D1. The database receives one primary-key upsert only: a new
+    // address is inserted, a still-subscribed address is untouched, and a
+    // returning unsubscribed address records its new consent. There is no
+    // table/count query for rejected or accepted traffic.
     await env.WAITLIST.prepare(
       `INSERT INTO waitlist (email_key, email, consent_text, consented_at, source_day_hash)
-       SELECT ?1, ?2, ?3, ?4, ?5
-       WHERE NOT EXISTS (SELECT 1 FROM waitlist WHERE email_key = ?1)
-         AND (
-           ?5 IS NULL
-           OR (SELECT COUNT(*) FROM waitlist WHERE source_day_hash = ?5) < ?6
-         )`,
+       VALUES (?1, ?2, ?3, ?4, ?5)
+       ON CONFLICT(email_key) DO UPDATE SET
+         email = excluded.email,
+         consent_text = excluded.consent_text,
+         consented_at = excluded.consented_at,
+         source_day_hash = excluded.source_day_hash,
+         unsubscribed_at = NULL
+       WHERE waitlist.unsubscribed_at IS NOT NULL`,
     )
       .bind(
         waitlistEmailKey(email),
@@ -576,19 +581,7 @@ async function handleWaitlist(request, env) {
         WAITLIST_CONSENT_TEXT,
         new Date().toISOString(),
         source,
-        WAITLIST_LIMITS.signupsPerIpPerDay,
       )
-      .run()
-
-    // Re-subscribing. Only ever clears an unsubscribe — it cannot revive a row
-    // that was never there, and it does not touch anyone still subscribed. The
-    // consent wording and date are refreshed because this is new consent.
-    await env.WAITLIST.prepare(
-      `UPDATE waitlist
-          SET unsubscribed_at = NULL, consent_text = ?2, consented_at = ?3, email = ?4
-        WHERE email_key = ?1 AND unsubscribed_at IS NOT NULL`,
-    )
-      .bind(waitlistEmailKey(email), WAITLIST_CONSENT_TEXT, new Date().toISOString(), email)
       .run()
   } catch {
     return unavailable('WAITLIST_WRITE_FAILED', 503)
@@ -632,8 +625,8 @@ async function waitlistSubmission(request) {
  * whole space can be hashed in minutes and the digest looked up. Keying it with
  * a secret removes that — without the key there is no table to build.
  *
- * Returns null when no key is configured, which disables the cap rather than
- * storing a value that only looks protective. Set it with:
+ * Returns null when no key is configured, which fails the waitlist closed so
+ * unkeyed traffic cannot bypass the rate limiter. Set it with:
  *   wrangler secret put WAITLIST_SALT
  */
 async function sourceFingerprint(request, env) {

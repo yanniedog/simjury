@@ -21,7 +21,9 @@ Speech as a fallback. The Cloudflare deployment is static-first: ordinary and
 solo routes bypass compute, while the optional bounded live-jury beta uses one
 Worker and three SQLite Durable Objects. Rooms expire after two hours and hard
 caps limit daily admission, concurrent rooms, seats, message count, message size,
-and retained history. It does not use Workers AI, D1, KV, R2, Queues,
+and retained history. The optional email waitlist uses one D1 database behind
+Cloudflare's in-memory rate limiter; permitted signups use one indexed upsert
+and never scan or count the table. It does not use Workers AI, KV, R2, Queues,
 Analytics Engine, public
 `workers.dev` host, preview URLs, or observability.
 

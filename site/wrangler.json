@@ -48,6 +48,24 @@
   "observability": {
     "enabled": false
   },
+  "ratelimits": [
+    {
+      "name": "WAITLIST_SOURCE_LIMITER",
+      "namespace_id": "52710431",
+      "simple": {
+        "limit": 2,
+        "period": 60
+      }
+    },
+    {
+      "name": "WAITLIST_GLOBAL_LIMITER",
+      "namespace_id": "52710432",
+      "simple": {
+        "limit": 5,
+        "period": 60
+      }
+    }
+  ],
   "d1_databases": [
     {
       "binding": "WAITLIST",

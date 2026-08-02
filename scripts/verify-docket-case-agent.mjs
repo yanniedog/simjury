@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict'
-import { mkdtempSync, mkdirSync, readFileSync, symlinkSync } from 'node:fs'
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { assertDispositions, assertGenerationMetadata, assertSafeResponse, assertWebpStructure, boundedJson, readConfig, requestIdempotencyKey, writeSafeFiles } from './docket-case-agent.mjs'
 import { resumeCandidate, unreservedDates } from './docket-commission-plan.mjs'
-import { callGeminiCaseAgent, estimateImageCost, estimateTextCost } from './gemini-case-agent.mjs'
+import { assertRepairDispositions, callGeminiCaseAgent, caseIdForDate, estimateImageCost, estimateTextCost, stableHash } from './gemini-case-agent.mjs'
 
 const env = {
   CASE_GENERATION_ENABLED: 'true', CASE_AGENT_ENDPOINT: 'https://agent.invalid/generate', CASE_AGENT_TOKEN: 'secret',
@@ -43,6 +43,11 @@ const root = mkdtempSync(join(tmpdir(), 'simjury-case-agent-'))
 writeSafeFiles(response, root, expected, config)
 assert.equal(readFileSync(join(root, 'site/app/docket/dd-0042.json'), 'utf8'), '{"label":"fiction"}')
 assert.throws(() => writeSafeFiles(response, root, expected, config, { overwrite: false }), /may not overwrite/)
+mkdirSync(join(root, 'site/app/public/media/dd-0042/characters'), { recursive: true })
+const obsoleteMedia = join(root, 'site/app/public/media/dd-0042/characters/obsolete.webp')
+writeFileSync(obsoleteMedia, Buffer.from(response.files[1].content, 'base64'))
+writeSafeFiles(response, root, expected, config, { pruneMedia: true })
+assert.equal(existsSync(obsoleteMedia), false, 'repair must prune obsolete case media')
 
 const rejected = (patch, pattern) => assert.throws(
   () => assertSafeResponse({ ...response, ...patch }, expected, config), pattern,
@@ -151,7 +156,7 @@ const geminiFiles = [
 const geminiReply = (phase, model, withReview = false) => new Response(JSON.stringify({
   candidates: [{ content: { parts: [{ text: JSON.stringify({
     files: geminiFiles,
-    ...(withReview ? { review: { approved: true, checks: Object.fromEntries((phase === 'story_review' ? ['hook', 'both_sides', 'fair_reversal', 'specificity', 'listenability', 'discussion', 'originality', 'sensitivity'] : []).map((key) => [key, true])) } } : {}),
+    ...(withReview ? { review: { approved: true, checks: Object.fromEntries((phase === 'legal_review' ? ['legal_coherence', 'admissibility', 'burden', 'competent_record', 'sensitivity'] : []).map((key) => [key, true])) } } : {}),
   }) }] } }], usageMetadata: { promptTokenCount: 100, candidatesTokenCount: 200 },
 }), { status: 200, headers: { 'content-type': 'application/json' } })
 const geminiConfig = { ...config, endpoint: 'gemini://generateContent', token: 'gemini-secret', provider: 'google-gemini', imageModel: 'gemini-image', imageLicense: 'Google Gemini API output terms', models: ['gemini-3.5-flash', 'gemini-2.5-pro', 'gemini-3.1-pro-preview'] }
@@ -181,9 +186,9 @@ assert.match(correctionPrompt, /trusted validation: Gemini returned no case file
 let geminiCalls = 0
 let imageRequest
 const storyResult = await callGeminiCaseAgent(geminiConfig, {
-  phase: 'story_review', dates: ['2026-08-09'], draft_pr: 400, model: geminiConfig.models[2], prior_files: geminiFiles,
+  phase: 'legal_review', dates: ['2026-08-09'], draft_pr: 400, model: geminiConfig.models[1], prior_files: geminiFiles,
   limits: { remaining_cost_usd: 25 }, authority_documents: {},
-}, geminiRoot, { fetchImpl: async (...args) => { geminiCalls += 1; if (geminiCalls === 1) return geminiReply('story_review', geminiConfig.models[2], true); imageRequest = args; return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ inlineData: { data: 'aW1hZ2U=' } }] } }] }), { status: 200 }) }, convert: () => Buffer.from(response.files[1].content, 'base64') })
+}, geminiRoot, { fetchImpl: async (...args) => { geminiCalls += 1; if (geminiCalls === 1) return geminiReply('legal_review', geminiConfig.models[1], true); imageRequest = args; return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ inlineData: { data: 'aW1hZ2U=' } }] } }] }), { status: 200 }) }, convert: () => Buffer.from(response.files[1].content, 'base64') })
 assert.equal(storyResult.files.filter(({ encoding }) => encoding === 'base64').length, 1)
 assert.equal(geminiCalls, 2)
 assert.equal(imageRequest[0], 'https://generativelanguage.googleapis.com/v1/models/gemini-image:generateContent')
@@ -196,5 +201,10 @@ assert.equal(estimateTextCost('gemini-2.5-pro', { candidatesTokenCount: 1_000_00
 assert.equal(estimateTextCost('gemini-3.1-pro-preview', { thoughtsTokenCount: 1_000_000 }), 15)
 assert.equal(estimateImageCost({}), 0.09)
 assert.ok(Math.abs(estimateImageCost({ candidatesTokenCount: 1120 }) - 0.084) < 1e-9)
+assert.equal(caseIdForDate('2026-08-09'), 'dd-0043')
+assert.equal(caseIdForDate('2026-08-10'), 'dd-0044')
+assert.equal(stableHash({ emoji: '🧑' }), 'b99ae6cc')
+assert.doesNotThrow(() => assertRepairDispositions({ dispositions: [{ thread_id: 'T1', status: 'Implemented', reason: 'Fixed.' }] }, { threads: [{ id: 'T1' }] }))
+assert.throws(() => assertRepairDispositions({ dispositions: [] }, { threads: [{ id: 'T1' }] }), /every unresolved thread/)
 
 console.log('docket-case-agent: all contract and containment assertions passed')
