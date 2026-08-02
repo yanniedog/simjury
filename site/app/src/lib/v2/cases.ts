@@ -92,11 +92,8 @@ export interface DocketSitting {
   trial: DocketCase
 }
 
-function localDateString(date: Date): string {
-  const y = date.getFullYear()
-  const m = String(date.getMonth() + 1).padStart(2, '0')
-  const d = String(date.getDate()).padStart(2, '0')
-  return `${y}-${m}-${d}`
+function utcDateString(date: Date): string {
+  return date.toISOString().slice(0, 10)
 }
 
 /**
@@ -108,7 +105,7 @@ export function docketCaseForDate(
   date: Date,
   queue: DocketCase[] = docketQueue,
 ): DocketCase | null {
-  const today = localDateString(date)
+  const today = utcDateString(date)
   return queue.reduce<DocketCase | null>((latest, trial) => {
     if (trial.publish_date > today) return latest
     if (latest === null || trial.publish_date > latest.publish_date) return trial
@@ -116,9 +113,8 @@ export function docketCaseForDate(
   }, null)
 }
 
-function localDateFromIso(value: string): Date {
-  const [year, month, date] = value.split('-').map(Number)
-  return new Date(year, month - 1, date)
+function utcDateFromIso(value: string): Date {
+  return new Date(`${value}T00:00:00.000Z`)
 }
 
 /**
@@ -132,7 +128,7 @@ export function docketLibrarySittings(
   queue: DocketCase[] = docketQueue,
 ): DocketSitting[] {
   return queue.map((trial) => {
-    const date = localDateFromIso(trial.publish_date)
+    const date = utcDateFromIso(trial.publish_date)
     return { day: dayIndex(date), date, trial }
   })
 }
@@ -158,7 +154,7 @@ export function introSitting(): DocketSitting | null {
   if (!introCase) return null
   return {
     day: INTRO_SITTING_DAY,
-    date: localDateFromIso(introCase.publish_date),
+    date: utcDateFromIso(introCase.publish_date),
     trial: introCase,
   }
 }
