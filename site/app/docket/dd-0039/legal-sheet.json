@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "case_id": "dd-0039",
-  "case_revision": "dd-0039@79ab36f3",
+  "case_revision": "dd-0039@fc4a7591",
   "jurisdiction": "State of Orinth",
   "statute": {"name":"Orinth Criminal Code 2026","section":"s 18","elements":["The accused caused the victim’s death.","The accused intended to kill or cause really serious injury.","The killing was not legally justified or excused."]},
   "agreed_facts": ["Nera Vale was deliberately killed by one forceful blow after her authenticated 9:12 call.","Elia Marr wore Iona’s red coat and travelled away from the gallery using Elia’s own transit card."],
@@ -22,5 +22,5 @@
   "required_directions": ["The prosecution must prove every element beyond reasonable doubt; Iona need prove nothing.","The excluded receptionist identification in beat b2 must be disregarded entirely and must not enter deliberation indirectly.","Elia’s lies and immunity require careful scrutiny but neither automatic acceptance nor automatic rejection.","Circumstantial strands may be considered together only after preserving the limitation of each strand.","Iona’s omissions may affect credibility but do not reverse the burden or independently prove murder."],
   "epilogue_strategy": "outcome_neutral",
   "checks": {"victim_humanity":"Nera is presented as a founder, mentor and working artist whose community plans survive beyond the trial, not merely as a body.","accused_prejudice":"The trial separates Iona’s deception and difficult partnership from proof of homicide, excludes punishment and preserves the presumption of innocence."},
-  "approvals": {"legal":{"status":"approved","reviewer":"Codex Content Curator + QA (gpt-5.6-sol)","approved_at":"2026-08-02T12:02:00.000Z","content_hash":"dd-0039@79ab36f3@legal-1f04af3d"},"read_aloud":{"status":"approved","reviewer":"Codex Content Curator + QA (gpt-5.6-sol)","approved_at":"2026-08-02T12:02:00.000Z","content_hash":"dd-0039@79ab36f3@legal-1f04af3d"},"blind_test":{"status":"approved","reviewer":"Codex Content Curator + QA (gpt-5.6-sol)","approved_at":"2026-08-02T12:02:00.000Z","content_hash":"dd-0039@79ab36f3@legal-1f04af3d"}}
+  "approvals": {"legal":{"status":"approved","reviewer":"Codex Content Curator + QA (gpt-5.6-sol)","approved_at":"2026-08-02T12:02:00.000Z","content_hash":"dd-0039@fc4a7591@legal-cf6e380e"},"read_aloud":{"status":"approved","reviewer":"Codex Content Curator + QA (gpt-5.6-sol)","approved_at":"2026-08-02T12:02:00.000Z","content_hash":"dd-0039@fc4a7591@legal-cf6e380e"},"blind_test":{"status":"approved","reviewer":"Codex Content Curator + QA (gpt-5.6-sol)","approved_at":"2026-08-02T12:02:00.000Z","content_hash":"dd-0039@fc4a7591@legal-cf6e380e"}}
 }
