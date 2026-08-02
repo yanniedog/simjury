@@ -2,7 +2,8 @@ import assert from 'node:assert/strict'
 import { mkdtempSync, mkdirSync, readFileSync, symlinkSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { assertDispositions, assertGenerationMetadata, assertSafeResponse, boundedJson, readConfig, writeSafeFiles } from './docket-case-agent.mjs'
+import { assertDispositions, assertGenerationMetadata, assertSafeResponse, assertWebpStructure, boundedJson, readConfig, requestIdempotencyKey, writeSafeFiles } from './docket-case-agent.mjs'
+import { unreservedDates } from './docket-commission-plan.mjs'
 
 const env = {
   CASE_GENERATION_ENABLED: 'true', CASE_AGENT_ENDPOINT: 'https://agent.invalid/generate', CASE_AGENT_TOKEN: 'secret',
@@ -20,7 +21,7 @@ const response = {
   review: { approved: true, checks: { hook: true, both_sides: true, fair_reversal: true, specificity: true, listenability: true, discussion: true, originality: true, sensitivity: true } },
   files: [
     { type: 'file', path: 'site/app/docket/dd-0042.json', encoding: 'utf8', content: '{"label":"fiction"}' },
-    { type: 'file', path: 'site/app/public/media/dd-0042/cover.webp', encoding: 'base64', content: Buffer.from('RIFF0000WEBP').toString('base64') },
+    { type: 'file', path: 'site/app/public/media/dd-0042/cover.webp', encoding: 'base64', content: Buffer.from('5249464612000000574542505650384c050000002f0000000000', 'hex').toString('base64') },
   ],
 }
 
@@ -50,8 +51,13 @@ rejected({ files: [{ type: 'file', path: 'site/app/docket/dd-0042.json', content
 rejected({ files: [{ type: 'file', path: 'site/app/docket/dd-0042.json', content: 'not-json' }] }, /invalid generated JSON/)
 rejected({ files: Array.from({ length: 25 }, (_, index) => ({
   type: 'file', path: `site/app/public/media/dd-0042/characters/p-${index}.webp`,
-  encoding: 'base64', content: Buffer.from('RIFF0000WEBP').toString('base64'),
+  encoding: 'base64', content: response.files[1].content,
 })) }, /image.*cap/)
+
+assert.doesNotThrow(() => assertWebpStructure(Buffer.from(response.files[1].content, 'base64')))
+assert.throws(() => assertWebpStructure(Buffer.from('RIFF0000WEBP')), /structured WebP/)
+assert.equal(requestIdempotencyKey({ draft_pr: 321, phase: 'repair', repair_attempt: 1 }, 'repo'), 'repo:321:repair:1')
+assert.equal(requestIdempotencyKey({ draft_pr: 321, phase: 'repair', repair_attempt: 2 }, 'repo'), 'repo:321:repair:2')
 
 const linkedRoot = mkdtempSync(join(tmpdir(), 'simjury-case-agent-link-'))
 mkdirSync(join(linkedRoot, 'site/app'), { recursive: true })
@@ -84,12 +90,23 @@ for (const contract of [
   'blocked_configuration', 'blocked_automation',
 ]) assert.ok(workflow.includes(contract), `workflow contract missing: ${contract}`)
 assert.ok(workflow.includes("if $missing==\"\" then []"), 'configured issue state must still emit valid JSON')
+assert.ok(workflow.includes('app-id: ${{ vars.CASE_BOT_APP_ID }}'), 'GitHub App token action must receive its required app-id')
+assert.ok(workflow.includes('INVALID_CASE_CONFIGURATION'), 'malformed configuration must produce a durable blocked record')
+assert.ok(workflow.includes('git status --porcelain=v1 --untracked-files=all'), 'V4 bundle containment must inspect individual untracked files')
 assert.ok(workflow.indexOf('gh pr create --draft') < workflow.indexOf('docket-case-agent.mjs generate'), 'draft PR must be reserved before generation')
+assert.ok(workflow.indexOf('Run the complete deterministic merge bar') < workflow.indexOf('Generate and publish Kokoro narration'), 'deterministic validation must precede narration publication')
 assert.equal(workflow.includes('--watch'), false, 'controller must never busy-poll')
 assert.equal(/gh pr merge/.test(workflow), false, 'controller must not bypass arm-and-park')
 assert.ok(workflow.includes("github.event.pull_request.head.repo.full_name == github.repository"), 'review events must fail closed for fork PRs')
 assert.ok(workflow.includes("contains(github.event.pull_request.labels.*.name, 'docket-generation')"), 'review events must require the docket-generation label')
 assert.equal(workflow.includes('actions: write'), false, 'controller must not request unused Actions write permission')
+assert.ok(workflow.includes("group: docket-supply-${{ github.event.pull_request.number || 'commission' }}"), 'unrelated PR repairs must not share a global concurrency lock')
+assert.ok(workflow.includes('gh pr view "$EVENT_PR"'), 'review events must resume their triggering PR')
+assert.ok(workflow.includes('gh pr list --state open --base main --label docket-generation'), 'scheduled commissions must inspect only default-branch generation PRs')
+assert.deepEqual(unreservedDates(
+  ['2026-08-08', '2026-08-09', '2026-08-10'],
+  [{ dates: ['2026-08-08'] }, { dates: ['2026-08-09', '2026-08-09'] }],
+), ['2026-08-10'], 'new UTC dates must remain commissionable while older PRs wait')
 const narration = readFileSync(new URL('../site/scripts/build-kokoro-jobs.mjs', import.meta.url), 'utf8')
 const narrationDiscovery = readFileSync(new URL('../site/scripts/docket-trials.mjs', import.meta.url), 'utf8')
 assert.ok(
