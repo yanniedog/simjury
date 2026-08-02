@@ -1,7 +1,9 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { assignKokoroVoices } from './speaker-voices.mjs'
+import { courtroomLines } from './courtroom-lines.mjs'
+import { listDocketTrialIds, readDocketTrial } from './docket-trials.mjs'
 
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 const docketDir = join(siteRoot, 'app', 'docket')
@@ -84,7 +86,7 @@ function spokenLines(c) {
     }
   }
   for (const beat of c.beats ?? []) {
-    lines.push(...(beat.turns ?? [{ speaker: beat.speaker, text: beat.text }]))
+    lines.push(...courtroomLines(beat))
   }
   for (const juror of c.jury?.jurors ?? []) {
     for (const bank of Object.values(juror.lines ?? {})) {
@@ -114,28 +116,8 @@ function clipsFor(docket) {
   return clips
 }
 
-/** Numeric daily dockets plus the guided intro case. */
-const DOCKET_FILE_RE = /^(dd-\d{4}|dd-intro)\.json$/
-const docketSources = new Map()
-for (const entry of readdirSync(docketDir, { withFileTypes: true })) {
-  const caseId = entry.name.replace(/\.json$/, '')
-  const source = entry.isFile() && DOCKET_FILE_RE.test(entry.name)
-    ? join(docketDir, entry.name)
-    : entry.isDirectory() && /^dd-\d{4}$/.test(entry.name) && existsSync(join(docketDir, entry.name, 'trial.json'))
-      ? join(docketDir, entry.name, 'trial.json')
-      : null
-  if (!source) continue
-  if (docketSources.has(caseId)) throw new Error(`Duplicate docket source: ${caseId}`)
-  docketSources.set(caseId, source)
-}
-const allCases = [...docketSources.keys()]
-  .sort((a, b) => {
-    // Keep dd-intro after the numbered runway so "all" matrices stay stable.
-    if (a === 'dd-intro') return 1
-    if (b === 'dd-intro') return -1
-    return a.localeCompare(b)
-})
-const readDocket = (caseId) => JSON.parse(readFileSync(docketSources.get(caseId), 'utf8'))
+/** Numeric flat/V4 daily dockets plus the guided intro case. */
+const allCases = listDocketTrialIds(docketDir)
 const selected = requested === 'all'
   ? allCases
   : requested.split(',').map((item) => item.trim()).filter(Boolean)
@@ -145,7 +127,7 @@ for (const caseId of selected) {
 }
 const corpusIds = new Map()
 for (const caseId of allCases) {
-  const docket = readDocket(caseId)
+  const docket = readDocketTrial(docketDir, caseId)
   for (const [id, clip] of clipsFor(docket)) {
     const prior = corpusIds.get(id)
     if (prior && JSON.stringify(prior) !== JSON.stringify(clip)) {
@@ -161,7 +143,7 @@ if (args.includes('--list')) {
 
 mkdirSync(outputDir, { recursive: true })
 for (const caseId of selected) {
-  const docket = readDocket(caseId)
+  const docket = readDocketTrial(docketDir, caseId)
   const clips = clipsFor(docket)
   const job = {
     caseId,
