@@ -497,21 +497,6 @@ function LegacyDocketApp({
         />
       )}
     >
-      {/* The lobby belongs to the briefing, where you decide who you are sitting
-          with — and to the jury room once a session is actually running. It
-          used to render outside the phase switch, so it was paid for on all
-          fourteen evidence beats as well. */}
-      {(phase === 'intro' || (phase === 'juryroom' && liveSession)) && (
-        <div className="mb-6">
-          <LiveJuryLobby
-            caseId={activeTrial.id}
-            caseTitle={activeTrial.title}
-            derivationRevision={liveDerivationRevision!}
-            session={liveSession}
-            onSession={setLiveSession}
-          />
-        </div>
-      )}
       {phase === 'intro' && (
         <DocketIntro
           trial={activeTrial}
@@ -583,6 +568,27 @@ function LegacyDocketApp({
           onChooseAnother={chooseAnotherSitting}
           isIntro={isIntro}
         />
+      )}
+      {/* The lobby belongs to the briefing, where you decide who you are
+          sitting with — and to the jury room once a session is running. It
+          used to render outside the phase switch, so it was paid for on all
+          fourteen evidence beats too.
+
+          It renders *after* the phase, not before it. Above the case it is
+          453px of chrome on the first screen a new player meets, which put the
+          case heading at 649px — worse than the 460px the audit measured.
+          Nothing but the top bar goes above the phase heading. You read the
+          case, then decide who to sit with. */}
+      {(phase === 'intro' || (phase === 'juryroom' && liveSession)) && (
+        <div className="mt-8">
+          <LiveJuryLobby
+            caseId={activeTrial.id}
+            caseTitle={activeTrial.title}
+            derivationRevision={liveDerivationRevision!}
+            session={liveSession}
+            onSession={setLiveSession}
+          />
+        </div>
       )}
     </DocketShell>
   )

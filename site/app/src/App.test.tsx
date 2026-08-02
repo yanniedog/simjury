@@ -63,4 +63,45 @@ describe('DocketApp version routing', () => {
     expect(markup).toContain('Take your seat')
     expect(markup).not.toContain('Put the case in your own words')
   })
+
+  /**
+   * The chrome budget: above the phase heading, the top bar and nothing else.
+   *
+   * The lobby was correctly confined to the briefing, but rendered before it —
+   * 453px of chrome on the first screen a new player meets, which put the case
+   * heading at 649px on the deployed site. That is worse than the 460px the
+   * audit measured and was the whole point of the finding.
+   *
+   * You read the case, then decide who to sit with.
+   * See docs/DESIGN-PROTOCOL.md rule 1.
+   */
+  it('renders nothing above the case heading on the briefing', () => {
+    const sitting = {
+      day: 10,
+      date: new Date('2026-08-02T00:00:00Z'),
+      schemaVersion: 3,
+      trial: makeDocketCase(),
+    } satisfies DocketSittingV3
+    const markup = renderToStaticMarkup(
+      <DocketApp
+        sitting={sitting}
+        sittings={[sitting]}
+        todayDay={10}
+        featuredSitting={sitting}
+        onSelect={() => undefined}
+        intro={null}
+      />,
+    )
+
+    const stageStart = markup.indexOf('docket-stage')
+    const heading = markup.indexOf('id="phase-heading"')
+    const lobby = markup.indexOf('live-lobby')
+
+    expect(stageStart).toBeGreaterThan(-1)
+    expect(heading).toBeGreaterThan(stageStart)
+    // Whatever else the briefing carries, it comes after the heading.
+    if (lobby > -1) expect(lobby).toBeGreaterThan(heading)
+    expect(markup.slice(stageStart, heading)).not.toContain('live-lobby')
+    expect(markup.slice(stageStart, heading)).not.toContain('Restarting clears')
+  })
 })
