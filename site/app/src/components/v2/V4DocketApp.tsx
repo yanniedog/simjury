@@ -1,5 +1,8 @@
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import type { DocketSitting, DocketSittingV4 } from '../../lib/v2/cases'
+import type { ClientDeliberationPack, V4PostVerdictPayload } from '../../lib/v2/caseBundles'
+import type { RoomOutcome } from '../../engine/deliberationV5'
+import type { V5RoomSession } from '../../engine/v5RoomSession'
 import { v4CourtroomCompatibilityIssue } from '../../lib/v2/v4CourtroomCompatibility'
 import { caseStorageId } from '../../lib/v2/caseRevision'
 import {
@@ -14,16 +17,24 @@ import {
   type NarrationEngineId,
   type NarrationRate,
 } from '../../lib/narration'
-import { loadProgress, saveProgress } from '../../lib/storage'
+import {
+  completePlay,
+  loadPlayForSitting,
+  loadProgress,
+  saveProgress,
+} from '../../lib/storage'
 import { upsertPlayerNote, type SittingNote } from '../../lib/jurorNotes'
 import { DocketIntro } from './DocketIntro'
 import { OpeningStatements } from './OpeningStatements'
 import { DocketBeatView } from './DocketBeatView'
 import { DocketVerdict } from './DocketVerdict'
+import type { Verdict } from './DocketVerdict'
 import { DocketShell, DocketSittingChooser } from './DocketChrome'
+import { V4JuryRoom } from './V4JuryRoom'
+import { V4Reveal } from './V4Reveal'
 
-type V4Phase = 'intro' | 'openings' | 'beats' | 'closings' | 'juryroom'
-type PersistedV4Phase = Exclude<V4Phase, 'intro'>
+type V4Phase = 'intro' | 'openings' | 'beats' | 'closings' | 'juryroom' | 'reveal'
+type PersistedV4Phase = Exclude<V4Phase, 'intro' | 'reveal'>
 type PackStatus = 'idle' | 'loading' | 'ready' | 'error'
 const RESUMABLE_PHASES = new Set<PersistedV4Phase>([
   'openings', 'beats', 'closings', 'juryroom',
@@ -49,7 +60,35 @@ export function V4JuryRoomUnavailable({ status }: { status: PackStatus }) {
   )
 }
 
-/** V4 courtroom route. It never imports or requests post-verdict analysis. */
+export function V4LazyBoundary({
+  label,
+  status,
+  onRetry,
+}: {
+  label: 'jury room' | 'verdict analysis'
+  status: PackStatus
+  onRetry: () => void
+}) {
+  return (
+    <div className="phase-view space-y-4 text-center">
+      <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">
+        {status === 'error' ? `The ${label} could not be opened` : `Opening the ${label}`}
+      </h1>
+      <p role={status === 'error' ? 'alert' : 'status'} className="mx-auto max-w-xl text-sm leading-relaxed text-neutral-400">
+        {status === 'error'
+          ? 'The revision-bound file failed verification. Nothing later in the case has been exposed.'
+          : 'Checking this sitting’s revision-bound files…'}
+      </p>
+      {status === 'error' && (
+        <button type="button" onClick={onRetry} className="rounded-lg border border-neutral-600 px-4 py-2 font-semibold text-neutral-200">
+          Try again
+        </button>
+      )}
+    </div>
+  )
+}
+
+/** V4 route. Answer-key analysis stays behind the sealed-verdict boundary. */
 export function V4DocketApp({
   sitting,
   sittings,
@@ -66,17 +105,37 @@ export function V4DocketApp({
   const { trial } = sitting
   const compatibilityIssue = v4CourtroomCompatibilityIssue(trial)
   const caseId = caseStorageId(trial)
+  const storedPlay = useMemo(
+    () => loadPlayForSitting(sitting.day, caseId),
+    [caseId, sitting.day],
+  )
   const stored = useMemo(() => loadProgress(sitting.day), [sitting.day])
   const valid = stored?.caseId === caseId && stored.beatIndex < trial.beats.length
     ? stored
     : null
-  const resumedPhase = valid && RESUMABLE_PHASES.has(valid.phase)
-    ? valid.phase
-    : 'intro'
+  const resumedPhase = storedPlay?.room
+    ? 'reveal'
+    : valid && RESUMABLE_PHASES.has(valid.phase)
+      ? valid.phase
+      : 'intro'
   const [phase, setPhase] = useState<V4Phase>(resumedPhase)
   const [beatIndex, setBeatIndex] = useState(valid?.beatIndex ?? 0)
   const [notes, setNotes] = useState<SittingNote[]>(valid?.notes ?? [])
   const [packStatus, setPackStatus] = useState<PackStatus>('idle')
+  const [pack, setPack] = useState<ClientDeliberationPack | null>(null)
+  const [packAttempt, setPackAttempt] = useState(0)
+  const [postStatus, setPostStatus] = useState<PackStatus>('idle')
+  const [postVerdict, setPostVerdict] = useState<V4PostVerdictPayload | null>(null)
+  const [postAttempt, setPostAttempt] = useState(0)
+  const [playerVerdict, setPlayerVerdict] = useState<Verdict | null>(storedPlay?.verdict ?? null)
+  const [roomOutcome, setRoomOutcome] = useState<RoomOutcome | null>(() => {
+    const room = storedPlay?.room
+    return room ? {
+      kind: room.kind,
+      verdict: room.verdict === 'guilty' ? 'G' : room.verdict === 'not_guilty' ? 'NG' : null,
+      tally: { g: room.g, ng: room.ng, u: room.u },
+    } : null
+  })
   const [narration, setNarration] = useState(narrationEnabled())
   const [playbackRate, setPlaybackRate] = useState(narrationRate())
   const [voiceEngine, setVoiceEngine] = useState(narrationEngine())
@@ -90,15 +149,36 @@ export function V4DocketApp({
   }, [trial])
 
   useEffect(() => {
-    if (compatibilityIssue || phase !== 'juryroom' || packStatus !== 'idle') return
+    if (compatibilityIssue || phase !== 'juryroom') return
     let current = true
     setPackStatus('loading')
     void sitting.loadDeliberationPack().then(
-      () => { if (current) setPackStatus('ready') },
+      (loaded) => {
+        if (current) {
+          setPack(loaded)
+          setPackStatus('ready')
+        }
+      },
       () => { if (current) setPackStatus('error') },
     )
     return () => { current = false }
-  }, [compatibilityIssue, packStatus, phase, sitting])
+  }, [compatibilityIssue, packAttempt, phase, sitting])
+
+  useEffect(() => {
+    if (compatibilityIssue || phase !== 'reveal') return
+    let current = true
+    setPostStatus('loading')
+    void sitting.loadPostVerdict().then(
+      (loaded) => {
+        if (current) {
+          setPostVerdict(loaded)
+          setPostStatus('ready')
+        }
+      },
+      () => { if (current) setPostStatus('error') },
+    )
+    return () => { current = false }
+  }, [compatibilityIssue, phase, postAttempt, sitting])
 
   function persist(nextPhase: PersistedV4Phase, nextBeat = beatIndex, nextNotes = notes) {
     saveProgress({ day: sitting.day, caseId, phase: nextPhase, beatIndex: nextBeat, notes: nextNotes })
@@ -134,6 +214,27 @@ export function V4DocketApp({
 
   function changeEngine(engine: NarrationEngineId) {
     setVoiceEngine(setNarrationEngine(engine))
+  }
+
+  function sealRoom(session: V5RoomSession, verdict: Verdict) {
+    const outcome = session.room.outcome
+    if (!outcome) return
+    completePlay({
+      day: sitting.day,
+      caseId,
+      convictions: [],
+      verdict,
+      room: {
+        kind: outcome.kind,
+        verdict: outcome.verdict === 'G' ? 'guilty' : outcome.verdict === 'NG' ? 'not_guilty' : null,
+        g: outcome.tally.g,
+        ng: outcome.tally.ng,
+        u: outcome.tally.u,
+      },
+    })
+    setPlayerVerdict(verdict)
+    setRoomOutcome(outcome)
+    setPhase('reveal')
   }
 
   if (compatibilityIssue) {
@@ -181,7 +282,47 @@ export function V4DocketApp({
       {phase === 'openings' && <OpeningStatements trial={trial} narration={narration} playbackRate={playbackRate} onDone={() => changePhase('beats')} />}
       {phase === 'beats' && <DocketBeatView trial={trial} beatIndex={beatIndex} narration={narration} playbackRate={playbackRate} notes={notes} onNoteChange={saveNote} onNext={nextBeat} />}
       {phase === 'closings' && <DocketVerdict trial={trial} narration={narration} playbackRate={playbackRate} onContinue={() => changePhase('juryroom')} />}
-      {phase === 'juryroom' && <V4JuryRoomUnavailable status={packStatus} />}
+      {phase === 'juryroom' && packStatus === 'ready' && pack && (
+        <V4JuryRoom
+          trial={trial}
+          day={sitting.day}
+          caseRevision={caseId}
+          pack={pack}
+          onSeal={sealRoom}
+        />
+      )}
+      {phase === 'juryroom' && packStatus !== 'ready' && (
+        <V4LazyBoundary
+          label="jury room"
+          status={packStatus}
+          onRetry={() => {
+            setPackStatus('idle')
+            setPackAttempt((attempt) => attempt + 1)
+          }}
+        />
+      )}
+      {phase === 'reveal' && postStatus === 'ready' && postVerdict && playerVerdict && roomOutcome && (
+        <V4Reveal
+          trial={trial}
+          analysis={postVerdict.analysis}
+          playerVerdict={playerVerdict}
+          room={roomOutcome}
+          dayNumber={sitting.day + 1}
+          onChooseAnother={() => onSelect(
+            sittings.find(({ day }) => day !== sitting.day)?.day ?? sitting.day,
+          )}
+        />
+      )}
+      {phase === 'reveal' && postStatus !== 'ready' && (
+        <V4LazyBoundary
+          label="verdict analysis"
+          status={postStatus}
+          onRetry={() => {
+            setPostStatus('idle')
+            setPostAttempt((attempt) => attempt + 1)
+          }}
+        />
+      )}
     </DocketShell>
   )
 }

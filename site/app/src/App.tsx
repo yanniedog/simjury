@@ -594,7 +594,7 @@ function LegacyDocketApp({
   )
 }
 
-function DocketApp(props: {
+export function DocketApp(props: {
   sitting: DocketSitting | null
   sittings: DocketSitting[]
   todayDay: number
@@ -605,6 +605,7 @@ function DocketApp(props: {
   if (props.sitting?.schemaVersion === 4) {
     return (
       <V4DocketApp
+        key={caseStorageId(props.sitting.trial)}
         sitting={props.sitting}
         sittings={props.sittings}
         featuredSitting={props.featuredSitting}
