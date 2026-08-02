@@ -1,11 +1,11 @@
 {
   "schema_version": 4,
   "case_id": "dd-0042",
-  "case_revision": "dd-0042@c1c7a794",
+  "case_revision": "dd-0042@04bf03fe",
   "reference_verdict": "Guilty",
   "reference_reasoning": "Nela continued after Oren clearly withdrew consent, blocked the only doorway, took his phone, wrote an explicit no-exit card, conditioned movement on restoring all shelters, and rejected offered safety volunteers. The anonymous warning and the phone-display explanation bear only on state of mind and initial consent; neither proves surveillance or an actual threat.",
   "strongest_opposing_interpretation": "The door was unlocked, Oren never tried to pass, corridor unrest was real, Nela returned the phone within minutes, and each act can be described as an overreaching effort to protect him. Those facts create a humane and substantial alternative if coercive intention or the vote condition is not proved.",
-  "sentencing_context": "Any sentence after conviction is for the judge. The jury must not alter the standard because the allegation involves a charity, shelter closures, or a vulnerable adult.",
+  "sentencing_context": "Any sentence after conviction is for the judge. The jury must not alter the standard because the allegation involves a charity, shelter closures, or a detained adult.",
   "epilogue": {
     "mode": "outcome_neutral",
     "text": "Carrow House adopted an emergency protocol requiring two trained decision-makers, direct contact with public safety services, and a written record whenever someone was asked to shelter in place. Oren took extended leave and later worked with residents affected by the shelter closures. Volunteers kept a temporary night service open while the board reconsidered funding. Nela's maintenance team was given independent supervision, and staff training began using the difficult distinction between requesting safety and removing another adult's choice."
