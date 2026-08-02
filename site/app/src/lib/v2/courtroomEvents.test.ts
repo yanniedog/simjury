@@ -13,7 +13,7 @@ function beat(): DocketBeatV4 {
     text: 'Fallback text.',
     speaker: 'witness',
     mode: 'cross',
-    direction: 'neutral',
+    direction: 'innocence',
     salience: 0.5,
     tags: ['credibility'],
     turns: [
