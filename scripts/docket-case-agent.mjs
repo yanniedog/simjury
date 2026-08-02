@@ -33,7 +33,7 @@ export function readConfig(env = process.env) {
   if (models.every(Boolean) && new Set(models).size !== models.length) {
     throw new Error('draft, legal-review, and story-review models must be distinct')
   }
-  if (env.CASE_AGENT_ENDPOINT && !/^https:\/\//.test(env.CASE_AGENT_ENDPOINT)) throw new Error('CASE_AGENT_ENDPOINT must use HTTPS')
+  if (env.CASE_AGENT_ENDPOINT && !/^(?:https:\/\/|gemini:\/\/generateContent$)/.test(env.CASE_AGENT_ENDPOINT)) throw new Error('CASE_AGENT_ENDPOINT must use HTTPS or the trusted Gemini adapter')
   return { enabled, missing, ...numbers, endpoint: env.CASE_AGENT_ENDPOINT, token: env.CASE_AGENT_TOKEN, provider: env.CASE_AGENT_PROVIDER, imageModel: env.CASE_IMAGE_MODEL, imageLicense: env.CASE_IMAGE_LICENSE, models }
 }
 

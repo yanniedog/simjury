@@ -10,6 +10,7 @@ on:
     types: [created]
 
 permissions:
+  actions: write
   contents: write
   issues: write
   pull-requests: write
@@ -34,21 +35,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
-      CASE_GENERATION_ENABLED: ${{ vars.CASE_GENERATION_ENABLED }}
-      CASE_AGENT_ENDPOINT: ${{ vars.CASE_AGENT_ENDPOINT }}
-      CASE_AGENT_TOKEN: ${{ secrets.CASE_AGENT_TOKEN }}
-      CASE_AGENT_PROVIDER: ${{ vars.CASE_AGENT_PROVIDER }}
-      CASE_IMAGE_MODEL: ${{ vars.CASE_IMAGE_MODEL }}
-      CASE_IMAGE_LICENSE: ${{ vars.CASE_IMAGE_LICENSE }}
-      CASE_DRAFT_MODEL: ${{ vars.CASE_DRAFT_MODEL }}
-      CASE_LEGAL_REVIEW_MODEL: ${{ vars.CASE_LEGAL_REVIEW_MODEL }}
-      CASE_STORY_REVIEW_MODEL: ${{ vars.CASE_STORY_REVIEW_MODEL }}
-      CASE_MAX_ATTEMPTS: ${{ vars.CASE_MAX_ATTEMPTS }}
-      CASE_MAX_REPAIR_ATTEMPTS: ${{ vars.CASE_MAX_REPAIR_ATTEMPTS }}
-      CASE_MAX_IMAGES_PER_CASE: ${{ vars.CASE_MAX_IMAGES_PER_CASE }}
-      CASE_MAX_OUTPUT_BYTES: ${{ vars.CASE_MAX_OUTPUT_BYTES }}
-      CASE_MAX_COST_USD: ${{ vars.CASE_MAX_COST_USD }}
-      CASE_MAX_TOKENS: ${{ vars.CASE_MAX_TOKENS }}
+      CASE_GENERATION_ENABLED: "true"
+      CASE_AGENT_ENDPOINT: gemini://generateContent
+      CASE_AGENT_TOKEN: ${{ secrets.GEMINI_API_KEY }}
+      CASE_AGENT_PROVIDER: google-gemini
+      CASE_IMAGE_MODEL: gemini-3.1-flash-image
+      CASE_IMAGE_LICENSE: Google Gemini API output terms
+      CASE_DRAFT_MODEL: gemini-3.5-flash
+      CASE_LEGAL_REVIEW_MODEL: gemini-2.5-pro
+      CASE_STORY_REVIEW_MODEL: gemini-3.1-pro-preview
+      CASE_MAX_ATTEMPTS: "2"
+      CASE_MAX_REPAIR_ATTEMPTS: "2"
+      CASE_MAX_IMAGES_PER_CASE: "24"
+      CASE_MAX_OUTPUT_BYTES: "12000000"
+      CASE_MAX_COST_USD: "8"
+      CASE_MAX_TOKENS: "64000"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -59,6 +60,12 @@ jobs:
       - name: Install
         working-directory: site/app
         run: npm ci
+
+      - name: Install and verify trusted media conversion
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          command -v ffmpeg
 
       - name: Measure the UTC rolling week
         id: plan
@@ -72,16 +79,13 @@ jobs:
 
       - name: Check kill switch, credentials, models and caps
         id: config
-        env:
-          BOT_APP_ID: ${{ vars.CASE_BOT_APP_ID }}
-          BOT_PRIVATE_KEY: ${{ secrets.CASE_BOT_PRIVATE_KEY }}
         run: |
           set +e
           node scripts/docket-case-agent.mjs config > config.json 2> config-error.txt
           result=$?
           set -e
           if jq -e '.missing | type == "array"' config.json >/dev/null 2>&1; then
-            missing=$(node -e "const c=require('./config.json'); const m=[...c.missing]; if(!c.enabled)m.push('CASE_GENERATION_ENABLED'); if(!process.env.BOT_APP_ID)m.push('CASE_BOT_APP_ID'); if(!process.env.BOT_PRIVATE_KEY)m.push('CASE_BOT_PRIVATE_KEY'); process.stdout.write(m.join(','))")
+            missing=$(node -e "const c=require('./config.json'); const m=[...c.missing]; if(!c.enabled)m.push('CASE_GENERATION_ENABLED'); process.stdout.write(m.join(','))")
             error=""
           else
             missing=INVALID_CASE_CONFIGURATION
@@ -124,19 +128,11 @@ jobs:
           fi
           echo "number=$number" >> "$GITHUB_OUTPUT"
 
-      - name: Mint the case bot token
-        if: steps.plan.outputs.needed != '0' && steps.config.outputs.ready == 'true'
-        id: app-token
-        uses: actions/create-github-app-token@v3
-        with:
-          app-id: ${{ vars.CASE_BOT_APP_ID }}
-          private-key: ${{ secrets.CASE_BOT_PRIVATE_KEY }}
-
       - name: Reserve or resume one draft PR
         if: steps.plan.outputs.needed != '0' && steps.config.outputs.ready == 'true'
         id: pr
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
           DATES: ${{ steps.plan.outputs.dates }}
           EVENT_PR: ${{ github.event.pull_request.number }}
         run: |
@@ -189,8 +185,8 @@ jobs:
               git checkout -b "$branch"
               mkdir -p .automation
               jq -n --arg dates "$DATES" '{schema:1,phase:"reserved",dates:($dates|split(",")),repair_attempts:0}' > .automation/docket-case-generation.json
-              git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
-              git config user.email "${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
+              git config user.name "github-actions[bot]"
+              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
               git add .automation/docket-case-generation.json
               git commit -m "chore(docket): reserve automated case commission"
               git push -u origin "$branch"
@@ -212,7 +208,7 @@ jobs:
       - name: Draft, legally review, story-review and write safe artifacts
         if: steps.pr.outputs.phase == 'reserved'
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
           DATES: ${{ steps.pr.outputs.dates }}
           PR: ${{ steps.pr.outputs.number }}
         run: |
@@ -234,18 +230,10 @@ jobs:
           test -n "$ids"
           bash site/scripts/synthesize-kokoro-clips.sh "$ids"
 
-      - name: Refresh case bot token for publication
-        if: steps.pr.outputs.phase == 'reserved'
-        id: publish-token
-        uses: actions/create-github-app-token@v3
-        with:
-          app-id: ${{ vars.CASE_BOT_APP_ID }}
-          private-key: ${{ secrets.CASE_BOT_PRIVATE_KEY }}
-
       - name: Publish validated Kokoro narration
         if: steps.pr.outputs.phase == 'reserved'
         env:
-          GH_TOKEN: ${{ steps.publish-token.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
@@ -254,19 +242,23 @@ jobs:
       - name: Commit the complete sitting and request reviews
         if: steps.pr.outputs.phase == 'reserved'
         env:
-          GH_TOKEN: ${{ steps.publish-token.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
           PR: ${{ steps.pr.outputs.number }}
+          BRANCH: ${{ steps.pr.outputs.branch }}
         run: |
           set -euo pipefail
           git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           spent=$(jq .spent_usd "$RUNNER_TEMP/generation-result.json")
           jq --argjson spent "$spent" '.phase="awaiting_review"|.spent_usd=$spent' .automation/docket-case-generation.json > state.json
           mv state.json .automation/docket-case-generation.json
-          git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
-          git config user.email "${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .automation/docket-case-generation.json site/app/docket site/app/public/media
           git commit -m "feat(docket): add complete commissioned sittings"
           git push origin HEAD
+          gh workflow run ci.yml --ref "$BRANCH"
+          gh workflow run pr-bot-feedback-check.yml --ref "$BRANCH" -f pr_number="$PR"
+          gh workflow run pr-request-bot-reviews.yml --ref "$BRANCH" -f pr_number="$PR"
           set +e
           npm run pr:arm-and-park -- --pr "$PR"
           result=$?
@@ -279,7 +271,7 @@ jobs:
         if: steps.pr.outputs.phase == 'awaiting_review'
         id: feedback
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
           PR: ${{ steps.pr.outputs.number }}
         run: |
           set -euo pipefail
@@ -324,34 +316,30 @@ jobs:
           echo "needed=true" >> "$GITHUB_OUTPUT"
           bash site/scripts/synthesize-kokoro-clips.sh "$ids"
 
-      - name: Refresh case bot token after repair
-        if: steps.pr.outputs.phase == 'awaiting_review' && steps.feedback.outputs.count != '0'
-        id: repair-token
-        uses: actions/create-github-app-token@v3
-        with:
-          app-id: ${{ vars.CASE_BOT_APP_ID }}
-          private-key: ${{ secrets.CASE_BOT_PRIVATE_KEY }}
-
       - name: Publish narration and commit the validated repair
         if: steps.pr.outputs.phase == 'awaiting_review' && steps.feedback.outputs.count != '0'
         env:
-          GH_TOKEN: ${{ steps.repair-token.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           PR: ${{ steps.pr.outputs.number }}
           ATTEMPT: ${{ steps.feedback.outputs.attempt }}
           NARRATION_NEEDED: ${{ steps.repair-narration.outputs.needed }}
+          BRANCH: ${{ steps.pr.outputs.branch }}
         run: |
           set -euo pipefail
           [ "$NARRATION_NEEDED" != true ] || node site/scripts/publish-kokoro-clips.mjs --clips narration-clips
           spent=$(jq .spent_usd "$RUNNER_TEMP/repair-result.json")
           jq --argjson n "$ATTEMPT" --argjson spent "$spent" '.repair_attempts=$n|.spent_usd=$spent' .automation/docket-case-generation.json > state.json
           mv state.json .automation/docket-case-generation.json
-          git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
-          git config user.email "${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git add .automation/docket-case-generation.json site/app/docket site/app/public/media
           git commit -m "fix(docket): address automated review feedback"
           git push origin HEAD
+          gh workflow run ci.yml --ref "$BRANCH"
+          gh workflow run pr-bot-feedback-check.yml --ref "$BRANCH" -f pr_number="$PR"
+          gh workflow run pr-request-bot-reviews.yml --ref "$BRANCH" -f pr_number="$PR"
           jq -c '.dispositions[]' "$RUNNER_TEMP/repair-result.json" | while read -r item; do
             id=$(jq -r .thread_id <<<"$item")
             status=$(jq -r .status <<<"$item")
