@@ -1,0 +1,77 @@
+/**
+ * SimJury design tokens — the single home for palette, radii, motion and type.
+ *
+ * These were declared twice: on `:root` in the app's `index.css` and again on
+ * `.landing` in `landing-modern.css`, with a third, older palette in
+ * `styles.css`. They agreed; nothing kept them agreeing.
+ *
+ * Loaded two ways, from this one file:
+ *   - the landing page links it directly, before its own stylesheets;
+ *   - the app `@import`s it, so Vite inlines it into the bundle and the app
+ *     makes no extra request and stays inside the strict CSP.
+ *
+ * See docs/DESIGN-PROTOCOL.md, rules 5, 6 and 7.
+ */
+
+:root {
+  color-scheme: dark;
+
+  /* --- Surfaces -----------------------------------------------------------
+   * Opaque, ascending. Elevation is expressed by lightness, not by opacity
+   * over a gradient: a translucent panel has measurably different contrast
+   * depending on where it lands on the page, so its text contrast cannot be
+   * stated as a ratio at all. The gradient wash stays on the page ground and
+   * never sits beneath a panel.
+   *
+   * The ground is deliberately lifted off pure black (#000) so shadows and
+   * elevation can read against it.
+   */
+  --ground: #0d1113;
+  --surface-1: #131a1d;
+  --surface-2: #182126;
+  --surface-3: #1e282e;
+  --sunken: #0a0e10;
+
+  /* --- Ink --------------------------------------------------------------- */
+  --ink: #f4f0e8;
+  --ink-2: #b8c1be;
+  --ink-3: #778581;
+
+  /* --- Accent ------------------------------------------------------------ */
+  --brass: #d6b979;
+  --brass-ink: #f5e3bd;
+  --focus-ring: #f5d67a;
+
+  /* --- Lines -------------------------------------------------------------
+   * One hairline for panel edges, one rule for stronger divisions.
+   */
+  --hairline: rgb(244 240 232 / 11%);
+  --rule: rgb(244 240 232 / 20%);
+
+  /* --- Radii -------------------------------------------------------------
+   * Four. The app previously carried twelve distinct values plus one
+   * percentage-based blob.
+   */
+  --radius-xs: 0.5rem;
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.25rem;
+
+  /* --- Motion ------------------------------------------------------------ */
+  --motion-fast: 160ms;
+  --motion-base: 240ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* --- Type --------------------------------------------------------------
+   * A system stack, chosen deliberately. There is no @font-face rule and no
+   * font file in the repository, so the previously named `Inter` never loaded
+   * and the site rendered in Segoe UI, SF or Roboto regardless. A stack names
+   * only faces that will actually render.
+   */
+  --font-body: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "Cascadia Mono", "SF Mono", "Segoe UI Mono", Menlo, monospace;
+
+  /* Testimony and body copy sit inside the accepted 50–75 character band. */
+  --measure: 66ch;
+}
