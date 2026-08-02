@@ -304,6 +304,17 @@ export function JuryRoomView({
     if (awaitingPlayerVote || outcome) headingRef.current?.focus()
   }, [outcome, awaitingPlayerVote])
 
+  // The judge's direction is spoken when the ballot comes round, rather than
+  // printed a second time. Its text is already set in its own box directly
+  // above the verdict buttons; the cue used to repeat those exact words about
+  // 1100px higher on the same screen. Narration is an alternative to reading
+  // the screen, not a duplicate of it.
+  useEffect(() => {
+    if (!awaitingPlayerVote || !narration || outcome) return
+    speak(phaseNarratorCue('verdict'), 'narrator', undefined, playbackRate)
+    return stopSpeech
+  }, [awaitingPlayerVote, narration, outcome, playbackRate])
+
   useEffect(() => {
     const transcript = transcriptRef.current
     if (transcript && followTranscriptRef.current) {
@@ -493,9 +504,12 @@ export function JuryRoomView({
       </div>
 
       {!outcome && !awaitingPlayerVote && !listening && !raising && (
-        <NarratorCue text={phaseNarratorCue('juryroom')} active={narratorActive} />
+        <NarratorCue text={phaseNarratorCue('juryroom')} narration={narration} active={narratorActive} />
       )}
-      {awaitingPlayerVote && <NarratorCue text={phaseNarratorCue('verdict')} />}
+      {/* The verdict cue is spoken, not printed. Its text is the
+          reasonable-doubt direction, which is already set in its own bordered
+          box directly above the verdict buttons — the cue printed the same
+          words again about 1100px higher up the same screen. */}
 
       {liveSession && <LiveJuryPanel session={liveSession} trial={trial} />}
 

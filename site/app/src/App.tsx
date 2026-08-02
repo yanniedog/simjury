@@ -167,7 +167,7 @@ export function IntroGate({
           Start with a guided intro?
         </h1>
       </div>
-      <NarratorCue text={cue} active={narratorActive} />
+      <NarratorCue text={cue} narration={narration} active={narratorActive} />
       <p className="entry-gate-copy mx-auto max-w-xl text-sm leading-relaxed">
         About five minutes. The guided sitting is a complete murder case with direct discussion of death and serious violence. You can skip it or reopen it later from the case library.
       </p>

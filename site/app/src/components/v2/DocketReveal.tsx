@@ -110,7 +110,7 @@ export function DocketReveal({
 
   return (
     <div className="phase-view reveal-view space-y-6">
-      <NarratorCue text={phaseCue} active={narratorActive} />
+      <NarratorCue text={phaseCue} narration={narration} active={narratorActive} />
 
       <div className="judgment-record border p-5 text-center">
         <h1 id="phase-heading" tabIndex={-1} className="text-neutral-50 focus:outline-none">

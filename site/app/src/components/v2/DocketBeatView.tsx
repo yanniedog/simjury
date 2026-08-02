@@ -146,7 +146,6 @@ export function DocketBeatView({
   }, [beat, cueText, events, hasTranscript, narration, playbackRate])
 
   const modeLabel = modeLabelFor(beat)
-  const subtitle = [speaker?.role_label, modeLabel].filter(Boolean).join(' · ')
 
   function commitNote() {
     onNoteChange(beat.id, draft)
@@ -155,9 +154,18 @@ export function DocketBeatView({
   return (
     <div className={`phase-view evidence-view evidence-${beat.kind} space-y-6`}>
       <div className="evidence-toolbar">
-        <p className="text-xs uppercase tracking-[0.15em] text-neutral-500">
+        {/* Position and mode, and nothing else. The speaker used to be printed
+            here as the phase heading and again inside the card immediately
+            below it; the card is the speaker's one home. Making this the
+            heading also means focus lands at the top of the phase on every
+            beat, and announces where you are rather than who is talking. */}
+        <h1
+          id="phase-heading"
+          tabIndex={-1}
+          className="text-xs uppercase tracking-[0.15em] text-neutral-500 focus:outline-none"
+        >
           Evidence {beatIndex + 1} of {total} · {modeLabel}
-        </p>
+        </h1>
         <div className="evidence-toolbar-actions">
           <button
             type="button"
@@ -225,15 +233,9 @@ export function DocketBeatView({
         </div>
       )}
 
-      {cueText && <NarratorCue text={cueText} active={narratorActive} />}
+      {cueText && <NarratorCue text={cueText} narration={narration} active={narratorActive} />}
 
       <div>
-        <h1 id="phase-heading" tabIndex={-1} className="text-sm font-semibold text-neutral-200 focus:outline-none">
-          {speaker?.name ?? beat.speaker}
-          <span className="ml-2 font-normal text-neutral-500">
-            {subtitle && `· ${subtitle}`}
-          </span>
-        </h1>
         {media && <div className="mt-4"><CaseMedia asset={media} /></div>}
         {hasTranscript ? (
           <section aria-label={`${modeLabel} transcript`} className="mt-4 grid gap-3">
@@ -296,6 +298,9 @@ export function DocketBeatView({
               <p className="speaker-heading mb-2">
                 <span className="text-sm font-semibold text-neutral-300">
                   {speaker?.name ?? beat.speaker}
+                  {speaker?.role_label && (
+                    <span className="font-normal text-neutral-500"> · {speaker.role_label}</span>
+                  )}
                 </span>
                 <SpeakerFlag active={singleSpeakerActive} />
               </p>
