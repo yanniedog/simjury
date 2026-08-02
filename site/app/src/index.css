@@ -197,15 +197,34 @@
   .proof-elements li > span:first-child { color: var(--brass); font-family: var(--font-mono); }
 
   .statement-card { padding: 1.15rem; border: 1px solid var(--hairline); border-radius: var(--radius-md); background: var(--surface-1); }
-  .statement-card.prosecution { border-left: 3px solid #f08b7d; }
-  .statement-card.defence { border-left: 3px solid #72c7aa; }
+  /* Amber Crown, cool defence — never red against green. The printed role
+     label is the redundant channel; see docs/DESIGN-PROTOCOL.md rule 3. */
+  .statement-card.prosecution { border-left: 3px solid var(--crown); }
+  .statement-card.defence { border-left: 3px solid var(--defence); }
   .speech-turn { transition: border-color var(--motion-fast) ease, box-shadow var(--motion-fast) ease, background-color var(--motion-fast) ease; }
   .speech-turn.speech-turn-active { border-color: var(--brass); background-color: rgb(214 185 121 / 12%); box-shadow: 0 0 0 2px rgb(214 185 121 / 34%); }
   .speaker-heading { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
   .speaker-flag { flex: 0 0 auto; padding: .2rem .5rem; border: 1px solid rgb(214 185 121 / 55%); border-radius: 999px; color: #f5d99a; background: var(--sunken); font-size: .58rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 
   .verdict-threshold { border-color: rgb(214 185 121 / 22%); border-radius: var(--radius-md); background: linear-gradient(145deg, rgb(214 185 121 / 9%), var(--surface-1)); }
+  /* Which side of the room a turn came from. Amber Crown, cool defence — the
+     printed role label on every card is the redundant channel. */
+  .turn-crown { border-color: rgb(217 154 78 / 55%); background: rgb(217 154 78 / 10%); }
+  .turn-defence { border-color: rgb(130 175 198 / 55%); background: rgb(130 175 198 / 10%); }
+  /* Three identical neutral surfaces. Green for acquit and red for convict
+     painted a moral valence onto a threshold the case asks the player to apply
+     honestly — and contradicted the reveal, which says of its own answer that
+     it is "an editorial comparison, not an objectively correct answer".
+     The label does the work; selection is marked in brass and by aria-pressed. */
   .verdict-choices button { min-height: 7.5rem; border-radius: var(--radius-md); }
+  .verdict-choice {
+    padding: 1rem; border: 1px solid var(--hairline); border-radius: var(--radius-md);
+    background: var(--surface-2); color: var(--ink); font-weight: 600;
+    transition: border-color var(--motion-fast) ease, background-color var(--motion-fast) ease;
+  }
+  .verdict-choice:hover { border-color: rgb(214 185 121 / 45%); }
+  .verdict-choice[aria-pressed="true"] { border-color: var(--brass); background: rgb(214 185 121 / 12%); box-shadow: inset 0 0 0 1px rgb(214 185 121 / 40%); }
+  .verdict-choice > span:last-child { color: var(--ink-3); font-weight: 400; }
   .verdict-dialog { width: min(30rem, calc(100% - 2rem)); padding: 1.5rem; border: 1px solid rgb(214 185 121 / 30%); border-radius: var(--radius-lg); color: var(--ink); background: var(--surface-2); box-shadow: 0 2rem 8rem rgb(0 0 0 / 60%); }
   .verdict-dialog::backdrop { background: rgb(3 5 6 / 78%); backdrop-filter: blur(5px); }
   .verdict-dialog h2 { margin: .7rem 0; font-family: var(--font-display); font-size: 2rem; font-weight: 400; }
@@ -312,11 +331,14 @@
   .dossier-name { overflow: hidden; color: var(--ink); font-size: .82rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
   .dossier-style { color: var(--brass); font-size: .65rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
   .dossier-standing { flex: 0 0 auto; padding: .2rem .55rem; border: 1px solid var(--hairline); border-radius: 999px; font-size: .62rem; font-weight: 600; }
-  .dossier-standing.warm { border-color: rgb(114 199 170 / 55%); color: #9fd9c4; }
-  .dossier-standing.mild { border-color: rgb(114 199 170 / 32%); color: #8fc9b6; }
+  /* Standing runs cool-to-warm, not green-to-red. Every step also carries its
+     own words — "With you", "Closed to you" — so colour is never the only
+     channel. The names warm/cool are about rapport, not hue. */
+  .dossier-standing.warm { border-color: rgb(130 175 198 / 60%); color: var(--defence); }
+  .dossier-standing.mild { border-color: rgb(130 175 198 / 32%); color: #a6c4d4; }
   .dossier-standing.flat { color: var(--ink-3); }
-  .dossier-standing.cool { border-color: rgb(240 139 125 / 35%); color: #e6a79c; }
-  .dossier-standing.cold { border-color: rgb(240 139 125 / 60%); color: #f08b7d; }
+  .dossier-standing.cool { border-color: rgb(217 154 78 / 35%); color: #e0be93; }
+  .dossier-standing.cold { border-color: rgb(217 154 78 / 60%); color: var(--crown); }
   .dossier-panel { padding: 0 .8rem .8rem; }
   .dossier-persona { margin: 0 0 .6rem; color: var(--ink-2); font-size: .82rem; line-height: 1.55; }
   .dossier-facts { display: grid; gap: .45rem; margin: 0; }
@@ -362,16 +384,17 @@
   .room-read-summary { margin: 0; color: var(--ink); font-size: .85rem; font-weight: 600; }
   .room-read-list { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
   .room-read-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem; padding-left: .65rem; border-left: 2px solid rgb(244 240 232 / 18%); color: var(--ink-2); font-size: .78rem; line-height: 1.5; }
-  .room-read-item.open { border-left-color: #72c7aa; }
-  .room-read-item.listening { border-left-color: rgb(114 199 170 / 50%); }
-  .room-read-item.resistant { border-left-color: rgb(240 139 125 / 55%); }
-  .room-read-item.shut { border-left-color: #f08b7d; }
+  /* Engagement on the same cool-to-warm axis, each step already labelled. */
+  .room-read-item.open { border-left-color: var(--defence); }
+  .room-read-item.listening { border-left-color: rgb(130 175 198 / 50%); }
+  .room-read-item.resistant { border-left-color: rgb(217 154 78 / 55%); }
+  .room-read-item.shut { border-left-color: var(--crown); }
   .room-read-who { color: var(--ink); font-weight: 650; }
   .room-read-flags { display: inline-flex; flex-wrap: wrap; gap: .3rem; }
   .room-read-flag { padding: .1rem .4rem; border: 1px solid var(--rule); border-radius: 999px; font-size: .6rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
   .room-read-flag.own { border-color: rgb(214 185 121 / 50%); color: var(--brass); }
   .room-read-flag.discount { color: var(--ink-3); }
-  .room-read-flag.backfire { border-color: rgb(240 139 125 / 55%); color: #f08b7d; }
+  .room-read-flag.backfire { border-color: rgb(217 154 78 / 55%); color: var(--crown); }
 
   /* The live-jury lobby: matching, inviting, and who is actually here. */
   .live-lobby { display: grid; gap: .9rem; padding: 1.1rem; border: 1px solid rgb(214 185 121 / 24%); border-radius: var(--radius-md); background: linear-gradient(145deg, rgb(214 185 121 / 8%), var(--surface-2)); }
