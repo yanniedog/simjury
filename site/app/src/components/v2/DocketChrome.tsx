@@ -150,7 +150,7 @@ export function DocketShell({
  * published 2026-08-05 appeared in the library as "Tue, 4 Aug" in Los Angeles.
  * A publish date is a calendar date, not an instant, so the zone is pinned.
  */
-const dateFormatter = new Intl.DateTimeFormat(undefined, {
+export const dateFormatter = new Intl.DateTimeFormat(undefined, {
   weekday: 'short',
   day: 'numeric',
   month: 'short',

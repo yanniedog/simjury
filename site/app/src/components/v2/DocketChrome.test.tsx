@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { docketLibrarySittings, featuredDocketSitting, introSitting } from '../../lib/v2/cases'
 import { saveProgress } from '../../lib/storage'
 import { caseStorageId } from '../../lib/v2/caseRevision'
-import { DocketShell, DocketSittingChooser } from './DocketChrome'
+import { DocketShell, DocketSittingChooser, dateFormatter } from './DocketChrome'
 
 function writableStorage() {
   const values = new Map<string, string>()
@@ -229,36 +229,25 @@ describe('DocketSittingChooser', () => {
 })
 
 describe('library dates', () => {
-  it('shows a publish date as its own calendar day, whatever zone the viewer is in', () => {
+  it('formats sitting dates in UTC, so they do not shift for a viewer west of it', () => {
     // #302 made the daily boundary UTC, so `utcDateFromIso` builds a publish
-    // date as UTC midnight. Formatting that in the viewer's zone showed the
-    // day before to everyone west of UTC: a case published 2026-08-05 read
+    // date as UTC midnight. Rendering that in the viewer's own zone showed the
+    // day before to everyone west of UTC — a case published 2026-08-05 read
     // "Tue, 4 Aug" in Los Angeles.
-    const publishedAtUtcMidnight = new Date('2026-08-05T00:00:00.000Z')
+    //
+    // The zone has to be asserted on the formatter itself. This suite runs east
+    // of UTC, where a UTC-midnight date renders as the same day either way, so
+    // comparing rendered output here would pass with or without the fix.
+    expect(dateFormatter.resolvedOptions().timeZone).toBe('UTC')
 
-    const pinned = new Intl.DateTimeFormat(undefined, {
-      weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC',
-    }).format(publishedAtUtcMidnight)
+    const published = new Date('2026-08-05T00:00:00.000Z')
+    expect(dateFormatter.format(published)).toContain('5')
+
+    // The zones genuinely disagree for this date, which is what made it a bug.
     const losAngeles = new Intl.DateTimeFormat(undefined, {
       weekday: 'short', day: 'numeric', month: 'short', timeZone: 'America/Los_Angeles',
-    }).format(publishedAtUtcMidnight)
-
-    // The two genuinely differ, so this test would catch a regression.
-    expect(losAngeles).not.toEqual(pinned)
-    expect(pinned).toContain('5')
+    }).format(published)
     expect(losAngeles).toContain('4')
-
-    // And the component renders the pinned one.
-    const sittings = docketLibrarySittings()
-    const markup = renderToStaticMarkup(
-      <DocketSittingChooser
-        sittings={sittings}
-        selectedCaseId={sittings[0].trial.id}
-        featuredSitting={null}
-        onSelect={() => undefined}
-      />,
-    )
-    const augustFifth = sittings.find((s) => s.trial.publish_date === '2026-08-05')
-    if (augustFifth) expect(markup).toContain(pinned)
+    expect(losAngeles).not.toEqual(dateFormatter.format(published))
   })
 })
