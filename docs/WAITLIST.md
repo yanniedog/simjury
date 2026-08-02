@@ -21,11 +21,17 @@ out.
 D1's free tier covers 5 GB of storage, 5 million rows read per day, and 100,000
 rows written per day.
 
-Each signup is one statement that both counts the rows sharing its daily
-fingerprint and inserts — so a signup reads as well as writes, including the
-ones the cap refuses. That is the load to watch: a flood of refused requests
-still spends read allowance even though it stores nothing. The per-source cap
-bounds how much any one client can write, not how often it can ask.
+The public route does not use D1 to count or rate-limit requests. Two Cloudflare
+Rate Limiting bindings run first: one bounds a keyed source fingerprint to two
+attempts per minute, and one bounds all traffic at each Cloudflare location to
+five attempts per minute. A rejected request performs **zero D1 operations**.
+
+A permitted signup performs one primary-key upsert. It never runs `SELECT`,
+`COUNT(*)`, or a second update statement. That preserves deduplication and lets
+an unsubscribed person consent again without a table or source-fingerprint scan.
+The rate-limit counters are local and eventually consistent, so they are an
+abuse circuit breaker rather than accounting; the indexed upsert remains the
+data-integrity boundary.
 
 Ordinary use is nowhere near either limit — sending an update reads the table
 once — and no paid Cloudflare product is introduced.
@@ -52,8 +58,8 @@ applied, and `WAITLIST_SALT` is set. Nothing below needs running again unless
 the database is recreated. It is recorded so the setup is reproducible.
 
 The salt is a Worker secret and cannot be read back. Losing it is not a data
-loss: only the per-IP fingerprints rotate, which resets the daily cap and
-leaves every stored address and consent record untouched.
+loss: only the keyed source fingerprints rotate. If it is missing, the waitlist
+fails closed before D1 instead of accepting unbounded traffic.
 
 ## How it was set up
 
@@ -79,8 +85,8 @@ leave the waitlist unbound, it would fail the deployment of the whole site.
 API. Failing in CI makes this a visible prerequisite instead of a landmine.
 
 `WAITLIST_SALT` is a secret, so it lives outside `wrangler.json` entirely and
-needs no allowlist change. Without it the per-IP cap is skipped and no
-fingerprint is stored — see below for why an unkeyed one would be worthless.
+needs no allowlist change. Without it the endpoint returns unavailable before
+touching D1 — see below for why an unkeyed fingerprint would be worthless.
 
 ## Reading the list
 
@@ -97,15 +103,13 @@ wrangler d1 execute simjury-waitlist --remote `
 | `email` | The address as typed. RFC 5321 local-parts are case-sensitive, so this is what gets mailed; only `email_key` decides who is the same person. |
 | `consent_text` | The exact wording agreed to, so the record stands even after the page copy changes. |
 | `consented_at` | When it was agreed. |
-| `source_day_hash` | HMAC-SHA-256 of `<ip>:<utc day>` under `WAITLIST_SALT`, or NULL when no salt is set. Enough to enforce the daily cap, useless as a location record. |
+| `source_day_hash` | HMAC-SHA-256 of `<ip>:<utc day>` under `WAITLIST_SALT`. Used as the source rate-limit key and retained for abuse investigation; useless as a location record without the key. |
 | `unsubscribed_at` | Set on unsubscribe; the row is kept so a later signup is not treated as fresh consent. |
 
 The fingerprint is **keyed**, not a plain digest. A bare SHA-256 of an IP is not
 anonymous: IPv4 is only 2³² values, so the whole space can be hashed and the
-digest looked up. Without the secret there is no such table to build. If no salt
-is configured the column stays NULL rather than holding a value that only looks
-protective, and the per-IP cap is skipped rather than applied to a constant
-every client shares.
+digest looked up. Without the secret there is no such table to build; the route
+fails closed rather than storing an unkeyed value or bypassing its limiter.
 
 No progress, notes, verdicts or case history are stored, and none of them are
 linked to an address.
