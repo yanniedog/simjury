@@ -38,7 +38,7 @@ describe('DocketBeatView dialogue', () => {
       <DocketBeatView
         trial={trial}
         beatIndex={1}
-        narration={false}
+        narration
         playbackRate={1}
         notes={[]}
         onNoteChange={() => undefined}
@@ -46,6 +46,53 @@ describe('DocketBeatView dialogue', () => {
       />,
     )
     expect(markup).toMatch(/cross-examination of/i)
+  })
+
+  // Finding 03: the cue printed the words that would have been spoken even
+  // with narration off, which is the default.
+  it('prints no narrator script when narration is off', () => {
+    const markup = renderToStaticMarkup(
+      <DocketBeatView
+        trial={makeDocketCase()}
+        beatIndex={1}
+        narration={false}
+        playbackRate={1}
+        notes={[]}
+        onNoteChange={() => undefined}
+        onNext={() => undefined}
+      />,
+    )
+
+    expect(markup).not.toMatch(/cross-examination of/i)
+    expect(markup).not.toContain('narrator-cue')
+  })
+
+  // Finding 08: the speaker was the phase heading and was then repeated inside
+  // the card immediately below it. The toolbar line carries position and mode;
+  // the card is the speaker's one home.
+  it('names the speaker once, on the card, and heads the phase with position', () => {
+    const trial = makeDocketCase()
+    trial.beats[1].turns = [
+      { speaker: 'defc', text: 'Where were you that evening?' },
+      { speaker: 'w1', text: 'I was reviewing the record.' },
+    ]
+    const markup = renderToStaticMarkup(
+      <DocketBeatView
+        trial={trial}
+        beatIndex={1}
+        narration={false}
+        playbackRate={1}
+        notes={[]}
+        onNoteChange={() => undefined}
+        onNext={() => undefined}
+      />,
+    )
+
+    expect(markup).toContain('id="phase-heading"')
+    expect(markup).toMatch(/id="phase-heading"[^>]*>Evidence 2 of \d+ · Cross-examination</)
+    // Each speaker is named exactly once — on their own card.
+    expect(markup.match(/Counsel Maddox/g)).toHaveLength(1)
+    expect(markup.match(/Renn Halloway/g)).toHaveLength(1)
   })
 
   it('renders an objection and exclusion in exact courtroom order', () => {

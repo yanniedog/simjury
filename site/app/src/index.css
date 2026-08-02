@@ -104,8 +104,15 @@
   .docket-stage { min-width: 0; animation: stage-enter 360ms var(--ease) both; }
   .juror-docket { padding: 1.1rem; border: 1px solid var(--hairline); border-radius: var(--radius-md); background: var(--surface-1); box-shadow: 0 1.25rem 4rem rgb(0 0 0 / 18%); }
   .docket-context { padding: 1rem 0; border-bottom: 1px solid var(--hairline); }
-  .narrator-cue { padding: 1rem 1.1rem; border: 1px solid rgb(214 185 121 / 22%); border-radius: var(--radius-md); background: rgb(214 185 121 / 8%); }
-  .narrator-cue > p:last-child { margin: .45rem 0 0; color: var(--ink-2); font-size: .9rem; line-height: 1.55; }
+  /* Subordinate to the testimony it introduces: a caption on a rule, not a
+     filled panel. It used to be a gold-bordered block that outweighed the
+     evidence beneath it — six lines of procedure carrying more visual weight
+     than the most important screen in the product. */
+  .narrator-cue { padding: .1rem 0 .1rem .9rem; border-left: 2px solid rgb(214 185 121 / 45%); }
+  .narrator-cue-label { display: flex; align-items: center; gap: .6rem; }
+  .narrator-cue-text { margin: .25rem 0 0; max-width: var(--measure); color: var(--ink-3); font-size: .82rem; line-height: 1.5; }
+  .narrator-cue-active { border-left-color: var(--brass); }
+  .narrator-cue-active .narrator-cue-text { color: var(--ink-2); }
   .docket-context > p:last-child { margin: .45rem 0 0; color: var(--ink-2); font-size: .78rem; line-height: 1.45; }
   .docket-archive { padding: .6rem 0; border-bottom: 1px solid var(--hairline); }
   .docket-archive summary { display: flex; justify-content: space-between; align-items: center; color: var(--ink-2); cursor: pointer; font-size: .75rem; list-style: none; }

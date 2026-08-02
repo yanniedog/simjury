@@ -104,6 +104,16 @@ describe('DocketIntro narration', () => {
         if_guilty: 'Arden would lose a career and face a long prison sentence.',
       },
     })
+    // The scene cue is a spoken line. It is asserted on the cue itself rather
+    // than on the markup because it deliberately no longer appears on screen:
+    // it restates the setting paragraph printed directly above it and the
+    // charge that sits in the rail. See finding 03.
+    const cue = introSceneNarratorCue(trial)
+    expect(cue).toContain('We begin in the coastal city of Orin Bay')
+    expect(cue).toContain('Corin Vale is the accused')
+    expect(cue).toContain('charged with obtaining funds by deception')
+    expect(cue).not.toContain('long prison sentence')
+
     const markup = renderToStaticMarkup(
       <DocketIntro
         trial={trial}
@@ -114,11 +124,44 @@ describe('DocketIntro narration', () => {
       />,
     )
 
-    expect(markup).toContain('We begin in the coastal city of Orin Bay')
-    expect(markup).toContain('Corin Vale is the accused')
-    expect(markup).toContain('charged with obtaining funds by deception')
     expect(markup).toContain('repairs bicycles')
     expect(markup).not.toContain('long prison sentence')
     expect(markup).not.toContain('If you convict')
+  })
+
+  // Finding 08: the charge was printed in the rail and again in a body panel
+  // on the briefing. The rail is its one home, where it stays visible for the
+  // whole sitting rather than only on the first screen.
+  it('leaves the charge to the rail instead of restating it in the body', () => {
+    const trial = makeDocketCase({ charge: 'obtaining funds by deception' })
+    const markup = renderToStaticMarkup(
+      <DocketIntro
+        trial={trial}
+        dayNumber={1}
+        narration={false}
+        playbackRate={1}
+        onBegin={() => undefined}
+      />,
+    )
+
+    expect(markup).not.toContain('briefing-charge')
+    expect(markup).not.toContain('obtaining funds by deception')
+    // What the briefing does own — the elements — is untouched.
+    expect(markup).toContain('To convict, the prosecution must prove')
+  })
+
+  it('prints no narrator script when narration is off', () => {
+    const markup = renderToStaticMarkup(
+      <DocketIntro
+        trial={makeDocketCase()}
+        dayNumber={1}
+        narration={false}
+        playbackRate={1}
+        onBegin={() => undefined}
+      />,
+    )
+
+    expect(markup).not.toContain('narrator-cue')
+    expect(markup).not.toContain(phaseNarratorCue('intro'))
   })
 })
