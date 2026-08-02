@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "case_id": "dd-0040",
-  "case_revision": "dd-0040@68bda528",
+  "case_revision": "dd-0040@f37369c6",
   "jurisdiction": "State of Orinth",
   "statute": {
     "name": "Orinth Criminal Code 2026",
@@ -20,5 +20,5 @@
   "required_directions": ["The prosecution must prove every element beyond reasonable doubt; Sera proves nothing.","An attempt requires an act beyond mere preparation together with the intention to kill.","Terrorist purpose requires an intention to intimidate the public or coerce government for an ideological end.","Lawful advocacy and the excluded public-meeting exchange must not be used as evidence of guilt or purpose.","Consider each record and observation only within its stated foundation and limitation."],
   "epilogue_strategy": "outcome_neutral",
   "checks": {"victim_humanity":"The Convenor and public are treated as people affected by a prevented threat, without weapon spectacle or graphic detail.","accused_prejudice":"The script excludes lawful advocacy and punishment consequences from the jury's decision."},
-  "approvals": {"legal":{"status":"approved","reviewer":"Codex GPT-5 editorial review","approved_at":"2026-08-02T11:00:00.000Z","content_hash":"dd-0040@68bda528@legal-c9dca73d"},"read_aloud":{"status":"approved","reviewer":"Codex GPT-5 editorial review","approved_at":"2026-08-02T11:00:00.000Z","content_hash":"dd-0040@68bda528@legal-c9dca73d"},"blind_test":{"status":"approved","reviewer":"Codex GPT-5 editorial review","approved_at":"2026-08-02T11:00:00.000Z","content_hash":"dd-0040@68bda528@legal-c9dca73d"}}
+  "approvals": {"legal":{"status":"approved","reviewer":"Codex GPT-5 editorial review","approved_at":"2026-08-02T11:00:00.000Z","content_hash":"dd-0040@f37369c6@legal-eb8eef70"},"read_aloud":{"status":"approved","reviewer":"Codex GPT-5 editorial review","approved_at":"2026-08-02T11:00:00.000Z","content_hash":"dd-0040@f37369c6@legal-eb8eef70"},"blind_test":{"status":"approved","reviewer":"Codex orchestrator independent editorial review","approved_at":"2026-08-02T11:00:00.000Z","content_hash":"dd-0040@f37369c6@legal-eb8eef70"}}
 }
