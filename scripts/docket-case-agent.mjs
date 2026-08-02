@@ -1,6 +1,7 @@
 import { lstatSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs'
 import { dirname, extname, isAbsolute, relative, resolve, sep } from 'node:path'
 import { pathToFileURL } from 'node:url'
+import { callGeminiCaseAgent } from './gemini-case-agent.mjs'
 
 const PHASES = ['draft', 'legal_review', 'story_review', 'repair']
 const TEXT_PATH = /^site\/app\/docket\/dd-\d{4}(?:\.json|\/(?:trial|analysis|legal-sheet|deliberation-pack)\.json)$/
@@ -229,7 +230,8 @@ function exists(path) {
   try { lstatSync(path); return true } catch { return false }
 }
 
-async function callAgent(config, request) {
+async function callAgent(config, request, root) {
+  if (config.endpoint === 'gemini://generateContent') return callGeminiCaseAgent(config, request, root)
   for (let attempt = 1; attempt <= config.maxAttempts; attempt += 1) {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), 20 * 60 * 1000)
@@ -308,7 +310,7 @@ async function run() {
       provider: config.provider, image_model: config.imageModel, image_license: config.imageLicense,
       limits: { attempt, tokens: config.maxTokens, images_per_case: config.maxImagesPerCase, output_bytes: config.maxOutputBytes, remaining_cost_usd: totalBudget - alreadySpent },
       authorities: ['CLAUDE.md', 'DAILY-PIVOT.md', 'docs/COMMISSION-BRIEF.md', 'docs/DAILY-CASES.md'],
-    })
+    }, root)
     assertSafeResponse(response, { phase: 'repair', model, draftPr, dates }, config)
     if (alreadySpent + response.cost_usd > totalBudget) throw new Error('repair exceeds the per-case budget cap')
     assertDispositions(response, feedback)
@@ -334,7 +336,8 @@ async function run() {
       repository: process.env.GITHUB_REPOSITORY, source_ref: process.env.GITHUB_SHA,
       authority_documents: authorityDocuments,
     }
-    const response = await callAgent(config, request)
+    if (prior) request.prior_files = prior.files.filter((file) => TEXT_PATH.test(file.path))
+    const response = await callAgent(config, request, root)
     assertSafeResponse(response, { phase, model: models[index], draftPr, dates }, config)
     spent += response.cost_usd
     if (spent > totalBudget) throw new Error(`agent spend ${spent} exceeds per-case cap ${config.maxCostUsd}`)
