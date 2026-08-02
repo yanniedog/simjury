@@ -162,3 +162,40 @@ export function introSitting(): DocketSitting | null {
     trial: introCase,
   }
 }
+
+export interface FeaturedFreshness {
+  /** True when today opens no case of its own and an earlier one is re-served. */
+  isRerun: boolean
+  /** The date the featured case was actually published. */
+  publishedOn: string
+  /** Days between that publication and today. */
+  daysOld: number
+}
+
+/**
+ * Is today's featured case actually today's, or yesterday's served again?
+ *
+ * `docketCaseForDate` falls back to the newest earlier case whenever the queue
+ * has a gap, which keeps the page working but says nothing about it. With the
+ * docket opening a new case on three days in fourteen, most visits are a
+ * re-serve, and a player who returned a verdict yesterday is shown the same
+ * trial with nothing to distinguish it.
+ *
+ * Returns null when there is no case at all to describe.
+ */
+export function featuredFreshness(
+  date: Date,
+  queue: DocketCase[] = docketQueue,
+): FeaturedFreshness | null {
+  const trial = docketCaseForDate(date, queue)
+  if (!trial) return null
+
+  const today = localDateString(date)
+  const publishedOn = trial.publish_date
+  const daysOld = Math.round(
+    (localDateFromIso(today).getTime() - localDateFromIso(publishedOn).getTime())
+    / (24 * 60 * 60 * 1000),
+  )
+
+  return { isRerun: publishedOn !== today, publishedOn, daysOld }
+}

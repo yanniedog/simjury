@@ -140,6 +140,27 @@ function sittingStatus(sitting: DocketSitting): string {
   return progress?.caseId === caseStorageId(sitting.trial) ? 'in progress' : 'not started'
 }
 
+
+/**
+ * How to name a sitting in the library.
+ *
+ * "Today" is reserved for a case whose publish date is today. A re-served case
+ * keeps its own filing date, so the list never claims an older trial is new.
+ */
+function featuredLabel(
+  sitting: DocketSitting,
+  featuredSitting: DocketSitting | null,
+): string {
+  if (sitting !== featuredSitting) return dateFormatter.format(sitting.date)
+  const filed = sitting.trial.publish_date
+  const featuredOn = `${sitting.date.getFullYear()}-`
+    + `${String(sitting.date.getMonth() + 1).padStart(2, '0')}-`
+    + `${String(sitting.date.getDate()).padStart(2, '0')}`
+  return filed === featuredOn
+    ? 'Today'
+    : `Today’s sitting, filed ${dateFormatter.format(new Date(sitting.trial.publish_date))}`
+}
+
 export function DocketSittingChooser({ sittings, selectedCaseId, featuredSitting, onSelect, introSitting }: {
   sittings: DocketSitting[]
   selectedCaseId: string
@@ -158,9 +179,12 @@ export function DocketSittingChooser({ sittings, selectedCaseId, featuredSitting
     return {
       day: sitting.day,
       id: sitting.trial.id,
+      // The featured sitting is only "Today" when a case was actually filed
+      // today. On a gap day the docket re-serves an earlier one, and labelling
+      // that "Today" tells a returning player it is new when it is not.
       label: sitting.trial.id === INTRO_CASE_ID
         ? `Guided intro — ${sitting.trial.title} (${sittingStatus(sitting)})`
-        : `${sitting === featuredSitting ? 'Today' : dateFormatter.format(sitting.date)} — ${sitting.trial.title} (${sittingStatus(sitting)})`,
+        : `${featuredLabel(sitting, featuredSitting)} — ${sitting.trial.title} (${sittingStatus(sitting)})`,
     }
   })
   return (

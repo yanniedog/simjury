@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   docketLibrarySittings,
   docketCaseForDate,
+  featuredFreshness,
   docketQueue,
   featuredDocketSitting,
   INTRO_CASE_ID,
@@ -112,5 +113,43 @@ describe('docket queue', () => {
     expect(featured?.day).toBe(dayIndex(gapDate))
     expect(featured?.date).toBe(gapDate)
     expect(featuredDocketSitting(new Date(2026, 6, 23), docketQueue)).toBeNull()
+  })
+})
+
+describe('featured freshness', () => {
+  // Two cases four days apart, which is the shape the live docket actually has.
+  const queue = [
+    { ...docketQueue[0], id: 'dd-a', publish_date: '2026-08-01' },
+    { ...docketQueue[0], id: 'dd-b', publish_date: '2026-08-05' },
+  ]
+  const on = (day: string) => {
+    const [y, m, d] = day.split('-').map(Number)
+    return new Date(y, m - 1, d)
+  }
+
+  it('knows the day a case actually opens is not a re-run', () => {
+    const fresh = featuredFreshness(on('2026-08-01'), queue)
+    expect(fresh).toEqual({ isRerun: false, publishedOn: '2026-08-01', daysOld: 0 })
+  })
+
+  it('reports how old the case is on a gap day', () => {
+    // The page renders normally on each of these; only the publish date differs.
+    expect(featuredFreshness(on('2026-08-02'), queue)).toEqual({
+      isRerun: true, publishedOn: '2026-08-01', daysOld: 1,
+    })
+    expect(featuredFreshness(on('2026-08-04'), queue)).toEqual({
+      isRerun: true, publishedOn: '2026-08-01', daysOld: 3,
+    })
+  })
+
+  it('keeps counting once the queue has ended', () => {
+    const stale = featuredFreshness(on('2026-09-01'), queue)
+    expect(stale?.isRerun).toBe(true)
+    expect(stale?.daysOld).toBe(27)
+  })
+
+  it('has nothing to describe before the first case', () => {
+    expect(featuredFreshness(on('2026-07-01'), queue)).toBeNull()
+    expect(featuredFreshness(on('2026-08-02'), [])).toBeNull()
   })
 })

@@ -197,10 +197,33 @@ describe('DocketSittingChooser', () => {
     expect(new Set(
       [...markup.matchAll(/<option value="([^"]+)"/g)].map((match) => match[1]),
     )).toHaveLength(7)
-    expect(markup).toContain('Today — The Alibi That Spoke (in progress)')
+    // 2026-07-29 opens no case of its own, so the docket re-serves the one
+    // filed on the 28th. Calling that "Today" told a returning player it was
+    // new; the label carries the real filing date instead.
+    expect(markup).toContain('Today’s sitting, filed')
+    expect(markup).toContain('The Alibi That Spoke (in progress)')
+    expect(markup).not.toContain('Today — The Alibi That Spoke')
     for (const trial of [intro!.trial, ...sittings.map(({ trial }) => trial)]) {
       expect(markup).toContain(trial.title)
     }
+  })
+
+  it('says plainly "Today" when a case was actually filed today', () => {
+    vi.stubGlobal('localStorage', writableStorage())
+    const sittings = docketLibrarySittings()
+    // 2026-07-28 is a publish date, so this is genuinely today's case.
+    const featured = featuredDocketSitting(new Date(2026, 6, 28))
+    const markup = renderToStaticMarkup(
+      <DocketSittingChooser
+        sittings={sittings}
+        selectedCaseId={featured!.trial.id}
+        featuredSitting={featured}
+        onSelect={() => undefined}
+      />,
+    )
+
+    expect(markup).toContain('Today — The Alibi That Spoke')
+    expect(markup).not.toContain('filed')
   })
 })
 
