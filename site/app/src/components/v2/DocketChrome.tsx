@@ -178,21 +178,22 @@ export function DocketSittingChooser({ sittings, selectedCaseId, featuredSitting
   /** Synthetic sitting for the guided intro; day may be negative. */
   introSitting?: DocketSitting | null
 }) {
-  const all = introSitting
-    ? [introSitting, ...sittings.filter((s) => s.trial.id !== INTRO_CASE_ID)]
-    : sittings
-  const options = [...all].reverse().map((librarySitting) => {
-    const sitting = librarySitting.trial.id === featuredSitting?.trial.id
-      ? featuredSitting
-      : librarySitting
-    return {
-      day: sitting.day,
-      id: sitting.trial.id,
-      label: sitting.trial.id === INTRO_CASE_ID
-        ? `Guided intro — ${sitting.trial.title} (${sittingStatus(sitting)})`
-        : `${sitting === featuredSitting ? 'Today' : dateFormatter.format(sitting.date)} — ${sitting.trial.title} (${sittingStatus(sitting)})`,
-    }
-  })
+  const options = sittings
+    .filter((sitting) => sitting.trial.id !== INTRO_CASE_ID)
+    .sort((left, right) => left.trial.publish_date.localeCompare(right.trial.publish_date)
+      || left.trial.id.localeCompare(right.trial.id))
+    .slice(-7)
+    .reverse()
+    .map((librarySitting) => {
+      const sitting = librarySitting.trial.id === featuredSitting?.trial.id
+        ? featuredSitting
+        : librarySitting
+      return {
+        day: sitting.day,
+        id: sitting.trial.id,
+        label: `${sitting === featuredSitting ? 'Today' : dateFormatter.format(sitting.date)} — ${sitting.trial.title} (${sittingStatus(sitting)})`,
+      }
+    })
   return (
     <nav aria-label="Daily Docket sittings">
       <details className="docket-archive">
@@ -208,6 +209,15 @@ export function DocketSittingChooser({ sittings, selectedCaseId, featuredSitting
         >
           {options.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
         </select>
+        {introSitting && (
+          <button
+            type="button"
+            className="docket-intro-link"
+            onClick={() => onSelect(introSitting.day)}
+          >
+            Guided intro — {introSitting.trial.title} ({sittingStatus(introSitting)})
+          </button>
+        )}
       </details>
     </nav>
   )

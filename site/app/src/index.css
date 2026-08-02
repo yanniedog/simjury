@@ -84,6 +84,8 @@
   .docket-archive summary::-webkit-details-marker { display: none; }
   .docket-archive label { display: block; margin: .6rem 0 .35rem; color: var(--steel-500); font-size: .65rem; }
   .docket-archive select { width: 100%; padding: .5rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .5rem; color: var(--paper-50); background: var(--court-950); font-size: .72rem; }
+  .docket-intro-link { width: 100%; margin-top: .45rem; padding: .5rem; border: 1px solid rgb(244 240 232 / 14%); border-radius: .5rem; color: var(--steel-300); background: transparent; font-size: .72rem; text-align: left; }
+  .docket-intro-link:hover { border-color: rgb(214 185 121 / 45%); color: var(--paper-50); }
   .local-note { margin: 1rem 0 0; color: var(--steel-500); font-size: .75rem; line-height: 1.55; }
   .local-note span { margin-right: .35rem; color: #72c7aa; }
   .local-note a { color: var(--steel-300); text-decoration: underline; text-underline-offset: .2em; }

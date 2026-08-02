@@ -21,10 +21,11 @@ function listedCases(script) {
 test('both narration engines can build the varied narrator cue corpus', () => {
   const kokoro = listedCases('build-kokoro-jobs.mjs')
   const scylla = listedCases('build-scylla-jobs.mjs')
+  const expected = listDocketTrialIds(join(siteRoot, 'app', 'docket'))
 
   assert.deepEqual(scylla, kokoro)
+  assert.deepEqual(scylla, expected)
   assert.ok(scylla.includes('dd-intro'))
-  assert.equal(scylla.length, 7)
 })
 
 test('courtroom narration preserves exact objection and ruling order', () => {
