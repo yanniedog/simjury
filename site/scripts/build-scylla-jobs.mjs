@@ -2,12 +2,10 @@
  * Build Scylla's Band narration job files (experimental alt voice mode).
  * Removable with site/app/src/lib/narrationAltVoice.json + scylla-narration.yml.
  */
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { assignScyllaVoices } from './scylla-voices.mjs'
-import { courtroomLines } from './courtroom-lines.mjs'
-import { listDocketTrialIds, readDocketTrial } from './docket-trials.mjs'
 
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 const docketDir = join(siteRoot, 'app', 'docket')
@@ -103,7 +101,7 @@ function spokenLines(c) {
     }
   }
   for (const beat of c.beats ?? []) {
-    lines.push(...courtroomLines(beat))
+    lines.push(...(beat.turns ?? [{ speaker: beat.speaker, text: beat.text }]))
   }
   for (const juror of c.jury?.jurors ?? []) {
     for (const bank of Object.values(juror.lines ?? {})) {
@@ -133,7 +131,15 @@ function clipsFor(docket) {
   return clips
 }
 
-const allCases = listDocketTrialIds(docketDir)
+const DOCKET_FILE_RE = /^(dd-\d{4}|dd-intro)\.json$/
+const allCases = readdirSync(docketDir)
+  .filter((file) => DOCKET_FILE_RE.test(file))
+  .map((file) => file.replace(/\.json$/, ''))
+  .sort((a, b) => {
+    if (a === 'dd-intro') return 1
+    if (b === 'dd-intro') return -1
+    return a.localeCompare(b)
+  })
 const selected = requested === 'all'
   ? allCases
   : requested.split(',').map((item) => item.trim()).filter(Boolean)
@@ -143,7 +149,7 @@ for (const caseId of selected) {
 }
 const corpusIds = new Map()
 for (const caseId of allCases) {
-  const docket = readDocketTrial(docketDir, caseId)
+  const docket = JSON.parse(readFileSync(join(docketDir, `${caseId}.json`), 'utf8'))
   for (const [id, clip] of clipsFor(docket)) {
     const prior = corpusIds.get(id)
     if (prior && JSON.stringify(prior) !== JSON.stringify(clip)) {
@@ -159,7 +165,7 @@ if (args.includes('--list')) {
 
 mkdirSync(outputDir, { recursive: true })
 for (const caseId of selected) {
-  const docket = readDocketTrial(docketDir, caseId)
+  const docket = JSON.parse(readFileSync(join(docketDir, `${caseId}.json`), 'utf8'))
   const clips = clipsFor(docket)
   const job = {
     caseId,
