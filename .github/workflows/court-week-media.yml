@@ -104,9 +104,13 @@ jobs:
           cache-dependency-path: site/narration-requirements.txt
       - name: Install prerecorded-media build dependencies
         run: |
-          # ffmpeg is part of the pinned GitHub-hosted Ubuntu image. Kokoro's
-          # Python dependency graph supplies espeakng-loader, so reaching out
-          # to mutable third-party apt feeds is unnecessary and brittle.
+          # Read only Ubuntu's runner source. Unrelated preconfigured vendor
+          # feeds must not make this deterministic media job unavailable.
+          ubuntu_sources=/etc/apt/sources.list.d/ubuntu.sources
+          test -f "$ubuntu_sources"
+          apt_options=(-o "Dir::Etc::sourcelist=$ubuntu_sources" -o "Dir::Etc::sourceparts=-")
+          sudo apt-get "${apt_options[@]}" update
+          sudo apt-get "${apt_options[@]}" install -y ffmpeg espeak-ng
           ffmpeg -version
           python -m pip install --disable-pip-version-check -r site/narration-requirements.txt
           python -c "import espeakng_loader; print(espeakng_loader.__file__)"
