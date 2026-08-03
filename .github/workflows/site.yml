@@ -49,6 +49,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Require the pinned immutable media release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: court-week-cw-0001-2026.08.03-r1
+        run: |
+          set -euo pipefail
+          test "$(gh release view "$RELEASE_TAG" --json isDraft,isImmutable --jq '.isDraft == false and .isImmutable == true')" = true
+          mkdir -p "$RUNNER_TEMP/court-week-release"
+          gh release download "$RELEASE_TAG" --pattern release-manifest.json --dir "$RUNNER_TEMP/court-week-release"
+          node -e 'const m=require(process.argv[1]); if(m.release_tag!==process.env.RELEASE_TAG||m.case_id!=="cw-0001") process.exit(1)' "$RUNNER_TEMP/court-week-release/release-manifest.json"
       - uses: actions/setup-node@v4
         with:
           node-version: "24"

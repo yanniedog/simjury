@@ -67,3 +67,4 @@ jobs:
             --target "$GITHUB_SHA" \
             --title "SimJury Court Week media — $RELEASE_TAG" \
             --notes "Reviewed, content-addressed static media for cw-0001. Source commit: $GITHUB_SHA"
+          test "$(gh release view "$RELEASE_TAG" --json isImmutable --jq .isImmutable)" = true
