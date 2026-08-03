@@ -54,6 +54,9 @@ test('Court Week media publishing is trusted, manual and non-clobbering', () => 
     4,
     'every dot-prefixed media artifact upload must include hidden files',
   )
+  assert.match(workflow, /ffmpeg -version/)
+  assert.match(workflow, /import espeakng_loader/)
+  assert.doesNotMatch(workflow, /apt-get|packages\.microsoft\.com/)
   assert.doesNotMatch(workflow, /pull_request_target:|\bschedule:/)
   assert.doesNotMatch(workflow, /--clobber/)
 })
