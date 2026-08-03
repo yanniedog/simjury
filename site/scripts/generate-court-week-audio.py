@@ -30,6 +30,7 @@ RETRY_TRUE_PEAK_TARGET = -1.25
 RELEASE_MIN_LUFS = -20.0
 RELEASE_MAX_LUFS = -16.0
 RELEASE_MAX_LRA = 12.0
+# Two dB permits useful correction while leaving three passes to absorb codec overshoot.
 MAX_LUFS_ADJUSTMENT = 2.0
 MAX_CODEC_ENCODE_ATTEMPTS = 3
 
@@ -164,8 +165,8 @@ def encode(source_wav: Path, target: Path, codec: str) -> None:
     if measured is None:  # Defensive if the attempt constant is ever misconfigured.
         raise RuntimeError("Codec encode loop completed without measuring an output")
     raise RuntimeError(
-        f"{target} is still outside the {RELEASE_MIN_LUFS:g} to {RELEASE_MAX_LUFS:g} LUFS, "
-        f"{RELEASE_TRUE_PEAK_CEILING:.2f} dBTP, {RELEASE_MAX_LRA:g} LU release contract "
+        f"{target} is still outside the {RELEASE_MIN_LUFS:.1f} to {RELEASE_MAX_LUFS:.1f} LUFS, "
+        f"{RELEASE_TRUE_PEAK_CEILING:.1f} dBTP, {RELEASE_MAX_LRA:.1f} LU release contract "
         f"after {MAX_CODEC_ENCODE_ATTEMPTS} codec passes: {measured}"
     )
 
@@ -200,11 +201,16 @@ def measure_loudness(path: Path) -> dict[str, float]:
 def probe_loudness(path: Path) -> dict[str, float]:
     result = measure_loudness(path)
     if not RELEASE_MIN_LUFS <= result["integratedLufs"] <= RELEASE_MAX_LUFS:
-        raise RuntimeError(f"{path} is outside the -18 LUFS dialogue window: {result}")
+        raise RuntimeError(
+            f"{path} is outside the {RELEASE_MIN_LUFS:.1f} to {RELEASE_MAX_LUFS:.1f} LUFS "
+            f"dialogue window: {result}"
+        )
     if result["truePeakDbtp"] > RELEASE_TRUE_PEAK_CEILING:
-        raise RuntimeError(f"{path} exceeds the true-peak ceiling: {result}")
+        raise RuntimeError(
+            f"{path} exceeds the {RELEASE_TRUE_PEAK_CEILING:.1f} dBTP true-peak ceiling: {result}"
+        )
     if result["loudnessRangeLu"] > RELEASE_MAX_LRA:
-        raise RuntimeError(f"{path} has excessive loudness range: {result}")
+        raise RuntimeError(f"{path} exceeds the {RELEASE_MAX_LRA:.1f} LU loudness range: {result}")
     return result
 
 
