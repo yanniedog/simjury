@@ -23,6 +23,17 @@ function forbidText(source, text, message) {
   if (source.toLowerCase().includes(text.toLowerCase())) failures.push(message)
 }
 
+function robotsGroupFor(source, agent) {
+  const normalizedAgent = agent.toLowerCase()
+  return source
+    .trim()
+    .split(/\n\s*\n/)
+    .find((block) =>
+      [...block.matchAll(/^User-agent:\s*(.+)$/gim)]
+        .some((match) => match[1].trim().toLowerCase() === normalizedAgent),
+    ) ?? ''
+}
+
 const home = read('index.html')
 const today = read(join('today', 'index.html'))
 const privacy = read(join('privacy', 'index.html'))
@@ -64,18 +75,22 @@ for (const [label, html, url] of canonicalPages) {
 }
 
 const contentSignal = 'Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference'
-requireText(robots, 'User-agent: *', 'robots must apply to every crawler')
-requireText(robots, contentSignal, 'robots must allow search and AI input while reserving training rights')
 requireText(headers, 'Content-Signal: search=yes, ai-input=yes, ai-train=no, use=reference', 'static responses must publish the AI-use policy')
 for (const agent of ['Claude-User', 'Claude-SearchBot']) {
-  const group = robots.match(new RegExp(`User-agent: ${agent}([\\s\\S]*?)(?:\\n\\s*\\n|$)`))?.[1] ?? ''
+  const group = robotsGroupFor(robots, agent)
   requireText(group, 'Allow: /', `${agent} must be allowed on public pages`)
   requireText(group, contentSignal, `${agent} must receive the AI-use policy`)
   for (const path of ['/api/', '/discord/', '/today/assets/']) {
     requireText(group, `Disallow: ${path}`, `${agent} must not crawl ${path}`)
   }
 }
-const trainingGroup = robots.match(/User-agent: ClaudeBot([\s\S]*?)(?:\n\s*\n|$)/)?.[1] ?? ''
+const wildcardGroup = robotsGroupFor(robots, '*')
+requireText(wildcardGroup, 'Allow: /', 'general crawlers must be allowed on public pages')
+requireText(wildcardGroup, contentSignal, 'general crawlers must receive the AI-use policy')
+for (const path of ['/api/', '/discord/', '/today/assets/']) {
+  requireText(wildcardGroup, `Disallow: ${path}`, `general crawlers must not crawl ${path}`)
+}
+const trainingGroup = robotsGroupFor(robots, 'ClaudeBot')
 for (const agent of [
   'ClaudeBot',
   'GPTBot',
@@ -85,7 +100,7 @@ for (const agent of [
   'Meta-ExternalAgent',
   'Applebot-Extended',
 ]) {
-  requireText(`User-agent: ClaudeBot${trainingGroup}`, `User-agent: ${agent}`, `${agent} model-training crawling must be grouped for exclusion`)
+  requireText(trainingGroup, `User-agent: ${agent}`, `${agent} model-training crawling must be grouped for exclusion`)
 }
 requireText(trainingGroup, 'Disallow: /', 'known model-training crawlers must be disallowed')
 requireText(robots, 'Sitemap: https://simjury.com/sitemap.xml', 'robots must advertise the sitemap')
