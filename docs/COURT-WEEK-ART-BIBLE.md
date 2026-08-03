@@ -1,0 +1,54 @@
+# Court Week scene-art bible
+
+This is the continuity authority for *Eleven Minutes*. A scene is rejected if
+it contradicts this file, even when it passes the binary readiness audit.
+
+## Fixed courtroom geography
+
+The camera is always on the jury side of the bar, facing the bench. Judge Sel
+Aven's bench is central and elevated. From that camera, the Crown lectern and
+table are left, the defence table is right, and the witness box is to the
+judge's right (viewer right). The clerk position is beside the bench. Doors,
+windows, rails, microphones and fixed furniture do not migrate between scenes.
+
+Portrait, tablet and desktop are separately composed lenses on this same room.
+They may reveal different amounts of it, but may not mirror the room, swap the
+parties, invent a second witness box or move fixed furniture.
+
+## Locked recurring cast
+
+- Judge Sel Aven: middle-aged woman; short side-parted silver hair; plain black
+  judicial robe; composed, neutral manner.
+- Crown counsel Asha Renn: adult woman; fair complexion; blonde hair in a low
+  neat bun; tailored plain navy suit; pale neutral blouse.
+- Defence counsel Corin Dax: adult man; short brown hair; plain charcoal suit;
+  restrained manner.
+- Accused Mara Venn: adult woman; long straight dark-brown hair; understated
+  dark civilian clothing; seated beside defence; no restraints or guilt cues.
+- Nella Orr: woman in her late forties; dark curly hair; plain slate business
+  suit; calm professional manner.
+
+Wardrobe stays unchanged through a court day. No police, rescue or military
+uniform appears in court unless the authored record expressly calls that person
+as a witness in that scene.
+
+## Shot continuity
+
+Each production tranche uses three locked set plates: portrait 9:16, tablet
+4:3 and desktop 16:9. A scene edit starts from its matching plate or the prior
+accepted shot of the same witness. Prompts must explicitly freeze camera,
+architecture, furniture, lighting direction and all people not involved in the
+new action.
+
+Before encoding, review a contact sheet in chronological rows and device
+columns. Reject any changed face, hair, wardrobe, door, window, bench, witness
+box, counsel table, rail, chair count or microphone position that is not caused
+by the authored action. Reframing is allowed; teleporting the room is not.
+
+## Legal neutrality and accessibility
+
+Artwork establishes presence, role and procedural phase. It never supplies a
+legal fact, resolves disputed evidence, signals guilt, or substitutes for an
+exhibit viewer. Documents and screens remain unreadable in stage art. Every
+scene keeps ambiguity-preserving alternative text, subject and evidence safe
+regions, and a clear caption zone.

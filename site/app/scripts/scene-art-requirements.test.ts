@@ -26,9 +26,17 @@ describe('SceneArtManifest contract', () => {
     expect(new Set(sourcePaths).size).toBe(55 * 3 * 2)
   })
 
-  it('keeps absent safe-region decisions explicit instead of inventing art metadata', () => {
+  it('keeps commissioned and absent safe-region decisions explicit', () => {
     const manifest = buildSceneArtManifestDraft(elevenMinutesCourtWeek)
-    expect(Object.values(manifest.scenes).every((entry) => entry.subjectSafeRegion === null)).toBe(true)
-    expect(Object.values(manifest.scenes).every((entry) => entry.evidenceSafeRegion === null)).toBe(true)
+    const monday = elevenMinutesCourtWeek.manifest.sessions[0].scenes.map((scene) => scene.id)
+    expect(monday).toHaveLength(7)
+    for (const sceneId of monday) {
+      expect(manifest.scenes[sceneId].subjectSafeRegion).not.toBeNull()
+      expect(manifest.scenes[sceneId].evidenceSafeRegion).not.toBeNull()
+    }
+    for (const entry of Object.values(manifest.scenes).slice(monday.length)) {
+      expect(entry.subjectSafeRegion).toBeNull()
+      expect(entry.evidenceSafeRegion).toBeNull()
+    }
   })
 })
