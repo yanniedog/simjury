@@ -1,0 +1,30 @@
+name: Cloudflare AI bots audit
+
+# Manual / on-demand audit of simjury.com Bot Fight Mode and AI bot settings.
+# Not a merge gate — exits non-zero when the token lacks Bot Management Read
+# or when live settings diverge from the desired LLM-access policy.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "site/scripts/cloudflare-ai-bots.mjs"
+      - "site/package.json"
+      - ".github/workflows/cloudflare-ai-bots-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Audit Cloudflare AI bot policy
+        working-directory: site
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npm run cloudflare:ai-bots:audit

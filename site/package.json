@@ -20,6 +20,9 @@
     "check:landing": "node scripts/assert-landing-page.mjs",
     "check:crawl": "node scripts/assert-crawl-surface.mjs",
     "submit:indexnow": "node scripts/submit-indexnow.mjs",
+    "cloudflare:ai-bots:audit": "node scripts/cloudflare-ai-bots.mjs audit",
+    "cloudflare:ai-bots:apply": "node scripts/cloudflare-ai-bots.mjs apply",
+    "cloudflare:ai-bots:apply:dry-run": "node scripts/cloudflare-ai-bots.mjs apply --dry-run",
     "waitlist:unsubscribe": "node scripts/waitlist-unsubscribe.mjs",
     "guard:cloudflare": "node scripts/assert-cloudflare-static-only.mjs",
     "test:runtime": "node --test tests/cloudflare-runtime.test.mjs tests/waitlist.test.mjs tests/landing-disclosure.test.mjs tests/narration-jobs.test.mjs"
