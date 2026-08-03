@@ -19,6 +19,7 @@
     "check:tokens": "node scripts/assert-design-tokens.mjs",
     "check:landing": "node scripts/assert-landing-page.mjs",
     "check:crawl": "node scripts/assert-crawl-surface.mjs",
+    "submit:indexnow": "node scripts/submit-indexnow.mjs",
     "waitlist:unsubscribe": "node scripts/waitlist-unsubscribe.mjs",
     "guard:cloudflare": "node scripts/assert-cloudflare-static-only.mjs",
     "test:runtime": "node --test tests/cloudflare-runtime.test.mjs tests/waitlist.test.mjs tests/landing-disclosure.test.mjs tests/narration-jobs.test.mjs"

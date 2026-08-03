@@ -1,5 +1,33 @@
-User-agent: *
+User-agent: Claude-User
+Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
 Allow: /
+Disallow: /api/
+Disallow: /discord/
+Disallow: /today/assets/
+
+User-agent: Claude-SearchBot
+Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
+Allow: /
+Disallow: /api/
+Disallow: /discord/
+Disallow: /today/assets/
+
+User-agent: ClaudeBot
+User-agent: GPTBot
+User-agent: Google-Extended
+User-agent: CCBot
+User-agent: Bytespider
+User-agent: Meta-ExternalAgent
+User-agent: Applebot-Extended
+Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
+Disallow: /
+
+User-agent: *
+Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
+Allow: /
+Disallow: /api/
+Disallow: /discord/
+Disallow: /today/assets/
 
 Sitemap: https://simjury.com/sitemap.xml
 

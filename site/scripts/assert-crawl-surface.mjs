@@ -30,6 +30,8 @@ const robots = read('robots.txt')
 const sitemap = read('sitemap.xml')
 const llms = read('llms.txt')
 const llmsFull = read('llms-full.txt')
+const headers = read('_headers')
+const indexNowKey = read('indexnow-key.txt').trim()
 
 const expectedSitemapUrls = [
   'https://simjury.com/',
@@ -61,11 +63,38 @@ for (const [label, html, url] of canonicalPages) {
   requireText(llms, `](${url})`, `llms.txt must link ${url}`)
 }
 
+const contentSignal = 'Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference'
 requireText(robots, 'User-agent: *', 'robots must apply to every crawler')
-requireText(robots, 'Allow: /', 'robots must allow the complete public site')
+requireText(robots, contentSignal, 'robots must allow search and AI input while reserving training rights')
+requireText(headers, 'Content-Signal: search=yes, ai-input=yes, ai-train=no, use=reference', 'static responses must publish the AI-use policy')
+for (const agent of ['Claude-User', 'Claude-SearchBot']) {
+  const group = robots.match(new RegExp(`User-agent: ${agent}([\\s\\S]*?)(?:\\n\\s*\\n|$)`))?.[1] ?? ''
+  requireText(group, 'Allow: /', `${agent} must be allowed on public pages`)
+  requireText(group, contentSignal, `${agent} must receive the AI-use policy`)
+  for (const path of ['/api/', '/discord/', '/today/assets/']) {
+    requireText(group, `Disallow: ${path}`, `${agent} must not crawl ${path}`)
+  }
+}
+const trainingGroup = robots.match(/User-agent: ClaudeBot([\s\S]*?)(?:\n\s*\n|$)/)?.[1] ?? ''
+for (const agent of [
+  'ClaudeBot',
+  'GPTBot',
+  'Google-Extended',
+  'CCBot',
+  'Bytespider',
+  'Meta-ExternalAgent',
+  'Applebot-Extended',
+]) {
+  requireText(`User-agent: ClaudeBot${trainingGroup}`, `User-agent: ${agent}`, `${agent} model-training crawling must be grouped for exclusion`)
+}
+requireText(trainingGroup, 'Disallow: /', 'known model-training crawlers must be disallowed')
 requireText(robots, 'Sitemap: https://simjury.com/sitemap.xml', 'robots must advertise the sitemap')
 requireText(robots, 'https://simjury.com/llms.txt', 'robots must advertise the concise AI guide')
 requireText(robots, 'https://simjury.com/llms-full.txt', 'robots must advertise the complete AI guide')
+
+if (!/^[a-f0-9]{8,128}$/i.test(indexNowKey)) {
+  failures.push('IndexNow key must be 8-128 hexadecimal characters')
+}
 
 requireText(today, '<div id="root">', 'built Daily Docket HTML must contain a semantic fallback')
 for (const text of [

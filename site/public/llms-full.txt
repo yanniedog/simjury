@@ -46,7 +46,8 @@ The static privacy page explains:
 
 ## Discovery and HTTP behavior
 
-- `https://simjury.com/robots.txt` permits all user agents and names the XML sitemap.
+- `https://simjury.com/robots.txt` explicitly permits Claude's user-directed and search agents, permits other agents on public pages, excludes runtime and bundled-asset paths, and does not permit model-training crawling.
+- Public static responses carry `Content-Signal: search=yes, ai-input=yes, ai-train=no, use=reference` so search, cited reference use, and user-directed AI retrieval are unambiguous without granting model-training rights.
 - `https://simjury.com/sitemap.xml` lists every canonical public HTML page.
 - `https://simjury.com/llms.txt` provides the concise machine-readable index.
 - Unknown routes return a real HTTP 404 page.

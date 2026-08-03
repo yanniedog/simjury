@@ -1,5 +1,6 @@
 /*
   Cache-Control: no-transform
+  Content-Signal: search=yes, ai-input=yes, ai-train=no, use=reference
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY

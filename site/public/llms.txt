@@ -14,7 +14,7 @@ SimJury is static-first. The interactive Daily Docket requires JavaScript, while
 
 - [Complete machine-readable site guide](https://simjury.com/llms-full.txt): Detailed route, interaction, accessibility, privacy, and architecture inventory.
 - [XML sitemap](https://simjury.com/sitemap.xml): Canonical public HTML pages.
-- [Robots policy](https://simjury.com/robots.txt): Public crawling is allowed.
+- [Robots policy](https://simjury.com/robots.txt): Search indexing and user-directed AI retrieval are allowed on public pages. Model-training crawling is not permitted.
 
 ## Boundaries
 
