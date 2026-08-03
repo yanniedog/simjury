@@ -49,6 +49,11 @@ test('Court Week media publishing is trusted, manual and non-clobbering', () => 
   assert.match(workflow, /github\.ref == 'refs\/heads\/main'/)
   assert.match(workflow, /Release .* already exists; immutable releases are never clobbered/)
   assert.match(workflow, /--json isImmutable/)
+  assert.equal(
+    (workflow.match(/include-hidden-files: true/g) ?? []).length,
+    4,
+    'every dot-prefixed media artifact upload must include hidden files',
+  )
   assert.doesNotMatch(workflow, /pull_request_target:|\bschedule:/)
   assert.doesNotMatch(workflow, /--clobber/)
 })
