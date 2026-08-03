@@ -104,9 +104,12 @@ jobs:
           cache-dependency-path: site/narration-requirements.txt
       - name: Install prerecorded-media build dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg espeak-ng
+          # ffmpeg is part of the pinned GitHub-hosted Ubuntu image. Kokoro's
+          # Python dependency graph supplies espeakng-loader, so reaching out
+          # to mutable third-party apt feeds is unnecessary and brittle.
+          ffmpeg -version
           python -m pip install --disable-pip-version-check -r site/narration-requirements.txt
+          python -c "import espeakng_loader; print(espeakng_loader.__file__)"
       - name: Synthesize, mix, normalize and validate one day
         env:
           HF_HUB_ENABLE_HF_TRANSFER: "1"
