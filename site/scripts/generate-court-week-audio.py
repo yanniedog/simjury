@@ -27,6 +27,7 @@ TARGET_LUFS = -18.0
 TARGET_TRUE_PEAK = -1.5
 RELEASE_TRUE_PEAK_CEILING = -0.5
 RETRY_TRUE_PEAK_TARGET = -1.25
+MAX_CODEC_ENCODE_ATTEMPTS = 3
 
 
 def run(command: list[str], *, capture: bool = False) -> subprocess.CompletedProcess[str]:
@@ -101,33 +102,38 @@ def encode_once(source_wav: Path, target: Path, codec: str, true_peak: float) ->
     ])
 
 
-def retry_true_peak(measured_true_peak: float) -> float:
+def retry_true_peak(current_target: float, measured_true_peak: float) -> float:
     """Compensate for the exact lossy codec's measured inter-sample overshoot."""
     overshoot = max(0.0, measured_true_peak - RETRY_TRUE_PEAK_TARGET)
-    return TARGET_TRUE_PEAK - overshoot
+    return current_target - overshoot
 
 
 def encode(source_wav: Path, target: Path, codec: str) -> None:
-    encode_once(source_wav, target, codec, TARGET_TRUE_PEAK)
-    measured = measure_loudness(target)
-    if measured["truePeakDbtp"] <= RELEASE_TRUE_PEAK_CEILING:
-        return
-
-    adjusted_target = retry_true_peak(measured["truePeakDbtp"])
-    log.warning(
-        "%s encoded at %.2f dBTP; retrying %s from the lossless stem with a %.2f dBTP target",
-        target,
-        measured["truePeakDbtp"],
-        codec,
-        adjusted_target,
-    )
-    encode_once(source_wav, target, codec, adjusted_target)
-    retried = measure_loudness(target)
-    if retried["truePeakDbtp"] > RELEASE_TRUE_PEAK_CEILING:
-        raise RuntimeError(
-            f"{target} still exceeds the {RELEASE_TRUE_PEAK_CEILING:.2f} dBTP true-peak ceiling "
-            f"after codec compensation: {retried}"
+    normalization_target = TARGET_TRUE_PEAK
+    measured: dict[str, float] | None = None
+    for attempt in range(1, MAX_CODEC_ENCODE_ATTEMPTS + 1):
+        encode_once(source_wav, target, codec, normalization_target)
+        measured = measure_loudness(target)
+        if measured["truePeakDbtp"] <= RELEASE_TRUE_PEAK_CEILING:
+            return
+        if attempt == MAX_CODEC_ENCODE_ATTEMPTS:
+            break
+        next_target = retry_true_peak(normalization_target, measured["truePeakDbtp"])
+        log.warning(
+            "%s encoded at %.2f dBTP on pass %d; retrying %s from the lossless stem "
+            "with a %.2f dBTP target",
+            target,
+            measured["truePeakDbtp"],
+            attempt,
+            codec,
+            next_target,
         )
+        normalization_target = next_target
+
+    raise RuntimeError(
+        f"{target} still exceeds the {RELEASE_TRUE_PEAK_CEILING:.2f} dBTP true-peak ceiling "
+        f"after {MAX_CODEC_ENCODE_ATTEMPTS} codec passes: {measured}"
+    )
 
 
 def probe_duration(path: Path) -> float:
