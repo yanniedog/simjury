@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { CourtWeek, CourtSession, ReasoningMove, SceneCue, Verdict } from '../model/schema'
 import {
-  aggregateFirstBallot,
   analysisForReturnedVerdict,
   calculateFinalBallot,
   calculateSecondBallot,
+  firstBallotForScene,
   matchImproperArgument,
   nextSundaySceneId,
   openCourtReturn,
@@ -19,6 +19,7 @@ import {
 import { type AccessMode, type StoredWeeklyProgress } from '../state/progress'
 import { useWeeklyProgress } from '../state/useWeeklyProgress'
 import { EvidenceViewer } from './EvidenceViewer'
+import { CourtWeekCompletion } from './CourtWeekCompletion'
 import { ImmersiveCourtShell } from './ImmersiveCourtShell'
 import { JurorDesk } from './JurorDesk'
 import '../courtweek.css'
@@ -142,6 +143,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const [interactionSealed, setInteractionSealed] = useState(false)
   const [reasoningQuestion, setReasoningQuestion] = useState('')
   const [reasoningEvidence, setReasoningEvidence] = useState('')
+  const [replaySessionId, setReplaySessionId] = useState<string | null>(null)
   const accessMode = progress.accessibilityMode ?? 'audio-first'
   const observedTime = observeCourtTime(Date.parse(progress.highestObservedTime), now())
   const availability = getSessionAvailability(
@@ -153,7 +155,14 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     progress.completedSessionIds,
     observedTime,
   )
+  const allSessionsCompleted = courtWeek.manifest.sessions.every((session) =>
+    progress.completedSessionIds.includes(session.id),
+  )
   const activeSession = useMemo(() => {
+    const replaySession = replaySessionId
+      ? courtWeek.manifest.sessions.find((session) => session.id === replaySessionId)
+      : undefined
+    if (replaySession) return replaySession
     const uncompleted = courtWeek.manifest.sessions.filter(
       (session) => !progress.completedSessionIds.includes(session.id),
     )
@@ -166,7 +175,8 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       uncompleted[0] ??
       courtWeek.manifest.sessions[courtWeek.manifest.sessions.length - 1]
     )
-  }, [availability, courtWeek.manifest.sessions, progress.completedSessionIds, progress.currentSessionId])
+  }, [availability, courtWeek.manifest.sessions, progress.completedSessionIds, progress.currentSessionId, replaySessionId])
+  const isReplay = replaySessionId === activeSession.id
   const position = cuePosition(activeSession, progress.currentSceneId, progress.currentCueId)
   const activeAvailability = availability.find((item) => item.id === activeSession.id)
   const presentedCue = useMemo<SceneCue>(() => {
@@ -222,6 +232,14 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       commitPosition(activeSession.id, nextScene.id, nextScene.cues[0].id)
       return
     }
+    if (isReplay) {
+      setReplaySessionId(null)
+      setStarted(false)
+      setInteractionOpen(false)
+      setInteractionChoice(null)
+      setInteractionSealed(false)
+      return
+    }
     const completed = Array.from(new Set([...progress.completedSessionIds, activeSession.id]))
     const nextSession = courtWeek.manifest.sessions[activeSession.ordinal]
     updateProgress((current) => ({
@@ -235,11 +253,15 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     setInteractionOpen(false)
     setInteractionChoice(null)
     setInteractionSealed(false)
-  }, [activeSession, commitPosition, courtWeek.manifest.sessions, interactionOpen, position, progress.completedSessionIds, updateProgress])
+  }, [activeSession, commitPosition, courtWeek.manifest.sessions, interactionOpen, isReplay, position, progress.completedSessionIds, updateProgress])
   const handleCueEnded = useCallback(() => {
     advance()
   }, [advance])
-  const playback = useCuePlayback(presentedCue, handleCueEnded)
+  const playback = useCuePlayback(
+    presentedCue,
+    handleCueEnded,
+    activeSession.scenes[position.sceneIndex + 1]?.cues[0],
+  )
   const playCue = playback.play
   useEffect(() => {
     const updateObservedTime = () => {
@@ -285,6 +307,25 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       />
     )
   }
+  if (allSessionsCompleted && !isReplay) {
+    return (
+      <CourtWeekCompletion
+        sessions={courtWeek.manifest.sessions}
+        onReplay={(session) => {
+          const firstScene = session.scenes[0]
+          setReplaySessionId(session.id)
+          setStarted(false)
+          setInteractionOpen(false)
+          setInteractionChoice(null)
+          setInteractionSealed(false)
+          setReasoningQuestion('')
+          setReasoningEvidence('')
+          if (firstScene?.cues[0]) commitPosition(session.id, firstScene.id, firstScene.cues[0].id)
+        }}
+        onSettings={() => setEntered(false)}
+      />
+    )
+  }
   if (!activeAvailability?.ready && !progress.completedSessionIds.includes(activeSession.id)) {
     return (
       <main className="cw-entry">
@@ -309,8 +350,30 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const sceneCount = activeSession.scenes.length
   const progressLabel = `Scene ${position.sceneIndex + 1} of ${sceneCount}`
   const interaction = position.scene.interaction
+  const firstBallot = firstBallotForScene(
+    courtWeek.deliberation, position.scene.id, progress.provisionalVote,
+  )
   const finishInteraction = () => {
     if (!interaction) return
+    if (isReplay) {
+      let nextScene: CourtSession['scenes'][number] | undefined = activeSession.scenes[position.sceneIndex + 1]
+      const sundayNext = activeSession.day === 'Sunday'
+        ? nextSundaySceneId(position.scene.id, progress.secondBallotWasUnanimous ?? false)
+        : null
+      if (sundayNext) nextScene = activeSession.scenes.find((scene) => scene.id === sundayNext)
+      setInteractionOpen(false)
+      setInteractionChoice(null)
+      setInteractionSealed(false)
+      setReasoningQuestion('')
+      setReasoningEvidence('')
+      if (nextScene) {
+        commitPosition(activeSession.id, nextScene.id, nextScene.cues[0].id)
+      } else {
+        setReplaySessionId(null)
+        setStarted(false)
+      }
+      return
+    }
     const choice = interactionChoice
     const isReasoning = interaction.kind === 'reasoning'
     const contribution = isReasoning && choice && reasoningQuestion && reasoningEvidence
@@ -414,7 +477,9 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       <section className="cw-modal cw-interaction" role="dialog" aria-modal="true" aria-labelledby="cw-interaction-heading">
         <p className="cw-kicker">Your contribution</p>
         <h2 id="cw-interaction-heading">{interaction.prompt}</h2>
-        {isVote ? (
+        {isReplay ? (
+          <p>Replay mode. Your sealed contributions, ballots and returned result remain unchanged.</p>
+        ) : isVote ? (
           <VerdictChoices
             selected={(interactionChoice as Verdict | null) ?? (
               interaction.kind === 'seal-vote'
@@ -461,9 +526,9 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
             ))}
           </div>
         )}
-        {position.scene.id === 'sat-first-ballot' && interactionSealed && progress.provisionalVote ? (
+        {firstBallot ? (
           <dl className="cw-ballot" aria-label="Anonymous first ballot">
-            {(Object.entries(aggregateFirstBallot(courtWeek.deliberation, progress.provisionalVote)) as [Verdict, number][]).map(([verdict, count]) => (
+            {(Object.entries(firstBallot) as [Verdict, number][]).map(([verdict, count]) => (
               <div key={verdict}><dt>{verdictLabels[verdict]}</dt><dd>{count}</dd></div>
             ))}
           </dl>
@@ -483,12 +548,15 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
           className="cw-primary"
           type="button"
           disabled={
-            (!interactionChoice && (isVote || Boolean(interaction.options?.length))) ||
-            (interaction.kind === 'reasoning' && (!reasoningQuestion || !reasoningEvidence))
+            !isReplay && (
+              (!interactionChoice && (isVote || Boolean(interaction.options?.length))) ||
+              (interaction.kind === 'reasoning' && (!reasoningQuestion || !reasoningEvidence))
+            )
           }
           onClick={finishInteraction}
         >
-          {interactionSealed
+          {isReplay ? 'Continue replay'
+            : interactionSealed
             ? (progress.secondBallotWasUnanimous ? 'Return to court' : 'Continue deliberation')
             : interaction.kind === 'final-vote' ? 'Seal final ballot'
               : isVote ? 'Seal ballot' : 'Continue proceedings'}

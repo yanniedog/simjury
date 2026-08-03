@@ -52,6 +52,15 @@ describe('Eleven Minutes Court Week', () => {
     })
   })
 
+  it('does not disguise defence argument as witness re-examination before addresses', () => {
+    const cue = elevenMinutesCourtWeek.manifest.sessions.flatMap((session) => session.scenes)
+      .flatMap((scene) => scene.cues).find((item) => item.id === 'thu-defence-theory')
+    expect(cue).toEqual(expect.objectContaining({
+      event: 'preliminary-direction', speaker: 'Judge Sel Aven', tone: 'ruling',
+    }))
+    expect(cue?.text).toMatch(/procedural information, not evidence and not a final address/i)
+  })
+
   it('uses eleven private authored jurors and unlocks majority only after safeguards', () => {
     const { deliberation } = elevenMinutesCourtWeek
     expect(deliberation.jurors).toHaveLength(11)

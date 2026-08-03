@@ -95,4 +95,24 @@ describe('ImmersiveCourtShell', () => {
     expect(markup).toContain('aria-live="off"')
     expect(markup).toContain('Continue')
   })
+
+  it('promotes an overlong caption to complete reading copy instead of clipping it', () => {
+    const longCue = {
+      ...cue,
+      text: 'The witness explains the complete sequence in enough detail that two visual lines cannot contain the legally material qualification, the source limitation, and the answer given in court.',
+    }
+    const markup = renderToStaticMarkup(
+      <ImmersiveCourtShell
+        session={session} scene={scene} cue={longCue} releaseBase="/media"
+        accessMode="captions" playbackStatus="playing" playbackError={null}
+        progressLabel="Scene 1 of 3" deskOpen={false}
+        onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
+        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+      />,
+    )
+    expect(markup).toContain('data-complete-captions="true"')
+    expect(markup).toContain('cw-reading-copy')
+    expect(markup).not.toContain('class="cw-captions"')
+    expect(markup).toContain(longCue.text)
+  })
 })

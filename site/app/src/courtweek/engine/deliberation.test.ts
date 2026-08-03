@@ -7,6 +7,7 @@ import {
   calculateSecondBallot,
   analysisForReturnedVerdict,
   evolveAuthoredBallot,
+  firstBallotForScene,
   openCourtReturn,
   outcomeAnalysis,
   nextSundaySceneId,
@@ -43,6 +44,14 @@ describe('Court Week deliberation engine', () => {
     expect(aggregateFirstBallot(elevenMinutesDeliberation, 'murder')).toEqual({
       murder: 4, manslaughter: 3, 'not-guilty': 4, 'unable-to-agree': 1,
     })
+  })
+
+  it('reveals the first aggregate in its scene from the persisted sealed vote', () => {
+    expect(firstBallotForScene(elevenMinutesDeliberation, 'sat-provisional', 'murder')).toBeNull()
+    expect(firstBallotForScene(elevenMinutesDeliberation, 'sat-first-ballot')).toBeNull()
+    const aggregate = firstBallotForScene(elevenMinutesDeliberation, 'sat-first-ballot', 'murder')
+    expect(aggregate).toEqual({ murder: 4, manslaughter: 3, 'not-guilty': 4, 'unable-to-agree': 1 })
+    expect(Object.values(aggregate ?? {}).reduce((sum, count) => sum + count, 0)).toBe(12)
   })
 
   it('moves no more than one anonymous authored vote per lawful contribution', () => {
