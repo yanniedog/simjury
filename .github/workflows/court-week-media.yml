@@ -68,6 +68,7 @@ jobs:
         with:
           name: court-week-audio-jobs
           path: .court-week-audio-jobs/
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
 
@@ -118,6 +119,7 @@ jobs:
         with:
           name: court-week-audio-${{ matrix.session }}
           path: .court-week-audio/
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
 
@@ -160,6 +162,7 @@ jobs:
         with:
           name: ${{ inputs.release_tag }}-art-readiness
           path: .court-week-release/art-readiness-report.json
+          include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14
       - name: Upload private review artifact
@@ -167,6 +170,7 @@ jobs:
         with:
           name: ${{ inputs.release_tag }}
           path: .court-week-release/
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
 
