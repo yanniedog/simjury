@@ -260,7 +260,6 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const playback = useCuePlayback(
     presentedCue,
     handleCueEnded,
-    activeSession.scenes[position.sceneIndex + 1]?.cues[0],
   )
   const playCue = playback.play
   useEffect(() => {
