@@ -86,7 +86,13 @@ def synthesise(pipeline: Any, text: str, voice: str, np: Any) -> Any:
     return np.concatenate(chunks)
 
 
-def encode_once(source_wav: Path, target: Path, codec: str, true_peak: float) -> None:
+def encode_once(
+    source_wav: Path,
+    target: Path,
+    codec: str,
+    integrated_lufs: float,
+    true_peak: float,
+) -> None:
     codec_arguments = {
         "opus": ["-c:a", "libopus", "-b:a", "32k", "-vbr", "on"],
         "aac": ["-c:a", "aac", "-b:a", "48k", "-movflags", "+faststart"],
@@ -95,7 +101,7 @@ def encode_once(source_wav: Path, target: Path, codec: str, true_peak: float) ->
     run([
         "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
         "-i", str(source_wav),
-        "-af", f"loudnorm=I={TARGET_LUFS}:LRA=7:TP={true_peak}",
+        "-af", f"loudnorm=I={integrated_lufs}:LRA=7:TP={true_peak}",
         "-ac", "1", "-ar", "48000",
         *codec_arguments,
         str(target),
@@ -108,33 +114,52 @@ def retry_true_peak(current_target: float, measured_true_peak: float) -> float:
     return current_target - overshoot
 
 
+def retry_integrated_lufs(current_target: float, measured_lufs: float) -> float:
+    if -20.0 <= measured_lufs <= -16.0:
+        return current_target
+    return current_target + (TARGET_LUFS - measured_lufs)
+
+
+def release_loudness_ready(measured: dict[str, float]) -> bool:
+    return (
+        -20.0 <= measured["integratedLufs"] <= -16.0
+        and measured["truePeakDbtp"] <= RELEASE_TRUE_PEAK_CEILING
+        and measured["loudnessRangeLu"] <= 12.0
+    )
+
+
 def encode(source_wav: Path, target: Path, codec: str) -> None:
+    integrated_target = TARGET_LUFS
     normalization_target = TARGET_TRUE_PEAK
     measured: dict[str, float] | None = None
     for attempt in range(1, MAX_CODEC_ENCODE_ATTEMPTS + 1):
-        encode_once(source_wav, target, codec, normalization_target)
+        encode_once(source_wav, target, codec, integrated_target, normalization_target)
         measured = measure_loudness(target)
-        if measured["truePeakDbtp"] <= RELEASE_TRUE_PEAK_CEILING:
+        if release_loudness_ready(measured):
             return
         if attempt == MAX_CODEC_ENCODE_ATTEMPTS:
             break
         next_target = retry_true_peak(normalization_target, measured["truePeakDbtp"])
+        next_integrated = retry_integrated_lufs(integrated_target, measured["integratedLufs"])
         log.warning(
-            "%s encoded at %.2f dBTP on pass %d; retrying %s from the lossless stem "
-            "with a %.2f dBTP target",
+            "%s measured %.2f LUFS / %.2f dBTP on pass %d; retrying %s from the "
+            "lossless stem with %.2f LUFS / %.2f dBTP targets",
             target,
+            measured["integratedLufs"],
             measured["truePeakDbtp"],
             attempt,
             codec,
+            next_integrated,
             next_target,
         )
+        integrated_target = next_integrated
         normalization_target = next_target
 
     if measured is None:  # Defensive if the attempt constant is ever misconfigured.
         raise RuntimeError("Codec encode loop completed without measuring an output")
     raise RuntimeError(
-        f"{target} still exceeds the {RELEASE_TRUE_PEAK_CEILING:.2f} dBTP true-peak ceiling "
-        f"after {MAX_CODEC_ENCODE_ATTEMPTS} codec passes: {measured}"
+        f"{target} is still outside the -20 to -16 LUFS, {RELEASE_TRUE_PEAK_CEILING:.2f} dBTP, "
+        f"12 LU release contract after {MAX_CODEC_ENCODE_ATTEMPTS} codec passes: {measured}"
     )
 
 
