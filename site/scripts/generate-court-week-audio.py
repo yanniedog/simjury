@@ -27,6 +27,10 @@ TARGET_LUFS = -18.0
 TARGET_TRUE_PEAK = -1.5
 RELEASE_TRUE_PEAK_CEILING = -0.5
 RETRY_TRUE_PEAK_TARGET = -1.25
+RELEASE_MIN_LUFS = -20.0
+RELEASE_MAX_LUFS = -16.0
+RELEASE_MAX_LRA = 12.0
+MAX_LUFS_ADJUSTMENT = 2.0
 MAX_CODEC_ENCODE_ATTEMPTS = 3
 
 
@@ -115,16 +119,18 @@ def retry_true_peak(current_target: float, measured_true_peak: float) -> float:
 
 
 def retry_integrated_lufs(current_target: float, measured_lufs: float) -> float:
-    if -20.0 <= measured_lufs <= -16.0:
+    if RELEASE_MIN_LUFS <= measured_lufs <= RELEASE_MAX_LUFS:
         return current_target
-    return current_target + (TARGET_LUFS - measured_lufs)
+    correction = TARGET_LUFS - measured_lufs
+    bounded = max(-MAX_LUFS_ADJUSTMENT, min(MAX_LUFS_ADJUSTMENT, correction))
+    return current_target + bounded
 
 
 def release_loudness_ready(measured: dict[str, float]) -> bool:
     return (
-        -20.0 <= measured["integratedLufs"] <= -16.0
+        RELEASE_MIN_LUFS <= measured["integratedLufs"] <= RELEASE_MAX_LUFS
         and measured["truePeakDbtp"] <= RELEASE_TRUE_PEAK_CEILING
-        and measured["loudnessRangeLu"] <= 12.0
+        and measured["loudnessRangeLu"] <= RELEASE_MAX_LRA
     )
 
 
@@ -158,8 +164,9 @@ def encode(source_wav: Path, target: Path, codec: str) -> None:
     if measured is None:  # Defensive if the attempt constant is ever misconfigured.
         raise RuntimeError("Codec encode loop completed without measuring an output")
     raise RuntimeError(
-        f"{target} is still outside the -20 to -16 LUFS, {RELEASE_TRUE_PEAK_CEILING:.2f} dBTP, "
-        f"12 LU release contract after {MAX_CODEC_ENCODE_ATTEMPTS} codec passes: {measured}"
+        f"{target} is still outside the {RELEASE_MIN_LUFS:g} to {RELEASE_MAX_LUFS:g} LUFS, "
+        f"{RELEASE_TRUE_PEAK_CEILING:.2f} dBTP, {RELEASE_MAX_LRA:g} LU release contract "
+        f"after {MAX_CODEC_ENCODE_ATTEMPTS} codec passes: {measured}"
     )
 
 
@@ -192,11 +199,11 @@ def measure_loudness(path: Path) -> dict[str, float]:
 
 def probe_loudness(path: Path) -> dict[str, float]:
     result = measure_loudness(path)
-    if not -20.0 <= result["integratedLufs"] <= -16.0:
+    if not RELEASE_MIN_LUFS <= result["integratedLufs"] <= RELEASE_MAX_LUFS:
         raise RuntimeError(f"{path} is outside the -18 LUFS dialogue window: {result}")
     if result["truePeakDbtp"] > RELEASE_TRUE_PEAK_CEILING:
         raise RuntimeError(f"{path} exceeds the true-peak ceiling: {result}")
-    if result["loudnessRangeLu"] > 12.0:
+    if result["loudnessRangeLu"] > RELEASE_MAX_LRA:
         raise RuntimeError(f"{path} has excessive loudness range: {result}")
     return result
 
