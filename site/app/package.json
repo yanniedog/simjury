@@ -16,7 +16,10 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:browser": "playwright test",
-    "validate:cases": "tsx scripts/validate-cases.ts"
+    "validate:cases": "tsx scripts/validate-cases.ts",
+    "media:audio:jobs": "tsx scripts/court-week-audio-jobs.ts",
+    "media:art:requirements": "tsx scripts/scene-art-requirements.ts",
+    "media:art:test": "node --test ../scripts/scene-art-readiness.test.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
