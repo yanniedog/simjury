@@ -1,7 +1,8 @@
 name: court-week-media
 
 # Trusted, explicit production path only. It never runs for pull requests,
-# forks, schedules or content deletion, and it never clobbers an old release.
+# forks or schedules. Review builds are read-only; only the separately gated
+# publish job receives contents:write.
 on:
   workflow_dispatch:
     inputs:
@@ -16,21 +17,21 @@ on:
         default: false
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: court-week-media-${{ inputs.release_tag }}
   cancel-in-progress: false
 
 jobs:
-  prepare:
+  source:
     if: github.ref == 'refs/heads/main' && github.event.repository.fork == false
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.sha }}
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
@@ -42,9 +43,125 @@ jobs:
         run: npm ci
       - name: Validate the exact reviewed Court Week source
         working-directory: site/app
-        run: npm run lint && npm run typecheck && npm test && npm run validate:cases && npm run build
-      - name: Build content-addressed media and enforce release budgets
-        run: node site/scripts/prepare-court-week-release.mjs --release-tag "${{ inputs.release_tag }}"
+        run: npm run lint && npm run typecheck && npm test && npm run media:art:test && npm run validate:cases && npm run build
+      - name: Build deterministic prerecorded-audio jobs
+        working-directory: site/app
+        run: npm run media:audio:jobs -- --output ../../.court-week-audio-jobs
+      - name: Build the strict 55-scene art requirements
+        working-directory: site/app
+        run: >-
+          npm run media:art:requirements --
+          --output ../../.court-week-audio-jobs/scene-art-requirements.json
+      - name: Match the requested immutable tag to the reviewed manifest
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: >-
+          node -e "const fs=require('node:fs');const i=JSON.parse(fs.readFileSync('.court-week-audio-jobs/index.json'));
+          if(i.releaseTag!==process.env.RELEASE_TAG)throw new Error('Requested release tag does not match reviewed CourtWeekManifest')"
+      - name: Validate every source job without loading a voice model
+        run: |
+          set -euo pipefail
+          for job in .court-week-audio-jobs/jobs/*.json; do
+            python site/scripts/generate-court-week-audio.py "$job" .court-week-audio --validate-only
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: court-week-audio-jobs
+          path: .court-week-audio-jobs/
+          if-no-files-found: error
+          retention-days: 7
+
+  audio:
+    needs: source
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        session:
+          - cw-0001-monday
+          - cw-0001-tuesday
+          - cw-0001-wednesday
+          - cw-0001-thursday
+          - cw-0001-friday
+          - cw-0001-saturday
+          - cw-0001-sunday
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: court-week-audio-jobs
+          path: .court-week-audio-jobs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: site/narration-requirements.txt
+      - name: Install prerecorded-media build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg espeak-ng
+          python -m pip install --disable-pip-version-check -r site/narration-requirements.txt
+      - name: Synthesize, mix, normalize and validate one day
+        env:
+          HF_HUB_ENABLE_HF_TRANSFER: "1"
+          TOKENIZERS_PARALLELISM: "false"
+        run: >-
+          python site/scripts/generate-court-week-audio.py
+          ".court-week-audio-jobs/jobs/${{ matrix.session }}.json"
+          .court-week-audio
+      - uses: actions/upload-artifact@v4
+        with:
+          name: court-week-audio-${{ matrix.session }}
+          path: .court-week-audio/
+          if-no-files-found: error
+          retention-days: 7
+
+  package:
+    needs: [source, audio]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: court-week-audio-jobs
+          path: .court-week-audio-jobs
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: court-week-audio-cw-0001-*
+          path: .court-week-audio
+          merge-multiple: true
+      - name: Build content-addressed media and enforce hard budgets
+        env:
+          PUBLISH: ${{ inputs.publish }}
+        run: |
+          set -euo pipefail
+          arguments=(
+            --release-tag "${{ inputs.release_tag }}"
+            --audio-root .court-week-audio
+            --jobs-root .court-week-audio-jobs
+            --art-requirements .court-week-audio-jobs/scene-art-requirements.json
+          )
+          if [[ "$PUBLISH" == "true" ]]; then
+            arguments+=(--require-release-ready-art)
+          fi
+          node site/scripts/prepare-court-week-release.mjs "${arguments[@]}"
+      - name: Upload complete SceneArtManifest gap report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.release_tag }}-art-readiness
+          path: .court-week-release/art-readiness-report.json
+          if-no-files-found: warn
+          retention-days: 14
       - name: Upload private review artifact
         uses: actions/upload-artifact@v4
         with:
@@ -52,19 +169,32 @@ jobs:
           path: .court-week-release/
           if-no-files-found: error
           retention-days: 7
-      - name: Publish a new release without mutating an existing tag
-        if: inputs.publish == true
+
+  publish:
+    if: inputs.publish == true
+    needs: package
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.release_tag }}
+          path: .court-week-release
+      - name: Publish a new immutable release without mutating an existing tag
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           set -euo pipefail
-          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo "Release $RELEASE_TAG already exists; immutable releases are never clobbered." >&2
             exit 1
           fi
           gh release create "$RELEASE_TAG" .court-week-release/* \
+            --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --title "SimJury Court Week media — $RELEASE_TAG" \
             --notes "Reviewed, content-addressed static media for cw-0001. Source commit: $GITHUB_SHA"
-          test "$(gh release view "$RELEASE_TAG" --json isImmutable --jq .isImmutable)" = true
+          test "$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json isImmutable --jq .isImmutable)" = true

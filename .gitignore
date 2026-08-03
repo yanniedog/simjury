@@ -8,6 +8,9 @@ site/public/jury/
 site/app/test-results/
 site/app/playwright-report/
 site/app/public/court-week/packs/
+.court-week-audio-jobs/
+.court-week-audio/
+.court-week-release/
 
 # Local agent scratch (screenshots, benches, one-off scripts)
 artifacts/

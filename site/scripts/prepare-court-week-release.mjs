@@ -1,12 +1,12 @@
 import { createHash } from 'node:crypto'
-import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, extname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { assessSceneArtManifest } from './scene-art-readiness.mjs'
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const repoRoot = resolve(siteRoot, '..')
-const sourceRoot = join(siteRoot, 'app', 'public', 'media', 'court-week', 'cw-0001')
-const outputRoot = join(repoRoot, '.court-week-release')
+const visualSourceRoot = join(siteRoot, 'app', 'public', 'media', 'court-week', 'cw-0001')
 
 function argument(name) {
   const index = process.argv.indexOf(name)
@@ -14,10 +14,25 @@ function argument(name) {
 }
 
 const releaseTag = argument('--release-tag')
+const outputRoot = resolve(argument('--output-root') ?? join(repoRoot, '.court-week-release'))
+const audioRootArgument = argument('--audio-root')
+const audioRoot = audioRootArgument ? resolve(audioRootArgument) : undefined
+const jobsRootArgument = argument('--jobs-root')
+const jobsRoot = jobsRootArgument ? resolve(jobsRootArgument) : undefined
+const artRequirementsArgument = argument('--art-requirements')
+const artRequirementsPath = artRequirementsArgument ? resolve(artRequirementsArgument) : undefined
+const requireReleaseReadyArt = process.argv.includes('--require-release-ready-art')
 if (!/^court-week-cw-0001-[0-9]{4}\.[0-9]{2}\.[0-9]{2}-r[1-9][0-9]*$/.test(releaseTag ?? '')) {
   throw new Error('Use --release-tag court-week-cw-0001-YYYY.MM.DD-rN')
 }
-if (!existsSync(sourceRoot)) throw new Error(`Missing reviewed media source: ${sourceRoot}`)
+if (!existsSync(visualSourceRoot)) throw new Error(`Missing reviewed media source: ${visualSourceRoot}`)
+if (!audioRoot || !existsSync(audioRoot)) throw new Error('Use --audio-root with the complete generated Court Week audio directory')
+if (!jobsRoot || !existsSync(jobsRoot)) {
+  throw new Error('Generated audio must be packaged with --jobs-root from the exact reviewed source job')
+}
+if (!artRequirementsPath || !existsSync(artRequirementsPath)) {
+  throw new Error('Use --art-requirements with the exact reviewed SceneArtManifest artifact')
+}
 
 function filesBelow(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -27,15 +42,26 @@ function filesBelow(directory) {
 }
 
 const allowedExtensions = new Set(['.avif', '.webp', '.opus', '.m4a', '.mp3', '.vtt'])
-const sources = filesBelow(sourceRoot).sort((left, right) => left.localeCompare(right))
+const sources = [
+  ...filesBelow(visualSourceRoot).map((path) => ({
+    path,
+    logicalPath: `visual/${relative(visualSourceRoot, path).split(sep).join('/')}`,
+  })),
+  ...filesBelow(audioRoot)
+    .filter((path) => path.split(sep).at(-1) !== 'session-media.json')
+    .map((path) => ({
+      path,
+      logicalPath: `audio/${relative(audioRoot, path).split(sep).join('/')}`,
+    })),
+].sort((left, right) => left.logicalPath.localeCompare(right.logicalPath))
 if (!sources.length) throw new Error('Court Week media source is empty')
-if (sources.length >= 500) throw new Error(`Release has ${sources.length} assets; limit is 499 plus manifest`)
+if (sources.length > 496) throw new Error(`Release has ${sources.length} media assets; three manifests keep the limit below 500`)
 
 rmSync(outputRoot, { recursive: true, force: true })
 mkdirSync(outputRoot, { recursive: true })
 
 const seenNames = new Set()
-const assets = sources.map((path) => {
+const assets = sources.map(({ path, logicalPath }) => {
   const extension = extname(path).toLowerCase()
   if (!allowedExtensions.has(extension)) throw new Error(`Unsupported media type: ${path}`)
   const bytes = readFileSync(path)
@@ -47,15 +73,171 @@ const assets = sources.map((path) => {
     seenNames.add(assetName)
   }
   return {
-    logical_path: relative(sourceRoot, path).split(sep).join('/'),
+    logical_path: logicalPath,
     asset_name: assetName,
-    bytes: statSync(path).size,
+    bytes: bytes.length,
     sha256,
   }
 })
 
-const totalBytes = assets.reduce((sum, asset) => sum + asset.bytes, 0)
-if (totalBytes > 150_000_000) throw new Error(`Release is ${totalBytes} bytes; budget is 150 MB`)
+const assetByLogicalPath = new Map(assets.map((asset) => [asset.logical_path, asset]))
+
+const artRequirements = JSON.parse(readFileSync(artRequirementsPath, 'utf8'))
+const artReadiness = assessSceneArtManifest(artRequirements, visualSourceRoot)
+writeFileSync(join(outputRoot, 'art-readiness-report.json'), `${JSON.stringify(artReadiness, null, 2)}\n`)
+if (artReadiness.release_ready) {
+  console.log(`Scene art is release-ready: ${artReadiness.ready_scene_count}/55 dedicated scenes.`)
+} else {
+  console.warn(`Scene art is not release-ready: ${artReadiness.ready_scene_count}/55 scenes; ${artReadiness.gap_count} gaps.`)
+  for (const gap of artReadiness.gaps) {
+    console.warn(`ART GAP [${gap.scene_id ?? 'manifest'}] ${gap.code} ${gap.field}: ${gap.message}`)
+  }
+  if (requireReleaseReadyArt) {
+    throw new Error('Release publication is blocked by SceneArtManifest gaps; see art-readiness-report.json')
+  }
+}
+
+function loadAudioSessions() {
+  const index = JSON.parse(readFileSync(join(jobsRoot, 'index.json'), 'utf8'))
+  if (index.schema !== 'simjury.court-week-audio-index/v1' || index.caseId !== 'cw-0001' || index.sessionCount !== 7) {
+    throw new Error('Unsupported or incomplete Court Week audio job index')
+  }
+  if (index.releaseTag !== releaseTag) throw new Error(`Audio jobs target ${index.releaseTag}, not ${releaseTag}`)
+  const jobs = new Map(index.jobs.map((entry) => {
+    const job = JSON.parse(readFileSync(join(jobsRoot, entry.path), 'utf8'))
+    if (job.sourceDigest !== entry.sourceDigest || job.sessionId !== entry.sessionId) {
+      throw new Error(`Audio job index mismatch for ${entry.sessionId}`)
+    }
+    return [job.sessionId, job]
+  }))
+  const manifestPaths = filesBelow(audioRoot)
+    .filter((path) => path.split(sep).at(-1) === 'session-media.json')
+    .sort((left, right) => left.localeCompare(right))
+  if (manifestPaths.length !== 7) throw new Error(`Expected seven session-media manifests; found ${manifestPaths.length}`)
+  const sessions = manifestPaths.map((path) => JSON.parse(readFileSync(path, 'utf8')))
+  const expectedIds = [
+    'cw-0001-monday', 'cw-0001-tuesday', 'cw-0001-wednesday', 'cw-0001-thursday',
+    'cw-0001-friday', 'cw-0001-saturday', 'cw-0001-sunday',
+  ]
+  if (JSON.stringify(sessions.map((session) => session.sessionId).sort()) !== JSON.stringify([...expectedIds].sort())) {
+    throw new Error('Session media manifests do not cover the exact Monday-Sunday Court Week')
+  }
+  const seenCueIds = new Set()
+  const referencedAudioPaths = new Set()
+  let productionEnvironment
+  for (const session of sessions) {
+    if (session.schema !== 'simjury.court-week-session-media/v1' || session.caseId !== 'cw-0001') {
+      throw new Error(`Unsupported session media manifest for ${session.sessionId}`)
+    }
+    if (session.releaseTag !== releaseTag) throw new Error(`${session.sessionId} was built for ${session.releaseTag}, not ${releaseTag}`)
+    if (!session.productionEnvironment || typeof session.productionEnvironment !== 'object') {
+      throw new Error(`${session.sessionId} is missing production environment provenance`)
+    }
+    if (productionEnvironment && JSON.stringify(session.productionEnvironment) !== JSON.stringify(productionEnvironment)) {
+      throw new Error('Court Week sessions were not produced by one consistent audio environment')
+    }
+    productionEnvironment ??= session.productionEnvironment
+    const job = jobs.get(session.sessionId)
+    if (!job || session.sourceDigest !== job.sourceDigest || session.sourceRevision !== job.sourceRevision) {
+      throw new Error(`${session.sessionId} media does not match its reviewed source job`)
+    }
+    if (!Array.isArray(session.segments) || session.segments.length < 8 || session.segments.length > 12) {
+      throw new Error(`${session.sessionId} must have 8-12 prerecorded audio segments`)
+    }
+    if (session.experienceSeconds < 18 * 60 || session.experienceSeconds > 22 * 60) {
+      throw new Error(`${session.sessionId} measures ${(session.experienceSeconds / 60).toFixed(2)} minutes; required 18-22`)
+    }
+    const codecBytes = { opus: 0, aac: 0, mp3: 0 }
+    for (const [segmentIndex, segment] of session.segments.entries()) {
+      if (!/^[0-9a-f]{32}$/.test(segment.opaqueId)) throw new Error(`Unsafe audio segment id in ${session.sessionId}`)
+      const jobSegment = job.segments[segmentIndex]
+      if (!jobSegment || segment.id !== jobSegment.id || segment.opaqueId !== jobSegment.opaqueId || segment.sourceSceneId !== jobSegment.sourceSceneId) {
+        throw new Error(`Audio segment order/source mismatch in ${session.sessionId} at position ${segmentIndex + 1}`)
+      }
+      for (const source of ['opus', 'aac', 'mp3', 'captions']) {
+        const logicalPath = `audio/${segment.sources[source]}`
+        const asset = assetByLogicalPath.get(logicalPath)
+        if (!asset) throw new Error(`Missing ${source} asset for ${segment.opaqueId}: ${logicalPath}`)
+        referencedAudioPaths.add(logicalPath)
+        if (source !== 'captions') codecBytes[source] += asset.bytes
+      }
+      if (segment.cues.length !== jobSegment.cues.length) throw new Error(`Cue count mismatch for ${segment.id}`)
+      for (const [cueIndex, cue] of segment.cues.entries()) {
+        if (cue.cueId !== jobSegment.cues[cueIndex]?.id) throw new Error(`Cue order mismatch for ${segment.id}`)
+        if (seenCueIds.has(cue.cueId)) throw new Error(`Duplicate audio cue mapping: ${cue.cueId}`)
+        seenCueIds.add(cue.cueId)
+        if (!(cue.startSeconds >= 0 && cue.endSeconds > cue.startSeconds && cue.endSeconds <= segment.durationSeconds + 0.15)) {
+          throw new Error(`Invalid cue range for ${cue.cueId}`)
+        }
+      }
+      for (const codec of ['opus', 'aac', 'mp3']) {
+        const measured = segment.loudness[codec]
+        if (measured.integratedLufs < -20 || measured.integratedLufs > -16 || measured.truePeakDbtp > -0.5 || measured.loudnessRangeLu > 12) {
+          throw new Error(`Loudness validation failed for ${segment.opaqueId}.${codec}`)
+        }
+      }
+    }
+    for (const [codec, bytes] of Object.entries(codecBytes)) {
+      if (bytes > 15_000_000) throw new Error(`${session.sessionId} ${codec} transfer is ${bytes} bytes; limit is 15 MB`)
+    }
+  }
+  for (const codec of ['opus', 'aac', 'mp3']) {
+    const bytes = sessions.reduce((week, session) => week + session.segments.reduce((day, segment) => {
+      const asset = assetByLogicalPath.get(`audio/${segment.sources[codec]}`)
+      return day + (asset?.bytes ?? 0)
+    }, 0), 0)
+    if (bytes > 100_000_000) throw new Error(`${codec} normal-week path is ${bytes} bytes; limit is 100 MB`)
+  }
+  const packagedAudioPaths = assets
+    .map((asset) => asset.logical_path)
+    .filter((path) => path.startsWith('audio/'))
+  const unreferenced = packagedAudioPaths.filter((path) => !referencedAudioPaths.has(path))
+  if (unreferenced.length) throw new Error(`Unreferenced generated audio assets: ${unreferenced.join(', ')}`)
+  const expectedCueCount = [...jobs.values()].reduce((count, job) =>
+    count + job.segments.reduce((segmentCount, segment) => segmentCount + segment.cues.length, 0), 0)
+  if (seenCueIds.size !== expectedCueCount) {
+    throw new Error(`Runtime media maps ${seenCueIds.size} cues; reviewed jobs require ${expectedCueCount}`)
+  }
+  return sessions
+}
+
+const audioSessions = loadAudioSessions()
+if (artRequirements.sourceRevision !== audioSessions[0]?.sourceRevision) {
+  throw new Error('SceneArtManifest and prerecorded audio were not derived from the same Court Week revision')
+}
+const runtimeMediaManifest = {
+  schema: 'simjury.court-week-runtime-media/v1',
+  case_id: 'cw-0001',
+  release_tag: releaseTag,
+  source_revision: audioSessions[0]?.sourceRevision ?? null,
+  sessions: audioSessions.map((session) => ({
+    session_id: session.sessionId,
+    day: session.day,
+    narration_seconds: session.narrationSeconds,
+    experience_seconds: session.experienceSeconds,
+    segments: session.segments.map((segment) => ({
+      id: segment.id,
+      source_scene_id: segment.sourceSceneId,
+      duration_seconds: segment.durationSeconds,
+      cues: segment.cues.map((cue) => ({
+        cue_id: cue.cueId,
+        start_seconds: cue.startSeconds,
+        end_seconds: cue.endSeconds,
+      })),
+      sources: Object.fromEntries(Object.entries(segment.sources).map(([codec, path]) => {
+        const asset = assetByLogicalPath.get(`audio/${path}`)
+        if (!asset) throw new Error(`Missing release asset for ${path}`)
+        return [codec, asset.asset_name]
+      })),
+    })),
+  })),
+}
+writeFileSync(join(outputRoot, 'court-week-media-manifest.json'), `${JSON.stringify(runtimeMediaManifest, null, 2)}\n`)
+
+let totalBytes = [...seenNames].reduce((sum, name) => sum + readFileSync(join(outputRoot, name)).length, 0)
+totalBytes += readFileSync(join(outputRoot, 'court-week-media-manifest.json')).length
+totalBytes += readFileSync(join(outputRoot, 'art-readiness-report.json')).length
+if (totalBytes > 150_000_000) throw new Error(`Release is ${totalBytes} bytes before provenance manifest; budget is 150 MB`)
 
 const manifest = {
   schema: 'simjury.court-week-media/v1',
@@ -63,10 +245,19 @@ const manifest = {
   release_tag: releaseTag,
   source_revision: process.env.GITHUB_SHA ?? 'local-unpublished',
   generated_at: process.env.GITHUB_RUN_ID ? new Date().toISOString() : null,
-  asset_count: seenNames.size,
+  production_environment: audioSessions[0]?.productionEnvironment ?? null,
+  art_readiness: {
+    release_ready: artReadiness.release_ready,
+    ready_scene_count: artReadiness.ready_scene_count,
+    gap_count: artReadiness.gap_count,
+  },
+  asset_count: seenNames.size + 3,
   total_bytes: totalBytes,
   assets,
 }
 writeFileSync(join(outputRoot, 'release-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`)
 
-console.log(`Prepared ${seenNames.size} content-addressed assets (${totalBytes} bytes) for ${releaseTag}.`)
+totalBytes += readFileSync(join(outputRoot, 'release-manifest.json')).length
+if (totalBytes > 150_000_000) throw new Error(`Release is ${totalBytes} bytes; budget is 150 MB`)
+
+console.log(`Prepared ${seenNames.size} content-addressed media assets (${totalBytes} bytes) for ${releaseTag}.`)
