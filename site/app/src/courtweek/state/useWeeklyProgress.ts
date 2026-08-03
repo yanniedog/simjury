@@ -16,6 +16,8 @@ export interface WeeklyProgressState {
   ) => void
 }
 
+export const WEEKLY_PROGRESS_EVENT = 'simjury:court-week-progress'
+
 export function useWeeklyProgress(
   initialProgress: StoredWeeklyProgress,
 ): WeeklyProgressState {
@@ -38,6 +40,10 @@ export function useWeeklyProgress(
 
   useEffect(() => {
     if (!hydrated) return
+    window.dispatchEvent(new CustomEvent<StoredWeeklyProgress>(
+      WEEKLY_PROGRESS_EVENT,
+      { detail: progress },
+    ))
     const sequence = ++saveSequence.current
     const timeout = window.setTimeout(() => {
       void saveWeeklyProgress(progress.courtWeekId, progress).then((destination) => {

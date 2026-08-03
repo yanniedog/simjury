@@ -34,7 +34,18 @@ export const audioSourceSchema = z.object({
   opus: z.string().url().optional(),
   aac: z.string().url().optional(),
   mp3: z.string().url().optional(),
-}).refine((value) => Object.values(value).some(Boolean), 'at least one audio source is required')
+  segmentId: z.string().min(1).optional(),
+  startSeconds: z.number().min(0).optional(),
+  endSeconds: z.number().positive().optional(),
+}).refine(
+  (value) => Boolean(value.opus || value.aac || value.mp3),
+  'at least one audio source is required',
+).refine(
+  (value) => value.startSeconds === undefined || (
+    value.endSeconds !== undefined && value.endSeconds > value.startSeconds
+  ),
+  'audio cue end must follow its start',
+)
 
 export const sceneCueSchema = z.object({
   id: z.string().min(1),
