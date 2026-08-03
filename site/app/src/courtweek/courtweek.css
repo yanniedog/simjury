@@ -109,7 +109,8 @@
 }
 .cw-speaker > p:first-child { margin: 0; color: var(--cw-brass); font-weight: 750; letter-spacing: .04em; }
 .cw-reading-copy { margin: .5rem 0 0; max-width: 66ch; line-height: 1.55; font-size: clamp(1rem, 2vw, 1.2rem); }
-.cw-shell[data-access-mode="reading"] .cw-speaker { top: 5.2rem; bottom: 5.2rem; overflow-y: auto; }
+.cw-shell[data-access-mode="reading"] .cw-speaker,
+.cw-shell[data-complete-captions="true"] .cw-speaker { top: 5.2rem; bottom: 5.2rem; overflow-y: auto; }
 .cw-tone--cross .cw-speaker { border-left-color: #80b9d2; }
 .cw-speaker__mode { color: #b9d9e7; font-size: .8em; }
 
@@ -227,6 +228,16 @@
 .cw-mode-picker small { margin-top: .25rem; color: var(--cw-muted); }
 .cw-entry__fullscreen { display: flex; align-items: center; gap: .6rem; margin: 1rem 0; }
 .cw-entry__privacy { color: var(--cw-muted); font-size: .82rem; }
+.cw-session-schedule { margin: 1.5rem 0; }
+.cw-session-schedule ol { display: grid; gap: .55rem; margin: 0; padding: 0; list-style: none; }
+.cw-session-schedule button { display: flex; width: 100%; align-items: baseline; justify-content: space-between; gap: 1rem; padding: .8rem 1rem; text-align: left; }
+.cw-session-schedule button span { font-weight: 750; }
+.cw-session-schedule button small { color: var(--cw-muted); text-align: right; }
+
+@media (max-width: 430px) {
+  .cw-session-schedule button { align-items: flex-start; flex-direction: column; gap: .2rem; }
+  .cw-session-schedule button small { text-align: left; }
+}
 
 .cw-skip-link, .cw-visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0,0,0,0) !important; white-space: nowrap !important; border: 0 !important; }
 .cw-skip-link:focus { z-index: 30; top: .5rem; left: .5rem; width: auto !important; height: auto !important; margin: 0 !important; padding: .75rem !important; clip: auto !important; color: #111; background: #fff; }
@@ -268,4 +279,45 @@
 
 @media (min-resolution: 2dppx) {
   .cw-status, .cw-controls { border-width: .5px; }
+}
+
+/* At extreme zoom the layout becomes a vertical document rather than hiding
+   legally material copy behind a fixed cinematic stage. */
+@media (max-width: 240px), (max-height: 319px) {
+  .cw-shell { overflow-x: hidden; overflow-y: auto; }
+  .cw-stage {
+    position: relative;
+    inset: auto;
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+    min-height: 100%;
+    height: auto;
+    padding: .25rem;
+    overflow: visible;
+  }
+  .cw-stage__picture, .cw-stage__fallback { position: fixed; inset: 0; opacity: .24; }
+  .cw-status, .cw-speaker, .cw-controls {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    max-width: none;
+    transform: none;
+  }
+  .cw-status { flex-direction: column; align-items: flex-start; gap: .2rem; }
+  .cw-shell[data-access-mode="reading"] .cw-speaker,
+  .cw-shell[data-complete-captions="true"] .cw-speaker {
+    top: auto;
+    bottom: auto;
+    max-height: none;
+    overflow: visible;
+  }
+  .cw-controls { flex-direction: column; margin-top: auto; }
+  .cw-controls button { width: 100%; }
+  .cw-modal, .cw-desk, .cw-interaction {
+    position: fixed;
+    inset: .25rem;
+    width: auto;
+    max-height: none;
+  }
 }

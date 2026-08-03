@@ -77,6 +77,7 @@ export function ImmersiveCourtShell({
     accessMode === 'captions' ||
     playbackStatus === 'speech-fallback' ||
     playbackStatus === 'reading-fallback'
+  const captionsNeedReading = captionsVisible && cue.text.length > 110
   const focalStyle = {
     objectPosition: `${scene.visual.focalPoint.x}% ${scene.visual.focalPoint.y}%`,
   }
@@ -91,6 +92,7 @@ export function ImmersiveCourtShell({
       className={`cw-shell cw-tone--${cue.tone}`}
       data-caption-position={scene.visual.captionPosition}
       data-access-mode={accessMode}
+      data-complete-captions={captionsNeedReading}
     >
       <a className="cw-skip-link" href="#cw-primary-controls">Skip to controls</a>
 
@@ -149,10 +151,10 @@ export function ImmersiveCourtShell({
             {cue.speaker}
             {cue.tone === 'cross' ? <span className="cw-speaker__mode"> · cross-examination</span> : null}
           </p>
-          {accessMode === 'reading' ? <p className="cw-reading-copy">{cue.text}</p> : null}
+          {(accessMode === 'reading' || captionsNeedReading) ? <p className="cw-reading-copy">{cue.text}</p> : null}
         </section>
 
-        {captionsVisible ? (
+        {captionsVisible && !captionsNeedReading ? (
           <div className="cw-captions" aria-hidden="true">
             <span>{cue.text}</span>
           </div>

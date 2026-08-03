@@ -48,6 +48,16 @@ export function aggregateFirstBallot(
   return aggregate
 }
 
+export function firstBallotForScene(
+  pack: DeliberationPack,
+  sceneId: string,
+  sealedPlayerVote?: Verdict,
+): BallotAggregate | null {
+  return sceneId === 'sat-first-ballot' && sealedPlayerVote
+    ? aggregateFirstBallot(pack, sealedPlayerVote)
+    : null
+}
+
 function validContributionCount(contributions: ReasoningContribution[]): number {
   return contributions.filter((item) => (
     item.legalQuestion.trim().length > 0 &&
