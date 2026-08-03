@@ -130,7 +130,8 @@ def encode(source_wav: Path, target: Path, codec: str) -> None:
         )
         normalization_target = next_target
 
-    assert measured is not None  # MAX_CODEC_ENCODE_ATTEMPTS is a positive constant.
+    if measured is None:  # Defensive if the attempt constant is ever misconfigured.
+        raise RuntimeError("Codec encode loop completed without measuring an output")
     raise RuntimeError(
         f"{target} still exceeds the {RELEASE_TRUE_PEAK_CEILING:.2f} dBTP true-peak ceiling "
         f"after {MAX_CODEC_ENCODE_ATTEMPTS} codec passes: {measured}"
