@@ -14,7 +14,7 @@ SimJury is static-first. The interactive Daily Docket requires JavaScript, while
 
 - [Complete machine-readable site guide](https://simjury.com/llms-full.txt): Detailed route, interaction, accessibility, privacy, and architecture inventory.
 - [XML sitemap](https://simjury.com/sitemap.xml): Canonical public HTML pages.
-- [Robots policy](https://simjury.com/robots.txt): Public crawling is allowed.
+- [Robots policy](https://simjury.com/robots.txt): Explicitly allows assistant fetch and AI-search agents Claude-User, Claude-SearchBot, ChatGPT-User, OAI-SearchBot, Kimi-User, and Kimi-SearchBot on public pages. Model-training crawlers including ClaudeBot, GPTBot, Google-Extended, CCBot, Bytespider, Meta-ExternalAgent, Applebot-Extended, and KimiBot are disallowed. DeepSeek has no published user-fetch UA, so chat-side retrieval remains under the wildcard Allow.
 
 ## Boundaries
 

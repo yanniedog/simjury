@@ -46,7 +46,8 @@ The static privacy page explains:
 
 ## Discovery and HTTP behavior
 
-- `https://simjury.com/robots.txt` permits all user agents and names the XML sitemap.
+- `https://simjury.com/robots.txt` explicitly permits assistant fetch and AI-search agents Claude-User, Claude-SearchBot, ChatGPT-User, OAI-SearchBot, Kimi-User, and Kimi-SearchBot on public pages; excludes runtime and bundled-asset paths; disallows model-training crawlers (ClaudeBot, GPTBot, Google-Extended, CCBot, Bytespider, Meta-ExternalAgent, Applebot-Extended, KimiBot); and leaves DeepSeek under the wildcard Allow because no distinct DeepSeek user-fetch UA is published.
+- Public static responses carry `Content-Signal: search=yes, ai-input=yes, ai-train=no, use=reference` so search, cited reference use, and user-directed AI retrieval are unambiguous without granting model-training rights.
 - `https://simjury.com/sitemap.xml` lists every canonical public HTML page.
 - `https://simjury.com/llms.txt` provides the concise machine-readable index.
 - Unknown routes return a real HTTP 404 page.
