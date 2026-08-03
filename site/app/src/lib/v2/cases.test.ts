@@ -42,7 +42,7 @@ describe('docket queue', () => {
     )).toBe(true)
   })
 
-  it('publishes an exact seven-case V4 slate from August 2 through August 8', () => {
+  it('publishes an exact seven-case V4 slate from August 2 through August 9', () => {
     const expected = [
       ['2026-08-02', 'dd-0038'],
       ['2026-08-03', 'dd-0040'],
@@ -50,11 +50,11 @@ describe('docket queue', () => {
       ['2026-08-05', 'dd-0032'],
       ['2026-08-06', 'dd-0041'],
       ['2026-08-07', 'dd-0039'],
-      ['2026-08-08', 'dd-0042'],
+      ['2026-08-09', 'dd-0042'],
     ]
     const slate = docketQueue.filter(
       ({ publish_date }) =>
-        publish_date >= '2026-08-02' && publish_date <= '2026-08-08',
+        publish_date >= '2026-08-02' && publish_date <= '2026-08-09',
     )
 
     expect(slate.map(({ publish_date, id }) => [publish_date, id])).toEqual(expected)
