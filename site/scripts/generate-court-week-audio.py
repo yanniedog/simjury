@@ -122,6 +122,11 @@ def encode(source_wav: Path, target: Path, codec: str) -> None:
         adjusted_target,
     )
     encode_once(source_wav, target, codec, adjusted_target)
+    retried = measure_loudness(target)
+    if retried["truePeakDbtp"] > RELEASE_TRUE_PEAK_CEILING:
+        raise RuntimeError(
+            f"{target} still exceeds the true-peak ceiling after codec compensation: {retried}"
+        )
 
 
 def probe_duration(path: Path) -> float:
@@ -135,7 +140,7 @@ def probe_duration(path: Path) -> float:
 def measure_loudness(path: Path) -> dict[str, float]:
     completed = subprocess.run([
         "ffmpeg", "-hide_banner", "-nostats", "-i", str(path),
-        "-af", f"loudnorm=I={TARGET_LUFS}:LRA=7:TP={TARGET_TRUE_PEAK}:print_format=json",
+        "-af", f"loudnorm=I={TARGET_LUFS}:LRA=7:TP={RELEASE_TRUE_PEAK_CEILING}:print_format=json",
         "-f", "null", "-",
     ], text=True, capture_output=True)
     if completed.returncode != 0:
