@@ -24,6 +24,24 @@ week must measure 126–154 minutes.
 - Individual juror positions stay sealed. An anonymous aggregate ballot is
   shown only after the player seals their own provisional position.
 
+## Static day sealing and its limits
+
+Future sessions are deterministic AES-GCM packs produced during the trusted
+GitHub build. The public bootstrap contains only the seven unlock instants,
+opaque pack locators and prerequisites. After the Hobart court time and prior
+session completion checks pass, the browser dynamically loads that day's second
+key fragment, fetches and authenticates the pack, then caches the opened session
+on-device. Trial exhibits enter the juror desk only with the first day that uses
+them; deliberation content does not enter the runtime before Saturday.
+
+This is deliberate anti-spoiler friction, **not server-enforced secrecy**. The
+repository and browser code are public, so a determined technical user can
+recover the static key material. The enforceable guarantees are that ordinary
+initial HTML, JavaScript, source maps, preload requests and encrypted pack bytes
+contain no plaintext future dialogue or media map, and that the app itself makes
+no future-pack request before both gates pass. Production build checks fail if
+those guarantees regress.
+
 ## Legal-order invariants
 
 The trial state machine, authored record and validation must enforce:
