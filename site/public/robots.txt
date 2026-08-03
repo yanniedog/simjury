@@ -12,6 +12,34 @@ Disallow: /api/
 Disallow: /discord/
 Disallow: /today/assets/
 
+User-agent: ChatGPT-User
+Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
+Allow: /
+Disallow: /api/
+Disallow: /discord/
+Disallow: /today/assets/
+
+User-agent: OAI-SearchBot
+Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
+Allow: /
+Disallow: /api/
+Disallow: /discord/
+Disallow: /today/assets/
+
+User-agent: Kimi-User
+Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
+Allow: /
+Disallow: /api/
+Disallow: /discord/
+Disallow: /today/assets/
+
+User-agent: Kimi-SearchBot
+Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
+Allow: /
+Disallow: /api/
+Disallow: /discord/
+Disallow: /today/assets/
+
 User-agent: ClaudeBot
 User-agent: GPTBot
 User-agent: Google-Extended
@@ -19,6 +47,7 @@ User-agent: CCBot
 User-agent: Bytespider
 User-agent: Meta-ExternalAgent
 User-agent: Applebot-Extended
+User-agent: KimiBot
 Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
 Disallow: /
 
@@ -34,3 +63,10 @@ Sitemap: https://simjury.com/sitemap.xml
 # AI-readable public-site guides:
 # https://simjury.com/llms.txt
 # https://simjury.com/llms-full.txt
+#
+# Assistant fetch / AI-search (explicit Allow above): Claude-User, Claude-SearchBot,
+# ChatGPT-User, OAI-SearchBot, Kimi-User, Kimi-SearchBot.
+# Model-training crawlers (Disallow /): ClaudeBot, GPTBot, Google-Extended, CCBot,
+# Bytespider, Meta-ExternalAgent, Applebot-Extended, KimiBot.
+# DeepSeek: no published user-fetch UA distinct from training reports; DeepSeekBot is
+# not listed in the training Disallow group so chat-side retrieval stays under *.

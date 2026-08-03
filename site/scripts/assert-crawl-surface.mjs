@@ -76,7 +76,15 @@ for (const [label, html, url] of canonicalPages) {
 
 const contentSignal = 'Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference'
 requireText(headers, 'Content-Signal: search=yes, ai-input=yes, ai-train=no, use=reference', 'static responses must publish the AI-use policy')
-for (const agent of ['Claude-User', 'Claude-SearchBot']) {
+const assistantAgents = [
+  'Claude-User',
+  'Claude-SearchBot',
+  'ChatGPT-User',
+  'OAI-SearchBot',
+  'Kimi-User',
+  'Kimi-SearchBot',
+]
+for (const agent of assistantAgents) {
   const group = robotsGroupFor(robots, agent)
   requireText(group, 'Allow: /', `${agent} must be allowed on public pages`)
   requireText(group, contentSignal, `${agent} must receive the AI-use policy`)
@@ -99,9 +107,24 @@ for (const agent of [
   'Bytespider',
   'Meta-ExternalAgent',
   'Applebot-Extended',
+  'KimiBot',
 ]) {
   requireText(trainingGroup, `User-agent: ${agent}`, `${agent} model-training crawling must be grouped for exclusion`)
 }
+if (robotsGroupFor(robots, 'DeepSeekBot')) {
+  failures.push('DeepSeekBot must not be explicitly listed; leave chat-side DeepSeek retrieval under *')
+}
+for (const textNeedle of [
+  'ChatGPT-User',
+  'OAI-SearchBot',
+  'Kimi-User',
+  'Kimi-SearchBot',
+]) {
+  requireText(llms, textNeedle, `llms.txt must name assistant fetcher ${textNeedle}`)
+  requireText(llmsFull, textNeedle, `llms-full.txt must name assistant fetcher ${textNeedle}`)
+}
+requireText(llms, 'KimiBot', 'llms.txt must name Kimi training opt-out')
+requireText(llmsFull, 'DeepSeek', 'llms-full.txt must document DeepSeek wildcard stance')
 requireText(trainingGroup, 'Disallow: /', 'known model-training crawlers must be disallowed')
 requireText(robots, 'Sitemap: https://simjury.com/sitemap.xml', 'robots must advertise the sitemap')
 requireText(robots, 'https://simjury.com/llms.txt', 'robots must advertise the concise AI guide')
