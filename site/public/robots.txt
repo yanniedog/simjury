@@ -3,42 +3,42 @@ Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
 Allow: /
 Disallow: /api/
 Disallow: /discord/
-Disallow: /today/assets/
+Disallow: /jury/assets/
 
 User-agent: Claude-SearchBot
 Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
 Allow: /
 Disallow: /api/
 Disallow: /discord/
-Disallow: /today/assets/
+Disallow: /jury/assets/
 
 User-agent: ChatGPT-User
 Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
 Allow: /
 Disallow: /api/
 Disallow: /discord/
-Disallow: /today/assets/
+Disallow: /jury/assets/
 
 User-agent: OAI-SearchBot
 Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
 Allow: /
 Disallow: /api/
 Disallow: /discord/
-Disallow: /today/assets/
+Disallow: /jury/assets/
 
 User-agent: Kimi-User
 Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
 Allow: /
 Disallow: /api/
 Disallow: /discord/
-Disallow: /today/assets/
+Disallow: /jury/assets/
 
 User-agent: Kimi-SearchBot
 Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
 Allow: /
 Disallow: /api/
 Disallow: /discord/
-Disallow: /today/assets/
+Disallow: /jury/assets/
 
 User-agent: ClaudeBot
 User-agent: GPTBot
@@ -56,7 +56,7 @@ Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference
 Allow: /
 Disallow: /api/
 Disallow: /discord/
-Disallow: /today/assets/
+Disallow: /jury/assets/
 
 Sitemap: https://simjury.com/sitemap.xml
 

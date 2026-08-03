@@ -6,11 +6,6 @@ name: Cloudflare AI bots audit
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "site/scripts/cloudflare-ai-bots.mjs"
-      - "site/package.json"
-      - ".github/workflows/cloudflare-ai-bots-audit.yml"
 
 permissions:
   contents: read

@@ -1,35 +1,32 @@
-# site/app — The Daily Docket player
+# site/app — SimJury Court Week
 
-The daily-case web app for simjury.com. Imported verbatim from the (now retired)
-`simjury-daily` repo at commit `e931d90` per [`DAILY-PIVOT.md`](../../DAILY-PIVOT.md)
-(owner decision, 2026-07-13); it evolves here through the D2–D8 ladder into the
-8–10 minute daily loop with the interactive jury room.
+The static React player for **Eleven Minutes**, SimJury's one active fictional
+case. The player serves seven sequential sessions at `/jury/`: five court days
+followed by Saturday and Sunday deliberation. The binding contract is
+[`COURT-WEEK.md`](../../COURT-WEEK.md).
 
-**The one rule that governs everything:** every daily case is fiction, built from real
-trial *patterns*, and says so — the `label: "fiction"` pin in
-[`src/lib/caseSchema.ts`](src/lib/caseSchema.ts) is a safety invariant, never a
-formality. No real names of people, companies, brands, or places in player-visible
-text. The removed real historical-case track must not be reintroduced into this
-pipeline.
+Court Week is audio-first and fullscreen, with optional captions and reading
+mode. It must provide the same complete legal record on supported phones,
+tablets, split-screen layouts and desktop browsers. Eleven jurors and every
+response are authored; progress, private notes and ballots remain on-device.
+
+The Daily Docket source/media are retained only under
+[`archive/daily-v2-2026-08-03/`](../../archive/daily-v2-2026-08-03/). The former
+Android/JVM and real historical-case tracks remain removed.
 
 ## Develop
 
 ```sh
 npm ci
-npm run dev             # local dev server
-npm run lint            # eslint
-npm run typecheck       # tsc --noEmit
-npm test                # vitest
-npm run validate:cases  # schema + design-quality gate over cases/
-npm run build           # typecheck + production build to dist/
+npm run dev
+npm run lint
+npm run typecheck
+npm test
+npm run validate:cases
+npm run build
 ```
 
-Node ≥ 20. CI: `.github/workflows/site-app-ci.yml`.
-
-The current `cases/` queue (`d-0001…d-0005`) is the imported v1 seed content used by
-tests; it is superseded by the 2026 docket (`dd-*`, schema v2) as the ladder lands.
-The full v1 Victorian docket is archived at [`archive/daily-v1/`](../../archive/daily-v1/).
-
-Deployment is wired through `site/`: the app builds into `site/public/today/`, and
-`.github/workflows/site.yml` deploys those static assets with the Cloudflare Worker.
-The standalone `site-app-ci.yml` workflow remains the fast app-specific quality gate.
+Node 24 is the repository standard. CI is
+`.github/workflows/site-app-ci.yml`. Production output is
+`site/public/jury/`; the `site/` wrapper enforces an assets-only Cloudflare
+configuration and deploys only after protected `main` checks pass.

@@ -112,7 +112,7 @@ if (!filters) {
   const mustBeReviewable = [
     'site/app/src/App.tsx',
     'site/app/src/engine/deliberation.ts',
-    'site/src/worker.js',
+    'site/app/src/courtweek/model/schema.ts',
     '.github/workflows/ci.yml',
     'scripts/pr-arm-and-park.mjs',
   ];

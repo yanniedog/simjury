@@ -9,7 +9,7 @@
  *   - Bot Management Edit  (apply) — dashboard label may say "Write"
  *   - Zone WAF Read / Edit (audit / optional assistant skip rule)
  *
- * Does not weaken /api/* or live-jury routes.
+ * Does not change the assets-only application architecture.
  *
  * Usage:
  *   node scripts/cloudflare-ai-bots.mjs audit

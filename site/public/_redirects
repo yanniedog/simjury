@@ -1,4 +1,6 @@
-/play /today/ 302
-/play/* /today/ 302
-/install / 302
-/install/* / 302
+/today /jury/ 302
+/today/* /jury/ 302
+/play /jury/ 302
+/play/* /jury/ 302
+/install /jury/ 302
+/install/* /jury/ 302

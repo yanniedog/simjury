@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Privacy — SimJury</title>
-  <meta name="description" content="What SimJury stores in your browser, what optional narration requests reveal, and what is not collected." />
+  <meta name="description" content="How SimJury keeps Court Week progress, notes and ballots on your device, and what static media requests reveal." />
   <link rel="canonical" href="https://simjury.com/privacy/" />
   <link rel="alternate" type="text/plain" href="/llms.txt" title="SimJury site guide" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -19,78 +19,71 @@
   <nav class="site-nav" aria-label="Primary">
     <a class="wordmark" href="/" aria-label="SimJury home">Sim<span>Jury</span></a>
     <span class="nav-edition">Privacy</span>
-    <div><a href="/">Home</a><a class="nav-seat" href="/today/">Take your seat</a></div>
+    <div><a href="/">Home</a><a class="nav-seat" href="/jury/">Take your seat</a></div>
   </nav>
 
   <main id="main" class="privacy-main" tabindex="-1">
     <header class="privacy-hero">
       <p class="eyebrow">Plain-language privacy</p>
-      <h1>Your sitting stays with this browser.</h1>
-      <p>SimJury has no player accounts or backend player-state service. Progress is useful because it is saved locally; that also means it cannot follow you to another browser or device.</p>
+      <h1>Your Court Week record stays with your browser.</h1>
+      <p>SimJury has no player accounts, analytics or backend player-state service. Progress is useful because it is saved locally; it reaches another browser or device only when you explicitly export and import it.</p>
     </header>
 
     <section class="privacy-grid" aria-label="Privacy details">
       <article>
         <p class="privacy-number" aria-hidden="true">01</p>
-        <h2>What is stored</h2>
-        <p>Your progress, notes, verdict, narration preferences and sitting statistics use this browser’s site storage on this device.</p>
-        <p>SimJury does not send that saved player state to an account or player-state backend.</p>
+        <h2>What is stored locally</h2>
+        <p>Your session progress, current cue, accessibility and narration preferences, private notes, provisional ballot, final ballot and deliberation state use this browser’s IndexedDB on this device.</p>
+        <p>SimJury does not send that saved state to an account, GitHub, Cloudflare or another player.</p>
       </article>
 
       <article>
         <p class="privacy-number" aria-hidden="true">02</p>
-        <h2>No sync or recovery</h2>
-        <p>There is no cross-device or cross-browser sync. Switching browser or device, using a separate browser profile, or clearing SimJury site data removes your access to the saved information there.</p>
+        <h2>Transfer and recovery</h2>
+        <p>There is no automatic cross-device or cross-browser sync. You may explicitly export a versioned progress file and import it elsewhere. Private notes are included only when you select that option.</p>
+        <p>Clearing SimJury site data removes your local record unless you retained an export.</p>
       </article>
 
       <article>
         <p class="privacy-number" aria-hidden="true">03</p>
-        <h2>Optional narration</h2>
-        <p>When narration is on, your browser can fetch public audio clips from GitHub Releases. GitHub can observe request metadata, request timing and the requested clip IDs.</p>
-        <p>Those requests do not contain your saved progress, notes, verdict or statistics. Clip IDs map to lines in SimJury’s public, pre-authored case corpus.</p>
+        <h2>Audio and artwork</h2>
+        <p>When media is used, your browser fetches reviewed public assets from the exact GitHub Release pinned by the case manifest. GitHub and its release-asset delivery service can observe normal request metadata, timing and opaque asset identifiers.</p>
+        <p>Those requests do not contain your saved progress, private notes, ballot or free-text reasoning.</p>
       </article>
 
       <article>
         <p class="privacy-number" aria-hidden="true">04</p>
-        <h2>Web delivery, not player tracking</h2>
-        <p>Static pages and assets are served through Cloudflare. Like any CDN, Cloudflare receives ordinary HTTP request metadata needed to deliver them.</p>
-        <p>SimJury does not add analytics or tracking code, and does not attach your locally saved progress, notes or verdicts to those requests.</p>
+        <h2>Static delivery</h2>
+        <p>Static pages, application code and small manifests are served through Cloudflare Static Assets. Like any CDN, Cloudflare receives ordinary HTTP request metadata needed to deliver them.</p>
+        <p>SimJury adds no analytics or tracking code and attaches no saved progress, notes or ballots to those requests. There is no SimJury Worker, D1 database, Durable Object or gameplay API.</p>
       </article>
 
       <article>
         <p class="privacy-number" aria-hidden="true">05</p>
-        <h2>Optional live jury rooms</h2>
-        <p>If you host or join a private live jury, Cloudflare processes the display name you choose, your room seat, messages, stated position and optional reasons so invited participants can deliberate together.</p>
-        <p>The room also keeps capability-token hashes and creation, join and activity times. Live-room state is deleted when the room closes or expires after two hours. Anyone with the private invitation can join while seats remain, so do not post confidential information.</p>
+        <h2>Reviewed, local simulation</h2>
+        <p>Eleven Minutes and every authored juror response are fictional and pre-authored. Outcomes are produced deterministically in your browser from the admitted record and your choices.</p>
+        <p>There is no runtime generative AI, multiplayer room, chat, email waitlist or account. Free-text notes are not interpreted by a server.</p>
       </article>
 
       <article>
         <p class="privacy-number" aria-hidden="true">06</p>
-        <h2>The optional email waitlist</h2>
-        <p>If you choose to join the waitlist, we store your email address, the exact wording you agreed to, the date you agreed, and — for abuse prevention — a keyed fingerprint derived from your IP address and the current date.</p>
-        <p>That fingerprint is a keyed hash, not your IP address: it cannot be reversed or matched to you, it changes every day, and its only use is limiting how many signups one source can make in a day. It is stored on the row and removed when the row is. Nothing about your play is kept: your progress, notes and verdict never leave your device and are never linked to your address.</p>
-        <p>We use it only to send occasional updates about The Daily Docket. We never sell or share it. Every email carries an unsubscribe link, and you can ask us to delete your address at any time by replying to any update.</p>
-      </article>
-
-      <article>
-        <p class="privacy-number" aria-hidden="true">07</p>
-        <h2>How the experience works</h2>
-        <p>Daily cases are fictional and pre-authored. Authored juror responses and solo outcomes are produced deterministically in your browser from the case and your choices.</p>
-        <p>There is no runtime generative AI. Human contributions appear only in an optional room you deliberately host or join and are labelled as live participants.</p>
+        <h2>Retired services</h2>
+        <p>The former Daily Docket live-room and email-waitlist services no longer accept data. Their Cloudflare bindings are removed from the active deployment.</p>
+        <p>Any retained waitlist export is handled by the operator outside GitHub under the documented quarantine and deletion process; it is never linked to Court Week play.</p>
       </article>
     </section>
 
     <aside class="privacy-callout">
       <p class="eyebrow">Before you sit</p>
       <h2>Use the browser you want to return to.</h2>
-      <p>If browser storage is unavailable, SimJury will still let you continue the current sitting and will warn you that it cannot resume later.</p>
-      <a class="btn primary" href="/today/">Open today’s case <span aria-hidden="true">→</span></a>
+      <p>If persistent storage is unavailable, SimJury keeps the current session in memory and offers a local export rather than silently claiming it can resume later.</p>
+      <a class="btn primary" href="/jury/">Open Court Week <span aria-hidden="true">→</span></a>
     </aside>
   </main>
 
   <footer>
-    <div><p><strong>SimJury</strong> · A daily exercise in judgment.</p></div>
-    <p><a href="/">Home</a> · <a href="/today/">Today’s case</a></p>
+    <div><p><strong>SimJury</strong> · A seven-session exercise in judgment.</p></div>
+    <p><a href="/">Home</a> · <a href="/jury/">Court Week</a></p>
   </footer>
 </body>
 </html>

@@ -33,11 +33,11 @@ jobs:
             <!-- gemini-code-review -->
             # Code Review by Gemini
           prompt: |
-            You are reviewing a SimJury / Daily Docket PR (static React site + pre-authored case JSON).
+            You are reviewing a SimJury Court Week PR (static React site + pre-authored fictional trial record).
             Flag real defects only: broken player flows, data loss, security issues, CI/gate breakages,
             and fiction-safety (real names of people/companies/brands/places in player-visible text).
             Prefer TypeScript/React and site/app concerns over style or optional refactors.
-            For case JSON under site/app/docket or site/public/cases: flag label/fiction integrity issues
-            and material contradictions that would confuse players.
+            For Court Week content: flag legal-order violations, fiction-integrity issues,
+            spoilers before verdict return, and material contradictions that would confuse jurors.
             For .github/workflows: flag permission mistakes and merge-protection gaps.
             Ignore pure formatting, renames, and speculative nits.

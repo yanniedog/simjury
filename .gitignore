@@ -3,6 +3,11 @@
 .simjury-bot-wait/
 node_modules/
 
+# Vite production output is rebuilt into the static site by CI.
+site/public/jury/
+site/app/test-results/
+site/app/playwright-report/
+
 # Local agent scratch (screenshots, benches, one-off scripts)
 artifacts/
 

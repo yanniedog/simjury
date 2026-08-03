@@ -1,252 +1,65 @@
-import { existsSync, readFileSync, readdirSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
-const publicRoot = join(siteRoot, 'public')
+const publicRoot = join(dirname(fileURLToPath(import.meta.url)), '..', 'public')
 const failures = []
-
 function read(relative) {
   const path = join(publicRoot, relative)
-  if (!existsSync(path)) {
-    failures.push(`missing crawl surface: public/${relative}`)
-    return ''
-  }
+  if (!existsSync(path)) { failures.push(`Missing public/${relative}`); return '' }
   return readFileSync(path, 'utf8')
 }
-
 function requireText(source, text, message) {
   if (!source.includes(text)) failures.push(message)
 }
-
 function forbidText(source, text, message) {
   if (source.toLowerCase().includes(text.toLowerCase())) failures.push(message)
 }
 
-function robotsGroupFor(source, agent) {
-  const normalizedAgent = agent.toLowerCase()
-  return source
-    .trim()
-    .split(/\n\s*\n/)
-    .find((block) =>
-      [...block.matchAll(/^User-agent:\s*(.+)$/gim)]
-        .some((match) => match[1].trim().toLowerCase() === normalizedAgent),
-    ) ?? ''
-}
-
 const home = read('index.html')
-const today = read(join('today', 'index.html'))
+const jury = read(join('jury', 'index.html'))
 const privacy = read(join('privacy', 'index.html'))
 const robots = read('robots.txt')
 const sitemap = read('sitemap.xml')
 const llms = read('llms.txt')
 const llmsFull = read('llms-full.txt')
-const headers = read('_headers')
-const indexNowKey = read('indexnow-key.txt').trim()
+const redirects = read('_redirects')
 
-const expectedSitemapUrls = [
-  'https://simjury.com/',
-  'https://simjury.com/today/',
-  'https://simjury.com/privacy/',
-]
-const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)]
-  .map((match) => match[1])
-
-if (
-  sitemapUrls.length !== expectedSitemapUrls.length ||
-  new Set(sitemapUrls).size !== expectedSitemapUrls.length ||
-  expectedSitemapUrls.some((url) => !sitemapUrls.includes(url))
-) {
-  failures.push(`sitemap URLs must be exactly: ${expectedSitemapUrls.join(', ')}`)
-}
-
-const canonicalPages = [
+const pages = [
   ['home', home, 'https://simjury.com/'],
-  ['today', today, 'https://simjury.com/today/'],
+  ['jury', jury, 'https://simjury.com/jury/'],
   ['privacy', privacy, 'https://simjury.com/privacy/'],
 ]
-
-for (const [label, html, url] of canonicalPages) {
-  requireText(html, `rel="canonical" href="${url}"`, `${label} must declare its canonical URL`)
-  requireText(html, 'href="/llms.txt"', `${label} must advertise the machine-readable site guide`)
-  forbidText(html, 'noindex', `${label} must remain indexable`)
-  requireText(sitemap, `<loc>${url}</loc>`, `sitemap must include ${url}`)
-  requireText(llms, `](${url})`, `llms.txt must link ${url}`)
+const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1])
+if (urls.length !== pages.length || new Set(urls).size !== pages.length) failures.push('Sitemap must list exactly three canonical pages')
+for (const [label, source, url] of pages) {
+  requireText(source, `rel="canonical" href="${url}"`, `${label} canonical is missing`)
+  requireText(source, 'href="/llms.txt"', `${label} must advertise llms.txt`)
+  requireText(sitemap, `<loc>${url}</loc>`, `${url} is missing from sitemap`)
+  requireText(llms, `](${url})`, `${url} is missing from llms.txt`)
+  forbidText(source, 'noindex', `${label} must remain indexable`)
 }
 
-const contentSignal = 'Content-signal: search=yes, ai-input=yes, ai-train=no, use=reference'
-requireText(headers, 'Content-Signal: search=yes, ai-input=yes, ai-train=no, use=reference', 'static responses must publish the AI-use policy')
-const assistantAgents = [
-  'Claude-User',
-  'Claude-SearchBot',
-  'ChatGPT-User',
-  'OAI-SearchBot',
-  'Kimi-User',
-  'Kimi-SearchBot',
-]
-for (const agent of assistantAgents) {
-  const group = robotsGroupFor(robots, agent)
-  requireText(group, 'Allow: /', `${agent} must be allowed on public pages`)
-  requireText(group, contentSignal, `${agent} must receive the AI-use policy`)
-  for (const path of ['/api/', '/discord/', '/today/assets/']) {
-    requireText(group, `Disallow: ${path}`, `${agent} must not crawl ${path}`)
-  }
+for (const path of ['/today', '/play', '/install']) {
+  requireText(redirects, `${path} /jury/ 302`, `${path} redirect is missing`)
+  requireText(redirects, `${path}/* /jury/ 302`, `${path} wildcard redirect is missing`)
 }
-const wildcardGroup = robotsGroupFor(robots, '*')
-requireText(wildcardGroup, 'Allow: /', 'general crawlers must be allowed on public pages')
-requireText(wildcardGroup, contentSignal, 'general crawlers must receive the AI-use policy')
-for (const path of ['/api/', '/discord/', '/today/assets/']) {
-  requireText(wildcardGroup, `Disallow: ${path}`, `general crawlers must not crawl ${path}`)
-}
-const trainingGroup = robotsGroupFor(robots, 'ClaudeBot')
-for (const agent of [
-  'ClaudeBot',
-  'GPTBot',
-  'Google-Extended',
-  'CCBot',
-  'Bytespider',
-  'Meta-ExternalAgent',
-  'Applebot-Extended',
-  'KimiBot',
-]) {
-  requireText(trainingGroup, `User-agent: ${agent}`, `${agent} model-training crawling must be grouped for exclusion`)
-}
-if (robotsGroupFor(robots, 'DeepSeekBot')) {
-  failures.push('DeepSeekBot must not be explicitly listed; leave chat-side DeepSeek retrieval under *')
-}
-for (const textNeedle of [
-  'ChatGPT-User',
-  'OAI-SearchBot',
-  'Kimi-User',
-  'Kimi-SearchBot',
-]) {
-  requireText(llms, textNeedle, `llms.txt must name assistant fetcher ${textNeedle}`)
-  requireText(llmsFull, textNeedle, `llms-full.txt must name assistant fetcher ${textNeedle}`)
-}
-requireText(llms, 'KimiBot', 'llms.txt must name Kimi training opt-out')
-requireText(llmsFull, 'DeepSeek', 'llms-full.txt must document DeepSeek wildcard stance')
-requireText(trainingGroup, 'Disallow: /', 'known model-training crawlers must be disallowed')
-requireText(robots, 'Sitemap: https://simjury.com/sitemap.xml', 'robots must advertise the sitemap')
-requireText(robots, 'https://simjury.com/llms.txt', 'robots must advertise the concise AI guide')
-requireText(robots, 'https://simjury.com/llms-full.txt', 'robots must advertise the complete AI guide')
-
-if (!/^[a-f0-9]{8,128}$/i.test(indexNowKey)) {
-  failures.push('IndexNow key must be 8-128 hexadecimal characters')
-}
-
-requireText(today, '<div id="root">', 'built Daily Docket HTML must contain a semantic fallback')
-for (const text of [
-  'guided introduction',
-  'seven-case library',
-  'opening statements',
-  'item of evidence',
-  'eleven authored jurors',
-  'private live-human beta room',
-  'Guilty, Not Guilty, or Undecided / No verdict',
-  'Any juror may remain undecided',
-  'unanimous, majority, or hung-jury result',
-  'spoiler-safe share card',
-  'href="/privacy/"',
-]) {
-  requireText(today, text, `built Daily Docket fallback must describe: ${text}`)
-}
-
-for (const text of [
-  '## Canonical public pages',
-  'Complete machine-readable site guide',
-  'seven-case library',
-  'https://simjury.com/llms-full.txt',
-]) {
+for (const text of ['Court Week', 'five weekday court sessions', 'There is no runtime AI', 'https://simjury.com/llms-full.txt']) {
   requireText(llms, text, `llms.txt must include: ${text}`)
 }
-
-for (const text of [
-  '## Canonical public routes',
-  '## Discovery and HTTP behavior',
-  '## Architecture and cost boundary',
-  '## Spoiler and publication boundary',
-  'seven-case library',
-]) {
+for (const text of ['## Canonical public routes', '## Architecture and cost boundary', 'Cloudflare serves Static Assets only', 'The archived Daily Docket corpus is outside the public build.']) {
   requireText(llmsFull, text, `llms-full.txt must include: ${text}`)
 }
-
-for (const [label, source] of [
-  ['llms.txt', llms],
-  ['llms-full.txt', llmsFull],
-  ['Daily Docket fallback', today],
-]) {
-  for (const stalePromise of [
-    'about ten minutes',
-    '~10 minutes',
-    'single-player: there are no live players or chat',
-    'final Guilty or Not Guilty verdict',
-    'simulations',
-  ]) {
-    forbidText(source, stalePromise, `${label} must not retain the stale promise: ${stalePromise}`)
-  }
-  for (const forbidden of [
-    'verdict_truth',
-    '"twist"',
-    '/docket/dd-',
-  ]) {
-    forbidText(source, forbidden, `${label} must not expose ${forbidden}`)
+for (const source of [llms, llmsFull, jury]) {
+  for (const forbidden of ['verdict_truth', '/docket/dd-', 'seven-case library', 'optional live-jury beta', '/api/waitlist']) {
+    forbidText(source, forbidden, `Public crawl surface exposes retired/spoiler text: ${forbidden}`)
   }
 }
-
-const sensitiveCaseText = new Set()
-const sensitiveKeys = new Set(['reveal_note', 'reveal_stamp'])
-const docketRoot = join(siteRoot, 'app', 'docket')
-
-function addSensitive(value) {
-  if (typeof value === 'string' && value.trim().length >= 4) {
-    sensitiveCaseText.add(value.trim())
-  }
-}
-
-function collectSensitiveKeys(value) {
-  if (Array.isArray(value)) {
-    value.forEach(collectSensitiveKeys)
-    return
-  }
-  if (!value || typeof value !== 'object') return
-  for (const [key, child] of Object.entries(value)) {
-    if (sensitiveKeys.has(key)) addSensitive(child)
-    collectSensitiveKeys(child)
-  }
-}
-
-for (const file of readdirSync(docketRoot).filter((name) => name.endsWith('.json'))) {
-  const docket = JSON.parse(readFileSync(join(docketRoot, file), 'utf8'))
-  for (const value of [
-    docket.id,
-    docket.title,
-    docket.hook,
-    docket.twist,
-    docket.epilogue,
-    docket.accused?.human,
-  ]) {
-    addSensitive(value)
-  }
-  for (const castMember of docket.cast ?? []) addSensitive(castMember.name)
-  collectSensitiveKeys(docket)
-}
-
-for (const [label, source] of [
-  ['llms.txt', llms],
-  ['llms-full.txt', llmsFull],
-  ['Daily Docket fallback', today],
-]) {
-  const normalized = source.toLowerCase()
-  for (const sensitive of sensitiveCaseText) {
-    if (normalized.includes(sensitive.toLowerCase())) {
-      failures.push(`${label} must not expose docket-specific text: ${sensitive}`)
-    }
-  }
-}
+requireText(robots, 'Disallow: /jury/assets/', 'Robots must exclude hashed Court Week assets')
+requireText(robots, 'Sitemap: https://simjury.com/sitemap.xml', 'Robots must advertise sitemap')
 
 if (failures.length) {
   console.error(`Crawl-surface validation failed:\n- ${failures.join('\n- ')}`)
   process.exit(1)
 }
-
-console.log('Crawl-surface validation passed: canonical pages, raw Daily Docket fallback, robots, sitemap, and AI guides are complete and spoiler-safe.')
+console.log('Crawl-surface validation passed: Court Week canonicals, redirects, guides and spoiler boundary are consistent.')

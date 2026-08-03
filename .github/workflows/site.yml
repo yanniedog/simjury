@@ -1,7 +1,7 @@
 name: site
 
 # simjury.com (Cloudflare Static Assets) CI/CD.
-#   - On PRs touching site/**: build + Daily Docket checks + wrangler dry-run (no deploy).
+#   - On PRs touching site/**: build + Court Week checks + wrangler dry-run (no deploy).
 #   - On push to main (i.e. AFTER a PR merges through the bot gates): deploy.
 # Deploys never run from a PR — only from a merged change on main.
 
@@ -38,7 +38,7 @@ jobs:
       - name: Enforce assets-only Cloudflare guardrails
         working-directory: site
         run: npm run guard:cloudflare
-      - name: Validate Daily Docket static site
+      - name: Validate Court Week static site
         working-directory: site
         run: npm run check
 
