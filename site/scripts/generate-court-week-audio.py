@@ -125,7 +125,8 @@ def encode(source_wav: Path, target: Path, codec: str) -> None:
     retried = measure_loudness(target)
     if retried["truePeakDbtp"] > RELEASE_TRUE_PEAK_CEILING:
         raise RuntimeError(
-            f"{target} still exceeds the true-peak ceiling after codec compensation: {retried}"
+            f"{target} still exceeds the {RELEASE_TRUE_PEAK_CEILING:.2f} dBTP true-peak ceiling "
+            f"after codec compensation: {retried}"
         )
 
 
