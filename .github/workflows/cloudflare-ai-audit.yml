@@ -1,0 +1,66 @@
+name: Cloudflare AI access audit
+
+on:
+  push:
+    branches: [codex/llm-crawler-access]
+    paths:
+      - ".github/workflows/cloudflare-ai-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read bot and crawler controls
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          api="https://api.cloudflare.com/client/v4"
+          auth="Authorization: Bearer ${CLOUDFLARE_API_TOKEN:?missing Cloudflare API token}"
+          zone_response="$(curl --fail-with-body --silent --show-error \
+            --get "${api}/zones" \
+            --header "$auth" \
+            --data-urlencode "name=simjury.com")"
+          zone_id="$(jq -er '.result | if length == 1 then .[0].id else error("expected one simjury.com zone") end' <<<"$zone_response")"
+
+          bot_response="$(curl --fail-with-body --silent --show-error \
+            "${api}/zones/${zone_id}/bot_management" \
+            --header "$auth")"
+          jq -e '{
+            success,
+            result: (.result | {
+              ai_bots_protection,
+              content_bots_protection,
+              fight_mode,
+              is_robots_txt_managed,
+              sbfm_definitely_automated,
+              sbfm_likely_automated,
+              sbfm_verified_bots
+            })
+          }' <<<"$bot_response"
+
+          robots_response="$(curl --fail-with-body --silent --show-error \
+            --get "${api}/zones/${zone_id}/ai-audit/robots" \
+            --header "$auth" \
+            --data-urlencode "subdomain=simjury.com")"
+          jq -e '{success, result}' <<<"$robots_response"
+
+          rules_response="$(curl --fail-with-body --silent --show-error \
+            "${api}/zones/${zone_id}/rulesets/phases/http_request_firewall_custom/entrypoint" \
+            --header "$auth")"
+          jq -e '{
+            success,
+            rules: [
+              .result.rules[]?
+              | select(
+                  ((.description // "") | ascii_downcase | test("ai|bot|crawl|agent|anthropic|claude"))
+                  or ((.expression // "") | ascii_downcase | test("ai|bot|crawl|agent|anthropic|claude"))
+                )
+              | {action, description, enabled, expression, ref}
+            ]
+          }' <<<"$rules_response"
