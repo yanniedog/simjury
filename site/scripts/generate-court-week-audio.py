@@ -25,6 +25,8 @@ JOB_SCHEMA = "simjury.court-week-audio-job/v1"
 SESSION_SCHEMA = "simjury.court-week-session-media/v1"
 TARGET_LUFS = -18.0
 TARGET_TRUE_PEAK = -1.5
+RELEASE_TRUE_PEAK_CEILING = -0.5
+RETRY_TRUE_PEAK_TARGET = -1.25
 
 
 def run(command: list[str], *, capture: bool = False) -> subprocess.CompletedProcess[str]:
@@ -83,7 +85,7 @@ def synthesise(pipeline: Any, text: str, voice: str, np: Any) -> Any:
     return np.concatenate(chunks)
 
 
-def encode(source_wav: Path, target: Path, codec: str) -> None:
+def encode_once(source_wav: Path, target: Path, codec: str, true_peak: float) -> None:
     codec_arguments = {
         "opus": ["-c:a", "libopus", "-b:a", "32k", "-vbr", "on"],
         "aac": ["-c:a", "aac", "-b:a", "48k", "-movflags", "+faststart"],
@@ -92,11 +94,34 @@ def encode(source_wav: Path, target: Path, codec: str) -> None:
     run([
         "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
         "-i", str(source_wav),
-        "-af", f"loudnorm=I={TARGET_LUFS}:LRA=7:TP={TARGET_TRUE_PEAK}",
+        "-af", f"loudnorm=I={TARGET_LUFS}:LRA=7:TP={true_peak}",
         "-ac", "1", "-ar", "48000",
         *codec_arguments,
         str(target),
     ])
+
+
+def retry_true_peak(measured_true_peak: float) -> float:
+    """Compensate for the exact lossy codec's measured inter-sample overshoot."""
+    overshoot = max(0.0, measured_true_peak - RETRY_TRUE_PEAK_TARGET)
+    return TARGET_TRUE_PEAK - overshoot
+
+
+def encode(source_wav: Path, target: Path, codec: str) -> None:
+    encode_once(source_wav, target, codec, TARGET_TRUE_PEAK)
+    measured = measure_loudness(target)
+    if measured["truePeakDbtp"] <= RELEASE_TRUE_PEAK_CEILING:
+        return
+
+    adjusted_target = retry_true_peak(measured["truePeakDbtp"])
+    log.warning(
+        "%s encoded at %.2f dBTP; retrying %s from the lossless stem with a %.2f dBTP target",
+        target,
+        measured["truePeakDbtp"],
+        codec,
+        adjusted_target,
+    )
+    encode_once(source_wav, target, codec, adjusted_target)
 
 
 def probe_duration(path: Path) -> float:
@@ -107,7 +132,7 @@ def probe_duration(path: Path) -> float:
     return float(completed.stdout.strip())
 
 
-def probe_loudness(path: Path) -> dict[str, float]:
+def measure_loudness(path: Path) -> dict[str, float]:
     completed = subprocess.run([
         "ffmpeg", "-hide_banner", "-nostats", "-i", str(path),
         "-af", f"loudnorm=I={TARGET_LUFS}:LRA=7:TP={TARGET_TRUE_PEAK}:print_format=json",
@@ -119,14 +144,18 @@ def probe_loudness(path: Path) -> dict[str, float]:
     if not matches:
         raise RuntimeError(f"No EBU loudness result for {path}")
     measured = json.loads(matches[-1])
-    result = {
+    return {
         "integratedLufs": float(measured["input_i"]),
         "truePeakDbtp": float(measured["input_tp"]),
         "loudnessRangeLu": float(measured["input_lra"]),
     }
+
+
+def probe_loudness(path: Path) -> dict[str, float]:
+    result = measure_loudness(path)
     if not -20.0 <= result["integratedLufs"] <= -16.0:
         raise RuntimeError(f"{path} is outside the -18 LUFS dialogue window: {result}")
-    if result["truePeakDbtp"] > -0.5:
+    if result["truePeakDbtp"] > RELEASE_TRUE_PEAK_CEILING:
         raise RuntimeError(f"{path} exceeds the true-peak ceiling: {result}")
     if result["loudnessRangeLu"] > 12.0:
         raise RuntimeError(f"{path} has excessive loudness range: {result}")
