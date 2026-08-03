@@ -76,6 +76,10 @@ from GitHub is incompatible with the site's `connect-src 'self'` policy.
 `site/app/scripts/scene-art-requirements.ts` generates a manifest keyed to all
 55 authored scene IDs. Each key owns six unique conventional paths:
 
+[`COURT-WEEK-ART-BIBLE.md`](COURT-WEEK-ART-BIBLE.md) is the human continuity
+gate for the fixed courtroom geography, recurring cast and chronological
+contact-sheet review. Binary validity never overrides a continuity rejection.
+
 - `portrait.avif` and `portrait.webp`, 9:16 and at least 720x1280;
 - `tablet.avif` and `tablet.webp`, 4:3 and at least 1024x768; and
 - `desktop.avif` and `desktop.webp`, 16:9 and at least 1280x720.
