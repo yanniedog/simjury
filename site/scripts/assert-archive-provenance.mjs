@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, extname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -8,6 +8,12 @@ const repoRoot = resolve(siteRoot, '..')
 const archiveRoot = join(repoRoot, 'archive', 'daily-v2-2026-08-03')
 const manifestPath = join(archiveRoot, 'manifest.json')
 const failures = []
+const canonicalBytes = (path) => {
+  const bytes = readFileSync(path)
+  return ['.json', '.md'].includes(extname(path).toLowerCase())
+    ? Buffer.from(bytes.toString('utf8').replace(/\r\n/g, '\n'), 'utf8')
+    : bytes
+}
 
 if (!existsSync(manifestPath)) {
   failures.push('Daily Docket v2 archive manifest is missing')
@@ -27,7 +33,7 @@ if (!existsSync(manifestPath)) {
       failures.push(`Archived file is missing: ${file.path}`)
       continue
     }
-    const digest = createHash('sha256').update(readFileSync(path)).digest('hex')
+    const digest = createHash('sha256').update(canonicalBytes(path)).digest('hex')
     if (digest !== file.sha256) failures.push(`Archived hash changed: ${file.path}`)
   }
 }

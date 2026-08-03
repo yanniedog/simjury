@@ -1,12 +1,18 @@
 import { createHash } from 'node:crypto'
-import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
-import { dirname, join, relative, resolve, sep } from 'node:path'
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { dirname, extname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const repoRoot = resolve(siteRoot, '..')
 const archiveRoot = join(repoRoot, 'archive', 'daily-v2-2026-08-03')
 const roots = ['cases', 'media']
+const canonicalBytes = (path) => {
+  const bytes = readFileSync(path)
+  return ['.json', '.md'].includes(extname(path).toLowerCase())
+    ? Buffer.from(bytes.toString('utf8').replace(/\r\n/g, '\n'), 'utf8')
+    : bytes
+}
 
 function filesBelow(directory) {
   return readdirSync(directory, { withFileTypes: true })
@@ -19,10 +25,10 @@ function filesBelow(directory) {
 const files = roots.flatMap((name) => filesBelow(join(archiveRoot, name)))
   .sort((left, right) => left.localeCompare(right))
   .map((path) => {
-    const bytes = readFileSync(path)
+    const bytes = canonicalBytes(path)
     return {
       path: relative(archiveRoot, path).split(sep).join('/'),
-      bytes: statSync(path).size,
+      bytes: bytes.length,
       sha256: createHash('sha256').update(bytes).digest('hex'),
     }
   })
