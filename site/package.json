@@ -2,7 +2,7 @@
   "name": "simjury-web",
   "private": true,
   "type": "module",
-  "description": "simjury.com Daily Docket static site",
+  "description": "simjury.com Court Week static site",
   "engines": {
     "node": ">=24"
   },
@@ -15,7 +15,7 @@
     "predeploy": "npm run install:app && npm run build:assets",
     "deploy": "wrangler deploy",
     "precheck": "npm run install:app && npm run build:assets",
-    "check": "npm run guard:cloudflare && npm run test:runtime && npm run check:tokens && npm run check:landing && npm run check:crawl && wrangler deploy --dry-run",
+    "check": "npm run guard:cloudflare && npm run check:archive && npm run test:static && npm run check:tokens && npm run check:landing && npm run check:crawl && npm run check:budget && wrangler deploy --dry-run",
     "check:tokens": "node scripts/assert-design-tokens.mjs",
     "check:landing": "node scripts/assert-landing-page.mjs",
     "check:crawl": "node scripts/assert-crawl-surface.mjs",
@@ -23,9 +23,10 @@
     "cloudflare:ai-bots:audit": "node scripts/cloudflare-ai-bots.mjs audit",
     "cloudflare:ai-bots:apply": "node scripts/cloudflare-ai-bots.mjs apply",
     "cloudflare:ai-bots:apply:dry-run": "node scripts/cloudflare-ai-bots.mjs apply --dry-run",
-    "waitlist:unsubscribe": "node scripts/waitlist-unsubscribe.mjs",
     "guard:cloudflare": "node scripts/assert-cloudflare-static-only.mjs",
-    "test:runtime": "node --test tests/cloudflare-runtime.test.mjs tests/waitlist.test.mjs tests/landing-disclosure.test.mjs tests/narration-jobs.test.mjs"
+    "check:archive": "node scripts/assert-archive-provenance.mjs",
+    "check:budget": "node scripts/assert-static-budget.mjs",
+    "test:static": "node --test tests/cloudflare-static.test.mjs tests/landing-disclosure.test.mjs"
   },
   "devDependencies": {
     "wrangler": "4.113.0"

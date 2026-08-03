@@ -2,52 +2,38 @@
 
 ## Start here
 
-The repository's only product surface is **The Daily Docket** on
-**simjury.com**, implemented in `site/app/`.
+The repository's only product is **SimJury Court Week** on simjury.com,
+implemented in `site/app/` and governed by [`COURT-WEEK.md`](COURT-WEEK.md).
 
-1. Read [`DAILY-PIVOT.md`](DAILY-PIVOT.md), the owner decision record and product
-   constraints.
-2. Read [`docs/DAILY-CASES.md`](docs/DAILY-CASES.md) for case-authoring rules,
-   and [`docs/DOCKET-SUPPLY.md`](docs/DOCKET-SUPPLY.md) for how the docket stays
-   a rolling week ahead and what "complete" means for a case.
-3. Read [`docs/DESIGN-PROTOCOL.md`](docs/DESIGN-PROTOCOL.md) before changing the
-   interface. It is the binding rule set from the design and UX audit.
-4. Use [`ROADMAP.md`](ROADMAP.md), [`WORKFLOW.md`](WORKFLOW.md), and
-   [`site/DECISIONS.md`](site/DECISIONS.md) as needed.
+1. Read `COURT-WEEK.md` for the owner decision and legal/hosting invariants.
+2. Read `docs/DESIGN-PROTOCOL.md` before changing the interface.
+3. Use `ROADMAP.md`, `WORKFLOW.md`, and `site/DECISIONS.md` as needed.
+4. Treat `DAILY-PIVOT.md`, `docs/DAILY-CASES.md`,
+   `docs/DOCKET-SUPPLY.md`, and `docs/COMMISSION-BRIEF.md` as retired-history
+   pointers, not active specifications.
 
-On 2026-07-29 the owner removed the former Android/JVM app and real historical-case
-track. They must not be reintroduced. Old `/play` and `/install` URLs are tombstoned
-to the current web product.
+On 2026-07-29 the owner removed the Android/JVM application and real
+historical-case track. On 2026-08-03 the owner retired the Daily Docket, its
+rolling supply, live rooms and waitlist. None may be reintroduced.
 
 ## Non-negotiable rules
 
-- **Daily Docket only** — work in `site/app/` and its site, CI, content, and docs.
-- **Daily cases are fiction, and say so** — `label: "fiction"` is a safety
-  invariant. Cases use real trial patterns, never real events, and contain no real
-  names of people, companies, brands, or specific places in player-visible text.
-- **No runtime AI; static-first hosting** — player-facing text is pre-authored JSON.
-  Ordinary and solo routes remain static; only the allowlisted live-jury paths
-  may use the bounded Worker and SQLite Durable Objects.
-- **A 20-minute V4 sitting** — new V4 cases must validate inside a computed
-  19–21 minute window. The playable V3 slate keeps its existing pacing gates
-  only until each case is expanded under the transitional 20-minute gate or
-  fully migrated; do not weaken either contract.
-- **The interface follows the design protocol** —
-  [`docs/DESIGN-PROTOCOL.md`](docs/DESIGN-PROTOCOL.md) binds `site/app/` and the
-  landing page: nothing above the phase heading but the top bar, colour never
-  carries meaning alone, one string has one home, surfaces are opaque, and juror
-  leanings stay sealed until the judge reads the result.
-- **Preserve provenance** — `archive/daily-v1/` is retained verbatim and is not a
-  shipped case source.
-- **PRs target the default branch, and run in parallel** — never stack a PR onto a
-  feature branch (it merges unreviewed) and never hand-roll `gh pr merge --auto`;
-  `pr:arm-and-park` fails closed with `base-unprotected`. Many PRs may be open
-  against `main` at once. See `.cursor/rules/pr-base-must-be-gated.mdc`.
-- **Required checks stay deterministic** — only `validate` and
-  `bot-feedback-gate` block merge. External bot presence and local Qwen are
-  advisory/disabled; every substantive review thread still needs a disposition.
-- **One concern per PR, about 400 lines, squash merge.** Agents use
-  `npm run pr:arm-and-park`; never `--watch` babysitting.
+- **One Court Week case only:** Eleven Minutes, with five court days and weekend
+  deliberation. No case chooser or rolling docket.
+- **Fiction and adult-entry safety:** no real people, organisations, brands,
+  events or specific real places; serious, non-graphic writing; one combined
+  fiction/18+ entry gate.
+- **No runtime AI or backend play:** content is reviewed and pre-authored;
+  progress, notes and ballots stay on-device.
+- **Cloudflare Static Assets only:** no Worker, route, D1, Durable Object, KV,
+  R2, Queue, AI, rate limiter, variables or observability.
+- **Audio-first, device-complete:** 18–22 measured minutes per day, minimal
+  persistent text, optional captions and reading mode, with equivalent play on
+  supported phone, tablet and desktop browsers.
+- **Preserve provenance:** both `archive/daily-v1/` and
+  `archive/daily-v2-2026-08-03/` are retained and excluded from builds.
+- **PR discipline:** target `main`; required deterministic `validate` and
+  `bot-feedback-gate`; one concern per PR; squash through `pr:arm-and-park`.
 
 ## Build and test
 
@@ -59,4 +45,8 @@ npm run typecheck
 npm test
 npm run validate:cases
 npm run build
+
+cd ..
+npm ci
+npm run check
 ```

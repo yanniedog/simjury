@@ -24,7 +24,7 @@ jobs:
       - name: Verify required docs exist
         run: |
           set -euo pipefail
-          for f in README.md DAILY-PIVOT.md ROADMAP.md WORKFLOW.md AGENTS.md CLAUDE.md docs/DAILY-CASES.md; do
+          for f in README.md COURT-WEEK.md DAILY-PIVOT.md ROADMAP.md WORKFLOW.md AGENTS.md CLAUDE.md docs/DESIGN-PROTOCOL.md; do
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
           test -d .projectmem || { echo "Missing .projectmem"; exit 1; }
@@ -37,8 +37,8 @@ jobs:
 
       - name: Check repository policy references
         run: |
-          grep -q "Daily Docket" AGENTS.md
-          grep -q "Daily Docket" ROADMAP.md
+          grep -q "Court Week" AGENTS.md
+          grep -q "Court Week" ROADMAP.md
           grep -q "only required checks" AGENTS.md
           grep -q "validate.*bot-feedback-gate" .github/BRANCH_PROTECTION.md
           test -f WORKFLOW.md
@@ -59,33 +59,32 @@ jobs:
           npm run pr:bot-wait-or-groups:verify
           npm run pr:base-guard:verify
           npm run pr:arm-and-park:verify
-          npm run docket:agent:verify
           npm run pr:coderabbit-filters:verify
           npm run pr:coderabbit-contract:verify
           npm run pr:coderabbit-review-recovery:verify
           npm run pr:coderabbit-rate-limit-retry:verify
           npm run github:bot-gates:operator
 
-      - name: Install Daily Docket dependencies
+      - name: Install Court Week dependencies
         working-directory: site/app
         run: npm ci
 
-      - name: Lint Daily Docket
+      - name: Lint Court Week
         working-directory: site/app
         run: npm run lint
 
-      - name: Typecheck Daily Docket
+      - name: Typecheck Court Week
         working-directory: site/app
         run: npm run typecheck
 
-      - name: Test Daily Docket
+      - name: Test Court Week
         working-directory: site/app
         run: npm test
 
-      - name: Validate Daily Docket cases
+      - name: Validate Court Week
         working-directory: site/app
         run: npm run validate:cases
 
-      - name: Build Daily Docket
+      - name: Build Court Week
         working-directory: site/app
         run: npm run build

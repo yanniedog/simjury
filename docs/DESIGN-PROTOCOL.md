@@ -1,167 +1,122 @@
-# Design protocol — the binding interface rules
+# Design protocol — the binding Court Week interface rules
 
-The Daily Docket's writing, case construction and palette are sound. What the
-2026-08-02 design and UX audit found was an interface that keeps interrupting
-them: persistent chrome above every phase, eleven authored jurors drawn as
-numbered boxes, and the same string printed twice on one screen.
+These rules bind `site/app/` and the landing page. They turn the player into a
+juror inside an unfolding hearing rather than a reader advancing cards. A
+feature that breaks one is a regression.
 
-These are the rules that came out of that audit. They are binding on
-`site/app/` and on the landing page. A change that breaks one of them is a
-regression even when it ships a feature.
+## 1. The stage is the product
 
-Each rule states the failure it exists to prevent, so it can be argued with on
-evidence rather than taste.
+The courtroom fills the available viewport. Use `100dvh` with `100svh` and
+fixed-position fallbacks plus `env(safe-area-inset-*)`. Persistent gameplay text
+is limited to speaker, court day/procedural phase, compact controls and optional
+captions. The juror desk is hidden until requested.
 
-## 1. The chrome budget
+Native fullscreen is optional. Rejection or Escape must leave a complete CSS
+fullscreen experience and must not alter audio position, scene or legal state.
 
-**Above the phase heading: the top bar, and nothing else.**
+## 2. One responsive composition is not three stretched crops
 
-Anything rendered outside the phase switch is paid for on the briefing, the
-openings, every evidence beat, the closings, the jury room and the record — six
-phases and fourteen beats, for a twenty-minute sitting. The audit measured 460px
-of such chrome on a 1440×950 desktop viewport, which put the case heading below
-the fold in every phase.
+Important scenes supply portrait-phone, 4:3-tablet and 16:9-desktop artwork via
+`<picture>`, `srcset` and `sizes`. Every scene records a focal point and
+subject-, evidence- and caption-safe regions.
 
-- A panel that belongs to one phase renders in that phase.
-- **An unavailable feature renders nothing.** Not a panel explaining the
-  absence. The live-jury lobby, when the health check reports rooms closed, is
-  absent — the solo route is the product, not a fallback being apologised for.
-- Destructive controls (rewind, clear progress) live behind a menu and a
-  confirm, never as a permanent banner in the first screenful.
+- A crop may never remove a face, exhibit label or legally material detail.
+- The evidence viewer is an opaque device-sized surface with button-operated
+  zoom, reset and pan. Pinch/pan is optional, never required.
+- No fact exists only in imagery, colour or sound.
+- Failed art falls back to a neutral built-in courtroom surface while audio and
+  state continue.
 
-## 2. The top bar does not wrap
+## 3. Controls survive every device
 
-Capped at **3.5rem on mobile, 4.5rem on desktop**, one row, always.
+Controls reflow with container queries, not device detection:
 
-Four always-visible audio controls wrapped onto a second row at 390px and held
-21% of the viewport permanently, on a screen whose job is reading. Secondary
-controls — voice engine, speed, narration, room tone — belong in the popover
-behind a single audio button.
+- phone portrait: bottom safe-area strip and full-screen desk sheet;
+- phone landscape: compact side controls outside the focal/caption regions;
+- tablet: optional 38–42% side sheet in either orientation or split-screen;
+- desktop: centred controls and a juror-desk overlay no wider than 420px.
 
-## 3. Colour never carries meaning alone
+At 200% zoom controls may wrap into an accessible menu, but no action or legal
+content disappears and no horizontal page scrolling is introduced. Targets are
+at least 44×44 CSS pixels. Hover, dragging, precision gestures and orientation
+lock are prohibited as requirements.
 
-- **No red/green pairing for status.** It is the pairing protanopes and
-  deuteranopes cannot separate. Use amber/blue: thematically warm Crown against
-  cool defence.
-- Every colour signal has a redundant channel — a printed label, a mark, an
-  `aria-pressed` state.
-- **Verdict choices are three identical neutral surfaces.** Green for acquit and
-  red for convict paints a moral valence onto a threshold the case asks the
-  player to apply honestly, and contradicts the reveal's own statement that it
-  offers "an editorial comparison, not an objectively correct answer".
-  Selection is marked in brass, not by fill colour.
+## 4. Audio leads; captions and reading are complete alternatives
 
-## 4. One string, one home
+“Take your seat” primes narration, ambience and optional fullscreen. Only the
+next unlocked scene is preloaded. Hiding the tab, interruption, rotation,
+resizing and changing output devices pause safely; resume starts at the last
+incomplete caption cue boundary.
 
-The same text is never printed twice on one screen.
+- Audio-first may hide captions; Audio + captions remembers them; Reading mode
+  is always available.
+- Captions use at most two opaque lines in authored safe zones. If enlarged text
+  cannot fit, the view expands to reading mode rather than clipping.
+- Visible captions render once. A separate polite live region supplies the same
+  cue to assistive technology without duplicate speech.
+- One failed fetch retries once, then offers device speech with captions; if no
+  voice works, reading mode opens automatically.
 
-- The speaker's name belongs on the card. The beat toolbar carries position and
-  mode only.
-- The charge belongs in the rail, where it stays visible for the whole sitting.
-- **Narration off: the narrator cue renders nothing.** Narration is an
-  alternative to reading the screen, not a duplicate of it. Narration on: a
-  single-line caption tied to playback state, subordinate to the testimony it
-  introduces.
-- A cue never repeats text already visible elsewhere on the screen.
+## 5. The juror's desk is functional memory
 
-## 5. Surfaces are opaque, and elevation is lightness
+The desk holds the charge and alternative, element question trail, admitted
+exhibits, judicial rulings and limitations, schedule and private notes. Oral
+testimony is forward-only: no searchable transcript. Admitted recorded exhibits
+may be replayed with a warning against giving them disproportionate weight.
 
-Four surface tokens ascending from `#0d1113`. The gradient stays on the page
-ground and never sits under a panel.
+Struck evidence is immediately removed from replay, desk, closings,
+deliberation and analysis. Private notes that contain a struck fragment are
+marked and excluded from deliberation selection without transmitting them.
 
-A translucent panel over a gradient has measurably different contrast depending
-on where it lands, so its text contrast cannot be stated as a ratio at all.
-Opaque tokens make contrast a fixed, checkable property of each pair. Pure black
-is also avoided deliberately: shadows and elevation cannot read against it.
+## 6. Courtroom roles have a visible and audible grammar
 
-## 6. Tokens are declared once
+Chief, cross and re-examination are distinguishable by counsel position,
+speaker label and sound perspective, never colour alone. Objections interrupt at
+their authored position; overruled and sustained rulings feel materially
+different. Judicial directions and open-court returns use the bench composition.
 
-One `tokens.css`, imported by both the app and the landing page. Palette
-variables declared in two stylesheets agree only until someone edits one.
+Surfaces are opaque. Elevation is expressed through controlled lightness; the
+near-black and brass palette remains. Crown/defence and verdict choices have
+neutral shapes with printed labels and state attributes. Red/green is not a
+semantic pair.
 
-Four radii. One hairline colour. One motion set. Twelve distinct radius values
-across an app is sprawl, not expression.
+## 7. Deliberation is evidence-first and sealed
 
-## 7. Typefaces are loaded or not named
+Speaking takes two required decisions: what legal question/evidence the player
+points to, then how they reason with it. Direction, address and free text are
+optional refinements. Free text stays private and is never sent for analysis.
 
-A font stack names only faces that will actually render: either self-hosted from
-`'self'` (which the strict CSP allows) or a deliberate system stack. Naming
-`Inter` with no `@font-face` rule and no font file means the site renders in
-Segoe UI, SF or Roboto depending on the platform, while the code claims
-otherwise.
+The player's provisional ballot seals before the anonymous aggregate first
+ballot. Seat-level positions never appear. A later majority direction does not
+reuse the first ballot: further discussion and a fresh final ballot are
+mandatory. No random tie-break or forced juror conversion is allowed.
 
-Typography: one alignment per block; any paragraph over two lines is
-left-aligned; testimony sets to `max-width: 66ch`.
+## 8. Progress tells procedural truth
 
-## 8. The jurors are people, not seats
+Progress is seven sessions plus the current legal phase, not a generic card
+count. Advance controls name the procedural result—“Call the next witness” or
+“Retire to consider the verdict”—rather than repeating “Next”. A locked session
+states its Hobart unlock time without exposing future case content.
 
-The premise of the product is that you must persuade eleven distinct people.
-They have authored personas, portraits, persuasion styles and their own notes.
+Rotation, viewport resize, split-screen and fullscreen changes must not restart
+media or alter progress. Scene transitions, adjournments and ballots save
+atomically; failed storage retains the current session in memory and offers an
+export.
 
-- A seat shows **portrait, given name, and a glyph for persuasion style**.
-- The speaking juror's seat lifts and rings in brass, and the transcript line is
-  anchored to that seat.
-- Clicking a seat opens that juror's dossier in place. The seat is the single
-  juror object — not numbers on the bench, names in the transcript and
-  characters in a panel behind a mode switch.
-- **Leanings and tallies stay sealed until the judge reads the result.** This is
-  a product rule and it outranks the rest of this section. Standing and
-  attention describe approach, not position, so they may show.
+## 9. Accessibility and motion are release gates
 
-## 9. Progress tells the truth
+Retain the skip link, visible 3px focus ring, semantic headings, focus movement
+at major procedural transitions, keyboard access, `aria-current` for the live
+speaker, reduced motion, forced-colour support and the 44px target floor.
 
-A progress indicator frozen for the longest stretch of the sitting is worse than
-none: it actively suggests nothing is happening.
+Test from 320×568 to 2560×1440 in supported phone, tablet, split-screen and
+desktop browsers at 100% and 200% zoom. Reduced motion uses static cuts; it does
+not remove content. No autoplay, audio, image, fullscreen or storage capability
+may be required to reach a lawful verdict.
 
-- Weight the bar by real work, not by phase count. Evidence is fourteen beats
-  and roughly half of the twenty minutes; it is not one sixth.
-- Each beat visibly lands, via a segmented indicator.
-- **Advance controls name their outcome.** "Call the first witness", not the
-  fourteenth "Next →".
+## 10. Restraint remains binding
 
-## 10. The rail is the juror's desk
-
-The charge, the elements the prosecution must prove, the evidence index, and
-your notes — what a real juror keeps in front of them. Not one line of text and
-a privacy notice held for twenty minutes.
-
-The storage notice moves to the footer. On mobile the rail must not reflow to
-put a privacy note below the primary button.
-
-## 11. Two decisions to speak
-
-The deliberation is why this is a product and not an article. Reaching send
-takes at most two decisions: **what you are pointing at** (the recollection),
-then **how you put it** (the technique).
-
-Direction and address are optional refinements behind a disclosure with sensible
-defaults. Free text is optional and never first. A five-field form at three
-rounds per sitting costs more time than the deliberation it serves, and feels
-like filing rather than speaking.
-
-## What is already right, and stays
-
-Recorded here so it is not traded away by a later change.
-
-- The **accessibility groundwork**: a skip link, a 44px minimum target (well
-  above the 24px WCAG 2.2 requires), a 3px focus ring, focus moved to the phase
-  heading on every transition, `aria-current` on the speaking turn, and a global
-  `prefers-reduced-motion` block.
-- The **no-JavaScript fallback** in `index.html`, which describes the whole
-  journey in readable prose.
-- The **palette's character** — brass on near-black with warm paper ink. Rules 3
-  and 5 adjust how it is applied; they do not replace it.
-- The **restraint**: no leaderboards, no streaks, no feed.
-
-## Grounding
-
-- WCAG 2.2 — target size 2.5.8, focus not obscured 2.4.11, dragging movements
-  2.5.7
-- *A Practical Guide To Designing For Colorblind People*, Smashing Magazine
-- *Optimal line length for readability*, UXPin — the 50–75 character band
-- *Tips for dark theme design*, UX Planet — elevation by lightness, off-black
-  grounds
-
-Method behind the findings: a Playwright walkthrough of the full sitting at
-1440×950 and 390×844 against `vite dev`, plus a read of the app source, both
-stylesheets and the landing page. Case shown: Docket 0214, The Locked Floor.
+One string has one visual home. Typefaces are either self-hosted or removed from
+the stack. Long reading-mode paragraphs are left-aligned and capped at 66ch.
+Tokens are defined once. There are no leaderboards, streaks, feeds, attention
+traps, countdowns or moral colouring of verdicts.

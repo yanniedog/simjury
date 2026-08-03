@@ -1,7 +1,7 @@
 {
   "name": "SimJury",
   "private": true,
-  "description": "SimJury Daily Docket web app and repository automation",
+  "description": "SimJury Court Week web app and repository automation",
   "engines": {
     "node": "24.x"
   },
@@ -13,7 +13,6 @@
     "pr:gates:check": "node scripts/pr-gates-check.mjs",
     "pr:arm-and-park": "node scripts/pr-arm-and-park.mjs",
     "pr:arm-and-park:verify": "node scripts/verify-pr-arm-and-park.mjs",
-    "docket:agent:verify": "node scripts/verify-docket-case-agent.mjs",
     "pr:merge": "node scripts/pr-merge.mjs",
     "pr:gate-exempt-policy:verify": "node scripts/verify-pr-gate-exempt-policy.mjs",
     "pr:gate-logic:verify": "node scripts/verify-pr-gate-logic.mjs",

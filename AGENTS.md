@@ -6,15 +6,16 @@ Hierarchical development team for SimJury. Every agent session declares its **ro
 
 ## Active surface (binding)
 
-**simjury.com only.** All agent work targets the Daily Docket web app in `site/app/`
-(and related site/CI/docs). See `CLAUDE.md` and `DAILY-PIVOT.md`.
+**simjury.com only.** All agent work targets the Court Week web app in `site/app/`
+(and related site/CI/docs). See `CLAUDE.md` and `COURT-WEEK.md`.
 
 ### Removed surfaces — binding owner decision
 
 On 2026-07-29 the owner removed the Android/JVM application and the real
 historical-case track. They are not parked or deferred and must not be
-reintroduced. Daily Docket work, its fictional case pipeline, static media,
-narration, and `archive/daily-v1/` provenance remain active.
+reintroduced. On 2026-08-03 the owner also retired Daily Docket, its rolling
+case supply, live rooms and waitlist. Court Week, static media/narration, and
+both archive provenance directories remain active.
 
 ---
 
@@ -38,20 +39,20 @@ Orchestrator (Lead)
 
 ### Architect
 
-- Schema, module boundaries, Daily Docket / `ROADMAP.md` alignment for `site/app/`
+- Schema, legal state-machine boundaries, Court Week / `ROADMAP.md` alignment for `site/app/`
 - Reviews cross-module impact before Engineer merges
 - **Reports to:** Orchestrator
 - **Deliverables:** ADRs and schema changes in small PRs
 
 ### Content Curator
 
-- Owns Daily Docket case quality (`docs/DAILY-CASES.md`, banned-token / fiction gates)
+- Owns Eleven Minutes content quality (`COURT-WEEK.md`, banned-token / fiction gates)
 - **Reports to:** Orchestrator
-- **Deliverables:** Daily Docket case JSON and quality notes
+- **Deliverables:** Court Week authored record and quality notes
 
 ### Engineer
 
-- Implements **simjury.com** / `site/app/` per `DAILY-PIVOT.md` and site decisions
+- Implements **simjury.com** / `site/app/` per `COURT-WEEK.md` and site decisions
 - Interface work follows `docs/DESIGN-PROTOCOL.md` — the binding rules from the
   design and UX audit. Breaking one is a regression even in a feature PR.
 - Matches existing conventions; minimal diffs
@@ -60,7 +61,7 @@ Orchestrator (Lead)
 
 ### QA
 
-- Runs `site/app` checks (`npm test`, `validate:cases`, manual Daily Docket playthrough)
+- Runs `site/app` checks (`npm test`, `validate:cases`, manual Court Week playthrough)
 - Files issues and confirms fixes through tests
 - **Reports to:** Orchestrator
 - **Deliverables:** test additions, CI fixes, gate sign-off in PR
@@ -71,7 +72,7 @@ Orchestrator (Lead)
 
 ### Start
 
-1. Read `CLAUDE.md` and `DAILY-PIVOT.md`
+1. Read `CLAUDE.md` and `COURT-WEEK.md`
 2. Confirm work is for **simjury.com** / `site/app/`
 3. Declare role and task in first commit/PR message
 

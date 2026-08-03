@@ -59,7 +59,7 @@ No mutable title or author-name exemption bypasses protected bot gates.
 ## 2. PR CI (`validate`)
 
 The required `ci` workflow runs repository-policy and PR gate script checks plus
-the full deterministic Daily Docket gate: pinned install, lint, typecheck, tests,
+the full deterministic Court Week gate: pinned install, lint, typecheck, tests,
 case validation and build. The path-filtered site workflows retain their focused
 checks and deployment responsibilities, but they are not substitutes for
 `validate`.

@@ -1,70 +1,63 @@
-# SimJury — The Daily Docket
+# SimJury — Court Week
 
-SimJury is **The Daily Docket**: one fictional, contemporary case per day with a
-deterministic interactive jury room, playable at
-[simjury.com/today](https://simjury.com/today/).
+SimJury is one immersive fictional criminal trial, **Eleven Minutes**, unfolding
+over a five-day court week and a weekend jury deliberation. The canonical player
+is [simjury.com/jury](https://simjury.com/jury/).
 
-Owner decision, 2026-07-29: the former Android/JVM app and real historical-case
-track were removed from this repository and must not be reintroduced. The Daily
-Docket remains active. Old `/play` and `/install` URLs redirect to the current web
-product.
+The experience is audio-first and fullscreen, with optional captions and reading
+mode. It is designed as the same complete legal experience on phones, tablets
+and desktop browsers. Eleven authored jurors deliberate locally with the player;
+there are no accounts, human-room services or runtime AI.
 
-**Public site:** [simjury.com](https://simjury.com) (Cloudflare Static Assets
-project `simjury-web` in `site/`).
+Owner decisions retained: the former Android/JVM application, real
+historical-case track and Daily Docket are retired and must not be reintroduced.
+Legacy `/today`, `/play` and `/install` routes redirect to Court Week.
 
 ## Static hosting and privacy boundary
 
-Case JSON, media, art, and application code are authored in this repository and
-bundled by GitHub Actions. Player progress remains in browser storage.
-Pre-generated narration is served from GitHub Releases with device-local Web
-Speech as a fallback. The Cloudflare deployment is static-first: ordinary and
-solo routes bypass compute, while the optional bounded live-jury beta uses one
-Worker and three SQLite Durable Objects. Rooms expire after two hours and hard
-caps limit daily admission, concurrent rooms, seats, message count, message size,
-and retained history. The optional email waitlist uses one D1 database behind
-Cloudflare's in-memory rate limiter; permitted signups use one indexed upsert
-and never scan or count the table. It does not use Workers AI, KV, R2, Queues,
-Analytics Engine, public
-`workers.dev` host, preview URLs, or observability.
+Reviewed source and production automation live in GitHub. Trusted manual GitHub
+Actions generate and verify media; heavy, content-addressed assets are pinned to
+an immutable GitHub Release. Cloudflare serves Static Assets only and performs no
+application compute or storage.
 
-Natural narration requests deterministic opaque clip IDs from GitHub. GitHub can
-observe normal request metadata and playback timing, but URLs contain no case text,
-verdict, or private player state. Cloudflare never synthesizes or stores narration.
+Progress, private notes and ballots stay in browser storage. An explicit local
+export/import file provides device transfer. GitHub can observe ordinary media
+request metadata and Cloudflare can observe ordinary CDN request metadata; those
+requests contain no saved progress, private notes or ballots.
 
 ## Quick start
 
 ```bash
 cd site/app
 npm ci
-npm run dev
 npm run lint
 npm run typecheck
 npm test
 npm run validate:cases
 npm run build
+
+cd ..
+npm ci
+npm run check
 ```
 
-Verify the site wrapper from the repository root with `npm run site:check`.
-Use Node 24 and `npm run cloud:bootstrap -- --check` for checkout preflight.
+Use Node 24. The root preflight is `npm run cloud:bootstrap -- --check`.
 
 ## Repository map
 
 | Area | Location |
 |------|----------|
-| Owner decision record | `DAILY-PIVOT.md` |
-| Daily case authoring | `docs/DAILY-CASES.md` |
-| Daily web app | `site/app/` |
-| Static site and deployment | `site/` |
-| Retired fictional docket provenance | `archive/daily-v1/` |
+| Active owner decision | `COURT-WEEK.md` |
+| Interface contract | `docs/DESIGN-PROTOCOL.md` |
+| Court Week web app | `site/app/` |
+| Static deployment | `site/` |
+| Retired Daily Docket | `archive/daily-v2-2026-08-03/` |
+| Earlier fictional provenance | `archive/daily-v1/` |
 | PR workflow | `WORKFLOW.md` |
 
 ## Development workflow
 
-1. Branch from `main` using `codex/<descriptive-name>`.
-2. Open a small PR with one concern.
-3. Run the checks documented in `CLAUDE.md`.
-4. Resolve CI and all review threads; squash merge only.
-
-`main` requires deterministic `validate` and `bot-feedback-gate`. Reviewer
-presence and local Qwen are advisory. See
-`.github/BRANCH_PROTECTION.md` and `WORKFLOW.md`.
+Branch from `main`, open a small draft PR with one concern, run the checks in
+`CLAUDE.md`, and resolve CI and every substantive review thread. `main` requires
+`validate` and `bot-feedback-gate`; squash merging is armed only through
+`npm run pr:arm-and-park`.

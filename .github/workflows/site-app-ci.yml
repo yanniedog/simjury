@@ -1,6 +1,6 @@
-# The Daily Docket app (site/app) CI: lint · typecheck · test · validate:cases · build.
+# The Court Week app (site/app) CI: lint, typecheck, test, validate and build.
 # Fast build/test gate. The app's output is deployed by site.yml through
-# site/public/today/; this workflow does not deploy on its own.
+# site/public/jury/; this workflow does not deploy on its own.
 name: site-app
 
 on:
@@ -43,7 +43,21 @@ jobs:
         run: npm run typecheck
       - name: Test
         run: npm test
-      - name: Validate cases (schema + design-quality gate)
+      - name: Validate Court Week (schema + legal-quality gate)
         run: npm run validate:cases
       - name: Build
         run: npm run build
+      - name: Install browser engines
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Browser and responsive matrix
+        run: npm run test:browser
+      - name: Upload browser QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: court-week-browser-qa
+          path: |
+            site/app/playwright-report/
+            site/app/test-results/
+          if-no-files-found: ignore
+          retention-days: 14
