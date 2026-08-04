@@ -37,7 +37,7 @@ describe('SceneArtManifest contract', () => {
   it('keeps commissioned and absent safe-region decisions explicit', () => {
     const manifest = buildSceneArtManifestDraft(elevenMinutesCourtWeek)
     const commissioned = new Set(Object.keys(SCENE_ART_AUTHORING))
-    expect(commissioned.size).toBe(13)
+    expect(commissioned.size).toBe(14)
     for (const [sceneId, entry] of Object.entries(manifest.scenes)) {
       if (commissioned.has(sceneId)) {
         expect(entry.subjectSafeRegion).not.toBeNull()
