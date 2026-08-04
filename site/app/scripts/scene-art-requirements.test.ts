@@ -65,6 +65,12 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['tue-recording'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
 
     const evidenceNeutralReviewedScenes = [
+      'tue-resume',
+      'tue-dorn-chief',
+      'tue-dorn-cross',
+      'tue-dorn-re',
+      'tue-mir-chief',
+      'tue-mir-cross',
       'tue-adjourn',
       'wed-resume',
       'wed-pell-chief',
@@ -111,6 +117,55 @@ describe('SceneArtManifest contract', () => {
     }
 
     expect(manifest.scenes['tue-adjourn'].compositionArt.portrait.subjectSafeRegion).toBeNull()
+    const tuesdayCropDirections = {
+      'tue-resume': {
+        portrait: [{ x: 50, y: 48 }, { x: 0, y: 37, width: 100, height: 49 }, 'top'],
+        tablet: [{ x: 50, y: 47 }, { x: 0, y: 33, width: 100, height: 53 }, 'top'],
+        desktop: [{ x: 50, y: 47 }, { x: 0, y: 31, width: 100, height: 59 }, 'top'],
+      },
+      'tue-dorn-chief': {
+        portrait: [{ x: 52, y: 49 }, { x: 0, y: 36, width: 100, height: 50 }, 'top'],
+        tablet: [{ x: 52, y: 47 }, { x: 0, y: 28, width: 100, height: 59 }, 'top'],
+        desktop: [{ x: 52, y: 46 }, { x: 0, y: 28, width: 100, height: 64 }, 'top'],
+      },
+      'tue-dorn-cross': {
+        portrait: [{ x: 53, y: 48 }, { x: 6, y: 25, width: 94, height: 43 }, 'bottom'],
+        tablet: [{ x: 52, y: 46 }, { x: 12, y: 22, width: 80, height: 45 }, 'bottom'],
+        desktop: [{ x: 57, y: 44 }, { x: 28, y: 9, width: 58, height: 59 }, 'bottom'],
+      },
+      'tue-dorn-re': {
+        portrait: [{ x: 52, y: 49 }, { x: 0, y: 36, width: 100, height: 50 }, 'top'],
+        tablet: [{ x: 52, y: 47 }, { x: 0, y: 28, width: 100, height: 59 }, 'top'],
+        desktop: [{ x: 52, y: 46 }, { x: 0, y: 27, width: 100, height: 65 }, 'top'],
+      },
+      'tue-mir-chief': {
+        portrait: [{ x: 52, y: 49 }, { x: 0, y: 36, width: 100, height: 50 }, 'top'],
+        tablet: [{ x: 52, y: 47 }, { x: 0, y: 28, width: 100, height: 59 }, 'top'],
+        desktop: [{ x: 52, y: 46 }, { x: 0, y: 28, width: 100, height: 64 }, 'top'],
+      },
+      'tue-mir-cross': {
+        portrait: [{ x: 53, y: 48 }, { x: 7, y: 26, width: 93, height: 42 }, 'bottom'],
+        tablet: [{ x: 52, y: 46 }, { x: 12, y: 22, width: 80, height: 45 }, 'bottom'],
+        desktop: [{ x: 62, y: 43 }, { x: 37, y: 17, width: 49, height: 51 }, 'bottom'],
+      },
+    } as const
+    for (const [sceneId, directions] of Object.entries(tuesdayCropDirections)) {
+      for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
+        const [focalPoint, subjectSafeRegion, captionPosition] = directions[composition]
+        expect(manifest.scenes[sceneId].compositionArt[composition]).toMatchObject({
+          focalPoint,
+          subjectSafeRegion,
+          evidenceSafeRegion: null,
+          permittedCaptionPositions: [captionPosition],
+          reviewStatus: 'crop-reviewed',
+        })
+      }
+    }
+    expect(manifest.scenes['tue-dorn-chief'].altDescription).toContain('no distress words, console status or inference about intent')
+    expect(manifest.scenes['tue-dorn-cross'].altDescription).toContain('does not resolve the room noise, competing incidents or her reliability')
+    expect(manifest.scenes['tue-dorn-re'].altDescription).toContain('no competing incident, inference or enhancement')
+    expect(manifest.scenes['tue-mir-chief'].altDescription).toContain('no audit-log content, launch-strip words, time or state of mind')
+    expect(manifest.scenes['tue-mir-cross'].altDescription).toContain('No log is depicted as infallible, worthless or proof of state of mind')
     expect(manifest.scenes['wed-resume'].compositionArt.portrait.permittedCaptionPositions).toEqual(['top'])
     expect(manifest.scenes['wed-resume'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
     expect(manifest.scenes['wed-adjourn'].compositionArt.portrait.subjectSafeRegion).toBeNull()

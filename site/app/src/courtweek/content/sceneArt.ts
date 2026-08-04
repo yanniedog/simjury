@@ -99,17 +99,37 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
   },
   'tue-resume': {
     altDescription: 'Juror-seat view of Tuesday court resuming, with the judge addressing the jury, counsel and the accused seated neutrally, and the witness box empty.',
-    compositionArt: sharedCompositionArt({
-      focalPoint: { x: 50, y: 42 }, subjectSafeRegion: { x: 10, y: 18, width: 80, height: 62 },
-      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
-    }),
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 37, width: 100, height: 49 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 47 }, subjectSafeRegion: { x: 0, y: 33, width: 100, height: 53 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 47 }, subjectSafeRegion: { x: 0, y: 31, width: 100, height: 59 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
   },
   'tue-dorn-chief': {
     altDescription: 'Junior dispatcher Peli Dorn gives evidence from the witness box while Crown counsel questions her; no distress words, console status or inference about intent is depicted.',
-    compositionArt: sharedCompositionArt({
-      focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
-    }),
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 52, y: 49 }, subjectSafeRegion: { x: 0, y: 36, width: 100, height: 50 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 52, y: 47 }, subjectSafeRegion: { x: 0, y: 28, width: 100, height: 59 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 52, y: 46 }, subjectSafeRegion: { x: 0, y: 28, width: 100, height: 64 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
   },
   'tue-recording': {
     altDescription: 'The courtroom listens to the admitted distress-channel recording while Peli Dorn remains in the witness box; an abstract waveform is visible but no words or disputed meaning are depicted.',
@@ -133,31 +153,71 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
   },
   'tue-dorn-cross': {
     altDescription: 'Defence counsel questions Peli Dorn from the lectern while she remains composed in the witness box; the scene does not resolve the room noise, competing incidents or her reliability.',
-    compositionArt: sharedCompositionArt({
-      focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
-    }),
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 53, y: 48 }, subjectSafeRegion: { x: 6, y: 25, width: 94, height: 43 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 52, y: 46 }, subjectSafeRegion: { x: 12, y: 22, width: 80, height: 45 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 57, y: 44 }, subjectSafeRegion: { x: 28, y: 9, width: 58, height: 59 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+      }),
+    },
   },
   'tue-dorn-re': {
     altDescription: 'Crown counsel asks Peli Dorn a confined clarifying question after cross-examination; no competing incident, inference or enhancement of her evidence is depicted.',
-    compositionArt: sharedCompositionArt({
-      focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
-    }),
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 52, y: 49 }, subjectSafeRegion: { x: 0, y: 36, width: 100, height: 50 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 52, y: 47 }, subjectSafeRegion: { x: 0, y: 28, width: 100, height: 59 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 52, y: 46 }, subjectSafeRegion: { x: 0, y: 27, width: 100, height: 65 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
   },
   'tue-mir-chief': {
     altDescription: 'Records custodian Tovan Mir gives evidence from the witness box while Crown counsel questions him; no audit-log content, launch-strip words, time or state of mind is depicted.',
-    compositionArt: sharedCompositionArt({
-      focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
-    }),
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 52, y: 49 }, subjectSafeRegion: { x: 0, y: 36, width: 100, height: 50 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 52, y: 47 }, subjectSafeRegion: { x: 0, y: 28, width: 100, height: 59 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 52, y: 46 }, subjectSafeRegion: { x: 0, y: 28, width: 100, height: 64 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
   },
   'tue-mir-cross': {
     altDescription: 'Defence counsel questions records custodian Tovan Mir while he remains composed in the witness box. No log is depicted as infallible, worthless or proof of state of mind.',
-    compositionArt: sharedCompositionArt({
-      focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
-    }),
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 53, y: 48 }, subjectSafeRegion: { x: 7, y: 26, width: 93, height: 42 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 52, y: 46 }, subjectSafeRegion: { x: 12, y: 22, width: 80, height: 45 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 62, y: 43 }, subjectSafeRegion: { x: 37, y: 17, width: 49, height: 51 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+      }),
+    },
   },
   'tue-adjourn': {
     altDescription: 'The courtroom is empty after Tuesday’s adjournment, with the bench, witness box and counsel tables orderly in dusk light. No evidence remains visible or readable.',
