@@ -105,17 +105,17 @@ describe('Court Week prerecorded audio jobs', () => {
       writeSceneArtManifestDraft(artRequirements)
       const artRequirementsManifest = JSON.parse(readFileSync(artRequirements, 'utf8'))
       mkdirSync(artRoot, { recursive: true })
-      const monday = elevenMinutesCourtWeek.manifest.sessions[0]
+      const commissionedSessions = elevenMinutesCourtWeek.manifest.sessions.slice(0, 2)
       const compositions = {
         portrait: { tile: { width: 720, height: 1280 }, strip: { width: 1440, height: 1280 } },
         tablet: { tile: { width: 1024, height: 768 }, strip: { width: 2048, height: 768 } },
         desktop: { tile: { width: 1280, height: 720 }, strip: { width: 2560, height: 720 } },
       }
-      const strips = Array.from({ length: 4 }, (_, stripIndex) => {
+      const strips = commissionedSessions.flatMap((session) => Array.from({ length: 4 }, (_, stripIndex) => {
         const sources = Object.fromEntries(Object.keys(compositions).map((composition) => [
           composition,
           Object.fromEntries(['avif', 'webp'].map((format) => {
-            const path = `strips/day-01/strip-${stripIndex + 1}/${composition}.${format}`
+            const path = `strips/day-${String(session.ordinal).padStart(2, '0')}/strip-${stripIndex + 1}/${composition}.${format}`
             const target = resolve(artRoot, path)
             mkdirSync(resolve(target, '..'), { recursive: true })
             writeFileSync(target, `${stripIndex}:${composition}:${format}`)
@@ -123,10 +123,10 @@ describe('Court Week prerecorded audio jobs', () => {
           })),
         ]))
         return {
-          sessionId: monday.id,
-          ordinal: monday.ordinal,
+          sessionId: session.id,
+          ordinal: session.ordinal,
           stripIndex,
-          sceneSlots: monday.scenes.slice(stripIndex * 2, stripIndex * 2 + 2)
+          sceneSlots: session.scenes.slice(stripIndex * 2, stripIndex * 2 + 2)
             .map((scene, cell) => ({
               sceneId: scene.id,
               cell,
@@ -134,7 +134,7 @@ describe('Court Week prerecorded audio jobs', () => {
             })),
           sources,
         }
-      })
+      }))
       writeFileSync(artStrips, JSON.stringify({
         schema: 'simjury.scene-art-strip-source/v1',
         caseId: 'cw-0001',
@@ -223,7 +223,7 @@ describe('Court Week prerecorded audio jobs', () => {
       expect(runtime.sessions.find((session: { session_id: string }) =>
         session.session_id === 'cw-0001-monday').art.strips).toHaveLength(4)
       expect(runtime.sessions.find((session: { session_id: string }) =>
-        session.session_id === 'cw-0001-tuesday').art).toBeNull()
+        session.session_id === 'cw-0001-tuesday').art.strips).toHaveLength(4)
       const reviewStrips = JSON.parse(readFileSync(resolve(privateOutputRoot, 'scene-art-strips.source.json'), 'utf8'))
       expect(reviewStrips.strips[0].sceneSlots[0]).toMatchObject({
         sceneId: 'mon-arrival',
@@ -247,7 +247,7 @@ describe('Court Week prerecorded audio jobs', () => {
       )
       const artReport = JSON.parse(readFileSync(resolve(privateOutputRoot, 'art-readiness-report.json'), 'utf8'))
       expect(artReport.release_ready).toBe(false)
-      expect(artReport.ready_scene_count).toBe(14)
+      expect(artReport.ready_scene_count).toBe(15)
       expect(artReport.ready_scene_ids).toEqual([
         'mon-arrival',
         'mon-oath',
@@ -263,6 +263,7 @@ describe('Court Week prerecorded audio jobs', () => {
         'tue-dorn-re',
         'tue-mir-chief',
         'tue-mir-cross',
+        'tue-adjourn',
       ])
       expect(artReport.scene_count).toBe(55)
       expect(() => execFileSync(process.execPath, [
