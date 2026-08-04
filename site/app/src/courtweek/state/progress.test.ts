@@ -8,6 +8,7 @@ import {
   importWeeklyProgress,
   loadWeeklyProgressResult,
   loadWeeklyProgress,
+  mergeImportedWeeklyProgress,
   saveWeeklyProgress,
 } from './progress'
 
@@ -238,6 +239,27 @@ describe('weekly progress', () => {
       'cw-0001',
       '2026.08.03-r2',
     )).toThrow('different case revision')
+  })
+
+  it('does not let an older import roll back the highest observed court time', () => {
+    const imported = {
+      ...progress,
+      highestObservedTime: '2026-08-10T08:30:00+10:00',
+      completedSessionIds: [],
+    }
+    const current = {
+      ...progress,
+      highestObservedTime: '2026-08-12T08:30:00+10:00',
+    }
+
+    expect(mergeImportedWeeklyProgress(current, imported)).toEqual({
+      ...imported,
+      highestObservedTime: '2026-08-11T22:30:00.000Z',
+    })
+    expect(mergeImportedWeeklyProgress(imported, current)).toEqual({
+      ...current,
+      highestObservedTime: '2026-08-11T22:30:00.000Z',
+    })
   })
 
   it('rejects forged or duplicated reasoning outside the authored journey', () => {
