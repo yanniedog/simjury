@@ -1,7 +1,8 @@
 import { z } from 'zod'
 import type { CourtSession, CourtWeek, SceneCue } from '../model/schema'
 
-const assetName = z.string().regex(/^[0-9a-f]{64}\.(?:opus|m4a|mp3|vtt)$/u)
+const audioAssetName = z.string().regex(/^[0-9a-f]{64}\.(?:opus|m4a|mp3|vtt)$/u)
+const artAssetName = z.string().regex(/^[0-9a-f]{64}\.(?:avif|webp)$/u)
 
 const runtimeCueSchema = z.object({
   cue_id: z.string().min(1),
@@ -15,11 +16,46 @@ const runtimeSegmentSchema = z.object({
   duration_seconds: z.number().positive(),
   cues: z.array(runtimeCueSchema).min(1),
   sources: z.object({
-    opus: assetName,
-    aac: assetName,
-    mp3: assetName,
-    captions: assetName,
+    opus: audioAssetName,
+    aac: audioAssetName,
+    mp3: audioAssetName,
+    captions: audioAssetName,
   }).strict(),
+}).strict()
+
+const stripSourcesSchema = z.object({
+  avif: artAssetName,
+  webp: artAssetName,
+}).strict()
+
+const runtimeArtSchema = z.object({
+  grid: z.object({ columns: z.literal(2), rows: z.literal(1) }).strict(),
+  compositions: z.object({
+    portrait: z.object({
+      tile_width: z.literal(720), tile_height: z.literal(1280),
+      strip_width: z.literal(1440), strip_height: z.literal(1280),
+    }).strict(),
+    tablet: z.object({
+      tile_width: z.literal(1024), tile_height: z.literal(768),
+      strip_width: z.literal(2048), strip_height: z.literal(768),
+    }).strict(),
+    desktop: z.object({
+      tile_width: z.literal(1280), tile_height: z.literal(720),
+      strip_width: z.literal(2560), strip_height: z.literal(720),
+    }).strict(),
+  }).strict(),
+  strips: z.array(z.object({
+    strip_index: z.number().int().min(1).max(4),
+    scene_slots: z.array(z.object({
+      scene_id: z.string().min(1),
+      cell: z.number().int().min(0).max(1),
+    }).strict()).min(1).max(2),
+    sources: z.object({
+      portrait: stripSourcesSchema,
+      tablet: stripSourcesSchema,
+      desktop: stripSourcesSchema,
+    }).strict(),
+  }).strict()).length(4),
 }).strict()
 
 export const courtWeekSessionMediaSchema = z.object({
@@ -28,6 +64,7 @@ export const courtWeekSessionMediaSchema = z.object({
   narration_seconds: z.number().positive(),
   experience_seconds: z.number().min(18 * 60).max(22 * 60),
   segments: z.array(runtimeSegmentSchema).min(8).max(12),
+  art: runtimeArtSchema,
 }).strict()
 
 export const courtWeekRuntimeMediaManifestSchema = z.object({
@@ -50,7 +87,7 @@ export function assertRuntimeMediaCoverage(
     manifest.source_revision !== courtWeek.manifest.revision ||
     manifest.release_tag !== courtWeek.manifest.releaseTag
   ) {
-    throw new Error('Pinned Court Week audio manifest targets a different reviewed revision.')
+    throw new Error('Pinned Court Week media manifest targets a different reviewed revision.')
   }
   const authoredCueIds = courtWeek.manifest.sessions.flatMap((session) =>
     session.scenes.flatMap((scene) => scene.cues.map((cue) => cue.id)))
@@ -60,12 +97,12 @@ export function assertRuntimeMediaCoverage(
     new Set(mappedCueIds).size !== mappedCueIds.length ||
     JSON.stringify([...mappedCueIds].sort()) !== JSON.stringify([...authoredCueIds].sort())
   ) {
-    throw new Error(`Pinned audio maps ${new Set(mappedCueIds).size} unique cues; reviewed Court Week requires ${authoredCueIds.length}.`)
+    throw new Error(`Pinned media maps ${new Set(mappedCueIds).size} unique cues; reviewed Court Week requires ${authoredCueIds.length}.`)
   }
   for (const sourceSession of courtWeek.manifest.sessions) {
     const media = manifest.sessions.find((session) => session.session_id === sourceSession.id)
     if (!media || media.day !== sourceSession.day) {
-      throw new Error(`Pinned audio is missing ${sourceSession.id}.`)
+      throw new Error(`Pinned media is missing ${sourceSession.id}.`)
     }
     for (const segment of media.segments) {
       const scene = sourceSession.scenes.find((candidate) => candidate.id === segment.source_scene_id)
@@ -77,6 +114,20 @@ export function assertRuntimeMediaCoverage(
       if (segment.cues.some((cue) => cue.end_seconds > segment.duration_seconds)) {
         throw new Error(`Audio segment ${segment.id} has a cue beyond its duration.`)
       }
+    }
+    const expectedSceneIds = sourceSession.scenes.map((scene) => scene.id)
+    const strips = [...media.art.strips].sort((left, right) => left.strip_index - right.strip_index)
+    if (strips.some((strip, index) => strip.strip_index !== index + 1)) {
+      throw new Error(`Pinned art for ${sourceSession.id} does not have four ordered strips.`)
+    }
+    const mappedSceneIds = strips.flatMap((strip) => {
+      if (strip.scene_slots.some((slot, index) => slot.cell !== index)) {
+        throw new Error(`Pinned art strip ${strip.strip_index} has a non-chronological cell map.`)
+      }
+      return strip.scene_slots.map((slot) => slot.scene_id)
+    })
+    if (JSON.stringify(mappedSceneIds) !== JSON.stringify(expectedSceneIds)) {
+      throw new Error(`Pinned art for ${sourceSession.id} does not map its exact scene order.`)
     }
   }
 }
