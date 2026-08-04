@@ -6,6 +6,7 @@ import {
   elevenMinutesCourtWeek,
   elevenMinutesValidation,
 } from '../src/courtweek/content'
+import { reportCourtWeekReviewSignoffs } from './court-week-review-signoffs'
 
 const appRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 const sessions = elevenMinutesCourtWeek.manifest.sessions
@@ -44,6 +45,8 @@ for (const session of sessions) {
   const seconds = elevenMinutesValidation.durationSeconds[session.id]
   console.log(`${session.day}: ${seconds}s (${(seconds / 60).toFixed(1)} minutes)`)
 }
+
+reportCourtWeekReviewSignoffs()
 
 console.log(
   `Court Week validation passed: ${elevenMinutesCourtWeek.manifest.title}, `

@@ -7,6 +7,7 @@ import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
 import { AUDIO_SAMPLE_RATE, buildCourtWeekAudioJobs, COURT_WEEK_VOICES, DIALOGUE_SPEAKER_ALIASES, splitCueUtterances, writeCourtWeekAudioJobs } from './court-week-audio-jobs'
 import { RUNTIME_DEPENDENT_CUE_IDS } from '../src/courtweek/media/runtimeCues'
 import { writeSceneArtManifestDraft } from './scene-art-requirements'
+import { courtWeekReviewDigest } from './court-week-review-signoffs'
 
 describe('Court Week prerecorded audio jobs', () => {
   it('covers the exact reviewed source with eight deterministic segments per day', () => {
@@ -83,6 +84,7 @@ describe('Court Week prerecorded audio jobs', () => {
     const audioRoot = resolve(temporary, 'audio')
     const outputRoot = resolve(temporary, 'release')
     const jobsRoot = resolve(temporary, 'jobs-root')
+    const reviewSignoffs = resolve(temporary, 'review-signoffs.json')
     const artRequirements = resolve(temporary, 'scene-art-requirements.json')
     const artRoot = resolve(temporary, 'art-strips')
     const artStrips = resolve(artRoot, 'scene-art-strips.json')
@@ -91,6 +93,15 @@ describe('Court Week prerecorded audio jobs', () => {
     const { jobs } = buildCourtWeekAudioJobs(elevenMinutesCourtWeek)
     try {
       writeCourtWeekAudioJobs(jobsRoot)
+      writeFileSync(reviewSignoffs, JSON.stringify({
+        schema: 'simjury.court-week-review-report/v1',
+        caseId: 'cw-0001',
+        revision: elevenMinutesCourtWeek.manifest.revision,
+        contentDigest: courtWeekReviewDigest(),
+        pendingRoles: ['prosecution'],
+        exactSourceMatch: true,
+        readyToPublish: false,
+      }))
       writeSceneArtManifestDraft(artRequirements)
       const artRequirementsManifest = JSON.parse(readFileSync(artRequirements, 'utf8'))
       mkdirSync(artRoot, { recursive: true })
@@ -137,6 +148,7 @@ describe('Court Week prerecorded audio jobs', () => {
         '--release-tag', releaseTag,
         '--audio-root', audioRoot,
         '--jobs-root', jobsRoot,
+        '--review-signoffs', reviewSignoffs,
         '--art-requirements', artRequirements,
         '--art-root', artRoot,
         '--art-strips', artStrips,
@@ -224,6 +236,10 @@ describe('Court Week prerecorded audio jobs', () => {
       const publicManifest = JSON.parse(readFileSync(resolve(outputRoot, 'release-manifest.json'), 'utf8'))
       expect(JSON.stringify(publicManifest)).not.toContain('logical_path')
       expect(JSON.stringify(publicManifest)).not.toContain('mon-arrival')
+      expect(publicManifest.court_week_revision).toBe(elevenMinutesCourtWeek.manifest.revision)
+      expect(publicManifest.review_content_digest).toBe(courtWeekReviewDigest())
+      const reviewReport = JSON.parse(readFileSync(resolve(privateOutputRoot, 'review-signoffs.json'), 'utf8'))
+      expect(reviewReport.readyToPublish).toBe(false)
       expect(publicManifest.media_bytes).toBeGreaterThan(0)
       expect(publicManifest.total_bytes).toBeGreaterThan(publicManifest.media_bytes)
       expect(publicManifest.total_bytes).toBe(

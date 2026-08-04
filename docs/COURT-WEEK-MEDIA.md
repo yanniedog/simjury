@@ -27,6 +27,31 @@ npm run media:audio:jobs -- --output ../../.court-week-audio-jobs
 
 The generated job directory is review material, not a production asset.
 
+## Exact-source review signoffs
+
+`site/app/content-reviews/cw-0001.review-signoffs.json` is the reviewed-source
+ledger. Its SHA-256 identity is calculated from the exact `TrialRecord`, all
+seven ordered `SessionPresentation` values and the `DeliberationPack`, together
+with the Court Week revision. The required roles are prosecution, defence,
+judicial-neutrality, accessibility, sensitivity, read-aloud, blind-balance and
+fixed-scope-criminal-law. A role decision needs no reviewer name or other PII.
+
+Keep decisions `pending` until each review has actually approved the displayed
+digest and revision through the normal GitHub review process. Do not copy an
+approval to a new digest. Check the current release blocker with:
+
+```powershell
+cd site/app
+npm run review:signoffs
+```
+
+Normal validation and `publish: false` report pending roles but continue so the
+private media artifact can be reviewed. That artifact carries the exact digest.
+A later trusted `publish: true` run downloads that reviewed artifact, recomputes
+the digest from current `main`, and fails unless the artifact, revision and all
+eight checked-in approvals match. The ledger and private report never become a
+gameplay API, database or public Release asset.
+
 ## Trusted GitHub build
 
 The `court-week-media` workflow is manual-only and accepts an immutable release
@@ -46,8 +71,9 @@ The workflow records the exact Python, FFmpeg, Kokoro, Torch, NumPy and
 SoundFile versions used by every matrix job and rejects mixed environments.
 
 The optional publish job is the only job with `contents: write`. It refuses to
-replace an existing tag. Do not set `publish` true until the review artifact,
-the fixed revision and the app's pinned runtime manifest have all been reviewed.
+replace an existing tag or publish without all exact-source review signoffs. Do
+not set `publish` true until the review artifact, fixed revision and app's pinned
+runtime manifest have all been reviewed.
 
 ## Blocking media gates
 
