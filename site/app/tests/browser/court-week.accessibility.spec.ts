@@ -1,4 +1,4 @@
-import { expect, test, type Browser, type BrowserContext, type Page } from '@playwright/test'
+import { expect, test, type Browser, type BrowserContext, type Locator, type Page } from '@playwright/test'
 
 const baseURL = 'http://127.0.0.1:43127'
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
@@ -55,6 +55,13 @@ async function expectNoHorizontalOverflow(page: Page) {
     document: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     body: document.body.scrollWidth - document.body.clientWidth,
   }))).toEqual({ document: 0, body: 0 })
+}
+
+async function expectThreePixelFocusRing(locator: Locator) {
+  expect(await locator.evaluate((element) => {
+    const style = getComputedStyle(element)
+    return { width: style.outlineWidth, style: style.outlineStyle }
+  })).toEqual({ width: '3px', style: 'solid' })
 }
 
 test('reduced motion switches to static cuts without changing legal position', async ({ page }) => {
@@ -128,7 +135,9 @@ test('keyboard-only entry, skip link and desk expose a visible three-pixel focus
   await expect(page.getByLabel('Reading mode')).toBeChecked()
   await page.keyboard.press('Tab')
   await page.keyboard.press('Tab')
-  await expect(page.getByRole('button', { name: 'Take your seat' })).toBeFocused()
+  const entryButton = page.getByRole('button', { name: 'Take your seat' })
+  await expect(entryButton).toBeFocused()
+  await expectThreePixelFocusRing(entryButton)
   await page.keyboard.press('Enter')
   await expect(page.locator('.cw-shell')).toBeVisible()
 
@@ -137,16 +146,14 @@ test('keyboard-only entry, skip link and desk expose a visible three-pixel focus
   await expect(skip).toBeFocused()
   await expect(skip).toBeVisible()
   await expect(skip).toHaveAttribute('href', '#cw-primary-controls')
+  await expectThreePixelFocusRing(skip)
   await page.keyboard.press('Tab')
   await expect(page.getByRole('button', { name: 'Play' })).toBeFocused()
 
   for (let index = 0; index < 3; index += 1) await page.keyboard.press('Tab')
   const deskTrigger = page.getByRole('button', { name: 'Juror desk', exact: true })
   await expect(deskTrigger).toBeFocused()
-  expect(await deskTrigger.evaluate((element) => {
-    const style = getComputedStyle(element)
-    return { width: style.outlineWidth, style: style.outlineStyle }
-  })).toEqual({ width: '3px', style: 'solid' })
+  await expectThreePixelFocusRing(deskTrigger)
 
   const before = await capturePosition(page)
   await page.keyboard.press('Enter')
