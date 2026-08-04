@@ -24,6 +24,13 @@ describe('Court Week reviewed-source signoffs', () => {
     expect(courtWeekReviewDigest()).toBe(courtWeekReviewDigest())
   })
 
+  it('invalidates the review digest when the pre-entry content advisory changes', () => {
+    const changed = structuredClone(elevenMinutesCourtWeek)
+    changed.manifest.contentAdvisory += ' Changed after review.'
+
+    expect(courtWeekReviewDigest(changed)).not.toBe(courtWeekReviewDigest())
+  })
+
   it('reports pending roles without treating them as approvals', () => {
     const report = assessReviewSignoffs(source())
     expect(report.exactSourceMatch).toBe(true)

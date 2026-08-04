@@ -12,7 +12,7 @@ export const elevenMinutesCourtWeek = courtWeekSchema.parse({
     label: 'fiction',
     title: 'Eleven Minutes',
     subtitle: 'One distress call. One deliberate hold. Your week in the jury box.',
-    contentAdvisory: 'Fictional non-graphic discussion of a death during a marine emergency. Suitable for adults.',
+    contentAdvisory: 'Fictional, non-graphic marine-emergency death, including an acted distress call. Pause or leave at any time; progress remains on this device. Suitable for adults.',
     timezone: 'Australia/Hobart',
     releaseTag: 'court-week-cw-0001-2026.08.03-r1',
     sessions: elevenMinutesSessions,

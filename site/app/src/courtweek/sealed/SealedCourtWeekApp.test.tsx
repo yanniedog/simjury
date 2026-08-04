@@ -67,6 +67,9 @@ describe('SealedCourtWeekApp', () => {
       )
     })
     await vi.waitFor(() => expect(container.textContent).toContain('Take your seat'))
+    expect(courtWeekBootstrap.contentAdvisory).toBe(elevenMinutesCourtWeek.manifest.contentAdvisory)
+    expect(container.textContent).toContain('acted distress call')
+    expect(container.textContent).toContain('Pause or leave at any time')
 
     const enter = Array.from(container.querySelectorAll('button')).find(
       (button) => button.textContent?.trim() === 'Take your seat',

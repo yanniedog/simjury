@@ -3,6 +3,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
+import type { CourtWeek } from '../src/courtweek/model/schema'
 
 export const COURT_WEEK_REVIEW_ROLES = [
   'prosecution',
@@ -50,12 +51,13 @@ function canonicalJson(value: unknown): string {
   return JSON.stringify(value)
 }
 
-export function courtWeekReviewDigest(): string {
+export function courtWeekReviewDigest(courtWeek: CourtWeek = elevenMinutesCourtWeek): string {
   const exactReviewedSource = {
-    revision: elevenMinutesCourtWeek.manifest.revision,
-    trialRecord: elevenMinutesCourtWeek.trial,
-    sessionPresentations: elevenMinutesCourtWeek.manifest.sessions,
-    deliberationPack: elevenMinutesCourtWeek.deliberation,
+    revision: courtWeek.manifest.revision,
+    contentAdvisory: courtWeek.manifest.contentAdvisory,
+    trialRecord: courtWeek.trial,
+    sessionPresentations: courtWeek.manifest.sessions,
+    deliberationPack: courtWeek.deliberation,
   }
   return `sha256:${createHash('sha256').update(canonicalJson(exactReviewedSource)).digest('hex')}`
 }
