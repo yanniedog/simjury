@@ -31,6 +31,18 @@ describe('sealed Court Week partition', () => {
     expect(packs[5].deliberation).toEqual(elevenMinutesCourtWeek.deliberation)
   })
 
+  it('ships every admitted item exactly once and never ships struck material', () => {
+    const packedEvidence = packs.flatMap((pack) => pack.evidence)
+    const admittedIds = elevenMinutesCourtWeek.trial.evidence
+      .filter((item) => item.status === 'admitted')
+      .map((item) => item.id)
+
+    expect(packedEvidence.every((item) => item.status === 'admitted')).toBe(true)
+    expect(packedEvidence.map((item) => item.id)).not.toContain('struck-rumour')
+    expect(new Set(packedEvidence.map((item) => item.id))).toEqual(new Set(admittedIds))
+    expect(packedEvidence).toHaveLength(admittedIds.length)
+  })
+
   it('carries every commissioned Monday source in Monday only', () => {
     const media = resolve('public/media/court-week/cw-0001')
     const monday = packs[0]

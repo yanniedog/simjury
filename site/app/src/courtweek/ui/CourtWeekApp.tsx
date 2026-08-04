@@ -10,6 +10,7 @@ import {
   openCourtReturn,
   unanimousVerdict,
 } from '../engine/deliberation'
+import { nextReplaySafeCue, replaySafeCue } from '../engine/replay'
 import { useCuePlayback } from '../media/useCuePlayback'
 import {
   getSessionAvailability,
@@ -183,31 +184,32 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const position = cuePosition(activeSession, progress.currentSceneId, progress.currentCueId)
   const activeAvailability = availability.find((item) => item.id === activeSession.id)
   const presentedCue = useMemo<SceneCue>(() => {
-    if (position.cue.id === 'sun-verdict-return' && progress.returnedVerdict && progress.returnedAgreement) {
+    const safeCue = replaySafeCue(position.cue, isReplay)
+    if (safeCue.id === 'sun-verdict-return' && progress.returnedVerdict && progress.returnedAgreement) {
       return {
-        ...position.cue,
+        ...safeCue,
         text: openCourtReturn(progress.returnedVerdict, progress.returnedAgreement),
         accessibleProposition: `The accused stands while the ${progress.returnedAgreement} result is spoken and recorded in open court.`,
       }
     }
-    if (position.cue.id === 'sun-analysis') {
+    if (safeCue.id === 'sun-analysis') {
       if (!progress.returnedVerdict) {
         return {
-          ...position.cue,
+          ...safeCue,
           text: 'Analysis remains sealed until the jury has returned its result in open court.',
           accessibleProposition: 'Post-verdict analysis is not available before the open-court return.',
         }
       }
       const analysis = analysisForReturnedVerdict(courtWeek.deliberation, progress.returnedVerdict)
-      if (!analysis) return position.cue
+      if (!analysis) return safeCue
       return {
-        ...position.cue,
+        ...safeCue,
         text: `Strongest lawful rationale: ${analysis.lawfulRationale}\n\nStrongest counter-analysis: ${analysis.counterAnalysis}`,
         accessibleProposition: 'Balanced analysis presents the strongest lawful rationale and counter-analysis for the returned result without declaring a correct answer.',
       }
     }
-    return position.cue
-  }, [courtWeek.deliberation, position.cue, progress.returnedAgreement, progress.returnedVerdict])
+    return safeCue
+  }, [courtWeek.deliberation, isReplay, position.cue, progress.returnedAgreement, progress.returnedVerdict])
   const commitPosition = useCallback((sessionId: string, sceneId: string, cueId: string) => {
     updateProgress((current) => ({
       ...current,
@@ -218,7 +220,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   }, [updateProgress])
 
   const advance = useCallback(() => {
-    const nextCue = position.scene.cues[position.cueIndex + 1]
+    const nextCue = nextReplaySafeCue(position.scene.cues, position.cueIndex, isReplay)
     if (nextCue) {
       commitPosition(activeSession.id, position.scene.id, nextCue.id)
       return
