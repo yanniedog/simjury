@@ -7,7 +7,7 @@ import test from 'node:test'
 import { assessSceneArtManifest, readAvifDimensions, readWebpDimensions } from './scene-art-readiness.mjs'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
-const mediaRoot = resolve(repoRoot, 'site/app/public/media/court-week/cw-0001')
+const mediaRoot = resolve(repoRoot, 'site/court-week-art/cw-0001')
 
 test('reads dimensions from checked commissioned AVIF and WebP scene art', () => {
   const expected = {

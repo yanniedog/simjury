@@ -6,7 +6,7 @@ import { assessSceneArtManifest } from './scene-art-readiness.mjs'
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const repoRoot = resolve(siteRoot, '..')
-const visualSourceRoot = join(siteRoot, 'app', 'public', 'media', 'court-week', 'cw-0001')
+const visualSourceRoot = join(siteRoot, 'court-week-art', 'cw-0001')
 
 function argument(name) {
   const index = process.argv.indexOf(name)

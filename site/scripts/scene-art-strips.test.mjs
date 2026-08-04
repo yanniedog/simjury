@@ -10,7 +10,7 @@ import { buildSceneArtStrips } from './scene-art-strips.mjs'
 const temporary = mkdtempSync(join(tmpdir(), 'simjury-art-strips-'))
 const requirementsPath = join(temporary, 'requirements.json')
 const outputRoot = join(temporary, 'output')
-const mediaRoot = resolve('app/public/media/court-week/cw-0001')
+const mediaRoot = resolve('court-week-art/cw-0001')
 let manifest
 
 function filesBelow(root) {
