@@ -5,7 +5,7 @@ import {
   furtherDiscussionContributionSceneIds,
   preSecondBallotContributionSceneIds,
 } from '../model/deliberationContract'
-import type { ReasoningContribution, ReasoningMove, Verdict } from '../model/schema'
+import type { ReasoningContribution, Verdict } from '../model/schema'
 import {
   aggregateFirstBallot,
   assessReasoningContribution,
@@ -31,26 +31,39 @@ const journeyReasoningSceneIds = (start: number, end: number) => orderedScenes
 const preSecondJourney = journeyReasoningSceneIds(retirementIndex + 1, secondBallotIndex)
 const furtherDiscussionJourney = journeyReasoningSceneIds(secondBallotIndex + 1, majorityIndex)
 
-function contributions(sceneIds: readonly string[]): ReasoningContribution[] {
-  const moves: ReasoningMove[] = ['connect', 'distinguish', 'test-source', 'challenge-inference', 'raise-alternative', 'apply-burden']
+const propositionForVerdict: Record<Exclude<Verdict, 'unable-to-agree'>, string> = {
+  murder: 'prop-intent-log-connect',
+  manslaughter: 'prop-negligence-warning-connect',
+  'not-guilty': 'prop-causation-survival-challenge',
+}
+
+function contributions(
+  sceneIds: readonly string[],
+  propositionId = 'prop-intent-log-connect',
+): ReasoningContribution[] {
+  const proposition = elevenMinutesDeliberation.propositions.find(({ id }) => id === propositionId)!
   return sceneIds.map((sceneId, index) => ({
+    propositionId,
     sceneId,
-    legalQuestion: `Question ${index + 1}`,
-    evidenceId: `exhibit-${index + 1}`,
-    move: moves[index % moves.length],
+    legalQuestion: proposition.legalQuestion,
+    evidenceId: proposition.evidenceId,
+    move: proposition.move,
     recordedAt: new Date(index * 1000).toISOString(),
     influencePenalty: 0,
   }))
 }
 
 function finalResult(verdict: Verdict, before: number, after: number, direction = true) {
+  const propositionId = verdict === 'unable-to-agree'
+    ? 'prop-duty-route-source-limit'
+    : propositionForVerdict[verdict]
   return calculateFinalBallot({
     pack: elevenMinutesDeliberation,
     secondVote: verdict,
     finalVote: verdict,
     contributions: [
-      ...contributions(preSecondJourney.slice(0, before)),
-      ...contributions(furtherDiscussionJourney.slice(0, after)),
+      ...contributions(preSecondJourney.slice(0, before), propositionId),
+      ...contributions(furtherDiscussionJourney.slice(0, after), propositionId),
     ],
     secondBallotWasUnanimous: false,
     majorityDirectionReceived: direction,
@@ -84,8 +97,9 @@ describe('Court Week deliberation engine', () => {
   })
 
   it('moves no more than one anonymous authored vote per lawful contribution', () => {
-    const afterOne = evolveAuthoredBallot(elevenMinutesDeliberation.firstBallot, 'murder', 1)
-    const afterTwo = evolveAuthoredBallot(elevenMinutesDeliberation.firstBallot, 'murder', 2)
+    const proposition = elevenMinutesDeliberation.propositions[0]
+    const afterOne = evolveAuthoredBallot(elevenMinutesDeliberation.firstBallot, [proposition])
+    const afterTwo = evolveAuthoredBallot(elevenMinutesDeliberation.firstBallot, [proposition, proposition])
     expect(afterOne.murder).toBe(4)
     expect(afterTwo.murder).toBe(5)
     expect(Object.values(afterTwo).reduce((a, b) => a + b, 0)).toBe(11)
@@ -94,11 +108,13 @@ describe('Court Week deliberation engine', () => {
   it.each(elevenMinutesDeliberation.improperArguments)(
     'corrects and removes influence from the authored improper claim "$claim"',
     (improper) => {
+      const proposition = elevenMinutesDeliberation.propositions[0]
       const assessment = assessReasoningContribution(elevenMinutesDeliberation, {
+        propositionId: proposition.id,
         sceneId: 'sat-improper',
-        legalQuestion: elevenMinutesDeliberation.legalQuestions[0],
-        evidenceId: 'ex-downgrade-log',
-        move: 'apply-burden',
+        legalQuestion: proposition.legalQuestion,
+        evidenceId: proposition.evidenceId,
+        move: proposition.move,
         recordedAt: '2026-08-15T09:00:00+10:00',
         improperClaim: improper.claim,
       })
@@ -114,25 +130,22 @@ describe('Court Week deliberation engine', () => {
     },
   )
 
-  it.each(elevenMinutesDeliberation.reasoningMoves)(
-    'leaves the lawful %s reasoning move unchanged when no prohibited basis is proposed',
-    (move) => {
-      const assessment = assessReasoningContribution(elevenMinutesDeliberation, {
-        sceneId: 'sat-improper',
-        legalQuestion: elevenMinutesDeliberation.legalQuestions[0],
-        evidenceId: 'ex-downgrade-log',
-        move,
-        recordedAt: '2026-08-15T09:00:00+10:00',
-      })
+  it('derives movement from the authored proposition, never the player ballot', () => {
+    const lawful = contributions(['sat-room'], 'prop-causation-survival-challenge')
+    expect(calculateSecondBallot(elevenMinutesDeliberation, 'murder', lawful)).toMatchObject({
+      murder: 4,
+      'not-guilty': 5,
+    })
+  })
 
-      expect(assessment).toMatchObject({ correction: null, contribution: { move, influencePenalty: 0 } })
-      expect(calculateSecondBallot(
-        elevenMinutesDeliberation,
-        'murder',
-        [assessment.contribution],
-      ).murder).toBe(5)
-    },
-  )
+  it('supports counter-direction and no-effect authored propositions', () => {
+    const counter = contributions(['sat-room'], 'prop-intent-display-alternative')
+    const noEffect = contributions(['sat-room'], 'prop-duty-route-source-limit')
+    expect(calculateSecondBallot(elevenMinutesDeliberation, 'murder', counter)).toMatchObject({ murder: 3, 'not-guilty': 5 })
+    expect(calculateSecondBallot(elevenMinutesDeliberation, 'murder', noEffect)).toEqual(
+      aggregateFirstBallot(elevenMinutesDeliberation, 'murder'),
+    )
+  })
 
   it.each([
     ['murder', 8],
@@ -142,7 +155,7 @@ describe('Court Week deliberation engine', () => {
     const ballot = calculateSecondBallot(
       elevenMinutesDeliberation,
       verdict,
-      contributions(preSecondJourney.slice(0, steps)),
+      contributions(preSecondJourney.slice(0, steps), propositionForVerdict[verdict]),
     )
     expect(unanimousVerdict(ballot)).toBe(verdict)
     expect(ballot[verdict]).toBe(12)
@@ -176,6 +189,18 @@ describe('Court Week deliberation engine', () => {
     expect(calculateSecondBallot(elevenMinutesDeliberation, 'murder', polluted)).toEqual(
       calculateSecondBallot(elevenMinutesDeliberation, 'murder', baseline),
     )
+  })
+
+  it('rejects unknown or tuple-mismatched proposition input', () => {
+    const lawful = contributions(['sat-room'])[0]
+    expect(() => assessReasoningContribution(elevenMinutesDeliberation, {
+      ...lawful,
+      propositionId: 'prop-unknown',
+    })).toThrow(/not part of the reviewed deliberation/i)
+    expect(() => assessReasoningContribution(elevenMinutesDeliberation, {
+      ...lawful,
+      evidenceId: 'ex-warning',
+    })).toThrow(/not part of the reviewed deliberation/i)
   })
 
   it('branches around coercive majority scenes after a unanimous second ballot', () => {

@@ -1,4 +1,4 @@
-import type { ReasoningContribution } from './schema'
+import type { DeliberationPack, ReasoningContribution } from './schema'
 
 export const preSecondBallotContributionSceneIds = [
   'sat-room',
@@ -32,13 +32,22 @@ export function contributionStage(sceneId: string): 'pre-second-ballot' | 'furth
 }
 
 /** One authored reasoning interaction can record at most one private contribution. */
-export function hasValidContributionJourney(contributions: ReasoningContribution[]): boolean {
+export function hasValidContributionJourney(
+  contributions: ReasoningContribution[],
+  pack: DeliberationPack,
+): boolean {
   const seen = new Set<string>()
   return contributions.every((contribution) => {
     if (!recordedReflectionSceneIdSet.has(contribution.sceneId) || seen.has(contribution.sceneId)) {
       return false
     }
     seen.add(contribution.sceneId)
-    return true
+    const proposition = pack.propositions.find(({ id }) => id === contribution.propositionId)
+    return Boolean(
+      proposition &&
+      proposition.legalQuestion === contribution.legalQuestion &&
+      proposition.evidenceId === contribution.evidenceId &&
+      proposition.move === contribution.move,
+    )
   })
 }
