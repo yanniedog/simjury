@@ -18,6 +18,7 @@ const canonicalBytes = (path) => {
 }
 
 function filesBelow(directory) {
+  if (!existsSync(directory)) return []
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const path = join(directory, entry.name)
     return entry.isDirectory() ? filesBelow(path) : [path]
@@ -26,6 +27,7 @@ function filesBelow(directory) {
 
 export function readArchiveSnapshot(archiveRoot = defaultArchiveRoot) {
   const manifestPath = join(archiveRoot, 'manifest.json')
+  const checksumPath = join(archiveRoot, 'manifest.sha256')
   if (!existsSync(manifestPath)) return null
   const files = ['cases', 'media']
     .flatMap((root) => filesBelow(join(archiveRoot, root)))
@@ -40,7 +42,9 @@ export function readArchiveSnapshot(archiveRoot = defaultArchiveRoot) {
     })
   return {
     manifest: JSON.parse(readFileSync(manifestPath, 'utf8')),
-    checksumInventory: readFileSync(join(archiveRoot, 'manifest.sha256'), 'utf8').replace(/\r\n/g, '\n'),
+    checksumInventory: existsSync(checksumPath)
+      ? readFileSync(checksumPath, 'utf8').replace(/\r\n/g, '\n')
+      : '',
     files,
   }
 }
@@ -53,9 +57,9 @@ export function validateArchiveSnapshot(snapshot) {
   if (JSON.stringify(manifest.case_ids) !== JSON.stringify(EXPECTED_CASE_IDS)) {
     failures.push('Archive must retain the exact ten retired sitting IDs in canonical order')
   }
-  if (manifest.file_count !== 230 || manifest.files?.length !== 230 || files.length !== 230) {
-    failures.push('Archive must retain exactly 230 source/media files for ten sittings')
-  }
+  if (manifest.file_count !== 230) failures.push(`Archive file count mismatch: manifest.file_count=${manifest.file_count ?? 'undefined'}, expected=230`)
+  if (manifest.files?.length !== 230) failures.push(`Archive file count mismatch: manifest.files.length=${manifest.files?.length ?? 'undefined'}, expected=230`)
+  if (files.length !== 230) failures.push(`Archive file count mismatch: snapshot.files.length=${files.length}, expected=230`)
 
   const manifestPaths = (manifest.files ?? []).map(({ path }) => path)
   const actualPaths = files.map(({ path }) => path)

@@ -21,6 +21,26 @@ describe('Daily Docket archive provenance', () => {
     assert.match(validateArchiveSnapshot(snapshot).join('\n'), /Unlisted file exists in archive/u)
   })
 
+  it('identifies each independent file-count drift', () => {
+    const manifestCount = copy()
+    manifestCount.manifest.file_count = 229
+    assert.ok(validateArchiveSnapshot(manifestCount).includes(
+      'Archive file count mismatch: manifest.file_count=229, expected=230',
+    ))
+
+    const manifestFiles = copy()
+    manifestFiles.manifest.files.pop()
+    assert.ok(validateArchiveSnapshot(manifestFiles).includes(
+      'Archive file count mismatch: manifest.files.length=229, expected=230',
+    ))
+
+    const snapshotFiles = copy()
+    snapshotFiles.files.pop()
+    assert.ok(validateArchiveSnapshot(snapshotFiles).includes(
+      'Archive file count mismatch: snapshot.files.length=229, expected=230',
+    ))
+  })
+
   it('rejects swapped or missing retired sitting IDs', async (t) => {
     await t.test('swapped ID', () => {
       const snapshot = copy()
@@ -37,7 +57,10 @@ describe('Daily Docket archive provenance', () => {
   it('rejects corrupt or truncated manifest.sha256 inventories', async (t) => {
     await t.test('corrupt hash', () => {
       const snapshot = copy()
-      snapshot.checksumInventory = snapshot.checksumInventory.replace(/[0-9a-f]/u, 'f')
+      snapshot.checksumInventory = snapshot.checksumInventory.replace(
+        /[0-9a-f]/u,
+        (character) => character === 'f' ? 'e' : 'f',
+      )
       assert.match(validateArchiveSnapshot(snapshot).join('\n'), /manifest\.sha256 does not exactly match/u)
     })
     await t.test('truncated inventory', () => {
