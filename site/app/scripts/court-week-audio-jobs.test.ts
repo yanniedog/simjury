@@ -66,8 +66,30 @@ describe('Court Week prerecorded audio jobs', () => {
       'Peli Dorn',
       'Mara Venn',
       'Ilan Saye',
+      'Recorded channel',
       'Mara Venn',
       'Ilan Saye',
+      'Recorded channel',
+    ])
+    expect(channel.filter(({ speaker }) => speaker === 'Ilan Saye').map(({ text }) => text).join(' '))
+      .not.toMatch(/static masks|transmission breaks/iu)
+
+    const struckAnswer = elevenMinutesCourtWeek.manifest.sessions[2].scenes
+      .flatMap((scene) => scene.cues)
+      .find((cue) => cue.id === 'wed-blurt')!
+    expect(splitCueUtterances(struckAnswer).map(({ speaker }) => speaker)).toEqual([
+      'Defence counsel Corin Dax',
+      'Oren Vale',
+      'Defence counsel Corin Dax',
+    ])
+
+    const crownObjection = elevenMinutesCourtWeek.manifest.sessions[3].scenes
+      .flatMap((scene) => scene.cues)
+      .find((cue) => cue.id === 'thu-crown-objection')!
+    expect(splitCueUtterances(crownObjection).map(({ speaker }) => speaker)).toEqual([
+      'Defence counsel Corin Dax',
+      'Crown counsel Asha Renn',
+      'Judge Sel Aven',
     ])
   })
 
