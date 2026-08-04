@@ -99,6 +99,7 @@ export const sceneCueSchema = z.object({
   evidenceIds: z.array(z.string().min(1)).default([]),
   audio: audioSourceSchema.optional(),
   replayable: z.boolean().default(false),
+  admissionStatus: z.enum(['provisional', 'final']).optional(),
 })
 export type SceneCue = z.infer<typeof sceneCueSchema>
 
