@@ -89,6 +89,7 @@ describe('SceneArtManifest contract', () => {
       'fri-murder-trail',
       'fri-manslaughter-trail',
       'sat-room',
+      'sat-concerns',
     ]
     for (const sceneId of evidenceNeutralReviewedScenes) {
       for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
@@ -124,8 +125,14 @@ describe('SceneArtManifest contract', () => {
       expect(manifest.scenes['sat-room'].compositionArt[composition].evidenceSafeRegion).toBeNull()
       expect(manifest.scenes['sat-room'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
       expect(manifest.scenes['sat-room'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
+      expect(manifest.scenes['sat-concerns'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+      expect(manifest.scenes['sat-concerns'].compositionArt[composition].evidenceSafeRegion).toBeNull()
+      expect(manifest.scenes['sat-concerns'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
+      expect(manifest.scenes['sat-concerns'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
     }
     expect(manifest.scenes['sat-room'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sat-room'].altDescription).toContain('No ballot is shown')
+    expect(manifest.scenes['sat-concerns'].altDescription).toContain('Exactly eleven other jurors')
+    expect(manifest.scenes['sat-concerns'].altDescription).toContain('No faction, ballot or verdict is shown')
   })
 })

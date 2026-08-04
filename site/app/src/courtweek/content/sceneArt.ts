@@ -587,6 +587,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'sat-concerns': {
+    altDescription: 'Exactly eleven other jurors remain seated around the deliberation table as a woman on the left raises a concern calmly and the others listen. No faction, ballot or verdict is shown.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 25, y: 59 }, subjectSafeRegion: { x: 0, y: 48, width: 100, height: 35 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 25, y: 54 }, subjectSafeRegion: { x: 0, y: 32, width: 100, height: 61 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 24, y: 58 }, subjectSafeRegion: { x: 0, y: 38, width: 100, height: 56 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
