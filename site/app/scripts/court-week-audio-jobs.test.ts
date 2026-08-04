@@ -239,7 +239,8 @@ describe('Court Week prerecorded audio jobs', () => {
         resolve('..', 'scripts', 'prepare-court-week-release.mjs'),
         ...packageArguments,
       ], { cwd: resolve('.'), stdio: 'pipe' })
-      const runtime = JSON.parse(readFileSync(resolve(privateOutputRoot, 'court-week-media-manifest.draft.json'), 'utf8'))
+      // Structural 55/55 readiness names this `.json`; crop review and signoffs remain separate publication gates.
+      const runtime = JSON.parse(readFileSync(resolve(privateOutputRoot, 'court-week-media-manifest.json'), 'utf8'))
       expect(runtime.sessions).toHaveLength(7)
       expect(runtime.sessions.map((session: { day: string }) => session.day)).toEqual([
         'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
@@ -254,6 +255,8 @@ describe('Court Week prerecorded audio jobs', () => {
         session.session_id === 'cw-0001-tuesday').art.strips).toHaveLength(4)
       expect(runtime.sessions.find((session: { session_id: string }) =>
         session.session_id === 'cw-0001-wednesday').art.strips).toHaveLength(4)
+      expect(runtime.sessions.find((session: { session_id: string }) =>
+        session.session_id === 'cw-0001-sunday').art.strips).toHaveLength(4)
       const reviewStrips = JSON.parse(readFileSync(resolve(privateOutputRoot, 'scene-art-strips.source.json'), 'utf8'))
       expect(reviewStrips.strips[0].sceneSlots[0]).toMatchObject({
         sceneId: 'mon-arrival',
@@ -281,17 +284,23 @@ describe('Court Week prerecorded audio jobs', () => {
         session.scenes.map((scene) => scene.id)
           .filter((sceneId) => Object.prototype.hasOwnProperty.call(SCENE_ART_AUTHORING, sceneId)),
       )
-      expect(artReport.release_ready).toBe(false)
+      expect(artReport.release_ready).toBe(true)
       expect(artReport.ready_scene_count).toBe(expectedReadySceneIds.length)
       expect(artReport.ready_scene_ids).toEqual(expectedReadySceneIds)
       expect(artReport.scene_count).toBe(55)
+      expect(artReport.gap_count).toBe(0)
+      expect(artReport.crop_review_complete).toBe(false)
+      expect(artReport.compatibility_migration_scene_ids).toEqual([
+        'mon-arrival', 'mon-oath', 'mon-crown-opening', 'mon-orr-chief', 'mon-orr-cross', 'mon-elements', 'mon-adjourn',
+      ])
       expect(() => execFileSync(process.execPath, [
         resolve('..', 'scripts', 'prepare-court-week-release.mjs'),
         ...packageArguments,
         '--require-release-ready-art',
-      ], { cwd: resolve('.'), stdio: 'pipe' })).toThrow()
+      ], { cwd: resolve('.'), stdio: 'pipe' })).toThrow(/Release publication is blocked until SceneArtManifest gaps are closed and every composition is crop-reviewed/)
       const blockedReport = JSON.parse(readFileSync(resolve(privateOutputRoot, 'art-readiness-report.json'), 'utf8'))
-      expect(blockedReport.release_ready).toBe(false)
+      expect(blockedReport.release_ready).toBe(true)
+      expect(blockedReport.crop_review_complete).toBe(false)
 
       const mondayManifestPath = resolve(audioRoot, 'cw-0001-monday', 'session-media.json')
       const mondayManifest = JSON.parse(readFileSync(mondayManifestPath, 'utf8'))

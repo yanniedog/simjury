@@ -12,7 +12,7 @@ const requirementsPath = join(temporary, 'requirements.json')
 const outputRoot = join(temporary, 'output')
 const mediaRoot = resolve('court-week-art/cw-0001')
 let manifest
-const staleFile = join(outputRoot, 'strips', 'day-07', 'strip-01', 'desktop.webp')
+const staleFile = join(outputRoot, 'strips', 'day-08', 'strip-01', 'desktop.webp')
 
 function filesBelow(root) {
   return readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
@@ -40,7 +40,7 @@ test('builds only fully commissioned session strips in legal order', () => {
   const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
   assert.deepEqual(manifest.grid, { columns: 2, rows: 1 })
   assert.deepEqual(manifest.toolchain, { sharp: '0.35.3', vips: sharp.versions.vips })
-  assert.equal(manifest.strips.length, 24)
+  assert.equal(manifest.strips.length, 28)
   assert.deepEqual([...new Set(manifest.strips.map((strip) => strip.sessionId))], [
     'cw-0001-monday',
     'cw-0001-tuesday',
@@ -48,20 +48,23 @@ test('builds only fully commissioned session strips in legal order', () => {
     'cw-0001-thursday',
     'cw-0001-friday',
     'cw-0001-saturday',
+    'cw-0001-sunday',
   ])
   assert.deepEqual(
     manifest.strips.flatMap((strip) => strip.sceneSlots.map((slot) => slot.sceneId)),
-    requirements.sessions.slice(0, 6).flatMap((session) => session.sceneIds),
+    requirements.sessions.flatMap((session) => session.sceneIds),
   )
   assert.deepEqual(
     manifest.strips[3].sceneSlots.map(({ sceneId, cell }) => ({ sceneId, cell })),
     [{ sceneId: 'mon-adjourn', cell: 0 }],
   )
   assert.deepEqual(
-    manifest.strips.at(-1).sceneSlots.map(({ sceneId, cell }) => ({ sceneId, cell })),
+    manifest.strips.slice(-4).map((strip) => strip.sceneSlots.map(({ sceneId, cell }) => ({ sceneId, cell }))),
     [
-      { sceneId: 'sat-note', cell: 0 },
-      { sceneId: 'sat-separate', cell: 1 },
+      [{ sceneId: 'sun-resume', cell: 0 }, { sceneId: 'sun-negligence', cell: 1 }],
+      [{ sceneId: 'sun-second-ballot', cell: 0 }, { sceneId: 'sun-persevere', cell: 1 }],
+      [{ sceneId: 'sun-majority', cell: 0 }, { sceneId: 'sun-final-ballot', cell: 1 }],
+      [{ sceneId: 'sun-verdict', cell: 0 }, { sceneId: 'sun-analysis', cell: 1 }],
     ],
   )
   assert.deepEqual(
@@ -78,7 +81,7 @@ test('creates six exact-size renditions per strip and no scene for the neutral c
     desktop: { width: 2560, height: 720 },
   }
   const files = filesBelow(outputRoot)
-  assert.equal(files.length, 24 * 3 * 2)
+  assert.equal(files.length, 28 * 3 * 2)
   for (const strip of manifest.strips) {
     const session = manifest.strips.filter((candidate) => candidate.sessionId === strip.sessionId)
     const isLastStrip = strip.stripIndex === session.length - 1

@@ -108,6 +108,7 @@ describe('SceneArtManifest contract', () => {
       'sun-second-ballot',
       'sun-majority',
       'sun-verdict',
+      'sun-persevere',
     ]
     for (const sceneId of evidenceNeutralReviewedScenes) {
       for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
@@ -174,6 +175,11 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['thu-rusk-chief'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
     expect(manifest.scenes['thu-rusk-cross'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
     expect(manifest.scenes['thu-quill-chief'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+    const perseveranceRegion = {
+      portrait: { x: 0, y: 42, width: 100, height: 42 },
+      tablet: { x: 0, y: 35, width: 100, height: 55 },
+      desktop: { x: 0, y: 34, width: 100, height: 56 },
+    }
     for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
       expect(manifest.scenes['thu-quill-cross'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
       expect(manifest.scenes['thu-defence-record'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
@@ -249,6 +255,10 @@ describe('SceneArtManifest contract', () => {
       expect(manifest.scenes['sun-verdict'].compositionArt[composition].evidenceSafeRegion).toBeNull()
       expect(manifest.scenes['sun-verdict'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
       expect(manifest.scenes['sun-verdict'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
+      expect(manifest.scenes['sun-persevere'].compositionArt[composition].subjectSafeRegion).toEqual(perseveranceRegion[composition])
+      expect(manifest.scenes['sun-persevere'].compositionArt[composition].evidenceSafeRegion).toBeNull()
+      expect(manifest.scenes['sun-persevere'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
+      expect(manifest.scenes['sun-persevere'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
     }
     expect(manifest.scenes['sat-room'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sat-room'].altDescription).toContain('No ballot is shown')
@@ -286,5 +296,8 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['sun-verdict'].altDescription).toContain('standing accused, Mara Venn')
     expect(manifest.scenes['sun-verdict'].altDescription).toContain('No verdict, count, restraint, reaction, guilt cue or analysis is shown')
     expect(manifest.scenes['sun-verdict'].compositionArt.portrait.subjectSafeRegion).toEqual({ x: 0, y: 34, width: 100, height: 49 })
+    expect(manifest.scenes['sun-persevere'].altDescription).toContain('one further honest effort')
+    expect(manifest.scenes['sun-persevere'].altDescription).toContain('does not pressure any juror or show a count, faction, verdict or outcome')
+    expect(manifest.scenes['sun-persevere'].altDescription).toContain('later jury-room reasoning appears only in audio and the live interface')
   })
 })
