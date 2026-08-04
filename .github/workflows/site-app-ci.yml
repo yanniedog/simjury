@@ -55,6 +55,8 @@ jobs:
         run: npx playwright install --with-deps chromium firefox webkit
       - name: Browser and responsive matrix
         run: npm run test:browser
+      - name: Production performance budgets
+        run: npm run test:performance
       - name: Upload browser QA evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -62,6 +64,7 @@ jobs:
           name: court-week-browser-qa
           path: |
             site/app/playwright-report/
+            site/app/playwright-performance-report/
             site/app/test-results/
           if-no-files-found: ignore
           retention-days: 14
