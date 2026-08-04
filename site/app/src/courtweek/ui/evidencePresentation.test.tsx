@@ -52,6 +52,17 @@ describe('reviewed exhibit presentations', () => {
     expect(markup).not.toContain(struck!.accessibleProposition)
   })
 
+  it('uses a neutral built-in surface when an admitted exhibit has no visual facsimile', () => {
+    const recording = elevenMinutesTrialRecord.evidence.find((item) => item.id === 'ex-distress')
+    expect(recording).toBeDefined()
+    const markup = renderToStaticMarkup(<EvidenceViewer evidence={recording!} onClose={() => undefined} />)
+    expect(markup).toContain('data-visual-fallback="neutral"')
+    expect(markup).toContain('A visual facsimile is unavailable. The admitted proposition remains available.')
+    expect(markup).toContain(recording!.accessibleProposition)
+    expect(markup).toContain(recording!.allowedUses[0])
+    expect(markup).toContain(recording!.limitations[0])
+  })
+
   it('preserves the critical competing propositions in visible renderings', () => {
     const markup = elevenMinutesTrialRecord.evidence.flatMap((item) => item.presentation
       ? [renderToStaticMarkup(renderExhibitPresentation(item.presentation))]
