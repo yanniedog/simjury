@@ -2,114 +2,144 @@ import type { SceneVisual } from '../model/schema'
 
 type CaptionPosition = SceneVisual['captionPosition']
 type ArtRegion = NonNullable<SceneVisual['subjectSafeRegion']>
+type Composition = 'portrait' | 'tablet' | 'desktop'
 
-export interface CommissionedSceneArt {
-  altDescription: string
+export interface CompositionArtDirection {
   focalPoint: { x: number; y: number }
-  subjectSafeRegion: ArtRegion
-  evidenceSafeRegion: ArtRegion
+  /** Null means the composition deliberately contains no human subject. */
+  subjectSafeRegion: ArtRegion | null
+  /** Null means the composition deliberately contains no visible evidence. */
+  evidenceSafeRegion: ArtRegion | null
   permittedCaptionPositions: CaptionPosition[]
 }
 
+export interface CommissionedSceneArt {
+  altDescription: string
+  compositionArt: Record<Composition, CompositionArtDirection>
+}
+
+/** Explicit compatibility migration for metadata reviewed as safe in all three crops. */
+function sharedCompositionArt(direction: CompositionArtDirection): CommissionedSceneArt['compositionArt'] {
+  return {
+    portrait: { ...direction },
+    tablet: { ...direction },
+    desktop: { ...direction },
+  }
+}
+
 /** Reviewed scene art that is safe to include in the corresponding sealed day pack. */
-export const SCENE_ART_AUTHORING: Readonly<Record<string, CommissionedSceneArt>> = {
+export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSceneArt>>> = {
   'mon-arrival': {
     altDescription: 'Juror-seat view of the settled courtroom before evidence, with judge, separated counsel tables and the accused shown neutrally.',
-    focalPoint: { x: 50, y: 44 },
-    subjectSafeRegion: { x: 14, y: 18, width: 72, height: 60 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
+    compositionArt: sharedCompositionArt({
+      focalPoint: { x: 50, y: 44 }, subjectSafeRegion: { x: 14, y: 18, width: 72, height: 60 },
+      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+    }),
   },
   'mon-oath': {
     altDescription: 'Juror-seat view of the judge and an officer of the court addressing the jury before evidence; neither oath nor affirmation is visually preferred.',
-    focalPoint: { x: 50, y: 42 },
-    subjectSafeRegion: { x: 14, y: 18, width: 72, height: 60 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
+    compositionArt: sharedCompositionArt({
+      focalPoint: { x: 50, y: 42 }, subjectSafeRegion: { x: 14, y: 18, width: 72, height: 60 },
+      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+    }),
   },
   'mon-crown-opening': {
     altDescription: 'Crown counsel addresses the jury while defence counsel and the accused remain seated separately; posture and lighting express no view about guilt.',
-    focalPoint: { x: 40, y: 46 },
-    subjectSafeRegion: { x: 12, y: 18, width: 76, height: 62 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
+    compositionArt: sharedCompositionArt({
+      focalPoint: { x: 40, y: 46 }, subjectSafeRegion: { x: 12, y: 18, width: 76, height: 62 },
+      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+    }),
   },
   'mon-orr-chief': {
     altDescription: 'Operations supervisor Nella Orr gives evidence from the witness box while Crown counsel questions her; no route information is shown in the artwork.',
-    focalPoint: { x: 54, y: 46 },
-    subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
+    compositionArt: sharedCompositionArt({
+      focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
+      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+    }),
   },
   'mon-orr-cross': {
     altDescription: 'Nella Orr remains in the witness box as defence counsel questions her from the opposing lectern; no disputed proposition is resolved visually.',
-    focalPoint: { x: 54, y: 46 },
-    subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
+    compositionArt: sharedCompositionArt({
+      focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
+      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+    }),
   },
   'mon-elements': {
     altDescription: 'The judge gives preliminary directions from the bench to the jury; no legal element, inference or verdict is depicted as answered.',
-    focalPoint: { x: 50, y: 38 },
-    subjectSafeRegion: { x: 20, y: 16, width: 60, height: 60 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
+    compositionArt: sharedCompositionArt({
+      focalPoint: { x: 50, y: 38 }, subjectSafeRegion: { x: 20, y: 16, width: 60, height: 60 },
+      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+    }),
   },
   'mon-adjourn': {
     altDescription: 'The same courtroom stands empty after adjournment, with the bench, witness box and counsel tables orderly and no evidence legible.',
-    focalPoint: { x: 50, y: 42 },
-    subjectSafeRegion: { x: 10, y: 12, width: 80, height: 66 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
+    compositionArt: sharedCompositionArt({
+      focalPoint: { x: 50, y: 42 }, subjectSafeRegion: null,
+      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+    }),
   },
   'tue-resume': {
     altDescription: 'Juror-seat view of Tuesday court resuming, with the judge addressing the jury, counsel and the accused seated neutrally, and the witness box empty.',
-    focalPoint: { x: 50, y: 42 },
-    subjectSafeRegion: { x: 10, y: 18, width: 80, height: 62 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
+    compositionArt: sharedCompositionArt({
+      focalPoint: { x: 50, y: 42 }, subjectSafeRegion: { x: 10, y: 18, width: 80, height: 62 },
+      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+    }),
   },
   'tue-dorn-chief': {
     altDescription: 'Junior dispatcher Peli Dorn gives evidence from the witness box while Crown counsel questions her; no distress words, console status or inference about intent is depicted.',
-    focalPoint: { x: 54, y: 46 },
-    subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
+    compositionArt: sharedCompositionArt({
+      focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
+      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+    }),
   },
   'tue-recording': {
     altDescription: 'The courtroom listens to the admitted distress-channel recording while Peli Dorn remains in the witness box; an abstract waveform is visible but no words or disputed meaning are depicted.',
-    focalPoint: { x: 50, y: 52 },
-    subjectSafeRegion: { x: 10, y: 20, width: 80, height: 62 },
-    evidenceSafeRegion: { x: 36, y: 48, width: 28, height: 22 },
-    permittedCaptionPositions: ['top'],
+    compositionArt: {
+      portrait: {
+        focalPoint: { x: 50, y: 52 }, subjectSafeRegion: { x: 8, y: 36, width: 84, height: 42 },
+        evidenceSafeRegion: { x: 37, y: 53, width: 15, height: 8 }, permittedCaptionPositions: ['top'],
+      },
+      tablet: {
+        focalPoint: { x: 50, y: 52 }, subjectSafeRegion: { x: 10, y: 22, width: 80, height: 58 },
+        evidenceSafeRegion: { x: 39, y: 57, width: 12, height: 10 }, permittedCaptionPositions: ['top'],
+      },
+      desktop: {
+        focalPoint: { x: 50, y: 52 }, subjectSafeRegion: { x: 10, y: 20, width: 80, height: 58 },
+        evidenceSafeRegion: { x: 38, y: 61, width: 10, height: 9 }, permittedCaptionPositions: ['top'],
+      },
+    },
   },
   'tue-dorn-cross': {
     altDescription: 'Defence counsel questions Peli Dorn from the lectern while she remains composed in the witness box; the scene does not resolve the room noise, competing incidents or her reliability.',
-    focalPoint: { x: 54, y: 46 },
-    subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
+    compositionArt: sharedCompositionArt({
+      focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
+      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+    }),
   },
   'tue-dorn-re': {
     altDescription: 'Crown counsel asks Peli Dorn a confined clarifying question after cross-examination; no competing incident, inference or enhancement of her evidence is depicted.',
-    focalPoint: { x: 54, y: 46 },
-    subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
+    compositionArt: sharedCompositionArt({
+      focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
+      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+    }),
   },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
   const art = SCENE_ART_AUTHORING[sceneId]
   if (!art) return fallback
+  // The current renderer consumes the historical flat fields. Tablet is the
+  // explicit compatibility projection until it selects direction by picture source.
+  const compatibility = art.compositionArt.tablet
   return {
     ...fallback,
     alt: art.altDescription,
-    focalPoint: art.focalPoint,
-    captionPosition: art.permittedCaptionPositions[0],
-    subjectSafeRegion: art.subjectSafeRegion,
-    evidenceSafeRegion: art.evidenceSafeRegion,
-    permittedCaptionPositions: art.permittedCaptionPositions,
+    focalPoint: compatibility.focalPoint,
+    captionPosition: compatibility.permittedCaptionPositions[0],
+    subjectSafeRegion: compatibility.subjectSafeRegion ?? undefined,
+    evidenceSafeRegion: compatibility.evidenceSafeRegion ?? undefined,
+    permittedCaptionPositions: compatibility.permittedCaptionPositions,
+    compositionArt: art.compositionArt,
     ...(sceneId.startsWith('mon-') ? {
       // Temporary pre-release review fallback. Future days stay outside public
       // assets until their content-addressed strips arrive in a sealed pack.

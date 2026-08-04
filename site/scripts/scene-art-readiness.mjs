@@ -92,10 +92,12 @@ export function assessSceneArtManifest(manifest, mediaRoot) {
   const referencedPaths = new Set()
   const contentOwners = new Map()
   const readySceneIds = []
+  const compositionReadiness = {}
   const addGap = (sceneId, code, field, message) => gaps.push({ scene_id: sceneId, code, field, message })
 
-  if (manifest?.schema !== 'simjury.scene-art-manifest/v1' || manifest?.caseId !== 'cw-0001') {
-    addGap(null, 'invalid-manifest', 'schema', 'Expected simjury.scene-art-manifest/v1 for cw-0001.')
+  const supportedSchema = ['simjury.scene-art-manifest/v1', 'simjury.scene-art-manifest/v2'].includes(manifest?.schema)
+  if (!supportedSchema || manifest?.caseId !== 'cw-0001') {
+    addGap(null, 'invalid-manifest', 'schema', 'Expected a supported SimJury scene-art manifest for cw-0001.')
   }
   const entries = Object.entries(manifest?.scenes ?? {})
   if (entries.length !== 55) {
@@ -104,23 +106,41 @@ export function assessSceneArtManifest(manifest, mediaRoot) {
 
   for (const [sceneId, entry] of entries) {
     const gapStart = gaps.length
+    compositionReadiness[sceneId] = {}
     if (typeof entry.altDescription !== 'string' || entry.altDescription.trim().length < 20) {
       addGap(sceneId, 'invalid-alt', 'altDescription', 'A precise ambiguity-preserving alternative description is required.')
     }
-    if (!validPoint(entry.focalPoint)) addGap(sceneId, 'invalid-focal-point', 'focalPoint', 'Focal point must be within the 0-100 coordinate space.')
-    if (!validRegion(entry.subjectSafeRegion)) {
-      addGap(sceneId, 'missing-subject-safe-region', 'subjectSafeRegion', 'A reviewed non-empty subject-safe rectangle is required.')
-    }
-    if (!validRegion(entry.evidenceSafeRegion)) {
-      addGap(sceneId, 'missing-evidence-safe-region', 'evidenceSafeRegion', 'A reviewed non-empty evidence-safe rectangle is required.')
-    }
-    if (!Array.isArray(entry.permittedCaptionPositions) || entry.permittedCaptionPositions.length === 0 ||
-      entry.permittedCaptionPositions.some((position) => !CAPTION_POSITIONS.has(position))) {
-      addGap(sceneId, 'invalid-caption-positions', 'permittedCaptionPositions', 'At least one supported, reviewed caption position is required.')
+    if (manifest?.schema === 'simjury.scene-art-manifest/v1') {
+      addGap(sceneId, 'legacy-composition-metadata', 'compositionArt', 'V1 shared crop metadata must be explicitly reviewed and migrated per composition.')
     }
 
     const dimensionsByComposition = new Map()
     for (const [composition, contract] of Object.entries(COMPOSITIONS)) {
+      const compositionGapStart = gaps.length
+      const direction = manifest?.schema === 'simjury.scene-art-manifest/v2'
+        ? entry.compositionArt?.[composition]
+        : entry
+      const directionField = manifest?.schema === 'simjury.scene-art-manifest/v2'
+        ? `compositionArt.${composition}`
+        : 'legacySharedDirection'
+      if (!validPoint(direction?.focalPoint)) {
+        addGap(sceneId, 'invalid-focal-point', `${directionField}.focalPoint`, `${composition} focal point must be within the 0-100 coordinate space.`)
+      }
+      for (const [field, code, label] of [
+        ['subjectSafeRegion', 'missing-subject-safe-region', 'subject'],
+        ['evidenceSafeRegion', 'missing-evidence-safe-region', 'evidence'],
+      ]) {
+        const value = direction?.[field]
+        if (value === undefined) {
+          addGap(sceneId, code, `${directionField}.${field}`, `${composition} requires an explicit ${label} region or null when none is visible.`)
+        } else if (value !== null && !validRegion(value)) {
+          addGap(sceneId, `invalid-${label}-safe-region`, `${directionField}.${field}`, `${composition} ${label} region must be a valid non-empty rectangle or null.`)
+        }
+      }
+      if (!Array.isArray(direction?.permittedCaptionPositions) || direction.permittedCaptionPositions.length === 0 ||
+        direction.permittedCaptionPositions.some((position) => !CAPTION_POSITIONS.has(position))) {
+        addGap(sceneId, 'invalid-caption-positions', `${directionField}.permittedCaptionPositions`, `${composition} requires at least one supported caption position.`)
+      }
       const formatDimensions = []
       for (const format of FORMATS) {
         const relativePath = entry.sources?.[composition]?.[format]
@@ -168,6 +188,10 @@ export function assessSceneArtManifest(manifest, mediaRoot) {
         (formatDimensions[0].width !== formatDimensions[1].width || formatDimensions[0].height !== formatDimensions[1].height)) {
         addGap(sceneId, 'codec-dimension-mismatch', `sources.${composition}`, `${composition} AVIF and WebP dimensions must match exactly.`)
       }
+      compositionReadiness[sceneId][composition] = {
+        ready: gaps.length === compositionGapStart,
+        gap_count: gaps.length - compositionGapStart,
+      }
     }
     if (gaps.length === gapStart) readySceneIds.push(sceneId)
     else addGap(sceneId, 'generic-fallback-forbidden', 'releaseReadiness', 'This scene has no complete dedicated art set and would fall back to generic imagery.')
@@ -184,11 +208,13 @@ export function assessSceneArtManifest(manifest, mediaRoot) {
     schema: 'simjury.scene-art-readiness/v1',
     case_id: 'cw-0001',
     source_revision: manifest?.sourceRevision ?? null,
+    manifest_schema: manifest?.schema ?? null,
     scene_count: entries.length,
     ready_scene_count: readySceneIds.length,
     release_ready: gaps.length === 0 && entries.length === 55,
     gap_count: gaps.length,
     ready_scene_ids: readySceneIds,
+    composition_readiness: compositionReadiness,
     gaps,
   }
 }

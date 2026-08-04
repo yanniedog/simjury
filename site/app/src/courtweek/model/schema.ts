@@ -35,6 +35,17 @@ const sceneArtSourcesSchema = z.object({
   tablet: z.object({ avif: sceneArtPathSchema, webp: sceneArtPathSchema }).strict(),
   desktop: z.object({ avif: sceneArtPathSchema, webp: sceneArtPathSchema }).strict(),
 }).strict()
+const compositionArtDirectionSchema = z.object({
+  focalPoint: pointSchema,
+  subjectSafeRegion: regionSchema.nullable(),
+  evidenceSafeRegion: regionSchema.nullable(),
+  permittedCaptionPositions: z.array(captionPositionSchema).min(1),
+}).strict()
+const sceneCompositionArtSchema = z.object({
+  portrait: compositionArtDirectionSchema,
+  tablet: compositionArtDirectionSchema,
+  desktop: compositionArtDirectionSchema,
+}).strict()
 const runtimeStripSourcesSchema = z.object({
   portrait: z.object({ avif: z.string().url(), webp: z.string().url() }).strict(),
   tablet: z.object({ avif: z.string().url(), webp: z.string().url() }).strict(),
@@ -49,6 +60,8 @@ export const visualSchema = z.object({
   subjectSafeRegion: regionSchema.optional(),
   evidenceSafeRegion: regionSchema.optional(),
   permittedCaptionPositions: z.array(captionPositionSchema).min(1).optional(),
+  /** Art-directed metadata for each independently composed device rendition. */
+  compositionArt: sceneCompositionArtSchema.optional(),
   sources: sceneArtSourcesSchema.optional(),
   runtimeStrip: z.object({
     cell: z.union([z.literal(0), z.literal(1)]),
