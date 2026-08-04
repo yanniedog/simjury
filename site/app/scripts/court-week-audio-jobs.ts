@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
 import { RUNTIME_DEPENDENT_CUE_IDS } from '../src/courtweek/media/runtimeCues'
 import { DIALOGUE_SPEAKER_ALIASES } from '../src/courtweek/content/dialogueSpeakers'
+import { splitCueTurns } from '../src/courtweek/content/cueTurns'
 import type { CourtSession, CourtWeek, SceneCue } from '../src/courtweek/model/schema'
 
 export const AUDIO_JOB_SCHEMA = 'simjury.court-week-audio-job/v1' as const
@@ -136,29 +137,8 @@ function castUtterance(
  * into speaker-attributed utterances before voice assignment.
  */
 export function splitCueUtterances(cue: SceneCue): AudioJobCue[] {
-  const aliasNames = Object.keys(DIALOGUE_SPEAKER_ALIASES).sort((left, right) => right.length - left.length)
-  const pattern = new RegExp(`(?:^|\\s)(${aliasNames.join('|')}):\\s*`, 'gu')
-  const text = cue.text.trim()
-  const matches = [...text.matchAll(pattern)]
-  if (matches.length === 0) {
-    return [castUtterance(cue, cue.speaker, text, cue.id)]
-  }
-
-  const utterances: AudioJobCue[] = []
-  const firstIndex = matches[0].index ?? 0
-  if (firstIndex > 0) {
-    const preface = text.slice(0, firstIndex).trim()
-    if (preface) utterances.push(castUtterance(cue, cue.speaker, preface, `${cue.id}__pre`))
-  }
-  matches.forEach((match, index) => {
-    const alias = match[1]
-    const speaker = DIALOGUE_SPEAKER_ALIASES[alias]
-    if (!speaker) throw new Error(`Unknown dialogue alias ${alias} in ${cue.id}`)
-    const start = (match.index ?? 0) + match[0].length
-    const end = index + 1 < matches.length ? (matches[index + 1].index ?? text.length) : text.length
-    utterances.push(castUtterance(cue, speaker, text.slice(start, end), `${cue.id}__${index + 1}`))
-  })
-  return utterances
+  return splitCueTurns(cue).map((turn) =>
+    castUtterance(cue, turn.speaker, turn.text, turn.id))
 }
 
 function castCue(cue: SceneCue, continuesSourceCue: boolean): AudioJobCue[] {

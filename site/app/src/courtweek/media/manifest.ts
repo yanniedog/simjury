@@ -9,6 +9,14 @@ const runtimeCueSchema = z.object({
   cue_id: z.string().min(1),
   start_seconds: z.number().min(0),
   end_seconds: z.number().positive(),
+  turns: z.array(z.object({
+    turn_id: z.string().min(1),
+    start_seconds: z.number().min(0),
+    end_seconds: z.number().positive(),
+  }).strict().refine(
+    (turn) => turn.end_seconds > turn.start_seconds,
+    'turn range must increase',
+  )).min(1),
 }).strict().refine((cue) => cue.end_seconds > cue.start_seconds, 'cue range must increase')
 
 const runtimeSegmentSchema = z.object({
@@ -115,6 +123,20 @@ export function assertRuntimeMediaCoverage(
       if (segment.cues.some((cue) => cue.end_seconds > segment.duration_seconds)) {
         throw new Error(`Audio segment ${segment.id} has a cue beyond its duration.`)
       }
+      for (const cue of segment.cues) {
+        const turnIds = cue.turns.map((turn) => turn.turn_id)
+        if (
+          new Set(turnIds).size !== turnIds.length ||
+          cue.turns.some((turn) =>
+            turn.start_seconds < cue.start_seconds || turn.end_seconds > cue.end_seconds)
+          || cue.turns.some((turn, index, turns) =>
+            index > 0 && turn.start_seconds < turns[index - 1].end_seconds)
+          || cue.turns[0].start_seconds !== cue.start_seconds
+          || cue.turns.at(-1)!.end_seconds !== cue.end_seconds
+        ) {
+          throw new Error(`Audio cue ${cue.cue_id} has invalid spoken-turn timing.`)
+        }
+      }
     }
     const expectedSceneIds = sourceSession.scenes.map((scene) => scene.id)
     const strips = [...media.art.strips].sort((left, right) => left.strip_index - right.strip_index)
@@ -149,6 +171,14 @@ export function attachSessionAudio(
       cues: scene.cues.map((cue): SceneCue => {
         const mapping = byCue.get(cue.id)
         if (!mapping) return cue
+        const authoredTurnIds = cue.turns?.map((turn) => turn.id)
+        const mediaTurnIds = mapping.cue.turns.map((turn) => turn.turn_id)
+        if (
+          authoredTurnIds &&
+          JSON.stringify(authoredTurnIds) !== JSON.stringify(mediaTurnIds)
+        ) {
+          throw new Error(`Pinned spoken turns do not match reviewed cue ${cue.id}.`)
+        }
         return {
           ...cue,
           audio: {
@@ -158,6 +188,11 @@ export function attachSessionAudio(
             segmentId: mapping.segment.id,
             startSeconds: mapping.cue.start_seconds,
             endSeconds: mapping.cue.end_seconds,
+            turns: mapping.cue.turns.map((turn) => ({
+              id: turn.turn_id,
+              startSeconds: turn.start_seconds,
+              endSeconds: turn.end_seconds,
+            })),
           },
         }
       }),

@@ -325,11 +325,21 @@ function collapseAuthoredCueRanges(cues, jobCues) {
         cue_id: sourceCueId,
         start_seconds: cue.startSeconds,
         end_seconds: cue.endSeconds,
+        turns: [{
+          turn_id: cue.cueId,
+          start_seconds: cue.startSeconds,
+          end_seconds: cue.endSeconds,
+        }],
       })
       continue
     }
     existing.start_seconds = Math.min(existing.start_seconds, cue.startSeconds)
     existing.end_seconds = Math.max(existing.end_seconds, cue.endSeconds)
+    existing.turns.push({
+      turn_id: cue.cueId,
+      start_seconds: cue.startSeconds,
+      end_seconds: cue.endSeconds,
+    })
   }
   return [...ranges.values()]
 }

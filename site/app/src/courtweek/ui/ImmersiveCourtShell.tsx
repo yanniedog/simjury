@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import type { CourtSession, Scene, SceneCue } from '../model/schema'
+import type { CourtSession, Scene, SceneCue, SceneCueTurn } from '../model/schema'
 import type { PlaybackStatus } from '../media/useCuePlayback'
 import type { AccessMode } from '../state/progress'
 import {
@@ -17,6 +17,7 @@ export interface ImmersiveCourtShellProps {
   session: CourtSession
   scene: Scene
   cue: SceneCue
+  activeTurn?: SceneCueTurn
   releaseBase: string
   accessMode: AccessMode
   dataSaver?: boolean
@@ -68,6 +69,7 @@ export function ImmersiveCourtShell({
   session,
   scene,
   cue,
+  activeTurn,
   releaseBase,
   accessMode,
   dataSaver = false,
@@ -115,6 +117,8 @@ export function ImmersiveCourtShell({
   }
 
   const playing = playbackStatus === 'playing' || playbackStatus === 'speech-fallback'
+  const displayedSpeaker = activeTurn?.speaker ?? cue.speaker
+  const displayedText = activeTurn?.text ?? cue.text
   const captionOverlayRequested = playbackStatus !== 'reading-fallback' && accessMode !== 'reading' && (
     accessMode === 'captions' ||
     playbackStatus === 'speech-fallback'
@@ -184,7 +188,7 @@ export function ImmersiveCourtShell({
       window.removeEventListener('resize', schedule)
       window.removeEventListener('orientationchange', schedule)
     }
-  }, [captionOverlayRequested, captionPlacements, cue.id, cue.text])
+  }, [captionOverlayRequested, captionPlacements, cue.id, displayedSpeaker, displayedText])
 
   return (
     <main
@@ -269,8 +273,8 @@ export function ImmersiveCourtShell({
         </header>
 
         <section className="cw-speaker" aria-labelledby="cw-speaker-name">
-          <p id="cw-speaker-name">
-            {cue.speaker}
+          <p id="cw-speaker-name" aria-current="true">
+            {displayedSpeaker}
             {cue.tone === 'cross' ? <span className="cw-speaker__mode"> · cross-examination</span> : null}
           </p>
           {readingModeActive ? <p className="cw-reading-copy">{cue.text}</p> : null}
@@ -278,14 +282,14 @@ export function ImmersiveCourtShell({
 
         <div className="cw-speaker cw-speaker--collision-probe" aria-hidden="true">
           <p ref={speakerCollisionProbe}>
-            {cue.speaker}
+            {displayedSpeaker}
             {cue.tone === 'cross' ? <span className="cw-speaker__mode"> · cross-examination</span> : null}
           </p>
         </div>
 
         {captionOverlayRequested ? (
           <div ref={captionOverlay} className="cw-captions" aria-hidden="true">
-            <span ref={captionCopy}>{cue.text}</span>
+            <span ref={captionCopy}>{displayedText}</span>
           </div>
         ) : null}
 
@@ -295,7 +299,7 @@ export function ImmersiveCourtShell({
           aria-hidden={readingModeActive || undefined}
           aria-atomic="true"
         >
-          {cue.speaker}: {cue.text}
+          {displayedSpeaker}: {displayedText}
         </p>
 
         {playbackError ? <p className="cw-media-notice" role="status">{playbackError}</p> : null}

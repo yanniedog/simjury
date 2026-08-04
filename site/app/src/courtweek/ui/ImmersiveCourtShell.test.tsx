@@ -129,6 +129,23 @@ describe('ImmersiveCourtShell', () => {
     expect(markup).toContain('Continue')
   })
 
+  it('switches the persistent speaker, visible caption and live region at a spoken-turn boundary', () => {
+    const activeTurn = { id: 'cue-1__2', speaker: 'Nella Orr', text: 'No. The warning was separate.' }
+    const markup = renderToStaticMarkup(
+      <ImmersiveCourtShell
+        session={session} scene={scene} cue={cue} activeTurn={activeTurn} releaseBase="/media"
+        accessMode="captions" playbackStatus="playing" playbackError={null}
+        progressLabel="Scene 1 of 3" deskOpen={false}
+        onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
+        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+      />,
+    )
+    expect(markup).toContain('<p id="cw-speaker-name" aria-current="true">Nella Orr')
+    expect(markup).toContain(`<span>${activeTurn.text}</span>`)
+    expect(markup).toContain(`Nella Orr: ${activeTurn.text}`)
+    expect(markup).not.toContain(`<span>${cue.text}</span>`)
+  })
+
   it('selects one cell from a sealed responsive strip without a fetch or canvas layer', () => {
     const markup = renderToStaticMarkup(
       <ImmersiveCourtShell
