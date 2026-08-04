@@ -825,6 +825,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'sun-verdict': {
+    altDescription: 'From the jury side, Judge Sel Aven faces the room. Crown counsel Asha Renn sits at viewer left; defence counsel Corin Dax sits beside the standing accused, Mara Venn, at viewer right, and a plain-clothed officer waits by the closed door. No verdict, count, restraint, reaction, guilt cue or analysis is shown.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 54 }, subjectSafeRegion: { x: 0, y: 34, width: 100, height: 49 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 49 }, subjectSafeRegion: { x: 0, y: 33, width: 100, height: 56 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 52 }, subjectSafeRegion: { x: 0, y: 34, width: 100, height: 56 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
