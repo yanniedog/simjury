@@ -15,10 +15,11 @@
     "predeploy": "npm run install:app && npm run build:assets",
     "deploy": "wrangler deploy",
     "precheck": "npm run install:app && npm run build:assets",
-    "check": "npm run guard:cloudflare && npm run check:archive && npm run test:static && npm run check:tokens && npm run check:landing && npm run check:crawl && npm run check:budget && wrangler deploy --dry-run",
+    "check": "npm run guard:cloudflare && npm run check:archive && npm run test:static && npm run check:tokens && npm run check:landing && npm run check:crawl && npm run check:art-strips && npm run check:budget && wrangler deploy --dry-run",
     "check:tokens": "node scripts/assert-design-tokens.mjs",
     "check:landing": "node scripts/assert-landing-page.mjs",
     "check:crawl": "node scripts/assert-crawl-surface.mjs",
+    "check:art-strips": "node --test scripts/scene-art-strips.test.mjs",
     "submit:indexnow": "node scripts/submit-indexnow.mjs",
     "cloudflare:ai-bots:audit": "node scripts/cloudflare-ai-bots.mjs audit",
     "cloudflare:ai-bots:apply": "node scripts/cloudflare-ai-bots.mjs apply",
@@ -29,6 +30,7 @@
     "test:static": "node --test tests/cloudflare-static.test.mjs tests/landing-disclosure.test.mjs"
   },
   "devDependencies": {
+    "sharp": "0.35.3",
     "wrangler": "4.113.0"
   },
   "overrides": {

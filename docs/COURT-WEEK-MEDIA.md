@@ -107,3 +107,38 @@ safe regions and the build never copies a generic image into 55 paths. A manual
 workflow run with `publish: false` succeeds after the other media gates and
 uploads the complete `art-readiness-report.json`. A run with `publish: true`
 fails before the publish job whenever that report is not fully release-ready.
+
+### Two-scene Release strips
+
+Conventional six-rendition scene files are review sources, not the final
+GitHub Release layout. `media:art:strips` deterministically joins chronological
+pairs within one court day. A strip never crosses a session boundary and an
+unpaired final scene receives a neutral second cell that is not mapped as a
+scene. Only a wholly commissioned day is emitted.
+
+```powershell
+cd site
+npm --prefix app run media:art:requirements -- --output <requirements.json>
+node scripts/scene-art-strips.mjs `
+  --requirements <requirements.json> `
+  --media-root app/public/media/court-week/cw-0001 `
+  --output-root <review-output>
+```
+
+The completed week contains 28 strips. Three compositions and two codecs make
+168 art assets; the fixed 56 audio segments and their four renditions make 224
+more. With three manifests, the projected Release contains 395 assets and
+retains a 105-asset safety margin below GitHub's 500-asset project gate.
+
+Two-scene strips are deliberate. They keep only the current and next scene in
+one decoded image (at most 2560 pixels on an edge). A whole-day atlas would
+decode seven or eight scenes, reach 5120 pixels and violate the performance
+contract despite using fewer Release assets.
+
+The strip manifest is private review/build material: it contains legal-order
+scene IDs and semantic paths. A later packaging phase must content-address the
+strip files, seal only one day's opaque mapping into its day pack, and exclude
+the source manifest and logical paths from public Release assets. Until that
+runtime cutover is complete and the immutable Release is pinned, reviewed
+scene files remain in the static development path and production remains
+fail-closed.
