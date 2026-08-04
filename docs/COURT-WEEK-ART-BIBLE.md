@@ -46,6 +46,9 @@ they are not represented as crop-specific approval.
 - Oren Vale: man in his early sixties; deep-brown complexion; close-cropped
   greying black hair; clean-shaven; plain dark-brown business suit, cream shirt
   and dark tie; careful compliance-director manner.
+- Tali Rusk: non-binary adult; medium-brown complexion; short black textured
+  hair; subtle round dark eyeglasses; plain muted olive-grey blazer over a
+  black shirt; composed human-factors-expert manner.
 
 Wardrobe stays unchanged through a court day. No police, rescue or military
 uniform appears in court unless the authored record expressly calls that person
