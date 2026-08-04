@@ -8,7 +8,23 @@ type Region = NonNullable<SceneVisual['subjectSafeRegion']>
 export interface CaptionPlacement {
   position: CaptionPosition
   region: Region
+  fits: boolean
 }
+
+interface CaptionDirection {
+  captionPosition: CaptionPosition
+  permittedCaptionPositions?: CaptionPosition[]
+  subjectSafeRegion?: Region | null
+  evidenceSafeRegion?: Region | null
+}
+
+interface CompositionDirection {
+  permittedCaptionPositions: CaptionPosition[]
+  subjectSafeRegion: Region | null
+  evidenceSafeRegion: Region | null
+}
+
+type CompositionDirections = Partial<Record<'portrait' | 'tablet' | 'desktop', CompositionDirection>>
 
 const viewportZones: Record<CaptionViewport, Record<CaptionPosition, Region>> = {
   phonePortrait: {
@@ -54,7 +70,23 @@ function overlapArea(left: Region, right: Region): number {
   return width * height
 }
 
-function protectedRegions(visual: SceneVisual): Region[] {
+function directionFor(visual: SceneVisual, viewport: CaptionViewport): CaptionDirection {
+  const composition = viewport === 'phonePortrait'
+    ? 'portrait'
+    : viewport === 'tablet' ? 'tablet' : 'desktop'
+  const direction = (visual as SceneVisual & { compositionArt?: CompositionDirections })
+    .compositionArt?.[composition]
+  return direction
+    ? {
+        captionPosition: direction.permittedCaptionPositions[0] ?? visual.captionPosition,
+        permittedCaptionPositions: direction.permittedCaptionPositions,
+        subjectSafeRegion: direction.subjectSafeRegion,
+        evidenceSafeRegion: direction.evidenceSafeRegion,
+      }
+    : visual
+}
+
+function protectedRegions(visual: CaptionDirection): Region[] {
   return [visual.subjectSafeRegion, visual.evidenceSafeRegion].filter((region): region is Region => Boolean(region))
 }
 
@@ -83,19 +115,22 @@ function keepOutsideProtectedLane(region: Region, position: CaptionPosition, pro
 }
 
 export function captionPlacementFor(visual: SceneVisual, viewport: CaptionViewport): CaptionPlacement {
-  const allowed = Array.from(new Set(visual.permittedCaptionPositions?.length
-    ? visual.permittedCaptionPositions
-    : [visual.captionPosition]))
-  const protectedArea = protectedRegions(visual)
+  const direction = directionFor(visual, viewport)
+  const allowed = Array.from(new Set(direction.permittedCaptionPositions?.length
+    ? direction.permittedCaptionPositions
+    : [direction.captionPosition]))
+  const protectedArea = protectedRegions(direction)
   const preference = viewportPreference[viewport]
   const position = [...allowed].sort((left, right) => {
     const leftOverlap = protectedArea.reduce((total, item) => total + overlapArea(viewportZones[viewport][left], item), 0)
     const rightOverlap = protectedArea.reduce((total, item) => total + overlapArea(viewportZones[viewport][right], item), 0)
     return leftOverlap - rightOverlap || preference.indexOf(left) - preference.indexOf(right)
-  })[0] ?? visual.captionPosition
+  })[0] ?? direction.captionPosition
+  const region = keepOutsideProtectedLane(viewportZones[viewport][position], position, protectedArea)
   return {
     position,
-    region: keepOutsideProtectedLane(viewportZones[viewport][position], position, protectedArea),
+    region,
+    fits: protectedArea.every((item) => overlapArea(region, item) === 0),
   }
 }
 

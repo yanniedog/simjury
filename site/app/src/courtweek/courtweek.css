@@ -135,6 +135,7 @@
 }
 .cw-speaker > p:first-child { margin: 0; color: var(--cw-brass); font-weight: 750; letter-spacing: .04em; }
 .cw-reading-copy { margin: .5rem 0 0; max-width: 66ch; line-height: 1.55; font-size: clamp(1rem, 2vw, 1.2rem); }
+.cw-caption-collision-copy { display: none; }
 .cw-shell[data-access-mode="reading"] .cw-speaker,
 .cw-shell[data-complete-captions="true"] .cw-speaker { top: 5.2rem; bottom: 5.2rem; overflow-y: auto; }
 .cw-tone--cross .cw-speaker { border-left-color: #80b9d2; }
@@ -270,6 +271,14 @@
 .cw-skip-link, .cw-visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0,0,0,0) !important; white-space: nowrap !important; border: 0 !important; }
 .cw-skip-link:focus { z-index: 30; top: .5rem; left: .5rem; width: auto !important; height: auto !important; margin: 0 !important; padding: .75rem !important; clip: auto !important; color: #111; background: #fff; }
 
+@container courtroom (max-width: 699px) {
+  .cw-shell[data-caption-phone-fits="true"] .cw-captions { display: flex; }
+  .cw-shell[data-caption-phone-fits="true"] .cw-caption-collision-copy { display: none; }
+  .cw-shell[data-caption-phone-fits="false"] .cw-captions { display: none; }
+  .cw-shell[data-caption-phone-fits="false"] .cw-caption-collision-copy { display: block; }
+  .cw-shell[data-caption-phone-fits="false"] .cw-speaker { top: 5.2rem; bottom: 5.2rem; overflow-y: auto; }
+}
+
 @container courtroom (min-width: 700px) {
   .cw-captions {
     --cw-caption-x: var(--cw-caption-tablet-x);
@@ -277,6 +286,11 @@
     --cw-caption-width: var(--cw-caption-tablet-width);
     --cw-caption-height: var(--cw-caption-tablet-height);
   }
+  .cw-shell[data-caption-tablet-fits="true"] .cw-captions { display: flex; }
+  .cw-shell[data-caption-tablet-fits="true"] .cw-caption-collision-copy { display: none; }
+  .cw-shell[data-caption-tablet-fits="false"] .cw-captions { display: none; }
+  .cw-shell[data-caption-tablet-fits="false"] .cw-caption-collision-copy { display: block; }
+  .cw-shell[data-caption-tablet-fits="false"] .cw-speaker { top: 5.2rem; bottom: 5.2rem; overflow-y: auto; }
   .cw-desk { left: auto; width: min(42%, 420px); }
   .cw-modal:not(.cw-evidence-viewer) { left: auto; width: min(42%, 520px); }
   .cw-evidence-viewer { inset: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); }
@@ -290,6 +304,11 @@
     --cw-caption-width: var(--cw-caption-desktop-width);
     --cw-caption-height: var(--cw-caption-desktop-height);
   }
+  .cw-shell[data-caption-desktop-fits="true"] .cw-captions { display: flex; }
+  .cw-shell[data-caption-desktop-fits="true"] .cw-caption-collision-copy { display: none; }
+  .cw-shell[data-caption-desktop-fits="false"] .cw-captions { display: none; }
+  .cw-shell[data-caption-desktop-fits="false"] .cw-caption-collision-copy { display: block; }
+  .cw-shell[data-caption-desktop-fits="false"] .cw-speaker { top: 5.2rem; bottom: 5.2rem; overflow-y: auto; }
 }
 
 @container courtroom (max-height: 500px) {
@@ -299,6 +318,11 @@
     --cw-caption-width: var(--cw-caption-phoneLandscape-width);
     --cw-caption-height: var(--cw-caption-phoneLandscape-height);
   }
+  .cw-shell[data-caption-landscape-fits="true"] .cw-captions { display: flex; }
+  .cw-shell[data-caption-landscape-fits="true"] .cw-caption-collision-copy { display: none; }
+  .cw-shell[data-caption-landscape-fits="false"] .cw-captions { display: none; }
+  .cw-shell[data-caption-landscape-fits="false"] .cw-caption-collision-copy { display: block; }
+  .cw-shell[data-caption-landscape-fits="false"] .cw-speaker { top: 5.2rem; bottom: 5.2rem; overflow-y: auto; }
 }
 
 @media (max-width: 599px) and (orientation: landscape) {

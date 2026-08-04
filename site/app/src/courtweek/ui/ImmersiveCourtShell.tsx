@@ -108,6 +108,10 @@ export function ImmersiveCourtShell({
       data-caption-landscape-position={captionPlacements.phoneLandscape.position}
       data-caption-tablet-position={captionPlacements.tablet.position}
       data-caption-desktop-position={captionPlacements.desktop.position}
+      data-caption-phone-fits={captionPlacements.phonePortrait.fits}
+      data-caption-landscape-fits={captionPlacements.phoneLandscape.fits}
+      data-caption-tablet-fits={captionPlacements.tablet.fits}
+      data-caption-desktop-fits={captionPlacements.desktop.fits}
       data-permitted-caption-positions={scene.visual.permittedCaptionPositions?.join(' ') ?? scene.visual.captionPosition}
       data-subject-safe-region={scene.visual.subjectSafeRegion
         ? JSON.stringify(scene.visual.subjectSafeRegion)
@@ -179,6 +183,9 @@ export function ImmersiveCourtShell({
             {cue.tone === 'cross' ? <span className="cw-speaker__mode"> · cross-examination</span> : null}
           </p>
           {(accessMode === 'reading' || captionsNeedReading) ? <p className="cw-reading-copy">{cue.text}</p> : null}
+          {captionsVisible && !captionsNeedReading ? (
+            <p className="cw-reading-copy cw-caption-collision-copy" aria-hidden="true">{cue.text}</p>
+          ) : null}
         </section>
 
         {captionsVisible && !captionsNeedReading ? (

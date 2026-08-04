@@ -162,4 +162,28 @@ describe('ImmersiveCourtShell', () => {
     expect(markup).not.toContain('class="cw-captions"')
     expect(markup).toContain(longCue.text)
   })
+
+  it('renders full reading copy when every permitted caption lane collides', () => {
+    const blockedScene: Scene = {
+      ...scene,
+      visual: {
+        ...scene.visual,
+        subjectSafeRegion: { x: 0, y: 0, width: 100, height: 100 },
+        evidenceSafeRegion: undefined,
+        permittedCaptionPositions: ['bottom'],
+      },
+    }
+    const markup = renderToStaticMarkup(
+      <ImmersiveCourtShell
+        session={session} scene={blockedScene} cue={cue} releaseBase="/media"
+        accessMode="captions" playbackStatus="playing" playbackError={null}
+        progressLabel="Scene 1 of 3" deskOpen={false}
+        onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
+        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+      />,
+    )
+    expect(markup).toContain('data-caption-phone-fits="false"')
+    expect(markup).toContain('cw-caption-collision-copy')
+    expect(markup).toContain(cue.text)
+  })
 })
