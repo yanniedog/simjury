@@ -118,9 +118,9 @@ const artRequirements = JSON.parse(readFileSync(artRequirementsPath, 'utf8'))
 const artReadiness = assessSceneArtManifest(artRequirements, visualSourceRoot)
 writeFileSync(join(privateOutputRoot, 'art-readiness-report.json'), `${JSON.stringify(artReadiness, null, 2)}\n`)
 if (artReadiness.release_ready) {
-  console.log(`Scene art is release-ready: ${artReadiness.ready_scene_count}/55 dedicated scenes.`)
+  console.log(`Scene art is release-ready: ${artReadiness.ready_scene_count}/${artReadiness.scene_count} dedicated scenes.`)
 } else {
-  console.warn(`Scene art is not release-ready: ${artReadiness.ready_scene_count}/55 scenes; ${artReadiness.gap_count} gaps.`)
+  console.warn(`Scene art is not release-ready: ${artReadiness.ready_scene_count}/${artReadiness.scene_count} scenes; ${artReadiness.gap_count} gaps.`)
   for (const gap of artReadiness.gaps) {
     console.warn(`ART GAP [${gap.scene_id ?? 'manifest'}] ${gap.code} ${gap.field}: ${gap.message}`)
   }
@@ -391,6 +391,7 @@ function serializeReleaseManifest(totalBytes) {
     production_environment: audioSessions[0]?.productionEnvironment ?? null,
     art_readiness: {
       release_ready: artReadiness.release_ready,
+      scene_count: artReadiness.scene_count,
       ready_scene_count: artReadiness.ready_scene_count,
       gap_count: artReadiness.gap_count,
     },
