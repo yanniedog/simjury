@@ -70,6 +70,7 @@ describe('ImmersiveCourtShell', () => {
         cue={cue}
         releaseBase="https://example.test/assets"
         accessMode="captions"
+        dataSaver
         playbackStatus="paused"
         playbackError={null}
         progressLabel="Scene 1 of 3"
@@ -84,6 +85,8 @@ describe('ImmersiveCourtShell', () => {
     )
 
     expect(markup).toContain('media="(orientation: portrait) and (max-width: 700px)"')
+    expect(markup).toContain('data-data-saver="true"')
+    expect(markup).toContain('data-ambience="off"')
     expect(markup).toContain('media="(orientation: landscape) and (max-height: 500px), (min-width: 1100px)"')
     expect(markup).toContain('scenes/scene-1/portrait.avif')
     expect(markup).toContain('scenes/scene-1/tablet.webp')
