@@ -81,7 +81,7 @@ export function ImmersiveCourtShell({
   const captionOverlay = useRef<HTMLDivElement>(null)
   const captionCopy = useRef<HTMLSpanElement>(null)
   const controls = useRef<HTMLElement>(null)
-  const speakerName = useRef<HTMLParagraphElement>(null)
+  const speakerCollisionProbe = useRef<HTMLParagraphElement>(null)
   const [fullscreen, setFullscreen] = useState(false)
   const [imageAvailable, setImageAvailable] = useState(true)
   const [captionRuntime, setCaptionRuntime] = useState<CaptionRuntimeState>({ mode: 'off', reason: null })
@@ -135,7 +135,7 @@ export function ImmersiveCourtShell({
       const overlayNode = captionOverlay.current
       const copyNode = captionCopy.current
       const controlsNode = controls.current
-      const speakerNode = speakerName.current
+      const speakerNode = speakerCollisionProbe.current
       if (!stageNode || !overlayNode || !copyNode || !controlsNode || !speakerNode) {
         setCaptionRuntime({ mode: 'reading', reason: 'layout-unavailable' })
         return
@@ -159,7 +159,7 @@ export function ImmersiveCourtShell({
     }
     measure()
     const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(schedule)
-    for (const node of [stage.current, controls.current, captionCopy.current]) {
+    for (const node of [stage.current, controls.current, captionCopy.current, speakerCollisionProbe.current]) {
       if (node) observer?.observe(node)
     }
     window.addEventListener('resize', schedule)
@@ -255,12 +255,19 @@ export function ImmersiveCourtShell({
         </header>
 
         <section className="cw-speaker" aria-labelledby="cw-speaker-name">
-          <p ref={speakerName} id="cw-speaker-name">
+          <p id="cw-speaker-name">
             {cue.speaker}
             {cue.tone === 'cross' ? <span className="cw-speaker__mode"> · cross-examination</span> : null}
           </p>
           {readingModeActive ? <p className="cw-reading-copy">{cue.text}</p> : null}
         </section>
+
+        <div className="cw-speaker cw-speaker--collision-probe" aria-hidden="true">
+          <p ref={speakerCollisionProbe}>
+            {cue.speaker}
+            {cue.tone === 'cross' ? <span className="cw-speaker__mode"> · cross-examination</span> : null}
+          </p>
+        </div>
 
         {captionOverlayRequested ? (
           <div ref={captionOverlay} className="cw-captions" aria-hidden="true">

@@ -315,6 +315,22 @@ test('caption runtime uses line fit and collision-free fallback at reported view
   }
 })
 
+test('short landscape reading mode preserves usable copy space', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Deterministic geometry is exercised once; cross-engine journeys remain separate.')
+  await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
+  await page.setViewportSize({ width: 568, height: 320 })
+  await page.goto('/')
+  await page.getByLabel('Reading mode').check()
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  await page.locator('.cw-shell').evaluate((shell) => shell.setAttribute('data-media-notice', 'true'))
+
+  const speaker = page.locator('.cw-speaker:not(.cw-speaker--collision-probe)')
+  await expect(speaker.locator('.cw-reading-copy')).toBeVisible()
+  const box = await speaker.boundingBox()
+  expect(box?.height ?? 0).toBeGreaterThanOrEqual(120)
+  await expect(page.locator('.cw-speaker--collision-probe')).toBeHidden()
+})
+
 async function readStoredProgress(page: Page) {
   return page.evaluate(async () => new Promise<Record<string, unknown> | null>((resolve, reject) => {
     const request = indexedDB.open('simjury-court-week-v1', 1)

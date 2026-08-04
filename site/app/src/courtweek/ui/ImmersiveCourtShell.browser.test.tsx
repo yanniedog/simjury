@@ -82,7 +82,7 @@ describe('ImmersiveCourtShell browser behavior', () => {
           ? { left: 100, top: 230, right: 600, bottom: 320, width: 500, height: 90 } as DOMRect
           : { left: 100, top: 800, right: 600, bottom: 890, width: 500, height: 90 } as DOMRect
       }
-      if (this.matches('#cw-speaker-name')) return { left: 12, top: 700, right: 255, bottom: 750, width: 243, height: 50 } as DOMRect
+      if (this.matches('.cw-speaker--collision-probe p')) return { left: 12, top: 700, right: 255, bottom: 750, width: 243, height: 50 } as DOMRect
       return { left: 0, top: 0, right: 1, bottom: 1, width: 1, height: 1 } as DOMRect
     })
     vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(50)
@@ -120,6 +120,8 @@ describe('ImmersiveCourtShell browser behavior', () => {
     await renderCue({ ...cue, id: 'cue-collision' })
     expect(container.querySelector('.cw-shell')?.getAttribute('data-caption-runtime-reason')).toBe('controls-collision')
     expect(container.querySelectorAll('.cw-speaker .cw-reading-copy')).toHaveLength(1)
+    await act(async () => window.dispatchEvent(new Event('resize')))
+    expect(container.querySelector('.cw-shell')?.getAttribute('data-caption-runtime-reason')).toBe('controls-collision')
     act(() => root.unmount())
   })
 })
