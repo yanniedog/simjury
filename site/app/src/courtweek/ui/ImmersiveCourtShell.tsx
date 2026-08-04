@@ -1,8 +1,15 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { CourtSession, Scene, SceneCue } from '../model/schema'
 import type { PlaybackStatus } from '../media/useCuePlayback'
 import type { AccessMode } from '../state/progress'
-import { captionPlacementStyle, responsiveCaptionPlacements } from './captionPlacement'
+import {
+  captionPlacementStyle,
+  captionViewportForSize,
+  evaluateCaptionRuntimeFit,
+  responsiveCaptionPlacements,
+  type CaptionFitFailure,
+  type CaptionRect,
+} from './captionPlacement'
 
 export type { AccessMode } from '../state/progress'
 
@@ -43,6 +50,15 @@ function sceneAssetUrl(
     : legacyAssetUrl(base, scene.visual.fallbackId, composition, format)
 }
 
+function captionRect(rect: DOMRect): CaptionRect {
+  return { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom }
+}
+
+interface CaptionRuntimeState {
+  mode: 'off' | 'fit' | 'reading'
+  reason: CaptionFitFailure | null
+}
+
 export function ImmersiveCourtShell({
   session,
   scene,
@@ -62,8 +78,13 @@ export function ImmersiveCourtShell({
   onToggleDesk,
 }: ImmersiveCourtShellProps) {
   const stage = useRef<HTMLElement>(null)
+  const captionOverlay = useRef<HTMLDivElement>(null)
+  const captionCopy = useRef<HTMLSpanElement>(null)
+  const controls = useRef<HTMLElement>(null)
+  const speakerCollisionProbe = useRef<HTMLParagraphElement>(null)
   const [fullscreen, setFullscreen] = useState(false)
   const [imageAvailable, setImageAvailable] = useState(true)
+  const [captionRuntime, setCaptionRuntime] = useState<CaptionRuntimeState>({ mode: 'off', reason: null })
 
   useEffect(() => {
     const update = () => setFullscreen(document.fullscreenElement === stage.current)
@@ -83,11 +104,10 @@ export function ImmersiveCourtShell({
   }
 
   const playing = playbackStatus === 'playing' || playbackStatus === 'speech-fallback'
-  const captionsVisible =
+  const captionOverlayRequested = playbackStatus !== 'reading-fallback' && accessMode !== 'reading' && (
     accessMode === 'captions' ||
-    playbackStatus === 'speech-fallback' ||
-    playbackStatus === 'reading-fallback'
-  const captionsNeedReading = captionsVisible && cue.text.length > 110
+    playbackStatus === 'speech-fallback'
+  )
   const stripFocalX = scene.visual.runtimeStrip
     ? (scene.visual.runtimeStrip.cell * 100 + scene.visual.focalPoint.x) / 2
     : scene.visual.focalPoint.x
@@ -98,7 +118,61 @@ export function ImmersiveCourtShell({
     composition: 'portrait' | 'tablet' | 'desktop',
     format: 'avif' | 'webp',
   ) => sceneAssetUrl(releaseBase, scene, composition, format)
-  const captionPlacements = responsiveCaptionPlacements(scene.visual)
+  const captionPlacements = useMemo(() => responsiveCaptionPlacements(scene.visual), [scene.visual])
+  const captionsNeedReading = captionOverlayRequested && captionRuntime.mode === 'reading'
+  const readingModeActive = accessMode === 'reading' || playbackStatus === 'reading-fallback' || captionsNeedReading
+
+  useLayoutEffect(() => {
+    if (!captionOverlayRequested) {
+      setCaptionRuntime({ mode: 'off', reason: null })
+      return
+    }
+    let cancelled = false
+    let frame = 0
+    const measure = () => {
+      if (cancelled) return
+      const stageNode = stage.current
+      const overlayNode = captionOverlay.current
+      const copyNode = captionCopy.current
+      const controlsNode = controls.current
+      const speakerNode = speakerCollisionProbe.current
+      if (!stageNode || !overlayNode || !copyNode || !controlsNode || !speakerNode) {
+        setCaptionRuntime({ mode: 'reading', reason: 'layout-unavailable' })
+        return
+      }
+      const stageBox = stageNode.getBoundingClientRect()
+      const viewport = captionViewportForSize(stageBox.width, stageBox.height)
+      const fit = evaluateCaptionRuntimeFit({
+        placementFits: captionPlacements[viewport].fits,
+        overlay: captionRect(copyNode.getBoundingClientRect()),
+        controls: captionRect(controlsNode.getBoundingClientRect()),
+        speaker: captionRect(speakerNode.getBoundingClientRect()),
+        clientHeight: copyNode.clientHeight,
+        scrollHeight: copyNode.scrollHeight,
+      })
+      setCaptionRuntime({ mode: fit.fits ? 'fit' : 'reading', reason: fit.reason })
+    }
+    const schedule = () => {
+      if (cancelled) return
+      window.cancelAnimationFrame(frame)
+      frame = window.requestAnimationFrame(measure)
+    }
+    measure()
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(schedule)
+    for (const node of [stage.current, controls.current, captionCopy.current, speakerCollisionProbe.current]) {
+      if (node) observer?.observe(node)
+    }
+    window.addEventListener('resize', schedule)
+    window.addEventListener('orientationchange', schedule)
+    void document.fonts?.ready.then(schedule)
+    return () => {
+      cancelled = true
+      window.cancelAnimationFrame(frame)
+      observer?.disconnect()
+      window.removeEventListener('resize', schedule)
+      window.removeEventListener('orientationchange', schedule)
+    }
+  }, [captionOverlayRequested, captionPlacements, cue.id, cue.text])
 
   return (
     <main
@@ -120,7 +194,10 @@ export function ImmersiveCourtShell({
         ? JSON.stringify(scene.visual.evidenceSafeRegion)
         : undefined}
       data-access-mode={accessMode}
-      data-complete-captions={captionsNeedReading}
+      data-complete-captions={readingModeActive}
+      data-caption-runtime-state={captionRuntime.mode}
+      data-caption-runtime-reason={captionRuntime.reason ?? undefined}
+      data-media-notice={Boolean(playbackError)}
       style={captionPlacementStyle(captionPlacements)}
     >
       <a className="cw-skip-link" href="#cw-primary-controls">Skip to controls</a>
@@ -182,21 +259,25 @@ export function ImmersiveCourtShell({
             {cue.speaker}
             {cue.tone === 'cross' ? <span className="cw-speaker__mode"> · cross-examination</span> : null}
           </p>
-          {(accessMode === 'reading' || captionsNeedReading) ? <p className="cw-reading-copy">{cue.text}</p> : null}
-          {captionsVisible && !captionsNeedReading ? (
-            <p className="cw-reading-copy cw-caption-collision-copy" aria-hidden="true">{cue.text}</p>
-          ) : null}
+          {readingModeActive ? <p className="cw-reading-copy">{cue.text}</p> : null}
         </section>
 
-        {captionsVisible && !captionsNeedReading ? (
-          <div className="cw-captions" aria-hidden="true">
-            <span>{cue.text}</span>
+        <div className="cw-speaker cw-speaker--collision-probe" aria-hidden="true">
+          <p ref={speakerCollisionProbe}>
+            {cue.speaker}
+            {cue.tone === 'cross' ? <span className="cw-speaker__mode"> · cross-examination</span> : null}
+          </p>
+        </div>
+
+        {captionOverlayRequested ? (
+          <div ref={captionOverlay} className="cw-captions" aria-hidden="true">
+            <span ref={captionCopy}>{cue.text}</span>
           </div>
         ) : null}
 
         <p
           className="cw-visually-hidden"
-          aria-live={accessMode === 'reading' || captionsNeedReading ? 'off' : 'polite'}
+          aria-live={readingModeActive ? 'off' : 'polite'}
           aria-atomic="true"
         >
           {cue.speaker}: {cue.accessibleProposition}
@@ -204,7 +285,7 @@ export function ImmersiveCourtShell({
 
         {playbackError ? <p className="cw-media-notice" role="status">{playbackError}</p> : null}
 
-        <nav id="cw-primary-controls" className="cw-controls" aria-label="Court playback controls">
+        <nav ref={controls} id="cw-primary-controls" className="cw-controls" aria-label="Court playback controls">
           <button type="button" onClick={playing ? onPause : onPlay}>
             {playing ? 'Pause' : playbackStatus === 'paused' ? 'Resume' : 'Play'}
           </button>
