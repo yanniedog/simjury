@@ -41,7 +41,7 @@ const deliberationSensitiveStrings = [
   ]),
   ...elevenMinutesCourtWeek.deliberation.legalQuestions,
   ...elevenMinutesCourtWeek.deliberation.propositions.flatMap((proposition) => [
-    proposition.id, proposition.legalQuestion,
+    proposition.id, proposition.legalQuestion, proposition.lawfulRationale,
   ]),
   ...elevenMinutesCourtWeek.deliberation.improperArguments.flatMap((argument) => [
     argument.claim, argument.correction,
