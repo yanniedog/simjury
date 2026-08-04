@@ -553,6 +553,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'fri-evidence-limits': {
+    altDescription: 'From the juror desk, six closed admitted-exhibit sleeves, a blank notepad and headphones sit before the judge. No exhibit substance or verdict cue is visible.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 70 }, subjectSafeRegion: { x: 0, y: 45, width: 100, height: 45 },
+        evidenceSafeRegion: { x: 0, y: 67, width: 100, height: 21 }, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 65 }, subjectSafeRegion: { x: 0, y: 34, width: 100, height: 58 },
+        evidenceSafeRegion: { x: 2, y: 62, width: 96, height: 28 }, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 61 }, subjectSafeRegion: { x: 0, y: 22, width: 100, height: 69 },
+        evidenceSafeRegion: { x: 0, y: 58, width: 96, height: 32 }, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
