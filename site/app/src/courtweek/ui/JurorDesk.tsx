@@ -8,6 +8,7 @@ import {
 export interface JurorDeskProps {
   trial: TrialRecord
   progress: WeeklyProgress
+  readOnly?: boolean
   onNotesChange: (notes: string) => void
   onImport: (progress: WeeklyProgress) => void
   onInspectEvidence: (evidenceId: string) => void
@@ -17,6 +18,7 @@ export interface JurorDeskProps {
 export function JurorDesk({
   trial,
   progress,
+  readOnly = false,
   onNotesChange,
   onImport,
   onInspectEvidence,
@@ -85,40 +87,54 @@ export function JurorDesk({
 
       <section>
         <label htmlFor="cw-private-notes"><strong>Your private notes</strong></label>
+        {readOnly ? (
+          <p className="cw-kicker">Replay mode keeps notes and sealed ballots unchanged.</p>
+        ) : null}
         <textarea
           id="cw-private-notes"
           rows={7}
           value={progress.notes}
-          onChange={(event) => onNotesChange(event.target.value)}
+          readOnly={readOnly}
+          onChange={(event) => {
+            if (!readOnly) onNotesChange(event.target.value)
+          }}
           placeholder="Your notes stay on this device unless you choose to export them."
         />
       </section>
 
       <section className="cw-desk__transfer">
         <h3>Move progress between devices</h3>
-        <label>
-          <input
-            type="checkbox"
-            checked={includeNotes}
-            onChange={(event) => setIncludeNotes(event.target.checked)}
-          />
-          Include my private notes in the export
-        </label>
+        {readOnly ? (
+          <p>Import is unavailable during replay so sealed ballots stay intact. Export remains available.</p>
+        ) : (
+          <label>
+            <input
+              type="checkbox"
+              checked={includeNotes}
+              onChange={(event) => setIncludeNotes(event.target.checked)}
+            />
+            Include my private notes in the export
+          </label>
+        )}
         <div className="cw-button-row">
-          <button type="button" onClick={() => downloadWeeklyProgress(progress, includeNotes)}>
+          <button type="button" onClick={() => downloadWeeklyProgress(progress, includeNotes || readOnly)}>
             Export progress
           </button>
-          <button type="button" onClick={() => importInput.current?.click()}>
-            Import progress
-          </button>
+          {!readOnly ? (
+            <button type="button" onClick={() => importInput.current?.click()}>
+              Import progress
+            </button>
+          ) : null}
         </div>
-        <input
-          ref={importInput}
-          className="cw-visually-hidden"
-          type="file"
-          accept="application/json,.json"
-          onChange={(event) => void readImport(event.target.files?.[0])}
-        />
+        {!readOnly ? (
+          <input
+            ref={importInput}
+            className="cw-visually-hidden"
+            type="file"
+            accept="application/json,.json"
+            onChange={(event) => void readImport(event.target.files?.[0])}
+          />
+        ) : null}
         {importError ? <p className="cw-error" role="alert">{importError}</p> : null}
       </section>
     </aside>
