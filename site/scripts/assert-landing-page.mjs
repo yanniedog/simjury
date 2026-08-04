@@ -9,6 +9,7 @@ const privacy = readFileSync(join(publicRoot, 'privacy', 'index.html'), 'utf8')
 const ready = readFileSync(join(publicRoot, 'ready.js'), 'utf8')
 const headers = readFileSync(join(publicRoot, '_headers'), 'utf8')
 const failures = []
+const courtSketchPath = '/assets/40845e3bb93922ec.webp'
 
 function requireText(source, text, message) {
   if (!source.includes(text)) failures.push(message)
@@ -59,8 +60,12 @@ for (const text of [
 
 requireText(ready, 'simjury:fiction-disclosure:v2', 'Landing must retain the versioned adult-fiction gate')
 requireText(headers, 'Cache-Control: no-transform', 'Static responses must block transformations')
+requireText(headers, '/assets/*', 'Content-addressed landing assets must have a dedicated cache rule')
+requireText(headers, 'Cache-Control: public, max-age=31536000, immutable, no-transform', 'Content-addressed landing assets must be immutable')
 requireText(headers, "script-src 'self'", 'CSP must keep scripts self-only')
 requireText(headers, "connect-src 'self'", 'CSP must keep connections self-only')
+requireText(home, `content="https://simjury.com${courtSketchPath}"`, 'Landing social metadata must use the content-addressed court sketch')
+if (!existsSync(join(publicRoot, courtSketchPath.slice(1)))) failures.push('Content-addressed landing court sketch is missing')
 
 if (failures.length) {
   console.error(`Landing validation failed:\n- ${failures.join('\n- ')}`)
