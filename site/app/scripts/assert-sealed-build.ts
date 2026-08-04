@@ -35,6 +35,28 @@ const sensitiveStrings = elevenMinutesCourtWeek.manifest.sessions.flatMap((sessi
     ].filter((value): value is string => Boolean(value))),
   ]),
 )
+const deliberationSensitiveStrings = [
+  ...elevenMinutesCourtWeek.deliberation.jurors.flatMap((juror) => [
+    juror.occupation, juror.concern, juror.reasoningStrength, juror.vulnerability,
+  ]),
+  ...elevenMinutesCourtWeek.deliberation.legalQuestions,
+  ...elevenMinutesCourtWeek.deliberation.propositions.flatMap((proposition) => [
+    proposition.id, proposition.legalQuestion,
+  ]),
+  ...elevenMinutesCourtWeek.deliberation.improperArguments.flatMap((argument) => [
+    argument.claim, argument.correction,
+  ]),
+  elevenMinutesCourtWeek.deliberation.juryNote.question,
+  elevenMinutesCourtWeek.deliberation.juryNote.answer,
+  ...elevenMinutesCourtWeek.deliberation.outcomePaths.flatMap((outcome) => [
+    outcome.lawfulRationale, outcome.counterAnalysis,
+  ]),
+]
+for (const sensitive of deliberationSensitiveStrings) {
+  if (sensitive.length >= 12 && publicCode.includes(sensitive)) {
+    throw new Error(`Deliberation content leaked into an executable/static source: ${sensitive.slice(0, 72)}`)
+  }
+}
 for (const sensitive of sensitiveStrings) {
   if (sensitive.length >= 12 && publicCode.includes(sensitive)) {
     throw new Error(`Authored Court Week content leaked into an executable/static source: ${sensitive.slice(0, 72)}`)

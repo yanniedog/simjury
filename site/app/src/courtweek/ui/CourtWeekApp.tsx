@@ -11,6 +11,7 @@ import {
   unanimousVerdict,
 } from '../engine/deliberation'
 import { nextReplaySafeCue, replaySafeCue } from '../engine/replay'
+import { contributionStage } from '../model/deliberationContract'
 import { useCuePlayback } from '../media/useCuePlayback'
 import {
   courtWeekMediaPolicy,
@@ -524,15 +525,23 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const improperArguments = courtWeek.deliberation.improperArguments ?? []
   const selectedImproperArgument = improperArguments[selectedImproperIndex] ?? null
   const reviewedPropositions = courtWeek.deliberation.propositions ?? []
-  const reasoningQuestions = Array.from(new Set(reviewedPropositions.map(({ legalQuestion }) => legalQuestion)))
-  const reasoningEvidenceIds = new Set(reviewedPropositions
-    .filter(({ legalQuestion }) => legalQuestion === reasoningQuestion)
-    .map(({ evidenceId: propositionEvidenceId }) => propositionEvidenceId))
-  const reasoningMoves = new Set(reviewedPropositions
-    .filter(({ legalQuestion, evidenceId: propositionEvidenceId }) => (
-      legalQuestion === reasoningQuestion && propositionEvidenceId === reasoningEvidence
-    ))
-    .map(({ move }) => move))
+  const influenceStage = contributionStage(position.scene.id)
+  const recordsInfluence = influenceStage !== null
+  const reasoningQuestions = recordsInfluence
+    ? Array.from(new Set(reviewedPropositions.map(({ legalQuestion }) => legalQuestion)))
+    : courtWeek.trial.offences.slice(0, 2).flatMap(({ elementQuestions }) => elementQuestions)
+  const reasoningEvidenceIds = new Set(recordsInfluence
+    ? reviewedPropositions
+        .filter(({ legalQuestion }) => legalQuestion === reasoningQuestion)
+        .map(({ evidenceId: propositionEvidenceId }) => propositionEvidenceId)
+    : courtWeek.trial.evidence.filter(({ status }) => status === 'admitted').map(({ id }) => id))
+  const reasoningMoves = new Set(recordsInfluence
+    ? reviewedPropositions
+        .filter(({ legalQuestion, evidenceId: propositionEvidenceId }) => (
+          legalQuestion === reasoningQuestion && propositionEvidenceId === reasoningEvidence
+        ))
+        .map(({ move }) => move)
+    : interaction?.options ?? [])
   const selectedProposition = reviewedPropositions.find((proposition) => (
     proposition.legalQuestion === reasoningQuestion &&
     proposition.evidenceId === reasoningEvidence &&
@@ -651,6 +660,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       <>
         <JurorDesk
           trial={courtWeek.trial}
+          deliberation={courtWeek.deliberation.propositions ? courtWeek.deliberation : undefined}
           progress={progress}
           readOnly={isReplay}
           inactive={Boolean(evidence)}
@@ -794,7 +804,10 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
               !interactionMinimumMet ||
               (!interactionChoice && (isVote || Boolean(interaction.options?.length))) ||
               (interaction.kind === 'reasoning' && (
-                !selectedProposition || (reviewsImproperArgument && !reasoningBasis)
+                (recordsInfluence
+                  ? !selectedProposition
+                  : !reasoningQuestion || !reasoningEvidence || !interactionChoice) ||
+                (reviewsImproperArgument && !reasoningBasis)
               ))
             )
           }
