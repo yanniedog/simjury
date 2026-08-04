@@ -77,7 +77,7 @@ test('holds the full release projection below 500 assets', () => {
   const artAssets = completeStripCount * 3 * 2
   const fixedAudioAndCaptionAssets = 7 * 8 * 4
   assert.equal(artAssets, 168)
-  assert.equal(artAssets + fixedAudioAndCaptionAssets + 3, 395)
+  assert.equal(artAssets + fixedAudioAndCaptionAssets + 1, 393)
 })
 
 test('rejects a duplicated or cross-session scene mapping before encoding', async () => {
