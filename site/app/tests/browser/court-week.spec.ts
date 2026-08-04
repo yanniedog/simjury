@@ -143,7 +143,21 @@ async function readStoredProgress(page: Page) {
 
 test('accelerated conclusion returns its verdict before analysis and preserves sealed state on replay', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'The real-duration release gate complements this accelerated conclusion.')
-  await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
+  await page.addInitScript((instant) => {
+    let current = instant
+    Date.now = () => current
+    Object.defineProperty(window, '__simjuryAdvanceClock', {
+      value: (milliseconds: number) => { current += milliseconds },
+      configurable: false,
+    })
+  }, releaseNow)
+  const satisfyInteractionTime = async () => {
+    await page.evaluate(() => {
+      const clock = window as Window & { __simjuryAdvanceClock: (milliseconds: number) => void }
+      clock.__simjuryAdvanceClock(10 * 60 * 1000)
+    })
+    await page.waitForTimeout(1_100)
+  }
   const prohibited: string[] = []
   page.on('request', (request) => {
     const url = new URL(request.url())
@@ -198,6 +212,7 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
   const continueButton = page.getByLabel('Court playback controls').getByRole('button', { name: 'Continue', exact: true })
   await continueButton.click()
   await continueButton.click()
+  await satisfyInteractionTime()
   await page.locator('.cw-interaction button.cw-primary').click()
   await expect(page.locator('.cw-reading-copy')).toContainText('Strongest lawful rationale:')
   await expect(page.locator('.cw-reading-copy')).toContainText('Strongest counter-analysis:')
@@ -207,6 +222,7 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
   await analysisDialog.locator('select').nth(0).selectOption({ index: 1 })
   await analysisDialog.locator('select').nth(1).selectOption({ index: 1 })
   await analysisDialog.locator('button[aria-pressed="false"]').first().click()
+  await satisfyInteractionTime()
   await analysisDialog.locator('button.cw-primary').click()
 
   await expect(page.getByRole('heading', { name: 'Court Week complete' })).toBeVisible()
