@@ -18,6 +18,11 @@ export interface CuePlayback {
   repeat: () => Promise<void>
 }
 
+export interface CuePlaybackOptions {
+  /** Keep recorded media source-free until play() runs inside the user's gesture. */
+  deferSourceUntilPlay?: boolean
+}
+
 export function supportedAudioSource(
   audio: Pick<HTMLAudioElement, 'canPlayType'>,
   cue: SceneCue,
@@ -55,6 +60,7 @@ export function useCuePlayback(
   cue: SceneCue,
   onEnded: () => void,
   nextSceneCue?: SceneCue,
+  options: CuePlaybackOptions = {},
 ): CuePlayback {
   const audio = useMemo(
     () => (typeof Audio === 'undefined' ? null : new Audio()),
@@ -190,9 +196,9 @@ export function useCuePlayback(
     if (!audio) return
     audio.pause()
     audio.currentTime = cue.audio?.startSeconds ?? 0
-    audio.preload = 'metadata'
+    audio.preload = options.deferSourceUntilPlay ? 'none' : 'metadata'
     const source = supportedAudioSource(audio, cue)
-    if (source) audio.src = source
+    if (source && !options.deferSourceUntilPlay) audio.src = source
     else audio.removeAttribute('src')
 
     const finishRange = () => {
@@ -249,7 +255,7 @@ export function useCuePlayback(
       audio.removeEventListener('pause', handlePause)
       cancelSpeech()
     }
-  }, [audio, cancelSpeech, clearPlaybackTimeout, cue, recoverRecordedPlayback, suppressRecordedPlayback])
+  }, [audio, cancelSpeech, clearPlaybackTimeout, cue, options.deferSourceUntilPlay, recoverRecordedPlayback, suppressRecordedPlayback])
 
   useEffect(() => {
     if (!preloader) return
@@ -301,6 +307,10 @@ export function useCuePlayback(
     if (!audio || !source) {
       speakFallback()
       return
+    }
+    if (audio.src !== source) {
+      audio.preload = 'metadata'
+      audio.src = source
     }
     const start = cue.audio?.startSeconds ?? 0
     if (

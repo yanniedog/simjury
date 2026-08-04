@@ -41,8 +41,13 @@ class MockAudio extends EventTarget {
   removeAttribute(name: string) { if (name === 'src') this.src = '' }
 }
 
-function Harness({ onEnded, activeCue = cue, nextSceneCue }: { onEnded: () => void; activeCue?: SceneCue; nextSceneCue?: SceneCue }) {
-  const playback = useCuePlayback(activeCue, onEnded, nextSceneCue)
+function Harness({ onEnded, activeCue = cue, nextSceneCue, deferSourceUntilPlay = false }: {
+  onEnded: () => void
+  activeCue?: SceneCue
+  nextSceneCue?: SceneCue
+  deferSourceUntilPlay?: boolean
+}) {
+  const playback = useCuePlayback(activeCue, onEnded, nextSceneCue, { deferSourceUntilPlay })
   const [, render] = useState(0)
   return (
     <div>
@@ -158,6 +163,23 @@ describe('useCuePlayback', () => {
     expect(MockAudio.instances[1].src).toBe(nextCue.audio?.opus)
     expect(MockAudio.instances[1].preload).toBe('metadata')
     expect(MockAudio.instances[1].play).not.toHaveBeenCalled()
+    act(() => root.unmount())
+  })
+
+  it('defers the active narration source until the play gesture', async () => {
+    const root = createRoot(container)
+    await act(async () => root.render(
+      <Harness activeCue={cue} deferSourceUntilPlay onEnded={() => undefined} />,
+    ))
+    const currentAudio = MockAudio.instances[0]
+    expect(currentAudio.src).toBe('')
+    expect(currentAudio.preload).toBe('none')
+
+    await act(async () => Array.from(container.querySelectorAll('button'))[0].click())
+
+    expect(currentAudio.src).toBe(cue.audio?.opus)
+    expect(currentAudio.preload).toBe('metadata')
+    expect(currentAudio.play).toHaveBeenCalledOnce()
     act(() => root.unmount())
   })
 

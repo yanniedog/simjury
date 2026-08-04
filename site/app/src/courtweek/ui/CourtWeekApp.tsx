@@ -249,6 +249,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const presentedAccessMode = mediaPolicy.recordedNarration || accessMode === 'reading'
     ? accessMode
     : 'reading'
+  const readingForcedByDataSaver = presentedAccessMode === 'reading' && accessMode !== 'reading'
   const observedTime = observeCourtTime(Date.parse(progress.highestObservedTime), now())
   const availability = getSessionAvailability(
     courtWeek.manifest.sessions.map((session) => ({
@@ -373,7 +374,8 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const playback = useCuePlayback(
     playbackCue,
     handleCueEnded,
-    nextCueForMediaPolicy(activeSession.scenes[position.sceneIndex + 1]?.cues[0], mediaPolicy),
+    nextCueForMediaPolicy(entered ? activeSession.scenes[position.sceneIndex + 1]?.cues[0] : undefined, mediaPolicy),
+    { deferSourceUntilPlay: true },
   )
   const playCue = playback.play
   useEffect(() => {
@@ -804,6 +806,8 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       releaseBase={releaseRoot}
       accessMode={presentedAccessMode}
       dataSaver={mediaPolicy.dataSaver}
+      captionPreference={accessMode}
+      captionsLocked={readingForcedByDataSaver}
       playbackStatus={playback.status}
       playbackError={[playback.error, storageNotice ?? (
         persistence === 'memory' ? 'Progress is held in this tab. Export it before leaving.' : null

@@ -147,6 +147,35 @@ describe('ImmersiveCourtShell', () => {
     expect(markup).toContain('sizes="100vw"')
   })
 
+  it('uses the smaller single-scene rendition instead of a two-scene strip in data saver', () => {
+    const markup = renderToStaticMarkup(
+      <ImmersiveCourtShell
+        session={session} scene={stripScene} cue={cue} releaseBase="/media"
+        accessMode="reading" dataSaver playbackStatus="paused" playbackError={null}
+        progressLabel="Scene 1 of 3" deskOpen={false}
+        onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
+        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+      />,
+    )
+    expect(markup).not.toContain('cw-stage__picture--strip')
+    expect(markup).toContain('/media/scenes/scene-1/portrait.avif')
+    expect(markup).not.toContain(`https://example.test/portrait.${'a'.repeat(64)}.avif`)
+    expect(markup).toContain('object-position:58% 42%')
+  })
+
+  it('locks captions to their stored preference while low-data reading is forced', () => {
+    const markup = renderToStaticMarkup(
+      <ImmersiveCourtShell
+        session={session} scene={scene} cue={cue} releaseBase="/media"
+        accessMode="reading" captionPreference="captions" captionsLocked
+        playbackStatus="idle" playbackError={null} progressLabel="Scene 1 of 3" deskOpen={false}
+        onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
+        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+      />,
+    )
+    expect(markup).toMatch(/aria-pressed="true" disabled=""[^>]*>Captions/u)
+  })
+
   it('does not guess caption fit from character count before browser layout', () => {
     const longCue = {
       ...cue,

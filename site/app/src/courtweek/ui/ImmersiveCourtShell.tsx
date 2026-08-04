@@ -20,6 +20,8 @@ export interface ImmersiveCourtShellProps {
   releaseBase: string
   accessMode: AccessMode
   dataSaver?: boolean
+  captionPreference?: AccessMode
+  captionsLocked?: boolean
   playbackStatus: PlaybackStatus
   playbackError: string | null
   progressLabel: string
@@ -42,10 +44,12 @@ function sceneAssetUrl(
   scene: Scene,
   composition: 'portrait' | 'tablet' | 'desktop',
   format: 'avif' | 'webp',
+  dataSaver: boolean,
 ) {
   const runtimeStrip = scene.visual.runtimeStrip?.sources?.[composition]?.[format]
-  if (runtimeStrip) return runtimeStrip
   const commissioned = scene.visual.sources?.[composition]?.[format]
+  if (dataSaver && commissioned) return `${base}/${commissioned}`
+  if (runtimeStrip) return runtimeStrip
   return commissioned
     ? `${base}/${commissioned}`
     : legacyAssetUrl(base, scene.visual.fallbackId, composition, format)
@@ -67,6 +71,8 @@ export function ImmersiveCourtShell({
   releaseBase,
   accessMode,
   dataSaver = false,
+  captionPreference = accessMode,
+  captionsLocked = false,
   playbackStatus,
   playbackError,
   progressLabel,
@@ -113,8 +119,9 @@ export function ImmersiveCourtShell({
     accessMode === 'captions' ||
     playbackStatus === 'speech-fallback'
   )
-  const stripFocalX = scene.visual.runtimeStrip
-    ? (scene.visual.runtimeStrip.cell * 100 + scene.visual.focalPoint.x) / 2
+  const usesRuntimeStrip = Boolean(scene.visual.runtimeStrip && (!dataSaver || !scene.visual.sources))
+  const stripFocalX = usesRuntimeStrip
+    ? ((scene.visual.runtimeStrip?.cell ?? 0) * 100 + scene.visual.focalPoint.x) / 2
     : scene.visual.focalPoint.x
   const focalStyle = {
     objectPosition: `${stripFocalX}% ${scene.visual.focalPoint.y}%`,
@@ -122,7 +129,7 @@ export function ImmersiveCourtShell({
   const visualUrl = (
     composition: 'portrait' | 'tablet' | 'desktop',
     format: 'avif' | 'webp',
-  ) => sceneAssetUrl(releaseBase, scene, composition, format)
+  ) => sceneAssetUrl(releaseBase, scene, composition, format, dataSaver)
   const captionPlacements = useMemo(() => responsiveCaptionPlacements(scene.visual), [scene.visual])
   const captionsNeedReading = captionOverlayRequested && captionRuntime.mode === 'reading'
   const readingModeActive = accessMode === 'reading' || playbackStatus === 'reading-fallback' || captionsNeedReading
@@ -211,8 +218,8 @@ export function ImmersiveCourtShell({
 
       <div className="cw-stage" aria-busy={playbackStatus === 'loading'}>
         <picture
-          className={`cw-stage__picture${scene.visual.runtimeStrip ? ' cw-stage__picture--strip' : ''}${imageAvailable ? '' : ' cw-stage__picture--unavailable'}`}
-          data-strip-cell={scene.visual.runtimeStrip?.cell}
+          className={`cw-stage__picture${usesRuntimeStrip ? ' cw-stage__picture--strip' : ''}${imageAvailable ? '' : ' cw-stage__picture--unavailable'}`}
+          data-strip-cell={usesRuntimeStrip ? scene.visual.runtimeStrip?.cell : undefined}
         >
           <source
             media="(orientation: portrait) and (max-width: 700px)"
@@ -301,7 +308,8 @@ export function ImmersiveCourtShell({
           <button
             type="button"
             onClick={onToggleCaptions}
-            aria-pressed={accessMode === 'captions'}
+            aria-pressed={captionPreference === 'captions'}
+            disabled={captionsLocked}
           >
             Captions
           </button>
