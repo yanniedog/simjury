@@ -140,6 +140,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
     }),
   },
+  'tue-adjourn': {
+    altDescription: 'The courtroom is empty after Tuesday’s adjournment, with the bench, witness box and counsel tables orderly in dusk light. No evidence remains visible or readable.',
+    compositionArt: {
+      portrait: {
+        focalPoint: { x: 50, y: 42 }, subjectSafeRegion: null,
+        evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'], reviewStatus: 'crop-reviewed',
+      },
+      tablet: {
+        focalPoint: { x: 50, y: 42 }, subjectSafeRegion: null,
+        evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'], reviewStatus: 'crop-reviewed',
+      },
+      desktop: {
+        focalPoint: { x: 50, y: 42 }, subjectSafeRegion: null,
+        evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'], reviewStatus: 'crop-reviewed',
+      },
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
