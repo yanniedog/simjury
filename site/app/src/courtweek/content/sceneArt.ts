@@ -417,6 +417,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'thu-def-close': {
+    altDescription: 'Defence counsel Corin Dax stands at the defence table to state that the defence calls no further evidence. The accused remains seated, and no reaction or verdict inference is depicted.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 55, y: 49 }, subjectSafeRegion: { x: 0, y: 34, width: 100, height: 55 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 55, y: 46 }, subjectSafeRegion: { x: 0, y: 24, width: 100, height: 69 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 56, y: 44 }, subjectSafeRegion: { x: 0, y: 20, width: 100, height: 74 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
