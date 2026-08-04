@@ -115,6 +115,7 @@ describe('ImmersiveCourtShell browser behavior', () => {
     expect(container.querySelector('.cw-shell')?.getAttribute('data-caption-runtime-reason')).toBe('line-overflow')
     expect(container.querySelector('.cw-speaker .cw-reading-copy')?.textContent).toBe(longCue.text)
     expect(container.querySelector('[aria-live]')?.getAttribute('aria-live')).toBe('off')
+    expect(container.querySelector('[aria-live]')?.getAttribute('aria-hidden')).toBe('true')
 
     collision = true
     await renderCue({ ...cue, id: 'cue-collision' })
