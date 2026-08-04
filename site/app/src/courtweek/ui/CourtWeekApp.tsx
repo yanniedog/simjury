@@ -18,7 +18,7 @@ import {
   formatCourtUnlock,
 } from '../state/schedule'
 import { type AccessMode, type StoredWeeklyProgress, downloadWeeklyProgress } from '../state/progress'
-import { useWeeklyProgress } from '../state/useWeeklyProgress'
+import { useWeeklyProgress, type PersistenceIssue } from '../state/useWeeklyProgress'
 import { EvidenceViewer } from './EvidenceViewer'
 import { CourtWeekCompletion } from './CourtWeekCompletion'
 import { ImmersiveCourtShell } from './ImmersiveCourtShell'
@@ -46,6 +46,13 @@ const improperBasisLabels = [
 
 function improperBasisToken(index: number): string {
   return `improper:${index}`
+}
+function persistenceNotice(issue: PersistenceIssue): string | null {
+  if (issue === 'corrupt') return 'Saved progress is damaged and could not be recovered. A new session has started; export it if you need a separate copy.'
+  if (issue === 'revision-mismatch') return 'Saved progress belongs to a different case revision and was not loaded. A new session has started.'
+  if (issue === 'unavailable') return 'Device storage is unavailable. Progress is held in this tab; export it before leaving.'
+  if (issue === 'save-failed') return 'Device storage could not save progress. Progress is held in this tab; export it before leaving.'
+  return null
 }
 function initialProgress(courtWeek: CourtWeek, now: number): StoredWeeklyProgress {
   return {
@@ -152,7 +159,8 @@ function VerdictChoices({
 }
 export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWeekAppProps) {
   const baseline = useMemo(() => initialProgress(courtWeek, now()), [courtWeek, now])
-  const { progress, hydrated, persistence, persistenceNotice, updateProgress } = useWeeklyProgress(baseline)
+  const { progress, hydrated, persistence, persistenceIssue, updateProgress } = useWeeklyProgress(baseline)
+  const storageNotice = persistenceNotice(persistenceIssue)
   const [entered, setEntered] = useState(false)
   const [started, setStarted] = useState(false)
   const [deskOpen, setDeskOpen] = useState(false)
@@ -347,7 +355,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
         title={courtWeek.manifest.title}
         advisory={courtWeek.manifest.contentAdvisory}
         mode={accessMode}
-        persistenceNotice={persistenceNotice}
+        persistenceNotice={storageNotice}
         onMode={(mode) => updateProgress((current) => ({ ...current, accessibilityMode: mode }))}
         onEnter={(requestFullscreen) => {
           setEntered(true)
@@ -704,7 +712,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       releaseBase={releaseRoot}
       accessMode={accessMode}
       playbackStatus={playback.status}
-      playbackError={[playback.error, persistenceNotice ?? (
+      playbackError={[playback.error, storageNotice ?? (
         persistence === 'memory' ? 'Progress is held in this tab. Export it before leaving.' : null
       )].filter(Boolean).join(' ') || null}
       progressLabel={progressLabel}
