@@ -24,11 +24,15 @@ function temporaryDirectory() {
 function mockWrangler(args) {
   if (args[1] === 'execute') {
     const sql = args.find((arg) => arg.startsWith('--command='))?.slice('--command='.length)
-    if (sql.includes('sqlite_schema')) return JSON.stringify([{ success: true, results: TABLES }])
+    if (sql.includes('sqlite_schema')) {
+      assert.match(sql, /name NOT GLOB '_cf_\*'/u)
+      return JSON.stringify([{ success: true, results: TABLES }])
+    }
     if (sql.includes('"audit"')) return JSON.stringify([{ success: true, results: [{ rows: 2 }] }])
     if (sql.includes('"waitlist"')) return JSON.stringify([{ success: true, results: [{ rows: 1 }] }])
   }
   if (args[1] === 'export') {
+    assert.ok(args.includes('--skip-confirmation'))
     const output = args.find((arg) => arg.startsWith('--output='))?.slice('--output='.length)
     writeFileSync(output, DATABASE_SQL)
     return ''
