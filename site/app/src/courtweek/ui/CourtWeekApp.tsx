@@ -2,10 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { CourtWeek, CourtSession, ReasoningMove, SceneCue, Verdict } from '../model/schema'
 import {
   analysisForReturnedVerdict,
+  assessReasoningContribution,
   calculateFinalBallot,
   calculateSecondBallot,
   firstBallotForScene,
-  matchImproperArgument,
   nextSundaySceneId,
   openCourtReturn,
   unanimousVerdict,
@@ -35,6 +35,17 @@ const verdictLabels: Record<Verdict, string> = {
   manslaughter: 'Guilty of manslaughter by criminal negligence',
   'not-guilty': 'Not Guilty',
   'unable-to-agree': 'Unable to agree',
+}
+const improperBasisLabels = [
+  'Rely on the accused’s silence',
+  'Consider the likely sentence',
+  'Decide from sympathy or personal feeling',
+  'Rely on character or material the judge excluded',
+  'Use manslaughter as a compromise midpoint',
+] as const
+
+function improperBasisToken(index: number): string {
+  return `improper:${index}`
 }
 function initialProgress(courtWeek: CourtWeek, now: number): StoredWeeklyProgress {
   return {
@@ -146,6 +157,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const [interactionSealed, setInteractionSealed] = useState(false)
   const [reasoningQuestion, setReasoningQuestion] = useState('')
   const [reasoningEvidence, setReasoningEvidence] = useState('')
+  const [reasoningBasis, setReasoningBasis] = useState('')
   const [replaySessionId, setReplaySessionId] = useState<string | null>(null)
   const gesturePlayedCue = useRef<string | null>(null)
   const [, setInteractionTick] = useState(0)
@@ -362,6 +374,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
           setInteractionSealed(false)
           setReasoningQuestion('')
           setReasoningEvidence('')
+          setReasoningBasis('')
           if (firstScene?.cues[0]) commitPosition(session.id, firstScene.id, firstScene.cues[0].id)
         }}
         onSettings={() => setEntered(false)}
@@ -394,6 +407,11 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const firstBallot = firstBallotForScene(
     courtWeek.deliberation, position.scene.id, progress.provisionalVote,
   )
+  const reviewsImproperArgument = position.scene.id === 'sat-improper'
+  const selectedImproperIndex = reasoningBasis.startsWith('improper:')
+    ? Number.parseInt(reasoningBasis.slice('improper:'.length), 10)
+    : -1
+  const selectedImproperArgument = courtWeek.deliberation.improperArguments[selectedImproperIndex] ?? null
   const finishInteraction = () => {
     if (!interaction) return
     if (!interactionMinimumMet) return
@@ -409,6 +427,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       setInteractionSealed(false)
       setReasoningQuestion('')
       setReasoningEvidence('')
+      setReasoningBasis('')
       if (nextScene) {
         commitPosition(activeSession.id, nextScene.id, nextScene.cues[0].id)
       } else {
@@ -420,14 +439,14 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     const choice = interactionChoice
     const isReasoning = interaction.kind === 'reasoning'
     const contribution = isReasoning && choice && reasoningQuestion && reasoningEvidence
-      ? {
+      ? assessReasoningContribution(courtWeek.deliberation, {
           sceneId: position.scene.id,
           legalQuestion: reasoningQuestion,
           evidenceId: reasoningEvidence,
           move: choice as ReasoningMove,
           recordedAt: new Date(now()).toISOString(),
-          influencePenalty: matchImproperArgument(courtWeek.deliberation, choice)?.influencePenalty ?? 0,
-        }
+          improperClaim: selectedImproperArgument?.claim,
+        }).contribution
       : null
     const contributions = [
       ...(progress.reasoningContributions ?? []),
@@ -495,6 +514,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     setInteractionSealed(false)
     setReasoningQuestion('')
     setReasoningEvidence('')
+    setReasoningBasis('')
     if (!nextScene) setStarted(false)
   }
 
@@ -570,6 +590,40 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
                 {option}
               </button>
             ))}
+            {reviewsImproperArgument ? (
+              <fieldset className="cw-reasoning-boundary">
+                <legend>Check the proposed basis</legend>
+                <label>
+                  <input
+                    type="radio"
+                    name="reasoning-basis"
+                    value="lawful"
+                    checked={reasoningBasis === 'lawful'}
+                    onChange={(event) => setReasoningBasis(event.target.value)}
+                  />
+                  Stay with admitted evidence and the judge’s directions.
+                </label>
+                {courtWeek.deliberation.improperArguments.map((argument, index) => (
+                  <label key={argument.claim}>
+                    <input
+                      type="radio"
+                      name="reasoning-basis"
+                      value={improperBasisToken(index)}
+                      checked={reasoningBasis === improperBasisToken(index)}
+                      onChange={(event) => setReasoningBasis(event.target.value)}
+                    />
+                    {improperBasisLabels[index] ?? 'Rely on another prohibited basis'}
+                  </label>
+                ))}
+              </fieldset>
+            ) : null}
+            {selectedImproperArgument ? (
+              <div className="cw-reasoning-correction" role="status" aria-live="polite">
+                <strong>Juror correction</strong>
+                <p>{selectedImproperArgument.correction}</p>
+                <p>This proposed basis is excluded and receives no influence in the room.</p>
+              </div>
+            ) : null}
           </div>
         ) : (
           <div className="cw-choice-grid">
@@ -605,7 +659,9 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
             !isReplay && (
               !interactionMinimumMet ||
               (!interactionChoice && (isVote || Boolean(interaction.options?.length))) ||
-              (interaction.kind === 'reasoning' && (!reasoningQuestion || !reasoningEvidence))
+              (interaction.kind === 'reasoning' && (
+                !reasoningQuestion || !reasoningEvidence || (reviewsImproperArgument && !reasoningBasis)
+              ))
             )
           }
           onClick={finishInteraction}

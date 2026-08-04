@@ -3,6 +3,7 @@ import { elevenMinutesDeliberation } from '../content/deliberation'
 import type { ReasoningContribution, ReasoningMove, Verdict } from '../model/schema'
 import {
   aggregateFirstBallot,
+  assessReasoningContribution,
   calculateFinalBallot,
   calculateSecondBallot,
   analysisForReturnedVerdict,
@@ -61,6 +62,49 @@ describe('Court Week deliberation engine', () => {
     expect(afterTwo.murder).toBe(5)
     expect(Object.values(afterTwo).reduce((a, b) => a + b, 0)).toBe(11)
   })
+
+  it.each(elevenMinutesDeliberation.improperArguments)(
+    'corrects and removes influence from the authored improper claim "$claim"',
+    (improper) => {
+      const assessment = assessReasoningContribution(elevenMinutesDeliberation, {
+        sceneId: 'sat-improper',
+        legalQuestion: elevenMinutesDeliberation.legalQuestions[0],
+        evidenceId: 'ex-downgrade-log',
+        move: 'apply-burden',
+        recordedAt: '2026-08-15T09:00:00+10:00',
+        improperClaim: improper.claim,
+      })
+
+      expect(assessment.correction).toBe(improper.correction)
+      expect(assessment.contribution.influencePenalty).toBe(improper.influencePenalty)
+      expect(assessment.contribution).not.toHaveProperty('improperClaim')
+      expect(calculateSecondBallot(
+        elevenMinutesDeliberation,
+        'murder',
+        [assessment.contribution],
+      )).toEqual(aggregateFirstBallot(elevenMinutesDeliberation, 'murder'))
+    },
+  )
+
+  it.each(elevenMinutesDeliberation.reasoningMoves)(
+    'leaves the lawful %s reasoning move unchanged when no prohibited basis is proposed',
+    (move) => {
+      const assessment = assessReasoningContribution(elevenMinutesDeliberation, {
+        sceneId: 'sat-improper',
+        legalQuestion: elevenMinutesDeliberation.legalQuestions[0],
+        evidenceId: 'ex-downgrade-log',
+        move,
+        recordedAt: '2026-08-15T09:00:00+10:00',
+      })
+
+      expect(assessment).toMatchObject({ correction: null, contribution: { move, influencePenalty: 0 } })
+      expect(calculateSecondBallot(
+        elevenMinutesDeliberation,
+        'murder',
+        [assessment.contribution],
+      ).murder).toBe(5)
+    },
+  )
 
   it.each([
     ['murder', 8],
