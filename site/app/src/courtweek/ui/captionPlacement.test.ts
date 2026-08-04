@@ -36,10 +36,47 @@ describe('responsive caption placement', () => {
     const placement = captionPlacementFor(bottomOnly, 'phonePortrait')
     expect(placement.position).toBe('bottom')
     expect(placement.region).toEqual({ x: 5, y: 80, width: 90, height: 12 })
+    expect(placement.fits).toBe(true)
+  })
+
+  it('reports no fit when every permitted lane intersects protected content', () => {
+    const blocked: SceneVisual = {
+      ...visual,
+      subjectSafeRegion: { x: 0, y: 0, width: 100, height: 100 },
+      evidenceSafeRegion: undefined,
+    }
+    for (const viewport of ['phonePortrait', 'phoneLandscape', 'tablet', 'desktop'] as const) {
+      expect(captionPlacementFor(blocked, viewport).fits).toBe(false)
+    }
+  })
+
+  it('uses the active composition direction instead of flat tablet compatibility data', () => {
+    const directed = {
+      ...visual,
+      compositionArt: {
+        portrait: {
+          subjectSafeRegion: { x: 0, y: 55, width: 100, height: 45 }, evidenceSafeRegion: null,
+          permittedCaptionPositions: ['top', 'bottom'],
+        },
+        tablet: {
+          subjectSafeRegion: { x: 0, y: 0, width: 100, height: 45 }, evidenceSafeRegion: null,
+          permittedCaptionPositions: ['top', 'bottom'],
+        },
+        desktop: {
+          subjectSafeRegion: { x: 50, y: 0, width: 50, height: 100 }, evidenceSafeRegion: null,
+          permittedCaptionPositions: ['left', 'right'],
+        },
+      },
+    } as unknown as SceneVisual
+    const placements = responsiveCaptionPlacements(directed)
+    expect(placements.phonePortrait.position).toBe('top')
+    expect(placements.tablet.position).toBe('bottom')
+    expect(placements.phoneLandscape.position).toBe('left')
+    expect(placements.desktop.position).toBe('left')
   })
 
   it('emits independent CSS lanes for phone, landscape, tablet and desktop', () => {
-    const style = captionPlacementStyle(visual) as Record<string, string>
+    const style = captionPlacementStyle(responsiveCaptionPlacements(visual)) as Record<string, string>
     expect(style['--cw-caption-phonePortrait-y']).toBeTruthy()
     expect(style['--cw-caption-phoneLandscape-width']).toBeTruthy()
     expect(style['--cw-caption-tablet-x']).toBeTruthy()
