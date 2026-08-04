@@ -158,13 +158,48 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
   }))
 
   const cueIndex = new Map(cueIds.map((id, index) => [id, index]))
+  const witnessCueOwners = new Map<string, string[]>()
   courtWeek.trial.witnesses.forEach((witness) => {
     const chiefEnd = Math.max(...witness.chiefCueIds.map((id) => cueIndex.get(id) ?? -1))
     const crossStart = Math.min(...witness.crossCueIds.map((id) => cueIndex.get(id) ?? Number.MAX_SAFE_INTEGER))
     demand(chiefEnd >= 0 && crossStart < Number.MAX_SAFE_INTEGER && chiefEnd < crossStart, `${witness.name}: chief must precede cross`)
     witness.reexaminationCueIds.forEach((id) => demand((cueIndex.get(id) ?? -1) > crossStart, `${witness.name}: re-examination must follow cross`))
     demand(witness.reexaminationCueIds.length === 0 || witness.reexaminationScope.length > 0, `${witness.name}: re-examination needs a confined scope`)
+    const memberships = [
+      ['chief', witness.chiefCueIds, ['witness-chief', 'exhibit-admitted']],
+      ['cross', witness.crossCueIds, ['witness-cross']],
+      ['re-examination', witness.reexaminationCueIds, ['witness-reexamination']],
+    ] as const
+    memberships.forEach(([label, ids, allowedEvents]) => ids.forEach((id) => {
+      const cue = allCues.find((item) => item.id === id)
+      demand(Boolean(cue), `${witness.name}: ${label} cue ${id} does not exist`)
+      demand(Boolean(cue && new Set<string>(allowedEvents).has(cue.event)), `${witness.name}: ${id} is not a ${label} cue`)
+      witnessCueOwners.set(id, [...(witnessCueOwners.get(id) ?? []), witness.id])
+    }))
   })
+  const witnessNames = new Set(courtWeek.trial.witnesses.map((witness) => witness.name))
+  allCues.filter((cue) => (
+    cue.event === 'witness-chief' ||
+    cue.event === 'witness-cross' ||
+    cue.event === 'witness-reexamination' ||
+    (cue.event === 'exhibit-admitted' && witnessNames.has(cue.speaker))
+  )).forEach((cue) => {
+    demand(witnessCueOwners.get(cue.id)?.length === 1, `substantive witness cue ${cue.id} must belong to exactly one witness`)
+  })
+
+  const provisionalAdmissions = allCues.filter((cue) => cue.admissionStatus === 'provisional')
+  const finalAdmissions = allCues.filter((cue) => cue.admissionStatus === 'final')
+  demand(provisionalAdmissions.length > 0, 'the recording condition must be represented as a provisional admission')
+  const statefulAdmissions = [...provisionalAdmissions, ...finalAdmissions]
+  statefulAdmissions.forEach((cue) => {
+    demand(cue.event === 'exhibit-admitted' && cue.evidenceIds.length > 0, `${cue.id}: an admission state requires identified exhibit evidence`)
+  })
+  provisionalAdmissions.forEach((provisional) => provisional.evidenceIds.forEach((evidenceId) => {
+    const final = finalAdmissions.find((cue) => (
+      cue.evidenceIds.includes(evidenceId) && (cueIndex.get(cue.id) ?? -1) > (cueIndex.get(provisional.id) ?? -1)
+    ))
+    demand(Boolean(final), `${evidenceId}: provisional admission requires a later final-admission cue`)
+  }))
 
   const objections = courtWeek.trial.objections
   demand(objections.some((o) => o.madeBy === 'Defence' && o.ruling === 'overruled'), 'one defence objection must be overruled')
