@@ -240,6 +240,14 @@ describe('Court Week deliberation engine', () => {
     expect(nextSundaySceneId('sun-majority', false)).toBe('sun-final-ballot')
   })
 
+  it('does not announce a divided result before the second ballot is sealed', () => {
+    const secondBallot = orderedScenes.find((scene) => scene.id === 'sun-second-ballot')
+      ?.cues.find((cue) => cue.id === 'sun-second-ballot')
+    expect(secondBallot?.text).toMatch(/if all twelve agree, we return to court/i)
+    expect(secondBallot?.text).toMatch(/if not, the aggregate records that unanimity has failed/i)
+    expect(secondBallot?.text).not.toMatch(/unanimity has not been reached/i)
+  })
+
   it('keeps analysis matched to the returned verdict and neutral about correctness', () => {
     expect(analysisForReturnedVerdict(elevenMinutesDeliberation)).toBeNull()
     for (const verdict of ['murder', 'manslaughter', 'not-guilty', 'unable-to-agree'] as Verdict[]) {
