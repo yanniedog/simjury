@@ -58,7 +58,11 @@ jobs:
           test "$(gh release view "$RELEASE_TAG" --json isDraft,isImmutable --jq '.isDraft == false and .isImmutable == true')" = true
           mkdir -p "$RUNNER_TEMP/court-week-release"
           gh release download "$RELEASE_TAG" --pattern release-manifest.json --dir "$RUNNER_TEMP/court-week-release"
-          node -e 'const m=require(process.argv[1]); if(m.release_tag!==process.env.RELEASE_TAG||m.case_id!=="cw-0001") process.exit(1)' "$RUNNER_TEMP/court-week-release/release-manifest.json"
+          node site/scripts/assert-pinned-media-release.mjs \
+            --runtime-manifest site/app/media/court-week-media-manifest.pinned.json \
+            --release-manifest "$RUNNER_TEMP/court-week-release/release-manifest.json" \
+            --review-signoffs site/app/content-reviews/cw-0001.review-signoffs.json \
+            --expected-release-tag "$RELEASE_TAG"
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
