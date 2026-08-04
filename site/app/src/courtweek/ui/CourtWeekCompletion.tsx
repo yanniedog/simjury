@@ -27,16 +27,15 @@ export function CourtWeekCompletion({
         <p className="cw-kicker">The court week has concluded</p>
         <h1 ref={headingRef} tabIndex={-1}>Court Week complete</h1>
         {persistence === 'memory' ? (
-          <p role="status" className="cw-complete__persistence-warning">
-            Progress is held in this tab only. Export it before leaving or the
-            completed verdict and notes will be lost.
+          <div className="cw-complete__persistence-warning">
+            <p role="status">
+              Progress is held in this tab only. Export it before leaving or the
+              completed verdict and notes will be lost.
+            </p>
             {onExportProgress ? (
-              <>
-                {' '}
-                <button type="button" onClick={onExportProgress}>Export progress</button>
-              </>
+              <button type="button" onClick={onExportProgress}>Export progress</button>
             ) : null}
-          </p>
+          </div>
         ) : null}
         <p>
           The complete record remains available. Replaying a session does not
