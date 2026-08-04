@@ -200,12 +200,14 @@ function assertReleaseArtReady(releaseManifest) {
   const readiness = requireObject(releaseManifest.art_readiness, 'Immutable Release art_readiness')
   if (
     readiness.release_ready !== true ||
+    readiness.crop_review_complete !== true ||
     readiness.scene_count !== 55 ||
     readiness.ready_scene_count !== 55 ||
     readiness.gap_count !== 0
   ) {
     throw new Error(
       `Immutable Release art is not ready: release_ready=${readiness.release_ready ?? 'missing'}, ` +
+      `crop_review_complete=${readiness.crop_review_complete ?? 'missing'}, ` +
       `ready_scene_count=${readiness.ready_scene_count ?? 'missing'}, scene_count=${readiness.scene_count ?? 'missing'}, ` +
       `gap_count=${readiness.gap_count ?? 'missing'}.`,
     )

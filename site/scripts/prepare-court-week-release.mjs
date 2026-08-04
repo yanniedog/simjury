@@ -118,15 +118,15 @@ if (seenNames.size + 1 >= 500) {
 const artRequirements = JSON.parse(readFileSync(artRequirementsPath, 'utf8'))
 const artReadiness = assessSceneArtManifest(artRequirements, visualSourceRoot)
 writeFileSync(join(privateOutputRoot, 'art-readiness-report.json'), `${JSON.stringify(artReadiness, null, 2)}\n`)
-if (artReadiness.release_ready) {
-  console.log(`Scene art is release-ready: ${artReadiness.ready_scene_count}/${artReadiness.scene_count} dedicated scenes.`)
+if (artReadiness.release_ready && artReadiness.crop_review_complete) {
+  console.log(`Scene art is release-ready and crop-reviewed: ${artReadiness.ready_scene_count}/${artReadiness.scene_count} dedicated scenes.`)
 } else {
-  console.warn(`Scene art is not release-ready: ${artReadiness.ready_scene_count}/${artReadiness.scene_count} scenes; ${artReadiness.gap_count} gaps.`)
+  console.warn(`Scene art is not publication-ready: ${artReadiness.ready_scene_count}/${artReadiness.scene_count} scenes; ${artReadiness.gap_count} gaps; crop_review_complete=${artReadiness.crop_review_complete}.`)
   for (const gap of artReadiness.gaps) {
     console.warn(`ART GAP [${gap.scene_id ?? 'manifest'}] ${gap.code} ${gap.field}: ${gap.message}`)
   }
   if (requireReleaseReadyArt) {
-    throw new Error('Release publication is blocked by SceneArtManifest gaps; see art-readiness-report.json')
+    throw new Error('Release publication is blocked until SceneArtManifest gaps are closed and every composition is crop-reviewed; see art-readiness-report.json')
   }
 }
 
@@ -404,6 +404,7 @@ function serializeReleaseManifest(totalBytes) {
     production_environment: audioSessions[0]?.productionEnvironment ?? null,
     art_readiness: {
       release_ready: artReadiness.release_ready,
+      crop_review_complete: artReadiness.crop_review_complete,
       scene_count: artReadiness.scene_count,
       ready_scene_count: artReadiness.ready_scene_count,
       gap_count: artReadiness.gap_count,

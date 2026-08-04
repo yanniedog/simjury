@@ -282,11 +282,13 @@ jobs:
               !Number.isInteger(readiness?.scene_count) ||
               readiness.scene_count <= 0 ||
               readiness?.release_ready !== true ||
+              readiness?.crop_review_complete !== true ||
               readiness.ready_scene_count !== readiness.scene_count ||
               readiness.gap_count !== 0
             ) {
               throw new Error(
                 `Reviewed artifact is not release-ready: release_ready=${readiness?.release_ready ?? "missing"}, ` +
+                `crop_review_complete=${readiness?.crop_review_complete ?? "missing"}, ` +
                 `ready_scene_count=${readiness?.ready_scene_count ?? "missing"}, ` +
                 `scene_count=${readiness?.scene_count ?? "missing"}, gap_count=${readiness?.gap_count ?? "missing"}`,
               );
