@@ -52,6 +52,64 @@ describe('Eleven Minutes Court Week', () => {
     })
   })
 
+  it('fails when a substantive witness cue is missing from that witness record', () => {
+    const orphaned = structuredClone(elevenMinutesCourtWeek)
+    const vale = orphaned.trial.witnesses.find((witness) => witness.id === 'w-vale')
+    if (!vale) throw new Error('Vale fixture is missing.')
+    vale.crossCueIds = vale.crossCueIds.filter((id) => id !== 'wed-blurt')
+    expect(() => validateCourtWeek(orphaned)).toThrow(/substantive witness cue wed-blurt/i)
+  })
+
+  it('requires a later final admission for every provisionally admitted exhibit', () => {
+    const unfinished = structuredClone(elevenMinutesCourtWeek)
+    const finalCue = unfinished.manifest.sessions.flatMap((session) => session.scenes)
+      .flatMap((scene) => scene.cues).find((cue) => cue.id === 'tue-recording-final-admission')
+    if (!finalCue) throw new Error('Recording final-admission fixture is missing.')
+    delete finalCue.admissionStatus
+    expect(() => validateCourtWeek(unfinished)).toThrow(/provisional admission requires a later final-admission cue/i)
+  })
+
+  it('completes the recording, log, strip and snapshot foundations through Mir', () => {
+    const allCues = elevenMinutesCourtWeek.manifest.sessions.flatMap((session) => session.scenes)
+      .flatMap((scene) => scene.cues)
+    const mir = elevenMinutesCourtWeek.trial.witnesses.find((witness) => witness.id === 'w-mir')
+    const foundation = allCues.filter((cue) => mir?.chiefCueIds.includes(cue.id))
+      .map((cue) => cue.text).join(' ')
+    expect(foundation).toMatch(/SHA-256 hash matches the write-once archive/i)
+    expect(foundation).toMatch(/no erasure, overwriting or alteration/i)
+    expect(foundation).toMatch(/copy is complete and unedited/i)
+    expect(foundation).toMatch(/snapshot.+complete/i)
+
+    const provisional = allCues.find((cue) => cue.id === 'tue-recording-foundation')
+    const final = allCues.find((cue) => cue.id === 'tue-recording-final-admission')
+    expect(provisional?.admissionStatus).toBe('provisional')
+    expect(final?.admissionStatus).toBe('final')
+    expect(allCues.indexOf(final!)).toBeGreaterThan(allCues.indexOf(provisional!))
+  })
+
+  it('records the Pell, Vale and Quill testimony and confines Quill to operations', () => {
+    const witnesses = elevenMinutesCourtWeek.trial.witnesses
+    expect(witnesses.find((witness) => witness.id === 'w-pell')?.chiefCueIds).toContain('wed-ready-admitted')
+    expect(witnesses.find((witness) => witness.id === 'w-vale')?.crossCueIds).toContain('wed-blurt')
+    expect(witnesses.find((witness) => witness.id === 'w-quill')?.chiefCueIds).toContain('thu-warning-admitted')
+
+    const quillReexamination = elevenMinutesCourtWeek.manifest.sessions.flatMap((session) => session.scenes)
+      .flatMap((scene) => scene.cues).find((cue) => cue.id === 'thu-quill-re-1')
+    expect(quillReexamination?.text).toMatch(/what operational information could you have supplied/i)
+    expect(quillReexamination?.text).not.toMatch(/legal authority|acted reasonably/i)
+  })
+
+  it('formally tenders the incident export without recalling Mir after cross-examination', () => {
+    const tender = elevenMinutesCourtWeek.manifest.sessions.flatMap((session) => session.scenes)
+      .flatMap((scene) => scene.cues).find((cue) => cue.id === 'wed-record-admitted')
+    expect(tender).toEqual(expect.objectContaining({
+      event: 'exhibit-admitted',
+      speaker: 'Crown counsel Asha Renn',
+      admissionStatus: 'final',
+    }))
+    expect(tender?.text).toMatch(/foundation tested yesterday/i)
+  })
+
   it('does not disguise defence argument as witness re-examination before addresses', () => {
     const cue = elevenMinutesCourtWeek.manifest.sessions.flatMap((session) => session.scenes)
       .flatMap((scene) => scene.cues).find((item) => item.id === 'thu-defence-theory')
