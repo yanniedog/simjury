@@ -30,15 +30,13 @@ function sharedCompositionArt(
   }
 }
 
-/** Crop-reviewed defaults for evidence-neutral commissioned courtroom art. */
+/** Adds reviewed status while legal safe-region and caption choices stay explicit. */
 function cropReviewedDirection({
   focalPoint,
   subjectSafeRegion,
-  evidenceSafeRegion = null,
-  permittedCaptionPositions = ['top'],
-}: Pick<CompositionArtDirection, 'focalPoint' | 'subjectSafeRegion'> & Partial<
-  Pick<CompositionArtDirection, 'evidenceSafeRegion' | 'permittedCaptionPositions'>
->): CompositionArtDirection {
+  evidenceSafeRegion,
+  permittedCaptionPositions,
+}: Omit<CompositionArtDirection, 'reviewStatus'>): CompositionArtDirection {
   return {
     focalPoint,
     subjectSafeRegion,
@@ -119,14 +117,17 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       portrait: cropReviewedDirection({
         focalPoint: { x: 50, y: 52 }, subjectSafeRegion: { x: 8, y: 36, width: 84, height: 42 },
         evidenceSafeRegion: { x: 37, y: 53, width: 15, height: 8 },
+        permittedCaptionPositions: ['top'],
       }),
       tablet: cropReviewedDirection({
         focalPoint: { x: 50, y: 52 }, subjectSafeRegion: { x: 10, y: 22, width: 80, height: 58 },
         evidenceSafeRegion: { x: 39, y: 57, width: 12, height: 10 },
+        permittedCaptionPositions: ['top'],
       }),
       desktop: cropReviewedDirection({
         focalPoint: { x: 50, y: 52 }, subjectSafeRegion: { x: 10, y: 20, width: 80, height: 58 },
         evidenceSafeRegion: { x: 38, y: 61, width: 10, height: 9 },
+        permittedCaptionPositions: ['top'],
       }),
     },
   },
@@ -163,14 +164,17 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
     compositionArt: {
       portrait: cropReviewedDirection({
         focalPoint: { x: 50, y: 42 }, subjectSafeRegion: null,
+        evidenceSafeRegion: null,
         permittedCaptionPositions: ['bottom'],
       }),
       tablet: cropReviewedDirection({
         focalPoint: { x: 50, y: 42 }, subjectSafeRegion: null,
+        evidenceSafeRegion: null,
         permittedCaptionPositions: ['bottom'],
       }),
       desktop: cropReviewedDirection({
         focalPoint: { x: 50, y: 42 }, subjectSafeRegion: null,
+        evidenceSafeRegion: null,
         permittedCaptionPositions: ['bottom'],
       }),
     },
@@ -180,12 +184,15 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
     compositionArt: {
       portrait: cropReviewedDirection({
         focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 38, width: 100, height: 47 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
       }),
       tablet: cropReviewedDirection({
         focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 34, width: 100, height: 50 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
       }),
       desktop: cropReviewedDirection({
         focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 31, width: 100, height: 59 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
       }),
     },
   },
@@ -194,12 +201,15 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
     compositionArt: {
       portrait: cropReviewedDirection({
         focalPoint: { x: 55, y: 47 }, subjectSafeRegion: { x: 0, y: 36, width: 100, height: 49 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
       }),
       tablet: cropReviewedDirection({
         focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 0, y: 30, width: 100, height: 58 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
       }),
       desktop: cropReviewedDirection({
         focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 0, y: 28, width: 100, height: 64 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
       }),
     },
   },
@@ -208,12 +218,15 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
     compositionArt: {
       portrait: cropReviewedDirection({
         focalPoint: { x: 52, y: 48 }, subjectSafeRegion: { x: 0, y: 37, width: 100, height: 49 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
       }),
       tablet: cropReviewedDirection({
         focalPoint: { x: 52, y: 47 }, subjectSafeRegion: { x: 0, y: 27, width: 100, height: 62 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
       }),
       desktop: cropReviewedDirection({
         focalPoint: { x: 53, y: 47 }, subjectSafeRegion: { x: 0, y: 25, width: 100, height: 67 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
       }),
     },
   },
@@ -222,12 +235,15 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
     compositionArt: {
       portrait: cropReviewedDirection({
         focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 35, width: 100, height: 49 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
       }),
       tablet: cropReviewedDirection({
         focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 30, width: 100, height: 58 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
       }),
       desktop: cropReviewedDirection({
         focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 28, width: 100, height: 64 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
       }),
     },
   },
