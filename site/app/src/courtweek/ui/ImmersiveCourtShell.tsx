@@ -290,12 +290,12 @@ export function ImmersiveCourtShell({
         ) : null}
 
         <p
-          className="cw-visually-hidden"
+          className="cw-visually-hidden cw-cue-live-region"
           aria-live={readingModeActive ? 'off' : 'polite'}
           aria-hidden={readingModeActive || undefined}
           aria-atomic="true"
         >
-          {cue.speaker}: {cue.accessibleProposition}
+          {cue.speaker}: {cue.text}
         </p>
 
         {playbackError ? <p className="cw-media-notice" role="status">{playbackError}</p> : null}
