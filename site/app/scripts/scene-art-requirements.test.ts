@@ -92,6 +92,7 @@ describe('SceneArtManifest contract', () => {
       'sat-room',
       'sat-concerns',
       'sat-provisional',
+      'sun-final-ballot',
       'sat-first-ballot',
       'sat-causation',
       'sat-improper',
@@ -143,6 +144,10 @@ describe('SceneArtManifest contract', () => {
       expect(manifest.scenes['sat-provisional'].compositionArt[composition].evidenceSafeRegion).toBeNull()
       expect(manifest.scenes['sat-provisional'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
       expect(manifest.scenes['sat-provisional'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
+      expect(manifest.scenes['sun-final-ballot'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+      expect(manifest.scenes['sun-final-ballot'].compositionArt[composition].evidenceSafeRegion).toBeNull()
+      expect(manifest.scenes['sun-final-ballot'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
+      expect(manifest.scenes['sun-final-ballot'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
       expect(manifest.scenes['sat-first-ballot'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
       expect(manifest.scenes['sat-first-ballot'].compositionArt[composition].evidenceSafeRegion).toBeNull()
       expect(manifest.scenes['sat-first-ballot'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
@@ -187,6 +192,9 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['sat-provisional'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sat-provisional'].altDescription).toContain('private face-down blank ballot card')
     expect(manifest.scenes['sat-provisional'].altDescription).toContain('No individual position, aggregate count, faction or verdict cue is visible')
+    expect(manifest.scenes['sun-final-ballot'].altDescription).toContain('Exactly eleven other jurors')
+    expect(manifest.scenes['sun-final-ballot'].altDescription).toContain('private face-down blank ballot card')
+    expect(manifest.scenes['sun-final-ballot'].altDescription).toContain('No individual position, aggregate count, faction, outcome or verdict cue is visible')
     expect(manifest.scenes['sat-first-ballot'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sat-first-ballot'].altDescription).toContain('No seat-level position is visible')
     expect(manifest.scenes['sat-causation'].altDescription).toContain('Exactly eleven other jurors')

@@ -638,6 +638,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'sun-final-ballot': {
+    altDescription: 'Exactly eleven other jurors each shield one private face-down blank ballot card with a plain folder around the deliberation table, while the player\'s matching blank final ballot card lies in the foreground. No individual position, aggregate count, faction, outcome or verdict cue is visible.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 61 }, subjectSafeRegion: { x: 0, y: 48, width: 100, height: 35 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 54 }, subjectSafeRegion: { x: 0, y: 32, width: 100, height: 61 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 57 }, subjectSafeRegion: { x: 0, y: 38, width: 100, height: 56 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
   'sat-first-ballot': {
     altDescription: 'Exactly eleven other jurors look toward a blank room display from the player\'s twelfth seat while the anonymous aggregate appears only in the live interface. No seat-level position is visible.',
     compositionArt: {
