@@ -1,4 +1,8 @@
 import { type CourtEvent, type CourtWeek, courtWeekSchema } from './schema'
+import {
+  furtherDiscussionContributionSceneIds,
+  preSecondBallotContributionSceneIds,
+} from './deliberationContract'
 
 export type LegalState = {
   sworn: boolean
@@ -183,6 +187,20 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
   })
   const procedure = ordered(['oath', 'crown-opening', 'crown-close', 'defence-opening', 'defence-close', 'crown-closing', 'defence-closing', 'summing-up', 'retire', 'provisional-vote', 'first-ballot', 'jury-note', 'judge-response', 'second-ballot', 'majority-direction', 'final-ballot', 'verdict-return', 'analysis'])
   demand(procedure.every((value, index) => index === 0 || value > procedure[index - 1]), 'required procedural events are out of order')
+
+  const allScenes = sessions.flatMap((session) => session.scenes)
+  const secondBallotSceneIndex = allScenes.findIndex((scene) => scene.id === 'sun-second-ballot')
+  const majoritySceneIndex = allScenes.findIndex((scene) => scene.id === 'sun-majority')
+  const contributionScenes = [...preSecondBallotContributionSceneIds, ...furtherDiscussionContributionSceneIds]
+    .map((id) => allScenes.find((scene) => scene.id === id))
+  demand(contributionScenes.every((scene) => scene?.phase === 'deliberation' && scene.interaction?.kind === 'reasoning'), 'every influential contribution must be an authored deliberation interaction')
+  demand(preSecondBallotContributionSceneIds.every((id) => allScenes.findIndex((scene) => scene.id === id) < secondBallotSceneIndex), 'second-ballot influence must arise before that ballot')
+  demand(furtherDiscussionContributionSceneIds.every((id) => {
+    const index = allScenes.findIndex((scene) => scene.id === id)
+    return index > secondBallotSceneIndex && index < majoritySceneIndex
+  }), 'further influence must arise after failed unanimity and before majority eligibility')
+  demand(preSecondBallotContributionSceneIds.length === 8, 'the journey must offer eight legitimate contributions before the second ballot')
+  demand(contributionScenes.filter((scene) => scene?.interaction?.optional).length === 4, 'four pre-ballot contributions must remain optional so disagreement is reachable')
 
   demand(courtWeek.deliberation.outcomePaths.map((path) => path.verdict).join('|') === 'murder|manslaughter|not-guilty|unable-to-agree', 'all four outcomes must be defined in neutral order')
   demand(courtWeek.deliberation.majorityGate.minimumElapsedCourtHours > 8, 'majority consideration must wait more than eight court hours')

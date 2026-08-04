@@ -413,7 +413,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     : -1
   const improperArguments = courtWeek.deliberation.improperArguments ?? []
   const selectedImproperArgument = improperArguments[selectedImproperIndex] ?? null
-  const finishInteraction = () => {
+  const finishInteraction = (skipOptionalReasoning = false) => {
     if (!interaction) return
     if (!interactionMinimumMet) return
     if (isReplay) {
@@ -439,7 +439,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     }
     const choice = interactionChoice
     const isReasoning = interaction.kind === 'reasoning'
-    const contribution = isReasoning && choice && reasoningQuestion && reasoningEvidence
+    const contribution = isReasoning && !skipOptionalReasoning && choice && reasoningQuestion && reasoningEvidence
       ? assessReasoningContribution(courtWeek.deliberation, {
           sceneId: position.scene.id,
           legalQuestion: reasoningQuestion,
@@ -665,7 +665,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
               ))
             )
           }
-          onClick={finishInteraction}
+          onClick={() => finishInteraction()}
         >
           {isReplay ? 'Continue replay'
             : !interactionMinimumMet
@@ -675,6 +675,15 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
             : interaction.kind === 'final-vote' ? 'Seal final ballot'
               : isVote ? 'Seal ballot' : 'Continue proceedings'}
         </button>
+        {!isReplay && interaction.kind === 'reasoning' && interaction.optional ? (
+          <button
+            type="button"
+            disabled={!interactionMinimumMet}
+            onClick={() => finishInteraction(true)}
+          >
+            Continue without contributing
+          </button>
+        ) : null}
       </section>
     )
   }
