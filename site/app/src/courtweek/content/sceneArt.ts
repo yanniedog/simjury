@@ -76,6 +76,13 @@ export const SCENE_ART_AUTHORING: Readonly<Record<string, CommissionedSceneArt>>
     evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
     permittedCaptionPositions: ['bottom'],
   },
+  'tue-recording': {
+    altDescription: 'The courtroom listens to the admitted distress-channel recording while Peli Dorn remains in the witness box; an abstract waveform is visible but no words or disputed meaning are depicted.',
+    focalPoint: { x: 50, y: 52 },
+    subjectSafeRegion: { x: 10, y: 20, width: 80, height: 62 },
+    evidenceSafeRegion: { x: 36, y: 48, width: 28, height: 22 },
+    permittedCaptionPositions: ['top'],
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
