@@ -62,6 +62,13 @@ export const SCENE_ART_AUTHORING: Readonly<Record<string, CommissionedSceneArt>>
     evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
     permittedCaptionPositions: ['bottom'],
   },
+  'tue-resume': {
+    altDescription: 'Juror-seat view of Tuesday court resuming, with the judge addressing the jury, counsel and the accused seated neutrally, and the witness box empty.',
+    focalPoint: { x: 50, y: 42 },
+    subjectSafeRegion: { x: 10, y: 18, width: 80, height: 62 },
+    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
+    permittedCaptionPositions: ['bottom'],
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
@@ -75,10 +82,14 @@ export function commissionedVisual(sceneId: string, fallback: SceneVisual): Scen
     subjectSafeRegion: art.subjectSafeRegion,
     evidenceSafeRegion: art.evidenceSafeRegion,
     permittedCaptionPositions: art.permittedCaptionPositions,
-    sources: {
-      portrait: { avif: `scenes/${sceneId}/portrait.avif`, webp: `scenes/${sceneId}/portrait.webp` },
-      tablet: { avif: `scenes/${sceneId}/tablet.avif`, webp: `scenes/${sceneId}/tablet.webp` },
-      desktop: { avif: `scenes/${sceneId}/desktop.avif`, webp: `scenes/${sceneId}/desktop.webp` },
-    },
+    ...(sceneId.startsWith('mon-') ? {
+      // Temporary pre-release review fallback. Future days stay outside public
+      // assets until their content-addressed strips arrive in a sealed pack.
+      sources: {
+        portrait: { avif: `scenes/${sceneId}/portrait.avif`, webp: `scenes/${sceneId}/portrait.webp` },
+        tablet: { avif: `scenes/${sceneId}/tablet.avif`, webp: `scenes/${sceneId}/tablet.webp` },
+        desktop: { avif: `scenes/${sceneId}/desktop.avif`, webp: `scenes/${sceneId}/desktop.webp` },
+      },
+    } : {}),
   }
 }
