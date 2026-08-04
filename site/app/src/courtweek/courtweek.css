@@ -313,7 +313,7 @@
 .cw-mode-picker label:has(input:checked) { border-color: var(--cw-brass); box-shadow: inset 0 0 0 1px var(--cw-brass); }
 .cw-mode-picker span, .cw-mode-picker small { display: block; }
 .cw-mode-picker small { margin-top: .25rem; color: var(--cw-muted); }
-.cw-entry__fullscreen { display: flex; align-items: center; gap: .6rem; margin: 1rem 0; }
+.cw-entry__fullscreen { display: flex; min-height: 44px; align-items: center; gap: .6rem; margin: 1rem 0; }
 .cw-entry__privacy { color: var(--cw-muted); font-size: .82rem; }
 .cw-session-schedule { margin: 1.5rem 0; }
 .cw-session-schedule ol { display: grid; gap: .55rem; margin: 0; padding: 0; list-style: none; }
