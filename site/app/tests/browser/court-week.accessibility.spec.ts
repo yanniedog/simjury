@@ -139,7 +139,15 @@ test('keyboard-only entry, skip link and desk expose a visible three-pixel focus
   await page.keyboard.press('ArrowDown')
   await expect(page.getByLabel('Reading mode')).toBeChecked()
   await page.keyboard.press('Tab')
+  const dataSaver = page.getByLabel('Use less data')
+  await expect(dataSaver).toBeFocused()
+  await expectThreePixelFocusRing(dataSaver)
   await page.keyboard.press('Tab')
+  const fullscreen = page.getByLabel('Ask to enter full screen')
+  if (await fullscreen.count()) {
+    await expect(fullscreen).toBeFocused()
+    await page.keyboard.press('Tab')
+  }
   const entryButton = page.getByRole('button', { name: 'Take your seat' })
   await expect(entryButton).toBeFocused()
   await expectThreePixelFocusRing(entryButton)
