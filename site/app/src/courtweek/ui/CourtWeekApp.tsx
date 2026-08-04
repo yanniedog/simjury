@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { CourtWeek, CourtSession, ReasoningMove, SceneCue, Verdict } from '../model/schema'
 import {
   analysisForReturnedVerdict,
@@ -138,6 +138,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const [started, setStarted] = useState(false)
   const [deskOpen, setDeskOpen] = useState(false)
   const [evidenceId, setEvidenceId] = useState<string | null>(null)
+  const evidenceTrigger = useRef<HTMLButtonElement | null>(null)
   const [interactionOpen, setInteractionOpen] = useState(false)
   const [interactionOpenedAt, setInteractionOpenedAt] = useState<number | null>(null)
   const [interactionChoice, setInteractionChoice] = useState<string | null>(null)
@@ -486,22 +487,31 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   }
 
   let overlay = null
-  if (evidence) {
-    overlay = <EvidenceViewer evidence={evidence} onClose={() => setEvidenceId(null)} />
-  } else if (deskOpen) {
+  if (deskOpen) {
     overlay = (
-      <JurorDesk
-        trial={courtWeek.trial}
-        progress={progress}
-        readOnly={isReplay}
-        onNotesChange={(notes) => updateProgress((current) => ({ ...current, notes }))}
-        onImport={(imported) => updateProgress(imported)}
-        onInspectEvidence={(id) => {
-          playback.pause()
-          setEvidenceId(id)
-        }}
-        onClose={() => setDeskOpen(false)}
-      />
+      <>
+        <JurorDesk
+          trial={courtWeek.trial}
+          progress={progress}
+          readOnly={isReplay}
+          inactive={Boolean(evidence)}
+          onNotesChange={(notes) => updateProgress((current) => ({ ...current, notes }))}
+          onImport={(imported) => updateProgress(imported)}
+          onInspectEvidence={(id, trigger) => {
+            playback.pause()
+            evidenceTrigger.current = trigger
+            setEvidenceId(id)
+          }}
+          onClose={() => setDeskOpen(false)}
+        />
+        {evidence ? (
+          <EvidenceViewer
+            evidence={evidence}
+            returnFocusTo={evidenceTrigger.current}
+            onClose={() => setEvidenceId(null)}
+          />
+        ) : null}
+      </>
     )
   } else if (interactionOpen && interaction) {
     const isVote = interaction.kind === 'seal-vote' || interaction.kind === 'second-vote' || interaction.kind === 'final-vote'
