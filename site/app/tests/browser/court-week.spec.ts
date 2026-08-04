@@ -90,6 +90,27 @@ test('the juror desk exposes no struck material or inspection route', async ({ p
   await expect(desk.getByRole('button', { name: /struck/i })).toHaveCount(0)
 })
 
+test('the juror desk traps keyboard focus and restores its trigger', async ({ page }) => {
+  await enterCourt(page)
+  const trigger = page.getByRole('button', { name: 'Juror desk', exact: true })
+  await trigger.focus()
+  await page.keyboard.press('Enter')
+
+  const desk = page.getByRole('dialog', { name: 'Your working papers' })
+  const close = desk.getByRole('button', { name: 'Close juror desk' })
+  const lastVisibleControl = desk.getByRole('button', { name: 'Import progress' })
+  await expect(close).toBeFocused()
+
+  await page.keyboard.press('Shift+Tab')
+  await expect(lastVisibleControl).toBeFocused()
+  await page.keyboard.press('Tab')
+  await expect(close).toBeFocused()
+
+  await page.keyboard.press('Escape')
+  await expect(desk).toHaveCount(0)
+  await expect(trigger).toBeFocused()
+})
+
 test.describe('device-sized admitted exhibit viewer', () => {
   test.skip(({ browserName }) => browserName !== 'chromium', 'device matrix runs once')
 
