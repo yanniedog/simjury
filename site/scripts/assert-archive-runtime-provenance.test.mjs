@@ -29,8 +29,10 @@ describe('retired Daily Docket runtime provenance', () => {
 
   it('rejects a trial source that no longer matches archive provenance', () => {
     const snapshot = copy()
-    snapshot.sourceRecords['cases/dd-0042/trial.json'].value.title = 'Changed'
-    assert.match(validateRuntimeProvenance(snapshot).join('\n'), /Final caseStorageId mismatch/u)
+    const source = snapshot.sourceRecords['cases/dd-0042/trial.json']
+    source.value = { ...source.value, title: 'Changed' }
+    source.bytes = Buffer.from(JSON.stringify(source.value), 'utf8')
+    assert.match(validateRuntimeProvenance(snapshot).join('\n'), /Archived trial SHA-256 mismatch/u)
   })
 
   it('identifies a missing trial entry in the archive manifest', () => {
