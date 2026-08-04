@@ -32,4 +32,14 @@ describe('retired Daily Docket runtime provenance', () => {
     snapshot.sourceRecords['cases/dd-0042/trial.json'].value.title = 'Changed'
     assert.match(validateRuntimeProvenance(snapshot).join('\n'), /Final caseStorageId mismatch/u)
   })
+
+  it('identifies a missing trial entry in the archive manifest', () => {
+    const snapshot = copy()
+    snapshot.archiveManifest.files = snapshot.archiveManifest.files.filter(
+      ({ path }) => path !== 'cases/dd-intro.json',
+    )
+    assert.ok(validateRuntimeProvenance(snapshot).includes(
+      'Archived trial manifest entry missing: dd-intro',
+    ))
+  })
 })

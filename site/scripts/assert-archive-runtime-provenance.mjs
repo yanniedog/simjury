@@ -71,8 +71,13 @@ export function validateRuntimeProvenance({ provenance, archiveManifest, sourceR
       failures.push(`Archived trial source mismatch: ${record.case_id}`)
       continue
     }
+    const manifestEntry = manifestByPath.get(record.source)
+    if (!manifestEntry) {
+      failures.push(`Archived trial manifest entry missing: ${record.case_id}`)
+      continue
+    }
     const sourceSha = createHash('sha256').update(source.bytes).digest('hex')
-    if (record.source_sha256 !== sourceSha || manifestByPath.get(record.source)?.sha256 !== sourceSha) {
+    if (record.source_sha256 !== sourceSha || manifestEntry.sha256 !== sourceSha) {
       failures.push(`Archived trial SHA-256 mismatch: ${record.case_id}`)
     }
     const expectedStorageId = `${record.case_id}@${stableContentHash(source.value)}`
