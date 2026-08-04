@@ -26,7 +26,7 @@
     "cloudflare:ai-bots:apply:dry-run": "node scripts/cloudflare-ai-bots.mjs apply --dry-run",
     "runtime:retirement": "node scripts/runtime-retirement.mjs",
     "guard:cloudflare": "node scripts/assert-cloudflare-static-only.mjs",
-    "check:archive": "node scripts/assert-archive-provenance.mjs",
+    "check:archive": "node scripts/assert-archive-provenance.mjs && node scripts/assert-archive-runtime-provenance.mjs && node --test scripts/assert-archive-runtime-provenance.test.mjs",
     "check:budget": "node scripts/assert-static-budget.mjs",
     "test:static": "node --test tests/cloudflare-static.test.mjs tests/landing-disclosure.test.mjs scripts/assert-archive-provenance.test.mjs scripts/assert-pinned-media-release.test.mjs scripts/runtime-retirement.test.mjs"
   },

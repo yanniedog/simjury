@@ -15,6 +15,11 @@ it.
 - `manifest.json`: machine-readable retirement and source-path provenance.
 - `manifest.sha256`: a stable SHA-256 inventory of every archived case/media
   file, using repository-relative archive paths.
+- `runtime-provenance.json`: the final revision-bound `caseStorageId` for every
+  sitting and its exact Kokoro/Scylla Release shards. A tag is reconstructed as
+  `<tag_prefix>-<release_shard>`; `"all"` means every integer from 0 through 31.
+  The pinned pre-retirement source commit retains the retired clip-id and voice
+  assignment code needed to reproduce those shard sets.
 
 The narration assets already published under `narration-kokoro-0` through
 `narration-kokoro-31` and `narration-scylla-0` through
