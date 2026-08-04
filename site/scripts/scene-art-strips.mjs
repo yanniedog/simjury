@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { dirname, resolve, sep } from 'node:path'
+import { dirname, isAbsolute, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
 import { assessSceneArtManifest } from './scene-art-readiness.mjs'
@@ -21,13 +21,18 @@ const CANONICAL_SESSIONS = [
   { id: 'cw-0001-sunday', ordinal: 7, day: 'Sunday' },
 ]
 
+function pathContainedBy(parent, child) {
+  const relativePath = relative(resolve(parent), resolve(child))
+  return relativePath === '' || (!relativePath.startsWith(`..${sep}`) && relativePath !== '..' && !isAbsolute(relativePath))
+}
+
 function safePath(root, relativePath) {
   if (typeof relativePath !== 'string' || !relativePath || relativePath.includes('\\')) {
     throw new Error(`Unsafe art path: ${relativePath}`)
   }
   const base = resolve(root)
   const target = resolve(base, relativePath)
-  if (!target.startsWith(`${base}${sep}`)) throw new Error(`Art path escapes its root: ${relativePath}`)
+  if (!pathContainedBy(base, target) || target === base) throw new Error(`Art path escapes its root: ${relativePath}`)
   return target
 }
 
@@ -58,6 +63,18 @@ function assertCanonicalSessionTopology(requirements) {
   const orderedIds = requirements.sessions.flatMap((session) => session.sceneIds)
   if (orderedIds.length !== 55 || new Set(orderedIds).size !== 55) {
     throw new Error('Scene-art session order must map each of the 55 scenes exactly once.')
+  }
+  const manifestSceneIds = Object.keys(requirements.scenes ?? {})
+  if (manifestSceneIds.length !== 55) {
+    throw new Error(`Scene-art requirements.scenes must define exactly 55 scenes; found ${manifestSceneIds.length}.`)
+  }
+  const orderedSet = new Set(orderedIds)
+  const missingFromManifest = orderedIds.filter((sceneId) => !(sceneId in (requirements.scenes ?? {})))
+  const unusedManifestScenes = manifestSceneIds.filter((sceneId) => !orderedSet.has(sceneId))
+  if (missingFromManifest.length || unusedManifestScenes.length) {
+    throw new Error(
+      `Scene-art session IDs must match requirements.scenes exactly (missing=${missingFromManifest.join(',') || 'none'}; unused=${unusedManifestScenes.join(',') || 'none'}).`,
+    )
   }
 }
 
@@ -96,8 +113,11 @@ async function composeStrip({ mediaRoot, outputRoot, sourcePaths, outputPath, co
 export async function buildSceneArtStrips({ requirements, mediaRoot, outputRoot }) {
   const sourceRoot = resolve(mediaRoot)
   const destination = resolve(outputRoot)
-  if (sourceRoot === destination || destination.startsWith(`${sourceRoot}${sep}`)) {
-    throw new Error('Strip output must be outside the reviewed conventional-art source root.')
+  if (
+    pathContainedBy(sourceRoot, destination) ||
+    pathContainedBy(destination, sourceRoot)
+  ) {
+    throw new Error('Strip output must stay disjoint from the reviewed conventional-art source root.')
   }
   assertCanonicalSessionTopology(requirements)
 

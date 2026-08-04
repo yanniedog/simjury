@@ -89,6 +89,27 @@ test('rejects a duplicated or cross-session scene mapping before encoding', asyn
   )
 })
 
+test('rejects unknown session scene IDs that are absent from requirements.scenes', async () => {
+  const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
+  requirements.sessions[0].sceneIds[0] = 'mon-unknown-scene'
+  await assert.rejects(
+    buildSceneArtStrips({ requirements, mediaRoot, outputRoot: join(temporary, 'unknown-scene') }),
+    /must match requirements\.scenes exactly/,
+  )
+})
+
+test('rejects output roots that contain the reviewed source tree', async () => {
+  const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
+  await assert.rejects(
+    buildSceneArtStrips({
+      requirements,
+      mediaRoot,
+      outputRoot: resolve(mediaRoot, '..'),
+    }),
+    /disjoint from the reviewed conventional-art source root/,
+  )
+})
+
 test('rejects swapped session topology even when scene IDs stay unique', async () => {
   const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
   const monday = requirements.sessions[0]
