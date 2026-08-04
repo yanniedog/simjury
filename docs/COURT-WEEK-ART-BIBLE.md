@@ -40,6 +40,9 @@ they are not represented as crop-specific approval.
 - Dr Eren Vos: woman in her late fifties; warm-brown complexion; short
   salt-and-pepper natural curls; no glasses; plain charcoal civilian jacket
   over a muted burgundy blouse; composed clinical manner.
+- Jaro Pell: man in his early forties; fair-to-tan complexion; short dark-blond
+  hair; clean-shaven; plain dark-blue shirt under a muted grey civilian jacket;
+  calm rescue-supervisor manner.
 
 Wardrobe stays unchanged through a court day. No police, rescue or military
 uniform appears in court unless the authored record expressly calls that person
