@@ -7,7 +7,9 @@ export default defineConfig({
   expect: { timeout: 8_000 },
   retries: process.env.CI ? 1 : 0,
   preserveOutput: 'always',
-  reporter: process.env.CI ? [['line'], ['html', { open: 'never' }]] : 'line',
+  // The standard matrix owns playwright-report/. The HAR remains in the
+  // uploaded test-results/ tree, so this follow-on run must not erase it.
+  reporter: 'line',
   use: {
     ...devices['Desktop Chrome'],
     baseURL: 'http://127.0.0.1:43130/jury/',
