@@ -400,6 +400,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'thu-defence-record': {
+    altDescription: 'Judge Sel Aven gives a neutral procedural direction after the defence witnesses finish. The witness box is empty, counsel and the accused remain seated, and no inference from silence is depicted.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 51, y: 47 }, subjectSafeRegion: { x: 0, y: 34, width: 100, height: 54 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 51, y: 45 }, subjectSafeRegion: { x: 0, y: 24, width: 100, height: 68 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 51, y: 43 }, subjectSafeRegion: { x: 0, y: 20, width: 100, height: 73 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
