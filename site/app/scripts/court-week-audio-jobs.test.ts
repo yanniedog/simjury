@@ -261,9 +261,9 @@ describe('Court Week prerecorded audio jobs', () => {
       expect(reviewStrips.strips[0].sceneSlots[0]).toMatchObject({
         sceneId: 'mon-arrival',
         compositionArt: {
-          portrait: { reviewStatus: 'compatibility-migration' },
-          tablet: { reviewStatus: 'compatibility-migration' },
-          desktop: { reviewStatus: 'compatibility-migration' },
+          portrait: { reviewStatus: 'crop-reviewed' },
+          tablet: { reviewStatus: 'crop-reviewed' },
+          desktop: { reviewStatus: 'crop-reviewed' },
         },
       })
       const publicManifest = JSON.parse(readFileSync(resolve(outputRoot, 'release-manifest.json'), 'utf8'))
@@ -285,22 +285,19 @@ describe('Court Week prerecorded audio jobs', () => {
           .filter((sceneId) => Object.prototype.hasOwnProperty.call(SCENE_ART_AUTHORING, sceneId)),
       )
       expect(artReport.release_ready).toBe(true)
+      expect(artReport.crop_review_complete).toBe(true)
+      expect(artReport.compatibility_migration_scene_ids).toEqual([])
       expect(artReport.ready_scene_count).toBe(expectedReadySceneIds.length)
       expect(artReport.ready_scene_ids).toEqual(expectedReadySceneIds)
       expect(artReport.scene_count).toBe(55)
       expect(artReport.gap_count).toBe(0)
-      expect(artReport.crop_review_complete).toBe(false)
-      expect(artReport.compatibility_migration_scene_ids).toEqual([
-        'mon-arrival', 'mon-oath', 'mon-crown-opening', 'mon-orr-chief', 'mon-orr-cross', 'mon-elements', 'mon-adjourn',
-      ])
       expect(() => execFileSync(process.execPath, [
         resolve('..', 'scripts', 'prepare-court-week-release.mjs'),
         ...packageArguments,
         '--require-release-ready-art',
-      ], { cwd: resolve('.'), stdio: 'pipe' })).toThrow(/Release publication is blocked until SceneArtManifest gaps are closed and every composition is crop-reviewed/)
-      const blockedReport = JSON.parse(readFileSync(resolve(privateOutputRoot, 'art-readiness-report.json'), 'utf8'))
-      expect(blockedReport.release_ready).toBe(true)
-      expect(blockedReport.crop_review_complete).toBe(false)
+      ], { cwd: resolve('.'), stdio: 'pipe' })).not.toThrow()
+      const requiredReport = JSON.parse(readFileSync(resolve(privateOutputRoot, 'art-readiness-report.json'), 'utf8'))
+      expect(requiredReport).toMatchObject({ release_ready: true, crop_review_complete: true })
 
       const mondayManifestPath = resolve(audioRoot, 'cw-0001-monday', 'session-media.json')
       const mondayManifest = JSON.parse(readFileSync(mondayManifestPath, 'utf8'))
