@@ -97,6 +97,8 @@ test('reads v1 manifests backwards-compatibly but requires explicit crop migrati
     scenes: Object.fromEntries(Array.from({ length: 55 }, (_, index) => [`legacy-${index}`, entry])),
   }, mediaRoot)
   assert.equal(report.gaps.filter((gap) => gap.code === 'invalid-manifest').length, 0)
-  assert.equal(report.gaps.filter((gap) => gap.code === 'legacy-composition-metadata').length, 55)
+  assert.equal(report.gaps.filter((gap) => gap.code === 'legacy-composition-metadata').length, 55 * 3)
+  assert.equal(report.composition_readiness['legacy-0'].portrait.ready, false)
+  assert.equal(report.composition_readiness['legacy-0'].portrait.gap_count > 0, true)
   assert.equal(report.release_ready, false)
 })

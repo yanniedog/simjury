@@ -112,11 +112,6 @@ export function assessSceneArtManifest(manifest, mediaRoot) {
     if (typeof entry.altDescription !== 'string' || entry.altDescription.trim().length < 20) {
       addGap(sceneId, 'invalid-alt', 'altDescription', 'A precise ambiguity-preserving alternative description is required.')
     }
-    if (manifest?.schema === 'simjury.scene-art-manifest/v1') {
-      addGap(sceneId, 'legacy-composition-metadata', 'compositionArt', 'V1 shared crop metadata must be explicitly reviewed and migrated per composition.')
-    }
-
-    const dimensionsByComposition = new Map()
     for (const [composition, contract] of Object.entries(COMPOSITIONS)) {
       const compositionGapStart = gaps.length
       const direction = manifest?.schema === 'simjury.scene-art-manifest/v2'
@@ -125,6 +120,9 @@ export function assessSceneArtManifest(manifest, mediaRoot) {
       const directionField = manifest?.schema === 'simjury.scene-art-manifest/v2'
         ? `compositionArt.${composition}`
         : 'legacySharedDirection'
+      if (manifest?.schema === 'simjury.scene-art-manifest/v1') {
+        addGap(sceneId, 'legacy-composition-metadata', `${directionField}.${composition}`, `${composition} uses shared v1 metadata and must be explicitly migrated.`)
+      }
       if (!validPoint(direction?.focalPoint)) {
         addGap(sceneId, 'invalid-focal-point', `${directionField}.focalPoint`, `${composition} focal point must be within the 0-100 coordinate space.`)
       }
@@ -190,7 +188,6 @@ export function assessSceneArtManifest(manifest, mediaRoot) {
           contentOwners.set(digest, normalized)
         }
       }
-      dimensionsByComposition.set(composition, formatDimensions)
       if (formatDimensions.length === 2 &&
         (formatDimensions[0].width !== formatDimensions[1].width || formatDimensions[0].height !== formatDimensions[1].height)) {
         addGap(sceneId, 'codec-dimension-mismatch', `sources.${composition}`, `${composition} AVIF and WebP dimensions must match exactly.`)
