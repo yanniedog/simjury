@@ -117,7 +117,7 @@ export function ImmersiveCourtShell({
         : undefined}
       data-access-mode={accessMode}
       data-complete-captions={captionsNeedReading}
-      style={captionPlacementStyle(scene.visual)}
+      style={captionPlacementStyle(captionPlacements)}
     >
       <a className="cw-skip-link" href="#cw-primary-controls">Skip to controls</a>
 

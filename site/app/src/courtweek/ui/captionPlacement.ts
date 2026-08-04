@@ -44,6 +44,10 @@ const viewportPreference: Record<CaptionViewport, CaptionPosition[]> = {
   desktop: ['bottom', 'left', 'right', 'top'],
 }
 
+const protectedGapPercent = 2
+const minimumVerticalLanePercent = 10
+const minimumHorizontalLanePercent = 28
+
 function overlapArea(left: Region, right: Region): number {
   const width = Math.max(0, Math.min(left.x + left.width, right.x + right.width) - Math.max(left.x, right.x))
   const height = Math.max(0, Math.min(left.y + left.height, right.y + right.height) - Math.max(left.y, right.y))
@@ -63,17 +67,17 @@ function keepOutsideProtectedLane(region: Region, position: CaptionPosition, pro
   const edge = { ...region }
 
   if (position === 'bottom') {
-    const nextY = Math.max(edge.y, maxY + 2)
-    if (edge.y + edge.height - nextY >= 10) return { ...edge, y: nextY, height: edge.y + edge.height - nextY }
+    const nextY = Math.max(edge.y, maxY + protectedGapPercent)
+    if (edge.y + edge.height - nextY >= minimumVerticalLanePercent) return { ...edge, y: nextY, height: edge.y + edge.height - nextY }
   } else if (position === 'top') {
-    const nextHeight = Math.min(edge.height, minY - edge.y - 2)
-    if (nextHeight >= 10) return { ...edge, height: nextHeight }
+    const nextHeight = Math.min(edge.height, minY - edge.y - protectedGapPercent)
+    if (nextHeight >= minimumVerticalLanePercent) return { ...edge, height: nextHeight }
   } else if (position === 'left') {
-    const nextWidth = Math.min(edge.width, minX - edge.x - 2)
-    if (nextWidth >= 28) return { ...edge, width: nextWidth }
+    const nextWidth = Math.min(edge.width, minX - edge.x - protectedGapPercent)
+    if (nextWidth >= minimumHorizontalLanePercent) return { ...edge, width: nextWidth }
   } else {
-    const nextX = Math.max(edge.x, maxX + 2)
-    if (edge.x + edge.width - nextX >= 28) return { ...edge, x: nextX, width: edge.x + edge.width - nextX }
+    const nextX = Math.max(edge.x, maxX + protectedGapPercent)
+    if (edge.x + edge.width - nextX >= minimumHorizontalLanePercent) return { ...edge, x: nextX, width: edge.x + edge.width - nextX }
   }
   return region
 }
@@ -101,8 +105,9 @@ export function responsiveCaptionPlacements(visual: SceneVisual): Record<Caption
   ) as Record<CaptionViewport, CaptionPlacement>
 }
 
-export function captionPlacementStyle(visual: SceneVisual): CSSProperties {
-  const placements = responsiveCaptionPlacements(visual)
+export function captionPlacementStyle(
+  placements: Record<CaptionViewport, CaptionPlacement>,
+): CSSProperties {
   const properties: Record<string, string> = {}
   for (const [viewport, placement] of Object.entries(placements)) {
     properties[`--cw-caption-${viewport}-x`] = `${placement.region.x}%`

@@ -39,7 +39,7 @@ describe('responsive caption placement', () => {
   })
 
   it('emits independent CSS lanes for phone, landscape, tablet and desktop', () => {
-    const style = captionPlacementStyle(visual) as Record<string, string>
+    const style = captionPlacementStyle(responsiveCaptionPlacements(visual)) as Record<string, string>
     expect(style['--cw-caption-phonePortrait-y']).toBeTruthy()
     expect(style['--cw-caption-phoneLandscape-width']).toBeTruthy()
     expect(style['--cw-caption-tablet-x']).toBeTruthy()
