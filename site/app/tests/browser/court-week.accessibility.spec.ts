@@ -70,17 +70,22 @@ test('reduced motion switches to static cuts without changing legal position', a
 
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await expect.poll(() => page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches)).toBe(true)
-  const motion = await page.locator('.cw-stage__picture img').evaluate((image) => {
+  await expect.poll(() => page.locator('.cw-stage__picture img').evaluate((image) => {
     const style = getComputedStyle(image)
     return {
       transform: style.transform,
-      transitionSeconds: style.transitionDuration.split(',').map((value) => Number.parseFloat(value)),
-      animationSeconds: style.animationDuration.split(',').map((value) => Number.parseFloat(value)),
+      transitionsAreStatic: style.transitionDuration
+        .split(',')
+        .every((value) => Number.parseFloat(value) <= 0.001),
+      animationsAreStatic: style.animationDuration
+        .split(',')
+        .every((value) => Number.parseFloat(value) <= 0.001),
     }
+  })).toEqual({
+    transform: 'none',
+    transitionsAreStatic: true,
+    animationsAreStatic: true,
   })
-  expect(motion.transform).toBe('none')
-  expect(motion.transitionSeconds.every((duration) => duration <= 0.001)).toBe(true)
-  expect(motion.animationSeconds.every((duration) => duration <= 0.001)).toBe(true)
   await expect.poll(() => readProgressPosition(page)).toEqual(before)
 
   const previousCue = before?.currentCueId
