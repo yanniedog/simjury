@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
+import { SCENE_ART_AUTHORING } from '../src/courtweek/content/sceneArt'
 import { buildSceneArtManifestDraft } from './scene-art-requirements'
 
 describe('SceneArtManifest contract', () => {
@@ -28,19 +29,23 @@ describe('SceneArtManifest contract', () => {
       }
     }
     expect(new Set(sourcePaths).size).toBe(55 * 3 * 2)
+    const tuesdayResume = elevenMinutesCourtWeek.manifest.sessions[1].scenes[0]
+    expect(tuesdayResume.id).toBe('tue-resume')
+    expect(tuesdayResume.visual.sources).toBeUndefined()
   })
 
   it('keeps commissioned and absent safe-region decisions explicit', () => {
     const manifest = buildSceneArtManifestDraft(elevenMinutesCourtWeek)
-    const monday = elevenMinutesCourtWeek.manifest.sessions[0].scenes.map((scene) => scene.id)
-    expect(monday).toHaveLength(7)
-    for (const sceneId of monday) {
-      expect(manifest.scenes[sceneId].subjectSafeRegion).not.toBeNull()
-      expect(manifest.scenes[sceneId].evidenceSafeRegion).not.toBeNull()
-    }
-    for (const entry of Object.values(manifest.scenes).slice(monday.length)) {
-      expect(entry.subjectSafeRegion).toBeNull()
-      expect(entry.evidenceSafeRegion).toBeNull()
+    const commissioned = new Set(Object.keys(SCENE_ART_AUTHORING))
+    expect(commissioned.size).toBe(8)
+    for (const [sceneId, entry] of Object.entries(manifest.scenes)) {
+      if (commissioned.has(sceneId)) {
+        expect(entry.subjectSafeRegion).not.toBeNull()
+        expect(entry.evidenceSafeRegion).not.toBeNull()
+      } else {
+        expect(entry.subjectSafeRegion).toBeNull()
+        expect(entry.evidenceSafeRegion).toBeNull()
+      }
     }
   })
 })
