@@ -106,9 +106,9 @@ test.describe('Court Week visual contract', () => {
   test.skip(({ browserName }) => browserName !== 'chromium', 'One pinned Chromium rasterizer owns visual baselines.')
   test.beforeEach(({ browserName }, testInfo) => {
     expect(browserName).toBe('chromium')
-    // A single lossless baseline is shared by local and Linux CI runs. The
-    // pixel tolerance absorbs rasterizer antialiasing without hiding layout.
-    testInfo.snapshotSuffix = ''
+    // Keep each checked baseline tied to its runner rasterizer. This avoids
+    // loosening pixel tolerance enough to hide real layout regressions.
+    testInfo.snapshotSuffix = process.platform
   })
 
   for (const viewport of viewports) {
