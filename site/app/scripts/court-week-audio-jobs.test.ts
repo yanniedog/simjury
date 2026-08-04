@@ -74,7 +74,7 @@ describe('Court Week prerecorded audio jobs', () => {
       'Recorded channel',
     ])
     expect(channel.filter(({ speaker }) => speaker === 'Ilan Saye').map(({ text }) => text).join(' '))
-      .not.toMatch(/static masks|transmission breaks/iu)
+      .not.toMatch(/seconds of static|transmission breaks/iu)
 
     const struckAnswer = elevenMinutesCourtWeek.manifest.sessions[2].scenes
       .flatMap((scene) => scene.cues)
