@@ -180,6 +180,33 @@ describe('useCuePlayback', () => {
     act(() => root.unmount())
   })
 
+  it('detects the incomplete recorded turn when interruption precedes its timeupdate', async () => {
+    const activeCue: SceneCue = {
+      ...cue,
+      turns: [
+        { id: 'cue-audio__1', speaker: 'Counsel', text: 'Question?' },
+        { id: 'cue-audio__2', speaker: 'Witness', text: 'Answer.' },
+      ],
+      audio: {
+        ...cue.audio!,
+        turns: [
+          { id: 'cue-audio__1', startSeconds: 12, endSeconds: 15 },
+          { id: 'cue-audio__2', startSeconds: 15, endSeconds: 18 },
+        ],
+      },
+    }
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness activeCue={activeCue} onEnded={() => undefined} />))
+    const currentAudio = MockAudio.instances[0]
+
+    currentAudio.currentTime = 16
+    act(() => window.dispatchEvent(new Event('pagehide')))
+
+    expect(currentAudio.currentTime).toBe(15)
+    expect(container.querySelector('[data-testid="turn"]')?.textContent).toBe('cue-audio__2')
+    act(() => root.unmount())
+  })
+
   it('preloads metadata for only the next scene cue', async () => {
     const nextCue: SceneCue = {
       ...cue,
