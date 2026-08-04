@@ -672,6 +672,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'sat-improper': {
+    altDescription: 'Exactly eleven other jurors remain around the deliberation table as Edda raises an open hand and one juror clears the blank room display. No forbidden allegation, evidence, ballot, count, faction or verdict is visible.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 59 }, subjectSafeRegion: { x: 0, y: 47, width: 100, height: 38 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 54 }, subjectSafeRegion: { x: 0, y: 31, width: 100, height: 62 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 57 }, subjectSafeRegion: { x: 0, y: 38, width: 100, height: 56 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
