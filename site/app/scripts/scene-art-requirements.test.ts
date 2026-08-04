@@ -95,6 +95,7 @@ describe('SceneArtManifest contract', () => {
       'sat-first-ballot',
       'sat-causation',
       'sat-improper',
+      'sun-resume',
     ]
     for (const sceneId of evidenceNeutralReviewedScenes) {
       for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
@@ -155,6 +156,10 @@ describe('SceneArtManifest contract', () => {
       expect(manifest.scenes['sat-note'].compositionArt[composition].evidenceSafeRegion).toMatchObject({ width: expect.any(Number), height: expect.any(Number) })
       expect(manifest.scenes['sat-note'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
       expect(manifest.scenes['sat-note'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
+      expect(manifest.scenes['sun-resume'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+      expect(manifest.scenes['sun-resume'].compositionArt[composition].evidenceSafeRegion).toBeNull()
+      expect(manifest.scenes['sun-resume'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
+      expect(manifest.scenes['sun-resume'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
     }
     expect(manifest.scenes['sat-room'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sat-room'].altDescription).toContain('No ballot is shown')
@@ -172,5 +177,8 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['sat-improper'].altDescription).toContain('No forbidden allegation, evidence, ballot, count, faction or verdict is visible')
     expect(manifest.scenes['sat-note'].altDescription).toContain('folded face-down unmarked jury note')
     expect(manifest.scenes['sat-note'].altDescription).toContain('No writing, ballot number, juror identity, position or verdict is visible')
+    expect(manifest.scenes['sun-resume'].altDescription).toContain('Exactly eleven other jurors')
+    expect(manifest.scenes['sun-resume'].altDescription).toContain('Sunday morning light')
+    expect(manifest.scenes['sun-resume'].altDescription).toContain('No ballot, evidence, faction, verdict or conclusion is shown')
   })
 })
