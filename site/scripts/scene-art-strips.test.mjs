@@ -102,10 +102,19 @@ test('rejects swapped session topology even when scene IDs stay unique', async (
 
 test('rejects manifest-level readiness failures before encoding ready scenes', async () => {
   const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
-  requirements.caseId = 'foreign-case'
+  requirements.schema = 'foreign.schema/v1'
   await assert.rejects(
     buildSceneArtStrips({ requirements, mediaRoot, outputRoot: join(temporary, 'foreign') }),
     /manifest-level readiness failure/,
+  )
+})
+
+test('rejects non-cw-0001 case IDs before topology encoding', async () => {
+  const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
+  requirements.caseId = 'foreign-case'
+  await assert.rejects(
+    buildSceneArtStrips({ requirements, mediaRoot, outputRoot: join(temporary, 'foreign-case') }),
+    /locked to caseId cw-0001/,
   )
 })
 

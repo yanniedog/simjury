@@ -32,6 +32,9 @@ function safePath(root, relativePath) {
 }
 
 function assertCanonicalSessionTopology(requirements) {
+  if (requirements?.caseId !== 'cw-0001') {
+    throw new Error('Scene-art strip builds are locked to caseId cw-0001 (Eleven Minutes).')
+  }
   if (!Array.isArray(requirements.sessions) || requirements.sessions.length !== 7) {
     throw new Error('Scene-art requirements must carry seven ordered Court Week sessions.')
   }
@@ -63,6 +66,9 @@ async function composeStrip({ mediaRoot, outputRoot, sourcePaths, outputPath, co
   const target = safePath(outputRoot, outputPath)
   mkdirSync(dirname(target), { recursive: true })
   const inputs = await Promise.all(sourcePaths.map(async (path, cell) => {
+    // Readiness already enforces composition aspect ratio; resize to exact tile
+    // pixels so Sharp composite accepts oversize commissioned sources without
+    // inventing a second aspect contract.
     const resized = await sharp(safePath(mediaRoot, path))
       .resize(tile.width, tile.height, { fit: 'fill' })
       .toBuffer()
