@@ -105,7 +105,8 @@ function collectReleaseAssets(releaseManifest) {
 export function assertReleasePayloadMatchesManifest(releaseManifestValue, releaseAssetsDirectory) {
   const releaseManifest = requireObject(releaseManifestValue, 'Immutable Release manifest')
   const expected = new Set(['release-manifest.json', ...releaseManifest.assets.map((asset) => asset.asset_name)])
-  const entries = readdirSync(resolve(releaseAssetsDirectory), { withFileTypes: true })
+  const releaseAssetsPath = resolve(releaseAssetsDirectory)
+  const entries = readdirSync(releaseAssetsPath, { withFileTypes: true })
   if (entries.some((entry) => !entry.isFile())) throw new Error('Immutable Release payload must contain files only.')
   const actual = new Set(entries.map((entry) => entry.name))
   const missing = [...expected].filter((name) => !actual.has(name)).sort()
@@ -116,7 +117,7 @@ export function assertReleasePayloadMatchesManifest(releaseManifestValue, releas
     )
   }
   for (const asset of releaseManifest.assets) {
-    const bytes = readFileSync(join(resolve(releaseAssetsDirectory), asset.asset_name))
+    const bytes = readFileSync(join(releaseAssetsPath, asset.asset_name))
     const sha256 = createHash('sha256').update(bytes).digest('hex')
     if (bytes.length !== asset.bytes || sha256 !== asset.sha256) {
       throw new Error(
