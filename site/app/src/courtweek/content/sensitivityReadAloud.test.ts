@@ -29,4 +29,15 @@ describe('sensitivity and read-aloud identity review', () => {
     expect(collisions).toEqual([])
   })
 
+  it('keeps runtime mechanics out of the named in-world cues', () => {
+    const cues = new Map(elevenMinutesCourtWeek.manifest.sessions
+      .flatMap(({ scenes }) => scenes)
+      .flatMap(({ cues }) => cues)
+      .map((cue) => [cue.id, cue]))
+
+    for (const id of ['mon-adjourn-2', 'sat-separate-2', 'sun-analysis-close']) {
+      expect(cues.get(id)?.speaker).toBe('Narrator')
+    }
+    expect(cues.get('sat-improper-1')?.text).not.toMatch(/influence|penalty|score/iu)
+  })
 })
