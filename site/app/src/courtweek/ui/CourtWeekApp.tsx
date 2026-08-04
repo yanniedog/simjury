@@ -206,9 +206,11 @@ function CourtWeekEntry({
 }
 function VerdictChoices({
   selected,
+  disabled = false,
   onSelect,
 }: {
   selected?: Verdict
+  disabled?: boolean
   onSelect: (verdict: Verdict) => void
 }) {
   return (
@@ -218,6 +220,7 @@ function VerdictChoices({
           key={verdict}
           type="button"
           aria-pressed={selected === verdict}
+          disabled={disabled}
           onClick={() => onSelect(verdict)}
         >
           {verdictLabels[verdict]}
@@ -712,6 +715,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
           <p>Replay mode. Your sealed contributions, ballots and returned result remain unchanged.</p>
         ) : isVote ? (
           <VerdictChoices
+            disabled={interactionSealed}
             selected={(interactionChoice as Verdict | null) ?? (
               interaction.kind === 'seal-vote'
                 ? progress.provisionalVote
@@ -721,7 +725,6 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
             )}
             onSelect={(verdict) => {
               setInteractionChoice(verdict)
-              setInteractionSealed(false)
             }}
           />
         ) : interaction.kind === 'reasoning' ? (
