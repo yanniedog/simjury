@@ -271,4 +271,55 @@ describe('CourtWeekApp improper-argument interaction', () => {
     })
     window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
   })
+
+  it('locks the second ballot before revealing its aggregate', async () => {
+    const sunday = elevenMinutesCourtWeek.manifest.sessions[6]
+    const ballotScene = sunday.scenes.find(({ id }) => id === 'sun-second-ballot')!
+    const progress: StoredWeeklyProgress = {
+      schemaVersion: 'court-week-progress-v1',
+      courtWeekId: 'cw-0001',
+      revision: elevenMinutesCourtWeek.manifest.revision,
+      highestObservedTime: '2026-08-16T12:00:00+10:00',
+      completedSessionIds: elevenMinutesCourtWeek.manifest.sessions.slice(0, 6).map(({ id }) => id),
+      currentSessionId: sunday.id,
+      currentSceneId: ballotScene.id,
+      currentCueId: ballotScene.cues.at(-1)?.id,
+      notes: '',
+      provisionalVote: 'not-guilty',
+      reasoningContributions: [],
+      majorityDirectionReceived: false,
+      accessibilityMode: 'reading',
+    }
+    await saveWeeklyProgress(progress.courtWeekId, progress)
+    let latestProgress = progress
+    const onProgress = (event: Event) => {
+      latestProgress = (event as CustomEvent<StoredWeeklyProgress>).detail
+    }
+    window.addEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
+    let clock = Date.parse('2026-08-16T12:00:00+10:00')
+
+    await act(async () => {
+      root.render(<CourtWeekApp courtWeek={elevenMinutesCourtWeek} now={() => clock} releaseBase="/media" />)
+      await Promise.resolve()
+    })
+    await act(async () => clickButton(container, 'Take your seat'))
+    await act(async () => clickButton(container, 'Continue'))
+    clock += 140_000
+    await act(async () => window.dispatchEvent(new Event('focus')))
+    await act(async () => clickButton(container, 'Guilty of murder'))
+    await act(async () => clickButton(container, 'Seal ballot'))
+
+    expect(container.querySelector('[aria-label="Anonymous second ballot"]')).not.toBeNull()
+    const notGuilty = Array.from(container.querySelectorAll('button')).find(
+      (button) => button.textContent?.trim() === 'Not Guilty',
+    ) as HTMLButtonElement | undefined
+    expect(notGuilty?.disabled).toBe(true)
+    await act(async () => notGuilty?.click())
+    expect(latestProgress.secondVote).toBe('murder')
+
+    await act(async () => clickButton(container, 'Continue deliberation'))
+    window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
+    expect(latestProgress.secondVote).toBe('murder')
+    expect(latestProgress.currentSceneId).toBe('sun-persevere')
+  })
 })
