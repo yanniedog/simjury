@@ -31,6 +31,8 @@ describe('CourtWeekCompletion', () => {
     )
 
     expect(markup).toContain('Progress is held in this tab only')
+    expect(markup).toContain('Include my private notes in the export')
+    expect(markup).not.toContain('checked=""')
     expect(markup).toContain('Export progress')
   })
 })
