@@ -128,6 +128,8 @@ export function EvidenceViewer({ evidence, returnFocusTo, onClose }: EvidenceVie
       <div className="cw-evidence-canvas">
         <article
           className="cw-evidence-document"
+          data-inspection-source={presentation?.kind === 'route' ? 'structured-vector' : 'structured-document'}
+          data-visual-fallback={presentation ? undefined : 'neutral'}
           {...(presentation ? {
             role: 'group',
             'aria-describedby': `cw-evidence-ambiguity-${evidence.id}`,
@@ -138,7 +140,12 @@ export function EvidenceViewer({ evidence, returnFocusTo, onClose }: EvidenceVie
         >
           {presentation ? (
             renderExhibitPresentation(presentation)
-          ) : <p>{evidence.accessibleProposition}</p>}
+          ) : (
+            <div className="cw-evidence-neutral">
+              <p>A visual facsimile is unavailable. The admitted proposition remains available.</p>
+              <p>{evidence.accessibleProposition}</p>
+            </div>
+          )}
           {presentation ? (
             <p id={`cw-evidence-ambiguity-${evidence.id}`} className="cw-evidence-ambiguity">
               {presentation.ambiguity}
