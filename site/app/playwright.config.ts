@@ -12,9 +12,13 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+    { name: 'chromium', testIgnore: /court-week\.devices\.spec\.ts/u, use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', testIgnore: /court-week\.devices\.spec\.ts/u, use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', testIgnore: /court-week\.devices\.spec\.ts/u, use: { ...devices['Desktop Safari'] } },
+    { name: 'iphone-safari', testMatch: /court-week\.devices\.spec\.ts/u, use: { ...devices['iPhone 15'] } },
+    { name: 'android-phone', testMatch: /court-week\.devices\.spec\.ts/u, use: { ...devices['Pixel 7a'] } },
+    { name: 'ipad-safari', testMatch: /court-week\.devices\.spec\.ts/u, use: { ...devices['iPad (gen 11)'] } },
+    { name: 'android-tablet', testMatch: /court-week\.devices\.spec\.ts/u, use: { ...devices['Galaxy Tab S9'] } },
   ],
   webServer: {
     command: 'npm run dev -- --host 127.0.0.1 --port 43127 --strictPort',
