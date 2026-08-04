@@ -40,6 +40,8 @@ function canSpeak(): boolean {
   )
 }
 
+const RECORDED_AUDIO_TIMEOUT_MS = 5_000
+
 function availableSpeechVoice(): SpeechSynthesisVoice | null {
   if (!canSpeak() || typeof window.speechSynthesis.getVoices !== 'function') return null
   const voices = window.speechSynthesis.getVoices()
@@ -65,6 +67,12 @@ export function useCuePlayback(
   const [status, setStatus] = useState<PlaybackStatus>('idle')
   const [error, setError] = useState<string | null>(null)
   const failedAttempts = useRef(0)
+  const failureHandling = useRef(false)
+  const recordedAttemptActive = useRef(false)
+  const playbackSuppressed = useRef(false)
+  const reloadPauseExpected = useRef(false)
+  const attemptGeneration = useRef(0)
+  const playbackTimeout = useRef<number | null>(null)
   const speechActive = useRef(false)
   const rangeEnded = useRef(false)
   const endedCallback = useRef(onEnded)
@@ -74,6 +82,19 @@ export function useCuePlayback(
     if (canSpeak()) window.speechSynthesis.cancel()
     speechActive.current = false
   }, [])
+
+  const clearPlaybackTimeout = useCallback(() => {
+    if (playbackTimeout.current !== null) window.clearTimeout(playbackTimeout.current)
+    playbackTimeout.current = null
+  }, [])
+
+  const suppressRecordedPlayback = useCallback(() => {
+    playbackSuppressed.current = true
+    reloadPauseExpected.current = false
+    attemptGeneration.current += 1
+    recordedAttemptActive.current = false
+    clearPlaybackTimeout()
+  }, [clearPlaybackTimeout])
 
   const speakFallback = useCallback(() => {
     if (speechActive.current) return
@@ -102,8 +123,66 @@ export function useCuePlayback(
     window.speechSynthesis.speak(utterance)
   }, [cue.text])
 
+  const attemptRecordedPlayback = useCallback(async (): Promise<'playing' | 'failed' | 'cancelled'> => {
+    if (!audio || recordedAttemptActive.current) return 'cancelled'
+    recordedAttemptActive.current = true
+    const generation = ++attemptGeneration.current
+    clearPlaybackTimeout()
+    setStatus('loading')
+    try {
+      await Promise.race([
+        audio.play(),
+        new Promise<never>((_, reject) => {
+          playbackTimeout.current = window.setTimeout(
+            () => reject(new Error('Recorded audio timed out.')),
+            RECORDED_AUDIO_TIMEOUT_MS,
+          )
+        }),
+      ])
+      return generation === attemptGeneration.current ? 'playing' : 'cancelled'
+    } catch {
+      return generation === attemptGeneration.current ? 'failed' : 'cancelled'
+    } finally {
+      if (generation === attemptGeneration.current) {
+        recordedAttemptActive.current = false
+        clearPlaybackTimeout()
+      }
+    }
+  }, [audio, clearPlaybackTimeout])
+
+  const recoverRecordedPlayback = useCallback(async () => {
+    if (failureHandling.current || playbackSuppressed.current || speechActive.current) return
+    failureHandling.current = true
+    attemptGeneration.current += 1
+    recordedAttemptActive.current = false
+    clearPlaybackTimeout()
+    try {
+      if (audio?.src && failedAttempts.current < 1) {
+        failedAttempts.current += 1
+        reloadPauseExpected.current = true
+        audio.load()
+        const retryResult = await attemptRecordedPlayback()
+        if (retryResult !== 'failed') return
+        if (playbackSuppressed.current) return
+      }
+      reloadPauseExpected.current = true
+      audio?.pause()
+      playbackSuppressed.current = false
+      setError('Recorded audio could not be loaded. Using this device instead.')
+      speakFallback()
+    } finally {
+      failureHandling.current = false
+    }
+  }, [attemptRecordedPlayback, audio, clearPlaybackTimeout, speakFallback])
+
   useEffect(() => {
     failedAttempts.current = 0
+    failureHandling.current = false
+    recordedAttemptActive.current = false
+    playbackSuppressed.current = false
+    reloadPauseExpected.current = false
+    attemptGeneration.current += 1
+    clearPlaybackTimeout()
     rangeEnded.current = false
     setStatus('idle')
     setError(null)
@@ -136,20 +215,19 @@ export function useCuePlayback(
         finishRange()
       }
     }
-    const handleError = () => {
-      if (speechActive.current) return
-      if (failedAttempts.current < 1 && audio.src) {
-        failedAttempts.current += 1
-        audio.load()
-        void audio.play().catch(speakFallback)
-        return
-      }
-      setError('Recorded audio could not be loaded. Using this device instead.')
-      speakFallback()
+    const handleError = () => { void recoverRecordedPlayback() }
+    const handlePlaying = () => {
+      reloadPauseExpected.current = false
+      clearPlaybackTimeout()
+      setStatus('playing')
     }
-    const handlePlaying = () => setStatus('playing')
     const handlePause = () => {
       if (!audio.ended && !rangeEnded.current) {
+        if (reloadPauseExpected.current) {
+          reloadPauseExpected.current = false
+          return
+        }
+        if (!playbackSuppressed.current) suppressRecordedPlayback()
         audio.currentTime = cue.audio?.startSeconds ?? 0
         setStatus('paused')
       }
@@ -161,6 +239,7 @@ export function useCuePlayback(
     audio.addEventListener('playing', handlePlaying)
     audio.addEventListener('pause', handlePause)
     return () => {
+      suppressRecordedPlayback()
       audio.pause()
       audio.removeEventListener('ended', handleEnded)
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata)
@@ -170,7 +249,7 @@ export function useCuePlayback(
       audio.removeEventListener('pause', handlePause)
       cancelSpeech()
     }
-  }, [audio, cancelSpeech, cue, speakFallback])
+  }, [audio, cancelSpeech, clearPlaybackTimeout, cue, recoverRecordedPlayback, suppressRecordedPlayback])
 
   useEffect(() => {
     if (!preloader) return
@@ -190,6 +269,7 @@ export function useCuePlayback(
 
   useEffect(() => {
     const interrupt = () => {
+      suppressRecordedPlayback()
       audio?.pause()
       if (audio) audio.currentTime = cue.audio?.startSeconds ?? 0
       if (speechActive.current && canSpeak()) {
@@ -210,16 +290,18 @@ export function useCuePlayback(
       window.removeEventListener('pagehide', interrupt)
       mediaDevices?.removeEventListener('devicechange', interrupt)
     }
-  }, [audio, cue.audio?.startSeconds])
+  }, [audio, cue.audio?.startSeconds, suppressRecordedPlayback])
 
   const play = useCallback(async () => {
+    if (recordedAttemptActive.current || failureHandling.current) return
+    playbackSuppressed.current = false
+    reloadPauseExpected.current = false
     cancelSpeech()
     const source = audio ? supportedAudioSource(audio, cue) : null
     if (!audio || !source) {
       speakFallback()
       return
     }
-    setStatus('loading')
     const start = cue.audio?.startSeconds ?? 0
     if (
       audio.currentTime < start ||
@@ -228,19 +310,16 @@ export function useCuePlayback(
       audio.currentTime = start
       rangeEnded.current = false
     }
-    try {
-      await audio.play()
-    } catch {
-      speakFallback()
-    }
-  }, [audio, cancelSpeech, cue, speakFallback])
+    if (await attemptRecordedPlayback() === 'failed') await recoverRecordedPlayback()
+  }, [attemptRecordedPlayback, audio, cancelSpeech, cue, recoverRecordedPlayback, speakFallback])
 
   const pause = useCallback(() => {
+    suppressRecordedPlayback()
     audio?.pause()
     if (audio) audio.currentTime = cue.audio?.startSeconds ?? 0
     if (speechActive.current) cancelSpeech()
     setStatus('paused')
-  }, [audio, cancelSpeech, cue.audio?.startSeconds])
+  }, [audio, cancelSpeech, cue.audio?.startSeconds, suppressRecordedPlayback])
 
   const repeat = useCallback(async () => {
     cancelSpeech()

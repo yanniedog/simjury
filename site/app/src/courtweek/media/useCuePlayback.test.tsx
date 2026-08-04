@@ -71,6 +71,7 @@ describe('useCuePlayback', () => {
   })
 
   afterEach(() => {
+    vi.useRealTimers()
     container.remove()
     if (speechSynthesisDescriptor) {
       Object.defineProperty(window, 'speechSynthesis', speechSynthesisDescriptor)
@@ -310,11 +311,13 @@ describe('useCuePlayback', () => {
     await act(async () => root.render(<Harness onEnded={() => undefined} />))
     const [play] = Array.from(container.querySelectorAll('button'))
     const currentAudio = MockAudio.instances[0]
+    currentAudio.load.mockImplementationOnce(() => currentAudio.dispatchEvent(new Event('pause')))
     await act(async () => play.click())
 
     await act(async () => currentAudio.dispatchEvent(new Event('error')))
     expect(currentAudio.load).toHaveBeenCalledOnce()
     expect(synthesis.speak).not.toHaveBeenCalled()
+    expect(container.querySelector('output')?.textContent).toBe('playing')
     await act(async () => currentAudio.dispatchEvent(new Event('error')))
 
     expect(currentAudio.load).toHaveBeenCalledOnce()
@@ -323,7 +326,7 @@ describe('useCuePlayback', () => {
     act(() => root.unmount())
   })
 
-  it('does not duplicate device speech when a late media error follows play rejection', async () => {
+  it('retries a rejected play once and ignores a late error after speech fallback', async () => {
     class MockUtterance {
       lang = ''
       rate = 1
@@ -346,14 +349,90 @@ describe('useCuePlayback', () => {
     await act(async () => root.render(<Harness onEnded={() => undefined} />))
     const [play] = Array.from(container.querySelectorAll('button'))
     const currentAudio = MockAudio.instances[0]
-    currentAudio.play.mockRejectedValueOnce(new Error('Output interrupted.'))
+    currentAudio.play.mockRejectedValue(new Error('Output interrupted.'))
     await act(async () => play.click())
+    expect(currentAudio.play).toHaveBeenCalledTimes(2)
+    expect(currentAudio.load).toHaveBeenCalledOnce()
     expect(synthesis.speak).toHaveBeenCalledOnce()
 
     act(() => currentAudio.dispatchEvent(new Event('error')))
 
-    expect(currentAudio.load).not.toHaveBeenCalled()
+    expect(currentAudio.load).toHaveBeenCalledOnce()
     expect(synthesis.speak).toHaveBeenCalledOnce()
+    act(() => root.unmount())
+  })
+
+  it('times out two stalled attempts before exposing reading mode', async () => {
+    vi.useFakeTimers()
+    class MockUtterance {
+      lang = ''
+      rate = 1
+      voice: SpeechSynthesisVoice | null = null
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+      constructor(public text: string) {}
+    }
+    const synthesis = {
+      paused: false,
+      getVoices: vi.fn(() => []),
+      speak: vi.fn(), cancel: vi.fn(), pause: vi.fn(), resume: vi.fn(),
+    }
+    vi.stubGlobal('SpeechSynthesisUtterance', MockUtterance)
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: synthesis })
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness onEnded={() => undefined} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
+    const currentAudio = MockAudio.instances[0]
+    currentAudio.play.mockImplementation(() => new Promise<boolean>(() => undefined))
+
+    act(() => play.click())
+    await act(async () => vi.advanceTimersByTimeAsync(10_000))
+
+    expect(currentAudio.play).toHaveBeenCalledTimes(2)
+    expect(currentAudio.load).toHaveBeenCalledOnce()
+    expect(synthesis.speak).not.toHaveBeenCalled()
+    expect(container.querySelector('output')?.textContent).toBe('reading-fallback')
+    act(() => root.unmount())
+    vi.useRealTimers()
+  })
+
+  it('does not retry or narrate after a stalled attempt is interrupted', async () => {
+    vi.useFakeTimers()
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness onEnded={() => undefined} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
+    const currentAudio = MockAudio.instances[0]
+    currentAudio.play.mockImplementation(() => new Promise<boolean>(() => undefined))
+
+    act(() => play.click())
+    act(() => window.dispatchEvent(new Event('pagehide')))
+    await act(async () => vi.advanceTimersByTimeAsync(15_000))
+
+    expect(currentAudio.play).toHaveBeenCalledOnce()
+    expect(currentAudio.load).not.toHaveBeenCalled()
+    expect(container.querySelector('output')?.textContent).toBe('paused')
+    act(() => root.unmount())
+  })
+
+  it('ignores a stale attempt that settles after the juror resumes', async () => {
+    let finishFirst!: (value: boolean) => void
+    const firstAttempt = new Promise<boolean>((resolve) => { finishFirst = resolve })
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness onEnded={() => undefined} />))
+    const [play, pause] = Array.from(container.querySelectorAll('button'))
+    const currentAudio = MockAudio.instances[0]
+    currentAudio.play
+      .mockImplementationOnce(() => firstAttempt)
+      .mockImplementationOnce(async () => currentAudio.dispatchEvent(new Event('playing')))
+
+    act(() => play.click())
+    act(() => pause.click())
+    await act(async () => play.click())
+    await act(async () => finishFirst(true))
+
+    expect(currentAudio.play).toHaveBeenCalledTimes(2)
+    expect(currentAudio.load).not.toHaveBeenCalled()
+    expect(container.querySelector('output')?.textContent).toBe('playing')
     act(() => root.unmount())
   })
 })
