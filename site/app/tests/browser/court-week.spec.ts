@@ -81,6 +81,50 @@ test('core flow remains playable across browser engines', async ({ page }) => {
   expect(prohibited).toEqual([])
 })
 
+test('the juror desk exposes no struck material or inspection route', async ({ page }) => {
+  await enterCourt(page)
+  await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
+  const desk = page.getByRole('dialog', { name: 'Your working papers' })
+  await expect(desk.getByText('Struck workplace rumour')).toHaveCount(0)
+  await expect(desk.getByText('This material is legally absent and must not be used for any purpose.')).toHaveCount(0)
+  await expect(desk.getByRole('button', { name: /struck/i })).toHaveCount(0)
+})
+
+test.describe('device-sized admitted exhibit viewer', () => {
+  test.skip(({ browserName }) => browserName !== 'chromium', 'device matrix runs once')
+
+  for (const [device, width, height] of [
+    ['phone', 320, 568],
+    ['tablet', 768, 1024],
+    ['desktop', 1280, 800],
+  ] as const) {
+    for (const zoom of [1, 2]) {
+      test(`${device} at ${zoom * 100}% zoom`, async ({ page }) => {
+        await page.setViewportSize({ width: Math.floor(width / zoom), height: Math.floor(height / zoom) })
+        const prohibited = await enterCourt(page)
+        await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
+        await page.getByRole('button', { name: /Route diagram/i }).click()
+        const viewer = page.getByRole('dialog', { name: /Harbour route diagram/i })
+        await expect(viewer).toBeVisible()
+        await expect(viewer.getByLabel('Exhibit viewing controls')).toBeVisible()
+        await expect(viewer.locator('.cw-exhibit--route svg')).toBeVisible()
+        await expect(viewer.getByText('The diagram establishes distance and route only, not conditions or outcome.')).toBeVisible()
+        await viewer.getByRole('button', { name: 'Zoom in' }).click()
+        await viewer.getByRole('button', { name: 'Move exhibit right' }).click()
+        await expect(viewer.locator('.cw-evidence-document')).toHaveAttribute('style', /translate\(24px, 0px\) scale\(1\.2\)/)
+        await viewer.getByRole('button', { name: 'Reset' }).click()
+        await expect(viewer.locator('.cw-evidence-document')).toHaveAttribute('style', /translate\(0px, 0px\) scale\(1\)/)
+        await viewer.getByText('Evidence foundation').click()
+        await expect(viewer.getByText(/Prepared from the service chart/)).toBeVisible()
+        await expect(viewer.getByText('Not proof of visibility, sea state or survival time')).toBeVisible()
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+        expect(overflow).toBeLessThanOrEqual(1)
+        expect(prohibited).toEqual([])
+      })
+    }
+  }
+})
+
 test('scene safe regions reflow caption lanes through phone, tablet, desktop and 200% zoom', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'Responsive geometry is exercised once; cross-engine flow remains separate.')
   await page.setViewportSize({ width: 390, height: 844 })
