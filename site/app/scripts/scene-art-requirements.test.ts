@@ -9,6 +9,10 @@ describe('SceneArtManifest contract', () => {
       .flatMap((session) => session.scenes.map((scene) => scene.id))
     expect(sourceSceneIds).toHaveLength(55)
     expect(Object.keys(manifest.scenes)).toEqual(sourceSceneIds)
+    expect(manifest.sessions.map((session) => session.sceneIds)).toEqual(
+      elevenMinutesCourtWeek.manifest.sessions.map((session) =>
+        session.scenes.map((scene) => scene.id)),
+    )
 
     const sourcePaths = []
     for (const [sceneId, entry] of Object.entries(manifest.scenes)) {

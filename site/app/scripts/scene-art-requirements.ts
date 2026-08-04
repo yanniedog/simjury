@@ -40,6 +40,12 @@ export interface SceneArtManifestDraft {
     tablet: { aspectRatio: '4:3'; minimumPixels: { width: 1024; height: 768 } }
     desktop: { aspectRatio: '16:9'; minimumPixels: { width: 1280; height: 720 } }
   }
+  sessions: Array<{
+    id: string
+    ordinal: number
+    day: CourtWeek['manifest']['sessions'][number]['day']
+    sceneIds: string[]
+  }>
   scenes: Record<string, DraftSceneArt>
 }
 
@@ -80,6 +86,12 @@ export function buildSceneArtManifestDraft(courtWeek: CourtWeek): SceneArtManife
       tablet: { aspectRatio: '4:3', minimumPixels: { width: 1024, height: 768 } },
       desktop: { aspectRatio: '16:9', minimumPixels: { width: 1280, height: 720 } },
     },
+    sessions: courtWeek.manifest.sessions.map((session) => ({
+      id: session.id,
+      ordinal: session.ordinal,
+      day: session.day,
+      sceneIds: session.scenes.map((scene) => scene.id),
+    })),
     scenes,
   }
 }
