@@ -215,8 +215,16 @@ describe('useCuePlayback', () => {
     act(() => root.unmount())
   })
 
-  it('restarts interrupted device speech from the cue boundary', async () => {
-    const speechCue: SceneCue = { ...cue, id: 'cue-speech', audio: undefined }
+  it('restarts interrupted device speech without a synchronous cancel callback advancing the turn', async () => {
+    const speechCue: SceneCue = {
+      ...cue,
+      id: 'cue-speech',
+      audio: undefined,
+      turns: [
+        { id: 'cue-speech__1', speaker: 'Counsel', text: 'Question?' },
+        { id: 'cue-speech__2', speaker: 'Witness', text: 'Answer.' },
+      ],
+    }
     class MockUtterance {
       lang = ''
       rate = 1
@@ -224,11 +232,15 @@ describe('useCuePlayback', () => {
       onerror: (() => void) | null = null
       constructor(public text: string) {}
     }
+    let activeUtterance: MockUtterance | null = null
     const synthesis = {
       paused: false,
       getVoices: vi.fn(() => [{ lang: 'en-AU', name: 'Test voice' }]),
-      speak: vi.fn(),
-      cancel: vi.fn(() => { synthesis.paused = false }),
+      speak: vi.fn((utterance: MockUtterance) => { activeUtterance = utterance }),
+      cancel: vi.fn(() => {
+        synthesis.paused = false
+        activeUtterance?.onend?.()
+      }),
       pause: vi.fn(() => { synthesis.paused = true }),
       resume: vi.fn(() => { synthesis.paused = false }),
     }
@@ -246,6 +258,7 @@ describe('useCuePlayback', () => {
     Object.defineProperty(document, 'visibilityState', { configurable: true, value: 'hidden' })
     act(() => document.dispatchEvent(new Event('visibilitychange')))
     expect(synthesis.cancel).toHaveBeenCalled()
+    expect(synthesis.speak).toHaveBeenCalledOnce()
     expect(synthesis.pause).not.toHaveBeenCalled()
     expect(container.querySelector('output')?.textContent).toBe('paused')
 

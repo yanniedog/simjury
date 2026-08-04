@@ -99,8 +99,8 @@ export function useCuePlayback(
   ), [cue.audio?.startSeconds, cue.audio?.turns])
 
   const cancelSpeech = useCallback(() => {
-    if (canSpeak()) window.speechSynthesis.cancel()
     speechActive.current = false
+    if (canSpeak()) window.speechSynthesis.cancel()
   }, [])
 
   const clearPlaybackTimeout = useCallback(() => {
@@ -149,6 +149,7 @@ export function useCuePlayback(
         endedCallback.current()
       }
       utterance.onerror = () => {
+        if (!speechActive.current) return
         speechActive.current = false
         setStatus('reading-fallback')
         setError('Audio is unavailable. Reading mode is ready.')
@@ -311,9 +312,8 @@ export function useCuePlayback(
       suppressRecordedPlayback()
       audio?.pause()
       if (audio) audio.currentTime = resumeBoundary()
-      if (speechActive.current && canSpeak()) {
-        window.speechSynthesis.cancel()
-        speechActive.current = false
+      if (speechActive.current) {
+        cancelSpeech()
         setStatus('paused')
       }
     }
@@ -329,7 +329,7 @@ export function useCuePlayback(
       window.removeEventListener('pagehide', interrupt)
       mediaDevices?.removeEventListener('devicechange', interrupt)
     }
-  }, [audio, resumeBoundary, suppressRecordedPlayback])
+  }, [audio, cancelSpeech, resumeBoundary, suppressRecordedPlayback])
 
   const play = useCallback(async () => {
     if (recordedAttemptActive.current || failureHandling.current) return
