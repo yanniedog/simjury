@@ -98,6 +98,14 @@ export function useCuePlayback(
       ?? 0
   ), [cue.audio?.startSeconds, cue.audio?.turns])
 
+  const rewindToIncompleteTurn = useCallback(() => {
+    if (!audio) return
+    const timedTurn = cue.audio?.turns?.find(({ startSeconds, endSeconds }) =>
+      audio.currentTime >= startSeconds && audio.currentTime < endSeconds)
+    if (timedTurn && timedTurn.id !== activeTurn.current) updateActiveTurn(timedTurn.id)
+    audio.currentTime = timedTurn?.startSeconds ?? resumeBoundary()
+  }, [audio, cue.audio?.turns, resumeBoundary, updateActiveTurn])
+
   const cancelSpeech = useCallback(() => {
     speechActive.current = false
     if (canSpeak()) window.speechSynthesis.cancel()
@@ -268,7 +276,7 @@ export function useCuePlayback(
           return
         }
         if (!playbackSuppressed.current) suppressRecordedPlayback()
-        audio.currentTime = resumeBoundary()
+        rewindToIncompleteTurn()
         setStatus('paused')
       }
     }
@@ -289,7 +297,7 @@ export function useCuePlayback(
       audio.removeEventListener('pause', handlePause)
       cancelSpeech()
     }
-  }, [audio, cancelSpeech, clearPlaybackTimeout, cue, options.deferSourceUntilPlay, recoverRecordedPlayback, resumeBoundary, suppressRecordedPlayback, updateActiveTurn])
+  }, [audio, cancelSpeech, clearPlaybackTimeout, cue, options.deferSourceUntilPlay, recoverRecordedPlayback, rewindToIncompleteTurn, suppressRecordedPlayback, updateActiveTurn])
 
   useEffect(() => {
     if (!preloader) return
@@ -311,7 +319,7 @@ export function useCuePlayback(
     const interrupt = () => {
       suppressRecordedPlayback()
       audio?.pause()
-      if (audio) audio.currentTime = resumeBoundary()
+      rewindToIncompleteTurn()
       if (speechActive.current) {
         cancelSpeech()
         setStatus('paused')
@@ -329,7 +337,7 @@ export function useCuePlayback(
       window.removeEventListener('pagehide', interrupt)
       mediaDevices?.removeEventListener('devicechange', interrupt)
     }
-  }, [audio, cancelSpeech, resumeBoundary, suppressRecordedPlayback])
+  }, [audio, cancelSpeech, rewindToIncompleteTurn, suppressRecordedPlayback])
 
   const play = useCallback(async () => {
     if (recordedAttemptActive.current || failureHandling.current) return
@@ -360,10 +368,10 @@ export function useCuePlayback(
   const pause = useCallback(() => {
     suppressRecordedPlayback()
     audio?.pause()
-    if (audio) audio.currentTime = resumeBoundary()
+    rewindToIncompleteTurn()
     if (speechActive.current) cancelSpeech()
     setStatus('paused')
-  }, [audio, cancelSpeech, resumeBoundary, suppressRecordedPlayback])
+  }, [audio, cancelSpeech, rewindToIncompleteTurn, suppressRecordedPlayback])
 
   const repeat = useCallback(async () => {
     cancelSpeech()
