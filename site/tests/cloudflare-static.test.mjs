@@ -53,6 +53,14 @@ test('Court Week media publishing is trusted, manual and non-clobbering', () => 
   assert.match(workflow, /--require-approved/)
   assert.match(workflow, /--expected-digest/)
   assert.match(workflow, /--expected-revision/)
+  assert.match(workflow, /readiness\?\.release_ready !== true/)
+  assert.match(workflow, /readiness\.ready_scene_count !== 55/)
+  assert.match(workflow, /readiness\.gap_count !== 0/)
+  assert.doesNotMatch(
+    workflow,
+    /--require-release-ready-art/,
+    'review packaging must remain gap-tolerant; publication validates the reviewed manifest',
+  )
   assert.match(workflow, /Release .* already exists; immutable releases are never clobbered/)
   assert.match(workflow, /--json isImmutable/)
   assert.equal(

@@ -174,8 +174,6 @@ jobs:
           --media-root site/court-week-art/cw-0001
           --output-root .court-week-art-strips
       - name: Build content-addressed media and enforce hard budgets
-        env:
-          PUBLISH: ${{ inputs.publish }}
         run: |
           set -euo pipefail
           arguments=(
@@ -188,9 +186,6 @@ jobs:
             --art-strips .court-week-art-strips/scene-art-strips.json
             --private-output-root .court-week-release-private
           )
-          if [[ "$PUBLISH" == "true" ]]; then
-            arguments+=(--require-release-ready-art)
-          fi
           node site/scripts/prepare-court-week-release.mjs "${arguments[@]}"
       - name: Upload complete SceneArtManifest gap report
         if: always()
@@ -278,6 +273,14 @@ jobs:
             }
             if (!/^sha256:[0-9a-f]{64}$/.test(manifest.review_content_digest) || !manifest.court_week_revision) {
               throw new Error("Reviewed artifact is missing its exact Court Week review identity");
+            }
+            const readiness = manifest.art_readiness;
+            if (
+              readiness?.release_ready !== true ||
+              readiness.ready_scene_count !== 55 ||
+              readiness.gap_count !== 0
+            ) {
+              throw new Error("Reviewed artifact is not release-ready for all 55 scene-art requirements");
             }
           '
           node -e '
