@@ -96,6 +96,8 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['thu-rusk-chief'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
     expect(manifest.scenes['thu-rusk-cross'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
     expect(manifest.scenes['thu-quill-chief'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
-    expect(manifest.scenes['thu-quill-cross'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+    for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
+      expect(manifest.scenes['thu-quill-cross'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+    }
   })
 })
