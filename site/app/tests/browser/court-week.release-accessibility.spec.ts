@@ -1,4 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
+import { elevenMinutesSessions } from '../../src/courtweek/content/sessions'
+import { responsiveCaptionPlacements, type CaptionViewport } from '../../src/courtweek/ui/captionPlacement'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 
@@ -120,4 +122,88 @@ test('200% text enlargement keeps reading copy and every core control usable', a
     }
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1)
+})
+
+test('Monday captions avoid line overflow with only enumerated safe-layout fallbacks', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Measured production-font geometry runs once; content limits run cross-engine in unit tests.')
+  await page.setViewportSize({ width: 390, height: 844 })
+  await prepareCourt(page)
+  await page.getByLabel('Audio and captions').check()
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  await page.evaluate(() => document.fonts.ready)
+  await page.locator('.cw-stage').evaluate((stage) => {
+    const probe = document.createElement('div')
+    probe.id = 'monday-caption-probe'
+    probe.className = 'cw-captions'
+    probe.style.visibility = 'visible'
+    probe.style.display = 'flex'
+    probe.append(document.createElement('span'))
+    stage.append(probe)
+  })
+
+  const monday = elevenMinutesSessions[0]
+  const layouts: Array<{ viewport: CaptionViewport; width: number; height: number }> = [
+    { viewport: 'phonePortrait', width: 390, height: 844 },
+    { viewport: 'phoneLandscape', width: 844, height: 390 },
+    { viewport: 'tablet', width: 820, height: 1180 },
+    { viewport: 'desktop', width: 1280, height: 800 },
+  ]
+  // These scenes deliberately protect the subject rather than forcing captions
+  // over a face or through the compact landscape control rail.
+  const intentionalRuntimeFallbacks = new Set([
+    'phonePortrait:mon-arrival', 'phonePortrait:mon-oath', 'phonePortrait:mon-crown-opening',
+    'phonePortrait:mon-orr-chief', 'phonePortrait:mon-orr-cross', 'phonePortrait:mon-elements',
+    ...monday.scenes.map((scene) => `phoneLandscape:${scene.id}`),
+    'tablet:mon-crown-opening', 'tablet:mon-orr-chief', 'tablet:mon-orr-cross',
+    'desktop:mon-crown-opening', 'desktop:mon-orr-chief', 'desktop:mon-orr-cross',
+  ])
+  const observedFallbacks = new Set<string>()
+  const measuredFailures: string[] = []
+
+  for (const layout of layouts) {
+    await page.setViewportSize({ width: layout.width, height: layout.height })
+    for (const scene of monday.scenes) {
+      const placements = responsiveCaptionPlacements(scene.visual)
+      const placement = placements[layout.viewport]
+      const fallbackKey = `${layout.viewport}:${scene.id}`
+      if (!placement.fits) {
+        expect(intentionalRuntimeFallbacks.has(fallbackKey), fallbackKey).toBe(true)
+        observedFallbacks.add(fallbackKey)
+        continue
+      }
+      for (const cue of scene.cues) {
+        const result = await page.locator('.cw-shell').evaluate((shell, input) => {
+          const root = shell as HTMLElement
+          const overlay = root.querySelector<HTMLElement>('#monday-caption-probe')!
+          overlay.style.left = `${input.placement.region.x}%`
+          overlay.style.top = `${input.placement.region.y}%`
+          overlay.style.width = `${input.placement.region.width}%`
+          overlay.style.height = `${input.placement.region.height}%`
+          const caption = overlay.querySelector<HTMLElement>('span')!
+          const speaker = root.querySelector<HTMLElement>('#cw-speaker-name')!
+          caption.textContent = input.text
+          const controls = root.querySelector<HTMLElement>('.cw-controls')!
+          const intersect = (left: DOMRect, right: DOMRect) => Math.max(0, Math.min(left.right, right.right) - Math.max(left.left, right.left)) *
+            Math.max(0, Math.min(left.bottom, right.bottom) - Math.max(left.top, right.top))
+          const captionBox = caption.getBoundingClientRect()
+          return {
+            displayed: getComputedStyle(overlay).display !== 'none',
+            lineFits: caption.scrollHeight <= caption.clientHeight + 1,
+            controlsIntersection: intersect(captionBox, controls.getBoundingClientRect()),
+            speakerIntersection: intersect(captionBox, speaker.getBoundingClientRect()),
+          }
+        }, { placement, text: cue.text })
+        const key = `${layout.viewport}:${cue.id}`
+        if (!result.displayed) measuredFailures.push(`${key}:hidden`)
+        if (!result.lineFits) measuredFailures.push(`${key}:line-overflow`)
+        if (result.controlsIntersection > 1) {
+          if (intentionalRuntimeFallbacks.has(fallbackKey)) observedFallbacks.add(fallbackKey)
+          else measuredFailures.push(`${key}:controls-collision`)
+        }
+        if (result.speakerIntersection > 1) measuredFailures.push(`${key}:speaker-collision`)
+      }
+    }
+  }
+  expect(observedFallbacks).toEqual(intentionalRuntimeFallbacks)
+  expect(measuredFailures).toEqual([])
 })

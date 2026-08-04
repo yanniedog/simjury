@@ -46,7 +46,14 @@ export function estimateSessionSeconds(session: CourtWeek['manifest']['sessions'
   return session.scenes.reduce((total, scene) => total
     + scene.transitionSeconds
     + (scene.interaction?.minimumSeconds ?? 0)
-    + scene.cues.reduce((cueTotal, cue) => cueTotal + estimateCueSeconds(cue.text), 0), 0)
+    + scene.cues.reduce((cueTotal, cue, index, cues) => {
+      if (index > 0 && cue.sourceCueId && cue.sourceCueId === cues[index - 1].sourceCueId) return cueTotal
+      const sourceId = cue.sourceCueId
+      const sourceText = sourceId
+        ? cues.slice(index).filter((candidate) => candidate.sourceCueId === sourceId).map((candidate) => candidate.text).join(' ')
+        : cue.text
+      return cueTotal + estimateCueSeconds(sourceText)
+    }, 0), 0)
 }
 
 function demand(condition: boolean, message: string): asserts condition {
@@ -136,6 +143,16 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
   const allCues = sessions.flatMap((session) => session.scenes.flatMap((scene) => scene.cues))
   const cueIds = allCues.map((cue) => cue.id)
   demand(new Set(cueIds).size === cueIds.length, 'cue ids must be unique across the week')
+  allCues.filter((cue) => cue.sourceCueId).forEach((cue) => {
+    demand(cueIds.includes(cue.sourceCueId!), `${cue.id}: source cue ${cue.sourceCueId} is absent`)
+    const sourceIndex = cueIds.indexOf(cue.sourceCueId!)
+    const cueIndex = cueIds.indexOf(cue.id)
+    demand(sourceIndex <= cueIndex, `${cue.id}: caption continuation precedes its source cue`)
+    demand(
+      cue.id === cue.sourceCueId || allCues[cueIndex - 1]?.sourceCueId === cue.sourceCueId,
+      `${cue.id}: caption continuations must remain contiguous with their source cue`,
+    )
+  })
 
   const expectedDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
   const durations: Record<string, number> = {}
@@ -216,7 +233,8 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
     cue.event === 'witness-reexamination' ||
     (cue.event === 'exhibit-admitted' && witnessNames.has(cue.speaker))
   )).forEach((cue) => {
-    demand(witnessCueOwners.get(cue.id)?.length === 1, `substantive witness cue ${cue.id} must belong to exactly one witness`)
+    const ownershipId = cue.sourceCueId ?? cue.id
+    demand(witnessCueOwners.get(ownershipId)?.length === 1, `substantive witness cue ${cue.id} must belong to exactly one witness`)
   })
 
   const provisionalAdmissions = allCues.filter((cue) => cue.admissionStatus === 'provisional')

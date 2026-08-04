@@ -4,6 +4,7 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
 import { RUNTIME_DEPENDENT_CUE_IDS } from '../src/courtweek/media/runtimeCues'
+import { DIALOGUE_SPEAKER_ALIASES } from '../src/courtweek/content/dialogueSpeakers'
 import type { CourtSession, CourtWeek, SceneCue } from '../src/courtweek/model/schema'
 
 export const AUDIO_JOB_SCHEMA = 'simjury.court-week-audio-job/v1' as const
@@ -51,18 +52,7 @@ export const COURT_WEEK_VOICES: Readonly<Record<string, string>> = {
  * Short dialogue labels embedded in multi-party cue text map to reviewed voices.
  * Cue.speaker remains the legal actor; synthesis uses these for attributed lines.
  */
-export const DIALOGUE_SPEAKER_ALIASES: Readonly<Record<string, string>> = {
-  Crown: 'Crown counsel Asha Renn',
-  Dax: 'Defence counsel Corin Dax',
-  Dorn: 'Peli Dorn',
-  Judge: 'Judge Sel Aven',
-  Orr: 'Nella Orr',
-  Pell: 'Jaro Pell',
-  Renn: 'Crown counsel Asha Renn',
-  Saye: 'Ilan Saye',
-  Venn: 'Mara Venn',
-  Vos: 'Dr Eren Vos',
-}
+export { DIALOGUE_SPEAKER_ALIASES }
 
 export interface AudioJobCue {
   id: string
@@ -171,8 +161,10 @@ export function splitCueUtterances(cue: SceneCue): AudioJobCue[] {
   return utterances
 }
 
-function castCue(cue: SceneCue): AudioJobCue[] {
-  return splitCueUtterances(cue)
+function castCue(cue: SceneCue, continuesSourceCue: boolean): AudioJobCue[] {
+  const utterances = splitCueUtterances(cue)
+  if (continuesSourceCue && utterances.length) utterances[utterances.length - 1].pauseAfterMs = 0
+  return utterances
 }
 
 function splitForMinimum(session: CourtSession): Array<{ id: string; sourceSceneId: string; cues: SceneCue[] }> {
@@ -188,7 +180,23 @@ function splitForMinimum(session: CourtSession): Array<{ id: string; sourceScene
     const index = segments.findIndex((segment) => segment.cues.length > 1)
     if (index < 0) throw new Error(`${session.id} cannot reach eight audio segments at cue boundaries`)
     const current = segments[index]
-    const midpoint = Math.ceil(current.cues.length / 2)
+    let midpoint = Math.ceil(current.cues.length / 2)
+    while (
+      midpoint < current.cues.length &&
+      current.cues[midpoint].sourceCueId &&
+      current.cues[midpoint].sourceCueId === current.cues[midpoint - 1].sourceCueId
+    ) midpoint += 1
+    if (midpoint === current.cues.length) {
+      midpoint = Math.ceil(current.cues.length / 2)
+      while (
+        midpoint > 0 &&
+        current.cues[midpoint].sourceCueId &&
+        current.cues[midpoint].sourceCueId === current.cues[midpoint - 1].sourceCueId
+      ) midpoint -= 1
+    }
+    if (midpoint <= 0 || midpoint >= current.cues.length) {
+      throw new Error(`${session.id}: no safe authored cue boundary for audio segmentation`)
+    }
     segments.splice(index, 1,
       { id: `${current.id}-part-1`, sourceSceneId: current.sourceSceneId, cues: current.cues.slice(0, midpoint) },
       { id: `${current.id}-part-2`, sourceSceneId: current.sourceSceneId, cues: current.cues.slice(midpoint) },
@@ -226,7 +234,10 @@ export function buildCourtWeekAudioJobs(courtWeek: CourtWeek): {
           ...cueIds,
         ].join('\0')).slice(0, 32),
         sourceSceneId: segment.sourceSceneId,
-        cues: synthesisCues.flatMap(castCue),
+        cues: synthesisCues.flatMap((cue, index, cues) => castCue(
+          cue,
+          Boolean(cue.sourceCueId && cues[index + 1]?.sourceCueId === cue.sourceCueId),
+        )),
       }
     }).filter((segment) => segment.cues.length > 0)
     if (segments.length < 8 || segments.length > 12) {
