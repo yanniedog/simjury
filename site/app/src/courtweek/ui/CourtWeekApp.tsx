@@ -297,6 +297,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       return {
         ...safeCue,
         text: openCourtReturn(progress.sealedVerdict, progress.sealedAgreement),
+        turns: undefined,
         accessibleProposition: `The accused stands while the ${progress.sealedAgreement} result is spoken and recorded in open court.`,
       }
     }
@@ -305,6 +306,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
         return {
           ...safeCue,
           text: 'Analysis remains sealed until the jury has returned its result in open court.',
+          turns: undefined,
           accessibleProposition: 'Post-verdict analysis is not available before the open-court return.',
         }
       }
@@ -313,6 +315,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       return {
         ...safeCue,
         text: `Strongest lawful rationale: ${analysis.lawfulRationale}\n\nStrongest counter-analysis: ${analysis.counterAnalysis}`,
+        turns: undefined,
         accessibleProposition: 'Balanced analysis presents the strongest lawful rationale and counter-analysis for the returned result without declaring a correct answer.',
       }
     }
@@ -856,6 +859,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       session={activeSession}
       scene={position.scene}
       cue={presentedCue}
+      activeTurn={presentedCue.turns?.find((turn) => turn.id === playback.activeTurnId)}
       releaseBase={releaseRoot}
       accessMode={presentedAccessMode}
       dataSaver={mediaPolicy.dataSaver}

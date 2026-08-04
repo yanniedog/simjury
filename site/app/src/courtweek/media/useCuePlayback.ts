@@ -13,6 +13,7 @@ export type PlaybackStatus =
 export interface CuePlayback {
   status: PlaybackStatus
   error: string | null
+  activeTurnId: string | null
   play: () => Promise<void>
   pause: () => void
   repeat: () => Promise<void>
@@ -72,6 +73,8 @@ export function useCuePlayback(
   )
   const [status, setStatus] = useState<PlaybackStatus>('idle')
   const [error, setError] = useState<string | null>(null)
+  const [activeTurnId, setActiveTurnId] = useState<string | null>(cue.turns?.[0]?.id ?? null)
+  const activeTurn = useRef<string | null>(cue.turns?.[0]?.id ?? null)
   const failedAttempts = useRef(0)
   const failureHandling = useRef(false)
   const recordedAttemptActive = useRef(false)
@@ -83,6 +86,17 @@ export function useCuePlayback(
   const rangeEnded = useRef(false)
   const endedCallback = useRef(onEnded)
   endedCallback.current = onEnded
+
+  const updateActiveTurn = useCallback((id: string | null) => {
+    activeTurn.current = id
+    setActiveTurnId(id)
+  }, [])
+
+  const resumeBoundary = useCallback(() => (
+    cue.audio?.turns?.find((turn) => turn.id === activeTurn.current)?.startSeconds
+      ?? cue.audio?.startSeconds
+      ?? 0
+  ), [cue.audio?.startSeconds, cue.audio?.turns])
 
   const cancelSpeech = useCallback(() => {
     if (canSpeak()) window.speechSynthesis.cancel()
@@ -110,24 +124,39 @@ export function useCuePlayback(
       setError('Audio is unavailable. Reading mode is ready.')
       return
     }
-    const utterance = new SpeechSynthesisUtterance(cue.text)
-    utterance.lang = 'en-AU'
-    utterance.rate = 0.96
-    utterance.voice = voice
-    utterance.onend = () => {
-      speechActive.current = false
-      setStatus('ended')
-      endedCallback.current()
-    }
-    utterance.onerror = () => {
-      speechActive.current = false
-      setStatus('reading-fallback')
-      setError('Audio is unavailable. Reading mode is ready.')
-    }
+    const turns = cue.turns?.length
+      ? cue.turns
+      : [{ id: cue.id, speaker: cue.speaker, text: cue.text }]
+    const currentIndex = Math.max(0, turns.findIndex((turn) => turn.id === activeTurn.current))
     speechActive.current = true
     setStatus('speech-fallback')
-    window.speechSynthesis.speak(utterance)
-  }, [cue.text])
+    const speakTurn = (index: number) => {
+      const turn = turns[index]
+      if (!turn || !speechActive.current) return
+      updateActiveTurn(turn.id)
+      const utterance = new SpeechSynthesisUtterance(turn.text)
+      utterance.lang = 'en-AU'
+      utterance.rate = 0.96
+      utterance.voice = voice
+      utterance.onend = () => {
+        if (!speechActive.current) return
+        if (index + 1 < turns.length) {
+          speakTurn(index + 1)
+          return
+        }
+        speechActive.current = false
+        setStatus('ended')
+        endedCallback.current()
+      }
+      utterance.onerror = () => {
+        speechActive.current = false
+        setStatus('reading-fallback')
+        setError('Audio is unavailable. Reading mode is ready.')
+      }
+      window.speechSynthesis.speak(utterance)
+    }
+    speakTurn(currentIndex)
+  }, [cue.id, cue.speaker, cue.text, cue.turns, updateActiveTurn])
 
   const attemptRecordedPlayback = useCallback(async (): Promise<'playing' | 'failed' | 'cancelled'> => {
     if (!audio || recordedAttemptActive.current) return 'cancelled'
@@ -190,6 +219,7 @@ export function useCuePlayback(
     attemptGeneration.current += 1
     clearPlaybackTimeout()
     rangeEnded.current = false
+    updateActiveTurn(cue.turns?.[0]?.id ?? null)
     setStatus('idle')
     setError(null)
     cancelSpeech()
@@ -215,6 +245,9 @@ export function useCuePlayback(
       }
     }
     const handleTimeUpdate = () => {
+      const turn = cue.audio?.turns?.find(({ startSeconds, endSeconds }) =>
+        audio.currentTime >= startSeconds && audio.currentTime < endSeconds)
+      if (turn && turn.id !== activeTurn.current) updateActiveTurn(turn.id)
       const end = cue.audio?.endSeconds
       if (end !== undefined && audio.currentTime >= end) {
         audio.pause()
@@ -234,7 +267,7 @@ export function useCuePlayback(
           return
         }
         if (!playbackSuppressed.current) suppressRecordedPlayback()
-        audio.currentTime = cue.audio?.startSeconds ?? 0
+        audio.currentTime = resumeBoundary()
         setStatus('paused')
       }
     }
@@ -255,7 +288,7 @@ export function useCuePlayback(
       audio.removeEventListener('pause', handlePause)
       cancelSpeech()
     }
-  }, [audio, cancelSpeech, clearPlaybackTimeout, cue, options.deferSourceUntilPlay, recoverRecordedPlayback, suppressRecordedPlayback])
+  }, [audio, cancelSpeech, clearPlaybackTimeout, cue, options.deferSourceUntilPlay, recoverRecordedPlayback, resumeBoundary, suppressRecordedPlayback, updateActiveTurn])
 
   useEffect(() => {
     if (!preloader) return
@@ -277,7 +310,7 @@ export function useCuePlayback(
     const interrupt = () => {
       suppressRecordedPlayback()
       audio?.pause()
-      if (audio) audio.currentTime = cue.audio?.startSeconds ?? 0
+      if (audio) audio.currentTime = resumeBoundary()
       if (speechActive.current && canSpeak()) {
         window.speechSynthesis.cancel()
         speechActive.current = false
@@ -296,7 +329,7 @@ export function useCuePlayback(
       window.removeEventListener('pagehide', interrupt)
       mediaDevices?.removeEventListener('devicechange', interrupt)
     }
-  }, [audio, cue.audio?.startSeconds, suppressRecordedPlayback])
+  }, [audio, resumeBoundary, suppressRecordedPlayback])
 
   const play = useCallback(async () => {
     if (recordedAttemptActive.current || failureHandling.current) return
@@ -319,24 +352,26 @@ export function useCuePlayback(
     ) {
       audio.currentTime = start
       rangeEnded.current = false
+      updateActiveTurn(cue.turns?.[0]?.id ?? null)
     }
     if (await attemptRecordedPlayback() === 'failed') await recoverRecordedPlayback()
-  }, [attemptRecordedPlayback, audio, cancelSpeech, cue, recoverRecordedPlayback, speakFallback])
+  }, [attemptRecordedPlayback, audio, cancelSpeech, cue, recoverRecordedPlayback, speakFallback, updateActiveTurn])
 
   const pause = useCallback(() => {
     suppressRecordedPlayback()
     audio?.pause()
-    if (audio) audio.currentTime = cue.audio?.startSeconds ?? 0
+    if (audio) audio.currentTime = resumeBoundary()
     if (speechActive.current) cancelSpeech()
     setStatus('paused')
-  }, [audio, cancelSpeech, cue.audio?.startSeconds, suppressRecordedPlayback])
+  }, [audio, cancelSpeech, resumeBoundary, suppressRecordedPlayback])
 
   const repeat = useCallback(async () => {
     cancelSpeech()
     rangeEnded.current = false
     if (audio) audio.currentTime = cue.audio?.startSeconds ?? 0
+    updateActiveTurn(cue.turns?.[0]?.id ?? null)
     await play()
-  }, [audio, cancelSpeech, cue.audio?.startSeconds, play])
+  }, [audio, cancelSpeech, cue.audio?.startSeconds, cue.turns, play, updateActiveTurn])
 
-  return { status, error, play, pause, repeat }
+  return { status, error, activeTurnId, play, pause, repeat }
 }

@@ -1,4 +1,5 @@
 import type { CourtWeek } from '../model/schema'
+import { attachCueTurns } from '../content/cueTurns'
 import type { CourtWeekRuntimeMediaManifest } from '../media/manifest'
 import type { CourtDayPack, CourtWeekBootstrap } from './types'
 
@@ -67,7 +68,13 @@ export function createCourtDayPacks(
       caseId: bootstrap.id,
       revision: bootstrap.revision,
       ordinal: schedule.ordinal,
-      session,
+      session: {
+        ...session,
+        scenes: session.scenes.map((scene) => ({
+          ...scene,
+          cues: scene.cues.map(attachCueTurns),
+        })),
+      },
       ...(schedule.ordinal === 1 ? { trialBase } : {}),
       evidence: courtWeek.trial.evidence.filter(
         (item) => item.status === 'admitted' &&

@@ -13,7 +13,17 @@ describe('sealed Court Week partition', () => {
     const publicBootstrap = JSON.stringify(courtWeekBootstrap)
     for (const sourceSession of elevenMinutesCourtWeek.manifest.sessions) {
       const packed = packs.find((pack) => pack.ordinal === sourceSession.ordinal)
-      expect(packed?.session).toEqual(sourceSession)
+      const packedWithoutPresentationTurns = packed && {
+        ...packed.session,
+        scenes: packed.session.scenes.map((scene) => ({
+          ...scene,
+          cues: scene.cues.map(({ turns, ...cue }) => {
+            void turns
+            return cue
+          }),
+        })),
+      }
+      expect(packedWithoutPresentationTurns).toEqual(sourceSession)
       const otherDays = JSON.stringify(packs.filter((pack) => pack.ordinal !== sourceSession.ordinal))
       for (const scene of sourceSession.scenes) {
         expect(publicBootstrap).not.toContain(scene.visual.fallbackId)

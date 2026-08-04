@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
 import { elevenMinutesCourtWeek } from '../content'
+import { splitCueTurns } from '../content/cueTurns'
 import type { CourtSession, SceneCue } from '../model/schema'
 import type { CourtWeekRuntimeMediaManifest } from './manifest'
 import { isRuntimeDependentCue } from './runtimeCues'
@@ -25,11 +26,21 @@ export function completeRuntimeMediaFixture(): CourtWeekRuntimeMediaManifest {
         duration_seconds: segment.cues.length * 6,
         cues: segment.cues
           .filter((cue) => !isRuntimeDependentCue(cue.id))
-          .map((cue, index) => ({
-          cue_id: cue.id,
-          start_seconds: index * 6,
-          end_seconds: index * 6 + 5.5,
-        })),
+          .map((cue, index) => {
+            const start = index * 6
+            const end = start + 5.5
+            const turns = splitCueTurns(cue)
+            return {
+              cue_id: cue.id,
+              start_seconds: start,
+              end_seconds: end,
+              turns: turns.map((turn, turnIndex) => ({
+                turn_id: turn.id,
+                start_seconds: start + (end - start) * turnIndex / turns.length,
+                end_seconds: start + (end - start) * (turnIndex + 1) / turns.length,
+              })),
+            }
+          }),
         sources: {
           opus: assetName(`${session.id}:${segment.id}:opus`, 'opus'),
           aac: assetName(`${session.id}:${segment.id}:aac`, 'm4a'),

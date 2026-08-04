@@ -90,6 +90,16 @@ describe('pinned text-free Court Week media manifest', () => {
     }
   })
 
+  it('rejects drift between encrypted authored turns and opaque media timing', () => {
+    const fixture = completeRuntimeMediaFixture()
+    const monday = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap, fixture)[0]
+    const mapped = fixture.sessions[0].segments.flatMap((segment) => segment.cues)
+      .find((cue) => cue.cue_id === 'mon-orr-cross-1')!
+    mapped.turns[0].turn_id = 'wrong-turn'
+    expect(() => attachSessionAudio(monday.session, fixture.sessions[0], fixture.release_tag))
+      .toThrow('Pinned spoken turns do not match reviewed cue mon-orr-cross-1')
+  })
+
   it('attaches every scene to its sealed strip cell and pinned image URLs', () => {
     const fixture = completeRuntimeMediaFixture()
     const scenes = elevenMinutesCourtWeek.manifest.sessions.flatMap((session) =>

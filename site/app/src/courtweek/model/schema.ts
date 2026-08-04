@@ -78,6 +78,14 @@ export const audioSourceSchema = z.object({
   segmentId: z.string().min(1).optional(),
   startSeconds: z.number().min(0).optional(),
   endSeconds: z.number().positive().optional(),
+  turns: z.array(z.object({
+    id: z.string().min(1),
+    startSeconds: z.number().min(0),
+    endSeconds: z.number().positive(),
+  }).strict().refine(
+    (turn) => turn.endSeconds > turn.startSeconds,
+    'audio turn end must follow its start',
+  )).min(1).optional(),
 }).refine(
   (value) => Boolean(value.opus || value.aac || value.mp3),
   'at least one audio source is required',
@@ -88,12 +96,21 @@ export const audioSourceSchema = z.object({
   'audio cue end must follow its start',
 )
 
+export const sceneCueTurnSchema = z.object({
+  id: z.string().min(1),
+  speaker: z.string().min(1),
+  text: z.string().min(1),
+}).strict()
+export type SceneCueTurn = z.infer<typeof sceneCueTurnSchema>
+
 export const sceneCueSchema = z.object({
   id: z.string().min(1),
   sourceCueId: z.string().min(1).optional(),
   event: courtEventSchema,
   speaker: z.string().min(1),
   text: z.string().min(1),
+  /** Spoken turns are presentation timing only; the parent cue remains the atomic legal event. */
+  turns: z.array(sceneCueTurnSchema).min(1).optional(),
   /** Equivalent proposition for users who cannot perceive the visual or audio treatment. */
   accessibleProposition: z.string().min(1),
   tone: z.enum(['neutral', 'formal', 'chief', 'cross', 'ruling', 'deliberation']),

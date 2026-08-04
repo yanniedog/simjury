@@ -52,6 +52,7 @@ function Harness({ onEnded, activeCue = cue, nextSceneCue, deferSourceUntilPlay 
   return (
     <div>
       <output>{playback.status}</output>
+      <output data-testid="turn">{playback.activeTurnId}</output>
       <button onClick={() => void playback.play()}>play</button>
       <button onClick={playback.pause}>pause</button>
       <button onClick={() => { render((value) => value + 1); void playback.repeat() }}>repeat</button>
@@ -145,6 +146,37 @@ describe('useCuePlayback', () => {
     expect(container.querySelector('output')?.textContent).toBe('ended')
     act(() => currentAudio.dispatchEvent(new Event('ended')))
     expect(ended).toHaveBeenCalledOnce()
+    act(() => root.unmount())
+  })
+
+  it('switches presentation at recorded turn boundaries and resumes the incomplete turn', async () => {
+    const activeCue: SceneCue = {
+      ...cue,
+      turns: [
+        { id: 'cue-audio__1', speaker: 'Counsel', text: 'Question?' },
+        { id: 'cue-audio__2', speaker: 'Witness', text: 'Answer.' },
+      ],
+      audio: {
+        ...cue.audio!,
+        turns: [
+          { id: 'cue-audio__1', startSeconds: 12, endSeconds: 15 },
+          { id: 'cue-audio__2', startSeconds: 15, endSeconds: 18 },
+        ],
+      },
+    }
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness activeCue={activeCue} onEnded={() => undefined} />))
+    const currentAudio = MockAudio.instances[0]
+    expect(container.querySelector('[data-testid="turn"]')?.textContent).toBe('cue-audio__1')
+
+    currentAudio.currentTime = 15
+    act(() => currentAudio.dispatchEvent(new Event('timeupdate')))
+    expect(container.querySelector('[data-testid="turn"]')?.textContent).toBe('cue-audio__2')
+
+    currentAudio.currentTime = 16
+    act(() => currentAudio.pause())
+    expect(currentAudio.currentTime).toBe(15)
+    expect(container.querySelector('[data-testid="turn"]')?.textContent).toBe('cue-audio__2')
     act(() => root.unmount())
   })
 
