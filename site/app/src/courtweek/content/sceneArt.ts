@@ -281,6 +281,40 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'wed-crown-close': {
+    altDescription: 'Crown counsel Asha Renn stands at the Crown lectern to close the prosecution case while the judge, defence table and accused remain composed. No conclusion about the evidence, charge or guilt is depicted.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 47 }, subjectSafeRegion: { x: 0, y: 32, width: 100, height: 54 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 47 }, subjectSafeRegion: { x: 0, y: 26, width: 100, height: 63 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 46 }, subjectSafeRegion: { x: 0, y: 23, width: 100, height: 68 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
+  'wed-adjourn': {
+    altDescription: 'The Court of Orinth courtroom stands empty after the Wednesday adjournment, with the bench, witness box, counsel tables and jury rail left undisturbed. No evidence, person or conclusion is depicted.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 49 }, subjectSafeRegion: null,
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 48 }, subjectSafeRegion: null,
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 47 }, subjectSafeRegion: null,
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
