@@ -3,6 +3,7 @@ import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, write
 import { dirname, extname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { assessSceneArtManifest } from './scene-art-readiness.mjs'
+import { canonicalSha256 } from './canonical-json.mjs'
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const repoRoot = resolve(siteRoot, '..')
@@ -371,6 +372,7 @@ const runtimeManifestName = artReadiness.release_ready
   ? 'court-week-media-manifest.json'
   : 'court-week-media-manifest.draft.json'
 writeFileSync(join(privateOutputRoot, runtimeManifestName), `${JSON.stringify(runtimeMediaManifest, null, 2)}\n`)
+const runtimeManifestDigest = canonicalSha256(runtimeMediaManifest)
 
 const mediaBytes = [...seenNames].reduce((sum, name) => sum + readFileSync(join(outputRoot, name)).length, 0)
 if (mediaBytes > 150_000_000) throw new Error(`Release media is ${mediaBytes} bytes; budget is 150 MB`)
@@ -386,6 +388,7 @@ function serializeReleaseManifest(totalBytes) {
     release_tag: releaseTag,
     court_week_revision: reviewSignoffs.revision,
     review_content_digest: reviewSignoffs.contentDigest,
+    runtime_manifest_digest: runtimeManifestDigest,
     source_revision: process.env.GITHUB_SHA ?? 'local-unpublished',
     generated_at: process.env.GITHUB_RUN_ID ? new Date().toISOString() : null,
     production_environment: audioSessions[0]?.productionEnvironment ?? null,
