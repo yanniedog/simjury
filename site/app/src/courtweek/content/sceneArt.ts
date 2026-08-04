@@ -689,6 +689,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'sat-note': {
+    altDescription: 'A folded face-down unmarked jury note rests on a plain court-clerk tray in the foreground while Judge Sel Aven, Crown counsel, defence counsel and the accused remain neutral behind it. No writing, ballot number, juror identity, position or verdict is visible.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 80 }, subjectSafeRegion: { x: 0, y: 40, width: 100, height: 48 },
+        evidenceSafeRegion: { x: 33, y: 76, width: 38, height: 11 }, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 57 }, subjectSafeRegion: { x: 0, y: 24, width: 100, height: 54 },
+        evidenceSafeRegion: { x: 38, y: 51, width: 24, height: 12 }, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 61 }, subjectSafeRegion: { x: 0, y: 17, width: 100, height: 73 },
+        evidenceSafeRegion: { x: 34, y: 56, width: 32, height: 12 }, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
