@@ -502,6 +502,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'fri-murder-trail': {
+    altDescription: 'Judge Sel Aven gives the structured murder directions from the bench while Crown counsel, defence counsel and the accused listen without reaction. The image conveys no view about guilt or verdict.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 50 }, subjectSafeRegion: { x: 0, y: 31, width: 100, height: 57 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 47 }, subjectSafeRegion: { x: 0, y: 25, width: 100, height: 66 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 44 }, subjectSafeRegion: { x: 0, y: 23, width: 100, height: 69 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
