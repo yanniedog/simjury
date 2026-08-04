@@ -521,6 +521,21 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     : -1
   const improperArguments = courtWeek.deliberation.improperArguments ?? []
   const selectedImproperArgument = improperArguments[selectedImproperIndex] ?? null
+  const reviewedPropositions = courtWeek.deliberation.propositions ?? []
+  const reasoningQuestions = Array.from(new Set(reviewedPropositions.map(({ legalQuestion }) => legalQuestion)))
+  const reasoningEvidenceIds = new Set(reviewedPropositions
+    .filter(({ legalQuestion }) => legalQuestion === reasoningQuestion)
+    .map(({ evidenceId: propositionEvidenceId }) => propositionEvidenceId))
+  const reasoningMoves = new Set(reviewedPropositions
+    .filter(({ legalQuestion, evidenceId: propositionEvidenceId }) => (
+      legalQuestion === reasoningQuestion && propositionEvidenceId === reasoningEvidence
+    ))
+    .map(({ move }) => move))
+  const selectedProposition = reviewedPropositions.find((proposition) => (
+    proposition.legalQuestion === reasoningQuestion &&
+    proposition.evidenceId === reasoningEvidence &&
+    proposition.move === interactionChoice
+  ))
   const finishInteraction = (skipOptionalReasoning = false) => {
     if (!interaction) return
     if (!interactionMinimumMet) return
@@ -547,12 +562,13 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     }
     const choice = interactionChoice
     const isReasoning = interaction.kind === 'reasoning'
-    const contribution = isReasoning && !skipOptionalReasoning && choice && reasoningQuestion && reasoningEvidence
+    const contribution = isReasoning && !skipOptionalReasoning && selectedProposition
       ? assessReasoningContribution(courtWeek.deliberation, {
+          propositionId: selectedProposition.id,
           sceneId: position.scene.id,
-          legalQuestion: reasoningQuestion,
-          evidenceId: reasoningEvidence,
-          move: choice as ReasoningMove,
+          legalQuestion: selectedProposition.legalQuestion,
+          evidenceId: selectedProposition.evidenceId,
+          move: selectedProposition.move,
           recordedAt: new Date(now()).toISOString(),
           improperClaim: selectedImproperArgument?.claim,
         }).contribution
@@ -680,21 +696,28 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
           <div className="cw-choice-grid">
             <label>
               Legal question
-              <select value={reasoningQuestion} onChange={(event) => setReasoningQuestion(event.target.value)}>
+              <select value={reasoningQuestion} onChange={(event) => {
+                setReasoningQuestion(event.target.value)
+                setReasoningEvidence('')
+                setInteractionChoice(null)
+              }}>
                 <option value="">Choose a question</option>
-                {courtWeek.deliberation.legalQuestions.map((question) => <option key={question}>{question}</option>)}
+                {reasoningQuestions.map((question) => <option key={question}>{question}</option>)}
               </select>
             </label>
             <label>
               Admitted evidence
-              <select value={reasoningEvidence} onChange={(event) => setReasoningEvidence(event.target.value)}>
+              <select value={reasoningEvidence} onChange={(event) => {
+                setReasoningEvidence(event.target.value)
+                setInteractionChoice(null)
+              }}>
                 <option value="">Choose admitted evidence</option>
-                {courtWeek.trial.evidence.filter((item) => item.status === 'admitted').map((item) => (
+                {courtWeek.trial.evidence.filter((item) => reasoningEvidenceIds.has(item.id)).map((item) => (
                   <option key={item.id} value={item.id}>{item.label}</option>
                 ))}
               </select>
             </label>
-            {(interaction.options ?? []).map((option) => (
+            {(interaction.options ?? []).filter((option) => reasoningMoves.has(option as ReasoningMove)).map((option) => (
               <button key={option} type="button" aria-pressed={interactionChoice === option} onClick={() => setInteractionChoice(option)}>
                 {option}
               </button>
@@ -769,7 +792,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
               !interactionMinimumMet ||
               (!interactionChoice && (isVote || Boolean(interaction.options?.length))) ||
               (interaction.kind === 'reasoning' && (
-                !reasoningQuestion || !reasoningEvidence || (reviewsImproperArgument && !reasoningBasis)
+                !selectedProposition || (reviewsImproperArgument && !reasoningBasis)
               ))
             )
           }

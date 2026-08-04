@@ -68,22 +68,28 @@ export function firstBallotForScene(
     : null
 }
 
-function validContributionCount(
+function validPropositions(
+  pack: DeliberationPack,
   contributions: ReasoningContribution[],
   stage: NonNullable<ReturnType<typeof contributionStage>>,
-): number {
+): DeliberationPack['propositions'] {
   const countedScenes = new Set<string>()
-  return contributions.filter((item) => {
+  return contributions.flatMap((item) => {
     if (
       contributionStage(item.sceneId) !== stage ||
       countedScenes.has(item.sceneId) ||
-      !item.legalQuestion.trim() ||
-      !item.evidenceId.trim() ||
       item.influencePenalty < 0
-    ) return false
+    ) return []
+    const proposition = pack.propositions.find(({ id }) => id === item.propositionId)
+    if (
+      !proposition ||
+      proposition.legalQuestion !== item.legalQuestion ||
+      proposition.evidenceId !== item.evidenceId ||
+      proposition.move !== item.move
+    ) return []
     countedScenes.add(item.sceneId)
-    return true
-  }).length
+    return [proposition]
+  })
 }
 
 /**
@@ -93,24 +99,32 @@ function validContributionCount(
  */
 export function evolveAuthoredBallot(
   startingBallot: BallotAggregate,
-  target: Verdict,
-  lawfulSteps: number,
+  propositions: DeliberationPack['propositions'],
 ): BallotAggregate {
   const ballot = cloneBallot(startingBallot)
   assertTotal(ballot, 11)
-  if (target === 'unable-to-agree') return ballot
-
-  for (let step = 0; step < lawfulSteps && ballot[target] < 11; step += 1) {
+  for (const proposition of propositions) {
+    const { issue, direction, counterVerdict } = proposition.influence
+    if (direction === 0) continue
+    if (direction === -1) {
+      if (counterVerdict && ballot[issue] > 0) {
+        ballot[issue] -= 1
+        ballot[counterVerdict] += 1
+      }
+      continue
+    }
+    if (ballot[issue] >= 11) continue
     const source = verdicts
-      .filter((verdict) => verdict !== target && ballot[verdict] > 0)
+      .filter((verdict) => verdict !== issue && ballot[verdict] > 0)
       .sort((left, right) => {
         if (left === 'unable-to-agree') return -1
         if (right === 'unable-to-agree') return 1
         return ballot[right] - ballot[left] || verdicts.indexOf(left) - verdicts.indexOf(right)
       })[0]
-    if (!source) break
-    ballot[source] -= 1
-    ballot[target] += 1
+    if (source) {
+      ballot[source] -= 1
+      ballot[issue] += 1
+    }
   }
   return ballot
 }
@@ -129,8 +143,7 @@ export function calculateSecondBallot(
 ): BallotAggregate {
   const authored = evolveAuthoredBallot(
     pack.firstBallot,
-    playerVote,
-    validContributionCount(contributions, 'pre-second-ballot'),
+    validPropositions(pack, contributions, 'pre-second-ballot'),
   )
   return addPlayer(authored, playerVote)
 }
@@ -153,13 +166,11 @@ export function canAuthorizeMajority(
 export function calculateFinalBallot(input: FinalBallotInput): DeliberationResult {
   const secondAuthored = evolveAuthoredBallot(
     input.pack.firstBallot,
-    input.secondVote,
-    validContributionCount(input.contributions, 'pre-second-ballot'),
+    validPropositions(input.pack, input.contributions, 'pre-second-ballot'),
   )
   const finalAuthored = evolveAuthoredBallot(
     secondAuthored,
-    input.finalVote,
-    validContributionCount(input.contributions, 'further-discussion'),
+    validPropositions(input.pack, input.contributions, 'further-discussion'),
   )
   const aggregate = addPlayer(finalAuthored, input.finalVote)
   const unanimous = unanimousVerdict(aggregate)
@@ -170,7 +181,7 @@ export function calculateFinalBallot(input: FinalBallotInput): DeliberationResul
   const majorityAuthorized = canAuthorizeMajority(
     input.pack,
     input,
-    validContributionCount(input.contributions, 'further-discussion'),
+    validPropositions(input.pack, input.contributions, 'further-discussion').length,
   )
   if (majorityAuthorized) {
     const majority = verdicts.find((verdict) => (
@@ -238,6 +249,13 @@ export function assessReasoningContribution(
   draft: ReasoningContributionDraft,
 ): ReasoningAssessment {
   const { improperClaim, ...lawfulDraft } = draft
+  const proposition = pack.propositions.find(({ id }) => id === lawfulDraft.propositionId)
+  if (
+    !proposition ||
+    proposition.legalQuestion !== lawfulDraft.legalQuestion ||
+    proposition.evidenceId !== lawfulDraft.evidenceId ||
+    proposition.move !== lawfulDraft.move
+  ) throw new Error('This reasoning proposition is not part of the reviewed deliberation.')
   const improper = improperClaim ? matchImproperArgument(pack, improperClaim) : null
   return {
     contribution: {

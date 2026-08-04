@@ -21,6 +21,28 @@ export const elevenMinutesDeliberation: DeliberationPack = {
     'If murder is not proved, was the deliberate duty breach so gross and the risk so high that it was manslaughter by criminal negligence?',
   ],
   reasoningMoves: ['connect', 'distinguish', 'test-source', 'challenge-inference', 'raise-alternative', 'apply-burden'],
+  propositions: [
+    {
+      id: 'prop-intent-log-connect', legalQuestion: 'Did Venn intend death or really serious injury, making the offence murder?',
+      evidenceId: 'ex-audit-log', move: 'connect', influence: { issue: 'murder', direction: 1 },
+    },
+    {
+      id: 'prop-negligence-warning-connect', legalQuestion: 'If murder is not proved, was the deliberate duty breach so gross and the risk so high that it was manslaughter by criminal negligence?',
+      evidenceId: 'ex-warning', move: 'connect', influence: { issue: 'manslaughter', direction: 1 },
+    },
+    {
+      id: 'prop-causation-survival-challenge', legalQuestion: 'Did that omission substantially and operatively cause Ilan Saye’s death beyond reasonable doubt?',
+      evidenceId: 'ex-survival', move: 'challenge-inference', influence: { issue: 'not-guilty', direction: 1 },
+    },
+    {
+      id: 'prop-intent-display-alternative', legalQuestion: 'Did Venn intend death or really serious injury, making the offence murder?',
+      evidenceId: 'ex-ready-display', move: 'raise-alternative', influence: { issue: 'murder', direction: -1, counterVerdict: 'not-guilty' },
+    },
+    {
+      id: 'prop-duty-route-source-limit', legalQuestion: 'Did Mara Venn intentionally fail to perform the accepted-alert duty without reasonably prioritising a greater imminent peril?',
+      evidenceId: 'ex-route', move: 'test-source', influence: { issue: 'not-guilty', direction: 0 },
+    },
+  ],
   improperArguments: [
     { claim: 'An innocent accused would have testified.', correction: 'The accused has an absolute right to silence. It supplies no evidence and cannot strengthen the Crown case.', influencePenalty: -2 },
     { claim: 'The likely sentence is too harsh or too lenient.', correction: 'Punishment is exclusively for the court and is irrelevant to whether an offence is proved.', influencePenalty: -2 },

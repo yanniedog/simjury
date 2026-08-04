@@ -157,10 +157,11 @@ describe('weekly progress', () => {
       returnedVerdict: 'not-guilty',
       returnedAgreement: 'majority',
       reasoningContributions: [{
+        propositionId: 'prop-causation-survival-challenge',
         sceneId: 'sat-causation',
-        legalQuestion: 'Causation',
+        legalQuestion: 'Did that omission substantially and operatively cause Ilan Saye’s death beyond reasonable doubt?',
         evidenceId: 'ex-survival',
-        move: 'test-source',
+        move: 'challenge-inference',
         recordedAt: '2026-08-15T10:00:00+10:00',
         influencePenalty: 0,
       }],
@@ -188,10 +189,11 @@ describe('weekly progress', () => {
 
   it('rejects forged or duplicated reasoning outside the authored journey', () => {
     const contribution = {
+      propositionId: 'prop-causation-survival-challenge',
       sceneId: 'sat-room',
-      legalQuestion: 'Causation',
+      legalQuestion: 'Did that omission substantially and operatively cause Ilan Saye’s death beyond reasonable doubt?',
       evidenceId: 'ex-survival',
-      move: 'test-source' as const,
+      move: 'challenge-inference' as const,
       recordedAt: '2026-08-15T10:00:00+10:00',
       influencePenalty: 0,
     }
@@ -210,5 +212,14 @@ describe('weekly progress', () => {
     expect(() => importWeeklyProgress(
       exportWeeklyProgress(duplicated), 'cw-0001', '2026.08.03-r1',
     )).toThrow('outside the authored Court Week journey')
+
+    expect(() => importWeeklyProgress(exportWeeklyProgress({
+      ...progress,
+      reasoningContributions: [{ ...contribution, propositionId: 'prop-unknown' }],
+    }), 'cw-0001', '2026.08.03-r1')).toThrow('outside the authored Court Week journey')
+    expect(() => importWeeklyProgress(exportWeeklyProgress({
+      ...progress,
+      reasoningContributions: [{ ...contribution, evidenceId: 'ex-warning' }],
+    }), 'cw-0001', '2026.08.03-r1')).toThrow('outside the authored Court Week journey')
   })
 })

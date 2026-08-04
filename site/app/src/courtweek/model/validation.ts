@@ -151,6 +151,13 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
 
   const evidenceIds = courtWeek.trial.evidence.map((evidence) => evidence.id)
   demand(new Set(evidenceIds).size === evidenceIds.length, 'evidence ids must be unique')
+  const propositionIds = courtWeek.deliberation.propositions.map(({ id }) => id)
+  demand(new Set(propositionIds).size === propositionIds.length, 'deliberation proposition ids must be unique')
+  courtWeek.deliberation.propositions.forEach((proposition) => {
+    demand(courtWeek.deliberation.legalQuestions.includes(proposition.legalQuestion), `${proposition.id}: unknown legal question`)
+    const evidence = courtWeek.trial.evidence.find(({ id }) => id === proposition.evidenceId)
+    demand(evidence?.status === 'admitted', `${proposition.id}: influence requires admitted evidence`)
+  })
   allCues.forEach((cue) => cue.evidenceIds.forEach((id) => {
     const item = courtWeek.trial.evidence.find((evidence) => evidence.id === id)
     demand(Boolean(item), `cue ${cue.id} cites unknown evidence ${id}`)
