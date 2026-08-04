@@ -73,8 +73,13 @@ export function useCuePlayback(
   )
   const [status, setStatus] = useState<PlaybackStatus>('idle')
   const [error, setError] = useState<string | null>(null)
-  const [activeTurnId, setActiveTurnId] = useState<string | null>(cue.turns?.[0]?.id ?? null)
+  const [, setActiveTurnId] = useState<string | null>(cue.turns?.[0]?.id ?? null)
   const activeTurn = useRef<string | null>(cue.turns?.[0]?.id ?? null)
+  const activeCueId = useRef(cue.id)
+  if (activeCueId.current !== cue.id) {
+    activeCueId.current = cue.id
+    activeTurn.current = cue.turns?.[0]?.id ?? null
+  }
   const failedAttempts = useRef(0)
   const failureHandling = useRef(false)
   const recordedAttemptActive = useRef(false)
@@ -381,5 +386,5 @@ export function useCuePlayback(
     await play()
   }, [audio, cancelSpeech, cue.audio?.startSeconds, cue.turns, play, updateActiveTurn])
 
-  return { status, error, activeTurnId, play, pause, repeat }
+  return { status, error, activeTurnId: activeTurn.current, play, pause, repeat }
 }

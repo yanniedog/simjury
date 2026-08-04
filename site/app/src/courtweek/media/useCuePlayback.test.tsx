@@ -41,13 +41,15 @@ class MockAudio extends EventTarget {
   removeAttribute(name: string) { if (name === 'src') this.src = '' }
 }
 
-function Harness({ onEnded, activeCue = cue, nextSceneCue, deferSourceUntilPlay = false }: {
+function Harness({ onEnded, activeCue = cue, nextSceneCue, deferSourceUntilPlay = false, onTurnRendered }: {
   onEnded: () => void
   activeCue?: SceneCue
   nextSceneCue?: SceneCue
   deferSourceUntilPlay?: boolean
+  onTurnRendered?: (turnId: string | null) => void
 }) {
   const playback = useCuePlayback(activeCue, onEnded, nextSceneCue, { deferSourceUntilPlay })
+  onTurnRendered?.(playback.activeTurnId)
   const [, render] = useState(0)
   return (
     <div>
@@ -204,6 +206,37 @@ describe('useCuePlayback', () => {
 
     expect(currentAudio.currentTime).toBe(15)
     expect(container.querySelector('[data-testid="turn"]')?.textContent).toBe('cue-audio__2')
+    act(() => root.unmount())
+  })
+
+  it('presents only the first turn when a new multi-party cue renders', async () => {
+    const firstCue: SceneCue = {
+      ...cue,
+      id: 'first-cue',
+      turns: [{ id: 'first-cue__1', speaker: 'Counsel', text: 'First cue.' }],
+    }
+    const secondCue: SceneCue = {
+      ...cue,
+      id: 'second-cue',
+      turns: [
+        { id: 'second-cue__1', speaker: 'Counsel', text: 'Question?' },
+        { id: 'second-cue__2', speaker: 'Witness', text: 'Answer.' },
+      ],
+    }
+    const renderedTurns: Array<string | null> = []
+    const root = createRoot(container)
+    await act(async () => root.render(
+      <Harness activeCue={firstCue} onEnded={() => undefined} onTurnRendered={(id) => renderedTurns.push(id)} />,
+    ))
+    renderedTurns.length = 0
+
+    await act(async () => root.render(
+      <Harness activeCue={secondCue} onEnded={() => undefined} onTurnRendered={(id) => renderedTurns.push(id)} />,
+    ))
+
+    expect(renderedTurns).not.toContain('first-cue__1')
+    expect(renderedTurns[0]).toBe('second-cue__1')
+    expect(container.querySelector('[data-testid="turn"]')?.textContent).toBe('second-cue__1')
     act(() => root.unmount())
   })
 
