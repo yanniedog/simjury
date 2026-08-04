@@ -305,10 +305,10 @@
     min-height: 100%;
     height: auto;
     padding:
-      max(.25rem, env(safe-area-inset-top))
-      max(.25rem, env(safe-area-inset-right))
-      max(.25rem, env(safe-area-inset-bottom))
-      max(.25rem, env(safe-area-inset-left));
+      max(.25rem, env(safe-area-inset-top, 0px))
+      max(.25rem, env(safe-area-inset-right, 0px))
+      max(.25rem, env(safe-area-inset-bottom, 0px))
+      max(.25rem, env(safe-area-inset-left, 0px));
     overflow: visible;
   }
   .cw-stage__picture, .cw-stage__fallback { position: fixed; inset: 0; opacity: .24; }
@@ -332,10 +332,10 @@
   .cw-modal, .cw-desk, .cw-interaction {
     position: fixed;
     inset:
-      max(.25rem, env(safe-area-inset-top))
-      max(.25rem, env(safe-area-inset-right))
-      max(.25rem, env(safe-area-inset-bottom))
-      max(.25rem, env(safe-area-inset-left));
+      max(.25rem, env(safe-area-inset-top, 0px))
+      max(.25rem, env(safe-area-inset-right, 0px))
+      max(.25rem, env(safe-area-inset-bottom, 0px))
+      max(.25rem, env(safe-area-inset-left, 0px));
     width: auto;
     max-height: none;
   }

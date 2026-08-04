@@ -106,18 +106,17 @@ export function JurorDesk({
         <h3>Move progress between devices</h3>
         {readOnly ? (
           <p>Import is unavailable during replay so sealed ballots stay intact. Export remains available.</p>
-        ) : (
-          <label>
-            <input
-              type="checkbox"
-              checked={includeNotes}
-              onChange={(event) => setIncludeNotes(event.target.checked)}
-            />
-            Include my private notes in the export
-          </label>
-        )}
+        ) : null}
+        <label>
+          <input
+            type="checkbox"
+            checked={includeNotes}
+            onChange={(event) => setIncludeNotes(event.target.checked)}
+          />
+          Include my private notes in the export
+        </label>
         <div className="cw-button-row">
-          <button type="button" onClick={() => downloadWeeklyProgress(progress, includeNotes || readOnly)}>
+          <button type="button" onClick={() => downloadWeeklyProgress(progress, includeNotes)}>
             Export progress
           </button>
           {!readOnly ? (
