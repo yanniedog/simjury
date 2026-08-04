@@ -131,6 +131,27 @@ describe('Eleven Minutes Court Week', () => {
     })
   })
 
+  it('authors at least one evidence-linked proposition for every question and reasoning move', () => {
+    const { deliberation } = elevenMinutesCourtWeek
+    expect(new Set(deliberation.propositions.map(({ legalQuestion }) => legalQuestion))).toEqual(new Set(deliberation.legalQuestions))
+    expect(new Set(deliberation.propositions.map(({ move }) => move))).toEqual(new Set(deliberation.reasoningMoves))
+
+    const missingMove = structuredClone(elevenMinutesCourtWeek)
+    missingMove.deliberation.propositions = missingMove.deliberation.propositions.filter(({ move }) => move !== 'apply-burden')
+    expect(() => validateCourtWeek(missingMove)).toThrow(/reasoning move has no authored proposition/i)
+
+    const missingQuestion = structuredClone(elevenMinutesCourtWeek)
+    const question = missingQuestion.deliberation.legalQuestions[2]
+    missingQuestion.deliberation.propositions = missingQuestion.deliberation.propositions.filter(({ legalQuestion }) => legalQuestion !== question)
+    expect(() => validateCourtWeek(missingQuestion)).toThrow(/legal question has no authored proposition/i)
+
+    const invalidCounter = structuredClone(elevenMinutesCourtWeek)
+    const counter = invalidCounter.deliberation.propositions.find(({ influence }) => influence.direction === -1)
+    if (!counter) throw new Error('Counter-direction fixture is missing.')
+    Object.assign(counter.influence, { counterVerdict: 'unable-to-agree' })
+    expect(() => validateCourtWeek(invalidCounter)).toThrow()
+  })
+
   it('fails closed when evidence is attempted before the oath', () => {
     expect(() => transitionLegalState(initialLegalState, 'witness-chief')).toThrow(/before oath/)
   })

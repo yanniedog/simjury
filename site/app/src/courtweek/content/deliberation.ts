@@ -42,6 +42,14 @@ export const elevenMinutesDeliberation: DeliberationPack = {
       id: 'prop-duty-route-source-limit', legalQuestion: 'Did Mara Venn intentionally fail to perform the accepted-alert duty without reasonably prioritising a greater imminent peril?',
       evidenceId: 'ex-route', move: 'test-source', influence: { issue: 'not-guilty', direction: 0 },
     },
+    {
+      id: 'prop-duty-incidents-distinguish', legalQuestion: 'Did Mara Venn intentionally fail to perform the accepted-alert duty without reasonably prioritising a greater imminent peril?',
+      evidenceId: 'ex-competing', move: 'distinguish', influence: { issue: 'not-guilty', direction: 1 },
+    },
+    {
+      id: 'prop-causation-survival-burden', legalQuestion: 'Did that omission substantially and operatively cause Ilan Saye’s death beyond reasonable doubt?',
+      evidenceId: 'ex-survival', move: 'apply-burden', influence: { issue: 'not-guilty', direction: 1 },
+    },
   ],
   improperArguments: [
     { claim: 'An innocent accused would have testified.', correction: 'The accused has an absolute right to silence. It supplies no evidence and cannot strengthen the Crown case.', influencePenalty: -2 },

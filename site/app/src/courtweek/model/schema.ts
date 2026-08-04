@@ -248,7 +248,7 @@ export type ReasoningContribution = z.infer<typeof reasoningContributionSchema>
 const authoredInfluenceSchema = z.object({
   issue: z.enum(['murder', 'manslaughter', 'not-guilty']),
   direction: z.union([z.literal(-1), z.literal(0), z.literal(1)]),
-  counterVerdict: verdictSchema.optional(),
+  counterVerdict: z.enum(['murder', 'manslaughter', 'not-guilty']).optional(),
 }).superRefine((value, context) => {
   if (value.direction === -1 && (!value.counterVerdict || value.counterVerdict === value.issue)) {
     context.addIssue({ code: 'custom', message: 'negative influence needs a different counter-verdict' })

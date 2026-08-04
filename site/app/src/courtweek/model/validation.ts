@@ -158,6 +158,12 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
     const evidence = courtWeek.trial.evidence.find(({ id }) => id === proposition.evidenceId)
     demand(evidence?.status === 'admitted', `${proposition.id}: influence requires admitted evidence`)
   })
+  courtWeek.deliberation.legalQuestions.forEach((question) => {
+    demand(courtWeek.deliberation.propositions.some(({ legalQuestion }) => legalQuestion === question), `legal question has no authored proposition: ${question}`)
+  })
+  courtWeek.deliberation.reasoningMoves.forEach((move) => {
+    demand(courtWeek.deliberation.propositions.some((proposition) => proposition.move === move), `reasoning move has no authored proposition: ${move}`)
+  })
   allCues.forEach((cue) => cue.evidenceIds.forEach((id) => {
     const item = courtWeek.trial.evidence.find((evidence) => evidence.id === id)
     demand(Boolean(item), `cue ${cue.id} cites unknown evidence ${id}`)
