@@ -34,9 +34,9 @@ function sceneAssetUrl(
   composition: 'portrait' | 'tablet' | 'desktop',
   format: 'avif' | 'webp',
 ) {
-  const runtimeStrip = scene.visual.runtimeStrip?.sources[composition][format]
+  const runtimeStrip = scene.visual.runtimeStrip?.sources?.[composition]?.[format]
   if (runtimeStrip) return runtimeStrip
-  const commissioned = scene.visual.sources?.[composition][format]
+  const commissioned = scene.visual.sources?.[composition]?.[format]
   return commissioned
     ? `${base}/${commissioned}`
     : legacyAssetUrl(base, scene.visual.fallbackId, composition, format)
