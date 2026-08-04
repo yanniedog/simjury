@@ -451,6 +451,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'fri-crown-close': {
+    altDescription: 'Crown counsel Asha Renn addresses the jury from the lectern while Judge Sel Aven and the defence listen without reaction. The image depicts advocacy, not evidence or a verdict.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 42, y: 51 }, subjectSafeRegion: { x: 0, y: 36, width: 100, height: 52 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 43, y: 48 }, subjectSafeRegion: { x: 0, y: 27, width: 100, height: 66 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 43, y: 46 }, subjectSafeRegion: { x: 0, y: 24, width: 100, height: 70 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
