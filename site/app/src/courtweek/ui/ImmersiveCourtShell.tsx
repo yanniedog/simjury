@@ -83,11 +83,14 @@ export function ImmersiveCourtShell({
   const controls = useRef<HTMLElement>(null)
   const speakerCollisionProbe = useRef<HTMLParagraphElement>(null)
   const [fullscreen, setFullscreen] = useState(false)
+  const fullscreenSupported = typeof document !== 'undefined'
+    && typeof document.documentElement.requestFullscreen === 'function'
   const [imageAvailable, setImageAvailable] = useState(true)
   const [captionRuntime, setCaptionRuntime] = useState<CaptionRuntimeState>({ mode: 'off', reason: null })
 
   useEffect(() => {
-    const update = () => setFullscreen(document.fullscreenElement === stage.current)
+    const update = () => setFullscreen(Boolean(document.fullscreenElement))
+    update()
     document.addEventListener('fullscreenchange', update)
     return () => document.removeEventListener('fullscreenchange', update)
   }, [])
@@ -99,7 +102,7 @@ export function ImmersiveCourtShell({
       if (document.fullscreenElement) await document.exitFullscreen()
       else if (stage.current?.requestFullscreen) await stage.current.requestFullscreen()
     } catch {
-      setFullscreen(false)
+      setFullscreen(Boolean(document.fullscreenElement))
     }
   }
 
@@ -301,9 +304,11 @@ export function ImmersiveCourtShell({
           <button type="button" onClick={onToggleDesk} aria-expanded={deskOpen}>
             Juror desk
           </button>
-          <button type="button" onClick={() => void toggleFullscreen()} aria-pressed={fullscreen}>
-            {fullscreen ? 'Exit full screen' : 'Full screen'}
-          </button>
+          {fullscreenSupported ? (
+            <button type="button" onClick={() => void toggleFullscreen()} aria-pressed={fullscreen}>
+              {fullscreen ? 'Exit full screen' : 'Full screen'}
+            </button>
+          ) : null}
           {(accessMode === 'reading' || playbackStatus === 'reading-fallback') ? (
             <button type="button" className="cw-controls__advance" onClick={onAdvance}>
               Continue

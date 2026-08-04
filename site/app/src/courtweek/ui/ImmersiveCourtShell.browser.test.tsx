@@ -22,14 +22,29 @@ const session: CourtSession = {
 
 describe('ImmersiveCourtShell browser behavior', () => {
   let container: HTMLDivElement
+  let requestFullscreenDescriptor: PropertyDescriptor | undefined
+  let exitFullscreenDescriptor: PropertyDescriptor | undefined
+  let fullscreenElementDescriptor: PropertyDescriptor | undefined
 
   beforeEach(() => {
+    requestFullscreenDescriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'requestFullscreen')
+    exitFullscreenDescriptor = Object.getOwnPropertyDescriptor(document, 'exitFullscreen')
+    fullscreenElementDescriptor = Object.getOwnPropertyDescriptor(document, 'fullscreenElement')
     container = document.createElement('div')
     document.body.append(container)
   })
   afterEach(() => {
     container.remove()
     vi.restoreAllMocks()
+    if (requestFullscreenDescriptor) {
+      Object.defineProperty(HTMLElement.prototype, 'requestFullscreen', requestFullscreenDescriptor)
+    } else {
+      delete (HTMLElement.prototype as { requestFullscreen?: unknown }).requestFullscreen
+    }
+    if (exitFullscreenDescriptor) Object.defineProperty(document, 'exitFullscreen', exitFullscreenDescriptor)
+    else delete (document as { exitFullscreen?: unknown }).exitFullscreen
+    if (fullscreenElementDescriptor) Object.defineProperty(document, 'fullscreenElement', fullscreenElementDescriptor)
+    else delete (document as { fullscreenElement?: unknown }).fullscreenElement
   })
 
   it('treats native full screen as optional and survives viewport changes', async () => {
@@ -69,6 +84,85 @@ describe('ImmersiveCourtShell browser behavior', () => {
     expect(container.querySelector('picture')).not.toBeNull()
     act(() => image?.dispatchEvent(new Event('load')))
     expect(container.querySelector('.cw-stage__fallback')).toBeNull()
+    act(() => root.unmount())
+  })
+
+  it('tracks accepted and exited native full screen without invoking media callbacks', async () => {
+    let activeElement: Element | null = document.documentElement
+    Object.defineProperty(document, 'fullscreenElement', {
+      configurable: true,
+      get: () => activeElement,
+    })
+    const requestFullscreen = vi.fn(async () => {
+      activeElement = document.documentElement
+      document.dispatchEvent(new Event('fullscreenchange'))
+    })
+    const exitFullscreen = vi.fn(async () => {
+      activeElement = null
+      document.dispatchEvent(new Event('fullscreenchange'))
+    })
+    Object.defineProperty(HTMLElement.prototype, 'requestFullscreen', {
+      configurable: true,
+      value: requestFullscreen,
+    })
+    Object.defineProperty(document, 'exitFullscreen', {
+      configurable: true,
+      value: exitFullscreen,
+    })
+    const callbacks = {
+      play: vi.fn(), pause: vi.fn(), repeat: vi.fn(), advance: vi.fn(),
+      captions: vi.fn(), desk: vi.fn(),
+    }
+    const root = createRoot(container)
+    await act(async () => root.render(
+      <ImmersiveCourtShell
+        session={session} scene={scene} cue={cue} releaseBase="/assets"
+        accessMode="audio-first" playbackStatus="playing" playbackError={null}
+        progressLabel="Scene 1 of 3" deskOpen={false}
+        onPlay={callbacks.play} onPause={callbacks.pause} onRepeat={callbacks.repeat}
+        onAdvance={callbacks.advance} onToggleCaptions={callbacks.captions} onToggleDesk={callbacks.desk}
+      />,
+    ))
+
+    const exitButton = Array.from(container.querySelectorAll('button')).find(
+      (button) => button.textContent === 'Exit full screen',
+    )
+    expect(exitButton?.getAttribute('aria-pressed')).toBe('true')
+    await act(async () => exitButton?.click())
+    expect(exitFullscreen).toHaveBeenCalledOnce()
+    expect(container.textContent).toContain('Full screen')
+    expect(Object.values(callbacks).every((callback) => callback.mock.calls.length === 0)).toBe(true)
+    act(() => root.unmount())
+  })
+
+  it('keeps truthful controls when native full screen is rejected or unsupported', async () => {
+    const requestFullscreen = vi.fn(async () => { throw new Error('Denied') })
+    Object.defineProperty(HTMLElement.prototype, 'requestFullscreen', {
+      configurable: true,
+      value: requestFullscreen,
+    })
+    const root = createRoot(container)
+    const render = async () => act(async () => root.render(
+      <ImmersiveCourtShell
+        session={session} scene={scene} cue={cue} releaseBase="/assets"
+        accessMode="audio-first" playbackStatus="paused" playbackError={null}
+        progressLabel="Scene 1 of 3" deskOpen={false}
+        onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
+        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+      />,
+    ))
+    await render()
+    const button = Array.from(container.querySelectorAll('button')).find(
+      (candidate) => candidate.textContent === 'Full screen',
+    )
+    await act(async () => button?.click())
+    expect(requestFullscreen).toHaveBeenCalledOnce()
+    expect(button?.getAttribute('aria-pressed')).toBe('false')
+
+    delete (HTMLElement.prototype as { requestFullscreen?: unknown }).requestFullscreen
+    await render()
+    expect(container.textContent).not.toContain('Full screen')
+    expect(container.querySelector('.cw-shell')).not.toBeNull()
     act(() => root.unmount())
   })
 
