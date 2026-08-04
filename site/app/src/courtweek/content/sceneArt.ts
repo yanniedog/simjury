@@ -247,6 +247,40 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'wed-vale': {
+    altDescription: 'Compliance director Oren Vale gives evidence from the witness box while Crown counsel questions him. No draft review, recommendation, prior delay, statement by Mara Venn or conclusion about motive is depicted.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 53, y: 48 }, subjectSafeRegion: { x: 0, y: 36, width: 100, height: 49 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 52, y: 47 }, subjectSafeRegion: { x: 0, y: 28, width: 100, height: 61 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 52, y: 47 }, subjectSafeRegion: { x: 0, y: 25, width: 100, height: 67 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
+  'wed-strike': {
+    altDescription: 'Judge Sel Aven gives an immediate open-palm ruling while Oren Vale remains composed in the witness box and counsel stay neutral. No rumour, earlier act, character inference or struck words are depicted.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 51, y: 48 }, subjectSafeRegion: { x: 0, y: 37, width: 100, height: 48 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 51, y: 47 }, subjectSafeRegion: { x: 0, y: 28, width: 100, height: 61 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 51, y: 47 }, subjectSafeRegion: { x: 0, y: 25, width: 100, height: 67 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {

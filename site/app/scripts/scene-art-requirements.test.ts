@@ -70,6 +70,8 @@ describe('SceneArtManifest contract', () => {
       'wed-pell-chief',
       'wed-pell-cross',
       'wed-vos',
+      'wed-vale',
+      'wed-strike',
     ]
     for (const sceneId of evidenceNeutralReviewedScenes) {
       for (const composition of ['portrait', 'tablet', 'desktop'] as const) {

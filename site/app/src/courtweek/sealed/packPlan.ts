@@ -54,7 +54,8 @@ export function createCourtDayPacks(
       session,
       ...(schedule.ordinal === 1 ? { trialBase } : {}),
       evidence: courtWeek.trial.evidence.filter(
-        (item) => (firstEvidenceDay.get(item.id) ?? 5) === schedule.ordinal,
+        (item) => item.status === 'admitted' &&
+          (firstEvidenceDay.get(item.id) ?? 5) === schedule.ordinal,
       ),
       ...(schedule.ordinal === 6 ? { deliberation: courtWeek.deliberation } : {}),
       ...(mediaManifest
