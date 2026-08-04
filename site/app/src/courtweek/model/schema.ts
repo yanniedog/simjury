@@ -90,6 +90,7 @@ export const audioSourceSchema = z.object({
 
 export const sceneCueSchema = z.object({
   id: z.string().min(1),
+  sourceCueId: z.string().min(1).optional(),
   event: courtEventSchema,
   speaker: z.string().min(1),
   text: z.string().min(1),
