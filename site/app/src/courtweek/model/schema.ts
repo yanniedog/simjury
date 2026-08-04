@@ -107,6 +107,7 @@ export const interactionSchema = z.object({
   prompt: z.string().min(1),
   minimumSeconds: z.number().int().min(15).max(360),
   options: z.array(z.string().min(1)).max(8).optional(),
+  optional: z.boolean().optional(),
 })
 
 export const sceneSchema = z.object({

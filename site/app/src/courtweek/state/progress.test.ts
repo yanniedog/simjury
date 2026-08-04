@@ -153,7 +153,7 @@ describe('weekly progress', () => {
       returnedVerdict: 'not-guilty',
       returnedAgreement: 'majority',
       reasoningContributions: [{
-        sceneId: 'sat-discussion',
+        sceneId: 'sat-causation',
         legalQuestion: 'Causation',
         evidenceId: 'ex-survival',
         move: 'test-source',
@@ -180,5 +180,31 @@ describe('weekly progress', () => {
       'cw-0001',
       '2026.08.03-r2',
     )).toThrow('different case revision')
+  })
+
+  it('rejects forged or duplicated reasoning outside the authored journey', () => {
+    const contribution = {
+      sceneId: 'sat-room',
+      legalQuestion: 'Causation',
+      evidenceId: 'ex-survival',
+      move: 'test-source' as const,
+      recordedAt: '2026-08-15T10:00:00+10:00',
+      influencePenalty: 0,
+    }
+    const forged: StoredWeeklyProgress = {
+      ...progress,
+      reasoningContributions: [{ ...contribution, sceneId: 'mon-arrival' }],
+    }
+    const duplicated: StoredWeeklyProgress = {
+      ...progress,
+      reasoningContributions: [contribution, { ...contribution, recordedAt: '2026-08-15T10:01:00+10:00' }],
+    }
+
+    expect(() => importWeeklyProgress(
+      exportWeeklyProgress(forged), 'cw-0001', '2026.08.03-r1',
+    )).toThrow('outside the authored Court Week journey')
+    expect(() => importWeeklyProgress(
+      exportWeeklyProgress(duplicated), 'cw-0001', '2026.08.03-r1',
+    )).toThrow('outside the authored Court Week journey')
   })
 })
