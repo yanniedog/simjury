@@ -723,6 +723,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'sun-negligence': {
+    altDescription: 'Exactly eleven other jurors remain around the deliberation table as one juror uses separated open hands to distinguish two legal questions. No spectrum, midpoint, ballot, count, faction, verdict or conclusion is shown.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 31, y: 59 }, subjectSafeRegion: { x: 0, y: 45, width: 100, height: 40 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 32, y: 53 }, subjectSafeRegion: { x: 0, y: 34, width: 100, height: 58 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 31, y: 58 }, subjectSafeRegion: { x: 0, y: 38, width: 100, height: 56 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
