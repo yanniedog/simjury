@@ -139,6 +139,14 @@ jobs:
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - name: Install the pinned strip builder
+        working-directory: site
+        run: npm ci
       - uses: actions/download-artifact@v4
         with:
           name: court-week-audio-jobs
@@ -148,6 +156,12 @@ jobs:
           pattern: court-week-audio-cw-0001-*
           path: .court-week-audio
           merge-multiple: true
+      - name: Build chronological two-scene art strips
+        run: >-
+          node site/scripts/scene-art-strips.mjs
+          --requirements .court-week-audio-jobs/scene-art-requirements.json
+          --media-root site/app/public/media/court-week/cw-0001
+          --output-root .court-week-art-strips
       - name: Build content-addressed media and enforce hard budgets
         env:
           PUBLISH: ${{ inputs.publish }}
@@ -158,6 +172,9 @@ jobs:
             --audio-root .court-week-audio
             --jobs-root .court-week-audio-jobs
             --art-requirements .court-week-audio-jobs/scene-art-requirements.json
+            --art-root .court-week-art-strips
+            --art-strips .court-week-art-strips/scene-art-strips.json
+            --private-output-root .court-week-release-private
           )
           if [[ "$PUBLISH" == "true" ]]; then
             arguments+=(--require-release-ready-art)
@@ -168,11 +185,19 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.release_tag }}-art-readiness
-          path: .court-week-release/art-readiness-report.json
+          path: .court-week-release-private/art-readiness-report.json
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14
-      - name: Upload private review artifact
+      - name: Upload private review manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.release_tag }}-private-review
+          path: .court-week-release-private/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload public Release payload
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.release_tag }}

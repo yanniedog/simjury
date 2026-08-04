@@ -51,7 +51,7 @@ test('Court Week media publishing is trusted, manual and non-clobbering', () => 
   assert.match(workflow, /--json isImmutable/)
   assert.equal(
     (workflow.match(/include-hidden-files: true/g) ?? []).length,
-    4,
+    5,
     'every dot-prefixed media artifact upload must include hidden files',
   )
   assert.match(workflow, /ffmpeg -version/)

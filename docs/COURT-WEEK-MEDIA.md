@@ -127,8 +127,10 @@ node scripts/scene-art-strips.mjs `
 
 The completed week contains 28 strips. Three compositions and two codecs make
 168 art assets; the fixed 56 audio segments and their four renditions make 224
-more. With three manifests, the projected Release contains 395 assets and
-retains a 105-asset safety margin below GitHub's 500-asset project gate.
+more. With its opaque public inventory, the projected Release contains 393
+assets and retains a 107-asset safety margin below GitHub's 500-asset project
+gate. The semantic runtime map, source provenance and readiness report remain
+private review artifacts; they are never published with the Release.
 
 Two-scene strips are deliberate. They keep only the current and next scene in
 one decoded image (at most 2560 pixels on an edge). A whole-day atlas would

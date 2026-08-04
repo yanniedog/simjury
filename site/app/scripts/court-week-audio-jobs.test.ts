@@ -42,11 +42,60 @@ describe('Court Week prerecorded audio jobs', () => {
     const outputRoot = resolve(temporary, 'release')
     const jobsRoot = resolve(temporary, 'jobs-root')
     const artRequirements = resolve(temporary, 'scene-art-requirements.json')
+    const artRoot = resolve(temporary, 'art-strips')
+    const artStrips = resolve(artRoot, 'scene-art-strips.json')
+    const privateOutputRoot = resolve(temporary, 'release-private')
     const releaseTag = elevenMinutesCourtWeek.manifest.releaseTag
     const { jobs } = buildCourtWeekAudioJobs(elevenMinutesCourtWeek)
     try {
       writeCourtWeekAudioJobs(jobsRoot)
       writeSceneArtManifestDraft(artRequirements)
+      mkdirSync(artRoot, { recursive: true })
+      const monday = elevenMinutesCourtWeek.manifest.sessions[0]
+      const compositions = {
+        portrait: { tile: { width: 720, height: 1280 }, strip: { width: 1440, height: 1280 } },
+        tablet: { tile: { width: 1024, height: 768 }, strip: { width: 2048, height: 768 } },
+        desktop: { tile: { width: 1280, height: 720 }, strip: { width: 2560, height: 720 } },
+      }
+      const strips = Array.from({ length: 4 }, (_, stripIndex) => {
+        const sources = Object.fromEntries(Object.keys(compositions).map((composition) => [
+          composition,
+          Object.fromEntries(['avif', 'webp'].map((format) => {
+            const path = `strips/day-01/strip-${stripIndex + 1}/${composition}.${format}`
+            const target = resolve(artRoot, path)
+            mkdirSync(resolve(target, '..'), { recursive: true })
+            writeFileSync(target, `${stripIndex}:${composition}:${format}`)
+            return [format, path]
+          })),
+        ]))
+        return {
+          sessionId: monday.id,
+          ordinal: monday.ordinal,
+          stripIndex,
+          sceneSlots: monday.scenes.slice(stripIndex * 2, stripIndex * 2 + 2)
+            .map((scene, cell) => ({ sceneId: scene.id, cell })),
+          sources,
+        }
+      })
+      writeFileSync(artStrips, JSON.stringify({
+        schema: 'simjury.scene-art-strip-source/v1',
+        caseId: 'cw-0001',
+        sourceRevision: elevenMinutesCourtWeek.manifest.revision,
+        grid: { columns: 2, rows: 1 },
+        toolchain: { sharp: 'test', vips: 'test' },
+        compositions,
+        strips,
+      }))
+      const packageArguments = [
+        '--release-tag', releaseTag,
+        '--audio-root', audioRoot,
+        '--jobs-root', jobsRoot,
+        '--art-requirements', artRequirements,
+        '--art-root', artRoot,
+        '--art-strips', artStrips,
+        '--private-output-root', privateOutputRoot,
+        '--output-root', outputRoot,
+      ]
       for (const job of jobs) {
         const sessionRoot = resolve(audioRoot, job.sessionId)
         mkdirSync(sessionRoot, { recursive: true })
@@ -100,19 +149,25 @@ describe('Court Week prerecorded audio jobs', () => {
 
       execFileSync(process.execPath, [
         resolve('..', 'scripts', 'prepare-court-week-release.mjs'),
-        '--release-tag', releaseTag,
-        '--audio-root', audioRoot,
-        '--jobs-root', jobsRoot,
-        '--art-requirements', artRequirements,
-        '--output-root', outputRoot,
+        ...packageArguments,
       ], { cwd: resolve('.'), stdio: 'pipe' })
-      const runtime = JSON.parse(readFileSync(resolve(outputRoot, 'court-week-media-manifest.json'), 'utf8'))
+      const runtime = JSON.parse(readFileSync(resolve(privateOutputRoot, 'court-week-media-manifest.draft.json'), 'utf8'))
       expect(runtime.sessions).toHaveLength(7)
+      expect(runtime.sessions.map((session: { day: string }) => session.day)).toEqual([
+        'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
+      ])
       expect(runtime.sessions.every((session: { segments: unknown[] }) => session.segments.length === 8)).toBe(true)
       expect(runtime.sessions[0].segments[0].sources.mp3).toMatch(/^[0-9a-f]{64}\.mp3$/)
       expect(JSON.stringify(runtime)).not.toContain('text')
       expect(JSON.stringify(runtime)).not.toContain('speaker')
-      const artReport = JSON.parse(readFileSync(resolve(outputRoot, 'art-readiness-report.json'), 'utf8'))
+      expect(runtime.sessions.find((session: { session_id: string }) =>
+        session.session_id === 'cw-0001-monday').art.strips).toHaveLength(4)
+      expect(runtime.sessions.find((session: { session_id: string }) =>
+        session.session_id === 'cw-0001-tuesday').art).toBeNull()
+      const publicManifest = JSON.parse(readFileSync(resolve(outputRoot, 'release-manifest.json'), 'utf8'))
+      expect(JSON.stringify(publicManifest)).not.toContain('logical_path')
+      expect(JSON.stringify(publicManifest)).not.toContain('mon-arrival')
+      const artReport = JSON.parse(readFileSync(resolve(privateOutputRoot, 'art-readiness-report.json'), 'utf8'))
       expect(artReport.release_ready).toBe(false)
       expect(artReport.ready_scene_count).toBe(7)
       expect(artReport.ready_scene_ids).toEqual([
@@ -127,14 +182,10 @@ describe('Court Week prerecorded audio jobs', () => {
       expect(artReport.scene_count).toBe(55)
       expect(() => execFileSync(process.execPath, [
         resolve('..', 'scripts', 'prepare-court-week-release.mjs'),
-        '--release-tag', releaseTag,
-        '--audio-root', audioRoot,
-        '--jobs-root', jobsRoot,
-        '--art-requirements', artRequirements,
-        '--output-root', outputRoot,
+        ...packageArguments,
         '--require-release-ready-art',
       ], { cwd: resolve('.'), stdio: 'pipe' })).toThrow()
-      const blockedReport = JSON.parse(readFileSync(resolve(outputRoot, 'art-readiness-report.json'), 'utf8'))
+      const blockedReport = JSON.parse(readFileSync(resolve(privateOutputRoot, 'art-readiness-report.json'), 'utf8'))
       expect(blockedReport.release_ready).toBe(false)
 
       const mondayManifestPath = resolve(audioRoot, 'cw-0001-monday', 'session-media.json')
@@ -143,11 +194,7 @@ describe('Court Week prerecorded audio jobs', () => {
       writeFileSync(mondayManifestPath, JSON.stringify(mondayManifest))
       expect(() => execFileSync(process.execPath, [
         resolve('..', 'scripts', 'prepare-court-week-release.mjs'),
-        '--release-tag', releaseTag,
-        '--audio-root', audioRoot,
-        '--jobs-root', jobsRoot,
-        '--art-requirements', artRequirements,
-        '--output-root', outputRoot,
+        ...packageArguments,
       ], { cwd: resolve('.'), stdio: 'pipe' })).toThrow()
 
       mondayManifest.experienceSeconds = 1_200
@@ -155,11 +202,7 @@ describe('Court Week prerecorded audio jobs', () => {
       writeFileSync(mondayManifestPath, JSON.stringify(mondayManifest))
       expect(() => execFileSync(process.execPath, [
         resolve('..', 'scripts', 'prepare-court-week-release.mjs'),
-        '--release-tag', releaseTag,
-        '--audio-root', audioRoot,
-        '--jobs-root', jobsRoot,
-        '--art-requirements', artRequirements,
-        '--output-root', outputRoot,
+        ...packageArguments,
       ], { cwd: resolve('.'), stdio: 'pipe' })).toThrow()
     } finally {
       rmSync(temporary, { recursive: true, force: true })

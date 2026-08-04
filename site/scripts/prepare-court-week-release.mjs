@@ -21,6 +21,11 @@ const jobsRootArgument = argument('--jobs-root')
 const jobsRoot = jobsRootArgument ? resolve(jobsRootArgument) : undefined
 const artRequirementsArgument = argument('--art-requirements')
 const artRequirementsPath = artRequirementsArgument ? resolve(artRequirementsArgument) : undefined
+const artRootArgument = argument('--art-root')
+const artRoot = artRootArgument ? resolve(artRootArgument) : undefined
+const artStripsArgument = argument('--art-strips')
+const artStripsPath = artStripsArgument ? resolve(artStripsArgument) : undefined
+const privateOutputRoot = resolve(argument('--private-output-root') ?? `${outputRoot}-private`)
 const requireReleaseReadyArt = process.argv.includes('--require-release-ready-art')
 if (!/^court-week-cw-0001-[0-9]{4}\.[0-9]{2}\.[0-9]{2}-r[1-9][0-9]*$/.test(releaseTag ?? '')) {
   throw new Error('Use --release-tag court-week-cw-0001-YYYY.MM.DD-rN')
@@ -33,6 +38,9 @@ if (!jobsRoot || !existsSync(jobsRoot)) {
 if (!artRequirementsPath || !existsSync(artRequirementsPath)) {
   throw new Error('Use --art-requirements with the exact reviewed SceneArtManifest artifact')
 }
+if (!artRoot || !existsSync(artRoot) || !artStripsPath || !existsSync(artStripsPath)) {
+  throw new Error('Use --art-root and --art-strips with the deterministic two-scene strip artifact')
+}
 
 function filesBelow(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -43,9 +51,11 @@ function filesBelow(directory) {
 
 const allowedExtensions = new Set(['.avif', '.webp', '.opus', '.m4a', '.mp3', '.vtt'])
 const sources = [
-  ...filesBelow(visualSourceRoot).map((path) => ({
+  ...filesBelow(artRoot)
+    .filter((path) => path !== artStripsPath)
+    .map((path) => ({
     path,
-    logicalPath: `visual/${relative(visualSourceRoot, path).split(sep).join('/')}`,
+    logicalPath: `art/${relative(artRoot, path).split(sep).join('/')}`,
   })),
   ...filesBelow(audioRoot)
     .filter((path) => path.split(sep).at(-1) !== 'session-media.json')
@@ -55,10 +65,11 @@ const sources = [
     })),
 ].sort((left, right) => left.logicalPath.localeCompare(right.logicalPath))
 if (!sources.length) throw new Error('Court Week media source is empty')
-if (sources.length > 496) throw new Error(`Release has ${sources.length} media assets; three manifests keep the limit below 500`)
 
 rmSync(outputRoot, { recursive: true, force: true })
+rmSync(privateOutputRoot, { recursive: true, force: true })
 mkdirSync(outputRoot, { recursive: true })
+mkdirSync(privateOutputRoot, { recursive: true })
 
 const seenNames = new Set()
 const assets = sources.map(({ path, logicalPath }) => {
@@ -81,10 +92,13 @@ const assets = sources.map(({ path, logicalPath }) => {
 })
 
 const assetByLogicalPath = new Map(assets.map((asset) => [asset.logical_path, asset]))
+if (seenNames.size + 1 >= 500) {
+  throw new Error(`Release would have ${seenNames.size + 1} assets; it must remain below 500`)
+}
 
 const artRequirements = JSON.parse(readFileSync(artRequirementsPath, 'utf8'))
 const artReadiness = assessSceneArtManifest(artRequirements, visualSourceRoot)
-writeFileSync(join(outputRoot, 'art-readiness-report.json'), `${JSON.stringify(artReadiness, null, 2)}\n`)
+writeFileSync(join(privateOutputRoot, 'art-readiness-report.json'), `${JSON.stringify(artReadiness, null, 2)}\n`)
 if (artReadiness.release_ready) {
   console.log(`Scene art is release-ready: ${artReadiness.ready_scene_count}/55 dedicated scenes.`)
 } else {
@@ -96,6 +110,79 @@ if (artReadiness.release_ready) {
     throw new Error('Release publication is blocked by SceneArtManifest gaps; see art-readiness-report.json')
   }
 }
+
+const artStrips = JSON.parse(readFileSync(artStripsPath, 'utf8'))
+const expectedCompositions = {
+  portrait: { tile: { width: 720, height: 1280 }, strip: { width: 1440, height: 1280 } },
+  tablet: { tile: { width: 1024, height: 768 }, strip: { width: 2048, height: 768 } },
+  desktop: { tile: { width: 1280, height: 720 }, strip: { width: 2560, height: 720 } },
+}
+if (
+  artStrips.schema !== 'simjury.scene-art-strip-source/v1' ||
+  artStrips.caseId !== 'cw-0001' ||
+  artStrips.sourceRevision !== artRequirements.sourceRevision ||
+  JSON.stringify(artStrips.grid) !== JSON.stringify({ columns: 2, rows: 1 }) ||
+  JSON.stringify(artStrips.compositions) !== JSON.stringify(expectedCompositions)
+) {
+  throw new Error('Unsupported or mismatched two-scene art strip manifest')
+}
+const readySceneIds = new Set(artReadiness.ready_scene_ids)
+const expectedArtSessions = artRequirements.sessions.filter((session) =>
+  session.sceneIds.every((sceneId) => readySceneIds.has(sceneId)))
+const expectedStripCount = expectedArtSessions.reduce(
+  (count, session) => count + Math.ceil(session.sceneIds.length / 2), 0,
+)
+if (artStrips.strips.length !== expectedStripCount) {
+  throw new Error(`Art strip artifact has ${artStrips.strips.length} strips; ${expectedStripCount} are expected`)
+}
+const artBySession = new Map()
+const referencedArtPaths = new Set()
+for (const session of expectedArtSessions) {
+  const strips = artStrips.strips
+    .filter((strip) => strip.sessionId === session.id)
+    .sort((left, right) => left.stripIndex - right.stripIndex)
+  if (strips.some((strip, index) => strip.stripIndex !== index)) {
+    throw new Error(`Art strips are not consecutive for ${session.id}`)
+  }
+  const mappedSceneIds = strips.flatMap((strip) =>
+    strip.sceneSlots.map((slot, cell) => {
+      if (slot.cell !== cell) throw new Error(`Non-chronological art cell in ${session.id}`)
+      return slot.sceneId
+    }))
+  if (JSON.stringify(mappedSceneIds) !== JSON.stringify(session.sceneIds)) {
+    throw new Error(`Art strips do not map the exact scene order for ${session.id}`)
+  }
+  const runtimeStrips = strips.map((strip) => ({
+    strip_index: strip.stripIndex + 1,
+    scene_slots: strip.sceneSlots.map((slot) => ({ scene_id: slot.sceneId, cell: slot.cell })),
+    sources: Object.fromEntries(['portrait', 'tablet', 'desktop'].map((composition) => [
+      composition,
+      Object.fromEntries(['avif', 'webp'].map((format) => {
+        const logicalPath = `art/${strip.sources?.[composition]?.[format]}`
+        const asset = assetByLogicalPath.get(logicalPath)
+        if (!asset) throw new Error(`Missing art strip asset: ${logicalPath}`)
+        referencedArtPaths.add(logicalPath)
+        return [format, asset.asset_name]
+      })),
+    ])),
+  }))
+  artBySession.set(session.id, {
+    grid: artStrips.grid,
+    compositions: Object.fromEntries(Object.entries(artStrips.compositions).map(([name, value]) => [
+      name,
+      {
+        tile_width: value.tile.width,
+        tile_height: value.tile.height,
+        strip_width: value.strip.width,
+        strip_height: value.strip.height,
+      },
+    ])),
+    strips: runtimeStrips,
+  })
+}
+const packagedArtPaths = assets.map((asset) => asset.logical_path).filter((path) => path.startsWith('art/'))
+const unreferencedArt = packagedArtPaths.filter((path) => !referencedArtPaths.has(path))
+if (unreferencedArt.length) throw new Error(`Unreferenced art strip assets: ${unreferencedArt.join(', ')}`)
 
 function loadAudioSessions() {
   const index = JSON.parse(readFileSync(join(jobsRoot, 'index.json'), 'utf8'))
@@ -114,14 +201,15 @@ function loadAudioSessions() {
     .filter((path) => path.split(sep).at(-1) === 'session-media.json')
     .sort((left, right) => left.localeCompare(right))
   if (manifestPaths.length !== 7) throw new Error(`Expected seven session-media manifests; found ${manifestPaths.length}`)
-  const sessions = manifestPaths.map((path) => JSON.parse(readFileSync(path, 'utf8')))
+  const parsedSessions = manifestPaths.map((path) => JSON.parse(readFileSync(path, 'utf8')))
   const expectedIds = [
     'cw-0001-monday', 'cw-0001-tuesday', 'cw-0001-wednesday', 'cw-0001-thursday',
     'cw-0001-friday', 'cw-0001-saturday', 'cw-0001-sunday',
   ]
-  if (JSON.stringify(sessions.map((session) => session.sessionId).sort()) !== JSON.stringify([...expectedIds].sort())) {
+  if (JSON.stringify(parsedSessions.map((session) => session.sessionId).sort()) !== JSON.stringify([...expectedIds].sort())) {
     throw new Error('Session media manifests do not cover the exact Monday-Sunday Court Week')
   }
+  const sessions = expectedIds.map((id) => parsedSessions.find((session) => session.sessionId === id))
   const seenCueIds = new Set()
   const referencedAudioPaths = new Set()
   let productionEnvironment
@@ -230,15 +318,20 @@ const runtimeMediaManifest = {
         return [codec, asset.asset_name]
       })),
     })),
+    art: artBySession.get(session.sessionId) ?? null,
   })),
 }
-writeFileSync(join(outputRoot, 'court-week-media-manifest.json'), `${JSON.stringify(runtimeMediaManifest, null, 2)}\n`)
+const runtimeManifestName = artReadiness.release_ready
+  ? 'court-week-media-manifest.json'
+  : 'court-week-media-manifest.draft.json'
+writeFileSync(join(privateOutputRoot, runtimeManifestName), `${JSON.stringify(runtimeMediaManifest, null, 2)}\n`)
 
 let totalBytes = [...seenNames].reduce((sum, name) => sum + readFileSync(join(outputRoot, name)).length, 0)
-totalBytes += readFileSync(join(outputRoot, 'court-week-media-manifest.json')).length
-totalBytes += readFileSync(join(outputRoot, 'art-readiness-report.json')).length
-if (totalBytes > 150_000_000) throw new Error(`Release is ${totalBytes} bytes before provenance manifest; budget is 150 MB`)
+if (totalBytes > 150_000_000) throw new Error(`Release media is ${totalBytes} bytes; budget is 150 MB`)
 
+const publicAssets = [...new Map(assets.map(({ asset_name, bytes, sha256 }) => [
+  asset_name, { asset_name, bytes, sha256 },
+])).values()]
 const manifest = {
   schema: 'simjury.court-week-media/v1',
   case_id: 'cw-0001',
@@ -251,13 +344,22 @@ const manifest = {
     ready_scene_count: artReadiness.ready_scene_count,
     gap_count: artReadiness.gap_count,
   },
-  asset_count: seenNames.size + 3,
-  total_bytes: totalBytes,
-  assets,
+  asset_count: seenNames.size + 1,
+  media_bytes: totalBytes,
+  assets: publicAssets,
 }
 writeFileSync(join(outputRoot, 'release-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`)
 
 totalBytes += readFileSync(join(outputRoot, 'release-manifest.json')).length
 if (totalBytes > 150_000_000) throw new Error(`Release is ${totalBytes} bytes; budget is 150 MB`)
+
+writeFileSync(join(privateOutputRoot, 'release-provenance.json'), `${JSON.stringify({
+  schema: 'simjury.court-week-media-provenance/v1',
+  case_id: 'cw-0001',
+  release_tag: releaseTag,
+  source_revision: audioSessions[0]?.sourceRevision ?? null,
+  public_asset_count: seenNames.size + 1,
+  assets,
+}, null, 2)}\n`)
 
 console.log(`Prepared ${seenNames.size} content-addressed media assets (${totalBytes} bytes) for ${releaseTag}.`)
