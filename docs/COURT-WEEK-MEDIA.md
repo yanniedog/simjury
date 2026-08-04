@@ -95,6 +95,10 @@ V2 requirements retain a flat tablet projection for older review consumers,
 but readiness is decided only from the per-composition metadata. V1 manifests
 remain readable and produce a complete gap report; they cannot become
 release-ready until their shared crop metadata is explicitly migrated.
+An explicit compatibility migration remains structurally ready but is not crop
+review sign-off: readiness output and private contact sheets retain its
+`compatibility-migration` status until each composition is visually checked and
+marked `crop-reviewed`.
 
 Run the source and binary audits with:
 

@@ -11,6 +11,7 @@ export interface CompositionArtDirection {
   /** Null means the composition deliberately contains no visible evidence. */
   evidenceSafeRegion: ArtRegion | null
   permittedCaptionPositions: CaptionPosition[]
+  reviewStatus: 'compatibility-migration' | 'crop-reviewed'
 }
 
 export interface CommissionedSceneArt {
@@ -19,11 +20,13 @@ export interface CommissionedSceneArt {
 }
 
 /** Explicit compatibility migration for metadata reviewed as safe in all three crops. */
-function sharedCompositionArt(direction: CompositionArtDirection): CommissionedSceneArt['compositionArt'] {
+function sharedCompositionArt(
+  direction: Omit<CompositionArtDirection, 'reviewStatus'>,
+): CommissionedSceneArt['compositionArt'] {
   return {
-    portrait: { ...direction },
-    tablet: { ...direction },
-    desktop: { ...direction },
+    portrait: { ...direction, reviewStatus: 'compatibility-migration' },
+    tablet: { ...direction, reviewStatus: 'compatibility-migration' },
+    desktop: { ...direction, reviewStatus: 'compatibility-migration' },
   }
 }
 
@@ -97,15 +100,15 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
     compositionArt: {
       portrait: {
         focalPoint: { x: 50, y: 52 }, subjectSafeRegion: { x: 8, y: 36, width: 84, height: 42 },
-        evidenceSafeRegion: { x: 37, y: 53, width: 15, height: 8 }, permittedCaptionPositions: ['top'],
+        evidenceSafeRegion: { x: 37, y: 53, width: 15, height: 8 }, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
       },
       tablet: {
         focalPoint: { x: 50, y: 52 }, subjectSafeRegion: { x: 10, y: 22, width: 80, height: 58 },
-        evidenceSafeRegion: { x: 39, y: 57, width: 12, height: 10 }, permittedCaptionPositions: ['top'],
+        evidenceSafeRegion: { x: 39, y: 57, width: 12, height: 10 }, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
       },
       desktop: {
         focalPoint: { x: 50, y: 52 }, subjectSafeRegion: { x: 10, y: 20, width: 80, height: 58 },
-        evidenceSafeRegion: { x: 38, y: 61, width: 10, height: 9 }, permittedCaptionPositions: ['top'],
+        evidenceSafeRegion: { x: 38, y: 61, width: 10, height: 9 }, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
       },
     },
   },
@@ -125,10 +128,10 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
   },
   'tue-mir-chief': {
     altDescription: 'Records custodian Tovan Mir gives evidence from the witness box while Crown counsel questions him; no audit-log content, launch-strip words, time or state of mind is depicted.',
-    focalPoint: { x: 54, y: 46 },
-    subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
+    compositionArt: sharedCompositionArt({
+      focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
+      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
+    }),
   },
 }
 

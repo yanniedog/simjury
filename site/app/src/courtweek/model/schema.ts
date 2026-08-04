@@ -40,6 +40,7 @@ const compositionArtDirectionSchema = z.object({
   subjectSafeRegion: regionSchema.nullable(),
   evidenceSafeRegion: regionSchema.nullable(),
   permittedCaptionPositions: z.array(captionPositionSchema).min(1),
+  reviewStatus: z.enum(['compatibility-migration', 'crop-reviewed']),
 }).strict()
 const sceneCompositionArtSchema = z.object({
   portrait: compositionArtDirectionSchema,

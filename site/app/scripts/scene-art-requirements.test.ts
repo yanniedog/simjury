@@ -62,5 +62,7 @@ describe('SceneArtManifest contract', () => {
       .map(([sceneId]) => sceneId)
     expect(visibleEvidenceScenes).toEqual(['tue-recording'])
     expect(manifest.scenes['mon-adjourn'].compositionArt.portrait.subjectSafeRegion).toBeNull()
+    expect(manifest.scenes['mon-arrival'].compositionArt.portrait.reviewStatus).toBe('compatibility-migration')
+    expect(manifest.scenes['tue-recording'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
   })
 })

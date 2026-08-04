@@ -71,8 +71,11 @@ test('reports every incomplete scene and forbids the current generic assets', ()
     assert.equal(report.gaps.filter((gap) => gap.code === 'missing-file').length, 55 * 6)
     assert.equal(report.gaps.filter((gap) => gap.code === 'missing-subject-safe-region').length, 55 * 3)
     assert.equal(report.gaps.filter((gap) => gap.code === 'missing-evidence-safe-region').length, 55 * 3)
+    assert.equal(report.gaps.filter((gap) => gap.code === 'invalid-review-status').length, 55 * 3)
     assert.equal(report.gaps.filter((gap) => gap.code === 'unreferenced-visual-asset').length, 6)
     assert.equal(report.composition_readiness['scene-01'].portrait.ready, false)
+    assert.equal(report.composition_readiness['scene-01'].portrait.review_status, null)
+    assert.equal(report.crop_review_complete, false)
   } finally {
     rmSync(fixtureRoot, { recursive: true, force: true })
   }

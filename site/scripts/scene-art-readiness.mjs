@@ -9,6 +9,7 @@ const COMPOSITIONS = {
 }
 const FORMATS = ['avif', 'webp']
 const CAPTION_POSITIONS = new Set(['top', 'bottom', 'left', 'right'])
+const REVIEW_STATUSES = new Set(['compatibility-migration', 'crop-reviewed'])
 
 function filesBelow(directory) {
   if (!existsSync(directory)) return []
@@ -93,6 +94,7 @@ export function assessSceneArtManifest(manifest, mediaRoot) {
   const contentOwners = new Map()
   const readySceneIds = []
   const compositionReadiness = {}
+  const compatibilityMigrationSceneIds = new Set()
   const addGap = (sceneId, code, field, message) => gaps.push({ scene_id: sceneId, code, field, message })
 
   const supportedSchema = ['simjury.scene-art-manifest/v1', 'simjury.scene-art-manifest/v2'].includes(manifest?.schema)
@@ -140,6 +142,11 @@ export function assessSceneArtManifest(manifest, mediaRoot) {
       if (!Array.isArray(direction?.permittedCaptionPositions) || direction.permittedCaptionPositions.length === 0 ||
         direction.permittedCaptionPositions.some((position) => !CAPTION_POSITIONS.has(position))) {
         addGap(sceneId, 'invalid-caption-positions', `${directionField}.permittedCaptionPositions`, `${composition} requires at least one supported caption position.`)
+      }
+      if (!REVIEW_STATUSES.has(direction?.reviewStatus)) {
+        addGap(sceneId, 'invalid-review-status', `${directionField}.reviewStatus`, `${composition} requires an explicit crop-reviewed or compatibility-migration status.`)
+      } else if (direction.reviewStatus === 'compatibility-migration') {
+        compatibilityMigrationSceneIds.add(sceneId)
       }
       const formatDimensions = []
       for (const format of FORMATS) {
@@ -191,6 +198,8 @@ export function assessSceneArtManifest(manifest, mediaRoot) {
       compositionReadiness[sceneId][composition] = {
         ready: gaps.length === compositionGapStart,
         gap_count: gaps.length - compositionGapStart,
+        review_status: direction?.reviewStatus ?? null,
+        crop_review_complete: direction?.reviewStatus === 'crop-reviewed',
       }
     }
     if (gaps.length === gapStart) readySceneIds.push(sceneId)
@@ -214,6 +223,9 @@ export function assessSceneArtManifest(manifest, mediaRoot) {
     release_ready: gaps.length === 0 && entries.length === 55,
     gap_count: gaps.length,
     ready_scene_ids: readySceneIds,
+    crop_review_complete: entries.length === 55 && compatibilityMigrationSceneIds.size === 0 &&
+      Object.values(compositionReadiness).every((scene) => Object.values(scene).every((composition) => composition.crop_review_complete)),
+    compatibility_migration_scene_ids: [...compatibilityMigrationSceneIds],
     composition_readiness: compositionReadiness,
     gaps,
   }

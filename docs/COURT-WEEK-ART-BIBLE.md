@@ -13,10 +13,11 @@ windows, rails, microphones and fixed furniture do not migrate between scenes.
 
 Portrait, tablet and desktop are separately composed lenses on this same room.
 They may reveal different amounts of it, but may not mirror the room, swap the
-parties, invent a second witness box or move fixed furniture. Focal points,
+parties, invent a second witness box or move fixed furniture. New focal points,
 protected subject/evidence rectangles and permitted caption positions are
-reviewed separately for each lens; coordinates never inherit silently between
-aspect ratios.
+reviewed separately for each lens. Existing shared coordinates carry the
+explicit `compatibility-migration` status until crop contact-sheet review;
+they are not represented as crop-specific approval.
 
 ## Locked recurring cast
 

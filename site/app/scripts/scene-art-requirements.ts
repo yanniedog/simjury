@@ -22,9 +22,10 @@ export interface ReleaseReadySceneArt {
   sources: Record<typeof COMPOSITIONS[number], Record<typeof FORMATS[number], string>>
 }
 
-type DraftCompositionArtDirection = Omit<CompositionArtDirection, 'subjectSafeRegion' | 'evidenceSafeRegion'> & {
+type DraftCompositionArtDirection = Omit<CompositionArtDirection, 'subjectSafeRegion' | 'evidenceSafeRegion' | 'reviewStatus'> & {
   subjectSafeRegion?: ArtRegion | null
   evidenceSafeRegion?: ArtRegion | null
+  reviewStatus?: CompositionArtDirection['reviewStatus']
 }
 
 type DraftSceneArt = Omit<ReleaseReadySceneArt, 'compositionArt'> & {
