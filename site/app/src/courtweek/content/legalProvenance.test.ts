@@ -131,4 +131,21 @@ describe('Eleven Minutes legal provenance', () => {
     expect(finalBallot).toMatch(/final position in private.*all twelve agree.*eleven agree.*no lawful agreement/is)
     expect(finalBallot).toMatch(/no seat is identified/i)
   })
+
+  it('gives the weekend room a direct, balanced account of each live inference', () => {
+    expect(cueText('sat-causation-1')).toMatch(/conscious near 21:16.*persuasive without certainty.*possibility reasonable/is)
+    expect(cueText('sun-resume-2')).toMatch(/removes a shortcut.*does not erase.*may support.*point the other way/is)
+    expect(cueText('sun-negligence-2')).toMatch(/may support grossness.*genuine rescuer risk.*point against.*reasonable doubt/is)
+  })
+
+  it('keeps the strongest verdict analyses within the facts the jury could find', () => {
+    const murder = elevenMinutesCourtWeek.deliberation.outcomePaths.find(({ verdict }) => verdict === 'murder')!
+    const manslaughter = elevenMinutesCourtWeek.deliberation.outcomePaths.find(({ verdict }) => verdict === 'manslaughter')!
+
+    expect(murder.lawfulRationale).toMatch(/expressed fear that Saye’s unfinished review threatened her career/i)
+    expect(murder.lawfulRationale).not.toMatch(/proved knowledge of the audit/i)
+    expect(murder.counterAnalysis).toMatch(/memorandum was unfinished and unseen.*did not prove she knew its recommendation/i)
+    expect(manslaughter.lawfulRationale).toMatch(/nearest launch-capable craft while AR-71 had no craft assigned/i)
+    expect(manslaughter.lawfulRationale).not.toMatch(/only unassigned nearest craft/i)
+  })
 })
