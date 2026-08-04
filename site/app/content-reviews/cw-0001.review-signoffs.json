@@ -2,7 +2,7 @@
   "schema": "simjury.court-week-review-signoffs/v1",
   "caseId": "cw-0001",
   "revision": "2026.08.03-r1",
-  "contentDigest": "sha256:0b76971e2b9340ae561f08f76e8e50c9753d79b97bcd74d37fc349bdebfb38dc",
+  "contentDigest": "sha256:58c36949aa1c304709932e67fcb5580c2c956bff147fdc041f578a0310324ab2",
   "signoffs": [
     { "role": "prosecution", "decision": "pending" },
     { "role": "defence", "decision": "pending" },
