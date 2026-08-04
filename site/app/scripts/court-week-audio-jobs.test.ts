@@ -4,7 +4,8 @@ import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
-import { AUDIO_SAMPLE_RATE, buildCourtWeekAudioJobs, COURT_WEEK_VOICES, writeCourtWeekAudioJobs } from './court-week-audio-jobs'
+import { AUDIO_SAMPLE_RATE, buildCourtWeekAudioJobs, COURT_WEEK_VOICES, DIALOGUE_SPEAKER_ALIASES, splitCueUtterances, writeCourtWeekAudioJobs } from './court-week-audio-jobs'
+import { RUNTIME_DEPENDENT_CUE_IDS } from '../src/courtweek/media/runtimeCues'
 import { writeSceneArtManifestDraft } from './scene-art-requirements'
 
 describe('Court Week prerecorded audio jobs', () => {
@@ -23,17 +24,58 @@ describe('Court Week prerecorded audio jobs', () => {
       const sourceCueIds = elevenMinutesCourtWeek.manifest.sessions
         .find((session) => session.id === job.sessionId)!
         .scenes.flatMap((scene) => scene.cues.map((cue) => cue.id))
-      const audioCueIds = job.segments.flatMap((segment) => segment.cues.map((cue) => cue.id))
-      expect(audioCueIds).toEqual(sourceCueIds)
+        .filter((cueId) => !RUNTIME_DEPENDENT_CUE_IDS.has(cueId))
+      const audioCueIds = [...new Set(job.segments.flatMap((segment) =>
+        segment.cues.map((cue) => cue.sourceCueId)))]
+      expect(audioCueIds.sort()).toEqual([...sourceCueIds].sort())
       expect(new Set(job.segments.map((segment) => segment.opaqueId)).size)
         .toBe(job.segments.length)
     }
   })
 
   it('has an intentional casting decision for every and only authored speaker', () => {
-    const speakers = new Set(elevenMinutesCourtWeek.manifest.sessions.flatMap((session) =>
-      session.scenes.flatMap((scene) => scene.cues.map((cue) => cue.speaker))))
+    const speakers = new Set([
+      ...elevenMinutesCourtWeek.manifest.sessions.flatMap((session) =>
+        session.scenes.flatMap((scene) => scene.cues.map((cue) => cue.speaker))),
+      ...Object.values(DIALOGUE_SPEAKER_ALIASES),
+    ])
     expect(Object.keys(COURT_WEEK_VOICES).sort()).toEqual([...speakers].sort())
+  })
+
+  it('splits multi-party cues into speaker-attributed utterances', () => {
+    const orrCross = elevenMinutesCourtWeek.manifest.sessions[0].scenes
+      .flatMap((scene) => scene.cues)
+      .find((cue) => cue.id === 'mon-orr-cross-1')!
+    const utterances = splitCueUtterances(orrCross)
+    expect(utterances.length).toBeGreaterThan(1)
+    expect(utterances.every((utterance) => utterance.sourceCueId === 'mon-orr-cross-1')).toBe(true)
+    expect(new Set(utterances.map((utterance) => utterance.speaker))).toEqual(new Set([
+      'Defence counsel Corin Dax',
+      'Nella Orr',
+    ]))
+
+    const recording = elevenMinutesCourtWeek.manifest.sessions[1].scenes
+      .flatMap((scene) => scene.cues)
+      .find((cue) => cue.id === 'tue-recording-play')!
+    const channel = splitCueUtterances(recording)
+    expect(channel.map((utterance) => utterance.speaker)).toEqual([
+      'Ilan Saye',
+      'Peli Dorn',
+      'Mara Venn',
+      'Ilan Saye',
+      'Mara Venn',
+      'Ilan Saye',
+    ])
+  })
+
+  it('omits runtime-dependent Sunday cues from prerecorded jobs', () => {
+    const sunday = buildCourtWeekAudioJobs(elevenMinutesCourtWeek).jobs
+      .find((job) => job.sessionId === 'cw-0001-sunday')!
+    const ids = sunday.segments.flatMap((segment) => segment.cues.map((cue) => cue.sourceCueId))
+    expect(ids).not.toContain('sun-verdict-return')
+    expect(ids).not.toContain('sun-analysis')
+    expect(ids).toContain('sun-verdict-confirm')
+    expect(ids).toContain('sun-analysis-close')
   })
 
   it('packages complete codec sets into opaque assets and a cue-range runtime manifest', () => {
@@ -115,6 +157,7 @@ describe('Court Week prerecorded audio jobs', () => {
             durationSeconds: segmentSeconds,
             cues: segment.cues.map((cue, index) => ({
               cueId: cue.id,
+              sourceCueId: cue.sourceCueId,
               speaker: cue.speaker,
               text: cue.text,
               startSeconds: index * segmentSeconds / segment.cues.length,
@@ -167,6 +210,11 @@ describe('Court Week prerecorded audio jobs', () => {
       const publicManifest = JSON.parse(readFileSync(resolve(outputRoot, 'release-manifest.json'), 'utf8'))
       expect(JSON.stringify(publicManifest)).not.toContain('logical_path')
       expect(JSON.stringify(publicManifest)).not.toContain('mon-arrival')
+      expect(publicManifest.media_bytes).toBeGreaterThan(0)
+      expect(publicManifest.total_bytes).toBeGreaterThan(publicManifest.media_bytes)
+      expect(publicManifest.total_bytes).toBe(
+        publicManifest.media_bytes + Buffer.byteLength(`${JSON.stringify(publicManifest, null, 2)}\n`),
+      )
       const artReport = JSON.parse(readFileSync(resolve(privateOutputRoot, 'art-readiness-report.json'), 'utf8'))
       expect(artReport.release_ready).toBe(false)
       expect(artReport.ready_scene_count).toBe(9)

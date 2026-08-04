@@ -15,6 +15,11 @@ on:
         required: true
         type: boolean
         default: false
+      reviewed_run_id:
+        description: Prior workflow run id whose public Release artifact was reviewed (required when publish=true)
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -25,7 +30,10 @@ concurrency:
 
 jobs:
   source:
-    if: github.ref == 'refs/heads/main' && github.event.repository.fork == false
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      github.event.repository.fork == false &&
+      inputs.publish != true
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -208,20 +216,52 @@ jobs:
 
   publish:
     if: inputs.publish == true
-    needs: package
     permissions:
       contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: ${{ inputs.release_tag }}
-          path: .court-week-release
+      - name: Require the reviewed run that produced the approved artifact
+        env:
+          REVIEWED_RUN_ID: ${{ inputs.reviewed_run_id }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${REVIEWED_RUN_ID}" ]]; then
+            echo "publish=true requires reviewed_run_id pointing at the prior review workflow run." >&2
+            exit 1
+          fi
+          if ! [[ "${REVIEWED_RUN_ID}" =~ ^[0-9]+$ ]]; then
+            echo "reviewed_run_id must be a numeric GitHub Actions run id." >&2
+            exit 1
+          fi
+      - name: Download the exact reviewed public Release payload
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEWED_RUN_ID: ${{ inputs.reviewed_run_id }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          mkdir -p .court-week-release
+          gh run download "$REVIEWED_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "$RELEASE_TAG" \
+            --dir .court-week-release
+          test -f .court-week-release/release-manifest.json
+          node -e '
+            const fs = require("node:fs");
+            const manifest = JSON.parse(fs.readFileSync(".court-week-release/release-manifest.json", "utf8"));
+            if (manifest.release_tag !== process.env.RELEASE_TAG || manifest.case_id !== "cw-0001") {
+              throw new Error("Reviewed artifact release-manifest does not match the requested tag");
+            }
+            if (!Number.isInteger(manifest.total_bytes) || manifest.total_bytes < (manifest.media_bytes ?? 0)) {
+              throw new Error("Reviewed artifact is missing a complete total_bytes");
+            }
+          '
       - name: Publish a new immutable release without mutating an existing tag
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.release_tag }}
+          REVIEWED_RUN_ID: ${{ inputs.reviewed_run_id }}
         run: |
           set -euo pipefail
           if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
@@ -232,5 +272,5 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --title "SimJury Court Week media — $RELEASE_TAG" \
-            --notes "Reviewed, content-addressed static media for cw-0001. Source commit: $GITHUB_SHA"
+            --notes "Reviewed, content-addressed static media for cw-0001. Reviewed workflow run: $REVIEWED_RUN_ID. Publish commit: $GITHUB_SHA"
           test "$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json isImmutable --jq .isImmutable)" = true

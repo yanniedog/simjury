@@ -50,7 +50,12 @@ export function useWeeklyProgress(
         if (sequence === saveSequence.current) setPersistence(destination)
       })
     }, 120)
-    return () => window.clearTimeout(timeout)
+    return () => {
+      window.clearTimeout(timeout)
+      // Flush immediately on unmount so a day-boundary remount cannot lose the
+      // just-recorded completion still sitting in the 120 ms debounce window.
+      void saveWeeklyProgress(progress.courtWeekId, progress)
+    }
   }, [hydrated, progress])
 
   const updateProgress = useCallback(

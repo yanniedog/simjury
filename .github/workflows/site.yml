@@ -70,6 +70,7 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          COURT_WEEK_REQUIRE_PINNED_MEDIA: "1"
         run: npm run deploy
       - name: Notify search indexes
         continue-on-error: true

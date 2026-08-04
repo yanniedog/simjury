@@ -57,12 +57,18 @@ function sealPack(pack: CourtDayPack): string {
 rmSync(outputRoot, { recursive: true, force: true })
 mkdirSync(outputRoot, { recursive: true })
 
+const requirePinnedMedia = process.env.COURT_WEEK_REQUIRE_PINNED_MEDIA === '1'
 let pinnedMedia: CourtWeekRuntimeMediaManifest | undefined
 if (existsSync(pinnedMediaPath)) {
   pinnedMedia = courtWeekRuntimeMediaManifestSchema.parse(
     JSON.parse(readFileSync(pinnedMediaPath, 'utf8')),
   )
   assertRuntimeMediaCoverage(elevenMinutesCourtWeek, pinnedMedia)
+} else if (requirePinnedMedia) {
+  throw new Error(
+    'Production Court Week packs require media/court-week-media-manifest.pinned.json ' +
+    '(validated authored narration). Set COURT_WEEK_REQUIRE_PINNED_MEDIA=1 only when that file is present.',
+  )
 }
 const packs = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap, pinnedMedia)
 for (const pack of packs) {

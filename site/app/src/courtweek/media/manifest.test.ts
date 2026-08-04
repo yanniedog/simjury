@@ -9,15 +9,18 @@ import {
   courtWeekRuntimeMediaManifestSchema,
 } from './manifest'
 import { completeRuntimeMediaFixture } from './runtimeManifest.fixture'
+import { RUNTIME_DEPENDENT_CUE_IDS } from './runtimeCues'
 
 describe('pinned text-free Court Week media manifest', () => {
-  it('strictly maps all 125 cues and 55 scenes without carrying authored prose', () => {
+  it('strictly maps all prerecorded cues and 55 scenes without carrying authored prose', () => {
     const fixture = completeRuntimeMediaFixture()
     expect(() => assertRuntimeMediaCoverage(elevenMinutesCourtWeek, fixture)).not.toThrow()
     const mappings = fixture.sessions.flatMap((session) =>
       session.segments.flatMap((segment) => segment.cues))
-    expect(mappings).toHaveLength(125)
-    expect(new Set(mappings.map((cue) => cue.cue_id))).toHaveLength(125)
+    expect(mappings).toHaveLength(123)
+    expect(new Set(mappings.map((cue) => cue.cue_id))).toHaveLength(123)
+    expect([...RUNTIME_DEPENDENT_CUE_IDS].every((cueId) =>
+      !mappings.some((cue) => cue.cue_id === cueId))).toBe(true)
     const artMappings = fixture.sessions.flatMap((session) =>
       session.art.strips.flatMap((strip) => strip.scene_slots))
     expect(artMappings).toHaveLength(55)
@@ -59,7 +62,7 @@ describe('pinned text-free Court Week media manifest', () => {
     )
   })
 
-  it('attaches each cue to one segment range and pinned codec URLs', () => {
+  it('attaches each prerecorded cue to one segment range and pinned codec URLs', () => {
     const fixture = completeRuntimeMediaFixture()
     const sessions = elevenMinutesCourtWeek.manifest.sessions.map((session) =>
       attachSessionAudio(
@@ -71,6 +74,10 @@ describe('pinned text-free Court Week media manifest', () => {
       session.scenes.flatMap((scene) => scene.cues))
     expect(cues).toHaveLength(125)
     for (const cue of cues) {
+      if (RUNTIME_DEPENDENT_CUE_IDS.has(cue.id)) {
+        expect(cue.audio).toBeUndefined()
+        continue
+      }
       expect(cue.audio?.segmentId).toBeTruthy()
       expect(cue.audio?.endSeconds).toBeGreaterThan(cue.audio?.startSeconds ?? -1)
       expect(cue.audio?.opus).toMatch(/^https:\/\/github\.com\/yanniedog\/simjury\/releases\/download\//u)

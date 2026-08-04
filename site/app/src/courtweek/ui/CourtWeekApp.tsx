@@ -139,11 +139,13 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const [deskOpen, setDeskOpen] = useState(false)
   const [evidenceId, setEvidenceId] = useState<string | null>(null)
   const [interactionOpen, setInteractionOpen] = useState(false)
+  const [interactionOpenedAt, setInteractionOpenedAt] = useState<number | null>(null)
   const [interactionChoice, setInteractionChoice] = useState<string | null>(null)
   const [interactionSealed, setInteractionSealed] = useState(false)
   const [reasoningQuestion, setReasoningQuestion] = useState('')
   const [reasoningEvidence, setReasoningEvidence] = useState('')
   const [replaySessionId, setReplaySessionId] = useState<string | null>(null)
+  const [, setInteractionTick] = useState(0)
   const accessMode = progress.accessibilityMode ?? 'audio-first'
   const observedTime = observeCourtTime(Date.parse(progress.highestObservedTime), now())
   const availability = getSessionAvailability(
@@ -222,11 +224,13 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     }
     if (position.scene.interaction && !interactionOpen) {
       setInteractionOpen(true)
+      setInteractionOpenedAt(now())
       return
     }
     const nextScene = activeSession.scenes[position.sceneIndex + 1]
     if (nextScene) {
       setInteractionOpen(false)
+      setInteractionOpenedAt(null)
       setInteractionChoice(null)
       setInteractionSealed(false)
       commitPosition(activeSession.id, nextScene.id, nextScene.cues[0].id)
@@ -236,6 +240,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       setReplaySessionId(null)
       setStarted(false)
       setInteractionOpen(false)
+      setInteractionOpenedAt(null)
       setInteractionChoice(null)
       setInteractionSealed(false)
       return
@@ -251,9 +256,10 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     }))
     setStarted(false)
     setInteractionOpen(false)
+    setInteractionOpenedAt(null)
     setInteractionChoice(null)
     setInteractionSealed(false)
-  }, [activeSession, commitPosition, courtWeek.manifest.sessions, interactionOpen, isReplay, position, progress.completedSessionIds, updateProgress])
+  }, [activeSession, commitPosition, courtWeek.manifest.sessions, interactionOpen, isReplay, now, position, progress.completedSessionIds, updateProgress])
   const handleCueEnded = useCallback(() => {
     advance()
   }, [advance])
@@ -324,6 +330,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
           setReplaySessionId(session.id)
           setStarted(false)
           setInteractionOpen(false)
+          setInteractionOpenedAt(null)
           setInteractionChoice(null)
           setInteractionSealed(false)
           setReasoningQuestion('')
@@ -358,11 +365,24 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const sceneCount = activeSession.scenes.length
   const progressLabel = `Scene ${position.sceneIndex + 1} of ${sceneCount}`
   const interaction = position.scene.interaction
+  const interactionElapsedSeconds = interactionOpen && interactionOpenedAt != null
+    ? Math.max(0, (now() - interactionOpenedAt) / 1000)
+    : 0
+  const interactionMinimumMet = !interaction
+    || isReplay
+    || interactionElapsedSeconds >= interaction.minimumSeconds
+  useEffect(() => {
+    if (!interactionOpen || !interaction || isReplay || interactionMinimumMet) return
+    const remainingMs = Math.max(0, interaction.minimumSeconds * 1000 - interactionElapsedSeconds * 1000)
+    const timer = window.setTimeout(() => setInteractionTick((value) => value + 1), Math.min(remainingMs + 16, 1000))
+    return () => window.clearTimeout(timer)
+  }, [interaction, interactionElapsedSeconds, interactionMinimumMet, interactionOpen, isReplay])
   const firstBallot = firstBallotForScene(
     courtWeek.deliberation, position.scene.id, progress.provisionalVote,
   )
   const finishInteraction = () => {
     if (!interaction) return
+    if (!interactionMinimumMet) return
     if (isReplay) {
       let nextScene: CourtSession['scenes'][number] | undefined = activeSession.scenes[position.sceneIndex + 1]
       const sundayNext = activeSession.day === 'Sunday'
@@ -370,6 +390,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
         : null
       if (sundayNext) nextScene = activeSession.scenes.find((scene) => scene.id === sundayNext)
       setInteractionOpen(false)
+      setInteractionOpenedAt(null)
       setInteractionChoice(null)
       setInteractionSealed(false)
       setReasoningQuestion('')
@@ -455,6 +476,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       currentCueId: nextScene?.cues[0]?.id ?? nextSession?.scenes[0]?.cues[0]?.id,
     }))
     setInteractionOpen(false)
+    setInteractionOpenedAt(null)
     setInteractionChoice(null)
     setInteractionSealed(false)
     setReasoningQuestion('')
@@ -558,6 +580,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
           type="button"
           disabled={
             !isReplay && (
+              !interactionMinimumMet ||
               (!interactionChoice && (isVote || Boolean(interaction.options?.length))) ||
               (interaction.kind === 'reasoning' && (!reasoningQuestion || !reasoningEvidence))
             )
@@ -565,6 +588,8 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
           onClick={finishInteraction}
         >
           {isReplay ? 'Continue replay'
+            : !interactionMinimumMet
+            ? `Continue in ${Math.max(1, Math.ceil(interaction.minimumSeconds - interactionElapsedSeconds))}s`
             : interactionSealed
             ? (progress.secondBallotWasUnanimous ? 'Return to court' : 'Continue deliberation')
             : interaction.kind === 'final-vote' ? 'Seal final ballot'
