@@ -31,12 +31,19 @@ describe('sealed Court Week partition', () => {
     expect(packs[5].deliberation).toEqual(elevenMinutesCourtWeek.deliberation)
   })
 
-  it('has every shared responsive artwork fallback required by sealed scenes', () => {
+  it('carries every commissioned Monday source in Monday only', () => {
     const media = resolve('public/media/court-week/cw-0001')
-    for (const composition of ['portrait', 'tablet', 'wide']) {
-      for (const format of ['avif', 'webp']) {
-        expect(existsSync(resolve(media, `courtroom-${composition}.${format}`))).toBe(true)
+    const monday = packs[0]
+    expect(monday.session.scenes.every((scene) => scene.visual.sources)).toBe(true)
+    for (const scene of monday.session.scenes) {
+      for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
+        for (const format of ['avif', 'webp'] as const) {
+          const source = scene.visual.sources?.[composition][format]
+          expect(source).toBe(`scenes/${scene.id}/${composition}.${format}`)
+          expect(existsSync(resolve(media, source!))).toBe(true)
+        }
       }
     }
+    expect(JSON.stringify(packs.slice(1))).not.toContain('scenes/mon-')
   })
 })

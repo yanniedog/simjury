@@ -2,6 +2,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
+import { SCENE_ART_AUTHORING } from '../src/courtweek/content/sceneArt'
 import type { CourtWeek } from '../src/courtweek/model/schema'
 
 export const SCENE_ART_SCHEMA = 'simjury.scene-art-manifest/v1' as const
@@ -46,60 +47,7 @@ export interface SceneArtManifestDraft {
  * Add reviewed safe regions here as art is commissioned. Source filenames are
  * fixed by convention and are never silently inherited from another scene.
  */
-export const SCENE_ART_AUTHORING: Readonly<Record<string, Partial<Pick<
-  ReleaseReadySceneArt,
-  'altDescription' | 'focalPoint' | 'subjectSafeRegion' | 'evidenceSafeRegion' | 'permittedCaptionPositions'
->>>> = {
-  'mon-arrival': {
-    altDescription: 'Juror-seat view of the settled courtroom before evidence, with judge, separated counsel tables and the accused shown neutrally.',
-    focalPoint: { x: 50, y: 44 },
-    subjectSafeRegion: { x: 14, y: 18, width: 72, height: 60 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
-  },
-  'mon-oath': {
-    altDescription: 'Juror-seat view of the judge and an officer of the court addressing the jury before evidence; neither oath nor affirmation is visually preferred.',
-    focalPoint: { x: 50, y: 42 },
-    subjectSafeRegion: { x: 14, y: 18, width: 72, height: 60 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
-  },
-  'mon-crown-opening': {
-    altDescription: 'Crown counsel addresses the jury while defence counsel and the accused remain seated separately; posture and lighting express no view about guilt.',
-    focalPoint: { x: 40, y: 46 },
-    subjectSafeRegion: { x: 12, y: 18, width: 76, height: 62 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
-  },
-  'mon-orr-chief': {
-    altDescription: 'Operations supervisor Nella Orr gives evidence from the witness box while Crown counsel questions her; no route information is shown in the artwork.',
-    focalPoint: { x: 54, y: 46 },
-    subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
-  },
-  'mon-orr-cross': {
-    altDescription: 'Nella Orr remains in the witness box as defence counsel questions her from the opposing lectern; no disputed proposition is resolved visually.',
-    focalPoint: { x: 54, y: 46 },
-    subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
-  },
-  'mon-elements': {
-    altDescription: 'The judge gives preliminary directions from the bench to the jury; no legal element, inference or verdict is depicted as answered.',
-    focalPoint: { x: 50, y: 38 },
-    subjectSafeRegion: { x: 20, y: 16, width: 60, height: 60 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
-  },
-  'mon-adjourn': {
-    altDescription: 'The same courtroom stands empty after adjournment, with the bench, witness box and counsel tables orderly and no evidence legible.',
-    focalPoint: { x: 50, y: 42 },
-    subjectSafeRegion: { x: 10, y: 12, width: 80, height: 66 },
-    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
-    permittedCaptionPositions: ['bottom'],
-  },
-}
+export { SCENE_ART_AUTHORING }
 
 export function buildSceneArtManifestDraft(courtWeek: CourtWeek): SceneArtManifestDraft {
   const scenes = Object.fromEntries(courtWeek.manifest.sessions.flatMap((session) =>

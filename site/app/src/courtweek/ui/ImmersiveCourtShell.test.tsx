@@ -22,6 +22,14 @@ const scene: Scene = {
     alt: 'Defence counsel addresses the witness from the jury viewpoint.',
     focalPoint: { x: 58, y: 42 },
     captionPosition: 'bottom',
+    subjectSafeRegion: { x: 12, y: 18, width: 76, height: 58 },
+    evidenceSafeRegion: { x: 30, y: 28, width: 40, height: 30 },
+    permittedCaptionPositions: ['bottom'],
+    sources: {
+      portrait: { avif: 'scenes/scene-1/portrait.avif', webp: 'scenes/scene-1/portrait.webp' },
+      tablet: { avif: 'scenes/scene-1/tablet.avif', webp: 'scenes/scene-1/tablet.webp' },
+      desktop: { avif: 'scenes/scene-1/desktop.avif', webp: 'scenes/scene-1/desktop.webp' },
+    },
   },
   cues: [cue],
   transitionSeconds: 3,
@@ -59,10 +67,12 @@ describe('ImmersiveCourtShell', () => {
       />,
     )
 
-    expect(markup).toContain('media="(max-width: 599px) and (orientation: portrait)"')
-    expect(markup).toContain('defence-cross-portrait.avif')
-    expect(markup).toContain('defence-cross-tablet.webp')
-    expect(markup).toContain('defence-cross-desktop.avif')
+    expect(markup).toContain('media="(orientation: portrait) and (max-width: 700px)"')
+    expect(markup).toContain('media="(orientation: landscape) and (max-height: 500px), (min-width: 1100px)"')
+    expect(markup).toContain('scenes/scene-1/portrait.avif')
+    expect(markup).toContain('scenes/scene-1/tablet.webp')
+    expect(markup).toContain('scenes/scene-1/desktop.avif')
+    expect(markup).toContain('data-subject-safe-region')
     expect(markup).toContain('aria-pressed="true"')
     expect(markup).toContain('Juror desk')
     expect(markup).toContain('Full screen')

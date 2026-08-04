@@ -1,4 +1,5 @@
 import type { CourtSession, LegalPhase, Scene, SceneCue } from '../model/schema'
+import { commissionedVisual } from './sceneArt'
 
 type CueInput = Omit<SceneCue, 'evidenceIds' | 'replayable'> & { evidenceIds?: string[]; replayable?: boolean }
 
@@ -19,11 +20,11 @@ function scene(
 ): Scene {
   return {
     id, title, phase,
-    visual: {
+    visual: commissionedVisual(id, {
       fallbackId,
       alt: `Illustrated courtroom view for ${title}. No legal information depends on this image.`,
       focalPoint: { x: 50, y: 44 }, captionPosition: 'bottom',
-    },
+    }),
     cues, transitionSeconds: 8,
     interaction: { kind, prompt, minimumSeconds, ...(options ? { options } : {}) },
   }

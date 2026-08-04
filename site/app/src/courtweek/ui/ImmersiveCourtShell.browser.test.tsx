@@ -65,8 +65,6 @@ describe('ImmersiveCourtShell browser behavior', () => {
 
     const image = container.querySelector('img')
     act(() => image?.dispatchEvent(new Event('error')))
-    expect(container.querySelector('img')?.getAttribute('src')).toBe('/assets/courtroom-wide.webp')
-    act(() => container.querySelector('img')?.dispatchEvent(new Event('error')))
     expect(container.querySelector('.cw-stage__fallback')).not.toBeNull()
     act(() => root.unmount())
   })

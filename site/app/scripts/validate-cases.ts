@@ -25,11 +25,19 @@ if (sessions.map((session) => session.day).join('|') !== expectedDays.join('|'))
 }
 
 const visualRoot = join(appRoot, 'public', 'media', 'court-week', elevenMinutesCourtWeek.manifest.id)
-for (const name of ['portrait', 'tablet', 'wide']) {
-  for (const format of ['avif', 'webp']) {
-    const path = join(visualRoot, `courtroom-${name}.${format}`)
-    if (!existsSync(path)) throw new Error(`Missing responsive courtroom visual: ${path}`)
+let commissionedScenes = 0
+for (const scene of sessions.flatMap((session) => session.scenes)) {
+  if (!scene.visual.sources) continue
+  commissionedScenes += 1
+  for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
+    for (const format of ['avif', 'webp'] as const) {
+      const path = join(visualRoot, scene.visual.sources[composition][format])
+      if (!existsSync(path)) throw new Error(`Missing commissioned scene visual: ${path}`)
+    }
   }
+}
+if (commissionedScenes !== 7) {
+  throw new Error(`Expected the seven reviewed Monday scene sets; found ${commissionedScenes}`)
 }
 
 for (const session of sessions) {
