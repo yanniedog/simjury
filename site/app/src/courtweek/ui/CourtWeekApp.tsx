@@ -24,7 +24,12 @@ import {
   observeCourtTime,
   formatCourtUnlock,
 } from '../state/schedule'
-import { type AccessMode, type StoredWeeklyProgress, downloadWeeklyProgress } from '../state/progress'
+import {
+  type AccessMode,
+  type StoredWeeklyProgress,
+  downloadWeeklyProgress,
+  mergeImportedWeeklyProgress,
+} from '../state/progress'
 import { useWeeklyProgress, type PersistenceIssue } from '../state/useWeeklyProgress'
 import { EvidenceViewer } from './EvidenceViewer'
 import { CourtWeekCompletion } from './CourtWeekCompletion'
@@ -675,7 +680,9 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
           readOnly={isReplay}
           inactive={Boolean(evidence)}
           onNotesChange={(notes) => updateProgress((current) => ({ ...current, notes }))}
-          onImport={(imported) => updateProgress(imported)}
+          onImport={(imported) => updateProgress((current) => (
+            mergeImportedWeeklyProgress(current, imported)
+          ))}
           onInspectEvidence={(id, trigger) => {
             playback.pause()
             evidenceTrigger.current = trigger
