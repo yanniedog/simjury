@@ -1,4 +1,4 @@
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -54,6 +54,18 @@ describe('Court Week reviewed-source signoffs', () => {
     expect(report.exactSourceMatch).toBe(true)
     expect(report.readyToPublish).toBe(false)
     expect(report.approvedRoles).toEqual([])
+    expect(report.pendingRoles).toEqual(COURT_WEEK_REVIEW_ROLES)
+  })
+
+  it('pins the checked-in pending ledger to the exact current source', () => {
+    const checkedIn = JSON.parse(readFileSync(
+      join(process.cwd(), 'content-reviews/cw-0001.review-signoffs.json'),
+      'utf8',
+    )) as ReviewSignoffSource
+    const report = assessReviewSignoffs(checkedIn)
+
+    expect(report.exactSourceMatch).toBe(true)
+    expect(report.readyToPublish).toBe(false)
     expect(report.pendingRoles).toEqual(COURT_WEEK_REVIEW_ROLES)
   })
 

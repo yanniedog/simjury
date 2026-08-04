@@ -70,7 +70,7 @@ export const elevenMinutesTrialRecord: TrialRecord = {
     {
       id: 'ex-launch-strip', label: 'Yellow launch strip', kind: 'document',
       provenance: 'Printed automatically when the distress incident was accepted, then recovered from Mara Venn’s console tray.',
-      authentication: 'Tovan Mir matches its incident number and print sequence to the immutable system log.',
+      authentication: 'Tovan Mir matches its incident number and print sequence to the immutable system log and recognises Venn\'s handwriting from incident strips he routinely reviewed before this event.',
       integrity: 'The paper bears no alteration; the handwritten notation “hold—readiness” is not timestamped.',
       admittedThrough: 'Tovan Mir', allowedUses: ['The accepted beacon and the handwritten hold notation'],
       limitations: ['Handwriting alone does not prove when or why it was written'], replayable: true, status: 'admitted',
