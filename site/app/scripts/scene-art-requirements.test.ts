@@ -100,6 +100,7 @@ describe('SceneArtManifest contract', () => {
       'sun-negligence',
       'sat-separate',
       'sun-second-ballot',
+      'sun-majority',
     ]
     for (const sceneId of evidenceNeutralReviewedScenes) {
       for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
@@ -184,6 +185,10 @@ describe('SceneArtManifest contract', () => {
       expect(manifest.scenes['sun-analysis'].compositionArt[composition].evidenceSafeRegion).toBeNull()
       expect(manifest.scenes['sun-analysis'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
       expect(manifest.scenes['sun-analysis'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
+      expect(manifest.scenes['sun-majority'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+      expect(manifest.scenes['sun-majority'].compositionArt[composition].evidenceSafeRegion).toBeNull()
+      expect(manifest.scenes['sun-majority'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
+      expect(manifest.scenes['sun-majority'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
     }
     expect(manifest.scenes['sat-room'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sat-room'].altDescription).toContain('No ballot is shown')
@@ -216,5 +221,7 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['sun-second-ballot'].altDescription).toContain('No individual choice, count, aggregate, faction, verdict, label or readable card is visible')
     expect(manifest.scenes['sun-analysis'].altDescription).toContain('No verdict, count or preferred analysis is shown')
     expect(manifest.scenes['sun-analysis'].altDescription).toContain('two lawful readings appear only in the live interface')
+    expect(manifest.scenes['sun-majority'].altDescription).toContain('numerical rule and later jury-room discussion appear only in audio and the live interface')
+    expect(manifest.scenes['sun-majority'].altDescription).toContain('no threshold, pressure gesture, lone juror, count, faction, verdict or outcome is visible')
   })
 })

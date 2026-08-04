@@ -757,6 +757,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'sun-majority': {
+    altDescription: 'From the juror side, Judge Sel Aven addresses the room from the bench while Crown counsel remains left, defence counsel and the accused remain right, and a plain-clothed officer waits by the closed door. The numerical rule and later jury-room discussion appear only in audio and the live interface; no threshold, pressure gesture, lone juror, count, faction, verdict or outcome is visible.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 50 }, subjectSafeRegion: { x: 0, y: 42, width: 100, height: 42 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 47 }, subjectSafeRegion: { x: 0, y: 35, width: 100, height: 55 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 45 }, subjectSafeRegion: { x: 0, y: 34, width: 100, height: 56 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
   'sat-note': {
     altDescription: 'A folded face-down unmarked jury note rests on a plain court-clerk tray in the foreground while Judge Sel Aven, Crown counsel, defence counsel and the accused remain neutral behind it. No writing, ballot number, juror identity, position or verdict is visible.',
     compositionArt: {
