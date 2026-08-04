@@ -443,6 +443,32 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     playback.pause()
     setDeskOpen(true)
   }, [deskOpen, playback])
+  const evidence = useMemo(() => (
+    evidenceId ? courtWeek.trial.evidence.find((item) => item.id === evidenceId) : undefined
+  ), [courtWeek.trial.evidence, evidenceId])
+  const recordingReplayCues = useMemo(() => (
+    evidence?.replaySourceCueId
+      ? (() => {
+          const ordered = courtWeek.manifest.sessions.flatMap((session) => (
+            session.scenes.flatMap((scene) => scene.cues.map((cue) => ({ cue, sessionId: session.id })))
+          ))
+          const finalAdmissionIndex = ordered.findIndex(({ cue }) => (
+            cue.admissionStatus === 'final' && cue.evidenceIds.includes(evidence.id)
+          ))
+          const currentIndex = ordered.findIndex(({ cue }) => cue.id === progress.currentCueId)
+          const admissionSessionId = ordered[finalAdmissionIndex]?.sessionId
+          const lawfullyAvailable = finalAdmissionIndex >= 0 && (
+            Boolean(admissionSessionId && progress.completedSessionIds.includes(admissionSessionId))
+            || currentIndex > finalAdmissionIndex
+          )
+          if (!lawfullyAvailable) return []
+          return ordered
+            .map(({ cue }) => cue)
+            .filter((cue) => (cue.sourceCueId ?? cue.id) === evidence.replaySourceCueId)
+            .map((cue) => cueForMediaPolicy(cue, mediaPolicy))
+        })()
+      : []
+  ), [courtWeek.manifest.sessions, evidence, mediaPolicy, progress.completedSessionIds, progress.currentCueId])
 
   const interaction = position.scene.interaction
   const interactionElapsedSeconds = interactionOpen && interactionOpenedAt != null
@@ -528,9 +554,6 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       </main>
     )
   }
-  const evidence = evidenceId
-    ? courtWeek.trial.evidence.find((item) => item.id === evidenceId)
-    : undefined
   const releaseRoot = releaseBase ??
     `https://github.com/yanniedog/simjury/releases/download/${encodeURIComponent(courtWeek.manifest.releaseTag)}`
   const sceneCount = activeSession.scenes.length
@@ -699,6 +722,9 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
         {evidence ? (
           <EvidenceViewer
             evidence={evidence}
+            recordingCues={recordingReplayCues}
+            showRecordingCaptions={presentedAccessMode !== 'audio-first'}
+            expandRecordingCaptions={presentedAccessMode === 'reading'}
             returnFocusTo={evidenceTrigger.current}
             onClose={() => setEvidenceId(null)}
           />

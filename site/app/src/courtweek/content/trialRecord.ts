@@ -64,7 +64,7 @@ export const elevenMinutesTrialRecord: TrialRecord = {
       authentication: 'Dispatcher Peli Dorn recognises the console channel, voices and contemporaneous incident sequence.',
       integrity: 'Records custodian verifies the file hash against the write-once incident archive; the played copy is unedited.',
       admittedThrough: 'Peli Dorn and Tovan Mir', allowedUses: ['What the speakers said', 'Whether the alert was credible and recognised'],
-      limitations: ['Audio quality may affect interpretation', 'May not be used to infer facts never spoken'], replayable: true, status: 'admitted',
+      limitations: ['Audio quality may affect interpretation', 'May not be used to infer facts never spoken'], replayable: true, replaySourceCueId: 'tue-recording-play', status: 'admitted',
       accessibleProposition: 'The caller identifies beacon AR-71; the controller repeats “AR-71” and says she has the position.',
     },
     {

@@ -250,6 +250,159 @@ test('exhibit viewer traps focus and restores the exact inspection trigger', asy
   await expect(close).toBeFocused()
 })
 
+async function seedTuesdayPosition(
+  page: Page,
+  currentSceneId: string,
+  currentCueId: string,
+  accessibilityMode: 'audio-first' | 'captions' | 'reading' = 'audio-first',
+) {
+  await page.goto('/robots.txt')
+  await page.evaluate(async ({ instant, currentSceneId, currentCueId, accessibilityMode }) => new Promise<void>((resolve, reject) => {
+    const request = indexedDB.open('simjury-court-week-v1', 1)
+    request.onerror = () => reject(request.error)
+    request.onsuccess = () => {
+      const database = request.result
+      const transaction = database.transaction('progress', 'readwrite')
+      transaction.onerror = () => reject(transaction.error)
+      transaction.oncomplete = () => { database.close(); resolve() }
+      transaction.objectStore('progress').put({
+        schemaVersion: 'court-week-progress-v1',
+        courtWeekId: 'cw-0001',
+        revision: '2026.08.03-r1',
+        highestObservedTime: new Date(instant).toISOString(),
+        completedSessionIds: ['cw-0001-monday'],
+        currentSessionId: 'cw-0001-tuesday',
+        currentSceneId,
+        currentCueId,
+        notes: '',
+        accessibilityMode,
+        reasoningContributions: [],
+        majorityDirectionReceived: false,
+      }, 'cw-0001')
+    }
+  }), { instant: releaseNow, currentSceneId, currentCueId, accessibilityMode })
+}
+
+test('recording replay stays sealed until its final admission has been heard', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'The cue-level legal gate is exercised once.')
+  await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
+  await seedTuesdayPosition(page, 'tue-resume', 'tue-resume-1', 'reading')
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
+  await page.getByRole('button', { name: 'Distress recording' }).click()
+  const viewer = page.getByRole('dialog', { name: 'Distress recording' })
+  await expect(viewer.getByRole('button', { name: 'Replay admitted recording' })).toHaveCount(0)
+  await expect(viewer.getByText('Admitted recording', { exact: true })).toHaveCount(0)
+})
+
+test('admitted recording replay keeps its legal direction, captions and compact-device controls together', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Deterministic compact geometry and speech fallback are exercised once.')
+  await page.setViewportSize({ width: 160, height: 284 })
+  await page.addInitScript((instant) => {
+    Date.now = () => instant
+    const mediaState = window as typeof window & {
+      __simjuryReplaySpeech: string[]
+      __simjuryReplayCancels: number
+      __simjuryEndReplayTurn: () => void
+    }
+    mediaState.__simjuryReplaySpeech = []
+    mediaState.__simjuryReplayCancels = 0
+    let currentUtterance: TestUtterance | null = null
+    class TestUtterance {
+      lang = ''
+      rate = 1
+      voice: SpeechSynthesisVoice | null = null
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+      constructor(public text: string) {}
+    }
+    Object.defineProperty(window, 'SpeechSynthesisUtterance', { configurable: true, value: TestUtterance })
+    Object.defineProperty(window, 'speechSynthesis', {
+      configurable: true,
+      value: {
+        getVoices: () => [{ lang: 'en-AU', name: 'Test voice' }],
+        speak: (utterance: TestUtterance) => {
+          currentUtterance = utterance
+          mediaState.__simjuryReplaySpeech.push(utterance.text)
+        },
+        cancel: () => { mediaState.__simjuryReplayCancels += 1 },
+        pause() {},
+        resume() {},
+      },
+    })
+    mediaState.__simjuryEndReplayTurn = () => currentUtterance?.onend?.()
+  }, releaseNow)
+  await seedTuesdayPosition(page, 'tue-adjourn', 'tue-adjourn-1')
+
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
+  const desk = page.getByRole('dialog', { name: 'Your working papers' })
+  const trigger = desk.getByRole('button', { name: 'Distress recording' })
+  await trigger.focus()
+  await page.keyboard.press('Enter')
+  const viewer = page.getByRole('dialog', { name: 'Distress recording' })
+  const replay = viewer.getByRole('button', { name: 'Replay admitted recording' })
+  await expect(viewer.getByText(/Repetition does not give it extra legal weight/)).toBeVisible()
+  await replay.scrollIntoViewIfNeeded()
+  const target = await replay.boundingBox()
+  expect(target?.width ?? 0).toBeGreaterThanOrEqual(44)
+  expect(target?.height ?? 0).toBeGreaterThanOrEqual(44)
+  expect(await viewer.evaluate((element) => element.scrollWidth - element.clientWidth)).toBeLessThanOrEqual(1)
+
+  await page.evaluate(() => {
+    (window as typeof window & { __simjuryReplaySpeech: string[] }).__simjuryReplaySpeech = []
+  })
+  await replay.focus()
+  await page.keyboard.press('Enter')
+  await expect(viewer.getByRole('button', { name: 'Pause admitted recording' })).toBeVisible()
+  await expect(viewer.locator('.cw-recording-caption')).toContainText('Lumen to Reach control')
+  await expect(viewer.locator('.cw-visually-hidden[aria-live="polite"]')).toContainText(/Ilan Saye.*Lumen to Reach control/)
+  const captionGeometry = await viewer.locator('.cw-recording-caption').evaluate((caption) => ({
+    clientHeight: caption.clientHeight,
+    scrollHeight: caption.scrollHeight,
+  }))
+  expect(captionGeometry.scrollHeight).toBeLessThanOrEqual(captionGeometry.clientHeight + 1)
+  expect((await page.evaluate(() => (
+    window as typeof window & { __simjuryReplaySpeech: string[] }
+  ).__simjuryReplaySpeech))[0]).toContain('Lumen to Reach control. Flooding fast.')
+  await page.evaluate(() => (
+    window as typeof window & { __simjuryEndReplayTurn: () => void }
+  ).__simjuryEndReplayTurn())
+  await expect.poll(() => page.evaluate(() => (
+    window as typeof window & { __simjuryReplaySpeech: string[] }
+  ).__simjuryReplaySpeech.length)).toBeGreaterThan(1)
+  expect((await page.evaluate(() => (
+    window as typeof window & { __simjuryReplaySpeech: string[] }
+  ).__simjuryReplaySpeech))[1]).toContain('Beacon Alpha-Romeo seven-one')
+  await page.keyboard.press('Space')
+  await expect(viewer.getByRole('button', { name: 'Resume admitted recording' })).toBeVisible()
+  await page.keyboard.press('Space')
+  await expect(viewer.getByRole('button', { name: 'Pause admitted recording' })).toBeVisible()
+  const cancelsBeforeClose = await page.evaluate(() => (
+    window as typeof window & { __simjuryReplayCancels: number }
+  ).__simjuryReplayCancels)
+  await viewer.getByRole('button', { name: 'Close exhibit' }).click()
+  await expect(viewer).toHaveCount(0)
+  await expect(trigger).toBeFocused()
+  await expect.poll(() => page.evaluate(() => (
+    window as typeof window & { __simjuryReplayCancels: number }
+  ).__simjuryReplayCancels)).toBeGreaterThan(cancelsBeforeClose)
+
+  await page.evaluate(() => { window.speechSynthesis.getVoices = () => [] })
+  await trigger.focus()
+  await page.keyboard.press('Enter')
+  const fallbackViewer = page.getByRole('dialog', { name: 'Distress recording' })
+  const fallbackReplay = fallbackViewer.getByRole('button', { name: 'Replay admitted recording' })
+  await fallbackReplay.focus()
+  await page.keyboard.press('Enter')
+  const fallbackCopy = fallbackViewer.locator('.cw-recording-caption')
+  await expect(fallbackViewer.getByText('Audio is unavailable. Reading mode is ready.')).toBeVisible()
+  await expect(fallbackCopy).toContainText('Transmission breaks')
+  await expect(fallbackCopy).toHaveAttribute('data-expanded', 'true')
+})
+
 test('scene safe regions reflow caption lanes through phone, tablet, desktop and 200% zoom', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'Responsive geometry is exercised once; cross-engine flow remains separate.')
   await page.setViewportSize({ width: 390, height: 844 })

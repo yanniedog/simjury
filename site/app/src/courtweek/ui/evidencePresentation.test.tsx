@@ -1,6 +1,8 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { elevenMinutesTrialRecord } from '../content/trialRecord'
+import { elevenMinutesSessions } from '../content/sessions'
+import { attachCueTurns } from '../content/cueTurns'
 import { EvidenceViewer } from './EvidenceViewer'
 import { renderExhibitPresentation } from './evidencePresentation'
 
@@ -54,13 +56,18 @@ describe('reviewed exhibit presentations', () => {
 
   it('uses a neutral built-in surface when an admitted exhibit has no visual facsimile', () => {
     const recording = elevenMinutesTrialRecord.evidence.find((item) => item.id === 'ex-distress')
+    const sourceCues = elevenMinutesSessions.flatMap((session) => session.scenes)
+      .flatMap((scene) => scene.cues).filter((cue) => (cue.sourceCueId ?? cue.id) === recording?.replaySourceCueId)
     expect(recording).toBeDefined()
-    const markup = renderToStaticMarkup(<EvidenceViewer evidence={recording!} onClose={() => undefined} />)
+    expect(sourceCues).toHaveLength(6)
+    const markup = renderToStaticMarkup(<EvidenceViewer evidence={recording!} recordingCues={sourceCues.map(attachCueTurns)} onClose={() => undefined} />)
     expect(markup).toContain('data-visual-fallback="neutral"')
     expect(markup).toContain('A visual facsimile is unavailable. The admitted proposition remains available.')
     expect(markup).toContain(recording!.accessibleProposition)
     expect(markup).toContain(recording!.allowedUses[0])
     expect(markup).toContain(recording!.limitations[0])
+    expect(markup).toContain('Replay admitted recording')
+    expect(markup).toContain('Repetition does not give it extra legal weight')
   })
 
   it('preserves the critical competing propositions in visible renderings', () => {
