@@ -106,7 +106,9 @@ describe('Court Week prerecorded audio jobs', () => {
       writeSceneArtManifestDraft(artRequirements)
       const artRequirementsManifest = JSON.parse(readFileSync(artRequirements, 'utf8'))
       mkdirSync(artRoot, { recursive: true })
-      const commissionedSessions = elevenMinutesCourtWeek.manifest.sessions.slice(0, 2)
+      const commissionedSessions = elevenMinutesCourtWeek.manifest.sessions.filter((session) =>
+        session.scenes.every((scene) => Object.prototype.hasOwnProperty.call(SCENE_ART_AUTHORING, scene.id)),
+      )
       const compositions = {
         portrait: { tile: { width: 720, height: 1280 }, strip: { width: 1440, height: 1280 } },
         tablet: { tile: { width: 1024, height: 768 }, strip: { width: 2048, height: 768 } },
@@ -225,6 +227,8 @@ describe('Court Week prerecorded audio jobs', () => {
         session.session_id === 'cw-0001-monday').art.strips).toHaveLength(4)
       expect(runtime.sessions.find((session: { session_id: string }) =>
         session.session_id === 'cw-0001-tuesday').art.strips).toHaveLength(4)
+      expect(runtime.sessions.find((session: { session_id: string }) =>
+        session.session_id === 'cw-0001-wednesday').art.strips).toHaveLength(4)
       const reviewStrips = JSON.parse(readFileSync(resolve(privateOutputRoot, 'scene-art-strips.source.json'), 'utf8'))
       expect(reviewStrips.strips[0].sceneSlots[0]).toMatchObject({
         sceneId: 'mon-arrival',
@@ -282,5 +286,5 @@ describe('Court Week prerecorded audio jobs', () => {
     } finally {
       rmSync(temporary, { recursive: true, force: true })
     }
-  }, 15_000)
+  }, 45_000)
 })
