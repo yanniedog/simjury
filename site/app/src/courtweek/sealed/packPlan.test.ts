@@ -17,7 +17,14 @@ describe('sealed Court Week partition', () => {
       const otherDays = JSON.stringify(packs.filter((pack) => pack.ordinal !== sourceSession.ordinal))
       for (const scene of sourceSession.scenes) {
         expect(publicBootstrap).not.toContain(scene.visual.fallbackId)
-        for (const cue of scene.cues) expect(otherDays).not.toContain(cue.text)
+        const authoredTexts = scene.cues.reduce<Array<{ id: string; text: string }>>((groups, cue) => {
+          const sourceId = cue.sourceCueId ?? cue.id
+          const current = groups.at(-1)
+          if (current?.id === sourceId) current.text += ` ${cue.text}`
+          else groups.push({ id: sourceId, text: cue.text })
+          return groups
+        }, [])
+        for (const source of authoredTexts) expect(otherDays).not.toContain(source.text)
       }
     }
   })

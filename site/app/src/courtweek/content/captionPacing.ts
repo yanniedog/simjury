@@ -1,7 +1,7 @@
 import type { SceneCue } from '../model/schema'
 import { DIALOGUE_SPEAKER_ALIASES } from './dialogueSpeakers'
 
-export const CAPTION_CUE_CHARACTER_LIMIT = 80
+export const CAPTION_CUE_CHARACTER_LIMIT = 64
 
 const naturalBreak = /[.!?;…”’]$/u
 const shortTailLimit = 32
