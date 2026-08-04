@@ -40,16 +40,17 @@ test('builds only fully commissioned session strips in legal order', () => {
   const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
   assert.deepEqual(manifest.grid, { columns: 2, rows: 1 })
   assert.deepEqual(manifest.toolchain, { sharp: '0.35.3', vips: sharp.versions.vips })
-  assert.equal(manifest.strips.length, 16)
+  assert.equal(manifest.strips.length, 20)
   assert.deepEqual([...new Set(manifest.strips.map((strip) => strip.sessionId))], [
     'cw-0001-monday',
     'cw-0001-tuesday',
     'cw-0001-wednesday',
     'cw-0001-thursday',
+    'cw-0001-friday',
   ])
   assert.deepEqual(
     manifest.strips.flatMap((strip) => strip.sceneSlots.map((slot) => slot.sceneId)),
-    requirements.sessions.slice(0, 4).flatMap((session) => session.sceneIds),
+    requirements.sessions.slice(0, 5).flatMap((session) => session.sceneIds),
   )
   assert.deepEqual(
     manifest.strips[3].sceneSlots.map(({ sceneId, cell }) => ({ sceneId, cell })),
@@ -58,8 +59,8 @@ test('builds only fully commissioned session strips in legal order', () => {
   assert.deepEqual(
     manifest.strips.at(-1).sceneSlots.map(({ sceneId, cell }) => ({ sceneId, cell })),
     [
-      { sceneId: 'thu-def-close', cell: 0 },
-      { sceneId: 'thu-adjourn', cell: 1 },
+      { sceneId: 'fri-evidence-limits', cell: 0 },
+      { sceneId: 'fri-retire', cell: 1 },
     ],
   )
   assert.deepEqual(
@@ -76,7 +77,7 @@ test('creates six exact-size renditions per strip and no scene for the neutral c
     desktop: { width: 2560, height: 720 },
   }
   const files = filesBelow(outputRoot)
-  assert.equal(files.length, 16 * 3 * 2)
+  assert.equal(files.length, 20 * 3 * 2)
   for (const strip of manifest.strips) {
     const session = manifest.strips.filter((candidate) => candidate.sessionId === strip.sessionId)
     const isLastStrip = strip.stripIndex === session.length - 1

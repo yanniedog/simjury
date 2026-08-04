@@ -88,6 +88,7 @@ describe('SceneArtManifest contract', () => {
       'fri-burden',
       'fri-murder-trail',
       'fri-manslaughter-trail',
+      'fri-retire',
       'sat-room',
       'sat-concerns',
       'sat-provisional',
@@ -123,6 +124,7 @@ describe('SceneArtManifest contract', () => {
       expect(manifest.scenes['fri-evidence-limits'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
       expect(manifest.scenes['fri-evidence-limits'].compositionArt[composition].evidenceSafeRegion).toMatchObject({ width: expect.any(Number), height: expect.any(Number) })
       expect(manifest.scenes['fri-evidence-limits'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
+      expect(manifest.scenes['fri-retire'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
       expect(manifest.scenes['sat-room'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
       expect(manifest.scenes['sat-room'].compositionArt[composition].evidenceSafeRegion).toBeNull()
       expect(manifest.scenes['sat-room'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
