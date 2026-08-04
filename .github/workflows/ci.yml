@@ -69,6 +69,10 @@ jobs:
         working-directory: site/app
         run: npm ci
 
+      - name: Install site tooling for art-strip proof
+        working-directory: site
+        run: npm ci
+
       - name: Lint Court Week
         working-directory: site/app
         run: npm run lint
@@ -84,6 +88,10 @@ jobs:
       - name: Audit Court Week scene-art contract
         working-directory: site/app
         run: npm run media:art:test
+
+      - name: Prove deterministic Court Week art strips
+        working-directory: site
+        run: npm run check:art-strips
 
       - name: Validate Court Week
         working-directory: site/app
