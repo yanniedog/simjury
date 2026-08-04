@@ -16,7 +16,7 @@ import {
   observeCourtTime,
   formatCourtUnlock,
 } from '../state/schedule'
-import { type AccessMode, type StoredWeeklyProgress } from '../state/progress'
+import { type AccessMode, type StoredWeeklyProgress, downloadWeeklyProgress } from '../state/progress'
 import { useWeeklyProgress } from '../state/useWeeklyProgress'
 import { EvidenceViewer } from './EvidenceViewer'
 import { CourtWeekCompletion } from './CourtWeekCompletion'
@@ -298,6 +298,12 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
         onMode={(mode) => updateProgress((current) => ({ ...current, accessibilityMode: mode }))}
         onEnter={(requestFullscreen) => {
           setEntered(true)
+          if (allSessionsCompleted && !replaySessionId) {
+            if (requestFullscreen) {
+              void document.documentElement.requestFullscreen?.().catch(() => undefined)
+            }
+            return
+          }
           setStarted(true)
           if (accessMode !== 'reading') void playback.play()
           if (requestFullscreen) {
@@ -311,6 +317,8 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     return (
       <CourtWeekCompletion
         sessions={courtWeek.manifest.sessions}
+        persistence={persistence}
+        onExportProgress={() => downloadWeeklyProgress(progress, true)}
         onReplay={(session) => {
           const firstScene = session.scenes[0]
           setReplaySessionId(session.id)
