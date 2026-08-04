@@ -83,6 +83,13 @@ export const SCENE_ART_AUTHORING: Readonly<Record<string, CommissionedSceneArt>>
     evidenceSafeRegion: { x: 36, y: 48, width: 28, height: 22 },
     permittedCaptionPositions: ['top'],
   },
+  'tue-dorn-cross': {
+    altDescription: 'Defence counsel questions Peli Dorn from the lectern while she remains composed in the witness box; the scene does not resolve the room noise, competing incidents or her reliability.',
+    focalPoint: { x: 54, y: 46 },
+    subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
+    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
+    permittedCaptionPositions: ['bottom'],
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
