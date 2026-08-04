@@ -156,6 +156,12 @@ pairs within one court day. A strip never crosses a session boundary and an
 unpaired final scene receives a neutral second cell that is not mapped as a
 scene. Only a wholly commissioned day is emitted.
 
+The offline builder renders at most two codec jobs concurrently. Each reviewed
+AVIF source remains on the AVIF path and each WebP source remains on the WebP
+path; resizing and compositing use raw pixel buffers so no intermediate lossy
+encode is performed. Final AVIF quality 70/effort 4 and WebP quality 90/effort
+4 remain unchanged.
+
 ```powershell
 cd site
 npm --prefix app run media:art:requirements -- --output <requirements.json>

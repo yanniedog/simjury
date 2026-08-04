@@ -6,6 +6,9 @@ import { assessSceneArtManifest } from './scene-art-readiness.mjs'
 
 const COMPOSITIONS = ['portrait', 'tablet', 'desktop']
 const FORMATS = ['avif', 'webp']
+const STRIP_JOB_CONCURRENCY = 2
+const AVIF_OPTIONS = { quality: 70, effort: 4, chromaSubsampling: '4:2:0' }
+const WEBP_OPTIONS = { quality: 90, effort: 4, smartSubsample: true }
 const TILE_DIMENSIONS = {
   portrait: { width: 720, height: 1280 },
   tablet: { width: 1024, height: 768 },
@@ -78,36 +81,56 @@ function assertCanonicalSessionTopology(requirements) {
   }
 }
 
-async function composeStrip({ mediaRoot, outputRoot, sourcePaths, outputPath, composition, format }) {
+export async function renderStripRendition({ mediaRoot, outputRoot, sourcePaths, outputPath, composition, format }) {
+  if (!COMPOSITIONS.includes(composition) || !FORMATS.includes(format)) {
+    throw new Error(`Unsupported strip rendition: ${composition}.${format}`)
+  }
   const tile = TILE_DIMENSIONS[composition]
-  const target = safePath(outputRoot, outputPath)
-  mkdirSync(dirname(target), { recursive: true })
   const inputs = await Promise.all(sourcePaths.map(async (path, cell) => {
     // Readiness already enforces composition aspect ratio; resize to exact tile
-    // pixels so Sharp composite accepts oversize commissioned sources without
-    // inventing a second aspect contract.
-    const resized = await sharp(safePath(mediaRoot, path))
+    // pixels as raw pixels, avoiding an intermediate lossy encode/decode cycle.
+    const { data, info } = await sharp(safePath(mediaRoot, path))
       .resize(tile.width, tile.height, { fit: 'fill' })
-      .toBuffer()
+      .raw()
+      .toBuffer({ resolveWithObject: true })
     return {
-      input: resized,
+      input: data,
+      raw: { width: info.width, height: info.height, channels: info.channels },
       left: cell * tile.width,
       top: 0,
     }
   }))
-  const pipeline = sharp({
+  const { data, info } = await sharp({
     create: {
       width: tile.width * 2,
       height: tile.height,
       channels: 3,
       background: '#0d1215',
     },
-  }).composite(inputs)
-  if (format === 'avif') {
-    await pipeline.avif({ quality: 70, effort: 4, chromaSubsampling: '4:2:0' }).toFile(target)
-  } else {
-    await pipeline.webp({ quality: 90, effort: 4, smartSubsample: true }).toFile(target)
+  }).composite(inputs).raw().toBuffer({ resolveWithObject: true })
+  const target = safePath(outputRoot, outputPath)
+  const pipeline = sharp(data, { raw: { width: info.width, height: info.height, channels: info.channels } })
+  mkdirSync(dirname(target), { recursive: true })
+  if (format === 'avif') await pipeline.avif(AVIF_OPTIONS).toFile(target)
+  else await pipeline.webp(WEBP_OPTIONS).toFile(target)
+}
+
+async function runBounded(tasks, concurrency) {
+  let next = 0
+  let failure
+  async function worker() {
+    while (!failure && next < tasks.length) {
+      const task = tasks[next]
+      next += 1
+      try {
+        await task()
+      } catch (error) {
+        failure ??= error
+      }
+    }
   }
+  await Promise.all(Array.from({ length: Math.min(concurrency, tasks.length) }, worker))
+  if (failure) throw failure
 }
 
 export async function buildSceneArtStrips({ requirements, mediaRoot, outputRoot }) {
@@ -138,6 +161,7 @@ export async function buildSceneArtStrips({ requirements, mediaRoot, outputRoot 
 
   const ready = new Set(readiness.ready_scene_ids)
   const strips = []
+  const renderTasks = []
 
   for (const session of requirements.sessions) {
     if (!session.sceneIds.every((sceneId) => ready.has(sceneId))) continue
@@ -150,14 +174,14 @@ export async function buildSceneArtStrips({ requirements, mediaRoot, outputRoot 
         for (const format of FORMATS) {
           const outputPath = `strips/day-${String(session.ordinal).padStart(2, '0')}/strip-${String(stripIndex + 1).padStart(2, '0')}/${composition}.${format}`
           sources[composition][format] = outputPath
-          await composeStrip({
+          renderTasks.push(() => renderStripRendition({
             mediaRoot: sourceRoot,
             outputRoot: destination,
             sourcePaths: sceneIds.map((sceneId) => requirements.scenes[sceneId].sources[composition][format]),
             outputPath,
             composition,
             format,
-          })
+          }))
         }
       }
       strips.push({
@@ -175,6 +199,8 @@ export async function buildSceneArtStrips({ requirements, mediaRoot, outputRoot 
       })
     }
   }
+
+  await runBounded(renderTasks, STRIP_JOB_CONCURRENCY)
 
   return {
     schema: 'simjury.scene-art-strip-source/v1',
