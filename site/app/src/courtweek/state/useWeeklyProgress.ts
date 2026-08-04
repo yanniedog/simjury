@@ -25,6 +25,8 @@ export function useWeeklyProgress(
   const [hydrated, setHydrated] = useState(false)
   const [persistence, setPersistence] = useState<WeeklyProgressState['persistence']>('pending')
   const saveSequence = useRef(0)
+  const progressRef = useRef(progress)
+  progressRef.current = progress
 
   useEffect(() => {
     let current = true
@@ -57,6 +59,23 @@ export function useWeeklyProgress(
       void saveWeeklyProgress(progress.courtWeekId, progress)
     }
   }, [hydrated, progress])
+
+  useEffect(() => {
+    if (!hydrated) return
+    const flushLatest = () => {
+      const latest = progressRef.current
+      void saveWeeklyProgress(latest.courtWeekId, latest)
+    }
+    const flushWhenHidden = () => {
+      if (document.visibilityState === 'hidden') flushLatest()
+    }
+    window.addEventListener('pagehide', flushLatest)
+    document.addEventListener('visibilitychange', flushWhenHidden)
+    return () => {
+      window.removeEventListener('pagehide', flushLatest)
+      document.removeEventListener('visibilitychange', flushWhenHidden)
+    }
+  }, [hydrated])
 
   const updateProgress = useCallback(
     (
