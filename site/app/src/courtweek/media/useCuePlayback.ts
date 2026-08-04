@@ -114,8 +114,8 @@ export function useCuePlayback(
     window.speechSynthesis.speak(utterance)
   }, [cue.text])
 
-  const attemptRecordedPlayback = useCallback(async (): Promise<boolean> => {
-    if (!audio || recordedAttemptActive.current) return false
+  const attemptRecordedPlayback = useCallback(async (): Promise<'playing' | 'failed' | 'cancelled'> => {
+    if (!audio || recordedAttemptActive.current) return 'cancelled'
     recordedAttemptActive.current = true
     const generation = ++attemptGeneration.current
     clearPlaybackTimeout()
@@ -130,9 +130,9 @@ export function useCuePlayback(
           )
         }),
       ])
-      return generation === attemptGeneration.current
+      return generation === attemptGeneration.current ? 'playing' : 'cancelled'
     } catch {
-      return false
+      return generation === attemptGeneration.current ? 'failed' : 'cancelled'
     } finally {
       if (generation === attemptGeneration.current) {
         recordedAttemptActive.current = false
@@ -151,7 +151,8 @@ export function useCuePlayback(
       if (audio?.src && failedAttempts.current < 1) {
         failedAttempts.current += 1
         audio.load()
-        if (await attemptRecordedPlayback()) return
+        const retryResult = await attemptRecordedPlayback()
+        if (retryResult !== 'failed') return
         if (playbackSuppressed.current) return
       }
       audio?.pause()
@@ -296,7 +297,7 @@ export function useCuePlayback(
       audio.currentTime = start
       rangeEnded.current = false
     }
-    if (!await attemptRecordedPlayback()) await recoverRecordedPlayback()
+    if (await attemptRecordedPlayback() === 'failed') await recoverRecordedPlayback()
   }, [attemptRecordedPlayback, audio, cancelSpeech, cue, recoverRecordedPlayback, speakFallback])
 
   const pause = useCallback(() => {

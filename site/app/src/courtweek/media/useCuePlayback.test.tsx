@@ -411,4 +411,26 @@ describe('useCuePlayback', () => {
     expect(container.querySelector('output')?.textContent).toBe('paused')
     act(() => root.unmount())
   })
+
+  it('ignores a stale attempt that settles after the juror resumes', async () => {
+    let finishFirst!: (value: boolean) => void
+    const firstAttempt = new Promise<boolean>((resolve) => { finishFirst = resolve })
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness onEnded={() => undefined} />))
+    const [play, pause] = Array.from(container.querySelectorAll('button'))
+    const currentAudio = MockAudio.instances[0]
+    currentAudio.play
+      .mockImplementationOnce(() => firstAttempt)
+      .mockImplementationOnce(async () => currentAudio.dispatchEvent(new Event('playing')))
+
+    act(() => play.click())
+    act(() => pause.click())
+    await act(async () => play.click())
+    await act(async () => finishFirst(true))
+
+    expect(currentAudio.play).toHaveBeenCalledTimes(2)
+    expect(currentAudio.load).not.toHaveBeenCalled()
+    expect(container.querySelector('output')?.textContent).toBe('playing')
+    act(() => root.unmount())
+  })
 })
