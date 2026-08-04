@@ -147,6 +147,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const [reasoningQuestion, setReasoningQuestion] = useState('')
   const [reasoningEvidence, setReasoningEvidence] = useState('')
   const [replaySessionId, setReplaySessionId] = useState<string | null>(null)
+  const gesturePlayedCue = useRef<string | null>(null)
   const [, setInteractionTick] = useState(0)
   const accessMode = progress.accessibilityMode ?? 'audio-first'
   const observedTime = observeCourtTime(Date.parse(progress.highestObservedTime), now())
@@ -293,8 +294,17 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   }, [now, progress.highestObservedTime, updateProgress])
   useEffect(() => {
     if (!started || interactionOpen || accessMode === 'reading') return
+    const alreadyPlayedFromGesture = gesturePlayedCue.current === presentedCue.id
+    gesturePlayedCue.current = null
+    if (alreadyPlayedFromGesture) return
     void playCue()
-  }, [accessMode, interactionOpen, playCue, position.cue.id, started])
+  }, [accessMode, interactionOpen, playCue, presentedCue.id, started])
+
+  const playFromGesture = useCallback(() => {
+    gesturePlayedCue.current = presentedCue.id
+    setStarted(true)
+    void playCue()
+  }, [playCue, presentedCue.id])
 
   const interaction = position.scene.interaction
   const interactionElapsedSeconds = interactionOpen && interactionOpenedAt != null
@@ -327,8 +337,8 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
             }
             return
           }
-          setStarted(true)
-          if (accessMode !== 'reading') void playback.play()
+          if (accessMode !== 'reading') playFromGesture()
+          else setStarted(true)
           if (requestFullscreen) {
             void document.documentElement.requestFullscreen?.().catch(() => undefined)
           }
@@ -625,8 +635,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       deskOpen={deskOpen}
       overlay={overlay}
       onPlay={() => {
-        setStarted(true)
-        void playback.play()
+        playFromGesture()
       }}
       onPause={playback.pause}
       onRepeat={() => void playback.repeat()}

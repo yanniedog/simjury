@@ -40,6 +40,15 @@ function canSpeak(): boolean {
   )
 }
 
+function availableSpeechVoice(): SpeechSynthesisVoice | null {
+  if (!canSpeak() || typeof window.speechSynthesis.getVoices !== 'function') return null
+  const voices = window.speechSynthesis.getVoices()
+  return voices.find((voice) => voice.lang.toLowerCase() === 'en-au')
+    ?? voices.find((voice) => voice.lang.toLowerCase().startsWith('en-'))
+    ?? voices[0]
+    ?? null
+}
+
 export function useCuePlayback(
   cue: SceneCue,
   onEnded: () => void,
@@ -67,7 +76,9 @@ export function useCuePlayback(
   }, [])
 
   const speakFallback = useCallback(() => {
-    if (!canSpeak()) {
+    if (speechActive.current) return
+    const voice = availableSpeechVoice()
+    if (!voice) {
       setStatus('reading-fallback')
       setError('Audio is unavailable. Reading mode is ready.')
       return
@@ -75,6 +86,7 @@ export function useCuePlayback(
     const utterance = new SpeechSynthesisUtterance(cue.text)
     utterance.lang = 'en-AU'
     utterance.rate = 0.96
+    utterance.voice = voice
     utterance.onend = () => {
       speechActive.current = false
       setStatus('ended')
@@ -125,6 +137,7 @@ export function useCuePlayback(
       }
     }
     const handleError = () => {
+      if (speechActive.current) return
       if (failedAttempts.current < 1 && audio.src) {
         failedAttempts.current += 1
         audio.load()
@@ -136,7 +149,10 @@ export function useCuePlayback(
     }
     const handlePlaying = () => setStatus('playing')
     const handlePause = () => {
-      if (!audio.ended) setStatus('paused')
+      if (!audio.ended && !rangeEnded.current) {
+        audio.currentTime = cue.audio?.startSeconds ?? 0
+        setStatus('paused')
+      }
     }
     audio.addEventListener('ended', handleEnded)
     audio.addEventListener('loadedmetadata', handleLoadedMetadata)
@@ -174,29 +190,29 @@ export function useCuePlayback(
 
   useEffect(() => {
     const interrupt = () => {
-      if (document.visibilityState === 'hidden') {
-        audio?.pause()
-        if (audio) audio.currentTime = cue.audio?.startSeconds ?? 0
-        if (speechActive.current && canSpeak()) {
-          window.speechSynthesis.pause()
-          setStatus('paused')
-        }
+      audio?.pause()
+      if (audio) audio.currentTime = cue.audio?.startSeconds ?? 0
+      if (speechActive.current && canSpeak()) {
+        window.speechSynthesis.cancel()
+        speechActive.current = false
+        setStatus('paused')
       }
     }
-    document.addEventListener('visibilitychange', interrupt)
+    const interruptWhenHidden = () => {
+      if (document.visibilityState === 'hidden') interrupt()
+    }
+    const mediaDevices = typeof navigator === 'undefined' ? undefined : navigator.mediaDevices
+    document.addEventListener('visibilitychange', interruptWhenHidden)
     window.addEventListener('pagehide', interrupt)
+    mediaDevices?.addEventListener('devicechange', interrupt)
     return () => {
-      document.removeEventListener('visibilitychange', interrupt)
+      document.removeEventListener('visibilitychange', interruptWhenHidden)
       window.removeEventListener('pagehide', interrupt)
+      mediaDevices?.removeEventListener('devicechange', interrupt)
     }
   }, [audio, cue.audio?.startSeconds])
 
   const play = useCallback(async () => {
-    if (speechActive.current && canSpeak() && window.speechSynthesis.paused) {
-      window.speechSynthesis.resume()
-      setStatus('speech-fallback')
-      return
-    }
     cancelSpeech()
     const source = audio ? supportedAudioSource(audio, cue) : null
     if (!audio || !source) {
@@ -222,9 +238,9 @@ export function useCuePlayback(
   const pause = useCallback(() => {
     audio?.pause()
     if (audio) audio.currentTime = cue.audio?.startSeconds ?? 0
-    if (speechActive.current && canSpeak()) window.speechSynthesis.pause()
+    if (speechActive.current) cancelSpeech()
     setStatus('paused')
-  }, [audio, cue.audio?.startSeconds])
+  }, [audio, cancelSpeech, cue.audio?.startSeconds])
 
   const repeat = useCallback(async () => {
     cancelSpeech()
