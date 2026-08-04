@@ -48,11 +48,17 @@ function improperBasisToken(index: number): string {
   return `improper:${index}`
 }
 function persistenceNotice(issue: PersistenceIssue): string | null {
-  if (issue === 'corrupt') return 'Saved progress is damaged and could not be recovered. A new session has started; export it if you need a separate copy.'
-  if (issue === 'revision-mismatch') return 'Saved progress belongs to a different case revision and was not loaded. A new session has started.'
-  if (issue === 'unavailable') return 'Device storage is unavailable. Progress is held in this tab; export it before leaving.'
-  if (issue === 'save-failed') return 'Device storage could not save progress. Progress is held in this tab; export it before leaving.'
-  return null
+  switch (issue) {
+    case 'corrupt': return 'Saved progress is damaged and could not be recovered. A new session has started; export it if you need a separate copy.'
+    case 'revision-mismatch': return 'Saved progress belongs to a different case revision and was not loaded. A new session has started.'
+    case 'unavailable': return 'Device storage is unavailable. Progress is held in this tab; export it before leaving.'
+    case 'save-failed': return 'Device storage could not save progress. Progress is held in this tab; export it before leaving.'
+    case null: return null
+    default: {
+      const unreachable: never = issue
+      return unreachable
+    }
+  }
 }
 function initialProgress(courtWeek: CourtWeek, now: number): StoredWeeklyProgress {
   return {
