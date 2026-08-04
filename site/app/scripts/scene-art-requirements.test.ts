@@ -230,5 +230,6 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['sun-majority'].altDescription).toContain('no threshold, pressure gesture, lone juror, count, faction, verdict or outcome is visible')
     expect(manifest.scenes['sun-verdict'].altDescription).toContain('standing accused, Mara Venn')
     expect(manifest.scenes['sun-verdict'].altDescription).toContain('No verdict, count, restraint, reaction, guilt cue or analysis is shown')
+    expect(manifest.scenes['sun-verdict'].compositionArt.portrait.subjectSafeRegion).toEqual({ x: 0, y: 34, width: 100, height: 49 })
   })
 })
