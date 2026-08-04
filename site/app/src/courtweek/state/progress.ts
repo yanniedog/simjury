@@ -1,9 +1,11 @@
 import { weeklyProgressSchema, type WeeklyProgress } from '../model/schema'
 import { hasValidContributionJourney } from '../model/deliberationContract'
 
-const DATABASE = 'simjury-court-week-v1'
-const STORE = 'progress'
-const DATABASE_VERSION = 1
+export const PROGRESS_DATABASE = {
+  name: 'simjury-court-week-v1',
+  store: 'progress',
+  version: 1,
+} as const
 
 export const PROGRESS_FORMAT = 'simjury-court-week-progress-v1' as const
 
@@ -44,11 +46,11 @@ function hasIndexedDb(): boolean {
 
 function openProgressDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DATABASE, DATABASE_VERSION)
+    const request = indexedDB.open(PROGRESS_DATABASE.name, PROGRESS_DATABASE.version)
     request.onerror = () => reject(request.error)
     request.onupgradeneeded = () => {
-      if (!request.result.objectStoreNames.contains(STORE)) {
-        request.result.createObjectStore(STORE)
+      if (!request.result.objectStoreNames.contains(PROGRESS_DATABASE.store)) {
+        request.result.createObjectStore(PROGRESS_DATABASE.store)
       }
     }
     request.onsuccess = () => resolve(request.result)
@@ -62,8 +64,8 @@ async function withStore<T>(
   const database = await openProgressDatabase()
   try {
     return await new Promise<T>((resolve, reject) => {
-      const transaction = database.transaction(STORE, mode)
-      const request = operation(transaction.objectStore(STORE))
+      const transaction = database.transaction(PROGRESS_DATABASE.store, mode)
+      const request = operation(transaction.objectStore(PROGRESS_DATABASE.store))
       let result!: T
       let requestSucceeded = false
       const rejectTransaction = () => reject(
