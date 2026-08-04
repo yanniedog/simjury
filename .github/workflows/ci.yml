@@ -81,6 +81,10 @@ jobs:
         working-directory: site/app
         run: npm test
 
+      - name: Audit Court Week scene-art contract
+        working-directory: site/app
+        run: npm run media:art:test
+
       - name: Validate Court Week
         working-directory: site/app
         run: npm run validate:cases

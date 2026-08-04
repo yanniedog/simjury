@@ -24,13 +24,20 @@ export interface ImmersiveCourtShellProps {
   onToggleDesk: () => void
 }
 
-function assetUrl(base: string, id: string, composition: string, format: string) {
+function legacyAssetUrl(base: string, id: string, composition: string, format: string) {
   return `${base}/${id}-${composition}.${format}`
 }
 
-function sharedAssetUrl(base: string, composition: string, format: string) {
-  const suffix = composition === 'desktop' ? 'wide' : composition
-  return `${base}/courtroom-${suffix}.${format}`
+function sceneAssetUrl(
+  base: string,
+  scene: Scene,
+  composition: 'portrait' | 'tablet' | 'desktop',
+  format: 'avif' | 'webp',
+) {
+  const commissioned = scene.visual.sources?.[composition][format]
+  return commissioned
+    ? `${base}/${commissioned}`
+    : legacyAssetUrl(base, scene.visual.fallbackId, composition, format)
 }
 
 export function ImmersiveCourtShell({
@@ -53,7 +60,7 @@ export function ImmersiveCourtShell({
 }: ImmersiveCourtShellProps) {
   const stage = useRef<HTMLElement>(null)
   const [fullscreen, setFullscreen] = useState(false)
-  const [imageFallback, setImageFallback] = useState<'scene' | 'shared' | 'none'>('scene')
+  const [imageAvailable, setImageAvailable] = useState(true)
 
   useEffect(() => {
     const update = () => setFullscreen(document.fullscreenElement === stage.current)
@@ -61,7 +68,7 @@ export function ImmersiveCourtShell({
     return () => document.removeEventListener('fullscreenchange', update)
   }, [])
 
-  useEffect(() => setImageFallback('scene'), [scene.visual.fallbackId])
+  useEffect(() => setImageAvailable(true), [scene.id])
 
   const toggleFullscreen = async () => {
     try {
@@ -81,59 +88,64 @@ export function ImmersiveCourtShell({
   const focalStyle = {
     objectPosition: `${scene.visual.focalPoint.x}% ${scene.visual.focalPoint.y}%`,
   }
-  const visualUrl = (composition: string, format: string) =>
-    imageFallback === 'shared'
-      ? sharedAssetUrl(releaseBase, composition, format)
-      : assetUrl(releaseBase, scene.visual.fallbackId, composition, format)
+  const visualUrl = (
+    composition: 'portrait' | 'tablet' | 'desktop',
+    format: 'avif' | 'webp',
+  ) => sceneAssetUrl(releaseBase, scene, composition, format)
 
   return (
     <main
       ref={stage}
       className={`cw-shell cw-tone--${cue.tone}`}
       data-caption-position={scene.visual.captionPosition}
+      data-permitted-caption-positions={scene.visual.permittedCaptionPositions?.join(' ') ?? scene.visual.captionPosition}
+      data-subject-safe-region={scene.visual.subjectSafeRegion
+        ? JSON.stringify(scene.visual.subjectSafeRegion)
+        : undefined}
+      data-evidence-safe-region={scene.visual.evidenceSafeRegion
+        ? JSON.stringify(scene.visual.evidenceSafeRegion)
+        : undefined}
       data-access-mode={accessMode}
       data-complete-captions={captionsNeedReading}
     >
       <a className="cw-skip-link" href="#cw-primary-controls">Skip to controls</a>
 
       <div className="cw-stage" aria-busy={playbackStatus === 'loading'}>
-        {imageFallback !== 'none' ? (
+        {imageAvailable ? (
           <picture className="cw-stage__picture">
             <source
-              media="(max-width: 599px) and (orientation: portrait)"
+              media="(orientation: portrait) and (max-width: 700px)"
               type="image/avif"
               srcSet={visualUrl('portrait', 'avif')}
             />
             <source
-              media="(max-width: 599px) and (orientation: portrait)"
+              media="(orientation: portrait) and (max-width: 700px)"
               type="image/webp"
               srcSet={visualUrl('portrait', 'webp')}
             />
             <source
-              media="(min-width: 600px) and (max-width: 1099px)"
-              type="image/avif"
-              srcSet={visualUrl('tablet', 'avif')}
-            />
-            <source
-              media="(min-width: 600px) and (max-width: 1099px)"
-              type="image/webp"
-              srcSet={visualUrl('tablet', 'webp')}
-            />
-            <source
-              media="(min-width: 1100px)"
+              media="(orientation: landscape) and (max-height: 500px), (min-width: 1100px)"
               type="image/avif"
               srcSet={visualUrl('desktop', 'avif')}
             />
             <source
-              media="(min-width: 1100px)"
+              media="(orientation: landscape) and (max-height: 500px), (min-width: 1100px)"
               type="image/webp"
               srcSet={visualUrl('desktop', 'webp')}
             />
+            <source
+              type="image/avif"
+              srcSet={visualUrl('tablet', 'avif')}
+            />
+            <source
+              type="image/webp"
+              srcSet={visualUrl('tablet', 'webp')}
+            />
             <img
-              src={visualUrl('desktop', 'webp')}
+              src={visualUrl('tablet', 'webp')}
               alt={scene.visual.alt}
               style={focalStyle}
-              onError={() => setImageFallback((current) => current === 'scene' ? 'shared' : 'none')}
+              onError={() => setImageAvailable(false)}
               decoding="async"
             />
           </picture>

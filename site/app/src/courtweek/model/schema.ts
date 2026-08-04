@@ -22,13 +22,31 @@ export const legalPhaseSchema = z.enum([
 export type LegalPhase = z.infer<typeof legalPhaseSchema>
 
 const pointSchema = z.object({ x: z.number().min(0).max(100), y: z.number().min(0).max(100) })
+const regionSchema = z.object({
+  x: z.number().min(0).max(100),
+  y: z.number().min(0).max(100),
+  width: z.number().positive().max(100),
+  height: z.number().positive().max(100),
+}).refine((region) => region.x + region.width <= 100 && region.y + region.height <= 100)
+const captionPositionSchema = z.enum(['top', 'bottom', 'left', 'right'])
+const sceneArtPathSchema = z.string().regex(/^scenes\/[a-z0-9-]+\/(?:portrait|tablet|desktop)\.(?:avif|webp)$/u)
+const sceneArtSourcesSchema = z.object({
+  portrait: z.object({ avif: sceneArtPathSchema, webp: sceneArtPathSchema }).strict(),
+  tablet: z.object({ avif: sceneArtPathSchema, webp: sceneArtPathSchema }).strict(),
+  desktop: z.object({ avif: sceneArtPathSchema, webp: sceneArtPathSchema }).strict(),
+}).strict()
 
 export const visualSchema = z.object({
   fallbackId: z.string().min(1),
   alt: z.string().min(1),
   focalPoint: pointSchema,
-  captionPosition: z.enum(['top', 'bottom', 'left', 'right']),
+  captionPosition: captionPositionSchema,
+  subjectSafeRegion: regionSchema.optional(),
+  evidenceSafeRegion: regionSchema.optional(),
+  permittedCaptionPositions: z.array(captionPositionSchema).min(1).optional(),
+  sources: sceneArtSourcesSchema.optional(),
 })
+export type SceneVisual = z.infer<typeof visualSchema>
 
 export const audioSourceSchema = z.object({
   opus: z.string().url().optional(),

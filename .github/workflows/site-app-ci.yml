@@ -7,11 +7,13 @@ on:
   pull_request:
     paths:
       - "site/app/**"
+      - "site/scripts/scene-art-readiness*.mjs"
       - ".github/workflows/site-app-ci.yml"
   push:
     branches: [main]
     paths:
       - "site/app/**"
+      - "site/scripts/scene-art-readiness*.mjs"
       - ".github/workflows/site-app-ci.yml"
 
 permissions:
@@ -43,6 +45,8 @@ jobs:
         run: npm run typecheck
       - name: Test
         run: npm test
+      - name: Audit scene-art contract
+        run: npm run media:art:test
       - name: Validate Court Week (schema + legal-quality gate)
         run: npm run validate:cases
       - name: Build
