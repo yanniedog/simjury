@@ -100,4 +100,35 @@ describe('Eleven Minutes legal provenance', () => {
     expect(cueText('thu-def-opening')).toMatch(/intention to cause death or really serious injury/i)
     expect(cueText('thu-rusk-chief-2')).not.toMatch(/disguise|conceal/i)
   })
+
+  it('gives both sides a separate, evidence-bound manslaughter submission', () => {
+    const crownClosing = cueText('fri-crown-closing-2')
+    const defenceClosing = cueText('fri-defence-closing-2')
+
+    expect(crownClosing).toMatch(/manslaughter separately.*never as a compromise/is)
+    expect(crownClosing).toMatch(/caused death.*so far below reasonable care.*high a risk.*merits criminal punishment/is)
+    expect(crownClosing).not.toMatch(/survival chance closed|knew when a survival window would close[^;]*\./i)
+    expect(defenceClosing).toMatch(/manslaughter is not a compromise/is)
+    expect(defenceClosing).toMatch(/caused death.*so far below reasonable care.*high a risk.*merits criminal punishment/is)
+    expect(defenceClosing).toMatch(/warning.*overloaded.*ambiguous READY/is)
+  })
+
+  it('authorises Friday separation in court after retirement begins and before any ballot', () => {
+    const retirementIndex = orderedCues.findIndex(({ id }) => id === 'fri-retire')
+    const separationIndex = orderedCues.findIndex(({ id }) => id === 'fri-adjourn')
+    const separation = orderedCues[separationIndex]
+
+    expect(retirementIndex).toBeGreaterThanOrEqual(0)
+    expect(separationIndex).toBeGreaterThan(retirementIndex)
+    expect(separation).toMatchObject({ speaker: 'Judge Sel Aven', tone: 'ruling', event: 'adjournment' })
+    expect(cueText('fri-adjourn')).toMatch(/taken no ballot.*authorise you to separate.*do not discuss or research/is)
+  })
+
+  it('keeps the final ballot entirely in-world and protects private positions', () => {
+    const finalBallot = cueText('sun-final-ballot')
+
+    expect(finalBallot).not.toMatch(/authored jurors|random tie|update gradually|player/i)
+    expect(finalBallot).toMatch(/final position in private.*all twelve agree.*eleven agree.*no lawful agreement/is)
+    expect(finalBallot).toMatch(/no seat is identified/i)
+  })
 })
