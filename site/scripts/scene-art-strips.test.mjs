@@ -12,7 +12,7 @@ const requirementsPath = join(temporary, 'requirements.json')
 const outputRoot = join(temporary, 'output')
 const mediaRoot = resolve('court-week-art/cw-0001')
 let manifest
-const staleFile = join(outputRoot, 'strips', 'day-03', 'strip-01', 'desktop.webp')
+const staleFile = join(outputRoot, 'strips', 'day-04', 'strip-01', 'desktop.webp')
 
 function filesBelow(root) {
   return readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
@@ -40,14 +40,15 @@ test('builds only fully commissioned session strips in legal order', () => {
   const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
   assert.deepEqual(manifest.grid, { columns: 2, rows: 1 })
   assert.deepEqual(manifest.toolchain, { sharp: '0.35.3', vips: sharp.versions.vips })
-  assert.equal(manifest.strips.length, 8)
+  assert.equal(manifest.strips.length, 12)
   assert.deepEqual([...new Set(manifest.strips.map((strip) => strip.sessionId))], [
     'cw-0001-monday',
     'cw-0001-tuesday',
+    'cw-0001-wednesday',
   ])
   assert.deepEqual(
     manifest.strips.flatMap((strip) => strip.sceneSlots.map((slot) => slot.sceneId)),
-    requirements.sessions.slice(0, 2).flatMap((session) => session.sceneIds),
+    requirements.sessions.slice(0, 3).flatMap((session) => session.sceneIds),
   )
   assert.deepEqual(
     manifest.strips[3].sceneSlots.map(({ sceneId, cell }) => ({ sceneId, cell })),
@@ -56,8 +57,8 @@ test('builds only fully commissioned session strips in legal order', () => {
   assert.deepEqual(
     manifest.strips.at(-1).sceneSlots.map(({ sceneId, cell }) => ({ sceneId, cell })),
     [
-      { sceneId: 'tue-mir-cross', cell: 0 },
-      { sceneId: 'tue-adjourn', cell: 1 },
+      { sceneId: 'wed-crown-close', cell: 0 },
+      { sceneId: 'wed-adjourn', cell: 1 },
     ],
   )
   assert.deepEqual(
@@ -74,7 +75,7 @@ test('creates six exact-size renditions per strip and no scene for the neutral c
     desktop: { width: 2560, height: 720 },
   }
   const files = filesBelow(outputRoot)
-  assert.equal(files.length, 8 * 3 * 2)
+  assert.equal(files.length, 12 * 3 * 2)
   for (const strip of manifest.strips) {
     const session = manifest.strips.filter((candidate) => candidate.sessionId === strip.sessionId)
     const isLastStrip = strip.stripIndex === session.length - 1
