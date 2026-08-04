@@ -79,6 +79,7 @@ describe('SceneArtManifest contract', () => {
       'thu-rusk-cross',
       'thu-quill-chief',
       'thu-quill-cross',
+      'thu-defence-record',
     ]
     for (const sceneId of evidenceNeutralReviewedScenes) {
       for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
@@ -98,6 +99,7 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['thu-quill-chief'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
     for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
       expect(manifest.scenes['thu-quill-cross'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+      expect(manifest.scenes['thu-defence-record'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
     }
   })
 })
