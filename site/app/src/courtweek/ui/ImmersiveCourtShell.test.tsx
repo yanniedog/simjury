@@ -44,6 +44,22 @@ const session: CourtSession = {
   prerequisiteSessionIds: [],
   scenes: [scene, scene, scene],
 }
+const stripScene: Scene = {
+  ...scene,
+  visual: {
+    ...scene.visual,
+    runtimeStrip: {
+      cell: 1,
+      sources: Object.fromEntries(['portrait', 'tablet', 'desktop'].map((composition) => [
+        composition,
+        {
+          avif: `https://example.test/${composition}.${'a'.repeat(64)}.avif`,
+          webp: `https://example.test/${composition}.${'b'.repeat(64)}.webp`,
+        },
+      ])) as NonNullable<Scene['visual']['runtimeStrip']>['sources'],
+    },
+  },
+}
 
 describe('ImmersiveCourtShell', () => {
   it('delivers responsive art, nonduplicated live copy and complete controls', () => {
@@ -104,6 +120,24 @@ describe('ImmersiveCourtShell', () => {
     expect(markup).toContain('cw-reading-copy')
     expect(markup).toContain('aria-live="off"')
     expect(markup).toContain('Continue')
+  })
+
+  it('selects one cell from a sealed responsive strip without a fetch or canvas layer', () => {
+    const markup = renderToStaticMarkup(
+      <ImmersiveCourtShell
+        session={session} scene={stripScene} cue={cue} releaseBase="/media"
+        accessMode="audio-first" playbackStatus="paused" playbackError={null}
+        progressLabel="Scene 1 of 3" deskOpen={false}
+        onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
+        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+      />,
+    )
+    expect(markup).toContain('cw-stage__picture--strip')
+    expect(markup).toContain('data-strip-cell="1"')
+    expect(markup).toContain('object-position:79% 42%')
+    expect(markup).toContain(`https://example.test/desktop.${'a'.repeat(64)}.avif`)
+    expect(markup).toContain('referrerPolicy="no-referrer"')
+    expect(markup).toContain('sizes="100vw"')
   })
 
   it('promotes an overlong caption to complete reading copy instead of clipping it', () => {

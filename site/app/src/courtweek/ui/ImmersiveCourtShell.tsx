@@ -34,6 +34,8 @@ function sceneAssetUrl(
   composition: 'portrait' | 'tablet' | 'desktop',
   format: 'avif' | 'webp',
 ) {
+  const runtimeStrip = scene.visual.runtimeStrip?.sources[composition][format]
+  if (runtimeStrip) return runtimeStrip
   const commissioned = scene.visual.sources?.[composition][format]
   return commissioned
     ? `${base}/${commissioned}`
@@ -85,8 +87,11 @@ export function ImmersiveCourtShell({
     playbackStatus === 'speech-fallback' ||
     playbackStatus === 'reading-fallback'
   const captionsNeedReading = captionsVisible && cue.text.length > 110
+  const stripFocalX = scene.visual.runtimeStrip
+    ? (scene.visual.runtimeStrip.cell * 100 + scene.visual.focalPoint.x) / 2
+    : scene.visual.focalPoint.x
   const focalStyle = {
-    objectPosition: `${scene.visual.focalPoint.x}% ${scene.visual.focalPoint.y}%`,
+    objectPosition: `${stripFocalX}% ${scene.visual.focalPoint.y}%`,
   }
   const visualUrl = (
     composition: 'portrait' | 'tablet' | 'desktop',
@@ -111,47 +116,51 @@ export function ImmersiveCourtShell({
       <a className="cw-skip-link" href="#cw-primary-controls">Skip to controls</a>
 
       <div className="cw-stage" aria-busy={playbackStatus === 'loading'}>
-        {imageAvailable ? (
-          <picture className="cw-stage__picture">
-            <source
-              media="(orientation: portrait) and (max-width: 700px)"
-              type="image/avif"
-              srcSet={visualUrl('portrait', 'avif')}
-            />
-            <source
-              media="(orientation: portrait) and (max-width: 700px)"
-              type="image/webp"
-              srcSet={visualUrl('portrait', 'webp')}
-            />
-            <source
-              media="(orientation: landscape) and (max-height: 500px), (min-width: 1100px)"
-              type="image/avif"
-              srcSet={visualUrl('desktop', 'avif')}
-            />
-            <source
-              media="(orientation: landscape) and (max-height: 500px), (min-width: 1100px)"
-              type="image/webp"
-              srcSet={visualUrl('desktop', 'webp')}
-            />
-            <source
-              type="image/avif"
-              srcSet={visualUrl('tablet', 'avif')}
-            />
-            <source
-              type="image/webp"
-              srcSet={visualUrl('tablet', 'webp')}
-            />
-            <img
-              src={visualUrl('tablet', 'webp')}
-              alt={scene.visual.alt}
-              style={focalStyle}
-              onError={() => setImageAvailable(false)}
-              decoding="async"
-            />
-          </picture>
-        ) : (
-          <div className="cw-stage__fallback" role="img" aria-label={scene.visual.alt} />
-        )}
+        <picture
+          className={`cw-stage__picture${scene.visual.runtimeStrip ? ' cw-stage__picture--strip' : ''}${imageAvailable ? '' : ' cw-stage__picture--unavailable'}`}
+          data-strip-cell={scene.visual.runtimeStrip?.cell}
+        >
+          <source
+            media="(orientation: portrait) and (max-width: 700px)"
+            type="image/avif"
+            srcSet={visualUrl('portrait', 'avif')}
+          />
+          <source
+            media="(orientation: portrait) and (max-width: 700px)"
+            type="image/webp"
+            srcSet={visualUrl('portrait', 'webp')}
+          />
+          <source
+            media="(orientation: landscape) and (max-height: 500px), (min-width: 1100px)"
+            type="image/avif"
+            srcSet={visualUrl('desktop', 'avif')}
+          />
+          <source
+            media="(orientation: landscape) and (max-height: 500px), (min-width: 1100px)"
+            type="image/webp"
+            srcSet={visualUrl('desktop', 'webp')}
+          />
+          <source type="image/avif" srcSet={visualUrl('tablet', 'avif')} />
+          <source type="image/webp" srcSet={visualUrl('tablet', 'webp')} />
+          <img
+            src={visualUrl('tablet', 'webp')}
+            srcSet={visualUrl('tablet', 'webp')}
+            sizes="100vw"
+            alt={imageAvailable ? scene.visual.alt : ''}
+            style={focalStyle}
+            onError={() => setImageAvailable(false)}
+            onLoad={() => setImageAvailable(true)}
+            decoding="async"
+            referrerPolicy="no-referrer"
+          />
+        </picture>
+        {!imageAvailable ? (
+          <div
+            className="cw-stage__fallback"
+            role="img"
+            aria-label="Courtroom image unavailable; proceedings continue."
+          />
+        ) : null}
 
         <header className="cw-status" aria-label="Court session status">
           <p><span>{session.day}</span><span aria-hidden="true"> · </span>{scene.phase.replace('-', ' ')}</p>
