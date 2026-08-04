@@ -47,10 +47,11 @@ describe('Court Week prerecorded audio jobs', () => {
   it('splits multi-party cues into speaker-attributed utterances', () => {
     const orrCross = elevenMinutesCourtWeek.manifest.sessions[0].scenes
       .flatMap((scene) => scene.cues)
-      .find((cue) => cue.id === 'mon-orr-cross-1')!
-    const utterances = splitCueUtterances(orrCross)
+      .filter((cue) => (cue.sourceCueId ?? cue.id) === 'mon-orr-cross-1')
+    const utterances = orrCross.flatMap(splitCueUtterances)
     expect(utterances.length).toBeGreaterThan(1)
-    expect(utterances.every((utterance) => utterance.sourceCueId === 'mon-orr-cross-1')).toBe(true)
+    expect(new Set(utterances.map((utterance) => utterance.sourceCueId)))
+      .toEqual(new Set(orrCross.map((cue) => cue.id)))
     expect(new Set(utterances.map((utterance) => utterance.speaker))).toEqual(new Set([
       'Defence counsel Corin Dax',
       'Nella Orr',

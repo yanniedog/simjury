@@ -27,7 +27,7 @@ describe('Monday caption pacing', () => {
 
     expect(digest).toBe('10b8e0ac536236a12c1570f50eb30051eb0b21c953438536623e2c6cb7263ea8')
     expect(sourceGroups).toHaveLength(17)
-    expect(mondayCues).toHaveLength(78)
+    expect(mondayCues).toHaveLength(94)
     for (const group of sourceGroups) {
       expect(group.cues[0].id).toBe(group.id)
       const source = group.cues[0]
@@ -45,7 +45,7 @@ describe('Monday caption pacing', () => {
 
   it('limits caption length without changing Monday duration or later sessions', () => {
     expect(Math.max(...mondayCues.map((cue) => cue.text.length))).toBeLessThanOrEqual(CAPTION_CUE_CHARACTER_LIMIT)
-    expect(Math.min(...mondayCues.map((cue) => cue.text.length))).toBeGreaterThanOrEqual(32)
+    expect(Math.min(...mondayCues.map((cue) => cue.text.length))).toBeGreaterThanOrEqual(30)
     expect(estimateSessionSeconds(monday)).toBe(1_272)
     expect(elevenMinutesCourtWeek.manifest.sessions.slice(1)
       .flatMap((session) => session.scenes.flatMap((scene) => scene.cues))
@@ -69,12 +69,12 @@ describe('Monday caption pacing', () => {
       expect(audioCues.at(-1)?.pauseAfterMs).toBeGreaterThan(0)
     }
 
-    const continuation = mondayCues.find((cue) => cue.id === 'mon-orr-cross-1--caption-2')!
-    const mixedContinuation = mondayCues.find((cue) => cue.id === 'mon-orr-cross-1--caption-3')!
+    const continuation = mondayCues.find((cue) => cue.id === 'mon-orr-cross-1--caption-3')!
+    const mixedContinuation = mondayCues.find((cue) => cue.id === 'mon-orr-cross-1--caption-5')!
     expect(continuation.speaker).toBe('Nella Orr')
     expect(splitCueUtterances(continuation).map((cue) => cue.speaker)).toEqual(['Nella Orr'])
     expect(splitCueUtterances(mixedContinuation).map((cue) => cue.speaker)).toEqual([
-      'Nella Orr', 'Defence counsel Corin Dax',
+      'Defence counsel Corin Dax', 'Nella Orr',
     ])
   })
 })
