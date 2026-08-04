@@ -81,6 +81,39 @@ test('core flow remains playable across browser engines', async ({ page }) => {
   expect(prohibited).toEqual([])
 })
 
+test.describe('device-sized admitted exhibit viewer', () => {
+  test.skip(({ browserName }) => browserName !== 'chromium', 'device matrix runs once')
+
+  for (const [device, width, height] of [
+    ['phone', 320, 568],
+    ['tablet', 768, 1024],
+    ['desktop', 1280, 800],
+  ] as const) {
+    for (const zoom of [1, 2]) {
+      test(`${device} at ${zoom * 100}% zoom`, async ({ page }) => {
+        await page.setViewportSize({ width: Math.floor(width / zoom), height: Math.floor(height / zoom) })
+        await enterCourt(page)
+        await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
+        await page.getByRole('button', { name: /Route diagram/i }).click()
+        const viewer = page.getByRole('dialog', { name: /Harbour route diagram/i })
+        await expect(viewer).toBeVisible()
+        await expect(viewer.getByLabel('Exhibit viewing controls')).toBeVisible()
+        await expect(viewer.getByRole('img', { name: /Harbour service route/i })).toBeVisible()
+        await viewer.getByRole('button', { name: 'Zoom in' }).click()
+        await viewer.getByRole('button', { name: 'Move exhibit right' }).click()
+        await expect(viewer.locator('.cw-evidence-document')).toHaveAttribute('style', /translate\(24px, 0px\) scale\(1\.2\)/)
+        await viewer.getByRole('button', { name: 'Reset' }).click()
+        await expect(viewer.locator('.cw-evidence-document')).toHaveAttribute('style', /translate\(0px, 0px\) scale\(1\)/)
+        await viewer.getByText('Evidence foundation').click()
+        await expect(viewer.getByText(/Prepared from the service chart/)).toBeVisible()
+        await expect(viewer.getByText('Not proof of visibility, sea state or survival time')).toBeVisible()
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+        expect(overflow).toBeLessThanOrEqual(1)
+      })
+    }
+  }
+})
+
 async function readStoredProgress(page: Page) {
   return page.evaluate(async () => new Promise<Record<string, unknown> | null>((resolve, reject) => {
     const request = indexedDB.open('simjury-court-week-v1', 1)

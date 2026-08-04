@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { EvidenceItem } from '../model/schema'
+import { reviewedExhibitPresentation } from './evidencePresentation'
 
 export interface EvidenceViewerProps {
   evidence: EvidenceItem
@@ -23,6 +24,24 @@ export function EvidenceViewer({ evidence, onClose }: EvidenceViewerProps) {
   const reset = () => {
     setZoom(1)
     setOffset({ x: 0, y: 0 })
+  }
+  const presentation = evidence.status === 'admitted'
+    ? reviewedExhibitPresentation(evidence.id)
+    : undefined
+
+  if (evidence.status !== 'admitted') {
+    return (
+      <section className="cw-modal cw-evidence-viewer" role="dialog" aria-modal="true" aria-labelledby="cw-evidence-unavailable">
+        <header className="cw-modal__header">
+          <div>
+            <p className="cw-kicker">Juror desk</p>
+            <h2 id="cw-evidence-unavailable">Exhibit unavailable</h2>
+          </div>
+          <button type="button" onClick={onClose} aria-label="Close exhibit">Close</button>
+        </header>
+        <p>Only admitted exhibits can be inspected.</p>
+      </section>
+    )
   }
 
   return (
@@ -59,19 +78,25 @@ export function EvidenceViewer({ evidence, onClose }: EvidenceViewerProps) {
       <div className="cw-evidence-canvas">
         <article
           className="cw-evidence-document"
+          aria-label={presentation?.alt ?? evidence.accessibleProposition}
           style={{
             transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
           }}
         >
-          <p>{evidence.accessibleProposition}</p>
-          <dl>
-            <dt>Provenance</dt><dd>{evidence.provenance}</dd>
-            <dt>Authentication</dt><dd>{evidence.authentication}</dd>
-            <dt>Integrity</dt><dd>{evidence.integrity}</dd>
-            <dt>Admitted through</dt><dd>{evidence.admittedThrough}</dd>
-          </dl>
+          {presentation?.rendering ?? <p>{evidence.accessibleProposition}</p>}
+          {presentation ? <p className="cw-evidence-ambiguity">{presentation.ambiguity}</p> : null}
         </article>
       </div>
+
+      <details className="cw-evidence-foundation">
+        <summary>Evidence foundation</summary>
+        <dl>
+          <dt>Provenance</dt><dd>{evidence.provenance}</dd>
+          <dt>Authentication</dt><dd>{evidence.authentication}</dd>
+          <dt>Integrity</dt><dd>{evidence.integrity}</dd>
+          <dt>Admitted through</dt><dd>{evidence.admittedThrough}</dd>
+        </dl>
+      </details>
 
       <div className="cw-evidence-limits">
         <h3>How you may use it</h3>
