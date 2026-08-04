@@ -332,6 +332,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'thu-rusk-chief': {
+    altDescription: 'Human-factors expert Tali Rusk gives evidence from the witness box while defence counsel and the accused listen. No alarm mechanism, diagnosis, view about intention or conclusion about guilt is depicted.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 52, y: 48 }, subjectSafeRegion: { x: 0, y: 36, width: 100, height: 50 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 52, y: 47 }, subjectSafeRegion: { x: 0, y: 27, width: 100, height: 63 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 53, y: 46 }, subjectSafeRegion: { x: 0, y: 24, width: 100, height: 68 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
