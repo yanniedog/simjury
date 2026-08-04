@@ -366,6 +366,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'thu-quill-chief': {
+    altDescription: 'Maintenance engineer Sera Quill gives evidence from the witness box while counsel and the accused listen. No warning document is visible, and the image does not suggest that the rescue craft was safe, unsafe or grounded.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 53, y: 49 }, subjectSafeRegion: { x: 0, y: 35, width: 100, height: 52 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 53, y: 47 }, subjectSafeRegion: { x: 0, y: 26, width: 100, height: 66 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 0, y: 23, width: 100, height: 70 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
