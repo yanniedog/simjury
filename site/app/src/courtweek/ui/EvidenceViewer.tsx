@@ -78,17 +78,14 @@ export function EvidenceViewer({ evidence, onClose }: EvidenceViewerProps) {
           className="cw-evidence-document"
           {...(presentation ? {
             role: 'group',
-            'aria-describedby': `cw-evidence-alt-${evidence.id} cw-evidence-ambiguity-${evidence.id}`,
+            'aria-describedby': `cw-evidence-ambiguity-${evidence.id}`,
           } : {})}
           style={{
             transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
           }}
         >
           {presentation ? (
-            <>
-              <p id={`cw-evidence-alt-${evidence.id}`} className="cw-visually-hidden">{presentation.alt}</p>
-              <div aria-hidden="true">{renderExhibitPresentation(presentation)}</div>
-            </>
+            renderExhibitPresentation(presentation)
           ) : <p>{evidence.accessibleProposition}</p>}
           {presentation ? (
             <p id={`cw-evidence-ambiguity-${evidence.id}`} className="cw-evidence-ambiguity">

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { CourtSession, Scene, SceneCue } from '../model/schema'
 import type { PlaybackStatus } from '../media/useCuePlayback'
 import type { AccessMode } from '../state/progress'
+import { captionPlacementStyle, responsiveCaptionPlacements } from './captionPlacement'
 
 export type { AccessMode } from '../state/progress'
 
@@ -97,12 +98,16 @@ export function ImmersiveCourtShell({
     composition: 'portrait' | 'tablet' | 'desktop',
     format: 'avif' | 'webp',
   ) => sceneAssetUrl(releaseBase, scene, composition, format)
+  const captionPlacements = responsiveCaptionPlacements(scene.visual)
 
   return (
     <main
       ref={stage}
       className={`cw-shell cw-tone--${cue.tone}`}
-      data-caption-position={scene.visual.captionPosition}
+      data-caption-phone-position={captionPlacements.phonePortrait.position}
+      data-caption-landscape-position={captionPlacements.phoneLandscape.position}
+      data-caption-tablet-position={captionPlacements.tablet.position}
+      data-caption-desktop-position={captionPlacements.desktop.position}
       data-permitted-caption-positions={scene.visual.permittedCaptionPositions?.join(' ') ?? scene.visual.captionPosition}
       data-subject-safe-region={scene.visual.subjectSafeRegion
         ? JSON.stringify(scene.visual.subjectSafeRegion)
@@ -112,6 +117,7 @@ export function ImmersiveCourtShell({
         : undefined}
       data-access-mode={accessMode}
       data-complete-captions={captionsNeedReading}
+      style={captionPlacementStyle(scene.visual)}
     >
       <a className="cw-skip-link" href="#cw-primary-controls">Skip to controls</a>
 

@@ -36,6 +36,7 @@ describe('reviewed exhibit presentations', () => {
       expect(markup).toContain('Limitations')
       expect(markup).toContain(evidence!.provenance)
       expect(markup).toContain(evidence!.limitations[0])
+      expect(markup).not.toContain('aria-hidden="true"')
       expect(markup).not.toContain('struck-rumour')
       expect(markup).not.toContain('Struck workplace rumour')
     }
@@ -60,5 +61,21 @@ describe('reviewed exhibit presentations', () => {
     expect(markup).toContain('READY does not mean free from maintenance warnings')
     expect(markup).toContain('did not ground Kestrel')
     expect(markup).toContain('cannot be said to guarantee survival')
+  })
+
+  it('exposes every structured visual field to assistive technology', () => {
+    const strings = (value: unknown): string[] => {
+      if (typeof value === 'string') return [value]
+      if (Array.isArray(value)) return value.flatMap(strings)
+      if (value && typeof value === 'object') return Object.values(value).flatMap(strings)
+      return []
+    }
+    for (const evidence of elevenMinutesTrialRecord.evidence.filter((item) => item.presentation)) {
+      const markup = renderToStaticMarkup(<EvidenceViewer evidence={evidence} onClose={() => undefined} />)
+      const { alt: _alt, kind: _kind, ...visibleAndDescribed } = evidence.presentation!
+      void _alt
+      void _kind
+      for (const value of strings(visibleAndDescribed)) expect(markup).toContain(value)
+    }
   })
 })

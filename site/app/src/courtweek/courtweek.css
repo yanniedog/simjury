@@ -141,12 +141,18 @@
 .cw-speaker__mode { color: #b9d9e7; font-size: .8em; }
 
 .cw-captions {
+  --cw-caption-x: var(--cw-caption-phonePortrait-x);
+  --cw-caption-y: var(--cw-caption-phonePortrait-y);
+  --cw-caption-width: var(--cw-caption-phonePortrait-width);
+  --cw-caption-height: var(--cw-caption-phonePortrait-height);
   position: absolute;
   z-index: 3;
-  left: max(.75rem, env(safe-area-inset-left));
-  right: max(.75rem, env(safe-area-inset-right));
-  bottom: calc(max(5rem, env(safe-area-inset-bottom) + 4.5rem));
+  left: max(var(--cw-caption-x), env(safe-area-inset-left));
+  top: max(var(--cw-caption-y), env(safe-area-inset-top));
+  width: min(var(--cw-caption-width), calc(100% - var(--cw-caption-x) - env(safe-area-inset-right)));
+  height: var(--cw-caption-height);
   display: flex;
+  align-items: center;
   justify-content: center;
   pointer-events: none;
 }
@@ -163,10 +169,6 @@
   border-radius: .3rem;
   box-decoration-break: clone;
 }
-.cw-shell[data-caption-position="top"] .cw-captions { top: 5.25rem; bottom: auto; }
-.cw-shell[data-caption-position="left"] .cw-captions { right: 50%; }
-.cw-shell[data-caption-position="right"] .cw-captions { left: 50%; }
-
 .cw-media-notice {
   position: absolute;
   z-index: 4;
@@ -313,17 +315,40 @@
 .cw-skip-link:focus { z-index: 30; top: .5rem; left: .5rem; width: auto !important; height: auto !important; margin: 0 !important; padding: .75rem !important; clip: auto !important; color: #111; background: #fff; }
 
 @container courtroom (min-width: 700px) {
+  .cw-captions {
+    --cw-caption-x: var(--cw-caption-tablet-x);
+    --cw-caption-y: var(--cw-caption-tablet-y);
+    --cw-caption-width: var(--cw-caption-tablet-width);
+    --cw-caption-height: var(--cw-caption-tablet-height);
+  }
   .cw-desk { left: auto; width: min(42%, 420px); }
   .cw-modal:not(.cw-evidence-viewer) { left: auto; width: min(42%, 520px); }
   .cw-evidence-viewer { inset: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); }
   .cw-controls { left: 50%; right: auto; transform: translateX(-50%); }
 }
 
+@container courtroom (min-width: 1100px) {
+  .cw-captions {
+    --cw-caption-x: var(--cw-caption-desktop-x);
+    --cw-caption-y: var(--cw-caption-desktop-y);
+    --cw-caption-width: var(--cw-caption-desktop-width);
+    --cw-caption-height: var(--cw-caption-desktop-height);
+  }
+}
+
+@container courtroom (max-height: 500px) {
+  .cw-captions {
+    --cw-caption-x: var(--cw-caption-phoneLandscape-x);
+    --cw-caption-y: var(--cw-caption-phoneLandscape-y);
+    --cw-caption-width: var(--cw-caption-phoneLandscape-width);
+    --cw-caption-height: var(--cw-caption-phoneLandscape-height);
+  }
+}
+
 @media (max-width: 599px) and (orientation: landscape) {
   .cw-controls { top: 50%; right: max(.4rem, env(safe-area-inset-right)); bottom: auto; left: auto; flex-direction: column; transform: translateY(-50%); }
   .cw-controls button { padding: .35rem .55rem; font-size: .78rem; }
   .cw-speaker { right: 8rem; bottom: max(.5rem, env(safe-area-inset-bottom)); }
-  .cw-captions { right: 8rem; bottom: max(.5rem, env(safe-area-inset-bottom)); }
   .cw-interaction { right: 8rem; bottom: max(.5rem, env(safe-area-inset-bottom)); }
 }
 
@@ -382,6 +407,14 @@
     width: 100%;
     max-width: none;
     transform: none;
+  }
+  .cw-captions {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    min-height: 3.5rem;
+    order: 2;
   }
   .cw-status { flex-direction: column; align-items: flex-start; gap: .2rem; }
   .cw-shell[data-access-mode="reading"] .cw-speaker,

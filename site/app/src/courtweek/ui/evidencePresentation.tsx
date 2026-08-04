@@ -8,7 +8,7 @@ function fields(items: Array<{ label: string; value: string }>) {
 
 function route(presentation: PresentationOf<'route'>) {
   return (
-    <div className="cw-exhibit cw-exhibit--route"><svg viewBox="0 0 800 500">
+    <div className="cw-exhibit cw-exhibit--route"><svg viewBox="0 0 800 500" role="img" aria-label={presentation.alt}>
       <path className="cw-route__shore" d="M40 88 C180 44 204 167 319 137 C406 114 447 40 571 61 L757 44 L757 474 L40 474 Z" />
       <path className="cw-route__line" d="M176 187 C303 226 402 294 624 351" />
       <circle className="cw-route__station" cx="176" cy="187" r="12" /><circle className="cw-route__beacon" cx="624" cy="351" r="14" />
