@@ -311,11 +311,13 @@ describe('useCuePlayback', () => {
     await act(async () => root.render(<Harness onEnded={() => undefined} />))
     const [play] = Array.from(container.querySelectorAll('button'))
     const currentAudio = MockAudio.instances[0]
+    currentAudio.load.mockImplementationOnce(() => currentAudio.dispatchEvent(new Event('pause')))
     await act(async () => play.click())
 
     await act(async () => currentAudio.dispatchEvent(new Event('error')))
     expect(currentAudio.load).toHaveBeenCalledOnce()
     expect(synthesis.speak).not.toHaveBeenCalled()
+    expect(container.querySelector('output')?.textContent).toBe('playing')
     await act(async () => currentAudio.dispatchEvent(new Event('error')))
 
     expect(currentAudio.load).toHaveBeenCalledOnce()

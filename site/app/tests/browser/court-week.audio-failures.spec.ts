@@ -71,7 +71,7 @@ test('failed recorded media reaches device speech through the mounted player', a
 
   await expect.poll(async () => (await probe(page)).speechCalls).toBe(1)
   await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible()
-  expect((await probe(page)).playCalls).toBeLessThanOrEqual(2)
+  expect([0, 2]).toContain((await probe(page)).playCalls)
 })
 
 test('zero available voices enters automatic reading mode', async ({ page }) => {
