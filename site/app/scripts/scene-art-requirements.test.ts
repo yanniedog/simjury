@@ -98,6 +98,7 @@ describe('SceneArtManifest contract', () => {
       'sun-resume',
       'sun-negligence',
       'sat-separate',
+      'sun-second-ballot',
     ]
     for (const sceneId of evidenceNeutralReviewedScenes) {
       for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
@@ -170,6 +171,10 @@ describe('SceneArtManifest contract', () => {
       expect(manifest.scenes['sat-separate'].compositionArt[composition].evidenceSafeRegion).toBeNull()
       expect(manifest.scenes['sat-separate'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
       expect(manifest.scenes['sat-separate'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
+      expect(manifest.scenes['sun-second-ballot'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+      expect(manifest.scenes['sun-second-ballot'].compositionArt[composition].evidenceSafeRegion).toBeNull()
+      expect(manifest.scenes['sun-second-ballot'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
+      expect(manifest.scenes['sun-second-ballot'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
     }
     expect(manifest.scenes['sat-room'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sat-room'].altDescription).toContain('No ballot is shown')
@@ -194,5 +199,8 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['sun-negligence'].altDescription).toContain('No spectrum, midpoint, ballot, count, faction, verdict or conclusion is shown')
     expect(manifest.scenes['sat-separate'].altDescription).toContain('overnight separation direction')
     expect(manifest.scenes['sat-separate'].altDescription).toContain('No departure, outside research, saved state, ballot count, legal text or verdict is shown')
+    expect(manifest.scenes['sun-second-ballot'].altDescription).toContain('Exactly eleven other jurors')
+    expect(manifest.scenes['sun-second-ballot'].altDescription).toContain('second private face-down blank ballot card')
+    expect(manifest.scenes['sun-second-ballot'].altDescription).toContain('No individual choice, count, aggregate, faction, verdict, label or readable card is visible')
   })
 })
