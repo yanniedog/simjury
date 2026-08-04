@@ -304,7 +304,11 @@
     gap: .35rem;
     min-height: 100%;
     height: auto;
-    padding: .25rem;
+    padding:
+      max(.25rem, env(safe-area-inset-top, 0px))
+      max(.25rem, env(safe-area-inset-right, 0px))
+      max(.25rem, env(safe-area-inset-bottom, 0px))
+      max(.25rem, env(safe-area-inset-left, 0px));
     overflow: visible;
   }
   .cw-stage__picture, .cw-stage__fallback { position: fixed; inset: 0; opacity: .24; }
@@ -327,7 +331,11 @@
   .cw-controls button { width: 100%; }
   .cw-modal, .cw-desk, .cw-interaction {
     position: fixed;
-    inset: .25rem;
+    inset:
+      max(.25rem, env(safe-area-inset-top, 0px))
+      max(.25rem, env(safe-area-inset-right, 0px))
+      max(.25rem, env(safe-area-inset-bottom, 0px))
+      max(.25rem, env(safe-area-inset-left, 0px));
     width: auto;
     max-height: none;
   }

@@ -183,7 +183,7 @@ export function ImmersiveCourtShell({
 
         <p
           className="cw-visually-hidden"
-          aria-live={accessMode === 'reading' ? 'off' : 'polite'}
+          aria-live={accessMode === 'reading' || captionsNeedReading ? 'off' : 'polite'}
           aria-atomic="true"
         >
           {cue.speaker}: {cue.accessibleProposition}

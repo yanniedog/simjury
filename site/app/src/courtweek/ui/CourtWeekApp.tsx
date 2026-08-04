@@ -470,6 +470,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       <JurorDesk
         trial={courtWeek.trial}
         progress={progress}
+        readOnly={isReplay}
         onNotesChange={(notes) => updateProgress((current) => ({ ...current, notes }))}
         onImport={(imported) => updateProgress(imported)}
         onInspectEvidence={(id) => {
@@ -541,7 +542,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
             ))}
           </dl>
         ) : null}
-        {position.scene.id === 'sun-second-ballot' && interactionSealed && progress.secondVote ? (
+        {position.scene.id === 'sun-second-ballot' && (interactionSealed || isReplay) && progress.secondVote ? (
           <dl className="cw-ballot" aria-label="Anonymous second ballot">
             {(Object.entries(calculateSecondBallot(
               courtWeek.deliberation,
