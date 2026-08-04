@@ -59,7 +59,7 @@ describe('SceneArtManifest contract', () => {
     const visibleEvidenceScenes = Object.entries(manifest.scenes)
       .filter(([, entry]) => Object.values(entry.compositionArt).some((direction) => direction.evidenceSafeRegion !== null && direction.evidenceSafeRegion !== undefined))
       .map(([sceneId]) => sceneId)
-    expect(visibleEvidenceScenes).toEqual(['tue-recording'])
+    expect(visibleEvidenceScenes).toEqual(['tue-recording', 'fri-evidence-limits'])
     expect(manifest.scenes['mon-adjourn'].compositionArt.portrait.subjectSafeRegion).toBeNull()
     expect(manifest.scenes['mon-arrival'].compositionArt.portrait.reviewStatus).toBe('compatibility-migration')
     expect(manifest.scenes['tue-recording'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
@@ -116,6 +116,9 @@ describe('SceneArtManifest contract', () => {
       expect(manifest.scenes['fri-burden'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
       expect(manifest.scenes['fri-murder-trail'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
       expect(manifest.scenes['fri-manslaughter-trail'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+      expect(manifest.scenes['fri-evidence-limits'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+      expect(manifest.scenes['fri-evidence-limits'].compositionArt[composition].evidenceSafeRegion).toMatchObject({ width: expect.any(Number), height: expect.any(Number) })
+      expect(manifest.scenes['fri-evidence-limits'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
     }
   })
 })
