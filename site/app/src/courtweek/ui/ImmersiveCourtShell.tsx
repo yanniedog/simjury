@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import type { CourtSession, Scene, SceneCue, SceneCueTurn } from '../model/schema'
 import type { PlaybackStatus } from '../media/useCuePlayback'
 import type { AccessMode } from '../state/progress'
@@ -124,12 +124,19 @@ export function ImmersiveCourtShell({
     playbackStatus === 'speech-fallback'
   )
   const usesRuntimeStrip = Boolean(scene.visual.runtimeStrip && (!dataSaver || !scene.visual.sources))
-  const stripFocalX = usesRuntimeStrip
-    ? ((scene.visual.runtimeStrip?.cell ?? 0) * 100 + scene.visual.focalPoint.x) / 2
-    : scene.visual.focalPoint.x
-  const focalStyle = {
-    objectPosition: `${stripFocalX}% ${scene.visual.focalPoint.y}%`,
+  const focalPosition = (composition: 'portrait' | 'tablet' | 'desktop') => {
+    const focalPoint = scene.visual.compositionArt?.[composition]?.focalPoint ?? scene.visual.focalPoint
+    const x = usesRuntimeStrip
+      ? ((scene.visual.runtimeStrip?.cell ?? 0) * 100 + focalPoint.x) / 2
+      : focalPoint.x
+    return `${x}% ${focalPoint.y}%`
   }
+  const focalStyle = {
+    '--cw-focal-portrait': focalPosition('portrait'),
+    '--cw-focal-tablet': focalPosition('tablet'),
+    '--cw-focal-desktop': focalPosition('desktop'),
+    objectPosition: `var(--cw-focal-active, ${focalPosition('tablet')})`,
+  } as CSSProperties
   const visualUrl = (
     composition: 'portrait' | 'tablet' | 'desktop',
     format: 'avif' | 'webp',
