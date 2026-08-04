@@ -261,6 +261,19 @@ export function importWeeklyProgress(
   return validated
 }
 
+export function mergeImportedWeeklyProgress(
+  current: StoredWeeklyProgress,
+  imported: StoredWeeklyProgress,
+): StoredWeeklyProgress {
+  return {
+    ...imported,
+    highestObservedTime: new Date(Math.max(
+      Date.parse(current.highestObservedTime),
+      Date.parse(imported.highestObservedTime),
+    )).toISOString(),
+  }
+}
+
 export function downloadWeeklyProgress(
   progress: StoredWeeklyProgress,
   includePrivateNotes = false,
