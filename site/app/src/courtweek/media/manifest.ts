@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import type { CourtSession, CourtWeek, Scene, SceneCue } from '../model/schema'
+import { prerecordedCueIds } from './runtimeCues'
 
 const audioAssetName = z.string().regex(/^[0-9a-f]{64}\.(?:opus|m4a|mp3|vtt)$/u)
 const artAssetName = z.string().regex(/^[0-9a-f]{64}\.(?:avif|webp)$/u)
@@ -89,15 +90,15 @@ export function assertRuntimeMediaCoverage(
   ) {
     throw new Error('Pinned Court Week media manifest targets a different reviewed revision.')
   }
-  const authoredCueIds = courtWeek.manifest.sessions.flatMap((session) =>
-    session.scenes.flatMap((scene) => scene.cues.map((cue) => cue.id)))
+  const authoredCueIds = prerecordedCueIds(courtWeek.manifest.sessions.flatMap((session) =>
+    session.scenes.flatMap((scene) => scene.cues.map((cue) => cue.id))))
   const mappedCueIds = manifest.sessions.flatMap((session) =>
     session.segments.flatMap((segment) => segment.cues.map((cue) => cue.cue_id)))
   if (
     new Set(mappedCueIds).size !== mappedCueIds.length ||
     JSON.stringify([...mappedCueIds].sort()) !== JSON.stringify([...authoredCueIds].sort())
   ) {
-    throw new Error(`Pinned media maps ${new Set(mappedCueIds).size} unique cues; reviewed Court Week requires ${authoredCueIds.length}.`)
+    throw new Error(`Pinned media maps ${new Set(mappedCueIds).size} unique cues; reviewed Court Week requires ${authoredCueIds.length} prerecorded cues.`)
   }
   for (const sourceSession of courtWeek.manifest.sessions) {
     const media = manifest.sessions.find((session) => session.session_id === sourceSession.id)

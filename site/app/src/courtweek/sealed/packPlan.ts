@@ -8,6 +8,17 @@ export function createCourtDayPacks(
   bootstrap: CourtWeekBootstrap,
   mediaManifest?: CourtWeekRuntimeMediaManifest,
 ): CourtDayPack[] {
+  if (
+    bootstrap.id !== courtWeek.manifest.id ||
+    bootstrap.revision !== courtWeek.manifest.revision ||
+    bootstrap.releaseTag !== courtWeek.manifest.releaseTag
+  ) {
+    throw new Error(
+      `Bootstrap revision drift: bootstrap ${bootstrap.id}@${bootstrap.revision}/${bootstrap.releaseTag} ` +
+      `does not match authored ${courtWeek.manifest.id}@${courtWeek.manifest.revision}/${courtWeek.manifest.releaseTag}`,
+    )
+  }
+
   const firstEvidenceDay = new Map<string, number>()
   for (const session of courtWeek.manifest.sessions) {
     for (const scene of session.scenes) {

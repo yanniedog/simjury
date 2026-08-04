@@ -46,4 +46,15 @@ describe('sealed Court Week partition', () => {
     }
     expect(JSON.stringify(packs.slice(1))).not.toContain('scenes/mon-')
   })
+
+  it('rejects bootstrap revision or release-tag drift from the authored manifest', () => {
+    expect(() => createCourtDayPacks(elevenMinutesCourtWeek, {
+      ...courtWeekBootstrap,
+      revision: 'drifted-revision',
+    })).toThrow(/Bootstrap revision drift/)
+    expect(() => createCourtDayPacks(elevenMinutesCourtWeek, {
+      ...courtWeekBootstrap,
+      releaseTag: 'court-week-cw-0001-2099.01.01-r9',
+    })).toThrow(/Bootstrap revision drift/)
+  })
 })

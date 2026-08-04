@@ -221,15 +221,24 @@ export function SealedCourtWeekApp({
       </main>
     )
   }
-  if (missingEligible) {
+  // Keep CourtWeekApp mounted once any pack is open so useWeeklyProgress can
+  // flush its debounced IndexedDB save across day-boundary pack fetches.
+  if (missingEligible && packs.length === 0) {
     return <main className="cw-loading" aria-busy="true"><p>Opening today’s sealed court session…</p></main>
   }
 
   return (
-    <CourtWeekApp
-      courtWeek={courtWeek}
-      now={now}
-      releaseBase={releaseBase}
-    />
+    <>
+      {missingEligible ? (
+        <div className="cw-loading cw-loading--inline" aria-busy="true" role="status">
+          Opening today’s sealed court session…
+        </div>
+      ) : null}
+      <CourtWeekApp
+        courtWeek={courtWeek}
+        now={now}
+        releaseBase={releaseBase}
+      />
+    </>
   )
 }

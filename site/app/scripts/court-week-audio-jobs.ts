@@ -3,6 +3,7 @@ import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
+import { RUNTIME_DEPENDENT_CUE_IDS } from '../src/courtweek/media/runtimeCues'
 import type { CourtSession, CourtWeek, SceneCue } from '../src/courtweek/model/schema'
 
 export const AUDIO_JOB_SCHEMA = 'simjury.court-week-audio-job/v1' as const
@@ -24,11 +25,13 @@ export const COURT_WEEK_VOICES: Readonly<Record<string, string>> = {
   'Dr Eren Vos': 'bf_lily',
   'Edda Rook': 'af_river',
   'Foreperson Edda Rook': 'af_river',
+  'Ilan Saye': 'am_adam',
   'Jaro Pell': 'am_fenrir',
   'Judge Sel Aven': 'bm_george',
   'Judge’s neutral case note': 'bm_george',
   'Kessa Noor': 'af_aoede',
   'Lina Fei': 'af_kore',
+  'Mara Venn': 'af_alloy',
   'Narrator': 'af_heart',
   'Nella Orr': 'af_nicole',
   'Niko Pell': 'am_michael',
@@ -44,8 +47,26 @@ export const COURT_WEEK_VOICES: Readonly<Record<string, string>> = {
   'Yara Voss': 'af_sky',
 }
 
+/**
+ * Short dialogue labels embedded in multi-party cue text map to reviewed voices.
+ * Cue.speaker remains the legal actor; synthesis uses these for attributed lines.
+ */
+export const DIALOGUE_SPEAKER_ALIASES: Readonly<Record<string, string>> = {
+  Crown: 'Crown counsel Asha Renn',
+  Dax: 'Defence counsel Corin Dax',
+  Dorn: 'Peli Dorn',
+  Judge: 'Judge Sel Aven',
+  Orr: 'Nella Orr',
+  Pell: 'Jaro Pell',
+  Renn: 'Crown counsel Asha Renn',
+  Saye: 'Ilan Saye',
+  Venn: 'Mara Venn',
+  Vos: 'Dr Eren Vos',
+}
+
 export interface AudioJobCue {
   id: string
+  sourceCueId: string
   speaker: string
   text: string
   voice: string
@@ -99,17 +120,59 @@ function pauseAfterMs(cue: SceneCue): number {
   return 340
 }
 
-function castCue(cue: SceneCue): AudioJobCue {
-  const voice = COURT_WEEK_VOICES[cue.speaker]
-  if (!voice) throw new Error(`No reviewed Kokoro voice for speaker: ${cue.speaker}`)
+function castUtterance(
+  cue: SceneCue,
+  speaker: string,
+  text: string,
+  id: string,
+): AudioJobCue {
+  const voice = COURT_WEEK_VOICES[speaker]
+  if (!voice) throw new Error(`No reviewed Kokoro voice for speaker: ${speaker}`)
+  const trimmed = text.trim()
+  if (!trimmed) throw new Error(`Empty utterance after multi-speaker split for ${cue.id}`)
   return {
-    id: cue.id,
-    speaker: cue.speaker,
-    text: cue.text.trim(),
+    id,
+    sourceCueId: cue.id,
+    speaker,
+    text: trimmed,
     voice,
     tone: cue.tone,
     pauseAfterMs: pauseAfterMs(cue),
   }
+}
+
+/**
+ * Split cues that embed labelled multi-party dialogue (e.g. "Dax: … Orr: …")
+ * into speaker-attributed utterances before voice assignment.
+ */
+export function splitCueUtterances(cue: SceneCue): AudioJobCue[] {
+  const aliasNames = Object.keys(DIALOGUE_SPEAKER_ALIASES).sort((left, right) => right.length - left.length)
+  const pattern = new RegExp(`(?:^|\\s)(${aliasNames.join('|')}):\\s*`, 'gu')
+  const text = cue.text.trim()
+  const matches = [...text.matchAll(pattern)]
+  if (matches.length === 0) {
+    return [castUtterance(cue, cue.speaker, text, cue.id)]
+  }
+
+  const utterances: AudioJobCue[] = []
+  const firstIndex = matches[0].index ?? 0
+  if (firstIndex > 0) {
+    const preface = text.slice(0, firstIndex).trim()
+    if (preface) utterances.push(castUtterance(cue, cue.speaker, preface, `${cue.id}__pre`))
+  }
+  matches.forEach((match, index) => {
+    const alias = match[1]
+    const speaker = DIALOGUE_SPEAKER_ALIASES[alias]
+    if (!speaker) throw new Error(`Unknown dialogue alias ${alias} in ${cue.id}`)
+    const start = (match.index ?? 0) + match[0].length
+    const end = index + 1 < matches.length ? (matches[index + 1].index ?? text.length) : text.length
+    utterances.push(castUtterance(cue, speaker, text.slice(start, end), `${cue.id}__${index + 1}`))
+  })
+  return utterances
+}
+
+function castCue(cue: SceneCue): AudioJobCue[] {
+  return splitCueUtterances(cue)
 }
 
 function splitForMinimum(session: CourtSession): Array<{ id: string; sourceSceneId: string; cues: SceneCue[] }> {
@@ -138,10 +201,12 @@ export function buildCourtWeekAudioJobs(courtWeek: CourtWeek): {
   index: CourtWeekAudioIndex
   jobs: CourtWeekAudioJob[]
 } {
-  const speakers = new Set(
+  const cueSpeakers = new Set(
     courtWeek.manifest.sessions.flatMap((session) =>
       session.scenes.flatMap((scene) => scene.cues.map((cue) => cue.speaker))),
   )
+  const dialogueSpeakers = new Set(Object.values(DIALOGUE_SPEAKER_ALIASES))
+  const speakers = new Set([...cueSpeakers, ...dialogueSpeakers])
   const unmapped = [...speakers].filter((speaker) => !COURT_WEEK_VOICES[speaker])
   if (unmapped.length) throw new Error(`Uncast Court Week speakers: ${unmapped.sort().join(', ')}`)
   const unused = Object.keys(COURT_WEEK_VOICES).filter((speaker) => !speakers.has(speaker))
@@ -149,7 +214,8 @@ export function buildCourtWeekAudioJobs(courtWeek: CourtWeek): {
 
   const jobs = courtWeek.manifest.sessions.map((session): CourtWeekAudioJob => {
     const segments = splitForMinimum(session).map((segment) => {
-      const cueIds = segment.cues.map((cue) => cue.id)
+      const synthesisCues = segment.cues.filter((cue) => !RUNTIME_DEPENDENT_CUE_IDS.has(cue.id))
+      const cueIds = synthesisCues.map((cue) => cue.id)
       return {
         id: segment.id,
         opaqueId: sha256([
@@ -160,11 +226,16 @@ export function buildCourtWeekAudioJobs(courtWeek: CourtWeek): {
           ...cueIds,
         ].join('\0')).slice(0, 32),
         sourceSceneId: segment.sourceSceneId,
-        cues: segment.cues.map(castCue),
+        cues: synthesisCues.flatMap(castCue),
       }
-    })
+    }).filter((segment) => segment.cues.length > 0)
+    if (segments.length < 8 || segments.length > 12) {
+      throw new Error(`${session.id} has ${segments.length} synthesizable audio segments after omitting runtime-dependent cues; need 8-12`)
+    }
+    // Count only interaction time the player enforces (minimumSeconds). Scene
+    // transitionSeconds are atmospheric and are not gated in CourtWeekApp.
     const fixedExperienceSeconds = session.scenes.reduce((total, scene) =>
-      total + scene.transitionSeconds + (scene.interaction?.minimumSeconds ?? 0), 0)
+      total + (scene.interaction?.minimumSeconds ?? 0), 0)
     const digestInput = {
       caseId: courtWeek.manifest.id,
       sourceRevision: courtWeek.manifest.revision,

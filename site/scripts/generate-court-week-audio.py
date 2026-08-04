@@ -278,6 +278,7 @@ def produce(job: dict[str, Any], output_root: Path) -> Path:
             end = sample_cursor / job["sampleRate"]
             cue_ranges.append({
                 "cueId": cue["id"],
+                "sourceCueId": str(cue.get("sourceCueId") or cue["id"]),
                 "speaker": cue["speaker"],
                 "text": cue["text"],
                 "startSeconds": round(start, 3),
