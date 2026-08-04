@@ -1,9 +1,19 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { TrialRecord, WeeklyProgress } from '../model/schema'
 import {
   downloadWeeklyProgress,
   importWeeklyProgress,
 } from '../state/progress'
+
+const focusableSelector = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled]):not([tabindex="-1"])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  'summary',
+  '[tabindex]:not([tabindex="-1"])',
+].join(',')
 
 export interface JurorDeskProps {
   trial: TrialRecord
@@ -28,8 +38,71 @@ export function JurorDesk({
 }: JurorDeskProps) {
   const importInput = useRef<HTMLInputElement>(null)
   const desk = useRef<HTMLElement>(null)
+  const onCloseRef = useRef(onClose)
+  const returnFocusTo = useRef<HTMLElement | null>(null)
   const [includeNotes, setIncludeNotes] = useState(false)
   const [importError, setImportError] = useState<string | null>(null)
+  onCloseRef.current = onClose
+
+  const closeDesk = useCallback(() => {
+    const target = returnFocusTo.current
+    onCloseRef.current()
+    queueMicrotask(() => {
+      if (target?.isConnected) target.focus()
+    })
+  }, [])
+
+  useEffect(() => {
+    const root = desk.current
+    if (!root) return
+    const active = document.activeElement
+    if (!returnFocusTo.current && active instanceof HTMLElement && !root.contains(active)) {
+      returnFocusTo.current = active
+    }
+    root.querySelector<HTMLElement>(focusableSelector)?.focus()
+    return () => {
+      queueMicrotask(() => {
+        if (!root.isConnected && returnFocusTo.current?.isConnected) {
+          returnFocusTo.current.focus()
+        }
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    const root = desk.current
+    if (!root || inactive) return
+    const focusable = () => Array.from(root.querySelectorAll<HTMLElement>(focusableSelector))
+      .filter((element) => !element.hasAttribute('disabled') && element.getAttribute('aria-hidden') !== 'true')
+    const keepFocusInDialog = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        event.stopPropagation()
+        closeDesk()
+        return
+      }
+      if (event.key !== 'Tab') return
+
+      const available = focusable()
+      const first = available[0]
+      const last = available.at(-1)
+      if (!first || !last) {
+        event.preventDefault()
+        root.focus()
+        return
+      }
+      const active = document.activeElement
+      if (event.shiftKey && (active === first || !root.contains(active))) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && (active === last || !root.contains(active))) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+    document.addEventListener('keydown', keepFocusInDialog)
+    return () => document.removeEventListener('keydown', keepFocusInDialog)
+  }, [closeDesk, inactive])
 
   useEffect(() => {
     if (inactive) desk.current?.setAttribute('inert', '')
@@ -58,13 +131,14 @@ export function JurorDesk({
       role="dialog"
       aria-modal={inactive ? undefined : 'true'}
       aria-labelledby="cw-desk-heading"
+      tabIndex={-1}
     >
       <header className="cw-modal__header">
         <div>
           <p className="cw-kicker">Private juror desk</p>
           <h2 id="cw-desk-heading">Your working papers</h2>
         </div>
-        <button type="button" onClick={onClose} aria-label="Close juror desk">Close</button>
+        <button type="button" onClick={closeDesk} aria-label="Close juror desk">Close</button>
       </header>
 
       <section>
@@ -143,6 +217,7 @@ export function JurorDesk({
             ref={importInput}
             className="cw-visually-hidden"
             type="file"
+            tabIndex={-1}
             accept="application/json,.json"
             onChange={(event) => void readImport(event.target.files?.[0])}
           />
