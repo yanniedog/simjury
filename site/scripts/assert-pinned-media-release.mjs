@@ -127,6 +127,39 @@ export function assertReleasePayloadMatchesManifest(releaseManifestValue, releas
   }
 }
 
+export function assertReleasePayloadReadyForPublication(releaseManifestValue, releaseAssetsDirectory, expectedReleaseTag) {
+  const releaseManifest = requireObject(releaseManifestValue, 'Reviewed Release manifest')
+  if (releaseManifest.schema !== 'simjury.court-week-media/v1' || releaseManifest.case_id !== 'cw-0001') {
+    throw new Error('Reviewed Release payload has an unsupported Court Week identity.')
+  }
+  if (releaseManifest.release_tag !== expectedReleaseTag) {
+    throw new Error(
+      `Reviewed Release tag mismatch: expected=${expectedReleaseTag ?? 'missing'}, release=${releaseManifest.release_tag ?? 'missing'}.`,
+    )
+  }
+  if (
+    !/^sha256:[0-9a-f]{64}$/u.test(releaseManifest.review_content_digest ?? '') ||
+    !/^sha256:[0-9a-f]{64}$/u.test(releaseManifest.runtime_manifest_digest ?? '') ||
+    typeof releaseManifest.court_week_revision !== 'string' ||
+    releaseManifest.court_week_revision.length === 0
+  ) {
+    throw new Error('Reviewed Release payload is missing its exact source and runtime-manifest identities.')
+  }
+  assertReleaseArtReady(releaseManifest)
+  const assets = collectReleaseAssets(releaseManifest)
+  assertReleasePayloadMatchesManifest(releaseManifest, releaseAssetsDirectory)
+
+  const manifestBytes = readFileSync(join(resolve(releaseAssetsDirectory), 'release-manifest.json')).length
+  const totalBytes = releaseManifest.media_bytes + manifestBytes
+  if (releaseManifest.total_bytes !== totalBytes) {
+    throw new Error(`Reviewed Release total_bytes is ${releaseManifest.total_bytes}; measured ${totalBytes}.`)
+  }
+  if (releaseManifest.asset_count >= 500 || totalBytes > 150_000_000) {
+    throw new Error(`Reviewed Release payload exceeds its publication budget: ${releaseManifest.asset_count} files, ${totalBytes} bytes.`)
+  }
+  return { assetCount: assets.size, releaseTag: expectedReleaseTag, totalBytes }
+}
+
 function assertExactReviewSignoffs(reviewSignoffs, runtimeManifest, releaseManifest) {
   if (reviewSignoffs.schema !== 'simjury.court-week-review-signoffs/v1') {
     throw new Error(`Unsupported Court Week review signoff schema: ${reviewSignoffs.schema ?? 'missing'}.`)
@@ -238,21 +271,33 @@ function argument(name) {
 
 const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 if (isMain) {
-  const runtimePath = argument('--runtime-manifest')
   const releasePath = argument('--release-manifest')
-  const reviewSignoffsPath = argument('--review-signoffs')
   const releaseAssetsDirectory = argument('--release-assets-dir')
   const expectedReleaseTag = argument('--expected-release-tag')
-  if (!runtimePath || !releasePath || !reviewSignoffsPath || !releaseAssetsDirectory || !expectedReleaseTag) {
-    throw new Error('Use --runtime-manifest, --release-manifest, --review-signoffs, --release-assets-dir and --expected-release-tag.')
+  if (process.argv.includes('--release-payload-only')) {
+    if (!releasePath || !releaseAssetsDirectory || !expectedReleaseTag) {
+      throw new Error('Payload verification requires --release-manifest, --release-assets-dir and --expected-release-tag.')
+    }
+    const result = assertReleasePayloadReadyForPublication(
+      JSON.parse(readFileSync(resolve(releasePath), 'utf8')),
+      releaseAssetsDirectory,
+      expectedReleaseTag,
+    )
+    console.log(`Reviewed Release payload matches ${result.assetCount} content-addressed assets in ${result.releaseTag}.`)
+  } else {
+    const runtimePath = argument('--runtime-manifest')
+    const reviewSignoffsPath = argument('--review-signoffs')
+    if (!runtimePath || !releasePath || !reviewSignoffsPath || !releaseAssetsDirectory || !expectedReleaseTag) {
+      throw new Error('Use --runtime-manifest, --release-manifest, --review-signoffs, --release-assets-dir and --expected-release-tag.')
+    }
+    const releaseManifest = JSON.parse(readFileSync(resolve(releasePath), 'utf8'))
+    const result = assertPinnedMediaMatchesRelease(
+      JSON.parse(readFileSync(resolve(runtimePath), 'utf8')),
+      releaseManifest,
+      JSON.parse(readFileSync(resolve(reviewSignoffsPath), 'utf8')),
+      expectedReleaseTag,
+    )
+    assertReleasePayloadMatchesManifest(releaseManifest, releaseAssetsDirectory)
+    console.log(`Pinned runtime media matches ${result.assetCount} content-addressed assets in ${result.releaseTag}.`)
   }
-  const releaseManifest = JSON.parse(readFileSync(resolve(releasePath), 'utf8'))
-  const result = assertPinnedMediaMatchesRelease(
-    JSON.parse(readFileSync(resolve(runtimePath), 'utf8')),
-    releaseManifest,
-    JSON.parse(readFileSync(resolve(reviewSignoffsPath), 'utf8')),
-    expectedReleaseTag,
-  )
-  assertReleasePayloadMatchesManifest(releaseManifest, releaseAssetsDirectory)
-  console.log(`Pinned runtime media matches ${result.assetCount} content-addressed assets in ${result.releaseTag}.`)
 }
