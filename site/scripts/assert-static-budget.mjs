@@ -1,5 +1,6 @@
+import { createHash } from 'node:crypto'
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, extname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -24,6 +25,39 @@ for (const forbidden of ['api', 'discord', 'docket', 'archive']) {
 }
 const retiredMedia = files.filter((path) => /[\\/]media[\\/]dd-(?:intro|\d{4})[\\/]/.test(path))
 if (retiredMedia.length) failures.push(`Retired docket media shipped: ${retiredMedia[0]}`)
+
+const retiredDocketPaths = files.filter((path) => /daily-docket/iu.test(relative(publicRoot, path)))
+if (retiredDocketPaths.length) failures.push(`Retired Daily Docket asset shipped: ${retiredDocketPaths[0]}`)
+
+for (const path of files.filter((candidate) => /^assets[\\/]/u.test(relative(publicRoot, candidate)))) {
+  const declaredPrefix = /(?:^|[\\/])([a-f0-9]+)\.[a-z0-9]+$/iu.exec(path)?.[1]
+  const actualDigest = createHash('sha256').update(readFileSync(path)).digest('hex')
+  if (!declaredPrefix || !actualDigest.startsWith(declaredPrefix)) {
+    failures.push(`Content-addressed static asset has a stale name: ${path}`)
+  }
+}
+
+const textExtensions = new Set(['.css', '.html', '.js', '.json', '.svg', '.txt', '.xml'])
+for (const path of files.filter((candidate) => textExtensions.has(extname(candidate)))) {
+  if (/daily-docket/iu.test(readFileSync(path, 'utf8'))) {
+    failures.push(`Retired Daily Docket production reference shipped: ${path}`)
+  }
+}
+
+for (const relativePage of ['index.html', join('jury', 'index.html')]) {
+  const pagePath = join(publicRoot, relativePage)
+  if (!existsSync(pagePath)) continue
+  const html = readFileSync(pagePath, 'utf8')
+  const socialImages = [...html.matchAll(/<meta (?:property|name)="(?:og:image|twitter:image)" content="https:\/\/simjury\.com(\/assets\/[a-f0-9]+\.webp)" \/>/gu)]
+    .map((match) => match[1])
+  if (socialImages.length !== 2 || new Set(socialImages).size !== 1) {
+    failures.push(`${relativePage} must expose one matching content-addressed Open Graph and Twitter image`)
+    continue
+  }
+  if (!existsSync(join(publicRoot, socialImages[0].slice(1)))) {
+    failures.push(`${relativePage} social image does not resolve: ${socialImages[0]}`)
+  }
+}
 
 const juryIndex = join(publicRoot, 'jury', 'index.html')
 if (existsSync(juryIndex)) {
