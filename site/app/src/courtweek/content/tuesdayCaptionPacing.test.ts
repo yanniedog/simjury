@@ -5,9 +5,9 @@ import { elevenMinutesCourtWeek } from './elevenMinutes'
 import { CAPTION_CUE_CHARACTER_LIMIT } from './captionPacing'
 import { estimateSessionSeconds } from '../model/validation'
 
-const monday = elevenMinutesCourtWeek.manifest.sessions[0]
-const mondayCues = monday.scenes.flatMap((scene) => scene.cues)
-const sourceGroups = mondayCues.reduce<Array<{ id: string; text: string; cues: typeof mondayCues }>>((groups, cue) => {
+const tuesday = elevenMinutesCourtWeek.manifest.sessions[1]
+const tuesdayCues = tuesday.scenes.flatMap((scene) => scene.cues)
+const sourceGroups = tuesdayCues.reduce<Array<{ id: string; text: string; cues: typeof tuesdayCues }>>((groups, cue) => {
   const sourceId = cue.sourceCueId ?? cue.id
   const current = groups.at(-1)
   if (current?.id === sourceId) {
@@ -19,41 +19,41 @@ const sourceGroups = mondayCues.reduce<Array<{ id: string; text: string; cues: t
   return groups
 }, [])
 
-describe('Monday caption pacing', () => {
+describe('Tuesday caption pacing', () => {
   it('preserves every authored word, event and legal annotation in source order', () => {
     const digest = createHash('sha256')
       .update(JSON.stringify(sourceGroups.map(({ id, text }) => [id, text])))
       .digest('hex')
 
-    expect(digest).toBe('10b8e0ac536236a12c1570f50eb30051eb0b21c953438536623e2c6cb7263ea8')
-    expect(sourceGroups).toHaveLength(17)
-    expect(mondayCues).toHaveLength(94)
+    expect(digest).toBe('26c08e3cff6c84d2df90441aa8fa61e020fcf71af92764e5a9700a0d709383a7')
+    expect(sourceGroups).toHaveLength(20)
+    expect(tuesdayCues).toHaveLength(116)
     for (const group of sourceGroups) {
       expect(group.cues[0].id).toBe(group.id)
       const source = group.cues[0]
-      for (const cue of group.cues) {
+      for (const [index, cue] of group.cues.entries()) {
         expect(cue.sourceCueId).toBe(group.id)
         expect(cue.event).toBe(source.event)
         expect(cue.tone).toBe(source.tone)
         expect(cue.evidenceIds).toEqual(source.evidenceIds)
         expect(cue.replayable).toBe(source.replayable)
-        expect(cue.admissionStatus).toBe(source.admissionStatus)
+        expect(cue.admissionStatus).toBe(index === 0 ? source.admissionStatus : undefined)
         expect(cue.accessibleProposition).toBe(source.accessibleProposition)
       }
     }
   })
 
-  it('limits caption length without changing Monday duration or later sessions', () => {
-    expect(Math.max(...mondayCues.map((cue) => cue.text.length))).toBeLessThanOrEqual(CAPTION_CUE_CHARACTER_LIMIT)
-    expect(Math.min(...mondayCues.map((cue) => cue.text.length))).toBeGreaterThanOrEqual(30)
-    expect(estimateSessionSeconds(monday)).toBe(1_272)
+  it('limits caption length without changing Tuesday duration or later sessions', () => {
+    expect(Math.max(...tuesdayCues.map((cue) => cue.text.length))).toBeLessThanOrEqual(CAPTION_CUE_CHARACTER_LIMIT)
+    expect(Math.min(...tuesdayCues.map((cue) => cue.text.length))).toBeGreaterThanOrEqual(28)
+    expect(estimateSessionSeconds(tuesday)).toBe(1_257)
     expect(elevenMinutesCourtWeek.manifest.sessions.slice(2)
       .flatMap((session) => session.scenes.flatMap((scene) => scene.cues))
       .every((cue) => cue.sourceCueId === undefined)).toBe(true)
   })
 
-  it('keeps authored utterances inside one audio segment and removes only internal split pauses', () => {
-    const job = buildCourtWeekAudioJobs(elevenMinutesCourtWeek).jobs[0]
+  it('keeps authored utterances in one audio segment with correct recorded voices and pauses', () => {
+    const job = buildCourtWeekAudioJobs(elevenMinutesCourtWeek).jobs[1]
     expect(job.segments).toHaveLength(8)
     for (const group of sourceGroups) {
       const segmentIndexes = job.segments.flatMap((segment, index) =>
@@ -69,12 +69,8 @@ describe('Monday caption pacing', () => {
       expect(audioCues.at(-1)?.pauseAfterMs).toBeGreaterThan(0)
     }
 
-    const continuation = mondayCues.find((cue) => cue.id === 'mon-orr-cross-1--caption-3')!
-    const mixedContinuation = mondayCues.find((cue) => cue.id === 'mon-orr-cross-1--caption-5')!
-    expect(continuation.speaker).toBe('Nella Orr')
-    expect(splitCueUtterances(continuation).map((cue) => cue.speaker)).toEqual(['Nella Orr'])
-    expect(splitCueUtterances(mixedContinuation).map((cue) => cue.speaker)).toEqual([
-      'Defence counsel Corin Dax', 'Nella Orr',
-    ])
+    const mixed = tuesdayCues.find((cue) => cue.id === 'tue-recording-play--caption-3')!
+    expect(mixed.speaker).toBe('Mara Venn')
+    expect(splitCueUtterances(mixed).map((cue) => cue.speaker)).toEqual(['Mara Venn', 'Ilan Saye'])
   })
 })

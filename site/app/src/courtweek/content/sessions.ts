@@ -12,6 +12,16 @@ function mondayCue(input: CueInput): SceneCue[] {
   return paceCueForCaptions(cue(input))
 }
 
+function paceSessionCaptions(session: CourtSession): CourtSession {
+  return {
+    ...session,
+    scenes: session.scenes.map((authoredScene) => ({
+      ...authoredScene,
+      cues: authoredScene.cues.flatMap(paceCueForCaptions),
+    })),
+  }
+}
+
 function scene(
   id: string,
   title: string,
@@ -74,7 +84,7 @@ const monday: CourtSession = {
   ],
 }
 
-const tuesday: CourtSession = {
+const tuesday: CourtSession = paceSessionCaptions({
   id: 'cw-0001-tuesday', ordinal: 2, day: 'Tuesday', title: 'The call',
   unlockAt: '2026-08-11T08:30:00+10:00', targetMinutes: 20, prerequisiteSessionIds: ['cw-0001-monday'],
   scenes: [
@@ -115,7 +125,7 @@ const tuesday: CourtSession = {
       cue({ id: 'tue-adjourn-2', event: 'adjournment', speaker: 'Court officer', tone: 'formal', text: 'Save observations, not a verdict. A useful note distinguishes “the system records this” from “this might mean that.” Court is adjourned.', accessibleProposition: 'Juror notes should distinguish recorded fact from inference and remain provisional.' }),
     ], 95, 'Close court with no verdict selected.'),
   ],
-}
+})
 
 const wednesday: CourtSession = {
   id: 'cw-0001-wednesday', ordinal: 3, day: 'Wednesday', title: 'The eleven-minute window',
