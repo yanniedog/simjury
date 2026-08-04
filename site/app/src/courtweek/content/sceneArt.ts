@@ -536,6 +536,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'fri-manslaughter-trail': {
+    altDescription: 'Judge Sel Aven gives the structured alternative manslaughter directions from the bench while the accused and counsel listen without reaction. The image conveys no view about guilt or verdict.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 60 }, subjectSafeRegion: { x: 0, y: 53, width: 100, height: 32 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 57 }, subjectSafeRegion: { x: 0, y: 53, width: 100, height: 39 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 35, width: 100, height: 46 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
