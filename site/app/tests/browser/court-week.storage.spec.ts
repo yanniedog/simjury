@@ -1,4 +1,5 @@
 import { expect, test, type Download, type Page } from '@playwright/test'
+import { PROGRESS_DATABASE } from '../../src/courtweek/state/progress'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 
@@ -62,13 +63,13 @@ test('blocked storage stays playable and exports private notes only by explicit 
 })
 
 test('quota failure is disclosed after a real gameplay write and play continues', async ({ page }) => {
-  await page.addInitScript(() => {
+  await page.addInitScript((storeName) => {
     const originalPut = IDBObjectStore.prototype.put
     IDBObjectStore.prototype.put = function (...args: Parameters<IDBObjectStore['put']>) {
-      if (this.name === 'progress') throw new DOMException('Storage is full.', 'QuotaExceededError')
+      if (this.name === storeName) throw new DOMException('Storage is full.', 'QuotaExceededError')
       return originalPut.apply(this, args)
     }
-  })
+  }, PROGRESS_DATABASE.store)
   await page.goto('/')
   await expect(page.getByRole('alert')).toHaveCount(0)
   await page.getByLabel('Reading mode').check()
@@ -80,32 +81,32 @@ test('quota failure is disclosed after a real gameplay write and play continues'
 
 test('corrupt stored progress is disclosed and not silently overwritten on hydration', async ({ page }) => {
   await page.goto('/robots.txt')
-  await page.evaluate(async () => new Promise<void>((resolve, reject) => {
-    const request = indexedDB.open('simjury-court-week-v1', 1)
+  await page.evaluate(async (contract) => new Promise<void>((resolve, reject) => {
+    const request = indexedDB.open(contract.name, contract.version)
     request.onerror = () => reject(request.error)
-    request.onupgradeneeded = () => request.result.createObjectStore('progress')
+    request.onupgradeneeded = () => request.result.createObjectStore(contract.store)
     request.onsuccess = () => {
       const database = request.result
-      const transaction = database.transaction('progress', 'readwrite')
+      const transaction = database.transaction(contract.store, 'readwrite')
       transaction.oncomplete = () => { database.close(); resolve() }
       transaction.onerror = () => reject(transaction.error)
-      transaction.objectStore('progress').put({ courtWeekId: 'cw-0001', notes: 'partial' }, 'cw-0001')
+      transaction.objectStore(contract.store).put({ courtWeekId: 'cw-0001', notes: 'partial' }, 'cw-0001')
     }
-  }))
+  }), PROGRESS_DATABASE)
 
   await page.goto('/')
   await expect(page.getByRole('alert')).toContainText('damaged and could not be recovered')
   await page.waitForTimeout(250)
-  const stored = await page.evaluate(async () => new Promise<unknown>((resolve, reject) => {
-    const request = indexedDB.open('simjury-court-week-v1', 1)
+  const stored = await page.evaluate(async (contract) => new Promise<unknown>((resolve, reject) => {
+    const request = indexedDB.open(contract.name, contract.version)
     request.onerror = () => reject(request.error)
     request.onsuccess = () => {
       const database = request.result
-      const get = database.transaction('progress').objectStore('progress').get('cw-0001')
+      const get = database.transaction(contract.store).objectStore(contract.store).get('cw-0001')
       get.onsuccess = () => { database.close(); resolve(get.result) }
       get.onerror = () => reject(get.error)
     }
-  }))
+  }), PROGRESS_DATABASE)
   expect(stored).toEqual({ courtWeekId: 'cw-0001', notes: 'partial' })
   await openDesk(page)
   await expect(page.getByLabel('Your private notes')).toHaveValue('')
