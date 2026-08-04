@@ -237,6 +237,9 @@
 .cw-evidence-canvas { display: grid; overflow: hidden; min-height: 14rem; border: 1px solid var(--cw-line); border-radius: .35rem; background: #292a28; }
 .cw-evidence-document { width: min(58rem, calc(100% - 1rem)); min-height: calc(100% - 1rem); margin: .5rem auto; padding: clamp(.75rem, 3vw, 2rem); transform-origin: center; color: #201d17; background: #f2ead8; box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.4); transition: transform 120ms ease-out; }
 .cw-evidence-document > p:first-child { max-width: 66ch; margin-inline: auto; }
+.cw-evidence-neutral { display: grid; min-height: 12rem; place-content: center; gap: .75rem; max-width: 66ch; margin: auto; text-align: left; }
+.cw-evidence-neutral p { margin: 0; }
+.cw-evidence-neutral p:first-child { color: #5f584c; font-weight: 700; }
 .cw-evidence-ambiguity { max-width: 66ch; margin: 1rem auto 0; padding-top: .75rem; border-top: 2px solid #6a604e; font-weight: 700; line-height: 1.45; }
 .cw-evidence-foundation { padding: 0; border: 1px solid var(--cw-line); border-radius: .4rem; background: #182126; }
 .cw-evidence-foundation summary { display: flex; min-height: 44px; align-items: center; padding: .65rem .8rem; cursor: pointer; font-weight: 750; }
