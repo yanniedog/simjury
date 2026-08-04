@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
+import { SCENE_ART_AUTHORING } from '../src/courtweek/content/sceneArt'
 import { AUDIO_SAMPLE_RATE, buildCourtWeekAudioJobs, COURT_WEEK_VOICES, DIALOGUE_SPEAKER_ALIASES, splitCueUtterances, writeCourtWeekAudioJobs } from './court-week-audio-jobs'
 import { RUNTIME_DEPENDENT_CUE_IDS } from '../src/courtweek/media/runtimeCues'
 import { writeSceneArtManifestDraft } from './scene-art-requirements'
@@ -246,26 +247,13 @@ describe('Court Week prerecorded audio jobs', () => {
         publicManifest.media_bytes + Buffer.byteLength(`${JSON.stringify(publicManifest, null, 2)}\n`),
       )
       const artReport = JSON.parse(readFileSync(resolve(privateOutputRoot, 'art-readiness-report.json'), 'utf8'))
+      const expectedReadySceneIds = elevenMinutesCourtWeek.manifest.sessions.flatMap((session) =>
+        session.scenes.map((scene) => scene.id)
+          .filter((sceneId) => Object.prototype.hasOwnProperty.call(SCENE_ART_AUTHORING, sceneId)),
+      )
       expect(artReport.release_ready).toBe(false)
-      expect(artReport.ready_scene_count).toBe(16)
-      expect(artReport.ready_scene_ids).toEqual([
-        'mon-arrival',
-        'mon-oath',
-        'mon-crown-opening',
-        'mon-orr-chief',
-        'mon-orr-cross',
-        'mon-elements',
-        'mon-adjourn',
-        'tue-resume',
-        'tue-dorn-chief',
-        'tue-recording',
-        'tue-dorn-cross',
-        'tue-dorn-re',
-        'tue-mir-chief',
-        'tue-mir-cross',
-        'tue-adjourn',
-        'wed-resume',
-      ])
+      expect(artReport.ready_scene_count).toBe(expectedReadySceneIds.length)
+      expect(artReport.ready_scene_ids).toEqual(expectedReadySceneIds)
       expect(artReport.scene_count).toBe(55)
       expect(() => execFileSync(process.execPath, [
         resolve('..', 'scripts', 'prepare-court-week-release.mjs'),

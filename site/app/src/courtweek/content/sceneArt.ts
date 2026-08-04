@@ -161,15 +161,15 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
     altDescription: 'Judge Sel Aven addresses the jury as Wednesday court resumes; Crown counsel, defence counsel and Mara Venn remain seated neutrally, the witness box is empty and no evidence is displayed.',
     compositionArt: {
       portrait: {
-        focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 6, y: 38, width: 88, height: 47 },
+        focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 38, width: 100, height: 47 },
         evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
       },
       tablet: {
-        focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 2, y: 34, width: 96, height: 50 },
+        focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 34, width: 100, height: 50 },
         evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
       },
       desktop: {
-        focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 2, y: 31, width: 96, height: 59 },
+        focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 31, width: 100, height: 59 },
         evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
       },
     },
