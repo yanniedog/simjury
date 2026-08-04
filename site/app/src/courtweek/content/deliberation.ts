@@ -47,7 +47,7 @@ export const elevenMinutesDeliberation: DeliberationPack = {
     { claim: 'An innocent accused would have testified.', correction: 'The accused has an absolute right to silence. It supplies no evidence and cannot strengthen the Crown case.', influencePenalty: -2 },
     { claim: 'The likely sentence is too harsh or too lenient.', correction: 'Punishment is exclusively for the court and is irrelevant to whether an offence is proved.', influencePenalty: -2 },
     { claim: 'The victim deserves a conviction because the death was preventable.', correction: 'Sympathy cannot establish duty breach, causation or intent; each element remains subject to proof beyond reasonable doubt.', influencePenalty: -2 },
-    { claim: 'The struck office rumour shows Venn had done this before.', correction: 'The volunteered hearsay was struck and is legally absent for character, propensity, motive and every other purpose.', influencePenalty: -3 },
+    { claim: 'We can still use the excluded answer because we heard it.', correction: 'No. The entire volunteered response was struck and is legally absent for character, propensity, motive and every other purpose.', influencePenalty: -3 },
     { claim: 'Manslaughter is the fair midpoint between murder and acquittal.', correction: 'Manslaughter is a separate offence whose own duty, causation and criminal-negligence elements must all be proved.', influencePenalty: -2 },
   ],
   juryNote: {
@@ -59,18 +59,18 @@ export const elevenMinutesDeliberation: DeliberationPack = {
   outcomePaths: [
     {
       verdict: 'murder', threshold: 'All murder elements proved beyond reasonable doubt, with unanimity or an authorised eleven-to-one majority.',
-      lawfulRationale: 'Recognition of AR-71, the express hold, authenticated downgrade and confirmation, available clarification, unchanged later launch, duration and proved knowledge of the audit may together exclude safety error and support the sole reasonable inference that Venn intended death or really serious injury. Vos’s bounded probability, read with the conscious last transmission and uneventful launch route, may prove the omission substantially caused death.',
+      lawfulRationale: 'Recognition of AR-71, the express hold, authenticated downgrade and confirmation, available clarification, unchanged later launch, duration and proved knowledge of the audit may together exclude safety error and support the sole reasonable inference that Venn intended death or really serious injury. Vos’s bounded probability, tested against its ordinary-route and uninterrupted-travel assumptions and read with the conscious last transmission, may prove the omission substantially caused death.',
       counterAnalysis: 'The genuine warning, overloaded room and accepted error mechanism leave a reasonable non-murderous explanation. The audit was unfinished and unseen, while the survival model concedes a same-outcome possibility. A deliberate hold and indifference to risk are not necessarily intent to harm.',
     },
     {
       verdict: 'manslaughter', threshold: 'Murderous intent is not proved, but every s 22 element is proved beyond reasonable doubt with the lawful numerical agreement.',
-      lawfulRationale: 'The jury may reject intent to harm yet find a deliberate and criminally grave failure: Venn recognised the alert, withheld the only unassigned nearest craft, made no clarification call, and launched eleven minutes later under the same non-grounding warning. The expert evidence may prove that omission materially caused death.',
+      lawfulRationale: 'The jury may reject intent to harm yet find a deliberate and criminally grave failure: Venn recognised the alert, withheld the only unassigned nearest craft for eleven minutes while clarification was available, and then launched under the same non-grounding warning. The expert evidence may prove that omission materially caused death.',
       counterAnalysis: 'Criminal negligence is not a compromise label for a bad outcome. The warning carried genuine rescuer risk, the interface obscured detail, and causation remains probabilistic. If either the grossness threshold or causation remains reasonably doubtful, manslaughter is not proved.',
     },
     {
       verdict: 'not-guilty', threshold: 'At least one required element of murder and manslaughter remains unproved beyond reasonable doubt.',
       lawfulRationale: 'The Crown cannot use silence to fill its gaps. A conscious console action does not establish intent to harm, and the warning plus alarm saturation supports an evidence-based error or safety-assessment possibility. Vos could not exclude an earlier but still fatal outcome, so causation may remain reasonably doubtful for both offences.',
-      counterAnalysis: 'The alternatives must be reasonable on the whole evidence, not merely conceivable. Recognition, explicit words, confirmation, absence of inquiry and unchanged later launch may contradict an honest safety assessment, while the last conscious transmission and expert model may sufficiently establish causation without certainty.',
+      counterAnalysis: 'The alternatives must be reasonable on the whole evidence, not merely conceivable. Recognition, explicit words, authenticated confirmation, the eleven-minute hold and unchanged later launch may contradict an honest safety assessment, while the last conscious transmission and expert model may sufficiently establish causation without certainty.',
     },
     {
       verdict: 'unable-to-agree', threshold: 'After honest consideration, neither unanimity nor an authorised eleven-to-one agreement is reached on any lawful verdict.',

@@ -2,6 +2,22 @@ import type { CourtWeek } from '../model/schema'
 import type { CourtWeekRuntimeMediaManifest } from '../media/manifest'
 import type { CourtDayPack, CourtWeekBootstrap } from './types'
 
+const STRUCK_SUBSTANCE_PATTERNS = [
+  /had done this before/i,
+  /people in the office said/i,
+]
+
+export function assertNoStruckSubstanceAfterRuling(packs: CourtDayPack[]): void {
+  for (const pack of packs.filter(({ ordinal }) => ordinal > 3)) {
+    const serialized = JSON.stringify(pack)
+    for (const pattern of STRUCK_SUBSTANCE_PATTERNS) {
+      if (pattern.test(serialized)) {
+        throw new Error(`Day ${pack.ordinal} repeats the substance of struck evidence after the ruling`)
+      }
+    }
+  }
+}
+
 /** Pure reviewed-content partition used by both the build and leak tests. */
 export function createCourtDayPacks(
   courtWeek: CourtWeek,
@@ -36,7 +52,7 @@ export function createCourtDayPacks(
   void _witnesses
   void _objections
 
-  return bootstrap.sessions.map((schedule) => {
+  const packs: CourtDayPack[] = bootstrap.sessions.map((schedule) => {
     const session = courtWeek.manifest.sessions.find((candidate) => candidate.id === schedule.id)
     if (!session) throw new Error(`Bootstrap session ${schedule.id} has no reviewed content`)
     if (
@@ -63,4 +79,6 @@ export function createCourtDayPacks(
         : {}),
     }
   })
+  assertNoStruckSubstanceAfterRuling(packs)
+  return packs
 }
