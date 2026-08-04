@@ -16,6 +16,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:browser": "playwright test",
+    "test:performance": "tsx scripts/assert-performance-budgets.ts && playwright test --config playwright.performance.config.ts",
     "validate:cases": "tsx scripts/validate-cases.ts",
     "review:signoffs": "tsx scripts/court-week-review-signoffs.ts",
     "media:audio:jobs": "tsx scripts/court-week-audio-jobs.ts",
