@@ -1,0 +1,16 @@
+{
+  "schema": "simjury.court-week-review-signoffs/v1",
+  "caseId": "cw-0001",
+  "revision": "2026.08.03-r1",
+  "contentDigest": "sha256:ea905255c6c730568aa174b610a14549b4ad8eebde78fbfb0c3118bc346d12e0",
+  "signoffs": [
+    { "role": "prosecution", "decision": "pending" },
+    { "role": "defence", "decision": "pending" },
+    { "role": "judicial-neutrality", "decision": "pending" },
+    { "role": "accessibility", "decision": "pending" },
+    { "role": "sensitivity", "decision": "pending" },
+    { "role": "read-aloud", "decision": "pending" },
+    { "role": "blind-balance", "decision": "pending" },
+    { "role": "fixed-scope-criminal-law", "decision": "pending" }
+  ]
+}

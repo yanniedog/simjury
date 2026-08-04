@@ -17,6 +17,7 @@
     "test": "vitest run",
     "test:browser": "playwright test",
     "validate:cases": "tsx scripts/validate-cases.ts",
+    "review:signoffs": "tsx scripts/court-week-review-signoffs.ts",
     "media:audio:jobs": "tsx scripts/court-week-audio-jobs.ts",
     "media:art:requirements": "tsx scripts/scene-art-requirements.ts",
     "media:art:test": "node --test ../scripts/scene-art-readiness.test.mjs"

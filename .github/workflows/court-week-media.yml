@@ -55,6 +55,9 @@ jobs:
       - name: Build deterministic prerecorded-audio jobs
         working-directory: site/app
         run: npm run media:audio:jobs -- --output ../../.court-week-audio-jobs
+      - name: Record exact-source review status without blocking review media
+        working-directory: site/app
+        run: npm run review:signoffs -- --report ../../.court-week-audio-jobs/review-signoffs.json
       - name: Build the strict 55-scene art requirements
         working-directory: site/app
         run: >-
@@ -179,6 +182,7 @@ jobs:
             --release-tag "${{ inputs.release_tag }}"
             --audio-root .court-week-audio
             --jobs-root .court-week-audio-jobs
+            --review-signoffs .court-week-audio-jobs/review-signoffs.json
             --art-requirements .court-week-audio-jobs/scene-art-requirements.json
             --art-root .court-week-art-strips
             --art-strips .court-week-art-strips/scene-art-strips.json
@@ -215,12 +219,27 @@ jobs:
           retention-days: 7
 
   publish:
-    if: inputs.publish == true
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      github.event.repository.fork == false &&
+      inputs.publish == true
     permissions:
       contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: site/app/package-lock.json
+      - name: Install pinned signoff verifier
+        working-directory: site/app
+        run: npm ci
       - name: Require the reviewed run that produced the approved artifact
         env:
           REVIEWED_RUN_ID: ${{ inputs.reviewed_run_id }}
@@ -235,6 +254,7 @@ jobs:
             exit 1
           fi
       - name: Download the exact reviewed public Release payload
+        id: reviewed
         env:
           GH_TOKEN: ${{ github.token }}
           REVIEWED_RUN_ID: ${{ inputs.reviewed_run_id }}
@@ -256,7 +276,22 @@ jobs:
             if (!Number.isInteger(manifest.total_bytes) || manifest.total_bytes < (manifest.media_bytes ?? 0)) {
               throw new Error("Reviewed artifact is missing a complete total_bytes");
             }
+            if (!/^sha256:[0-9a-f]{64}$/.test(manifest.review_content_digest) || !manifest.court_week_revision) {
+              throw new Error("Reviewed artifact is missing its exact Court Week review identity");
+            }
           '
+          node -e '
+            const fs = require("node:fs");
+            const manifest = JSON.parse(fs.readFileSync(".court-week-release/release-manifest.json", "utf8"));
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `digest=${manifest.review_content_digest}\nrevision=${manifest.court_week_revision}\n`);
+          '
+      - name: Require every exact-source review signoff
+        working-directory: site/app
+        run: >-
+          npm run review:signoffs --
+          --require-approved
+          --expected-digest "${{ steps.reviewed.outputs.digest }}"
+          --expected-revision "${{ steps.reviewed.outputs.revision }}"
       - name: Publish a new immutable release without mutating an existing tag
         env:
           GH_TOKEN: ${{ github.token }}

@@ -19,6 +19,8 @@ const audioRootArgument = argument('--audio-root')
 const audioRoot = audioRootArgument ? resolve(audioRootArgument) : undefined
 const jobsRootArgument = argument('--jobs-root')
 const jobsRoot = jobsRootArgument ? resolve(jobsRootArgument) : undefined
+const reviewSignoffsArgument = argument('--review-signoffs')
+const reviewSignoffsPath = reviewSignoffsArgument ? resolve(reviewSignoffsArgument) : undefined
 const artRequirementsArgument = argument('--art-requirements')
 const artRequirementsPath = artRequirementsArgument ? resolve(artRequirementsArgument) : undefined
 const artRootArgument = argument('--art-root')
@@ -34,6 +36,9 @@ if (!existsSync(visualSourceRoot)) throw new Error(`Missing reviewed media sourc
 if (!audioRoot || !existsSync(audioRoot)) throw new Error('Use --audio-root with the complete generated Court Week audio directory')
 if (!jobsRoot || !existsSync(jobsRoot)) {
   throw new Error('Generated audio must be packaged with --jobs-root from the exact reviewed source job')
+}
+if (!reviewSignoffsPath || !existsSync(reviewSignoffsPath)) {
+  throw new Error('Use --review-signoffs with the exact reviewed-source report')
 }
 if (!artRequirementsPath || !existsSync(artRequirementsPath)) {
   throw new Error('Use --art-requirements with the exact reviewed SceneArtManifest artifact')
@@ -70,6 +75,19 @@ rmSync(outputRoot, { recursive: true, force: true })
 rmSync(privateOutputRoot, { recursive: true, force: true })
 mkdirSync(outputRoot, { recursive: true })
 mkdirSync(privateOutputRoot, { recursive: true })
+
+const reviewSignoffs = JSON.parse(readFileSync(reviewSignoffsPath, 'utf8'))
+if (
+  reviewSignoffs.schema !== 'simjury.court-week-review-report/v1' ||
+  reviewSignoffs.caseId !== 'cw-0001' ||
+  !/^sha256:[0-9a-f]{64}$/.test(reviewSignoffs.contentDigest) ||
+  !Array.isArray(reviewSignoffs.pendingRoles) ||
+  typeof reviewSignoffs.exactSourceMatch !== 'boolean' ||
+  typeof reviewSignoffs.readyToPublish !== 'boolean'
+) {
+  throw new Error('Unsupported or incomplete Court Week reviewed-source report')
+}
+cpSync(reviewSignoffsPath, join(privateOutputRoot, 'review-signoffs.json'))
 
 const seenNames = new Set()
 const assets = sources.map(({ path, logicalPath }) => {
@@ -319,6 +337,9 @@ const { sessions: audioSessions, jobs: jobsBySession } = loadAudioSessions()
 if (artRequirements.sourceRevision !== audioSessions[0]?.sourceRevision) {
   throw new Error('SceneArtManifest and prerecorded audio were not derived from the same Court Week revision')
 }
+if (reviewSignoffs.revision !== audioSessions[0]?.sourceRevision) {
+  throw new Error('Review signoffs and prerecorded audio were not derived from the same Court Week revision')
+}
 const runtimeMediaManifest = {
   schema: 'simjury.court-week-runtime-media/v1',
   case_id: 'cw-0001',
@@ -363,6 +384,8 @@ function serializeReleaseManifest(totalBytes) {
     schema: 'simjury.court-week-media/v1',
     case_id: 'cw-0001',
     release_tag: releaseTag,
+    court_week_revision: reviewSignoffs.revision,
+    review_content_digest: reviewSignoffs.contentDigest,
     source_revision: process.env.GITHUB_SHA ?? 'local-unpublished',
     generated_at: process.env.GITHUB_RUN_ID ? new Date().toISOString() : null,
     production_environment: audioSessions[0]?.productionEnvironment ?? null,
@@ -394,6 +417,7 @@ writeFileSync(join(privateOutputRoot, 'release-provenance.json'), `${JSON.string
   schema: 'simjury.court-week-media-provenance/v1',
   case_id: 'cw-0001',
   release_tag: releaseTag,
+  review_content_digest: reviewSignoffs.contentDigest,
   source_revision: audioSessions[0]?.sourceRevision ?? null,
   public_asset_count: seenNames.size + 1,
   assets,
