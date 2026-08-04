@@ -32,7 +32,10 @@ The generated job directory is review material, not a production asset.
 `site/app/content-reviews/cw-0001.review-signoffs.json` is the reviewed-source
 ledger. Its SHA-256 identity is calculated from the exact `TrialRecord`, all
 seven ordered `SessionPresentation` values and the `DeliberationPack`, together
-with the Court Week revision. The required roles are prosecution, defence,
+with the content advisory, Court Week revision, and the path and byte-level
+SHA-256 of every AVIF and WebP under `site/court-week-art/cw-0001/scenes/`.
+Replacing a rendered scene therefore invalidates prior approvals even when its
+authored metadata is unchanged. The required roles are prosecution, defence,
 judicial-neutrality, accessibility, sensitivity, read-aloud, blind-balance and
 fixed-scope-criminal-law. A role decision needs no reviewer name or other PII.
 

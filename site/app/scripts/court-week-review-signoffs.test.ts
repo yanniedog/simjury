@@ -1,3 +1,6 @@
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
 import {
@@ -19,7 +22,7 @@ function source(decision: 'pending' | 'approved' = 'pending'): ReviewSignoffSour
 }
 
 describe('Court Week reviewed-source signoffs', () => {
-  it('computes one deterministic SHA-256 digest over the exact legal content', () => {
+  it('computes one deterministic SHA-256 digest over the exact reviewed content and rendered art', () => {
     expect(courtWeekReviewDigest()).toMatch(/^sha256:[0-9a-f]{64}$/)
     expect(courtWeekReviewDigest()).toBe(courtWeekReviewDigest())
   })
@@ -29,6 +32,21 @@ describe('Court Week reviewed-source signoffs', () => {
     changed.manifest.contentAdvisory += ' Changed after review.'
 
     expect(courtWeekReviewDigest(changed)).not.toBe(courtWeekReviewDigest())
+  })
+
+  it('invalidates the review digest when a rendered scene asset changes', () => {
+    const temporary = mkdtempSync(join(tmpdir(), 'simjury-reviewed-art-'))
+    try {
+      const scene = join(temporary, 'mon-arrival')
+      mkdirSync(scene)
+      const rendition = join(scene, 'portrait.webp')
+      writeFileSync(rendition, 'first reviewed raster')
+      const reviewed = courtWeekReviewDigest(elevenMinutesCourtWeek, temporary)
+      writeFileSync(rendition, 'replacement raster')
+      expect(courtWeekReviewDigest(elevenMinutesCourtWeek, temporary)).not.toBe(reviewed)
+    } finally {
+      rmSync(temporary, { recursive: true, force: true })
+    }
   })
 
   it('reports pending roles without treating them as approvals', () => {

@@ -11,23 +11,12 @@ export interface CompositionArtDirection {
   /** Null means the composition deliberately contains no visible evidence. */
   evidenceSafeRegion: ArtRegion | null
   permittedCaptionPositions: CaptionPosition[]
-  reviewStatus: 'compatibility-migration' | 'crop-reviewed'
+  reviewStatus: 'crop-reviewed'
 }
 
 export interface CommissionedSceneArt {
   altDescription: string
   compositionArt: Record<Composition, CompositionArtDirection>
-}
-
-/** Explicit compatibility migration for metadata reviewed as safe in all three crops. */
-function sharedCompositionArt(
-  direction: Omit<CompositionArtDirection, 'reviewStatus'>,
-): CommissionedSceneArt['compositionArt'] {
-  return {
-    portrait: { ...direction, reviewStatus: 'compatibility-migration' },
-    tablet: { ...direction, reviewStatus: 'compatibility-migration' },
-    desktop: { ...direction, reviewStatus: 'compatibility-migration' },
-  }
 }
 
 /** Adds reviewed status while legal safe-region and caption choices stay explicit. */
@@ -49,53 +38,123 @@ function cropReviewedDirection({
 /** Reviewed scene art that is safe to include in the corresponding sealed day pack. */
 export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSceneArt>>> = {
   'mon-arrival': {
-    altDescription: 'Juror-seat view of the settled courtroom before evidence, with judge, separated counsel tables and the accused shown neutrally.',
-    compositionArt: sharedCompositionArt({
-      focalPoint: { x: 50, y: 44 }, subjectSafeRegion: { x: 14, y: 18, width: 72, height: 60 },
-      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
-    }),
+    altDescription: 'From the jury side before evidence, Judge Sel Aven sits at the central bench while counsel and Mara Venn occupy their respective sides of the courtroom. No challenge, plea, allegation or view about guilt is depicted.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 44 }, subjectSafeRegion: { x: 0, y: 34, width: 100, height: 51 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 38 }, subjectSafeRegion: { x: 0, y: 30, width: 100, height: 51 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 38 }, subjectSafeRegion: { x: 0, y: 30, width: 100, height: 50 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
   },
   'mon-oath': {
-    altDescription: 'Juror-seat view of the judge and an officer of the court addressing the jury before evidence; neither oath nor affirmation is visually preferred.',
-    compositionArt: sharedCompositionArt({
-      focalPoint: { x: 50, y: 42 }, subjectSafeRegion: { x: 14, y: 18, width: 72, height: 60 },
-      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
-    }),
+    altDescription: 'From the jury side before evidence, the courtroom faces the jury and Judge Sel Aven presides from the central bench. Neither oath nor affirmation is visually preferred, and no juror choice is identified.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 37, width: 100, height: 49 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 43 }, subjectSafeRegion: { x: 0, y: 27, width: 100, height: 53 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 45 }, subjectSafeRegion: { x: 0, y: 33, width: 100, height: 62 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
   },
   'mon-crown-opening': {
-    altDescription: 'Crown counsel addresses the jury while defence counsel and the accused remain seated separately; posture and lighting express no view about guilt.',
-    compositionArt: sharedCompositionArt({
-      focalPoint: { x: 40, y: 46 }, subjectSafeRegion: { x: 12, y: 18, width: 76, height: 62 },
-      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
-    }),
+    altDescription: 'Crown counsel Asha Renn addresses the jury from viewer left while Judge Sel Aven presides and Corin Dax and Mara Venn remain on the defence side. Nothing visible adopts the allegation or expresses guilt.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 26, y: 46 }, subjectSafeRegion: { x: 0, y: 34, width: 100, height: 47 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 28, y: 48 }, subjectSafeRegion: { x: 0, y: 29, width: 100, height: 57 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 24, y: 48 }, subjectSafeRegion: { x: 0, y: 30, width: 100, height: 52 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
   },
   'mon-orr-chief': {
-    altDescription: 'Operations supervisor Nella Orr gives evidence from the witness box while Crown counsel questions her; no route information is shown in the artwork.',
-    compositionArt: sharedCompositionArt({
-      focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
-    }),
+    altDescription: 'Nella Orr sits in the viewer-right witness box while Crown counsel Asha Renn questions from viewer left and Judge Sel Aven presides. The route diagram and its contents are not visible.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 56, y: 53 }, subjectSafeRegion: { x: 0, y: 29, width: 100, height: 66 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 82, y: 46 }, subjectSafeRegion: { x: 0, y: 30, width: 100, height: 60 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 78, y: 46 }, subjectSafeRegion: { x: 0, y: 32, width: 100, height: 64 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
   },
   'mon-orr-cross': {
-    altDescription: 'Nella Orr remains in the witness box as defence counsel questions her from the opposing lectern; no disputed proposition is resolved visually.',
-    compositionArt: sharedCompositionArt({
-      focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
-      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
-    }),
+    altDescription: 'Nella Orr remains in the viewer-right witness box while defence counsel Corin Dax stands to cross-examine and Judge Sel Aven presides. No proposition about duty, readiness or belief is resolved visually.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 56, y: 52 }, subjectSafeRegion: { x: 0, y: 29, width: 100, height: 66 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 55, y: 48 }, subjectSafeRegion: { x: 0, y: 30, width: 100, height: 60 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 64, y: 48 }, subjectSafeRegion: { x: 0, y: 17, width: 100, height: 80 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
   },
   'mon-elements': {
-    altDescription: 'The judge gives preliminary directions from the bench to the jury; no legal element, inference or verdict is depicted as answered.',
-    compositionArt: sharedCompositionArt({
-      focalPoint: { x: 50, y: 38 }, subjectSafeRegion: { x: 20, y: 16, width: 60, height: 60 },
-      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
-    }),
+    altDescription: 'Judge Sel Aven addresses the jury from the central bench after Orr’s evidence; counsel and other courtroom participants remain visible, but no element, inference or verdict is depicted as answered.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 42 }, subjectSafeRegion: { x: 0, y: 34, width: 100, height: 51 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 38 }, subjectSafeRegion: { x: 0, y: 27, width: 100, height: 68 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 40 }, subjectSafeRegion: { x: 0, y: 32, width: 100, height: 64 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
   },
   'mon-adjourn': {
-    altDescription: 'The same courtroom stands empty after adjournment, with the bench, witness box and counsel tables orderly and no evidence legible.',
-    compositionArt: sharedCompositionArt({
-      focalPoint: { x: 50, y: 42 }, subjectSafeRegion: null,
-      evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'],
-    }),
+    altDescription: 'The courtroom is empty after adjournment; the central bench, viewer-right witness box and counsel furniture remain, with no route information or other evidence legible.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 42 }, subjectSafeRegion: null,
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 44 }, subjectSafeRegion: null,
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 42 }, subjectSafeRegion: null,
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
   },
   'tue-resume': {
     altDescription: 'Juror-seat view of Tuesday court resuming, with the judge addressing the jury, counsel and the accused seated neutrally, and the witness box empty.',

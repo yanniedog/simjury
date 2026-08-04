@@ -54,17 +54,24 @@ describe('SceneArtManifest contract', () => {
     }
   })
 
-  it('does not invent visible evidence during legacy metadata migration', () => {
+  it('does not invent visible evidence in reviewed stage art', () => {
     const manifest = buildSceneArtManifestDraft(elevenMinutesCourtWeek)
     const visibleEvidenceScenes = Object.entries(manifest.scenes)
       .filter(([, entry]) => Object.values(entry.compositionArt).some((direction) => direction.evidenceSafeRegion !== null && direction.evidenceSafeRegion !== undefined))
       .map(([sceneId]) => sceneId)
     expect(visibleEvidenceScenes).toEqual(['tue-recording', 'fri-evidence-limits', 'sat-note'])
     expect(manifest.scenes['mon-adjourn'].compositionArt.portrait.subjectSafeRegion).toBeNull()
-    expect(manifest.scenes['mon-arrival'].compositionArt.portrait.reviewStatus).toBe('compatibility-migration')
+    expect(manifest.scenes['mon-arrival'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
     expect(manifest.scenes['tue-recording'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
 
     const evidenceNeutralReviewedScenes = [
+      'mon-arrival',
+      'mon-oath',
+      'mon-crown-opening',
+      'mon-orr-chief',
+      'mon-orr-cross',
+      'mon-elements',
+      'mon-adjourn',
       'tue-resume',
       'tue-dorn-chief',
       'tue-dorn-cross',
@@ -299,5 +306,76 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['sun-persevere'].altDescription).toContain('one further honest effort')
     expect(manifest.scenes['sun-persevere'].altDescription).toContain('does not pressure any juror or show a count, faction, verdict or outcome')
     expect(manifest.scenes['sun-persevere'].altDescription).toContain('later jury-room reasoning appears only in audio and the live interface')
+  })
+
+  it('locks Monday crop review to the 21 inspected renditions', () => {
+    const manifest = buildSceneArtManifestDraft(elevenMinutesCourtWeek)
+    const expectedDirections = {
+      'mon-arrival': {
+        portrait: [{ x: 50, y: 44 }, { x: 0, y: 34, width: 100, height: 51 }],
+        tablet: [{ x: 50, y: 38 }, { x: 0, y: 30, width: 100, height: 51 }],
+        desktop: [{ x: 50, y: 38 }, { x: 0, y: 30, width: 100, height: 50 }],
+      },
+      'mon-oath': {
+        portrait: [{ x: 50, y: 48 }, { x: 0, y: 37, width: 100, height: 49 }],
+        tablet: [{ x: 50, y: 43 }, { x: 0, y: 27, width: 100, height: 53 }],
+        desktop: [{ x: 50, y: 45 }, { x: 0, y: 33, width: 100, height: 62 }],
+      },
+      'mon-crown-opening': {
+        portrait: [{ x: 26, y: 46 }, { x: 0, y: 34, width: 100, height: 47 }],
+        tablet: [{ x: 28, y: 48 }, { x: 0, y: 29, width: 100, height: 57 }],
+        desktop: [{ x: 24, y: 48 }, { x: 0, y: 30, width: 100, height: 52 }],
+      },
+      'mon-orr-chief': {
+        portrait: [{ x: 56, y: 53 }, { x: 0, y: 29, width: 100, height: 66 }],
+        tablet: [{ x: 82, y: 46 }, { x: 0, y: 30, width: 100, height: 60 }],
+        desktop: [{ x: 78, y: 46 }, { x: 0, y: 32, width: 100, height: 64 }],
+      },
+      'mon-orr-cross': {
+        portrait: [{ x: 56, y: 52 }, { x: 0, y: 29, width: 100, height: 66 }],
+        tablet: [{ x: 55, y: 48 }, { x: 0, y: 30, width: 100, height: 60 }],
+        desktop: [{ x: 64, y: 48 }, { x: 0, y: 17, width: 100, height: 80 }],
+      },
+      'mon-elements': {
+        portrait: [{ x: 50, y: 42 }, { x: 0, y: 34, width: 100, height: 51 }],
+        tablet: [{ x: 50, y: 38 }, { x: 0, y: 27, width: 100, height: 68 }],
+        desktop: [{ x: 50, y: 40 }, { x: 0, y: 32, width: 100, height: 64 }],
+      },
+    } as const
+
+    for (const [sceneId, compositions] of Object.entries(expectedDirections)) {
+      for (const [composition, [focalPoint, subjectSafeRegion]] of Object.entries(compositions)) {
+        const direction = manifest.scenes[sceneId].compositionArt[composition as 'portrait' | 'tablet' | 'desktop']
+        expect(direction).toEqual({
+          focalPoint,
+          subjectSafeRegion,
+          evidenceSafeRegion: null,
+          permittedCaptionPositions: ['top'],
+          reviewStatus: 'crop-reviewed',
+        })
+      }
+    }
+
+    const adjournFocalPoints = {
+      portrait: { x: 50, y: 42 },
+      tablet: { x: 50, y: 44 },
+      desktop: { x: 50, y: 42 },
+    } as const
+    for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
+      expect(manifest.scenes['mon-adjourn'].compositionArt[composition]).toEqual({
+        focalPoint: adjournFocalPoints[composition],
+        subjectSafeRegion: null,
+        evidenceSafeRegion: null,
+        permittedCaptionPositions: ['top'],
+        reviewStatus: 'crop-reviewed',
+      })
+    }
+    expect(manifest.scenes['mon-arrival'].altDescription).toContain('No challenge, plea, allegation or view about guilt is depicted')
+    expect(manifest.scenes['mon-oath'].altDescription).toContain('Neither oath nor affirmation is visually preferred')
+    expect(manifest.scenes['mon-crown-opening'].altDescription).toContain('Nothing visible adopts the allegation or expresses guilt')
+    expect(manifest.scenes['mon-orr-chief'].altDescription).toContain('The route diagram and its contents are not visible')
+    expect(manifest.scenes['mon-orr-cross'].altDescription).toContain('No proposition about duty, readiness or belief is resolved visually')
+    expect(manifest.scenes['mon-elements'].altDescription).toContain('no element, inference or verdict is depicted as answered')
+    expect(manifest.scenes['mon-adjourn'].altDescription).toContain('no route information or other evidence legible')
   })
 })

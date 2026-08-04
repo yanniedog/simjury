@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
 import type { CourtWeek } from '../src/courtweek/model/schema'
@@ -51,13 +51,30 @@ function canonicalJson(value: unknown): string {
   return JSON.stringify(value)
 }
 
-export function courtWeekReviewDigest(courtWeek: CourtWeek = elevenMinutesCourtWeek): string {
+function reviewedSceneAssets(directory: string, root = directory): Array<{ path: string; sha256: string }> {
+  return readdirSync(directory, { withFileTypes: true })
+    .sort(({ name: left }, { name: right }) => left.localeCompare(right))
+    .flatMap((entry) => {
+      const absolute = join(directory, entry.name)
+      if (entry.isDirectory()) return reviewedSceneAssets(absolute, root)
+      if (!entry.isFile() || !/\.(?:avif|webp)$/i.test(entry.name)) return []
+      return [{ path: relative(root, absolute).split('\\').join('/'), sha256: createHash('sha256').update(readFileSync(absolute)).digest('hex') }]
+    })
+}
+
+const defaultSceneAssetRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../court-week-art', elevenMinutesCourtWeek.manifest.id, 'scenes')
+let cachedDefaultSceneAssets: ReturnType<typeof reviewedSceneAssets> | undefined
+const digestSceneAssets = (root: string) => resolve(root) === defaultSceneAssetRoot
+  ? (cachedDefaultSceneAssets ??= reviewedSceneAssets(root)) : reviewedSceneAssets(root)
+
+export function courtWeekReviewDigest(courtWeek: CourtWeek = elevenMinutesCourtWeek, sceneAssetRoot = defaultSceneAssetRoot): string {
   const exactReviewedSource = {
     revision: courtWeek.manifest.revision,
     contentAdvisory: courtWeek.manifest.contentAdvisory,
     trialRecord: courtWeek.trial,
     sessionPresentations: courtWeek.manifest.sessions,
     deliberationPack: courtWeek.deliberation,
+    renderedSceneAssets: digestSceneAssets(sceneAssetRoot),
   }
   return `sha256:${createHash('sha256').update(canonicalJson(exactReviewedSource)).digest('hex')}`
 }
