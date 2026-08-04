@@ -69,6 +69,13 @@ export const SCENE_ART_AUTHORING: Readonly<Record<string, CommissionedSceneArt>>
     evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
     permittedCaptionPositions: ['bottom'],
   },
+  'tue-dorn-chief': {
+    altDescription: 'Junior dispatcher Peli Dorn gives evidence from the witness box while Crown counsel questions her; no distress words, console status or inference about intent is depicted.',
+    focalPoint: { x: 54, y: 46 },
+    subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
+    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
+    permittedCaptionPositions: ['bottom'],
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {

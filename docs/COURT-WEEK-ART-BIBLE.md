@@ -27,6 +27,9 @@ parties, invent a second witness box or move fixed furniture.
   dark civilian clothing; seated beside defence; no restraints or guilt cues.
 - Nella Orr: woman in her late forties; dark curly hair; plain slate business
   suit; calm professional manner.
+- Peli Dorn: young adult woman; medium-brown complexion; short close dark
+  curls; plain charcoal blazer over a muted forest-green blouse; attentive,
+  professional manner.
 
 Wardrobe stays unchanged through a court day. No police, rescue or military
 uniform appears in court unless the authored record expressly calls that person
