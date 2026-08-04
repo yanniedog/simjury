@@ -243,6 +243,7 @@ describe('Court Week prerecorded audio jobs', () => {
       expect(JSON.stringify(publicManifest)).not.toContain('mon-arrival')
       expect(publicManifest.court_week_revision).toBe(elevenMinutesCourtWeek.manifest.revision)
       expect(publicManifest.review_content_digest).toBe(courtWeekReviewDigest())
+      expect(publicManifest.runtime_manifest_digest).toMatch(/^sha256:[0-9a-f]{64}$/)
       const reviewReport = JSON.parse(readFileSync(resolve(privateOutputRoot, 'review-signoffs.json'), 'utf8'))
       expect(reviewReport.readyToPublish).toBe(false)
       expect(publicManifest.media_bytes).toBeGreaterThan(0)

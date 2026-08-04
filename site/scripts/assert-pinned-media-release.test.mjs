@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import test from 'node:test'
-import { assertPinnedMediaMatchesRelease } from './assert-pinned-media-release.mjs'
+import { canonicalSha256 } from './canonical-json.mjs'
+import { assertPinnedMediaMatchesRelease, assertReleasePayloadMatchesManifest } from './assert-pinned-media-release.mjs'
 
 const releaseTag = 'court-week-cw-0001-2026.08.03-r1'
 const revision = '2026.08.03-r1'
@@ -10,18 +14,21 @@ function assetName(label, extension) {
   return `${createHash('sha256').update(label).digest('hex')}${extension}`
 }
 
-const names = {
-  opus: assetName('opus', '.opus'),
-  aac: assetName('aac', '.m4a'),
-  mp3: assetName('mp3', '.mp3'),
-  captions: assetName('captions', '.vtt'),
-  portraitAvif: assetName('portrait-avif', '.avif'),
-  portraitWebp: assetName('portrait-webp', '.webp'),
-  tabletAvif: assetName('tablet-avif', '.avif'),
-  tabletWebp: assetName('tablet-webp', '.webp'),
-  desktopAvif: assetName('desktop-avif', '.avif'),
-  desktopWebp: assetName('desktop-webp', '.webp'),
+const assetInputs = {
+  opusA: ['opus-a', '.opus'],
+  opusB: ['opus-b', '.opus'],
+  aac: ['aac', '.m4a'],
+  mp3: ['mp3', '.mp3'],
+  captions: ['captions', '.vtt'],
+  portraitAvif: ['portrait-avif', '.avif'],
+  portraitWebp: ['portrait-webp', '.webp'],
+  tabletAvif: ['tablet-avif', '.avif'],
+  tabletWebp: ['tablet-webp', '.webp'],
+  desktopAvif: ['desktop-avif', '.avif'],
+  desktopWebp: ['desktop-webp', '.webp'],
 }
+const names = Object.fromEntries(Object.entries(assetInputs).map(([key, [label, extension]]) => [key, assetName(label, extension)]))
+const payloadBytes = new Map(Object.entries(assetInputs).map(([key, [label]]) => [names[key], Buffer.from(label)]))
 
 function matchedManifests() {
   const runtime = {
@@ -31,7 +38,7 @@ function matchedManifests() {
     source_revision: revision,
     sessions: Array.from({ length: 7 }, (_, index) => ({
       session_id: `session-${index + 1}`,
-      segments: [{ sources: { opus: names.opus, aac: names.aac, mp3: names.mp3, captions: names.captions } }],
+      segments: [{ sources: { opus: index === 0 ? names.opusA : names.opusB, aac: names.aac, mp3: names.mp3, captions: names.captions } }],
       art: { strips: [{ sources: {
         portrait: { avif: names.portraitAvif, webp: names.portraitWebp },
         tablet: { avif: names.tabletAvif, webp: names.tabletWebp },
@@ -39,9 +46,9 @@ function matchedManifests() {
       } }] },
     })),
   }
-  const assets = [...new Set(Object.values(names))].map((name, index) => ({
+  const assets = [...new Set(Object.values(names))].map((name) => ({
     asset_name: name,
-    bytes: 100 + index,
+    bytes: payloadBytes.get(name).length,
     sha256: name.slice(0, 64),
   }))
   const release = {
@@ -55,6 +62,7 @@ function matchedManifests() {
     media_bytes: assets.reduce((sum, asset) => sum + asset.bytes, 0),
     assets,
   }
+  release.runtime_manifest_digest = canonicalSha256(runtime)
   const reviewSignoffs = {
     schema: 'simjury.court-week-review-signoffs/v1',
     caseId: 'cw-0001',
@@ -74,8 +82,21 @@ test('accepts matching identity and the exact content-addressed runtime asset se
     caseId: 'cw-0001',
     revision,
     releaseTag,
-    assetCount: 10,
+    assetCount: 11,
   })
+})
+
+test('rejects a swapped same-format runtime mapping even when the asset set is unchanged', () => {
+  const manifests = matchedManifests()
+  const first = manifests.runtime.sessions[0].segments[0].sources
+  const second = manifests.runtime.sessions[1].segments[0].sources
+  const firstOpus = first.opus
+  first.opus = second.opus
+  second.opus = firstOpus
+  assert.throws(
+    () => assertPinnedMediaMatchesRelease(manifests.runtime, manifests.release, manifests.reviewSignoffs, releaseTag),
+    /runtime mapping digest mismatch/u,
+  )
 })
 
 test('rejects stale case, revision and tag identities', async (t) => {
@@ -160,5 +181,42 @@ test('rejects missing, extra and SHA-mismatched Release assets', async (t) => {
     const { runtime, release, reviewSignoffs } = matchedManifests()
     release.assets[0].sha256 = '0'.repeat(64)
     assert.throws(() => assertPinnedMediaMatchesRelease(runtime, release, reviewSignoffs, releaseTag), /does not match its declared SHA-256/u)
+  })
+})
+
+function writeReleasePayload(release) {
+  const directory = mkdtempSync(join(tmpdir(), 'simjury-release-payload-'))
+  writeFileSync(join(directory, 'release-manifest.json'), `${JSON.stringify(release)}\n`)
+  for (const asset of release.assets) writeFileSync(join(directory, asset.asset_name), payloadBytes.get(asset.asset_name))
+  return directory
+}
+
+test('hashes the exact attached immutable Release payload', async (t) => {
+  await t.test('matching payload', (t) => {
+    const { release } = matchedManifests()
+    const directory = writeReleasePayload(release)
+    t.after(() => rmSync(directory, { recursive: true, force: true }))
+    assert.doesNotThrow(() => assertReleasePayloadMatchesManifest(release, directory))
+  })
+  await t.test('missing attachment', (t) => {
+    const { release } = matchedManifests()
+    const directory = writeReleasePayload(release)
+    t.after(() => rmSync(directory, { recursive: true, force: true }))
+    rmSync(join(directory, release.assets[0].asset_name))
+    assert.throws(() => assertReleasePayloadMatchesManifest(release, directory), /Attached Release inventory mismatch/u)
+  })
+  await t.test('extra attachment', (t) => {
+    const { release } = matchedManifests()
+    const directory = writeReleasePayload(release)
+    t.after(() => rmSync(directory, { recursive: true, force: true }))
+    writeFileSync(join(directory, 'unexpected.txt'), 'unexpected')
+    assert.throws(() => assertReleasePayloadMatchesManifest(release, directory), /Attached Release inventory mismatch/u)
+  })
+  await t.test('corrupt attachment', (t) => {
+    const { release } = matchedManifests()
+    const directory = writeReleasePayload(release)
+    t.after(() => rmSync(directory, { recursive: true, force: true }))
+    writeFileSync(join(directory, release.assets[0].asset_name), 'corrupt')
+    assert.throws(() => assertReleasePayloadMatchesManifest(release, directory), /failed integrity/u)
   })
 })
