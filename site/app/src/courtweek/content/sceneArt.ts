@@ -689,6 +689,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'sun-resume': {
+    altDescription: 'Exactly eleven other jurors resume deliberations around the table from the player\'s twelfth seat in Sunday morning light. No ballot, evidence, faction, verdict or conclusion is shown.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 61 }, subjectSafeRegion: { x: 0, y: 44, width: 100, height: 36 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 54 }, subjectSafeRegion: { x: 0, y: 23, width: 100, height: 54 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 57 }, subjectSafeRegion: { x: 0, y: 38, width: 100, height: 56 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
   'sat-note': {
     altDescription: 'A folded face-down unmarked jury note rests on a plain court-clerk tray in the foreground while Judge Sel Aven, Crown counsel, defence counsel and the accused remain neutral behind it. No writing, ballot number, juror identity, position or verdict is visible.',
     compositionArt: {
