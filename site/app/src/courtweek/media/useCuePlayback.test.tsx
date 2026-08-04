@@ -56,9 +56,15 @@ function Harness({ onEnded, activeCue = cue, nextSceneCue }: { onEnded: () => vo
 
 describe('useCuePlayback', () => {
   let container: HTMLDivElement
+  let speechSynthesisDescriptor: PropertyDescriptor | undefined
+  let visibilityDescriptor: PropertyDescriptor | undefined
+  let mediaDevicesDescriptor: PropertyDescriptor | undefined
 
   beforeEach(() => {
     MockAudio.instances = []
+    speechSynthesisDescriptor = Object.getOwnPropertyDescriptor(window, 'speechSynthesis')
+    visibilityDescriptor = Object.getOwnPropertyDescriptor(document, 'visibilityState')
+    mediaDevicesDescriptor = Object.getOwnPropertyDescriptor(navigator, 'mediaDevices')
     container = document.createElement('div')
     document.body.append(container)
     vi.stubGlobal('Audio', MockAudio)
@@ -66,6 +72,21 @@ describe('useCuePlayback', () => {
 
   afterEach(() => {
     container.remove()
+    if (speechSynthesisDescriptor) {
+      Object.defineProperty(window, 'speechSynthesis', speechSynthesisDescriptor)
+    } else {
+      Reflect.deleteProperty(window, 'speechSynthesis')
+    }
+    if (visibilityDescriptor) {
+      Object.defineProperty(document, 'visibilityState', visibilityDescriptor)
+    } else {
+      Reflect.deleteProperty(document, 'visibilityState')
+    }
+    if (mediaDevicesDescriptor) {
+      Object.defineProperty(navigator, 'mediaDevices', mediaDevicesDescriptor)
+    } else {
+      Reflect.deleteProperty(navigator, 'mediaDevices')
+    }
     vi.unstubAllGlobals()
     vi.restoreAllMocks()
   })
@@ -139,7 +160,7 @@ describe('useCuePlayback', () => {
     act(() => root.unmount())
   })
 
-  it('resumes interrupted device speech without restarting the cue', async () => {
+  it('restarts interrupted device speech from the cue boundary', async () => {
     const speechCue: SceneCue = { ...cue, id: 'cue-speech', audio: undefined }
     class MockUtterance {
       lang = ''
@@ -150,6 +171,7 @@ describe('useCuePlayback', () => {
     }
     const synthesis = {
       paused: false,
+      getVoices: vi.fn(() => [{ lang: 'en-AU', name: 'Test voice' }]),
       speak: vi.fn(),
       cancel: vi.fn(() => { synthesis.paused = false }),
       pause: vi.fn(() => { synthesis.paused = true }),
@@ -168,17 +190,170 @@ describe('useCuePlayback', () => {
 
     Object.defineProperty(document, 'visibilityState', { configurable: true, value: 'hidden' })
     act(() => document.dispatchEvent(new Event('visibilitychange')))
-    expect(synthesis.pause).toHaveBeenCalledOnce()
+    expect(synthesis.cancel).toHaveBeenCalled()
+    expect(synthesis.pause).not.toHaveBeenCalled()
     expect(container.querySelector('output')?.textContent).toBe('paused')
 
     Object.defineProperty(document, 'visibilityState', { configurable: true, value: 'visible' })
     await act(async () => play.click())
-    expect(synthesis.resume).toHaveBeenCalledOnce()
-    expect(synthesis.speak).toHaveBeenCalledOnce()
+    expect(synthesis.resume).not.toHaveBeenCalled()
+    expect(synthesis.speak).toHaveBeenCalledTimes(2)
     expect(container.querySelector('output')?.textContent).toBe('speech-fallback')
 
     await act(async () => repeat.click())
-    expect(synthesis.speak).toHaveBeenCalledTimes(2)
+    expect(synthesis.speak).toHaveBeenCalledTimes(3)
+    act(() => root.unmount())
+  })
+
+  it('rewinds to the cue boundary when pagehide fires before visibility changes', async () => {
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness onEnded={() => undefined} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
+    const currentAudio = MockAudio.instances[0]
+    await act(async () => play.click())
+    currentAudio.pause.mockClear()
+    currentAudio.currentTime = 15
+    Object.defineProperty(document, 'visibilityState', { configurable: true, value: 'visible' })
+
+    act(() => window.dispatchEvent(new Event('pagehide')))
+
+    expect(currentAudio.pause).toHaveBeenCalledOnce()
+    expect(currentAudio.currentTime).toBe(12)
+    act(() => root.unmount())
+  })
+
+  it('rewinds an operating-system media pause to the cue boundary', async () => {
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness onEnded={() => undefined} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
+    const currentAudio = MockAudio.instances[0]
+    await act(async () => play.click())
+    currentAudio.currentTime = 15
+
+    act(() => currentAudio.pause())
+
+    expect(currentAudio.currentTime).toBe(12)
+    expect(container.querySelector('output')?.textContent).toBe('paused')
+    act(() => root.unmount())
+  })
+
+  it('uses reading mode when device speech has no available voice', async () => {
+    const speechCue: SceneCue = { ...cue, id: 'cue-no-voice', audio: undefined }
+    class MockUtterance {
+      lang = ''
+      rate = 1
+      voice: SpeechSynthesisVoice | null = null
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+      constructor(public text: string) {}
+    }
+    const synthesis = {
+      paused: false,
+      getVoices: vi.fn(() => []),
+      speak: vi.fn(),
+      cancel: vi.fn(),
+      pause: vi.fn(),
+      resume: vi.fn(),
+    }
+    vi.stubGlobal('SpeechSynthesisUtterance', MockUtterance)
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: synthesis })
+
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness activeCue={speechCue} onEnded={() => undefined} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
+    await act(async () => play.click())
+
+    expect(synthesis.speak).not.toHaveBeenCalled()
+    expect(container.querySelector('output')?.textContent).toBe('reading-fallback')
+    act(() => root.unmount())
+  })
+
+  it('pauses and rewinds for a Bluetooth-like media-device change', async () => {
+    const mediaDevices = new EventTarget()
+    Object.defineProperty(navigator, 'mediaDevices', { configurable: true, value: mediaDevices })
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness onEnded={() => undefined} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
+    const currentAudio = MockAudio.instances[0]
+    await act(async () => play.click())
+    currentAudio.pause.mockClear()
+    currentAudio.currentTime = 15
+
+    act(() => mediaDevices.dispatchEvent(new Event('devicechange')))
+
+    expect(currentAudio.pause).toHaveBeenCalledOnce()
+    expect(currentAudio.currentTime).toBe(12)
+    expect(container.querySelector('output')?.textContent).toBe('paused')
+    act(() => root.unmount())
+  })
+
+  it('retries recorded audio once before using device speech', async () => {
+    class MockUtterance {
+      lang = ''
+      rate = 1
+      voice: SpeechSynthesisVoice | null = null
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+      constructor(public text: string) {}
+    }
+    const synthesis = {
+      paused: false,
+      getVoices: vi.fn(() => [{ lang: 'en-AU', name: 'Test voice' }]),
+      speak: vi.fn(),
+      cancel: vi.fn(),
+      pause: vi.fn(),
+      resume: vi.fn(),
+    }
+    vi.stubGlobal('SpeechSynthesisUtterance', MockUtterance)
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: synthesis })
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness onEnded={() => undefined} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
+    const currentAudio = MockAudio.instances[0]
+    await act(async () => play.click())
+
+    await act(async () => currentAudio.dispatchEvent(new Event('error')))
+    expect(currentAudio.load).toHaveBeenCalledOnce()
+    expect(synthesis.speak).not.toHaveBeenCalled()
+    await act(async () => currentAudio.dispatchEvent(new Event('error')))
+
+    expect(currentAudio.load).toHaveBeenCalledOnce()
+    expect(synthesis.speak).toHaveBeenCalledOnce()
+    expect(container.querySelector('output')?.textContent).toBe('speech-fallback')
+    act(() => root.unmount())
+  })
+
+  it('does not duplicate device speech when a late media error follows play rejection', async () => {
+    class MockUtterance {
+      lang = ''
+      rate = 1
+      voice: SpeechSynthesisVoice | null = null
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+      constructor(public text: string) {}
+    }
+    const synthesis = {
+      paused: false,
+      getVoices: vi.fn(() => [{ lang: 'en-AU', name: 'Test voice' }]),
+      speak: vi.fn(),
+      cancel: vi.fn(),
+      pause: vi.fn(),
+      resume: vi.fn(),
+    }
+    vi.stubGlobal('SpeechSynthesisUtterance', MockUtterance)
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: synthesis })
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness onEnded={() => undefined} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
+    const currentAudio = MockAudio.instances[0]
+    currentAudio.play.mockRejectedValueOnce(new Error('Output interrupted.'))
+    await act(async () => play.click())
+    expect(synthesis.speak).toHaveBeenCalledOnce()
+
+    act(() => currentAudio.dispatchEvent(new Event('error')))
+
+    expect(currentAudio.load).not.toHaveBeenCalled()
+    expect(synthesis.speak).toHaveBeenCalledOnce()
     act(() => root.unmount())
   })
 })

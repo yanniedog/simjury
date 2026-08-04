@@ -24,6 +24,56 @@ const viewports = [
   [1280, 800], [1366, 768], [1440, 900], [1920, 1080], [2560, 1440],
 ] as const
 
+test('Take your seat starts the first cue exactly once', async ({ page }) => {
+  await page.addInitScript((instant) => {
+    Date.now = () => instant
+    const mediaState = window as typeof window & { __simjurySpeechCalls: number }
+    mediaState.__simjurySpeechCalls = 0
+    class TestAudio extends EventTarget {
+      src = ''
+      currentTime = 0
+      preload = ''
+      ended = false
+      canPlayType() { return 'probably' }
+      load() { /* deterministic no-network audio */ }
+      play() {
+        this.dispatchEvent(new Event('playing'))
+        return Promise.resolve()
+      }
+      pause() { this.dispatchEvent(new Event('pause')) }
+      removeAttribute(name: string) { if (name === 'src') this.src = '' }
+    }
+    Object.defineProperty(window, 'Audio', { configurable: true, value: TestAudio })
+    class TestUtterance {
+      lang = ''
+      rate = 1
+      voice: SpeechSynthesisVoice | null = null
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+      constructor(public text: string) {}
+    }
+    Object.defineProperty(window, 'SpeechSynthesisUtterance', { configurable: true, value: TestUtterance })
+    Object.defineProperty(window, 'speechSynthesis', {
+      configurable: true,
+      value: {
+        paused: false,
+        getVoices: () => [{ lang: 'en-AU', name: 'Test voice' }],
+        speak: () => { mediaState.__simjurySpeechCalls += 1 },
+        cancel() {},
+        pause() {},
+        resume() {},
+      },
+    })
+  }, releaseNow)
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  await expect(page.locator('.cw-shell')).toBeVisible()
+
+  await expect.poll(() => page.evaluate(
+    () => (window as typeof window & { __simjurySpeechCalls: number }).__simjurySpeechCalls,
+  )).toBe(1)
+})
+
 test.describe('responsive Court Week shell', () => {
   test.skip(({ browserName }) => browserName !== 'chromium', 'full viewport matrix runs once')
 
@@ -281,7 +331,11 @@ test('caption runtime uses line fit and collision-free fallback at reported view
     Object.defineProperty(window, 'SpeechSynthesisUtterance', { configurable: true, value: TestUtterance })
     Object.defineProperty(window, 'speechSynthesis', {
       configurable: true,
-      value: { paused: false, speak() {}, cancel() {}, pause() {}, resume() {} },
+      value: {
+        paused: false,
+        getVoices: () => [{ lang: 'en-AU', name: 'Test voice' }],
+        speak() {}, cancel() {}, pause() {}, resume() {},
+      },
     })
   }, releaseNow)
   await page.setViewportSize({ width: 320, height: 568 })
