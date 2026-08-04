@@ -24,10 +24,11 @@
     "cloudflare:ai-bots:audit": "node scripts/cloudflare-ai-bots.mjs audit",
     "cloudflare:ai-bots:apply": "node scripts/cloudflare-ai-bots.mjs apply",
     "cloudflare:ai-bots:apply:dry-run": "node scripts/cloudflare-ai-bots.mjs apply --dry-run",
+    "runtime:retirement": "node scripts/runtime-retirement.mjs",
     "guard:cloudflare": "node scripts/assert-cloudflare-static-only.mjs",
     "check:archive": "node scripts/assert-archive-provenance.mjs",
     "check:budget": "node scripts/assert-static-budget.mjs",
-    "test:static": "node --test tests/cloudflare-static.test.mjs tests/landing-disclosure.test.mjs scripts/assert-pinned-media-release.test.mjs"
+    "test:static": "node --test tests/cloudflare-static.test.mjs tests/landing-disclosure.test.mjs scripts/assert-pinned-media-release.test.mjs scripts/runtime-retirement.test.mjs"
   },
   "devDependencies": {
     "sharp": "0.35.3",
