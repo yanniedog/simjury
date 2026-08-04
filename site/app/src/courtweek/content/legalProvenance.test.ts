@@ -67,4 +67,29 @@ describe('Eleven Minutes legal provenance', () => {
       ({ event, evidenceIds }) => event === 'exhibit-admitted' && evidenceIds.includes('ex-warning'),
     )).toBe(true)
   })
+
+  it('keeps the single Crown objection and the sustained Defence objection in credible examinations', () => {
+    const chiefStart = orderedCues.findIndex(({ id }) => id === 'tue-dorn-chief-1')
+    const defenceObjection = orderedCues.findIndex(({ id }) => id === 'tue-def-objection')
+    const chiefAnswer = orderedCues.findIndex(({ id }) => id === 'tue-dorn-chief-2')
+    const crownObjections = elevenMinutesCourtWeek.trial.objections.filter(({ madeBy }) => madeBy === 'Crown')
+
+    expect(chiefStart).toBeLessThan(defenceObjection)
+    expect(defenceObjection).toBeLessThan(chiefAnswer)
+    expect(cueText('tue-def-objection')).toMatch(/Dax: Objection.*hearsay.*Sustained before the witness answers/is)
+    expect(crownObjections).toHaveLength(1)
+    expect(crownObjections[0].cueId).toBe('thu-crown-objection')
+  })
+
+  it('keeps the route exhibit within its authenticated visual scope', () => {
+    expect(cueText('mon-orr-chief-2')).toMatch(/does not show.*other incidents or craft assignments/i)
+    expect(cueText('mon-orr-chief-2')).not.toMatch(/shown east|rescue was already assigned/i)
+  })
+
+  it('lays concise expert foundations without conceding the defence case or inventing concealment', () => {
+    expect(cueText('wed-vos-chief-1')).toMatch(/fourteen years.*accepted immersion datasets.*both sides received/is)
+    expect(cueText('thu-rusk-chief-1')).toMatch(/twelve years.*reviewed.*did not interview or diagnose/is)
+    expect(cueText('thu-def-opening')).not.toMatch(/grave failure|admits a serious failure/i)
+    expect(cueText('thu-rusk-chief-2')).not.toMatch(/disguise|conceal/i)
+  })
 })
