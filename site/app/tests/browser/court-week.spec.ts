@@ -480,8 +480,9 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
         secondVote: 'not-guilty',
         secondBallotWasUnanimous: true,
         majorityDirectionReceived: false,
-        returnedVerdict: 'not-guilty',
-        returnedAgreement: 'unanimous',
+        sealedVerdict: 'not-guilty',
+        sealedAgreement: 'unanimous',
+        openCourtVerdictReturned: false,
       }, 'cw-0001')
     }
   }), releaseNow)
@@ -518,6 +519,9 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
     provisionalVote: beforeReplay?.provisionalVote,
     secondVote: beforeReplay?.secondVote,
     finalVote: beforeReplay?.finalVote,
+    sealedVerdict: beforeReplay?.sealedVerdict,
+    sealedAgreement: beforeReplay?.sealedAgreement,
+    openCourtVerdictReturned: beforeReplay?.openCourtVerdictReturned,
     returnedVerdict: beforeReplay?.returnedVerdict,
     returnedAgreement: beforeReplay?.returnedAgreement,
   }
@@ -535,6 +539,9 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
     provisionalVote: afterReplay?.provisionalVote,
     secondVote: afterReplay?.secondVote,
     finalVote: afterReplay?.finalVote,
+    sealedVerdict: afterReplay?.sealedVerdict,
+    sealedAgreement: afterReplay?.sealedAgreement,
+    openCourtVerdictReturned: afterReplay?.openCourtVerdictReturned,
     returnedVerdict: afterReplay?.returnedVerdict,
     returnedAgreement: afterReplay?.returnedAgreement,
   }).toEqual(protectedBefore)
