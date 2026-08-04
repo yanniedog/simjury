@@ -81,6 +81,15 @@ test('core flow remains playable across browser engines', async ({ page }) => {
   expect(prohibited).toEqual([])
 })
 
+test('the juror desk exposes no struck material or inspection route', async ({ page }) => {
+  await enterCourt(page)
+  await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
+  const desk = page.getByRole('dialog', { name: 'Your working papers' })
+  await expect(desk.getByText('Struck workplace rumour')).toHaveCount(0)
+  await expect(desk.getByText('This material is legally absent and must not be used for any purpose.')).toHaveCount(0)
+  await expect(desk.getByRole('button', { name: /struck/i })).toHaveCount(0)
+})
+
 test.describe('device-sized admitted exhibit viewer', () => {
   test.skip(({ browserName }) => browserName !== 'chromium', 'device matrix runs once')
 
@@ -98,7 +107,8 @@ test.describe('device-sized admitted exhibit viewer', () => {
         const viewer = page.getByRole('dialog', { name: /Harbour route diagram/i })
         await expect(viewer).toBeVisible()
         await expect(viewer.getByLabel('Exhibit viewing controls')).toBeVisible()
-        await expect(viewer.getByRole('img', { name: /Harbour service route/i })).toBeVisible()
+        await expect(viewer.locator('.cw-exhibit--route svg')).toBeVisible()
+        await expect(viewer.getByText('The diagram establishes distance and route only, not conditions or outcome.')).toBeVisible()
         await viewer.getByRole('button', { name: 'Zoom in' }).click()
         await viewer.getByRole('button', { name: 'Move exhibit right' }).click()
         await expect(viewer.locator('.cw-evidence-document')).toHaveAttribute('style', /translate\(24px, 0px\) scale\(1\.2\)/)

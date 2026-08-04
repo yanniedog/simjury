@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { EvidenceItem } from '../model/schema'
-import { reviewedExhibitPresentation } from './evidencePresentation'
+import { isReviewedExhibitId, reviewedExhibitPresentation } from './evidencePresentation'
 
 export interface EvidenceViewerProps {
   evidence: EvidenceItem
@@ -25,7 +25,7 @@ export function EvidenceViewer({ evidence, onClose }: EvidenceViewerProps) {
     setZoom(1)
     setOffset({ x: 0, y: 0 })
   }
-  const presentation = evidence.status === 'admitted'
+  const presentation = evidence.status === 'admitted' && isReviewedExhibitId(evidence.id)
     ? reviewedExhibitPresentation(evidence.id)
     : undefined
 
@@ -78,13 +78,21 @@ export function EvidenceViewer({ evidence, onClose }: EvidenceViewerProps) {
       <div className="cw-evidence-canvas">
         <article
           className="cw-evidence-document"
-          aria-label={presentation?.alt ?? evidence.accessibleProposition}
+          {...(presentation ? {
+            role: 'group',
+            'aria-label': presentation.alt,
+            'aria-describedby': `cw-evidence-ambiguity-${evidence.id}`,
+          } : {})}
           style={{
             transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
           }}
         >
-          {presentation?.rendering ?? <p>{evidence.accessibleProposition}</p>}
-          {presentation ? <p className="cw-evidence-ambiguity">{presentation.ambiguity}</p> : null}
+          {presentation ? <div aria-hidden="true">{presentation.rendering}</div> : <p>{evidence.accessibleProposition}</p>}
+          {presentation ? (
+            <p id={`cw-evidence-ambiguity-${evidence.id}`} className="cw-evidence-ambiguity">
+              {presentation.ambiguity}
+            </p>
+          ) : null}
         </article>
       </div>
 

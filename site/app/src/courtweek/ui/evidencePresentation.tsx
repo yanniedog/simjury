@@ -163,6 +163,10 @@ export const REVIEWED_EXHIBIT_PRESENTATIONS: Readonly<Record<ReviewedExhibitId, 
   },
 }
 
-export function reviewedExhibitPresentation(id: string): ExhibitPresentation | undefined {
-  return REVIEWED_EXHIBIT_PRESENTATIONS[id as ReviewedExhibitId]
+export function isReviewedExhibitId(id: string): id is ReviewedExhibitId {
+  return Object.prototype.hasOwnProperty.call(REVIEWED_EXHIBIT_PRESENTATIONS, id)
+}
+
+export function reviewedExhibitPresentation(id: ReviewedExhibitId): ExhibitPresentation {
+  return REVIEWED_EXHIBIT_PRESENTATIONS[id]
 }
