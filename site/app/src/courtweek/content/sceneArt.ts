@@ -315,6 +315,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'thu-opening': {
+    altDescription: 'Defence counsel Corin Dax stands to open the defence case while accused Mara Venn remains seated beside him and the judge and Crown listen. No evidence, testimony or conclusion about guilt is depicted.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 52, y: 48 }, subjectSafeRegion: { x: 0, y: 34, width: 100, height: 52 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 51, y: 47 }, subjectSafeRegion: { x: 0, y: 27, width: 100, height: 62 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 52, y: 46 }, subjectSafeRegion: { x: 0, y: 24, width: 100, height: 68 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
