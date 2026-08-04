@@ -59,8 +59,10 @@ describe('Eleven Minutes legal provenance', () => {
   it('does not ship the warning document before its Thursday admission', () => {
     const packs = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap)
     const warningPack = packs.find(({ evidence }) => evidence.some(({ id }) => id === 'ex-warning'))
+    const pellScene = elevenMinutesCourtWeek.manifest.sessions[2].scenes.find(({ id }) => id === 'wed-pell-chief')
 
     expect(warningPack?.ordinal).toBe(4)
+    expect(pellScene?.interaction?.prompt).toMatch(/Pell’s oral evidence/i)
     expect(warningPack?.session.scenes.flatMap(({ cues }) => cues).some(
       ({ event, evidenceIds }) => event === 'exhibit-admitted' && evidenceIds.includes('ex-warning'),
     )).toBe(true)
