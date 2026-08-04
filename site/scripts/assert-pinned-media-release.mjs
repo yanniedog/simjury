@@ -1,6 +1,8 @@
-import { readFileSync } from 'node:fs'
-import { extname, resolve } from 'node:path'
+import { createHash } from 'node:crypto'
+import { readFileSync, readdirSync } from 'node:fs'
+import { extname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { canonicalSha256 } from './canonical-json.mjs'
 
 const CONTENT_ADDRESSED_ASSET = /^[0-9a-f]{64}\.(?:avif|webp|opus|m4a|mp3|vtt)$/u
 const AUDIO_SOURCE_EXTENSIONS = {
@@ -100,6 +102,30 @@ function collectReleaseAssets(releaseManifest) {
   return assets
 }
 
+export function assertReleasePayloadMatchesManifest(releaseManifestValue, releaseAssetsDirectory) {
+  const releaseManifest = requireObject(releaseManifestValue, 'Immutable Release manifest')
+  const expected = new Set(['release-manifest.json', ...releaseManifest.assets.map((asset) => asset.asset_name)])
+  const entries = readdirSync(resolve(releaseAssetsDirectory), { withFileTypes: true })
+  if (entries.some((entry) => !entry.isFile())) throw new Error('Immutable Release payload must contain files only.')
+  const actual = new Set(entries.map((entry) => entry.name))
+  const missing = [...expected].filter((name) => !actual.has(name)).sort()
+  const extra = [...actual].filter((name) => !expected.has(name)).sort()
+  if (missing.length || extra.length) {
+    throw new Error(
+      `Attached Release inventory mismatch; missing: ${missing.join(', ') || 'none'}; extra: ${extra.join(', ') || 'none'}.`,
+    )
+  }
+  for (const asset of releaseManifest.assets) {
+    const bytes = readFileSync(join(resolve(releaseAssetsDirectory), asset.asset_name))
+    const sha256 = createHash('sha256').update(bytes).digest('hex')
+    if (bytes.length !== asset.bytes || sha256 !== asset.sha256) {
+      throw new Error(
+        `Attached Release asset ${asset.asset_name} failed integrity: bytes=${bytes.length}/${asset.bytes}, sha256=${sha256}/${asset.sha256}.`,
+      )
+    }
+  }
+}
+
 function assertExactReviewSignoffs(reviewSignoffs, runtimeManifest, releaseManifest) {
   if (reviewSignoffs.schema !== 'simjury.court-week-review-signoffs/v1') {
     throw new Error(`Unsupported Court Week review signoff schema: ${reviewSignoffs.schema ?? 'missing'}.`)
@@ -184,6 +210,12 @@ export function assertPinnedMediaMatchesRelease(runtimeManifestValue, releaseMan
   }
   assertExactReviewSignoffs(reviewSignoffs, runtimeManifest, releaseManifest)
   assertReleaseArtReady(releaseManifest)
+  const runtimeManifestDigest = canonicalSha256(runtimeManifest)
+  if (releaseManifest.runtime_manifest_digest !== runtimeManifestDigest) {
+    throw new Error(
+      `Pinned runtime mapping digest mismatch: runtime=${runtimeManifestDigest}, release=${releaseManifest.runtime_manifest_digest ?? 'missing'}.`,
+    )
+  }
 
   const runtimeAssets = collectRuntimeAssets(runtimeManifest)
   const releaseAssets = collectReleaseAssets(releaseManifest)
@@ -208,15 +240,18 @@ if (isMain) {
   const runtimePath = argument('--runtime-manifest')
   const releasePath = argument('--release-manifest')
   const reviewSignoffsPath = argument('--review-signoffs')
+  const releaseAssetsDirectory = argument('--release-assets-dir')
   const expectedReleaseTag = argument('--expected-release-tag')
-  if (!runtimePath || !releasePath || !reviewSignoffsPath || !expectedReleaseTag) {
-    throw new Error('Use --runtime-manifest, --release-manifest, --review-signoffs and --expected-release-tag.')
+  if (!runtimePath || !releasePath || !reviewSignoffsPath || !releaseAssetsDirectory || !expectedReleaseTag) {
+    throw new Error('Use --runtime-manifest, --release-manifest, --review-signoffs, --release-assets-dir and --expected-release-tag.')
   }
+  const releaseManifest = JSON.parse(readFileSync(resolve(releasePath), 'utf8'))
   const result = assertPinnedMediaMatchesRelease(
     JSON.parse(readFileSync(resolve(runtimePath), 'utf8')),
-    JSON.parse(readFileSync(resolve(releasePath), 'utf8')),
+    releaseManifest,
     JSON.parse(readFileSync(resolve(reviewSignoffsPath), 'utf8')),
     expectedReleaseTag,
   )
+  assertReleasePayloadMatchesManifest(releaseManifest, releaseAssetsDirectory)
   console.log(`Pinned runtime media matches ${result.assetCount} content-addressed assets in ${result.releaseTag}.`)
 }
