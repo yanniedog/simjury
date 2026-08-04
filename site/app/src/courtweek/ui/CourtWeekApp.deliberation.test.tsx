@@ -317,6 +317,20 @@ describe('CourtWeekApp improper-argument interaction', () => {
     await act(async () => notGuilty?.click())
     expect(latestProgress.secondVote).toBe('murder')
 
+    await act(async () => root.unmount())
+    await saveWeeklyProgress(progress.courtWeekId, latestProgress)
+    root = createRoot(container)
+    await act(async () => {
+      root.render(<CourtWeekApp courtWeek={elevenMinutesCourtWeek} now={() => clock} releaseBase="/media" />)
+      await Promise.resolve()
+    })
+    await act(async () => clickButton(container, 'Take your seat'))
+    await act(async () => clickButton(container, 'Continue'))
+    expect(container.querySelector('[aria-label="Anonymous second ballot"]')).not.toBeNull()
+    expect(Array.from(container.querySelectorAll<HTMLButtonElement>('.cw-verdict-grid button')).every(
+      (button) => button.disabled,
+    )).toBe(true)
+
     await act(async () => clickButton(container, 'Continue deliberation'))
     window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
     expect(latestProgress.secondVote).toBe('murder')
