@@ -79,4 +79,50 @@ describe('SealedCourtWeekApp', () => {
       elevenMinutesCourtWeek.deliberation.improperArguments[0].claim,
     )
   })
+
+  it('keeps required Friday reflections playable without opening the Saturday deliberation pack', async () => {
+    const packs = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap)
+    await Promise.all(packs.slice(0, 5).map((pack) => saveOpenedPack(pack)))
+    expect(packs[4].deliberation).toBeUndefined()
+
+    const now = Date.parse('2026-08-14T08:31:00+10:00')
+    const friday = elevenMinutesCourtWeek.manifest.sessions[4]
+    await saveWeeklyProgress(courtWeekBootstrap.id, {
+      schemaVersion: 'court-week-progress-v1',
+      courtWeekId: courtWeekBootstrap.id,
+      revision: courtWeekBootstrap.revision,
+      highestObservedTime: new Date(now).toISOString(),
+      completedSessionIds: courtWeekBootstrap.sessions.slice(0, 4).map(({ id }) => id),
+      currentSessionId: friday.id,
+      currentSceneId: 'fri-crown-close',
+      currentCueId: 'fri-crown-closing-1',
+      notes: '',
+      reasoningContributions: [],
+      majorityDirectionReceived: false,
+      accessibilityMode: 'reading',
+    })
+
+    await act(async () => root.render(<SealedCourtWeekApp
+      bootstrap={courtWeekBootstrap}
+      now={() => now}
+      releaseBase="/media"
+      packBase="/packs/"
+    />))
+    await vi.waitFor(() => expect(container.textContent).toContain('Take your seat'))
+    const click = async (label: string) => {
+      const button = Array.from(container.querySelectorAll('button')).find(
+        (candidate) => candidate.textContent?.trim() === label,
+      )
+      if (!button) throw new Error(`Button not found: ${label}`)
+      await act(async () => button.click())
+    }
+    await click('Take your seat')
+    await click('Continue')
+    await click('Continue')
+
+    expect(container.textContent).toContain('Legal question')
+    expect(container.textContent).toContain('Admitted evidence')
+    expect(container.textContent).toContain('connect')
+    expect(container.textContent).not.toContain(elevenMinutesCourtWeek.deliberation.jurors[0].occupation)
+  })
 })

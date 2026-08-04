@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+import { elevenMinutesDeliberation } from '../content/deliberation'
 import type { StoredWeeklyProgress } from './progress'
 import {
   clearMemoryProgressForTests,
@@ -170,12 +171,14 @@ describe('weekly progress', () => {
       exportWeeklyProgress(deliberated),
       'cw-0001',
       '2026.08.03-r1',
+      elevenMinutesDeliberation,
     )
     expect(withoutNotes).toEqual({ ...deliberated, notes: '' })
     expect(importWeeklyProgress(
       exportWeeklyProgress(deliberated, true),
       'cw-0001',
       '2026.08.03-r1',
+      elevenMinutesDeliberation,
     )).toEqual(deliberated)
   })
 
@@ -207,19 +210,25 @@ describe('weekly progress', () => {
     }
 
     expect(() => importWeeklyProgress(
-      exportWeeklyProgress(forged), 'cw-0001', '2026.08.03-r1',
+      exportWeeklyProgress(forged), 'cw-0001', '2026.08.03-r1', elevenMinutesDeliberation,
     )).toThrow('outside the authored Court Week journey')
     expect(() => importWeeklyProgress(
-      exportWeeklyProgress(duplicated), 'cw-0001', '2026.08.03-r1',
+      exportWeeklyProgress(duplicated), 'cw-0001', '2026.08.03-r1', elevenMinutesDeliberation,
     )).toThrow('outside the authored Court Week journey')
 
     expect(() => importWeeklyProgress(exportWeeklyProgress({
       ...progress,
       reasoningContributions: [{ ...contribution, propositionId: 'prop-unknown' }],
-    }), 'cw-0001', '2026.08.03-r1')).toThrow('outside the authored Court Week journey')
+    }), 'cw-0001', '2026.08.03-r1', elevenMinutesDeliberation)).toThrow('outside the authored Court Week journey')
     expect(() => importWeeklyProgress(exportWeeklyProgress({
       ...progress,
       reasoningContributions: [{ ...contribution, evidenceId: 'ex-warning' }],
-    }), 'cw-0001', '2026.08.03-r1')).toThrow('outside the authored Court Week journey')
+    }), 'cw-0001', '2026.08.03-r1', elevenMinutesDeliberation)).toThrow('outside the authored Court Week journey')
+
+    expect(() => importWeeklyProgress(
+      exportWeeklyProgress({ ...progress, reasoningContributions: [contribution] }),
+      'cw-0001',
+      '2026.08.03-r1',
+    )).toThrow(/after the Saturday session has opened/i)
   })
 })

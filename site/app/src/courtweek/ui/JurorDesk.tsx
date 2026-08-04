@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { TrialRecord, WeeklyProgress } from '../model/schema'
+import type { DeliberationPack, TrialRecord, WeeklyProgress } from '../model/schema'
 import {
   downloadWeeklyProgress,
   importWeeklyProgress,
@@ -17,6 +17,7 @@ const focusableSelector = [
 
 export interface JurorDeskProps {
   trial: TrialRecord
+  deliberation?: DeliberationPack
   progress: WeeklyProgress
   readOnly?: boolean
   inactive?: boolean
@@ -28,6 +29,7 @@ export interface JurorDeskProps {
 
 export function JurorDesk({
   trial,
+  deliberation,
   progress,
   readOnly = false,
   inactive = false,
@@ -116,6 +118,7 @@ export function JurorDesk({
         await file.text(),
         progress.courtWeekId,
         progress.revision,
+        deliberation,
       )
       onImport(imported)
       setImportError(null)

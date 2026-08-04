@@ -1,6 +1,5 @@
-import { weeklyProgressSchema, type WeeklyProgress } from '../model/schema'
+import { weeklyProgressSchema, type DeliberationPack, type WeeklyProgress } from '../model/schema'
 import { hasValidContributionJourney } from '../model/deliberationContract'
-import { elevenMinutesDeliberation } from '../content/deliberation'
 
 export const PROGRESS_DATABASE = {
   name: 'simjury-court-week-v1',
@@ -148,6 +147,7 @@ export function importWeeklyProgress(
   text: string,
   expectedCaseId: string,
   expectedRevision: string,
+  deliberation?: DeliberationPack,
 ): StoredWeeklyProgress {
   const parsed: unknown = JSON.parse(text)
   if (!parsed || typeof parsed !== 'object') {
@@ -167,7 +167,11 @@ export function importWeeklyProgress(
   if (validated.revision !== expectedRevision) {
     throw new Error('This progress belongs to a different case revision.')
   }
-  if (!hasValidContributionJourney(validated.reasoningContributions ?? [], elevenMinutesDeliberation)) {
+  const contributions = validated.reasoningContributions ?? []
+  if (contributions.length > 0 && !deliberation?.propositions) {
+    throw new Error('Deliberation progress can be imported after the Saturday session has opened.')
+  }
+  if (deliberation && !hasValidContributionJourney(contributions, deliberation)) {
     throw new Error('This progress contains reasoning outside the authored Court Week journey.')
   }
   return validated
