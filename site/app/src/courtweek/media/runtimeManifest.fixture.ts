@@ -3,7 +3,7 @@ import { elevenMinutesCourtWeek } from '../content'
 import type { CourtSession, SceneCue } from '../model/schema'
 import type { CourtWeekRuntimeMediaManifest } from './manifest'
 
-function assetName(seed: string, extension: 'opus' | 'm4a' | 'mp3' | 'vtt') {
+function assetName(seed: string, extension: 'opus' | 'm4a' | 'mp3' | 'vtt' | 'avif' | 'webp') {
   return `${createHash('sha256').update(seed).digest('hex')}.${extension}`
 }
 
@@ -34,6 +34,28 @@ export function completeRuntimeMediaFixture(): CourtWeekRuntimeMediaManifest {
           captions: assetName(`${session.id}:${segment.id}:captions`, 'vtt'),
         },
       })),
+      art: {
+        grid: { columns: 2, rows: 1 },
+        compositions: {
+          portrait: { tile_width: 720, tile_height: 1280, strip_width: 1440, strip_height: 1280 },
+          tablet: { tile_width: 1024, tile_height: 768, strip_width: 2048, strip_height: 768 },
+          desktop: { tile_width: 1280, tile_height: 720, strip_width: 2560, strip_height: 720 },
+        },
+        strips: Array.from({ length: 4 }, (_, stripIndex) => ({
+          strip_index: stripIndex + 1,
+          scene_slots: session.scenes.slice(stripIndex * 2, stripIndex * 2 + 2).map((scene, cell) => ({
+            scene_id: scene.id,
+            cell,
+          })),
+          sources: Object.fromEntries(['portrait', 'tablet', 'desktop'].map((composition) => [
+            composition,
+            {
+              avif: assetName(`${session.id}:strip-${stripIndex + 1}:${composition}:avif`, 'avif'),
+              webp: assetName(`${session.id}:strip-${stripIndex + 1}:${composition}:webp`, 'webp'),
+            },
+          ])) as CourtWeekRuntimeMediaManifest['sessions'][number]['art']['strips'][number]['sources'],
+        })),
+      },
     })) as CourtWeekRuntimeMediaManifest['sessions'],
   }
 }
