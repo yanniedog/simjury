@@ -207,3 +207,87 @@ test('Monday captions avoid line overflow with only enumerated safe-layout fallb
   expect(observedFallbacks).toEqual(intentionalRuntimeFallbacks)
   expect(measuredFailures).toEqual([])
 })
+
+test('Tuesday captions avoid line overflow with only enumerated safe-layout fallbacks', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Measured production-font geometry runs once; content limits run cross-engine in unit tests.')
+  await page.setViewportSize({ width: 390, height: 844 })
+  await prepareCourt(page)
+  await page.getByLabel('Audio and captions').check()
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  await page.evaluate(() => document.fonts.ready)
+  await page.locator('.cw-stage').evaluate((stage) => {
+    const probe = document.createElement('div')
+    probe.id = 'tuesday-caption-probe'
+    probe.className = 'cw-captions'
+    probe.style.visibility = 'visible'
+    probe.style.display = 'flex'
+    probe.append(document.createElement('span'))
+    stage.append(probe)
+  })
+
+  const tuesday = elevenMinutesSessions[1]
+  const layouts: Array<{ viewport: CaptionViewport; width: number; height: number }> = [
+    { viewport: 'phonePortrait', width: 390, height: 844 },
+    { viewport: 'phoneLandscape', width: 844, height: 390 },
+    { viewport: 'tablet', width: 820, height: 1180 },
+    { viewport: 'desktop', width: 1280, height: 800 },
+  ]
+  const subjectScenes = tuesday.scenes.filter((scene) => scene.id !== 'tue-adjourn')
+  const intentionalRuntimeFallbacks = new Set([
+    ...subjectScenes.map((scene) => `phonePortrait:${scene.id}`),
+    ...tuesday.scenes.map((scene) => `phoneLandscape:${scene.id}`),
+    ...tuesday.scenes.filter((scene) => scene.id !== 'tue-adjourn').map((scene) => `tablet:${scene.id}`),
+    ...tuesday.scenes.filter((scene) => scene.id !== 'tue-adjourn').map((scene) => `desktop:${scene.id}`),
+  ])
+  const observedFallbacks = new Set<string>()
+  const measuredFailures: string[] = []
+
+  for (const layout of layouts) {
+    await page.setViewportSize({ width: layout.width, height: layout.height })
+    for (const scene of tuesday.scenes) {
+      const placement = responsiveCaptionPlacements(scene.visual)[layout.viewport]
+      const fallbackKey = `${layout.viewport}:${scene.id}`
+      if (!placement.fits) {
+        expect(intentionalRuntimeFallbacks.has(fallbackKey), fallbackKey).toBe(true)
+        observedFallbacks.add(fallbackKey)
+        continue
+      }
+      for (const cue of scene.cues) {
+        const result = await page.locator('.cw-shell').evaluate((shell, input) => {
+          const root = shell as HTMLElement
+          const overlay = root.querySelector<HTMLElement>('#tuesday-caption-probe')!
+          overlay.style.left = `${input.placement.region.x}%`
+          overlay.style.top = `${input.placement.region.y}%`
+          overlay.style.width = `${input.placement.region.width}%`
+          overlay.style.height = `${input.placement.region.height}%`
+          const caption = overlay.querySelector<HTMLElement>('span')!
+          const speaker = root.querySelector<HTMLElement>('#cw-speaker-name')!
+          caption.textContent = input.text
+          const controls = root.querySelector<HTMLElement>('.cw-controls')!
+          const intersect = (left: DOMRect, right: DOMRect) => Math.max(0, Math.min(left.right, right.right) - Math.max(left.left, right.left)) *
+            Math.max(0, Math.min(left.bottom, right.bottom) - Math.max(left.top, right.top))
+          const captionBox = caption.getBoundingClientRect()
+          return {
+            displayed: getComputedStyle(overlay).display !== 'none',
+            lineFits: caption.scrollHeight <= caption.clientHeight + 1,
+            controlsIntersection: intersect(captionBox, controls.getBoundingClientRect()),
+            speakerIntersection: intersect(captionBox, speaker.getBoundingClientRect()),
+          }
+        }, { placement, text: cue.text })
+        const key = `${layout.viewport}:${cue.id}`
+        if (!result.displayed) measuredFailures.push(`${key}:hidden`)
+        if (!result.lineFits) measuredFailures.push(`${key}:line-overflow`)
+        if (result.controlsIntersection > 1) {
+          if (intentionalRuntimeFallbacks.has(fallbackKey)) observedFallbacks.add(fallbackKey)
+          else measuredFailures.push(`${key}:controls-collision`)
+        }
+        if (result.speakerIntersection > 1) {
+          if (intentionalRuntimeFallbacks.has(fallbackKey)) observedFallbacks.add(fallbackKey)
+          else measuredFailures.push(`${key}:speaker-collision`)
+        }
+      }
+    }
+  }
+  expect(observedFallbacks).toEqual(intentionalRuntimeFallbacks)
+  expect(measuredFailures).toEqual([])
+})
