@@ -59,9 +59,11 @@ describe('Court Week prerecorded audio jobs', () => {
 
     const recording = elevenMinutesCourtWeek.manifest.sessions[1].scenes
       .flatMap((scene) => scene.cues)
-      .find((cue) => cue.id === 'tue-recording-play')!
-    const channel = splitCueUtterances(recording)
-    expect(channel.map((utterance) => utterance.speaker)).toEqual([
+      .filter((cue) => (cue.sourceCueId ?? cue.id) === 'tue-recording-play')
+    const channel = recording.flatMap(splitCueUtterances)
+    const speakerTurns = channel.map((utterance) => utterance.speaker)
+      .filter((speaker, index, speakers) => index === 0 || speaker !== speakers[index - 1])
+    expect(speakerTurns).toEqual([
       'Ilan Saye',
       'Peli Dorn',
       'Mara Venn',

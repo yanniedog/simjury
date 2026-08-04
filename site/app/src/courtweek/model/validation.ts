@@ -227,12 +227,13 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
     }))
   })
   const witnessNames = new Set(courtWeek.trial.witnesses.map((witness) => witness.name))
-  allCues.filter((cue) => (
-    cue.event === 'witness-chief' ||
-    cue.event === 'witness-cross' ||
-    cue.event === 'witness-reexamination' ||
-    (cue.event === 'exhibit-admitted' && witnessNames.has(cue.speaker))
-  )).forEach((cue) => {
+  allCues.filter((cue) => {
+    const source = cue.sourceCueId ? allCues.find((candidate) => candidate.id === cue.sourceCueId) : cue
+    return source?.event === 'witness-chief' ||
+      source?.event === 'witness-cross' ||
+      source?.event === 'witness-reexamination' ||
+      (source?.event === 'exhibit-admitted' && witnessNames.has(source.speaker))
+  }).forEach((cue) => {
     const ownershipId = cue.sourceCueId ?? cue.id
     demand(witnessCueOwners.get(ownershipId)?.length === 1, `substantive witness cue ${cue.id} must belong to exactly one witness`)
   })

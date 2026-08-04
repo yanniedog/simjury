@@ -55,14 +55,19 @@ export function paceCueForCaptions(cue: SceneCue): SceneCue[] {
   let activeSpeaker = cue.speaker
   const aliasPattern = new RegExp(`(?:^|\\s)(${Object.keys(DIALOGUE_SPEAKER_ALIASES).join('|')}):`, 'gu')
   return rebalanceShortTail(parts).map((text, index) => {
-    const speaker = activeSpeaker
-    for (const match of text.matchAll(aliasPattern)) {
+    const matches = [...text.matchAll(aliasPattern)]
+    const firstAlias = matches[0]
+    const speaker = index > 0 && firstAlias?.index === 0
+      ? DIALOGUE_SPEAKER_ALIASES[firstAlias[1]] ?? activeSpeaker
+      : activeSpeaker
+    for (const match of matches) {
       activeSpeaker = DIALOGUE_SPEAKER_ALIASES[match[1]] ?? activeSpeaker
     }
     return {
       ...cue,
       id: index === 0 ? cue.id : `${cue.id}--caption-${index + 1}`,
       sourceCueId: cue.id,
+      admissionStatus: index === 0 ? cue.admissionStatus : undefined,
       speaker,
       text,
     }

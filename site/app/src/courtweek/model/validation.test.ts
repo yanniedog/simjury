@@ -73,7 +73,9 @@ describe('Eleven Minutes Court Week', () => {
     const allCues = elevenMinutesCourtWeek.manifest.sessions.flatMap((session) => session.scenes)
       .flatMap((scene) => scene.cues)
     const mir = elevenMinutesCourtWeek.trial.witnesses.find((witness) => witness.id === 'w-mir')
-    const foundation = allCues.filter((cue) => mir?.chiefCueIds.includes(cue.id))
+    const foundation = allCues.filter((cue) => (
+      mir?.chiefCueIds.includes(cue.sourceCueId ?? cue.id)
+    ))
       .map((cue) => cue.text).join(' ')
     expect(foundation).toMatch(/SHA-256 hash matches the write-once archive/i)
     expect(foundation).toMatch(/no erasure, overwriting or alteration/i)
