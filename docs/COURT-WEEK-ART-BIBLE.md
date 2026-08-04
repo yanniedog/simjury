@@ -30,6 +30,9 @@ parties, invent a second witness box or move fixed furniture.
 - Peli Dorn: young adult woman; medium-brown complexion; short close dark
   curls; plain charcoal blazer over a muted forest-green blouse; attentive,
   professional manner.
+- Tovan Mir: man in his early fifties; medium olive complexion; short
+  salt-and-pepper hair; clean-shaven; plain mid-grey business suit, muted blue
+  shirt and dark tie; calm records-custodian manner.
 
 Wardrobe stays unchanged through a court day. No police, rescue or military
 uniform appears in court unless the authored record expressly calls that person
