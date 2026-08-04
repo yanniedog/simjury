@@ -51,10 +51,12 @@ describe('Eleven Minutes legal provenance', () => {
   it('rules on the review evidence before Vale answers and formally admits the document', () => {
     const objectionIndex = orderedCues.findIndex(({ id }) => id === 'wed-def-objection')
     const answerIndex = orderedCues.findIndex(({ id }) => id === 'wed-vale-chief-1')
+    const objection = orderedCues[objectionIndex]
     const admittedReview = orderedCues[answerIndex]
 
     expect(objectionIndex).toBeGreaterThanOrEqual(0)
     expect(answerIndex).toBeGreaterThan(objectionIndex)
+    expect(objection).toMatchObject({ event: 'objection', tone: 'chief' })
     expect(admittedReview).toMatchObject({
       event: 'exhibit-admitted',
       admissionStatus: 'final',
