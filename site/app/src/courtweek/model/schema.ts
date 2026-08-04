@@ -265,6 +265,7 @@ const deliberationPropositionSchema = z.object({
   legalQuestion: z.string().min(1),
   evidenceIds: z.array(z.string().min(1)).min(2),
   moves: z.array(reasoningMoveSchema).min(2),
+  lawfulRationale: z.string().min(40),
   influence: authoredInfluenceSchema,
 })
 

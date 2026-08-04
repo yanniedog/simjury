@@ -59,7 +59,7 @@ function outcomeContributions(verdict: Verdict): ReasoningContribution[] {
   if (verdict === 'murder') return contributions(
     ['sat-room', 'sat-concerns', 'sat-first-ballot', 'sat-separate', 'sun-persevere'],
     propositionForVerdict.murder,
-  ).concat(contributions(['sat-causation'], 'prop-causation-route-support'))
+  )
   if (verdict === 'manslaughter') return [
     ...contributions(['sat-room', 'sat-concerns', 'sat-first-ballot', 'sat-separate', 'sun-negligence'], propositionForVerdict.manslaughter),
     ...contributions(['sat-causation'], 'prop-causation-window-support'),
@@ -67,9 +67,8 @@ function outcomeContributions(verdict: Verdict): ReasoningContribution[] {
     ...contributions(['sun-persevere'], propositionForVerdict.manslaughter),
   ]
   if (verdict === 'not-guilty') return [
-    ...contributions(['sat-room', 'sat-concerns', 'sat-first-ballot', 'sat-separate', 'sun-persevere'], 'prop-intent-error-alternative'),
-    ...contributions(['sat-causation', 'sun-negligence'], propositionForVerdict['not-guilty']),
-    ...contributions(['sun-resume'], 'prop-resume-intent-alternative'),
+    ...contributions(['sat-room', 'sat-first-ballot', 'sat-causation', 'sat-separate', 'sun-negligence', 'sun-persevere'], propositionForVerdict['not-guilty']),
+    ...contributions(['sat-concerns'], 'prop-duty-priority-doubt'),
   ]
   return [
     ...contributions(['sat-concerns', 'sun-resume'], 'prop-intent-source-limit'),
@@ -104,7 +103,7 @@ describe('Court Week deliberation engine', () => {
   it('hides the authored count until the player is added and always totals twelve', () => {
     expect(Object.values(elevenMinutesDeliberation.firstBallot).reduce((a, b) => a + b, 0)).toBe(11)
     expect(aggregateFirstBallot(elevenMinutesDeliberation, 'murder')).toEqual({
-      murder: 5, manslaughter: 4, 'not-guilty': 2, 'unable-to-agree': 1,
+      murder: 6, manslaughter: 2, 'not-guilty': 3, 'unable-to-agree': 1,
     })
   })
 
@@ -112,7 +111,7 @@ describe('Court Week deliberation engine', () => {
     expect(firstBallotForScene(elevenMinutesDeliberation, 'sat-provisional', 'murder')).toBeNull()
     expect(firstBallotForScene(elevenMinutesDeliberation, 'sat-first-ballot')).toBeNull()
     const aggregate = firstBallotForScene(elevenMinutesDeliberation, 'sat-first-ballot', 'murder')
-    expect(aggregate).toEqual({ murder: 5, manslaughter: 4, 'not-guilty': 2, 'unable-to-agree': 1 })
+    expect(aggregate).toEqual({ murder: 6, manslaughter: 2, 'not-guilty': 3, 'unable-to-agree': 1 })
     expect(Object.values(aggregate ?? {}).reduce((sum, count) => sum + count, 0)).toBe(12)
   })
 
@@ -120,8 +119,8 @@ describe('Court Week deliberation engine', () => {
     const proposition = elevenMinutesDeliberation.propositions[0]
     const afterOne = evolveAuthoredBallot(elevenMinutesDeliberation.firstBallot, [proposition])
     const afterTwo = evolveAuthoredBallot(elevenMinutesDeliberation.firstBallot, [proposition, proposition])
-    expect(afterOne.murder).toBe(5)
-    expect(afterTwo.murder).toBe(6)
+    expect(afterOne.murder).toBe(6)
+    expect(afterTwo.murder).toBe(7)
     expect(Object.values(afterTwo).reduce((a, b) => a + b, 0)).toBe(11)
   })
 
@@ -153,15 +152,15 @@ describe('Court Week deliberation engine', () => {
   it('derives movement from the authored proposition, never the player ballot', () => {
     const lawful = contributions(['sat-room'], 'prop-causation-window-doubt')
     expect(calculateSecondBallot(elevenMinutesDeliberation, 'murder', lawful)).toMatchObject({
-      murder: 5,
-      'not-guilty': 3,
+      murder: 6,
+      'not-guilty': 4,
     })
   })
 
   it('supports counter-direction and no-effect authored propositions', () => {
     const counter = contributions(['sat-room'], 'prop-negligence-safety-alternative')
     const noEffect = contributions(['sat-concerns'], 'prop-intent-source-limit')
-    expect(calculateSecondBallot(elevenMinutesDeliberation, 'murder', counter)).toMatchObject({ manslaughter: 3, 'not-guilty': 3 })
+    expect(calculateSecondBallot(elevenMinutesDeliberation, 'murder', counter)).toMatchObject({ manslaughter: 1, 'not-guilty': 4 })
     expect(calculateSecondBallot(elevenMinutesDeliberation, 'murder', noEffect)).toEqual(
       aggregateFirstBallot(elevenMinutesDeliberation, 'murder'),
     )
@@ -169,13 +168,23 @@ describe('Court Week deliberation engine', () => {
 
   it.each([
     ['murder', 'majority'],
-    ['manslaughter', 'unanimous'],
+    ['manslaughter', 'majority'],
     ['not-guilty', 'majority'],
   ] as const)('can reach a deterministic %s outcome', (verdict, agreement) => {
     const result = finalResult(verdict)
     expect(result.verdict).toBe(verdict)
     expect(result.agreement).toBe(agreement)
-    expect(result.aggregate[verdict]).toBe(agreement === 'unanimous' ? 12 : 11)
+    expect(result.aggregate[verdict]).toBe(11)
+  })
+
+  it('documents legally bounded effects for intent doubt and route-assumption testing', () => {
+    const intentAlternative = elevenMinutesDeliberation.propositions.find(({ id }) => id === 'prop-intent-error-alternative')!
+    expect(intentAlternative.influence).toEqual({ issue: 'murder', direction: -1, counterVerdict: 'manslaughter' })
+    expect(intentAlternative.lawfulRationale).toMatch(/leaves the separate manslaughter questions live/i)
+
+    const routeAssumption = elevenMinutesDeliberation.propositions.find(({ id }) => id === 'prop-causation-route-support')!
+    expect(routeAssumption.influence.direction).toBe(0)
+    expect(routeAssumption.lawfulRationale).toMatch(/cannot prove medical causation or murderous intent/i)
   })
 
   it('offers only scene-reviewed topics while preserving evidence and move choices', () => {
