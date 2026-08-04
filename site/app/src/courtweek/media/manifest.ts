@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { CourtSession, CourtWeek, SceneCue } from '../model/schema'
+import type { CourtSession, CourtWeek, Scene, SceneCue } from '../model/schema'
 
 const audioAssetName = z.string().regex(/^[0-9a-f]{64}\.(?:opus|m4a|mp3|vtt)$/u)
 const artAssetName = z.string().regex(/^[0-9a-f]{64}\.(?:avif|webp)$/u)
@@ -48,7 +48,7 @@ const runtimeArtSchema = z.object({
     strip_index: z.number().int().min(1).max(4),
     scene_slots: z.array(z.object({
       scene_id: z.string().min(1),
-      cell: z.number().int().min(0).max(1),
+      cell: z.union([z.literal(0), z.literal(1)]),
     }).strict()).min(1).max(2),
     sources: z.object({
       portrait: stripSourcesSchema,
@@ -161,5 +161,40 @@ export function attachSessionAudio(
         }
       }),
     })),
+  }
+}
+
+export function attachSessionArt(
+  session: CourtSession,
+  media: CourtWeekSessionMedia | undefined,
+  releaseTag: string,
+): CourtSession {
+  if (!media) return session
+  const releaseRoot = `https://github.com/yanniedog/simjury/releases/download/${encodeURIComponent(releaseTag)}`
+  const byScene = new Map(media.art.strips.flatMap((strip) =>
+    strip.scene_slots.map((slot) => [slot.scene_id, { strip, slot }] as const)))
+  return {
+    ...session,
+    scenes: session.scenes.map((scene) => {
+      const mapping = byScene.get(scene.id)
+      if (!mapping) return scene
+      return {
+        ...scene,
+        visual: {
+          ...scene.visual,
+          runtimeStrip: {
+            cell: mapping.slot.cell,
+            sources: Object.fromEntries(
+              Object.entries(mapping.strip.sources).map(([composition, sources]) => [
+                composition,
+                Object.fromEntries(Object.entries(sources).map(([format, asset]) => [
+                  format, `${releaseRoot}/${asset}`,
+                ])),
+              ]),
+            ) as NonNullable<Scene['visual']['runtimeStrip']>['sources'],
+          },
+        },
+      }
+    }),
   }
 }

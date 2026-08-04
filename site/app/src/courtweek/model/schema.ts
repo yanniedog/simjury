@@ -35,6 +35,11 @@ const sceneArtSourcesSchema = z.object({
   tablet: z.object({ avif: sceneArtPathSchema, webp: sceneArtPathSchema }).strict(),
   desktop: z.object({ avif: sceneArtPathSchema, webp: sceneArtPathSchema }).strict(),
 }).strict()
+const runtimeStripSourcesSchema = z.object({
+  portrait: z.object({ avif: z.string().url(), webp: z.string().url() }).strict(),
+  tablet: z.object({ avif: z.string().url(), webp: z.string().url() }).strict(),
+  desktop: z.object({ avif: z.string().url(), webp: z.string().url() }).strict(),
+}).strict()
 
 export const visualSchema = z.object({
   fallbackId: z.string().min(1),
@@ -45,6 +50,10 @@ export const visualSchema = z.object({
   evidenceSafeRegion: regionSchema.optional(),
   permittedCaptionPositions: z.array(captionPositionSchema).min(1).optional(),
   sources: sceneArtSourcesSchema.optional(),
+  runtimeStrip: z.object({
+    cell: z.union([z.literal(0), z.literal(1)]),
+    sources: runtimeStripSourcesSchema,
+  }).strict().optional(),
 })
 export type SceneVisual = z.infer<typeof visualSchema>
 

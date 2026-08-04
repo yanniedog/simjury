@@ -5,7 +5,7 @@ import type {
   DeliberationPack,
   TrialRecord,
 } from '../model/schema'
-import { attachSessionAudio } from '../media/manifest'
+import { attachSessionArt, attachSessionAudio } from '../media/manifest'
 import { loadWeeklyProgress, type StoredWeeklyProgress } from '../state/progress'
 import { observeCourtTime } from '../state/schedule'
 import { WEEKLY_PROGRESS_EVENT } from '../state/useWeeklyProgress'
@@ -111,8 +111,12 @@ function runtimeCourtWeek(
       releaseTag: bootstrap.releaseTag,
       sessions: bootstrap.sessions.map((entry) =>
         byOrdinal.get(entry.ordinal)
-          ? attachSessionAudio(
-              byOrdinal.get(entry.ordinal)!.session,
+          ? attachSessionArt(
+              attachSessionAudio(
+                byOrdinal.get(entry.ordinal)!.session,
+                byOrdinal.get(entry.ordinal)!.media,
+                bootstrap.releaseTag,
+              ),
               byOrdinal.get(entry.ordinal)!.media,
               bootstrap.releaseTag,
             )

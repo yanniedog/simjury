@@ -4,6 +4,7 @@ import { courtWeekBootstrap } from '../sealed/bootstrap'
 import { createCourtDayPacks } from '../sealed/packPlan'
 import {
   assertRuntimeMediaCoverage,
+  attachSessionArt,
   attachSessionAudio,
   courtWeekRuntimeMediaManifestSchema,
 } from './manifest'
@@ -75,6 +76,25 @@ describe('pinned text-free Court Week media manifest', () => {
       expect(cue.audio?.opus).toMatch(/^https:\/\/github\.com\/yanniedog\/simjury\/releases\/download\//u)
       expect(cue.audio?.aac).toMatch(/\.m4a$/u)
       expect(cue.audio?.mp3).toMatch(/\.mp3$/u)
+    }
+  })
+
+  it('attaches every scene to its sealed strip cell and pinned image URLs', () => {
+    const fixture = completeRuntimeMediaFixture()
+    const scenes = elevenMinutesCourtWeek.manifest.sessions.flatMap((session) =>
+      attachSessionArt(
+        session,
+        fixture.sessions.find((media) => media.session_id === session.id),
+        fixture.release_tag,
+      ).scenes)
+    expect(scenes).toHaveLength(55)
+    for (const scene of scenes) {
+      expect(scene.visual.runtimeStrip?.cell).toBeGreaterThanOrEqual(0)
+      expect(scene.visual.runtimeStrip?.cell).toBeLessThanOrEqual(1)
+      expect(scene.visual.runtimeStrip?.sources.portrait.avif).toMatch(
+        /^https:\/\/github\.com\/yanniedog\/simjury\/releases\/download\/.*\/[0-9a-f]{64}\.avif$/u,
+      )
+      expect(scene.visual.runtimeStrip?.sources.desktop.webp).toMatch(/\.webp$/u)
     }
   })
 })
