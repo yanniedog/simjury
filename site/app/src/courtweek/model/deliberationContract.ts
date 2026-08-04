@@ -1,0 +1,44 @@
+import type { ReasoningContribution } from './schema'
+
+export const preSecondBallotContributionSceneIds = [
+  'sat-room',
+  'sat-concerns',
+  'sat-first-ballot',
+  'sat-causation',
+  'sat-improper',
+  'sat-separate',
+  'sun-resume',
+  'sun-negligence',
+] as const
+
+export const furtherDiscussionContributionSceneIds = ['sun-persevere'] as const
+
+const recordedReflectionSceneIds = [
+  'fri-crown-close',
+  'fri-defence-close',
+  ...preSecondBallotContributionSceneIds,
+  ...furtherDiscussionContributionSceneIds,
+  'sun-analysis',
+] as const
+
+const recordedReflectionSceneIdSet = new Set<string>(recordedReflectionSceneIds)
+const preSecondBallotSceneIdSet = new Set<string>(preSecondBallotContributionSceneIds)
+const furtherDiscussionSceneIdSet = new Set<string>(furtherDiscussionContributionSceneIds)
+
+export function contributionStage(sceneId: string): 'pre-second-ballot' | 'further-discussion' | null {
+  if (preSecondBallotSceneIdSet.has(sceneId)) return 'pre-second-ballot'
+  if (furtherDiscussionSceneIdSet.has(sceneId)) return 'further-discussion'
+  return null
+}
+
+/** One authored reasoning interaction can record at most one private contribution. */
+export function hasValidContributionJourney(contributions: ReasoningContribution[]): boolean {
+  const seen = new Set<string>()
+  return contributions.every((contribution) => {
+    if (!recordedReflectionSceneIdSet.has(contribution.sceneId) || seen.has(contribution.sceneId)) {
+      return false
+    }
+    seen.add(contribution.sceneId)
+    return true
+  })
+}

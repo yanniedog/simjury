@@ -130,4 +130,50 @@ describe('CourtWeekApp improper-argument interaction', () => {
     })
     expect(saved).not.toHaveProperty('improperClaim')
   })
+
+  it('lets the juror skip an optional reasoning opportunity without fabricating influence', async () => {
+    const saturday = elevenMinutesCourtWeek.manifest.sessions.find((session) => session.day === 'Saturday')
+    const scene = saturday?.scenes.find((candidate) => candidate.id === 'sat-room')
+    const cue = scene?.cues.at(-1)
+    if (!saturday || !scene || !cue) throw new Error('Saturday opening scene is missing.')
+
+    const progress: StoredWeeklyProgress = {
+      schemaVersion: 'court-week-progress-v1',
+      courtWeekId: 'cw-0001',
+      revision: elevenMinutesCourtWeek.manifest.revision,
+      highestObservedTime: '2026-08-16T12:00:00+10:00',
+      completedSessionIds: elevenMinutesCourtWeek.manifest.sessions.slice(0, 5).map((session) => session.id),
+      currentSessionId: saturday.id,
+      currentSceneId: scene.id,
+      currentCueId: cue.id,
+      notes: '',
+      reasoningContributions: [],
+      accessibilityMode: 'reading',
+      majorityDirectionReceived: false,
+    }
+    await saveWeeklyProgress(progress.courtWeekId, progress)
+
+    let latestProgress = progress
+    const onProgress = (event: Event) => {
+      latestProgress = (event as CustomEvent<StoredWeeklyProgress>).detail
+    }
+    window.addEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
+    let clock = Date.parse('2026-08-16T12:00:00+10:00')
+
+    await act(async () => {
+      root.render(<CourtWeekApp courtWeek={elevenMinutesCourtWeek} now={() => clock} releaseBase="/media" />)
+      await Promise.resolve()
+    })
+    await act(async () => clickButton(container, 'Take your seat'))
+    await act(async () => clickButton(container, 'Continue'))
+    clock += 120_000
+    await act(async () => window.dispatchEvent(new Event('focus')))
+
+    expect(container.textContent).toContain('Continue without contributing')
+    await act(async () => clickButton(container, 'Continue without contributing'))
+    window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
+
+    expect(latestProgress.reasoningContributions).toEqual([])
+    expect(latestProgress.currentSceneId).toBe('sat-concerns')
+  })
 })
