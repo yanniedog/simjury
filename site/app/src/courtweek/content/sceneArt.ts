@@ -451,6 +451,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'fri-legal-submissions': {
+    altDescription: 'Jurors wait in a secure antechamber facing a closed courtroom door while two court officers stand nearby. Nothing occurring inside the courtroom is visible.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 50, y: 56 }, subjectSafeRegion: { x: 0, y: 40, width: 100, height: 52 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 50, y: 50 }, subjectSafeRegion: { x: 0, y: 32, width: 100, height: 60 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 50, y: 49 }, subjectSafeRegion: { x: 0, y: 30, width: 100, height: 62 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
   'fri-crown-close': {
     altDescription: 'Crown counsel Asha Renn addresses the jury from the lectern while Judge Sel Aven and the defence listen without reaction. The image depicts advocacy, not evidence or a verdict.',
     compositionArt: {

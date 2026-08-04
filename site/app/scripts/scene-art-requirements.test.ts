@@ -82,6 +82,7 @@ describe('SceneArtManifest contract', () => {
       'thu-defence-record',
       'thu-def-close',
       'thu-adjourn',
+      'fri-legal-submissions',
       'fri-crown-close',
       'fri-defence-close',
       'fri-burden',
@@ -108,6 +109,7 @@ describe('SceneArtManifest contract', () => {
       expect(manifest.scenes['thu-defence-record'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
       expect(manifest.scenes['thu-def-close'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
       expect(manifest.scenes['thu-adjourn'].compositionArt[composition].subjectSafeRegion).toBeNull()
+      expect(manifest.scenes['fri-legal-submissions'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
       expect(manifest.scenes['fri-crown-close'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
       expect(manifest.scenes['fri-defence-close'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
       expect(manifest.scenes['fri-burden'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
