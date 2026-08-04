@@ -96,6 +96,7 @@ describe('SceneArtManifest contract', () => {
       'sat-causation',
       'sat-improper',
       'sun-resume',
+      'sun-negligence',
     ]
     for (const sceneId of evidenceNeutralReviewedScenes) {
       for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
@@ -160,6 +161,10 @@ describe('SceneArtManifest contract', () => {
       expect(manifest.scenes['sun-resume'].compositionArt[composition].evidenceSafeRegion).toBeNull()
       expect(manifest.scenes['sun-resume'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
       expect(manifest.scenes['sun-resume'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
+      expect(manifest.scenes['sun-negligence'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+      expect(manifest.scenes['sun-negligence'].compositionArt[composition].evidenceSafeRegion).toBeNull()
+      expect(manifest.scenes['sun-negligence'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
+      expect(manifest.scenes['sun-negligence'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
     }
     expect(manifest.scenes['sat-room'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sat-room'].altDescription).toContain('No ballot is shown')
@@ -180,5 +185,7 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['sun-resume'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sun-resume'].altDescription).toContain('Sunday morning light')
     expect(manifest.scenes['sun-resume'].altDescription).toContain('No ballot, evidence, faction, verdict or conclusion is shown')
+    expect(manifest.scenes['sun-negligence'].altDescription).toContain('Exactly eleven other jurors')
+    expect(manifest.scenes['sun-negligence'].altDescription).toContain('No spectrum, midpoint, ballot, count, faction, verdict or conclusion is shown')
   })
 })
