@@ -13,7 +13,7 @@ const STATIC_ATTESTATION = 'STATIC_ASSETS_ONLY_DEPLOYED'
 const DELETION_ATTESTATION = 'OWNER_AUTHORIZED_SEPARATE_DELETION'
 const QUARANTINE_MS = 30 * 24 * 60 * 60 * 1_000
 const ROOM_DRAIN_MS = 2 * 60 * 60 * 1_000
-const TABLE_SQL = "SELECT name, sql FROM sqlite_schema WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name"
+const TABLE_SQL = "SELECT name, sql FROM sqlite_schema WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT GLOB '_cf_*' ORDER BY name"
 
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex')
 const quoteIdentifier = (name) => `"${name.replaceAll('"', '""')}"`
@@ -74,7 +74,7 @@ function queryRemote(sql, runWrangler) {
 }
 
 function exportRemote(output, runWrangler) {
-  runWrangler(['d1', 'export', DATABASE, '--remote', `--output=${output}`])
+  runWrangler(['d1', 'export', DATABASE, '--remote', '--skip-confirmation', `--output=${output}`])
 }
 
 function restoredRecord(sqlPath) {
