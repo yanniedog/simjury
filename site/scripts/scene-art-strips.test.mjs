@@ -33,19 +33,29 @@ before(async () => {
 
 after(() => rmSync(temporary, { recursive: true, force: true }))
 
-test('builds only fully commissioned Monday strips in legal order', () => {
+test('builds only fully commissioned session strips in legal order', () => {
   const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
   assert.deepEqual(manifest.grid, { columns: 2, rows: 1 })
   assert.deepEqual(manifest.toolchain, { sharp: '0.35.3', vips: sharp.versions.vips })
-  assert.equal(manifest.strips.length, 4)
-  assert.deepEqual([...new Set(manifest.strips.map((strip) => strip.sessionId))], ['cw-0001-monday'])
+  assert.equal(manifest.strips.length, 8)
+  assert.deepEqual([...new Set(manifest.strips.map((strip) => strip.sessionId))], [
+    'cw-0001-monday',
+    'cw-0001-tuesday',
+  ])
   assert.deepEqual(
     manifest.strips.flatMap((strip) => strip.sceneSlots.map((slot) => slot.sceneId)),
-    requirements.sessions[0].sceneIds,
+    requirements.sessions.slice(0, 2).flatMap((session) => session.sceneIds),
+  )
+  assert.deepEqual(
+    manifest.strips[3].sceneSlots.map(({ sceneId, cell }) => ({ sceneId, cell })),
+    [{ sceneId: 'mon-adjourn', cell: 0 }],
   )
   assert.deepEqual(
     manifest.strips.at(-1).sceneSlots.map(({ sceneId, cell }) => ({ sceneId, cell })),
-    [{ sceneId: 'mon-adjourn', cell: 0 }],
+    [
+      { sceneId: 'tue-mir-cross', cell: 0 },
+      { sceneId: 'tue-adjourn', cell: 1 },
+    ],
   )
   assert.deepEqual(
     manifest.strips[0].sceneSlots[0].compositionArt,
@@ -60,9 +70,13 @@ test('creates six exact-size renditions per strip and no scene for the neutral c
     desktop: { width: 2560, height: 720 },
   }
   const files = filesBelow(outputRoot)
-  assert.equal(files.length, 4 * 3 * 2)
+  assert.equal(files.length, 8 * 3 * 2)
   for (const strip of manifest.strips) {
-    assert.equal(strip.sceneSlots.length, strip.stripIndex === 3 ? 1 : 2)
+    const session = manifest.strips.filter((candidate) => candidate.sessionId === strip.sessionId)
+    const isLastStrip = strip.stripIndex === session.length - 1
+    const hasOddSceneCount = requirements.sessions
+      .find((candidate) => candidate.id === strip.sessionId).sceneIds.length % 2 === 1
+    assert.equal(strip.sceneSlots.length, isLastStrip && hasOddSceneCount ? 1 : 2)
     for (const composition of ['portrait', 'tablet', 'desktop']) {
       for (const format of ['avif', 'webp']) {
         const path = resolve(outputRoot, strip.sources[composition][format])
@@ -149,7 +163,7 @@ test('rejects non-cw-0001 case IDs before topology encoding', async () => {
 test('clears stale strip output before rebuilding', async () => {
   const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
   const staleRoot = join(temporary, 'stale-output')
-  const staleFile = join(staleRoot, 'strips', 'day-02', 'strip-01', 'desktop.webp')
+  const staleFile = join(staleRoot, 'strips', 'day-03', 'strip-01', 'desktop.webp')
   mkdirSync(dirname(staleFile), { recursive: true })
   writeFileSync(staleFile, 'stale')
   await buildSceneArtStrips({ requirements, mediaRoot, outputRoot: staleRoot })
