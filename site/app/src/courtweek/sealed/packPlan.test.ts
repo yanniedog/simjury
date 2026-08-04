@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { elevenMinutesCourtWeek } from '../content'
 import { courtWeekBootstrap } from './bootstrap'
-import { createCourtDayPacks } from './packPlan'
+import { assertNoStruckSubstanceAfterRuling, createCourtDayPacks } from './packPlan'
 
 describe('sealed Court Week partition', () => {
   const packs = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap)
@@ -41,6 +41,15 @@ describe('sealed Court Week partition', () => {
     expect(packedEvidence.map((item) => item.id)).not.toContain('struck-rumour')
     expect(new Set(packedEvidence.map((item) => item.id))).toEqual(new Set(admittedIds))
     expect(packedEvidence).toHaveLength(admittedIds.length)
+  })
+
+  it('scans serialized post-ruling packs for the substance of struck evidence', () => {
+    const futurePayload = JSON.stringify(packs.filter(({ ordinal }) => ordinal > 3))
+    expect(futurePayload).not.toMatch(/had done this before|people in the office said/i)
+
+    const contaminated = structuredClone(packs)
+    contaminated[3].session.scenes[0].cues[0].text += ' People in the office said she had done this before.'
+    expect(() => assertNoStruckSubstanceAfterRuling(contaminated)).toThrow(/struck evidence/)
   })
 
   it('carries every commissioned Monday source in Monday only', () => {
