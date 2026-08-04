@@ -125,6 +125,60 @@ test.describe('device-sized admitted exhibit viewer', () => {
   }
 })
 
+test('exhibit viewer survives 200% phone reflow without clipping controls', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Responsive geometry is exercised once.')
+  await page.setViewportSize({ width: 160, height: 284 })
+  await enterCourt(page)
+  await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
+  await page.getByRole('button', { name: /Route diagram/i }).click()
+  const viewer = page.getByRole('dialog', { name: /Harbour route diagram/i })
+  const close = viewer.getByRole('button', { name: 'Close exhibit' })
+  await expect(viewer).toBeVisible()
+  await expect(close).toBeVisible()
+  const geometry = await viewer.evaluate((element) => {
+    const viewerBox = element.getBoundingClientRect()
+    const closeBox = element.querySelector<HTMLElement>('[aria-label="Close exhibit"]')!.getBoundingClientRect()
+    return {
+      internalOverflow: element.scrollWidth - element.clientWidth,
+      closeInsideViewer: closeBox.left >= viewerBox.left && closeBox.right <= viewerBox.right,
+      closeInsideViewport: closeBox.left >= 0 && closeBox.right <= document.documentElement.clientWidth,
+    }
+  })
+  expect(geometry).toEqual({ internalOverflow: 0, closeInsideViewer: true, closeInsideViewport: true })
+})
+
+test('exhibit viewer traps focus and restores the exact inspection trigger', async ({ page }) => {
+  await enterCourt(page)
+  await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
+  const desk = page.getByRole('dialog', { name: 'Your working papers' })
+  const trigger = desk
+    .getByRole('button', { name: /Route diagram/i })
+  const originalTrigger = await trigger.elementHandle()
+  expect(originalTrigger).not.toBeNull()
+
+  await trigger.focus()
+  await page.keyboard.press('Enter')
+  const viewer = page.getByRole('dialog', { name: /Harbour route diagram/i })
+  const close = viewer.getByRole('button', { name: 'Close exhibit' })
+  const lastFocusable = viewer.getByText('Evidence foundation')
+  await expect(close).toBeFocused()
+  await expect(page.locator('.cw-desk')).toHaveAttribute('inert', '')
+
+  await page.keyboard.press('Shift+Tab')
+  await expect(lastFocusable).toBeFocused()
+  await page.keyboard.press('Tab')
+  await expect(close).toBeFocused()
+
+  await page.keyboard.press('Escape')
+  await expect(viewer).toHaveCount(0)
+  await expect(desk).not.toHaveAttribute('inert', '')
+  expect(await originalTrigger!.evaluate((element) => element.isConnected && document.activeElement === element)).toBe(true)
+
+  await page.keyboard.press('Enter')
+  await expect(viewer).toBeVisible()
+  await expect(close).toBeFocused()
+})
+
 test('scene safe regions reflow caption lanes through phone, tablet, desktop and 200% zoom', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'Responsive geometry is exercised once; cross-engine flow remains separate.')
   await page.setViewportSize({ width: 390, height: 844 })
