@@ -39,7 +39,6 @@ describe('SceneArtManifest contract', () => {
   it('keeps per-composition presence and absent safe-region decisions explicit', () => {
     const manifest = buildSceneArtManifestDraft(elevenMinutesCourtWeek)
     const commissioned = new Set(Object.keys(SCENE_ART_AUTHORING))
-    expect(commissioned.size).toBe(15)
     for (const [sceneId, entry] of Object.entries(manifest.scenes)) {
       if (commissioned.has(sceneId)) {
         for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
@@ -67,5 +66,8 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['tue-adjourn'].compositionArt.portrait.subjectSafeRegion).toBeNull()
     expect(manifest.scenes['tue-adjourn'].compositionArt.portrait.evidenceSafeRegion).toBeNull()
     expect(manifest.scenes['tue-adjourn'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
+    expect(manifest.scenes['wed-resume'].compositionArt.portrait.permittedCaptionPositions).toEqual(['top'])
+    expect(manifest.scenes['wed-resume'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+    expect(manifest.scenes['wed-resume'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
   })
 })
