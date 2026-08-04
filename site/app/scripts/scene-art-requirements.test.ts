@@ -63,17 +63,23 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['mon-adjourn'].compositionArt.portrait.subjectSafeRegion).toBeNull()
     expect(manifest.scenes['mon-arrival'].compositionArt.portrait.reviewStatus).toBe('compatibility-migration')
     expect(manifest.scenes['tue-recording'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
+
+    const evidenceNeutralReviewedScenes = [
+      'tue-adjourn',
+      'wed-resume',
+      'wed-pell-chief',
+      'wed-pell-cross',
+      'wed-vos',
+    ]
+    for (const sceneId of evidenceNeutralReviewedScenes) {
+      for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
+        expect(manifest.scenes[sceneId].compositionArt[composition].evidenceSafeRegion).toBeNull()
+        expect(manifest.scenes[sceneId].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
+      }
+    }
+
     expect(manifest.scenes['tue-adjourn'].compositionArt.portrait.subjectSafeRegion).toBeNull()
-    expect(manifest.scenes['tue-adjourn'].compositionArt.portrait.evidenceSafeRegion).toBeNull()
-    expect(manifest.scenes['tue-adjourn'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
     expect(manifest.scenes['wed-resume'].compositionArt.portrait.permittedCaptionPositions).toEqual(['top'])
     expect(manifest.scenes['wed-resume'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
-    expect(manifest.scenes['wed-resume'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
-    expect(manifest.scenes['wed-pell-chief'].compositionArt.portrait.evidenceSafeRegion).toBeNull()
-    expect(manifest.scenes['wed-pell-chief'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
-    expect(manifest.scenes['wed-pell-cross'].compositionArt.portrait.evidenceSafeRegion).toBeNull()
-    expect(manifest.scenes['wed-pell-cross'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
-    expect(manifest.scenes['wed-vos'].compositionArt.portrait.evidenceSafeRegion).toBeNull()
-    expect(manifest.scenes['wed-vos'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
   })
 })
