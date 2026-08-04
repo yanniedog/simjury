@@ -1,0 +1,85 @@
+{
+  "schema": "simjury.daily-docket-runtime-provenance/v1",
+  "derivation_source_commit": "c5f0af91947a48f32b1ac3ec76b7dd9b8692ff9b",
+  "case_revision_algorithm": "caseStorageId: case id + @ + 32-bit FNV-1a of JSON.stringify(parsed trial)",
+  "narration_shard_algorithm": "parseInt(clip id characters -8..-6, 16) modulo 32",
+  "release_catalog": {
+    "kokoro": { "tag_prefix": "narration-kokoro", "shard_count": 32 },
+    "scylla": { "tag_prefix": "narration-scylla", "shard_count": 32 }
+  },
+  "cases": [
+    {
+      "case_id": "dd-intro",
+      "source": "cases/dd-intro.json",
+      "source_sha256": "102b1404a40936200e74e7b4651013eb486bbacb848d5e84ba6673f6aaad6e67",
+      "case_storage_id": "dd-intro@4a62cfc0",
+      "narration": { "kokoro": { "clip_count": 135, "release_shards": "all" }, "scylla": { "clip_count": 135, "release_shards": "all" } }
+    },
+    {
+      "case_id": "dd-0006",
+      "source": "cases/dd-0006.json",
+      "source_sha256": "1e2fd689759997ca2ce56c5d0d58f2817114cae8e4f6f868fdca7868b57f9010",
+      "case_storage_id": "dd-0006@3ccfb85d",
+      "narration": { "kokoro": { "clip_count": 167, "release_shards": "all" }, "scylla": { "clip_count": 167, "release_shards": "all" } }
+    },
+    {
+      "case_id": "dd-0017",
+      "source": "cases/dd-0017.json",
+      "source_sha256": "f53d27d1715e4a2caae1293beb0bf951b6139d9cc913cf14f15e26bc6058f6eb",
+      "case_storage_id": "dd-0017@893c3db6",
+      "narration": { "kokoro": { "clip_count": 173, "release_shards": "all" }, "scylla": { "clip_count": 173, "release_shards": "all" } }
+    },
+    {
+      "case_id": "dd-0032",
+      "source": "cases/dd-0032/trial.json",
+      "source_sha256": "774786ff370caeef47c76a5fadedb825a24b7d10fc312c8e6cd1b1d980754aef",
+      "case_storage_id": "dd-0032@3211d98e",
+      "narration": {
+        "kokoro": { "clip_count": 152, "release_shards": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31] },
+        "scylla": { "clip_count": 152, "release_shards": "all" }
+      }
+    },
+    {
+      "case_id": "dd-0037",
+      "source": "cases/dd-0037/trial.json",
+      "source_sha256": "c1de2610151c87c304cdf7efab96efdd6ce4edbe3b66d40cea32c57b29a4697b",
+      "case_storage_id": "dd-0037@6df00be5",
+      "narration": { "kokoro": { "clip_count": 170, "release_shards": "all" }, "scylla": { "clip_count": 170, "release_shards": "all" } }
+    },
+    {
+      "case_id": "dd-0038",
+      "source": "cases/dd-0038/trial.json",
+      "source_sha256": "cb80d0278d70f6fdee64622136bb901d4631d0bf349f1188158cb49b866c0957",
+      "case_storage_id": "dd-0038@4ecfc36b",
+      "narration": { "kokoro": { "clip_count": 170, "release_shards": "all" }, "scylla": { "clip_count": 170, "release_shards": "all" } }
+    },
+    {
+      "case_id": "dd-0039",
+      "source": "cases/dd-0039/trial.json",
+      "source_sha256": "7318ded7793c43e719c0a7d28d6cb3bcdcb7cecfbf0758e7a4b53c64a073df2c",
+      "case_storage_id": "dd-0039@a6316871",
+      "narration": { "kokoro": { "clip_count": 163, "release_shards": "all" }, "scylla": { "clip_count": 163, "release_shards": "all" } }
+    },
+    {
+      "case_id": "dd-0040",
+      "source": "cases/dd-0040/trial.json",
+      "source_sha256": "913139b89f92ef0739d6a6f4e5b3d267071e0e53b1d68497f2ea97f4c3e4e843",
+      "case_storage_id": "dd-0040@f37369c6",
+      "narration": { "kokoro": { "clip_count": 165, "release_shards": "all" }, "scylla": { "clip_count": 165, "release_shards": "all" } }
+    },
+    {
+      "case_id": "dd-0041",
+      "source": "cases/dd-0041/trial.json",
+      "source_sha256": "e6e8b9e1eeb0f5d8e73313e028df3913c0b84a6efff1c126a4e101a09e8e9324",
+      "case_storage_id": "dd-0041@f93f26cd",
+      "narration": { "kokoro": { "clip_count": 175, "release_shards": "all" }, "scylla": { "clip_count": 175, "release_shards": "all" } }
+    },
+    {
+      "case_id": "dd-0042",
+      "source": "cases/dd-0042/trial.json",
+      "source_sha256": "d9a99a559f071ab9e350b9e7d7d7ae9c4df22fde2a7393c15854c01272c9a61e",
+      "case_storage_id": "dd-0042@14681dcb",
+      "narration": { "kokoro": { "clip_count": 163, "release_shards": "all" }, "scylla": { "clip_count": 163, "release_shards": "all" } }
+    }
+  ]
+}

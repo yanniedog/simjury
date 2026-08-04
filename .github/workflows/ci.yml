@@ -93,6 +93,10 @@ jobs:
         working-directory: site
         run: npm run check:art-strips
 
+      - name: Audit retired Daily Docket archive provenance
+        working-directory: site
+        run: npm run check:archive
+
       - name: Validate Court Week
         working-directory: site/app
         run: npm run validate:cases
