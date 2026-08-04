@@ -471,11 +471,24 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   ), [courtWeek.manifest.sessions, evidence, mediaPolicy, progress.completedSessionIds, progress.currentCueId])
 
   const interaction = position.scene.interaction
+  const persistedInteractionVote = interaction?.kind === 'seal-vote'
+    ? progress.provisionalVote
+    : interaction?.kind === 'second-vote'
+      ? progress.secondVote
+      : interaction?.kind === 'final-vote'
+        ? progress.finalVote
+        : undefined
+  const effectiveInteractionChoice = interactionChoice ?? persistedInteractionVote
+  const persistedBallotSealed = Boolean(
+    persistedInteractionVote && (interaction?.kind === 'seal-vote' || interaction?.kind === 'second-vote'),
+  )
+  const ballotSealed = interactionSealed || persistedBallotSealed
   const interactionElapsedSeconds = interactionOpen && interactionOpenedAt != null
     ? Math.max(0, (now() - interactionOpenedAt) / 1000)
     : 0
   const interactionMinimumMet = !interaction
     || isReplay
+    || ballotSealed
     || interactionElapsedSeconds >= interaction.minimumSeconds
   useEffect(() => {
     if (!interactionOpen || !interaction || isReplay || interactionMinimumMet) return
@@ -615,7 +628,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       }
       return
     }
-    const choice = interactionChoice
+    const choice = effectiveInteractionChoice
     const isReasoning = interaction.kind === 'reasoning'
     const contribution = isReasoning && !skipOptionalReasoning && selectedProposition
       ? assessReasoningContribution(courtWeek.deliberation, {
@@ -664,7 +677,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       patch.sealedAgreement = result.agreement
     }
 
-    if ((interaction.kind === 'seal-vote' || interaction.kind === 'second-vote') && !interactionSealed) {
+    if ((interaction.kind === 'seal-vote' || interaction.kind === 'second-vote') && !ballotSealed) {
       updateProgress((current) => ({ ...current, ...patch }))
       setInteractionSealed(true)
       return
@@ -741,14 +754,8 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
           <p>Replay mode. Your sealed contributions, ballots and returned result remain unchanged.</p>
         ) : isVote ? (
           <VerdictChoices
-            disabled={interactionSealed}
-            selected={(interactionChoice as Verdict | null) ?? (
-              interaction.kind === 'seal-vote'
-                ? progress.provisionalVote
-                : interaction.kind === 'second-vote'
-                  ? progress.secondVote
-                  : progress.finalVote
-            )}
+            disabled={ballotSealed}
+            selected={effectiveInteractionChoice as Verdict | undefined}
             onSelect={(verdict) => {
               setInteractionChoice(verdict)
             }}
@@ -834,7 +841,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
             ))}
           </dl>
         ) : null}
-        {position.scene.id === 'sun-second-ballot' && (interactionSealed || isReplay) && progress.secondVote ? (
+        {position.scene.id === 'sun-second-ballot' && (ballotSealed || isReplay) && progress.secondVote ? (
           <dl className="cw-ballot" aria-label="Anonymous second ballot">
             {(Object.entries(calculateSecondBallot(
               courtWeek.deliberation,
@@ -851,7 +858,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
           disabled={
             !isReplay && (
               !interactionMinimumMet ||
-              (!interactionChoice && (isVote || Boolean(interaction.options?.length))) ||
+              (!effectiveInteractionChoice && (isVote || Boolean(interaction.options?.length))) ||
               (interaction.kind === 'reasoning' && (
                 (recordsInfluence
                   ? !selectedProposition
@@ -865,7 +872,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
           {isReplay ? 'Continue replay'
             : !interactionMinimumMet
             ? `Continue in ${Math.max(1, Math.ceil(interaction.minimumSeconds - interactionElapsedSeconds))}s`
-            : interactionSealed
+            : ballotSealed
             ? (progress.secondBallotWasUnanimous ? 'Return to court' : 'Continue deliberation')
             : interaction.kind === 'final-vote' ? 'Seal final ballot'
               : isVote ? 'Seal ballot' : 'Continue proceedings'}
