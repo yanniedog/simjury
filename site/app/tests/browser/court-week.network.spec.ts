@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises'
 import { expect, test } from '@playwright/test'
 import { courtWeekBootstrap } from '../../src/courtweek/sealed/bootstrap'
 
-const baseUrl = 'http://127.0.0.1:43127/'
+const baseUrl = 'http://127.0.0.1:43130/jury/'
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 
 interface HarEntry {
@@ -24,18 +24,6 @@ function isForbiddenRuntime(url: URL): boolean {
   )
 }
 
-function isViteDevelopmentSocket(url: URL): boolean {
-  const base = new URL(baseUrl)
-  return (
-    url.protocol === 'ws:' &&
-    url.hostname === base.hostname &&
-    url.port === base.port &&
-    url.pathname === '/' &&
-    url.searchParams.has('token') &&
-    Array.from(url.searchParams.keys()).every((key) => key === 'token')
-  )
-}
-
 function isPinnedReleaseRequest(url: URL): boolean {
   return (
     url.hostname === 'github.com' &&
@@ -46,7 +34,6 @@ function isPinnedReleaseRequest(url: URL): boolean {
 }
 
 test('HAR proves the initial unlocked journey is static-only and fetches no future pack', async ({ browser }, testInfo) => {
-  test.skip(testInfo.project.name !== 'chromium', 'One browser records the deterministic static network contract.')
   const harPath = testInfo.outputPath('court-week-network.har')
   const context = await browser.newContext({
     serviceWorkers: 'block',
@@ -81,13 +68,10 @@ test('HAR proves the initial unlocked journey is static-only and fetches no futu
     return redirect.hostname === 'release-assets.githubusercontent.com' ? [redirect.href] : []
   }))
 
-  expect(webSockets.filter((address) => !isViteDevelopmentSocket(new URL(address)))).toEqual([])
-  expect(requests.filter(({ url }) => (
-    isForbiddenRuntime(url) && !isViteDevelopmentSocket(url)
-  ))).toEqual([])
+  expect(webSockets).toEqual([])
+  expect(requests.filter(({ url }) => isForbiddenRuntime(url))).toEqual([])
   expect(requests.filter(({ url }) => (
     url.origin !== localOrigin &&
-    !isViteDevelopmentSocket(url) &&
     !isPinnedReleaseRequest(url) &&
     !pinnedReleaseRedirects.has(url.href)
   ))).toEqual([])

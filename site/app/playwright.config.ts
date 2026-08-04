@@ -1,5 +1,10 @@
 import { defineConfig, devices } from '@playwright/test'
 
+const desktopIgnore = [
+  /court-week\.devices\.spec\.ts/u,
+  /court-week\.network\.spec\.ts/u,
+]
+
 export default defineConfig({
   testDir: './tests/browser',
   timeout: 45_000,
@@ -12,9 +17,9 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   projects: [
-    { name: 'chromium', testIgnore: /court-week\.devices\.spec\.ts/u, use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', testIgnore: /court-week\.devices\.spec\.ts/u, use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit', testIgnore: /court-week\.devices\.spec\.ts/u, use: { ...devices['Desktop Safari'] } },
+    { name: 'chromium', testIgnore: desktopIgnore, use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', testIgnore: desktopIgnore, use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', testIgnore: desktopIgnore, use: { ...devices['Desktop Safari'] } },
     { name: 'iphone-safari', testMatch: /court-week\.devices\.spec\.ts/u, use: { ...devices['iPhone 15'] } },
     { name: 'android-phone', testMatch: /court-week\.devices\.spec\.ts/u, use: { ...devices['Pixel 7a'] } },
     { name: 'ipad-safari', testMatch: /court-week\.devices\.spec\.ts/u, use: { ...devices['iPad (gen 11)'] } },
