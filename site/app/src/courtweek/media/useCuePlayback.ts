@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { SceneCue } from '../model/schema'
 
 export type PlaybackStatus =
@@ -73,13 +73,11 @@ export function useCuePlayback(
   )
   const [status, setStatus] = useState<PlaybackStatus>('idle')
   const [error, setError] = useState<string | null>(null)
-  const [, setActiveTurnId] = useState<string | null>(cue.turns?.[0]?.id ?? null)
-  const activeTurn = useRef<string | null>(cue.turns?.[0]?.id ?? null)
-  const activeCueId = useRef(cue.id)
-  if (activeCueId.current !== cue.id) {
-    activeCueId.current = cue.id
-    activeTurn.current = cue.turns?.[0]?.id ?? null
-  }
+  const firstTurnId = cue.turns?.[0]?.id ?? null
+  const [activeTurnState, setActiveTurnState] = useState({ cueId: cue.id, turnId: firstTurnId })
+  const activeTurnId = activeTurnState.cueId === cue.id ? activeTurnState.turnId : firstTurnId
+  const activeTurn = useRef<string | null>(activeTurnId)
+  useLayoutEffect(() => { activeTurn.current = activeTurnId }, [activeTurnId])
   const failedAttempts = useRef(0)
   const failureHandling = useRef(false)
   const recordedAttemptActive = useRef(false)
@@ -94,8 +92,10 @@ export function useCuePlayback(
 
   const updateActiveTurn = useCallback((id: string | null) => {
     activeTurn.current = id
-    setActiveTurnId(id)
-  }, [])
+    setActiveTurnState((current) => current.cueId === cue.id && current.turnId === id
+      ? current
+      : { cueId: cue.id, turnId: id })
+  }, [cue.id])
 
   const resumeBoundary = useCallback(() => (
     cue.audio?.turns?.find((turn) => turn.id === activeTurn.current)?.startSeconds
@@ -386,5 +386,5 @@ export function useCuePlayback(
     await play()
   }, [audio, cancelSpeech, cue.audio?.startSeconds, cue.turns, play, updateActiveTurn])
 
-  return { status, error, activeTurnId: activeTurn.current, play, pause, repeat }
+  return { status, error, activeTurnId, play, pause, repeat }
 }
