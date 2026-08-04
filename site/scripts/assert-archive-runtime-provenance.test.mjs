@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import {
@@ -43,5 +44,10 @@ describe('retired Daily Docket runtime provenance', () => {
     assert.ok(validateRuntimeProvenance(snapshot).includes(
       'Archived trial manifest entry missing: dd-intro',
     ))
+  })
+
+  it('runs the archive audit in the required validate workflow', () => {
+    const workflow = readFileSync(fileURLToPath(new URL('../../.github/workflows/ci.yml', import.meta.url)), 'utf8')
+    assert.match(workflow, /name: Audit retired Daily Docket archive provenance[\s\S]*?run: npm run check:archive/u)
   })
 })
