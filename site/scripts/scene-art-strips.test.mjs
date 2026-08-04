@@ -64,6 +64,7 @@ test('builds only fully commissioned session strips in legal order', () => {
 })
 
 test('creates six exact-size renditions per strip and no scene for the neutral cell', async () => {
+  const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
   const expected = {
     portrait: { width: 1440, height: 1280 },
     tablet: { width: 2048, height: 768 },
