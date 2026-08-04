@@ -61,7 +61,7 @@ function matchedManifests() {
     release_tag: releaseTag,
     court_week_revision: revision,
     review_content_digest: `sha256:${'a'.repeat(64)}`,
-    art_readiness: { release_ready: true, scene_count: 55, ready_scene_count: 55, gap_count: 0 },
+    art_readiness: { release_ready: true, crop_review_complete: true, scene_count: 55, ready_scene_count: 55, gap_count: 0 },
     asset_count: assets.length + 1,
     media_bytes: assets.reduce((sum, asset) => sum + asset.bytes, 0),
     assets,
@@ -147,9 +147,10 @@ test('rejects stale reviewed-source identity and incomplete signoffs', async (t)
   })
 })
 
-test('rejects an immutable Release without 55/55 zero-gap art readiness', async (t) => {
+test('rejects an immutable Release without complete crop-reviewed art readiness', async (t) => {
   for (const [name, mutate] of [
     ['release_ready false', (readiness) => { readiness.release_ready = false }],
+    ['crop review incomplete', (readiness) => { readiness.crop_review_complete = false }],
     ['scene count incomplete', (readiness) => { readiness.scene_count = 54 }],
     ['ready count incomplete', (readiness) => { readiness.ready_scene_count = 54 }],
     ['remaining gap', (readiness) => { readiness.gap_count = 1 }],

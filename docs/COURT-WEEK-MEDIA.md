@@ -146,7 +146,8 @@ Missing commissioned art remains explicit: the authoring map does not invent
 safe regions and the build never copies a generic image into 55 paths. A manual
 workflow run with `publish: false` succeeds after the other media gates and
 uploads the complete `art-readiness-report.json`. A run with `publish: true`
-fails before the publish job whenever that report is not fully release-ready.
+fails before the publish job unless all 55 scenes are gap-free and every
+portrait, tablet and desktop composition is explicitly `crop-reviewed`.
 
 ### Two-scene Release strips
 
