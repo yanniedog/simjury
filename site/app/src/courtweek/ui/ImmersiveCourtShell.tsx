@@ -19,6 +19,7 @@ export interface ImmersiveCourtShellProps {
   cue: SceneCue
   releaseBase: string
   accessMode: AccessMode
+  dataSaver?: boolean
   playbackStatus: PlaybackStatus
   playbackError: string | null
   progressLabel: string
@@ -65,6 +66,7 @@ export function ImmersiveCourtShell({
   cue,
   releaseBase,
   accessMode,
+  dataSaver = false,
   playbackStatus,
   playbackError,
   progressLabel,
@@ -197,6 +199,8 @@ export function ImmersiveCourtShell({
         ? JSON.stringify(scene.visual.evidenceSafeRegion)
         : undefined}
       data-access-mode={accessMode}
+      data-data-saver={dataSaver}
+      data-ambience={dataSaver ? 'off' : 'available'}
       data-complete-captions={readingModeActive}
       data-caption-runtime-state={captionRuntime.mode}
       data-caption-runtime-reason={captionRuntime.reason ?? undefined}
