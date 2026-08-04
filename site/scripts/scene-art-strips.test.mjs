@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { after, before, test } from 'node:test'
 import sharp from 'sharp'
 import { buildSceneArtStrips } from './scene-art-strips.mjs'
@@ -87,4 +87,98 @@ test('rejects a duplicated or cross-session scene mapping before encoding', asyn
     buildSceneArtStrips({ requirements, mediaRoot, outputRoot: join(temporary, 'invalid') }),
     /map each of the 55 scenes exactly once/,
   )
+})
+
+test('rejects unknown session scene IDs that are absent from requirements.scenes', async () => {
+  const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
+  requirements.sessions[0].sceneIds[0] = 'mon-unknown-scene'
+  await assert.rejects(
+    buildSceneArtStrips({ requirements, mediaRoot, outputRoot: join(temporary, 'unknown-scene') }),
+    /must match requirements\.scenes exactly/,
+  )
+})
+
+test('rejects output roots that contain the reviewed source tree', async () => {
+  const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
+  await assert.rejects(
+    buildSceneArtStrips({
+      requirements,
+      mediaRoot,
+      outputRoot: resolve(mediaRoot, '..'),
+    }),
+    /disjoint from the reviewed conventional-art source root/,
+  )
+})
+
+test('rejects swapped session topology even when scene IDs stay unique', async () => {
+  const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
+  const monday = requirements.sessions[0]
+  requirements.sessions[0] = requirements.sessions[1]
+  requirements.sessions[1] = monday
+  await assert.rejects(
+    buildSceneArtStrips({ requirements, mediaRoot, outputRoot: join(temporary, 'swapped') }),
+    /session topology mismatch/,
+  )
+})
+
+test('rejects manifest-level readiness failures before encoding ready scenes', async () => {
+  const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
+  requirements.schema = 'foreign.schema/v1'
+  await assert.rejects(
+    buildSceneArtStrips({ requirements, mediaRoot, outputRoot: join(temporary, 'foreign') }),
+    /manifest-level readiness failure/,
+  )
+})
+
+test('rejects non-cw-0001 case IDs before topology encoding', async () => {
+  const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
+  requirements.caseId = 'foreign-case'
+  await assert.rejects(
+    buildSceneArtStrips({ requirements, mediaRoot, outputRoot: join(temporary, 'foreign-case') }),
+    /locked to caseId cw-0001/,
+  )
+})
+
+test('clears stale strip output before rebuilding', async () => {
+  const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
+  const staleRoot = join(temporary, 'stale-output')
+  const staleFile = join(staleRoot, 'strips', 'day-02', 'strip-01', 'desktop.webp')
+  mkdirSync(dirname(staleFile), { recursive: true })
+  writeFileSync(staleFile, 'stale')
+  await buildSceneArtStrips({ requirements, mediaRoot, outputRoot: staleRoot })
+  assert.equal(existsSync(staleFile), false)
+})
+
+test('normalizes oversized commissioned art to tile dimensions before compositing', async () => {
+  const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
+  const oversizedRoot = join(temporary, 'oversized-source')
+  const oversizedOutput = join(temporary, 'oversized-output')
+  mkdirSync(join(oversizedRoot, 'scenes', 'mon-arrival'), { recursive: true })
+  for (const sceneId of requirements.sessions[0].sceneIds) {
+    for (const composition of ['portrait', 'tablet', 'desktop']) {
+      for (const format of ['avif', 'webp']) {
+        const relative = requirements.scenes[sceneId].sources[composition][format]
+        const source = resolve(mediaRoot, relative)
+        const target = join(oversizedRoot, relative)
+        mkdirSync(dirname(target), { recursive: true })
+        if (sceneId === 'mon-arrival' && composition === 'portrait') {
+          const tile = { width: 720, height: 1280 }
+          const pipeline = sharp(source).resize(tile.width * 2, tile.height * 2, { fit: 'fill' })
+          if (format === 'avif') await pipeline.avif().toFile(target)
+          else await pipeline.webp().toFile(target)
+        } else {
+          copyFileSync(source, target)
+        }
+      }
+    }
+  }
+  const rebuilt = await buildSceneArtStrips({
+    requirements,
+    mediaRoot: oversizedRoot,
+    outputRoot: oversizedOutput,
+  })
+  assert.equal(rebuilt.strips.length, 4)
+  const firstPortrait = resolve(oversizedOutput, rebuilt.strips[0].sources.portrait.webp)
+  const metadata = await sharp(firstPortrait).metadata()
+  assert.deepEqual({ width: metadata.width, height: metadata.height }, { width: 1440, height: 1280 })
 })

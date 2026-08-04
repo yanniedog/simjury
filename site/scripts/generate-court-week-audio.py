@@ -30,9 +30,10 @@ RETRY_TRUE_PEAK_TARGET = -1.25
 RELEASE_MIN_LUFS = -20.0
 RELEASE_MAX_LUFS = -16.0
 RELEASE_MAX_LRA = 12.0
-# Two dB permits useful correction while leaving three passes to absorb codec overshoot.
-MAX_LUFS_ADJUSTMENT = 2.0
 MAX_CODEC_ENCODE_ATTEMPTS = 3
+# Keep the per-pass LUFS correction bound to the remaining retry budget so a
+# misconfigured attempt count cannot outrun the adjustment ceiling.
+MAX_LUFS_ADJUSTMENT = float(MAX_CODEC_ENCODE_ATTEMPTS - 1)
 
 
 def run(command: list[str], *, capture: bool = False) -> subprocess.CompletedProcess[str]:
@@ -136,6 +137,10 @@ def release_loudness_ready(measured: dict[str, float]) -> bool:
 
 
 def encode(source_wav: Path, target: Path, codec: str) -> None:
+    if MAX_CODEC_ENCODE_ATTEMPTS < 1:
+        raise AssertionError(
+            f"MAX_CODEC_ENCODE_ATTEMPTS must be >= 1 (got {MAX_CODEC_ENCODE_ATTEMPTS})"
+        )
     integrated_target = TARGET_LUFS
     normalization_target = TARGET_TRUE_PEAK
     measured: dict[str, float] | None = None
@@ -162,8 +167,11 @@ def encode(source_wav: Path, target: Path, codec: str) -> None:
         integrated_target = next_integrated
         normalization_target = next_target
 
-    if measured is None:  # Defensive if the attempt constant is ever misconfigured.
-        raise RuntimeError("Codec encode loop completed without measuring an output")
+    if measured is None:
+        raise AssertionError(
+            "Codec encode loop completed without measuring an output "
+            f"(MAX_CODEC_ENCODE_ATTEMPTS={MAX_CODEC_ENCODE_ATTEMPTS})"
+        )
     raise RuntimeError(
         f"{target} is still outside the {RELEASE_MIN_LUFS:.1f} to {RELEASE_MAX_LUFS:.1f} LUFS, "
         f"{RELEASE_TRUE_PEAK_CEILING:.1f} dBTP, {RELEASE_MAX_LRA:.1f} LU release contract "
