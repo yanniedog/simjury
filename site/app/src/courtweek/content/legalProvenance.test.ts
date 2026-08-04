@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { elevenMinutesCourtWeek } from './elevenMinutes'
+import { courtWeekBootstrap } from '../sealed/bootstrap'
+import { createCourtDayPacks } from '../sealed/packPlan'
 
 function cueText(cueId: string): string {
   for (const session of elevenMinutesCourtWeek.manifest.sessions) {
@@ -12,6 +14,10 @@ function cueText(cueId: string): string {
 }
 
 describe('Eleven Minutes legal provenance', () => {
+  const orderedCues = elevenMinutesCourtWeek.manifest.sessions.flatMap(({ scenes }) =>
+    scenes.flatMap(({ cues }) => cues),
+  )
+
   it('does not reveal legal submissions made outside the jury\'s presence', () => {
     const jurorWaiting = `${cueText('fri-submissions-1')} ${cueText('fri-submissions-2')}`
     expect(jurorWaiting).toMatch(/do not speculate/i)
@@ -34,5 +40,29 @@ describe('Eleven Minutes legal provenance', () => {
     expect(cueText('sat-causation-2')).toMatch(/neither invent a breakdown nor assume an interruption-free journey was proved/i)
     expect(elevenMinutesCourtWeek.deliberation.outcomePaths.find(({ verdict }) => verdict === 'murder')?.lawfulRationale)
       .not.toMatch(/uneventful launch route/i)
+  })
+
+  it('rules on the review evidence before Vale answers and formally admits the document', () => {
+    const objectionIndex = orderedCues.findIndex(({ id }) => id === 'wed-def-objection')
+    const answerIndex = orderedCues.findIndex(({ id }) => id === 'wed-vale-chief-1')
+    const admittedReview = orderedCues[answerIndex]
+
+    expect(objectionIndex).toBeGreaterThanOrEqual(0)
+    expect(answerIndex).toBeGreaterThan(objectionIndex)
+    expect(admittedReview).toMatchObject({
+      event: 'exhibit-admitted',
+      admissionStatus: 'final',
+      evidenceIds: ['ex-review'],
+    })
+  })
+
+  it('does not ship the warning document before its Thursday admission', () => {
+    const packs = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap)
+    const warningPack = packs.find(({ evidence }) => evidence.some(({ id }) => id === 'ex-warning'))
+
+    expect(warningPack?.ordinal).toBe(4)
+    expect(warningPack?.session.scenes.flatMap(({ cues }) => cues).some(
+      ({ event, evidenceIds }) => event === 'exhibit-admitted' && evidenceIds.includes('ex-warning'),
+    )).toBe(true)
   })
 })
