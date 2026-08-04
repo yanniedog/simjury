@@ -232,12 +232,24 @@ test('Tuesday captions avoid line overflow with only enumerated safe-layout fall
     { viewport: 'tablet', width: 820, height: 1180 },
     { viewport: 'desktop', width: 1280, height: 800 },
   ]
-  const subjectScenes = tuesday.scenes.filter((scene) => scene.id !== 'tue-adjourn')
+  // Exact pairs measured after the crop review: runtime fallback is allowed only
+  // when the probe below still reports no overflow or speaker/control collision.
+  // Re-measure every viewport before changing this independent regression baseline.
   const intentionalRuntimeFallbacks = new Set([
-    ...subjectScenes.map((scene) => `phonePortrait:${scene.id}`),
-    ...tuesday.scenes.map((scene) => `phoneLandscape:${scene.id}`),
-    ...tuesday.scenes.filter((scene) => scene.id !== 'tue-adjourn').map((scene) => `tablet:${scene.id}`),
-    ...tuesday.scenes.filter((scene) => scene.id !== 'tue-adjourn').map((scene) => `desktop:${scene.id}`),
+    'desktop:tue-dorn-chief',
+    'desktop:tue-mir-chief',
+    'desktop:tue-recording',
+    'desktop:tue-resume',
+    'phoneLandscape:tue-adjourn',
+    'phoneLandscape:tue-dorn-cross',
+    'phoneLandscape:tue-mir-cross',
+    'phoneLandscape:tue-recording',
+    'phonePortrait:tue-dorn-chief',
+    'phonePortrait:tue-dorn-re',
+    'phonePortrait:tue-mir-chief',
+    'phonePortrait:tue-recording',
+    'phonePortrait:tue-resume',
+    'tablet:tue-recording',
   ])
   const observedFallbacks = new Set<string>()
   const measuredFailures: string[] = []
