@@ -40,6 +40,8 @@ function canSpeak(): boolean {
   )
 }
 
+const RECORDED_AUDIO_TIMEOUT_MS = 5_000
+
 function availableSpeechVoice(): SpeechSynthesisVoice | null {
   if (!canSpeak() || typeof window.speechSynthesis.getVoices !== 'function') return null
   const voices = window.speechSynthesis.getVoices()
@@ -65,6 +67,11 @@ export function useCuePlayback(
   const [status, setStatus] = useState<PlaybackStatus>('idle')
   const [error, setError] = useState<string | null>(null)
   const failedAttempts = useRef(0)
+  const failureHandling = useRef(false)
+  const recordedAttemptActive = useRef(false)
+  const playbackSuppressed = useRef(false)
+  const attemptGeneration = useRef(0)
+  const playbackTimeout = useRef<number | null>(null)
   const speechActive = useRef(false)
   const rangeEnded = useRef(false)
   const endedCallback = useRef(onEnded)
@@ -73,6 +80,11 @@ export function useCuePlayback(
   const cancelSpeech = useCallback(() => {
     if (canSpeak()) window.speechSynthesis.cancel()
     speechActive.current = false
+  }, [])
+
+  const clearPlaybackTimeout = useCallback(() => {
+    if (playbackTimeout.current !== null) window.clearTimeout(playbackTimeout.current)
+    playbackTimeout.current = null
   }, [])
 
   const speakFallback = useCallback(() => {
@@ -102,8 +114,62 @@ export function useCuePlayback(
     window.speechSynthesis.speak(utterance)
   }, [cue.text])
 
+  const attemptRecordedPlayback = useCallback(async (): Promise<boolean> => {
+    if (!audio || recordedAttemptActive.current) return false
+    recordedAttemptActive.current = true
+    const generation = ++attemptGeneration.current
+    clearPlaybackTimeout()
+    setStatus('loading')
+    try {
+      await Promise.race([
+        audio.play(),
+        new Promise<never>((_, reject) => {
+          playbackTimeout.current = window.setTimeout(
+            () => reject(new Error('Recorded audio timed out.')),
+            RECORDED_AUDIO_TIMEOUT_MS,
+          )
+        }),
+      ])
+      return generation === attemptGeneration.current
+    } catch {
+      return false
+    } finally {
+      if (generation === attemptGeneration.current) {
+        recordedAttemptActive.current = false
+        clearPlaybackTimeout()
+      }
+    }
+  }, [audio, clearPlaybackTimeout])
+
+  const recoverRecordedPlayback = useCallback(async () => {
+    if (failureHandling.current || playbackSuppressed.current || speechActive.current) return
+    failureHandling.current = true
+    attemptGeneration.current += 1
+    recordedAttemptActive.current = false
+    clearPlaybackTimeout()
+    try {
+      if (audio?.src && failedAttempts.current < 1) {
+        failedAttempts.current += 1
+        audio.load()
+        if (await attemptRecordedPlayback()) return
+        if (playbackSuppressed.current) return
+      }
+      audio?.pause()
+      playbackSuppressed.current = false
+      setError('Recorded audio could not be loaded. Using this device instead.')
+      speakFallback()
+    } finally {
+      failureHandling.current = false
+    }
+  }, [attemptRecordedPlayback, audio, clearPlaybackTimeout, speakFallback])
+
   useEffect(() => {
     failedAttempts.current = 0
+    failureHandling.current = false
+    recordedAttemptActive.current = false
+    playbackSuppressed.current = false
+    attemptGeneration.current += 1
+    clearPlaybackTimeout()
     rangeEnded.current = false
     setStatus('idle')
     setError(null)
@@ -136,20 +202,17 @@ export function useCuePlayback(
         finishRange()
       }
     }
-    const handleError = () => {
-      if (speechActive.current) return
-      if (failedAttempts.current < 1 && audio.src) {
-        failedAttempts.current += 1
-        audio.load()
-        void audio.play().catch(speakFallback)
-        return
-      }
-      setError('Recorded audio could not be loaded. Using this device instead.')
-      speakFallback()
+    const handleError = () => { void recoverRecordedPlayback() }
+    const handlePlaying = () => {
+      clearPlaybackTimeout()
+      setStatus('playing')
     }
-    const handlePlaying = () => setStatus('playing')
     const handlePause = () => {
       if (!audio.ended && !rangeEnded.current) {
+        playbackSuppressed.current = true
+        attemptGeneration.current += 1
+        recordedAttemptActive.current = false
+        clearPlaybackTimeout()
         audio.currentTime = cue.audio?.startSeconds ?? 0
         setStatus('paused')
       }
@@ -162,6 +225,10 @@ export function useCuePlayback(
     audio.addEventListener('pause', handlePause)
     return () => {
       audio.pause()
+      attemptGeneration.current += 1
+      recordedAttemptActive.current = false
+      playbackSuppressed.current = true
+      clearPlaybackTimeout()
       audio.removeEventListener('ended', handleEnded)
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata)
       audio.removeEventListener('timeupdate', handleTimeUpdate)
@@ -170,7 +237,7 @@ export function useCuePlayback(
       audio.removeEventListener('pause', handlePause)
       cancelSpeech()
     }
-  }, [audio, cancelSpeech, cue, speakFallback])
+  }, [audio, cancelSpeech, clearPlaybackTimeout, cue, recoverRecordedPlayback])
 
   useEffect(() => {
     if (!preloader) return
@@ -213,13 +280,14 @@ export function useCuePlayback(
   }, [audio, cue.audio?.startSeconds])
 
   const play = useCallback(async () => {
+    if (recordedAttemptActive.current || failureHandling.current) return
+    playbackSuppressed.current = false
     cancelSpeech()
     const source = audio ? supportedAudioSource(audio, cue) : null
     if (!audio || !source) {
       speakFallback()
       return
     }
-    setStatus('loading')
     const start = cue.audio?.startSeconds ?? 0
     if (
       audio.currentTime < start ||
@@ -228,12 +296,8 @@ export function useCuePlayback(
       audio.currentTime = start
       rangeEnded.current = false
     }
-    try {
-      await audio.play()
-    } catch {
-      speakFallback()
-    }
-  }, [audio, cancelSpeech, cue, speakFallback])
+    if (!await attemptRecordedPlayback()) await recoverRecordedPlayback()
+  }, [attemptRecordedPlayback, audio, cancelSpeech, cue, recoverRecordedPlayback, speakFallback])
 
   const pause = useCallback(() => {
     audio?.pause()
