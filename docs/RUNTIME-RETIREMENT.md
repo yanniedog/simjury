@@ -17,48 +17,38 @@ former live-room and email-waitlist data. CI must never perform these steps.
   Cloudflare secret store until final data-retention approval; it need not be
   readable for the export.
 
-## 1. Export and verify D1 before static-only deployment
+## 1. Export and verify D1 before unbinding
 
-Authenticate Wrangler interactively on the operator workstation. Choose an
-encrypted directory outside the repository, then record the schema, logical row
-counts and database export:
+Install exact `site` dependencies, authenticate Wrangler interactively, and
+create an empty encrypted directory outside Git/cloud-sync. Do not pass a token.
+Record the real room-disable instant; after the two-hour TTL run:
 
 ```powershell
-$retirementExportDir = '<encrypted-export-directory>'
-New-Item -ItemType Directory -Path $retirementExportDir -Force
-
-wrangler d1 execute simjury-waitlist --remote --json `
-  --command="SELECT COUNT(*) AS rows, SUM(unsubscribed_at IS NOT NULL) AS unsubscribed FROM waitlist" `
-  | Set-Content -Encoding utf8 (Join-Path $retirementExportDir 'row-counts.json')
-
-wrangler d1 export simjury-waitlist --remote --no-data `
-  --output (Join-Path $retirementExportDir 'schema.sql')
-wrangler d1 export simjury-waitlist --remote `
-  --output (Join-Path $retirementExportDir 'waitlist-export.sql')
-
-Get-FileHash -Algorithm SHA256 `
-  (Join-Path $retirementExportDir 'schema.sql'), `
-  (Join-Path $retirementExportDir 'waitlist-export.sql'), `
-  (Join-Path $retirementExportDir 'row-counts.json')
+npm --prefix site run runtime:retirement -- export `
+  --destination 'X:\encrypted\simjury-retirement' `
+  --rooms-disabled-at '2026-08-04T08:30:00Z' `
+  --confirm-encrypted ENCRYPTED_AND_OPERATOR_CONTROLLED
 ```
 
-Open the export locally and verify that the `waitlist` table exists and the
-exported `INSERT` count agrees with `row-counts.json`. Record the three hashes in
-the owner's private retention log—not in GitHub.
+The command rejects relative, symlinked, in-repository or non-empty paths. It
+uses only D1 `SELECT`/export, records every non-system table/schema/count,
+restores to temporary SQLite, runs `PRAGMA integrity_check`, requires exact
+agreement, hashes every artifact and atomically writes `verification.json`.
+It removes the temporary database and prints no credentials or row contents.
+Record the receipt hash/counts privately. Unless status is
+`verified_for_unbinding`, do not unbind or delete.
 
-If export, count or checksum verification fails, stop. Do not deploy the
-binding-removal change and do not delete anything remotely.
-
-## 2. Drain live rooms
+## 2. Drain live rooms and deploy static-only
 
 Before deploying static-only configuration:
 
 1. ensure the old UI no longer offers room creation or waitlist submission;
 2. wait at least two hours after that version is live;
-3. confirm no supported application route calls `/api/live/*`, `/api/waitlist`
-   or `/discord/interactions`; and
-4. deploy the static-only configuration through the normal protected `main`
-   workflow.
+3. confirm no supported route calls `/api/live/*`, `/api/waitlist` or
+   `/discord/interactions`;
+4. re-run `runtime:retirement -- verify --package <absolute-encrypted-path>`;
+   and
+5. deploy the static-only configuration through protected `main`.
 
 The repository intentionally contains no automated Durable Object deletion
 migration. Creating one would be an irreversible data action requiring a new
@@ -66,19 +56,31 @@ explicit owner decision and a current Cloudflare-state audit.
 
 ## 3. Thirty-day D1 quarantine
 
-After static-only deployment, leave `simjury-waitlist` unbound and do not write
-to it. Record the deployment time and quarantine end in the private retention
-log. During the 30 days:
+After static-only deployment, record the exact deployed commit. This re-verifies
+the export and starts quarantine; it does not change Cloudflare:
 
-- retain the encrypted verified export;
-- do not attach D1 to another Worker;
-- honour any deletion/unsubscribe request against both retained locations; and
-- verify production continues to make zero calls to the retired routes.
+```powershell
+npm --prefix site run runtime:retirement -- record-unbound `
+  --package 'X:\encrypted\simjury-retirement' `
+  --deployment-commit '<full-40-character-main-sha>' `
+  --confirm-static STATIC_ASSETS_ONLY_DEPLOYED
+```
 
-At the end of quarantine, review legal/operational retention needs and obtain an
-explicit deletion decision. Only then may an operator use Cloudflare's current
-documented deletion command or dashboard. Record the remote deletion result and
-the chosen encrypted-export retention/destruction result in the private log.
+Record the returned times privately. Keep D1 unbound/read-only and the verified
+export encrypted; honour deletion requests in both locations. `quarantine-status
+--package <absolute-encrypted-path>` re-verifies the package and remains
+`complete: false` for 30 days. Then obtain a new explicit owner decision:
+
+```powershell
+npm --prefix site run runtime:retirement -- authorize-deletion `
+  --package 'X:\encrypted\simjury-retirement' `
+  --authorization-reference '<private-log-reference>' `
+  --confirm-deletion OWNER_AUTHORIZED_SEPARATE_DELETION
+```
+
+This atomically writes a separate receipt and **never deletes anything**. A
+separately authorised operator action using current Cloudflare documentation is
+still required; record its result and the export disposition privately.
 
 ## 4. Rollback boundary
 
