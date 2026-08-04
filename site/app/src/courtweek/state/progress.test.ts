@@ -158,7 +158,7 @@ describe('weekly progress', () => {
       returnedVerdict: 'not-guilty',
       returnedAgreement: 'majority',
       reasoningContributions: [{
-        propositionId: 'prop-causation-survival-challenge',
+        propositionId: 'prop-causation-window-doubt',
         sceneId: 'sat-causation',
         legalQuestion: 'Did that omission substantially and operatively cause Ilan Saye’s death beyond reasonable doubt?',
         evidenceId: 'ex-survival',
@@ -192,7 +192,7 @@ describe('weekly progress', () => {
 
   it('rejects forged or duplicated reasoning outside the authored journey', () => {
     const contribution = {
-      propositionId: 'prop-causation-survival-challenge',
+      propositionId: 'prop-causation-window-doubt',
       sceneId: 'sat-room',
       legalQuestion: 'Did that omission substantially and operatively cause Ilan Saye’s death beyond reasonable doubt?',
       evidenceId: 'ex-survival',

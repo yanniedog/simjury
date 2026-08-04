@@ -524,7 +524,8 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     : -1
   const improperArguments = courtWeek.deliberation.improperArguments ?? []
   const selectedImproperArgument = improperArguments[selectedImproperIndex] ?? null
-  const reviewedPropositions = courtWeek.deliberation.propositions ?? []
+  const reviewedPropositions = (courtWeek.deliberation.propositions ?? [])
+    .filter(({ sceneIds }) => sceneIds.includes(position.scene.id))
   const influenceStage = contributionStage(position.scene.id)
   const recordsInfluence = influenceStage !== null
   const reasoningQuestions = recordsInfluence
@@ -533,19 +534,19 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const reasoningEvidenceIds = new Set(recordsInfluence
     ? reviewedPropositions
         .filter(({ legalQuestion }) => legalQuestion === reasoningQuestion)
-        .map(({ evidenceId: propositionEvidenceId }) => propositionEvidenceId)
+        .flatMap(({ evidenceIds }) => evidenceIds)
     : courtWeek.trial.evidence.filter(({ status }) => status === 'admitted').map(({ id }) => id))
   const reasoningMoves = new Set(recordsInfluence
     ? reviewedPropositions
-        .filter(({ legalQuestion, evidenceId: propositionEvidenceId }) => (
-          legalQuestion === reasoningQuestion && propositionEvidenceId === reasoningEvidence
+        .filter(({ legalQuestion, evidenceIds }) => (
+          legalQuestion === reasoningQuestion && evidenceIds.includes(reasoningEvidence)
         ))
-        .map(({ move }) => move)
+        .flatMap(({ moves }) => moves)
     : interaction?.options ?? [])
   const selectedProposition = reviewedPropositions.find((proposition) => (
     proposition.legalQuestion === reasoningQuestion &&
-    proposition.evidenceId === reasoningEvidence &&
-    proposition.move === interactionChoice
+    proposition.evidenceIds.includes(reasoningEvidence) &&
+    proposition.moves.includes(interactionChoice as ReasoningMove)
   ))
   const finishInteraction = (skipOptionalReasoning = false) => {
     if (!interaction) return
@@ -578,8 +579,8 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
           propositionId: selectedProposition.id,
           sceneId: position.scene.id,
           legalQuestion: selectedProposition.legalQuestion,
-          evidenceId: selectedProposition.evidenceId,
-          move: selectedProposition.move,
+          evidenceId: reasoningEvidence,
+          move: interactionChoice as ReasoningMove,
           recordedAt: new Date(now()).toISOString(),
           improperClaim: selectedImproperArgument?.claim,
         }).contribution

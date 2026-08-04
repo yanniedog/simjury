@@ -83,9 +83,10 @@ function validPropositions(
     const proposition = pack.propositions.find(({ id }) => id === item.propositionId)
     if (
       !proposition ||
+      !proposition.sceneIds.includes(item.sceneId) ||
       proposition.legalQuestion !== item.legalQuestion ||
-      proposition.evidenceId !== item.evidenceId ||
-      proposition.move !== item.move
+      !proposition.evidenceIds.includes(item.evidenceId) ||
+      !proposition.moves.includes(item.move)
     ) return []
     countedScenes.add(item.sceneId)
     return [proposition]
@@ -252,9 +253,10 @@ export function assessReasoningContribution(
   const proposition = pack.propositions.find(({ id }) => id === lawfulDraft.propositionId)
   if (
     !proposition ||
+    !proposition.sceneIds.includes(lawfulDraft.sceneId) ||
     proposition.legalQuestion !== lawfulDraft.legalQuestion ||
-    proposition.evidenceId !== lawfulDraft.evidenceId ||
-    proposition.move !== lawfulDraft.move
+    !proposition.evidenceIds.includes(lawfulDraft.evidenceId) ||
+    !proposition.moves.includes(lawfulDraft.move)
   ) throw new Error('This reasoning proposition is not part of the reviewed deliberation.')
   const improper = improperClaim ? matchImproperArgument(pack, improperClaim) : null
   return {

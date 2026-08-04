@@ -1,5 +1,6 @@
 import { type CourtEvent, type CourtWeek, courtWeekSchema } from './schema'
 import {
+  contributionStage,
   furtherDiscussionContributionSceneIds,
   preSecondBallotContributionSceneIds,
 } from './deliberationContract'
@@ -153,10 +154,34 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
   demand(new Set(evidenceIds).size === evidenceIds.length, 'evidence ids must be unique')
   const propositionIds = courtWeek.deliberation.propositions.map(({ id }) => id)
   demand(new Set(propositionIds).size === propositionIds.length, 'deliberation proposition ids must be unique')
+  const reasoningScenes = new Map(sessions.flatMap((session) => session.scenes)
+    .filter((scene) => contributionStage(scene.id) !== null)
+    .map((scene) => [scene.id, scene]))
+  const reviewedTuples = new Set<string>()
   courtWeek.deliberation.propositions.forEach((proposition) => {
     demand(courtWeek.deliberation.legalQuestions.includes(proposition.legalQuestion), `${proposition.id}: unknown legal question`)
-    const evidence = courtWeek.trial.evidence.find(({ id }) => id === proposition.evidenceId)
-    demand(evidence?.status === 'admitted', `${proposition.id}: influence requires admitted evidence`)
+    demand(new Set(proposition.sceneIds).size === proposition.sceneIds.length, `${proposition.id}: scene ids must be unique`)
+    demand(new Set(proposition.evidenceIds).size === proposition.evidenceIds.length, `${proposition.id}: evidence ids must be unique`)
+    demand(new Set(proposition.moves).size === proposition.moves.length, `${proposition.id}: reasoning moves must be unique`)
+    proposition.evidenceIds.forEach((evidenceId) => {
+      const evidence = courtWeek.trial.evidence.find(({ id }) => id === evidenceId)
+      demand(evidence?.status === 'admitted', `${proposition.id}: influence requires admitted evidence`)
+    })
+    proposition.sceneIds.forEach((sceneId) => {
+      const scene = reasoningScenes.get(sceneId)
+      demand(Boolean(scene), `${proposition.id}: ${sceneId} is not a ballot-influencing reasoning scene`)
+      proposition.moves.forEach((move) => {
+        demand(Boolean(scene?.interaction?.options?.includes(move)), `${proposition.id}: ${move} is unavailable in ${sceneId}`)
+        proposition.evidenceIds.forEach((evidenceId) => {
+          const tuple = [sceneId, proposition.legalQuestion, evidenceId, move].join('\u0000')
+          demand(!reviewedTuples.has(tuple), `${proposition.id}: duplicate reviewed reasoning tuple in ${sceneId}`)
+          reviewedTuples.add(tuple)
+        })
+      })
+    })
+  })
+  reasoningScenes.forEach((_, sceneId) => {
+    demand(courtWeek.deliberation.propositions.some(({ sceneIds }) => sceneIds.includes(sceneId)), `${sceneId}: no reviewed reasoning proposition`)
   })
   allCues.forEach((cue) => cue.evidenceIds.forEach((id) => {
     const item = courtWeek.trial.evidence.find((evidence) => evidence.id === id)

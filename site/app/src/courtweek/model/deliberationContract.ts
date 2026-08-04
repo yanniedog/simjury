@@ -45,9 +45,10 @@ export function hasValidContributionJourney(
     const proposition = pack.propositions.find(({ id }) => id === contribution.propositionId)
     return Boolean(
       proposition &&
+      proposition.sceneIds.includes(contribution.sceneId) &&
       proposition.legalQuestion === contribution.legalQuestion &&
-      proposition.evidenceId === contribution.evidenceId &&
-      proposition.move === contribution.move,
+      proposition.evidenceIds.includes(contribution.evidenceId) &&
+      proposition.moves.includes(contribution.move),
     )
   })
 }
