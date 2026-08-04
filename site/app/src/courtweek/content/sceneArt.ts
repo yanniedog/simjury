@@ -174,6 +174,40 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       },
     },
   },
+  'wed-pell-chief': {
+    altDescription: 'Rescue supervisor Jaro Pell gives evidence from the witness box while Crown counsel questions him. No readiness label, warning status, launch authority or conclusion about Mara Venn hearing the operations channel is depicted.',
+    compositionArt: {
+      portrait: {
+        focalPoint: { x: 55, y: 47 }, subjectSafeRegion: { x: 0, y: 36, width: 100, height: 49 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
+      },
+      tablet: {
+        focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 0, y: 30, width: 100, height: 58 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
+      },
+      desktop: {
+        focalPoint: { x: 54, y: 46 }, subjectSafeRegion: { x: 0, y: 28, width: 100, height: 64 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
+      },
+    },
+  },
+  'wed-pell-cross': {
+    altDescription: 'Defence counsel Corin Dax questions rescue supervisor Jaro Pell while the judge and jury listen. No steering warning, risk level, operations-channel record or conclusion about whether Mara Venn heard Pell is depicted.',
+    compositionArt: {
+      portrait: {
+        focalPoint: { x: 52, y: 48 }, subjectSafeRegion: { x: 0, y: 37, width: 100, height: 49 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
+      },
+      tablet: {
+        focalPoint: { x: 52, y: 47 }, subjectSafeRegion: { x: 0, y: 27, width: 100, height: 62 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
+      },
+      desktop: {
+        focalPoint: { x: 53, y: 47 }, subjectSafeRegion: { x: 0, y: 25, width: 100, height: 67 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
+      },
+    },
+  },
   'wed-vos': {
     altDescription: 'Marine survival physician Dr Eren Vos gives evidence from the witness box while Crown counsel questions her. No survival model, death time, probability or conclusion about causation is depicted.',
     compositionArt: {
