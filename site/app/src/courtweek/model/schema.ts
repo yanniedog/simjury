@@ -132,6 +132,21 @@ export const courtSessionSchema = z.object({
 })
 export type CourtSession = z.infer<typeof courtSessionSchema>
 
+const exhibitPresentationBase = {
+  alt: z.string().min(1),
+  ambiguity: z.string().min(1),
+}
+const exhibitFieldSchema = z.object({ label: z.string().min(1), value: z.string().min(1) })
+export const exhibitPresentationSchema = z.discriminatedUnion('kind', [
+  z.object({ ...exhibitPresentationBase, kind: z.literal('route'), origin: z.string(), destination: z.string(), distance: z.string(), disclaimer: z.string() }),
+  z.object({ ...exhibitPresentationBase, kind: z.literal('audit'), heading: z.string(), subheading: z.string(), caption: z.string(), fields: z.array(exhibitFieldSchema).min(1), footer: z.string() }),
+  z.object({ ...exhibitPresentationBase, kind: z.literal('strip'), heading: z.string(), fields: z.array(exhibitFieldSchema).min(1), notation: z.string(), footer: z.string() }),
+  z.object({ ...exhibitPresentationBase, kind: z.literal('ready'), heading: z.string(), subheading: z.string(), craft: z.string(), status: z.string(), statusMeaning: z.string(), warningMarker: z.string(), footer: z.string() }),
+  z.object({ ...exhibitPresentationBase, kind: z.literal('warning'), heading: z.string(), fields: z.array(exhibitFieldSchema).min(1), footer: z.string() }),
+  z.object({ ...exhibitPresentationBase, kind: z.literal('survival'), heading: z.string(), comparisons: z.array(exhibitFieldSchema).length(2), footer: z.string() }),
+])
+export type ExhibitPresentation = z.infer<typeof exhibitPresentationSchema>
+
 export const evidenceSchema = z.object({
   id: z.string().min(1),
   label: z.string().min(1),
@@ -145,6 +160,7 @@ export const evidenceSchema = z.object({
   replayable: z.boolean(),
   status: z.enum(['admitted', 'struck']),
   accessibleProposition: z.string().min(1),
+  presentation: exhibitPresentationSchema.optional(),
 })
 export type EvidenceItem = z.infer<typeof evidenceSchema>
 
