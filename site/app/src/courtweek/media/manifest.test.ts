@@ -17,8 +17,8 @@ describe('pinned text-free Court Week media manifest', () => {
     expect(() => assertRuntimeMediaCoverage(elevenMinutesCourtWeek, fixture)).not.toThrow()
     const mappings = fixture.sessions.flatMap((session) =>
       session.segments.flatMap((segment) => segment.cues))
-    expect(mappings).toHaveLength(123)
-    expect(new Set(mappings.map((cue) => cue.cue_id))).toHaveLength(123)
+    expect(mappings).toHaveLength(125)
+    expect(new Set(mappings.map((cue) => cue.cue_id))).toHaveLength(125)
     expect([...RUNTIME_DEPENDENT_CUE_IDS].every((cueId) =>
       !mappings.some((cue) => cue.cue_id === cueId))).toBe(true)
     const artMappings = fixture.sessions.flatMap((session) =>
@@ -72,7 +72,7 @@ describe('pinned text-free Court Week media manifest', () => {
       ))
     const cues = sessions.flatMap((session) =>
       session.scenes.flatMap((scene) => scene.cues))
-    expect(cues).toHaveLength(125)
+    expect(cues).toHaveLength(127)
     for (const cue of cues) {
       if (RUNTIME_DEPENDENT_CUE_IDS.has(cue.id)) {
         expect(cue.audio).toBeUndefined()
