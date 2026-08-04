@@ -19,6 +19,11 @@ export interface ProgressEnvelope {
   progress: StoredWeeklyProgress
 }
 
+export type ProgressLoadResult = {
+  progress: StoredWeeklyProgress | null
+  issue: 'unavailable' | 'corrupt' | null
+}
+
 const memoryProgress = new Map<string, StoredWeeklyProgress>()
 
 function validateStoredProgress(value: unknown): StoredWeeklyProgress | null {
@@ -84,7 +89,13 @@ async function withStore<T>(
 export async function loadWeeklyProgress(
   caseId: string,
 ): Promise<StoredWeeklyProgress | null> {
-  if (!hasIndexedDb()) return memoryProgress.get(caseId) ?? null
+  return (await loadWeeklyProgressResult(caseId)).progress
+}
+
+export async function loadWeeklyProgressResult(caseId: string): Promise<ProgressLoadResult> {
+  if (!hasIndexedDb()) {
+    return { progress: memoryProgress.get(caseId) ?? null, issue: 'unavailable' }
+  }
   try {
     const storedValue = await withStore<unknown>(
       'readonly',
@@ -92,9 +103,12 @@ export async function loadWeeklyProgress(
     )
     const stored = validateStoredProgress(storedValue)
     if (stored) memoryProgress.set(caseId, stored)
-    return stored ?? memoryProgress.get(caseId) ?? null
+    return {
+      progress: stored ?? memoryProgress.get(caseId) ?? null,
+      issue: storedValue != null && !stored ? 'corrupt' : null,
+    }
   } catch {
-    return memoryProgress.get(caseId) ?? null
+    return { progress: memoryProgress.get(caseId) ?? null, issue: 'unavailable' }
   }
 }
 
