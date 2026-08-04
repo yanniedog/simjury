@@ -411,7 +411,8 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const selectedImproperIndex = reasoningBasis.startsWith('improper:')
     ? Number.parseInt(reasoningBasis.slice('improper:'.length), 10)
     : -1
-  const selectedImproperArgument = courtWeek.deliberation.improperArguments[selectedImproperIndex] ?? null
+  const improperArguments = courtWeek.deliberation.improperArguments ?? []
+  const selectedImproperArgument = improperArguments[selectedImproperIndex] ?? null
   const finishInteraction = () => {
     if (!interaction) return
     if (!interactionMinimumMet) return
@@ -603,7 +604,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
                   />
                   Stay with admitted evidence and the judge’s directions.
                 </label>
-                {courtWeek.deliberation.improperArguments.map((argument, index) => (
+                {improperArguments.map((argument, index) => (
                   <label key={argument.claim}>
                     <input
                       type="radio"
