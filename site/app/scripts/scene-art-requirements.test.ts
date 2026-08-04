@@ -175,6 +175,10 @@ describe('SceneArtManifest contract', () => {
       expect(manifest.scenes['sun-second-ballot'].compositionArt[composition].evidenceSafeRegion).toBeNull()
       expect(manifest.scenes['sun-second-ballot'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
       expect(manifest.scenes['sun-second-ballot'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
+      expect(manifest.scenes['sun-analysis'].compositionArt[composition].subjectSafeRegion).toBeNull()
+      expect(manifest.scenes['sun-analysis'].compositionArt[composition].evidenceSafeRegion).toBeNull()
+      expect(manifest.scenes['sun-analysis'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
+      expect(manifest.scenes['sun-analysis'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
     }
     expect(manifest.scenes['sat-room'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sat-room'].altDescription).toContain('No ballot is shown')
@@ -202,5 +206,7 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['sun-second-ballot'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sun-second-ballot'].altDescription).toContain('second private face-down blank ballot card')
     expect(manifest.scenes['sun-second-ballot'].altDescription).toContain('No individual choice, count, aggregate, faction, verdict, label or readable card is visible')
+    expect(manifest.scenes['sun-analysis'].altDescription).toContain('No verdict, count or preferred analysis is shown')
+    expect(manifest.scenes['sun-analysis'].altDescription).toContain('two lawful readings appear only in the live interface')
   })
 })
