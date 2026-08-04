@@ -260,9 +260,10 @@ const authoredInfluenceSchema = z.object({
 
 const deliberationPropositionSchema = z.object({
   id: z.string().regex(/^prop-[a-z0-9-]+$/),
+  sceneIds: z.array(z.string().min(1)).min(1),
   legalQuestion: z.string().min(1),
-  evidenceId: z.string().min(1),
-  move: reasoningMoveSchema,
+  evidenceIds: z.array(z.string().min(1)).min(2),
+  moves: z.array(reasoningMoveSchema).min(2),
   influence: authoredInfluenceSchema,
 })
 
