@@ -45,6 +45,7 @@ test('legacy product paths redirect to the canonical Court Week route', () => {
 
 test('Court Week media publishing is trusted, manual and non-clobbering', () => {
   const workflow = readFileSync(new URL('../../.github/workflows/court-week-media.yml', import.meta.url), 'utf8')
+  const packager = readFileSync(new URL('../scripts/prepare-court-week-release.mjs', import.meta.url), 'utf8')
   assert.match(workflow, /workflow_dispatch:/)
   assert.match(workflow, /inputs\.publish != true/)
   assert.match(workflow, /reviewed_run_id/)
@@ -53,9 +54,15 @@ test('Court Week media publishing is trusted, manual and non-clobbering', () => 
   assert.match(workflow, /--require-approved/)
   assert.match(workflow, /--expected-digest/)
   assert.match(workflow, /--expected-revision/)
+  assert.match(packager, /scene_count: artReadiness\.scene_count/)
+  assert.match(workflow, /Number\.isInteger\(readiness\?\.scene_count\)/)
   assert.match(workflow, /readiness\?\.release_ready !== true/)
-  assert.match(workflow, /readiness\.ready_scene_count !== 55/)
+  assert.match(workflow, /readiness\.ready_scene_count !== readiness\.scene_count/)
   assert.match(workflow, /readiness\.gap_count !== 0/)
+  assert.match(workflow, /release_ready=\$\{readiness\?\.release_ready/)
+  assert.match(workflow, /ready_scene_count=\$\{readiness\?\.ready_scene_count/)
+  assert.match(workflow, /scene_count=\$\{readiness\?\.scene_count/)
+  assert.match(workflow, /gap_count=\$\{readiness\?\.gap_count/)
   assert.doesNotMatch(
     workflow,
     /--require-release-ready-art/,
