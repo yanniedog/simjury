@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { TrialRecord, WeeklyProgress } from '../model/schema'
 import {
   downloadWeeklyProgress,
@@ -9,9 +9,10 @@ export interface JurorDeskProps {
   trial: TrialRecord
   progress: WeeklyProgress
   readOnly?: boolean
+  inactive?: boolean
   onNotesChange: (notes: string) => void
   onImport: (progress: WeeklyProgress) => void
-  onInspectEvidence: (evidenceId: string) => void
+  onInspectEvidence: (evidenceId: string, trigger: HTMLButtonElement) => void
   onClose: () => void
 }
 
@@ -19,14 +20,21 @@ export function JurorDesk({
   trial,
   progress,
   readOnly = false,
+  inactive = false,
   onNotesChange,
   onImport,
   onInspectEvidence,
   onClose,
 }: JurorDeskProps) {
   const importInput = useRef<HTMLInputElement>(null)
+  const desk = useRef<HTMLElement>(null)
   const [includeNotes, setIncludeNotes] = useState(false)
   const [importError, setImportError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (inactive) desk.current?.setAttribute('inert', '')
+    else desk.current?.removeAttribute('inert')
+  }, [inactive])
 
   const readImport = async (file: File | undefined) => {
     if (!file) return
@@ -45,9 +53,10 @@ export function JurorDesk({
 
   return (
     <aside
+      ref={desk}
       className="cw-desk"
       role="dialog"
-      aria-modal="true"
+      aria-modal={inactive ? undefined : 'true'}
       aria-labelledby="cw-desk-heading"
     >
       <header className="cw-modal__header">
@@ -78,7 +87,11 @@ export function JurorDesk({
         <h3>Admitted exhibits</h3>
         <div className="cw-desk__evidence-list">
           {trial.evidence.filter((item) => item.status === 'admitted').map((item) => (
-            <button key={item.id} type="button" onClick={() => onInspectEvidence(item.id)}>
+            <button
+              key={item.id}
+              type="button"
+              onClick={(event) => onInspectEvidence(item.id, event.currentTarget)}
+            >
               {item.label}
             </button>
           ))}
