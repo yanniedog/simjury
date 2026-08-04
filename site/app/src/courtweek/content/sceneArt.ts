@@ -315,23 +315,6 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
-  'thu-resume': {
-    altDescription: 'The Court of Orinth courtroom is quiet before the Thursday sitting resumes, with the bench, witness box, counsel tables and jury rail ready for court. No evidence, person or conclusion is depicted.',
-    compositionArt: {
-      portrait: cropReviewedDirection({
-        focalPoint: { x: 50, y: 49 }, subjectSafeRegion: null,
-        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
-      }),
-      tablet: cropReviewedDirection({
-        focalPoint: { x: 50, y: 48 }, subjectSafeRegion: null,
-        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
-      }),
-      desktop: cropReviewedDirection({
-        focalPoint: { x: 50, y: 47 }, subjectSafeRegion: null,
-        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
-      }),
-    },
-  },
   'thu-opening': {
     altDescription: 'Defence counsel Corin Dax stands to open the defence case while accused Mara Venn remains seated beside him and the judge and Crown listen. No evidence, testimony or conclusion about guilt is depicted.',
     compositionArt: {

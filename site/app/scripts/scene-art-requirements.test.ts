@@ -74,7 +74,6 @@ describe('SceneArtManifest contract', () => {
       'wed-strike',
       'wed-crown-close',
       'wed-adjourn',
-      'thu-resume',
       'thu-opening',
     ]
     for (const sceneId of evidenceNeutralReviewedScenes) {
@@ -89,7 +88,6 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['wed-resume'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
     expect(manifest.scenes['wed-adjourn'].compositionArt.portrait.subjectSafeRegion).toBeNull()
     expect(manifest.scenes['wed-adjourn'].compositionArt.portrait.evidenceSafeRegion).toBeNull()
-    expect(manifest.scenes['thu-resume'].compositionArt.portrait.subjectSafeRegion).toBeNull()
     expect(manifest.scenes['thu-opening'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
   })
 })
