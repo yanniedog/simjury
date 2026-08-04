@@ -1,5 +1,5 @@
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, resolve, sep } from 'node:path'
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { dirname, isAbsolute, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
 import { assessSceneArtManifest } from './scene-art-readiness.mjs'
@@ -11,6 +11,20 @@ const TILE_DIMENSIONS = {
   tablet: { width: 1024, height: 768 },
   desktop: { width: 1280, height: 720 },
 }
+const CANONICAL_SESSIONS = [
+  { id: 'cw-0001-monday', ordinal: 1, day: 'Monday' },
+  { id: 'cw-0001-tuesday', ordinal: 2, day: 'Tuesday' },
+  { id: 'cw-0001-wednesday', ordinal: 3, day: 'Wednesday' },
+  { id: 'cw-0001-thursday', ordinal: 4, day: 'Thursday' },
+  { id: 'cw-0001-friday', ordinal: 5, day: 'Friday' },
+  { id: 'cw-0001-saturday', ordinal: 6, day: 'Saturday' },
+  { id: 'cw-0001-sunday', ordinal: 7, day: 'Sunday' },
+]
+
+function pathContainedBy(parent, child) {
+  const relativePath = relative(resolve(parent), resolve(child))
+  return relativePath === '' || (!relativePath.startsWith(`..${sep}`) && relativePath !== '..' && !isAbsolute(relativePath))
+}
 
 function safePath(root, relativePath) {
   if (typeof relativePath !== 'string' || !relativePath || relativePath.includes('\\')) {
@@ -18,18 +32,68 @@ function safePath(root, relativePath) {
   }
   const base = resolve(root)
   const target = resolve(base, relativePath)
-  if (!target.startsWith(`${base}${sep}`)) throw new Error(`Art path escapes its root: ${relativePath}`)
+  if (!pathContainedBy(base, target) || target === base) throw new Error(`Art path escapes its root: ${relativePath}`)
   return target
+}
+
+function assertCanonicalSessionTopology(requirements) {
+  if (requirements?.caseId !== 'cw-0001') {
+    throw new Error('Scene-art strip builds are locked to caseId cw-0001 (Eleven Minutes).')
+  }
+  if (!Array.isArray(requirements.sessions) || requirements.sessions.length !== 7) {
+    throw new Error('Scene-art requirements must carry seven ordered Court Week sessions.')
+  }
+  for (const [index, expected] of CANONICAL_SESSIONS.entries()) {
+    const session = requirements.sessions[index]
+    if (
+      session?.id !== expected.id ||
+      session?.ordinal !== expected.ordinal ||
+      session?.day !== expected.day ||
+      !Array.isArray(session.sceneIds) ||
+      session.sceneIds.length === 0
+    ) {
+      throw new Error(
+        `Scene-art session topology mismatch at index ${index}: expected ${expected.id} ordinal ${expected.ordinal}.`,
+      )
+    }
+    if (new Set(session.sceneIds).size !== session.sceneIds.length) {
+      throw new Error(`Scene-art session ${session.id} repeats scene IDs.`)
+    }
+  }
+  const orderedIds = requirements.sessions.flatMap((session) => session.sceneIds)
+  if (orderedIds.length !== 55 || new Set(orderedIds).size !== 55) {
+    throw new Error('Scene-art session order must map each of the 55 scenes exactly once.')
+  }
+  const manifestSceneIds = Object.keys(requirements.scenes ?? {})
+  if (manifestSceneIds.length !== 55) {
+    throw new Error(`Scene-art requirements.scenes must define exactly 55 scenes; found ${manifestSceneIds.length}.`)
+  }
+  const orderedSet = new Set(orderedIds)
+  const missingFromManifest = orderedIds.filter((sceneId) => !(sceneId in (requirements.scenes ?? {})))
+  const unusedManifestScenes = manifestSceneIds.filter((sceneId) => !orderedSet.has(sceneId))
+  if (missingFromManifest.length || unusedManifestScenes.length) {
+    throw new Error(
+      `Scene-art session IDs must match requirements.scenes exactly (missing=${missingFromManifest.join(',') || 'none'}; unused=${unusedManifestScenes.join(',') || 'none'}).`,
+    )
+  }
 }
 
 async function composeStrip({ mediaRoot, outputRoot, sourcePaths, outputPath, composition, format }) {
   const tile = TILE_DIMENSIONS[composition]
   const target = safePath(outputRoot, outputPath)
   mkdirSync(dirname(target), { recursive: true })
-  const inputs = sourcePaths.map((path, cell) => ({
-    input: safePath(mediaRoot, path),
-    left: cell * tile.width,
-    top: 0,
+  const inputs = await Promise.all(sourcePaths.map(async (path, cell) => {
+    // Readiness already enforces composition aspect ratio; resize to exact tile
+    // pixels so Sharp composite accepts oversize commissioned sources without
+    // inventing a second aspect contract.
+    const resized = await sharp(safePath(mediaRoot, path))
+      .resize(tile.width, tile.height, { fit: 'fill' })
+      .toBuffer()
+    return {
+      input: resized,
+      left: cell * tile.width,
+      top: 0,
+    }
   }))
   const pipeline = sharp({
     create: {
@@ -49,20 +113,29 @@ async function composeStrip({ mediaRoot, outputRoot, sourcePaths, outputPath, co
 export async function buildSceneArtStrips({ requirements, mediaRoot, outputRoot }) {
   const sourceRoot = resolve(mediaRoot)
   const destination = resolve(outputRoot)
-  if (sourceRoot === destination || destination.startsWith(`${sourceRoot}${sep}`)) {
-    throw new Error('Strip output must be outside the reviewed conventional-art source root.')
+  if (
+    pathContainedBy(sourceRoot, destination) ||
+    pathContainedBy(destination, sourceRoot)
+  ) {
+    throw new Error('Strip output must stay disjoint from the reviewed conventional-art source root.')
   }
-  if (!Array.isArray(requirements.sessions) || requirements.sessions.length !== 7) {
-    throw new Error('Scene-art requirements must carry seven ordered Court Week sessions.')
-  }
-  const orderedIds = requirements.sessions.flatMap((session) => session.sceneIds)
-  if (orderedIds.length !== 55 || new Set(orderedIds).size !== 55) {
-    throw new Error('Scene-art session order must map each of the 55 scenes exactly once.')
-  }
+  assertCanonicalSessionTopology(requirements)
 
   sharp.cache(false)
   sharp.concurrency(2)
   const readiness = assessSceneArtManifest(requirements, sourceRoot)
+  const blockingGaps = readiness.gaps.filter((gap) =>
+    gap.code === 'invalid-manifest' || gap.code === 'scene-count',
+  )
+  if (blockingGaps.length) {
+    throw new Error(
+      `Scene-art strip build rejected manifest-level readiness failure: ${blockingGaps.map((gap) => gap.message).join('; ')}`,
+    )
+  }
+
+  if (existsSync(destination)) rmSync(destination, { recursive: true, force: true })
+  mkdirSync(destination, { recursive: true })
+
   const ready = new Set(readiness.ready_scene_ids)
   const strips = []
 
@@ -99,7 +172,7 @@ export async function buildSceneArtStrips({ requirements, mediaRoot, outputRoot 
 
   return {
     schema: 'simjury.scene-art-strip-source/v1',
-    caseId: 'cw-0001',
+    caseId: requirements.caseId ?? 'cw-0001',
     sourceRevision: requirements.sourceRevision,
     grid: { columns: 2, rows: 1 },
     toolchain: { sharp: sharp.versions.sharp, vips: sharp.versions.vips },
