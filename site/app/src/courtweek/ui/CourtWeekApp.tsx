@@ -13,6 +13,12 @@ import {
 import { nextReplaySafeCue, replaySafeCue } from '../engine/replay'
 import { useCuePlayback } from '../media/useCuePlayback'
 import {
+  courtWeekMediaPolicy,
+  cueForMediaPolicy,
+  navigatorRequestsDataSaver,
+  nextCueForMediaPolicy,
+} from '../media/dataSaver'
+import {
   getSessionAvailability,
   observeCourtTime,
   formatCourtUnlock,
@@ -88,6 +94,10 @@ function CourtWeekEntry({
   onMode,
   onEnter,
   persistenceNotice,
+  dataSaver,
+  narrationApproved,
+  onDataSaver,
+  onNarrationApproved,
 }: {
   title: string
   advisory: string
@@ -95,6 +105,10 @@ function CourtWeekEntry({
   onMode: (mode: AccessMode) => void
   onEnter: (fullscreen: boolean) => void
   persistenceNotice: string | null
+  dataSaver: boolean
+  narrationApproved: boolean
+  onDataSaver: (enabled: boolean) => void
+  onNarrationApproved: (approved: boolean) => void
 }) {
   const [fullscreen, setFullscreen] = useState(false)
   const fullscreenSupported = typeof document !== 'undefined'
@@ -127,6 +141,44 @@ function CourtWeekEntry({
             </label>
           ))}
         </fieldset>
+        <fieldset className="cw-mode-picker">
+          <legend>Data use</legend>
+          <label>
+            <input
+              type="checkbox"
+              checked={dataSaver}
+              onChange={(event) => onDataSaver(event.target.checked)}
+            />
+            <span>
+              <strong>Use less data</strong>
+              <small>Uses the smallest supported scene artwork and turns off ambience and background preloading.</small>
+            </span>
+          </label>
+        </fieldset>
+        {dataSaver && mode !== 'reading' ? (
+          <fieldset className="cw-mode-picker">
+            <legend>Narration download</legend>
+            <p>Recorded narration is not downloaded unless you approve it. Reading mode remains complete.</p>
+            <label>
+              <input
+                type="radio"
+                name="narration-download"
+                checked={!narrationApproved}
+                onChange={() => onNarrationApproved(false)}
+              />
+              <span><strong>Continue without recorded audio</strong><small>Show every spoken line for reading.</small></span>
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="narration-download"
+                checked={narrationApproved}
+                onChange={() => onNarrationApproved(true)}
+              />
+              <span><strong>Download recorded narration</strong><small>Only the current cue is prepared; the next scene is not preloaded.</small></span>
+            </label>
+          </fieldset>
+        ) : null}
         {fullscreenSupported ? (
           <label className="cw-entry__fullscreen">
             <input type="checkbox" checked={fullscreen} onChange={(event) => setFullscreen(event.target.checked)} />
@@ -172,6 +224,8 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const { progress, hydrated, persistence, persistenceIssue, updateProgress } = useWeeklyProgress(baseline)
   const storageNotice = persistenceNotice(persistenceIssue)
   const [entered, setEntered] = useState(false)
+  const [dataSaver, setDataSaver] = useState(navigatorRequestsDataSaver)
+  const [narrationApproved, setNarrationApproved] = useState(false)
   const [started, setStarted] = useState(false)
   const [deskOpen, setDeskOpen] = useState(false)
   const [evidenceId, setEvidenceId] = useState<string | null>(null)
@@ -187,6 +241,13 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const gesturePlayedCue = useRef<string | null>(null)
   const [, setInteractionTick] = useState(0)
   const accessMode = progress.accessibilityMode ?? 'audio-first'
+  const mediaPolicy = useMemo(
+    () => courtWeekMediaPolicy(dataSaver, narrationApproved),
+    [dataSaver, narrationApproved],
+  )
+  const presentedAccessMode = mediaPolicy.recordedNarration || accessMode === 'reading'
+    ? accessMode
+    : 'reading'
   const observedTime = observeCourtTime(Date.parse(progress.highestObservedTime), now())
   const availability = getSessionAvailability(
     courtWeek.manifest.sessions.map((session) => ({
@@ -304,10 +365,14 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const handleCueEnded = useCallback(() => {
     advance()
   }, [advance])
+  const playbackCue = useMemo<SceneCue>(
+    () => cueForMediaPolicy(presentedCue, mediaPolicy),
+    [mediaPolicy, presentedCue],
+  )
   const playback = useCuePlayback(
-    presentedCue,
+    playbackCue,
     handleCueEnded,
-    activeSession.scenes[position.sceneIndex + 1]?.cues[0],
+    nextCueForMediaPolicy(activeSession.scenes[position.sceneIndex + 1]?.cues[0], mediaPolicy),
   )
   const playCue = playback.play
   useEffect(() => {
@@ -330,12 +395,12 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     }
   }, [now, progress.highestObservedTime, updateProgress])
   useEffect(() => {
-    if (!started || interactionOpen || accessMode === 'reading') return
+    if (!started || interactionOpen || presentedAccessMode === 'reading') return
     const alreadyPlayedFromGesture = gesturePlayedCue.current === presentedCue.id
     gesturePlayedCue.current = null
     if (alreadyPlayedFromGesture) return
     void playCue()
-  }, [accessMode, interactionOpen, playCue, presentedCue.id, started])
+  }, [interactionOpen, playCue, presentedAccessMode, presentedCue.id, started])
 
   const playFromGesture = useCallback(() => {
     gesturePlayedCue.current = presentedCue.id
@@ -366,6 +431,10 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
         advisory={courtWeek.manifest.contentAdvisory}
         mode={accessMode}
         persistenceNotice={storageNotice}
+        dataSaver={dataSaver}
+        narrationApproved={narrationApproved}
+        onDataSaver={setDataSaver}
+        onNarrationApproved={setNarrationApproved}
         onMode={(mode) => updateProgress((current) => ({ ...current, accessibilityMode: mode }))}
         onEnter={(requestFullscreen) => {
           setEntered(true)
@@ -375,7 +444,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
             }
             return
           }
-          if (accessMode !== 'reading') playFromGesture()
+          if (presentedAccessMode !== 'reading') playFromGesture()
           else setStarted(true)
           if (requestFullscreen) {
             void document.documentElement.requestFullscreen?.().catch(() => undefined)
@@ -720,7 +789,8 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       scene={position.scene}
       cue={presentedCue}
       releaseBase={releaseRoot}
-      accessMode={accessMode}
+      accessMode={presentedAccessMode}
+      dataSaver={mediaPolicy.dataSaver}
       playbackStatus={playback.status}
       playbackError={[playback.error, storageNotice ?? (
         persistence === 'memory' ? 'Progress is held in this tab. Export it before leaving.' : null
