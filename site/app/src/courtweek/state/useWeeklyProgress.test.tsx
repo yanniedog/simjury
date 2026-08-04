@@ -51,6 +51,7 @@ describe('useWeeklyProgress durability boundaries', () => {
     await act(async () => root.render(<Harness />))
     await act(async () => { await Promise.resolve() })
     expect(state?.hydrated).toBe(true)
+    expect(state?.persistenceIssue).toBe('unavailable')
 
     act(() => state?.updateProgress((current) => ({
       ...current,

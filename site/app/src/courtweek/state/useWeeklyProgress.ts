@@ -9,13 +9,15 @@ export interface WeeklyProgressState {
   progress: StoredWeeklyProgress
   hydrated: boolean
   persistence: 'indexeddb' | 'memory' | 'pending'
-  persistenceNotice: string | null
+  persistenceIssue: PersistenceIssue
   updateProgress: (
     update:
       | StoredWeeklyProgress
       | ((current: StoredWeeklyProgress) => StoredWeeklyProgress),
   ) => void
 }
+
+export type PersistenceIssue = 'unavailable' | 'save-failed' | 'corrupt' | 'revision-mismatch' | null
 
 export const WEEKLY_PROGRESS_EVENT = 'simjury:court-week-progress'
 
@@ -25,7 +27,7 @@ export function useWeeklyProgress(
   const [progress, setProgress] = useState(initialProgress)
   const [hydrated, setHydrated] = useState(false)
   const [persistence, setPersistence] = useState<WeeklyProgressState['persistence']>('pending')
-  const [persistenceNotice, setPersistenceNotice] = useState<string | null>(null)
+  const [persistenceIssue, setPersistenceIssue] = useState<PersistenceIssue>(null)
   const saveSequence = useRef(0)
   const skipHydrationSave = useRef(true)
   const progressRef = useRef(progress)
@@ -39,12 +41,10 @@ export function useWeeklyProgress(
       if (stored && !incompatible) setProgress(stored)
       if (incompatible) {
         setPersistence('memory')
-        setPersistenceNotice('Saved progress belongs to a different case revision and was not loaded. A new session has started.')
+        setPersistenceIssue('revision-mismatch')
       } else if (issue) {
         setPersistence('memory')
-        setPersistenceNotice(issue === 'corrupt'
-          ? 'Saved progress is damaged and could not be recovered. A new session has started; export it if you need a separate copy.'
-          : 'Device storage is unavailable. Progress is held in this tab; export it before leaving.')
+        setPersistenceIssue(issue)
       } else if (stored) {
         setPersistence('indexeddb')
       }
@@ -71,9 +71,9 @@ export function useWeeklyProgress(
         if (sequence === saveSequence.current) {
           setPersistence(destination)
           if (destination === 'memory') {
-            setPersistenceNotice('Device storage could not save progress. Progress is held in this tab; export it before leaving.')
+            setPersistenceIssue('save-failed')
           } else {
-            setPersistenceNotice((notice) => notice?.startsWith('Device storage') ? null : notice)
+            setPersistenceIssue((issue) => issue === 'unavailable' || issue === 'save-failed' ? null : issue)
           }
         }
       })
@@ -112,5 +112,5 @@ export function useWeeklyProgress(
     [],
   )
 
-  return { progress, hydrated, persistence, persistenceNotice, updateProgress }
+  return { progress, hydrated, persistence, persistenceIssue, updateProgress }
 }
