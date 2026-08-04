@@ -11,6 +11,34 @@ export interface CaptionPlacement {
   fits: boolean
 }
 
+export interface CaptionRect {
+  left: number
+  top: number
+  right: number
+  bottom: number
+}
+
+export type CaptionFitFailure =
+  | 'protected-region'
+  | 'line-overflow'
+  | 'controls-collision'
+  | 'speaker-collision'
+  | 'layout-unavailable'
+
+export interface CaptionRuntimeGeometry {
+  placementFits: boolean
+  overlay: CaptionRect
+  controls: CaptionRect
+  speaker: CaptionRect
+  clientHeight: number
+  scrollHeight: number
+}
+
+export interface CaptionRuntimeFit {
+  fits: boolean
+  reason: CaptionFitFailure | null
+}
+
 interface CaptionDirection {
   captionPosition: CaptionPosition
   permittedCaptionPositions?: CaptionPosition[]
@@ -63,11 +91,41 @@ const viewportPreference: Record<CaptionViewport, CaptionPosition[]> = {
 const protectedGapPercent = 2
 const minimumVerticalLanePercent = 10
 const minimumHorizontalLanePercent = 28
+const collisionClearancePixels = 2
 
 function overlapArea(left: Region, right: Region): number {
   const width = Math.max(0, Math.min(left.x + left.width, right.x + right.width) - Math.max(left.x, right.x))
   const height = Math.max(0, Math.min(left.y + left.height, right.y + right.height) - Math.max(left.y, right.y))
   return width * height
+}
+
+function rectanglesCollide(left: CaptionRect, right: CaptionRect): boolean {
+  return left.left < right.right + collisionClearancePixels &&
+    left.right > right.left - collisionClearancePixels &&
+    left.top < right.bottom + collisionClearancePixels &&
+    left.bottom > right.top - collisionClearancePixels
+}
+
+export function captionViewportForSize(width: number, height: number): CaptionViewport {
+  if (height <= 500) return 'phoneLandscape'
+  if (width >= 1100) return 'desktop'
+  if (width >= 700) return 'tablet'
+  return 'phonePortrait'
+}
+
+export function evaluateCaptionRuntimeFit(geometry: CaptionRuntimeGeometry): CaptionRuntimeFit {
+  if (!geometry.placementFits) return { fits: false, reason: 'protected-region' }
+  if (
+    geometry.clientHeight <= 0 ||
+    geometry.overlay.right <= geometry.overlay.left ||
+    geometry.overlay.bottom <= geometry.overlay.top
+  ) {
+    return { fits: false, reason: 'layout-unavailable' }
+  }
+  if (geometry.scrollHeight > geometry.clientHeight + 1) return { fits: false, reason: 'line-overflow' }
+  if (rectanglesCollide(geometry.overlay, geometry.controls)) return { fits: false, reason: 'controls-collision' }
+  if (rectanglesCollide(geometry.overlay, geometry.speaker)) return { fits: false, reason: 'speaker-collision' }
+  return { fits: true, reason: null }
 }
 
 function directionFor(visual: SceneVisual, viewport: CaptionViewport): CaptionDirection {

@@ -5,13 +5,14 @@ import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { after, before, test } from 'node:test'
 import sharp from 'sharp'
-import { buildSceneArtStrips } from './scene-art-strips.mjs'
+import { buildSceneArtStrips, renderStripRendition } from './scene-art-strips.mjs'
 
 const temporary = mkdtempSync(join(tmpdir(), 'simjury-art-strips-'))
 const requirementsPath = join(temporary, 'requirements.json')
 const outputRoot = join(temporary, 'output')
 const mediaRoot = resolve('court-week-art/cw-0001')
 let manifest
+const staleFile = join(outputRoot, 'strips', 'day-03', 'strip-01', 'desktop.webp')
 
 function filesBelow(root) {
   return readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
@@ -28,6 +29,8 @@ before(async () => {
     requirementsPath,
   ], { stdio: 'pipe' })
   const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
+  mkdirSync(dirname(staleFile), { recursive: true })
+  writeFileSync(staleFile, 'stale')
   manifest = await buildSceneArtStrips({ requirements, mediaRoot, outputRoot })
 }, { timeout: 180_000 })
 
@@ -161,46 +164,53 @@ test('rejects non-cw-0001 case IDs before topology encoding', async () => {
   )
 })
 
+test('rejects unsupported rendition settings before reading source pixels', async () => {
+  await assert.rejects(renderStripRendition({
+    mediaRoot,
+    outputRoot,
+    sourcePaths: ['unused.webp'],
+    outputPath: 'unused.webp',
+    composition: 'phone',
+    format: 'webp',
+  }), /Unsupported strip rendition/)
+})
+
 test('clears stale strip output before rebuilding', async () => {
-  const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
-  const staleRoot = join(temporary, 'stale-output')
-  const staleFile = join(staleRoot, 'strips', 'day-03', 'strip-01', 'desktop.webp')
-  mkdirSync(dirname(staleFile), { recursive: true })
-  writeFileSync(staleFile, 'stale')
-  await buildSceneArtStrips({ requirements, mediaRoot, outputRoot: staleRoot })
   assert.equal(existsSync(staleFile), false)
 })
 
-test('normalizes oversized commissioned art to tile dimensions before compositing', async () => {
+test('normalizes oversized art and renders deterministic bytes without a full rebuild', async () => {
   const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
   const oversizedRoot = join(temporary, 'oversized-source')
   const oversizedOutput = join(temporary, 'oversized-output')
-  mkdirSync(join(oversizedRoot, 'scenes', 'mon-arrival'), { recursive: true })
-  for (const sceneId of requirements.sessions[0].sceneIds) {
-    for (const composition of ['portrait', 'tablet', 'desktop']) {
-      for (const format of ['avif', 'webp']) {
-        const relative = requirements.scenes[sceneId].sources[composition][format]
-        const source = resolve(mediaRoot, relative)
-        const target = join(oversizedRoot, relative)
-        mkdirSync(dirname(target), { recursive: true })
-        if (sceneId === 'mon-arrival' && composition === 'portrait') {
-          const tile = { width: 720, height: 1280 }
-          const pipeline = sharp(source).resize(tile.width * 2, tile.height * 2, { fit: 'fill' })
-          if (format === 'avif') await pipeline.avif().toFile(target)
-          else await pipeline.webp().toFile(target)
-        } else {
-          copyFileSync(source, target)
-        }
-      }
-    }
+  const sourcePaths = requirements.sessions[0].sceneIds.slice(0, 2)
+    .map((sceneId) => requirements.scenes[sceneId].sources.portrait.webp)
+  for (const [index, relative] of sourcePaths.entries()) {
+    const source = resolve(mediaRoot, relative)
+    const target = join(oversizedRoot, relative)
+    mkdirSync(dirname(target), { recursive: true })
+    if (index === 0) {
+      await sharp(source).resize(1440, 2560, { fit: 'fill' }).webp().toFile(target)
+    } else copyFileSync(source, target)
   }
-  const rebuilt = await buildSceneArtStrips({
-    requirements,
+  await renderStripRendition({
     mediaRoot: oversizedRoot,
     outputRoot: oversizedOutput,
+    sourcePaths,
+    outputPath: 'portrait.webp',
+    composition: 'portrait',
+    format: 'webp',
   })
-  assert.equal(rebuilt.strips.length, 4)
-  const firstPortrait = resolve(oversizedOutput, rebuilt.strips[0].sources.portrait.webp)
+  await renderStripRendition({
+    mediaRoot: oversizedRoot,
+    outputRoot: oversizedOutput,
+    sourcePaths,
+    outputPath: 'portrait-copy.webp',
+    composition: 'portrait',
+    format: 'webp',
+  })
+  const firstPortrait = resolve(oversizedOutput, 'portrait.webp')
   const metadata = await sharp(firstPortrait).metadata()
   assert.deepEqual({ width: metadata.width, height: metadata.height }, { width: 1440, height: 1280 })
+  assert.deepEqual(readFileSync(firstPortrait), readFileSync(resolve(oversizedOutput, 'portrait-copy.webp')))
 })
