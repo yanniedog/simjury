@@ -25,9 +25,9 @@ describe('Monday caption pacing', () => {
       .update(JSON.stringify(sourceGroups.map(({ id, text }) => [id, text])))
       .digest('hex')
 
-    expect(digest).toBe('666485f381000e950231807d131e59f59cc095ffbffe82dcbed15ee045bb2c6c')
+    expect(digest).toBe('10b8e0ac536236a12c1570f50eb30051eb0b21c953438536623e2c6cb7263ea8')
     expect(sourceGroups).toHaveLength(17)
-    expect(mondayCues).toHaveLength(79)
+    expect(mondayCues).toHaveLength(78)
     for (const group of sourceGroups) {
       expect(group.cues[0].id).toBe(group.id)
       const source = group.cues[0]
@@ -46,7 +46,7 @@ describe('Monday caption pacing', () => {
   it('limits caption length without changing Monday duration or later sessions', () => {
     expect(Math.max(...mondayCues.map((cue) => cue.text.length))).toBeLessThanOrEqual(CAPTION_CUE_CHARACTER_LIMIT)
     expect(Math.min(...mondayCues.map((cue) => cue.text.length))).toBeGreaterThanOrEqual(32)
-    expect(estimateSessionSeconds(monday)).toBe(1_276)
+    expect(estimateSessionSeconds(monday)).toBe(1_272)
     expect(elevenMinutesCourtWeek.manifest.sessions.slice(1)
       .flatMap((session) => session.scenes.flatMap((scene) => scene.cues))
       .every((cue) => cue.sourceCueId === undefined)).toBe(true)

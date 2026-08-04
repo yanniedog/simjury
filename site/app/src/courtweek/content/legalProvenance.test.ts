@@ -7,7 +7,13 @@ function cueText(cueId: string): string {
   for (const session of elevenMinutesCourtWeek.manifest.sessions) {
     for (const scene of session.scenes) {
       const cue = scene.cues.find(({ id }) => id === cueId)
-      if (cue) return `${cue.text} ${cue.accessibleProposition}`
+      if (cue) {
+        const sourceText = scene.cues
+          .filter(({ id, sourceCueId }) => id === cueId || sourceCueId === cueId)
+          .map(({ text }) => text)
+          .join(' ')
+        return `${sourceText} ${cue.accessibleProposition}`
+      }
     }
   }
   throw new Error(`Missing cue ${cueId}`)
@@ -77,6 +83,7 @@ describe('Eleven Minutes legal provenance', () => {
     expect(chiefStart).toBeLessThan(defenceObjection)
     expect(defenceObjection).toBeLessThan(chiefAnswer)
     expect(cueText('tue-def-objection')).toMatch(/Dax: Objection.*hearsay.*Sustained before the witness answers/is)
+    expect(orderedCues[defenceObjection].tone).toBe('chief')
     expect(crownObjections).toHaveLength(1)
     expect(crownObjections[0].cueId).toBe('thu-crown-objection')
   })
@@ -90,6 +97,7 @@ describe('Eleven Minutes legal provenance', () => {
     expect(cueText('wed-vos-chief-1')).toMatch(/fourteen years.*accepted immersion datasets.*both sides received/is)
     expect(cueText('thu-rusk-chief-1')).toMatch(/twelve years.*reviewed.*did not interview or diagnose/is)
     expect(cueText('thu-def-opening')).not.toMatch(/grave failure|admits a serious failure/i)
+    expect(cueText('thu-def-opening')).toMatch(/intention to cause death or really serious injury/i)
     expect(cueText('thu-rusk-chief-2')).not.toMatch(/disguise|conceal/i)
   })
 })
