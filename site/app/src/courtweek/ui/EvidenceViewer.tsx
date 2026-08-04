@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import type { EvidenceItem } from '../model/schema'
+import { useCuePlayback } from '../media/useCuePlayback'
+import type { EvidenceItem, SceneCue } from '../model/schema'
 import { renderExhibitPresentation } from './evidencePresentation'
 
 export interface EvidenceViewerProps {
   evidence: EvidenceItem
+  recordingCues?: SceneCue[]
+  showRecordingCaptions?: boolean
+  expandRecordingCaptions?: boolean
   returnFocusTo?: HTMLElement | null
   onClose: () => void
 }
@@ -18,7 +22,84 @@ const focusableSelector = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(',')
 
-export function EvidenceViewer({ evidence, returnFocusTo, onClose }: EvidenceViewerProps) {
+function RecordingReplay({
+  cues,
+  showCaptions = false,
+  expandCaptions = false,
+}: {
+  cues: SceneCue[]
+  showCaptions?: boolean
+  expandCaptions?: boolean
+}) {
+  const [cueIndex, setCueIndex] = useState(0)
+  const [continueOnCueChange, setContinueOnCueChange] = useState(false)
+  const [completed, setCompleted] = useState(false)
+  const cue = cues[cueIndex]
+  const playback = useCuePlayback(cue, () => {
+    if (cueIndex + 1 < cues.length) {
+      setContinueOnCueChange(true)
+      setCueIndex((index) => index + 1)
+    } else {
+      setCompleted(true)
+    }
+  }, undefined, { deferSourceUntilPlay: true })
+  const playRecording = playback.play
+  useEffect(() => {
+    if (!continueOnCueChange) return
+    setContinueOnCueChange(false)
+    void playRecording()
+  }, [continueOnCueChange, cueIndex, playRecording])
+  const activeTurn = cue.turns?.find((turn) => turn.id === playback.activeTurnId)
+  const caption = playback.status === 'reading-fallback'
+    ? { speaker: cue.speaker, text: cues.map((item) => item.text).join(' ') }
+    : activeTurn ?? { speaker: cue.speaker, text: cue.accessibleProposition }
+  const active = playback.status === 'playing' || playback.status === 'speech-fallback' || playback.status === 'loading'
+  const presentingCaption = active || playback.status === 'paused' || playback.status === 'reading-fallback'
+  const captionsVisible = showCaptions || playback.status === 'speech-fallback' || playback.status === 'reading-fallback'
+  const label = active
+    ? 'Pause admitted recording'
+    : playback.status === 'paused' && !completed
+      ? 'Resume admitted recording'
+      : 'Replay admitted recording'
+
+  return (
+    <section className="cw-recording-replay" aria-labelledby="cw-recording-replay-heading">
+      <h3 id="cw-recording-replay-heading">Admitted recording</h3>
+      <p id="cw-recording-replay-direction">
+        You may replay this exhibit. Repetition does not give it extra legal weight; use only what is actually audible and keep its stated limitations in mind.
+      </p>
+      <button
+        type="button"
+        aria-describedby="cw-recording-replay-direction"
+        onClick={() => {
+          if (active) playback.pause()
+          else if (playback.status === 'paused' && !completed) void playback.play()
+          else {
+            setCompleted(false)
+            if (cueIndex === 0) void playback.repeat()
+            else {
+              setContinueOnCueChange(true)
+              setCueIndex(0)
+            }
+          }
+        }}
+      >
+        {label}
+      </button>
+      {captionsVisible && presentingCaption ? (
+        <p className="cw-recording-caption" data-expanded={expandCaptions || playback.status === 'reading-fallback' || undefined} aria-hidden="true">
+          <strong>{caption.speaker}</strong> {caption.text}
+        </p>
+      ) : null}
+      <p className="cw-visually-hidden" aria-live="polite" aria-atomic="true">
+        {presentingCaption ? `${caption.speaker}. ${caption.text}` : ''}
+      </p>
+      {playback.error ? <p className="cw-error" role="status">{playback.error}</p> : null}
+    </section>
+  )
+}
+
+export function EvidenceViewer({ evidence, recordingCues, showRecordingCaptions, expandRecordingCaptions, returnFocusTo, onClose }: EvidenceViewerProps) {
   const [zoom, setZoom] = useState(1)
   const [offset, setOffset] = useState({ x: 0, y: 0 })
   const dialog = useRef<HTMLElement>(null)
@@ -170,6 +251,10 @@ export function EvidenceViewer({ evidence, returnFocusTo, onClose }: EvidenceVie
         <h3>Limitations</h3>
         <ul>{evidence.limitations.map((limit) => <li key={limit}>{limit}</li>)}</ul>
       </div>
+
+      {evidence.kind === 'recording' && recordingCues?.length ? (
+        <RecordingReplay cues={recordingCues} showCaptions={showRecordingCaptions} expandCaptions={expandRecordingCaptions} />
+      ) : null}
     </section>
   )
 }
