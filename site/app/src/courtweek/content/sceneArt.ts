@@ -383,6 +383,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'thu-quill-cross': {
+    altDescription: 'Crown counsel Asha Renn stands at the Crown table to cross-examine maintenance engineer Sera Quill, who remains in the witness box. The image conveys questioning only and no conclusion about craft safety, the warning or the reasonableness of any delay.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 52, y: 50 }, subjectSafeRegion: { x: 0, y: 35, width: 100, height: 52 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 51, y: 48 }, subjectSafeRegion: { x: 0, y: 26, width: 100, height: 66 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 51, y: 47 }, subjectSafeRegion: { x: 0, y: 23, width: 100, height: 70 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
