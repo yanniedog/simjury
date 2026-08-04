@@ -468,6 +468,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       }),
     },
   },
+  'fri-defence-close': {
+    altDescription: 'Defence counsel Corin Dax addresses the jury while Judge Sel Aven, Crown counsel and the accused listen without reaction. The image depicts advocacy, not evidence or a verdict.',
+    compositionArt: {
+      portrait: cropReviewedDirection({
+        focalPoint: { x: 57, y: 50 }, subjectSafeRegion: { x: 0, y: 27, width: 100, height: 64 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      tablet: cropReviewedDirection({
+        focalPoint: { x: 57, y: 47 }, subjectSafeRegion: { x: 0, y: 25, width: 100, height: 68 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+      desktop: cropReviewedDirection({
+        focalPoint: { x: 57, y: 45 }, subjectSafeRegion: { x: 0, y: 22, width: 100, height: 72 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'],
+      }),
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
