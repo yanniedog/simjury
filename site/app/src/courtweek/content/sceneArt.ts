@@ -116,18 +116,18 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
   'tue-recording': {
     altDescription: 'The courtroom listens to the admitted distress-channel recording while Peli Dorn remains in the witness box; an abstract waveform is visible but no words or disputed meaning are depicted.',
     compositionArt: {
-      portrait: {
+      portrait: cropReviewedDirection({
         focalPoint: { x: 50, y: 52 }, subjectSafeRegion: { x: 8, y: 36, width: 84, height: 42 },
-        evidenceSafeRegion: { x: 37, y: 53, width: 15, height: 8 }, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
-      },
-      tablet: {
+        evidenceSafeRegion: { x: 37, y: 53, width: 15, height: 8 },
+      }),
+      tablet: cropReviewedDirection({
         focalPoint: { x: 50, y: 52 }, subjectSafeRegion: { x: 10, y: 22, width: 80, height: 58 },
-        evidenceSafeRegion: { x: 39, y: 57, width: 12, height: 10 }, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
-      },
-      desktop: {
+        evidenceSafeRegion: { x: 39, y: 57, width: 12, height: 10 },
+      }),
+      desktop: cropReviewedDirection({
         focalPoint: { x: 50, y: 52 }, subjectSafeRegion: { x: 10, y: 20, width: 80, height: 58 },
-        evidenceSafeRegion: { x: 38, y: 61, width: 10, height: 9 }, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
-      },
+        evidenceSafeRegion: { x: 38, y: 61, width: 10, height: 9 },
+      }),
     },
   },
   'tue-dorn-cross': {
@@ -161,35 +161,32 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
   'tue-adjourn': {
     altDescription: 'The courtroom is empty after Tuesday’s adjournment, with the bench, witness box and counsel tables orderly in dusk light. No evidence remains visible or readable.',
     compositionArt: {
-      portrait: {
+      portrait: cropReviewedDirection({
         focalPoint: { x: 50, y: 42 }, subjectSafeRegion: null,
-        evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'], reviewStatus: 'crop-reviewed',
-      },
-      tablet: {
+        permittedCaptionPositions: ['bottom'],
+      }),
+      tablet: cropReviewedDirection({
         focalPoint: { x: 50, y: 42 }, subjectSafeRegion: null,
-        evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'], reviewStatus: 'crop-reviewed',
-      },
-      desktop: {
+        permittedCaptionPositions: ['bottom'],
+      }),
+      desktop: cropReviewedDirection({
         focalPoint: { x: 50, y: 42 }, subjectSafeRegion: null,
-        evidenceSafeRegion: null, permittedCaptionPositions: ['bottom'], reviewStatus: 'crop-reviewed',
-      },
+        permittedCaptionPositions: ['bottom'],
+      }),
     },
   },
   'wed-resume': {
     altDescription: 'Judge Sel Aven addresses the jury as Wednesday court resumes; Crown counsel, defence counsel and Mara Venn remain seated neutrally, the witness box is empty and no evidence is displayed.',
     compositionArt: {
-      portrait: {
+      portrait: cropReviewedDirection({
         focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 38, width: 100, height: 47 },
-        evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
-      },
-      tablet: {
+      }),
+      tablet: cropReviewedDirection({
         focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 34, width: 100, height: 50 },
-        evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
-      },
-      desktop: {
+      }),
+      desktop: cropReviewedDirection({
         focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 31, width: 100, height: 59 },
-        evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
-      },
+      }),
     },
   },
   'wed-pell-chief': {
