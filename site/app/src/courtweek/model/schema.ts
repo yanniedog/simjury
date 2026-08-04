@@ -323,6 +323,9 @@ export const weeklyProgressSchema = z.object({
   reasoningContributions: z.array(reasoningContributionSchema).optional(),
   secondBallotWasUnanimous: z.boolean().optional(),
   majorityDirectionReceived: z.boolean().optional(),
+  sealedVerdict: verdictSchema.optional(),
+  sealedAgreement: z.enum(['unanimous', 'majority', 'hung']).optional(),
+  openCourtVerdictReturned: z.boolean().optional(),
   returnedVerdict: verdictSchema.optional(),
   returnedAgreement: z.enum(['unanimous', 'majority', 'hung']).optional(),
 })
