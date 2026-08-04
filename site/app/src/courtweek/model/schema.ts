@@ -235,6 +235,7 @@ export const reasoningMoveSchema = z.enum([
 export type ReasoningMove = z.infer<typeof reasoningMoveSchema>
 
 export const reasoningContributionSchema = z.object({
+  propositionId: z.string().regex(/^prop-[a-z0-9-]+$/),
   sceneId: z.string().min(1),
   legalQuestion: z.string().min(1),
   evidenceId: z.string().min(1),
@@ -244,10 +245,32 @@ export const reasoningContributionSchema = z.object({
 })
 export type ReasoningContribution = z.infer<typeof reasoningContributionSchema>
 
+const authoredInfluenceSchema = z.object({
+  issue: z.enum(['murder', 'manslaughter', 'not-guilty']),
+  direction: z.union([z.literal(-1), z.literal(0), z.literal(1)]),
+  counterVerdict: verdictSchema.optional(),
+}).superRefine((value, context) => {
+  if (value.direction === -1 && (!value.counterVerdict || value.counterVerdict === value.issue)) {
+    context.addIssue({ code: 'custom', message: 'negative influence needs a different counter-verdict' })
+  }
+  if (value.direction !== -1 && value.counterVerdict) {
+    context.addIssue({ code: 'custom', message: 'only negative influence may name a counter-verdict' })
+  }
+})
+
+const deliberationPropositionSchema = z.object({
+  id: z.string().regex(/^prop-[a-z0-9-]+$/),
+  legalQuestion: z.string().min(1),
+  evidenceId: z.string().min(1),
+  move: reasoningMoveSchema,
+  influence: authoredInfluenceSchema,
+})
+
 export const deliberationPackSchema = z.object({
   jurors: z.array(jurorSchema).length(11),
   legalQuestions: z.array(z.string().min(1)).min(3),
   reasoningMoves: z.array(reasoningMoveSchema).length(6),
+  propositions: z.array(deliberationPropositionSchema).min(5),
   improperArguments: z.array(z.object({ claim: z.string().min(1), correction: z.string().min(1), influencePenalty: z.number().int().negative() })).min(4),
   juryNote: z.object({ question: z.string().min(1), answer: z.string().min(1) }),
   /** Authored-juror aggregate only; the player is added after sealing their own vote. */

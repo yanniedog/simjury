@@ -96,15 +96,16 @@ describe('CourtWeekApp improper-argument interaction', () => {
       expect(container.textContent).not.toContain(improper.claim)
     }
 
-    const legalQuestion = elevenMinutesCourtWeek.deliberation.legalQuestions[0]
-    const evidenceId = elevenMinutesCourtWeek.trial.evidence.find((item) => item.status === 'admitted')?.id
+    const proposition = elevenMinutesCourtWeek.deliberation.propositions.find(({ move }) => move === 'test-source')
+    const legalQuestion = proposition?.legalQuestion
+    const evidenceId = proposition?.evidenceId
     const silenceArgument = elevenMinutesCourtWeek.deliberation.improperArguments[0]
-    if (!evidenceId || !silenceArgument) throw new Error('Required deliberation fixtures are missing.')
+    if (!proposition || !legalQuestion || !evidenceId || !silenceArgument) throw new Error('Required deliberation fixtures are missing.')
 
     await act(async () => {
       chooseSelect(container, 'Legal question', legalQuestion)
       chooseSelect(container, 'Admitted evidence', evidenceId)
-      clickButton(container, 'apply-burden')
+      clickButton(container, proposition.move)
       const radio = Array.from(container.querySelectorAll<HTMLInputElement>('input[name="reasoning-basis"]')).find(
         (candidate) => candidate.value === 'improper:0',
       )
@@ -123,9 +124,10 @@ describe('CourtWeekApp improper-argument interaction', () => {
     const saved = latestProgress.reasoningContributions?.at(-1)
     expect(saved).toMatchObject({
       sceneId: 'sat-improper',
+      propositionId: proposition.id,
       legalQuestion,
       evidenceId,
-      move: 'apply-burden',
+      move: proposition.move,
       influencePenalty: silenceArgument.influencePenalty,
     })
     expect(saved).not.toHaveProperty('improperClaim')
