@@ -28,7 +28,7 @@
     "guard:cloudflare": "node scripts/assert-cloudflare-static-only.mjs",
     "check:archive": "node scripts/assert-archive-provenance.mjs",
     "check:budget": "node scripts/assert-static-budget.mjs",
-    "test:static": "node --test tests/cloudflare-static.test.mjs tests/landing-disclosure.test.mjs scripts/assert-pinned-media-release.test.mjs scripts/runtime-retirement.test.mjs"
+    "test:static": "node --test tests/cloudflare-static.test.mjs tests/landing-disclosure.test.mjs scripts/assert-archive-provenance.test.mjs scripts/assert-pinned-media-release.test.mjs scripts/runtime-retirement.test.mjs"
   },
   "devDependencies": {
     "sharp": "0.35.3",
