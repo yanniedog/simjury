@@ -217,7 +217,7 @@ describe('Court Week prerecorded audio jobs', () => {
       )
       const artReport = JSON.parse(readFileSync(resolve(privateOutputRoot, 'art-readiness-report.json'), 'utf8'))
       expect(artReport.release_ready).toBe(false)
-      expect(artReport.ready_scene_count).toBe(13)
+      expect(artReport.ready_scene_count).toBe(14)
       expect(artReport.ready_scene_ids).toEqual([
         'mon-arrival',
         'mon-oath',
@@ -232,6 +232,7 @@ describe('Court Week prerecorded audio jobs', () => {
         'tue-dorn-cross',
         'tue-dorn-re',
         'tue-mir-chief',
+        'tue-mir-cross',
       ])
       expect(artReport.scene_count).toBe(55)
       expect(() => execFileSync(process.execPath, [

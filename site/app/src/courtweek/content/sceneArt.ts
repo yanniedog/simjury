@@ -104,6 +104,13 @@ export const SCENE_ART_AUTHORING: Readonly<Record<string, CommissionedSceneArt>>
     evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
     permittedCaptionPositions: ['bottom'],
   },
+  'tue-mir-cross': {
+    altDescription: 'Defence counsel questions records custodian Tovan Mir while he remains composed in the witness box. No log is depicted as infallible, worthless or proof of state of mind.',
+    focalPoint: { x: 54, y: 46 },
+    subjectSafeRegion: { x: 12, y: 20, width: 76, height: 60 },
+    evidenceSafeRegion: { x: 30, y: 24, width: 40, height: 42 },
+    permittedCaptionPositions: ['bottom'],
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {
