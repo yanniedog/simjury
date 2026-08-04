@@ -81,6 +81,56 @@ test('core flow remains playable across browser engines', async ({ page }) => {
   expect(prohibited).toEqual([])
 })
 
+test('scene safe regions reflow caption lanes through phone, tablet, desktop and 200% zoom', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Responsive geometry is exercised once; cross-engine flow remains separate.')
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
+  await page.goto('/')
+  await page.getByLabel('Audio and captions').check()
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  await page.evaluate(() => {
+    const probe = document.createElement('div')
+    probe.className = 'cw-captions cw-caption-probe'
+    const copy = document.createElement('span')
+    copy.textContent = 'A short caption used to verify the authored safe lane.'
+    probe.append(copy)
+    document.querySelector('.cw-stage')?.append(probe)
+  })
+
+  const geometry = async () => page.locator('.cw-caption-probe').evaluate((caption) => {
+    const shell = caption.closest('.cw-shell') as HTMLElement
+    const stage = caption.closest('.cw-stage')!.getBoundingClientRect()
+    const box = caption.getBoundingClientRect()
+    const safe = JSON.parse(shell.dataset.subjectSafeRegion ?? '{}') as { x: number; y: number; width: number; height: number }
+    const protectedBox = {
+      left: stage.left + stage.width * safe.x / 100,
+      top: stage.top + stage.height * safe.y / 100,
+      right: stage.left + stage.width * (safe.x + safe.width) / 100,
+      bottom: stage.top + stage.height * (safe.y + safe.height) / 100,
+    }
+    const intersection = Math.max(0, Math.min(box.right, protectedBox.right) - Math.max(box.left, protectedBox.left)) *
+      Math.max(0, Math.min(box.bottom, protectedBox.bottom) - Math.max(box.top, protectedBox.top))
+    return { widthRatio: box.width / stage.width, intersection, top: box.top, bottom: box.bottom }
+  })
+
+  const phone = await geometry()
+  expect(phone.intersection).toBeLessThanOrEqual(1)
+  await page.setViewportSize({ width: 844, height: 390 })
+  const landscape = await geometry()
+  expect(landscape.intersection).toBeLessThanOrEqual(1)
+  expect(landscape.widthRatio).toBeLessThan(phone.widthRatio)
+  await page.setViewportSize({ width: 820, height: 1180 })
+  expect((await geometry()).intersection).toBeLessThanOrEqual(1)
+  await page.setViewportSize({ width: 1280, height: 800 })
+  expect((await geometry()).intersection).toBeLessThanOrEqual(1)
+
+  // A 390px browser at 200% has an approximately 195px layout viewport.
+  await page.setViewportSize({ width: 195, height: 422 })
+  await expect(page.locator('.cw-caption-probe')).toBeVisible()
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+  expect(overflow).toBeLessThanOrEqual(1)
+})
+
 async function readStoredProgress(page: Page) {
   return page.evaluate(async () => new Promise<Record<string, unknown> | null>((resolve, reject) => {
     const request = indexedDB.open('simjury-court-week-v1', 1)
