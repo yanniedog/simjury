@@ -297,7 +297,7 @@ describe('Court Week prerecorded audio jobs', () => {
         resolve('..', 'scripts', 'prepare-court-week-release.mjs'),
         ...packageArguments,
         '--require-release-ready-art',
-      ], { cwd: resolve('.'), stdio: 'pipe' })).toThrow()
+      ], { cwd: resolve('.'), stdio: 'pipe' })).toThrow(/Release publication is blocked until SceneArtManifest gaps are closed and every composition is crop-reviewed/)
       const blockedReport = JSON.parse(readFileSync(resolve(privateOutputRoot, 'art-readiness-report.json'), 'utf8'))
       expect(blockedReport.release_ready).toBe(true)
       expect(blockedReport.crop_review_complete).toBe(false)
