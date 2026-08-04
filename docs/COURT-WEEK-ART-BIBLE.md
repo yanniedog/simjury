@@ -13,7 +13,11 @@ windows, rails, microphones and fixed furniture do not migrate between scenes.
 
 Portrait, tablet and desktop are separately composed lenses on this same room.
 They may reveal different amounts of it, but may not mirror the room, swap the
-parties, invent a second witness box or move fixed furniture.
+parties, invent a second witness box or move fixed furniture. New focal points,
+protected subject/evidence rectangles and permitted caption positions are
+reviewed separately for each lens. Existing shared coordinates carry the
+explicit `compatibility-migration` status until crop contact-sheet review;
+they are not represented as crop-specific approval.
 
 ## Locked recurring cast
 
@@ -56,5 +60,8 @@ by the authored action. Reframing is allowed; teleporting the room is not.
 Artwork establishes presence, role and procedural phase. It never supplies a
 legal fact, resolves disputed evidence, signals guilt, or substitutes for an
 exhibit viewer. Documents and screens remain unreadable in stage art. Every
-scene keeps ambiguity-preserving alternative text, subject and evidence safe
-regions, and a clear caption zone.
+scene keeps ambiguity-preserving alternative text and a clear caption zone.
+When a crop contains a visible subject or evidence object, its protected region
+must enclose the actual pixels. When none is visible, the corresponding value is
+explicitly `null`; reviewers never draw a fictional evidence region merely to
+satisfy a gate.

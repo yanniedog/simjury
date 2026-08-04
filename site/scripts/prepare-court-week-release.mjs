@@ -183,6 +183,9 @@ for (const session of expectedArtSessions) {
 const packagedArtPaths = assets.map((asset) => asset.logical_path).filter((path) => path.startsWith('art/'))
 const unreferencedArt = packagedArtPaths.filter((path) => !referencedArtPaths.has(path))
 if (unreferencedArt.length) throw new Error(`Unreferenced art strip assets: ${unreferencedArt.join(', ')}`)
+// This source manifest is private review evidence, not a public release asset.
+// Preserve its crop geometry and provenance beside the packaged contact sheets.
+cpSync(artStripsPath, join(privateOutputRoot, 'scene-art-strips.source.json'))
 
 function loadAudioSessions() {
   const index = JSON.parse(readFileSync(join(jobsRoot, 'index.json'), 'utf8'))

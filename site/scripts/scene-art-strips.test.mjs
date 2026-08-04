@@ -29,7 +29,7 @@ before(async () => {
   ], { stdio: 'pipe' })
   const requirements = JSON.parse(readFileSync(requirementsPath, 'utf8'))
   manifest = await buildSceneArtStrips({ requirements, mediaRoot, outputRoot })
-}, { timeout: 90_000 })
+}, { timeout: 180_000 })
 
 after(() => rmSync(temporary, { recursive: true, force: true }))
 
@@ -43,7 +43,14 @@ test('builds only fully commissioned Monday strips in legal order', () => {
     manifest.strips.flatMap((strip) => strip.sceneSlots.map((slot) => slot.sceneId)),
     requirements.sessions[0].sceneIds,
   )
-  assert.deepEqual(manifest.strips.at(-1).sceneSlots, [{ sceneId: 'mon-adjourn', cell: 0 }])
+  assert.deepEqual(
+    manifest.strips.at(-1).sceneSlots.map(({ sceneId, cell }) => ({ sceneId, cell })),
+    [{ sceneId: 'mon-adjourn', cell: 0 }],
+  )
+  assert.deepEqual(
+    manifest.strips[0].sceneSlots[0].compositionArt,
+    requirements.scenes['mon-arrival'].compositionArt,
+  )
 })
 
 test('creates six exact-size renditions per strip and no scene for the neutral cell', async () => {

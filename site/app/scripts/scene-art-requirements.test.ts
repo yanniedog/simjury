@@ -10,6 +10,7 @@ describe('SceneArtManifest contract', () => {
       .flatMap((session) => session.scenes.map((scene) => scene.id))
     expect(sourceSceneIds).toHaveLength(55)
     expect(Object.keys(manifest.scenes)).toEqual(sourceSceneIds)
+    expect(manifest.schema).toBe('simjury.scene-art-manifest/v2')
     expect(manifest.sessions.map((session) => session.sceneIds)).toEqual(
       elevenMinutesCourtWeek.manifest.sessions.map((session) =>
         session.scenes.map((scene) => scene.id)),
@@ -18,8 +19,9 @@ describe('SceneArtManifest contract', () => {
     const sourcePaths = []
     for (const [sceneId, entry] of Object.entries(manifest.scenes)) {
       expect(entry.altDescription.length).toBeGreaterThan(20)
-      expect(entry.permittedCaptionPositions.length).toBeGreaterThan(0)
       for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
+        expect(entry.compositionArt[composition].focalPoint).toBeDefined()
+        expect(entry.compositionArt[composition].permittedCaptionPositions.length).toBeGreaterThan(0)
         for (const format of ['avif', 'webp'] as const) {
           const path = entry.sources[composition][format]
           expect(path).toBe(`scenes/${sceneId}/${composition}.${format}`)
@@ -34,18 +36,33 @@ describe('SceneArtManifest contract', () => {
     expect(tuesdayResume.visual.sources).toBeUndefined()
   })
 
-  it('keeps commissioned and absent safe-region decisions explicit', () => {
+  it('keeps per-composition presence and absent safe-region decisions explicit', () => {
     const manifest = buildSceneArtManifestDraft(elevenMinutesCourtWeek)
     const commissioned = new Set(Object.keys(SCENE_ART_AUTHORING))
     expect(commissioned.size).toBe(14)
     for (const [sceneId, entry] of Object.entries(manifest.scenes)) {
       if (commissioned.has(sceneId)) {
-        expect(entry.subjectSafeRegion).not.toBeNull()
-        expect(entry.evidenceSafeRegion).not.toBeNull()
+        for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
+          expect(entry.compositionArt[composition].subjectSafeRegion).not.toBeUndefined()
+          expect(entry.compositionArt[composition].evidenceSafeRegion).not.toBeUndefined()
+        }
       } else {
-        expect(entry.subjectSafeRegion).toBeNull()
-        expect(entry.evidenceSafeRegion).toBeNull()
+        for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
+          expect(entry.compositionArt[composition].subjectSafeRegion).toBeUndefined()
+          expect(entry.compositionArt[composition].evidenceSafeRegion).toBeUndefined()
+        }
       }
     }
+  })
+
+  it('does not invent visible evidence during legacy metadata migration', () => {
+    const manifest = buildSceneArtManifestDraft(elevenMinutesCourtWeek)
+    const visibleEvidenceScenes = Object.entries(manifest.scenes)
+      .filter(([, entry]) => Object.values(entry.compositionArt).some((direction) => direction.evidenceSafeRegion !== null && direction.evidenceSafeRegion !== undefined))
+      .map(([sceneId]) => sceneId)
+    expect(visibleEvidenceScenes).toEqual(['tue-recording'])
+    expect(manifest.scenes['mon-adjourn'].compositionArt.portrait.subjectSafeRegion).toBeNull()
+    expect(manifest.scenes['mon-arrival'].compositionArt.portrait.reviewStatus).toBe('compatibility-migration')
+    expect(manifest.scenes['tue-recording'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
   })
 })

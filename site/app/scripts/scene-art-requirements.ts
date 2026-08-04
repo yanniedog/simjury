@@ -2,10 +2,10 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
-import { SCENE_ART_AUTHORING } from '../src/courtweek/content/sceneArt'
+import { SCENE_ART_AUTHORING, type CompositionArtDirection } from '../src/courtweek/content/sceneArt'
 import type { CourtWeek } from '../src/courtweek/model/schema'
 
-export const SCENE_ART_SCHEMA = 'simjury.scene-art-manifest/v1' as const
+export const SCENE_ART_SCHEMA = 'simjury.scene-art-manifest/v2' as const
 const COMPOSITIONS = ['portrait', 'tablet', 'desktop'] as const
 const FORMATS = ['avif', 'webp'] as const
 
@@ -18,16 +18,23 @@ export interface ArtRegion {
 
 export interface ReleaseReadySceneArt {
   altDescription: string
-  focalPoint: { x: number; y: number }
-  subjectSafeRegion: ArtRegion
-  evidenceSafeRegion: ArtRegion
-  permittedCaptionPositions: Array<'top' | 'bottom' | 'left' | 'right'>
+  compositionArt: Record<typeof COMPOSITIONS[number], CompositionArtDirection>
   sources: Record<typeof COMPOSITIONS[number], Record<typeof FORMATS[number], string>>
 }
 
-type DraftSceneArt = Omit<ReleaseReadySceneArt, 'subjectSafeRegion' | 'evidenceSafeRegion'> & {
+type DraftCompositionArtDirection = Omit<CompositionArtDirection, 'subjectSafeRegion' | 'evidenceSafeRegion' | 'reviewStatus'> & {
+  subjectSafeRegion?: ArtRegion | null
+  evidenceSafeRegion?: ArtRegion | null
+  reviewStatus?: CompositionArtDirection['reviewStatus']
+}
+
+type DraftSceneArt = Omit<ReleaseReadySceneArt, 'compositionArt'> & {
+  compositionArt: Record<typeof COMPOSITIONS[number], DraftCompositionArtDirection>
+  /** Flat tablet projection retained for v1 review-tool compatibility. */
+  focalPoint: { x: number; y: number }
   subjectSafeRegion: ArtRegion | null
   evidenceSafeRegion: ArtRegion | null
+  permittedCaptionPositions: Array<'top' | 'bottom' | 'left' | 'right'>
   currentFallbackId: string
 }
 
@@ -58,7 +65,7 @@ export { SCENE_ART_AUTHORING }
 export function buildSceneArtManifestDraft(courtWeek: CourtWeek): SceneArtManifestDraft {
   const scenes = Object.fromEntries(courtWeek.manifest.sessions.flatMap((session) =>
     session.scenes.map((scene) => {
-      const authored = SCENE_ART_AUTHORING[scene.id] ?? {}
+      const authored = SCENE_ART_AUTHORING[scene.id]
       const sources = Object.fromEntries(COMPOSITIONS.map((composition) => [
         composition,
         Object.fromEntries(FORMATS.map((format) => [
@@ -66,12 +73,25 @@ export function buildSceneArtManifestDraft(courtWeek: CourtWeek): SceneArtManife
           `scenes/${scene.id}/${composition}.${format}`,
         ])),
       ])) as ReleaseReadySceneArt['sources']
+      const compositionArt = authored?.compositionArt ?? Object.fromEntries(COMPOSITIONS.map((composition) => [
+        composition,
+        {
+          focalPoint: scene.visual.focalPoint,
+          permittedCaptionPositions: [scene.visual.captionPosition],
+          // Undefined is deliberately different from null: uncommissioned
+          // metadata is missing, while null records reviewed visual absence.
+          subjectSafeRegion: undefined,
+          evidenceSafeRegion: undefined,
+        },
+      ])) as DraftSceneArt['compositionArt']
+      const compatibility = compositionArt.tablet
       return [scene.id, {
-        altDescription: authored.altDescription ?? scene.visual.alt,
-        focalPoint: authored.focalPoint ?? scene.visual.focalPoint,
-        subjectSafeRegion: authored.subjectSafeRegion ?? null,
-        evidenceSafeRegion: authored.evidenceSafeRegion ?? null,
-        permittedCaptionPositions: authored.permittedCaptionPositions ?? [scene.visual.captionPosition],
+        altDescription: authored?.altDescription ?? scene.visual.alt,
+        compositionArt,
+        focalPoint: compatibility.focalPoint,
+        subjectSafeRegion: compatibility.subjectSafeRegion ?? null,
+        evidenceSafeRegion: compatibility.evidenceSafeRegion ?? null,
+        permittedCaptionPositions: compatibility.permittedCaptionPositions,
         currentFallbackId: scene.visual.fallbackId,
         sources,
       }]

@@ -84,10 +84,21 @@ contact-sheet review. Binary validity never overrides a continuity rejection.
 - `tablet.avif` and `tablet.webp`, 4:3 and at least 1024x768; and
 - `desktop.avif` and `desktop.webp`, 16:9 and at least 1280x720.
 
-Every entry also requires an ambiguity-preserving alternative description,
-focal point, subject-safe rectangle, evidence-safe rectangle and one or more
-permitted caption positions. Safe regions are percentages in a 0-100 coordinate
-space and must be non-empty and remain fully inside the composition.
+Every entry also requires an ambiguity-preserving alternative description and
+separate portrait, tablet and desktop art direction. Each composition owns its
+focal point, permitted caption positions and explicit subject/evidence state.
+Visible subjects or evidence use a non-empty protected rectangle in a 0-100
+coordinate space; `null` means the reviewed composition deliberately contains
+none. An omitted field remains uncommissioned and blocks readiness.
+
+V2 requirements retain a flat tablet projection for older review consumers,
+but readiness is decided only from the per-composition metadata. V1 manifests
+remain readable and produce a complete gap report; they cannot become
+release-ready until their shared crop metadata is explicitly migrated.
+An explicit compatibility migration remains structurally ready but is not crop
+review sign-off: readiness output and private contact sheets retain its
+`compatibility-migration` status until each composition is visually checked and
+marked `crop-reviewed`.
 
 Run the source and binary audits with:
 
@@ -101,6 +112,9 @@ The release audit reads dimensions directly from both AVIF and WebP files. It
 also requires matching dimensions between codecs, rejects undersized or wrongly
 shaped compositions, unsafe paths, copied bytes, generic/shared/fallback names
 and visual files not owned by a manifest entry.
+The readiness report and private strip/contact-sheet manifest expose readiness
+and protected geometry per composition so reviewers can overlay the correct
+crop rather than applying desktop coordinates to a phone image.
 
 Missing commissioned art remains explicit: the authoring map does not invent
 safe regions and the build never copies a generic image into 55 paths. A manual

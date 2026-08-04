@@ -44,10 +44,10 @@ test('reports every incomplete scene and forbids the current generic assets', ()
     const id = `scene-${String(index + 1).padStart(2, '0')}`
     return [id, {
       altDescription: `A precise alternative description for authored courtroom scene ${index + 1}.`,
-      focalPoint: { x: 50, y: 50 },
-      subjectSafeRegion: null,
-      evidenceSafeRegion: null,
-      permittedCaptionPositions: ['bottom'],
+      compositionArt: Object.fromEntries(['portrait', 'tablet', 'desktop'].map((composition) => [composition, {
+        focalPoint: { x: 50, y: 50 },
+        permittedCaptionPositions: ['bottom'],
+      }])),
       sources: Object.fromEntries(['portrait', 'tablet', 'desktop'].map((composition) => [composition, {
         avif: `scenes/${id}/${composition}.avif`,
         webp: `scenes/${id}/${composition}.webp`,
@@ -56,7 +56,7 @@ test('reports every incomplete scene and forbids the current generic assets', ()
   }))
   try {
     const report = assessSceneArtManifest({
-      schema: 'simjury.scene-art-manifest/v1',
+      schema: 'simjury.scene-art-manifest/v2',
       caseId: 'cw-0001',
       sourceRevision: 'test',
       compositionContract: {
@@ -69,10 +69,36 @@ test('reports every incomplete scene and forbids the current generic assets', ()
     assert.equal(report.scene_count, 55)
     assert.equal(report.ready_scene_count, 0)
     assert.equal(report.gaps.filter((gap) => gap.code === 'missing-file').length, 55 * 6)
-    assert.equal(report.gaps.filter((gap) => gap.code === 'missing-subject-safe-region').length, 55)
-    assert.equal(report.gaps.filter((gap) => gap.code === 'missing-evidence-safe-region').length, 55)
+    assert.equal(report.gaps.filter((gap) => gap.code === 'missing-subject-safe-region').length, 55 * 3)
+    assert.equal(report.gaps.filter((gap) => gap.code === 'missing-evidence-safe-region').length, 55 * 3)
+    assert.equal(report.gaps.filter((gap) => gap.code === 'invalid-review-status').length, 55 * 3)
     assert.equal(report.gaps.filter((gap) => gap.code === 'unreferenced-visual-asset').length, 6)
+    assert.equal(report.composition_readiness['scene-01'].portrait.ready, false)
+    assert.equal(report.composition_readiness['scene-01'].portrait.review_status, null)
+    assert.equal(report.crop_review_complete, false)
   } finally {
     rmSync(fixtureRoot, { recursive: true, force: true })
   }
+})
+
+test('reads v1 manifests backwards-compatibly but requires explicit crop migration', () => {
+  const entry = {
+    altDescription: 'A sufficiently precise description of one legacy courtroom composition.',
+    focalPoint: { x: 50, y: 50 },
+    subjectSafeRegion: null,
+    evidenceSafeRegion: null,
+    permittedCaptionPositions: ['bottom'],
+    sources: Object.fromEntries(['portrait', 'tablet', 'desktop'].map((composition) => [composition, {
+      avif: `scenes/legacy/${composition}.avif`, webp: `scenes/legacy/${composition}.webp`,
+    }])),
+  }
+  const report = assessSceneArtManifest({
+    schema: 'simjury.scene-art-manifest/v1', caseId: 'cw-0001', sourceRevision: 'legacy',
+    scenes: Object.fromEntries(Array.from({ length: 55 }, (_, index) => [`legacy-${index}`, entry])),
+  }, mediaRoot)
+  assert.equal(report.gaps.filter((gap) => gap.code === 'invalid-manifest').length, 0)
+  assert.equal(report.gaps.filter((gap) => gap.code === 'legacy-composition-metadata').length, 55 * 3)
+  assert.equal(report.composition_readiness['legacy-0'].portrait.ready, false)
+  assert.equal(report.composition_readiness['legacy-0'].portrait.gap_count > 0, true)
+  assert.equal(report.release_ready, false)
 })

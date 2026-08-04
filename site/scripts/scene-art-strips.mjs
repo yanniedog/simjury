@@ -164,7 +164,13 @@ export async function buildSceneArtStrips({ requirements, mediaRoot, outputRoot 
         sessionId: session.id,
         ordinal: session.ordinal,
         stripIndex,
-        sceneSlots: sceneIds.map((sceneId, cell) => ({ sceneId, cell })),
+        sceneSlots: sceneIds.map((sceneId, cell) => ({
+          sceneId,
+          cell,
+          // Private review metadata: each crop keeps its own protected content
+          // and caption geometry alongside the contact-sheet strip mapping.
+          compositionArt: requirements.scenes[sceneId].compositionArt,
+        })),
         sources,
       })
     }

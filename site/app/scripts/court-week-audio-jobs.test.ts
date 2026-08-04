@@ -92,6 +92,7 @@ describe('Court Week prerecorded audio jobs', () => {
     try {
       writeCourtWeekAudioJobs(jobsRoot)
       writeSceneArtManifestDraft(artRequirements)
+      const artRequirementsManifest = JSON.parse(readFileSync(artRequirements, 'utf8'))
       mkdirSync(artRoot, { recursive: true })
       const monday = elevenMinutesCourtWeek.manifest.sessions[0]
       const compositions = {
@@ -115,7 +116,11 @@ describe('Court Week prerecorded audio jobs', () => {
           ordinal: monday.ordinal,
           stripIndex,
           sceneSlots: monday.scenes.slice(stripIndex * 2, stripIndex * 2 + 2)
-            .map((scene, cell) => ({ sceneId: scene.id, cell })),
+            .map((scene, cell) => ({
+              sceneId: scene.id,
+              cell,
+              compositionArt: artRequirementsManifest.scenes[scene.id].compositionArt,
+            })),
           sources,
         }
       })
@@ -207,6 +212,15 @@ describe('Court Week prerecorded audio jobs', () => {
         session.session_id === 'cw-0001-monday').art.strips).toHaveLength(4)
       expect(runtime.sessions.find((session: { session_id: string }) =>
         session.session_id === 'cw-0001-tuesday').art).toBeNull()
+      const reviewStrips = JSON.parse(readFileSync(resolve(privateOutputRoot, 'scene-art-strips.source.json'), 'utf8'))
+      expect(reviewStrips.strips[0].sceneSlots[0]).toMatchObject({
+        sceneId: 'mon-arrival',
+        compositionArt: {
+          portrait: { reviewStatus: 'compatibility-migration' },
+          tablet: { reviewStatus: 'compatibility-migration' },
+          desktop: { reviewStatus: 'compatibility-migration' },
+        },
+      })
       const publicManifest = JSON.parse(readFileSync(resolve(outputRoot, 'release-manifest.json'), 'utf8'))
       expect(JSON.stringify(publicManifest)).not.toContain('logical_path')
       expect(JSON.stringify(publicManifest)).not.toContain('mon-arrival')
