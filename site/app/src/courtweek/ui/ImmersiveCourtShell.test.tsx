@@ -94,7 +94,7 @@ describe('ImmersiveCourtShell', () => {
     expect(markup).toContain('--cw-caption-desktop-height:12%')
     expect(markup).toContain('aria-pressed="true"')
     expect(markup).toContain('Juror desk')
-    expect(markup).toContain('Full screen')
+    expect(markup).not.toContain('Full screen')
     expect(markup).toContain('cross-examination')
     expect(markup).toContain('aria-live="polite"')
   })

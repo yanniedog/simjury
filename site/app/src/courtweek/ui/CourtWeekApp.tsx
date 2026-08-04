@@ -97,6 +97,8 @@ function CourtWeekEntry({
   persistenceNotice: string | null
 }) {
   const [fullscreen, setFullscreen] = useState(false)
+  const fullscreenSupported = typeof document !== 'undefined'
+    && typeof document.documentElement.requestFullscreen === 'function'
   return (
     <main className="cw-entry">
       <div className="cw-entry__panel">
@@ -125,10 +127,12 @@ function CourtWeekEntry({
             </label>
           ))}
         </fieldset>
-        <label className="cw-entry__fullscreen">
-          <input type="checkbox" checked={fullscreen} onChange={(event) => setFullscreen(event.target.checked)} />
-          Ask to enter full screen
-        </label>
+        {fullscreenSupported ? (
+          <label className="cw-entry__fullscreen">
+            <input type="checkbox" checked={fullscreen} onChange={(event) => setFullscreen(event.target.checked)} />
+            Ask to enter full screen
+          </label>
+        ) : null}
         <button className="cw-primary" type="button" onClick={() => onEnter(fullscreen)}>
           Take your seat
         </button>
