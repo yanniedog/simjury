@@ -43,6 +43,9 @@ they are not represented as crop-specific approval.
 - Jaro Pell: man in his early forties; fair-to-tan complexion; short dark-blond
   hair; clean-shaven; plain dark-blue shirt under a muted grey civilian jacket;
   calm rescue-supervisor manner.
+- Oren Vale: man in his early sixties; deep-brown complexion; close-cropped
+  greying black hair; clean-shaven; plain dark-brown business suit, cream shirt
+  and dark tie; careful compliance-director manner.
 
 Wardrobe stays unchanged through a court day. No police, rescue or military
 uniform appears in court unless the authored record expressly calls that person
