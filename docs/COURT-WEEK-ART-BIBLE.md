@@ -49,6 +49,9 @@ they are not represented as crop-specific approval.
 - Tali Rusk: non-binary adult; medium-brown complexion; short black textured
   hair; subtle round dark eyeglasses; plain muted olive-grey blazer over a
   black shirt; composed human-factors-expert manner.
+- Sera Quill: woman in her early forties; warm light-medium East Asian
+  complexion; straight dark hair secured in a low ponytail; no glasses; plain
+  navy blazer over a pale-blue shirt; practical maintenance-engineer manner.
 
 Wardrobe stays unchanged through a court day. No police, rescue or military
 uniform appears in court unless the authored record expressly calls that person
