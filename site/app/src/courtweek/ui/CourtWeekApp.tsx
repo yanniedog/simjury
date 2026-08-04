@@ -293,6 +293,20 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     void playCue()
   }, [accessMode, interactionOpen, playCue, position.cue.id, started])
 
+  const interaction = position.scene.interaction
+  const interactionElapsedSeconds = interactionOpen && interactionOpenedAt != null
+    ? Math.max(0, (now() - interactionOpenedAt) / 1000)
+    : 0
+  const interactionMinimumMet = !interaction
+    || isReplay
+    || interactionElapsedSeconds >= interaction.minimumSeconds
+  useEffect(() => {
+    if (!interactionOpen || !interaction || isReplay || interactionMinimumMet) return
+    const remainingMs = Math.max(0, interaction.minimumSeconds * 1000 - interactionElapsedSeconds * 1000)
+    const timer = window.setTimeout(() => setInteractionTick((value) => value + 1), Math.min(remainingMs + 16, 1000))
+    return () => window.clearTimeout(timer)
+  }, [interaction, interactionElapsedSeconds, interactionMinimumMet, interactionOpen, isReplay])
+
   if (!hydrated) return <main className="cw-loading" aria-busy="true"><p>Preparing the courtroom…</p></main>
 
   if (!entered) {
@@ -364,19 +378,6 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     `https://github.com/yanniedog/simjury/releases/download/${encodeURIComponent(courtWeek.manifest.releaseTag)}`
   const sceneCount = activeSession.scenes.length
   const progressLabel = `Scene ${position.sceneIndex + 1} of ${sceneCount}`
-  const interaction = position.scene.interaction
-  const interactionElapsedSeconds = interactionOpen && interactionOpenedAt != null
-    ? Math.max(0, (now() - interactionOpenedAt) / 1000)
-    : 0
-  const interactionMinimumMet = !interaction
-    || isReplay
-    || interactionElapsedSeconds >= interaction.minimumSeconds
-  useEffect(() => {
-    if (!interactionOpen || !interaction || isReplay || interactionMinimumMet) return
-    const remainingMs = Math.max(0, interaction.minimumSeconds * 1000 - interactionElapsedSeconds * 1000)
-    const timer = window.setTimeout(() => setInteractionTick((value) => value + 1), Math.min(remainingMs + 16, 1000))
-    return () => window.clearTimeout(timer)
-  }, [interaction, interactionElapsedSeconds, interactionMinimumMet, interactionOpen, isReplay])
   const firstBallot = firstBallotForScene(
     courtWeek.deliberation, position.scene.id, progress.provisionalVote,
   )
