@@ -5,7 +5,11 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
 import { canonicalSha256 } from './canonical-json.mjs'
-import { assertPinnedMediaMatchesRelease, assertReleasePayloadMatchesManifest } from './assert-pinned-media-release.mjs'
+import {
+  assertPinnedMediaMatchesRelease,
+  assertReleasePayloadMatchesManifest,
+  assertReleasePayloadReadyForPublication,
+} from './assert-pinned-media-release.mjs'
 
 const releaseTag = 'court-week-cw-0001-2026.08.03-r1'
 const revision = '2026.08.03-r1'
@@ -186,8 +190,13 @@ test('rejects missing, extra and SHA-mismatched Release assets', async (t) => {
 
 function writeReleasePayload(release) {
   const directory = mkdtempSync(join(tmpdir(), 'simjury-release-payload-'))
-  writeFileSync(join(directory, 'release-manifest.json'), `${JSON.stringify(release)}\n`)
   for (const asset of release.assets) writeFileSync(join(directory, asset.asset_name), payloadBytes.get(asset.asset_name))
+  let manifestBytes = Buffer.from(`${JSON.stringify(release)}\n`)
+  do {
+    release.total_bytes = release.media_bytes + manifestBytes.length
+    manifestBytes = Buffer.from(`${JSON.stringify(release)}\n`)
+  } while (release.total_bytes !== release.media_bytes + manifestBytes.length)
+  writeFileSync(join(directory, 'release-manifest.json'), manifestBytes)
   return directory
 }
 
@@ -218,5 +227,38 @@ test('hashes the exact attached immutable Release payload', async (t) => {
     t.after(() => rmSync(directory, { recursive: true, force: true }))
     writeFileSync(join(directory, release.assets[0].asset_name), 'corrupt')
     assert.throws(() => assertReleasePayloadMatchesManifest(release, directory), /failed integrity/u)
+  })
+})
+
+test('publication re-verifies the complete reviewed payload immediately before release creation', async (t) => {
+  await t.test('matching payload', (t) => {
+    const { release } = matchedManifests()
+    const directory = writeReleasePayload(release)
+    t.after(() => rmSync(directory, { recursive: true, force: true }))
+    assert.deepEqual(assertReleasePayloadReadyForPublication(release, directory, releaseTag), {
+      assetCount: 11,
+      releaseTag,
+      totalBytes: release.total_bytes,
+    })
+  })
+  await t.test('substituted asset', (t) => {
+    const { release } = matchedManifests()
+    const directory = writeReleasePayload(release)
+    t.after(() => rmSync(directory, { recursive: true, force: true }))
+    writeFileSync(join(directory, release.assets[0].asset_name), 'substituted')
+    assert.throws(
+      () => assertReleasePayloadReadyForPublication(release, directory, releaseTag),
+      /failed integrity/u,
+    )
+  })
+  await t.test('incomplete byte manifest', (t) => {
+    const { release } = matchedManifests()
+    const directory = writeReleasePayload(release)
+    t.after(() => rmSync(directory, { recursive: true, force: true }))
+    release.total_bytes += 1
+    assert.throws(
+      () => assertReleasePayloadReadyForPublication(release, directory, releaseTag),
+      /total_bytes/u,
+    )
   })
 })

@@ -311,6 +311,11 @@ jobs:
           REVIEWED_RUN_ID: ${{ inputs.reviewed_run_id }}
         run: |
           set -euo pipefail
+          node site/scripts/assert-pinned-media-release.mjs \
+            --release-payload-only \
+            --release-manifest .court-week-release/release-manifest.json \
+            --release-assets-dir .court-week-release \
+            --expected-release-tag "$RELEASE_TAG"
           if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo "Release $RELEASE_TAG already exists; immutable releases are never clobbered." >&2
             exit 1
