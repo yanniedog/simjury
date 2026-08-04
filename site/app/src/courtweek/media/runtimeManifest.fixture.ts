@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import { elevenMinutesCourtWeek } from '../content'
 import type { CourtSession, SceneCue } from '../model/schema'
 import type { CourtWeekRuntimeMediaManifest } from './manifest'
+import { isRuntimeDependentCue } from './runtimeCues'
 
 function assetName(seed: string, extension: 'opus' | 'm4a' | 'mp3' | 'vtt' | 'avif' | 'webp') {
   return `${createHash('sha256').update(seed).digest('hex')}.${extension}`
@@ -22,7 +23,9 @@ export function completeRuntimeMediaFixture(): CourtWeekRuntimeMediaManifest {
         id: segment.id,
         source_scene_id: segment.sourceSceneId,
         duration_seconds: segment.cues.length * 6,
-        cues: segment.cues.map((cue, index) => ({
+        cues: segment.cues
+          .filter((cue) => !isRuntimeDependentCue(cue.id))
+          .map((cue, index) => ({
           cue_id: cue.id,
           start_seconds: index * 6,
           end_seconds: index * 6 + 5.5,
@@ -81,4 +84,9 @@ function fixtureSegments(session: CourtSession): Array<{
     )
   }
   return segments
+    .map((segment) => ({
+      ...segment,
+      cues: segment.cues.filter((cue) => !isRuntimeDependentCue(cue.id)),
+    }))
+    .filter((segment) => segment.cues.length > 0)
 }

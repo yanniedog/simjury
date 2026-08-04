@@ -14,6 +14,21 @@
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+.cw-loading--inline {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 40;
+  min-height: 0;
+  padding: 0.65rem 1rem;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--cw-ground) 88%, transparent);
+  color: var(--cw-paper);
+  font: 600 0.95rem/1.3 Georgia, "Times New Roman", serif;
+  pointer-events: none;
+}
+
 .cw-shell *, .cw-entry *, .cw-loading * { box-sizing: border-box; }
 .cw-shell button, .cw-entry button, .cw-shell input, .cw-shell textarea, .cw-entry input { font: inherit; }
 .cw-shell button, .cw-entry button {

@@ -46,7 +46,9 @@ test('legacy product paths redirect to the canonical Court Week route', () => {
 test('Court Week media publishing is trusted, manual and non-clobbering', () => {
   const workflow = readFileSync(new URL('../../.github/workflows/court-week-media.yml', import.meta.url), 'utf8')
   assert.match(workflow, /workflow_dispatch:/)
-  assert.match(workflow, /github\.ref == 'refs\/heads\/main'/)
+  assert.match(workflow, /inputs\.publish != true/)
+  assert.match(workflow, /reviewed_run_id/)
+  assert.match(workflow, /gh run download/)
   assert.match(workflow, /Release .* already exists; immutable releases are never clobbered/)
   assert.match(workflow, /--json isImmutable/)
   assert.equal(
@@ -68,4 +70,5 @@ test('production deploy requires the exact pinned immutable release', () => {
   assert.match(workflow, /RELEASE_TAG: court-week-cw-0001-2026\.08\.03-r1/)
   assert.match(workflow, /isDraft == false and \.isImmutable == true/)
   assert.match(workflow, /m\.release_tag!==process\.env\.RELEASE_TAG/)
+  assert.match(workflow, /COURT_WEEK_REQUIRE_PINNED_MEDIA: "1"/)
 })

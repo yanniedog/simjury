@@ -251,8 +251,12 @@ function loadAudioSessions() {
       }
       if (segment.cues.length !== jobSegment.cues.length) throw new Error(`Cue count mismatch for ${segment.id}`)
       for (const [cueIndex, cue] of segment.cues.entries()) {
-        if (cue.cueId !== jobSegment.cues[cueIndex]?.id) throw new Error(`Cue order mismatch for ${segment.id}`)
-        if (seenCueIds.has(cue.cueId)) throw new Error(`Duplicate audio cue mapping: ${cue.cueId}`)
+        const jobCue = jobSegment.cues[cueIndex]
+        if (cue.cueId !== jobCue?.id) throw new Error(`Cue order mismatch for ${segment.id}`)
+        if (jobCue.sourceCueId && cue.sourceCueId && cue.sourceCueId !== jobCue.sourceCueId) {
+          throw new Error(`sourceCueId mismatch for ${cue.cueId}`)
+        }
+        if (seenCueIds.has(cue.cueId)) throw new Error(`Duplicate audio utterance mapping: ${cue.cueId}`)
         seenCueIds.add(cue.cueId)
         if (!(cue.startSeconds >= 0 && cue.endSeconds > cue.startSeconds && cue.endSeconds <= segment.durationSeconds + 0.15)) {
           throw new Error(`Invalid cue range for ${cue.cueId}`)
@@ -284,12 +288,31 @@ function loadAudioSessions() {
   const expectedCueCount = [...jobs.values()].reduce((count, job) =>
     count + job.segments.reduce((segmentCount, segment) => segmentCount + segment.cues.length, 0), 0)
   if (seenCueIds.size !== expectedCueCount) {
-    throw new Error(`Runtime media maps ${seenCueIds.size} cues; reviewed jobs require ${expectedCueCount}`)
+    throw new Error(`Runtime media maps ${seenCueIds.size} utterances; reviewed jobs require ${expectedCueCount}`)
   }
-  return sessions
+  return { sessions, jobs }
 }
 
-const audioSessions = loadAudioSessions()
+function collapseAuthoredCueRanges(cues, jobCues) {
+  const ranges = new Map()
+  for (const [index, cue] of cues.entries()) {
+    const sourceCueId = cue.sourceCueId ?? jobCues[index]?.sourceCueId ?? cue.cueId
+    const existing = ranges.get(sourceCueId)
+    if (!existing) {
+      ranges.set(sourceCueId, {
+        cue_id: sourceCueId,
+        start_seconds: cue.startSeconds,
+        end_seconds: cue.endSeconds,
+      })
+      continue
+    }
+    existing.start_seconds = Math.min(existing.start_seconds, cue.startSeconds)
+    existing.end_seconds = Math.max(existing.end_seconds, cue.endSeconds)
+  }
+  return [...ranges.values()]
+}
+
+const { sessions: audioSessions, jobs: jobsBySession } = loadAudioSessions()
 if (artRequirements.sourceRevision !== audioSessions[0]?.sourceRevision) {
   throw new Error('SceneArtManifest and prerecorded audio were not derived from the same Court Week revision')
 }
@@ -298,60 +321,71 @@ const runtimeMediaManifest = {
   case_id: 'cw-0001',
   release_tag: releaseTag,
   source_revision: audioSessions[0]?.sourceRevision ?? null,
-  sessions: audioSessions.map((session) => ({
-    session_id: session.sessionId,
-    day: session.day,
-    narration_seconds: session.narrationSeconds,
-    experience_seconds: session.experienceSeconds,
-    segments: session.segments.map((segment) => ({
-      id: segment.id,
-      source_scene_id: segment.sourceSceneId,
-      duration_seconds: segment.durationSeconds,
-      cues: segment.cues.map((cue) => ({
-        cue_id: cue.cueId,
-        start_seconds: cue.startSeconds,
-        end_seconds: cue.endSeconds,
+  sessions: audioSessions.map((session) => {
+    const job = jobsBySession.get(session.sessionId)
+    return {
+      session_id: session.sessionId,
+      day: session.day,
+      narration_seconds: session.narrationSeconds,
+      experience_seconds: session.experienceSeconds,
+      segments: session.segments.map((segment, segmentIndex) => ({
+        id: segment.id,
+        source_scene_id: segment.sourceSceneId,
+        duration_seconds: segment.durationSeconds,
+        cues: collapseAuthoredCueRanges(segment.cues, job?.segments[segmentIndex]?.cues ?? []),
+        sources: Object.fromEntries(Object.entries(segment.sources).map(([codec, path]) => {
+          const asset = assetByLogicalPath.get(`audio/${path}`)
+          if (!asset) throw new Error(`Missing release asset for ${path}`)
+          return [codec, asset.asset_name]
+        })),
       })),
-      sources: Object.fromEntries(Object.entries(segment.sources).map(([codec, path]) => {
-        const asset = assetByLogicalPath.get(`audio/${path}`)
-        if (!asset) throw new Error(`Missing release asset for ${path}`)
-        return [codec, asset.asset_name]
-      })),
-    })),
-    art: artBySession.get(session.sessionId) ?? null,
-  })),
+      art: artBySession.get(session.sessionId) ?? null,
+    }
+  }),
 }
 const runtimeManifestName = artReadiness.release_ready
   ? 'court-week-media-manifest.json'
   : 'court-week-media-manifest.draft.json'
 writeFileSync(join(privateOutputRoot, runtimeManifestName), `${JSON.stringify(runtimeMediaManifest, null, 2)}\n`)
 
-let totalBytes = [...seenNames].reduce((sum, name) => sum + readFileSync(join(outputRoot, name)).length, 0)
-if (totalBytes > 150_000_000) throw new Error(`Release media is ${totalBytes} bytes; budget is 150 MB`)
+const mediaBytes = [...seenNames].reduce((sum, name) => sum + readFileSync(join(outputRoot, name)).length, 0)
+if (mediaBytes > 150_000_000) throw new Error(`Release media is ${mediaBytes} bytes; budget is 150 MB`)
 
 const publicAssets = [...new Map(assets.map(({ asset_name, bytes, sha256 }) => [
   asset_name, { asset_name, bytes, sha256 },
 ])).values()]
-const manifest = {
-  schema: 'simjury.court-week-media/v1',
-  case_id: 'cw-0001',
-  release_tag: releaseTag,
-  source_revision: process.env.GITHUB_SHA ?? 'local-unpublished',
-  generated_at: process.env.GITHUB_RUN_ID ? new Date().toISOString() : null,
-  production_environment: audioSessions[0]?.productionEnvironment ?? null,
-  art_readiness: {
-    release_ready: artReadiness.release_ready,
-    ready_scene_count: artReadiness.ready_scene_count,
-    gap_count: artReadiness.gap_count,
-  },
-  asset_count: seenNames.size + 1,
-  media_bytes: totalBytes,
-  assets: publicAssets,
-}
-writeFileSync(join(outputRoot, 'release-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`)
 
-totalBytes += readFileSync(join(outputRoot, 'release-manifest.json')).length
+function serializeReleaseManifest(totalBytes) {
+  return `${JSON.stringify({
+    schema: 'simjury.court-week-media/v1',
+    case_id: 'cw-0001',
+    release_tag: releaseTag,
+    source_revision: process.env.GITHUB_SHA ?? 'local-unpublished',
+    generated_at: process.env.GITHUB_RUN_ID ? new Date().toISOString() : null,
+    production_environment: audioSessions[0]?.productionEnvironment ?? null,
+    art_readiness: {
+      release_ready: artReadiness.release_ready,
+      ready_scene_count: artReadiness.ready_scene_count,
+      gap_count: artReadiness.gap_count,
+    },
+    asset_count: seenNames.size + 1,
+    media_bytes: mediaBytes,
+    total_bytes: totalBytes,
+    assets: publicAssets,
+  }, null, 2)}\n`
+}
+
+let releaseManifestBody = serializeReleaseManifest(mediaBytes)
+let totalBytes = mediaBytes + Buffer.byteLength(releaseManifestBody)
+releaseManifestBody = serializeReleaseManifest(totalBytes)
+totalBytes = mediaBytes + Buffer.byteLength(releaseManifestBody)
+releaseManifestBody = serializeReleaseManifest(totalBytes)
+if (mediaBytes + Buffer.byteLength(releaseManifestBody) !== totalBytes) {
+  totalBytes = mediaBytes + Buffer.byteLength(releaseManifestBody)
+  releaseManifestBody = serializeReleaseManifest(totalBytes)
+}
 if (totalBytes > 150_000_000) throw new Error(`Release is ${totalBytes} bytes; budget is 150 MB`)
+writeFileSync(join(outputRoot, 'release-manifest.json'), releaseManifestBody)
 
 writeFileSync(join(privateOutputRoot, 'release-provenance.json'), `${JSON.stringify({
   schema: 'simjury.court-week-media-provenance/v1',
