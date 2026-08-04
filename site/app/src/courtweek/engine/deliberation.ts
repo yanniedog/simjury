@@ -24,6 +24,15 @@ export interface FinalBallotInput {
   elapsedCourtHours: number
 }
 
+export type ReasoningContributionDraft = Omit<ReasoningContribution, 'influencePenalty'> & {
+  improperClaim?: string | null
+}
+
+export interface ReasoningAssessment {
+  contribution: ReasoningContribution
+  correction: string | null
+}
+
 const verdicts: Verdict[] = ['murder', 'manslaughter', 'not-guilty', 'unable-to-agree']
 
 function cloneBallot(ballot: BallotAggregate): BallotAggregate {
@@ -209,4 +218,23 @@ export function openCourtReturn(verdict: Verdict, agreement: Agreement): string 
 export function matchImproperArgument(pack: DeliberationPack, claim: string) {
   const normalized = claim.trim().toLocaleLowerCase()
   return pack.improperArguments.find((argument) => argument.claim.toLocaleLowerCase() === normalized) ?? null
+}
+
+/**
+ * Assesses the proposed basis separately from the lawful reasoning move.
+ * Forbidden content is not persisted; only its authored influence penalty is.
+ */
+export function assessReasoningContribution(
+  pack: DeliberationPack,
+  draft: ReasoningContributionDraft,
+): ReasoningAssessment {
+  const { improperClaim, ...lawfulDraft } = draft
+  const improper = improperClaim ? matchImproperArgument(pack, improperClaim) : null
+  return {
+    contribution: {
+      ...lawfulDraft,
+      influencePenalty: improper?.influencePenalty ?? 0,
+    },
+    correction: improper?.correction ?? null,
+  }
 }
