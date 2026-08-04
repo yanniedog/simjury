@@ -232,6 +232,9 @@ test('Tuesday captions avoid line overflow with only enumerated safe-layout fall
     { viewport: 'tablet', width: 820, height: 1180 },
     { viewport: 'desktop', width: 1280, height: 800 },
   ]
+  // Exact pairs measured after the crop review: runtime fallback is allowed only
+  // when the probe below still reports no overflow or speaker/control collision.
+  // Re-measure every viewport before changing this independent regression baseline.
   const intentionalRuntimeFallbacks = new Set([
     'desktop:tue-dorn-chief',
     'desktop:tue-mir-chief',
