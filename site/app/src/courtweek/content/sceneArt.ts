@@ -174,6 +174,23 @@ export const SCENE_ART_AUTHORING: Readonly<Partial<Record<string, CommissionedSc
       },
     },
   },
+  'wed-vos': {
+    altDescription: 'Marine survival physician Dr Eren Vos gives evidence from the witness box while Crown counsel questions her. No survival model, death time, probability or conclusion about causation is depicted.',
+    compositionArt: {
+      portrait: {
+        focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 35, width: 100, height: 49 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
+      },
+      tablet: {
+        focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 30, width: 100, height: 58 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
+      },
+      desktop: {
+        focalPoint: { x: 50, y: 48 }, subjectSafeRegion: { x: 0, y: 28, width: 100, height: 64 },
+        evidenceSafeRegion: null, permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
+      },
+    },
+  },
 }
 
 export function commissionedVisual(sceneId: string, fallback: SceneVisual): SceneVisual {

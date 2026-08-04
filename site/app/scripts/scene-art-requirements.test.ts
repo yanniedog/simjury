@@ -69,5 +69,7 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['wed-resume'].compositionArt.portrait.permittedCaptionPositions).toEqual(['top'])
     expect(manifest.scenes['wed-resume'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
     expect(manifest.scenes['wed-resume'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
+    expect(manifest.scenes['wed-vos'].compositionArt.portrait.evidenceSafeRegion).toBeNull()
+    expect(manifest.scenes['wed-vos'].compositionArt.portrait.reviewStatus).toBe('crop-reviewed')
   })
 })

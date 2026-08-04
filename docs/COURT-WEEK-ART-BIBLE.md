@@ -37,6 +37,9 @@ they are not represented as crop-specific approval.
 - Tovan Mir: man in his early fifties; medium olive complexion; short
   salt-and-pepper hair; clean-shaven; plain mid-grey business suit, muted blue
   shirt and dark tie; calm records-custodian manner.
+- Dr Eren Vos: woman in her late fifties; warm-brown complexion; short
+  salt-and-pepper natural curls; no glasses; plain charcoal civilian jacket
+  over a muted burgundy blouse; composed clinical manner.
 
 Wardrobe stays unchanged through a court day. No police, rescue or military
 uniform appears in court unless the authored record expressly calls that person
