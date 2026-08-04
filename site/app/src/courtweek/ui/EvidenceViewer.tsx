@@ -1,23 +1,73 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { EvidenceItem } from '../model/schema'
 import { renderExhibitPresentation } from './evidencePresentation'
 
 export interface EvidenceViewerProps {
   evidence: EvidenceItem
+  returnFocusTo?: HTMLElement | null
   onClose: () => void
 }
 
-export function EvidenceViewer({ evidence, onClose }: EvidenceViewerProps) {
+const focusableSelector = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  'summary',
+  '[tabindex]:not([tabindex="-1"])',
+].join(',')
+
+export function EvidenceViewer({ evidence, returnFocusTo, onClose }: EvidenceViewerProps) {
   const [zoom, setZoom] = useState(1)
   const [offset, setOffset] = useState({ x: 0, y: 0 })
+  const dialog = useRef<HTMLElement>(null)
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
 
   useEffect(() => {
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose()
+    const root = dialog.current
+    if (!root) return
+
+    const focusable = () => Array.from(root.querySelectorAll<HTMLElement>(focusableSelector))
+      .filter((element) => !element.hasAttribute('disabled') && element.getAttribute('aria-hidden') !== 'true')
+    const initialFocus = focusable()[0] ?? root
+    initialFocus.focus()
+
+    const keepFocusInDialog = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        event.stopPropagation()
+        onCloseRef.current()
+        return
+      }
+      if (event.key !== 'Tab') return
+
+      const available = focusable()
+      const first = available[0]
+      const last = available.at(-1)
+      if (!first || !last) {
+        event.preventDefault()
+        root.focus()
+        return
+      }
+      const active = document.activeElement
+      if (event.shiftKey && (active === first || !root.contains(active))) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && (active === last || !root.contains(active))) {
+        event.preventDefault()
+        first.focus()
+      }
     }
-    window.addEventListener('keydown', closeOnEscape)
-    return () => window.removeEventListener('keydown', closeOnEscape)
-  }, [onClose])
+    document.addEventListener('keydown', keepFocusInDialog)
+    return () => {
+      document.removeEventListener('keydown', keepFocusInDialog)
+      queueMicrotask(() => {
+        if (!root.isConnected && returnFocusTo?.isConnected) returnFocusTo.focus()
+      })
+    }
+  }, [returnFocusTo])
 
   const move = (x: number, y: number) =>
     setOffset((current) => ({ x: current.x + x, y: current.y + y }))
@@ -29,7 +79,7 @@ export function EvidenceViewer({ evidence, onClose }: EvidenceViewerProps) {
 
   if (evidence.status !== 'admitted') {
     return (
-      <section className="cw-modal cw-evidence-viewer" role="dialog" aria-modal="true" aria-labelledby="cw-evidence-unavailable">
+      <section ref={dialog} className="cw-modal cw-evidence-viewer" role="dialog" aria-modal="true" aria-labelledby="cw-evidence-unavailable" tabIndex={-1}>
         <header className="cw-modal__header">
           <div>
             <p className="cw-kicker">Juror desk</p>
@@ -44,10 +94,12 @@ export function EvidenceViewer({ evidence, onClose }: EvidenceViewerProps) {
 
   return (
     <section
+      ref={dialog}
       className="cw-modal cw-evidence-viewer"
       role="dialog"
       aria-modal="true"
       aria-labelledby="cw-evidence-heading"
+      tabIndex={-1}
     >
       <header className="cw-modal__header">
         <div>

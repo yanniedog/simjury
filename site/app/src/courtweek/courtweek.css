@@ -464,7 +464,12 @@
     display: block;
     overflow-x: hidden;
     overflow-y: auto;
+    padding: .5rem;
   }
+  .cw-evidence-viewer .cw-modal__header { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .25rem; }
+  .cw-evidence-viewer .cw-modal__header > div { min-width: 0; }
+  .cw-evidence-viewer .cw-modal__header h2 { overflow-wrap: anywhere; }
+  .cw-evidence-viewer .cw-modal__header button { padding-inline: .5rem; }
   .cw-evidence-viewer > * + * { margin-top: .5rem; }
   .cw-evidence-canvas { height: 60dvh; min-height: 10rem; }
   .cw-evidence-document { min-height: calc(100% - 1rem); }
