@@ -160,7 +160,7 @@ jobs:
         run: >-
           node site/scripts/scene-art-strips.mjs
           --requirements .court-week-audio-jobs/scene-art-requirements.json
-          --media-root site/app/public/media/court-week/cw-0001
+          --media-root site/court-week-art/cw-0001
           --output-root .court-week-art-strips
       - name: Build content-addressed media and enforce hard budgets
         env:

@@ -121,7 +121,7 @@ cd site
 npm --prefix app run media:art:requirements -- --output <requirements.json>
 node scripts/scene-art-strips.mjs `
   --requirements <requirements.json> `
-  --media-root app/public/media/court-week/cw-0001 `
+  --media-root court-week-art/cw-0001 `
   --output-root <review-output>
 ```
 
