@@ -175,6 +175,11 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['thu-rusk-chief'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
     expect(manifest.scenes['thu-rusk-cross'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
     expect(manifest.scenes['thu-quill-chief'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+    const perseveranceRegion = {
+      portrait: { x: 0, y: 42, width: 100, height: 42 },
+      tablet: { x: 0, y: 35, width: 100, height: 55 },
+      desktop: { x: 0, y: 34, width: 100, height: 56 },
+    }
     for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
       expect(manifest.scenes['thu-quill-cross'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
       expect(manifest.scenes['thu-defence-record'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
@@ -250,7 +255,7 @@ describe('SceneArtManifest contract', () => {
       expect(manifest.scenes['sun-verdict'].compositionArt[composition].evidenceSafeRegion).toBeNull()
       expect(manifest.scenes['sun-verdict'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
       expect(manifest.scenes['sun-verdict'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
-      expect(manifest.scenes['sun-persevere'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+      expect(manifest.scenes['sun-persevere'].compositionArt[composition].subjectSafeRegion).toEqual(perseveranceRegion[composition])
       expect(manifest.scenes['sun-persevere'].compositionArt[composition].evidenceSafeRegion).toBeNull()
       expect(manifest.scenes['sun-persevere'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
       expect(manifest.scenes['sun-persevere'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')

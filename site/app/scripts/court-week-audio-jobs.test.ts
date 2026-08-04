@@ -239,6 +239,7 @@ describe('Court Week prerecorded audio jobs', () => {
         resolve('..', 'scripts', 'prepare-court-week-release.mjs'),
         ...packageArguments,
       ], { cwd: resolve('.'), stdio: 'pipe' })
+      // Structural 55/55 readiness names this `.json`; crop review and signoffs remain separate publication gates.
       const runtime = JSON.parse(readFileSync(resolve(privateOutputRoot, 'court-week-media-manifest.json'), 'utf8'))
       expect(runtime.sessions).toHaveLength(7)
       expect(runtime.sessions.map((session: { day: string }) => session.day)).toEqual([
@@ -291,7 +292,6 @@ describe('Court Week prerecorded audio jobs', () => {
       expect(artReport.crop_review_complete).toBe(false)
       expect(artReport.compatibility_migration_scene_ids).toEqual([
         'mon-arrival', 'mon-oath', 'mon-crown-opening', 'mon-orr-chief', 'mon-orr-cross', 'mon-elements', 'mon-adjourn',
-        'tue-resume', 'tue-dorn-chief', 'tue-dorn-cross', 'tue-dorn-re', 'tue-mir-chief', 'tue-mir-cross',
       ])
       expect(() => execFileSync(process.execPath, [
         resolve('..', 'scripts', 'prepare-court-week-release.mjs'),
