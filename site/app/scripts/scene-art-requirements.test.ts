@@ -94,6 +94,7 @@ describe('SceneArtManifest contract', () => {
       'sat-provisional',
       'sat-first-ballot',
       'sat-causation',
+      'sat-improper',
     ]
     for (const sceneId of evidenceNeutralReviewedScenes) {
       for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
@@ -146,6 +147,10 @@ describe('SceneArtManifest contract', () => {
       expect(manifest.scenes['sat-causation'].compositionArt[composition].evidenceSafeRegion).toBeNull()
       expect(manifest.scenes['sat-causation'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
       expect(manifest.scenes['sat-causation'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
+      expect(manifest.scenes['sat-improper'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+      expect(manifest.scenes['sat-improper'].compositionArt[composition].evidenceSafeRegion).toBeNull()
+      expect(manifest.scenes['sat-improper'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
+      expect(manifest.scenes['sat-improper'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
     }
     expect(manifest.scenes['sat-room'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sat-room'].altDescription).toContain('No ballot is shown')
@@ -159,5 +164,7 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['sat-causation'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sat-causation'].altDescription).toContain('evidence-first causation discussion')
     expect(manifest.scenes['sat-causation'].altDescription).toContain('no readable evidence, ballot, faction, verdict or conclusion is shown')
+    expect(manifest.scenes['sat-improper'].altDescription).toContain('Exactly eleven other jurors')
+    expect(manifest.scenes['sat-improper'].altDescription).toContain('No forbidden allegation, evidence, ballot, count, faction or verdict is visible')
   })
 })
