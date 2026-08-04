@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import type { SceneVisual } from '../model/schema'
-import { captionPlacementFor, captionPlacementStyle, responsiveCaptionPlacements } from './captionPlacement'
+import {
+  captionPlacementFor,
+  captionPlacementStyle,
+  captionViewportForSize,
+  evaluateCaptionRuntimeFit,
+  responsiveCaptionPlacements,
+  type CaptionRect,
+} from './captionPlacement'
 
 const visual: SceneVisual = {
   fallbackId: 'courtroom',
@@ -81,5 +88,53 @@ describe('responsive caption placement', () => {
     expect(style['--cw-caption-phoneLandscape-width']).toBeTruthy()
     expect(style['--cw-caption-tablet-x']).toBeTruthy()
     expect(style['--cw-caption-desktop-height']).toBeTruthy()
+  })
+
+  it.each([
+    [320, 568, 'phonePortrait'],
+    [844, 390, 'phoneLandscape'],
+    [500, 900, 'phonePortrait'],
+    [700, 900, 'tablet'],
+    [720, 450, 'phoneLandscape'],
+  ] as const)('selects the runtime lane for a %ix%i layout viewport', (width, height, expected) => {
+    expect(captionViewportForSize(width, height)).toBe(expected)
+  })
+
+  it.each([
+    ['320x568 controls', { left: 16, top: 414, right: 304, bottom: 472 }, { left: 8, top: 452, right: 312, bottom: 560 }, { left: 12, top: 350, right: 255, bottom: 389 }, 'controls-collision'],
+    ['844x390 controls', { left: 71, top: 282, right: 587, bottom: 318 }, { left: 211, top: 274, right: 633, bottom: 382 }, { left: 12, top: 172, right: 255, bottom: 211 }, 'controls-collision'],
+    ['500px split speaker', { left: 25, top: 673, right: 475, bottom: 731 }, { left: 8, top: 806, right: 492, bottom: 892 }, { left: 12, top: 711, right: 255, bottom: 750 }, 'speaker-collision'],
+    ['700px split speaker', { left: 92, top: 684, right: 608, bottom: 720 }, { left: 94, top: 806, right: 606, bottom: 892 }, { left: 12, top: 711, right: 255, bottom: 750 }, 'speaker-collision'],
+    ['1440 desktop at 200% controls', { left: 29, top: 318, right: 533, bottom: 375 }, { left: 180, top: 334, right: 540, bottom: 442 }, { left: 12, top: 232, right: 255, bottom: 271 }, 'controls-collision'],
+  ] as const)('rejects the reported %s collision', (_name, overlay, controls, speaker, reason) => {
+    expect(evaluateCaptionRuntimeFit({
+      placementFits: true,
+      overlay: overlay as CaptionRect,
+      controls: controls as CaptionRect,
+      speaker: speaker as CaptionRect,
+      clientHeight: 58,
+      scrollHeight: 58,
+    })).toEqual({ fits: false, reason })
+  })
+
+  it('accepts actual two-line copy only when it fits and remains collision-free', () => {
+    const clear = evaluateCaptionRuntimeFit({
+      placementFits: true,
+      overlay: { left: 200, top: 220, right: 620, bottom: 270 },
+      controls: { left: 200, top: 800, right: 620, bottom: 890 },
+      speaker: { left: 12, top: 700, right: 255, bottom: 750 },
+      clientHeight: 50,
+      scrollHeight: 50,
+    })
+    const overflow = evaluateCaptionRuntimeFit({
+      placementFits: true,
+      overlay: { left: 200, top: 220, right: 620, bottom: 270 },
+      controls: { left: 200, top: 800, right: 620, bottom: 890 },
+      speaker: { left: 12, top: 700, right: 255, bottom: 750 },
+      clientHeight: 50,
+      scrollHeight: 76,
+    })
+    expect(clear).toEqual({ fits: true, reason: null })
+    expect(overflow).toEqual({ fits: false, reason: 'line-overflow' })
   })
 })

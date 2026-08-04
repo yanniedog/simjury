@@ -99,14 +99,14 @@ describe('ImmersiveCourtShell', () => {
     expect(markup).toContain('aria-live="polite"')
   })
 
-  it('keeps full dialogue visible in reading mode without live-region duplication', () => {
+  it('keeps full dialogue visible in audio fallback without visual or live-region duplication', () => {
     const markup = renderToStaticMarkup(
       <ImmersiveCourtShell
         session={session}
         scene={scene}
         cue={cue}
         releaseBase="/media"
-        accessMode="reading"
+        accessMode="captions"
         playbackStatus="reading-fallback"
         playbackError="Audio is unavailable. Reading mode is ready."
         progressLabel="Scene 1 of 3"
@@ -121,6 +121,7 @@ describe('ImmersiveCourtShell', () => {
     )
 
     expect(markup).toContain('cw-reading-copy')
+    expect(markup).not.toContain('class="cw-captions"')
     expect(markup).toContain('aria-live="off"')
     expect(markup).toContain('Continue')
   })
@@ -143,7 +144,7 @@ describe('ImmersiveCourtShell', () => {
     expect(markup).toContain('sizes="100vw"')
   })
 
-  it('promotes an overlong caption to complete reading copy instead of clipping it', () => {
+  it('does not guess caption fit from character count before browser layout', () => {
     const longCue = {
       ...cue,
       text: 'The witness explains the complete sequence in enough detail that two visual lines cannot contain the legally material qualification, the source limitation, and the answer given in court.',
@@ -157,9 +158,10 @@ describe('ImmersiveCourtShell', () => {
         onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
       />,
     )
-    expect(markup).toContain('data-complete-captions="true"')
-    expect(markup).toContain('cw-reading-copy')
-    expect(markup).not.toContain('class="cw-captions"')
+    expect(markup).toContain('data-complete-captions="false"')
+    expect(markup).toContain('data-caption-runtime-state="off"')
+    expect(markup).toContain('class="cw-captions"')
+    expect(markup).not.toContain('cw-reading-copy')
     expect(markup).toContain(longCue.text)
   })
 
@@ -183,7 +185,7 @@ describe('ImmersiveCourtShell', () => {
       />,
     )
     expect(markup).toContain('data-caption-phone-fits="false"')
-    expect(markup).toContain('cw-caption-collision-copy')
+    expect(markup).toContain('class="cw-captions"')
     expect(markup).toContain(cue.text)
   })
 })

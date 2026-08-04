@@ -189,6 +189,7 @@ test('scene safe regions reflow caption lanes through phone, tablet, desktop and
   await page.evaluate(() => {
     const probe = document.createElement('div')
     probe.className = 'cw-captions cw-caption-probe'
+    probe.style.visibility = 'visible'
     const copy = document.createElement('span')
     copy.textContent = 'A short caption used to verify the authored safe lane.'
     probe.append(copy)
@@ -227,6 +228,91 @@ test('scene safe regions reflow caption lanes through phone, tablet, desktop and
   await expect(page.locator('.cw-caption-probe')).toBeVisible()
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
   expect(overflow).toBeLessThanOrEqual(1)
+})
+
+test('caption runtime uses line fit and collision-free fallback at reported viewports', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Deterministic geometry is exercised once; cross-engine journeys remain separate.')
+  await page.addInitScript((instant) => {
+    Date.now = () => instant
+    class TestAudio extends EventTarget {
+      src = ''
+      currentTime = 0
+      preload = ''
+      ended = false
+      canPlayType() { return 'probably' }
+      load() { /* deterministic no-network audio */ }
+      play() {
+        this.dispatchEvent(new Event('playing'))
+        return Promise.resolve()
+      }
+      pause() { this.dispatchEvent(new Event('pause')) }
+      removeAttribute(name: string) { if (name === 'src') this.src = '' }
+    }
+    Object.defineProperty(window, 'Audio', { configurable: true, value: TestAudio })
+    class TestUtterance extends EventTarget {
+      text: string
+      lang = ''
+      rate = 1
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+      constructor(text: string) { super(); this.text = text }
+    }
+    Object.defineProperty(window, 'SpeechSynthesisUtterance', { configurable: true, value: TestUtterance })
+    Object.defineProperty(window, 'speechSynthesis', {
+      configurable: true,
+      value: { paused: false, speak() {}, cancel() {}, pause() {}, resume() {} },
+    })
+  }, releaseNow)
+  await page.setViewportSize({ width: 320, height: 568 })
+  await page.goto('/')
+  await page.getByLabel('Audio and captions').check()
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+
+  const layouts = [
+    { name: '320x568', width: 320, height: 568 },
+    { name: '844x390', width: 844, height: 390 },
+    { name: 'split-500', width: 500, height: 900 },
+    { name: 'split-700', width: 700, height: 900 },
+    { name: '1440x900 at 200% reflow', width: 720, height: 450 },
+  ]
+  for (const layout of layouts) {
+    await page.setViewportSize({ width: layout.width, height: layout.height })
+    await expect(page.locator('.cw-shell')).toHaveAttribute('data-caption-runtime-state', /^(?:fit|reading)$/)
+    const result = await page.locator('.cw-shell').evaluate((shell) => {
+      const intersect = (left: DOMRect, right: DOMRect) => Math.max(0, Math.min(left.right, right.right) - Math.max(left.left, right.left)) *
+        Math.max(0, Math.min(left.bottom, right.bottom) - Math.max(left.top, right.top))
+      const caption = shell.querySelector<HTMLElement>('.cw-captions span')
+      const reading = shell.querySelector<HTMLElement>('.cw-speaker .cw-reading-copy')
+      const controls = shell.querySelector<HTMLElement>('.cw-controls')!
+      const speaker = shell.querySelector<HTMLElement>('#cw-speaker-name')!
+      const speakerPanel = shell.querySelector<HTMLElement>('.cw-speaker')!
+      const visible = (element: HTMLElement | null) => {
+        if (!element) return false
+        const box = element.getBoundingClientRect()
+        return box.width > 0 && box.height > 0 && getComputedStyle(element).display !== 'none' &&
+          getComputedStyle(element).visibility !== 'hidden'
+      }
+      return {
+        state: (shell as HTMLElement).dataset.captionRuntimeState,
+        overlayVisible: visible(caption),
+        readingVisible: visible(reading),
+        captionControls: caption ? intersect(caption.getBoundingClientRect(), controls.getBoundingClientRect()) : 0,
+        captionSpeaker: caption ? intersect(caption.getBoundingClientRect(), speaker.getBoundingClientRect()) : 0,
+        readingControls: reading ? intersect(speakerPanel.getBoundingClientRect(), controls.getBoundingClientRect()) : 0,
+        lineFits: caption ? caption.scrollHeight <= caption.clientHeight + 1 : true,
+      }
+    })
+    expect(result.overlayVisible === result.readingVisible, layout.name).toBe(false)
+    if (result.state === 'fit') {
+      expect(result.overlayVisible, layout.name).toBe(true)
+      expect(result.captionControls, layout.name).toBeLessThanOrEqual(1)
+      expect(result.captionSpeaker, layout.name).toBeLessThanOrEqual(1)
+      expect(result.lineFits, layout.name).toBe(true)
+    } else {
+      expect(result.readingVisible, layout.name).toBe(true)
+      expect(result.readingControls, layout.name).toBeLessThanOrEqual(1)
+    }
+  }
 })
 
 async function readStoredProgress(page: Page) {
