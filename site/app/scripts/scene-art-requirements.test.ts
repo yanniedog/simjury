@@ -76,6 +76,7 @@ describe('SceneArtManifest contract', () => {
       'wed-adjourn',
       'thu-opening',
       'thu-rusk-chief',
+      'thu-rusk-cross',
     ]
     for (const sceneId of evidenceNeutralReviewedScenes) {
       for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
@@ -91,5 +92,6 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['wed-adjourn'].compositionArt.portrait.evidenceSafeRegion).toBeNull()
     expect(manifest.scenes['thu-opening'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
     expect(manifest.scenes['thu-rusk-chief'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+    expect(manifest.scenes['thu-rusk-cross'].compositionArt.portrait.subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
   })
 })
