@@ -91,6 +91,7 @@ describe('SceneArtManifest contract', () => {
       'sat-room',
       'sat-concerns',
       'sat-provisional',
+      'sat-first-ballot',
     ]
     for (const sceneId of evidenceNeutralReviewedScenes) {
       for (const composition of ['portrait', 'tablet', 'desktop'] as const) {
@@ -134,6 +135,10 @@ describe('SceneArtManifest contract', () => {
       expect(manifest.scenes['sat-provisional'].compositionArt[composition].evidenceSafeRegion).toBeNull()
       expect(manifest.scenes['sat-provisional'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
       expect(manifest.scenes['sat-provisional'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
+      expect(manifest.scenes['sat-first-ballot'].compositionArt[composition].subjectSafeRegion).toMatchObject({ x: 0, width: 100 })
+      expect(manifest.scenes['sat-first-ballot'].compositionArt[composition].evidenceSafeRegion).toBeNull()
+      expect(manifest.scenes['sat-first-ballot'].compositionArt[composition].permittedCaptionPositions).toEqual(['top'])
+      expect(manifest.scenes['sat-first-ballot'].compositionArt[composition].reviewStatus).toBe('crop-reviewed')
     }
     expect(manifest.scenes['sat-room'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sat-room'].altDescription).toContain('No ballot is shown')
@@ -142,5 +147,7 @@ describe('SceneArtManifest contract', () => {
     expect(manifest.scenes['sat-provisional'].altDescription).toContain('Exactly eleven other jurors')
     expect(manifest.scenes['sat-provisional'].altDescription).toContain('private face-down blank ballot card')
     expect(manifest.scenes['sat-provisional'].altDescription).toContain('No individual position, aggregate count, faction or verdict cue is visible')
+    expect(manifest.scenes['sat-first-ballot'].altDescription).toContain('Exactly eleven other jurors')
+    expect(manifest.scenes['sat-first-ballot'].altDescription).toContain('No seat-level position is visible')
   })
 })
