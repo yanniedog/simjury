@@ -3,6 +3,7 @@ import type {
   ReasoningContribution,
   Verdict,
 } from '../model/schema'
+import { contributionStage } from '../model/deliberationContract'
 
 export type BallotAggregate = Record<Verdict, number>
 export type Agreement = 'unanimous' | 'majority' | 'hung'
@@ -67,12 +68,22 @@ export function firstBallotForScene(
     : null
 }
 
-function validContributionCount(contributions: ReasoningContribution[]): number {
-  return contributions.filter((item) => (
-    item.legalQuestion.trim().length > 0 &&
-    item.evidenceId.trim().length > 0 &&
-    item.influencePenalty >= 0
-  )).length
+function validContributionCount(
+  contributions: ReasoningContribution[],
+  stage: NonNullable<ReturnType<typeof contributionStage>>,
+): number {
+  const countedScenes = new Set<string>()
+  return contributions.filter((item) => {
+    if (
+      contributionStage(item.sceneId) !== stage ||
+      countedScenes.has(item.sceneId) ||
+      !item.legalQuestion.trim() ||
+      !item.evidenceId.trim() ||
+      item.influencePenalty < 0
+    ) return false
+    countedScenes.add(item.sceneId)
+    return true
+  }).length
 }
 
 /**
@@ -119,7 +130,7 @@ export function calculateSecondBallot(
   const authored = evolveAuthoredBallot(
     pack.firstBallot,
     playerVote,
-    validContributionCount(contributions),
+    validContributionCount(contributions, 'pre-second-ballot'),
   )
   return addPlayer(authored, playerVote)
 }
@@ -140,17 +151,15 @@ export function canAuthorizeMajority(
 }
 
 export function calculateFinalBallot(input: FinalBallotInput): DeliberationResult {
-  const secondContributions = input.contributions.filter((item) => item.sceneId !== 'sun-persevere')
-  const furtherContributions = input.contributions.filter((item) => item.sceneId === 'sun-persevere')
   const secondAuthored = evolveAuthoredBallot(
     input.pack.firstBallot,
     input.secondVote,
-    validContributionCount(secondContributions),
+    validContributionCount(input.contributions, 'pre-second-ballot'),
   )
   const finalAuthored = evolveAuthoredBallot(
     secondAuthored,
     input.finalVote,
-    validContributionCount(furtherContributions),
+    validContributionCount(input.contributions, 'further-discussion'),
   )
   const aggregate = addPlayer(finalAuthored, input.finalVote)
   const unanimous = unanimousVerdict(aggregate)
@@ -161,7 +170,7 @@ export function calculateFinalBallot(input: FinalBallotInput): DeliberationResul
   const majorityAuthorized = canAuthorizeMajority(
     input.pack,
     input,
-    validContributionCount(furtherContributions),
+    validContributionCount(input.contributions, 'further-discussion'),
   )
   if (majorityAuthorized) {
     const majority = verdicts.find((verdict) => (
