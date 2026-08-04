@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { CourtSession } from '../model/schema'
 
 export interface CourtWeekCompletionProps {
@@ -6,7 +6,7 @@ export interface CourtWeekCompletionProps {
   persistence: 'indexeddb' | 'memory' | 'pending'
   onReplay: (session: CourtSession) => void
   onSettings: () => void
-  onExportProgress?: () => void
+  onExportProgress?: (includePrivateNotes: boolean) => void
 }
 
 export function CourtWeekCompletion({
@@ -17,6 +17,7 @@ export function CourtWeekCompletion({
   onExportProgress,
 }: CourtWeekCompletionProps) {
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const [includeNotes, setIncludeNotes] = useState(false)
   useEffect(() => {
     headingRef.current?.focus()
   }, [])
@@ -33,7 +34,17 @@ export function CourtWeekCompletion({
               completed verdict and notes will be lost.
             </p>
             {onExportProgress ? (
-              <button type="button" onClick={onExportProgress}>Export progress</button>
+              <>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={includeNotes}
+                    onChange={(event) => setIncludeNotes(event.target.checked)}
+                  />
+                  Include my private notes in the export
+                </label>
+                <button type="button" onClick={() => onExportProgress(includeNotes)}>Export progress</button>
+              </>
             ) : null}
           </div>
         ) : null}

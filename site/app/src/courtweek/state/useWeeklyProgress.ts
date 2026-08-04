@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
-  loadWeeklyProgress,
+  loadWeeklyProgressResult,
   saveWeeklyProgress,
   type StoredWeeklyProgress,
 } from './progress'
@@ -9,6 +9,7 @@ export interface WeeklyProgressState {
   progress: StoredWeeklyProgress
   hydrated: boolean
   persistence: 'indexeddb' | 'memory' | 'pending'
+  persistenceNotice: string | null
   updateProgress: (
     update:
       | StoredWeeklyProgress
@@ -24,15 +25,29 @@ export function useWeeklyProgress(
   const [progress, setProgress] = useState(initialProgress)
   const [hydrated, setHydrated] = useState(false)
   const [persistence, setPersistence] = useState<WeeklyProgressState['persistence']>('pending')
+  const [persistenceNotice, setPersistenceNotice] = useState<string | null>(null)
   const saveSequence = useRef(0)
+  const skipHydrationSave = useRef(true)
   const progressRef = useRef(progress)
   progressRef.current = progress
 
   useEffect(() => {
     let current = true
-    void loadWeeklyProgress(initialProgress.courtWeekId).then((stored) => {
+    void loadWeeklyProgressResult(initialProgress.courtWeekId).then(({ progress: stored, issue }) => {
       if (!current) return
-      if (stored?.revision === initialProgress.revision) setProgress(stored)
+      const incompatible = stored && stored.revision !== initialProgress.revision
+      if (stored && !incompatible) setProgress(stored)
+      if (incompatible) {
+        setPersistence('memory')
+        setPersistenceNotice('Saved progress belongs to a different case revision and was not loaded. A new session has started.')
+      } else if (issue) {
+        setPersistence('memory')
+        setPersistenceNotice(issue === 'corrupt'
+          ? 'Saved progress is damaged and could not be recovered. A new session has started; export it if you need a separate copy.'
+          : 'Device storage is unavailable. Progress is held in this tab; export it before leaving.')
+      } else if (stored) {
+        setPersistence('indexeddb')
+      }
       setHydrated(true)
     })
     return () => {
@@ -46,10 +61,21 @@ export function useWeeklyProgress(
       WEEKLY_PROGRESS_EVENT,
       { detail: progress },
     ))
+    if (skipHydrationSave.current) {
+      skipHydrationSave.current = false
+      return
+    }
     const sequence = ++saveSequence.current
     const timeout = window.setTimeout(() => {
       void saveWeeklyProgress(progress.courtWeekId, progress).then((destination) => {
-        if (sequence === saveSequence.current) setPersistence(destination)
+        if (sequence === saveSequence.current) {
+          setPersistence(destination)
+          if (destination === 'memory') {
+            setPersistenceNotice('Device storage could not save progress. Progress is held in this tab; export it before leaving.')
+          } else {
+            setPersistenceNotice((notice) => notice?.startsWith('Device storage') ? null : notice)
+          }
+        }
       })
     }, 120)
     return () => {
@@ -86,5 +112,5 @@ export function useWeeklyProgress(
     [],
   )
 
-  return { progress, hydrated, persistence, updateProgress }
+  return { progress, hydrated, persistence, persistenceNotice, updateProgress }
 }

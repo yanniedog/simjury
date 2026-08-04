@@ -74,12 +74,14 @@ function CourtWeekEntry({
   mode,
   onMode,
   onEnter,
+  persistenceNotice,
 }: {
   title: string
   advisory: string
   mode: AccessMode
   onMode: (mode: AccessMode) => void
   onEnter: (fullscreen: boolean) => void
+  persistenceNotice: string | null
 }) {
   const [fullscreen, setFullscreen] = useState(false)
   return (
@@ -89,6 +91,7 @@ function CourtWeekEntry({
         <h1>{title}</h1>
         <p>{advisory}</p>
         <p>SimJury is fictional and intended for adults aged 18 and older.</p>
+        {persistenceNotice ? <p className="cw-error" role="alert">{persistenceNotice}</p> : null}
         <p>Choose how the court should be presented. You can change captions later.</p>
         <fieldset className="cw-mode-picker">
           <legend>Presentation</legend>
@@ -116,7 +119,11 @@ function CourtWeekEntry({
         <button className="cw-primary" type="button" onClick={() => onEnter(fullscreen)}>
           Take your seat
         </button>
-        <p className="cw-entry__privacy">Progress and private notes stay on this device unless you export them.</p>
+        <p className="cw-entry__privacy">
+          {persistenceNotice
+            ? 'Use Export progress from the juror desk before leaving this tab.'
+            : 'Progress and private notes stay on this device unless you export them.'}
+        </p>
       </div>
     </main>
   )
@@ -145,7 +152,7 @@ function VerdictChoices({
 }
 export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWeekAppProps) {
   const baseline = useMemo(() => initialProgress(courtWeek, now()), [courtWeek, now])
-  const { progress, hydrated, persistence, updateProgress } = useWeeklyProgress(baseline)
+  const { progress, hydrated, persistence, persistenceNotice, updateProgress } = useWeeklyProgress(baseline)
   const [entered, setEntered] = useState(false)
   const [started, setStarted] = useState(false)
   const [deskOpen, setDeskOpen] = useState(false)
@@ -340,6 +347,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
         title={courtWeek.manifest.title}
         advisory={courtWeek.manifest.contentAdvisory}
         mode={accessMode}
+        persistenceNotice={persistenceNotice}
         onMode={(mode) => updateProgress((current) => ({ ...current, accessibilityMode: mode }))}
         onEnter={(requestFullscreen) => {
           setEntered(true)
@@ -363,7 +371,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       <CourtWeekCompletion
         sessions={courtWeek.manifest.sessions}
         persistence={persistence}
-        onExportProgress={() => downloadWeeklyProgress(progress, true)}
+        onExportProgress={(includePrivateNotes) => downloadWeeklyProgress(progress, includePrivateNotes)}
         onReplay={(session) => {
           const firstScene = session.scenes[0]
           setReplaySessionId(session.id)
@@ -696,7 +704,9 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       releaseBase={releaseRoot}
       accessMode={accessMode}
       playbackStatus={playback.status}
-      playbackError={playback.error ?? (persistence === 'memory' ? 'Progress is held in this tab. Export it before leaving.' : null)}
+      playbackError={[playback.error, persistenceNotice ?? (
+        persistence === 'memory' ? 'Progress is held in this tab. Export it before leaving.' : null
+      )].filter(Boolean).join(' ') || null}
       progressLabel={progressLabel}
       deskOpen={deskOpen}
       overlay={overlay}

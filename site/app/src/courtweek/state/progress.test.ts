@@ -4,6 +4,7 @@ import {
   clearMemoryProgressForTests,
   exportWeeklyProgress,
   importWeeklyProgress,
+  loadWeeklyProgressResult,
   loadWeeklyProgress,
   saveWeeklyProgress,
 } from './progress'
@@ -81,7 +82,10 @@ describe('weekly progress', () => {
     } as unknown as IDBFactory
     Object.defineProperty(globalThis, 'indexedDB', { configurable: true, value: factory })
     try {
-      await expect(loadWeeklyProgress('cw-0001')).resolves.toBeNull()
+      await expect(loadWeeklyProgressResult('cw-0001')).resolves.toEqual({
+        progress: null,
+        issue: 'corrupt',
+      })
     } finally {
       if (descriptor) Object.defineProperty(globalThis, 'indexedDB', descriptor)
       else delete (globalThis as { indexedDB?: IDBFactory }).indexedDB
