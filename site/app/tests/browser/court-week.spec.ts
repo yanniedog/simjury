@@ -101,7 +101,7 @@ test.describe('device-sized admitted exhibit viewer', () => {
     for (const zoom of [1, 2]) {
       test(`${device} at ${zoom * 100}% zoom`, async ({ page }) => {
         await page.setViewportSize({ width: Math.floor(width / zoom), height: Math.floor(height / zoom) })
-        await enterCourt(page)
+        const prohibited = await enterCourt(page)
         await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
         await page.getByRole('button', { name: /Route diagram/i }).click()
         const viewer = page.getByRole('dialog', { name: /Harbour route diagram/i })
@@ -119,6 +119,7 @@ test.describe('device-sized admitted exhibit viewer', () => {
         await expect(viewer.getByText('Not proof of visibility, sea state or survival time')).toBeVisible()
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
         expect(overflow).toBeLessThanOrEqual(1)
+        expect(prohibited).toEqual([])
       })
     }
   }

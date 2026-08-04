@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { EvidenceItem } from '../model/schema'
-import { isReviewedExhibitId, reviewedExhibitPresentation } from './evidencePresentation'
+import { renderExhibitPresentation } from './evidencePresentation'
 
 export interface EvidenceViewerProps {
   evidence: EvidenceItem
@@ -25,9 +25,7 @@ export function EvidenceViewer({ evidence, onClose }: EvidenceViewerProps) {
     setZoom(1)
     setOffset({ x: 0, y: 0 })
   }
-  const presentation = evidence.status === 'admitted' && isReviewedExhibitId(evidence.id)
-    ? reviewedExhibitPresentation(evidence.id)
-    : undefined
+  const presentation = evidence.status === 'admitted' ? evidence.presentation : undefined
 
   if (evidence.status !== 'admitted') {
     return (
@@ -80,14 +78,18 @@ export function EvidenceViewer({ evidence, onClose }: EvidenceViewerProps) {
           className="cw-evidence-document"
           {...(presentation ? {
             role: 'group',
-            'aria-label': presentation.alt,
-            'aria-describedby': `cw-evidence-ambiguity-${evidence.id}`,
+            'aria-describedby': `cw-evidence-alt-${evidence.id} cw-evidence-ambiguity-${evidence.id}`,
           } : {})}
           style={{
             transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
           }}
         >
-          {presentation ? <div aria-hidden="true">{presentation.rendering}</div> : <p>{evidence.accessibleProposition}</p>}
+          {presentation ? (
+            <>
+              <p id={`cw-evidence-alt-${evidence.id}`} className="cw-visually-hidden">{presentation.alt}</p>
+              <div aria-hidden="true">{renderExhibitPresentation(presentation)}</div>
+            </>
+          ) : <p>{evidence.accessibleProposition}</p>}
           {presentation ? (
             <p id={`cw-evidence-ambiguity-${evidence.id}`} className="cw-evidence-ambiguity">
               {presentation.ambiguity}

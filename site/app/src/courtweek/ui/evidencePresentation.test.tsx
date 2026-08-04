@@ -2,7 +2,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { elevenMinutesTrialRecord } from '../content/trialRecord'
 import { EvidenceViewer } from './EvidenceViewer'
-import { REVIEWED_EXHIBIT_PRESENTATIONS } from './evidencePresentation'
+import { renderExhibitPresentation } from './evidencePresentation'
 
 const reviewedIds = [
   'ex-route',
@@ -15,12 +15,13 @@ const reviewedIds = [
 
 describe('reviewed exhibit presentations', () => {
   it('defines exactly the six requested admitted renderings with ambiguity in their alternatives', () => {
-    expect(Object.keys(REVIEWED_EXHIBIT_PRESENTATIONS).sort()).toEqual([...reviewedIds].sort())
+    const presented = elevenMinutesTrialRecord.evidence.filter((item) => item.presentation)
+    expect(presented.map((item) => item.id).sort()).toEqual([...reviewedIds].sort())
     for (const id of reviewedIds) {
-      const presentation = REVIEWED_EXHIBIT_PRESENTATIONS[id]
-      expect(presentation.alt.length).toBeGreaterThan(70)
-      expect(presentation.ambiguity.length).toBeGreaterThan(50)
-      expect(presentation.id).toBe(id)
+      const presentation = presented.find((item) => item.id === id)?.presentation
+      expect(presentation).toBeDefined()
+      expect(presentation!.alt.length).toBeGreaterThan(70)
+      expect(presentation!.ambiguity.length).toBeGreaterThan(50)
     }
   })
 
@@ -51,9 +52,9 @@ describe('reviewed exhibit presentations', () => {
   })
 
   it('preserves the critical competing propositions in visible renderings', () => {
-    const markup = reviewedIds.map((id) =>
-      renderToStaticMarkup(REVIEWED_EXHIBIT_PRESENTATIONS[id].rendering),
-    ).join('\n')
+    const markup = elevenMinutesTrialRecord.evidence.flatMap((item) => item.presentation
+      ? [renderToStaticMarkup(renderExhibitPresentation(item.presentation))]
+      : []).join('\n')
     expect(markup).toContain('Actions are recorded; reasons and state of mind are not.')
     expect(markup).toContain('has no recorded time')
     expect(markup).toContain('READY does not mean free from maintenance warnings')
@@ -61,4 +62,3 @@ describe('reviewed exhibit presentations', () => {
     expect(markup).toContain('cannot be said to guarantee survival')
   })
 })
-

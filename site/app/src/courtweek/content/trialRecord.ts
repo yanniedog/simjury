@@ -52,6 +52,11 @@ export const elevenMinutesTrialRecord: TrialRecord = {
       admittedThrough: 'Nella Orr', allowedUses: ['Understanding distance and the dispatch route'],
       limitations: ['Not proof of visibility, sea state or survival time'], replayable: true, status: 'admitted',
       accessibleProposition: 'The nearest rescue craft was based at North Station, eleven nautical miles from beacon AR-71.',
+      presentation: {
+        kind: 'route', origin: 'North Station', destination: 'Beacon AR-71', distance: 'ordinary route · 11 nautical miles', disclaimer: 'SERVICE DIAGRAM · CONDITIONS NOT REPRESENTED',
+        alt: 'Simplified service chart showing North Station and beacon AR-71 joined by an ordinary route labelled eleven nautical miles; weather and survival conditions are not depicted.',
+        ambiguity: 'The diagram establishes distance and route only, not conditions or outcome.',
+      },
     },
     {
       id: 'ex-distress', label: 'Distress recording', kind: 'recording',
@@ -70,6 +75,13 @@ export const elevenMinutesTrialRecord: TrialRecord = {
       admittedThrough: 'Tovan Mir', allowedUses: ['The accepted beacon and the handwritten hold notation'],
       limitations: ['Handwriting alone does not prove when or why it was written'], replayable: true, status: 'admitted',
       accessibleProposition: 'The strip shows AR-71 and the handwritten words “hold—readiness”.',
+      presentation: {
+        kind: 'strip', heading: 'ASTER REACH COORDINATION · LAUNCH STRIP', notation: 'hold—readiness',
+        fields: [{ label: 'Beacon', value: 'AR-71' }, { label: 'Craft', value: 'KESTREL' }, { label: 'Status', value: 'ACCEPTED' }],
+        footer: 'The handwritten notation has no recorded time and does not state why it was written.',
+        alt: 'Yellow printed launch strip for AR-71 and Kestrel with the handwritten words hold—readiness; the handwriting has no recorded time or explanation.',
+        ambiguity: 'The notation does not establish when it was written or what the writer meant.',
+      },
     },
     {
       id: 'ex-audit-log', label: 'Incident audit log', kind: 'system-log',
@@ -79,6 +91,13 @@ export const elevenMinutesTrialRecord: TrialRecord = {
       admittedThrough: 'Tovan Mir', allowedUses: ['Timing and identity of logged console actions'],
       limitations: ['The log records button actions, not the operator’s state of mind'], replayable: true, status: 'admitted',
       accessibleProposition: 'Venn’s account accepted AR-71, changed its priority, confirmed the change, and released Kestrel eleven minutes later.',
+      presentation: {
+        kind: 'audit', heading: 'INCIDENT AR-71', subheading: 'Authenticated controller session', caption: 'Recorded console actions',
+        fields: [{ label: '21:16:08', value: 'Incident accepted' }, { label: '21:16:31', value: 'Priority 2 changed to Priority 3' }, { label: '21:16:36', value: 'Priority change confirmed' }, { label: '21:27:29', value: 'Kestrel released' }],
+        footer: 'Clock verified within two seconds. Actions are recorded; reasons and state of mind are not.',
+        alt: 'Four authenticated console entries show acceptance at 21:16:08, a priority change and confirmation, and Kestrel release at 21:27:29.',
+        ambiguity: 'The system records account actions and timing, not the operator’s reasons or state of mind.',
+      },
     },
     {
       id: 'ex-ready-display', label: 'Kestrel readiness display', kind: 'system-log',
@@ -88,6 +107,12 @@ export const elevenMinutesTrialRecord: TrialRecord = {
       admittedThrough: 'Jaro Pell and Tovan Mir', allowedUses: ['What the controller could see about Kestrel’s displayed readiness'],
       limitations: ['READY meant crewed and launch-capable, not necessarily free from warnings'], replayable: true, status: 'admitted',
       accessibleProposition: 'Kestrel displayed READY throughout, while a separate page carried a steering-pressure warning.',
+      presentation: {
+        kind: 'ready', heading: 'NORTH STATION', subheading: 'CRAFT STATUS', craft: 'KESTREL', status: 'READY', statusMeaning: 'CREWED · LAUNCH-CAPABLE', warningMarker: 'Separate warning detail available',
+        footer: 'READY does not mean free from maintenance warnings. Warning detail appeared on a separate page.',
+        alt: 'Kestrel’s main status tile reads READY, meaning crewed and launch-capable, with an indicator that separate warning detail was available.',
+        ambiguity: 'READY did not certify freedom from warnings or decide whether dispatch was reasonable.',
+      },
     },
     {
       id: 'ex-warning', label: 'Kestrel steering warning record', kind: 'document',
@@ -97,6 +122,13 @@ export const elevenMinutesTrialRecord: TrialRecord = {
       admittedThrough: 'Sera Quill', allowedUses: ['The warning known to the coordination system', 'Whether a cautious dispatch hold was plausible'],
       limitations: ['The warning did not itself prohibit launch'], replayable: true, status: 'admitted',
       accessibleProposition: 'A fluctuating steering-pressure warning required monitoring but did not prohibit launch.',
+      presentation: {
+        kind: 'warning', heading: 'KESTREL · PRE-SHIFT ENGINEERING ENTRY',
+        fields: [{ label: 'System', value: 'Steering pressure' }, { label: 'Observation', value: 'Intermittent fluctuation' }, { label: 'Instruction', value: 'Monitor on launch; abort for sustained pressure loss.' }, { label: 'Launch status', value: 'Permitted with monitoring' }],
+        footer: 'The entry records a genuine warning. It did not ground Kestrel or prescribe an eleven-minute diagnostic.',
+        alt: 'Pre-shift engineering record notes intermittent steering-pressure fluctuation and directs monitoring on launch with abort only for sustained pressure loss.',
+        ambiguity: 'The warning was genuine but did not prohibit launch or prescribe the duration of a hold.',
+      },
     },
     {
       id: 'ex-review', label: 'Pending certification review', kind: 'document',
@@ -115,6 +147,13 @@ export const elevenMinutesTrialRecord: TrialRecord = {
       admittedThrough: 'Dr Eren Vos', allowedUses: ['Assessing whether earlier dispatch materially affected the chance of survival'],
       limitations: ['Cannot identify an exact time of death', 'Cannot say earlier dispatch certainly would have saved Saye'], replayable: true, status: 'admitted',
       accessibleProposition: 'An eleven-minute earlier dispatch would probably have brought rescue inside the medically significant window, but survival cannot be stated with certainty.',
+      presentation: {
+        kind: 'survival', heading: 'COMPARATIVE SURVIVAL-WINDOW OPINION',
+        comparisons: [{ label: 'Dispatch at 21:16', value: 'Probably inside a medically significant window' }, { label: 'Dispatch at 21:27', value: 'Probably outside that window' }],
+        footer: 'Both comparisons depend on route, immersion-time and uninterrupted-travel assumptions. Earlier dispatch cannot be said to guarantee survival, and an exact time of death cannot be identified.',
+        alt: 'A qualitative comparison says dispatch at 21:16 was probably inside a medically significant window and dispatch at 21:27 probably outside it, subject to stated assumptions.',
+        ambiguity: 'The opinion gives probabilities, not an exact death time or a guarantee that earlier dispatch would have saved Ilan Saye.',
+      },
     },
     {
       id: 'ex-competing', label: 'Concurrent incident board', kind: 'system-log',
