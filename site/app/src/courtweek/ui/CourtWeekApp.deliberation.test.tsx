@@ -183,4 +183,92 @@ describe('CourtWeekApp improper-argument interaction', () => {
     expect(latestProgress.reasoningContributions).toEqual([])
     expect(latestProgress.currentSceneId).toBe('sat-concerns')
   })
+
+  it('publishes the sealed result only after the open-court return cue is traversed', async () => {
+    const sunday = elevenMinutesCourtWeek.manifest.sessions[6]
+    const verdictScene = sunday.scenes.find(({ id }) => id === 'sun-verdict')!
+    const progress: StoredWeeklyProgress = {
+      schemaVersion: 'court-week-progress-v1',
+      courtWeekId: 'cw-0001',
+      revision: elevenMinutesCourtWeek.manifest.revision,
+      highestObservedTime: '2026-08-16T12:00:00+10:00',
+      completedSessionIds: elevenMinutesCourtWeek.manifest.sessions.slice(0, 6).map(({ id }) => id),
+      currentSessionId: sunday.id,
+      currentSceneId: verdictScene.id,
+      currentCueId: 'sun-verdict-return',
+      notes: '',
+      provisionalVote: 'unable-to-agree',
+      secondVote: 'unable-to-agree',
+      finalVote: 'unable-to-agree',
+      secondBallotWasUnanimous: false,
+      majorityDirectionReceived: true,
+      sealedVerdict: 'unable-to-agree',
+      sealedAgreement: 'hung',
+      openCourtVerdictReturned: false,
+      accessibilityMode: 'reading',
+    }
+    await saveWeeklyProgress(progress.courtWeekId, progress)
+    let latestProgress = progress
+    const onProgress = (event: Event) => {
+      latestProgress = (event as CustomEvent<StoredWeeklyProgress>).detail
+    }
+    window.addEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
+
+    await act(async () => {
+      root.render(<CourtWeekApp courtWeek={elevenMinutesCourtWeek} now={() => Date.parse('2026-08-16T12:00:00+10:00')} releaseBase="/media" />)
+      await Promise.resolve()
+    })
+    await act(async () => clickButton(container, 'Take your seat'))
+    expect(container.textContent).toContain('The accused stands')
+    expect(latestProgress.openCourtVerdictReturned).toBe(false)
+    expect(latestProgress.returnedVerdict).toBeUndefined()
+
+    await act(async () => clickButton(container, 'Continue'))
+    expect(latestProgress).toMatchObject({
+      currentCueId: 'sun-verdict-confirm',
+      openCourtVerdictReturned: true,
+      returnedVerdict: 'unable-to-agree',
+      returnedAgreement: 'hung',
+    })
+    window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
+  })
+
+  it('records the majority direction only after the judge delivers it', async () => {
+    const sunday = elevenMinutesCourtWeek.manifest.sessions[6]
+    const majorityScene = sunday.scenes.find(({ id }) => id === 'sun-majority')!
+    const progress: StoredWeeklyProgress = {
+      schemaVersion: 'court-week-progress-v1',
+      courtWeekId: 'cw-0001',
+      revision: elevenMinutesCourtWeek.manifest.revision,
+      highestObservedTime: '2026-08-16T12:00:00+10:00',
+      completedSessionIds: elevenMinutesCourtWeek.manifest.sessions.slice(0, 6).map(({ id }) => id),
+      currentSessionId: sunday.id,
+      currentSceneId: majorityScene.id,
+      currentCueId: 'sun-majority-direction',
+      notes: '',
+      provisionalVote: 'unable-to-agree',
+      secondVote: 'unable-to-agree',
+      secondBallotWasUnanimous: false,
+      majorityDirectionReceived: false,
+      accessibilityMode: 'reading',
+    }
+    await saveWeeklyProgress(progress.courtWeekId, progress)
+    let latestProgress = progress
+    const onProgress = (event: Event) => {
+      latestProgress = (event as CustomEvent<StoredWeeklyProgress>).detail
+    }
+    window.addEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
+    await act(async () => {
+      root.render(<CourtWeekApp courtWeek={elevenMinutesCourtWeek} now={() => Date.parse('2026-08-16T12:00:00+10:00')} releaseBase="/media" />)
+      await Promise.resolve()
+    })
+    await act(async () => clickButton(container, 'Take your seat'))
+    expect(latestProgress.majorityDirectionReceived).toBe(false)
+    await act(async () => clickButton(container, 'Continue'))
+    expect(latestProgress).toMatchObject({
+      currentCueId: 'sun-majority-limit',
+      majorityDirectionReceived: true,
+    })
+    window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
+  })
 })

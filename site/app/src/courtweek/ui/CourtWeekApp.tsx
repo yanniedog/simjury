@@ -80,6 +80,7 @@ function initialProgress(courtWeek: CourtWeek, now: number): StoredWeeklyProgres
     notes: '',
     reasoningContributions: [],
     majorityDirectionReceived: false,
+    openCourtVerdictReturned: false,
   }
 }
 function cuePosition(session: CourtSession, sceneId?: string, cueId?: string) {
@@ -287,15 +288,15 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const activeAvailability = availability.find((item) => item.id === activeSession.id)
   const presentedCue = useMemo<SceneCue>(() => {
     const safeCue = replaySafeCue(position.cue, isReplay)
-    if (safeCue.id === 'sun-verdict-return' && progress.returnedVerdict && progress.returnedAgreement) {
+    if (safeCue.id === 'sun-verdict-return' && progress.sealedVerdict && progress.sealedAgreement) {
       return {
         ...safeCue,
-        text: openCourtReturn(progress.returnedVerdict, progress.returnedAgreement),
-        accessibleProposition: `The accused stands while the ${progress.returnedAgreement} result is spoken and recorded in open court.`,
+        text: openCourtReturn(progress.sealedVerdict, progress.sealedAgreement),
+        accessibleProposition: `The accused stands while the ${progress.sealedAgreement} result is spoken and recorded in open court.`,
       }
     }
     if (safeCue.id === 'sun-analysis') {
-      if (!progress.returnedVerdict) {
+      if (!progress.openCourtVerdictReturned || !progress.returnedVerdict) {
         return {
           ...safeCue,
           text: 'Analysis remains sealed until the jury has returned its result in open court.',
@@ -311,10 +312,18 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       }
     }
     return safeCue
-  }, [courtWeek.deliberation, isReplay, position.cue, progress.returnedAgreement, progress.returnedVerdict])
-  const commitPosition = useCallback((sessionId: string, sceneId: string, cueId: string) => {
+  }, [courtWeek.deliberation, isReplay, position.cue, progress.openCourtVerdictReturned, progress.returnedVerdict, progress.sealedAgreement, progress.sealedVerdict])
+  const commitPosition = useCallback((sessionId: string, sceneId: string, cueId: string, traversedCueId?: string) => {
     updateProgress((current) => ({
       ...current,
+      ...(traversedCueId === 'sun-majority-direction' ? { majorityDirectionReceived: true } : {}),
+      ...(traversedCueId === 'sun-verdict-return' && current.sealedVerdict && current.sealedAgreement
+        ? {
+            openCourtVerdictReturned: true,
+            returnedVerdict: current.sealedVerdict,
+            returnedAgreement: current.sealedAgreement,
+          }
+        : {}),
       currentSessionId: sessionId,
       currentSceneId: sceneId,
       currentCueId: cueId,
@@ -324,7 +333,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const advance = useCallback(() => {
     const nextCue = nextReplaySafeCue(position.scene.cues, position.cueIndex, isReplay)
     if (nextCue) {
-      commitPosition(activeSession.id, position.scene.id, nextCue.id)
+      commitPosition(activeSession.id, position.scene.id, nextCue.id, isReplay ? undefined : position.cue.id)
       return
     }
     if (position.scene.interaction && !interactionOpen) {
@@ -338,7 +347,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       setInteractionOpenedAt(null)
       setInteractionChoice(null)
       setInteractionSealed(false)
-      commitPosition(activeSession.id, nextScene.id, nextScene.cues[0].id)
+      commitPosition(activeSession.id, nextScene.id, nextScene.cues[0].id, isReplay ? undefined : position.cue.id)
       return
     }
     if (isReplay) {
@@ -600,11 +609,10 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       const unanimous = unanimousVerdict(calculateSecondBallot(courtWeek.deliberation, vote, contributions))
       patch.secondBallotWasUnanimous = Boolean(unanimous)
       if (unanimous) {
-        patch.returnedVerdict = unanimous
-        patch.returnedAgreement = 'unanimous'
+        patch.sealedVerdict = unanimous
+        patch.sealedAgreement = 'unanimous'
       }
     }
-    if (position.scene.id === 'sun-majority') patch.majorityDirectionReceived = true
     if (interaction.kind === 'final-vote' && choice) {
       const vote = choice as Verdict
       const secondVote = progress.secondVote ?? progress.provisionalVote ?? vote
@@ -618,8 +626,8 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
         elapsedCourtHours: 8.5,
       })
       patch.finalVote = vote
-      patch.returnedVerdict = result.verdict
-      patch.returnedAgreement = result.agreement
+      patch.sealedVerdict = result.verdict
+      patch.sealedAgreement = result.agreement
     }
 
     if ((interaction.kind === 'seal-vote' || interaction.kind === 'second-vote') && !interactionSealed) {
@@ -661,6 +669,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
       <>
         <JurorDesk
           trial={courtWeek.trial}
+          sessions={courtWeek.manifest.sessions}
           deliberation={courtWeek.deliberation.propositions ? courtWeek.deliberation : undefined}
           progress={progress}
           readOnly={isReplay}

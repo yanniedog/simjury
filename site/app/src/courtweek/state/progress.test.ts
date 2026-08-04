@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+import { elevenMinutesCourtWeek } from '../content'
 import { elevenMinutesDeliberation } from '../content/deliberation'
 import type { StoredWeeklyProgress } from './progress'
 import {
@@ -150,28 +151,28 @@ describe('weekly progress', () => {
   it('round-trips ballots and deliberation while keeping notes opt-in', () => {
     const deliberated: StoredWeeklyProgress = {
       ...progress,
-      provisionalVote: 'manslaughter',
-      secondVote: 'not-guilty',
-      finalVote: 'not-guilty',
+      completedSessionIds: elevenMinutesCourtWeek.manifest.sessions.map(({ id }) => id),
+      currentSessionId: undefined,
+      currentSceneId: undefined,
+      currentCueId: undefined,
+      provisionalVote: 'unable-to-agree',
+      secondVote: 'unable-to-agree',
+      finalVote: 'unable-to-agree',
       secondBallotWasUnanimous: false,
       majorityDirectionReceived: true,
-      returnedVerdict: 'not-guilty',
-      returnedAgreement: 'majority',
-      reasoningContributions: [{
-        propositionId: 'prop-causation-window-doubt',
-        sceneId: 'sat-causation',
-        legalQuestion: 'Did that omission substantially and operatively cause Ilan Saye’s death beyond reasonable doubt?',
-        evidenceId: 'ex-survival',
-        move: 'challenge-inference',
-        recordedAt: '2026-08-15T10:00:00+10:00',
-        influencePenalty: 0,
-      }],
+      sealedVerdict: 'unable-to-agree',
+      sealedAgreement: 'hung',
+      openCourtVerdictReturned: true,
+      returnedVerdict: 'unable-to-agree',
+      returnedAgreement: 'hung',
+      reasoningContributions: [],
     }
     const withoutNotes = importWeeklyProgress(
       exportWeeklyProgress(deliberated),
       'cw-0001',
       '2026.08.03-r1',
       elevenMinutesDeliberation,
+      elevenMinutesCourtWeek.manifest.sessions,
     )
     expect(withoutNotes).toEqual({ ...deliberated, notes: '' })
     expect(importWeeklyProgress(
@@ -179,7 +180,56 @@ describe('weekly progress', () => {
       'cw-0001',
       '2026.08.03-r1',
       elevenMinutesDeliberation,
+      elevenMinutesCourtWeek.manifest.sessions,
     )).toEqual(deliberated)
+  })
+
+  it('rejects forged Tuesday verdict state and Sunday analysis before open-court return', () => {
+    const sessions = elevenMinutesCourtWeek.manifest.sessions
+    const tuesday = sessions[1]
+    const forgedTuesday: StoredWeeklyProgress = {
+      ...progress,
+      completedSessionIds: [sessions[0].id],
+      currentSessionId: tuesday.id,
+      currentSceneId: tuesday.scenes[0].id,
+      currentCueId: tuesday.scenes[0].cues[0].id,
+      sealedVerdict: 'murder',
+      sealedAgreement: 'unanimous',
+      openCourtVerdictReturned: true,
+      returnedVerdict: 'murder',
+      returnedAgreement: 'unanimous',
+    }
+    const analysis = sessions[6].scenes.find(({ id }) => id === 'sun-analysis')!
+    const forgedAnalysis: StoredWeeklyProgress = {
+      ...progress,
+      completedSessionIds: sessions.slice(0, 6).map(({ id }) => id),
+      currentSessionId: sessions[6].id,
+      currentSceneId: analysis.id,
+      currentCueId: analysis.cues[0].id,
+      provisionalVote: 'unable-to-agree',
+      secondVote: 'unable-to-agree',
+      finalVote: 'unable-to-agree',
+      secondBallotWasUnanimous: false,
+      majorityDirectionReceived: true,
+      sealedVerdict: 'unable-to-agree',
+      sealedAgreement: 'hung',
+      returnedVerdict: 'unable-to-agree',
+      returnedAgreement: 'hung',
+    }
+    for (const forged of [forgedTuesday, forgedAnalysis]) {
+      expect(() => importWeeklyProgress(
+        exportWeeklyProgress(forged), 'cw-0001', '2026.08.03-r1',
+        elevenMinutesDeliberation, sessions,
+      )).toThrow(/impossible Court Week chronology/i)
+    }
+  })
+
+  it('rejects an old revision before interpreting forged milestones', () => {
+    expect(() => importWeeklyProgress(
+      exportWeeklyProgress({ ...progress, openCourtVerdictReturned: true }),
+      'cw-0001', '2026.08.03-r2', elevenMinutesDeliberation,
+      elevenMinutesCourtWeek.manifest.sessions,
+    )).toThrow(/different case revision/i)
   })
 
   it('rejects progress from a different case revision', () => {

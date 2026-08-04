@@ -1,5 +1,11 @@
-import { weeklyProgressSchema, type DeliberationPack, type WeeklyProgress } from '../model/schema'
+import {
+  weeklyProgressSchema,
+  type CourtSession,
+  type DeliberationPack,
+  type WeeklyProgress,
+} from '../model/schema'
 import { hasValidContributionJourney } from '../model/deliberationContract'
+import { calculateFinalBallot, calculateSecondBallot, unanimousVerdict } from '../engine/deliberation'
 
 export const PROGRESS_DATABASE = {
   name: 'simjury-court-week-v1',
@@ -38,6 +44,82 @@ function validateStoredProgress(value: unknown): StoredWeeklyProgress | null {
       ? { accessibilityMode: mode }
       : {}),
   }
+}
+
+function assertImportChronology(
+  progress: StoredWeeklyProgress,
+  sessions: CourtSession[],
+  deliberation?: DeliberationPack,
+): void {
+  const fail = (): never => { throw new Error('This progress contains an impossible Court Week chronology.') }
+  const completed = progress.completedSessionIds
+  const expectedPrefix = sessions.slice(0, completed.length).map(({ id }) => id)
+  if (new Set(completed).size !== completed.length || JSON.stringify(completed) !== JSON.stringify(expectedPrefix)) fail()
+
+  const positionParts = [progress.currentSessionId, progress.currentSceneId, progress.currentCueId]
+  if (positionParts.some(Boolean) && !positionParts.every(Boolean)) fail()
+  const currentSession = sessions.find(({ id }) => id === progress.currentSessionId)
+  const currentScene = currentSession?.scenes.find(({ id }) => id === progress.currentSceneId)
+  const currentCue = currentScene?.cues.find(({ id }) => id === progress.currentCueId)
+  if (positionParts.every(Boolean) && (!currentSession || !currentScene || !currentCue)) fail()
+  if (completed.length < sessions.length) {
+    if (!currentSession || currentSession.id !== sessions[completed.length]?.id) fail()
+  } else if (completed.length > sessions.length) fail()
+
+  const orderedCues = sessions.flatMap((session) => session.scenes.flatMap((scene) => (
+    scene.cues.map((cue) => ({ sessionId: session.id, sceneId: scene.id, cueId: cue.id }))
+  )))
+  const currentIndex = completed.length === sessions.length
+    ? Number.POSITIVE_INFINITY
+    : orderedCues.findIndex(({ sessionId, sceneId, cueId }) => (
+        sessionId === progress.currentSessionId && sceneId === progress.currentSceneId && cueId === progress.currentCueId
+      ))
+  const sceneIndex = (sceneId: string) => orderedCues.findIndex((cue) => cue.sceneId === sceneId)
+  const cueIndex = (cueId: string) => orderedCues.findIndex((cue) => cue.cueId === cueId)
+  const atOrAfterScene = (sceneId: string) => sceneIndex(sceneId) >= 0 && currentIndex >= sceneIndex(sceneId)
+  const afterCue = (cueId: string) => cueIndex(cueId) >= 0 && currentIndex > cueIndex(cueId)
+
+  if (progress.provisionalVote && !atOrAfterScene('sat-provisional')) fail()
+  if (progress.secondVote && (!progress.provisionalVote || !atOrAfterScene('sun-second-ballot'))) fail()
+  if (progress.finalVote && (!progress.secondVote || !atOrAfterScene('sun-final-ballot'))) fail()
+  if (atOrAfterScene('sat-first-ballot') && !progress.provisionalVote) fail()
+  if (atOrAfterScene('sun-persevere') && !progress.secondVote) fail()
+  if (atOrAfterScene('sun-final-ballot') && !progress.secondBallotWasUnanimous && !progress.majorityDirectionReceived) fail()
+  if (progress.majorityDirectionReceived && !afterCue('sun-majority-direction')) fail()
+
+  const sealedPair = Boolean(progress.sealedVerdict) === Boolean(progress.sealedAgreement)
+  const returnedPair = Boolean(progress.returnedVerdict) === Boolean(progress.returnedAgreement)
+  if (!sealedPair || !returnedPair) fail()
+  if (progress.secondVote) {
+    if (!deliberation) throw new Error('This progress contains an impossible Court Week chronology.')
+    if (progress.secondBallotWasUnanimous === undefined) fail()
+    const secondResult = unanimousVerdict(calculateSecondBallot(
+      deliberation, progress.secondVote, progress.reasoningContributions ?? [],
+    ))
+    if (Boolean(secondResult) !== progress.secondBallotWasUnanimous) fail()
+    if (secondResult && (progress.sealedVerdict !== secondResult || progress.sealedAgreement !== 'unanimous')) fail()
+  }
+  if (progress.finalVote) {
+    if (!deliberation) throw new Error('This progress contains an impossible Court Week chronology.')
+    const finalResult = calculateFinalBallot({
+      pack: deliberation,
+      secondVote: progress.secondVote!,
+      finalVote: progress.finalVote,
+      contributions: progress.reasoningContributions ?? [],
+      secondBallotWasUnanimous: progress.secondBallotWasUnanimous ?? false,
+      majorityDirectionReceived: progress.majorityDirectionReceived ?? false,
+      elapsedCourtHours: 8.5,
+    })
+    if (progress.sealedVerdict !== finalResult.verdict || progress.sealedAgreement !== finalResult.agreement) fail()
+  }
+  if (atOrAfterScene('sun-verdict') && !progress.sealedVerdict) fail()
+  if (progress.openCourtVerdictReturned) {
+    if (
+      !afterCue('sun-verdict-return') ||
+      progress.returnedVerdict !== progress.sealedVerdict ||
+      progress.returnedAgreement !== progress.sealedAgreement
+    ) fail()
+  } else if (progress.returnedVerdict || progress.returnedAgreement || atOrAfterScene('sun-analysis')) fail()
 }
 
 function hasIndexedDb(): boolean {
@@ -148,6 +230,7 @@ export function importWeeklyProgress(
   expectedCaseId: string,
   expectedRevision: string,
   deliberation?: DeliberationPack,
+  sessions?: CourtSession[],
 ): StoredWeeklyProgress {
   const parsed: unknown = JSON.parse(text)
   if (!parsed || typeof parsed !== 'object') {
@@ -174,6 +257,7 @@ export function importWeeklyProgress(
   if (deliberation && !hasValidContributionJourney(contributions, deliberation)) {
     throw new Error('This progress contains reasoning outside the authored Court Week journey.')
   }
+  if (sessions) assertImportChronology(validated, sessions, deliberation)
   return validated
 }
 
