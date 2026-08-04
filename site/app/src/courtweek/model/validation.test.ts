@@ -69,6 +69,17 @@ describe('Eleven Minutes Court Week', () => {
     expect(() => validateCourtWeek(unfinished)).toThrow(/provisional admission requires a later final-admission cue/i)
   })
 
+  it('binds every admitted replayable recording to its exact evidence cue', () => {
+    const recording = elevenMinutesCourtWeek.trial.evidence.find((evidence) => evidence.id === 'ex-distress')
+    expect(recording?.replaySourceCueId).toBe('tue-recording-play')
+
+    const unbound = structuredClone(elevenMinutesCourtWeek)
+    const unboundRecording = unbound.trial.evidence.find((evidence) => evidence.id === 'ex-distress')
+    if (!unboundRecording) throw new Error('Recording fixture is missing.')
+    delete unboundRecording.replaySourceCueId
+    expect(() => validateCourtWeek(unbound)).toThrow(/requires an exact replay source cue/i)
+  })
+
   it('completes the recording, log, strip and snapshot foundations through Mir', () => {
     const allCues = elevenMinutesCourtWeek.manifest.sessions.flatMap((session) => session.scenes)
       .flatMap((scene) => scene.cues)

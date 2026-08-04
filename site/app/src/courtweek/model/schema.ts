@@ -178,6 +178,8 @@ export const evidenceSchema = z.object({
   allowedUses: z.array(z.string().min(1)).min(1),
   limitations: z.array(z.string().min(1)).min(1),
   replayable: z.boolean(),
+  /** Atomic source cue whose paced children form the juror-desk recording replay. */
+  replaySourceCueId: z.string().min(1).optional(),
   status: z.enum(['admitted', 'struck']),
   accessibleProposition: z.string().min(1),
   presentation: exhibitPresentationSchema.optional(),

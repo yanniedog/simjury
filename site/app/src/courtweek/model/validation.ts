@@ -261,6 +261,16 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
   const struckItems = courtWeek.trial.evidence.filter((evidence) => evidence.status === 'struck')
   demand(struckItems.length === 1 && struckItems[0].id === postAnswerStrikes[0].struckEvidenceId, 'the single struck item must match the post-answer ruling')
   demand(!struckItems[0].replayable, 'struck material must never be replayable')
+  courtWeek.trial.evidence.forEach((evidence) => {
+    demand(!evidence.replaySourceCueId || evidence.kind === 'recording', `${evidence.id}: only a recording may identify a replay source cue`)
+    if (evidence.kind !== 'recording' || evidence.status !== 'admitted' || !evidence.replayable) return
+    demand(Boolean(evidence.replaySourceCueId), `${evidence.id}: an admitted replayable recording requires an exact replay source cue`)
+    const replayCues = allCues.filter((cue) => (cue.sourceCueId ?? cue.id) === evidence.replaySourceCueId)
+    demand(replayCues.length > 0, `${evidence.id}: replay source cue ${evidence.replaySourceCueId} is absent`)
+    demand(replayCues.every((cue) => cue.replayable), `${evidence.id}: every paced replay cue must be replayable`)
+    demand(replayCues.every((cue) => cue.evidenceIds.includes(evidence.id)), `${evidence.id}: every paced replay cue must cite the recording`)
+    demand(finalAdmissions.some((cue) => cue.evidenceIds.includes(evidence.id)), `${evidence.id}: replay requires a final-admission cue`)
+  })
 
   let legalState = initialLegalState
   allCues.forEach((cue) => { legalState = transitionLegalState(legalState, cue.event) })
