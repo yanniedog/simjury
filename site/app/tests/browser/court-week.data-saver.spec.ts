@@ -62,7 +62,9 @@ test.describe('Court Week data saver', () => {
     await page.goto('/')
 
     await expect(page.getByLabel('Use less data')).toBeChecked()
+    await page.getByLabel('Audio and captions').check()
     await expect(page.getByLabel('Continue without recorded audio')).toBeChecked()
+    await expect.poll(() => savedPosition(page)).not.toBeNull()
     const positionBeforeEntry = await savedPosition(page)
     await page.getByRole('button', { name: 'Take your seat' }).click()
 
@@ -71,6 +73,8 @@ test.describe('Court Week data saver', () => {
     await expect(shell).toHaveAttribute('data-ambience', 'off')
     await expect(page.locator('.cw-reading-copy')).toBeVisible()
     await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Captions' })).toBeDisabled()
+    await expect(page.getByRole('button', { name: 'Captions' })).toHaveAttribute('aria-pressed', 'true')
     expect(await page.evaluate(() => (
       window as typeof window & { __simjuryAudioSources: string[] }
     ).__simjuryAudioSources)).toEqual([])
@@ -84,6 +88,9 @@ test.describe('Court Week data saver', () => {
     await page.goto('/')
     await page.getByLabel('Audio and captions').check()
     await page.getByLabel('Download recorded narration').check()
+    expect(await page.evaluate(() => (
+      window as typeof window & { __simjuryAudioSources: string[] }
+    ).__simjuryAudioSources)).toEqual([])
     await page.getByRole('button', { name: 'Take your seat' }).click()
 
     await expect(page.locator('.cw-shell')).toHaveAttribute('data-access-mode', 'captions')
