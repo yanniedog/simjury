@@ -230,6 +230,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
   const [deskOpen, setDeskOpen] = useState(false)
   const [evidenceId, setEvidenceId] = useState<string | null>(null)
   const evidenceTrigger = useRef<HTMLButtonElement | null>(null)
+  const resumeAfterDeskClose = useRef(false)
   const [interactionOpen, setInteractionOpen] = useState(false)
   const [interactionOpenedAt, setInteractionOpenedAt] = useState<number | null>(null)
   const [interactionChoice, setInteractionChoice] = useState<string | null>(null)
@@ -407,6 +408,18 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
     setStarted(true)
     void playCue()
   }, [playCue, presentedCue.id])
+
+  const toggleDesk = useCallback(() => {
+    if (deskOpen) {
+      setDeskOpen(false)
+      if (resumeAfterDeskClose.current) void playback.play()
+      resumeAfterDeskClose.current = false
+      return
+    }
+    resumeAfterDeskClose.current = playback.status === 'playing' || playback.status === 'speech-fallback'
+    playback.pause()
+    setDeskOpen(true)
+  }, [deskOpen, playback])
 
   const interaction = position.scene.interaction
   const interactionElapsedSeconds = interactionOpen && interactionOpenedAt != null
@@ -630,7 +643,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
             evidenceTrigger.current = trigger
             setEvidenceId(id)
           }}
-          onClose={() => setDeskOpen(false)}
+          onClose={toggleDesk}
         />
         {evidence ? (
           <EvidenceViewer
@@ -808,10 +821,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
         ...current,
         accessibilityMode: current.accessibilityMode === 'captions' ? 'audio-first' : 'captions',
       }))}
-      onToggleDesk={() => setDeskOpen((open) => {
-        if (!open) playback.pause()
-        return !open
-      })}
+      onToggleDesk={toggleDesk}
     />
   )
 }
