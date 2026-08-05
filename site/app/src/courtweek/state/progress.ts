@@ -232,6 +232,24 @@ export function importWeeklyProgress(
   deliberation?: DeliberationPack,
   sessions?: CourtSession[],
 ): StoredWeeklyProgress {
+  const validated = parseWeeklyProgressExport(text, expectedCaseId, expectedRevision)
+  const contributions = validated.reasoningContributions ?? []
+  if (contributions.length > 0 && !deliberation?.propositions) {
+    throw new Error('Deliberation progress can be imported after the Saturday session has opened.')
+  }
+  if (deliberation && !hasValidContributionJourney(contributions, deliberation)) {
+    throw new Error('This progress contains reasoning outside the authored Court Week journey.')
+  }
+  if (sessions) assertImportChronology(validated, sessions, deliberation)
+  return validated
+}
+
+/** Parse identity and schema only; sealed imports run exact chronology after hydrating eligible packs. */
+export function parseWeeklyProgressExport(
+  text: string,
+  expectedCaseId: string,
+  expectedRevision: string,
+): StoredWeeklyProgress {
   const parsed: unknown = JSON.parse(text)
   if (!parsed || typeof parsed !== 'object') {
     throw new Error('This is not a SimJury progress file.')
@@ -250,14 +268,6 @@ export function importWeeklyProgress(
   if (validated.revision !== expectedRevision) {
     throw new Error('This progress belongs to a different case revision.')
   }
-  const contributions = validated.reasoningContributions ?? []
-  if (contributions.length > 0 && !deliberation?.propositions) {
-    throw new Error('Deliberation progress can be imported after the Saturday session has opened.')
-  }
-  if (deliberation && !hasValidContributionJourney(contributions, deliberation)) {
-    throw new Error('This progress contains reasoning outside the authored Court Week journey.')
-  }
-  if (sessions) assertImportChronology(validated, sessions, deliberation)
   return validated
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type {
   CourtSession,
   CourtWeek,
@@ -11,6 +11,8 @@ import { observeCourtTime } from '../state/schedule'
 import { WEEKLY_PROGRESS_EVENT } from '../state/useWeeklyProgress'
 import { CourtWeekApp } from '../ui'
 import { eligibleScheduleEntries, loadEligibleCourtPacks, type SealedPackFetcher } from './loader'
+import { saveOpenedPack } from './packStore'
+import { prepareSealedProgressImport } from './progressImport'
 import type { CourtDayPack, CourtWeekBootstrap } from './types'
 
 export interface SealedCourtWeekAppProps {
@@ -204,6 +206,28 @@ export function SealedCourtWeekApp({
   }, [bootstrap, eligibleKey, fetcher, missingEligible, observedNow, packBase, progress, retry])
 
   const courtWeek = useMemo(() => runtimeCourtWeek(bootstrap, packs), [bootstrap, packs])
+  const prepareProgressImport = useCallback(async (
+    text: string,
+    current: StoredWeeklyProgress,
+  ) => {
+    const prepared = await prepareSealedProgressImport({
+      text,
+      bootstrap,
+      currentProgress: current,
+      // Imported watermarks are untrusted. Only this browser's live clock may
+      // authorise a previously unopened session during device transfer.
+      observedNow: now(),
+      baseUrl: packBase,
+      sealedSessions: courtWeek.manifest.sessions,
+      ...(fetcher ? { fetcher } : {}),
+    })
+    await Promise.all(prepared.packs.map((pack) => saveOpenedPack(pack)))
+    setPacks((existing) => {
+      const merged = new Map([...existing, ...prepared.packs].map((pack) => [pack.ordinal, pack]))
+      return Array.from(merged.values()).sort((left, right) => left.ordinal - right.ordinal)
+    })
+    return prepared.progress
+  }, [bootstrap, courtWeek.manifest.sessions, fetcher, now, packBase])
 
   if (!progress) {
     return <main className="cw-loading" aria-busy="true"><p>Preparing the courtroom…</p></main>
@@ -238,6 +262,7 @@ export function SealedCourtWeekApp({
         courtWeek={courtWeek}
         now={now}
         releaseBase={releaseBase}
+        prepareProgressImport={prepareProgressImport}
       />
     </>
   )
