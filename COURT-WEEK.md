@@ -128,8 +128,8 @@ pre-authored; no inference runs during play.
 - All ten former daily sittings and their canonical media are archived under
   `archive/daily-v2-2026-08-03/`, with SHA-256 provenance. Existing narration
   Releases are preserved and must never be clobbered because a source was moved.
-- `/jury/` is canonical. `/today`, `/today/*`, `/play`, `/play/*`, `/install`
-  and `/install/*` are compatibility redirects to `/jury/`.
+- `/jury/` is canonical. The bare domain, `/today`, `/today/*`, `/play`,
+  `/play/*`, `/install` and `/install/*` redirect to `/jury/`.
 - Old local-storage keys are not deleted or migrated. The Court Week player does
   not read them.
 - D1/waitlist and live-room data retirement follows `docs/RUNTIME-RETIREMENT.md`.

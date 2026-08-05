@@ -16,7 +16,6 @@ function forbidText(source, text, message) {
   if (source.toLowerCase().includes(text.toLowerCase())) failures.push(message)
 }
 
-const home = read('index.html')
 const jury = read(join('jury', 'index.html'))
 const privacy = read(join('privacy', 'index.html'))
 const robots = read('robots.txt')
@@ -26,12 +25,11 @@ const llmsFull = read('llms-full.txt')
 const redirects = read('_redirects')
 
 const pages = [
-  ['home', home, 'https://simjury.com/'],
   ['jury', jury, 'https://simjury.com/jury/'],
   ['privacy', privacy, 'https://simjury.com/privacy/'],
 ]
 const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1])
-if (urls.length !== pages.length || new Set(urls).size !== pages.length) failures.push('Sitemap must list exactly three canonical pages')
+if (urls.length !== pages.length || new Set(urls).size !== pages.length) failures.push(`Sitemap must list exactly ${pages.length} canonical pages`)
 for (const [label, source, url] of pages) {
   requireText(source, `rel="canonical" href="${url}"`, `${label} canonical is missing`)
   requireText(source, 'href="/llms.txt"', `${label} must advertise llms.txt`)
@@ -40,6 +38,7 @@ for (const [label, source, url] of pages) {
   forbidText(source, 'noindex', `${label} must remain indexable`)
 }
 
+requireText(redirects, '/ /jury/ 302', 'Bare-domain Court Week redirect is missing')
 for (const path of ['/today', '/play', '/install']) {
   requireText(redirects, `${path} /jury/ 302`, `${path} redirect is missing`)
   requireText(redirects, `${path}/* /jury/ 302`, `${path} wildcard redirect is missing`)

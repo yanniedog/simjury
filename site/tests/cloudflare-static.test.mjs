@@ -37,6 +37,7 @@ test('retired runtime implementation remains absent', () => {
 
 test('legacy product paths redirect to the canonical Court Week route', () => {
   const redirects = readFileSync(new URL('../public/_redirects', import.meta.url), 'utf8')
+  assert.match(redirects, /^\/ \/jury\/ 302$/m)
   for (const path of ['/today', '/play', '/install']) {
     assert.match(redirects, new RegExp(`^${path.replace('/', '\\/')} \\/jury\\/ 302$`, 'm'))
     assert.match(redirects, new RegExp(`^${path.replace('/', '\\/')}\\/\\* \\/jury\\/ 302$`, 'm'))
