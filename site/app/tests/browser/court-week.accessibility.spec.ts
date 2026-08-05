@@ -151,6 +151,10 @@ test('keyboard-only entry, skip link and desk expose a visible three-pixel focus
   await prepareCourt(page)
 
   await page.keyboard.press('Tab')
+  const localProfile = page.locator('.cw-local-profile summary')
+  await expect(localProfile).toBeFocused()
+  await expectThreePixelFocusRing(localProfile)
+  await page.keyboard.press('Tab')
   await expect(page.getByLabel('Audio first')).toBeFocused()
   await page.keyboard.press('ArrowDown')
   await page.keyboard.press('ArrowDown')
