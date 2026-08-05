@@ -196,6 +196,13 @@ describe('CourtWeekApp improper-argument interaction', () => {
       startSeconds: 0,
       endSeconds: 12,
     }
+    monday.scenes[1].cues[0].audio = {
+      opus: '/media/after-mandatory-interaction.opus',
+      mp3: '/media/after-mandatory-interaction.mp3',
+      segmentId: 'after-mandatory-interaction',
+      startSeconds: 0,
+      endSeconds: 12,
+    }
     const progress: StoredWeeklyProgress = {
       schemaVersion: 'court-week-progress-v1', courtWeekId: 'cw-0001',
       revision: courtWeek.manifest.revision,
@@ -230,6 +237,10 @@ describe('CourtWeekApp improper-argument interaction', () => {
     await act(async () => clickButton(container, 'Take your seat'))
     expect(play).toHaveBeenCalledTimes(1)
     expect(container.querySelector('.cw-stage')?.getAttribute('aria-busy')).toBe('true')
+    await act(async () => clickButton(container, 'Juror desk'))
+    expect(pause).toHaveBeenCalled()
+    await act(async () => clickButton(container, 'Close'))
+    expect(play).toHaveBeenCalledTimes(2)
     await act(async () => beginPlaying?.())
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent === 'Pause')).toBe(true)
     pause.mockClear()
@@ -250,12 +261,17 @@ describe('CourtWeekApp improper-argument interaction', () => {
     })
     expect({ sceneId: latestProgress.currentSceneId, cueId: latestProgress.currentCueId }).toEqual(frozen)
 
+    await act(async () => clickButton(container, 'Juror desk'))
+    await act(async () => clickButton(container, 'Close'))
+    expect(container.querySelector('.cw-interaction')).not.toBeNull()
+
     const choice = container.querySelector<HTMLButtonElement>('.cw-choice-grid button')!
     await act(async () => choice.click())
     await act(async () => clickButton(container, 'Continue proceedings'))
+    expect(play).toHaveBeenCalledTimes(3)
     expect(latestProgress).toMatchObject({ currentSceneId: 'mon-oath', currentCueId: 'mon-oath' })
     expect(container.querySelector('.cw-interaction')).toBeNull()
-    expect(container.querySelector('.cw-reading-copy')?.textContent).toContain('Choose an oath or affirmation')
+    expect(container.querySelector('.cw-cue-live-region')?.textContent).toContain('Choose an oath or affirmation')
     window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
   })
 

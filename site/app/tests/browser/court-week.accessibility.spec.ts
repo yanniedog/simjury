@@ -181,7 +181,7 @@ test('keyboard-only entry, skip link and desk expose a visible three-pixel focus
   await expect.poll(() => readProgressPosition(page)).toEqual(before)
 })
 
-test('an active audio cue stays fixed and resumes exactly once after each juror-desk close', async ({ page, browserName }) => {
+test('juror-desk close resumes active audio exactly once and leaves paused audio paused', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'Deterministic media lifecycle runs once.')
   await page.addInitScript(() => {
     const state = window as typeof window & { __deskAudio: { utterances: string[]; cancels: number } }
@@ -248,6 +248,17 @@ test('an active audio cue stays fixed and resumes exactly once after each juror-
   expect(lifecycle.utterances[1]).toBe(lifecycle.utterances[0])
   expect(lifecycle.utterances[2]).toBe(lifecycle.utterances[0])
   expect(lifecycle.cancels).toBeGreaterThanOrEqual(2)
+
+  await controls.getByRole('button', { name: 'Pause' }).click()
+  await expect(controls.getByRole('button', { name: 'Resume' })).toBeVisible()
+  await openDesk.click()
+  const pausedDesk = page.getByRole('dialog', { name: 'Your working papers' })
+  await pausedDesk.getByRole('button', { name: 'Close juror desk' }).click()
+  await expect(controls.getByRole('button', { name: 'Resume' })).toBeVisible()
+  await expect.poll(() => page.evaluate(() => (
+    window as typeof window & { __deskAudio: { utterances: string[] } }
+  ).__deskAudio.utterances.length)).toBe(3)
+  await expect.poll(() => readProgressPosition(page)).toEqual(fixedPosition)
 })
 
 test('mandatory contribution dialogs take and contain focus before returning it to proceedings', async ({ page }) => {

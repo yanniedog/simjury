@@ -275,7 +275,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
   const interactionReturnFocus = useRef<HTMLElement | null>(null)
   const advanceBlocked = useRef(false)
   const resumeAfterDeskClose = useRef(false)
-  const deskResumeConsumed = useRef(false)
+  const suppressAutoPlayAfterDeskClose = useRef(false)
   const [interactionOpen, setInteractionOpen] = useState(false)
   const [interactionOpenedAt, setInteractionOpenedAt] = useState<number | null>(null)
   const [interactionChoice, setInteractionChoice] = useState<string | null>(null)
@@ -450,7 +450,6 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
     advanceBlocked.current = false
     if (resumeAfterDeskClose.current) {
       resumeAfterDeskClose.current = false
-      deskResumeConsumed.current = true
       void resumeCuePlayback()
     }
   }, [deskOpen, evidenceId, interactionOpen, position.cue.id, resumeCuePlayback])
@@ -475,11 +474,11 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
     }
   }, [now, progress.highestObservedTime, updateProgress])
   useEffect(() => {
-    if (!started || interactionOpen || deskOpen || evidenceId || advanceBlocked.current || presentedAccessMode === 'reading') return
-    if (deskResumeConsumed.current) {
-      deskResumeConsumed.current = false
+    if (suppressAutoPlayAfterDeskClose.current) {
+      suppressAutoPlayAfterDeskClose.current = false
       return
     }
+    if (!started || interactionOpen || deskOpen || evidenceId || advanceBlocked.current || presentedAccessMode === 'reading') return
     const alreadyPlayedFromGesture = gesturePlayedCue.current === presentedCue.id
     gesturePlayedCue.current = null
     if (alreadyPlayedFromGesture) return
@@ -494,6 +493,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
 
   const toggleDesk = useCallback(() => {
     if (deskOpen) {
+      if (!interactionOpen) suppressAutoPlayAfterDeskClose.current = true
       setDeskOpen(false)
       if (interactionOpen) resumeAfterDeskClose.current = false
       return
