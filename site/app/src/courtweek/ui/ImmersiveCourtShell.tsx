@@ -225,9 +225,13 @@ export function ImmersiveCourtShell({
       data-media-notice={Boolean(playbackError)}
       style={captionPlacementStyle(captionPlacements)}
     >
-      <a className="cw-skip-link" href="#cw-primary-controls">Skip to controls</a>
-
-      <div className="cw-stage" aria-busy={playbackStatus === 'loading'}>
+      <div
+        className="cw-stage"
+        aria-busy={playbackStatus === 'loading'}
+        aria-hidden={overlay ? true : undefined}
+        {...(overlay ? { inert: '' } : {})}
+      >
+        <a className="cw-skip-link" href="#cw-primary-controls">Skip to controls</a>
         <picture
           className={`cw-stage__picture${usesRuntimeStrip ? ' cw-stage__picture--strip' : ''}${imageAvailable ? '' : ' cw-stage__picture--unavailable'}`}
           data-strip-cell={usesRuntimeStrip ? scene.visual.runtimeStrip?.cell : undefined}

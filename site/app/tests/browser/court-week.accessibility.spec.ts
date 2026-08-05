@@ -178,6 +178,51 @@ test('keyboard-only entry, skip link and desk expose a visible three-pixel focus
   await expect.poll(() => readProgressPosition(page)).toEqual(before)
 })
 
+test('mandatory contribution dialogs take and contain focus before returning it to proceedings', async ({ page }) => {
+  await page.addInitScript((instant) => {
+    let clock = instant
+    Date.now = () => clock
+    Object.defineProperty(window, '__advanceCourtClock', {
+      configurable: true,
+      value: (milliseconds: number) => { clock += milliseconds },
+    })
+  }, releaseNow)
+  await page.goto('/')
+  await page.getByLabel('Reading mode').check()
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+
+  for (let cue = 0; cue < 30; cue += 1) {
+    if (await page.locator('.cw-interaction').count()) break
+    await page.getByRole('button', { name: 'Continue' }).click()
+  }
+
+  const dialog = page.getByRole('dialog', { name: /Settle into the jury viewpoint/i })
+  await expect(dialog).toBeVisible()
+  const choice = dialog.getByRole('button', { name: 'Continue', exact: true })
+  await expect(choice).toBeFocused()
+  await expect(page.locator('.cw-stage')).toHaveAttribute('inert', '')
+  await expect(page.locator('.cw-stage')).toHaveAttribute('aria-hidden', 'true')
+
+  await page.keyboard.press('Tab')
+  await expect(choice).toBeFocused()
+  await page.keyboard.press('Shift+Tab')
+  await expect(choice).toBeFocused()
+  await expect(page.locator('.cw-controls button:focus')).toHaveCount(0)
+
+  await page.evaluate(() => {
+    const advance = (window as typeof window & { __advanceCourtClock: (milliseconds: number) => void })
+      .__advanceCourtClock
+    advance(120_000)
+  })
+  await expect(dialog.getByRole('button', { name: 'Continue proceedings' })).toBeEnabled()
+  await dialog.getByRole('button', { name: 'Continue proceedings' }).click()
+
+  await expect(dialog).toHaveCount(0)
+  await expect(page.locator('.cw-stage')).not.toHaveAttribute('inert', '')
+  await expect(page.getByRole('button', { name: 'Continue' })).toBeFocused()
+  await expect(page.locator('.cw-reading-copy')).toContainText('Choose an oath or affirmation')
+})
+
 async function newReflowContext(browser: Browser, screen: { width: number; height: number }): Promise<BrowserContext> {
   return browser.newContext({
     baseURL,
