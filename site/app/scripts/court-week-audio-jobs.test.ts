@@ -95,6 +95,55 @@ describe('Court Week prerecorded audio jobs', () => {
     ])
   })
 
+  it('casts every records and defence-witness exchange to the person speaking', () => {
+    const { jobs } = buildCourtWeekAudioJobs(elevenMinutesCourtWeek)
+    const expectedTurns = new Map<string, string[]>([
+      ['tue-mir-cross-1', [
+        'Defence counsel Corin Dax', 'Tovan Mir',
+        'Defence counsel Corin Dax', 'Tovan Mir',
+        'Defence counsel Corin Dax', 'Tovan Mir',
+        'Defence counsel Corin Dax', 'Tovan Mir',
+      ]],
+      ['thu-rusk-cross-1', [
+        'Crown counsel Asha Renn', 'Tali Rusk',
+        'Crown counsel Asha Renn', 'Tali Rusk',
+        'Crown counsel Asha Renn', 'Tali Rusk',
+      ]],
+      ['thu-rusk-re-1', ['Defence counsel Corin Dax', 'Tali Rusk']],
+      ['thu-quill-cross-1', [
+        'Crown counsel Asha Renn', 'Sera Quill',
+        'Crown counsel Asha Renn', 'Sera Quill',
+        'Crown counsel Asha Renn', 'Sera Quill',
+        'Crown counsel Asha Renn', 'Sera Quill',
+      ]],
+      ['thu-quill-re-1', [
+        'Defence counsel Corin Dax', 'Sera Quill',
+        'Defence counsel Corin Dax', 'Sera Quill',
+      ]],
+    ])
+
+    for (const [sourceCueId, expected] of expectedTurns) {
+      const authoredCueIds = new Set(elevenMinutesCourtWeek.manifest.sessions
+        .flatMap((session) => session.scenes)
+        .flatMap((scene) => scene.cues)
+        .filter((cue) => (cue.sourceCueId ?? cue.id) === sourceCueId)
+        .map((cue) => cue.id))
+      const utterances = jobs.flatMap((job) => job.segments)
+        .flatMap((segment) => segment.cues)
+        .filter((utterance) => authoredCueIds.has(utterance.sourceCueId))
+      const speakerTurns = utterances.map(({ speaker }) => speaker)
+        .filter((speaker, index, speakers) => index === 0 || speaker !== speakers[index - 1])
+
+      expect(speakerTurns, sourceCueId).toEqual(expected)
+      expect(utterances.map(({ text }) => text).join(' '), sourceCueId)
+        .not.toMatch(/\b(?:Mir|Rusk|Quill):/u)
+    }
+  })
+
+  it('keeps the records custodian aurally distinct from the court officer', () => {
+    expect(COURT_WEEK_VOICES['Tovan Mir']).not.toBe(COURT_WEEK_VOICES['Court officer'])
+  })
+
   it('omits runtime-dependent Sunday cues from prerecorded jobs', () => {
     const sunday = buildCourtWeekAudioJobs(elevenMinutesCourtWeek).jobs
       .find((job) => job.sessionId === 'cw-0001-sunday')!
