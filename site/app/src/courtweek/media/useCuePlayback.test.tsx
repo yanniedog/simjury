@@ -124,6 +124,27 @@ describe('useCuePlayback', () => {
     act(() => root.unmount())
   })
 
+  it('detaches synchronous pause listeners before committing the next cue', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    const nextCue: SceneCue = {
+      ...cue,
+      id: 'cue-audio-next',
+      audio: { ...cue.audio!, startSeconds: 18, endSeconds: 24 },
+    }
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness activeCue={cue} onEnded={() => undefined} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
+    await act(async () => play.click())
+
+    await act(async () => root.render(<Harness activeCue={nextCue} onEnded={() => undefined} />))
+
+    expect(container.querySelector('output')?.textContent).toBe('idle')
+    expect(consoleError.mock.calls.flat().join(' ')).not.toMatch(
+      /Cannot update a component|Maximum update depth exceeded/u,
+    )
+    act(() => root.unmount())
+  })
+
   it('selects Opus, then AAC, then the MP3 compatibility fallback', () => {
     expect(supportedAudioSource({
       canPlayType: (type) => type.includes('opus') ? 'probably' : '',

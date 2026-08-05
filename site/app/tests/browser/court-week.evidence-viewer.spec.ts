@@ -104,17 +104,6 @@ test('closing focused inspection resumes an active cue from its boundary', async
   await page.addInitScript(() => {
     const state = window as typeof window & { __evidenceSpeech: { utterances: string[]; cancels: number } }
     state.__evidenceSpeech = { utterances: [], cancels: 0 }
-    class TestAudio extends EventTarget {
-      src = ''
-      currentTime = 0
-      preload = ''
-      ended = false
-      canPlayType() { return '' }
-      load() { /* deterministic no-network audio */ }
-      play() { return Promise.resolve() }
-      pause() { this.dispatchEvent(new Event('pause')) }
-      removeAttribute(name: string) { if (name === 'src') this.src = '' }
-    }
     class TestUtterance {
       lang = ''
       rate = 1
@@ -123,7 +112,10 @@ test('closing focused inspection resumes an active cue from its boundary', async
       onerror: (() => void) | null = null
       constructor(public text: string) {}
     }
-    Object.defineProperty(window, 'Audio', { configurable: true, value: TestAudio })
+    // This test owns the device-speech interruption path. Pinned production
+    // cues now carry recorded MP3, so remove Audio rather than pretending the
+    // format is unsupported (MP3 remains the deliberate compatibility fallback).
+    Object.defineProperty(window, 'Audio', { configurable: true, value: undefined })
     Object.defineProperty(window, 'SpeechSynthesisUtterance', { configurable: true, value: TestUtterance })
     Object.defineProperty(window, 'speechSynthesis', {
       configurable: true,

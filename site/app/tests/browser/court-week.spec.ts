@@ -28,7 +28,8 @@ const viewports = [
 test('Take your seat starts the first cue exactly once', async ({ page }) => {
   await page.addInitScript((instant) => {
     Date.now = () => instant
-    const mediaState = window as typeof window & { __simjurySpeechCalls: number }
+    const mediaState = window as typeof window & { __simjuryPlayCalls: number; __simjurySpeechCalls: number }
+    mediaState.__simjuryPlayCalls = 0
     mediaState.__simjurySpeechCalls = 0
     class TestAudio extends EventTarget {
       src = ''
@@ -38,6 +39,7 @@ test('Take your seat starts the first cue exactly once', async ({ page }) => {
       canPlayType() { return 'probably' }
       load() { /* deterministic no-network audio */ }
       play() {
+        mediaState.__simjuryPlayCalls += 1
         this.dispatchEvent(new Event('playing'))
         return Promise.resolve()
       }
@@ -71,8 +73,11 @@ test('Take your seat starts the first cue exactly once', async ({ page }) => {
   await expect(page.locator('.cw-shell')).toBeVisible()
 
   await expect.poll(() => page.evaluate(
-    () => (window as typeof window & { __simjurySpeechCalls: number }).__simjurySpeechCalls,
+    () => (window as typeof window & { __simjuryPlayCalls: number }).__simjuryPlayCalls,
   )).toBe(1)
+  expect(await page.evaluate(
+    () => (window as typeof window & { __simjurySpeechCalls: number }).__simjurySpeechCalls,
+  )).toBe(0)
 })
 
 test.describe('responsive Court Week shell', () => {

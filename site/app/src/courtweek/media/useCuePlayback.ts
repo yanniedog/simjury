@@ -347,11 +347,14 @@ export function useCuePlayback(
     audio.addEventListener('pause', handlePause)
     return () => {
       suppressRecordedPlayback()
-      audio.pause()
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata)
       audio.removeEventListener('error', handleError)
       audio.removeEventListener('playing', handlePlaying)
       audio.removeEventListener('pause', handlePause)
+      // Some browsers and deterministic test doubles dispatch `pause`
+      // synchronously. Detach this cue's listeners first so teardown cannot
+      // update playback state while React is committing the next cue.
+      audio.pause()
       cancelSpeech()
     }
   }, [audio, cancelSpeech, clearPlaybackTimeout, clearRecordedCompletionHandlers, cue, options.deferSourceUntilPlay, recoverRecordedPlayback, rewindToIncompleteTurn, suppressRecordedPlayback, updateActiveTurn])
