@@ -60,6 +60,7 @@ for (const text of [
 
 requireText(ready, 'simjury:fiction-disclosure:v2', 'Landing must retain the versioned adult-fiction gate')
 requireText(headers, 'Cache-Control: no-transform', 'Static responses must block transformations')
+requireText(headers, '/jury/\n  Cache-Control: no-store, no-cache, must-revalidate, no-transform', 'Court Week shell must not outlive its hashed chunks')
 requireText(headers, '/assets/*', 'Content-addressed landing assets must have a dedicated cache rule')
 requireText(headers, 'Cache-Control: public, max-age=31536000, immutable, no-transform', 'Content-addressed landing assets must be immutable')
 requireText(headers, "script-src 'self'", 'CSP must keep scripts self-only')
