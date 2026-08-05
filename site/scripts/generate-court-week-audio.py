@@ -141,6 +141,111 @@ def synthesise(pipeline: Any, text: str, voice: str, np: Any, torch: Any) -> Any
     return np.concatenate(chunks)
 
 
+def synthesise_timed(
+    pipeline: Any,
+    text: str,
+    voice: str,
+    sample_rate: int,
+    np: Any,
+    torch: Any,
+) -> dict[str, Any]:
+    """Render one complete performance while retaining Kokoro token timing."""
+    chunks = []
+    timed_tokens = []
+    character_cursor = 0
+    sample_cursor = 0
+    with torch.inference_mode():
+        for result in pipeline(text, voice=voice):
+            samples = np.asarray(result.audio, dtype=np.float32).reshape(-1)
+            if samples.size:
+                chunks.append(samples)
+            if not result.tokens:
+                raise RuntimeError(f"Kokoro returned no token timings for {voice}")
+            chunk_seconds = sample_cursor / sample_rate
+            chunk_duration = samples.size / sample_rate
+            for token in result.tokens:
+                piece = f"{token.text or ''}{token.whitespace or ''}"
+                token_start = character_cursor
+                character_cursor += len(piece)
+                start_ts = None if token.start_ts is None else chunk_seconds + float(token.start_ts)
+                end_ts = None if token.end_ts is None else chunk_seconds + float(token.end_ts)
+                if start_ts is not None and end_ts is not None:
+                    start_ts = max(chunk_seconds, min(start_ts, chunk_seconds + chunk_duration))
+                    end_ts = max(start_ts, min(end_ts, chunk_seconds + chunk_duration))
+                timed_tokens.append({
+                    "text": piece,
+                    "characterStart": token_start,
+                    "characterEnd": character_cursor,
+                    "startSeconds": start_ts,
+                    "endSeconds": end_ts,
+                })
+            sample_cursor += samples.size
+    if not chunks:
+        raise RuntimeError(f"Kokoro produced no samples for {voice}")
+    samples = np.concatenate(chunks)
+    rendered_text = "".join(token["text"] for token in timed_tokens)
+    leading = len(rendered_text) - len(rendered_text.lstrip())
+    rendered_text = rendered_text.strip()
+    for token in timed_tokens:
+        token["characterStart"] -= leading
+        token["characterEnd"] -= leading
+    return {"samples": samples, "text": rendered_text, "tokens": timed_tokens}
+
+
+def align_utterance_parts(
+    synthesis: dict[str, Any],
+    utterance: dict[str, Any],
+    sample_rate: int,
+) -> list[dict[str, Any]]:
+    """Map reviewed caption parts onto exact, monotonic token boundaries."""
+    parts = utterance["parts"]
+    expected_text = " ".join(str(part["text"]).strip() for part in parts)
+    if synthesis["text"] != expected_text or str(utterance["text"]).strip() != expected_text:
+        raise RuntimeError(f"Kokoro token text does not reconstruct {utterance['id']}")
+
+    part_ranges = []
+    character_cursor = 0
+    for index, part in enumerate(parts):
+        if index:
+            if synthesis["text"][character_cursor: character_cursor + 1] != " ":
+                raise RuntimeError(f"Kokoro token boundary differs before {part['turnId']}")
+            character_cursor += 1
+        part_text = str(part["text"]).strip()
+        start_character = character_cursor
+        end_character = start_character + len(part_text)
+        if synthesis["text"][start_character:end_character] != part_text:
+            raise RuntimeError(f"Kokoro token text differs for {part['turnId']}")
+        character_cursor = end_character
+        tokens = [token for token in synthesis["tokens"] if (
+            token["characterStart"] < end_character and
+            token["characterEnd"] > start_character and
+            token["startSeconds"] is not None and
+            token["endSeconds"] is not None
+        )]
+        if not tokens:
+            raise RuntimeError(f"Kokoro returned no spoken timing for {part['turnId']}")
+        part_ranges.append({
+            **part,
+            "startSeconds": min(token["startSeconds"] for token in tokens),
+            "endSeconds": max(token["endSeconds"] for token in tokens),
+        })
+    if character_cursor != len(synthesis["text"]):
+        raise RuntimeError(f"Kokoro left unmatched token text in {utterance['id']}")
+
+    duration = synthesis["samples"].size / sample_rate
+    part_ranges[0]["startSeconds"] = 0.0
+    part_ranges[-1]["endSeconds"] = duration
+    for index in range(len(part_ranges) - 1):
+        left = part_ranges[index]
+        right = part_ranges[index + 1]
+        boundary = (float(left["endSeconds"]) + float(right["startSeconds"])) / 2
+        if not left["startSeconds"] < boundary < right["endSeconds"]:
+            raise RuntimeError(f"Non-monotonic Kokoro token boundary in {utterance['id']}")
+        left["endSeconds"] = boundary
+        right["startSeconds"] = boundary
+    return part_ranges
+
+
 def encode_once(
     source_wav: Path,
     target: Path,

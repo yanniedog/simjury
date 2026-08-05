@@ -42,5 +42,63 @@ class PauseValidationTests(unittest.TestCase):
                 MODULE.validate_job(job_with_pause(invalid))
 
 
+class CaptionTimingTests(unittest.TestCase):
+    def test_uses_one_continuous_utterance_with_monotonic_caption_boundaries(self):
+        first = "Members of the jury panel, switch off every device except the"
+        second = "one running this simulation."
+        text = f"{first} {second}"
+        tokens = []
+        cursor = 0
+        words = text.split(" ")
+        for index, word in enumerate(words):
+            piece = word if index == len(words) - 1 else f"{word} "
+            tokens.append({
+                "text": piece,
+                "characterStart": cursor,
+                "characterEnd": cursor + len(piece),
+                "startSeconds": index * 0.2,
+                "endSeconds": index * 0.2 + 0.15,
+            })
+            cursor += len(piece)
+
+        class Samples:
+            size = 4 * 24_000
+
+        parts = [
+            {"captionId": "caption-1", "turnId": "turn-1", "text": first},
+            {"captionId": "caption-2", "turnId": "turn-2", "text": second},
+        ]
+        ranges = MODULE.align_utterance_parts(
+            {"samples": Samples(), "text": text, "tokens": tokens},
+            {"id": "source-1--utterance-1", "text": text, "parts": parts},
+            24_000,
+        )
+
+        self.assertEqual(ranges[0]["startSeconds"], 0)
+        self.assertEqual(ranges[-1]["endSeconds"], 4)
+        self.assertEqual(ranges[0]["endSeconds"], ranges[1]["startSeconds"])
+        self.assertLess(ranges[0]["startSeconds"], ranges[0]["endSeconds"])
+        self.assertLess(ranges[1]["startSeconds"], ranges[1]["endSeconds"])
+
+    def test_fails_closed_when_kokoro_token_text_does_not_match(self):
+        class Samples:
+            size = 24_000
+
+        with self.assertRaisesRegex(RuntimeError, "does not reconstruct"):
+            MODULE.align_utterance_parts(
+                {"samples": Samples(), "text": "changed words", "tokens": []},
+                {
+                    "id": "source-1--utterance-1",
+                    "text": "reviewed words",
+                    "parts": [{
+                        "captionId": "caption-1",
+                        "turnId": "turn-1",
+                        "text": "reviewed words",
+                    }],
+                },
+                24_000,
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
