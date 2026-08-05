@@ -11,6 +11,15 @@ import { prepareSealedProgressImport } from './progressImport'
 
 const packs = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap)
 const tuesday = elevenMinutesCourtWeek.manifest.sessions[1]
+const sealedTuesday = {
+  ...tuesday,
+  prerequisiteSessionIds: [...tuesday.prerequisiteSessionIds, `sealed:${tuesday.id}`],
+  scenes: [{
+    ...tuesday.scenes[0],
+    id: 'sealed-2-scene',
+    cues: [{ ...tuesday.scenes[0].cues[0], id: 'sealed-2-cue' }],
+  }],
+}
 const tuesdayNow = Date.parse('2026-08-11T08:31:00+10:00')
 
 function currentProgress(): StoredWeeklyProgress {
@@ -77,9 +86,42 @@ describe('sealed progress import preparation', () => {
       currentProgress: currentProgress(),
       observedNow: Date.parse('2026-08-10T09:00:00+10:00'),
       baseUrl: '/packs/',
+      sealedSessions: [packs[0].session, sealedTuesday],
       hydrate,
     })).rejects.toThrow(/Tuesday remains sealed/i)
     expect(hydrate).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['before Tuesday unlock', Date.parse('2026-08-10T09:00:00+10:00')],
+    ['after Tuesday unlock', tuesdayNow],
+  ])('preserves a legitimate day-boundary export %s', async (_label, observedNow) => {
+    const hydrate = vi.fn(async ({ entries }) => packs.slice(0, entries.length))
+    const boundary = {
+      ...importedTuesday(),
+      currentSceneId: 'sealed-2-scene',
+      currentCueId: 'sealed-2-cue',
+    }
+    const prepared = await prepareSealedProgressImport({
+      text: exportWeeklyProgress(boundary),
+      bootstrap: courtWeekBootstrap,
+      currentProgress: currentProgress(),
+      observedNow,
+      baseUrl: '/packs/',
+      sealedSessions: [packs[0].session, sealedTuesday],
+      hydrate,
+    })
+
+    expect(hydrate).toHaveBeenCalledWith(expect.objectContaining({
+      entries: courtWeekBootstrap.sessions.slice(0, 1),
+      persistOpened: false,
+    }))
+    expect(prepared.packs.map(({ ordinal }) => ordinal)).toEqual([1])
+    expect(prepared.progress).toMatchObject({
+      currentSessionId: tuesday.id,
+      currentSceneId: 'sealed-2-scene',
+      currentCueId: 'sealed-2-cue',
+    })
   })
 
   it('rejects a tampered non-sequential completion claim before hydration', async () => {

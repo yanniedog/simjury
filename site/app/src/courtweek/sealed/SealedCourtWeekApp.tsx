@@ -218,6 +218,7 @@ export function SealedCourtWeekApp({
       // authorise a previously unopened session during device transfer.
       observedNow: now(),
       baseUrl: packBase,
+      sealedSessions: courtWeek.manifest.sessions,
       ...(fetcher ? { fetcher } : {}),
     })
     await Promise.all(prepared.packs.map((pack) => saveOpenedPack(pack)))
@@ -226,7 +227,7 @@ export function SealedCourtWeekApp({
       return Array.from(merged.values()).sort((left, right) => left.ordinal - right.ordinal)
     })
     return prepared.progress
-  }, [bootstrap, fetcher, now, packBase])
+  }, [bootstrap, courtWeek.manifest.sessions, fetcher, now, packBase])
 
   if (!progress) {
     return <main className="cw-loading" aria-busy="true"><p>Preparing the courtroom…</p></main>

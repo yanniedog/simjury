@@ -3,6 +3,7 @@ import {
   parseWeeklyProgressExport,
   type StoredWeeklyProgress,
 } from '../state/progress'
+import type { CourtSession } from '../model/schema'
 import { hydrateCourtPacks, type SealedPackFetcher } from './loader'
 import type { CourtDayPack, CourtWeekBootstrap, CourtWeekScheduleEntry } from './types'
 
@@ -18,6 +19,7 @@ export function requiredImportEntries(
   bootstrap: CourtWeekBootstrap,
   candidate: StoredWeeklyProgress,
   observedNow: number,
+  includeCurrent = true,
 ): CourtWeekScheduleEntry[] {
   const fail = (): never => { throw new Error('This progress contains an impossible Court Week chronology.') }
   const completed = candidate.completedSessionIds
@@ -32,7 +34,7 @@ export function requiredImportEntries(
   if (current && candidate.currentSessionId !== current.id) fail()
   if (completed.length > bootstrap.sessions.length) fail()
 
-  const entries = bootstrap.sessions.slice(0, completed.length + (current ? 1 : 0))
+  const entries = bootstrap.sessions.slice(0, completed.length + (current && includeCurrent ? 1 : 0))
   const completedSet = new Set(completed)
   for (const entry of entries) {
     const unlockAt = Date.parse(entry.unlockAt)
@@ -56,6 +58,7 @@ export async function prepareSealedProgressImport({
   observedNow,
   baseUrl,
   fetcher,
+  sealedSessions = [],
   hydrate = hydrateCourtPacks,
 }: {
   text: string
@@ -64,10 +67,19 @@ export async function prepareSealedProgressImport({
   observedNow: number
   baseUrl: string
   fetcher?: SealedPackFetcher
+  sealedSessions?: CourtSession[]
   hydrate?: ImportPackHydrator
 }): Promise<{ progress: StoredWeeklyProgress; packs: CourtDayPack[] }> {
   const candidate = parseWeeklyProgressExport(text, bootstrap.id, bootstrap.revision)
-  const entries = requiredImportEntries(bootstrap, candidate, observedNow)
+  const boundarySession = sealedSessions.find((session) => (
+    session.id === candidate.currentSessionId
+    && session.prerequisiteSessionIds.includes(`sealed:${session.id}`)
+    && session.scenes.some((scene) => (
+      scene.id === candidate.currentSceneId
+      && scene.cues.some((cue) => cue.id === candidate.currentCueId)
+    ))
+  ))
+  const entries = requiredImportEntries(bootstrap, candidate, observedNow, !boundarySession)
   const packs = await hydrate({
     bootstrap,
     entries,
@@ -82,12 +94,14 @@ export async function prepareSealedProgressImport({
     throw new Error('The imported Court Week record could not be hydrated completely.')
   }
   const deliberation = packs.find((pack) => pack.deliberation)?.deliberation
+  const validationSessions = packs.map((pack) => pack.session)
+  if (boundarySession) validationSessions.push(boundarySession)
   const exact = importWeeklyProgress(
     text,
     bootstrap.id,
     bootstrap.revision,
     deliberation,
-    packs.map((pack) => pack.session),
+    validationSessions,
   )
   const currentWatermark = Date.parse(currentProgress.highestObservedTime)
   return {
