@@ -30,11 +30,18 @@ import {
   downloadWeeklyProgress,
   mergeImportedWeeklyProgress,
 } from '../state/progress'
+import type {
+  LocalProfile,
+  LocalProfileInput,
+  LocalProfileIssue,
+  LocalProfilePersistence,
+} from '../state/localProfile'
 import { useWeeklyProgress, type PersistenceIssue } from '../state/useWeeklyProgress'
 import { EvidenceViewer } from './EvidenceViewer'
 import { CourtWeekCompletion } from './CourtWeekCompletion'
 import { ImmersiveCourtShell } from './ImmersiveCourtShell'
 import { JurorDesk } from './JurorDesk'
+import { LocalProfilePanel } from './LocalProfilePanel'
 import { useModalFocusBoundary } from './useModalFocusBoundary'
 import '../courtweek.css'
 
@@ -57,6 +64,14 @@ export interface CourtWeekAppProps {
     onLeave: () => void
   }
   onEnteredChange?: (entered: boolean) => void
+  localProfile?: {
+    profile: LocalProfile
+    persistence: LocalProfilePersistence
+    issue: LocalProfileIssue
+    onChange: (profile: LocalProfileInput) => void
+    onReset: () => void
+    onOpenDeveloperPreview: () => void
+  }
 }
 const verdictLabels: Record<Verdict, string> = {
   murder: 'Guilty of murder',
@@ -124,6 +139,7 @@ function CourtWeekEntry({
   onDataSaver,
   onNarrationApproved,
   focusHeading,
+  localProfile,
 }: {
   title: string
   advisory: string
@@ -138,6 +154,7 @@ function CourtWeekEntry({
   onDataSaver: (enabled: boolean) => void
   onNarrationApproved: (approved: boolean) => void
   focusHeading: boolean
+  localProfile?: CourtWeekAppProps['localProfile']
 }) {
   const [fullscreen, setFullscreen] = useState(false)
   const headingRef = useRef<HTMLHeadingElement>(null)
@@ -153,6 +170,7 @@ function CourtWeekEntry({
         <h1 ref={headingRef} tabIndex={focusHeading ? -1 : undefined}>{title}</h1>
         <p>{ephemeral && ephemeralAdvisory ? ephemeralAdvisory : advisory}</p>
         <p>SimJury is fictional and intended for adults aged 18 and older.</p>
+        {localProfile ? <LocalProfilePanel {...localProfile} /> : null}
         {persistenceNotice ? <p className="cw-error" role="alert">{persistenceNotice}</p> : null}
         <p>Choose how the court should be presented. You can change captions later.</p>
         <fieldset className="cw-mode-picker">
@@ -218,9 +236,17 @@ function CourtWeekEntry({
             Ask to enter full screen
           </label>
         ) : null}
-        <button className="cw-primary" type="button" onClick={() => onEnter(fullscreen)}>
+        <button
+          className="cw-primary"
+          type="button"
+          disabled={Boolean(localProfile && !localProfile.profile.adultFictionAcknowledged)}
+          onClick={() => onEnter(fullscreen)}
+        >
           Take your seat
         </button>
+        {localProfile && !localProfile.profile.adultFictionAcknowledged ? (
+          <p className="cw-entry__requirement" role="status">Confirm the adult fiction notice in Local profile to continue.</p>
+        ) : null}
         <p className="cw-entry__privacy">
           {ephemeral
             ? 'Preview progress and private notes are discarded when you switch sessions or leave preview.'
@@ -295,6 +321,7 @@ export function CourtWeekApp({
   focusEntryHeading = false,
   developerPreview,
   onEnteredChange,
+  localProfile,
 }: CourtWeekAppProps) {
   const baseline = useMemo(
     () => initialProgressOverride ?? initialProgress(courtWeek, now()),
@@ -618,6 +645,7 @@ export function CourtWeekApp({
         dataSaver={dataSaver}
         narrationApproved={narrationApproved}
         focusHeading={focusEntryHeading}
+        localProfile={localProfile}
         onDataSaver={setDataSaver}
         onNarrationApproved={setNarrationApproved}
         onMode={(mode) => updateProgress((current) => ({ ...current, accessibilityMode: mode }))}
