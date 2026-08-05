@@ -70,7 +70,7 @@ const cacheRules = [
 ]
 for (const [route, directive, label] of cacheRules) {
   requireMatch(headers, new RegExp(`^${route}\\r?\\n\\s+${directive}$`, 'm'),
-    `${label} cache rule must survive deploy transitions`)
+    `${label} cache rule for ${route} must survive deploy transitions`)
 }
 requireText(headers, '/assets/*', 'Content-addressed landing assets must have a dedicated cache rule')
 requireText(headers, 'Cache-Control: public, max-age=31536000, immutable, no-transform', 'Content-addressed landing assets must be immutable')
