@@ -69,10 +69,7 @@ describe('Eleven Minutes legal provenance', () => {
   it('keeps the distress recording and its accessible propositions singular', () => {
     const distress = elevenMinutesCourtWeek.trial.evidence.find(({ id }) => id === 'ex-distress')!
     const recording = cueText('tue-recording-play')
-    const completeAuthoredRecord = JSON.stringify({
-      trialRecord: elevenMinutesCourtWeek.trial,
-      cueContent: orderedCues.map(({ text, accessibleProposition }) => ({ text, accessibleProposition })),
-    })
+    const completeAuthoredRecord = JSON.stringify(elevenMinutesCourtWeek)
 
     expect(recording).toMatch(/One person aboard/i)
     expect(recording).toMatch(/reports one person aboard/i)
