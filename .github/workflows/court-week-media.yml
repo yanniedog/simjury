@@ -54,10 +54,12 @@ jobs:
         run: npm run lint && npm run typecheck && npm test && npm run media:art:test && npm run validate:cases && npm run build
       - name: Build deterministic prerecorded-audio jobs
         working-directory: site/app
+        env:
+          REVIEW_CANDIDATE_RELEASE_TAG: ${{ inputs.release_tag }}
         run: >-
           npm run media:audio:jobs --
           --output ../../.court-week-audio-jobs
-          --review-candidate-release-tag "${{ inputs.release_tag }}"
+          --review-candidate-release-tag "$REVIEW_CANDIDATE_RELEASE_TAG"
       - name: Record exact-source review status without blocking review media
         working-directory: site/app
         run: npm run review:signoffs -- --report ../../.court-week-audio-jobs/review-signoffs.json

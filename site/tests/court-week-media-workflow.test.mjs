@@ -24,8 +24,18 @@ test('review packaging fails closed unless all scene art is release ready', () =
 })
 
 test('review-candidate tags are confined to non-publishing media jobs', () => {
+  const buildStep = workflow.match(
+    /- name: Build deterministic prerecorded-audio jobs[\s\S]*?(?=\n\s+- name:)/u,
+  )?.[0] ?? ''
+  const runBlock = buildStep.match(/run: >-[\s\S]*/u)?.[0] ?? ''
+
   assert.match(workflow, /inputs\.publish != true/u)
-  assert.match(workflow, /--review-candidate-release-tag "\$\{\{ inputs\.release_tag \}\}"/u)
+  assert.match(
+    buildStep,
+    /env:\s*\n\s+REVIEW_CANDIDATE_RELEASE_TAG: \$\{\{ inputs\.release_tag \}\}/u,
+  )
+  assert.match(runBlock, /--review-candidate-release-tag "\$REVIEW_CANDIDATE_RELEASE_TAG"/u)
+  assert.doesNotMatch(runBlock, /\$\{\{\s*inputs\.release_tag\s*\}\}/u)
   assert.match(workflow, /Requested release tag does not match generated review-candidate jobs/u)
 })
 
