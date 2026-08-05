@@ -23,6 +23,30 @@ test('review packaging fails closed unless all scene art is release ready', () =
   assert.match(workflow, /--require-release-ready-art/u)
 })
 
+test('review-candidate tags are confined to non-publishing media jobs', () => {
+  const buildStep = workflow.match(
+    /- name: Build deterministic prerecorded-audio jobs[\s\S]*?(?=\n\s+- name:)/u,
+  )?.[0] ?? ''
+  const runBlock = buildStep.match(/run: >-[\s\S]*/u)?.[0] ?? ''
+  const publishHeader = /^  publish:\r?$/mu.exec(workflow)
+  assert.ok(publishHeader, 'publish job must remain present')
+  const publishStart = publishHeader.index
+  const nextJob = /^  [a-z][a-z0-9-]*:\r?$/gmu
+  nextJob.lastIndex = publishStart + publishHeader[0].length
+  const followingJob = nextJob.exec(workflow)
+  const publishJob = workflow.slice(publishStart, followingJob?.index ?? workflow.length)
+
+  assert.match(workflow, /inputs\.publish != true/u)
+  assert.match(
+    buildStep,
+    /env:\s*\n\s+REVIEW_CANDIDATE_RELEASE_TAG: \$\{\{ inputs\.release_tag \}\}/u,
+  )
+  assert.match(runBlock, /--review-candidate-release-tag "\$REVIEW_CANDIDATE_RELEASE_TAG"/u)
+  assert.doesNotMatch(runBlock, /\$\{\{\s*inputs\.release_tag\s*\}\}/u)
+  assert.doesNotMatch(publishJob, /--review-candidate-release-tag/u)
+  assert.match(workflow, /Requested release tag does not match generated review-candidate jobs/u)
+})
+
 test('package and publish fail closed on reviewed-run artifact provenance', () => {
   assert.equal((workflow.match(/actions: read/gu) ?? []).length, 2)
   assert.doesNotMatch(workflow, /actions: write/u)
