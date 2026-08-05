@@ -1,9 +1,9 @@
 import { expect, test, type CDPSession, type Page } from '@playwright/test'
 import { writeFile } from 'node:fs/promises'
 import { DEFAULT_LOCAL_PROFILE, LOCAL_PROFILE_STORAGE_KEY } from '../../src/courtweek/state/localProfile'
+import { PERFORMANCE_BASE_URL } from './environment'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
-const performanceOrigin = 'http://127.0.0.1:43129'
 const acknowledgedProfile = JSON.stringify({
   ...DEFAULT_LOCAL_PROFILE,
   adultFictionAcknowledged: true,
@@ -19,7 +19,7 @@ test.use({
   storageState: {
     cookies: [],
     origins: [{
-      origin: performanceOrigin,
+      origin: new URL(PERFORMANCE_BASE_URL).origin,
       localStorage: [{ name: LOCAL_PROFILE_STORAGE_KEY, value: acknowledgedProfile }],
     }],
   },
