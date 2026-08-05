@@ -23,6 +23,15 @@ test('review packaging fails closed unless all scene art is release ready', () =
   assert.match(workflow, /--require-release-ready-art/u)
 })
 
+test('package and publish fail closed on reviewed-run artifact provenance', () => {
+  assert.equal((workflow.match(/actions: read/gu) ?? []).length, 2)
+  assert.doesNotMatch(workflow, /actions: write/u)
+  assert.match(workflow, /assert-court-week-media-run\.mjs[\s\S]*?--mode package/u)
+  assert.match(workflow, /assert-court-week-media-run\.mjs[\s\S]*?--mode publish/u)
+  assert.match(workflow, /actions\/runs\/\$GITHUB_RUN_ID\/artifacts\?per_page=100/u)
+  assert.match(workflow, /actions\/runs\/\$REVIEWED_RUN_ID\/artifacts\?per_page=100/u)
+})
+
 test('synthesis inputs are exact and the immutable Kokoro revision is explicit', () => {
   const declared = requirements.split(/\r?\n/u).filter(Boolean)
   assert.ok(declared.length > 0)

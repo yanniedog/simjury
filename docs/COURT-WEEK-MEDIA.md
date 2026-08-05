@@ -86,13 +86,18 @@ hash-locked wheel closure and an operator-controlled immutable apt snapshot;
 silently pinning package version strings that the live mirror may later remove
 would make the workflow less reliable. Generated audio therefore remains a
 review artifact until its exact bytes and recorded production environment are
-heard and approved. Do not reuse artifacts from a rerun that created duplicate
-matrix artifact names; dispatch a fresh whole review run instead.
+heard and approved. Packaging queries the current run through GitHub's read-only
+Actions API and fails unless there is exactly one source artifact and one audio
+artifact for each canonical Monday-Sunday session. This makes duplicate matrix
+artifacts from reruns a hard failure instead of an extraction-order ambiguity.
 
 The optional publish job is the only job with `contents: write`. It refuses to
-replace an existing tag or publish without all exact-source review signoffs. Do
-not set `publish` true until the review artifact, fixed revision and app's pinned
-runtime manifest have all been reviewed.
+replace an existing tag or publish without all exact-source review signoffs. It
+also requires the reviewed run to be a completed successful `court-week-media`
+dispatch on this repository's `main`, with one complete, unexpired, run-bound
+source/session/public-payload artifact set. Do not set `publish` true until the
+review artifact, fixed revision and app's pinned runtime manifest have all been
+reviewed.
 
 ## Blocking media gates
 
