@@ -127,6 +127,7 @@ test('core flow remains playable across browser engines', async ({ page }) => {
   await page.getByRole('button', { name: 'Zoom in' }).click()
   await page.getByRole('button', { name: 'Reset' }).click()
   await page.getByRole('button', { name: 'Close exhibit' }).click()
+  await page.getByRole('button', { name: 'Close juror desk' }).click()
   await page.setViewportSize({ width: 844, height: 390 })
   await expect(page.getByRole('button', { name: 'Juror desk', exact: true })).toBeVisible()
   expect(prohibited).toEqual([])

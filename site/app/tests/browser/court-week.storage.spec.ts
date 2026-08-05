@@ -28,8 +28,10 @@ test('blocked storage stays playable and exports private notes only by explicit 
   await page.goto('/')
   expect(await page.evaluate(() => typeof indexedDB)).toBe('undefined')
   await expect(page.getByRole('alert')).toContainText('Device storage is unavailable')
-  await openDesk(page)
+  await page.getByLabel('Reading mode').check()
+  await page.getByRole('button', { name: 'Take your seat' }).click()
   await expect(page.getByRole('status')).toContainText('Progress is held in this tab')
+  await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
   await page.getByLabel('Your private notes').fill('Private causation note.')
 
   const defaultDownload = page.waitForEvent('download')

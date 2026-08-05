@@ -110,7 +110,7 @@ async function readProgressPosition(page: Page): Promise<ProgressPosition | null
 async function captureActiveState(page: Page) {
   await expect.poll(() => readProgressPosition(page)).not.toBeNull()
   return {
-    cue: await page.locator('[aria-live]').textContent(),
+    cue: await page.locator('.cw-cue-live-region').textContent(),
     speaker: await page.locator('#cw-speaker-name').textContent(),
     progressLabel: await page.locator('.cw-status p').nth(1).textContent(),
     stored: await readProgressPosition(page),
@@ -121,7 +121,7 @@ async function captureActiveState(page: Page) {
 }
 
 async function expectActiveState(page: Page, expected: Awaited<ReturnType<typeof captureActiveState>>) {
-  await expect(page.locator('[aria-live]')).toHaveText(expected.cue ?? '')
+  await expect(page.locator('.cw-cue-live-region')).toHaveText(expected.cue ?? '')
   await expect(page.locator('#cw-speaker-name')).toHaveText(expected.speaker ?? '')
   await expect(page.locator('.cw-status p').nth(1)).toHaveText(expected.progressLabel ?? '')
   await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible()

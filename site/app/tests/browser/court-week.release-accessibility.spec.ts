@@ -151,9 +151,11 @@ test('mandatory deliberation selects retain 44px targets and a three-pixel focus
   await page.getByRole('button', { name: 'Continue' }).click()
 
   const dialog = page.getByRole('dialog', { name: /Optionally test this opening concern/i })
+  await expect(dialog).toBeFocused()
   for (const label of ['Legal question', 'Admitted evidence']) {
     const select = dialog.getByLabel(label)
-    await select.focus()
+    await page.keyboard.press('Tab')
+    await expect(select).toBeFocused()
     const geometry = await select.evaluate((element) => {
       const box = element.getBoundingClientRect()
       const style = getComputedStyle(element)
