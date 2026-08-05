@@ -79,9 +79,12 @@ describe('CourtWeekApp improper-argument interaction', () => {
       root.render(<CourtWeekApp courtWeek={elevenMinutesCourtWeek} now={now} releaseBase="/media" />)
       await Promise.resolve()
     })
-    await act(async () => { await new Promise((resolve) => window.setTimeout(resolve, 180)) })
 
-    const saved = await loadWeeklyProgress(elevenMinutesCourtWeek.manifest.id)
+    const saved = await act(async () => vi.waitFor(async () => {
+      const candidate = await loadWeeklyProgress(elevenMinutesCourtWeek.manifest.id)
+      expect(Date.parse(candidate?.highestObservedTime ?? '')).toBeGreaterThan(Date.parse(persistedTime))
+      return candidate
+    }, { timeout: 1_000, interval: 20 }))
     expect(Date.parse(saved?.highestObservedTime ?? '')).toBeGreaterThan(Date.parse(persistedTime))
     expect(Date.parse(saved?.highestObservedTime ?? '')).toBeGreaterThanOrEqual(start)
     expect(clockReads).toBeLessThan(10)
