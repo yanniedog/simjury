@@ -73,4 +73,22 @@ describe('useModalFocusBoundary', () => {
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true, cancelable: true }))
     expect(document.activeElement).toBe(buttons[1])
   })
+
+  it('skips controls removed from the active focus order', async () => {
+    function AvailabilityDialog() {
+      const dialog = useRef<HTMLElement>(null)
+      useModalFocusBoundary(dialog)
+      return (
+        <section ref={dialog} role="dialog" tabIndex={-1}>
+          <div hidden><button type="button">Hidden by ancestor</button></div>
+          <button type="button" tabIndex={-1}>Programmatic only</button>
+          <fieldset disabled><button type="button">Disabled by fieldset</button></fieldset>
+          <button type="button">Available</button>
+        </section>
+      )
+    }
+
+    await act(async () => { root.render(<AvailabilityDialog />) })
+    expect(document.activeElement?.textContent).toBe('Available')
+  })
 })

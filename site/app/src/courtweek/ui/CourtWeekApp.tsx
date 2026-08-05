@@ -242,7 +242,11 @@ function MandatoryInteractionDialog({
   returnFocusTo?: HTMLElement | null
 }) {
   const dialog = useRef<HTMLElement>(null)
-  useModalFocusBoundary(dialog, returnFocusTo)
+  useModalFocusBoundary(
+    dialog,
+    returnFocusTo,
+    '.cw-controls__advance, .cw-controls button:not([disabled])',
+  )
   return (
     <section
       ref={dialog}

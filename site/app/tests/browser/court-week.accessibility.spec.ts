@@ -199,6 +199,12 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-stage')).toHaveAttribute('inert', '')
   await expect(page.locator('.cw-stage')).toHaveAttribute('aria-hidden', 'true')
 
+  const mandatoryPosition = await readProgressPosition(page)
+  await page.keyboard.press('Escape')
+  await expect(dialog).toBeVisible()
+  await expect(choice).toBeFocused()
+  await expect.poll(() => readProgressPosition(page)).toEqual(mandatoryPosition)
+
   await page.keyboard.press('Tab')
   await expect(choice).toBeFocused()
   await page.keyboard.press('Shift+Tab')

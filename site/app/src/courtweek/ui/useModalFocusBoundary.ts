@@ -1,24 +1,35 @@
 import { useEffect, type RefObject } from 'react'
 
 const focusableSelector = [
-  'a[href]',
-  'button:not([disabled])',
+  'a[href]:not([tabindex="-1"])',
+  'button:not([disabled]):not([tabindex="-1"])',
   'input:not([disabled]):not([tabindex="-1"])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  'summary',
+  'select:not([disabled]):not([tabindex="-1"])',
+  'textarea:not([disabled]):not([tabindex="-1"])',
+  'summary:not([tabindex="-1"])',
   '[tabindex]:not([tabindex="-1"])',
 ].join(',')
 
+function isAvailable(element: HTMLElement, root: HTMLElement): boolean {
+  if (element.matches(':disabled')) return false
+  for (let current: HTMLElement | null = element; current && root.contains(current); current = current.parentElement) {
+    if (current.hidden || current.hasAttribute('inert') || current.getAttribute('aria-hidden') === 'true') return false
+    const style = getComputedStyle(current)
+    if (style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse') return false
+  }
+  return true
+}
+
 function availableControls(root: HTMLElement): HTMLElement[] {
   return Array.from(root.querySelectorAll<HTMLElement>(focusableSelector))
-    .filter((element) => element.getAttribute('aria-hidden') !== 'true')
+    .filter((element) => isAvailable(element, root))
 }
 
 /** Keeps a mandatory modal's keyboard focus inside it without making Escape an exit. */
 export function useModalFocusBoundary(
   rootRef: RefObject<HTMLElement>,
   preferredReturnFocus?: HTMLElement | null,
+  fallbackReturnFocusSelector?: string,
 ): void {
   useEffect(() => {
     const root = rootRef.current
@@ -59,9 +70,11 @@ export function useModalFocusBoundary(
         if (root.isConnected) return
         const target = returnFocusTo?.isConnected
           ? returnFocusTo
-          : document.querySelector<HTMLElement>('.cw-controls__advance, .cw-controls button:not([disabled])')
+          : fallbackReturnFocusSelector
+            ? document.querySelector<HTMLElement>(fallbackReturnFocusSelector)
+            : null
         target?.focus()
       })
     }
-  }, [preferredReturnFocus, rootRef])
+  }, [fallbackReturnFocusSelector, preferredReturnFocus, rootRef])
 }

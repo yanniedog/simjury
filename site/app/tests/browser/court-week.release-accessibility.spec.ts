@@ -141,6 +141,8 @@ test('reading mode announces each newly displayed legal cue exactly once', async
   await page.getByRole('button', { name: 'Continue' }).click()
   await expect(readingCopy).not.toHaveText(firstCue ?? '')
   await expect(page.locator('[aria-live="polite"]')).toHaveCount(1)
+  await expect(page.locator('.cw-cue-live-region')).toHaveAttribute('aria-live', 'off')
+  await expect(page.locator('.cw-cue-live-region')).toHaveAttribute('aria-hidden', 'true')
 })
 
 test('mandatory deliberation selects retain 44px targets and a three-pixel focus ring', async ({ page }) => {
