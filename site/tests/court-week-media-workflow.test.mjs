@@ -28,6 +28,13 @@ test('review-candidate tags are confined to non-publishing media jobs', () => {
     /- name: Build deterministic prerecorded-audio jobs[\s\S]*?(?=\n\s+- name:)/u,
   )?.[0] ?? ''
   const runBlock = buildStep.match(/run: >-[\s\S]*/u)?.[0] ?? ''
+  const publishHeader = /^  publish:\r?$/mu.exec(workflow)
+  assert.ok(publishHeader, 'publish job must remain present')
+  const publishStart = publishHeader.index
+  const nextJob = /^  [a-z][a-z0-9-]*:\r?$/gmu
+  nextJob.lastIndex = publishStart + publishHeader[0].length
+  const followingJob = nextJob.exec(workflow)
+  const publishJob = workflow.slice(publishStart, followingJob?.index ?? workflow.length)
 
   assert.match(workflow, /inputs\.publish != true/u)
   assert.match(
@@ -36,6 +43,7 @@ test('review-candidate tags are confined to non-publishing media jobs', () => {
   )
   assert.match(runBlock, /--review-candidate-release-tag "\$REVIEW_CANDIDATE_RELEASE_TAG"/u)
   assert.doesNotMatch(runBlock, /\$\{\{\s*inputs\.release_tag\s*\}\}/u)
+  assert.doesNotMatch(publishJob, /--review-candidate-release-tag/u)
   assert.match(workflow, /Requested release tag does not match generated review-candidate jobs/u)
 })
 
