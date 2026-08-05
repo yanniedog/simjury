@@ -7,7 +7,11 @@ import {
   loadWeeklyProgress,
   type StoredWeeklyProgress,
 } from './progress'
-import { useWeeklyProgress, type WeeklyProgressState } from './useWeeklyProgress'
+import {
+  useWeeklyProgress,
+  WEEKLY_PROGRESS_EVENT,
+  type WeeklyProgressState,
+} from './useWeeklyProgress'
 
 const initialProgress: StoredWeeklyProgress = {
   schemaVersion: 'court-week-progress-v1',
@@ -96,5 +100,28 @@ describe('useWeeklyProgress durability boundaries', () => {
     } else {
       Reflect.deleteProperty(document, 'visibilityState')
     }
+  })
+
+  it('keeps ephemeral preview progress entirely in React memory', async () => {
+    let progressEvents = 0
+    const receiveProgress = () => { progressEvents += 1 }
+    window.addEventListener(WEEKLY_PROGRESS_EVENT, receiveProgress)
+    function Harness() {
+      state = useWeeklyProgress(initialProgress, { ephemeral: true })
+      return null
+    }
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness />))
+    expect(state?.hydrated).toBe(true)
+    expect(state?.persistence).toBe('ephemeral')
+
+    act(() => state?.updateProgress((current) => ({ ...current, notes: 'Discard me.' })))
+    act(() => window.dispatchEvent(new Event('pagehide')))
+    await new Promise((resolve) => window.setTimeout(resolve, 150))
+
+    expect(progressEvents).toBe(0)
+    await expect(loadWeeklyProgress('cw-0001')).resolves.toBeNull()
+    act(() => root.unmount())
+    window.removeEventListener(WEEKLY_PROGRESS_EVENT, receiveProgress)
   })
 })

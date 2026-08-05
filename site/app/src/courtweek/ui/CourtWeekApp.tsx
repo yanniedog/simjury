@@ -46,6 +46,15 @@ export interface CourtWeekAppProps {
     text: string,
     current: StoredWeeklyProgress,
   ) => Promise<StoredWeeklyProgress>
+  initialProgressOverride?: StoredWeeklyProgress
+  ephemeral?: boolean
+  developerPreview?: {
+    selectedOrdinal: number
+    sessions: Array<{ ordinal: number; day: string }>
+    onSelect: (ordinal: number) => void
+    onLeave: () => void
+  }
+  onEnteredChange?: (entered: boolean) => void
 }
 const verdictLabels: Record<Verdict, string> = {
   murder: 'Guilty of murder',
@@ -106,6 +115,7 @@ function CourtWeekEntry({
   onMode,
   onEnter,
   persistenceNotice,
+  ephemeral,
   dataSaver,
   narrationApproved,
   onDataSaver,
@@ -117,6 +127,7 @@ function CourtWeekEntry({
   onMode: (mode: AccessMode) => void
   onEnter: (fullscreen: boolean) => void
   persistenceNotice: string | null
+  ephemeral: boolean
   dataSaver: boolean
   narrationApproved: boolean
   onDataSaver: (enabled: boolean) => void
@@ -130,7 +141,12 @@ function CourtWeekEntry({
       <div className="cw-entry__panel">
         <p className="cw-kicker">A seven-day fictional jury experience</p>
         <h1>{title}</h1>
-        <p>{advisory}</p>
+        <p>{ephemeral
+          ? advisory.replace(
+              'progress remains on this device.',
+              'preview progress is discarded when you switch sessions or leave preview.',
+            )
+          : advisory}</p>
         <p>SimJury is fictional and intended for adults aged 18 and older.</p>
         {persistenceNotice ? <p className="cw-error" role="alert">{persistenceNotice}</p> : null}
         <p>Choose how the court should be presented. You can change captions later.</p>
@@ -201,7 +217,9 @@ function CourtWeekEntry({
           Take your seat
         </button>
         <p className="cw-entry__privacy">
-          {persistenceNotice
+          {ephemeral
+            ? 'Preview progress and private notes are discarded when you switch sessions or leave preview.'
+            : persistenceNotice
             ? 'Use Export progress from the juror desk before leaving this tab.'
             : 'Progress and private notes stay on this device unless you export them.'}
         </p>
@@ -261,14 +279,29 @@ function MandatoryInteractionDialog({
   )
 }
 
-export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, prepareProgressImport }: CourtWeekAppProps) {
-  const baseline = useMemo(() => initialProgress(courtWeek, now()), [courtWeek, now])
-  const { progress, hydrated, persistence, persistenceIssue, updateProgress } = useWeeklyProgress(baseline)
+export function CourtWeekApp({
+  courtWeek,
+  now = Date.now,
+  releaseBase,
+  prepareProgressImport,
+  initialProgressOverride,
+  ephemeral = false,
+  developerPreview,
+  onEnteredChange,
+}: CourtWeekAppProps) {
+  const baseline = useMemo(
+    () => initialProgressOverride ?? initialProgress(courtWeek, now()),
+    [courtWeek, initialProgressOverride, now],
+  )
+  const { progress, hydrated, persistence, persistenceIssue, updateProgress } = useWeeklyProgress(
+    baseline,
+    { ephemeral },
+  )
   const highestObservedTime = useRef(progress.highestObservedTime)
   if (Date.parse(progress.highestObservedTime) > Date.parse(highestObservedTime.current)) {
     highestObservedTime.current = progress.highestObservedTime
   }
-  const storageNotice = persistenceNotice(persistenceIssue)
+  const storageNotice = ephemeral ? null : persistenceNotice(persistenceIssue)
   const [entered, setEntered] = useState(false)
   const [dataSaver, setDataSaver] = useState(navigatorRequestsDataSaver)
   const [narrationApproved, setNarrationApproved] = useState(false)
@@ -281,6 +314,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
   const resumeAfterDeskClose = useRef(false)
   const suppressAutoPlayAfterDeskClose = useRef(false)
   const [interactionOpen, setInteractionOpen] = useState(false)
+  const [developerPreviewOpen, setDeveloperPreviewOpen] = useState(false)
   const [interactionOpenedAt, setInteractionOpenedAt] = useState<number | null>(null)
   const [interactionChoice, setInteractionChoice] = useState<string | null>(null)
   const [interactionSealed, setInteractionSealed] = useState(false)
@@ -572,6 +606,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
         advisory={courtWeek.manifest.contentAdvisory}
         mode={accessMode}
         persistenceNotice={storageNotice}
+        ephemeral={ephemeral}
         dataSaver={dataSaver}
         narrationApproved={narrationApproved}
         onDataSaver={setDataSaver}
@@ -579,6 +614,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
         onMode={(mode) => updateProgress((current) => ({ ...current, accessibilityMode: mode }))}
         onEnter={(requestFullscreen) => {
           setEntered(true)
+          onEnteredChange?.(true)
           if (allSessionsCompleted && !replaySessionId) {
             if (requestFullscreen) {
               void document.documentElement.requestFullscreen?.().catch(() => undefined)
@@ -599,7 +635,9 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
       <CourtWeekCompletion
         sessions={courtWeek.manifest.sessions}
         persistence={persistence}
-        onExportProgress={(includePrivateNotes) => downloadWeeklyProgress(progress, includePrivateNotes)}
+        onExportProgress={ephemeral
+          ? undefined
+          : (includePrivateNotes) => downloadWeeklyProgress(progress, includePrivateNotes)}
         onReplay={(session) => {
           const firstScene = session.scenes[0]
           setReplaySessionId(session.id)
@@ -613,7 +651,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
           setReasoningBasis('')
           if (firstScene?.cues[0]) commitPosition(session.id, firstScene.id, firstScene.cues[0].id)
         }}
-        onSettings={() => setEntered(false)}
+        onSettings={() => { setEntered(false); onEnteredChange?.(false) }}
       />
     )
   }
@@ -628,7 +666,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
           ) : (
             <p>Complete the preceding court session before returning.</p>
           )}
-          <button type="button" onClick={() => setEntered(false)}>Presentation settings</button>
+          <button type="button" onClick={() => { setEntered(false); onEnteredChange?.(false) }}>Presentation settings</button>
         </div>
       </main>
     )
@@ -777,7 +815,32 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
   }
 
   let overlay = null
-  if (deskOpen) {
+  if (developerPreviewOpen && developerPreview) {
+    overlay = (
+      <MandatoryInteractionDialog returnFocusTo={interactionReturnFocus.current}>
+        <p className="cw-kicker">DEV PREVIEW</p>
+        <h2 id="cw-interaction-heading">Developer preview controls</h2>
+        <p>Saved juror progress is untouched. Preview changes are discarded.</p>
+        <label className="cw-developer-day" htmlFor="cw-developer-day-modal">Session</label>
+        <select
+          id="cw-developer-day-modal"
+          value={developerPreview.selectedOrdinal}
+          onChange={(event) => developerPreview.onSelect(Number(event.target.value))}
+        >
+          {developerPreview.sessions.map(({ day, ordinal }) => (
+            <option key={ordinal} value={ordinal}>{day}</option>
+          ))}
+        </select>
+        <div className="cw-button-row">
+          <button type="button" onClick={() => {
+            setDeveloperPreviewOpen(false)
+            advanceBlocked.current = false
+          }}>Close</button>
+          <button type="button" onClick={developerPreview.onLeave}>Leave preview</button>
+        </div>
+      </MandatoryInteractionDialog>
+    )
+  } else if (deskOpen) {
     overlay = (
       <>
         <JurorDesk
@@ -785,6 +848,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
           sessions={courtWeek.manifest.sessions}
           deliberation={courtWeek.deliberation.propositions ? courtWeek.deliberation : undefined}
           progress={progress}
+          progressTransferEnabled={!ephemeral}
           readOnly={isReplay}
           inactive={Boolean(evidence)}
           onNotesChange={(notes) => updateProgress((current) => ({ ...current, notes }))}
@@ -991,6 +1055,12 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
         accessibilityMode: current.accessibilityMode === 'captions' ? 'audio-first' : 'captions',
       }))}
       onToggleDesk={toggleDesk}
+      onOpenDeveloperPreview={developerPreview ? (trigger) => {
+        interactionReturnFocus.current = trigger
+        advanceBlocked.current = true
+        playback.pause()
+        setDeveloperPreviewOpen(true)
+      } : undefined}
     />
   )
 }

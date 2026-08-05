@@ -3,7 +3,7 @@ import type { CourtSession } from '../model/schema'
 
 export interface CourtWeekCompletionProps {
   sessions: CourtSession[]
-  persistence: 'indexeddb' | 'memory' | 'pending'
+  persistence: 'indexeddb' | 'memory' | 'pending' | 'ephemeral'
   onReplay: (session: CourtSession) => void
   onSettings: () => void
   onExportProgress?: (includePrivateNotes: boolean) => void
