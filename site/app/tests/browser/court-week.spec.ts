@@ -44,6 +44,42 @@ test('local developer mode remains reachable at a 200% compact-phone reflow', as
   await expect(submit).toBeVisible()
 })
 
+test('local profile label controls stay inside their card at supported reflow widths', async ({ page }) => {
+  await page.addInitScript(() => localStorage.removeItem('simjury:court-week:local-profile:v1'))
+
+  for (const [width, height] of [[160, 284], [390, 844], [820, 1180], [1440, 900]] as const) {
+    await page.setViewportSize({ width, height })
+    await page.goto('/')
+
+    const containment = await page.locator('.cw-local-profile').evaluate((profile) => {
+      const body = profile.querySelector<HTMLElement>('.cw-local-profile__body')
+      const row = profile.querySelector<HTMLElement>('.cw-local-profile__label-row')
+      const save = row?.querySelector<HTMLButtonElement>('button')
+      if (!body || !row || !save) throw new Error('Local profile label controls are missing.')
+      const rowRect = row.getBoundingClientRect()
+      const saveRect = save.getBoundingClientRect()
+      return {
+        profileContained: profile.scrollWidth <= profile.clientWidth,
+        bodyContained: body.scrollWidth <= body.clientWidth,
+        rowContained: row.scrollWidth <= row.clientWidth,
+        saveContained: saveRect.left >= rowRect.left - 0.5 && saveRect.right <= rowRect.right + 0.5,
+        saveWidth: saveRect.width,
+        saveHeight: saveRect.height,
+      }
+    })
+
+    expect(containment, `${width}x${height} profile containment`).toMatchObject({
+      profileContained: true,
+      bodyContained: true,
+      rowContained: true,
+      saveContained: true,
+    })
+    expect(containment.saveWidth).toBeGreaterThanOrEqual(44)
+    expect(containment.saveHeight).toBeGreaterThanOrEqual(44)
+    await expect(page.getByRole('button', { name: 'Save' })).toBeVisible()
+  }
+})
+
 test('Take your seat starts the first cue exactly once', async ({ page }) => {
   await page.addInitScript((instant) => {
     Date.now = () => instant

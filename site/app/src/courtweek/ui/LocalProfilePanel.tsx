@@ -52,7 +52,7 @@ export function LocalProfilePanel({
         <p><strong>No account.</strong> These settings stay in this browser.</p>
         <form className="cw-local-profile__label" onSubmit={saveLabel}>
           <label htmlFor="cw-juror-label">Juror label</label>
-          <div>
+          <div className="cw-local-profile__label-row">
             <input
               id="cw-juror-label"
               type="text"
