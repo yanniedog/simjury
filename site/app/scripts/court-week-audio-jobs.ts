@@ -8,8 +8,8 @@ import { DIALOGUE_SPEAKER_ALIASES } from '../src/courtweek/content/dialogueSpeak
 import { splitCueTurns } from '../src/courtweek/content/cueTurns'
 import type { CourtSession, CourtWeek, SceneCue } from '../src/courtweek/model/schema'
 
-export const AUDIO_JOB_SCHEMA = 'simjury.court-week-audio-job/v1' as const
-export const AUDIO_INDEX_SCHEMA = 'simjury.court-week-audio-index/v1' as const
+export const AUDIO_JOB_SCHEMA = 'simjury.court-week-audio-job/v2' as const
+export const AUDIO_INDEX_SCHEMA = 'simjury.court-week-audio-index/v2' as const
 export const AUDIO_SAMPLE_RATE = 24_000
 
 /**
@@ -65,11 +65,37 @@ export interface AudioJobCue {
   pauseAfterMs: number
 }
 
+export interface AudioJobCaptionTurn {
+  id: string
+  speaker: string
+  text: string
+  utteranceId: string
+}
+
+export interface AudioJobCaption {
+  id: string
+  sourceCueId: string
+  speaker: string
+  text: string
+  turns: AudioJobCaptionTurn[]
+}
+
+export interface AudioJobUtterancePart {
+  captionId: string
+  turnId: string
+  text: string
+}
+
+export interface AudioJobUtterance extends AudioJobCue {
+  parts: AudioJobUtterancePart[]
+}
+
 export interface AudioJobSegment {
   id: string
   opaqueId: string
   sourceSceneId: string
-  cues: AudioJobCue[]
+  captions: AudioJobCaption[]
+  utterances: AudioJobUtterance[]
 }
 
 export interface CourtWeekAudioJob {
@@ -141,10 +167,78 @@ export function splitCueUtterances(cue: SceneCue): AudioJobCue[] {
     castUtterance(cue, turn.speaker, turn.text, turn.id))
 }
 
-function castCue(cue: SceneCue, continuesSourceCue: boolean): AudioJobCue[] {
-  const utterances = splitCueUtterances(cue)
-  if (continuesSourceCue && utterances.length) utterances[utterances.length - 1].pauseAfterMs = 0
-  return utterances
+function groupSourceCues(cues: SceneCue[]): SceneCue[][] {
+  return cues.reduce<SceneCue[][]>((groups, cue) => {
+    const sourceCueId = cue.sourceCueId ?? cue.id
+    const current = groups.at(-1)
+    if (current && (current[0].sourceCueId ?? current[0].id) === sourceCueId) current.push(cue)
+    else groups.push([cue])
+    return groups
+  }, [])
+}
+
+/**
+ * Captions are display-sized projections of an authored cue. Synthesis instead
+ * follows complete, adjacent speaker turns so a visual line wrap can never
+ * reset prosody in the middle of an utterance.
+ */
+function buildSourceAudio(cues: SceneCue[]): {
+  captions: AudioJobCaption[]
+  utterances: AudioJobUtterance[]
+} {
+  const sourceCueId = cues[0]?.sourceCueId ?? cues[0]?.id
+  if (!sourceCueId) throw new Error('Cannot build audio for an empty source-cue group')
+  if (cues.some((cue) => (cue.sourceCueId ?? cue.id) !== sourceCueId)) {
+    throw new Error(`${sourceCueId}: audio source group contains another authored cue`)
+  }
+  const tone = cues[0].tone
+  if (cues.some((cue) => cue.tone !== tone)) {
+    throw new Error(`${sourceCueId}: caption projections disagree on delivery tone`)
+  }
+
+  const pendingCaptions = cues.map((cue) => ({ cue, turns: splitCueUtterances(cue) }))
+  const utterances: AudioJobUtterance[] = []
+  const utteranceByTurn = new Map<string, string>()
+
+  for (const { cue, turns } of pendingCaptions) {
+    for (const turn of turns) {
+      let utterance = utterances.at(-1)
+      if (!utterance || utterance.speaker !== turn.speaker) {
+        const id = `${sourceCueId}--utterance-${utterances.length + 1}`
+        utterance = {
+          ...turn,
+          id,
+          sourceCueId,
+          text: turn.text,
+          pauseAfterMs: pauseAfterMs(cue),
+          parts: [],
+        }
+        utterances.push(utterance)
+      } else {
+        utterance.text += ` ${turn.text}`
+        utterance.pauseAfterMs = pauseAfterMs(cue)
+      }
+      utterance.parts.push({ captionId: cue.id, turnId: turn.id, text: turn.text })
+      utteranceByTurn.set(turn.id, utterance.id)
+    }
+  }
+
+  const captions = pendingCaptions.map(({ cue, turns }): AudioJobCaption => ({
+    id: cue.id,
+    sourceCueId,
+    speaker: cue.speaker,
+    text: cue.text,
+    turns: turns.map((turn) => ({
+      id: turn.id,
+      speaker: turn.speaker,
+      text: turn.text,
+      utteranceId: utteranceByTurn.get(turn.id) ?? '',
+    })),
+  }))
+  if (captions.some((caption) => caption.turns.some((turn) => !turn.utteranceId))) {
+    throw new Error(`${sourceCueId}: a display-caption turn has no performance utterance`)
+  }
+  return { captions, utterances }
 }
 
 function splitForMinimum(session: CourtSession): Array<{ id: string; sourceSceneId: string; cues: SceneCue[] }> {
@@ -203,23 +297,25 @@ export function buildCourtWeekAudioJobs(courtWeek: CourtWeek): {
   const jobs = courtWeek.manifest.sessions.map((session): CourtWeekAudioJob => {
     const segments = splitForMinimum(session).map((segment) => {
       const synthesisCues = segment.cues.filter((cue) => !RUNTIME_DEPENDENT_CUE_IDS.has(cue.id))
-      const cueIds = synthesisCues.map((cue) => cue.id)
+      const sourceAudio = groupSourceCues(synthesisCues).map(buildSourceAudio)
+      const captions = sourceAudio.flatMap((group) => group.captions)
+      const utterances = sourceAudio.flatMap((group) => group.utterances)
       return {
         id: segment.id,
         opaqueId: sha256([
+          AUDIO_JOB_SCHEMA,
           courtWeek.manifest.id,
           courtWeek.manifest.revision,
           session.id,
           segment.sourceSceneId,
-          ...cueIds,
+          ...captions.map((caption) => caption.id),
+          ...utterances.flatMap((utterance) => [utterance.id, utterance.speaker, utterance.text]),
         ].join('\0')).slice(0, 32),
         sourceSceneId: segment.sourceSceneId,
-        cues: synthesisCues.flatMap((cue, index, cues) => castCue(
-          cue,
-          Boolean(cue.sourceCueId && cues[index + 1]?.sourceCueId === cue.sourceCueId),
-        )),
+        captions,
+        utterances,
       }
-    }).filter((segment) => segment.cues.length > 0)
+    }).filter((segment) => segment.utterances.length > 0)
     if (segments.length < 8 || segments.length > 12) {
       throw new Error(`${session.id} has ${segments.length} synthesizable audio segments after omitting runtime-dependent cues; need 8-12`)
     }
@@ -228,6 +324,7 @@ export function buildCourtWeekAudioJobs(courtWeek: CourtWeek): {
     const fixedExperienceSeconds = session.scenes.reduce((total, scene) =>
       total + (scene.interaction?.minimumSeconds ?? 0), 0)
     const digestInput = {
+      schema: AUDIO_JOB_SCHEMA,
       caseId: courtWeek.manifest.id,
       sourceRevision: courtWeek.manifest.revision,
       releaseTag: courtWeek.manifest.releaseTag,
@@ -238,7 +335,6 @@ export function buildCourtWeekAudioJobs(courtWeek: CourtWeek): {
       segments,
     }
     return {
-      schema: AUDIO_JOB_SCHEMA,
       ...digestInput,
       sourceDigest: sha256(JSON.stringify(digestInput)),
     }

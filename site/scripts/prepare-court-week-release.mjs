@@ -208,7 +208,7 @@ cpSync(artStripsPath, join(privateOutputRoot, 'scene-art-strips.source.json'))
 
 function loadAudioSessions() {
   const index = JSON.parse(readFileSync(join(jobsRoot, 'index.json'), 'utf8'))
-  if (index.schema !== 'simjury.court-week-audio-index/v1' || index.caseId !== 'cw-0001' || index.sessionCount !== 7) {
+  if (index.schema !== 'simjury.court-week-audio-index/v2' || index.caseId !== 'cw-0001' || index.sessionCount !== 7) {
     throw new Error('Unsupported or incomplete Court Week audio job index')
   }
   if (index.releaseTag !== releaseTag) throw new Error(`Audio jobs target ${index.releaseTag}, not ${releaseTag}`)
@@ -271,17 +271,25 @@ function loadAudioSessions() {
         referencedAudioPaths.add(logicalPath)
         if (source !== 'captions') codecBytes[source] += asset.bytes
       }
-      if (segment.cues.length !== jobSegment.cues.length) throw new Error(`Cue count mismatch for ${segment.id}`)
+      if (segment.cues.length !== jobSegment.captions.length) throw new Error(`Caption count mismatch for ${segment.id}`)
       for (const [cueIndex, cue] of segment.cues.entries()) {
-        const jobCue = jobSegment.cues[cueIndex]
-        if (cue.cueId !== jobCue?.id) throw new Error(`Cue order mismatch for ${segment.id}`)
-        if (jobCue.sourceCueId && cue.sourceCueId && cue.sourceCueId !== jobCue.sourceCueId) {
+        const jobCue = jobSegment.captions[cueIndex]
+        if (cue.cueId !== jobCue?.id) throw new Error(`Caption order mismatch for ${segment.id}`)
+        if (cue.sourceCueId !== jobCue.sourceCueId) {
           throw new Error(`sourceCueId mismatch for ${cue.cueId}`)
         }
         if (seenCueIds.has(cue.cueId)) throw new Error(`Duplicate audio utterance mapping: ${cue.cueId}`)
         seenCueIds.add(cue.cueId)
         if (!(cue.startSeconds >= 0 && cue.endSeconds > cue.startSeconds && cue.endSeconds <= segment.durationSeconds + 0.15)) {
           throw new Error(`Invalid cue range for ${cue.cueId}`)
+        }
+        if (!Array.isArray(cue.turns) || JSON.stringify(cue.turns.map((turn) => turn.turnId)) !== JSON.stringify(jobCue.turns.map((turn) => turn.id))) {
+          throw new Error(`Spoken-turn order mismatch for ${cue.cueId}`)
+        }
+        for (const turn of cue.turns) {
+          if (!(turn.startSeconds >= cue.startSeconds && turn.endSeconds > turn.startSeconds && turn.endSeconds <= cue.endSeconds + 0.001)) {
+            throw new Error(`Invalid spoken-turn range for ${turn.turnId}`)
+          }
         }
       }
       for (const codec of ['opus', 'aac', 'mp3']) {
@@ -308,43 +316,27 @@ function loadAudioSessions() {
   const unreferenced = packagedAudioPaths.filter((path) => !referencedAudioPaths.has(path))
   if (unreferenced.length) throw new Error(`Unreferenced generated audio assets: ${unreferenced.join(', ')}`)
   const expectedCueCount = [...jobs.values()].reduce((count, job) =>
-    count + job.segments.reduce((segmentCount, segment) => segmentCount + segment.cues.length, 0), 0)
+    count + job.segments.reduce((segmentCount, segment) => segmentCount + segment.captions.length, 0), 0)
   if (seenCueIds.size !== expectedCueCount) {
     throw new Error(`Runtime media maps ${seenCueIds.size} utterances; reviewed jobs require ${expectedCueCount}`)
   }
   return { sessions, jobs }
 }
 
-function collapseAuthoredCueRanges(cues, jobCues) {
-  const ranges = new Map()
-  for (const [index, cue] of cues.entries()) {
-    const sourceCueId = cue.sourceCueId ?? jobCues[index]?.sourceCueId ?? cue.cueId
-    const existing = ranges.get(sourceCueId)
-    if (!existing) {
-      ranges.set(sourceCueId, {
-        cue_id: sourceCueId,
-        start_seconds: cue.startSeconds,
-        end_seconds: cue.endSeconds,
-        turns: [{
-          turn_id: cue.cueId,
-          start_seconds: cue.startSeconds,
-          end_seconds: cue.endSeconds,
-        }],
-      })
-      continue
-    }
-    existing.start_seconds = Math.min(existing.start_seconds, cue.startSeconds)
-    existing.end_seconds = Math.max(existing.end_seconds, cue.endSeconds)
-    existing.turns.push({
-      turn_id: cue.cueId,
-      start_seconds: cue.startSeconds,
-      end_seconds: cue.endSeconds,
-    })
-  }
-  return [...ranges.values()]
+function runtimeCueRanges(cues) {
+  return cues.map((cue) => ({
+    cue_id: cue.cueId,
+    start_seconds: cue.startSeconds,
+    end_seconds: cue.endSeconds,
+    turns: cue.turns.map((turn) => ({
+      turn_id: turn.turnId,
+      start_seconds: turn.startSeconds,
+      end_seconds: turn.endSeconds,
+    })),
+  }))
 }
 
-const { sessions: audioSessions, jobs: jobsBySession } = loadAudioSessions()
+const { sessions: audioSessions } = loadAudioSessions()
 if (artRequirements.sourceRevision !== audioSessions[0]?.sourceRevision) {
   throw new Error('SceneArtManifest and prerecorded audio were not derived from the same Court Week revision')
 }
@@ -357,7 +349,6 @@ const runtimeMediaManifest = {
   release_tag: releaseTag,
   source_revision: audioSessions[0]?.sourceRevision ?? null,
   sessions: audioSessions.map((session) => {
-    const job = jobsBySession.get(session.sessionId)
     return {
       session_id: session.sessionId,
       day: session.day,
@@ -367,7 +358,7 @@ const runtimeMediaManifest = {
         id: segment.id,
         source_scene_id: segment.sourceSceneId,
         duration_seconds: segment.durationSeconds,
-        cues: collapseAuthoredCueRanges(segment.cues, job?.segments[segmentIndex]?.cues ?? []),
+        cues: runtimeCueRanges(segment.cues),
         sources: Object.fromEntries(Object.entries(segment.sources).map(([codec, path]) => {
           const asset = assetByLogicalPath.get(`audio/${path}`)
           if (!asset) throw new Error(`Missing release asset for ${path}`)

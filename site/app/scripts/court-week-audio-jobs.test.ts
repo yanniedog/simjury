@@ -5,10 +5,11 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
 import { SCENE_ART_AUTHORING } from '../src/courtweek/content/sceneArt'
-import { AUDIO_SAMPLE_RATE, buildCourtWeekAudioJobs, COURT_WEEK_VOICES, DIALOGUE_SPEAKER_ALIASES, splitCueUtterances, writeCourtWeekAudioJobs } from './court-week-audio-jobs'
+import { AUDIO_INDEX_SCHEMA, AUDIO_JOB_SCHEMA, AUDIO_SAMPLE_RATE, buildCourtWeekAudioJobs, COURT_WEEK_VOICES, DIALOGUE_SPEAKER_ALIASES, splitCueUtterances, writeCourtWeekAudioJobs } from './court-week-audio-jobs'
 import { RUNTIME_DEPENDENT_CUE_IDS } from '../src/courtweek/media/runtimeCues'
 import { writeSceneArtManifestDraft } from './scene-art-requirements'
 import { courtWeekReviewDigest } from './court-week-review-signoffs'
+import type { SceneCue } from '../src/courtweek/model/schema'
 
 describe('Court Week prerecorded audio jobs', () => {
   it('covers the exact reviewed source with eight deterministic segments per day', () => {
@@ -16,7 +17,9 @@ describe('Court Week prerecorded audio jobs', () => {
     const second = buildCourtWeekAudioJobs(elevenMinutesCourtWeek)
 
     expect(second).toEqual(first)
+    expect(first.index.schema).toBe(AUDIO_INDEX_SCHEMA)
     expect(first.jobs).toHaveLength(7)
+    expect(first.jobs.every((job) => job.schema === AUDIO_JOB_SCHEMA)).toBe(true)
     expect(first.jobs.every((job) => job.sampleRate === AUDIO_SAMPLE_RATE)).toBe(true)
     expect(first.jobs.map((job) => job.segments.length)).toEqual([8, 8, 8, 8, 8, 8, 8])
     expect(first.jobs[0].segments.slice(0, 2).map((segment) => segment.sourceSceneId))
@@ -28,10 +31,57 @@ describe('Court Week prerecorded audio jobs', () => {
         .scenes.flatMap((scene) => scene.cues.map((cue) => cue.id))
         .filter((cueId) => !RUNTIME_DEPENDENT_CUE_IDS.has(cueId))
       const audioCueIds = [...new Set(job.segments.flatMap((segment) =>
-        segment.cues.map((cue) => cue.sourceCueId)))]
+        segment.captions.map((caption) => caption.id)))]
       expect(audioCueIds.sort()).toEqual([...sourceCueIds].sort())
       expect(new Set(job.segments.map((segment) => segment.opaqueId)).size)
         .toBe(job.segments.length)
+    }
+  })
+
+  it('synthesizes complete Monday and Tuesday speaker turns while reconstructing every display caption verbatim', () => {
+    const { jobs } = buildCourtWeekAudioJobs(elevenMinutesCourtWeek)
+    for (const session of elevenMinutesCourtWeek.manifest.sessions.slice(0, 2)) {
+      const job = jobs.find((candidate) => candidate.sessionId === session.id)!
+      const sourceGroups = session.scenes.flatMap((scene) => scene.cues)
+        .reduce<SceneCue[][]>((groups, cue) => {
+          const sourceCueId = cue.sourceCueId ?? cue.id
+          const current = groups.at(-1)
+          if (current && (current[0].sourceCueId ?? current[0].id) === sourceCueId) current.push(cue)
+          else groups.push([cue])
+          return groups
+        }, [])
+
+      expect(job.segments.flatMap((segment) => segment.utterances).length)
+        .toBeLessThan(job.segments.flatMap((segment) => segment.captions).length)
+      for (const group of sourceGroups) {
+        const sourceCueId = group[0].sourceCueId ?? group[0].id
+        const segmentIndexes = job.segments.flatMap((segment, index) =>
+          segment.captions.some((caption) => caption.sourceCueId === sourceCueId) ? [index] : [])
+        expect(segmentIndexes, sourceCueId).toHaveLength(1)
+        const segment = job.segments[segmentIndexes[0]]
+        const captions = segment.captions.filter((caption) => caption.sourceCueId === sourceCueId)
+        const utterances = segment.utterances.filter((utterance) => utterance.sourceCueId === sourceCueId)
+        const sourceText = group.map((cue) => cue.text).join(' ')
+        expect(captions.map((caption) => caption.text).join(' '), sourceCueId).toBe(sourceText)
+
+        const expectedTurns = splitCueUtterances({
+          ...group[0],
+          id: sourceCueId,
+          sourceCueId: undefined,
+          text: sourceText,
+        }).reduce<Array<{ speaker: string; text: string }>>((turns, turn) => {
+          const current = turns.at(-1)
+          if (current?.speaker === turn.speaker) current.text += ` ${turn.text}`
+          else turns.push({ speaker: turn.speaker, text: turn.text })
+          return turns
+        }, [])
+        expect(utterances.map(({ speaker, text }) => ({ speaker, text })), sourceCueId).toEqual(expectedTurns)
+        for (const utterance of utterances) {
+          expect(utterance.parts.map((part) => part.text).join(' '), utterance.id).toBe(utterance.text)
+        }
+        expect(captions.flatMap((caption) => caption.turns.map((turn) => turn.id)))
+          .toEqual(utterances.flatMap((utterance) => utterance.parts.map((part) => part.turnId)))
+      }
     }
   })
 
@@ -123,14 +173,9 @@ describe('Court Week prerecorded audio jobs', () => {
     ])
 
     for (const [sourceCueId, expected] of expectedTurns) {
-      const authoredCueIds = new Set(elevenMinutesCourtWeek.manifest.sessions
-        .flatMap((session) => session.scenes)
-        .flatMap((scene) => scene.cues)
-        .filter((cue) => (cue.sourceCueId ?? cue.id) === sourceCueId)
-        .map((cue) => cue.id))
       const utterances = jobs.flatMap((job) => job.segments)
-        .flatMap((segment) => segment.cues)
-        .filter((utterance) => authoredCueIds.has(utterance.sourceCueId))
+        .flatMap((segment) => segment.utterances)
+        .filter((utterance) => utterance.sourceCueId === sourceCueId)
       const speakerTurns = utterances.map(({ speaker }) => speaker)
         .filter((speaker, index, speakers) => index === 0 || speaker !== speakers[index - 1])
 
@@ -160,7 +205,7 @@ describe('Court Week prerecorded audio jobs', () => {
   it('omits runtime-dependent Sunday cues from prerecorded jobs', () => {
     const sunday = buildCourtWeekAudioJobs(elevenMinutesCourtWeek).jobs
       .find((job) => job.sessionId === 'cw-0001-sunday')!
-    const ids = sunday.segments.flatMap((segment) => segment.cues.map((cue) => cue.sourceCueId))
+    const ids = sunday.segments.flatMap((segment) => segment.captions.map((caption) => caption.id))
     expect(ids).not.toContain('sun-verdict-return')
     expect(ids).not.toContain('sun-analysis')
     expect(ids).toContain('sun-verdict-confirm')
@@ -262,14 +307,23 @@ describe('Court Week prerecorded audio jobs', () => {
             opaqueId: segment.opaqueId,
             sourceSceneId: segment.sourceSceneId,
             durationSeconds: segmentSeconds,
-            cues: segment.cues.map((cue, index) => ({
-              cueId: cue.id,
-              sourceCueId: cue.sourceCueId,
-              speaker: cue.speaker,
-              text: cue.text,
-              startSeconds: index * segmentSeconds / segment.cues.length,
-              endSeconds: (index + 1) * segmentSeconds / segment.cues.length,
-            })),
+            cues: segment.captions.map((caption, index) => {
+              const startSeconds = index * segmentSeconds / segment.captions.length
+              const endSeconds = (index + 1) * segmentSeconds / segment.captions.length
+              return {
+                cueId: caption.id,
+                sourceCueId: caption.sourceCueId,
+                speaker: caption.speaker,
+                text: caption.text,
+                startSeconds,
+                endSeconds,
+                turns: caption.turns.map((turn, turnIndex) => ({
+                  turnId: turn.id,
+                  startSeconds: startSeconds + turnIndex * (endSeconds - startSeconds) / caption.turns.length,
+                  endSeconds: startSeconds + (turnIndex + 1) * (endSeconds - startSeconds) / caption.turns.length,
+                })),
+              }
+            }),
             sources,
             loudness: Object.fromEntries(['opus', 'aac', 'mp3'].map((codec) => [codec, {
               integratedLufs: -18,

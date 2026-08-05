@@ -52,21 +52,23 @@ describe('Monday caption pacing', () => {
       .every((cue) => cue.sourceCueId === undefined)).toBe(true)
   })
 
-  it('keeps authored utterances inside one audio segment and removes only internal split pauses', () => {
+  it('keeps authored utterances inside one audio segment without synthesizing display-caption fragments', () => {
     const job = buildCourtWeekAudioJobs(elevenMinutesCourtWeek).jobs[0]
     expect(job.segments).toHaveLength(8)
     for (const group of sourceGroups) {
       const segmentIndexes = job.segments.flatMap((segment, index) =>
-        segment.cues.some((audioCue) => group.cues.some((cue) => cue.id === audioCue.sourceCueId)) ? [index] : [],
+        segment.captions.some((caption) => caption.sourceCueId === group.id) ? [index] : [],
       )
       expect(new Set(segmentIndexes).size, group.id).toBe(1)
-      const audioCues = job.segments.flatMap((segment) => segment.cues)
-        .filter((audioCue) => group.cues.some((cue) => cue.id === audioCue.sourceCueId))
-      const captionCueIds = [...new Set(audioCues.map((cue) => cue.sourceCueId))]
-      for (const captionCueId of captionCueIds.slice(0, -1)) {
-        expect(audioCues.filter((cue) => cue.sourceCueId === captionCueId).at(-1)?.pauseAfterMs).toBe(0)
-      }
-      expect(audioCues.at(-1)?.pauseAfterMs).toBeGreaterThan(0)
+      const captions = job.segments.flatMap((segment) => segment.captions)
+        .filter((caption) => caption.sourceCueId === group.id)
+      const utterances = job.segments.flatMap((segment) => segment.utterances)
+        .filter((utterance) => utterance.sourceCueId === group.id)
+      expect(captions.map((caption) => caption.id)).toEqual(group.cues.map((cue) => cue.id))
+      expect(captions.map((caption) => caption.text).join(' ')).toBe(group.text)
+      expect(utterances.every((utterance) => utterance.pauseAfterMs > 0)).toBe(true)
+      expect(utterances.flatMap((utterance) => utterance.parts.map((part) => part.turnId)))
+        .toEqual(captions.flatMap((caption) => caption.turns.map((turn) => turn.id)))
     }
 
     const continuation = mondayCues.find((cue) => cue.id === 'mon-orr-cross-1--caption-3')!
