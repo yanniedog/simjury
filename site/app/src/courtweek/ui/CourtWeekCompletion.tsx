@@ -87,6 +87,11 @@ export function CourtWeekCompletion({
             <button type="button" onClick={developerPreview.onLeave}>Leave preview</button>
           </div>
         ) : null}
+        {persistence === 'ephemeral' ? (
+          <p role="status">
+            Preview progress and private notes are discarded when you switch sessions or leave preview.
+          </p>
+        ) : null}
         <button type="button" onClick={onSettings}>Presentation settings</button>
       </div>
     </main>
