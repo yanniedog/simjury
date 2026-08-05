@@ -7,6 +7,12 @@ export interface CourtWeekCompletionProps {
   onReplay: (session: CourtSession) => void
   onSettings: () => void
   onExportProgress?: (includePrivateNotes: boolean) => void
+  developerPreview?: {
+    selectedOrdinal: number
+    sessions: Array<{ ordinal: number; day: string }>
+    onSelect: (ordinal: number) => void
+    onLeave: () => void
+  }
 }
 
 export function CourtWeekCompletion({
@@ -15,6 +21,7 @@ export function CourtWeekCompletion({
   onReplay,
   onSettings,
   onExportProgress,
+  developerPreview,
 }: CourtWeekCompletionProps) {
   const headingRef = useRef<HTMLHeadingElement>(null)
   const [includeNotes, setIncludeNotes] = useState(false)
@@ -65,6 +72,21 @@ export function CourtWeekCompletion({
             ))}
           </ol>
         </nav>
+        {developerPreview ? (
+          <div className="cw-button-row" aria-label="Developer preview controls">
+            <label htmlFor="cw-developer-day-complete">Developer session</label>
+            <select
+              id="cw-developer-day-complete"
+              value={developerPreview.selectedOrdinal}
+              onChange={(event) => developerPreview.onSelect(Number(event.target.value))}
+            >
+              {developerPreview.sessions.map(({ day, ordinal }) => (
+                <option key={ordinal} value={ordinal}>{day}</option>
+              ))}
+            </select>
+            <button type="button" onClick={developerPreview.onLeave}>Leave preview</button>
+          </div>
+        ) : null}
         <button type="button" onClick={onSettings}>Presentation settings</button>
       </div>
     </main>

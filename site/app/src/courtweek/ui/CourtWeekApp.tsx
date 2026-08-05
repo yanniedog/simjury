@@ -638,6 +638,7 @@ export function CourtWeekApp({
         onExportProgress={ephemeral
           ? undefined
           : (includePrivateNotes) => downloadWeeklyProgress(progress, includePrivateNotes)}
+        developerPreview={developerPreview}
         onReplay={(session) => {
           const firstScene = session.scenes[0]
           setReplaySessionId(session.id)
@@ -836,7 +837,11 @@ export function CourtWeekApp({
             setDeveloperPreviewOpen(false)
             advanceBlocked.current = false
           }}>Close</button>
-          <button type="button" onClick={developerPreview.onLeave}>Leave preview</button>
+          <button type="button" onClick={() => {
+            setDeveloperPreviewOpen(false)
+            advanceBlocked.current = false
+            developerPreview.onLeave()
+          }}>Leave preview</button>
         </div>
       </MandatoryInteractionDialog>
     )

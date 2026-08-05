@@ -35,4 +35,25 @@ describe('CourtWeekCompletion', () => {
     expect(markup).not.toContain('checked=""')
     expect(markup).toContain('Export progress')
   })
+
+  it('keeps session switching and exit available after a preview completes', () => {
+    const markup = renderToStaticMarkup(
+      <CourtWeekCompletion
+        sessions={elevenMinutesSessions}
+        persistence="ephemeral"
+        onReplay={() => undefined}
+        onSettings={() => undefined}
+        developerPreview={{
+          selectedOrdinal: 7,
+          sessions: elevenMinutesSessions,
+          onSelect: () => undefined,
+          onLeave: () => undefined,
+        }}
+      />,
+    )
+
+    expect(markup).toContain('Developer session')
+    expect(markup).toContain('Leave preview')
+    expect(markup).toContain('<option value="7" selected="">Sunday</option>')
+  })
 })
