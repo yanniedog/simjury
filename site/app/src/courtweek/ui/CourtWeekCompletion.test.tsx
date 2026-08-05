@@ -1,5 +1,8 @@
+// @vitest-environment jsdom
+import { act } from 'react'
+import { createRoot } from 'react-dom/client'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { elevenMinutesSessions } from '../content'
 import { CourtWeekCompletion } from './CourtWeekCompletion'
 
@@ -34,5 +37,63 @@ describe('CourtWeekCompletion', () => {
     expect(markup).toContain('Include my private notes in the export')
     expect(markup).not.toContain('checked=""')
     expect(markup).toContain('Export progress')
+  })
+
+  it('keeps session switching and exit available after a preview completes', () => {
+    const markup = renderToStaticMarkup(
+      <CourtWeekCompletion
+        sessions={elevenMinutesSessions}
+        persistence="ephemeral"
+        onReplay={() => undefined}
+        onSettings={() => undefined}
+        developerPreview={{
+          selectedOrdinal: 7,
+          sessions: elevenMinutesSessions,
+          onSelect: () => undefined,
+          onLeave: () => undefined,
+        }}
+      />,
+    )
+
+    expect(markup).toContain('Developer session')
+    expect(markup).toContain('Leave preview')
+    expect(markup).toContain('Preview progress and private notes are discarded')
+    expect(markup).toContain('<option value="7" selected="">Sunday</option>')
+  })
+
+  it('invokes preview session switching and exit controls', async () => {
+    const container = document.createElement('div')
+    document.body.append(container)
+    const root = createRoot(container)
+    const onSelect = vi.fn()
+    const onLeave = vi.fn()
+    await act(async () => root.render(
+      <CourtWeekCompletion
+        sessions={elevenMinutesSessions}
+        persistence="ephemeral"
+        onReplay={() => undefined}
+        onSettings={() => undefined}
+        developerPreview={{
+          selectedOrdinal: 1,
+          sessions: elevenMinutesSessions,
+          onSelect,
+          onLeave,
+        }}
+      />,
+    ))
+
+    const selector = container.querySelector<HTMLSelectElement>('#cw-developer-day-complete')
+    if (!selector) throw new Error('Developer completion selector was not rendered.')
+    selector.value = '7'
+    act(() => selector.dispatchEvent(new Event('change', { bubbles: true })))
+    const leave = Array.from(container.querySelectorAll('button')).find(
+      ({ textContent }) => textContent?.trim() === 'Leave preview',
+    )
+    act(() => leave?.click())
+
+    expect(onSelect).toHaveBeenCalledWith(7)
+    expect(onLeave).toHaveBeenCalledOnce()
+    act(() => root.unmount())
+    container.remove()
   })
 })

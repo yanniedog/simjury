@@ -8,7 +8,7 @@ import {
 export interface WeeklyProgressState {
   progress: StoredWeeklyProgress
   hydrated: boolean
-  persistence: 'indexeddb' | 'memory' | 'pending'
+  persistence: 'indexeddb' | 'memory' | 'pending' | 'ephemeral'
   persistenceIssue: PersistenceIssue
   updateProgress: (
     update:
@@ -23,17 +23,34 @@ export const WEEKLY_PROGRESS_EVENT = 'simjury:court-week-progress'
 
 export function useWeeklyProgress(
   initialProgress: StoredWeeklyProgress,
+  { ephemeral = false }: { ephemeral?: boolean } = {},
 ): WeeklyProgressState {
   const [progress, setProgress] = useState(initialProgress)
-  const [hydrated, setHydrated] = useState(false)
-  const [persistence, setPersistence] = useState<WeeklyProgressState['persistence']>('pending')
+  const [hydrated, setHydrated] = useState(ephemeral)
+  const [persistence, setPersistence] = useState<WeeklyProgressState['persistence']>(
+    ephemeral ? 'ephemeral' : 'pending',
+  )
   const [persistenceIssue, setPersistenceIssue] = useState<PersistenceIssue>(null)
   const saveSequence = useRef(0)
   const skipHydrationSave = useRef(true)
   const progressRef = useRef(progress)
+  const initialProgressRef = useRef(initialProgress)
+  const ephemeralResetKey = [
+    initialProgress.courtWeekId,
+    initialProgress.revision,
+    initialProgress.currentSessionId,
+    initialProgress.currentSceneId,
+    initialProgress.currentCueId,
+  ].join('\0')
   progressRef.current = progress
+  initialProgressRef.current = initialProgress
 
   useEffect(() => {
+    if (ephemeral) setProgress(initialProgressRef.current)
+  }, [ephemeral, ephemeralResetKey])
+
+  useEffect(() => {
+    if (ephemeral) return
     let current = true
     void loadWeeklyProgressResult(initialProgress.courtWeekId).then(({ progress: stored, issue }) => {
       if (!current) return
@@ -53,10 +70,10 @@ export function useWeeklyProgress(
     return () => {
       current = false
     }
-  }, [initialProgress.courtWeekId, initialProgress.revision])
+  }, [ephemeral, initialProgress.courtWeekId, initialProgress.revision])
 
   useEffect(() => {
-    if (!hydrated) return
+    if (!hydrated || ephemeral) return
     window.dispatchEvent(new CustomEvent<StoredWeeklyProgress>(
       WEEKLY_PROGRESS_EVENT,
       { detail: progress },
@@ -84,10 +101,10 @@ export function useWeeklyProgress(
       // just-recorded completion still sitting in the 120 ms debounce window.
       void saveWeeklyProgress(progress.courtWeekId, progress)
     }
-  }, [hydrated, progress])
+  }, [ephemeral, hydrated, progress])
 
   useEffect(() => {
-    if (!hydrated) return
+    if (!hydrated || ephemeral) return
     const flushLatest = () => {
       const latest = progressRef.current
       void saveWeeklyProgress(latest.courtWeekId, latest)
@@ -101,7 +118,7 @@ export function useWeeklyProgress(
       window.removeEventListener('pagehide', flushLatest)
       document.removeEventListener('visibilitychange', flushWhenHidden)
     }
-  }, [hydrated])
+  }, [ephemeral, hydrated])
 
   const updateProgress = useCallback(
     (

@@ -34,6 +34,7 @@ export interface ImmersiveCourtShellProps {
   onAdvance: (trigger?: HTMLElement) => void
   onToggleCaptions: () => void
   onToggleDesk: () => void
+  onOpenDeveloperPreview?: (trigger: HTMLElement) => void
 }
 
 function legacyAssetUrl(base: string, id: string, composition: string, format: string) {
@@ -86,6 +87,7 @@ export function ImmersiveCourtShell({
   onAdvance,
   onToggleCaptions,
   onToggleDesk,
+  onOpenDeveloperPreview,
 }: ImmersiveCourtShellProps) {
   const stage = useRef<HTMLElement>(null)
   const captionOverlay = useRef<HTMLDivElement>(null)
@@ -336,6 +338,11 @@ export function ImmersiveCourtShell({
           <button type="button" onClick={onToggleDesk} aria-expanded={deskOpen}>
             Juror desk
           </button>
+          {onOpenDeveloperPreview ? (
+            <button type="button" onClick={(event) => onOpenDeveloperPreview(event.currentTarget)}>
+              DEV preview
+            </button>
+          ) : null}
           {fullscreenSupported ? (
             <button type="button" onClick={() => void toggleFullscreen()} aria-pressed={fullscreen}>
               {fullscreen ? 'Exit full screen' : 'Full screen'}

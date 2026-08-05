@@ -63,12 +63,14 @@ export async function hydrateCourtPacks({
   baseUrl,
   fetcher = window.fetch.bind(window),
   persistOpened = false,
+  readOpened = true,
 }: {
   bootstrap: CourtWeekBootstrap
   entries: CourtWeekScheduleEntry[]
   baseUrl: string
   fetcher?: SealedPackFetcher
   persistOpened?: boolean
+  readOpened?: boolean
 }): Promise<CourtDayPack[]> {
   const packs: CourtDayPack[] = []
 
@@ -76,7 +78,9 @@ export async function hydrateCourtPacks({
     if (bootstrap.sessions[entry.ordinal - 1]?.id !== entry.id) {
       throw new Error('The requested session is not part of this Court Week revision.')
     }
-    const cached = await loadOpenedPack(bootstrap.id, bootstrap.revision, entry.ordinal)
+    const cached = readOpened
+      ? await loadOpenedPack(bootstrap.id, bootstrap.revision, entry.ordinal)
+      : null
     if (cached) {
       packs.push(cached)
       continue

@@ -25,6 +25,7 @@ export interface JurorDeskProps {
   onNotesChange: (notes: string) => void
   prepareImport?: (text: string) => Promise<WeeklyProgress>
   onImport: (progress: WeeklyProgress) => void
+  progressTransferEnabled?: boolean
   onInspectEvidence: (evidenceId: string, trigger: HTMLButtonElement) => void
   onClose: () => void
 }
@@ -39,6 +40,7 @@ export function JurorDesk({
   onNotesChange,
   prepareImport,
   onImport,
+  progressTransferEnabled = true,
   onInspectEvidence,
   onClose,
 }: JurorDeskProps) {
@@ -196,11 +198,13 @@ export function JurorDesk({
           onChange={(event) => {
             if (!readOnly) onNotesChange(event.target.value)
           }}
-          placeholder="Your notes stay on this device unless you choose to export them."
+          placeholder={progressTransferEnabled
+            ? 'Your notes stay on this device unless you choose to export them.'
+            : 'Preview notes are discarded when you switch sessions or leave preview.'}
         />
       </section>
 
-      <section className="cw-desk__transfer">
+      {progressTransferEnabled ? <section className="cw-desk__transfer">
         <h3>Move progress between devices</h3>
         {readOnly ? (
           <p>Import is unavailable during replay so sealed ballots stay intact. Export remains available.</p>
@@ -234,7 +238,7 @@ export function JurorDesk({
           />
         ) : null}
         {importError ? <p className="cw-error" role="alert">{importError}</p> : null}
-      </section>
+      </section> : null}
     </aside>
   )
 }
