@@ -12,6 +12,16 @@ export const AUDIO_JOB_SCHEMA = 'simjury.court-week-audio-job/v2' as const
 export const AUDIO_INDEX_SCHEMA = 'simjury.court-week-audio-index/v2' as const
 export const AUDIO_SAMPLE_RATE = 24_000
 
+const COURT_WEEK_RELEASE_TAG = /^court-week-cw-0001-\d{4}\.\d{2}\.\d{2}-r[1-9]\d*$/u
+
+export interface CourtWeekAudioJobOptions {
+  /**
+   * Review-build identity only. This does not mutate the authored Court Week,
+   * bootstrap or pinned runtime manifest.
+   */
+  reviewCandidateReleaseTag?: string
+}
+
 /**
  * Reviewed voice casting. Speaker names are deliberately explicit: adding a
  * speaker to the TrialRecord cannot silently select a random or generic voice.
@@ -279,10 +289,17 @@ function splitForMinimum(session: CourtSession): Array<{ id: string; sourceScene
   return segments
 }
 
-export function buildCourtWeekAudioJobs(courtWeek: CourtWeek): {
+export function buildCourtWeekAudioJobs(
+  courtWeek: CourtWeek,
+  options: CourtWeekAudioJobOptions = {},
+): {
   index: CourtWeekAudioIndex
   jobs: CourtWeekAudioJob[]
 } {
+  const releaseTag = options.reviewCandidateReleaseTag ?? courtWeek.manifest.releaseTag
+  if (!COURT_WEEK_RELEASE_TAG.test(releaseTag)) {
+    throw new Error('Review candidate must use court-week-cw-0001-YYYY.MM.DD-rN')
+  }
   const cueSpeakers = new Set(
     courtWeek.manifest.sessions.flatMap((session) =>
       session.scenes.flatMap((scene) => scene.cues.map((cue) => cue.speaker))),
@@ -327,7 +344,7 @@ export function buildCourtWeekAudioJobs(courtWeek: CourtWeek): {
       schema: AUDIO_JOB_SCHEMA,
       caseId: courtWeek.manifest.id,
       sourceRevision: courtWeek.manifest.revision,
-      releaseTag: courtWeek.manifest.releaseTag,
+      releaseTag,
       sessionId: session.id,
       day: session.day,
       sampleRate: 24_000 as const,
@@ -344,7 +361,7 @@ export function buildCourtWeekAudioJobs(courtWeek: CourtWeek): {
     schema: AUDIO_INDEX_SCHEMA,
     caseId: 'cw-0001',
     sourceRevision: courtWeek.manifest.revision,
-    releaseTag: courtWeek.manifest.releaseTag,
+    releaseTag,
     sessionCount: 7,
     jobs: jobs.map((job) => ({
       sessionId: job.sessionId,
@@ -357,9 +374,12 @@ export function buildCourtWeekAudioJobs(courtWeek: CourtWeek): {
   return { index, jobs }
 }
 
-export function writeCourtWeekAudioJobs(outputDirectory: string): CourtWeekAudioIndex {
+export function writeCourtWeekAudioJobs(
+  outputDirectory: string,
+  options: CourtWeekAudioJobOptions = {},
+): CourtWeekAudioIndex {
   const output = resolve(outputDirectory)
-  const { index, jobs } = buildCourtWeekAudioJobs(elevenMinutesCourtWeek)
+  const { index, jobs } = buildCourtWeekAudioJobs(elevenMinutesCourtWeek, options)
   rmSync(output, { recursive: true, force: true })
   mkdirSync(resolve(output, 'jobs'), { recursive: true })
   for (const job of jobs) {
@@ -376,7 +396,13 @@ function cliArgument(name: string): string | undefined {
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   const output = cliArgument('--output')
-  if (!output) throw new Error('Usage: tsx scripts/court-week-audio-jobs.ts --output <directory>')
-  const index = writeCourtWeekAudioJobs(output)
+  const reviewCandidateReleaseTag = cliArgument('--review-candidate-release-tag')
+  if (!output) {
+    throw new Error(
+      'Usage: tsx scripts/court-week-audio-jobs.ts --output <directory> ' +
+      '[--review-candidate-release-tag court-week-cw-0001-YYYY.MM.DD-rN]',
+    )
+  }
+  const index = writeCourtWeekAudioJobs(output, { reviewCandidateReleaseTag })
   console.log(`Wrote ${index.jobs.length} deterministic Court Week audio jobs to ${resolve(output)}.`)
 }

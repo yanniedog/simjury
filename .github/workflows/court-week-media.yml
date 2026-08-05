@@ -9,7 +9,7 @@ on:
       release_tag:
         description: Immutable tag (court-week-cw-0001-YYYY.MM.DD-rN)
         required: true
-        default: court-week-cw-0001-2026.08.03-r2
+        default: court-week-cw-0001-2026.08.03-r3
       publish:
         description: Publish after validation; false produces a review artifact only
         required: true
@@ -54,7 +54,12 @@ jobs:
         run: npm run lint && npm run typecheck && npm test && npm run media:art:test && npm run validate:cases && npm run build
       - name: Build deterministic prerecorded-audio jobs
         working-directory: site/app
-        run: npm run media:audio:jobs -- --output ../../.court-week-audio-jobs
+        env:
+          REVIEW_CANDIDATE_RELEASE_TAG: ${{ inputs.release_tag }}
+        run: >-
+          npm run media:audio:jobs --
+          --output ../../.court-week-audio-jobs
+          --review-candidate-release-tag "$REVIEW_CANDIDATE_RELEASE_TAG"
       - name: Record exact-source review status without blocking review media
         working-directory: site/app
         run: npm run review:signoffs -- --report ../../.court-week-audio-jobs/review-signoffs.json
@@ -63,12 +68,12 @@ jobs:
         run: >-
           npm run media:art:requirements --
           --output ../../.court-week-audio-jobs/scene-art-requirements.json
-      - name: Match the requested immutable tag to the reviewed manifest
+      - name: Match the requested immutable tag to the review-candidate jobs
         env:
           RELEASE_TAG: ${{ inputs.release_tag }}
         run: >-
           node -e "const fs=require('node:fs');const i=JSON.parse(fs.readFileSync('.court-week-audio-jobs/index.json'));
-          if(i.releaseTag!==process.env.RELEASE_TAG)throw new Error('Requested release tag does not match reviewed CourtWeekManifest')"
+          if(i.releaseTag!==process.env.RELEASE_TAG)throw new Error('Requested release tag does not match generated review-candidate jobs')"
       - name: Validate every source job without loading a voice model
         run: |
           set -euo pipefail

@@ -10,6 +10,7 @@ import { RUNTIME_DEPENDENT_CUE_IDS } from '../src/courtweek/media/runtimeCues'
 import { writeSceneArtManifestDraft } from './scene-art-requirements'
 import { courtWeekReviewDigest } from './court-week-review-signoffs'
 import type { SceneCue } from '../src/courtweek/model/schema'
+import { courtWeekBootstrap } from '../src/courtweek/sealed/bootstrap'
 
 describe('Court Week prerecorded audio jobs', () => {
   it('covers the exact reviewed source with eight deterministic segments per day', () => {
@@ -36,6 +37,38 @@ describe('Court Week prerecorded audio jobs', () => {
       expect(new Set(job.segments.map((segment) => segment.opaqueId)).size)
         .toBe(job.segments.length)
     }
+  })
+
+  it('isolates an r3 review-candidate identity from the pinned r2 runtime', () => {
+    const candidateTag = 'court-week-cw-0001-2026.08.03-r3'
+    const normal = buildCourtWeekAudioJobs(elevenMinutesCourtWeek)
+    const candidate = buildCourtWeekAudioJobs(elevenMinutesCourtWeek, {
+      reviewCandidateReleaseTag: candidateTag,
+    })
+    const pinned = JSON.parse(readFileSync(resolve('media/court-week-media-manifest.pinned.json'), 'utf8'))
+
+    expect(elevenMinutesCourtWeek.manifest.releaseTag).toBe('court-week-cw-0001-2026.08.03-r2')
+    expect(courtWeekBootstrap.releaseTag).toBe(elevenMinutesCourtWeek.manifest.releaseTag)
+    expect(pinned.release_tag).toBe(elevenMinutesCourtWeek.manifest.releaseTag)
+    expect(normal.index.releaseTag).toBe(elevenMinutesCourtWeek.manifest.releaseTag)
+    expect(normal.jobs.every((job) => job.releaseTag === elevenMinutesCourtWeek.manifest.releaseTag))
+      .toBe(true)
+    expect(candidate.index.releaseTag).toBe(candidateTag)
+    expect(candidate.jobs.every((job) => job.releaseTag === candidateTag)).toBe(true)
+
+    for (const [index, candidateJob] of candidate.jobs.entries()) {
+      const normalJob = normal.jobs[index]
+      expect({ ...candidateJob, releaseTag: '', sourceDigest: '' })
+        .toEqual({ ...normalJob, releaseTag: '', sourceDigest: '' })
+      expect(candidateJob.sourceDigest).not.toBe(normalJob.sourceDigest)
+    }
+    expect(elevenMinutesCourtWeek.manifest.releaseTag).toBe('court-week-cw-0001-2026.08.03-r2')
+  })
+
+  it('rejects malformed review-candidate release tags', () => {
+    expect(() => buildCourtWeekAudioJobs(elevenMinutesCourtWeek, {
+      reviewCandidateReleaseTag: 'court-week-cw-0001-latest',
+    })).toThrow('Review candidate must use court-week-cw-0001-YYYY.MM.DD-rN')
   })
 
   it('synthesizes complete Monday and Tuesday speaker turns while reconstructing every display caption verbatim', () => {
