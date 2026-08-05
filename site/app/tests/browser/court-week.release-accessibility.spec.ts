@@ -23,6 +23,38 @@ async function prepareCourt(page: Page) {
   await page.goto('/')
 }
 
+async function seedSaturdayReasoning(page: Page) {
+  await page.goto('/robots.txt')
+  await page.evaluate(async (instant) => new Promise<void>((resolve, reject) => {
+    const request = indexedDB.open('simjury-court-week-v1', 1)
+    request.onerror = () => reject(request.error)
+    request.onupgradeneeded = () => request.result.createObjectStore('progress')
+    request.onsuccess = () => {
+      const database = request.result
+      const transaction = database.transaction('progress', 'readwrite')
+      transaction.onerror = () => reject(transaction.error)
+      transaction.oncomplete = () => { database.close(); resolve() }
+      transaction.objectStore('progress').put({
+        schemaVersion: 'court-week-progress-v1',
+        courtWeekId: 'cw-0001',
+        revision: '2026.08.03-r1',
+        highestObservedTime: new Date(instant).toISOString(),
+        completedSessionIds: [
+          'cw-0001-monday', 'cw-0001-tuesday', 'cw-0001-wednesday',
+          'cw-0001-thursday', 'cw-0001-friday',
+        ],
+        currentSessionId: 'cw-0001-saturday',
+        currentSceneId: 'sat-room',
+        currentCueId: 'sat-room-3',
+        notes: '',
+        reasoningContributions: [],
+        accessibilityMode: 'reading',
+        majorityDirectionReceived: false,
+      }, 'cw-0001')
+    }
+  }), releaseNow)
+}
+
 test('caption assistive copy exposes the complete visible cue exactly once', async ({ page }) => {
   await page.addInitScript((instant) => {
     Date.now = () => instant
@@ -91,6 +123,45 @@ test('caption assistive copy exposes the complete visible cue exactly once', asy
   await expect(liveCue).toHaveAttribute('aria-live', 'polite')
   await expect(liveCue).toHaveText(`Court officer: ${await visibleCue.textContent()}`)
   await expect(visibleCue.locator('xpath=..')).toHaveAttribute('aria-hidden', 'true')
+})
+
+test('reading mode announces each newly displayed legal cue exactly once', async ({ page }) => {
+  await prepareCourt(page)
+  await page.getByLabel('Reading mode').check()
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+
+  const readingCopy = page.locator('.cw-reading-copy')
+  const firstCue = await readingCopy.textContent()
+  await expect(readingCopy).toHaveAttribute('aria-live', 'polite')
+  await expect(readingCopy).toHaveAttribute('aria-atomic', 'true')
+  await expect(page.locator('[aria-live="polite"]')).toHaveCount(1)
+  await expect(page.locator('.cw-cue-live-region')).toHaveAttribute('aria-live', 'off')
+  await expect(page.locator('.cw-cue-live-region')).toHaveAttribute('aria-hidden', 'true')
+
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await expect(readingCopy).not.toHaveText(firstCue ?? '')
+  await expect(page.locator('[aria-live="polite"]')).toHaveCount(1)
+})
+
+test('mandatory deliberation selects retain 44px targets and a three-pixel focus ring', async ({ page }) => {
+  await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
+  await seedSaturdayReasoning(page)
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  const dialog = page.getByRole('dialog', { name: /Optionally test this opening concern/i })
+  for (const label of ['Legal question', 'Admitted evidence']) {
+    const select = dialog.getByLabel(label)
+    await select.focus()
+    const geometry = await select.evaluate((element) => {
+      const box = element.getBoundingClientRect()
+      const style = getComputedStyle(element)
+      return { height: box.height, outlineWidth: style.outlineWidth, outlineStyle: style.outlineStyle }
+    })
+    expect(geometry.height).toBeGreaterThanOrEqual(44)
+    expect(geometry).toMatchObject({ outlineWidth: '3px', outlineStyle: 'solid' })
+  }
 })
 
 test('labelled entry and desk controls retain a 44px effective touch target', async ({ page }) => {

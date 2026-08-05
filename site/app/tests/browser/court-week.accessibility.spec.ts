@@ -173,20 +173,16 @@ test('keyboard-only entry, skip link and desk expose a visible three-pixel focus
   const desk = page.getByRole('dialog', { name: 'Your working papers' })
   await expect(desk.getByRole('button', { name: 'Close juror desk' })).toBeFocused()
   await expect(desk.getByRole('heading', { name: 'The charge' })).toBeVisible()
+  const legalSummary = desk.locator('summary').first()
+  await legalSummary.focus()
+  await expectThreePixelFocusRing(legalSummary)
   await page.keyboard.press('Escape')
   await expect(deskTrigger).toBeFocused()
   await expect.poll(() => readProgressPosition(page)).toEqual(before)
 })
 
 test('mandatory contribution dialogs take and contain focus before returning it to proceedings', async ({ page }) => {
-  await page.addInitScript((instant) => {
-    let clock = instant
-    Date.now = () => clock
-    Object.defineProperty(window, '__advanceCourtClock', {
-      configurable: true,
-      value: (milliseconds: number) => { clock += milliseconds },
-    })
-  }, releaseNow)
+  await page.clock.install({ time: releaseNow })
   await page.goto('/')
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
@@ -209,11 +205,7 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(choice).toBeFocused()
   await expect(page.locator('.cw-controls button:focus')).toHaveCount(0)
 
-  await page.evaluate(() => {
-    const advance = (window as typeof window & { __advanceCourtClock: (milliseconds: number) => void })
-      .__advanceCourtClock
-    advance(120_000)
-  })
+  await page.clock.fastForward(120_000)
   await expect(dialog.getByRole('button', { name: 'Continue proceedings' })).toBeEnabled()
   await dialog.getByRole('button', { name: 'Continue proceedings' }).click()
 

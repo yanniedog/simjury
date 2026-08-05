@@ -288,7 +288,9 @@ export function ImmersiveCourtShell({
             {displayedSpeaker}
             {cue.tone === 'cross' ? <span className="cw-speaker__mode"> · cross-examination</span> : null}
           </p>
-          {readingModeActive ? <p className="cw-reading-copy">{cue.text}</p> : null}
+          {readingModeActive ? (
+            <p className="cw-reading-copy" aria-live="polite" aria-atomic="true">{cue.text}</p>
+          ) : null}
         </section>
 
         <div className="cw-speaker cw-speaker--collision-probe" aria-hidden="true">
