@@ -138,7 +138,11 @@ describe('useCuePlayback', () => {
     const ended = vi.fn()
     const root = createRoot(container)
     await act(async () => root.render(<Harness onEnded={ended} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
     const currentAudio = MockAudio.instances[0]
+    await act(async () => play.click())
+    act(() => currentAudio.dispatchEvent(new Event('ended')))
+    expect(ended).not.toHaveBeenCalled()
     currentAudio.currentTime = 17.9
     act(() => currentAudio.dispatchEvent(new Event('timeupdate')))
     expect(ended).not.toHaveBeenCalled()
@@ -148,6 +152,56 @@ describe('useCuePlayback', () => {
     expect(container.querySelector('output')?.textContent).toBe('ended')
     act(() => currentAudio.dispatchEvent(new Event('ended')))
     expect(ended).toHaveBeenCalledOnce()
+    act(() => root.unmount())
+  })
+
+  it('ignores recorded completion events from a playback generation invalidated by pause', async () => {
+    const ended = vi.fn()
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness onEnded={ended} />))
+    const [play, pause] = Array.from(container.querySelectorAll('button'))
+    const currentAudio = MockAudio.instances[0]
+    const addEventListener = vi.spyOn(currentAudio, 'addEventListener')
+    await act(async () => play.click())
+    const staleTimeUpdate = addEventListener.mock.calls.find(([type]) => type === 'timeupdate')?.[1] as EventListener
+    const staleEnded = addEventListener.mock.calls.find(([type]) => type === 'ended')?.[1] as EventListener
+
+    act(() => pause.click())
+    currentAudio.currentTime = 18
+    currentAudio.ended = true
+    act(() => staleTimeUpdate.call(currentAudio, new Event('timeupdate')))
+    act(() => staleEnded.call(currentAudio, new Event('ended')))
+
+    expect(ended).not.toHaveBeenCalled()
+    expect(container.querySelector('output')?.textContent).toBe('paused')
+    act(() => root.unmount())
+  })
+
+  it('ignores recorded completion events from the previous cue generation', async () => {
+    const ended = vi.fn()
+    const nextCue: SceneCue = {
+      ...cue,
+      id: 'cue-audio-next',
+      text: 'The next witness answers.',
+      audio: { ...cue.audio!, segmentId: 'segment-two' },
+    }
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness activeCue={cue} onEnded={ended} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
+    const currentAudio = MockAudio.instances[0]
+    const addEventListener = vi.spyOn(currentAudio, 'addEventListener')
+    await act(async () => play.click())
+    const staleTimeUpdate = addEventListener.mock.calls.find(([type]) => type === 'timeupdate')?.[1] as EventListener
+    const staleEnded = addEventListener.mock.calls.find(([type]) => type === 'ended')?.[1] as EventListener
+
+    await act(async () => root.render(<Harness activeCue={nextCue} onEnded={ended} />))
+    currentAudio.currentTime = 18
+    currentAudio.ended = true
+    act(() => staleTimeUpdate.call(currentAudio, new Event('timeupdate')))
+    act(() => staleEnded.call(currentAudio, new Event('ended')))
+
+    expect(ended).not.toHaveBeenCalled()
+    expect(container.querySelector('output')?.textContent).toBe('idle')
     act(() => root.unmount())
   })
 
@@ -168,8 +222,10 @@ describe('useCuePlayback', () => {
     }
     const root = createRoot(container)
     await act(async () => root.render(<Harness activeCue={activeCue} onEnded={() => undefined} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
     const currentAudio = MockAudio.instances[0]
     expect(container.querySelector('[data-testid="turn"]')?.textContent).toBe('cue-audio__1')
+    await act(async () => play.click())
 
     currentAudio.currentTime = 15
     act(() => currentAudio.dispatchEvent(new Event('timeupdate')))
@@ -330,6 +386,45 @@ describe('useCuePlayback', () => {
 
     await act(async () => repeat.click())
     expect(synthesis.speak).toHaveBeenCalledTimes(3)
+    act(() => root.unmount())
+  })
+
+  it('ignores an old speech completion after cancel and completes the current generation once', async () => {
+    const speechCue: SceneCue = { ...cue, id: 'cue-speech-generation', audio: undefined }
+    class MockUtterance {
+      lang = ''
+      rate = 1
+      voice: SpeechSynthesisVoice | null = null
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+      constructor(public text: string) {}
+    }
+    const utterances: MockUtterance[] = []
+    const synthesis = {
+      getVoices: vi.fn(() => [{ lang: 'en-AU', name: 'Test voice' }]),
+      speak: vi.fn((utterance: MockUtterance) => { utterances.push(utterance) }),
+      cancel: vi.fn(),
+    }
+    vi.stubGlobal('SpeechSynthesisUtterance', MockUtterance)
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: synthesis })
+    const ended = vi.fn()
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness activeCue={speechCue} onEnded={ended} />))
+    const [play, pause] = Array.from(container.querySelectorAll('button'))
+    await act(async () => play.click())
+    const oldUtterance = utterances[0]
+
+    act(() => pause.click())
+    await act(async () => play.click())
+    const currentUtterance = utterances[1]
+    act(() => oldUtterance.onend?.())
+    expect(ended).not.toHaveBeenCalled()
+    expect(container.querySelector('output')?.textContent).toBe('speech-fallback')
+
+    act(() => currentUtterance.onend?.())
+    act(() => currentUtterance.onend?.())
+    expect(ended).toHaveBeenCalledOnce()
+    expect(container.querySelector('output')?.textContent).toBe('ended')
     act(() => root.unmount())
   })
 
