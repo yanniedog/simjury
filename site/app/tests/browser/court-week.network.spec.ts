@@ -1,9 +1,14 @@
 import { readFile } from 'node:fs/promises'
 import { expect, test } from '@playwright/test'
 import { courtWeekBootstrap } from '../../src/courtweek/sealed/bootstrap'
+import { DEFAULT_LOCAL_PROFILE, LOCAL_PROFILE_STORAGE_KEY } from '../../src/courtweek/state/localProfile'
 
 const baseUrl = 'http://127.0.0.1:43130/jury/'
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
+const acknowledgedProfile = JSON.stringify({
+  ...DEFAULT_LOCAL_PROFILE,
+  adultFictionAcknowledged: true,
+})
 
 interface HarEntry {
   request: { method: string; url: string }
@@ -38,6 +43,13 @@ test('HAR proves the initial unlocked journey is static-only and fetches no futu
   const context = await browser.newContext({
     serviceWorkers: 'block',
     recordHar: { path: harPath, mode: 'full', content: 'omit' },
+    storageState: {
+      cookies: [],
+      origins: [{
+        origin: new URL(baseUrl).origin,
+        localStorage: [{ name: LOCAL_PROFILE_STORAGE_KEY, value: acknowledgedProfile }],
+      }],
+    },
   })
   await context.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
   const page = await context.newPage()
