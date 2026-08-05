@@ -36,7 +36,7 @@ export const COURT_WEEK_VOICES: Readonly<Record<string, string>> = {
   'Mara Venn': 'af_alloy',
   'Narrator': 'af_heart',
   'Nella Orr': 'af_nicole',
-  'Niko Hale': 'am_michael',
+  'Niko Hale': 'am_santa',
   'Omri Cade': 'am_onyx',
   'Oren Vale': 'am_liam',
   'Peli Dorn': 'af_sarah',

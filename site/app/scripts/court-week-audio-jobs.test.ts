@@ -140,8 +140,21 @@ describe('Court Week prerecorded audio jobs', () => {
     }
   })
 
-  it('keeps the records custodian aurally distinct from the court officer', () => {
-    expect(COURT_WEEK_VOICES['Tovan Mir']).not.toBe(COURT_WEEK_VOICES['Court officer'])
+  it('reuses voices only for alternate labels of the same in-world speaker', () => {
+    const speakersByVoice = Object.entries(COURT_WEEK_VOICES).reduce<Map<string, string[]>>(
+      (speakers, [speaker, voice]) => speakers.set(voice, [...(speakers.get(voice) ?? []), speaker]),
+      new Map(),
+    )
+    const sharedVoices = [...speakersByVoice.values()]
+      .filter((speakers) => speakers.length > 1)
+      .map((speakers) => speakers.sort())
+      .sort(([left], [right]) => left.localeCompare(right))
+
+    expect(sharedVoices).toEqual([
+      ['Edda Rook', 'Foreperson Edda Rook'],
+      ['Judge Sel Aven', 'Judge’s neutral case note'],
+    ])
+    expect(COURT_WEEK_VOICES['Niko Hale']).not.toBe(COURT_WEEK_VOICES['Tovan Mir'])
   })
 
   it('omits runtime-dependent Sunday cues from prerecorded jobs', () => {
