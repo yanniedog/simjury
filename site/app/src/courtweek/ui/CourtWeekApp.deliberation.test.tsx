@@ -219,9 +219,13 @@ describe('CourtWeekApp improper-argument interaction', () => {
     let clock = Date.parse('2026-08-10T12:00:00+10:00')
     const pause = vi.mocked(HTMLMediaElement.prototype.pause)
     let beginPlaying: (() => void) | undefined
-    let activeMedia: HTMLMediaElement | undefined
+    let finishPlaying: (() => void) | undefined
     const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockImplementation(function (this: HTMLMediaElement) {
-      activeMedia = this
+      finishPlaying = () => {
+        Object.defineProperty(this, 'ended', { configurable: true, value: true })
+        this.dispatchEvent(new Event('ended'))
+        this.dispatchEvent(new Event('ended'))
+      }
       return new Promise<void>((resolve) => {
         beginPlaying = () => {
           this.dispatchEvent(new Event('playing'))
@@ -245,10 +249,8 @@ describe('CourtWeekApp improper-argument interaction', () => {
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent === 'Pause')).toBe(true)
     pause.mockClear()
     await act(async () => {
-      if (!activeMedia) throw new Error('The active recorded cue was not created.')
-      Object.defineProperty(activeMedia, 'ended', { configurable: true, value: true })
-      activeMedia.dispatchEvent(new Event('ended'))
-      activeMedia.dispatchEvent(new Event('ended'))
+      if (!finishPlaying) throw new Error('The active recorded cue was not created.')
+      finishPlaying()
     })
     expect(container.querySelector('.cw-interaction')).not.toBeNull()
     expect(pause).toHaveBeenCalled()
