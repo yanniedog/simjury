@@ -95,6 +95,23 @@ describe('Eleven Minutes legal provenance', () => {
     expect(cueText('mon-orr-chief-2')).not.toMatch(/shown east|rescue was already assigned/i)
   })
 
+  it('authenticates the launch-strip handwriting through ordinary pre-event familiarity', () => {
+    const strip = elevenMinutesCourtWeek.trial.evidence.find(({ id }) => id === 'ex-launch-strip')!
+    const foundation = cueText('tue-mir-chief-2')
+
+    expect(strip.authentication).toMatch(/recognises Venn's handwriting.*routinely reviewed before this event/i)
+    expect(foundation).toMatch(/ordinary records work.*routinely reviewed.*before this event.*recognise the handwriting as her ordinary hand/is)
+    expect(foundation).toMatch(/cannot tell us when she wrote it or why/i)
+  })
+
+  it('makes the post-answer rumour a volunteered extra after a responsive answer', () => {
+    const blurt = cueText('wed-blurt')
+
+    expect(blurt).toMatch(/no personal knowledge of another prior delay.*No personal knowledge\. People in the office said/is)
+    expect(blurt).toMatch(/volunteers a workplace rumour/i)
+    expect(blurt).not.toMatch(/any other basis/i)
+  })
+
   it('lays concise expert foundations without conceding the defence case or inventing concealment', () => {
     expect(cueText('wed-vos-chief-1')).toMatch(/fourteen years.*accepted immersion datasets.*both sides received/is)
     expect(cueText('thu-rusk-chief-1')).toMatch(/twelve years.*reviewed.*did not interview or diagnose/is)
