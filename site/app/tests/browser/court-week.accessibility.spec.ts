@@ -316,6 +316,12 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-stage')).toHaveAttribute('inert', '')
   await expect(page.locator('.cw-stage')).toHaveAttribute('aria-hidden', 'true')
 
+  // Progress writes are deliberately debounced. The dialog can render while
+  // IndexedDB is still committing the last caption that led to this boundary,
+  // so first wait for storage to match the cue already presented behind it.
+  await expect.poll(() => readProgressPosition(page)).toMatchObject({
+    currentCueId: 'mon-plea--caption-5',
+  })
   const mandatoryPosition = await readProgressPosition(page)
   const frozenCue = await page.locator('.cw-cue-live-region').textContent()
   await page.keyboard.press('Escape')
