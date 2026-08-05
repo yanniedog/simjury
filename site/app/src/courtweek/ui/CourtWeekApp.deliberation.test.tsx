@@ -185,15 +185,23 @@ describe('CourtWeekApp improper-argument interaction', () => {
   })
 
   it('freezes cue playback and legal position until a mandatory interaction is completed', async () => {
-    const monday = elevenMinutesCourtWeek.manifest.sessions[0]
+    const courtWeek = structuredClone(elevenMinutesCourtWeek)
+    const monday = courtWeek.manifest.sessions[0]
     const scene = monday.scenes[0]
     const cue = scene.cues.at(-1)!
+    cue.audio = {
+      opus: '/media/mandatory-interaction.opus',
+      mp3: '/media/mandatory-interaction.mp3',
+      segmentId: 'mandatory-interaction',
+      startSeconds: 0,
+      endSeconds: 12,
+    }
     const progress: StoredWeeklyProgress = {
       schemaVersion: 'court-week-progress-v1', courtWeekId: 'cw-0001',
-      revision: elevenMinutesCourtWeek.manifest.revision,
+      revision: courtWeek.manifest.revision,
       highestObservedTime: '2026-08-10T12:00:00+10:00', completedSessionIds: [],
       currentSessionId: monday.id, currentSceneId: scene.id, currentCueId: cue.id,
-      notes: '', reasoningContributions: [], accessibilityMode: 'reading', majorityDirectionReceived: false,
+      notes: '', reasoningContributions: [], accessibilityMode: 'audio-first', majorityDirectionReceived: false,
     }
     await saveWeeklyProgress(progress.courtWeekId, progress)
     let latestProgress = progress
@@ -203,17 +211,33 @@ describe('CourtWeekApp improper-argument interaction', () => {
     window.addEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
     let clock = Date.parse('2026-08-10T12:00:00+10:00')
     const pause = vi.mocked(HTMLMediaElement.prototype.pause)
+    let beginPlaying: (() => void) | undefined
+    let activeMedia: HTMLMediaElement | undefined
+    const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockImplementation(function (this: HTMLMediaElement) {
+      activeMedia = this
+      return new Promise<void>((resolve) => {
+        beginPlaying = () => {
+          this.dispatchEvent(new Event('playing'))
+          resolve()
+        }
+      })
+    })
 
     await act(async () => {
-      root.render(<CourtWeekApp courtWeek={elevenMinutesCourtWeek} now={() => clock} releaseBase="/media" />)
+      root.render(<CourtWeekApp courtWeek={courtWeek} now={() => clock} releaseBase="/media" />)
       await Promise.resolve()
     })
     await act(async () => clickButton(container, 'Take your seat'))
+    expect(play).toHaveBeenCalledTimes(1)
+    expect(container.querySelector('.cw-stage')?.getAttribute('aria-busy')).toBe('true')
+    await act(async () => beginPlaying?.())
+    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent === 'Pause')).toBe(true)
     pause.mockClear()
-    const advance = container.querySelector('.cw-controls__advance') as HTMLButtonElement
     await act(async () => {
-      advance.click()
-      advance.click()
+      if (!activeMedia) throw new Error('The active recorded cue was not created.')
+      Object.defineProperty(activeMedia, 'ended', { configurable: true, value: true })
+      activeMedia.dispatchEvent(new Event('ended'))
+      activeMedia.dispatchEvent(new Event('ended'))
     })
     expect(container.querySelector('.cw-interaction')).not.toBeNull()
     expect(pause).toHaveBeenCalled()
@@ -221,7 +245,6 @@ describe('CourtWeekApp improper-argument interaction', () => {
     const frozen = { sceneId: latestProgress.currentSceneId, cueId: latestProgress.currentCueId }
     await act(async () => {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
-      advance.click()
       clock += 120_000
       window.dispatchEvent(new Event('focus'))
     })

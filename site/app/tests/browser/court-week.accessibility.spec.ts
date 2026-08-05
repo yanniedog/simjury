@@ -181,6 +181,75 @@ test('keyboard-only entry, skip link and desk expose a visible three-pixel focus
   await expect.poll(() => readProgressPosition(page)).toEqual(before)
 })
 
+test('an active audio cue stays fixed and resumes exactly once after each juror-desk close', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Deterministic media lifecycle runs once.')
+  await page.addInitScript(() => {
+    const state = window as typeof window & { __deskAudio: { utterances: string[]; cancels: number } }
+    state.__deskAudio = { utterances: [], cancels: 0 }
+    class TestAudio extends EventTarget {
+      src = ''
+      currentTime = 0
+      preload = ''
+      ended = false
+      canPlayType() { return '' }
+      load() { /* deterministic no-network audio */ }
+      play() { return Promise.resolve() }
+      pause() { this.dispatchEvent(new Event('pause')) }
+      removeAttribute(name: string) { if (name === 'src') this.src = '' }
+    }
+    class TestUtterance {
+      lang = ''
+      rate = 1
+      voice: SpeechSynthesisVoice | null = null
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+      constructor(public text: string) {}
+    }
+    Object.defineProperty(window, 'Audio', { configurable: true, value: TestAudio })
+    Object.defineProperty(window, 'SpeechSynthesisUtterance', { configurable: true, value: TestUtterance })
+    Object.defineProperty(window, 'speechSynthesis', {
+      configurable: true,
+      value: {
+        paused: false,
+        getVoices: () => [{ lang: 'en-AU', name: 'Test voice' }],
+        speak: (utterance: TestUtterance) => { state.__deskAudio.utterances.push(utterance.text) },
+        cancel: () => { state.__deskAudio.cancels += 1 },
+        pause() {},
+        resume() {},
+      },
+    })
+  })
+  await prepareCourt(page)
+  await page.getByLabel('Audio and captions').check()
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  const controls = page.getByLabel('Court playback controls')
+  await expect(controls.getByRole('button', { name: 'Pause' })).toBeVisible()
+  const fixedPosition = await capturePosition(page)
+
+  const openDesk = page.getByRole('button', { name: 'Juror desk', exact: true })
+  for (const expectedUtterances of [2, 3]) {
+    await openDesk.click()
+    const desk = page.getByRole('dialog', { name: 'Your working papers' })
+    await expect(desk).toBeVisible()
+    await expect(page.locator('.cw-controls button', { hasText: 'Resume' })).toHaveCount(1)
+    await expect.poll(() => readProgressPosition(page)).toEqual(fixedPosition)
+    await desk.getByRole('button', { name: 'Close juror desk' }).click()
+    await expect(controls.getByRole('button', { name: 'Pause' })).toBeVisible()
+    await expect.poll(() => page.evaluate(() => (
+      window as typeof window & { __deskAudio: { utterances: string[] } }
+    ).__deskAudio.utterances.length)).toBe(expectedUtterances)
+    await expect.poll(() => readProgressPosition(page)).toEqual(fixedPosition)
+  }
+
+  const lifecycle = await page.evaluate(() => (
+    window as typeof window & { __deskAudio: { utterances: string[]; cancels: number } }
+  ).__deskAudio)
+  expect(lifecycle.utterances).toHaveLength(3)
+  expect(lifecycle.utterances[1]).toBe(lifecycle.utterances[0])
+  expect(lifecycle.utterances[2]).toBe(lifecycle.utterances[0])
+  expect(lifecycle.cancels).toBeGreaterThanOrEqual(2)
+})
+
 test('mandatory contribution dialogs take and contain focus before returning it to proceedings', async ({ page }) => {
   await page.clock.install({ time: releaseNow })
   await page.goto('/')
