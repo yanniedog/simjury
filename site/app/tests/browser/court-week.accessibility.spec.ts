@@ -28,15 +28,9 @@ async function enterReadingCourt(page: Page) {
 }
 
 async function mountRecordedAudioCourt(page: Page) {
-  await page.goto('/')
-  await page.evaluate(async (instant) => {
-    document.body.replaceChildren()
-    const host = document.createElement('div')
-    document.body.append(host)
-    // @ts-expect-error Vite serves this browser-only fixture during Playwright runs.
-    const fixture = await import('/tests/browser/fixtures/audioCourtWeekHarness.tsx')
-    fixture.mountRecordedAudioCourt(host, instant)
-  }, releaseNow)
+  // Navigate directly to a fixture-only document so the production
+  // SealedCourtWeekApp never mounts a competing progress writer.
+  await page.goto(`/tests/browser/fixtures/audioCourtWeekHarness.html?instant=${releaseNow}`)
   await expect(page.getByRole('button', { name: 'Take your seat' })).toBeVisible()
 }
 
