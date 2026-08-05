@@ -47,7 +47,8 @@
 .cw-shell button:hover, .cw-entry button:hover, .cw-developer-preview button:hover { background: var(--cw-raised); }
 .cw-shell button:focus-visible, .cw-entry button:focus-visible, .cw-developer-preview button:focus-visible,
 .cw-shell input:focus-visible, .cw-entry input:focus-visible,
-.cw-shell select:focus-visible, .cw-developer-preview select:focus-visible, .cw-shell summary:focus-visible,
+.cw-shell select:focus-visible, .cw-developer-preview select:focus-visible,
+.cw-shell summary:focus-visible, .cw-entry summary:focus-visible,
 .cw-shell textarea:focus-visible {
   outline: 3px solid var(--cw-focus);
   outline-offset: 3px;
@@ -383,6 +384,8 @@
   .cw-entry { padding: .5rem; }
   .cw-entry__panel { padding: .75rem; }
   .cw-entry h1 { font-size: 1.75rem; overflow-wrap: anywhere; }
+  .cw-mode-picker { min-width: 0; }
+  .cw-local-profile summary span { float: none; display: block; margin-top: .2rem; }
   .cw-local-profile__body { padding: 0 .5rem .5rem; }
   .cw-local-profile__label > div { display: grid; }
   .cw-local-profile__label button { width: 100%; }
