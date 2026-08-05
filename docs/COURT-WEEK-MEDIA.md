@@ -70,8 +70,24 @@ tag. Leave `publish` false for the first run. It:
 6. packages opaque SHA-256 filenames plus provenance and runtime cue ranges;
 7. uploads a seven-day private review artifact retained for seven days.
 
-The workflow records the exact Python, FFmpeg, Kokoro, Torch, NumPy and
-SoundFile versions used by every matrix job and rejects mixed environments.
+The trusted workflow pins its Ubuntu image and every third-party Action by full
+commit SHA. Its direct Python synthesis requirements are exact versions, and
+Kokoro loads the model, config and voice packs from the immutable
+`hexgrad/Kokoro-82M@f3ff3571791e39611d31c381e3a41a3af07b4987` revision rather
+than that repository's mutable `main`. Every session records the model/config
+SHA-256 plus the exact Python, FFmpeg, eSpeak, Kokoro, Torch, NumPy, SoundFile,
+Misaki and Hugging Face versions; packaging rejects mixed environments.
+
+This is not yet a claim of bit-reproducibility across an arbitrary future
+runner. Transitive Python wheels are not hash-locked and Ubuntu's signed apt
+repository does not provide an immutable content-addressed FFmpeg/eSpeak
+snapshot through this workflow. Closing that last gap requires a reviewed
+hash-locked wheel closure and an operator-controlled immutable apt snapshot;
+silently pinning package version strings that the live mirror may later remove
+would make the workflow less reliable. Generated audio therefore remains a
+review artifact until its exact bytes and recorded production environment are
+heard and approved. Do not reuse artifacts from a rerun that created duplicate
+matrix artifact names; dispatch a fresh whole review run instead.
 
 The optional publish job is the only job with `contents: write`. It refuses to
 replace an existing tag or publish without all exact-source review signoffs. Do
@@ -146,11 +162,11 @@ and protected geometry per composition so reviewers can overlay the correct
 crop rather than applying desktop coordinates to a phone image.
 
 Missing commissioned art remains explicit: the authoring map does not invent
-safe regions and the build never copies a generic image into 55 paths. A manual
-workflow run with `publish: false` succeeds after the other media gates and
-uploads the complete `art-readiness-report.json`. A run with `publish: true`
-fails before the publish job unless all 55 scenes are gap-free and every
-portrait, tablet and desktop composition is explicitly `crop-reviewed`.
+safe regions and the build never copies a generic image into 55 paths. The
+authoritative manual workflow fails during review packaging unless all 55
+scenes are gap-free and every portrait, tablet and desktop composition is
+explicitly `crop-reviewed`; the always-uploaded readiness report identifies the
+failure without producing an apparently reviewable Release payload.
 
 ### Two-scene Release strips
 

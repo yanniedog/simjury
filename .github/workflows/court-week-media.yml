@@ -34,14 +34,14 @@ jobs:
       github.ref == 'refs/heads/main' &&
       github.event.repository.fork == false &&
       inputs.publish != true
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "24"
           cache: npm
@@ -75,7 +75,7 @@ jobs:
           for job in .court-week-audio-jobs/jobs/*.json; do
             python site/scripts/generate-court-week-audio.py "$job" .court-week-audio --validate-only
           done
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: court-week-audio-jobs
           path: .court-week-audio-jobs/
@@ -97,18 +97,18 @@ jobs:
           - cw-0001-friday
           - cw-0001-saturday
           - cw-0001-sunday
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 360
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: court-week-audio-jobs
           path: .court-week-audio-jobs
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
           cache: pip
@@ -133,7 +133,7 @@ jobs:
           python site/scripts/generate-court-week-audio.py
           ".court-week-audio-jobs/jobs/${{ matrix.session }}.json"
           .court-week-audio
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: court-week-audio-${{ matrix.session }}
           path: .court-week-audio/
@@ -143,14 +143,14 @@ jobs:
 
   package:
     needs: [source, audio]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "24"
           cache: npm
@@ -158,11 +158,11 @@ jobs:
       - name: Install the pinned strip builder
         working-directory: site
         run: npm ci
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: court-week-audio-jobs
           path: .court-week-audio-jobs
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           pattern: court-week-audio-cw-0001-*
           path: .court-week-audio
@@ -185,11 +185,12 @@ jobs:
             --art-root .court-week-art-strips
             --art-strips .court-week-art-strips/scene-art-strips.json
             --private-output-root .court-week-release-private
+            --require-release-ready-art
           )
           node site/scripts/prepare-court-week-release.mjs "${arguments[@]}"
       - name: Upload complete SceneArtManifest gap report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ${{ inputs.release_tag }}-art-readiness
           path: .court-week-release-private/art-readiness-report.json
@@ -197,7 +198,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
       - name: Upload private review manifests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ${{ inputs.release_tag }}-private-review
           path: .court-week-release-private/
@@ -205,7 +206,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
       - name: Upload public Release payload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ${{ inputs.release_tag }}
           path: .court-week-release/
@@ -220,14 +221,14 @@ jobs:
       inputs.publish == true
     permissions:
       contents: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "24"
           cache: npm

@@ -8,6 +8,7 @@ trusted GitHub Actions production job; browsers never invoke an AI service.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import html
 import importlib.metadata
 import json
@@ -34,6 +35,19 @@ MAX_CODEC_ENCODE_ATTEMPTS = 3
 # Keep the per-pass LUFS correction bound to the remaining retry budget so a
 # misconfigured attempt count cannot outrun the adjustment ceiling.
 MAX_LUFS_ADJUSTMENT = float(MAX_CODEC_ENCODE_ATTEMPTS - 1)
+KOKORO_REPOSITORY = "hexgrad/Kokoro-82M"
+KOKORO_REVISION = "f3ff3571791e39611d31c381e3a41a3af07b4987"
+KOKORO_CONFIG = "config.json"
+KOKORO_MODEL = "kokoro-v1_0.pth"
+PINNED_PYTHON_PACKAGES = {
+    "kokoro": "0.9.4",
+    "soundfile": "0.13.1",
+    "numpy": "2.4.6",
+    "torch": "2.13.0",
+    "misaki": "0.9.4",
+    "huggingface_hub": "1.26.0",
+    "hf_transfer": "0.1.9",
+}
 
 
 def run(command: list[str], *, capture: bool = False) -> subprocess.CompletedProcess[str]:
@@ -43,6 +57,26 @@ def run(command: list[str], *, capture: bool = False) -> subprocess.CompletedPro
         text=True,
         capture_output=capture,
     )
+
+
+def require_pinned_python_packages() -> dict[str, str]:
+    actual = {name: importlib.metadata.version(name) for name in PINNED_PYTHON_PACKAGES}
+    drift = {
+        name: {"expected": expected, "actual": actual[name]}
+        for name, expected in PINNED_PYTHON_PACKAGES.items()
+        if actual[name] != expected
+    }
+    if drift:
+        raise RuntimeError(f"Court Week synthesis dependency drift: {json.dumps(drift, sort_keys=True)}")
+    return actual
+
+
+def sha256_file(path: str | Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return f"sha256:{digest.hexdigest()}"
 
 
 def validate_job(job: dict[str, Any]) -> None:
@@ -77,7 +111,9 @@ def validate_job(job: dict[str, Any]) -> None:
             if not re.fullmatch(r"[ab][fm]_[a-z]+", str(cue.get("voice", ""))):
                 raise ValueError(f"Cue {cue_id} has an unsafe Kokoro voice id")
             pause = int(cue.get("pauseAfterMs", 0))
-            if pause < 150 or pause > 1_500:
+            # Zero joins two attributed turns split from one authored cue. It
+            # must not inject a false courtroom pause between those speakers.
+            if pause != 0 and (pause < 150 or pause > 1_500):
                 raise ValueError(f"Cue {cue_id} has an invalid pause")
 
 
@@ -246,14 +282,44 @@ def produce(job: dict[str, Any], output_root: Path) -> Path:
     import numpy as np
     import soundfile as sf
     import torch
-    from kokoro import KPipeline
+    from huggingface_hub import hf_hub_download
+    from kokoro import KModel, KPipeline
 
     validate_job(job)
+    pinned_packages = require_pinned_python_packages()
     torch.manual_seed(0)
     torch.set_num_threads(max(1, min(8, os.cpu_count() or 4)))
+    config_path = hf_hub_download(
+        repo_id=KOKORO_REPOSITORY,
+        revision=KOKORO_REVISION,
+        filename=KOKORO_CONFIG,
+    )
+    model_path = hf_hub_download(
+        repo_id=KOKORO_REPOSITORY,
+        revision=KOKORO_REVISION,
+        filename=KOKORO_MODEL,
+    )
+    model = KModel(
+        repo_id=KOKORO_REPOSITORY,
+        config=config_path,
+        model=model_path,
+    ).to("cpu").eval()
     pipelines: dict[str, Any] = {}
     for language in sorted({str(cue["voice"])[0] for segment in job["segments"] for cue in segment["cues"]}):
-        pipelines[language] = KPipeline(lang_code=language)
+        pipelines[language] = KPipeline(
+            lang_code=language,
+            repo_id=KOKORO_REPOSITORY,
+            model=model,
+            device="cpu",
+        )
+    voices = {
+        voice: hf_hub_download(
+            repo_id=KOKORO_REPOSITORY,
+            revision=KOKORO_REVISION,
+            filename=f"voices/{voice}.pt",
+        )
+        for voice in sorted({str(cue["voice"]) for segment in job["segments"] for cue in segment["cues"]})
+    }
 
     session_id = str(job["sessionId"])
     session_root = output_root / session_id
@@ -268,7 +334,7 @@ def produce(job: dict[str, Any], output_root: Path) -> Path:
         cue_ranges = []
         for cue in segment["cues"]:
             voice = str(cue["voice"])
-            speech = synthesise(pipelines[voice[0]], str(cue["text"]), voice, np)
+            speech = synthesise(pipelines[voice[0]], str(cue["text"]), voices[voice], np)
             peak = float(np.max(np.abs(speech)))
             if peak > 1.0:
                 speech = speech / peak
@@ -345,11 +411,13 @@ def produce(job: dict[str, Any], output_root: Path) -> Path:
         "narrationSeconds": round(total_duration, 3),
         "experienceSeconds": round(experience, 3),
         "productionEnvironment": {
-            "kokoro": importlib.metadata.version("kokoro"),
-            "numpy": importlib.metadata.version("numpy"),
-            "soundfile": importlib.metadata.version("soundfile"),
-            "torch": importlib.metadata.version("torch"),
+            **pinned_packages,
+            "kokoroRepository": KOKORO_REPOSITORY,
+            "kokoroRevision": KOKORO_REVISION,
+            "kokoroConfigSha256": sha256_file(config_path),
+            "kokoroModelSha256": sha256_file(model_path),
             "ffmpeg": run(["ffmpeg", "-version"], capture=True).stdout.splitlines()[0],
+            "espeakNg": run(["espeak-ng", "--version"], capture=True).stdout.splitlines()[0],
             "python": sys.version.split()[0],
         },
         "segments": segment_media,
