@@ -31,7 +31,7 @@ export interface ImmersiveCourtShellProps {
   onPlay: () => void
   onPause: () => void
   onRepeat: () => void
-  onAdvance: () => void
+  onAdvance: (trigger?: HTMLElement) => void
   onToggleCaptions: () => void
   onToggleDesk: () => void
 }
@@ -342,7 +342,11 @@ export function ImmersiveCourtShell({
             </button>
           ) : null}
           {(accessMode === 'reading' || playbackStatus === 'reading-fallback') ? (
-            <button type="button" className="cw-controls__advance" onClick={onAdvance}>
+            <button
+              type="button"
+              className="cw-controls__advance"
+              onClick={(event) => onAdvance(event.currentTarget)}
+            >
               Continue
             </button>
           ) : null}

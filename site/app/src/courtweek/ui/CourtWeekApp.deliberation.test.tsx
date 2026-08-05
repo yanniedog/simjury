@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { elevenMinutesCourtWeek } from '../content'
 import {
   clearMemoryProgressForTests,
+  loadWeeklyProgress,
   saveWeeklyProgress,
   type StoredWeeklyProgress,
 } from '../state/progress'
@@ -47,6 +48,44 @@ describe('CourtWeekApp improper-argument interaction', () => {
     container.remove()
     clearMemoryProgressForTests()
     vi.restoreAllMocks()
+  })
+
+  it('observes a moving court clock without feeding progress updates back into rendering', async () => {
+    const monday = elevenMinutesCourtWeek.manifest.sessions[0]
+    const firstScene = monday?.scenes[0]
+    const firstCue = firstScene?.cues[0]
+    if (!monday || !firstScene || !firstCue) throw new Error('Monday fixtures are missing.')
+    const persistedTime = '2026-08-10T08:30:00+10:00'
+    await saveWeeklyProgress(elevenMinutesCourtWeek.manifest.id, {
+      schemaVersion: 'court-week-progress-v1',
+      courtWeekId: elevenMinutesCourtWeek.manifest.id,
+      revision: elevenMinutesCourtWeek.manifest.revision,
+      highestObservedTime: persistedTime,
+      completedSessionIds: [],
+      currentSessionId: monday.id,
+      currentSceneId: firstScene.id,
+      currentCueId: firstCue.id,
+      notes: '',
+      accessibilityMode: 'reading',
+      majorityDirectionReceived: false,
+    })
+    let clockReads = 0
+    const start = Date.parse('2026-08-17T09:00:00+10:00')
+    const now = () => start + clockReads++
+    const errors: unknown[][] = []
+    vi.spyOn(console, 'error').mockImplementation((...args: unknown[]) => { errors.push(args) })
+
+    await act(async () => {
+      root.render(<CourtWeekApp courtWeek={elevenMinutesCourtWeek} now={now} releaseBase="/media" />)
+      await Promise.resolve()
+    })
+    await act(async () => { await new Promise((resolve) => window.setTimeout(resolve, 180)) })
+
+    const saved = await loadWeeklyProgress(elevenMinutesCourtWeek.manifest.id)
+    expect(Date.parse(saved?.highestObservedTime ?? '')).toBeGreaterThan(Date.parse(persistedTime))
+    expect(Date.parse(saved?.highestObservedTime ?? '')).toBeGreaterThanOrEqual(start)
+    expect(clockReads).toBeLessThan(10)
+    expect(errors.some((args) => args.some((value) => String(value).includes('Maximum update depth')))).toBe(false)
   })
 
   it('makes the authored claims reachable, announces the correction, and persists reduced influence', async () => {
