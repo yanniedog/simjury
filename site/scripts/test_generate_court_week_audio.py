@@ -110,10 +110,14 @@ class CodecQualityTests(unittest.TestCase):
             with self.subTest(codec=codec), patch.object(MODULE, "run") as run:
                 MODULE.encode_once(Path("source.wav"), target, codec, -18.0, -1.5)
 
+                run.assert_called_once()
                 command = run.call_args.args[0]
                 self.assertEqual(command[-len(codec_arguments) - 1:-1], codec_arguments)
                 self.assertEqual(command[-1], str(target))
-                self.assertIn("loudnorm=I=-18.0:LRA=7:TP=-1.5", command)
+                self.assertEqual(
+                    command[command.index("-af") + 1],
+                    "loudnorm=I=-18.0:LRA=7:TP=-1.5",
+                )
                 self.assertEqual(command[command.index("-ac") + 1], "1")
                 self.assertEqual(command[command.index("-ar") + 1], "48000")
 
