@@ -144,6 +144,23 @@ test('reading mode announces each newly displayed legal cue exactly once', async
   await expect(page.locator('.cw-cue-live-region')).toHaveAttribute('aria-hidden', 'true')
 })
 
+test('Tuesday distress assistive output states that one person was aboard', async ({ page }) => {
+  const scene = elevenMinutesSessions[1].scenes.find(({ id }) => id === 'tue-recording')!
+  const distressCue = scene.cues.find(({ id }) => id === 'tue-recording-play--caption-4')!
+  await seedProgress(page, {
+    completedSessionIds: ['cw-0001-monday'],
+    currentSessionId: 'cw-0001-tuesday',
+    currentSceneId: scene.id,
+    currentCueId: distressCue.id,
+  })
+  await prepareCourt(page)
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+
+  const readingCopy = page.locator('.cw-reading-copy')
+  await expect(readingCopy).toHaveAttribute('aria-live', 'polite')
+  await expect(readingCopy).toContainText('One person aboard')
+})
+
 test('mandatory deliberation selects retain 44px targets and a three-pixel focus ring', async ({ page }) => {
   await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
   const scene = elevenMinutesSessions[5].scenes.find(({ id }) => id === 'sat-room')!
