@@ -41,14 +41,15 @@ class MockAudio extends EventTarget {
   removeAttribute(name: string) { if (name === 'src') this.src = '' }
 }
 
-function Harness({ onEnded, activeCue = cue, nextSceneCue, deferSourceUntilPlay = false, onTurnRendered }: {
+function Harness({ onEnded, activeCue = cue, nextSceneCue, followingCue, deferSourceUntilPlay = false, onTurnRendered }: {
   onEnded: () => void
   activeCue?: SceneCue
   nextSceneCue?: SceneCue
+  followingCue?: SceneCue
   deferSourceUntilPlay?: boolean
   onTurnRendered?: (turnId: string | null) => void
 }) {
-  const playback = useCuePlayback(activeCue, onEnded, nextSceneCue, { deferSourceUntilPlay })
+  const playback = useCuePlayback(activeCue, onEnded, nextSceneCue, { deferSourceUntilPlay, followingCue })
   onTurnRendered?.(playback.activeTurnId)
   const [, render] = useState(0)
   return (
@@ -58,6 +59,30 @@ function Harness({ onEnded, activeCue = cue, nextSceneCue, deferSourceUntilPlay 
       <button onClick={() => void playback.play()}>play</button>
       <button onClick={playback.pause}>pause</button>
       <button onClick={() => { render((value) => value + 1); void playback.repeat() }}>repeat</button>
+    </div>
+  )
+}
+
+function ContinuousSequenceHarness({ cues, onComplete }: {
+  cues: [SceneCue, SceneCue]
+  onComplete: () => void
+}) {
+  const [index, setIndex] = useState(0)
+  const activeCue = cues[index]
+  const playback = useCuePlayback(
+    activeCue,
+    () => {
+      if (index === 0) setIndex(1)
+      else onComplete()
+    },
+    undefined,
+    { deferSourceUntilPlay: true, followingCue: index === 0 ? cues[1] : undefined },
+  )
+  return (
+    <div>
+      <output data-testid="status">{playback.status}</output>
+      <output data-testid="cue">{activeCue.id}</output>
+      <button onClick={() => void playback.play()}>play</button>
     </div>
   )
 }
@@ -173,6 +198,78 @@ describe('useCuePlayback', () => {
     expect(container.querySelector('output')?.textContent).toBe('ended')
     act(() => currentAudio.dispatchEvent(new Event('ended')))
     expect(ended).toHaveBeenCalledOnce()
+    act(() => root.unmount())
+  })
+
+  it('keeps one recording alive across the 4.35 and 8.55 caption ranges of a shared segment', async () => {
+    const firstCue: SceneCue = {
+      ...cue,
+      id: 'mon-arrival-1',
+      audio: { ...cue.audio!, startSeconds: 0.2, endSeconds: 4.35 },
+    }
+    const secondCue: SceneCue = {
+      ...cue,
+      id: 'mon-arrival-1--caption-2',
+      audio: { ...cue.audio!, startSeconds: 4.35, endSeconds: 8.55 },
+    }
+    const completed = vi.fn()
+    const root = createRoot(container)
+    await act(async () => root.render(
+      <ContinuousSequenceHarness cues={[firstCue, secondCue]} onComplete={completed} />,
+    ))
+    const currentAudio = MockAudio.instances[0]
+    const removeSource = vi.spyOn(currentAudio, 'removeAttribute')
+    currentAudio.pause.mockClear()
+
+    await act(async () => container.querySelector('button')?.click())
+    expect(currentAudio.play).toHaveBeenCalledOnce()
+
+    currentAudio.currentTime = 4.35
+    await act(async () => currentAudio.dispatchEvent(new Event('timeupdate')))
+
+    expect(container.querySelector('[data-testid="cue"]')?.textContent)
+      .toBe('mon-arrival-1--caption-2')
+    expect(container.querySelector('[data-testid="status"]')?.textContent).toBe('playing')
+    expect(currentAudio.currentTime).toBe(4.35)
+    expect(currentAudio.pause).not.toHaveBeenCalled()
+    expect(currentAudio.play).toHaveBeenCalledOnce()
+    expect(removeSource).not.toHaveBeenCalled()
+    expect(currentAudio.src).toBe(cue.audio?.opus)
+
+    currentAudio.currentTime = 8.55
+    act(() => currentAudio.dispatchEvent(new Event('timeupdate')))
+
+    expect(completed).toHaveBeenCalledOnce()
+    expect(currentAudio.pause).toHaveBeenCalledOnce()
+    expect(container.querySelector('[data-testid="status"]')?.textContent).toBe('ended')
+    act(() => root.unmount())
+  })
+
+  it('ends normally before a following cue from a different recorded segment', async () => {
+    const followingCue: SceneCue = {
+      ...cue,
+      id: 'next-recording',
+      audio: {
+        ...cue.audio!,
+        opus: 'https://example.test/next.opus',
+        segmentId: 'segment-two',
+        startSeconds: 0.2,
+        endSeconds: 4.2,
+      },
+    }
+    const ended = vi.fn()
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness activeCue={cue} followingCue={followingCue} onEnded={ended} />))
+    const currentAudio = MockAudio.instances[0]
+    await act(async () => container.querySelector('button')?.click())
+    currentAudio.pause.mockClear()
+
+    currentAudio.currentTime = 18
+    act(() => currentAudio.dispatchEvent(new Event('timeupdate')))
+
+    expect(ended).toHaveBeenCalledOnce()
+    expect(currentAudio.pause).toHaveBeenCalledOnce()
+    expect(container.querySelector('output')?.textContent).toBe('ended')
     act(() => root.unmount())
   })
 
@@ -476,6 +573,28 @@ describe('useCuePlayback', () => {
 
     act(() => currentAudio.pause())
 
+    expect(currentAudio.currentTime).toBe(12)
+    expect(container.querySelector('output')?.textContent).toBe('paused')
+    act(() => root.unmount())
+  })
+
+  it('immediately stops a stale native playing event after an interruption', async () => {
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness onEnded={() => undefined} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
+    const currentAudio = MockAudio.instances[0]
+    await act(async () => play.click())
+    currentAudio.currentTime = 15
+
+    act(() => window.dispatchEvent(new Event('pagehide')))
+    const pausesAfterInterruption = currentAudio.pause.mock.calls.length
+    expect(currentAudio.currentTime).toBe(12)
+    expect(container.querySelector('output')?.textContent).toBe('paused')
+
+    currentAudio.currentTime = 15
+    act(() => currentAudio.dispatchEvent(new Event('playing')))
+
+    expect(currentAudio.pause).toHaveBeenCalledTimes(pausesAfterInterruption + 1)
     expect(currentAudio.currentTime).toBe(12)
     expect(container.querySelector('output')?.textContent).toBe('paused')
     act(() => root.unmount())

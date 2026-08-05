@@ -22,6 +22,8 @@ export interface CuePlayback {
 export interface CuePlaybackOptions {
   /** Keep recorded media source-free until play() runs inside the user's gesture. */
   deferSourceUntilPlay?: boolean
+  /** The next automatically presented cue, used to preserve a shared recorded segment. */
+  followingCue?: SceneCue
 }
 
 export function supportedAudioSource(
@@ -47,6 +49,15 @@ function canSpeak(): boolean {
 }
 
 const RECORDED_AUDIO_TIMEOUT_MS = 5_000
+const MAX_CONTINUOUS_SEGMENT_GAP_SECONDS = 0.75
+
+interface ContinuousHandoff {
+  fromCueId: string
+  toCueId: string
+  generation: number
+  segmentId: string
+  source: string
+}
 
 function availableSpeechVoice(): SpeechSynthesisVoice | null {
   if (!canSpeak() || typeof window.speechSynthesis.getVoices !== 'function') return null
@@ -94,8 +105,30 @@ export function useCuePlayback(
   const speechActive = useRef(false)
   const speechGeneration = useRef(0)
   const rangeEnded = useRef(false)
+  const continuousHandoff = useRef<ContinuousHandoff | null>(null)
   const endedCallback = useRef(onEnded)
   endedCallback.current = onEnded
+
+  const continuousFollowingCue = useMemo(() => {
+    const followingCue = options.followingCue
+    const segmentId = cue.audio?.segmentId
+    const followingSegmentId = followingCue?.audio?.segmentId
+    const end = cue.audio?.endSeconds
+    const followingStart = followingCue?.audio?.startSeconds
+    if (
+      !audio
+      || !followingCue
+      || !segmentId
+      || segmentId !== followingSegmentId
+      || end === undefined
+      || followingStart === undefined
+      || followingStart < end
+      || followingStart - end > MAX_CONTINUOUS_SEGMENT_GAP_SECONDS
+    ) return null
+    const source = supportedAudioSource(audio, cue)
+    if (!source || supportedAudioSource(audio, followingCue) !== source) return null
+    return { cue: followingCue, segmentId, source }
+  }, [audio, cue, options.followingCue])
 
   const updateActiveTurn = useCallback((id: string | null) => {
     activeTurn.current = id
@@ -137,7 +170,7 @@ export function useCuePlayback(
     recordedCompletionHandlers.current = null
   }, [])
 
-  const finishRecordedPlayback = useCallback((generation: number): boolean => {
+  const finishRecordedPlayback = useCallback((generation: number): 'continued' | 'ended' | false => {
     if (
       generation !== attemptGeneration.current
       || generation !== recordedPlaybackGeneration.current
@@ -145,12 +178,24 @@ export function useCuePlayback(
       || rangeEnded.current
     ) return false
     rangeEnded.current = true
+    if (continuousFollowingCue) {
+      clearRecordedCompletionHandlers()
+      continuousHandoff.current = {
+        fromCueId: cue.id,
+        toCueId: continuousFollowingCue.cue.id,
+        generation,
+        segmentId: continuousFollowingCue.segmentId,
+        source: continuousFollowingCue.source,
+      }
+      endedCallback.current()
+      return 'continued'
+    }
     recordedPlaybackGeneration.current = null
     clearRecordedCompletionHandlers()
     setStatus('ended')
     endedCallback.current()
-    return true
-  }, [clearRecordedCompletionHandlers])
+    return 'ended'
+  }, [clearRecordedCompletionHandlers, continuousFollowingCue, cue.id])
 
   const bindRecordedCompletionHandlers = useCallback((generation: number) => {
     if (!audio) return
@@ -170,7 +215,7 @@ export function useCuePlayback(
       if (turn && turn.id !== activeTurn.current) updateActiveTurn(turn.id)
       const end = cue.audio?.endSeconds
       if (end !== undefined && audio.currentTime >= end) {
-        if (finishRecordedPlayback(generation)) audio.pause()
+        if (finishRecordedPlayback(generation) === 'ended') audio.pause()
       }
     }
     const handlers = { audio, ended: handleEnded, timeupdate: handleTimeUpdate }
@@ -290,27 +335,49 @@ export function useCuePlayback(
   }, [attemptRecordedPlayback, audio, clearPlaybackTimeout, clearRecordedCompletionHandlers, speakFallback])
 
   useEffect(() => {
-    failedAttempts.current = 0
-    failureHandling.current = false
-    recordedAttemptActive.current = false
-    playbackSuppressed.current = false
-    reloadPauseExpected.current = false
-    attemptGeneration.current += 1
-    recordedPlaybackGeneration.current = null
-    clearRecordedCompletionHandlers()
-    clearPlaybackTimeout()
-    rangeEnded.current = false
-    updateActiveTurn(cue.turns?.[0]?.id ?? null)
-    setStatus('idle')
-    setError(null)
-    cancelSpeech()
+    const source = audio ? supportedAudioSource(audio, cue) : null
+    const pendingHandoff = continuousHandoff.current
+    const continuingRecordedSegment = Boolean(
+      audio
+      && source
+      && pendingHandoff
+      && pendingHandoff.toCueId === cue.id
+      && pendingHandoff.segmentId === cue.audio?.segmentId
+      && pendingHandoff.source === source
+      && pendingHandoff.generation === recordedPlaybackGeneration.current
+      && !playbackSuppressed.current,
+    )
+
+    if (continuingRecordedSegment) {
+      continuousHandoff.current = null
+      rangeEnded.current = false
+      updateActiveTurn(cue.turns?.[0]?.id ?? null)
+      setError(null)
+    } else {
+      continuousHandoff.current = null
+      failedAttempts.current = 0
+      failureHandling.current = false
+      recordedAttemptActive.current = false
+      playbackSuppressed.current = false
+      reloadPauseExpected.current = false
+      attemptGeneration.current += 1
+      recordedPlaybackGeneration.current = null
+      clearRecordedCompletionHandlers()
+      clearPlaybackTimeout()
+      rangeEnded.current = false
+      updateActiveTurn(cue.turns?.[0]?.id ?? null)
+      setStatus('idle')
+      setError(null)
+      cancelSpeech()
+      if (!audio) return
+      audio.pause()
+      audio.currentTime = cue.audio?.startSeconds ?? 0
+      audio.preload = options.deferSourceUntilPlay ? 'none' : 'metadata'
+      if (source && !options.deferSourceUntilPlay) audio.src = source
+      else audio.removeAttribute('src')
+    }
+
     if (!audio) return
-    audio.pause()
-    audio.currentTime = cue.audio?.startSeconds ?? 0
-    audio.preload = options.deferSourceUntilPlay ? 'none' : 'metadata'
-    const source = supportedAudioSource(audio, cue)
-    if (source && !options.deferSourceUntilPlay) audio.src = source
-    else audio.removeAttribute('src')
 
     const handleLoadedMetadata = () => {
       const start = cue.audio?.startSeconds ?? 0
@@ -325,7 +392,15 @@ export function useCuePlayback(
         generation === null
         || generation !== attemptGeneration.current
         || playbackSuppressed.current
-      ) return
+      ) {
+        suppressRecordedPlayback()
+        audio.pause()
+        if (!rangeEnded.current) {
+          rewindToIncompleteTurn()
+          setStatus('paused')
+        }
+        return
+      }
       reloadPauseExpected.current = false
       clearPlaybackTimeout()
       setStatus('playing')
@@ -345,19 +420,39 @@ export function useCuePlayback(
     audio.addEventListener('error', handleError)
     audio.addEventListener('playing', handlePlaying)
     audio.addEventListener('pause', handlePause)
+    if (continuingRecordedSegment && recordedPlaybackGeneration.current !== null) {
+      bindRecordedCompletionHandlers(recordedPlaybackGeneration.current)
+    }
     return () => {
-      suppressRecordedPlayback()
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata)
       audio.removeEventListener('error', handleError)
       audio.removeEventListener('playing', handlePlaying)
       audio.removeEventListener('pause', handlePause)
+      const handoff = continuousHandoff.current
+      const preservePlayback = Boolean(
+        handoff
+        && handoff.fromCueId === cue.id
+        && handoff.generation === recordedPlaybackGeneration.current
+        && !playbackSuppressed.current,
+      )
+      if (preservePlayback) {
+        queueMicrotask(() => {
+          if (continuousHandoff.current !== handoff) return
+          continuousHandoff.current = null
+          suppressRecordedPlayback()
+          audio.pause()
+          cancelSpeech()
+        })
+        return
+      }
+      suppressRecordedPlayback()
       // Some browsers and deterministic test doubles dispatch `pause`
       // synchronously. Detach this cue's listeners first so teardown cannot
       // update playback state while React is committing the next cue.
       audio.pause()
       cancelSpeech()
     }
-  }, [audio, cancelSpeech, clearPlaybackTimeout, clearRecordedCompletionHandlers, cue, options.deferSourceUntilPlay, recoverRecordedPlayback, rewindToIncompleteTurn, suppressRecordedPlayback, updateActiveTurn])
+  }, [audio, bindRecordedCompletionHandlers, cancelSpeech, clearPlaybackTimeout, clearRecordedCompletionHandlers, cue, options.deferSourceUntilPlay, recoverRecordedPlayback, rewindToIncompleteTurn, suppressRecordedPlayback, updateActiveTurn])
 
   useEffect(() => {
     if (!preloader) return
@@ -380,10 +475,8 @@ export function useCuePlayback(
       suppressRecordedPlayback()
       audio?.pause()
       rewindToIncompleteTurn()
-      if (speechActive.current) {
-        cancelSpeech()
-        setStatus('paused')
-      }
+      if (speechActive.current) cancelSpeech()
+      setStatus('paused')
     }
     const interruptWhenHidden = () => {
       if (document.visibilityState === 'hidden') interrupt()
@@ -401,6 +494,7 @@ export function useCuePlayback(
 
   const play = useCallback(async () => {
     if (recordedAttemptActive.current || failureHandling.current) return
+    if (recordedPlaybackGeneration.current !== null && !playbackSuppressed.current) return
     playbackSuppressed.current = false
     reloadPauseExpected.current = false
     cancelSpeech()

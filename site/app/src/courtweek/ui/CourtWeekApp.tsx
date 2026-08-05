@@ -506,11 +506,18 @@ export function CourtWeekApp({
     () => cueForMediaPolicy(presentedCue, mediaPolicy),
     [mediaPolicy, presentedCue],
   )
+  const followingPlaybackCue = useMemo(() => {
+    const sameSceneCue = nextReplaySafeCue(position.scene.cues, position.cueIndex, isReplay)
+    if (sameSceneCue) return nextCueForMediaPolicy(sameSceneCue, mediaPolicy)
+    if (position.scene.interaction) return undefined
+    const nextSceneCue = activeSession.scenes[position.sceneIndex + 1]?.cues[0]
+    return nextCueForMediaPolicy(nextSceneCue ? replaySafeCue(nextSceneCue, isReplay) : undefined, mediaPolicy)
+  }, [activeSession.scenes, isReplay, mediaPolicy, position.cueIndex, position.scene, position.sceneIndex])
   const playback = useCuePlayback(
     playbackCue,
     handleCueEnded,
     nextCueForMediaPolicy(entered ? activeSession.scenes[position.sceneIndex + 1]?.cues[0] : undefined, mediaPolicy),
-    { deferSourceUntilPlay: true },
+    { deferSourceUntilPlay: true, followingCue: followingPlaybackCue },
   )
   const pauseCuePlayback = playback.pause
   const resumeCuePlayback = playback.play
