@@ -18,6 +18,8 @@ describe('developer preview boundary', () => {
     await expect(verifyDeveloperToken('B'.repeat(43), fixtureDigest)).resolves.toBe(false)
     await expect(verifyDeveloperToken('short', fixtureDigest)).resolves.toBe(false)
     await expect(verifyDeveloperToken('A'.repeat(44), fixtureDigest)).resolves.toBe(false)
+    await expect(verifyDeveloperToken(fixture, fixtureDigest.slice(1))).resolves.toBe(false)
+    await expect(verifyDeveloperToken(fixture, 'g'.repeat(64))).resolves.toBe(false)
   })
 
   it('starts each selected day at its first cue with only the preceding days completed', () => {

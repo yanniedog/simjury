@@ -17,8 +17,9 @@ export async function verifyDeveloperToken(
   expectedDigest = EXPECTED_DEVELOPER_DIGEST,
 ): Promise<boolean> {
   if (!/^[A-Za-z0-9_-]{43}$/.test(token)) return false
+  if (!/^[a-f0-9]{64}$/.test(expectedDigest)) return false
   const actual = await digestDeveloperToken(token)
-  let mismatch = actual.length ^ expectedDigest.length
+  let mismatch = 0
   for (let index = 0; index < expectedDigest.length; index += 1) {
     mismatch |= actual.charCodeAt(index) ^ expectedDigest.charCodeAt(index)
   }

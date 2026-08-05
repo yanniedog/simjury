@@ -34,7 +34,20 @@ export function useWeeklyProgress(
   const saveSequence = useRef(0)
   const skipHydrationSave = useRef(true)
   const progressRef = useRef(progress)
+  const initialProgressRef = useRef(initialProgress)
+  const ephemeralResetKey = [
+    initialProgress.courtWeekId,
+    initialProgress.revision,
+    initialProgress.currentSessionId,
+    initialProgress.currentSceneId,
+    initialProgress.currentCueId,
+  ].join('\0')
   progressRef.current = progress
+  initialProgressRef.current = initialProgress
+
+  useEffect(() => {
+    if (ephemeral) setProgress(initialProgressRef.current)
+  }, [ephemeral, ephemeralResetKey])
 
   useEffect(() => {
     if (ephemeral) return

@@ -48,6 +48,7 @@ export interface CourtWeekAppProps {
   ) => Promise<StoredWeeklyProgress>
   initialProgressOverride?: StoredWeeklyProgress
   ephemeral?: boolean
+  ephemeralAdvisory?: string
   developerPreview?: {
     selectedOrdinal: number
     sessions: Array<{ ordinal: number; day: string }>
@@ -116,6 +117,7 @@ function CourtWeekEntry({
   onEnter,
   persistenceNotice,
   ephemeral,
+  ephemeralAdvisory,
   dataSaver,
   narrationApproved,
   onDataSaver,
@@ -128,6 +130,7 @@ function CourtWeekEntry({
   onEnter: (fullscreen: boolean) => void
   persistenceNotice: string | null
   ephemeral: boolean
+  ephemeralAdvisory?: string
   dataSaver: boolean
   narrationApproved: boolean
   onDataSaver: (enabled: boolean) => void
@@ -141,12 +144,7 @@ function CourtWeekEntry({
       <div className="cw-entry__panel">
         <p className="cw-kicker">A seven-day fictional jury experience</p>
         <h1>{title}</h1>
-        <p>{ephemeral
-          ? advisory.replace(
-              'progress remains on this device.',
-              'preview progress is discarded when you switch sessions or leave preview.',
-            )
-          : advisory}</p>
+        <p>{ephemeral && ephemeralAdvisory ? ephemeralAdvisory : advisory}</p>
         <p>SimJury is fictional and intended for adults aged 18 and older.</p>
         {persistenceNotice ? <p className="cw-error" role="alert">{persistenceNotice}</p> : null}
         <p>Choose how the court should be presented. You can change captions later.</p>
@@ -286,6 +284,7 @@ export function CourtWeekApp({
   prepareProgressImport,
   initialProgressOverride,
   ephemeral = false,
+  ephemeralAdvisory,
   developerPreview,
   onEnteredChange,
 }: CourtWeekAppProps) {
@@ -607,6 +606,7 @@ export function CourtWeekApp({
         mode={accessMode}
         persistenceNotice={storageNotice}
         ephemeral={ephemeral}
+        ephemeralAdvisory={ephemeralAdvisory}
         dataSaver={dataSaver}
         narrationApproved={narrationApproved}
         onDataSaver={setDataSaver}

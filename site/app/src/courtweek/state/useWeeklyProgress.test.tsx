@@ -124,4 +124,31 @@ describe('useWeeklyProgress durability boundaries', () => {
     act(() => root.unmount())
     window.removeEventListener(WEEKLY_PROGRESS_EVENT, receiveProgress)
   })
+
+  it('resets ephemeral state when the selected preview position changes', async () => {
+    let supplied = initialProgress
+    function Harness() {
+      state = useWeeklyProgress(supplied, { ephemeral: true })
+      return null
+    }
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness />))
+    act(() => state?.updateProgress((current) => ({ ...current, notes: 'Discard me.' })))
+
+    supplied = {
+      ...initialProgress,
+      currentSessionId: 'cw-0001-tuesday',
+      currentSceneId: 'tue-dispatcher',
+      currentCueId: 'tue-dispatcher-1',
+    }
+    await act(async () => root.render(<Harness />))
+
+    expect(state?.progress).toMatchObject({
+      currentSessionId: 'cw-0001-tuesday',
+      currentSceneId: 'tue-dispatcher',
+      currentCueId: 'tue-dispatcher-1',
+      notes: '',
+    })
+    act(() => root.unmount())
+  })
 })
