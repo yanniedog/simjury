@@ -60,7 +60,17 @@ def run(command: list[str], *, capture: bool = False) -> subprocess.CompletedPro
 
 
 def require_pinned_python_packages() -> dict[str, str]:
-    actual = {name: importlib.metadata.version(name) for name in PINNED_PYTHON_PACKAGES}
+    actual: dict[str, str] = {}
+    missing: dict[str, dict[str, str | None]] = {}
+    for name, expected in PINNED_PYTHON_PACKAGES.items():
+        try:
+            actual[name] = importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:
+            missing[name] = {"expected": expected, "actual": None}
+    if missing:
+        raise RuntimeError(
+            f"Court Week synthesis dependencies are missing: {json.dumps(missing, sort_keys=True)}"
+        )
     drift = {
         name: {"expected": expected, "actual": actual[name]}
         for name, expected in PINNED_PYTHON_PACKAGES.items()
@@ -117,12 +127,13 @@ def validate_job(job: dict[str, Any]) -> None:
                 raise ValueError(f"Cue {cue_id} has an invalid pause")
 
 
-def synthesise(pipeline: Any, text: str, voice: str, np: Any) -> Any:
+def synthesise(pipeline: Any, text: str, voice: str, np: Any, torch: Any) -> Any:
     chunks = []
-    for _graphemes, _phonemes, audio in pipeline(text, voice=voice):
-        samples = np.asarray(audio, dtype=np.float32).reshape(-1)
-        if samples.size:
-            chunks.append(samples)
+    with torch.inference_mode():
+        for _graphemes, _phonemes, audio in pipeline(text, voice=voice):
+            samples = np.asarray(audio, dtype=np.float32).reshape(-1)
+            if samples.size:
+                chunks.append(samples)
     if not chunks:
         raise RuntimeError(f"Kokoro produced no samples for {voice}")
     return np.concatenate(chunks)
@@ -334,7 +345,7 @@ def produce(job: dict[str, Any], output_root: Path) -> Path:
         cue_ranges = []
         for cue in segment["cues"]:
             voice = str(cue["voice"])
-            speech = synthesise(pipelines[voice[0]], str(cue["text"]), voices[voice], np)
+            speech = synthesise(pipelines[voice[0]], str(cue["text"]), voices[voice], np, torch)
             peak = float(np.max(np.abs(speech)))
             if peak > 1.0:
                 speech = speech / peak
