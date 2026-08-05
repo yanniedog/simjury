@@ -320,20 +320,27 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-stage')).toHaveAttribute('inert', '')
   await expect(page.locator('.cw-stage')).toHaveAttribute('aria-hidden', 'true')
 
+  const liveCue = page.locator('.cw-cue-live-region')
+  const frozenCue = (await liveCue.textContent())?.trim()
+  if (!frozenCue) throw new Error('The mandatory boundary must retain a narrated cue.')
   // Progress writes are deliberately debounced. The dialog can render while
   // IndexedDB is still committing the last caption that led to this boundary,
   // so first wait for storage to match the cue already presented behind it.
-  await expect.poll(() => readProgressPosition(page)).toMatchObject({
-    currentCueId: firstMandatoryCueId,
+  await expect.poll(async () => ({
+    position: await readProgressPosition(page),
+    cue: (await liveCue.textContent())?.trim(),
+  })).toMatchObject({
+    position: { currentCueId: firstMandatoryCueId },
+    cue: frozenCue,
   })
+  await expect(liveCue).toHaveText(frozenCue)
   const mandatoryPosition = await readProgressPosition(page)
   expect(mandatoryPosition).toMatchObject({ currentCueId: firstMandatoryCueId })
-  const frozenCue = await page.locator('.cw-cue-live-region').textContent()
   await page.keyboard.press('Escape')
   await expect(dialog).toBeVisible()
   await expect(choice).toBeFocused()
   await expect.poll(() => readProgressPosition(page)).toEqual(mandatoryPosition)
-  await expect(page.locator('.cw-cue-live-region')).toHaveText(frozenCue ?? '')
+  await expect(liveCue).toHaveText(frozenCue)
 
   await page.keyboard.press('Tab')
   await expect(choice).toBeFocused()
@@ -342,7 +349,7 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-controls button:focus')).toHaveCount(0)
 
   await page.clock.fastForward(120_000)
-  await expect(page.locator('.cw-cue-live-region')).toHaveText(frozenCue ?? '')
+  await expect(liveCue).toHaveText(frozenCue)
   await expect(dialog.getByRole('button', { name: 'Continue proceedings' })).toBeEnabled()
   await dialog.getByRole('button', { name: 'Continue proceedings' }).click()
 
@@ -350,7 +357,7 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-stage')).not.toHaveAttribute('inert', '')
   await expect(page.getByRole('button', { name: 'Continue' })).toBeFocused()
   await expect(page.locator('.cw-reading-copy')).toContainText('Choose an oath or affirmation')
-  await expect(page.locator('.cw-cue-live-region')).not.toHaveText(frozenCue ?? '')
+  await expect(liveCue).not.toHaveText(frozenCue)
 })
 
 async function newReflowContext(browser: Browser, screen: { width: number; height: number }): Promise<BrowserContext> {
