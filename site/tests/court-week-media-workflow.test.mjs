@@ -58,4 +58,7 @@ test('synthesis inputs are exact and the immutable Kokoro revision is explicit',
   assert.doesNotMatch(generator, /KPipeline\(lang_code=language\)/u)
   assert.match(generator, /isinstance\(pause, bool\) or not isinstance\(pause, int\)/u)
   assert.match(generator, /pause != 0 and \(pause < 150 or pause > 1_500\)/u)
+  assert.match(generator, /result\.tokens/u)
+  assert.match(generator, /align_utterance_parts/u)
+  assert.match(generator, /Kokoro token text does not reconstruct/u)
 })

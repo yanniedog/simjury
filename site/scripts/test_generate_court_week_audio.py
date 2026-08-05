@@ -31,15 +31,70 @@ def job_with_pause(pause):
     }
 
 
+def v2_job_with_pause(pause):
+    return {
+        "schema": "simjury.court-week-audio-job/v2",
+        "caseId": "cw-0001",
+        "sessionId": "cw-0001-monday",
+        "sampleRate": 24_000,
+        "segments": [
+            {
+                "opaqueId": f"{index:032x}",
+                "captions": [{
+                    "id": f"caption-{index}",
+                    "sourceCueId": f"source-{index}",
+                    "speaker": "Counsel",
+                    "text": "Reviewed test words.",
+                    "turns": [{
+                        "id": f"turn-{index}",
+                        "speaker": "Counsel",
+                        "text": "Reviewed test words.",
+                        "utteranceId": f"utterance-{index}",
+                    }],
+                }],
+                "utterances": [{
+                    "id": f"utterance-{index}",
+                    "sourceCueId": f"source-{index}",
+                    "speaker": "Counsel",
+                    "text": "Reviewed test words.",
+                    "voice": "af_bella",
+                    "tone": "formal",
+                    "pauseAfterMs": pause,
+                    "parts": [{
+                        "captionId": f"caption-{index}",
+                        "turnId": f"turn-{index}",
+                        "text": "Reviewed test words.",
+                    }],
+                }],
+            }
+            for index in range(1, 9)
+        ],
+    }
+
+
 class PauseValidationTests(unittest.TestCase):
     def test_accepts_zero_join_and_normal_authored_pause(self):
-        MODULE.validate_job(job_with_pause(0))
-        MODULE.validate_job(job_with_pause(340))
+        for factory in (job_with_pause, v2_job_with_pause):
+            MODULE.validate_job(factory(0))
+            MODULE.validate_job(factory(340))
 
     def test_rejects_fractional_and_boolean_pauses(self):
-        for invalid in (False, True, 0.5, -0.5, "0"):
-            with self.subTest(invalid=invalid), self.assertRaisesRegex(ValueError, "non-integer pause"):
-                MODULE.validate_job(job_with_pause(invalid))
+        for factory in (job_with_pause, v2_job_with_pause):
+            for invalid in (False, True, 0.5, -0.5, "0"):
+                with self.subTest(factory=factory.__name__, invalid=invalid), self.assertRaisesRegex(ValueError, "non-integer pause"):
+                    MODULE.validate_job(factory(invalid))
+
+    def test_rejects_unsupported_schemas(self):
+        job = job_with_pause(340)
+        job["schema"] = "simjury.court-week-audio-job/v3"
+        with self.assertRaisesRegex(ValueError, "Unsupported audio job schema"):
+            MODULE.validate_job(job)
+
+    def test_v2_caption_and_utterance_coverage_must_match(self):
+        job = v2_job_with_pause(340)
+        job["segments"][0]["utterances"][0]["parts"][0]["turnId"] = "another-turn"
+        with self.assertRaisesRegex(ValueError, "coverage or order differs"):
+            MODULE.validate_job(job)
 
 
 class CaptionTimingTests(unittest.TestCase):
