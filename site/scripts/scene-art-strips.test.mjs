@@ -12,9 +12,9 @@ const requirementsPath = join(temporary, 'requirements.json')
 const outputRoot = join(temporary, 'output')
 const mediaRoot = resolve('court-week-art/cw-0001')
 // The complete AVIF/WebP corpus took almost fourteen minutes on a
-// resource-contended Windows libvips host. Keep a finite ceiling with roughly
-// 45% headroom over that observed platform variance.
-const ART_STRIP_SETUP_TIMEOUT_MS = 1_200_000
+// resource-contended Windows libvips host. Keep the proven six-minute ceiling
+// elsewhere while giving Windows roughly 45% headroom over the observed run.
+const ART_STRIP_SETUP_TIMEOUT_MS = process.platform === 'win32' ? 1_200_000 : 360_000
 let manifest
 const staleFile = join(outputRoot, 'strips', 'day-08', 'strip-01', 'desktop.webp')
 
