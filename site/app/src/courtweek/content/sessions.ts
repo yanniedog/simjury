@@ -9,7 +9,7 @@ type CueInput = Omit<SceneCue, 'evidenceIds' | 'replayable' | 'closingPropositio
 }
 
 function cue(input: CueInput): SceneCue {
-  return { evidenceIds: [], replayable: false, closingPropositions: [], ...input }
+  return { evidenceIds: [], replayable: false, ...input }
 }
 
 function mondayCue(input: CueInput): SceneCue[] {

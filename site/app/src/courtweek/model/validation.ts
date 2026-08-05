@@ -60,6 +60,9 @@ function demand(condition: boolean, message: string): asserts condition {
   if (!condition) throw new Error(message)
 }
 
+const closingAddressEvents = new Set<CourtEvent>(['crown-closing', 'defence-closing'])
+const substantiveWitnessEvents = new Set<CourtEvent>(['witness-chief', 'witness-cross', 'witness-reexamination'])
+
 export function transitionLegalState(state: LegalState, event: CourtEvent): LegalState {
   const next = { ...state }
   switch (event) {
@@ -229,9 +232,7 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
   const witnessNames = new Set(courtWeek.trial.witnesses.map((witness) => witness.name))
   allCues.filter((cue) => {
     const source = cue.sourceCueId ? allCues.find((candidate) => candidate.id === cue.sourceCueId) : cue
-    return source?.event === 'witness-chief' ||
-      source?.event === 'witness-cross' ||
-      source?.event === 'witness-reexamination' ||
+    return Boolean(source && substantiveWitnessEvents.has(source.event)) ||
       (source?.event === 'exhibit-admitted' && witnessNames.has(source.speaker))
   }).forEach((cue) => {
     const ownershipId = cue.sourceCueId ?? cue.id
@@ -266,36 +267,34 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
   demand((cueIndex.get(postAnswerStrikes[0].cueId) ?? -1) > (cueIndex.get(postAnswerStrikes[0].struckCueId!) ?? -1), 'the post-answer ruling must follow the excluded answer')
   demand(!struckItems[0].replayable, 'struck material must never be replayable')
 
-  const closingEvents = new Set<CourtEvent>(['crown-closing', 'defence-closing'])
-  const closingCues = allCues.filter((cue) => closingEvents.has(cue.event))
+  const closingCues = allCues.filter((cue) => closingAddressEvents.has(cue.event))
   demand(closingCues.length === 4, 'the addresses must contain exactly four traced closing cues')
-  allCues.filter((cue) => !closingEvents.has(cue.event)).forEach((cue) => {
+  allCues.filter((cue) => !closingAddressEvents.has(cue.event)).forEach((cue) => {
     demand((cue.closingPropositions ?? []).length === 0, `${cue.id}: only a closing address may define closing propositions`)
   })
   const closingPropositionIds = closingCues.flatMap((cue) => (cue.closingPropositions ?? []).map(({ id }) => id))
   demand(new Set(closingPropositionIds).size === closingPropositionIds.length, 'closing proposition ids must be unique')
   const struckCueIds = new Set(postAnswerStrikes.flatMap(({ struckCueId }) => struckCueId ? [struckCueId] : []))
-  const testimonyEvents = new Set<CourtEvent>(['witness-chief', 'witness-cross', 'witness-reexamination'])
   closingCues.forEach((closingCue) => {
     const closingPropositions = closingCue.closingPropositions ?? []
     demand(closingPropositions.length > 0, `${closingCue.id}: every closing cue requires proposition-level record sources`)
     const closingIndex = cueIndex.get(closingCue.id) ?? -1
     closingPropositions.forEach((proposition) => {
-      demand(closingCue.text.includes(proposition.text), `${proposition.id}: traced words must occur exactly in ${closingCue.id}`)
+      demand(closingCue.text.includes(proposition.text), `${proposition.id}: traced words must appear within ${closingCue.id}`)
       proposition.recordSources.forEach((source) => {
         if (source.kind === 'exhibit') {
           const evidence = courtWeek.trial.evidence.find(({ id }) => id === source.evidenceId)
           demand(evidence?.status === 'admitted', `${proposition.id}: exhibit source ${source.evidenceId} is not admitted`)
           const admittedRecordCue = allCues.find((cue, index) => (
             index < closingIndex && cue.evidenceIds.includes(source.evidenceId) && (
-              cue.event === 'exhibit-admitted' || testimonyEvents.has(cue.event)
+              cue.event === 'exhibit-admitted' || substantiveWitnessEvents.has(cue.event)
             )
           ))
           demand(Boolean(admittedRecordCue), `${proposition.id}: exhibit source ${source.evidenceId} was not in the admitted record before closing`)
           return
         }
         const testimony = allCues.find((cue) => cue.id === source.cueId)
-        demand(Boolean(testimony && testimonyEvents.has(testimony.event)), `${proposition.id}: testimony source ${source.cueId} is not substantive witness evidence`)
+        demand(Boolean(testimony && substantiveWitnessEvents.has(testimony.event)), `${proposition.id}: testimony source ${source.cueId} is not substantive witness evidence`)
         demand((cueIndex.get(source.cueId) ?? -1) < closingIndex, `${proposition.id}: testimony source ${source.cueId} was not heard before closing`)
         demand(!struckCueIds.has(source.cueId), `${proposition.id}: testimony source ${source.cueId} was struck`)
         demand(witnessCueOwners.get(source.cueId)?.length === 1, `${proposition.id}: testimony source ${source.cueId} lacks a unique witness owner`)
