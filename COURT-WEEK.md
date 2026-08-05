@@ -42,19 +42,24 @@ contain no plaintext future dialogue or media map, and that the app itself makes
 no future-pack request before both gates pass. Production build checks fail if
 those guarantees regress.
 
-### Owner developer preview exception
+### Local developer preview exception
 
-An owner-authorised, hidden `#developer` route may expose a password gate for
-testing all seven sessions. This is anti-casual spoiler friction, not
-authentication: the password plaintext is never committed or stored; only its
-one-way verifier digest is public. Only after a successful in-page check may
-the browser hydrate all static packs. The app does not persist the password,
-decrypted packs, opened-pack cache or preview progress; normal browser-managed
-HTTP caching of public static assets remains possible. Preview uses a fixed
-developer clock and explicit day selector; its ephemeral progress must never
-read or write normal IndexedDB progress.
-It adds no backend, runtime operation, binding or recurring cost. Outside this
-explicit preview, the ordinary schedule and prerequisite gates remain binding.
+During the owner-authorised live test, a device-local profile may enable an
+explicit Developer mode and all-session preview. It is not authentication and
+must be labelled as such. Developer mode defaults off; enabling it fetches
+nothing until the user separately chooses **Open all-session preview** after a
+future-session spoiler warning.
+
+The app does not persist decrypted packs, opened-pack cache or preview progress;
+normal browser-managed HTTP caching of public static assets remains possible.
+Preview uses a fixed developer clock and explicit day selector; its ephemeral
+progress must never read or write normal IndexedDB progress. The former password
+and hidden `#developer` route are retired. The local profile contains only a
+short juror label, the combined fiction/adult acknowledgement and the testing
+preference; it is not an account and is never sent over the network.
+
+The preview adds no backend, runtime operation, binding or recurring cost.
+Outside it, the ordinary schedule and prerequisite gates remain binding.
 
 ## Legal-order invariants
 

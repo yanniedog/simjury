@@ -13,8 +13,11 @@ import { courtWeekBootstrap } from './bootstrap'
 import { createCourtDayPacks } from './packPlan'
 import { clearOpenedPackMemoryForTests, saveOpenedPack } from './packStore'
 import { SealedCourtWeekApp } from './SealedCourtWeekApp'
-import { digestDeveloperToken } from './developerPreview'
 import * as loader from './loader'
+import {
+  clearMemoryLocalProfileForTests,
+  saveLocalProfile,
+} from '../state/localProfile'
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
@@ -26,6 +29,13 @@ describe('SealedCourtWeekApp', () => {
     history.replaceState(null, '', '/')
     clearMemoryProgressForTests()
     clearOpenedPackMemoryForTests()
+    clearMemoryLocalProfileForTests()
+    localStorage.clear()
+    saveLocalProfile({
+      jurorLabel: 'Juror 01',
+      adultFictionAcknowledged: true,
+      developerMode: false,
+    })
     container = document.createElement('div')
     document.body.append(container)
     root = createRoot(container)
@@ -37,16 +47,16 @@ describe('SealedCourtWeekApp', () => {
     container.remove()
     clearMemoryProgressForTests()
     clearOpenedPackMemoryForTests()
+    clearMemoryLocalProfileForTests()
+    localStorage.clear()
     vi.restoreAllMocks()
     history.replaceState(null, '', '/')
   })
 
-  it('hydrates all seven packs only after valid access and leaves saved progress untouched', async () => {
-    const token = 'A'.repeat(43)
-    const developerDigest = await digestDeveloperToken(token)
+  it('hydrates all seven packs only after explicit local developer preview and leaves saved progress untouched', async () => {
     const existing: StoredWeeklyProgress = {
       schemaVersion: 'court-week-progress-v1', courtWeekId: courtWeekBootstrap.id,
-      revision: courtWeekBootstrap.revision, highestObservedTime: '2026-08-10T08:31:00.000Z',
+      revision: courtWeekBootstrap.revision, highestObservedTime: '2026-08-06T08:31:00.000Z',
       completedSessionIds: [], currentSessionId: courtWeekBootstrap.sessions[0].id,
       notes: 'Keep this saved note.', reasoningContributions: [], majorityDirectionReceived: false,
     }
@@ -64,32 +74,23 @@ describe('SealedCourtWeekApp', () => {
       await Promise.all(entries.map(({ locator }) => load?.(`/packs/${locator}`)))
       return packs
     })
-    history.replaceState(null, '', '/jury/#developer')
     await act(async () => root.render(<SealedCourtWeekApp
       bootstrap={courtWeekBootstrap} packBase="/packs/" fetcher={fetcher}
-      developerDigest={developerDigest}
     />))
-    expect(container.querySelector<HTMLInputElement>('#cw-developer-access')?.type).toBe('password')
-    expect(container.querySelector('#cw-developer-access')?.getAttribute('aria-describedby'))
-      .toBe('cw-developer-access-help')
-    expect(container.textContent).not.toContain('Take your seat')
-
-    const submit = async (value: string) => {
-      const input = container.querySelector<HTMLInputElement>('#cw-developer-access')
-      const form = container.querySelector<HTMLFormElement>('form')
-      if (!input || !form) throw new Error('Developer access form was not rendered.')
-      input.value = value
-      await act(async () => form.requestSubmit())
-    }
-    await submit('B'.repeat(43))
+    await vi.waitFor(() => expect(container.textContent).toContain('Take your seat'))
+    expect(container.querySelector('input[type="password"]')).toBeNull()
+    const developerToggle = Array.from(container.querySelectorAll('label')).find(
+      ({ textContent }) => textContent?.includes('Developer mode'),
+    )?.querySelector<HTMLInputElement>('input[type="checkbox"]')
+    if (!developerToggle) throw new Error('Developer mode toggle was not rendered.')
     expect(fetcher).not.toHaveBeenCalled()
-    expect(location.hash).toBe('#developer')
-    await vi.waitFor(() => expect(document.activeElement).toBe(
-      container.querySelector('#cw-developer-access'),
-    ))
-    await submit(token)
+    await act(async () => developerToggle.click())
+    expect(fetcher).not.toHaveBeenCalled()
+    const openPreview = Array.from(container.querySelectorAll('button')).find(
+      ({ textContent }) => textContent?.trim() === 'Open all-session preview',
+    )
+    await act(async () => openPreview?.click())
     await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(7))
-    expect(location.hash).toBe('')
     await vi.waitFor(() => expect(document.activeElement).toBe(
       container.querySelector('#cw-developer-day'),
     ))
@@ -132,19 +133,14 @@ describe('SealedCourtWeekApp', () => {
     await expect(loadWeeklyProgress(existing.courtWeekId)).resolves.toMatchObject({ notes: existing.notes })
   })
 
-  it('opens the gate when an existing public tab navigates to the developer hash', async () => {
-    await act(async () => root.render(<SealedCourtWeekApp bootstrap={courtWeekBootstrap} />))
-    expect(container.querySelector('#cw-developer-access')).toBeNull()
-
+  it('does not expose preview or request future packs from the retired developer hash', async () => {
+    const hydrate = vi.spyOn(loader, 'hydrateCourtPacks')
     history.replaceState(null, '', '/jury/#developer')
-    act(() => window.dispatchEvent(new HashChangeEvent('hashchange')))
-
-    expect(container.querySelector<HTMLInputElement>('#cw-developer-access')?.type).toBe('password')
-
-    history.replaceState(null, '', '/jury/')
-    act(() => window.dispatchEvent(new HashChangeEvent('hashchange')))
-
-    expect(container.querySelector('#cw-developer-access')).toBeNull()
+    await act(async () => root.render(<SealedCourtWeekApp bootstrap={courtWeekBootstrap} />))
+    await vi.waitFor(() => expect(container.textContent).toContain('Take your seat'))
+    expect(container.querySelector('input[type="password"]')).toBeNull()
+    expect(container.textContent).not.toContain('DEV PREVIEW')
+    expect(hydrate).not.toHaveBeenCalled()
   })
 
   it('opens Monday while the Saturday deliberation pack remains absent', async () => {
