@@ -4,7 +4,7 @@
 
 **Eleven Minutes** is SimJury's only case: five sequential weekday court
 sessions followed by Saturday and Sunday deliberation. Each day measures 18–22
-minutes. `/jury/` is the canonical route and the case remains playable after its
+minutes. `/jury/` is the canonical route, the bare domain redirects there, and the case remains playable after its
 shared launch week.
 
 The binding product, legal, privacy and hosting contract is
