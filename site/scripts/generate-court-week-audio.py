@@ -120,7 +120,9 @@ def validate_job(job: dict[str, Any]) -> None:
                 raise ValueError(f"Cue {cue_id} has no narration text")
             if not re.fullmatch(r"[ab][fm]_[a-z]+", str(cue.get("voice", ""))):
                 raise ValueError(f"Cue {cue_id} has an unsafe Kokoro voice id")
-            pause = int(cue.get("pauseAfterMs", 0))
+            pause = cue.get("pauseAfterMs", 0)
+            if isinstance(pause, bool) or not isinstance(pause, int):
+                raise ValueError(f"Cue {cue_id} has a non-integer pause")
             # Zero joins two attributed turns split from one authored cue. It
             # must not inject a false courtroom pause between those speakers.
             if pause != 0 and (pause < 150 or pause > 1_500):

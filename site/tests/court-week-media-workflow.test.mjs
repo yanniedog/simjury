@@ -47,5 +47,6 @@ test('synthesis inputs are exact and the immutable Kokoro revision is explicit',
   assert.match(generator, /"espeakNg":/u)
   assert.match(generator, /with torch\.inference_mode\(\):/u)
   assert.doesNotMatch(generator, /KPipeline\(lang_code=language\)/u)
+  assert.match(generator, /isinstance\(pause, bool\) or not isinstance\(pause, int\)/u)
   assert.match(generator, /pause != 0 and \(pause < 150 or pause > 1_500\)/u)
 })
