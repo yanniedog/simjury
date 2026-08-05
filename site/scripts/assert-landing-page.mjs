@@ -14,6 +14,9 @@ const courtSketchPath = '/assets/40845e3bb93922ec.webp'
 function requireText(source, text, message) {
   if (!source.includes(text)) failures.push(message)
 }
+function requireMatch(source, pattern, message) {
+  if (!pattern.test(source)) failures.push(message)
+}
 function forbidText(source, text, message) {
   if (source.toLowerCase().includes(text.toLowerCase())) failures.push(message)
 }
@@ -60,7 +63,11 @@ for (const text of [
 
 requireText(ready, 'simjury:fiction-disclosure:v2', 'Landing must retain the versioned adult-fiction gate')
 requireText(headers, 'Cache-Control: no-transform', 'Static responses must block transformations')
-requireText(headers, '/jury/\n  Cache-Control: no-store, no-cache, must-revalidate, no-transform', 'Court Week shell must not outlive its hashed chunks')
+for (const route of ['/jury/', '/jury/index.html']) {
+  requireMatch(headers, new RegExp(`^${route.replace('.', '\\.')}`
+    + String.raw`\r?\n\s+Cache-Control:\s*no-store, no-cache, must-revalidate, no-transform$`, 'm'),
+  `Court Week shell route ${route} must not outlive its hashed chunks`)
+}
 requireText(headers, '/assets/*', 'Content-addressed landing assets must have a dedicated cache rule')
 requireText(headers, 'Cache-Control: public, max-age=31536000, immutable, no-transform', 'Content-addressed landing assets must be immutable')
 requireText(headers, "script-src 'self'", 'CSP must keep scripts self-only')
