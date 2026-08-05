@@ -45,6 +45,65 @@ describe('Eleven Minutes Court Week', () => {
     expect(cited).not.toContain('struck-rumour')
   })
 
+  it('traces every closing proposition to admitted exhibits or identified testimony', () => {
+    const closingCues = elevenMinutesCourtWeek.manifest.sessions.flatMap((session) => session.scenes)
+      .flatMap((scene) => scene.cues)
+      .filter(({ event }) => event === 'crown-closing' || event === 'defence-closing')
+
+    expect(closingCues).toHaveLength(4)
+    expect(closingCues.every(({ closingPropositions }) => (closingPropositions ?? []).length > 0)).toBe(true)
+    expect(closingCues.flatMap(({ closingPropositions }) => closingPropositions ?? [])).toHaveLength(15)
+    closingCues.forEach((cue) => (cue.closingPropositions ?? []).forEach((proposition) => {
+      expect(cue.text).toContain(proposition.text)
+      expect(proposition.recordSources.length).toBeGreaterThan(0)
+    }))
+
+    const proposition = (id: string) => closingCues.flatMap(({ closingPropositions }) => closingPropositions ?? [])
+      .find((candidate) => candidate.id === id)
+    expect(proposition('crown-launch-availability')?.recordSources).toContainEqual({ kind: 'testimony', cueId: 'thu-quill-cross-1' })
+    expect(proposition('defence-grossness-context')?.recordSources).toContainEqual({ kind: 'testimony', cueId: 'thu-quill-re-1' })
+    expect(proposition('crown-motive')?.recordSources).toContainEqual({ kind: 'testimony', cueId: 'wed-vale-chief-1' })
+  })
+
+  it('rejects missing, struck or unadmitted closing sources', () => {
+    const missing = structuredClone(elevenMinutesCourtWeek)
+    const missingClosing = missing.manifest.sessions[4].scenes
+      .flatMap(({ cues }) => cues).find(({ id }) => id === 'fri-crown-closing-1')!
+    missingClosing.closingPropositions = []
+    expect(() => validateCourtWeek(missing)).toThrow(/every closing cue requires proposition-level record sources/i)
+
+    const struckTestimony = structuredClone(elevenMinutesCourtWeek)
+    const testimonyClosing = struckTestimony.manifest.sessions[4].scenes
+      .flatMap(({ cues }) => cues).find(({ id }) => id === 'fri-defence-closing-1')!
+    const testimonyProposition = testimonyClosing.closingPropositions
+      ?.find(({ id }) => id === 'defence-error-mechanism')
+    if (!testimonyProposition) throw new Error('Defence testimony traceability fixture is missing.')
+    testimonyProposition.recordSources = [{ kind: 'testimony', cueId: 'wed-blurt' }]
+    expect(() => validateCourtWeek(struckTestimony)).toThrow(/testimony source wed-blurt was struck/i)
+
+    const struckExhibit = structuredClone(elevenMinutesCourtWeek)
+    const exhibitClosing = struckExhibit.manifest.sessions[4].scenes
+      .flatMap(({ cues }) => cues).find(({ id }) => id === 'fri-crown-closing-2')!
+    const exhibitProposition = exhibitClosing.closingPropositions
+      ?.find(({ id }) => id === 'crown-motive')
+    if (!exhibitProposition) throw new Error('Crown exhibit traceability fixture is missing.')
+    exhibitProposition.recordSources = [{ kind: 'exhibit', evidenceId: 'struck-rumour' }]
+    expect(() => validateCourtWeek(struckExhibit)).toThrow(/exhibit source struck-rumour is not admitted/i)
+  })
+
+  it('rejects unlisted closing claims and a strike attached to the wrong answer', () => {
+    const unlisted = structuredClone(elevenMinutesCourtWeek)
+    const closing = unlisted.manifest.sessions[4].scenes
+      .flatMap(({ cues }) => cues).find(({ id }) => id === 'fri-crown-closing-1')!
+    closing.text += ' A new factual assertion appears without a source.'
+    expect(() => validateCourtWeek(unlisted)).toThrow(/unlisted closing text has no admitted-record source/i)
+
+    const wrongAnswer = structuredClone(elevenMinutesCourtWeek)
+    const strike = wrongAnswer.trial.objections.find(({ id }) => id === 'obj-3')!
+    strike.struckCueId = 'wed-vale-cross-1'
+    expect(() => validateCourtWeek(wrongAnswer)).toThrow(/post-answer ruling must immediately follow its excluded answer/i)
+  })
+
   it('keeps the accused silent and confines every re-examination to a declared scope', () => {
     expect(elevenMinutesCourtWeek.trial.accusedTestifies).toBe(false)
     elevenMinutesCourtWeek.trial.witnesses.forEach((witness) => {

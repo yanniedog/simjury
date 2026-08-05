@@ -185,7 +185,7 @@ export const elevenMinutesTrialRecord: TrialRecord = {
   objections: [
     { id: 'obj-1', cueId: 'tue-def-objection', madeBy: 'Defence', ground: 'hearsay', timing: 'pre-answer', ruling: 'sustained' },
     { id: 'obj-2', cueId: 'wed-def-objection', madeBy: 'Defence', ground: 'relevance', timing: 'pre-answer', ruling: 'overruled' },
-    { id: 'obj-3', cueId: 'wed-postanswer-ruling', madeBy: 'Defence', ground: 'hearsay', timing: 'post-answer', ruling: 'sustained', struckEvidenceId: 'struck-rumour' },
+    { id: 'obj-3', cueId: 'wed-postanswer-ruling', madeBy: 'Defence', ground: 'hearsay', timing: 'post-answer', ruling: 'sustained', struckEvidenceId: 'struck-rumour', struckCueId: 'wed-blurt' },
     { id: 'obj-4', cueId: 'thu-crown-objection', madeBy: 'Crown', ground: 'argumentative', timing: 'pre-answer', ruling: 'sustained' },
   ],
   accusedTestifies: false,
