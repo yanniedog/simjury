@@ -21,6 +21,14 @@ export default defineConfig(({ command }) => ({
     emptyOutDir: true,
     assetsInlineLimit: 0,
     modulePreload: { polyfill: false },
+    rollupOptions: {
+      output: {
+        // Dynamic modules include the per-day unlock half. Keep their public
+        // names opaque so ordinary asset inspection does not advertise court
+        // days or the key-loading module before its runtime gates pass.
+        chunkFileNames: 'assets/[hash].js',
+      },
+    },
   },
   test: {
     environment: 'node',
