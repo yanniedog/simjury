@@ -2,7 +2,7 @@
 
 The active and only player is **SimJury Court Week** at `/jury/`. The full owner
 decision is [`../COURT-WEEK.md`](../COURT-WEEK.md). Legacy `/today`, `/play` and
-`/install` paths redirect to `/jury/`.
+`/install` paths and the bare domain redirect to `/jury/`.
 
 ## D-WEB-1 — Audio-first, reviewed media
 
