@@ -41,6 +41,10 @@ export interface CourtWeekAppProps {
   courtWeek: CourtWeek
   now?: () => number
   releaseBase?: string
+  prepareProgressImport?: (
+    text: string,
+    current: StoredWeeklyProgress,
+  ) => Promise<StoredWeeklyProgress>
 }
 const verdictLabels: Record<Verdict, string> = {
   murder: 'Guilty of murder',
@@ -229,7 +233,7 @@ function VerdictChoices({
     </div>
   )
 }
-export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWeekAppProps) {
+export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, prepareProgressImport }: CourtWeekAppProps) {
   const baseline = useMemo(() => initialProgress(courtWeek, now()), [courtWeek, now])
   const { progress, hydrated, persistence, persistenceIssue, updateProgress } = useWeeklyProgress(baseline)
   const storageNotice = persistenceNotice(persistenceIssue)
@@ -722,6 +726,9 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase }: CourtWe
           readOnly={isReplay}
           inactive={Boolean(evidence)}
           onNotesChange={(notes) => updateProgress((current) => ({ ...current, notes }))}
+          prepareImport={prepareProgressImport
+            ? (text) => prepareProgressImport(text, progress)
+            : undefined}
           onImport={(imported) => updateProgress((current) => (
             mergeImportedWeeklyProgress(current, imported)
           ))}

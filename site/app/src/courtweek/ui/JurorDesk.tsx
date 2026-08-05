@@ -23,6 +23,7 @@ export interface JurorDeskProps {
   readOnly?: boolean
   inactive?: boolean
   onNotesChange: (notes: string) => void
+  prepareImport?: (text: string) => Promise<WeeklyProgress>
   onImport: (progress: WeeklyProgress) => void
   onInspectEvidence: (evidenceId: string, trigger: HTMLButtonElement) => void
   onClose: () => void
@@ -36,6 +37,7 @@ export function JurorDesk({
   readOnly = false,
   inactive = false,
   onNotesChange,
+  prepareImport,
   onImport,
   onInspectEvidence,
   onClose,
@@ -116,13 +118,16 @@ export function JurorDesk({
   const readImport = async (file: File | undefined) => {
     if (!file) return
     try {
-      const imported = importWeeklyProgress(
-        await file.text(),
-        progress.courtWeekId,
-        progress.revision,
-        deliberation,
-        sessions,
-      )
+      const text = await file.text()
+      const imported = prepareImport
+        ? await prepareImport(text)
+        : importWeeklyProgress(
+            text,
+            progress.courtWeekId,
+            progress.revision,
+            deliberation,
+            sessions,
+          )
       onImport(imported)
       setImportError(null)
     } catch (error) {

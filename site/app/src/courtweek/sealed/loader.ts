@@ -47,9 +47,35 @@ export async function loadEligibleCourtPacks({
   fetcher?: SealedPackFetcher
 }): Promise<CourtDayPack[]> {
   const eligible = eligibleScheduleEntries(bootstrap, progress, observedNow)
+  return hydrateCourtPacks({
+    bootstrap,
+    entries: eligible,
+    baseUrl,
+    fetcher,
+    persistOpened: true,
+  })
+}
+
+/** Fetch and authenticate an already-authorised entry set; import preparation keeps it unpersisted. */
+export async function hydrateCourtPacks({
+  bootstrap,
+  entries,
+  baseUrl,
+  fetcher = window.fetch.bind(window),
+  persistOpened = false,
+}: {
+  bootstrap: CourtWeekBootstrap
+  entries: CourtWeekScheduleEntry[]
+  baseUrl: string
+  fetcher?: SealedPackFetcher
+  persistOpened?: boolean
+}): Promise<CourtDayPack[]> {
   const packs: CourtDayPack[] = []
 
-  for (const entry of eligible) {
+  for (const entry of entries) {
+    if (bootstrap.sessions[entry.ordinal - 1]?.id !== entry.id) {
+      throw new Error('The requested session is not part of this Court Week revision.')
+    }
     const cached = await loadOpenedPack(bootstrap.id, bootstrap.revision, entry.ordinal)
     if (cached) {
       packs.push(cached)
@@ -67,7 +93,7 @@ export async function loadEligibleCourtPacks({
       { caseId: bootstrap.id, revision: bootstrap.revision, ordinal: entry.ordinal },
       unlockFragment,
     )
-    await saveOpenedPack(pack)
+    if (persistOpened) await saveOpenedPack(pack)
     packs.push(pack)
   }
 
