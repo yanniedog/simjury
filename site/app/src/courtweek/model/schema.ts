@@ -103,6 +103,20 @@ export const sceneCueTurnSchema = z.object({
 }).strict()
 export type SceneCueTurn = z.infer<typeof sceneCueTurnSchema>
 
+export const closingRecordSourceSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('exhibit'), evidenceId: z.string().min(1) }).strict(),
+  z.object({ kind: z.literal('testimony'), cueId: z.string().min(1) }).strict(),
+])
+export type ClosingRecordSource = z.infer<typeof closingRecordSourceSchema>
+
+export const closingPropositionSchema = z.object({
+  id: z.string().min(1),
+  /** Exact closing words whose support is being traced. */
+  text: z.string().min(1),
+  recordSources: z.array(closingRecordSourceSchema).min(1),
+}).strict()
+export type ClosingProposition = z.infer<typeof closingPropositionSchema>
+
 export const sceneCueSchema = z.object({
   id: z.string().min(1),
   sourceCueId: z.string().min(1).optional(),
@@ -115,6 +129,8 @@ export const sceneCueSchema = z.object({
   accessibleProposition: z.string().min(1),
   tone: z.enum(['neutral', 'formal', 'chief', 'cross', 'ruling', 'deliberation']),
   evidenceIds: z.array(z.string().min(1)).default([]),
+  /** Claim-level admitted-record traceability for counsel's closing addresses. */
+  closingPropositions: z.array(closingPropositionSchema).optional(),
   audio: audioSourceSchema.optional(),
   replayable: z.boolean().default(false),
   admissionStatus: z.enum(['provisional', 'final']).optional(),
@@ -206,6 +222,7 @@ export const objectionSchema = z.object({
   timing: z.enum(['pre-answer', 'post-answer']),
   ruling: z.enum(['sustained', 'overruled']),
   struckEvidenceId: z.string().optional(),
+  struckCueId: z.string().optional(),
 })
 
 export const offenceSchema = z.object({

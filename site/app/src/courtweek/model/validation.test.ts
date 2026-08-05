@@ -45,6 +45,46 @@ describe('Eleven Minutes Court Week', () => {
     expect(cited).not.toContain('struck-rumour')
   })
 
+  it('traces every closing proposition to admitted exhibits or identified testimony', () => {
+    const closingCues = elevenMinutesCourtWeek.manifest.sessions.flatMap((session) => session.scenes)
+      .flatMap((scene) => scene.cues)
+      .filter(({ event }) => event === 'crown-closing' || event === 'defence-closing')
+
+    expect(closingCues).toHaveLength(4)
+    expect(closingCues.every(({ closingPropositions }) => (closingPropositions ?? []).length > 0)).toBe(true)
+    expect(closingCues.flatMap(({ closingPropositions }) => closingPropositions ?? [])).toHaveLength(15)
+    closingCues.forEach((cue) => (cue.closingPropositions ?? []).forEach((proposition) => {
+      expect(cue.text).toContain(proposition.text)
+      expect(proposition.recordSources.length).toBeGreaterThan(0)
+    }))
+  })
+
+  it('rejects missing, struck or unadmitted closing sources', () => {
+    const missing = structuredClone(elevenMinutesCourtWeek)
+    const missingClosing = missing.manifest.sessions[4].scenes
+      .flatMap(({ cues }) => cues).find(({ id }) => id === 'fri-crown-closing-1')!
+    missingClosing.closingPropositions = []
+    expect(() => validateCourtWeek(missing)).toThrow(/every closing cue requires proposition-level record sources/i)
+
+    const struckTestimony = structuredClone(elevenMinutesCourtWeek)
+    const testimonyClosing = struckTestimony.manifest.sessions[4].scenes
+      .flatMap(({ cues }) => cues).find(({ id }) => id === 'fri-defence-closing-1')!
+    const testimonyProposition = testimonyClosing.closingPropositions
+      ?.find(({ id }) => id === 'defence-error-mechanism')
+    if (!testimonyProposition) throw new Error('Defence testimony traceability fixture is missing.')
+    testimonyProposition.recordSources = [{ kind: 'testimony', cueId: 'wed-blurt' }]
+    expect(() => validateCourtWeek(struckTestimony)).toThrow(/testimony source wed-blurt was struck/i)
+
+    const struckExhibit = structuredClone(elevenMinutesCourtWeek)
+    const exhibitClosing = struckExhibit.manifest.sessions[4].scenes
+      .flatMap(({ cues }) => cues).find(({ id }) => id === 'fri-crown-closing-2')!
+    const exhibitProposition = exhibitClosing.closingPropositions
+      ?.find(({ id }) => id === 'crown-motive')
+    if (!exhibitProposition) throw new Error('Crown exhibit traceability fixture is missing.')
+    exhibitProposition.recordSources = [{ kind: 'exhibit', evidenceId: 'struck-rumour' }]
+    expect(() => validateCourtWeek(struckExhibit)).toThrow(/exhibit source struck-rumour is not admitted/i)
+  })
+
   it('keeps the accused silent and confines every re-examination to a declared scope', () => {
     expect(elevenMinutesCourtWeek.trial.accusedTestifies).toBe(false)
     elevenMinutesCourtWeek.trial.witnesses.forEach((witness) => {
