@@ -264,6 +264,10 @@ function MandatoryInteractionDialog({
 export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, prepareProgressImport }: CourtWeekAppProps) {
   const baseline = useMemo(() => initialProgress(courtWeek, now()), [courtWeek, now])
   const { progress, hydrated, persistence, persistenceIssue, updateProgress } = useWeeklyProgress(baseline)
+  const highestObservedTime = useRef(progress.highestObservedTime)
+  if (Date.parse(progress.highestObservedTime) > Date.parse(highestObservedTime.current)) {
+    highestObservedTime.current = progress.highestObservedTime
+  }
   const storageNotice = persistenceNotice(persistenceIssue)
   const [entered, setEntered] = useState(false)
   const [dataSaver, setDataSaver] = useState(navigatorRequestsDataSaver)
@@ -376,7 +380,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
     }))
   }, [updateProgress])
 
-  const advance = useCallback(() => {
+  const advance = useCallback((trigger?: HTMLElement) => {
     // A mandatory interaction is a hard legal-state boundary. Stale media
     // completion or programmatic control events must not traverse beneath it.
     if (advanceBlocked.current || interactionOpen || deskOpen) return
@@ -387,9 +391,9 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
     }
     if (position.scene.interaction && !interactionOpen) {
       advanceBlocked.current = true
-      interactionReturnFocus.current = document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null
+      interactionReturnFocus.current = trigger ?? (
+        document.activeElement instanceof HTMLElement ? document.activeElement : null
+      )
       setInteractionOpen(true)
       setInteractionOpenedAt(now())
       return
@@ -455,15 +459,15 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
   }, [deskOpen, evidenceId, interactionOpen, position.cue.id, resumeCuePlayback])
   const playCue = playback.play
   useEffect(() => {
+    if (!hydrated) return
     const updateObservedTime = () => {
       if (document.visibilityState === 'hidden') return
-      const highest = observeCourtTime(Date.parse(progress.highestObservedTime), now())
-      if (highest > Date.parse(progress.highestObservedTime)) {
-        updateProgress((current) => ({
-          ...current,
-          highestObservedTime: new Date(highest).toISOString(),
-        }))
-      }
+      const highest = observeCourtTime(Date.parse(highestObservedTime.current), now())
+      const observedTime = new Date(highest).toISOString()
+      highestObservedTime.current = observedTime
+      updateProgress((current) => highest <= Date.parse(current.highestObservedTime)
+        ? current
+        : { ...current, highestObservedTime: observedTime })
     }
     window.addEventListener('focus', updateObservedTime)
     document.addEventListener('visibilitychange', updateObservedTime)
@@ -472,7 +476,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
       window.removeEventListener('focus', updateObservedTime)
       document.removeEventListener('visibilitychange', updateObservedTime)
     }
-  }, [now, progress.highestObservedTime, updateProgress])
+  }, [hydrated, now, updateProgress])
   useEffect(() => {
     if (suppressAutoPlayAfterDeskClose.current) {
       suppressAutoPlayAfterDeskClose.current = false

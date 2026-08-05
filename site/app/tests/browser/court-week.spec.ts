@@ -316,6 +316,18 @@ test('admitted recording replay keeps its legal direction, captions and compact-
     mediaState.__simjuryReplaySpeech = []
     mediaState.__simjuryReplayCancels = 0
     let currentUtterance: TestUtterance | null = null
+    class FailedRecording extends EventTarget {
+      src = ''
+      currentTime = 0
+      preload = ''
+      ended = false
+      canPlayType() { return 'probably' }
+      load() { /* deterministic retry */ }
+      play() { return Promise.reject(new Error('Recording unavailable')) }
+      pause() { /* the failed recording never starts */ }
+      removeAttribute(name: string) { if (name === 'src') this.src = '' }
+    }
+    Object.defineProperty(window, 'Audio', { configurable: true, value: FailedRecording })
     class TestUtterance {
       lang = ''
       rate = 1
