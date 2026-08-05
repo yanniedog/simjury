@@ -22,7 +22,9 @@ export function requiredImportEntries(
   const fail = (): never => { throw new Error('This progress contains an impossible Court Week chronology.') }
   const completed = candidate.completedSessionIds
   const expectedPrefix = bootstrap.sessions.slice(0, completed.length).map(({ id }) => id)
-  if (new Set(completed).size !== completed.length || JSON.stringify(completed) !== JSON.stringify(expectedPrefix)) fail()
+  const isExactPrefix = completed.length === expectedPrefix.length
+    && completed.every((id, index) => id === expectedPrefix[index])
+  if (new Set(completed).size !== completed.length || !isExactPrefix) fail()
 
   const current = completed.length < bootstrap.sessions.length
     ? bootstrap.sessions[completed.length]
