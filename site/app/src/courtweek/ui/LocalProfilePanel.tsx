@@ -26,6 +26,9 @@ export function LocalProfilePanel({
   const [label, setLabel] = useState(profile.jurorLabel)
   const [expanded, setExpanded] = useState(!profile.adultFictionAcknowledged)
   useEffect(() => setLabel(profile.jurorLabel), [profile.jurorLabel])
+  useEffect(() => {
+    if (!profile.adultFictionAcknowledged) setExpanded(true)
+  }, [profile.adultFictionAcknowledged])
 
   const update = (patch: Partial<LocalProfileInput>) => onChange({
     jurorLabel: profile.jurorLabel,

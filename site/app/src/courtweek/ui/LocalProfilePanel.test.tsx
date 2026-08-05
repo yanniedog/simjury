@@ -67,4 +67,26 @@ describe('LocalProfilePanel', () => {
     await act(async () => open?.click())
     expect(onOpenDeveloperPreview).toHaveBeenCalledOnce()
   })
+
+  it('reopens when an external reset clears the adult acknowledgement', async () => {
+    const container = document.createElement('div')
+    document.body.append(container)
+    const root = createRoot(container)
+    roots.push(root)
+    const props = {
+      persistence: 'local-storage' as const,
+      issue: null,
+      onChange: vi.fn(),
+      onReset: vi.fn(),
+      onOpenDeveloperPreview: vi.fn(),
+    }
+    await act(async () => root.render(<LocalProfilePanel profile={baseProfile} {...props} />))
+    expect(container.querySelector('details')?.open).toBe(false)
+
+    await act(async () => root.render(<LocalProfilePanel
+      profile={{ ...baseProfile, adultFictionAcknowledged: false }}
+      {...props}
+    />))
+    expect(container.querySelector('details')?.open).toBe(true)
+  })
 })

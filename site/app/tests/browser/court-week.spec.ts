@@ -27,8 +27,10 @@ const viewports = [
 
 test('local developer mode remains reachable at a 200% compact-phone reflow', async ({ page }) => {
   await page.setViewportSize({ width: 160, height: 284 })
+  await page.addInitScript(() => localStorage.removeItem('simjury:court-week:local-profile:v1'))
   await page.goto('/')
   const surface = page.locator('.cw-entry__panel')
+  await expect(page.getByRole('button', { name: 'Take your seat' })).toBeDisabled()
   await page.getByLabel('I am 18 or older and understand this case is fictional.').check()
   await page.getByLabel('Developer mode').check()
   const submit = page.getByRole('button', { name: 'Open all-session preview' })

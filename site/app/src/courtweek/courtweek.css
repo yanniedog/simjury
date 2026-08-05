@@ -345,6 +345,7 @@
 .cw-mode-picker small { margin-top: .25rem; color: var(--cw-muted); }
 .cw-entry__fullscreen { display: flex; min-height: 44px; align-items: center; gap: .6rem; margin: 1rem 0; }
 .cw-entry__privacy { color: var(--cw-muted); font-size: .82rem; }
+.cw-entry__requirement { color: var(--cw-focus); font-size: .88rem; }
 .cw-local-profile { min-width: 0; margin: 1rem 0; overflow-wrap: anywhere; border: 1px solid var(--cw-line); border-radius: .5rem; background: #0d1215; }
 .cw-local-profile summary { min-height: 44px; padding: .7rem .8rem; cursor: pointer; font-weight: 750; }
 .cw-local-profile summary span { float: right; color: var(--cw-brass); font-weight: 500; }

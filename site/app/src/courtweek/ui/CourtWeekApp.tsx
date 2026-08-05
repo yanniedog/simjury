@@ -239,10 +239,14 @@ function CourtWeekEntry({
         <button
           className="cw-primary"
           type="button"
+          disabled={Boolean(localProfile && !localProfile.profile.adultFictionAcknowledged)}
           onClick={() => onEnter(fullscreen)}
         >
           Take your seat
         </button>
+        {localProfile && !localProfile.profile.adultFictionAcknowledged ? (
+          <p className="cw-entry__requirement" role="status">Confirm the adult fiction notice in Local profile to continue.</p>
+        ) : null}
         <p className="cw-entry__privacy">
           {ephemeral
             ? 'Preview progress and private notes are discarded when you switch sessions or leave preview.'
