@@ -29,7 +29,7 @@ const pages = [
   ['privacy', privacy, 'https://simjury.com/privacy/'],
 ]
 const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1])
-if (urls.length !== pages.length || new Set(urls).size !== pages.length) failures.push('Sitemap must list exactly two canonical pages')
+if (urls.length !== pages.length || new Set(urls).size !== pages.length) failures.push(`Sitemap must list exactly ${pages.length} canonical pages`)
 for (const [label, source, url] of pages) {
   requireText(source, `rel="canonical" href="${url}"`, `${label} canonical is missing`)
   requireText(source, 'href="/llms.txt"', `${label} must advertise llms.txt`)
