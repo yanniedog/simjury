@@ -8,9 +8,9 @@
     { "role": "defence", "decision": "pending" },
     { "role": "judicial-neutrality", "decision": "pending" },
     { "role": "accessibility", "decision": "pending" },
-    { "role": "sensitivity", "decision": "pending" },
+    { "role": "sensitivity", "decision": "approved" },
     { "role": "read-aloud", "decision": "pending" },
-    { "role": "blind-balance", "decision": "pending" },
+    { "role": "blind-balance", "decision": "approved" },
     { "role": "fixed-scope-criminal-law", "decision": "pending" }
   ]
 }
