@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync } from 'node:fs'
-import { dirname, extname, join, resolve } from 'node:path'
+import { basename, dirname, extname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content'
 import { courtWeekBootstrap } from '../src/courtweek/sealed/bootstrap'
@@ -72,6 +72,20 @@ const initialCode = initialAssets.map((asset) => {
   const relative = asset.replace(/^\/jury\//u, '')
   return readFileSync(join(buildRoot, relative), 'utf8')
 }).join('\n')
+const semanticUnlockReference = /(?:day0[1-7](?:[-.]|$)|unlockkey|sealed\/keys)/iu
+if (semanticUnlockReference.test(indexHtml) || semanticUnlockReference.test(initialCode)) {
+  throw new Error('The initial asset graph names a future-day unlock module.')
+}
+
+const initialJavaScript = new Set(initialAssets
+  .filter((asset) => asset.endsWith('.js'))
+  .map((asset) => resolve(buildRoot, asset.replace(/^\/jury\//u, ''))))
+const dynamicJavaScript = files.filter((file) => extname(file) === '.js' && !initialJavaScript.has(resolve(file)))
+for (const file of dynamicJavaScript) {
+  if (!/^[A-Za-z0-9_-]{8}\.js$/u.test(basename(file))) {
+    throw new Error(`Dynamic production chunk is not content-hash-only: ${basename(file)}`)
+  }
+}
 for (const fragment of BUILD_UNLOCK_FRAGMENTS) {
   if (initialCode.includes(fragment)) {
     throw new Error('A future-day unlock fragment leaked into the initial asset graph.')
