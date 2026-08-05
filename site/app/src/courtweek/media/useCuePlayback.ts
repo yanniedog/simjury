@@ -84,8 +84,15 @@ export function useCuePlayback(
   const playbackSuppressed = useRef(false)
   const reloadPauseExpected = useRef(false)
   const attemptGeneration = useRef(0)
+  const recordedPlaybackGeneration = useRef<number | null>(null)
+  const recordedCompletionHandlers = useRef<{
+    audio: HTMLAudioElement
+    ended: () => void
+    timeupdate: () => void
+  } | null>(null)
   const playbackTimeout = useRef<number | null>(null)
   const speechActive = useRef(false)
+  const speechGeneration = useRef(0)
   const rangeEnded = useRef(false)
   const endedCallback = useRef(onEnded)
   endedCallback.current = onEnded
@@ -112,6 +119,7 @@ export function useCuePlayback(
   }, [audio, cue.audio?.turns, resumeBoundary, updateActiveTurn])
 
   const cancelSpeech = useCallback(() => {
+    speechGeneration.current += 1
     speechActive.current = false
     if (canSpeak()) window.speechSynthesis.cancel()
   }, [])
@@ -121,13 +129,65 @@ export function useCuePlayback(
     playbackTimeout.current = null
   }, [])
 
+  const clearRecordedCompletionHandlers = useCallback(() => {
+    const handlers = recordedCompletionHandlers.current
+    if (!handlers) return
+    handlers.audio.removeEventListener('ended', handlers.ended)
+    handlers.audio.removeEventListener('timeupdate', handlers.timeupdate)
+    recordedCompletionHandlers.current = null
+  }, [])
+
+  const finishRecordedPlayback = useCallback((generation: number): boolean => {
+    if (
+      generation !== attemptGeneration.current
+      || generation !== recordedPlaybackGeneration.current
+      || playbackSuppressed.current
+      || rangeEnded.current
+    ) return false
+    rangeEnded.current = true
+    recordedPlaybackGeneration.current = null
+    clearRecordedCompletionHandlers()
+    setStatus('ended')
+    endedCallback.current()
+    return true
+  }, [clearRecordedCompletionHandlers])
+
+  const bindRecordedCompletionHandlers = useCallback((generation: number) => {
+    if (!audio) return
+    clearRecordedCompletionHandlers()
+    const handleEnded = () => {
+      if (!audio.ended) return
+      finishRecordedPlayback(generation)
+    }
+    const handleTimeUpdate = () => {
+      if (
+        generation !== attemptGeneration.current
+        || generation !== recordedPlaybackGeneration.current
+        || playbackSuppressed.current
+      ) return
+      const turn = cue.audio?.turns?.find(({ startSeconds, endSeconds }) =>
+        audio.currentTime >= startSeconds && audio.currentTime < endSeconds)
+      if (turn && turn.id !== activeTurn.current) updateActiveTurn(turn.id)
+      const end = cue.audio?.endSeconds
+      if (end !== undefined && audio.currentTime >= end) {
+        if (finishRecordedPlayback(generation)) audio.pause()
+      }
+    }
+    const handlers = { audio, ended: handleEnded, timeupdate: handleTimeUpdate }
+    recordedCompletionHandlers.current = handlers
+    audio.addEventListener('ended', handlers.ended)
+    audio.addEventListener('timeupdate', handlers.timeupdate)
+  }, [audio, clearRecordedCompletionHandlers, cue.audio?.endSeconds, cue.audio?.turns, finishRecordedPlayback, updateActiveTurn])
+
   const suppressRecordedPlayback = useCallback(() => {
     playbackSuppressed.current = true
     reloadPauseExpected.current = false
     attemptGeneration.current += 1
+    recordedPlaybackGeneration.current = null
+    clearRecordedCompletionHandlers()
     recordedAttemptActive.current = false
     clearPlaybackTimeout()
-  }, [clearPlaybackTimeout])
+  }, [clearPlaybackTimeout, clearRecordedCompletionHandlers])
 
   const speakFallback = useCallback(() => {
     if (speechActive.current) return
@@ -141,18 +201,19 @@ export function useCuePlayback(
       ? cue.turns
       : [{ id: cue.id, speaker: cue.speaker, text: cue.text }]
     const currentIndex = Math.max(0, turns.findIndex((turn) => turn.id === activeTurn.current))
+    const generation = ++speechGeneration.current
     speechActive.current = true
     setStatus('speech-fallback')
     const speakTurn = (index: number) => {
       const turn = turns[index]
-      if (!turn || !speechActive.current) return
+      if (!turn || !speechActive.current || generation !== speechGeneration.current) return
       updateActiveTurn(turn.id)
       const utterance = new SpeechSynthesisUtterance(turn.text)
       utterance.lang = 'en-AU'
       utterance.rate = 0.96
       utterance.voice = voice
       utterance.onend = () => {
-        if (!speechActive.current) return
+        if (!speechActive.current || generation !== speechGeneration.current) return
         if (index + 1 < turns.length) {
           speakTurn(index + 1)
           return
@@ -162,7 +223,7 @@ export function useCuePlayback(
         endedCallback.current()
       }
       utterance.onerror = () => {
-        if (!speechActive.current) return
+        if (!speechActive.current || generation !== speechGeneration.current) return
         speechActive.current = false
         setStatus('reading-fallback')
         setError('Audio is unavailable. Reading mode is ready.')
@@ -176,6 +237,8 @@ export function useCuePlayback(
     if (!audio || recordedAttemptActive.current) return 'cancelled'
     recordedAttemptActive.current = true
     const generation = ++attemptGeneration.current
+    recordedPlaybackGeneration.current = generation
+    bindRecordedCompletionHandlers(generation)
     clearPlaybackTimeout()
     setStatus('loading')
     try {
@@ -197,12 +260,14 @@ export function useCuePlayback(
         clearPlaybackTimeout()
       }
     }
-  }, [audio, clearPlaybackTimeout])
+  }, [audio, bindRecordedCompletionHandlers, clearPlaybackTimeout])
 
   const recoverRecordedPlayback = useCallback(async () => {
     if (failureHandling.current || playbackSuppressed.current || speechActive.current) return
     failureHandling.current = true
     attemptGeneration.current += 1
+    recordedPlaybackGeneration.current = null
+    clearRecordedCompletionHandlers()
     recordedAttemptActive.current = false
     clearPlaybackTimeout()
     try {
@@ -222,7 +287,7 @@ export function useCuePlayback(
     } finally {
       failureHandling.current = false
     }
-  }, [attemptRecordedPlayback, audio, clearPlaybackTimeout, speakFallback])
+  }, [attemptRecordedPlayback, audio, clearPlaybackTimeout, clearRecordedCompletionHandlers, speakFallback])
 
   useEffect(() => {
     failedAttempts.current = 0
@@ -231,6 +296,8 @@ export function useCuePlayback(
     playbackSuppressed.current = false
     reloadPauseExpected.current = false
     attemptGeneration.current += 1
+    recordedPlaybackGeneration.current = null
+    clearRecordedCompletionHandlers()
     clearPlaybackTimeout()
     rangeEnded.current = false
     updateActiveTurn(cue.turns?.[0]?.id ?? null)
@@ -245,31 +312,20 @@ export function useCuePlayback(
     if (source && !options.deferSourceUntilPlay) audio.src = source
     else audio.removeAttribute('src')
 
-    const finishRange = () => {
-      if (rangeEnded.current) return
-      rangeEnded.current = true
-      setStatus('ended')
-      endedCallback.current()
-    }
-    const handleEnded = () => finishRange()
     const handleLoadedMetadata = () => {
       const start = cue.audio?.startSeconds ?? 0
       if (audio.currentTime < start || (cue.audio?.endSeconds !== undefined && audio.currentTime >= cue.audio.endSeconds)) {
         audio.currentTime = start
       }
     }
-    const handleTimeUpdate = () => {
-      const turn = cue.audio?.turns?.find(({ startSeconds, endSeconds }) =>
-        audio.currentTime >= startSeconds && audio.currentTime < endSeconds)
-      if (turn && turn.id !== activeTurn.current) updateActiveTurn(turn.id)
-      const end = cue.audio?.endSeconds
-      if (end !== undefined && audio.currentTime >= end) {
-        audio.pause()
-        finishRange()
-      }
-    }
     const handleError = () => { void recoverRecordedPlayback() }
     const handlePlaying = () => {
+      const generation = recordedPlaybackGeneration.current
+      if (
+        generation === null
+        || generation !== attemptGeneration.current
+        || playbackSuppressed.current
+      ) return
       reloadPauseExpected.current = false
       clearPlaybackTimeout()
       setStatus('playing')
@@ -285,24 +341,20 @@ export function useCuePlayback(
         setStatus('paused')
       }
     }
-    audio.addEventListener('ended', handleEnded)
     audio.addEventListener('loadedmetadata', handleLoadedMetadata)
-    audio.addEventListener('timeupdate', handleTimeUpdate)
     audio.addEventListener('error', handleError)
     audio.addEventListener('playing', handlePlaying)
     audio.addEventListener('pause', handlePause)
     return () => {
       suppressRecordedPlayback()
       audio.pause()
-      audio.removeEventListener('ended', handleEnded)
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata)
-      audio.removeEventListener('timeupdate', handleTimeUpdate)
       audio.removeEventListener('error', handleError)
       audio.removeEventListener('playing', handlePlaying)
       audio.removeEventListener('pause', handlePause)
       cancelSpeech()
     }
-  }, [audio, cancelSpeech, clearPlaybackTimeout, cue, options.deferSourceUntilPlay, recoverRecordedPlayback, rewindToIncompleteTurn, suppressRecordedPlayback, updateActiveTurn])
+  }, [audio, cancelSpeech, clearPlaybackTimeout, clearRecordedCompletionHandlers, cue, options.deferSourceUntilPlay, recoverRecordedPlayback, rewindToIncompleteTurn, suppressRecordedPlayback, updateActiveTurn])
 
   useEffect(() => {
     if (!preloader) return
