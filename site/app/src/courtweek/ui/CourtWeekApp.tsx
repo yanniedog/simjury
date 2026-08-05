@@ -49,6 +49,7 @@ export interface CourtWeekAppProps {
   initialProgressOverride?: StoredWeeklyProgress
   ephemeral?: boolean
   ephemeralAdvisory?: string
+  focusEntryHeading?: boolean
   developerPreview?: {
     selectedOrdinal: number
     sessions: Array<{ ordinal: number; day: string }>
@@ -122,6 +123,7 @@ function CourtWeekEntry({
   narrationApproved,
   onDataSaver,
   onNarrationApproved,
+  focusHeading,
 }: {
   title: string
   advisory: string
@@ -135,15 +137,20 @@ function CourtWeekEntry({
   narrationApproved: boolean
   onDataSaver: (enabled: boolean) => void
   onNarrationApproved: (approved: boolean) => void
+  focusHeading: boolean
 }) {
   const [fullscreen, setFullscreen] = useState(false)
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  useEffect(() => {
+    if (focusHeading) headingRef.current?.focus()
+  }, [focusHeading])
   const fullscreenSupported = typeof document !== 'undefined'
     && typeof document.documentElement.requestFullscreen === 'function'
   return (
     <main className="cw-entry">
       <div className="cw-entry__panel">
         <p className="cw-kicker">A seven-day fictional jury experience</p>
-        <h1>{title}</h1>
+        <h1 ref={headingRef} tabIndex={focusHeading ? -1 : undefined}>{title}</h1>
         <p>{ephemeral && ephemeralAdvisory ? ephemeralAdvisory : advisory}</p>
         <p>SimJury is fictional and intended for adults aged 18 and older.</p>
         {persistenceNotice ? <p className="cw-error" role="alert">{persistenceNotice}</p> : null}
@@ -285,6 +292,7 @@ export function CourtWeekApp({
   initialProgressOverride,
   ephemeral = false,
   ephemeralAdvisory,
+  focusEntryHeading = false,
   developerPreview,
   onEnteredChange,
 }: CourtWeekAppProps) {
@@ -609,6 +617,7 @@ export function CourtWeekApp({
         ephemeralAdvisory={ephemeralAdvisory}
         dataSaver={dataSaver}
         narrationApproved={narrationApproved}
+        focusHeading={focusEntryHeading}
         onDataSaver={setDataSaver}
         onNarrationApproved={setNarrationApproved}
         onMode={(mode) => updateProgress((current) => ({ ...current, accessibilityMode: mode }))}

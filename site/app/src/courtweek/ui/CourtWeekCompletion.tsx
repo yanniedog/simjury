@@ -25,6 +25,9 @@ export function CourtWeekCompletion({
 }: CourtWeekCompletionProps) {
   const headingRef = useRef<HTMLHeadingElement>(null)
   const [includeNotes, setIncludeNotes] = useState(false)
+  const previewDay = developerPreview?.sessions.find(
+    ({ ordinal }) => ordinal === developerPreview.selectedOrdinal,
+  )?.day
   useEffect(() => {
     headingRef.current?.focus()
   }, [])
@@ -32,8 +35,12 @@ export function CourtWeekCompletion({
   return (
     <main className="cw-entry cw-complete">
       <div className="cw-entry__panel">
-        <p className="cw-kicker">The court week has concluded</p>
-        <h1 ref={headingRef} tabIndex={-1}>Court Week complete</h1>
+        <p className="cw-kicker">
+          {developerPreview ? 'Developer session complete' : 'The court week has concluded'}
+        </p>
+        <h1 ref={headingRef} tabIndex={-1}>
+          {developerPreview ? `${previewDay ?? 'Session'} preview complete` : 'Court Week complete'}
+        </h1>
         {persistence === 'memory' ? (
           <div className="cw-complete__persistence-warning">
             <p role="status">
@@ -55,10 +62,9 @@ export function CourtWeekCompletion({
             ) : null}
           </div>
         ) : null}
-        <p>
-          The complete record remains available. Replaying a session does not
-          change your private notes, reasoning contributions, sealed ballots or
-          returned result.
+        <p>{developerPreview
+          ? 'Choose another session to inspect, replay this session, or leave the developer preview.'
+          : 'The complete record remains available. Replaying a session does not change your private notes, reasoning contributions, sealed ballots or returned result.'}
         </p>
         <nav className="cw-session-schedule" aria-label="Completed court sessions">
           <ol>
