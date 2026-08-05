@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync } from 'node:fs'
-import { basename, dirname, extname, join, resolve } from 'node:path'
+import { basename, dirname, extname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content'
 import { courtWeekBootstrap } from '../src/courtweek/sealed/bootstrap'
@@ -83,7 +83,7 @@ const initialJavaScript = new Set(initialAssets
 const dynamicJavaScript = files.filter((file) => extname(file) === '.js' && !initialJavaScript.has(resolve(file)))
 for (const file of dynamicJavaScript) {
   if (!/^[A-Za-z0-9_-]{8}\.js$/u.test(basename(file))) {
-    throw new Error(`Dynamic production chunk is not content-hash-only: ${basename(file)}`)
+    throw new Error(`Dynamic production chunk is not content-hash-only: ${relative(buildRoot, file)}`)
   }
 }
 for (const fragment of BUILD_UNLOCK_FRAGMENTS) {
