@@ -1,6 +1,7 @@
 import importlib.util
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 SCRIPT = Path(__file__).with_name("generate-court-week-audio.py")
@@ -95,6 +96,26 @@ class PauseValidationTests(unittest.TestCase):
         job["segments"][0]["utterances"][0]["parts"][0]["turnId"] = "another-turn"
         with self.assertRaisesRegex(ValueError, "coverage or order differs"):
             MODULE.validate_job(job)
+
+
+class CodecQualityTests(unittest.TestCase):
+    def test_uses_release_quality_speech_codecs(self):
+        expected = {
+            "opus": ["-c:a", "libopus", "-b:a", "64k", "-vbr", "on"],
+            "aac": ["-c:a", "aac", "-b:a", "96k", "-movflags", "+faststart"],
+            "mp3": ["-c:a", "libmp3lame", "-q:a", "2"],
+        }
+        for codec, codec_arguments in expected.items():
+            target = Path(f"output.{codec}")
+            with self.subTest(codec=codec), patch.object(MODULE, "run") as run:
+                MODULE.encode_once(Path("source.wav"), target, codec, -18.0, -1.5)
+
+                command = run.call_args.args[0]
+                self.assertEqual(command[-len(codec_arguments) - 1:-1], codec_arguments)
+                self.assertEqual(command[-1], str(target))
+                self.assertIn("loudnorm=I=-18.0:LRA=7:TP=-1.5", command)
+                self.assertEqual(command[command.index("-ac") + 1], "1")
+                self.assertEqual(command[command.index("-ar") + 1], "48000")
 
 
 class CaptionTimingTests(unittest.TestCase):

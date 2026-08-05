@@ -34,6 +34,12 @@ RELEASE_MIN_LUFS = -20.0
 RELEASE_MAX_LUFS = -16.0
 RELEASE_MAX_LRA = 12.0
 MAX_CODEC_ENCODE_ATTEMPTS = 3
+CODEC_ARGUMENTS = {
+    "opus": ["-c:a", "libopus", "-b:a", "64k", "-vbr", "on"],
+    "aac": ["-c:a", "aac", "-b:a", "96k", "-movflags", "+faststart"],
+    # Match the high-quality LAME VBR contract used by Daily Docket.
+    "mp3": ["-c:a", "libmp3lame", "-q:a", "2"],
+}
 # Keep the per-pass LUFS correction bound to the remaining retry budget so a
 # misconfigured attempt count cannot outrun the adjustment ceiling.
 MAX_LUFS_ADJUSTMENT = float(MAX_CODEC_ENCODE_ATTEMPTS - 1)
@@ -320,11 +326,7 @@ def encode_once(
     integrated_lufs: float,
     true_peak: float,
 ) -> None:
-    codec_arguments = {
-        "opus": ["-c:a", "libopus", "-b:a", "32k", "-vbr", "on"],
-        "aac": ["-c:a", "aac", "-b:a", "48k", "-movflags", "+faststart"],
-        "mp3": ["-c:a", "libmp3lame", "-b:a", "56k"],
-    }[codec]
+    codec_arguments = CODEC_ARGUMENTS[codec]
     run([
         "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
         "-i", str(source_wav),
