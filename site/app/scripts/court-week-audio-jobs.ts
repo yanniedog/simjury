@@ -45,7 +45,7 @@ export const COURT_WEEK_VOICES: Readonly<Record<string, string>> = {
   'Sola Iven': 'af_jessica',
   'Tali Rusk': 'bf_alice',
   'Toma Reed': 'am_puck',
-  'Tovan Mir': 'bm_daniel',
+  'Tovan Mir': 'am_michael',
   'Yara Merrow': 'af_sky',
 }
 
