@@ -131,6 +131,8 @@ export const sceneCueSchema = z.object({
   evidenceIds: z.array(z.string().min(1)).default([]),
   /** Claim-level admitted-record traceability for counsel's closing addresses. */
   closingPropositions: z.array(closingPropositionSchema).optional(),
+  /** Exact rhetorical or legal-address words that do not assert an evidentiary fact. */
+  nonEvidenceClosingText: z.array(z.string().min(1)).optional(),
   audio: audioSourceSchema.optional(),
   replayable: z.boolean().default(false),
   admissionStatus: z.enum(['provisional', 'final']).optional(),

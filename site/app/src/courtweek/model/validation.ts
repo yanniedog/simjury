@@ -230,10 +230,13 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
     }))
   })
   const witnessNames = new Set(courtWeek.trial.witnesses.map((witness) => witness.name))
+  const isSubstantiveWitnessEvidence = (cue: (typeof allCues)[number]) => (
+    substantiveWitnessEvents.has(cue.event) ||
+    (cue.event === 'exhibit-admitted' && witnessNames.has(cue.speaker))
+  )
   allCues.filter((cue) => {
     const source = cue.sourceCueId ? allCues.find((candidate) => candidate.id === cue.sourceCueId) : cue
-    return Boolean(source && substantiveWitnessEvents.has(source.event)) ||
-      (source?.event === 'exhibit-admitted' && witnessNames.has(source.speaker))
+    return Boolean(source && isSubstantiveWitnessEvidence(source))
   }).forEach((cue) => {
     const ownershipId = cue.sourceCueId ?? cue.id
     demand(witnessCueOwners.get(ownershipId)?.length === 1, `substantive witness cue ${cue.id} must belong to exactly one witness`)
@@ -264,13 +267,14 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
   demand(struckItems.length === 1 && struckItems[0].id === postAnswerStrikes[0].struckEvidenceId, 'the single struck item must match the post-answer ruling')
   const struckCue = allCues.find((cue) => cue.id === postAnswerStrikes[0].struckCueId)
   demand(struckCue?.event === 'witness-cross', 'the post-answer strike must identify the excluded witness answer')
-  demand((cueIndex.get(postAnswerStrikes[0].cueId) ?? -1) > (cueIndex.get(postAnswerStrikes[0].struckCueId!) ?? -1), 'the post-answer ruling must follow the excluded answer')
+  demand((cueIndex.get(postAnswerStrikes[0].cueId) ?? -1) === (cueIndex.get(postAnswerStrikes[0].struckCueId!) ?? -1) + 1, 'the post-answer ruling must immediately follow its excluded answer')
   demand(!struckItems[0].replayable, 'struck material must never be replayable')
 
   const closingCues = allCues.filter((cue) => closingAddressEvents.has(cue.event))
   demand(closingCues.length === 4, 'the addresses must contain exactly four traced closing cues')
   allCues.filter((cue) => !closingAddressEvents.has(cue.event)).forEach((cue) => {
     demand((cue.closingPropositions ?? []).length === 0, `${cue.id}: only a closing address may define closing propositions`)
+    demand((cue.nonEvidenceClosingText ?? []).length === 0, `${cue.id}: only a closing address may define non-evidence closing text`)
   })
   const closingPropositionIds = closingCues.flatMap((cue) => (cue.closingPropositions ?? []).map(({ id }) => id))
   demand(new Set(closingPropositionIds).size === closingPropositionIds.length, 'closing proposition ids must be unique')
@@ -279,6 +283,22 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
     const closingPropositions = closingCue.closingPropositions ?? []
     demand(closingPropositions.length > 0, `${closingCue.id}: every closing cue requires proposition-level record sources`)
     const closingIndex = cueIndex.get(closingCue.id) ?? -1
+    const tracedSegments = [
+      ...closingPropositions.map(({ text }) => text),
+      ...(closingCue.nonEvidenceClosingText ?? []),
+    ].map((text) => {
+      const start = closingCue.text.indexOf(text)
+      demand(start >= 0, `${closingCue.id}: traced closing text does not appear in the address`)
+      demand(closingCue.text.indexOf(text, start + 1) === -1, `${closingCue.id}: traced closing text must identify one unambiguous passage`)
+      return { start, end: start + text.length }
+    }).sort((left, right) => left.start - right.start)
+    let coveredThrough = 0
+    tracedSegments.forEach(({ start, end }) => {
+      demand(start >= coveredThrough, `${closingCue.id}: traced closing passages must not overlap`)
+      demand(closingCue.text.slice(coveredThrough, start).trim().length === 0, `${closingCue.id}: unlisted closing text has no admitted-record source or legal/rhetorical exemption`)
+      coveredThrough = end
+    })
+    demand(closingCue.text.slice(coveredThrough).trim().length === 0, `${closingCue.id}: unlisted closing text has no admitted-record source or legal/rhetorical exemption`)
     closingPropositions.forEach((proposition) => {
       demand(closingCue.text.includes(proposition.text), `${proposition.id}: traced words must appear within ${closingCue.id}`)
       proposition.recordSources.forEach((source) => {
@@ -294,7 +314,7 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
           return
         }
         const testimony = allCues.find((cue) => cue.id === source.cueId)
-        demand(Boolean(testimony && substantiveWitnessEvents.has(testimony.event)), `${proposition.id}: testimony source ${source.cueId} is not substantive witness evidence`)
+        demand(Boolean(testimony && isSubstantiveWitnessEvidence(testimony)), `${proposition.id}: testimony source ${source.cueId} is not substantive witness evidence`)
         demand((cueIndex.get(source.cueId) ?? -1) < closingIndex, `${proposition.id}: testimony source ${source.cueId} was not heard before closing`)
         demand(!struckCueIds.has(source.cueId), `${proposition.id}: testimony source ${source.cueId} was struck`)
         demand(witnessCueOwners.get(source.cueId)?.length === 1, `${proposition.id}: testimony source ${source.cueId} lacks a unique witness owner`)

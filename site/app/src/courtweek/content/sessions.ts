@@ -2,10 +2,11 @@ import type { CourtSession, LegalPhase, Scene, SceneCue } from '../model/schema'
 import { paceCueForCaptions } from './captionPacing'
 import { commissionedVisual } from './sceneArt'
 
-type CueInput = Omit<SceneCue, 'evidenceIds' | 'replayable' | 'closingPropositions'> & {
+type CueInput = Omit<SceneCue, 'evidenceIds' | 'replayable' | 'closingPropositions' | 'nonEvidenceClosingText'> & {
   evidenceIds?: string[]
   replayable?: boolean
   closingPropositions?: SceneCue['closingPropositions']
+  nonEvidenceClosingText?: SceneCue['nonEvidenceClosingText']
 }
 
 function cue(input: CueInput): SceneCue {
@@ -226,6 +227,7 @@ const friday: CourtSession = {
         id: 'fri-crown-closing-1', event: 'crown-closing', speaker: 'Crown counsel Asha Renn', tone: 'formal',
         text: 'The Crown asks you to reason from the joined circumstances, not one dramatic phrase. Venn heard and repeated AR-71. Her authenticated session accepted, downgraded and confirmed it. She singled it out—“seventy-one waits”—while another craft handled the greater visible peril. Kestrel was READY, clarification was available, no diagnostic required eleven minutes, and the craft later launched with the warning unchanged.',
         accessibleProposition: 'The Crown combines recognition, deliberate actions, existing assignments and the proved availability of launch or clarification.',
+        nonEvidenceClosingText: ['The Crown asks you to reason from the joined circumstances, not one dramatic phrase.'],
         closingPropositions: [
           { id: 'crown-recognition', text: 'Venn heard and repeated AR-71.', recordSources: [{ kind: 'exhibit', evidenceId: 'ex-distress' }] },
           { id: 'crown-console-sequence', text: 'Her authenticated session accepted, downgraded and confirmed it.', recordSources: [{ kind: 'exhibit', evidenceId: 'ex-audit-log' }] },
@@ -254,8 +256,18 @@ const friday: CourtSession = {
         id: 'fri-crown-closing-2', event: 'crown-closing', speaker: 'Crown counsel Asha Renn', tone: 'formal',
         text: 'Why hold this incident? The unfinished review supplied a reason, though motive alone proves nothing. The Crown says the note, manual actions and eleven-minute hold support an intention to cause death or really serious injury. The medical evidence does not prove that Venn knew when a survival window would close; it does say timely dispatch would materially accelerate rescue. If murderous intent is not proved, consider manslaughter separately, never as a compromise: the Crown says deliberately withholding reasonable dispatch steps, despite the accepted distress duty, available clarification and a launch-capable craft, caused death and fell so far below reasonable care—with so high a risk of death or serious injury—that it merits criminal punishment.',
         accessibleProposition: 'The Crown argues motive and deliberate withholding support murderous intent, or separately the causative, criminally grave duty breach required for manslaughter.',
+        nonEvidenceClosingText: [
+          'Why hold this incident?',
+          'If murderous intent is not proved, consider manslaughter separately, never as a compromise:',
+        ],
         closingPropositions: [
-          { id: 'crown-motive', text: 'The unfinished review supplied a reason, though motive alone proves nothing.', recordSources: [{ kind: 'exhibit', evidenceId: 'ex-review' }] },
+          {
+            id: 'crown-motive', text: 'The unfinished review supplied a reason, though motive alone proves nothing.',
+            recordSources: [
+              { kind: 'exhibit', evidenceId: 'ex-review' },
+              { kind: 'testimony', cueId: 'wed-vale-chief-1' },
+            ],
+          },
           {
             id: 'crown-intent-inference',
             text: 'The Crown says the note, manual actions and eleven-minute hold support an intention to cause death or really serious injury.',
@@ -291,6 +303,7 @@ const friday: CourtSession = {
         id: 'fri-defence-closing-1', event: 'defence-closing', speaker: 'Defence counsel Corin Dax', tone: 'formal',
         text: 'Do not let the death rewrite the decision as it appeared at 21:16. The room was saturated, READY concealed a genuine warning, and even Dorn first wondered which rescue the hold concerned. Rusk identified a recognised error mechanism without pretending to read Venn’s mind. Quill confirmed the safety risk was real. A bad judgment may be deliberate in action yet innocent of murderous purpose.',
         accessibleProposition: 'The defence relies on overload, display ambiguity and a genuine warning to preserve reasonable doubt about intent.',
+        nonEvidenceClosingText: ['Do not let the death rewrite the decision as it appeared at 21:16.'],
         closingPropositions: [
           {
             id: 'defence-overload-and-ambiguity',
@@ -332,10 +345,15 @@ const friday: CourtSession = {
         id: 'fri-defence-closing-2', event: 'defence-closing', speaker: 'Defence counsel Corin Dax', tone: 'formal',
         text: 'Causation remains uncertain. Vos assumed route, immersion range and no steering interruption; at the pessimistic end, timely dispatch may still have been too late. Manslaughter is not a compromise for doubts about murder. Even if you find a deliberate duty breach, the Crown must prove it caused death and fell so far below reasonable care, with so high a risk of death or serious injury, that it merits criminal punishment. The genuine warning, overloaded room, ambiguous READY tile and available safety assessment bear directly on that demanding question. Venn need not explain the eleven minutes. Unless the Crown excludes reasonable error, safety assessment and same-outcome possibilities beyond reasonable doubt, neither offence is proved.',
         accessibleProposition: 'The defence separately contests manslaughter causation and criminal grossness using the expert limits, warning, overload and display ambiguity.',
+        nonEvidenceClosingText: [
+          'Manslaughter is not a compromise for doubts about murder.',
+          'Even if you find a deliberate duty breach, the Crown must prove it caused death and fell so far below reasonable care, with so high a risk of death or serious injury, that it merits criminal punishment.',
+          'Venn need not explain the eleven minutes.',
+        ],
         closingPropositions: [
           {
             id: 'defence-causation-limits',
-            text: 'Vos assumed route, immersion range and no steering interruption; at the pessimistic end, timely dispatch may still have been too late.',
+            text: 'Causation remains uncertain. Vos assumed route, immersion range and no steering interruption; at the pessimistic end, timely dispatch may still have been too late.',
             recordSources: [
               { kind: 'exhibit', evidenceId: 'ex-survival' },
               { kind: 'testimony', cueId: 'wed-vos-cross-1' },
@@ -349,6 +367,8 @@ const friday: CourtSession = {
               { kind: 'exhibit', evidenceId: 'ex-competing' },
               { kind: 'exhibit', evidenceId: 'ex-ready-display' },
               { kind: 'testimony', cueId: 'thu-rusk-chief-1' },
+              { kind: 'testimony', cueId: 'thu-quill-chief-1' },
+              { kind: 'testimony', cueId: 'thu-quill-re-1' },
             ],
           },
           {

@@ -57,6 +57,12 @@ describe('Eleven Minutes Court Week', () => {
       expect(cue.text).toContain(proposition.text)
       expect(proposition.recordSources.length).toBeGreaterThan(0)
     }))
+
+    const proposition = (id: string) => closingCues.flatMap(({ closingPropositions }) => closingPropositions ?? [])
+      .find((candidate) => candidate.id === id)
+    expect(proposition('crown-launch-availability')?.recordSources).toContainEqual({ kind: 'testimony', cueId: 'thu-quill-cross-1' })
+    expect(proposition('defence-grossness-context')?.recordSources).toContainEqual({ kind: 'testimony', cueId: 'thu-quill-re-1' })
+    expect(proposition('crown-motive')?.recordSources).toContainEqual({ kind: 'testimony', cueId: 'wed-vale-chief-1' })
   })
 
   it('rejects missing, struck or unadmitted closing sources', () => {
@@ -83,6 +89,19 @@ describe('Eleven Minutes Court Week', () => {
     if (!exhibitProposition) throw new Error('Crown exhibit traceability fixture is missing.')
     exhibitProposition.recordSources = [{ kind: 'exhibit', evidenceId: 'struck-rumour' }]
     expect(() => validateCourtWeek(struckExhibit)).toThrow(/exhibit source struck-rumour is not admitted/i)
+  })
+
+  it('rejects unlisted closing claims and a strike attached to the wrong answer', () => {
+    const unlisted = structuredClone(elevenMinutesCourtWeek)
+    const closing = unlisted.manifest.sessions[4].scenes
+      .flatMap(({ cues }) => cues).find(({ id }) => id === 'fri-crown-closing-1')!
+    closing.text += ' A new factual assertion appears without a source.'
+    expect(() => validateCourtWeek(unlisted)).toThrow(/unlisted closing text has no admitted-record source/i)
+
+    const wrongAnswer = structuredClone(elevenMinutesCourtWeek)
+    const strike = wrongAnswer.trial.objections.find(({ id }) => id === 'obj-3')!
+    strike.struckCueId = 'wed-vale-cross-1'
+    expect(() => validateCourtWeek(wrongAnswer)).toThrow(/post-answer ruling must immediately follow its excluded answer/i)
   })
 
   it('keeps the accused silent and confines every re-examination to a declared scope', () => {
