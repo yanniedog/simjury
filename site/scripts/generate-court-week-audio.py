@@ -22,7 +22,9 @@ from pathlib import Path
 from typing import Any
 
 log = logging.getLogger("court-week-audio")
-JOB_SCHEMA = "simjury.court-week-audio-job/v1"
+JOB_SCHEMA_V1 = "simjury.court-week-audio-job/v1"
+JOB_SCHEMA_V2 = "simjury.court-week-audio-job/v2"
+SUPPORTED_JOB_SCHEMAS = {JOB_SCHEMA_V1, JOB_SCHEMA_V2}
 SESSION_SCHEMA = "simjury.court-week-session-media/v1"
 TARGET_LUFS = -18.0
 TARGET_TRUE_PEAK = -1.5
@@ -90,7 +92,8 @@ def sha256_file(path: str | Path) -> str:
 
 
 def validate_job(job: dict[str, Any]) -> None:
-    if job.get("schema") != JOB_SCHEMA:
+    schema = job.get("schema")
+    if schema not in SUPPORTED_JOB_SCHEMAS:
         raise ValueError(f"Unsupported audio job schema: {job.get('schema')!r}")
     if job.get("caseId") != "cw-0001":
         raise ValueError("Court Week audio jobs must target cw-0001")
@@ -101,32 +104,96 @@ def validate_job(job: dict[str, Any]) -> None:
     segments = job.get("segments")
     if not isinstance(segments, list) or not 8 <= len(segments) <= 12:
         raise ValueError("Every Court Week day must contain 8-12 audio segments")
-    cue_ids: set[str] = set()
     opaque_ids: set[str] = set()
+    cue_ids: set[str] = set()
+    caption_ids: set[str] = set()
+    turn_ids: set[str] = set()
+    utterance_ids: set[str] = set()
     for segment in segments:
         opaque_id = str(segment.get("opaqueId", ""))
         if not re.fullmatch(r"[0-9a-f]{32}", opaque_id) or opaque_id in opaque_ids:
             raise ValueError(f"Invalid or duplicate opaque segment id: {opaque_id!r}")
         opaque_ids.add(opaque_id)
-        cues = segment.get("cues")
-        if not isinstance(cues, list) or not cues:
-            raise ValueError(f"Audio segment {opaque_id} has no cues")
-        for cue in cues:
-            cue_id = str(cue.get("id", ""))
-            if not cue_id or cue_id in cue_ids:
-                raise ValueError(f"Missing or duplicate cue id: {cue_id!r}")
-            cue_ids.add(cue_id)
-            if not str(cue.get("text", "")).strip():
-                raise ValueError(f"Cue {cue_id} has no narration text")
-            if not re.fullmatch(r"[ab][fm]_[a-z]+", str(cue.get("voice", ""))):
-                raise ValueError(f"Cue {cue_id} has an unsafe Kokoro voice id")
-            pause = cue.get("pauseAfterMs", 0)
-            if isinstance(pause, bool) or not isinstance(pause, int):
-                raise ValueError(f"Cue {cue_id} has a non-integer pause")
-            # Zero joins two attributed turns split from one authored cue. It
-            # must not inject a false courtroom pause between those speakers.
-            if pause != 0 and (pause < 150 or pause > 1_500):
-                raise ValueError(f"Cue {cue_id} has an invalid pause")
+        if schema == JOB_SCHEMA_V1:
+            cues = segment.get("cues")
+            if not isinstance(cues, list) or not cues:
+                raise ValueError(f"Audio segment {opaque_id} has no cues")
+            for cue in cues:
+                cue_id = str(cue.get("id", ""))
+                if not cue_id or cue_id in cue_ids:
+                    raise ValueError(f"Missing or duplicate cue id: {cue_id!r}")
+                cue_ids.add(cue_id)
+                if not str(cue.get("text", "")).strip():
+                    raise ValueError(f"Cue {cue_id} has no narration text")
+                if not re.fullmatch(r"[ab][fm]_[a-z]+", str(cue.get("voice", ""))):
+                    raise ValueError(f"Cue {cue_id} has an unsafe Kokoro voice id")
+                validate_pause(cue.get("pauseAfterMs", 0), f"Cue {cue_id}")
+            continue
+
+        captions = segment.get("captions")
+        utterances = segment.get("utterances")
+        if not isinstance(captions, list) or not captions:
+            raise ValueError(f"Audio segment {opaque_id} has no display captions")
+        if not isinstance(utterances, list) or not utterances:
+            raise ValueError(f"Audio segment {opaque_id} has no performance utterances")
+        caption_turns = []
+        for caption in captions:
+            caption_id = str(caption.get("id", ""))
+            if not caption_id or caption_id in caption_ids:
+                raise ValueError(f"Missing or duplicate caption id: {caption_id!r}")
+            caption_ids.add(caption_id)
+            if not str(caption.get("sourceCueId", "")).strip():
+                raise ValueError(f"Caption {caption_id} has no authored source cue id")
+            if not str(caption.get("speaker", "")).strip() or not str(caption.get("text", "")).strip():
+                raise ValueError(f"Caption {caption_id} has incomplete display text")
+            turns = caption.get("turns")
+            if not isinstance(turns, list) or not turns:
+                raise ValueError(f"Caption {caption_id} has no spoken turns")
+            for turn in turns:
+                turn_id = str(turn.get("id", ""))
+                if not turn_id or turn_id in turn_ids:
+                    raise ValueError(f"Missing or duplicate caption turn id: {turn_id!r}")
+                turn_ids.add(turn_id)
+                if not str(turn.get("speaker", "")).strip() or not str(turn.get("text", "")).strip():
+                    raise ValueError(f"Caption turn {turn_id} is incomplete")
+                utterance_id = str(turn.get("utteranceId", ""))
+                if not utterance_id:
+                    raise ValueError(f"Caption turn {turn_id} has no performance utterance")
+                caption_turns.append((caption_id, turn_id, str(turn["text"]), utterance_id))
+
+        utterance_parts = []
+        for utterance in utterances:
+            utterance_id = str(utterance.get("id", ""))
+            if not utterance_id or utterance_id in utterance_ids:
+                raise ValueError(f"Missing or duplicate performance utterance id: {utterance_id!r}")
+            utterance_ids.add(utterance_id)
+            text = str(utterance.get("text", "")).strip()
+            if not text:
+                raise ValueError(f"Performance utterance {utterance_id} has no narration text")
+            if not re.fullmatch(r"[ab][fm]_[a-z]+", str(utterance.get("voice", ""))):
+                raise ValueError(f"Performance utterance {utterance_id} has an unsafe Kokoro voice id")
+            parts = utterance.get("parts")
+            if not isinstance(parts, list) or not parts:
+                raise ValueError(f"Performance utterance {utterance_id} has no caption parts")
+            if " ".join(str(part.get("text", "")).strip() for part in parts) != text:
+                raise ValueError(f"Performance utterance {utterance_id} does not reconstruct from its caption parts")
+            for part in parts:
+                utterance_parts.append((
+                    str(part.get("captionId", "")),
+                    str(part.get("turnId", "")),
+                    str(part.get("text", "")),
+                    utterance_id,
+                ))
+            validate_pause(utterance.get("pauseAfterMs", 0), f"Performance utterance {utterance_id}")
+        if caption_turns != utterance_parts:
+            raise ValueError(f"Audio segment {opaque_id} caption/utterance coverage or order differs")
+
+
+def validate_pause(pause: Any, label: str) -> None:
+    if isinstance(pause, bool) or not isinstance(pause, int):
+        raise ValueError(f"{label} has a non-integer pause")
+    if pause != 0 and (pause < 150 or pause > 1_500):
+        raise ValueError(f"{label} has an invalid pause")
 
 
 def synthesise(pipeline: Any, text: str, voice: str, np: Any, torch: Any) -> Any:
@@ -422,8 +489,13 @@ def produce(job: dict[str, Any], output_root: Path) -> Path:
         config=config_path,
         model=model_path,
     ).to("cpu").eval()
+    performance_items = [
+        item
+        for segment in job["segments"]
+        for item in (segment["cues"] if job["schema"] == JOB_SCHEMA_V1 else segment["utterances"])
+    ]
     pipelines: dict[str, Any] = {}
-    for language in sorted({str(cue["voice"])[0] for segment in job["segments"] for cue in segment["cues"]}):
+    for language in sorted({str(item["voice"])[0] for item in performance_items}):
         pipelines[language] = KPipeline(
             lang_code=language,
             repo_id=KOKORO_REPOSITORY,
@@ -436,7 +508,7 @@ def produce(job: dict[str, Any], output_root: Path) -> Path:
             revision=KOKORO_REVISION,
             filename=f"voices/{voice}.pt",
         )
-        for voice in sorted({str(cue["voice"]) for segment in job["segments"] for cue in segment["cues"]})
+        for voice in sorted({str(item["voice"]) for item in performance_items})
     }
 
     session_id = str(job["sessionId"])
@@ -450,27 +522,87 @@ def produce(job: dict[str, Any], output_root: Path) -> Path:
         chunks = [np.zeros(round(job["sampleRate"] * 0.20), dtype=np.float32)]
         sample_cursor = len(chunks[0])
         cue_ranges = []
-        for cue in segment["cues"]:
-            voice = str(cue["voice"])
-            speech = synthesise(pipelines[voice[0]], str(cue["text"]), voices[voice], np, torch)
-            peak = float(np.max(np.abs(speech)))
-            if peak > 1.0:
-                speech = speech / peak
-            start = sample_cursor / job["sampleRate"]
-            chunks.append(speech)
-            sample_cursor += speech.size
-            end = sample_cursor / job["sampleRate"]
-            cue_ranges.append({
-                "cueId": cue["id"],
-                "sourceCueId": str(cue.get("sourceCueId") or cue["id"]),
-                "speaker": cue["speaker"],
-                "text": cue["text"],
-                "startSeconds": round(start, 3),
-                "endSeconds": round(end, 3),
-            })
-            silence = np.zeros(round(job["sampleRate"] * cue["pauseAfterMs"] / 1000), dtype=np.float32)
-            chunks.append(silence)
-            sample_cursor += silence.size
+        if job["schema"] == JOB_SCHEMA_V1:
+            for cue in segment["cues"]:
+                voice = str(cue["voice"])
+                speech = synthesise(pipelines[voice[0]], str(cue["text"]), voices[voice], np, torch)
+                peak = float(np.max(np.abs(speech)))
+                if peak > 1.0:
+                    speech = speech / peak
+                start = sample_cursor / job["sampleRate"]
+                chunks.append(speech)
+                sample_cursor += speech.size
+                end = sample_cursor / job["sampleRate"]
+                cue_ranges.append({
+                    "cueId": cue["id"],
+                    "sourceCueId": str(cue.get("sourceCueId") or cue["id"]),
+                    "speaker": cue["speaker"],
+                    "text": cue["text"],
+                    "startSeconds": round(start, 3),
+                    "endSeconds": round(end, 3),
+                })
+                silence = np.zeros(round(job["sampleRate"] * cue["pauseAfterMs"] / 1000), dtype=np.float32)
+                chunks.append(silence)
+                sample_cursor += silence.size
+        else:
+            caption_ranges = {
+                caption["id"]: {
+                    "cueId": caption["id"],
+                    "sourceCueId": caption["sourceCueId"],
+                    "speaker": caption["speaker"],
+                    "text": caption["text"],
+                    "startSeconds": None,
+                    "endSeconds": None,
+                    "turns": [],
+                }
+                for caption in segment["captions"]
+            }
+            for utterance in segment["utterances"]:
+                voice = str(utterance["voice"])
+                synthesis = synthesise_timed(
+                    pipelines[voice[0]],
+                    str(utterance["text"]),
+                    voices[voice],
+                    job["sampleRate"],
+                    np,
+                    torch,
+                )
+                speech = synthesis["samples"]
+                peak = float(np.max(np.abs(speech)))
+                if peak > 1.0:
+                    speech = speech / peak
+                utterance_start = sample_cursor / job["sampleRate"]
+                part_ranges = align_utterance_parts(synthesis, utterance, job["sampleRate"])
+                chunks.append(speech)
+                sample_cursor += speech.size
+                for part in part_ranges:
+                    caption = caption_ranges.get(part["captionId"])
+                    if caption is None:
+                        raise RuntimeError(f"Unknown caption {part['captionId']} in {utterance['id']}")
+                    start = utterance_start + float(part["startSeconds"])
+                    end = utterance_start + float(part["endSeconds"])
+                    caption["startSeconds"] = start if caption["startSeconds"] is None else min(caption["startSeconds"], start)
+                    caption["endSeconds"] = end if caption["endSeconds"] is None else max(caption["endSeconds"], end)
+                    caption["turns"].append({
+                        "turnId": part["turnId"],
+                        "startSeconds": round(start, 3),
+                        "endSeconds": round(end, 3),
+                    })
+                silence = np.zeros(round(job["sampleRate"] * utterance["pauseAfterMs"] / 1000), dtype=np.float32)
+                chunks.append(silence)
+                sample_cursor += silence.size
+
+            for caption_source in segment["captions"]:
+                caption = caption_ranges[caption_source["id"]]
+                expected_turns = [turn["id"] for turn in caption_source["turns"]]
+                actual_turns = [turn["turnId"] for turn in caption["turns"]]
+                if caption["startSeconds"] is None or caption["endSeconds"] is None or actual_turns != expected_turns:
+                    raise RuntimeError(f"Incomplete timed caption {caption_source['id']}")
+                if not caption["startSeconds"] < caption["endSeconds"]:
+                    raise RuntimeError(f"Non-monotonic timed caption {caption_source['id']}")
+                caption["startSeconds"] = round(caption["startSeconds"], 3)
+                caption["endSeconds"] = round(caption["endSeconds"], 3)
+                cue_ranges.append(caption)
 
         samples = np.concatenate(chunks)
         stem = str(segment["opaqueId"])
