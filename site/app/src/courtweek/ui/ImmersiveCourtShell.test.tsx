@@ -44,10 +44,30 @@ const session: CourtSession = {
   prerequisiteSessionIds: [],
   scenes: [scene, scene, scene],
 }
-const stripScene: Scene = {
+const directedScene: Scene = {
   ...scene,
   visual: {
     ...scene.visual,
+    compositionArt: {
+      portrait: {
+        focalPoint: { x: 56, y: 53 }, subjectSafeRegion: null, evidenceSafeRegion: null,
+        permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
+      },
+      tablet: {
+        focalPoint: { x: 82, y: 46 }, subjectSafeRegion: null, evidenceSafeRegion: null,
+        permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
+      },
+      desktop: {
+        focalPoint: { x: 78, y: 46 }, subjectSafeRegion: null, evidenceSafeRegion: null,
+        permittedCaptionPositions: ['top'], reviewStatus: 'crop-reviewed',
+      },
+    },
+  },
+}
+const stripScene: Scene = {
+  ...directedScene,
+  visual: {
+    ...directedScene.visual,
     runtimeStrip: {
       cell: 1,
       sources: Object.fromEntries(['portrait', 'tablet', 'desktop'].map((composition) => [
@@ -158,7 +178,10 @@ describe('ImmersiveCourtShell', () => {
     )
     expect(markup).toContain('cw-stage__picture--strip')
     expect(markup).toContain('data-strip-cell="1"')
-    expect(markup).toContain('object-position:79% 42%')
+    expect(markup).toContain('--cw-focal-portrait:78% 53%')
+    expect(markup).toContain('--cw-focal-tablet:91% 46%')
+    expect(markup).toContain('--cw-focal-desktop:89% 46%')
+    expect(markup).toContain('object-position:var(--cw-focal-active, 91% 46%)')
     expect(markup).toContain(`https://example.test/desktop.${'a'.repeat(64)}.avif`)
     expect(markup).toContain('referrerPolicy="no-referrer"')
     expect(markup).toContain('sizes="100vw"')
@@ -177,7 +200,10 @@ describe('ImmersiveCourtShell', () => {
     expect(markup).not.toContain('cw-stage__picture--strip')
     expect(markup).toContain('/media/scenes/scene-1/portrait.avif')
     expect(markup).not.toContain(`https://example.test/portrait.${'a'.repeat(64)}.avif`)
-    expect(markup).toContain('object-position:58% 42%')
+    expect(markup).toContain('--cw-focal-portrait:56% 53%')
+    expect(markup).toContain('--cw-focal-tablet:82% 46%')
+    expect(markup).toContain('--cw-focal-desktop:78% 46%')
+    expect(markup).toContain('object-position:var(--cw-focal-active, 82% 46%)')
   })
 
   it('locks captions to their stored preference while low-data reading is forced', () => {

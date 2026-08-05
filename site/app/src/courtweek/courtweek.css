@@ -74,10 +74,17 @@
 }
 .cw-stage__picture { position: absolute; inset: 0; overflow: hidden; }
 .cw-stage__picture img {
+  --cw-focal-active: var(--cw-focal-tablet);
   object-fit: cover;
   filter: brightness(.78) saturate(.86);
   transition: opacity 320ms ease-out, transform 8s ease-out;
   transform: scale(1.015);
+}
+@media (orientation: landscape) and (max-height: 500px), (min-width: 1100px) {
+  .cw-stage__picture img { --cw-focal-active: var(--cw-focal-desktop); }
+}
+@media (orientation: portrait) and (max-width: 700px) {
+  .cw-stage__picture img { --cw-focal-active: var(--cw-focal-portrait); }
 }
 .cw-stage__picture--strip img {
   position: absolute;
