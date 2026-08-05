@@ -340,9 +340,9 @@
 .cw-entry p { max-width: 60ch; line-height: 1.55; }
 .cw-mode-picker { display: grid; gap: .5rem; margin: 1rem 0; padding: 0; border: 0; }
 .cw-mode-picker legend { margin-bottom: .5rem; font-weight: 750; }
-.cw-mode-picker label { display: flex; align-items: flex-start; gap: .75rem; padding: .75rem; border: 1px solid var(--cw-line); border-radius: .45rem; background: #182126; cursor: pointer; }
+.cw-mode-picker label { display: flex; width: 100%; min-width: 0; align-items: flex-start; gap: .75rem; padding: .75rem; border: 1px solid var(--cw-line); border-radius: .45rem; background: #182126; cursor: pointer; }
 .cw-mode-picker label:has(input:checked) { border-color: var(--cw-brass); box-shadow: inset 0 0 0 1px var(--cw-brass); }
-.cw-mode-picker span, .cw-mode-picker small { display: block; }
+.cw-mode-picker span, .cw-mode-picker small { display: block; min-width: 0; overflow-wrap: anywhere; }
 .cw-mode-picker small { margin-top: .25rem; color: var(--cw-muted); }
 .cw-entry__fullscreen { display: flex; min-height: 44px; align-items: center; gap: .6rem; margin: 1rem 0; }
 .cw-entry__privacy { color: var(--cw-muted); font-size: .82rem; }
