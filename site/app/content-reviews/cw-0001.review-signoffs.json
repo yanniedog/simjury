@@ -7,9 +7,9 @@
     { "role": "prosecution", "decision": "approved" },
     { "role": "defence", "decision": "approved" },
     { "role": "judicial-neutrality", "decision": "approved" },
-    { "role": "accessibility", "decision": "pending" },
+    { "role": "accessibility", "decision": "approved" },
     { "role": "sensitivity", "decision": "approved" },
-    { "role": "read-aloud", "decision": "pending" },
+    { "role": "read-aloud", "decision": "approved" },
     { "role": "blind-balance", "decision": "approved" },
     { "role": "fixed-scope-criminal-law", "decision": "approved" }
   ]
