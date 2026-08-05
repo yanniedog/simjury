@@ -28,9 +28,9 @@ const inventory = (items) => [{ total_count: items.length, artifacts: items }]
 const reviewArtifacts = (sourceRun = run()) => [
   artifact('court-week-audio-jobs', sourceRun),
   ...SESSION_ARTIFACTS.map((name) => artifact(name, sourceRun)),
-  artifact('court-week-cw-0001-2026.08.03-r1', sourceRun),
+  artifact('court-week-cw-0001-2026.08.03-r2', sourceRun),
 ]
-const options = { repository: 'yanniedog/simjury', releaseTag: 'court-week-cw-0001-2026.08.03-r1', runId: '42' }
+const options = { repository: 'yanniedog/simjury', releaseTag: 'court-week-cw-0001-2026.08.03-r2', runId: '42' }
 
 test('package accepts exactly one source and seven canonical session artifacts', () => {
   const items = reviewArtifacts().slice(0, 8)
@@ -47,8 +47,8 @@ test('package rejects duplicate, missing and incomplete inventories', () => {
 test('package rejects the triplicate Thursday shape observed in run 30831483078', () => {
   const sourceRun = run({ id: 30831483078 })
   const names = [
-    'court-week-cw-0001-2026.08.03-r1',
-    'court-week-cw-0001-2026.08.03-r1-art-readiness',
+    'court-week-cw-0001-2026.08.03-r2',
+    'court-week-cw-0001-2026.08.03-r2-art-readiness',
     'court-week-audio-cw-0001-sunday',
     'court-week-audio-cw-0001-friday',
     'court-week-audio-cw-0001-saturday',
@@ -80,7 +80,7 @@ test('publish rejects wrong run, workflow, ref and status', () => {
 test('publish rejects duplicate, missing and cross-run artifacts', () => {
   const items = reviewArtifacts()
   assert.throws(() => assertReviewedRun(run(), inventory([...items, items[4]]), options), /thursday=2/u)
-  assert.throws(() => assertReviewedRun(run(), inventory(items.filter((item) => item.name !== options.releaseTag)), options), /2026\.08\.03-r1=0/u)
+  assert.throws(() => assertReviewedRun(run(), inventory(items.filter((item) => item.name !== options.releaseTag)), options), /2026\.08\.03-r2=0/u)
   const wrong = [...items]
   wrong[3] = artifact(wrong[3].name, run({ id: 99 }))
   assert.throws(() => assertReviewedRun(run(), inventory(wrong), options), /wrong-run/u)

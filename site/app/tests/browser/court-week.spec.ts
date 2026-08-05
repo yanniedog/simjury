@@ -270,7 +270,7 @@ async function seedTuesdayPosition(
       transaction.objectStore('progress').put({
         schemaVersion: 'court-week-progress-v1',
         courtWeekId: 'cw-0001',
-        revision: '2026.08.03-r1',
+        revision: '2026.08.03-r2',
         highestObservedTime: new Date(instant).toISOString(),
         completedSessionIds: ['cw-0001-monday'],
         currentSessionId: 'cw-0001-tuesday',
@@ -635,7 +635,7 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
       transaction.objectStore('progress').put({
         schemaVersion: 'court-week-progress-v1',
         courtWeekId: 'cw-0001',
-        revision: '2026.08.03-r1',
+        revision: '2026.08.03-r2',
         highestObservedTime: new Date(instant).toISOString(),
         completedSessionIds: [
           'cw-0001-monday', 'cw-0001-tuesday', 'cw-0001-wednesday',

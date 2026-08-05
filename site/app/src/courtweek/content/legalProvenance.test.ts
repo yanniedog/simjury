@@ -41,6 +41,42 @@ describe('Eleven Minutes legal provenance', () => {
     expect(reviewed).toMatch(/clarification was available|available clarification|advice was available/i)
   })
 
+  it('treats credible-alert acceptance at 21:16:08 as agreed rather than a live jury question', () => {
+    const section41 = elevenMinutesCourtWeek.trial.offences.find(({ id }) => id === 'orinth-eca-s41')!
+    const section18 = elevenMinutesCourtWeek.trial.offences.find(({ id }) => id === 'orinth-cc-s18')!
+    const mondayDirection = cueText('mon-elements-1')
+    const fridayDirection = cueText('fri-summing-duty')
+
+    expect(elevenMinutesCourtWeek.trial.agreedFacts).toContain(
+      'Mara Venn accepted AR-71 as a credible distress alert at 21:16:08.',
+    )
+    expect(section41.elementQuestions.join(' ')).not.toMatch(/did .*accept.*credible distress alert/i)
+    expect(section41.elementQuestions).toEqual([
+      'Were reasonable dispatch steps available?',
+      'Was any delay a reasonable prioritisation of a greater imminent peril?',
+    ])
+    expect(section18.elementQuestions[0]).toBe(
+      'Did Mara Venn intentionally fail to perform the legal duty identified under s 41?',
+    )
+    expect(section18.elementQuestions.join(' ')).not.toMatch(/did .*owe/i)
+    expect(mondayDirection).toMatch(/agreed.*accepted AR-71 as a credible distress alert at 21:16:08/is)
+    expect(mondayDirection).not.toMatch(/did Venn accept a credible alert/i)
+    expect(fridayDirection).toMatch(/agreed.*accepted AR-71 as a credible distress alert at 21:16:08.*first live question/is)
+    expect(cueText('fri-summing-causation')).toMatch(/Second:/)
+    expect(cueText('fri-summing-intent')).toMatch(/Third, only if the first two live questions are proved/)
+  })
+
+  it('keeps the distress recording and its accessible propositions singular', () => {
+    const distress = elevenMinutesCourtWeek.trial.evidence.find(({ id }) => id === 'ex-distress')!
+    const recording = cueText('tue-recording-play')
+    const completeAuthoredRecord = JSON.stringify(elevenMinutesCourtWeek)
+
+    expect(recording).toMatch(/One person aboard/i)
+    expect(recording).toMatch(/reports one person aboard/i)
+    expect(distress.accessibleProposition).toMatch(/reports being the one person aboard/i)
+    expect(completeAuthoredRecord).not.toMatch(/\btwo aboard\b/i)
+  })
+
   it('states material acceleration and preserves the expert travel assumptions as unproved', () => {
     expect(cueText('wed-resume-2')).toMatch(/materially accelerates|materially postponed/i)
     expect(cueText('sat-causation-2')).toMatch(/neither invent a breakdown nor assume an interruption-free journey was proved/i)

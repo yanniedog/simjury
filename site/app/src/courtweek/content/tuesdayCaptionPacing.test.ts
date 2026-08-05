@@ -25,7 +25,7 @@ describe('Tuesday caption pacing', () => {
       .update(JSON.stringify(sourceGroups.map(({ id, text }) => [id, text])))
       .digest('hex')
 
-    expect(digest).toBe('9374b058d787604045ffdfbcd0380a18b8c7e4473cfb5d44b0fadca2e4359b8b')
+    expect(digest).toBe('67f4cc7590d6e70a6a4b5d5efa7573228156ba5e05cc5df5979527906365e7bd')
     expect(sourceGroups).toHaveLength(20)
     expect(tuesdayCues).toHaveLength(118)
     for (const group of sourceGroups) {

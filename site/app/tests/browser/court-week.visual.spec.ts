@@ -55,7 +55,7 @@ async function seedPosition(page: Page, position: CourtPosition) {
       transaction.objectStore('progress').put({
         schemaVersion: 'court-week-progress-v1',
         courtWeekId: 'cw-0001',
-        revision: '2026.08.03-r1',
+        revision: '2026.08.03-r2',
         highestObservedTime: new Date(instant).toISOString(),
         completedSessionIds: [],
         currentSessionId: 'cw-0001-monday',

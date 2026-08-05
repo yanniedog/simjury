@@ -12,7 +12,7 @@ export const elevenMinutesTrialRecord: TrialRecord = {
       id: 'orinth-cc-s18', citation: 'Criminal Code s 18', title: 'Murder by act or omission',
       text: 'A person commits murder if, by a voluntary act or an intentional failure to perform a legal duty, that person causes death while intending to cause death or really serious injury.',
       elementQuestions: [
-        'Did Mara Venn owe and intentionally fail to perform the legal duty identified under s 41?',
+        'Did Mara Venn intentionally fail to perform the legal duty identified under s 41?',
         'Did that intentional omission cause Ilan Saye’s death?',
         'At the time of the omission, did Mara Venn intend death or really serious injury?',
       ],
@@ -30,7 +30,6 @@ export const elevenMinutesTrialRecord: TrialRecord = {
       id: 'orinth-eca-s41', citation: 'Emergency Coordination Act s 41', title: 'Accepted distress alerts',
       text: 'A duty controller who accepts a credible distress alert must take reasonable dispatch steps unless reasonably prioritising a greater imminent peril.',
       elementQuestions: [
-        'Did Mara Venn accept a credible distress alert?',
         'Were reasonable dispatch steps available?',
         'Was any delay a reasonable prioritisation of a greater imminent peril?',
       ],
@@ -39,6 +38,7 @@ export const elevenMinutesTrialRecord: TrialRecord = {
   agreedFacts: [
     'Mara Venn was the duty controller from 18:00 to 06:00 and was subject to Emergency Coordination Act s 41.',
     'Ilan Saye transmitted the recorded distress call from beacon AR-71 during the storm.',
+    'Mara Venn accepted AR-71 as a credible distress alert at 21:16:08.',
     'The launch order for rescue craft Kestrel was withheld for eleven minutes after the incident was accepted.',
     'Ilan Saye died before rescuers reached the disabled survey vessel.',
     'The case and every person, institution and place in it are fictional.',
@@ -65,7 +65,7 @@ export const elevenMinutesTrialRecord: TrialRecord = {
       integrity: 'Records custodian verifies the file hash against the write-once incident archive; the played copy is unedited.',
       admittedThrough: 'Peli Dorn and Tovan Mir', allowedUses: ['What the speakers said', 'Whether the alert was credible and recognised'],
       limitations: ['Audio quality may affect interpretation', 'May not be used to infer facts never spoken'], replayable: true, replaySourceCueId: 'tue-recording-play', status: 'admitted',
-      accessibleProposition: 'The caller identifies beacon AR-71; the controller repeats “AR-71” and says she has the position.',
+      accessibleProposition: 'The caller reports being the one person aboard, identifies beacon AR-71, and hears the controller repeat “AR-71” and say she has the position.',
     },
     {
       id: 'ex-launch-strip', label: 'Yellow launch strip', kind: 'document',

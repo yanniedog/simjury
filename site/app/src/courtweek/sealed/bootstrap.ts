@@ -7,13 +7,13 @@ import type { CourtWeekBootstrap } from './types'
 export const courtWeekBootstrap: CourtWeekBootstrap = {
   schemaVersion: 'court-week-sealed-v1',
   id: 'cw-0001',
-  revision: '2026.08.03-r1',
+  revision: '2026.08.03-r2',
   label: 'fiction',
   title: 'Eleven Minutes',
   subtitle: 'One distress call. One deliberate hold. Your week in the jury box.',
   contentAdvisory: 'Fictional, non-graphic marine-emergency death, including an acted distress call. Pause or leave at any time; progress remains on this device. Suitable for adults.',
   timezone: 'Australia/Hobart',
-  releaseTag: 'court-week-cw-0001-2026.08.03-r1',
+  releaseTag: 'court-week-cw-0001-2026.08.03-r2',
   sessions: [
     { id: 'cw-0001-monday', ordinal: 1, day: 'Monday', unlockAt: '2026-08-10T08:30:00+10:00', targetMinutes: 20, prerequisiteSessionIds: [], locator: '3999223499cc6bb30eba7267.sjp' },
     { id: 'cw-0001-tuesday', ordinal: 2, day: 'Tuesday', unlockAt: '2026-08-11T08:30:00+10:00', targetMinutes: 20, prerequisiteSessionIds: ['cw-0001-monday'], locator: '5243d2617888cf2b8d20a0b9.sjp' },

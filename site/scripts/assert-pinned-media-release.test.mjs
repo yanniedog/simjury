@@ -11,8 +11,8 @@ import {
   assertReleasePayloadReadyForPublication,
 } from './assert-pinned-media-release.mjs'
 
-const releaseTag = 'court-week-cw-0001-2026.08.03-r1'
-const revision = '2026.08.03-r1'
+const releaseTag = 'court-week-cw-0001-2026.08.03-r2'
+const revision = '2026.08.03-r2'
 
 function assetName(label, extension) {
   return `${createHash('sha256').update(label).digest('hex')}${extension}`
@@ -109,8 +109,8 @@ test('rejects stale case, revision and tag identities', async (t) => {
     ['release schema', ({ release }) => { release.schema = 'stale-release/v1' }, /Unsupported immutable Release schema/u],
     ['case', ({ release }) => { release.case_id = 'cw-stale' }, /case mismatch/u],
     ['revision', ({ release }) => { release.court_week_revision = 'stale-r1' }, /revision mismatch/u],
-    ['runtime tag', ({ runtime }) => { runtime.release_tag = 'court-week-cw-0001-2026.08.03-r2' }, /Release tag mismatch/u],
-    ['release tag', ({ release }) => { release.release_tag = 'court-week-cw-0001-2026.08.03-r2' }, /Release tag mismatch/u],
+    ['runtime tag', ({ runtime }) => { runtime.release_tag = 'court-week-cw-0001-2026.08.03-r3' }, /Release tag mismatch/u],
+    ['release tag', ({ release }) => { release.release_tag = 'court-week-cw-0001-2026.08.03-r3' }, /Release tag mismatch/u],
   ]) {
     await t.test(name, () => {
       const manifests = matchedManifests()

@@ -95,7 +95,7 @@ test('Court Week media publishing is trusted, manual and non-clobbering', () => 
 
 test('production deploy requires the exact pinned immutable release', () => {
   const workflow = readFileSync(new URL('../../.github/workflows/site.yml', import.meta.url), 'utf8')
-  assert.match(workflow, /RELEASE_TAG: court-week-cw-0001-2026\.08\.03-r1/)
+  assert.match(workflow, /RELEASE_TAG: court-week-cw-0001-2026\.08\.03-r2/)
   assert.match(workflow, /isDraft == false and \.isImmutable == true/)
   assert.match(workflow, /assert-pinned-media-release\.mjs/)
   assert.match(workflow, /--runtime-manifest site\/app\/media\/court-week-media-manifest\.pinned\.json/)
