@@ -23,6 +23,19 @@ async function enterReadingCourt(page: Page) {
   await expect(page.locator('.cw-reading-copy')).toBeVisible()
 }
 
+async function mountRecordedAudioCourt(page: Page) {
+  await page.goto('/')
+  await page.evaluate(async (instant) => {
+    document.body.replaceChildren()
+    const host = document.createElement('div')
+    document.body.append(host)
+    // @ts-expect-error Vite serves this browser-only fixture during Playwright runs.
+    const fixture = await import('/tests/browser/fixtures/audioCourtWeekHarness.tsx')
+    fixture.mountRecordedAudioCourt(host, instant)
+  }, releaseNow)
+  await expect(page.getByRole('button', { name: 'Take your seat' })).toBeVisible()
+}
+
 async function readProgressPosition(page: Page): Promise<ProgressPosition | null> {
   return page.evaluate(async () => new Promise<ProgressPosition | null>((resolve, reject) => {
     const request = indexedDB.open('simjury-court-week-v1', 1)
@@ -181,6 +194,110 @@ test('keyboard-only entry, skip link and desk expose a visible three-pixel focus
   await expect.poll(() => readProgressPosition(page)).toEqual(before)
 })
 
+test('juror-desk close resumes active audio exactly once and leaves paused audio paused', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Deterministic media lifecycle runs once.')
+  await page.addInitScript(() => {
+    const state = window as typeof window & {
+      __deskAudio: { utterances: string[]; cancels: number; nativePlays: number; nativePauses: number }
+    }
+    state.__deskAudio = { utterances: [], cancels: 0, nativePlays: 0, nativePauses: 0 }
+    class TestAudio extends EventTarget {
+      src = ''
+      currentTime = 0
+      preload = ''
+      ended = false
+      canPlayType(type: string) { return type.includes('opus') ? 'probably' : '' }
+      load() { /* deterministic no-network audio */ }
+      play() {
+        state.__deskAudio.nativePlays += 1
+        this.dispatchEvent(new Event('playing'))
+        return Promise.resolve()
+      }
+      pause() {
+        state.__deskAudio.nativePauses += 1
+        this.dispatchEvent(new Event('pause'))
+      }
+      removeAttribute(name: string) { if (name === 'src') this.src = '' }
+    }
+    class TestUtterance {
+      lang = ''
+      rate = 1
+      voice: SpeechSynthesisVoice | null = null
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+      constructor(public text: string) {}
+    }
+    Object.defineProperty(window, 'Audio', { configurable: true, value: TestAudio })
+    Object.defineProperty(window, 'SpeechSynthesisUtterance', { configurable: true, value: TestUtterance })
+    Object.defineProperty(window, 'speechSynthesis', {
+      configurable: true,
+      value: {
+        paused: false,
+        getVoices: () => [{ lang: 'en-AU', name: 'Test voice' }],
+        speak: (utterance: TestUtterance) => { state.__deskAudio.utterances.push(utterance.text) },
+        cancel: () => { state.__deskAudio.cancels += 1 },
+        pause() {},
+        resume() {},
+      },
+    })
+  })
+  await mountRecordedAudioCourt(page)
+  await page.getByLabel('Audio and captions').check()
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  const controls = page.getByLabel('Court playback controls')
+  await expect(controls.getByRole('button', { name: 'Pause' })).toBeVisible()
+  await expect.poll(() => page.evaluate(() => (
+    window as typeof window & { __deskAudio: { nativePlays: number } }
+  ).__deskAudio.nativePlays)).toBe(1)
+  const fixedPosition = await capturePosition(page)
+
+  const openDesk = page.getByRole('button', { name: 'Juror desk', exact: true })
+  let priorNativePauses = await page.evaluate(() => (
+    window as typeof window & { __deskAudio: { nativePauses: number } }
+  ).__deskAudio.nativePauses)
+  for (const expectedNativePlays of [2, 3]) {
+    await openDesk.click()
+    const desk = page.getByRole('dialog', { name: 'Your working papers' })
+    await expect(desk).toBeVisible()
+    await expect(page.locator('.cw-controls button', { hasText: 'Resume' })).toHaveCount(1)
+    await expect.poll(() => page.evaluate(() => (
+      window as typeof window & { __deskAudio: { nativePlays: number } }
+    ).__deskAudio.nativePlays)).toBe(expectedNativePlays - 1)
+    const pausesWhileOpen = await page.evaluate(() => (
+      window as typeof window & { __deskAudio: { nativePauses: number } }
+    ).__deskAudio.nativePauses)
+    expect(pausesWhileOpen).toBeGreaterThan(priorNativePauses)
+    priorNativePauses = pausesWhileOpen
+    await expect.poll(() => readProgressPosition(page)).toEqual(fixedPosition)
+    await desk.getByRole('button', { name: 'Close juror desk' }).click()
+    await expect(controls.getByRole('button', { name: 'Pause' })).toBeVisible()
+    await expect.poll(() => page.evaluate(() => (
+      window as typeof window & { __deskAudio: { nativePlays: number } }
+    ).__deskAudio.nativePlays)).toBe(expectedNativePlays)
+    await expect.poll(() => readProgressPosition(page)).toEqual(fixedPosition)
+  }
+
+  const lifecycle = await page.evaluate(() => (
+    window as typeof window & {
+      __deskAudio: { utterances: string[]; cancels: number; nativePlays: number; nativePauses: number }
+    }
+  ).__deskAudio)
+  expect(lifecycle.nativePlays).toBe(3)
+  expect(lifecycle.utterances).toEqual([])
+  expect(lifecycle.nativePauses).toBeGreaterThan(0)
+
+  await controls.getByRole('button', { name: 'Pause' }).click()
+  await expect(controls.getByRole('button', { name: 'Resume' })).toBeVisible()
+  await openDesk.click()
+  const pausedDesk = page.getByRole('dialog', { name: 'Your working papers' })
+  await pausedDesk.getByRole('button', { name: 'Close juror desk' }).click()
+  await expect(controls.getByRole('button', { name: 'Resume' })).toBeVisible()
+  await expect.poll(() => page.evaluate(() => (
+    window as typeof window & { __deskAudio: { nativePlays: number } }
+  ).__deskAudio.nativePlays)).toBe(3)
+  await expect.poll(() => readProgressPosition(page)).toEqual(fixedPosition)
+})
+
 test('mandatory contribution dialogs take and contain focus before returning it to proceedings', async ({ page }) => {
   await page.clock.install({ time: releaseNow })
   await page.goto('/')
@@ -200,10 +317,12 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-stage')).toHaveAttribute('aria-hidden', 'true')
 
   const mandatoryPosition = await readProgressPosition(page)
+  const frozenCue = await page.locator('.cw-cue-live-region').textContent()
   await page.keyboard.press('Escape')
   await expect(dialog).toBeVisible()
   await expect(choice).toBeFocused()
   await expect.poll(() => readProgressPosition(page)).toEqual(mandatoryPosition)
+  await expect(page.locator('.cw-cue-live-region')).toHaveText(frozenCue ?? '')
 
   await page.keyboard.press('Tab')
   await expect(choice).toBeFocused()
@@ -212,6 +331,7 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-controls button:focus')).toHaveCount(0)
 
   await page.clock.fastForward(120_000)
+  await expect(page.locator('.cw-cue-live-region')).toHaveText(frozenCue ?? '')
   await expect(dialog.getByRole('button', { name: 'Continue proceedings' })).toBeEnabled()
   await dialog.getByRole('button', { name: 'Continue proceedings' }).click()
 
@@ -219,6 +339,7 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-stage')).not.toHaveAttribute('inert', '')
   await expect(page.getByRole('button', { name: 'Continue' })).toBeFocused()
   await expect(page.locator('.cw-reading-copy')).toContainText('Choose an oath or affirmation')
+  await expect(page.locator('.cw-cue-live-region')).not.toHaveText(frozenCue ?? '')
 })
 
 async function newReflowContext(browser: Browser, screen: { width: number; height: number }): Promise<BrowserContext> {

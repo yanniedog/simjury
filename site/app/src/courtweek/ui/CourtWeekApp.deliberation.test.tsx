@@ -184,6 +184,99 @@ describe('CourtWeekApp improper-argument interaction', () => {
     expect(latestProgress.currentSceneId).toBe('sat-concerns')
   })
 
+  it('freezes cue playback and legal position until a mandatory interaction is completed', async () => {
+    const courtWeek = structuredClone(elevenMinutesCourtWeek)
+    const monday = courtWeek.manifest.sessions[0]
+    const scene = monday.scenes[0]
+    const cue = scene.cues.at(-1)!
+    cue.audio = {
+      opus: '/media/mandatory-interaction.opus',
+      mp3: '/media/mandatory-interaction.mp3',
+      segmentId: 'mandatory-interaction',
+      startSeconds: 0,
+      endSeconds: 12,
+    }
+    monday.scenes[1].cues[0].audio = {
+      opus: '/media/after-mandatory-interaction.opus',
+      mp3: '/media/after-mandatory-interaction.mp3',
+      segmentId: 'after-mandatory-interaction',
+      startSeconds: 0,
+      endSeconds: 12,
+    }
+    const progress: StoredWeeklyProgress = {
+      schemaVersion: 'court-week-progress-v1', courtWeekId: 'cw-0001',
+      revision: courtWeek.manifest.revision,
+      highestObservedTime: '2026-08-10T12:00:00+10:00', completedSessionIds: [],
+      currentSessionId: monday.id, currentSceneId: scene.id, currentCueId: cue.id,
+      notes: '', reasoningContributions: [], accessibilityMode: 'audio-first', majorityDirectionReceived: false,
+    }
+    await saveWeeklyProgress(progress.courtWeekId, progress)
+    let latestProgress = progress
+    const onProgress = (event: Event) => {
+      latestProgress = (event as CustomEvent<StoredWeeklyProgress>).detail
+    }
+    window.addEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
+    let clock = Date.parse('2026-08-10T12:00:00+10:00')
+    const pause = vi.mocked(HTMLMediaElement.prototype.pause)
+    let beginPlaying: (() => void) | undefined
+    let finishPlaying: (() => void) | undefined
+    const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockImplementation(function (this: HTMLMediaElement) {
+      finishPlaying = () => {
+        Object.defineProperty(this, 'ended', { configurable: true, value: true })
+        this.dispatchEvent(new Event('ended'))
+        this.dispatchEvent(new Event('ended'))
+      }
+      return new Promise<void>((resolve) => {
+        beginPlaying = () => {
+          this.dispatchEvent(new Event('playing'))
+          resolve()
+        }
+      })
+    })
+
+    await act(async () => {
+      root.render(<CourtWeekApp courtWeek={courtWeek} now={() => clock} releaseBase="/media" />)
+      await Promise.resolve()
+    })
+    await act(async () => clickButton(container, 'Take your seat'))
+    expect(play).toHaveBeenCalledTimes(1)
+    expect(container.querySelector('.cw-stage')?.getAttribute('aria-busy')).toBe('true')
+    await act(async () => clickButton(container, 'Juror desk'))
+    expect(pause).toHaveBeenCalled()
+    await act(async () => clickButton(container, 'Close'))
+    expect(play).toHaveBeenCalledTimes(2)
+    await act(async () => beginPlaying?.())
+    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent === 'Pause')).toBe(true)
+    pause.mockClear()
+    await act(async () => {
+      if (!finishPlaying) throw new Error('The active recorded cue was not created.')
+      finishPlaying()
+    })
+    expect(container.querySelector('.cw-interaction')).not.toBeNull()
+    expect(pause).toHaveBeenCalled()
+
+    const frozen = { sceneId: latestProgress.currentSceneId, cueId: latestProgress.currentCueId }
+    await act(async () => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+      clock += 120_000
+      window.dispatchEvent(new Event('focus'))
+    })
+    expect({ sceneId: latestProgress.currentSceneId, cueId: latestProgress.currentCueId }).toEqual(frozen)
+
+    await act(async () => clickButton(container, 'Juror desk'))
+    await act(async () => clickButton(container, 'Close'))
+    expect(container.querySelector('.cw-interaction')).not.toBeNull()
+
+    const choice = container.querySelector<HTMLButtonElement>('.cw-choice-grid button')!
+    await act(async () => choice.click())
+    await act(async () => clickButton(container, 'Continue proceedings'))
+    expect(play).toHaveBeenCalledTimes(3)
+    expect(latestProgress).toMatchObject({ currentSceneId: 'mon-oath', currentCueId: 'mon-oath' })
+    expect(container.querySelector('.cw-interaction')).toBeNull()
+    expect(container.querySelector('.cw-cue-live-region')?.textContent).toContain('Choose an oath or affirmation')
+    window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
+  })
+
   it('publishes the sealed result only after the open-court return cue is traversed', async () => {
     const sunday = elevenMinutesCourtWeek.manifest.sessions[6]
     const verdictScene = sunday.scenes.find(({ id }) => id === 'sun-verdict')!

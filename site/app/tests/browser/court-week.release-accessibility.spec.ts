@@ -25,7 +25,7 @@ async function prepareCourt(page: Page) {
 
 async function seedProgress(page: Page, position: Record<string, unknown>) {
   await page.goto('/robots.txt')
-  await page.evaluate(async (instant) => new Promise<void>((resolve, reject) => {
+  await page.evaluate(async ({ instant, seededPosition }) => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open('simjury-court-week-v1', 1)
     request.onerror = () => reject(request.error)
     request.onupgradeneeded = () => request.result.createObjectStore('progress')
@@ -47,10 +47,10 @@ async function seedProgress(page: Page, position: Record<string, unknown>) {
         reasoningContributions: [],
         accessibilityMode: 'reading',
         majorityDirectionReceived: false,
-        ...position,
+        ...seededPosition,
       }, 'cw-0001')
     }
-  }), releaseNow)
+  }), { instant: releaseNow, seededPosition: position })
 }
 
 test('caption assistive copy exposes the complete visible cue exactly once', async ({ page }) => {
@@ -146,12 +146,13 @@ test('reading mode announces each newly displayed legal cue exactly once', async
 
 test('mandatory deliberation selects retain 44px targets and a three-pixel focus ring', async ({ page }) => {
   await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
+  const scene = elevenMinutesSessions[5].scenes.find(({ id }) => id === 'sat-room')!
   await seedProgress(page, {
     completedSessionIds: [
       'cw-0001-monday', 'cw-0001-tuesday', 'cw-0001-wednesday',
       'cw-0001-thursday', 'cw-0001-friday',
     ],
-    currentSessionId: 'cw-0001-saturday', currentSceneId: 'sat-room', currentCueId: 'sat-room-3',
+    currentSessionId: 'cw-0001-saturday', currentSceneId: scene.id, currentCueId: scene.cues.at(-1)!.id,
   })
   await page.goto('/')
   await page.getByRole('button', { name: 'Take your seat' }).click()
@@ -173,7 +174,8 @@ test('mandatory deliberation selects retain 44px targets and a three-pixel focus
 })
 
 test('inspect-exhibit prompts keep admitted exhibits reachable inside the modal boundary', async ({ page }) => {
-  await seedProgress(page, { currentSceneId: 'mon-orr-chief', currentCueId: 'mon-orr-chief-2' })
+  const scene = elevenMinutesSessions[0].scenes.find(({ id }) => id === 'mon-orr-chief')!
+  await seedProgress(page, { currentSceneId: scene.id, currentCueId: scene.cues.at(-1)!.id })
   await prepareCourt(page)
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await page.getByRole('button', { name: 'Continue' }).click()

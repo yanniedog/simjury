@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { CourtWeek, CourtSession, ReasoningMove, SceneCue, Verdict } from '../model/schema'
 import {
   analysisForReturnedVerdict,
@@ -273,7 +273,9 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
   const [evidenceId, setEvidenceId] = useState<string | null>(null)
   const evidenceTrigger = useRef<HTMLButtonElement | null>(null)
   const interactionReturnFocus = useRef<HTMLElement | null>(null)
+  const advanceBlocked = useRef(false)
   const resumeAfterDeskClose = useRef(false)
+  const suppressAutoPlayAfterDeskClose = useRef(false)
   const [interactionOpen, setInteractionOpen] = useState(false)
   const [interactionOpenedAt, setInteractionOpenedAt] = useState<number | null>(null)
   const [interactionChoice, setInteractionChoice] = useState<string | null>(null)
@@ -375,12 +377,16 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
   }, [updateProgress])
 
   const advance = useCallback(() => {
+    // A mandatory interaction is a hard legal-state boundary. Stale media
+    // completion or programmatic control events must not traverse beneath it.
+    if (advanceBlocked.current || interactionOpen || deskOpen) return
     const nextCue = nextReplaySafeCue(position.scene.cues, position.cueIndex, isReplay)
     if (nextCue) {
       commitPosition(activeSession.id, position.scene.id, nextCue.id, isReplay ? undefined : position.cue.id)
       return
     }
     if (position.scene.interaction && !interactionOpen) {
+      advanceBlocked.current = true
       interactionReturnFocus.current = document.activeElement instanceof HTMLElement
         ? document.activeElement
         : null
@@ -420,7 +426,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
     setInteractionOpenedAt(null)
     setInteractionChoice(null)
     setInteractionSealed(false)
-  }, [activeSession, commitPosition, courtWeek.manifest.sessions, interactionOpen, isReplay, now, position, progress.completedSessionIds, updateProgress])
+  }, [activeSession, commitPosition, courtWeek.manifest.sessions, deskOpen, interactionOpen, isReplay, now, position, progress.completedSessionIds, updateProgress])
   const handleCueEnded = useCallback(() => {
     advance()
   }, [advance])
@@ -434,6 +440,19 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
     nextCueForMediaPolicy(entered ? activeSession.scenes[position.sceneIndex + 1]?.cues[0] : undefined, mediaPolicy),
     { deferSourceUntilPlay: true },
   )
+  const pauseCuePlayback = playback.pause
+  const resumeCuePlayback = playback.play
+  useEffect(() => {
+    if (interactionOpen) pauseCuePlayback()
+  }, [interactionOpen, pauseCuePlayback])
+  useLayoutEffect(() => {
+    if (interactionOpen || deskOpen || evidenceId) return
+    advanceBlocked.current = false
+    if (resumeAfterDeskClose.current) {
+      resumeAfterDeskClose.current = false
+      void resumeCuePlayback()
+    }
+  }, [deskOpen, evidenceId, interactionOpen, position.cue.id, resumeCuePlayback])
   const playCue = playback.play
   useEffect(() => {
     const updateObservedTime = () => {
@@ -455,12 +474,16 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
     }
   }, [now, progress.highestObservedTime, updateProgress])
   useEffect(() => {
-    if (!started || interactionOpen || presentedAccessMode === 'reading') return
+    if (suppressAutoPlayAfterDeskClose.current) {
+      suppressAutoPlayAfterDeskClose.current = false
+      return
+    }
+    if (!started || interactionOpen || deskOpen || evidenceId || advanceBlocked.current || presentedAccessMode === 'reading') return
     const alreadyPlayedFromGesture = gesturePlayedCue.current === presentedCue.id
     gesturePlayedCue.current = null
     if (alreadyPlayedFromGesture) return
     void playCue()
-  }, [interactionOpen, playCue, presentedAccessMode, presentedCue.id, started])
+  }, [deskOpen, evidenceId, interactionOpen, playCue, presentedAccessMode, presentedCue.id, started])
 
   const playFromGesture = useCallback(() => {
     gesturePlayedCue.current = presentedCue.id
@@ -470,15 +493,18 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
 
   const toggleDesk = useCallback(() => {
     if (deskOpen) {
+      if (!interactionOpen) suppressAutoPlayAfterDeskClose.current = true
       setDeskOpen(false)
-      if (resumeAfterDeskClose.current) void playback.play()
-      resumeAfterDeskClose.current = false
+      if (interactionOpen) resumeAfterDeskClose.current = false
       return
     }
-    resumeAfterDeskClose.current = playback.status === 'playing' || playback.status === 'speech-fallback'
+    advanceBlocked.current = true
+    resumeAfterDeskClose.current = playback.status === 'loading'
+      || playback.status === 'playing'
+      || playback.status === 'speech-fallback'
     playback.pause()
     setDeskOpen(true)
-  }, [deskOpen, playback])
+  }, [deskOpen, interactionOpen, playback])
   const evidence = useMemo(() => (
     evidenceId ? courtWeek.trial.evidence.find((item) => item.id === evidenceId) : undefined
   ), [courtWeek.trial.evidence, evidenceId])
