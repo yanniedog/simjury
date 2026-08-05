@@ -33,6 +33,11 @@ test('developer gate remains reachable at a 200% compact-phone reflow', async ({
   await submit.scrollIntoViewIfNeeded()
   await expect(submit).toBeVisible()
   expect(await surface.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth
+    && document.body.scrollWidth <= window.innerWidth)).toBe(true)
+  await submit.focus()
+  await expect(submit).toBeFocused()
+  await expect(submit).toBeVisible()
 })
 
 test('Take your seat starts the first cue exactly once', async ({ page }) => {
