@@ -23,7 +23,7 @@ async function prepareCourt(page: Page) {
   await page.goto('/')
 }
 
-async function seedSaturdayReasoning(page: Page) {
+async function seedProgress(page: Page, position: Record<string, unknown>) {
   await page.goto('/robots.txt')
   await page.evaluate(async (instant) => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open('simjury-court-week-v1', 1)
@@ -39,17 +39,15 @@ async function seedSaturdayReasoning(page: Page) {
         courtWeekId: 'cw-0001',
         revision: '2026.08.03-r1',
         highestObservedTime: new Date(instant).toISOString(),
-        completedSessionIds: [
-          'cw-0001-monday', 'cw-0001-tuesday', 'cw-0001-wednesday',
-          'cw-0001-thursday', 'cw-0001-friday',
-        ],
-        currentSessionId: 'cw-0001-saturday',
-        currentSceneId: 'sat-room',
-        currentCueId: 'sat-room-3',
+        completedSessionIds: [],
+        currentSessionId: 'cw-0001-monday',
+        currentSceneId: 'mon-arrival',
+        currentCueId: 'mon-arrival-1',
         notes: '',
         reasoningContributions: [],
         accessibilityMode: 'reading',
         majorityDirectionReceived: false,
+        ...position,
       }, 'cw-0001')
     }
   }), releaseNow)
@@ -134,6 +132,7 @@ test('reading mode announces each newly displayed legal cue exactly once', async
   const firstCue = await readingCopy.textContent()
   await expect(readingCopy).toHaveAttribute('aria-live', 'polite')
   await expect(readingCopy).toHaveAttribute('aria-atomic', 'true')
+  await expect(readingCopy.locator('.cw-visually-hidden')).toContainText('Court officer:')
   await expect(page.locator('[aria-live="polite"]')).toHaveCount(1)
   await expect(page.locator('.cw-cue-live-region')).toHaveAttribute('aria-live', 'off')
   await expect(page.locator('.cw-cue-live-region')).toHaveAttribute('aria-hidden', 'true')
@@ -147,7 +146,13 @@ test('reading mode announces each newly displayed legal cue exactly once', async
 
 test('mandatory deliberation selects retain 44px targets and a three-pixel focus ring', async ({ page }) => {
   await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
-  await seedSaturdayReasoning(page)
+  await seedProgress(page, {
+    completedSessionIds: [
+      'cw-0001-monday', 'cw-0001-tuesday', 'cw-0001-wednesday',
+      'cw-0001-thursday', 'cw-0001-friday',
+    ],
+    currentSessionId: 'cw-0001-saturday', currentSceneId: 'sat-room', currentCueId: 'sat-room-3',
+  })
   await page.goto('/')
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await page.getByRole('button', { name: 'Continue' }).click()
@@ -165,6 +170,16 @@ test('mandatory deliberation selects retain 44px targets and a three-pixel focus
     expect(geometry.height).toBeGreaterThanOrEqual(44)
     expect(geometry).toMatchObject({ outlineWidth: '3px', outlineStyle: 'solid' })
   }
+})
+
+test('inspect-exhibit prompts keep admitted exhibits reachable inside the modal boundary', async ({ page }) => {
+  await seedProgress(page, { currentSceneId: 'mon-orr-chief', currentCueId: 'mon-orr-chief-2' })
+  await prepareCourt(page)
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  const interaction = page.getByRole('dialog', { name: /Inspect the admitted route diagram/i })
+  await interaction.getByRole('button', { name: /Open juror desk/i }).click()
+  await expect(page.getByRole('dialog', { name: 'Your working papers' })).toBeVisible()
 })
 
 test('labelled entry and desk controls retain a 44px effective touch target', async ({ page }) => {

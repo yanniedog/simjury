@@ -891,6 +891,9 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
             ))}
           </dl>
         ) : null}
+        {interaction.kind === 'inspect-exhibit' ? (
+          <button type="button" onClick={toggleDesk}>Open juror desk to inspect admitted exhibits</button>
+        ) : null}
         <button
           className="cw-primary"
           type="button"

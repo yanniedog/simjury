@@ -208,7 +208,7 @@ describe('ImmersiveCourtShell browser behavior', () => {
     await renderCue(longCue)
     expect(container.querySelector('.cw-shell')?.getAttribute('data-caption-runtime-reason')).toBe('line-overflow')
     const readingCopy = container.querySelector('.cw-speaker .cw-reading-copy')
-    expect(readingCopy?.textContent).toBe(longCue.text)
+    expect(readingCopy?.textContent).toBe(`Witness: ${longCue.text}`)
     expect(readingCopy?.getAttribute('aria-live')).toBe('polite')
     expect(readingCopy?.getAttribute('aria-atomic')).toBe('true')
     const cueLiveRegion = container.querySelector('.cw-cue-live-region')

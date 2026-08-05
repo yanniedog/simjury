@@ -12,8 +12,7 @@ function TestDialog({ controlsEnabled = true }: { controlsEnabled?: boolean }) {
   useModalFocusBoundary(dialog)
   return (
     <section ref={dialog} role="dialog" tabIndex={-1}>
-      <button type="button" disabled={!controlsEnabled}>First</button>
-      <button type="button" disabled={!controlsEnabled}>Last</button>
+      <button disabled={!controlsEnabled}>First</button><button disabled={!controlsEnabled}>Last</button>
     </section>
   )
 }
@@ -38,15 +37,12 @@ describe('useModalFocusBoundary', () => {
     trigger.textContent = 'Open'
     document.body.prepend(trigger)
     trigger.focus()
-
     await act(async () => { root.render(<TestDialog />) })
     const buttons = host.querySelectorAll('button')
     expect(document.activeElement).toBe(buttons[0])
-
     buttons[1].focus()
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }))
     expect(document.activeElement).toBe(buttons[0])
-
     buttons[0].focus()
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true, cancelable: true }))
     expect(document.activeElement).toBe(buttons[1])
@@ -62,7 +58,6 @@ describe('useModalFocusBoundary', () => {
     await act(async () => { root.render(<TestDialog controlsEnabled={false} />) })
     const dialog = host.querySelector<HTMLElement>('[role="dialog"]')!
     expect(document.activeElement).toBe(dialog)
-
     await act(async () => { root.render(<TestDialog controlsEnabled />) })
     const buttons = host.querySelectorAll('button')
     dialog.focus()
@@ -87,7 +82,6 @@ describe('useModalFocusBoundary', () => {
         </section>
       )
     }
-
     await act(async () => { root.render(<AvailabilityDialog />) })
     expect(document.activeElement?.textContent).toBe('Available')
   })
