@@ -598,10 +598,10 @@ def produce(job: dict[str, Any], output_root: Path) -> Path:
                 actual_turns = [turn["turnId"] for turn in caption["turns"]]
                 if caption["startSeconds"] is None or caption["endSeconds"] is None or actual_turns != expected_turns:
                     raise RuntimeError(f"Incomplete timed caption {caption_source['id']}")
-                caption["startSeconds"] = round(caption["startSeconds"], 3)
-                caption["endSeconds"] = round(caption["endSeconds"], 3)
                 if not caption["startSeconds"] < caption["endSeconds"]:
                     raise RuntimeError(f"Non-monotonic timed caption {caption_source['id']}")
+                caption["startSeconds"] = round(caption["startSeconds"], 3)
+                caption["endSeconds"] = round(caption["endSeconds"], 3)
                 cue_ranges.append(caption)
 
         samples = np.concatenate(chunks)
