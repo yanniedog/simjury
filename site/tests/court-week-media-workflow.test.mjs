@@ -23,6 +23,12 @@ test('review packaging fails closed unless all scene art is release ready', () =
   assert.match(workflow, /--require-release-ready-art/u)
 })
 
+test('review-candidate tags are confined to non-publishing media jobs', () => {
+  assert.match(workflow, /inputs\.publish != true/u)
+  assert.match(workflow, /--review-candidate-release-tag "\$\{\{ inputs\.release_tag \}\}"/u)
+  assert.match(workflow, /Requested release tag does not match generated review-candidate jobs/u)
+})
+
 test('package and publish fail closed on reviewed-run artifact provenance', () => {
   assert.equal((workflow.match(/actions: read/gu) ?? []).length, 2)
   assert.doesNotMatch(workflow, /actions: write/u)
