@@ -184,6 +184,58 @@ describe('CourtWeekApp improper-argument interaction', () => {
     expect(latestProgress.currentSceneId).toBe('sat-concerns')
   })
 
+  it('freezes cue playback and legal position until a mandatory interaction is completed', async () => {
+    const monday = elevenMinutesCourtWeek.manifest.sessions[0]
+    const scene = monday.scenes[0]
+    const cue = scene.cues.at(-1)!
+    const progress: StoredWeeklyProgress = {
+      schemaVersion: 'court-week-progress-v1', courtWeekId: 'cw-0001',
+      revision: elevenMinutesCourtWeek.manifest.revision,
+      highestObservedTime: '2026-08-10T12:00:00+10:00', completedSessionIds: [],
+      currentSessionId: monday.id, currentSceneId: scene.id, currentCueId: cue.id,
+      notes: '', reasoningContributions: [], accessibilityMode: 'reading', majorityDirectionReceived: false,
+    }
+    await saveWeeklyProgress(progress.courtWeekId, progress)
+    let latestProgress = progress
+    const onProgress = (event: Event) => {
+      latestProgress = (event as CustomEvent<StoredWeeklyProgress>).detail
+    }
+    window.addEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
+    let clock = Date.parse('2026-08-10T12:00:00+10:00')
+    const pause = vi.mocked(HTMLMediaElement.prototype.pause)
+
+    await act(async () => {
+      root.render(<CourtWeekApp courtWeek={elevenMinutesCourtWeek} now={() => clock} releaseBase="/media" />)
+      await Promise.resolve()
+    })
+    await act(async () => clickButton(container, 'Take your seat'))
+    pause.mockClear()
+    const advance = container.querySelector('.cw-controls__advance') as HTMLButtonElement
+    await act(async () => {
+      advance.click()
+      advance.click()
+    })
+    expect(container.querySelector('.cw-interaction')).not.toBeNull()
+    expect(pause).toHaveBeenCalled()
+
+    const frozen = { sceneId: latestProgress.currentSceneId, cueId: latestProgress.currentCueId }
+    await act(async () => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+      advance.click()
+      clock += 120_000
+      window.dispatchEvent(new Event('focus'))
+    })
+    expect({ sceneId: latestProgress.currentSceneId, cueId: latestProgress.currentCueId }).toEqual(frozen)
+
+    const choice = container.querySelector<HTMLButtonElement>('.cw-choice-grid button')!
+    await act(async () => choice.click())
+    await act(async () => clickButton(container, 'Continue proceedings'))
+    expect(latestProgress).toMatchObject({ currentSceneId: 'mon-oath', currentCueId: 'mon-oath' })
+    expect(container.querySelector('.cw-interaction')).toBeNull()
+    expect(container.querySelector('.cw-reading-copy')?.textContent).toContain('Choose an oath or affirmation')
+    window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
+  })
+
   it('publishes the sealed result only after the open-court return cue is traversed', async () => {
     const sunday = elevenMinutesCourtWeek.manifest.sessions[6]
     const verdictScene = sunday.scenes.find(({ id }) => id === 'sun-verdict')!

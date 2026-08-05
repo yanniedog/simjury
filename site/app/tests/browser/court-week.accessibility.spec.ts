@@ -200,10 +200,12 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-stage')).toHaveAttribute('aria-hidden', 'true')
 
   const mandatoryPosition = await readProgressPosition(page)
+  const frozenCue = await page.locator('.cw-cue-live-region').textContent()
   await page.keyboard.press('Escape')
   await expect(dialog).toBeVisible()
   await expect(choice).toBeFocused()
   await expect.poll(() => readProgressPosition(page)).toEqual(mandatoryPosition)
+  await expect(page.locator('.cw-cue-live-region')).toHaveText(frozenCue ?? '')
 
   await page.keyboard.press('Tab')
   await expect(choice).toBeFocused()
@@ -212,6 +214,7 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-controls button:focus')).toHaveCount(0)
 
   await page.clock.fastForward(120_000)
+  await expect(page.locator('.cw-cue-live-region')).toHaveText(frozenCue ?? '')
   await expect(dialog.getByRole('button', { name: 'Continue proceedings' })).toBeEnabled()
   await dialog.getByRole('button', { name: 'Continue proceedings' }).click()
 
@@ -219,6 +222,7 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-stage')).not.toHaveAttribute('inert', '')
   await expect(page.getByRole('button', { name: 'Continue' })).toBeFocused()
   await expect(page.locator('.cw-reading-copy')).toContainText('Choose an oath or affirmation')
+  await expect(page.locator('.cw-cue-live-region')).not.toHaveText(frozenCue ?? '')
 })
 
 async function newReflowContext(browser: Browser, screen: { width: number; height: number }): Promise<BrowserContext> {
