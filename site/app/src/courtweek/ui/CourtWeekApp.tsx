@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { CourtWeek, CourtSession, ReasoningMove, SceneCue, Verdict } from '../model/schema'
 import {
   analysisForReturnedVerdict,
@@ -35,6 +35,7 @@ import { EvidenceViewer } from './EvidenceViewer'
 import { CourtWeekCompletion } from './CourtWeekCompletion'
 import { ImmersiveCourtShell } from './ImmersiveCourtShell'
 import { JurorDesk } from './JurorDesk'
+import { useModalFocusBoundary } from './useModalFocusBoundary'
 import '../courtweek.css'
 
 export interface CourtWeekAppProps {
@@ -233,6 +234,33 @@ function VerdictChoices({
     </div>
   )
 }
+function MandatoryInteractionDialog({
+  children,
+  returnFocusTo,
+}: {
+  children: ReactNode
+  returnFocusTo?: HTMLElement | null
+}) {
+  const dialog = useRef<HTMLElement>(null)
+  useModalFocusBoundary(
+    dialog,
+    returnFocusTo,
+    '.cw-controls__advance, .cw-controls button:not([disabled])',
+  )
+  return (
+    <section
+      ref={dialog}
+      className="cw-modal cw-interaction"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cw-interaction-heading"
+      tabIndex={-1}
+    >
+      {children}
+    </section>
+  )
+}
+
 export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, prepareProgressImport }: CourtWeekAppProps) {
   const baseline = useMemo(() => initialProgress(courtWeek, now()), [courtWeek, now])
   const { progress, hydrated, persistence, persistenceIssue, updateProgress } = useWeeklyProgress(baseline)
@@ -244,6 +272,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
   const [deskOpen, setDeskOpen] = useState(false)
   const [evidenceId, setEvidenceId] = useState<string | null>(null)
   const evidenceTrigger = useRef<HTMLButtonElement | null>(null)
+  const interactionReturnFocus = useRef<HTMLElement | null>(null)
   const resumeAfterDeskClose = useRef(false)
   const [interactionOpen, setInteractionOpen] = useState(false)
   const [interactionOpenedAt, setInteractionOpenedAt] = useState<number | null>(null)
@@ -352,6 +381,9 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
       return
     }
     if (position.scene.interaction && !interactionOpen) {
+      interactionReturnFocus.current = document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null
       setInteractionOpen(true)
       setInteractionOpenedAt(now())
       return
@@ -754,7 +786,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
   } else if (interactionOpen && interaction) {
     const isVote = interaction.kind === 'seal-vote' || interaction.kind === 'second-vote' || interaction.kind === 'final-vote'
     overlay = (
-      <section className="cw-modal cw-interaction" role="dialog" aria-modal="true" aria-labelledby="cw-interaction-heading">
+      <MandatoryInteractionDialog returnFocusTo={interactionReturnFocus.current}>
         <p className="cw-kicker">Your contribution</p>
         <h2 id="cw-interaction-heading">{interaction.prompt}</h2>
         {isReplay ? (
@@ -859,6 +891,9 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
             ))}
           </dl>
         ) : null}
+        {interaction.kind === 'inspect-exhibit' ? (
+          <button type="button" onClick={toggleDesk}>Open juror desk to inspect admitted exhibits</button>
+        ) : null}
         <button
           className="cw-primary"
           type="button"
@@ -893,7 +928,7 @@ export function CourtWeekApp({ courtWeek, now = Date.now, releaseBase, preparePr
             Continue without contributing
           </button>
         ) : null}
-      </section>
+      </MandatoryInteractionDialog>
     )
   }
 

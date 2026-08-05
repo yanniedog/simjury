@@ -23,6 +23,36 @@ async function prepareCourt(page: Page) {
   await page.goto('/')
 }
 
+async function seedProgress(page: Page, position: Record<string, unknown>) {
+  await page.goto('/robots.txt')
+  await page.evaluate(async (instant) => new Promise<void>((resolve, reject) => {
+    const request = indexedDB.open('simjury-court-week-v1', 1)
+    request.onerror = () => reject(request.error)
+    request.onupgradeneeded = () => request.result.createObjectStore('progress')
+    request.onsuccess = () => {
+      const database = request.result
+      const transaction = database.transaction('progress', 'readwrite')
+      transaction.onerror = () => reject(transaction.error)
+      transaction.oncomplete = () => { database.close(); resolve() }
+      transaction.objectStore('progress').put({
+        schemaVersion: 'court-week-progress-v1',
+        courtWeekId: 'cw-0001',
+        revision: '2026.08.03-r1',
+        highestObservedTime: new Date(instant).toISOString(),
+        completedSessionIds: [],
+        currentSessionId: 'cw-0001-monday',
+        currentSceneId: 'mon-arrival',
+        currentCueId: 'mon-arrival-1',
+        notes: '',
+        reasoningContributions: [],
+        accessibilityMode: 'reading',
+        majorityDirectionReceived: false,
+        ...position,
+      }, 'cw-0001')
+    }
+  }), releaseNow)
+}
+
 test('caption assistive copy exposes the complete visible cue exactly once', async ({ page }) => {
   await page.addInitScript((instant) => {
     Date.now = () => instant
@@ -91,6 +121,65 @@ test('caption assistive copy exposes the complete visible cue exactly once', asy
   await expect(liveCue).toHaveAttribute('aria-live', 'polite')
   await expect(liveCue).toHaveText(`Court officer: ${await visibleCue.textContent()}`)
   await expect(visibleCue.locator('xpath=..')).toHaveAttribute('aria-hidden', 'true')
+})
+
+test('reading mode announces each newly displayed legal cue exactly once', async ({ page }) => {
+  await prepareCourt(page)
+  await page.getByLabel('Reading mode').check()
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+
+  const readingCopy = page.locator('.cw-reading-copy')
+  const firstCue = await readingCopy.textContent()
+  await expect(readingCopy).toHaveAttribute('aria-live', 'polite')
+  await expect(readingCopy).toHaveAttribute('aria-atomic', 'true')
+  await expect(readingCopy.locator('.cw-visually-hidden')).toContainText('Court officer:')
+  await expect(page.locator('[aria-live="polite"]')).toHaveCount(1)
+  await expect(page.locator('.cw-cue-live-region')).toHaveAttribute('aria-live', 'off')
+  await expect(page.locator('.cw-cue-live-region')).toHaveAttribute('aria-hidden', 'true')
+
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await expect(readingCopy).not.toHaveText(firstCue ?? '')
+  await expect(page.locator('[aria-live="polite"]')).toHaveCount(1)
+  await expect(page.locator('.cw-cue-live-region')).toHaveAttribute('aria-live', 'off')
+  await expect(page.locator('.cw-cue-live-region')).toHaveAttribute('aria-hidden', 'true')
+})
+
+test('mandatory deliberation selects retain 44px targets and a three-pixel focus ring', async ({ page }) => {
+  await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
+  await seedProgress(page, {
+    completedSessionIds: [
+      'cw-0001-monday', 'cw-0001-tuesday', 'cw-0001-wednesday',
+      'cw-0001-thursday', 'cw-0001-friday',
+    ],
+    currentSessionId: 'cw-0001-saturday', currentSceneId: 'sat-room', currentCueId: 'sat-room-3',
+  })
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  const dialog = page.getByRole('dialog', { name: /Optionally test this opening concern/i })
+  for (const [index, label] of ['Legal question', 'Admitted evidence'].entries()) {
+    const select = dialog.getByLabel(label)
+    if (index > 0) await page.keyboard.press('Tab')
+    await expect(select).toBeFocused()
+    const geometry = await select.evaluate((element) => {
+      const box = element.getBoundingClientRect()
+      const style = getComputedStyle(element)
+      return { height: box.height, outlineWidth: style.outlineWidth, outlineStyle: style.outlineStyle }
+    })
+    expect(geometry.height).toBeGreaterThanOrEqual(44)
+    expect(geometry).toMatchObject({ outlineWidth: '3px', outlineStyle: 'solid' })
+  }
+})
+
+test('inspect-exhibit prompts keep admitted exhibits reachable inside the modal boundary', async ({ page }) => {
+  await seedProgress(page, { currentSceneId: 'mon-orr-chief', currentCueId: 'mon-orr-chief-2' })
+  await prepareCourt(page)
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  const interaction = page.getByRole('dialog', { name: /Inspect the admitted route diagram/i })
+  await interaction.getByRole('button', { name: /Open juror desk/i }).click()
+  await expect(page.getByRole('dialog', { name: 'Your working papers' })).toBeVisible()
 })
 
 test('labelled entry and desk controls retain a 44px effective touch target', async ({ page }) => {

@@ -225,9 +225,13 @@ export function ImmersiveCourtShell({
       data-media-notice={Boolean(playbackError)}
       style={captionPlacementStyle(captionPlacements)}
     >
-      <a className="cw-skip-link" href="#cw-primary-controls">Skip to controls</a>
-
-      <div className="cw-stage" aria-busy={playbackStatus === 'loading'}>
+      <div
+        className="cw-stage"
+        aria-busy={playbackStatus === 'loading'}
+        aria-hidden={overlay ? true : undefined}
+        {...(overlay ? { inert: '' } : {})}
+      >
+        <a className="cw-skip-link" href="#cw-primary-controls">Skip to controls</a>
         <picture
           className={`cw-stage__picture${usesRuntimeStrip ? ' cw-stage__picture--strip' : ''}${imageAvailable ? '' : ' cw-stage__picture--unavailable'}`}
           data-strip-cell={usesRuntimeStrip ? scene.visual.runtimeStrip?.cell : undefined}
@@ -284,7 +288,12 @@ export function ImmersiveCourtShell({
             {displayedSpeaker}
             {cue.tone === 'cross' ? <span className="cw-speaker__mode"> · cross-examination</span> : null}
           </p>
-          {readingModeActive ? <p className="cw-reading-copy">{cue.text}</p> : null}
+          {readingModeActive ? (
+            <p className="cw-reading-copy" aria-live="polite" aria-atomic="true">
+              <span className="cw-visually-hidden">{displayedSpeaker}{cue.tone === 'cross' ? ' · cross-examination' : ''}: </span>
+              {cue.text}
+            </p>
+          ) : null}
         </section>
 
         <div className="cw-speaker cw-speaker--collision-probe" aria-hidden="true">

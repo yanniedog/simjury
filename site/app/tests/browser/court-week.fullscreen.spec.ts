@@ -154,7 +154,7 @@ async function captureCourtState(page: Page) {
     dayAndPhase: await page.locator('.cw-status p').first().textContent(),
     progressLabel: await page.locator('.cw-status p').nth(1).textContent(),
     speaker: await page.locator('#cw-speaker-name').textContent(),
-    cue: await page.locator('[aria-live]').textContent(),
+    cue: await page.locator('.cw-cue-live-region').textContent(),
     stored: await readProgress(page),
     media: await page.evaluate(() => ({ ...(
       window as typeof window & { __simjuryMediaAudit: MediaAudit }
@@ -166,7 +166,7 @@ async function expectCourtState(page: Page, expected: Awaited<ReturnType<typeof 
   await expect(page.locator('.cw-status p').first()).toHaveText(expected.dayAndPhase ?? '')
   await expect(page.locator('.cw-status p').nth(1)).toHaveText(expected.progressLabel ?? '')
   await expect(page.locator('#cw-speaker-name')).toHaveText(expected.speaker ?? '')
-  await expect(page.locator('[aria-live]')).toHaveText(expected.cue ?? '')
+  await expect(page.locator('.cw-cue-live-region')).toHaveText(expected.cue ?? '')
   await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible()
   await expect.poll(() => readProgress(page)).toEqual(expected.stored)
   await expect.poll(() => page.evaluate(() => ({ ...(

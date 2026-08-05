@@ -173,9 +173,52 @@ test('keyboard-only entry, skip link and desk expose a visible three-pixel focus
   const desk = page.getByRole('dialog', { name: 'Your working papers' })
   await expect(desk.getByRole('button', { name: 'Close juror desk' })).toBeFocused()
   await expect(desk.getByRole('heading', { name: 'The charge' })).toBeVisible()
+  const legalSummary = desk.locator('summary').first()
+  await legalSummary.focus()
+  await expectThreePixelFocusRing(legalSummary)
   await page.keyboard.press('Escape')
   await expect(deskTrigger).toBeFocused()
   await expect.poll(() => readProgressPosition(page)).toEqual(before)
+})
+
+test('mandatory contribution dialogs take and contain focus before returning it to proceedings', async ({ page }) => {
+  await page.clock.install({ time: releaseNow })
+  await page.goto('/')
+  await page.getByLabel('Reading mode').check()
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+
+  for (let cue = 0; cue < 30; cue += 1) {
+    if (await page.locator('.cw-interaction').count()) break
+    await page.getByRole('button', { name: 'Continue' }).click()
+  }
+
+  const dialog = page.getByRole('dialog', { name: /Settle into the jury viewpoint/i })
+  await expect(dialog).toBeVisible()
+  const choice = dialog.getByRole('button', { name: 'Continue', exact: true })
+  await expect(choice).toBeFocused()
+  await expect(page.locator('.cw-stage')).toHaveAttribute('inert', '')
+  await expect(page.locator('.cw-stage')).toHaveAttribute('aria-hidden', 'true')
+
+  const mandatoryPosition = await readProgressPosition(page)
+  await page.keyboard.press('Escape')
+  await expect(dialog).toBeVisible()
+  await expect(choice).toBeFocused()
+  await expect.poll(() => readProgressPosition(page)).toEqual(mandatoryPosition)
+
+  await page.keyboard.press('Tab')
+  await expect(choice).toBeFocused()
+  await page.keyboard.press('Shift+Tab')
+  await expect(choice).toBeFocused()
+  await expect(page.locator('.cw-controls button:focus')).toHaveCount(0)
+
+  await page.clock.fastForward(120_000)
+  await expect(dialog.getByRole('button', { name: 'Continue proceedings' })).toBeEnabled()
+  await dialog.getByRole('button', { name: 'Continue proceedings' }).click()
+
+  await expect(dialog).toHaveCount(0)
+  await expect(page.locator('.cw-stage')).not.toHaveAttribute('inert', '')
+  await expect(page.getByRole('button', { name: 'Continue' })).toBeFocused()
+  await expect(page.locator('.cw-reading-copy')).toContainText('Choose an oath or affirmation')
 })
 
 async function newReflowContext(browser: Browser, screen: { width: number; height: number }): Promise<BrowserContext> {

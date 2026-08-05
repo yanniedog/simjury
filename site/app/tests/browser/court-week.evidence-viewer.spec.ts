@@ -142,7 +142,9 @@ test('closing focused inspection resumes an active cue from its boundary', async
   await expect.poll(() => readProgressPosition(page)).not.toBeNull()
   const progressBefore = await readProgressPosition(page)
   const viewer = await openRoute(page)
-  await expect(page.getByLabel('Court playback controls').getByRole('button', { name: 'Resume' })).toBeVisible()
+  // The playback controls are intentionally outside the accessibility tree
+  // while the modal viewer is open, but their paused state must still update.
+  await expect(page.locator('.cw-controls button', { hasText: 'Resume' })).toHaveCount(1)
   await viewer.getByRole('button', { name: 'Close exhibit' }).click()
   await page.getByRole('button', { name: 'Close juror desk' }).click()
   await expect(page.getByLabel('Court playback controls').getByRole('button', { name: 'Pause' })).toBeVisible()
