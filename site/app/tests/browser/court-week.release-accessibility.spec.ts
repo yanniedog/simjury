@@ -329,7 +329,9 @@ test('Monday captions avoid line overflow with only enumerated safe-layout fallb
       }
     }
   }
-  expect(observedFallbacks).toEqual(intentionalRuntimeFallbacks)
+  // Font rasterisation can make an allowlisted fallback unnecessary on another
+  // supported platform. Unexpected fallbacks still fail in the checks above.
+  expect([...observedFallbacks].every((key) => intentionalRuntimeFallbacks.has(key))).toBe(true)
   expect(measuredFailures).toEqual([])
 })
 
@@ -422,6 +424,8 @@ test('Tuesday captions avoid line overflow with only enumerated safe-layout fall
       }
     }
   }
-  expect(observedFallbacks).toEqual(intentionalRuntimeFallbacks)
+  // Font rasterisation can make an allowlisted fallback unnecessary on another
+  // supported platform. Unexpected fallbacks still fail in the checks above.
+  expect([...observedFallbacks].every((key) => intentionalRuntimeFallbacks.has(key))).toBe(true)
   expect(measuredFailures).toEqual([])
 })

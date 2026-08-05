@@ -16,6 +16,7 @@ const expectedBrowser: Record<string, 'chromium' | 'webkit'> = {
 }
 
 interface MediaAuditState {
+  playCalls: number
   speakCalls: number
   cancelCalls: number
   lastUtterance: string
@@ -31,7 +32,7 @@ async function installDeterministicPlayback(page: Page) {
   await page.addInitScript((instant) => {
     Date.now = () => instant
     const auditWindow = window as typeof window & { __simjuryMediaAudit: MediaAuditState }
-    auditWindow.__simjuryMediaAudit = { speakCalls: 0, cancelCalls: 0, lastUtterance: '' }
+    auditWindow.__simjuryMediaAudit = { playCalls: 0, speakCalls: 0, cancelCalls: 0, lastUtterance: '' }
     class TestAudio extends EventTarget {
       src = ''
       currentTime = 0
@@ -40,6 +41,7 @@ async function installDeterministicPlayback(page: Page) {
       canPlayType() { return 'probably' }
       load() { /* deterministic no-network audio */ }
       play() {
+        auditWindow.__simjuryMediaAudit.playCalls += 1
         this.dispatchEvent(new Event('playing'))
         return Promise.resolve()
       }
@@ -82,7 +84,10 @@ async function enterActiveCourt(page: Page) {
   await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible()
   await expect.poll(() => page.evaluate(() => (
     window as typeof window & { __simjuryMediaAudit: MediaAuditState }
-  ).__simjuryMediaAudit.speakCalls)).toBe(1)
+  ).__simjuryMediaAudit.playCalls)).toBe(1)
+  await expect.poll(() => page.evaluate(() => (
+    window as typeof window & { __simjuryMediaAudit: MediaAuditState }
+  ).__simjuryMediaAudit.speakCalls)).toBe(0)
 }
 
 async function readProgressPosition(page: Page): Promise<ProgressPosition | null> {
