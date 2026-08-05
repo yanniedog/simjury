@@ -320,15 +320,16 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-stage')).toHaveAttribute('inert', '')
   await expect(page.locator('.cw-stage')).toHaveAttribute('aria-hidden', 'true')
 
+  const frozenCue = await page.locator('.cw-cue-live-region').textContent()
   // Progress writes are deliberately debounced. The dialog can render while
   // IndexedDB is still committing the last caption that led to this boundary,
   // so first wait for storage to match the cue already presented behind it.
   await expect.poll(() => readProgressPosition(page)).toMatchObject({
     currentCueId: firstMandatoryCueId,
   })
+  await expect(page.locator('.cw-cue-live-region')).toHaveText(frozenCue ?? '')
   const mandatoryPosition = await readProgressPosition(page)
   expect(mandatoryPosition).toMatchObject({ currentCueId: firstMandatoryCueId })
-  const frozenCue = await page.locator('.cw-cue-live-region').textContent()
   await page.keyboard.press('Escape')
   await expect(dialog).toBeVisible()
   await expect(choice).toBeFocused()
