@@ -24,7 +24,11 @@ export function LocalProfilePanel({
   onOpenDeveloperPreview,
 }: LocalProfilePanelProps) {
   const [label, setLabel] = useState(profile.jurorLabel)
+  const [expanded, setExpanded] = useState(!profile.adultFictionAcknowledged)
   useEffect(() => setLabel(profile.jurorLabel), [profile.jurorLabel])
+  useEffect(() => {
+    if (!profile.adultFictionAcknowledged) setExpanded(true)
+  }, [profile.adultFictionAcknowledged])
 
   const update = (patch: Partial<LocalProfileInput>) => onChange({
     jurorLabel: profile.jurorLabel,
@@ -38,7 +42,11 @@ export function LocalProfilePanel({
   }
 
   return (
-    <details className="cw-local-profile" open={!profile.adultFictionAcknowledged}>
+    <details
+      className="cw-local-profile"
+      open={expanded}
+      onToggle={(event) => setExpanded(event.currentTarget.open)}
+    >
       <summary>Local profile <span>{profile.jurorLabel}</span></summary>
       <div className="cw-local-profile__body">
         <p><strong>No account.</strong> These settings stay in this browser.</p>

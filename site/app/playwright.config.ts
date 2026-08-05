@@ -1,5 +1,12 @@
 import { defineConfig, devices } from '@playwright/test'
 
+const acknowledgedProfile = JSON.stringify({
+  schemaVersion: 'simjury-local-profile-v1',
+  jurorLabel: 'Juror 01',
+  adultFictionAcknowledged: true,
+  developerMode: false,
+})
+
 const desktopIgnore = [
   /court-week\.devices\.spec\.ts/u,
   /court-week\.network\.spec\.ts/u,
@@ -13,6 +20,13 @@ export default defineConfig({
   reporter: process.env.CI ? [['line'], ['html', { open: 'never' }]] : 'line',
   use: {
     baseURL: 'http://127.0.0.1:43127',
+    storageState: {
+      cookies: [],
+      origins: [{
+        origin: 'http://127.0.0.1:43127',
+        localStorage: [{ name: 'simjury:court-week:local-profile:v1', value: acknowledgedProfile }],
+      }],
+    },
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },

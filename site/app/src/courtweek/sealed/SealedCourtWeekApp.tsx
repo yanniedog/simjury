@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type {
   CourtSession,
   CourtWeek,
@@ -9,6 +9,13 @@ import { attachSessionArt, attachSessionAudio } from '../media/manifest'
 import { loadWeeklyProgress, type StoredWeeklyProgress } from '../state/progress'
 import { observeCourtTime } from '../state/schedule'
 import { WEEKLY_PROGRESS_EVENT } from '../state/useWeeklyProgress'
+import {
+  loadLocalProfile,
+  resetLocalProfile,
+  saveLocalProfile,
+  type LocalProfileInput,
+  type LocalProfileResult,
+} from '../state/localProfile'
 import { CourtWeekApp } from '../ui'
 import {
   eligibleScheduleEntries,
@@ -19,11 +26,7 @@ import {
 import { saveOpenedPack } from './packStore'
 import { prepareSealedProgressImport } from './progressImport'
 import type { CourtDayPack, CourtWeekBootstrap } from './types'
-import {
-  DEVELOPER_PREVIEW_NOW,
-  developerProgressForDay,
-  verifyDeveloperToken,
-} from './developerPreview'
+import { DEVELOPER_PREVIEW_NOW, developerProgressForDay } from './developerPreview'
 
 export interface SealedCourtWeekAppProps {
   bootstrap: CourtWeekBootstrap
@@ -31,7 +34,6 @@ export interface SealedCourtWeekAppProps {
   releaseBase?: string
   packBase?: string
   fetcher?: SealedPackFetcher
-  developerDigest?: string
 }
 
 function baselineProgress(bootstrap: CourtWeekBootstrap, now: number): StoredWeeklyProgress {
@@ -154,7 +156,16 @@ function StandardSealedCourtWeekApp({
   packBase = `${import.meta.env.BASE_URL}court-week/packs/`,
   fetcher,
   focusEntryHeading = false,
-}: SealedCourtWeekAppProps & { focusEntryHeading?: boolean }) {
+  localProfile,
+}: SealedCourtWeekAppProps & {
+  focusEntryHeading?: boolean
+  localProfile?: {
+    state: LocalProfileResult
+    onChange: (profile: LocalProfileInput) => void
+    onReset: () => void
+    onOpenDeveloperPreview: () => void
+  }
+}) {
   const [progress, setProgress] = useState<StoredWeeklyProgress | null>(null)
   const [packs, setPacks] = useState<CourtDayPack[]>([])
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -283,73 +294,16 @@ function StandardSealedCourtWeekApp({
         releaseBase={releaseBase}
         prepareProgressImport={prepareProgressImport}
         focusEntryHeading={focusEntryHeading}
+        localProfile={localProfile ? {
+          profile: localProfile.state.profile,
+          persistence: localProfile.state.persistence,
+          issue: localProfile.state.issue,
+          onChange: localProfile.onChange,
+          onReset: localProfile.onReset,
+          onOpenDeveloperPreview: localProfile.onOpenDeveloperPreview,
+        } : undefined}
       />
     </>
-  )
-}
-
-function DeveloperAccessGate({
-  onAuthorised,
-  expectedDigest,
-}: { onAuthorised: () => void; expectedDigest?: string }) {
-  const input = useRef<HTMLInputElement>(null)
-  const [checking, setChecking] = useState(false)
-  const [error, setError] = useState('')
-
-  const submit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const form = event.currentTarget
-    const token = input.current?.value ?? ''
-    setChecking(true)
-    setError('')
-    try {
-      if (!await verifyDeveloperToken(token, expectedDigest)) {
-        setError('That developer access key was not recognised.')
-        window.setTimeout(() => {
-          input.current?.focus()
-          input.current?.select()
-        }, 0)
-        return
-      }
-      form.reset()
-      if (input.current) input.current.value = ''
-      history.replaceState(history.state, '', `${location.pathname}${location.search}`)
-      onAuthorised()
-    } catch {
-      setError('Developer access could not be checked in this browser.')
-      window.setTimeout(() => {
-        input.current?.focus()
-        input.current?.select()
-      }, 0)
-    } finally {
-      setChecking(false)
-    }
-  }
-
-  return (
-    <main className="cw-entry cw-developer-gate-surface">
-      <form className="cw-entry__panel cw-developer-gate" onSubmit={(event) => void submit(event)}>
-        <p className="cw-kicker">Owner access</p>
-        <h1>Developer preview</h1>
-        <p id="cw-developer-access-help">
-          Enter the private developer access key to inspect the complete Court Week without changing saved juror progress.
-        </p>
-        <label htmlFor="cw-developer-access"><strong>Developer access key</strong></label>
-        <input
-          ref={input}
-          id="cw-developer-access"
-          type="password"
-          autoComplete="off"
-          aria-describedby="cw-developer-access-help"
-          disabled={checking}
-          required
-        />
-        {error ? <p className="cw-error" role="alert">{error}</p> : null}
-        <button className="cw-primary" type="submit" disabled={checking}>
-          {checking ? 'Checking access…' : 'Open developer preview'}
-        </button>
-      </form>
-    </main>
   )
 }
 
@@ -396,6 +350,20 @@ function DeveloperPreview({
     return () => { active = false }
   }, [bootstrap, fetcher, packBase, retry])
 
+  // Entering preview asks the parent to hide the toolbar. Keep the hydrated
+  // Court Week identity stable across that parent render so a playing cue is
+  // not torn down and immediately paused.
+  const courtWeek = useMemo(
+    () => packs
+      ? runtimeCourtWeek(bootstrap, packs.filter(({ ordinal }) => ordinal <= selectedOrdinal))
+      : null,
+    [bootstrap, packs, selectedOrdinal],
+  )
+  const previewProgress = useMemo(
+    () => courtWeek ? developerProgressForDay(courtWeek, selectedOrdinal) : null,
+    [courtWeek, selectedOrdinal],
+  )
+
   if (loadError) {
     return <main className="cw-entry"><div className="cw-entry__panel">
       <p className="cw-kicker">Developer preview</p><h1>Sessions unavailable</h1>
@@ -406,10 +374,7 @@ function DeveloperPreview({
       </div>
     </div></main>
   }
-  if (!packs) return <main className="cw-loading" aria-busy="true"><p>Opening developer preview…</p></main>
-
-  const courtWeek = runtimeCourtWeek(bootstrap, packs.filter(({ ordinal }) => ordinal <= selectedOrdinal))
-  const previewProgress = developerProgressForDay(courtWeek, selectedOrdinal)
+  if (!courtWeek || !previewProgress) return <main className="cw-loading" aria-busy="true"><p>Opening developer preview…</p></main>
   return (
     <div className="cw-developer-preview">
       {!entered ? <aside className="cw-developer-toolbar" aria-label="Developer preview controls">
@@ -447,35 +412,14 @@ function DeveloperPreview({
 }
 
 export function SealedCourtWeekApp(props: SealedCourtWeekAppProps) {
-  const [developerMode, setDeveloperMode] = useState<'gate' | 'preview' | 'standard'>(() => (
-    typeof location !== 'undefined' && location.hash === '#developer' ? 'gate' : 'standard'
-  ))
+  const [developerMode, setDeveloperMode] = useState<'preview' | 'standard'>('standard')
   const [focusPublicEntry, setFocusPublicEntry] = useState(false)
-  useEffect(() => {
-    const followDeveloperHash = () => setDeveloperMode((current) => {
-      if (location.hash === '#developer') {
-        setFocusPublicEntry(false)
-        return current === 'standard' ? 'gate' : current
-      }
-      if (current === 'gate') {
-        setFocusPublicEntry(true)
-        return 'standard'
-      }
-      return current
-    })
-    window.addEventListener('hashchange', followDeveloperHash)
-    return () => window.removeEventListener('hashchange', followDeveloperHash)
+  const [localProfile, setLocalProfile] = useState<LocalProfileResult>(loadLocalProfile)
+  const changeLocalProfile = useCallback((profile: LocalProfileInput) => {
+    setLocalProfile(saveLocalProfile(profile))
   }, [])
+  const clearLocalProfile = useCallback(() => setLocalProfile(resetLocalProfile()), [])
   const packBase = props.packBase ?? `${import.meta.env.BASE_URL}court-week/packs/`
-  if (developerMode === 'gate') {
-    return <DeveloperAccessGate
-      expectedDigest={props.developerDigest}
-      onAuthorised={() => {
-        setFocusPublicEntry(false)
-        setDeveloperMode('preview')
-      }}
-    />
-  }
   if (developerMode === 'preview') {
     return <DeveloperPreview {...props} packBase={packBase} onLeave={() => {
       setFocusPublicEntry(true)
@@ -486,5 +430,15 @@ export function SealedCourtWeekApp(props: SealedCourtWeekAppProps) {
     {...props}
     packBase={packBase}
     focusEntryHeading={focusPublicEntry}
+    localProfile={{
+      state: localProfile,
+      onChange: changeLocalProfile,
+      onReset: clearLocalProfile,
+      onOpenDeveloperPreview: () => {
+        if (!localProfile.profile.adultFictionAcknowledged || !localProfile.profile.developerMode) return
+        setFocusPublicEntry(false)
+        setDeveloperMode('preview')
+      },
+    }}
   />
 }

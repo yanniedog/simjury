@@ -3,25 +3,9 @@ import { elevenMinutesCourtWeek } from '../content'
 import {
   DEVELOPER_PREVIEW_NOW,
   developerProgressForDay,
-  digestDeveloperToken,
-  verifyDeveloperToken,
 } from './developerPreview'
 
 describe('developer preview boundary', () => {
-  it('uses the domain-separated SHA-256 verifier', async () => {
-    await expect(digestDeveloperToken('test')).resolves.toBe(
-      'f7230d7ddca6d772015f4ac74141c6cc0a80e745895420731bc0ed6aeed0cbe1',
-    )
-    const fixture = 'A'.repeat(43)
-    const fixtureDigest = await digestDeveloperToken(fixture)
-    await expect(verifyDeveloperToken(fixture, fixtureDigest)).resolves.toBe(true)
-    await expect(verifyDeveloperToken('B'.repeat(43), fixtureDigest)).resolves.toBe(false)
-    await expect(verifyDeveloperToken('short', fixtureDigest)).resolves.toBe(false)
-    await expect(verifyDeveloperToken('A'.repeat(44), fixtureDigest)).resolves.toBe(false)
-    await expect(verifyDeveloperToken(fixture, fixtureDigest.slice(1))).resolves.toBe(false)
-    await expect(verifyDeveloperToken(fixture, 'g'.repeat(64))).resolves.toBe(false)
-  })
-
   it('starts each selected day at its first cue with only the preceding days completed', () => {
     for (const session of elevenMinutesCourtWeek.manifest.sessions) {
       const progress = developerProgressForDay(elevenMinutesCourtWeek, session.ordinal)

@@ -40,8 +40,8 @@ decision is [`../COURT-WEEK.md`](../COURT-WEEK.md). Legacy `/today`, `/play` and
 ## D-WEB-4 — Fiction and adult entry
 
 - SimJury identifies the whole experience as fictional and for adults aged 18+
-  in one combined entry gate remembered locally. The case does not repeat that
-  disclaimer during play.
+  in one combined entry acknowledgement remembered in the device-local profile.
+  The case does not repeat that disclaimer during play.
 - No real person, organisation, brand, event or specific real location appears
   in player-visible content. Serious crime is direct but non-graphic and omits
   reusable instructions for harm.
@@ -50,8 +50,10 @@ decision is [`../COURT-WEEK.md`](../COURT-WEEK.md). Legacy `/today`, `/play` and
 
 - Cloudflare serves Static Assets only. No Worker, API, D1, Durable Object,
   WebSocket, waitlist, Discord handler, analytics or runtime AI is allowed.
-- Progress, preferences, private notes and ballots live in IndexedDB. A versioned
-  local export/import file is the only cross-device transfer mechanism.
+- Progress, private notes and ballots live in IndexedDB. The small local profile
+  (juror label, adult-fiction acknowledgement and default-off Developer mode)
+  lives in validated localStorage. It is not an account and is never transmitted.
+  A versioned local export/import file is the only cross-device transfer mechanism.
 - Old Daily Docket local-storage records remain untouched but are never read.
 
 ## D-WEB-6 — Device parity
