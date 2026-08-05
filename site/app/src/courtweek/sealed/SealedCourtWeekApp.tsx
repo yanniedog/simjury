@@ -153,12 +153,18 @@ function StandardSealedCourtWeekApp({
   releaseBase,
   packBase = `${import.meta.env.BASE_URL}court-week/packs/`,
   fetcher,
-}: SealedCourtWeekAppProps) {
+  focusEntryHeading = false,
+}: SealedCourtWeekAppProps & { focusEntryHeading?: boolean }) {
   const [progress, setProgress] = useState<StoredWeeklyProgress | null>(null)
   const [packs, setPacks] = useState<CourtDayPack[]>([])
   const [loadError, setLoadError] = useState<string | null>(null)
   const [retry, setRetry] = useState(0)
   const [, setClockTick] = useState(0)
+  const errorHeading = useRef<HTMLHeadingElement>(null)
+
+  useEffect(() => {
+    if (focusEntryHeading && loadError) errorHeading.current?.focus()
+  }, [focusEntryHeading, loadError])
 
   useEffect(() => {
     const timer = window.setInterval(() => setClockTick((value) => value + 1), 30_000)
@@ -248,7 +254,9 @@ function StandardSealedCourtWeekApp({
       <main className="cw-entry">
         <div className="cw-entry__panel">
           <p className="cw-kicker">Session still sealed</p>
-          <h1>Reconnect to enter court</h1>
+          <h1 ref={errorHeading} tabIndex={focusEntryHeading ? -1 : undefined}>
+            Reconnect to enter court
+          </h1>
           <p>{loadError}</p>
           <p>Previously opened sessions remain stored on this device. No progress has been lost.</p>
           <button type="button" onClick={() => setRetry((value) => value + 1)}>Try again</button>
@@ -274,6 +282,7 @@ function StandardSealedCourtWeekApp({
         now={now}
         releaseBase={releaseBase}
         prepareProgressImport={prepareProgressImport}
+        focusEntryHeading={focusEntryHeading}
       />
     </>
   )
@@ -318,7 +327,7 @@ function DeveloperAccessGate({
   }
 
   return (
-    <main className="cw-entry">
+    <main className="cw-entry cw-developer-gate-surface">
       <form className="cw-entry__panel cw-developer-gate" onSubmit={(event) => void submit(event)}>
         <p className="cw-kicker">Owner access</p>
         <h1>Developer preview</h1>
@@ -367,7 +376,7 @@ function DeveloperPreview({
 
   useEffect(() => {
     if (!entered) sessionSelector.current?.focus()
-  }, [entered, selectedOrdinal])
+  }, [entered, packs, selectedOrdinal])
 
   useEffect(() => {
     let active = true
@@ -441,24 +450,41 @@ export function SealedCourtWeekApp(props: SealedCourtWeekAppProps) {
   const [developerMode, setDeveloperMode] = useState<'gate' | 'preview' | 'standard'>(() => (
     typeof location !== 'undefined' && location.hash === '#developer' ? 'gate' : 'standard'
   ))
+  const [focusPublicEntry, setFocusPublicEntry] = useState(false)
   useEffect(() => {
-    const openDeveloperGate = () => {
+    const followDeveloperHash = () => setDeveloperMode((current) => {
       if (location.hash === '#developer') {
-        setDeveloperMode((current) => current === 'standard' ? 'gate' : current)
+        setFocusPublicEntry(false)
+        return current === 'standard' ? 'gate' : current
       }
-    }
-    window.addEventListener('hashchange', openDeveloperGate)
-    return () => window.removeEventListener('hashchange', openDeveloperGate)
+      if (current === 'gate') {
+        setFocusPublicEntry(true)
+        return 'standard'
+      }
+      return current
+    })
+    window.addEventListener('hashchange', followDeveloperHash)
+    return () => window.removeEventListener('hashchange', followDeveloperHash)
   }, [])
   const packBase = props.packBase ?? `${import.meta.env.BASE_URL}court-week/packs/`
   if (developerMode === 'gate') {
     return <DeveloperAccessGate
       expectedDigest={props.developerDigest}
-      onAuthorised={() => setDeveloperMode('preview')}
+      onAuthorised={() => {
+        setFocusPublicEntry(false)
+        setDeveloperMode('preview')
+      }}
     />
   }
   if (developerMode === 'preview') {
-    return <DeveloperPreview {...props} packBase={packBase} onLeave={() => setDeveloperMode('standard')} />
+    return <DeveloperPreview {...props} packBase={packBase} onLeave={() => {
+      setFocusPublicEntry(true)
+      setDeveloperMode('standard')
+    }} />
   }
-  return <StandardSealedCourtWeekApp {...props} packBase={packBase} />
+  return <StandardSealedCourtWeekApp
+    {...props}
+    packBase={packBase}
+    focusEntryHeading={focusPublicEntry}
+  />
 }

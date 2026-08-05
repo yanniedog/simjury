@@ -25,6 +25,16 @@ const viewports = [
   [1280, 800], [1366, 768], [1440, 900], [1920, 1080], [2560, 1440],
 ] as const
 
+test('developer gate remains reachable at a 200% compact-phone reflow', async ({ page }) => {
+  await page.setViewportSize({ width: 160, height: 284 })
+  await page.goto('/#developer')
+  const surface = page.locator('.cw-developer-gate-surface')
+  const submit = page.getByRole('button', { name: 'Open developer preview' })
+  await submit.scrollIntoViewIfNeeded()
+  await expect(submit).toBeVisible()
+  expect(await surface.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true)
+})
+
 test('Take your seat starts the first cue exactly once', async ({ page }) => {
   await page.addInitScript((instant) => {
     Date.now = () => instant

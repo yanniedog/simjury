@@ -90,6 +90,9 @@ describe('SealedCourtWeekApp', () => {
     await submit(token)
     await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(7))
     expect(location.hash).toBe('')
+    await vi.waitFor(() => expect(document.activeElement).toBe(
+      container.querySelector('#cw-developer-day'),
+    ))
     expect(container.textContent).toContain('Saved juror progress is untouched')
     expect(container.textContent).toContain('Preview progress and private notes are discarded')
     expect(container.textContent).not.toContain('progress remains on this device')
@@ -117,6 +120,13 @@ describe('SealedCourtWeekApp', () => {
       container.querySelector('#cw-developer-day'),
     ))
 
+    const leave = Array.from(container.querySelectorAll('button')).find(
+      ({ textContent }) => textContent?.trim() === 'Leave preview',
+    )
+    await act(async () => leave?.click())
+    await vi.waitFor(() => expect(document.activeElement).toBe(container.querySelector('h1')))
+    expect(container.textContent).not.toContain('DEV PREVIEW')
+
     act(() => window.dispatchEvent(new Event('pagehide')))
     await new Promise((resolve) => window.setTimeout(resolve, 150))
     await expect(loadWeeklyProgress(existing.courtWeekId)).resolves.toMatchObject({ notes: existing.notes })
@@ -130,6 +140,11 @@ describe('SealedCourtWeekApp', () => {
     act(() => window.dispatchEvent(new HashChangeEvent('hashchange')))
 
     expect(container.querySelector<HTMLInputElement>('#cw-developer-access')?.type).toBe('password')
+
+    history.replaceState(null, '', '/jury/')
+    act(() => window.dispatchEvent(new HashChangeEvent('hashchange')))
+
+    expect(container.querySelector('#cw-developer-access')).toBeNull()
   })
 
   it('opens Monday while the Saturday deliberation pack remains absent', async () => {

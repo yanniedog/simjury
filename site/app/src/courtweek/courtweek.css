@@ -345,9 +345,12 @@
 .cw-mode-picker small { margin-top: .25rem; color: var(--cw-muted); }
 .cw-entry__fullscreen { display: flex; min-height: 44px; align-items: center; gap: .6rem; margin: 1rem 0; }
 .cw-entry__privacy { color: var(--cw-muted); font-size: .82rem; }
+.cw-developer-gate-surface { width: 100%; height: 100vh; min-height: 0; height: 100dvh; box-sizing: border-box; overflow-x: hidden; overflow-y: auto; place-items: start center; }
 .cw-developer-gate { display: grid; gap: .75rem; }
 .cw-developer-gate h1, .cw-developer-gate p { margin-block: 0; }
-.cw-developer-gate input { width: 100%; min-height: 44px; padding: .65rem; color: var(--cw-paper); border: 1px solid var(--cw-line); border-radius: .35rem; background: #080c0e; }
+.cw-developer-gate input { width: 100%; min-height: 44px; padding: .65rem; box-sizing: border-box; color: var(--cw-paper); border: 1px solid var(--cw-line); border-radius: .35rem; background: #080c0e; }
+.cw-developer-gate, .cw-developer-gate button { min-width: 0; overflow-wrap: anywhere; }
+.cw-developer-gate button { white-space: normal; }
 .cw-developer-preview { width: 100%; height: 100vh; min-height: 100svh; height: 100dvh; overflow-x: hidden; overflow-y: auto; background: #090d0f; }
 .cw-developer-toolbar { display: flex; width: min(42rem, calc(100% - 2rem)); min-height: 44px; margin: max(.5rem, env(safe-area-inset-top)) auto 0; align-items: center; gap: .55rem; padding: .35rem .6rem; box-sizing: border-box; color: var(--cw-paper); border: 1px solid var(--cw-brass); border-radius: .4rem; background: #11171a; }
 .cw-developer-toolbar strong { color: var(--cw-brass); white-space: nowrap; }

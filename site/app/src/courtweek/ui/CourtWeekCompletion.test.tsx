@@ -56,6 +56,8 @@ describe('CourtWeekCompletion', () => {
     )
 
     expect(markup).toContain('Developer session')
+    expect(markup).toContain('Sunday preview complete')
+    expect(markup).not.toContain('Court Week complete')
     expect(markup).toContain('Leave preview')
     expect(markup).toContain('Preview progress and private notes are discarded')
     expect(markup).toContain('<option value="7" selected="">Sunday</option>')
