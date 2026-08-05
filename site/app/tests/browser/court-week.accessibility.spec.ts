@@ -1,7 +1,11 @@
 import { expect, test, type Browser, type BrowserContext, type Locator, type Page } from '@playwright/test'
+import { elevenMinutesCourtWeek } from '../../src/courtweek/content/elevenMinutes'
 
 const baseURL = 'http://127.0.0.1:43127'
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
+const firstMandatoryCueId = elevenMinutesCourtWeek.manifest.sessions[0]?.scenes[0]?.cues.at(-1)?.id
+
+if (!firstMandatoryCueId) throw new Error('The first mandatory scene must contain at least one cue.')
 
 interface ProgressPosition {
   currentSessionId?: string
@@ -316,7 +320,14 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-stage')).toHaveAttribute('inert', '')
   await expect(page.locator('.cw-stage')).toHaveAttribute('aria-hidden', 'true')
 
+  // Progress writes are deliberately debounced. The dialog can render while
+  // IndexedDB is still committing the last caption that led to this boundary,
+  // so first wait for storage to match the cue already presented behind it.
+  await expect.poll(() => readProgressPosition(page)).toMatchObject({
+    currentCueId: firstMandatoryCueId,
+  })
   const mandatoryPosition = await readProgressPosition(page)
+  expect(mandatoryPosition).toMatchObject({ currentCueId: firstMandatoryCueId })
   const frozenCue = await page.locator('.cw-cue-live-region').textContent()
   await page.keyboard.press('Escape')
   await expect(dialog).toBeVisible()
