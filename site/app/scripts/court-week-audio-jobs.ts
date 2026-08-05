@@ -216,6 +216,7 @@ function buildSourceAudio(cues: SceneCue[]): {
         utterances.push(utterance)
       } else {
         utterance.text += ` ${turn.text}`
+        utterance.pauseAfterMs = pauseAfterMs(cue)
       }
       utterance.parts.push({ captionId: cue.id, turnId: turn.id, text: turn.text })
       utteranceByTurn.set(turn.id, utterance.id)
