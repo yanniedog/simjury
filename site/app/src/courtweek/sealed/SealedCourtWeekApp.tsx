@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import type {
   CourtSession,
   CourtWeek,
@@ -10,10 +10,20 @@ import { loadWeeklyProgress, type StoredWeeklyProgress } from '../state/progress
 import { observeCourtTime } from '../state/schedule'
 import { WEEKLY_PROGRESS_EVENT } from '../state/useWeeklyProgress'
 import { CourtWeekApp } from '../ui'
-import { eligibleScheduleEntries, loadEligibleCourtPacks, type SealedPackFetcher } from './loader'
+import {
+  eligibleScheduleEntries,
+  hydrateCourtPacks,
+  loadEligibleCourtPacks,
+  type SealedPackFetcher,
+} from './loader'
 import { saveOpenedPack } from './packStore'
 import { prepareSealedProgressImport } from './progressImport'
 import type { CourtDayPack, CourtWeekBootstrap } from './types'
+import {
+  DEVELOPER_PREVIEW_NOW,
+  developerProgressForDay,
+  verifyDeveloperToken,
+} from './developerPreview'
 
 export interface SealedCourtWeekAppProps {
   bootstrap: CourtWeekBootstrap
@@ -21,6 +31,7 @@ export interface SealedCourtWeekAppProps {
   releaseBase?: string
   packBase?: string
   fetcher?: SealedPackFetcher
+  developerDigest?: string
 }
 
 function baselineProgress(bootstrap: CourtWeekBootstrap, now: number): StoredWeeklyProgress {
@@ -136,7 +147,7 @@ function runtimeCourtWeek(
  * promise is narrower: normal builds, page source, preloads and pre-unlock
  * network activity do not expose future authored sessions.
  */
-export function SealedCourtWeekApp({
+function StandardSealedCourtWeekApp({
   bootstrap,
   now = Date.now,
   releaseBase,
@@ -266,4 +277,188 @@ export function SealedCourtWeekApp({
       />
     </>
   )
+}
+
+function DeveloperAccessGate({
+  onAuthorised,
+  expectedDigest,
+}: { onAuthorised: () => void; expectedDigest?: string }) {
+  const input = useRef<HTMLInputElement>(null)
+  const [checking, setChecking] = useState(false)
+  const [error, setError] = useState('')
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const form = event.currentTarget
+    const token = input.current?.value ?? ''
+    setChecking(true)
+    setError('')
+    try {
+      if (!await verifyDeveloperToken(token, expectedDigest)) {
+        setError('That developer access key was not recognised.')
+        window.setTimeout(() => {
+          input.current?.focus()
+          input.current?.select()
+        }, 0)
+        return
+      }
+      form.reset()
+      if (input.current) input.current.value = ''
+      history.replaceState(history.state, '', `${location.pathname}${location.search}`)
+      onAuthorised()
+    } catch {
+      setError('Developer access could not be checked in this browser.')
+      window.setTimeout(() => {
+        input.current?.focus()
+        input.current?.select()
+      }, 0)
+    } finally {
+      setChecking(false)
+    }
+  }
+
+  return (
+    <main className="cw-entry">
+      <form className="cw-entry__panel cw-developer-gate" onSubmit={(event) => void submit(event)}>
+        <p className="cw-kicker">Owner access</p>
+        <h1>Developer preview</h1>
+        <p id="cw-developer-access-help">
+          Enter the private developer access key to inspect the complete Court Week without changing saved juror progress.
+        </p>
+        <label htmlFor="cw-developer-access"><strong>Developer access key</strong></label>
+        <input
+          ref={input}
+          id="cw-developer-access"
+          type="password"
+          autoComplete="off"
+          aria-describedby="cw-developer-access-help"
+          disabled={checking}
+          required
+        />
+        {error ? <p className="cw-error" role="alert">{error}</p> : null}
+        <button className="cw-primary" type="submit" disabled={checking}>
+          {checking ? 'Checking access…' : 'Open developer preview'}
+        </button>
+      </form>
+    </main>
+  )
+}
+
+const DEVELOPER_PREVIEW_ADVISORY = [
+  'Fictional, non-graphic marine-emergency death, including an acted distress call.',
+  'Pause or leave at any time; preview progress is discarded when you switch sessions or leave preview.',
+  'Suitable for adults.',
+].join(' ')
+
+function DeveloperPreview({
+  bootstrap,
+  releaseBase,
+  packBase,
+  fetcher,
+  onLeave,
+}: Required<Pick<SealedCourtWeekAppProps, 'bootstrap' | 'packBase'>> &
+  Pick<SealedCourtWeekAppProps, 'releaseBase' | 'fetcher'> & { onLeave: () => void }) {
+  const [packs, setPacks] = useState<CourtDayPack[] | null>(null)
+  const [loadError, setLoadError] = useState('')
+  const [selectedOrdinal, setSelectedOrdinal] = useState(1)
+  const [retry, setRetry] = useState(0)
+  const [entered, setEntered] = useState(false)
+  const sessionSelector = useRef<HTMLSelectElement>(null)
+
+  useEffect(() => {
+    if (!entered) sessionSelector.current?.focus()
+  }, [entered, selectedOrdinal])
+
+  useEffect(() => {
+    let active = true
+    setLoadError('')
+    void hydrateCourtPacks({
+      bootstrap,
+      entries: bootstrap.sessions,
+      baseUrl: packBase,
+      ...(fetcher ? { fetcher } : {}),
+      persistOpened: false,
+      readOpened: false,
+    }).then((opened) => {
+      if (active) setPacks(opened)
+    }).catch(() => {
+      if (active) setLoadError('The developer sessions could not be opened.')
+    })
+    return () => { active = false }
+  }, [bootstrap, fetcher, packBase, retry])
+
+  if (loadError) {
+    return <main className="cw-entry"><div className="cw-entry__panel">
+      <p className="cw-kicker">Developer preview</p><h1>Sessions unavailable</h1>
+      <p role="alert">{loadError}</p>
+      <div className="cw-button-row">
+        <button type="button" onClick={() => setRetry((value) => value + 1)}>Try again</button>
+        <button type="button" onClick={onLeave}>Leave preview</button>
+      </div>
+    </div></main>
+  }
+  if (!packs) return <main className="cw-loading" aria-busy="true"><p>Opening developer preview…</p></main>
+
+  const courtWeek = runtimeCourtWeek(bootstrap, packs.filter(({ ordinal }) => ordinal <= selectedOrdinal))
+  const previewProgress = developerProgressForDay(courtWeek, selectedOrdinal)
+  return (
+    <div className="cw-developer-preview">
+      {!entered ? <aside className="cw-developer-toolbar" aria-label="Developer preview controls">
+        <strong>DEV PREVIEW</strong>
+        <label htmlFor="cw-developer-day">Session</label>
+        <select
+          ref={sessionSelector}
+          id="cw-developer-day"
+          value={selectedOrdinal}
+          onChange={(event) => setSelectedOrdinal(Number(event.target.value))}
+        >
+          {bootstrap.sessions.map(({ day, ordinal }) => <option key={ordinal} value={ordinal}>{day}</option>)}
+        </select>
+        <span role="status">Saved juror progress is untouched. Preview changes are discarded.</span>
+        <button type="button" onClick={onLeave}>Leave preview</button>
+      </aside> : null}
+      <CourtWeekApp
+        key={selectedOrdinal}
+        courtWeek={courtWeek}
+        now={() => DEVELOPER_PREVIEW_NOW}
+        releaseBase={releaseBase}
+        initialProgressOverride={previewProgress}
+        ephemeral
+        ephemeralAdvisory={DEVELOPER_PREVIEW_ADVISORY}
+        onEnteredChange={setEntered}
+        developerPreview={{
+          selectedOrdinal,
+          sessions: bootstrap.sessions,
+          onSelect: (ordinal) => { setSelectedOrdinal(ordinal); setEntered(false) },
+          onLeave,
+        }}
+      />
+    </div>
+  )
+}
+
+export function SealedCourtWeekApp(props: SealedCourtWeekAppProps) {
+  const [developerMode, setDeveloperMode] = useState<'gate' | 'preview' | 'standard'>(() => (
+    typeof location !== 'undefined' && location.hash === '#developer' ? 'gate' : 'standard'
+  ))
+  useEffect(() => {
+    const openDeveloperGate = () => {
+      if (location.hash === '#developer') {
+        setDeveloperMode((current) => current === 'standard' ? 'gate' : current)
+      }
+    }
+    window.addEventListener('hashchange', openDeveloperGate)
+    return () => window.removeEventListener('hashchange', openDeveloperGate)
+  }, [])
+  const packBase = props.packBase ?? `${import.meta.env.BASE_URL}court-week/packs/`
+  if (developerMode === 'gate') {
+    return <DeveloperAccessGate
+      expectedDigest={props.developerDigest}
+      onAuthorised={() => setDeveloperMode('preview')}
+    />
+  }
+  if (developerMode === 'preview') {
+    return <DeveloperPreview {...props} packBase={packBase} onLeave={() => setDeveloperMode('standard')} />
+  }
+  return <StandardSealedCourtWeekApp {...props} packBase={packBase} />
 }
