@@ -365,10 +365,12 @@ test('admitted recording replay keeps its legal direction, captions and compact-
     Date.now = () => instant
     const mediaState = window as typeof window & {
       __simjuryReplaySpeech: string[]
+      __simjuryReplayVoices: string[]
       __simjuryReplayCancels: number
       __simjuryEndReplayTurn: () => void
     }
     mediaState.__simjuryReplaySpeech = []
+    mediaState.__simjuryReplayVoices = []
     mediaState.__simjuryReplayCancels = 0
     let currentUtterance: TestUtterance | null = null
     class FailedRecording extends EventTarget {
@@ -404,6 +406,7 @@ test('admitted recording replay keeps its legal direction, captions and compact-
         speak: (utterance: TestUtterance) => {
           currentUtterance = utterance
           mediaState.__simjuryReplaySpeech.push(utterance.text)
+          mediaState.__simjuryReplayVoices.push(utterance.voice?.voiceURI ?? '')
         },
         cancel: () => { mediaState.__simjuryReplayCancels += 1 },
         pause() {},
@@ -455,6 +458,16 @@ test('admitted recording replay keeps its legal direction, captions and compact-
   expect((await page.evaluate(() => (
     window as typeof window & { __simjuryReplaySpeech: string[] }
   ).__simjuryReplaySpeech))[1]).toContain('Beacon Alpha-Romeo seven-one')
+  const firstSpeakerVoices = await page.evaluate(() => (
+    window as typeof window & { __simjuryReplayVoices: string[] }
+  ).__simjuryReplayVoices.slice(0, 2))
+  expect(firstSpeakerVoices).toHaveLength(2)
+  expect(firstSpeakerVoices.every((voice) => /^test-voice-/u.test(voice))).toBe(true)
+  expect(await page.evaluate(() => (
+    window as typeof window & { __simjuryReplayVoices: string[] }
+  ).__simjuryReplayVoices[1])).not.toBe(await page.evaluate(() => (
+    window as typeof window & { __simjuryReplayVoices: string[] }
+  ).__simjuryReplayVoices[0]))
   await page.keyboard.press('Space')
   await expect(viewer.getByRole('button', { name: 'Resume admitted recording' })).toBeVisible()
   await page.keyboard.press('Space')
@@ -739,6 +752,7 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
   await page.getByRole('button', { name: 'Take your seat' }).click()
 
   await expect(page.locator('.cw-reading-copy')).toContainText('The jury returns to the courtroom. Mara Venn stands.')
+  await expect(page.locator('.cw-reading-copy')).not.toContainText('The jury returns. The accused stands.')
   await expect(page.locator('.cw-reading-copy')).not.toContainText('Strongest lawful rationale:')
   const continueButton = page.getByLabel('Court playback controls').getByRole('button', { name: 'Continue', exact: true })
   await continueButton.click()

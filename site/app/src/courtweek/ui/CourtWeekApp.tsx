@@ -164,7 +164,7 @@ function CourtWeekEntry({
           <legend>Presentation</legend>
           {([
             ['audio-first', 'Audio first', 'Courtroom narration with captions hidden.'],
-            ['captions', 'Audio and captions', 'Courtroom narration with large, speaker-labelled captions.'],
+            ['captions', 'Audio and captions', 'Large, speaker-labelled captions with reading fallback when two lines cannot fit.'],
             ['reading', 'Reading mode', 'All dialogue remains visible and audio is optional.'],
           ] as const).map(([value, label, description]) => (
             <label key={value}>
