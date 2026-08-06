@@ -234,7 +234,8 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
 
 await mkdir(output, { recursive: true })
 for (let run = 1; run <= runCount; run += 1) for (const item of profiles) await runJourney(item, run)
-if (expectClarity && journeys.reduce((sum, journey) => sum + journey.clarityCollects, 0) === 0) {
+const nonBlockedJourneys = journeys.filter((journey) => journey.status !== 'BLOCKED')
+if (expectClarity && nonBlockedJourneys.length > 0 && nonBlockedJourneys.every((journey) => journey.clarityCollects === 0)) {
   add('high', 'analytics', 'all profiles', 'Microsoft Clarity did not send any collection requests.')
 }
 const median = (values: number[]) => [...values].sort((left, right) => left - right)[Math.floor(values.length / 2)] ?? 0

@@ -6,7 +6,7 @@ import vm from 'node:vm'
 
 const source = readFileSync(join(import.meta.dirname, '..', 'public', 'clarity.js'), 'utf8')
 
-function runLoader(initialOptOut = false) {
+function runLoader(initialOptOut = false, storageBlocked = false) {
   const values = new Map(initialOptOut ? [['simjury:clarity-opt-out:v1', '1']] : [])
   const appended = []
   const domListeners = new Map()
@@ -26,9 +26,18 @@ function runLoader(initialOptOut = false) {
   }
   const window = {
     localStorage: {
-      getItem: (key) => values.get(key) ?? null,
-      setItem: (key, value) => values.set(key, value),
-      removeItem: (key) => values.delete(key),
+      getItem: (key) => {
+        if (storageBlocked) throw new Error('storage blocked')
+        return values.get(key) ?? null
+      },
+      setItem: (key, value) => {
+        if (storageBlocked) throw new Error('storage blocked')
+        values.set(key, value)
+      },
+      removeItem: (key) => {
+        if (storageBlocked) throw new Error('storage blocked')
+        values.delete(key)
+      },
     },
   }
   vm.runInNewContext(source, { document, navigator: { webdriver: false }, window })
@@ -59,4 +68,14 @@ test('persists opt-out, revokes consent, and does not load on the next page', ()
   nextPage.optIn.click()
   assert.equal(nextPage.appended.length, 1)
   assert.equal(nextPage.values.has('simjury:clarity-opt-out:v1'), false)
+})
+
+test('honors opt-out for the current page when browser storage is blocked', () => {
+  const result = runLoader(false, true)
+  result.optOut.click()
+  assert.equal(result.window.clarity.q.at(-1)[0], 'consent')
+  assert.equal(result.window.clarity.q.at(-1)[1], false)
+  assert.match(result.status.textContent, /disabled for this page/)
+  assert.equal(result.optOut.hidden, true)
+  assert.equal(result.optIn.hidden, false)
 })

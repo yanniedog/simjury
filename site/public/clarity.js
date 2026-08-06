@@ -4,21 +4,27 @@
   const PROJECT_ID = 'xy3peca8h4';
   const OPT_OUT_KEY = 'simjury:clarity-opt-out:v1';
   let clarityLoaded = false;
+  let pageOptOut = null;
+  let preferencePersistent = true;
 
   function optedOut() {
+    if (pageOptOut !== null) return pageOptOut;
     try {
       return window.localStorage.getItem(OPT_OUT_KEY) === '1';
     } catch {
+      preferencePersistent = false;
       return false;
     }
   }
 
   function rememberOptOut(value) {
+    pageOptOut = value;
     try {
       if (value) window.localStorage.setItem(OPT_OUT_KEY, '1');
       else window.localStorage.removeItem(OPT_OUT_KEY);
+      preferencePersistent = true;
     } catch {
-      // Clarity can still honor the choice for this page when storage is blocked.
+      preferencePersistent = false;
     }
   }
 
@@ -51,7 +57,9 @@
     const disabled = optedOut();
     document.querySelectorAll('[data-clarity-status]').forEach((node) => {
       node.textContent = disabled
-        ? 'Optional analytics is disabled in this browser.'
+        ? preferencePersistent
+          ? 'Optional analytics is disabled in this browser.'
+          : 'Optional analytics is disabled for this page; the browser blocked saving this choice.'
         : 'Optional analytics is enabled in this browser.';
     });
     document.querySelectorAll('[data-clarity-opt-out]').forEach((node) => {
