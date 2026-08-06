@@ -79,7 +79,7 @@ export async function hydrateCourtPacks({
       throw new Error('The requested session is not part of this Court Week revision.')
     }
     const cached = readOpened
-      ? await loadOpenedPack(bootstrap.id, bootstrap.revision, entry.ordinal)
+      ? await loadOpenedPack(bootstrap.id, bootstrap.revision, bootstrap.releaseTag, entry.ordinal)
       : null
     if (cached) {
       packs.push(cached)
@@ -97,7 +97,7 @@ export async function hydrateCourtPacks({
       { caseId: bootstrap.id, revision: bootstrap.revision, ordinal: entry.ordinal },
       unlockFragment,
     )
-    if (persistOpened) await saveOpenedPack(pack)
+    if (persistOpened) await saveOpenedPack(pack, bootstrap.releaseTag)
     packs.push(pack)
   }
 

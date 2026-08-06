@@ -7,8 +7,8 @@ const VERSION = 1
 
 const memoryPacks = new Map<string, CourtDayPack>()
 
-function cacheKey(caseId: string, revision: string, ordinal: number) {
-  return `${caseId}:${revision}:${ordinal}`
+function cacheKey(caseId: string, revision: string, releaseTag: string, ordinal: number) {
+  return `${caseId}:${revision}:${releaseTag}:${ordinal}`
 }
 
 function openDatabase(): Promise<IDBDatabase> {
@@ -56,9 +56,10 @@ async function writeIndexed(key: string, pack: CourtDayPack): Promise<void> {
 export async function loadOpenedPack(
   caseId: string,
   revision: string,
+  releaseTag: string,
   ordinal: number,
 ): Promise<CourtDayPack | null> {
-  const key = cacheKey(caseId, revision, ordinal)
+  const key = cacheKey(caseId, revision, releaseTag, ordinal)
   const memory = memoryPacks.get(key)
   if (memory) return memory
   if (typeof indexedDB === 'undefined') return null
@@ -72,8 +73,8 @@ export async function loadOpenedPack(
   }
 }
 
-export async function saveOpenedPack(pack: CourtDayPack): Promise<void> {
-  const key = cacheKey(pack.caseId, pack.revision, pack.ordinal)
+export async function saveOpenedPack(pack: CourtDayPack, releaseTag: string): Promise<void> {
+  const key = cacheKey(pack.caseId, pack.revision, releaseTag, pack.ordinal)
   memoryPacks.set(key, pack)
   if (typeof indexedDB === 'undefined') return
   try {

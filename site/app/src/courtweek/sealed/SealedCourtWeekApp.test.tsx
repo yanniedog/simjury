@@ -146,7 +146,7 @@ describe('SealedCourtWeekApp', () => {
   it('opens Monday while the Saturday deliberation pack remains absent', async () => {
     const mondayPack = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap)[0]
     expect(mondayPack.deliberation).toBeUndefined()
-    await saveOpenedPack(mondayPack)
+    await saveOpenedPack(mondayPack, courtWeekBootstrap.releaseTag)
 
     const now = Date.parse('2026-08-10T08:31:00+10:00')
     const progress: StoredWeeklyProgress = {
@@ -192,7 +192,7 @@ describe('SealedCourtWeekApp', () => {
 
   it('keeps required Friday reflections playable without opening the Saturday deliberation pack', async () => {
     const packs = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap)
-    await Promise.all(packs.slice(0, 5).map((pack) => saveOpenedPack(pack)))
+    await Promise.all(packs.slice(0, 5).map((pack) => saveOpenedPack(pack, courtWeekBootstrap.releaseTag)))
     expect(packs[4].deliberation).toBeUndefined()
 
     const now = Date.parse('2026-08-14T08:31:00+10:00')

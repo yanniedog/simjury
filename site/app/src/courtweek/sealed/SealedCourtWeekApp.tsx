@@ -249,7 +249,7 @@ function StandardSealedCourtWeekApp({
       sealedSessions: courtWeek.manifest.sessions,
       ...(fetcher ? { fetcher } : {}),
     })
-    await Promise.all(prepared.packs.map((pack) => saveOpenedPack(pack)))
+    await Promise.all(prepared.packs.map((pack) => saveOpenedPack(pack, bootstrap.releaseTag)))
     setPacks((existing) => {
       const merged = new Map([...existing, ...prepared.packs].map((pack) => [pack.ordinal, pack]))
       return Array.from(merged.values()).sort((left, right) => left.ordinal - right.ordinal)
