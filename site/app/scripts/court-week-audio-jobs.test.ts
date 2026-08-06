@@ -84,9 +84,9 @@ describe('Court Week prerecorded audio jobs', () => {
     })).toThrow('Review candidate must use court-week-cw-0001-YYYY.MM.DD-rN')
   })
 
-  it('synthesizes complete Monday and Tuesday speaker turns while reconstructing every display caption verbatim', () => {
+  it('synthesizes complete speaker turns for the whole week while reconstructing every display caption verbatim', () => {
     const { jobs } = buildCourtWeekAudioJobs(elevenMinutesCourtWeek)
-    for (const session of elevenMinutesCourtWeek.manifest.sessions.slice(0, 2)) {
+    for (const session of elevenMinutesCourtWeek.manifest.sessions) {
       const job = jobs.find((candidate) => candidate.sessionId === session.id)!
       const sourceGroups = session.scenes.flatMap((scene) => scene.cues)
         .reduce<SceneCue[][]>((groups, cue) => {
@@ -97,10 +97,9 @@ describe('Court Week prerecorded audio jobs', () => {
           return groups
         }, [])
 
-      expect(job.segments.flatMap((segment) => segment.utterances).length)
-        .toBeLessThan(job.segments.flatMap((segment) => segment.captions).length)
       for (const group of sourceGroups) {
         const sourceCueId = group[0].sourceCueId ?? group[0].id
+        if (RUNTIME_DEPENDENT_CUE_IDS.has(sourceCueId)) continue
         const segmentIndexes = job.segments.flatMap((segment, index) =>
           segment.captions.some((caption) => caption.sourceCueId === sourceCueId) ? [index] : [])
         expect(segmentIndexes, sourceCueId).toHaveLength(1)
@@ -141,6 +140,14 @@ describe('Court Week prerecorded audio jobs', () => {
   })
 
   it('splits multi-party cues into speaker-attributed utterances', () => {
+    const plea = elevenMinutesCourtWeek.manifest.sessions[0].scenes
+      .flatMap((scene) => scene.cues)
+      .filter((cue) => (cue.sourceCueId ?? cue.id) === 'mon-plea')
+      .flatMap(splitCueUtterances)
+      .map(({ speaker }) => speaker)
+      .filter((speaker, index, speakers) => index === 0 || speaker !== speakers[index - 1])
+    expect(plea).toEqual(['Clerk', 'Mara Venn', 'Judge Sel Aven'])
+
     const orrCross = elevenMinutesCourtWeek.manifest.sessions[0].scenes
       .flatMap((scene) => scene.cues)
       .filter((cue) => (cue.sourceCueId ?? cue.id) === 'mon-orr-cross-1')
@@ -189,6 +196,20 @@ describe('Court Week prerecorded audio jobs', () => {
       'Crown counsel Asha Renn',
       'Judge Sel Aven',
     ])
+
+    const saturdayJurors = new Map([
+      ['sat-concerns-1', ['Ari Tem', 'Sola Iven']],
+      ['sat-concerns-2', ['Bram Tey', 'Kessa Noor']],
+      ['sat-concerns-3', ['Daro Sen', 'Yara Merrow']],
+      ['sat-improper-1', ['Bram Tey', 'Kessa Noor']],
+      ['sat-improper-2', ['Sola Iven', 'Foreperson Edda Rook']],
+    ])
+    const saturdayCues = elevenMinutesCourtWeek.manifest.sessions[5].scenes
+      .flatMap((scene) => scene.cues)
+    for (const [cueId, expected] of saturdayJurors) {
+      expect(splitCueUtterances(saturdayCues.find(({ id }) => id === cueId)!)
+        .map(({ speaker }) => speaker), cueId).toEqual(expected)
+    }
   })
 
   it('casts every records and defence-witness exchange to the person speaking', () => {
@@ -231,7 +252,7 @@ describe('Court Week prerecorded audio jobs', () => {
     }
   })
 
-  it('reuses voices only for alternate labels of the same in-world speaker', () => {
+  it('dedicates one unique reviewed voice to every authored speaker identity', () => {
     const speakersByVoice = Object.entries(COURT_WEEK_VOICES).reduce<Map<string, string[]>>(
       (speakers, [speaker, voice]) => speakers.set(voice, [...(speakers.get(voice) ?? []), speaker]),
       new Map(),
@@ -241,10 +262,7 @@ describe('Court Week prerecorded audio jobs', () => {
       .map((speakers) => speakers.sort())
       .sort(([left], [right]) => left.localeCompare(right))
 
-    expect(sharedVoices).toEqual([
-      ['Edda Rook', 'Foreperson Edda Rook'],
-      ['Judge Sel Aven', 'Judge’s neutral case note'],
-    ])
+    expect(sharedVoices).toEqual([])
     expect(COURT_WEEK_VOICES['Niko Hale']).not.toBe(COURT_WEEK_VOICES['Tovan Mir'])
   })
 

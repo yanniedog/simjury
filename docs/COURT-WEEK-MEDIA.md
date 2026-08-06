@@ -11,11 +11,23 @@ part of gameplay.
 digest covers the case revision, release tag, session, cue order, exact spoken
 text, voice casting, pauses and fixed interaction/transition time.
 
-Every authored speaker has an explicit Kokoro voice. A new, removed or renamed
-speaker fails the build until the casting map is reviewed. The week currently
-produces eight audio segments per day: one per authored scene except Monday,
-whose first scene is split once at a cue boundary. All 125 cues remain in their
-original legal order.
+Every authored speaker identity has one explicit, dedicated Kokoro voice; no
+two people share a voice. A new, removed or renamed speaker fails the build
+until the casting map is reviewed. `speakerIntegrity.ts` is the content-curator
+ledger for every multi-party cue. It fails closed if a turn is added, removed,
+reordered or attributed to a different person, or if known present-character
+speech is folded back into third-person paraphrase by another speaker. The week
+currently produces eight audio segments per day: one per authored scene except
+Monday, whose first scene is split once at a cue boundary. All 127 authored cues remain
+in their original legal order.
+
+Stage directions belong to the Narrator, courtroom questions and rulings belong
+to the identified legal actor, and live jury-room views belong to the juror who
+actually expresses them. A witness quoting a past statement remains witness
+testimony unless the admitted recording itself is being played; changing the
+voice in that situation would falsely present remembered evidence as a recording.
+Runtime-dependent verdict and analysis text must preserve the same named-turn
+contract when it falls back to device speech.
 
 Run the source-only checks locally without downloading a model:
 

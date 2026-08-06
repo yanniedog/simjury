@@ -2,9 +2,10 @@ import { courtWeekSchema } from '../model/schema'
 import { validateCourtWeek } from '../model/validation'
 import { elevenMinutesDeliberation } from './deliberation'
 import { elevenMinutesSessions } from './sessions'
+import { assertReviewedSpeakerIntegrity } from './speakerIntegrity'
 import { elevenMinutesTrialRecord } from './trialRecord'
 
-export const elevenMinutesCourtWeek = courtWeekSchema.parse({
+const parsedElevenMinutesCourtWeek = courtWeekSchema.parse({
   manifest: {
     schemaVersion: 'court-week-v1',
     id: 'cw-0001',
@@ -20,6 +21,10 @@ export const elevenMinutesCourtWeek = courtWeekSchema.parse({
   trial: elevenMinutesTrialRecord,
   deliberation: elevenMinutesDeliberation,
 })
+
+assertReviewedSpeakerIntegrity(parsedElevenMinutesCourtWeek.manifest.sessions)
+
+export const elevenMinutesCourtWeek = parsedElevenMinutesCourtWeek
 
 /** Build-time evidence that this exact parsed revision satisfies the legal/content gates. */
 export const elevenMinutesValidation = validateCourtWeek(elevenMinutesCourtWeek)
