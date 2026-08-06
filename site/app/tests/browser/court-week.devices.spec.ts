@@ -143,6 +143,7 @@ test('Android phone entry reaches its primary action with a touch swipe', async 
   await page.goto('/')
 
   const entry = page.locator('.cw-entry')
+  const heading = page.getByRole('heading', { name: 'Eleven Minutes' })
   const takeSeat = page.getByRole('button', { name: 'Take your seat' })
   const before = await entry.evaluate((element) => ({
     clientHeight: element.clientHeight,
@@ -150,16 +151,22 @@ test('Android phone entry reaches its primary action with a touch swipe', async 
     scrollTop: element.scrollTop,
   }))
   expect(before.scrollHeight).toBeGreaterThan(before.clientHeight)
+  await expect(heading).toBeInViewport()
 
   const touch = await context.newCDPSession(page)
+  const entryBox = await entry.boundingBox()
+  if (!entryBox) throw new Error('Court Week entry is not rendered.')
+  const x = entryBox.x + entryBox.width / 2
+  const startY = entryBox.y + entryBox.height * 0.88
+  const endY = entryBox.y + entryBox.height * 0.2
   await touch.send('Input.dispatchTouchEvent', {
     type: 'touchStart',
-    touchPoints: [{ x: 206, y: 620 }],
+    touchPoints: [{ x, y: startY }],
   })
-  for (const y of [540, 460, 380, 300, 220, 140]) {
+  for (const progress of [0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1]) {
     await touch.send('Input.dispatchTouchEvent', {
       type: 'touchMove',
-      touchPoints: [{ x: 206, y }],
+      touchPoints: [{ x, y: startY + (endY - startY) * progress }],
     })
   }
   await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })

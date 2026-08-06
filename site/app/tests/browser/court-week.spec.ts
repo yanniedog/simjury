@@ -30,20 +30,24 @@ test('mobile entry scrolls inside the locked application root', async ({ page })
   await page.goto('/')
 
   const entry = page.locator('.cw-entry')
+  const heading = page.getByRole('heading', { name: 'Eleven Minutes' })
   const takeSeat = page.getByRole('button', { name: 'Take your seat' })
   const before = await entry.evaluate((element) => ({
     clientHeight: element.clientHeight,
     scrollHeight: element.scrollHeight,
+    viewportHeight: window.innerHeight,
     overflowX: getComputedStyle(element).overflowX,
     overflowY: getComputedStyle(element).overflowY,
   }))
 
   expect(before).toMatchObject({
-    clientHeight: 568,
     overflowX: 'hidden',
     overflowY: 'auto',
   })
+  expect(before.clientHeight).toBe(before.viewportHeight)
   expect(before.scrollHeight).toBeGreaterThan(before.clientHeight)
+  expect(await entry.evaluate((element) => element.scrollTop)).toBe(0)
+  await expect(heading).toBeInViewport()
 
   await entry.hover()
   await page.mouse.wheel(0, before.scrollHeight)
