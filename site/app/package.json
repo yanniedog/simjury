@@ -21,6 +21,7 @@
     "test:network": "playwright test --config playwright.network.config.ts",
     "test:visual": "playwright test --config playwright.visual.config.ts",
     "test:performance": "tsx scripts/assert-performance-budgets.ts && playwright test --config playwright.performance.config.ts",
+    "audit:production": "tsx scripts/production-browser-audit.ts",
     "validate:cases": "tsx scripts/validate-cases.ts",
     "review:signoffs": "tsx scripts/court-week-review-signoffs.ts",
     "media:audio:jobs": "tsx scripts/court-week-audio-jobs.ts",
