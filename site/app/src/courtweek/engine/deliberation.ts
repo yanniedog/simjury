@@ -1,6 +1,7 @@
 import type {
   DeliberationPack,
   ReasoningContribution,
+  SceneCueTurn,
   Verdict,
 } from '../model/schema'
 import { contributionStage } from '../model/deliberationContract'
@@ -223,17 +224,55 @@ export function nextSundaySceneId(
   return index >= 0 ? dividedOrder[index + 1] ?? null : null
 }
 
-export function openCourtReturn(verdict: Verdict, agreement: Agreement): string {
-  if (agreement === 'hung') {
-    return 'The jury returns. The accused stands. The foreperson says: “We are unable to agree.” The judge discharges the jury without criticism.'
+export function openCourtReturnTurns(verdict: Verdict, agreement: Agreement): SceneCueTurn[] {
+  const narrator: SceneCueTurn = {
+    id: 'sun-verdict-return__narrator',
+    speaker: 'Narrator',
+    text: 'The jury returns to the courtroom. Mara Venn stands.',
   }
+  const clerk: SceneCueTurn = {
+    id: 'sun-verdict-return__clerk',
+    speaker: 'Clerk',
+    text: 'Foreperson, has the jury reached a verdict?',
+  }
+  if (agreement === 'hung') return [
+    narrator,
+    clerk,
+    {
+      id: 'sun-verdict-return__foreperson',
+      speaker: 'Foreperson Edda Rook',
+      text: 'We are unable to agree.',
+    },
+    {
+      id: 'sun-verdict-return__judge',
+      speaker: 'Judge Sel Aven',
+      text: 'I discharge the jury without criticism.',
+    },
+  ]
   const spoken = verdict === 'murder'
     ? 'Guilty of murder'
     : verdict === 'manslaughter'
       ? 'Guilty of manslaughter by criminal negligence'
       : 'Not Guilty'
   const basis = agreement === 'majority' ? 'by an authorised eleven-to-one majority' : 'unanimously'
-  return `The jury returns. The accused stands. The foreperson says: “${spoken}, ${basis}.” The verdict is recorded in open court.`
+  return [
+    narrator,
+    clerk,
+    {
+      id: 'sun-verdict-return__foreperson',
+      speaker: 'Foreperson Edda Rook',
+      text: `${spoken}, ${basis}.`,
+    },
+    {
+      id: 'sun-verdict-return__judge',
+      speaker: 'Judge Sel Aven',
+      text: 'The court records the verdict as returned.',
+    },
+  ]
+}
+
+export function openCourtReturn(verdict: Verdict, agreement: Agreement): string {
+  return openCourtReturnTurns(verdict, agreement).map(({ text }) => text).join(' ')
 }
 
 export function matchImproperArgument(pack: DeliberationPack, claim: string) {

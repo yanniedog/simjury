@@ -354,7 +354,13 @@ describe('CourtWeekApp improper-argument interaction', () => {
       await Promise.resolve()
     })
     await act(async () => clickButton(container, 'Take your seat'))
-    expect(container.textContent).toContain('The accused stands')
+    expect(container.textContent).toContain('Mara Venn stands')
+    expect([...container.querySelectorAll('.cw-reading-turn')].map((turn) => turn.textContent)).toEqual([
+      'Narrator: The jury returns to the courtroom. Mara Venn stands.',
+      'Clerk: Foreperson, has the jury reached a verdict?',
+      'Foreperson Edda Rook: We are unable to agree.',
+      'Judge Sel Aven: I discharge the jury without criticism.',
+    ])
     expect(latestProgress.openCourtVerdictReturned).toBe(false)
     expect(latestProgress.returnedVerdict).toBeUndefined()
 
