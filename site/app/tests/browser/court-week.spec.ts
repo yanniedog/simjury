@@ -395,7 +395,12 @@ test('admitted recording replay keeps its legal direction, captions and compact-
     Object.defineProperty(window, 'speechSynthesis', {
       configurable: true,
       value: {
-        getVoices: () => [{ lang: 'en-AU', name: 'Test voice' }],
+        getVoices: () => [
+          { lang: 'en-AU', name: 'Test voice 1', voiceURI: 'test-voice-1' },
+          { lang: 'en-AU', name: 'Test voice 2', voiceURI: 'test-voice-2' },
+          { lang: 'en-AU', name: 'Test voice 3', voiceURI: 'test-voice-3' },
+          { lang: 'en-AU', name: 'Test voice 4', voiceURI: 'test-voice-4' },
+        ],
         speak: (utterance: TestUtterance) => {
           currentUtterance = utterance
           mediaState.__simjuryReplaySpeech.push(utterance.text)
@@ -733,7 +738,7 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
 
-  await expect(page.locator('.cw-reading-copy')).toContainText('The jury returns. The accused stands.')
+  await expect(page.locator('.cw-reading-copy')).toContainText('The jury returns to the courtroom. Mara Venn stands.')
   await expect(page.locator('.cw-reading-copy')).not.toContainText('Strongest lawful rationale:')
   const continueButton = page.getByLabel('Court playback controls').getByRole('button', { name: 'Continue', exact: true })
   await continueButton.click()

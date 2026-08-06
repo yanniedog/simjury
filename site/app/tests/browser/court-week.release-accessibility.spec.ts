@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 import { elevenMinutesSessions } from '../../src/courtweek/content/sessions'
+import { splitCueTurns } from '../../src/courtweek/content/cueTurns'
 import { responsiveCaptionPlacements, type CaptionViewport } from '../../src/courtweek/ui/captionPlacement'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
@@ -265,7 +266,7 @@ test('Monday captions avoid line overflow with only enumerated safe-layout fallb
 
   const monday = elevenMinutesSessions[0]
   const layouts: Array<{ viewport: CaptionViewport; width: number; height: number }> = [
-    { viewport: 'phonePortrait', width: 390, height: 844 },
+    { viewport: 'phonePortrait', width: 320, height: 568 },
     { viewport: 'phoneLandscape', width: 844, height: 390 },
     { viewport: 'tablet', width: 820, height: 1180 },
     { viewport: 'desktop', width: 1280, height: 800 },
@@ -292,6 +293,7 @@ test('Monday captions avoid line overflow with only enumerated safe-layout fallb
         continue
       }
       for (const cue of scene.cues) {
+        for (const turn of splitCueTurns(cue)) {
         const result = await page.locator('.cw-shell').evaluate((shell, input) => {
           const root = shell as HTMLElement
           const overlay = root.querySelector<HTMLElement>('#monday-caption-probe')!
@@ -314,8 +316,8 @@ test('Monday captions avoid line overflow with only enumerated safe-layout fallb
             controlsIntersection: intersect(captionBox, controls.getBoundingClientRect()),
             speakerIntersection: intersect(captionBox, speaker.getBoundingClientRect()),
           }
-        }, { placement, text: cue.text })
-        const key = `${layout.viewport}:${cue.id}`
+        }, { placement, text: `${turn.speaker}: ${turn.text}` })
+        const key = `${layout.viewport}:${turn.id}`
         if (!result.displayed) measuredFailures.push(`${key}:hidden`)
         if (!result.lineFits) measuredFailures.push(`${key}:line-overflow`)
         if (result.controlsIntersection > 1) {
@@ -325,6 +327,7 @@ test('Monday captions avoid line overflow with only enumerated safe-layout fallb
         if (result.speakerIntersection > 1) {
           if (intentionalRuntimeFallbacks.has(fallbackKey)) observedFallbacks.add(fallbackKey)
           else measuredFailures.push(`${key}:speaker-collision`)
+        }
         }
       }
     }
@@ -354,7 +357,7 @@ test('Tuesday captions avoid line overflow with only enumerated safe-layout fall
 
   const tuesday = elevenMinutesSessions[1]
   const layouts: Array<{ viewport: CaptionViewport; width: number; height: number }> = [
-    { viewport: 'phonePortrait', width: 390, height: 844 },
+    { viewport: 'phonePortrait', width: 320, height: 568 },
     { viewport: 'phoneLandscape', width: 844, height: 390 },
     { viewport: 'tablet', width: 820, height: 1180 },
     { viewport: 'desktop', width: 1280, height: 800 },
@@ -387,6 +390,7 @@ test('Tuesday captions avoid line overflow with only enumerated safe-layout fall
         continue
       }
       for (const cue of scene.cues) {
+        for (const turn of splitCueTurns(cue)) {
         const result = await page.locator('.cw-shell').evaluate((shell, input) => {
           const root = shell as HTMLElement
           const overlay = root.querySelector<HTMLElement>('#tuesday-caption-probe')!
@@ -409,8 +413,8 @@ test('Tuesday captions avoid line overflow with only enumerated safe-layout fall
             controlsIntersection: intersect(captionBox, controls.getBoundingClientRect()),
             speakerIntersection: intersect(captionBox, speaker.getBoundingClientRect()),
           }
-        }, { placement, text: cue.text })
-        const key = `${layout.viewport}:${cue.id}`
+        }, { placement, text: `${turn.speaker}: ${turn.text}` })
+        const key = `${layout.viewport}:${turn.id}`
         if (!result.displayed) measuredFailures.push(`${key}:hidden`)
         if (!result.lineFits) measuredFailures.push(`${key}:line-overflow`)
         if (result.controlsIntersection > 1) {
@@ -420,6 +424,7 @@ test('Tuesday captions avoid line overflow with only enumerated safe-layout fall
         if (result.speakerIntersection > 1) {
           if (intentionalRuntimeFallbacks.has(fallbackKey)) observedFallbacks.add(fallbackKey)
           else measuredFailures.push(`${key}:speaker-collision`)
+        }
         }
       }
     }

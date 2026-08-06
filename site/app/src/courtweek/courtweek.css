@@ -181,9 +181,9 @@
 .cw-captions span {
   display: -webkit-box;
   max-width: 66ch;
-  padding: .45rem .7rem;
+  padding: .4rem .55rem;
   overflow: hidden;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   font-size: clamp(1.125rem, 2.2vw, 1.35rem);
   line-height: 1.4;
