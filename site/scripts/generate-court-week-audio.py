@@ -557,12 +557,14 @@ def timestamp(seconds: float) -> str:
 def write_vtt(path: Path, cue_ranges: list[dict[str, Any]]) -> None:
     lines = ["WEBVTT", ""]
     for cue in cue_ranges:
-        lines.extend([
-            cue["cueId"],
-            f"{timestamp(cue['startSeconds'])} --> {timestamp(cue['endSeconds'])}",
-            f"<v {html.escape(str(cue['speaker']), quote=True)}>{html.escape(str(cue['text']))}",
-            "",
-        ])
+        entries = cue.get("turns") or [cue]
+        for entry in entries:
+            lines.extend([
+                str(entry.get("turnId") or cue["cueId"]),
+                f"{timestamp(entry['startSeconds'])} --> {timestamp(entry['endSeconds'])}",
+                f"<v {html.escape(str(entry['speaker']), quote=True)}>{html.escape(str(entry['text']))}",
+                "",
+            ])
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
@@ -676,6 +678,8 @@ def produce(job: dict[str, Any], output_root: Path) -> Path:
                     caption["endSeconds"] = end if caption["endSeconds"] is None else max(caption["endSeconds"], end)
                     caption["turns"].append({
                         "turnId": part["turnId"],
+                        "speaker": utterance["speaker"],
+                        "text": part["text"],
                         "startSeconds": round(start, 3),
                         "endSeconds": round(end, 3),
                     })

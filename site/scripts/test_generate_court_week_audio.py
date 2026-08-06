@@ -1,4 +1,5 @@
 import importlib.util
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -187,6 +188,37 @@ class CodecQualityTests(unittest.TestCase):
 
 
 class CaptionTimingTests(unittest.TestCase):
+    def test_vtt_emits_each_speaker_turn_as_a_separate_named_cue(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "plea.vtt"
+            MODULE.write_vtt(path, [{
+                "cueId": "mon-plea--caption-4",
+                "speaker": "Mara Venn",
+                "text": "Venn: Not Guilty. Judge: The plea is recorded.",
+                "startSeconds": 10.57,
+                "endSeconds": 15.065,
+                "turns": [{
+                    "turnId": "mon-plea--caption-4__1",
+                    "speaker": "Mara Venn",
+                    "text": "Not Guilty.",
+                    "startSeconds": 10.57,
+                    "endSeconds": 12.42,
+                }, {
+                    "turnId": "mon-plea--caption-4__2",
+                    "speaker": "Judge Sel Aven",
+                    "text": "The plea is recorded.",
+                    "startSeconds": 12.84,
+                    "endSeconds": 15.065,
+                }],
+            }])
+
+            captions = path.read_text(encoding="utf-8")
+            self.assertIn("mon-plea--caption-4__1", captions)
+            self.assertIn("<v Mara Venn>Not Guilty.", captions)
+            self.assertIn("mon-plea--caption-4__2", captions)
+            self.assertIn("<v Judge Sel Aven>The plea is recorded.", captions)
+            self.assertNotIn("Venn: Not Guilty. Judge:", captions)
+
     def test_uses_one_continuous_utterance_with_monotonic_caption_boundaries(self):
         first = "Members of the jury panel, switch off every device except the"
         second = "one running this simulation."
