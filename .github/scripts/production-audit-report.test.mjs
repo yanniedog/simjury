@@ -13,6 +13,7 @@ test('deidentifies credentials, identities, local paths, storage and URL secrets
     'Windows trace C:\\Users\\Jane Doe\\App Data\\audit.log',
     'POSIX trace /home/Jane Doe/work/audit.log',
     'GET https://simjury.com/path?token=secret#private',
+    'GET http://203.0.113.42/private?token=secret',
     'localStorage contained private notes and ballots',
   ].join('\n'))
   assertDeidentified(safe)
@@ -34,6 +35,8 @@ test('workflow is one-shot, non-blocking, fork-safe and publishes only redacted 
   assert.match(workflow, /continue-on-error: true/u)
   assert.match(workflow, /paste\.rs/u)
   assert.match(workflow, /audit\.deidentified\.log/u)
+  assert.match(workflow, /SIMJURY_EXPECT_DEPLOYMENT_SHA/u)
+  assert.match(workflow, /steps\.evidence\.outcome == 'success'/u)
   assert.doesNotMatch(workflow, /uses:\s+[^\s]+@v\d+/u)
   assert.doesNotMatch(workflow, /\bschedule:|workflow_dispatch:/u)
   assert.doesNotMatch(workflow, /path: site\/app\/test-results\/production-audit\/$/mu)
@@ -52,6 +55,13 @@ test('live audit covers compact browser chrome and rejects every off-viewport co
   assert.match(audit, /Actionable controls are clipped by the viewport/u)
   assert.match(audit, /\.cw-skip-link:not\(:focus\)/u)
   assert.match(audit, /layouts\.push\(await inspectLayout\(page, id, `Session \$\{ordinal\}`\)\)/u)
+  assert.match(audit, /status = deploymentIdentity\.superseded \? 'SUPERSEDED'/u)
+})
+
+test('site deployment publishes the exact served commit identity as a static asset', () => {
+  const workflow = readFileSync(new URL('../workflows/site.yml', import.meta.url), 'utf8')
+  assert.match(workflow, /simjury-deployment\.json/u)
+  assert.match(workflow, /DEPLOY_SHA: \$\{\{ github\.sha \}\}/u)
 })
 
 test('tracker identity is stable for idempotent issue updates', () => {

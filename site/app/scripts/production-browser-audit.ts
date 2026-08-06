@@ -6,6 +6,10 @@ const target = new URL(process.env.SIMJURY_AUDIT_URL ?? 'https://simjury.com/')
 if (target.href !== 'https://simjury.com/') throw new Error('Production audits only target https://simjury.com/.')
 const runCount = Math.max(1, Number.parseInt(process.env.SIMJURY_AUDIT_RUNS ?? '1', 10) || 1)
 const expectClarity = process.env.SIMJURY_EXPECT_CLARITY === '1'
+const expectedDeploymentSha = process.env.SIMJURY_EXPECT_DEPLOYMENT_SHA
+if (expectedDeploymentSha && !/^[0-9a-f]{40}$/u.test(expectedDeploymentSha)) {
+  throw new Error('SIMJURY_EXPECT_DEPLOYMENT_SHA must be a full commit SHA.')
+}
 const output = join(process.cwd(), 'test-results', 'production-audit')
 const audioStartTimeoutMs = 15_000
 const controlTimeoutMs = 5_000
@@ -42,6 +46,22 @@ const safeUrl = (value: string) => {
 const isClarityCollect = (value: string) => {
   const url = new URL(value)
   return url.protocol === 'https:' && url.hostname.endsWith('.clarity.ms') && url.pathname === '/collect'
+}
+
+async function verifyDeploymentIdentity() {
+  if (!expectedDeploymentSha) return { verified: true, superseded: false, servedSha: null }
+  const marker = new URL('/.well-known/simjury-deployment.json', target)
+  marker.searchParams.set('expected', expectedDeploymentSha)
+  try {
+    const response = await fetch(marker, { headers: { 'Cache-Control': 'no-cache' } })
+    if (!response.ok) throw new Error(`marker returned ${response.status}`)
+    const body = await response.json() as { sha?: unknown }
+    if (typeof body.sha !== 'string' || !/^[0-9a-f]{40}$/u.test(body.sha)) throw new Error('marker SHA is invalid')
+    return { verified: body.sha === expectedDeploymentSha, superseded: body.sha !== expectedDeploymentSha, servedSha: body.sha }
+  } catch (error) {
+    add('high', 'deployment-identity', 'all profiles', `Could not verify the served deployment: ${error instanceof Error ? error.message : String(error)}.`)
+    return { verified: false, superseded: false, servedSha: null }
+  }
 }
 
 async function pointerClick(page: Page, locator: Locator, label: string, actions: Action[], mustStartVisible = false) {
@@ -258,7 +278,12 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
 }
 
 await mkdir(output, { recursive: true })
-for (let run = 1; run <= runCount; run += 1) for (const item of profiles) await runJourney(item, run)
+const deploymentIdentity = await verifyDeploymentIdentity()
+if (deploymentIdentity.superseded) {
+  add('low', 'deployment-identity', 'all profiles', `Deployment ${expectedDeploymentSha} was superseded before its audit began; the served SHA is ${deploymentIdentity.servedSha}.`)
+} else if (deploymentIdentity.verified) {
+  for (let run = 1; run <= runCount; run += 1) for (const item of profiles) await runJourney(item, run)
+}
 const nonBlockedJourneys = journeys.filter((journey) => journey.status !== 'BLOCKED')
 if (expectClarity && nonBlockedJourneys.length > 0 && nonBlockedJourneys.every((journey) => journey.clarityCollects === 0)) {
   add('high', 'analytics', 'all profiles', 'Microsoft Clarity did not send any collection requests.')
@@ -278,10 +303,12 @@ for (const item of profiles) {
   if (ttfb > 3_000) add('high', 'performance', item.name, `Median TTFB was ${Math.round(ttfb)}ms.`)
   else if (ttfb > 1_800) add('medium', 'performance', item.name, `Median TTFB was ${Math.round(ttfb)}ms.`)
 }
-const status = findings.some((item) => item.severity === 'high') ? 'FAIL'
+const status = deploymentIdentity.superseded ? 'SUPERSEDED'
+  : !deploymentIdentity.verified ? 'BLOCKED'
+    : findings.some((item) => item.severity === 'high') ? 'FAIL'
   : journeys.some((item) => item.status === 'BLOCKED') ? 'BLOCKED'
   : findings.some((item) => item.severity === 'medium') ? 'WARN' : 'PASS'
-const report = { schema: 'simjury.production-audit/v1', target: target.href, startedAt: new Date().toISOString(), status, runCount, performance: performanceSummary, journeys, findings }
+const report = { schema: 'simjury.production-audit/v1', target: target.href, expectedDeploymentSha: expectedDeploymentSha ?? null, servedDeploymentSha: deploymentIdentity.servedSha, startedAt: new Date().toISOString(), status, runCount, performance: performanceSummary, journeys, findings }
 const markdown = [
   `# SimJury production browser audit: ${status}`,
   '', `Target: ${target.href}`, `Runs: ${runCount} per profile`,

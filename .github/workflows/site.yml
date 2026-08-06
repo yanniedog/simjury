@@ -85,6 +85,15 @@ jobs:
       - name: Install
         working-directory: site
         run: npm ci
+      - name: Stamp the exact deployment identity
+        working-directory: site
+        env:
+          DEPLOY_SHA: ${{ github.sha }}
+        run: >-
+          node -e "const fs=require('node:fs');
+          if(!/^[0-9a-f]{40}$/.test(process.env.DEPLOY_SHA))throw new Error('Invalid deployment SHA');
+          fs.mkdirSync('public/.well-known',{recursive:true});
+          fs.writeFileSync('public/.well-known/simjury-deployment.json',JSON.stringify({sha:process.env.DEPLOY_SHA})+'\n')"
       - name: Deploy static assets to Cloudflare
         working-directory: site
         env:

@@ -45,7 +45,10 @@ work, and uses only `contents: read` plus `issues: write`. It does not run fork
 code, accept an arbitrary target URL, hold Cloudflare credentials, or read player
 profiles, progress, notes or ballots. Issue and paste delivery failure can be
 retried because a SHA is considered complete only after its result comment is
-stored.
+stored. Each deployment also publishes a tiny static commit marker. The audit
+checks that marker before opening a browser, so a queued run cannot attribute a
+newer mutable deployment to an older SHA. A deployment overtaken before its run
+is reported honestly as `SUPERSEDED`, without claiming browser-quality results.
 
 SimJury is a public repository, so this uses a standard public-repository GitHub
 hosted runner rather than a billable larger runner. GitHub currently documents

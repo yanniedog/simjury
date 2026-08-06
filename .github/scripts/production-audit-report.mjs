@@ -1,4 +1,5 @@
 import { appendFile, mkdir, readFile, writeFile } from 'node:fs/promises'
+import { isIP } from 'node:net'
 import { basename, dirname } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
@@ -25,6 +26,8 @@ export function deidentify(raw) {
     .replace(/\bhttps?:\/\/[^\s<>"')\]]+/gu, (candidate) => {
       try {
         const parsed = new URL(candidate)
+        const address = parsed.hostname.replace(/^\[|\]$/gu, '')
+        if (isIP(address)) return '[redacted-url]'
         return `${parsed.protocol}//${parsed.hostname}${parsed.port ? `:${parsed.port}` : ''}${parsed.pathname}`
       } catch {
         return '[redacted-url]'
@@ -132,7 +135,7 @@ async function publish() {
   let auditStatus = 'ERROR'
   try {
     const parsed = JSON.parse(await readFile(required('AUDIT_STATUS_PATH'), 'utf8'))
-    if (['PASS', 'WARN', 'FAIL', 'BLOCKED'].includes(parsed.status)) auditStatus = parsed.status
+    if (['PASS', 'WARN', 'FAIL', 'BLOCKED', 'SUPERSEDED'].includes(parsed.status)) auditStatus = parsed.status
   } catch { /* the command-level outcome below remains available */ }
   const paste = process.env.AUDIT_PASTE_URL && /^https:\/\/paste\.rs\/[A-Za-z0-9._-]+\/?$/u.test(process.env.AUDIT_PASTE_URL)
     ? process.env.AUDIT_PASTE_URL : null

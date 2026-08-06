@@ -55,6 +55,7 @@ jobs:
           SIMJURY_AUDIT_URL: https://simjury.com/
           SIMJURY_AUDIT_RUNS: "1"
           SIMJURY_EXPECT_CLARITY: "1"
+          SIMJURY_EXPECT_DEPLOYMENT_SHA: ${{ github.event.workflow_run.head_sha }}
         run: npm run audit:production > "$RUNNER_TEMP/audit.raw.log" 2>&1
       - name: Deidentify the complete audit output
         if: always() && steps.dedupe.outputs.already_reported != 'true'
@@ -81,6 +82,7 @@ jobs:
             echo "url=" >> "$GITHUB_OUTPUT"
           fi
       - name: Upload GitHub-hosted deidentified evidence
+        id: evidence
         if: always() && steps.dedupe.outputs.already_reported != 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -91,7 +93,8 @@ jobs:
           if-no-files-found: error
           retention-days: 90
       - name: Update the production quality issue
-        if: always() && steps.dedupe.outputs.already_reported != 'true'
+        id: publish
+        if: always() && steps.dedupe.outputs.already_reported != 'true' && steps.evidence.outcome == 'success'
         env:
           AUDIT_SHA: ${{ github.event.workflow_run.head_sha }}
           AUDIT_OUTCOME: ${{ steps.audit.outcome }}
@@ -103,5 +106,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: node ../../.github/scripts/production-audit-report.mjs publish
       - name: Preserve an alerting failure without blocking deployment
-        if: steps.dedupe.outputs.already_reported != 'true' && steps.audit.outcome != 'success'
+        if: >-
+          always() && steps.dedupe.outputs.already_reported != 'true' &&
+          (steps.audit.outcome != 'success' || steps.evidence.outcome != 'success' || steps.publish.outcome != 'success')
         run: exit 1
