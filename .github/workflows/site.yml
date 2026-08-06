@@ -52,7 +52,7 @@ jobs:
       - name: Require the pinned immutable media release
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: court-week-cw-0001-2026.08.03-r2
+          RELEASE_TAG: court-week-cw-0001-2026.08.03-r3
         run: |
           set -euo pipefail
           test "$(gh release view "$RELEASE_TAG" --json isDraft,isImmutable --jq '.isDraft == false and .isImmutable == true')" = true
