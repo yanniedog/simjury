@@ -44,7 +44,7 @@ for (const path of files.filter((candidate) => textExtensions.has(extname(candid
   }
 }
 
-for (const relativePage of ['index.html', join('jury', 'index.html')]) {
+for (const relativePage of ['index.html', join('jury', 'court-week.html')]) {
   const pagePath = join(publicRoot, relativePage)
   if (!existsSync(pagePath)) continue
   const html = readFileSync(pagePath, 'utf8')
@@ -59,7 +59,7 @@ for (const relativePage of ['index.html', join('jury', 'index.html')]) {
   }
 }
 
-const juryIndex = join(publicRoot, 'jury', 'index.html')
+const juryIndex = join(publicRoot, 'jury', 'court-week.html')
 if (existsSync(juryIndex)) {
   const html = readFileSync(juryIndex, 'utf8')
   const initialPaths = [...html.matchAll(/(?:src|href)="(\/jury\/[^"?#]+)"/g)]

@@ -64,7 +64,7 @@ for (const sensitive of sensitiveStrings) {
   }
 }
 
-const indexHtml = readFileSync(join(buildRoot, 'index.html'), 'utf8')
+const indexHtml = readFileSync(join(buildRoot, 'court-week.html'), 'utf8')
 if (/\.sjp|court-week\/packs/iu.test(indexHtml)) {
   throw new Error('The initial HTML must not preload or name a sealed day pack.')
 }

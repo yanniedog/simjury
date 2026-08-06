@@ -13,7 +13,7 @@ to agree. The site never declares one outcome objectively correct.
 
 ## Canonical public routes
 
-### https://simjury.com/jury/
+### https://simjury.com/
 
 The static JavaScript player presents, in lawful order: empanelment and oath;
 preliminary directions; Crown opening and evidence; defence opening and
@@ -39,8 +39,8 @@ accounts, analytics, runtime AI and backend player state.
   model-training crawlers, and prevents ordinary indexing of hashed app assets.
 - Static responses publish `Content-Signal: search=yes, ai-input=yes,
   ai-train=no, use=reference` and strict security headers.
-- `sitemap.xml` lists `/jury/` and `/privacy/` only.
-- The bare domain, `/today/`, `/play/` and `/install/` redirect to `/jury/`.
+- `sitemap.xml` lists `/` and `/privacy/` only.
+- `/jury/`, `/today/`, `/play/` and `/install/` redirect to `/`.
 - Unknown routes return a real 404 response.
 
 ## Architecture and cost boundary

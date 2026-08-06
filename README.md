@@ -2,7 +2,7 @@
 
 SimJury is one immersive fictional criminal trial, **Eleven Minutes**, unfolding
 over a five-day court week and a weekend jury deliberation. The canonical player
-is [simjury.com/jury](https://simjury.com/jury/).
+is [simjury.com](https://simjury.com/).
 
 The experience is audio-first and fullscreen, with optional captions and reading
 mode. It is designed as the same complete legal experience on phones, tablets
