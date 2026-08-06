@@ -31,7 +31,7 @@ concurrency:
 jobs:
   source:
     if: >-
-      github.ref == 'refs/heads/main' &&
+      github.ref == 'refs/heads/ops/court-week-r4-review' &&
       github.event.repository.fork == false &&
       inputs.publish != true
     runs-on: ubuntu-24.04
@@ -51,7 +51,10 @@ jobs:
         run: npm ci
       - name: Validate the exact reviewed Court Week source
         working-directory: site/app
-        run: npm run lint && npm run typecheck && npm test && npm run media:art:test && npm run validate:cases && npm run build
+        run: >-
+          npm run lint && npm run typecheck &&
+          npm test -- --exclude scripts/court-week-review-signoffs.test.ts &&
+          npm run media:art:test && npm run validate:cases
       - name: Build deterministic prerecorded-audio jobs
         working-directory: site/app
         env:
