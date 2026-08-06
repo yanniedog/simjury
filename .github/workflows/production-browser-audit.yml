@@ -1,0 +1,61 @@
+name: production-browser-audit
+
+on:
+  workflow_run:
+    workflows: [site]
+    types: [completed]
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Public SimJury URL
+        required: false
+        default: https://simjury.com/
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-browser-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: site/app
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: site/app/package-lock.json
+      - run: npm ci
+      - name: Install the pinned browser
+        run: npx playwright install --with-deps chromium
+      - name: Audit deployed SimJury
+        env:
+          SIMJURY_AUDIT_URL: ${{ inputs.target || 'https://simjury.com/' }}
+          SIMJURY_AUDIT_RUNS: "3"
+        run: npm run audit:production
+      - name: Publish readable summary
+        if: always()
+        run: cat test-results/production-audit/report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: simjury-production-browser-audit-${{ github.run_id }}
+          path: site/app/test-results/production-audit/
+          if-no-files-found: error
+          retention-days: 30
