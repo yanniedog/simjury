@@ -10,6 +10,7 @@ import {
   type CaptionFitFailure,
   type CaptionRect,
 } from './captionPlacement'
+import { speakerCaptionColour } from './speakerPresentation'
 
 export type { AccessMode } from '../state/progress'
 
@@ -20,9 +21,6 @@ export interface ImmersiveCourtShellProps {
   activeTurn?: SceneCueTurn
   releaseBase: string
   accessMode: AccessMode
-  dataSaver?: boolean
-  captionPreference?: AccessMode
-  captionsLocked?: boolean
   playbackStatus: PlaybackStatus
   playbackError: string | null
   progressLabel: string
@@ -46,11 +44,9 @@ function sceneAssetUrl(
   scene: Scene,
   composition: 'portrait' | 'tablet' | 'desktop',
   format: 'avif' | 'webp',
-  dataSaver: boolean,
 ) {
   const runtimeStrip = scene.visual.runtimeStrip?.sources?.[composition]?.[format]
   const commissioned = scene.visual.sources?.[composition]?.[format]
-  if (dataSaver && commissioned) return `${base}/${commissioned}`
   if (runtimeStrip) return runtimeStrip
   return commissioned
     ? `${base}/${commissioned}`
@@ -73,9 +69,6 @@ export function ImmersiveCourtShell({
   activeTurn,
   releaseBase,
   accessMode,
-  dataSaver = false,
-  captionPreference = accessMode,
-  captionsLocked = false,
   playbackStatus,
   playbackError,
   progressLabel,
@@ -121,11 +114,12 @@ export function ImmersiveCourtShell({
   const playing = playbackStatus === 'playing' || playbackStatus === 'speech-fallback'
   const displayedSpeaker = activeTurn?.speaker ?? cue.speaker
   const displayedText = activeTurn?.text ?? cue.text
+  const speakerColour = speakerCaptionColour(displayedSpeaker)
   const captionOverlayRequested = playbackStatus !== 'reading-fallback' && accessMode !== 'reading' && (
     accessMode === 'captions' ||
     playbackStatus === 'speech-fallback'
   )
-  const usesRuntimeStrip = Boolean(scene.visual.runtimeStrip && (!dataSaver || !scene.visual.sources))
+  const usesRuntimeStrip = Boolean(scene.visual.runtimeStrip)
   const focalPosition = (composition: 'portrait' | 'tablet' | 'desktop') => {
     const focalPoint = scene.visual.compositionArt?.[composition]?.focalPoint ?? scene.visual.focalPoint
     const x = usesRuntimeStrip
@@ -142,7 +136,7 @@ export function ImmersiveCourtShell({
   const visualUrl = (
     composition: 'portrait' | 'tablet' | 'desktop',
     format: 'avif' | 'webp',
-  ) => sceneAssetUrl(releaseBase, scene, composition, format, dataSaver)
+  ) => sceneAssetUrl(releaseBase, scene, composition, format)
   const captionPlacements = useMemo(() => responsiveCaptionPlacements(scene.visual), [scene.visual])
   const captionsNeedReading = captionOverlayRequested && captionRuntime.mode === 'reading'
   const readingModeActive = accessMode === 'reading' || playbackStatus === 'reading-fallback' || captionsNeedReading
@@ -219,13 +213,14 @@ export function ImmersiveCourtShell({
         ? JSON.stringify(scene.visual.evidenceSafeRegion)
         : undefined}
       data-access-mode={accessMode}
-      data-data-saver={dataSaver}
-      data-ambience={dataSaver ? 'off' : 'available'}
       data-complete-captions={readingModeActive}
       data-caption-runtime-state={captionRuntime.mode}
       data-caption-runtime-reason={captionRuntime.reason ?? undefined}
       data-media-notice={Boolean(playbackError)}
-      style={captionPlacementStyle(captionPlacements)}
+      style={{
+        ...captionPlacementStyle(captionPlacements),
+        '--cw-speaker-colour': speakerColour,
+      } as CSSProperties}
     >
       <div
         className="cw-stage"
@@ -291,10 +286,24 @@ export function ImmersiveCourtShell({
             {cue.tone === 'cross' ? <span className="cw-speaker__mode"> · cross-examination</span> : null}
           </p>
           {readingModeActive ? (
-            <p className="cw-reading-copy" aria-live="polite" aria-atomic="true">
-              <span className="cw-visually-hidden">{displayedSpeaker}{cue.tone === 'cross' ? ' · cross-examination' : ''}: </span>
-              {cue.text}
-            </p>
+            cue.turns && cue.turns.length > 1 ? (
+              <div className="cw-reading-copy cw-reading-turns" aria-live="polite" aria-atomic="true">
+                {cue.turns.map((turn) => (
+                  <p
+                    key={turn.id}
+                    className="cw-reading-turn"
+                    style={{ color: speakerCaptionColour(turn.speaker) }}
+                  >
+                    <strong>{turn.speaker}:</strong> {turn.text}
+                  </p>
+                ))}
+              </div>
+            ) : (
+              <p className="cw-reading-copy" aria-live="polite" aria-atomic="true">
+                <span className="cw-visually-hidden">{displayedSpeaker}{cue.tone === 'cross' ? ' · cross-examination' : ''}: </span>
+                {cue.text}
+              </p>
+            )
           ) : null}
         </section>
 
@@ -307,7 +316,9 @@ export function ImmersiveCourtShell({
 
         {captionOverlayRequested ? (
           <div ref={captionOverlay} className="cw-captions" aria-hidden="true">
-            <span ref={captionCopy}>{displayedText}</span>
+            <span ref={captionCopy} data-speaker={displayedSpeaker}>
+              <strong>{displayedSpeaker}:</strong> {displayedText}
+            </span>
           </div>
         ) : null}
 
@@ -330,8 +341,7 @@ export function ImmersiveCourtShell({
           <button
             type="button"
             onClick={onToggleCaptions}
-            aria-pressed={captionPreference === 'captions'}
-            disabled={captionsLocked}
+            aria-pressed={accessMode === 'captions'}
           >
             Captions
           </button>

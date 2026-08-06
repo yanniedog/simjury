@@ -119,7 +119,7 @@ test('caption assistive copy exposes the complete visible cue exactly once', asy
   const liveCue = page.locator('.cw-cue-live-region')
   await expect(visibleCue).toBeVisible()
   await expect(liveCue).toHaveAttribute('aria-live', 'polite')
-  await expect(liveCue).toHaveText(`Court officer: ${await visibleCue.textContent()}`)
+  await expect(liveCue).toHaveText(await visibleCue.textContent() ?? '')
   await expect(visibleCue.locator('xpath=..')).toHaveAttribute('aria-hidden', 'true')
 })
 
@@ -206,7 +206,7 @@ test('labelled entry and desk controls retain a 44px effective touch target', as
   await prepareCourt(page)
 
   const undersized: Array<{ label: string; height: number }> = []
-  for (const label of ['Audio first', 'Audio and captions', 'Reading mode', 'Use less data', 'Ask to enter full screen']) {
+  for (const label of ['Audio first', 'Audio and captions', 'Reading mode', 'Ask to enter full screen']) {
     const input = page.getByLabel(label)
     if (await input.count()) {
       const target = input.locator('xpath=ancestor::label')

@@ -8,17 +8,12 @@ import {
   firstBallotForScene,
   nextSundaySceneId,
   openCourtReturn,
+  openCourtReturnTurns,
   unanimousVerdict,
 } from '../engine/deliberation'
 import { nextReplaySafeCue, replaySafeCue } from '../engine/replay'
 import { contributionStage } from '../model/deliberationContract'
 import { useCuePlayback } from '../media/useCuePlayback'
-import {
-  courtWeekMediaPolicy,
-  cueForMediaPolicy,
-  navigatorRequestsDataSaver,
-  nextCueForMediaPolicy,
-} from '../media/dataSaver'
 import {
   getSessionAvailability,
   observeCourtTime,
@@ -134,10 +129,6 @@ function CourtWeekEntry({
   persistenceNotice,
   ephemeral,
   ephemeralAdvisory,
-  dataSaver,
-  narrationApproved,
-  onDataSaver,
-  onNarrationApproved,
   focusHeading,
   localProfile,
 }: {
@@ -149,10 +140,6 @@ function CourtWeekEntry({
   persistenceNotice: string | null
   ephemeral: boolean
   ephemeralAdvisory?: string
-  dataSaver: boolean
-  narrationApproved: boolean
-  onDataSaver: (enabled: boolean) => void
-  onNarrationApproved: (approved: boolean) => void
   focusHeading: boolean
   localProfile?: CourtWeekAppProps['localProfile']
 }) {
@@ -192,44 +179,6 @@ function CourtWeekEntry({
             </label>
           ))}
         </fieldset>
-        <fieldset className="cw-mode-picker">
-          <legend>Data use</legend>
-          <label>
-            <input
-              type="checkbox"
-              checked={dataSaver}
-              onChange={(event) => onDataSaver(event.target.checked)}
-            />
-            <span>
-              <strong>Use less data</strong>
-              <small>Uses the smallest supported scene artwork and turns off ambience and background preloading.</small>
-            </span>
-          </label>
-        </fieldset>
-        {dataSaver && mode !== 'reading' ? (
-          <fieldset className="cw-mode-picker">
-            <legend>Narration download</legend>
-            <p>Recorded narration is not downloaded unless you approve it. Reading mode remains complete.</p>
-            <label>
-              <input
-                type="radio"
-                name="narration-download"
-                checked={!narrationApproved}
-                onChange={() => onNarrationApproved(false)}
-              />
-              <span><strong>Continue without recorded audio</strong><small>Show every spoken line for reading.</small></span>
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="narration-download"
-                checked={narrationApproved}
-                onChange={() => onNarrationApproved(true)}
-              />
-              <span><strong>Download recorded narration</strong><small>Only the current cue is prepared; the next scene is not preloaded.</small></span>
-            </label>
-          </fieldset>
-        ) : null}
         {fullscreenSupported ? (
           <label className="cw-entry__fullscreen">
             <input type="checkbox" checked={fullscreen} onChange={(event) => setFullscreen(event.target.checked)} />
@@ -338,8 +287,6 @@ export function CourtWeekApp({
   }
   const storageNotice = ephemeral ? null : persistenceNotice(persistenceIssue)
   const [entered, setEntered] = useState(false)
-  const [dataSaver, setDataSaver] = useState(navigatorRequestsDataSaver)
-  const [narrationApproved, setNarrationApproved] = useState(false)
   const [started, setStarted] = useState(false)
   const [deskOpen, setDeskOpen] = useState(false)
   const [evidenceId, setEvidenceId] = useState<string | null>(null)
@@ -360,14 +307,6 @@ export function CourtWeekApp({
   const gesturePlayedCue = useRef<string | null>(null)
   const [, setInteractionTick] = useState(0)
   const accessMode = progress.accessibilityMode ?? 'audio-first'
-  const mediaPolicy = useMemo(
-    () => courtWeekMediaPolicy(dataSaver, narrationApproved),
-    [dataSaver, narrationApproved],
-  )
-  const presentedAccessMode = mediaPolicy.recordedNarration || accessMode === 'reading'
-    ? accessMode
-    : 'reading'
-  const readingForcedByDataSaver = presentedAccessMode === 'reading' && accessMode !== 'reading'
   const observedTime = observeCourtTime(Date.parse(progress.highestObservedTime), now())
   const availability = getSessionAvailability(
     courtWeek.manifest.sessions.map((session) => ({
@@ -405,10 +344,14 @@ export function CourtWeekApp({
   const presentedCue = useMemo<SceneCue>(() => {
     const safeCue = replaySafeCue(position.cue, isReplay)
     if (safeCue.id === 'sun-verdict-return' && progress.sealedVerdict && progress.sealedAgreement) {
+      const turns = openCourtReturnTurns(progress.sealedVerdict, progress.sealedAgreement)
       return {
         ...safeCue,
         text: openCourtReturn(progress.sealedVerdict, progress.sealedAgreement),
-        turns: undefined,
+        turns,
+        // The sealed outcome is dynamic. Static placeholder narration cannot
+        // truthfully voice it, so device speech speaks each identified turn.
+        audio: undefined,
         accessibleProposition: `The accused stands while the ${progress.sealedAgreement} result is spoken and recorded in open court.`,
       }
     }
@@ -503,21 +446,17 @@ export function CourtWeekApp({
   const handleCueEnded = useCallback(() => {
     advance()
   }, [advance])
-  const playbackCue = useMemo<SceneCue>(
-    () => cueForMediaPolicy(presentedCue, mediaPolicy),
-    [mediaPolicy, presentedCue],
-  )
   const followingPlaybackCue = useMemo(() => {
     const sameSceneCue = nextReplaySafeCue(position.scene.cues, position.cueIndex, isReplay)
-    if (sameSceneCue) return nextCueForMediaPolicy(sameSceneCue, mediaPolicy)
+    if (sameSceneCue) return sameSceneCue
     if (position.scene.interaction) return undefined
     const nextSceneCue = activeSession.scenes[position.sceneIndex + 1]?.cues[0]
-    return nextCueForMediaPolicy(nextSceneCue ? replaySafeCue(nextSceneCue, isReplay) : undefined, mediaPolicy)
-  }, [activeSession.scenes, isReplay, mediaPolicy, position.cueIndex, position.scene, position.sceneIndex])
+    return nextSceneCue ? replaySafeCue(nextSceneCue, isReplay) : undefined
+  }, [activeSession.scenes, isReplay, position.cueIndex, position.scene, position.sceneIndex])
   const playback = useCuePlayback(
-    playbackCue,
+    presentedCue,
     handleCueEnded,
-    nextCueForMediaPolicy(entered ? activeSession.scenes[position.sceneIndex + 1]?.cues[0] : undefined, mediaPolicy),
+    entered ? activeSession.scenes[position.sceneIndex + 1]?.cues[0] : undefined,
     { deferSourceUntilPlay: true, followingCue: followingPlaybackCue },
   )
   const pauseCuePlayback = playback.pause
@@ -558,12 +497,12 @@ export function CourtWeekApp({
       suppressAutoPlayAfterDeskClose.current = false
       return
     }
-    if (!started || interactionOpen || deskOpen || evidenceId || advanceBlocked.current || presentedAccessMode === 'reading') return
+    if (!started || interactionOpen || deskOpen || evidenceId || advanceBlocked.current || accessMode === 'reading') return
     const alreadyPlayedFromGesture = gesturePlayedCue.current === presentedCue.id
     gesturePlayedCue.current = null
     if (alreadyPlayedFromGesture) return
     void playCue()
-  }, [deskOpen, evidenceId, interactionOpen, playCue, presentedAccessMode, presentedCue.id, started])
+  }, [accessMode, deskOpen, evidenceId, interactionOpen, playCue, presentedCue.id, started])
 
   const playFromGesture = useCallback(() => {
     gesturePlayedCue.current = presentedCue.id
@@ -607,10 +546,10 @@ export function CourtWeekApp({
           return ordered
             .map(({ cue }) => cue)
             .filter((cue) => (cue.sourceCueId ?? cue.id) === evidence.replaySourceCueId)
-            .map((cue) => cueForMediaPolicy(cue, mediaPolicy))
+            .map((cue) => cue)
         })()
       : []
-  ), [courtWeek.manifest.sessions, evidence, mediaPolicy, progress.completedSessionIds, progress.currentCueId])
+  ), [courtWeek.manifest.sessions, evidence, progress.completedSessionIds, progress.currentCueId])
 
   const interaction = position.scene.interaction
   const persistedInteractionVote = interaction?.kind === 'seal-vote'
@@ -650,12 +589,8 @@ export function CourtWeekApp({
         persistenceNotice={storageNotice}
         ephemeral={ephemeral}
         ephemeralAdvisory={ephemeralAdvisory}
-        dataSaver={dataSaver}
-        narrationApproved={narrationApproved}
         focusHeading={focusEntryHeading}
         localProfile={localProfile}
-        onDataSaver={setDataSaver}
-        onNarrationApproved={setNarrationApproved}
         onMode={(mode) => updateProgress((current) => ({ ...current, accessibilityMode: mode }))}
         onEnter={(requestFullscreen) => {
           setEntered(true)
@@ -666,7 +601,7 @@ export function CourtWeekApp({
             }
             return
           }
-          if (presentedAccessMode !== 'reading') playFromGesture()
+          if (accessMode !== 'reading') playFromGesture()
           else setStarted(true)
           if (requestFullscreen) {
             void document.documentElement.requestFullscreen?.().catch(() => undefined)
@@ -919,8 +854,8 @@ export function CourtWeekApp({
           <EvidenceViewer
             evidence={evidence}
             recordingCues={recordingReplayCues}
-            showRecordingCaptions={presentedAccessMode !== 'audio-first'}
-            expandRecordingCaptions={presentedAccessMode === 'reading'}
+            showRecordingCaptions={accessMode !== 'audio-first'}
+            expandRecordingCaptions={accessMode === 'reading'}
             returnFocusTo={evidenceTrigger.current}
             onClose={() => setEvidenceId(null)}
           />
@@ -1083,10 +1018,7 @@ export function CourtWeekApp({
       cue={presentedCue}
       activeTurn={presentedCue.turns?.find((turn) => turn.id === playback.activeTurnId)}
       releaseBase={releaseRoot}
-      accessMode={presentedAccessMode}
-      dataSaver={mediaPolicy.dataSaver}
-      captionPreference={accessMode}
-      captionsLocked={readingForcedByDataSaver}
+      accessMode={accessMode}
       playbackStatus={playback.status}
       playbackError={[playback.error, storageNotice ?? (
         persistence === 'memory' ? 'Progress is held in this tab. Export it before leaving.' : null
