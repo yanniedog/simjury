@@ -53,6 +53,15 @@ decision is [`../COURT-WEEK.md`](../COURT-WEEK.md). Legacy `/today`, `/play` and
   allowed. The reviewed client-side Microsoft Clarity tag is the sole analytics
   exception: source is fully masked, advertising storage is denied, automated
   sessions are tagged and a browser-local opt-out prevents future tag loading.
+- This cost boundary is about server-owner quotas, not a player "low data"
+  mode. Cloudflare's Static Assets billing contract currently makes static asset
+  requests free and unlimited and adds no asset-storage charge; only a Worker
+  invocation enters Workers request/CPU billing. The fail-closed configuration
+  guard therefore prohibits every Worker entrypoint, route and binding. Heavy
+  narration and responsive courtroom art are immutable GitHub Release assets,
+  so user media traffic also bypasses Cloudflare. Re-check the official
+  [Static Assets billing terms](https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/)
+  before changing this boundary.
 - Progress, private notes and ballots live in IndexedDB. The small local profile
   (juror label, adult-fiction acknowledgement and default-off Developer mode)
   lives in validated localStorage. It is not an account and is never transmitted.

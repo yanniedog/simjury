@@ -4,59 +4,109 @@ on:
   workflow_run:
     workflows: [site]
     types: [completed]
-  schedule:
-    - cron: "17 3 * * *"
-  workflow_dispatch:
-    inputs:
-      target:
-        description: Public SimJury URL
-        required: false
-        default: https://simjury.com/
 
 permissions:
   contents: read
+  issues: write
 
 concurrency:
   group: production-browser-audit
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   audit:
     if: >-
-      github.event_name != 'workflow_run' ||
-      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 30
     defaults:
       run:
         working-directory: site/app
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          ref: ${{ github.event.workflow_run.head_sha }}
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - name: Skip a deployment already reported
+        id: dedupe
+        env:
+          AUDIT_SHA: ${{ github.event.workflow_run.head_sha }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node ../../.github/scripts/production-audit-report.mjs check
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        if: steps.dedupe.outputs.already_reported != 'true'
         with:
           node-version: "24"
           cache: npm
           cache-dependency-path: site/app/package-lock.json
-      - run: npm ci
+      - if: steps.dedupe.outputs.already_reported != 'true'
+        run: npm ci
       - name: Install the pinned browser
+        if: steps.dedupe.outputs.already_reported != 'true'
         run: npx playwright install --with-deps chromium
       - name: Audit deployed SimJury
+        id: audit
+        if: steps.dedupe.outputs.already_reported != 'true'
+        continue-on-error: true
         env:
-          SIMJURY_AUDIT_URL: ${{ inputs.target || 'https://simjury.com/' }}
-          SIMJURY_AUDIT_RUNS: "3"
+          SIMJURY_AUDIT_URL: https://simjury.com/
+          SIMJURY_AUDIT_RUNS: "1"
           SIMJURY_EXPECT_CLARITY: "1"
-        run: npm run audit:production
-      - name: Publish readable summary
-        if: always()
-        run: cat test-results/production-audit/report.md >> "$GITHUB_STEP_SUMMARY"
-      - name: Upload audit evidence
-        if: always()
-        uses: actions/upload-artifact@v4
+          SIMJURY_EXPECT_DEPLOYMENT_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: npm run audit:production > "$RUNNER_TEMP/audit.raw.log" 2>&1
+      - name: Deidentify the complete audit output
+        if: always() && steps.dedupe.outputs.already_reported != 'true'
+        run: |
+          node ../../.github/scripts/production-audit-report.mjs redact \
+            test-results/production-audit/audit.deidentified.log \
+            "$RUNNER_TEMP/audit.raw.log" \
+            test-results/production-audit/report.json
+          node ../../.github/scripts/production-audit-report.mjs redact \
+            test-results/production-audit/report.deidentified.md \
+            test-results/production-audit/report.md
+          rm -f "$RUNNER_TEMP/audit.raw.log"
+          cat test-results/production-audit/report.deidentified.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload full deidentified terminal log
+        id: paste
+        if: always() && steps.dedupe.outputs.already_reported != 'true'
+        run: |
+          paste_url="$(curl --fail --silent --show-error --retry 2 --retry-all-errors --max-time 30 \
+            -H 'Content-Type: text/plain; charset=utf-8' \
+            --data-binary @test-results/production-audit/audit.deidentified.log https://paste.rs 2>/dev/null || true)"
+          if [[ "$paste_url" =~ ^https://paste\.rs/[A-Za-z0-9._-]+/?$ ]]; then
+            echo "url=$paste_url" >> "$GITHUB_OUTPUT"
+          else
+            echo "url=" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Upload GitHub-hosted deidentified evidence
+        id: evidence
+        if: always() && steps.dedupe.outputs.already_reported != 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: simjury-production-browser-audit-${{ github.run_id }}
-          path: site/app/test-results/production-audit/
+          path: |
+            site/app/test-results/production-audit/audit.deidentified.log
+            site/app/test-results/production-audit/report.deidentified.md
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 90
+      - name: Update the production quality issue
+        id: publish
+        if: always() && steps.dedupe.outputs.already_reported != 'true' && steps.evidence.outcome == 'success'
+        env:
+          AUDIT_SHA: ${{ github.event.workflow_run.head_sha }}
+          AUDIT_OUTCOME: ${{ steps.audit.outcome }}
+          AUDIT_SUMMARY_PATH: test-results/production-audit/report.deidentified.md
+          AUDIT_STATUS_PATH: test-results/production-audit/report.json
+          AUDIT_PASTE_URL: ${{ steps.paste.outputs.url }}
+          AUDIT_WORKFLOW_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          AUDIT_ARTIFACT_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node ../../.github/scripts/production-audit-report.mjs publish
+      - name: Preserve an alerting failure without blocking deployment
+        if: >-
+          always() && steps.dedupe.outputs.already_reported != 'true' &&
+          (steps.audit.outcome != 'success' || steps.evidence.outcome != 'success' || steps.publish.outcome != 'success')
+        run: exit 1
