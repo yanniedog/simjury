@@ -5,6 +5,8 @@ import { join } from 'node:path'
 const target = new URL(process.env.SIMJURY_AUDIT_URL ?? 'https://simjury.com/')
 const runCount = Math.max(1, Number.parseInt(process.env.SIMJURY_AUDIT_RUNS ?? '1', 10) || 1)
 const output = join(process.cwd(), 'test-results', 'production-audit')
+const audioStartTimeoutMs = 15_000
+const controlTimeoutMs = 5_000
 const profile = JSON.stringify({
   schemaVersion: 'simjury-local-profile-v1', jurorLabel: 'Synthetic QA',
   adultFictionAcknowledged: true, developerMode: true,
@@ -173,24 +175,32 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
       if (ordinal === 1) {
         const controls = page.getByLabel('Court playback controls')
         const pause = controls.getByRole('button', { name: 'Pause' })
-        const unavailable = page.getByText('Audio is unavailable. Reading mode is ready.')
+        const mediaFallback = page.getByRole('status').filter({
+          hasText: /Audio is unavailable|Recorded audio could not be loaded/i,
+        })
         const audioState = await Promise.race([
-          pause.waitFor({ state: 'visible', timeout: 15_000 }).then(() => 'playing'),
-          unavailable.waitFor({ state: 'visible', timeout: 15_000 }).then(() => 'unavailable'),
+          pause.waitFor({ state: 'visible', timeout: audioStartTimeoutMs }).then(() => 'playing'),
+          mediaFallback.waitFor({ state: 'visible', timeout: audioStartTimeoutMs }).then(() => 'unavailable'),
         ])
-        if (audioState === 'unavailable') {
-          add('high', 'audio', id, 'Narration fell back to reading mode on production Chromium.')
+        const fallbackText = await mediaFallback.count() ? await mediaFallback.first().textContent() : null
+        const recordedAudioPlaying = audioState === 'playing' && !fallbackText
+        if (!recordedAudioPlaying) {
+          add('high', 'audio', id, `Recorded narration fell back on production Chromium${fallbackText ? `: ${fallbackText}` : '.'}`)
         } else {
           await pointerClick(page, pause, 'Pause narration', actions)
           const resume = controls.getByRole('button', { name: 'Resume' })
-          await resume.waitFor({ state: 'visible', timeout: 5_000 })
+          await resume.waitFor({ state: 'visible', timeout: controlTimeoutMs })
           await pointerClick(page, resume, 'Resume narration', actions)
-          await pause.waitFor({ state: 'visible', timeout: 5_000 })
+          await pause.waitFor({ state: 'visible', timeout: controlTimeoutMs })
         }
         await pointerClick(page, page.getByRole('button', { name: 'Juror desk', exact: true }), 'Open juror desk', actions)
         await page.getByRole('dialog', { name: 'Your working papers' }).waitFor({ state: 'visible' })
+        if (recordedAudioPlaying) {
+          await page.locator('.cw-controls button', { hasText: 'Resume' }).waitFor({ state: 'attached', timeout: controlTimeoutMs })
+        }
         await pointerClick(page, page.getByRole('button', { name: 'Close juror desk' }), 'Close juror desk', actions)
-        if (audioState === 'playing') await pause.waitFor({ state: 'visible', timeout: 5_000 })
+        await page.getByRole('dialog', { name: 'Your working papers' }).waitFor({ state: 'hidden', timeout: controlTimeoutMs })
+        if (recordedAudioPlaying) await pause.waitFor({ state: 'visible', timeout: controlTimeoutMs })
       }
     }
     const layout = await inspectLayout(page, id)
