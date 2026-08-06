@@ -3,8 +3,13 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 const target = new URL(process.env.SIMJURY_AUDIT_URL ?? 'https://simjury.com/')
+if (target.href !== 'https://simjury.com/') throw new Error('Production audits only target https://simjury.com/.')
 const runCount = Math.max(1, Number.parseInt(process.env.SIMJURY_AUDIT_RUNS ?? '1', 10) || 1)
 const expectClarity = process.env.SIMJURY_EXPECT_CLARITY === '1'
+const expectedDeploymentSha = process.env.SIMJURY_EXPECT_DEPLOYMENT_SHA
+if (expectedDeploymentSha && !/^[0-9a-f]{40}$/u.test(expectedDeploymentSha)) {
+  throw new Error('SIMJURY_EXPECT_DEPLOYMENT_SHA must be a full commit SHA.')
+}
 const output = join(process.cwd(), 'test-results', 'production-audit')
 const audioStartTimeoutMs = 15_000
 const controlTimeoutMs = 5_000
@@ -13,14 +18,18 @@ const profile = JSON.stringify({
   adultFictionAcknowledged: true, developerMode: true,
 })
 const profiles = [
-  { name: 'mobile', width: 360, height: 800, allSessions: false },
-  { name: 'desktop', width: 1440, height: 900, allSessions: true },
+  { name: 'small-phone', width: 320, height: 568, mobile: true, allSessions: false },
+  { name: 'browser-chrome-reduced', width: 360, height: 560, mobile: true, allSessions: false },
+  { name: 'phone-landscape', width: 568, height: 320, mobile: true, allSessions: false },
+  { name: 'tablet-portrait', width: 768, height: 1024, mobile: true, allSessions: false },
+  { name: 'desktop-200-percent', width: 720, height: 450, mobile: false, allSessions: false },
+  { name: 'desktop', width: 1440, height: 900, mobile: false, allSessions: true },
 ] as const
 
 type Severity = 'high' | 'medium' | 'low'
 type Finding = { severity: Severity; category: string; profile: string; message: string }
-type Action = { label: string; milliseconds: number; blocked: boolean }
-type Metrics = { ttfbMs: number; lcpMs: number; cls: number; entryBytes: number; overflowPx: number; smallTargets: number }
+type Action = { label: string; milliseconds: number; blocked: boolean; initiallyClipped: boolean }
+type Metrics = { ttfbMs: number; lcpMs: number; cls: number; entryBytes: number; overflowPx: number; smallTargets: number; clippedTargets: number }
 type Journey = { profile: string; run: number; status: 'PASS' | 'FAIL' | 'BLOCKED'; sessions: string[]; actions: Action[]; clarityCollects: number; metrics?: Metrics }
 
 const findings: Finding[] = []
@@ -39,7 +48,30 @@ const isClarityCollect = (value: string) => {
   return url.protocol === 'https:' && url.hostname.endsWith('.clarity.ms') && url.pathname === '/collect'
 }
 
-async function pointerClick(page: Page, locator: Locator, label: string, actions: Action[]) {
+async function verifyDeploymentIdentity() {
+  if (!expectedDeploymentSha) return { verified: true, superseded: false, servedSha: null }
+  const marker = new URL('/.well-known/simjury-deployment.json', target)
+  marker.searchParams.set('expected', expectedDeploymentSha)
+  try {
+    const response = await fetch(marker, { headers: { 'Cache-Control': 'no-cache' } })
+    if (!response.ok) throw new Error(`marker returned ${response.status}`)
+    const body = await response.json() as { sha?: unknown }
+    if (typeof body.sha !== 'string' || !/^[0-9a-f]{40}$/u.test(body.sha)) throw new Error('marker SHA is invalid')
+    return { verified: body.sha === expectedDeploymentSha, superseded: body.sha !== expectedDeploymentSha, servedSha: body.sha }
+  } catch (error) {
+    add('high', 'deployment-identity', 'all profiles', `Could not verify the served deployment: ${error instanceof Error ? error.message : String(error)}.`)
+    return { verified: false, superseded: false, servedSha: null }
+  }
+}
+
+async function pointerClick(page: Page, locator: Locator, label: string, actions: Action[], mustStartVisible = false) {
+  const initialBox = await locator.boundingBox()
+  const viewport = page.viewportSize()
+  const initiallyClipped = Boolean(mustStartVisible && initialBox && viewport && (
+    initialBox.x < 0 || initialBox.y < 0
+    || initialBox.x + initialBox.width > viewport.width
+    || initialBox.y + initialBox.height > viewport.height
+  ))
   await locator.scrollIntoViewIfNeeded()
   const box = await locator.boundingBox()
   if (!box) throw new Error(`${label} has no clickable box`)
@@ -51,7 +83,7 @@ async function pointerClick(page: Page, locator: Locator, label: string, actions
   await page.mouse.move(point.x, point.y, { steps: 12 })
   const started = Date.now()
   await locator.click({ timeout: 10_000 })
-  actions.push({ label, milliseconds: Date.now() - started, blocked })
+  actions.push({ label, milliseconds: Date.now() - started, blocked, initiallyClipped })
 }
 
 async function gotoPublicPage(page: Page, profileName: string): Promise<Response | null> {
@@ -68,14 +100,14 @@ async function gotoPublicPage(page: Page, profileName: string): Promise<Response
   return response
 }
 
-async function inspectLayout(page: Page, profileName: string) {
+async function inspectLayout(page: Page, profileName: string, scope = '') {
   const layout = await page.evaluate(() => {
     const controls = [...document.querySelectorAll<HTMLElement>('button, a[href], input, select, textarea')]
       .filter((element) => {
         const style = getComputedStyle(element)
         const box = element.getBoundingClientRect()
-        return style.visibility !== 'hidden' && style.display !== 'none' && box.width > 0 && box.height > 0
-          && box.right > 0 && box.bottom > 0 && box.left < innerWidth && box.top < innerHeight
+        return !element.matches('.cw-visually-hidden, .cw-skip-link:not(:focus)')
+          && style.visibility !== 'hidden' && style.display !== 'none' && box.width > 0 && box.height > 0
       })
     const small = controls.flatMap((element) => {
       const target = element.closest<HTMLElement>('label') ?? element
@@ -84,35 +116,43 @@ async function inspectLayout(page: Page, profileName: string) {
       const name = element.getAttribute('aria-label') || element.textContent?.trim() || element.tagName.toLowerCase()
       return [`${name.slice(0, 60)} (${Math.round(box.width)}x${Math.round(box.height)})`]
     })
+    const clipped = controls.flatMap((element) => {
+      const box = (element.closest<HTMLElement>('label') ?? element).getBoundingClientRect()
+      if (box.left >= 0 && box.top >= 0 && box.right <= innerWidth && box.bottom <= innerHeight) return []
+      const name = element.getAttribute('aria-label') || element.textContent?.trim() || element.tagName.toLowerCase()
+      return [`${name.slice(0, 60)} (${Math.round(box.left)},${Math.round(box.top)} to ${Math.round(box.right)},${Math.round(box.bottom)})`]
+    })
     const images = [...document.images].filter((image) => image.complete && image.naturalWidth === 0)
     return {
       overflow: Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth),
-      small,
+      small, clipped,
       brokenImages: images.length,
     }
   })
-  if (layout.overflow > 1) add('high', 'layout', profileName, `Horizontal overflow is ${layout.overflow}px.`)
-  if (layout.small.length > 0) add('medium', 'accessibility', profileName, `Targets below 44x44px: ${layout.small.join(', ')}.`)
-  if (layout.brokenImages > 0) add('high', 'media', profileName, `${layout.brokenImages} visible images failed to decode.`)
+  const prefix = scope ? `${scope}: ` : ''
+  if (layout.overflow > 1) add('high', 'layout', profileName, `${prefix}Horizontal overflow is ${layout.overflow}px.`)
+  if (layout.small.length > 0) add('medium', 'accessibility', profileName, `${prefix}Targets below 44x44px: ${layout.small.join(', ')}.`)
+  if (layout.clipped.length > 0) add('high', 'layout', profileName, `${prefix}Actionable controls are clipped by the viewport: ${layout.clipped.join(', ')}.`)
+  if (layout.brokenImages > 0) add('high', 'media', profileName, `${prefix}${layout.brokenImages} visible images failed to decode.`)
   return layout
 }
 
 async function runJourney(profileInfo: typeof profiles[number], run: number) {
   const id = `${profileInfo.name}-${run}`
-  const tracePath = join(output, `${id}.zip`)
-  const screenshotPath = join(output, `${id}.webp`)
   const actions: Action[] = []
   const sessions: string[] = []
   let clarityCollects = 0
   const browser = await chromium.launch({ headless: true })
   const context = await browser.newContext({
     viewport: { width: profileInfo.width, height: profileInfo.height },
+    screen: { width: profileInfo.width, height: profileInfo.height },
+    isMobile: profileInfo.mobile, hasTouch: profileInfo.mobile,
+    deviceScaleFactor: profileInfo.mobile ? 2.75 : 1,
     reducedMotion: 'reduce', serviceWorkers: 'block',
     storageState: { cookies: [], origins: [{ origin: target.origin, localStorage: [
       { name: 'simjury:court-week:local-profile:v1', value: profile },
     ] }] },
   })
-  await context.tracing.start({ screenshots: true, snapshots: true })
   await context.addInitScript(() => {
     const state = { lcp: 0, cls: 0, violations: [] as string[] }
     Object.defineProperty(window, '__simjuryAudit', { value: state })
@@ -165,9 +205,10 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
     await page.getByRole('heading', { name: 'Eleven Minutes' }).waitFor({ state: 'visible', timeout: 20_000 })
 
     const ordinals = profileInfo.allSessions ? [1, 2, 3, 4, 5, 6, 7] : [1]
+    const layouts: Awaited<ReturnType<typeof inspectLayout>>[] = []
     for (const ordinal of ordinals) {
       if (ordinal > 1) {
-        await pointerClick(page, page.getByRole('button', { name: 'DEV preview' }), 'Open preview session picker', actions)
+        await pointerClick(page, page.getByRole('button', { name: 'DEV preview' }), 'Open preview session picker', actions, true)
         await page.locator('#cw-developer-day-modal').selectOption(String(ordinal))
         await page.getByRole('heading', { name: 'Eleven Minutes' }).waitFor({ state: 'visible', timeout: 20_000 })
       }
@@ -197,43 +238,52 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
         if (!recordedAudioPlaying) {
           add('high', 'audio', id, `Recorded narration fell back on production Chromium${fallbackText ? `: ${fallbackText}` : '.'}`)
         } else {
-          await pointerClick(page, pause, 'Pause narration', actions)
+          await pointerClick(page, pause, 'Pause narration', actions, true)
           const resume = controls.getByRole('button', { name: 'Resume' })
           await resume.waitFor({ state: 'visible', timeout: controlTimeoutMs })
-          await pointerClick(page, resume, 'Resume narration', actions)
+          await pointerClick(page, resume, 'Resume narration', actions, true)
           await pause.waitFor({ state: 'visible', timeout: controlTimeoutMs })
         }
-        await pointerClick(page, page.getByRole('button', { name: 'Juror desk', exact: true }), 'Open juror desk', actions)
+        await pointerClick(page, page.getByRole('button', { name: 'Juror desk', exact: true }), 'Open juror desk', actions, true)
         await page.getByRole('dialog', { name: 'Your working papers' }).waitFor({ state: 'visible' })
         if (recordedAudioPlaying) {
           await page.locator('.cw-controls button', { hasText: 'Resume' }).waitFor({ state: 'attached', timeout: controlTimeoutMs })
         }
-        await pointerClick(page, page.getByRole('button', { name: 'Close juror desk' }), 'Close juror desk', actions)
+        await pointerClick(page, page.getByRole('button', { name: 'Close juror desk' }), 'Close juror desk', actions, true)
         await page.getByRole('dialog', { name: 'Your working papers' }).waitFor({ state: 'hidden', timeout: controlTimeoutMs })
         if (recordedAudioPlaying) await pause.waitFor({ state: 'visible', timeout: controlTimeoutMs })
       }
+      layouts.push(await inspectLayout(page, id, `Session ${ordinal}`))
     }
-    const layout = await inspectLayout(page, id)
-    await page.screenshot({ path: screenshotPath, type: 'webp', fullPage: true })
+    const layout = {
+      overflow: Math.max(0, ...layouts.map((item) => item.overflow)),
+      small: layouts.flatMap((item) => item.small),
+      clipped: layouts.flatMap((item) => item.clipped),
+    }
     const vital = await page.evaluate(() => (window as typeof window & { __simjuryAudit: { lcp: number; cls: number; violations: string[] } }).__simjuryAudit)
     vital.violations.forEach((violation) => add('high', 'csp', id, violation))
     actions.filter((action) => action.blocked).forEach((action) => add('high', 'click-blocker', id, `${action.label} was obscured at its centre point.`))
+    actions.filter((action) => action.initiallyClipped).forEach((action) => add('high', 'layout', id, `${action.label} required synthetic scrolling because it began outside the viewport.`))
     actions.filter((action) => action.milliseconds > 1_000).forEach((action) => add('high', 'performance', id, `${action.label} took ${action.milliseconds}ms.`))
     journeys.push({ profile: profileInfo.name, run, status: findings.some((item) => item.profile === id && item.severity === 'high') ? 'FAIL' : 'PASS', sessions, actions,
       clarityCollects,
-      metrics: { ttfbMs: navigation.responseStart, lcpMs: vital.lcp, cls: vital.cls, entryBytes, overflowPx: layout.overflow, smallTargets: layout.small.length } })
+      metrics: { ttfbMs: navigation.responseStart, lcpMs: vital.lcp, cls: vital.cls, entryBytes, overflowPx: layout.overflow, smallTargets: layout.small.length, clippedTargets: layout.clipped.length } })
   } catch (error) {
     add('high', 'journey', id, error instanceof Error ? error.message : String(error))
     journeys.push({ profile: profileInfo.name, run, status: 'FAIL', sessions, actions, clarityCollects })
   } finally {
-    await context.tracing.stop({ path: tracePath }).catch(() => undefined)
     await context.close()
     await browser.close()
   }
 }
 
 await mkdir(output, { recursive: true })
-for (let run = 1; run <= runCount; run += 1) for (const item of profiles) await runJourney(item, run)
+const deploymentIdentity = await verifyDeploymentIdentity()
+if (deploymentIdentity.superseded) {
+  add('low', 'deployment-identity', 'all profiles', `Deployment ${expectedDeploymentSha} was superseded before its audit began; the served SHA is ${deploymentIdentity.servedSha}.`)
+} else if (deploymentIdentity.verified) {
+  for (let run = 1; run <= runCount; run += 1) for (const item of profiles) await runJourney(item, run)
+}
 const nonBlockedJourneys = journeys.filter((journey) => journey.status !== 'BLOCKED')
 if (expectClarity && nonBlockedJourneys.length > 0 && nonBlockedJourneys.every((journey) => journey.clarityCollects === 0)) {
   add('high', 'analytics', 'all profiles', 'Microsoft Clarity did not send any collection requests.')
@@ -253,10 +303,12 @@ for (const item of profiles) {
   if (ttfb > 3_000) add('high', 'performance', item.name, `Median TTFB was ${Math.round(ttfb)}ms.`)
   else if (ttfb > 1_800) add('medium', 'performance', item.name, `Median TTFB was ${Math.round(ttfb)}ms.`)
 }
-const status = findings.some((item) => item.severity === 'high') ? 'FAIL'
+const status = deploymentIdentity.superseded ? 'SUPERSEDED'
+  : !deploymentIdentity.verified ? 'BLOCKED'
+    : findings.some((item) => item.severity === 'high') ? 'FAIL'
   : journeys.some((item) => item.status === 'BLOCKED') ? 'BLOCKED'
   : findings.some((item) => item.severity === 'medium') ? 'WARN' : 'PASS'
-const report = { schema: 'simjury.production-audit/v1', target: target.href, startedAt: new Date().toISOString(), status, runCount, performance: performanceSummary, journeys, findings }
+const report = { schema: 'simjury.production-audit/v1', target: target.href, expectedDeploymentSha: expectedDeploymentSha ?? null, servedDeploymentSha: deploymentIdentity.servedSha, startedAt: new Date().toISOString(), status, runCount, performance: performanceSummary, journeys, findings }
 const markdown = [
   `# SimJury production browser audit: ${status}`,
   '', `Target: ${target.href}`, `Runs: ${runCount} per profile`,
