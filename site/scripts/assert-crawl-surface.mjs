@@ -16,7 +16,7 @@ function forbidText(source, text, message) {
   if (source.toLowerCase().includes(text.toLowerCase())) failures.push(message)
 }
 
-const jury = read(join('jury', 'index.html'))
+const jury = read(join('jury', 'court-week.html'))
 const privacy = read(join('privacy', 'index.html'))
 const robots = read('robots.txt')
 const sitemap = read('sitemap.xml')
@@ -25,7 +25,7 @@ const llmsFull = read('llms-full.txt')
 const redirects = read('_redirects')
 
 const pages = [
-  ['jury', jury, 'https://simjury.com/jury/'],
+  ['root', jury, 'https://simjury.com/'],
   ['privacy', privacy, 'https://simjury.com/privacy/'],
 ]
 const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1])
@@ -38,10 +38,13 @@ for (const [label, source, url] of pages) {
   forbidText(source, 'noindex', `${label} must remain indexable`)
 }
 
-requireText(redirects, '/ /jury/ 302', 'Bare-domain Court Week redirect is missing')
+requireText(redirects, '/ /jury/court-week 200', 'Bare-domain Court Week proxy is missing')
+for (const path of ['/jury', '/jury/']) {
+  requireText(redirects, `${path} / 301`, `${path} canonical redirect is missing`)
+}
 for (const path of ['/today', '/play', '/install']) {
-  requireText(redirects, `${path} /jury/ 302`, `${path} redirect is missing`)
-  requireText(redirects, `${path}/* /jury/ 302`, `${path} wildcard redirect is missing`)
+  requireText(redirects, `${path} / 302`, `${path} redirect is missing`)
+  requireText(redirects, `${path}/* / 302`, `${path} wildcard redirect is missing`)
 }
 for (const text of ['Court Week', 'five weekday court sessions', 'There is no runtime AI', 'https://simjury.com/llms-full.txt']) {
   requireText(llms, text, `llms.txt must include: ${text}`)

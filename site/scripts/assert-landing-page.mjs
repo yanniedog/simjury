@@ -41,7 +41,7 @@ for (const text of [
   'five trial days',
   'eleven authored jurors',
   'Murder, manslaughter, Not Guilty',
-  'href="/jury/"',
+  'href="/"',
   'Everything in SimJury is fictional',
   'adults aged 18 and over',
 ]) requireText(home, text, `Landing must include: ${text}`)
@@ -64,6 +64,7 @@ for (const text of [
 requireText(ready, 'simjury:fiction-disclosure:v2', 'Landing must retain the versioned adult-fiction gate')
 requireText(headers, 'Cache-Control: no-transform', 'Static responses must block transformations')
 const cacheRules = [
+  ['/', '! Cache-Control\\r?\\n\\s+Cache-Control:\\s*no-store, no-cache, must-revalidate, no-transform', 'canonical Court Week shell'],
   ['/jury/\\*', 'Cache-Control:\\s*no-store, no-cache, must-revalidate, no-transform', 'Court Week shell'],
   ['/jury/assets/\\*', '! Cache-Control\\r?\\n\\s+Cache-Control:\\s*public, max-age=31536000, immutable, no-transform', 'Court Week hashed assets'],
   ['/jury/court-week/packs/\\*', '! Cache-Control\\r?\\n\\s+Cache-Control:\\s*public, max-age=0, must-revalidate, no-transform', 'Court Week sealed packs'],

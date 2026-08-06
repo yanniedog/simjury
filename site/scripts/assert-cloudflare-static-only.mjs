@@ -47,7 +47,7 @@ for (const path of [
 }
 
 const redirects = readFileSync(join(siteRoot, 'public', '_redirects'), 'utf8')
-for (const route of ['/today /jury/ 302', '/play /jury/ 302', '/install /jury/ 302']) {
+for (const route of ['/today / 302', '/play / 302', '/install / 302']) {
   if (!redirects.includes(route)) failures.push(`Compatibility redirect missing: ${route}`)
 }
 

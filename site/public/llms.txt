@@ -9,7 +9,7 @@ analytics, account, multiplayer room, waitlist or gameplay API.
 
 ## Canonical public pages
 
-- [Court Week](https://simjury.com/jury/): The seven-session audio-first courtroom and deliberation experience.
+- [Court Week](https://simjury.com/): The seven-session audio-first courtroom and deliberation experience.
 - [Privacy](https://simjury.com/privacy/): Local state, explicit device transfer, static delivery and media-request boundaries.
 
 ## Site access
@@ -21,5 +21,5 @@ analytics, account, multiplayer room, waitlist or gameplay API.
 ## Boundaries
 
 These guides do not reproduce or link case facts, testimony, exhibits, juror
-rules, ballots, outcomes or analysis. The bare domain, `/today/`, `/play/` and `/install/` are
-compatibility redirects to `/jury/`.
+rules, ballots, outcomes or analysis. `/jury/`, `/today/`, `/play/` and `/install/` are
+compatibility redirects to the bare domain.

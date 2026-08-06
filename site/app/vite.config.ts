@@ -4,7 +4,8 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 //
-// Court Week ships as static assets at `/jury/`. Two build
+// Court Week compiles into the internal `/jury/` asset directory and is
+// presented canonically at `/` by the static `_redirects` proxy. Two build
 // choices keep it inside the site's strict Content-Security-Policy
 // (`script-src 'self'`, no `unsafe-inline` for scripts):
 //   - `modulePreload.polyfill: false` drops Vite's inline preload-polyfill

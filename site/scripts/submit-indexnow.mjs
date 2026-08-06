@@ -17,7 +17,6 @@ const payload = {
   keyLocation: `https://simjury.com/${keyFile}`,
   urlList: [
     'https://simjury.com/',
-    'https://simjury.com/today/',
     'https://simjury.com/privacy/',
     'https://simjury.com/llms.txt',
     'https://simjury.com/llms-full.txt',

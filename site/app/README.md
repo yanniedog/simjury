@@ -1,7 +1,7 @@
 # site/app — SimJury Court Week
 
 The static React player for **Eleven Minutes**, SimJury's one active fictional
-case. The player serves seven sequential sessions at `/jury/`: five court days
+case. The player serves seven sequential sessions at `/`: five court days
 followed by Saturday and Sunday deliberation. The binding contract is
 [`COURT-WEEK.md`](../../COURT-WEEK.md).
 
@@ -28,5 +28,5 @@ npm run build
 
 Node 24 is the repository standard. CI is
 `.github/workflows/site-app-ci.yml`. Production output is
-`site/public/jury/`; the `site/` wrapper enforces an assets-only Cloudflare
+`site/public/jury/` and is proxied statically to `/`; the `site/` wrapper enforces an assets-only Cloudflare
 configuration and deploys only after protected `main` checks pass.
