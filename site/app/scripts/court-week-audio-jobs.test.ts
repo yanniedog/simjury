@@ -52,15 +52,15 @@ describe('Court Week prerecorded audio jobs', () => {
     expect(saturdayJob.fixedExperienceSeconds).toBe(765)
   })
 
-  it('isolates an r3 review-candidate identity from the pinned r2 runtime', () => {
-    const candidateTag = 'court-week-cw-0001-2026.08.03-r3'
+  it('isolates an r4 review-candidate identity from the pinned r3 runtime', () => {
+    const candidateTag = 'court-week-cw-0001-2026.08.03-r4'
     const normal = buildCourtWeekAudioJobs(elevenMinutesCourtWeek)
     const candidate = buildCourtWeekAudioJobs(elevenMinutesCourtWeek, {
       reviewCandidateReleaseTag: candidateTag,
     })
     const pinned = JSON.parse(readFileSync(resolve('media/court-week-media-manifest.pinned.json'), 'utf8'))
 
-    expect(elevenMinutesCourtWeek.manifest.releaseTag).toBe('court-week-cw-0001-2026.08.03-r2')
+    expect(elevenMinutesCourtWeek.manifest.releaseTag).toBe('court-week-cw-0001-2026.08.03-r3')
     expect(courtWeekBootstrap.releaseTag).toBe(elevenMinutesCourtWeek.manifest.releaseTag)
     expect(pinned.release_tag).toBe(elevenMinutesCourtWeek.manifest.releaseTag)
     expect(normal.index.releaseTag).toBe(elevenMinutesCourtWeek.manifest.releaseTag)
@@ -75,7 +75,7 @@ describe('Court Week prerecorded audio jobs', () => {
         .toEqual({ ...normalJob, releaseTag: '', sourceDigest: '' })
       expect(candidateJob.sourceDigest).not.toBe(normalJob.sourceDigest)
     }
-    expect(elevenMinutesCourtWeek.manifest.releaseTag).toBe('court-week-cw-0001-2026.08.03-r2')
+    expect(elevenMinutesCourtWeek.manifest.releaseTag).toBe('court-week-cw-0001-2026.08.03-r3')
   })
 
   it('rejects malformed review-candidate release tags', () => {
