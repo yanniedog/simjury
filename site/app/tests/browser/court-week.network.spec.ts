@@ -3,7 +3,9 @@ import { expect, test } from '@playwright/test'
 import { courtWeekBootstrap } from '../../src/courtweek/sealed/bootstrap'
 import { DEFAULT_LOCAL_PROFILE, LOCAL_PROFILE_STORAGE_KEY } from '../../src/courtweek/state/localProfile'
 
-const baseUrl = 'http://127.0.0.1:43130/jury/'
+// Vite preview does not apply the Cloudflare `_redirects` proxy used by the
+// canonical root URL, so test the exact built Court Week shell directly.
+const baseUrl = 'http://127.0.0.1:43130/jury/court-week.html'
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 const acknowledgedProfile = JSON.stringify({
   ...DEFAULT_LOCAL_PROFILE,
