@@ -49,7 +49,10 @@ decision is [`../COURT-WEEK.md`](../COURT-WEEK.md). Legacy `/today`, `/play` and
 ## D-WEB-5 — Static-only hosting and local state
 
 - Cloudflare serves Static Assets only. No Worker, API, D1, Durable Object,
-  WebSocket, waitlist, Discord handler, analytics or runtime AI is allowed.
+  WebSocket, waitlist, Discord handler, server-side analytics or runtime AI is
+  allowed. The reviewed client-side Microsoft Clarity tag is the sole analytics
+  exception: source is fully masked, advertising storage is denied, automated
+  sessions are tagged and a browser-local opt-out prevents future tag loading.
 - Progress, private notes and ballots live in IndexedDB. The small local profile
   (juror label, adult-fiction acknowledgement and default-off Developer mode)
   lives in validated localStorage. It is not an account and is never transmitted.
