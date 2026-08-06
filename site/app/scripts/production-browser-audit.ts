@@ -3,6 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 const target = new URL(process.env.SIMJURY_AUDIT_URL ?? 'https://simjury.com/')
+if (target.href !== 'https://simjury.com/') throw new Error('Production audits only target https://simjury.com/.')
 const runCount = Math.max(1, Number.parseInt(process.env.SIMJURY_AUDIT_RUNS ?? '1', 10) || 1)
 const expectClarity = process.env.SIMJURY_EXPECT_CLARITY === '1'
 const output = join(process.cwd(), 'test-results', 'production-audit')
@@ -13,14 +14,18 @@ const profile = JSON.stringify({
   adultFictionAcknowledged: true, developerMode: true,
 })
 const profiles = [
-  { name: 'mobile', width: 360, height: 800, allSessions: false },
-  { name: 'desktop', width: 1440, height: 900, allSessions: true },
+  { name: 'small-phone', width: 320, height: 568, mobile: true, allSessions: false },
+  { name: 'browser-chrome-reduced', width: 360, height: 560, mobile: true, allSessions: false },
+  { name: 'phone-landscape', width: 568, height: 320, mobile: true, allSessions: false },
+  { name: 'tablet-portrait', width: 768, height: 1024, mobile: true, allSessions: false },
+  { name: 'desktop-200-percent', width: 720, height: 450, mobile: false, allSessions: false },
+  { name: 'desktop', width: 1440, height: 900, mobile: false, allSessions: true },
 ] as const
 
 type Severity = 'high' | 'medium' | 'low'
 type Finding = { severity: Severity; category: string; profile: string; message: string }
-type Action = { label: string; milliseconds: number; blocked: boolean }
-type Metrics = { ttfbMs: number; lcpMs: number; cls: number; entryBytes: number; overflowPx: number; smallTargets: number }
+type Action = { label: string; milliseconds: number; blocked: boolean; initiallyClipped: boolean }
+type Metrics = { ttfbMs: number; lcpMs: number; cls: number; entryBytes: number; overflowPx: number; smallTargets: number; clippedTargets: number }
 type Journey = { profile: string; run: number; status: 'PASS' | 'FAIL' | 'BLOCKED'; sessions: string[]; actions: Action[]; clarityCollects: number; metrics?: Metrics }
 
 const findings: Finding[] = []
@@ -39,7 +44,14 @@ const isClarityCollect = (value: string) => {
   return url.protocol === 'https:' && url.hostname.endsWith('.clarity.ms') && url.pathname === '/collect'
 }
 
-async function pointerClick(page: Page, locator: Locator, label: string, actions: Action[]) {
+async function pointerClick(page: Page, locator: Locator, label: string, actions: Action[], mustStartVisible = false) {
+  const initialBox = await locator.boundingBox()
+  const viewport = page.viewportSize()
+  const initiallyClipped = Boolean(mustStartVisible && initialBox && viewport && (
+    initialBox.x < 0 || initialBox.y < 0
+    || initialBox.x + initialBox.width > viewport.width
+    || initialBox.y + initialBox.height > viewport.height
+  ))
   await locator.scrollIntoViewIfNeeded()
   const box = await locator.boundingBox()
   if (!box) throw new Error(`${label} has no clickable box`)
@@ -51,7 +63,7 @@ async function pointerClick(page: Page, locator: Locator, label: string, actions
   await page.mouse.move(point.x, point.y, { steps: 12 })
   const started = Date.now()
   await locator.click({ timeout: 10_000 })
-  actions.push({ label, milliseconds: Date.now() - started, blocked })
+  actions.push({ label, milliseconds: Date.now() - started, blocked, initiallyClipped })
 }
 
 async function gotoPublicPage(page: Page, profileName: string): Promise<Response | null> {
@@ -74,8 +86,8 @@ async function inspectLayout(page: Page, profileName: string) {
       .filter((element) => {
         const style = getComputedStyle(element)
         const box = element.getBoundingClientRect()
-        return style.visibility !== 'hidden' && style.display !== 'none' && box.width > 0 && box.height > 0
-          && box.right > 0 && box.bottom > 0 && box.left < innerWidth && box.top < innerHeight
+        return !element.matches('.cw-visually-hidden, .cw-skip-link:not(:focus)')
+          && style.visibility !== 'hidden' && style.display !== 'none' && box.width > 0 && box.height > 0
       })
     const small = controls.flatMap((element) => {
       const target = element.closest<HTMLElement>('label') ?? element
@@ -84,35 +96,42 @@ async function inspectLayout(page: Page, profileName: string) {
       const name = element.getAttribute('aria-label') || element.textContent?.trim() || element.tagName.toLowerCase()
       return [`${name.slice(0, 60)} (${Math.round(box.width)}x${Math.round(box.height)})`]
     })
+    const clipped = controls.flatMap((element) => {
+      const box = (element.closest<HTMLElement>('label') ?? element).getBoundingClientRect()
+      if (box.left >= 0 && box.top >= 0 && box.right <= innerWidth && box.bottom <= innerHeight) return []
+      const name = element.getAttribute('aria-label') || element.textContent?.trim() || element.tagName.toLowerCase()
+      return [`${name.slice(0, 60)} (${Math.round(box.left)},${Math.round(box.top)} to ${Math.round(box.right)},${Math.round(box.bottom)})`]
+    })
     const images = [...document.images].filter((image) => image.complete && image.naturalWidth === 0)
     return {
       overflow: Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth),
-      small,
+      small, clipped,
       brokenImages: images.length,
     }
   })
   if (layout.overflow > 1) add('high', 'layout', profileName, `Horizontal overflow is ${layout.overflow}px.`)
   if (layout.small.length > 0) add('medium', 'accessibility', profileName, `Targets below 44x44px: ${layout.small.join(', ')}.`)
+  if (layout.clipped.length > 0) add('high', 'layout', profileName, `Actionable controls are clipped by the viewport: ${layout.clipped.join(', ')}.`)
   if (layout.brokenImages > 0) add('high', 'media', profileName, `${layout.brokenImages} visible images failed to decode.`)
   return layout
 }
 
 async function runJourney(profileInfo: typeof profiles[number], run: number) {
   const id = `${profileInfo.name}-${run}`
-  const tracePath = join(output, `${id}.zip`)
-  const screenshotPath = join(output, `${id}.webp`)
   const actions: Action[] = []
   const sessions: string[] = []
   let clarityCollects = 0
   const browser = await chromium.launch({ headless: true })
   const context = await browser.newContext({
     viewport: { width: profileInfo.width, height: profileInfo.height },
+    screen: { width: profileInfo.width, height: profileInfo.height },
+    isMobile: profileInfo.mobile, hasTouch: profileInfo.mobile,
+    deviceScaleFactor: profileInfo.mobile ? 2.75 : 1,
     reducedMotion: 'reduce', serviceWorkers: 'block',
     storageState: { cookies: [], origins: [{ origin: target.origin, localStorage: [
       { name: 'simjury:court-week:local-profile:v1', value: profile },
     ] }] },
   })
-  await context.tracing.start({ screenshots: true, snapshots: true })
   await context.addInitScript(() => {
     const state = { lcp: 0, cls: 0, violations: [] as string[] }
     Object.defineProperty(window, '__simjuryAudit', { value: state })
@@ -167,7 +186,7 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
     const ordinals = profileInfo.allSessions ? [1, 2, 3, 4, 5, 6, 7] : [1]
     for (const ordinal of ordinals) {
       if (ordinal > 1) {
-        await pointerClick(page, page.getByRole('button', { name: 'DEV preview' }), 'Open preview session picker', actions)
+        await pointerClick(page, page.getByRole('button', { name: 'DEV preview' }), 'Open preview session picker', actions, true)
         await page.locator('#cw-developer-day-modal').selectOption(String(ordinal))
         await page.getByRole('heading', { name: 'Eleven Minutes' }).waitFor({ state: 'visible', timeout: 20_000 })
       }
@@ -197,36 +216,35 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
         if (!recordedAudioPlaying) {
           add('high', 'audio', id, `Recorded narration fell back on production Chromium${fallbackText ? `: ${fallbackText}` : '.'}`)
         } else {
-          await pointerClick(page, pause, 'Pause narration', actions)
+          await pointerClick(page, pause, 'Pause narration', actions, true)
           const resume = controls.getByRole('button', { name: 'Resume' })
           await resume.waitFor({ state: 'visible', timeout: controlTimeoutMs })
-          await pointerClick(page, resume, 'Resume narration', actions)
+          await pointerClick(page, resume, 'Resume narration', actions, true)
           await pause.waitFor({ state: 'visible', timeout: controlTimeoutMs })
         }
-        await pointerClick(page, page.getByRole('button', { name: 'Juror desk', exact: true }), 'Open juror desk', actions)
+        await pointerClick(page, page.getByRole('button', { name: 'Juror desk', exact: true }), 'Open juror desk', actions, true)
         await page.getByRole('dialog', { name: 'Your working papers' }).waitFor({ state: 'visible' })
         if (recordedAudioPlaying) {
           await page.locator('.cw-controls button', { hasText: 'Resume' }).waitFor({ state: 'attached', timeout: controlTimeoutMs })
         }
-        await pointerClick(page, page.getByRole('button', { name: 'Close juror desk' }), 'Close juror desk', actions)
+        await pointerClick(page, page.getByRole('button', { name: 'Close juror desk' }), 'Close juror desk', actions, true)
         await page.getByRole('dialog', { name: 'Your working papers' }).waitFor({ state: 'hidden', timeout: controlTimeoutMs })
         if (recordedAudioPlaying) await pause.waitFor({ state: 'visible', timeout: controlTimeoutMs })
       }
     }
     const layout = await inspectLayout(page, id)
-    await page.screenshot({ path: screenshotPath, type: 'webp', fullPage: true })
     const vital = await page.evaluate(() => (window as typeof window & { __simjuryAudit: { lcp: number; cls: number; violations: string[] } }).__simjuryAudit)
     vital.violations.forEach((violation) => add('high', 'csp', id, violation))
     actions.filter((action) => action.blocked).forEach((action) => add('high', 'click-blocker', id, `${action.label} was obscured at its centre point.`))
+    actions.filter((action) => action.initiallyClipped).forEach((action) => add('high', 'layout', id, `${action.label} required synthetic scrolling because it began outside the viewport.`))
     actions.filter((action) => action.milliseconds > 1_000).forEach((action) => add('high', 'performance', id, `${action.label} took ${action.milliseconds}ms.`))
     journeys.push({ profile: profileInfo.name, run, status: findings.some((item) => item.profile === id && item.severity === 'high') ? 'FAIL' : 'PASS', sessions, actions,
       clarityCollects,
-      metrics: { ttfbMs: navigation.responseStart, lcpMs: vital.lcp, cls: vital.cls, entryBytes, overflowPx: layout.overflow, smallTargets: layout.small.length } })
+      metrics: { ttfbMs: navigation.responseStart, lcpMs: vital.lcp, cls: vital.cls, entryBytes, overflowPx: layout.overflow, smallTargets: layout.small.length, clippedTargets: layout.clipped.length } })
   } catch (error) {
     add('high', 'journey', id, error instanceof Error ? error.message : String(error))
     journeys.push({ profile: profileInfo.name, run, status: 'FAIL', sessions, actions, clarityCollects })
   } finally {
-    await context.tracing.stop({ path: tracePath }).catch(() => undefined)
     await context.close()
     await browser.close()
   }
