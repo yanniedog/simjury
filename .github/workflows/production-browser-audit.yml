@@ -47,6 +47,7 @@ jobs:
         env:
           SIMJURY_AUDIT_URL: ${{ inputs.target || 'https://simjury.com/' }}
           SIMJURY_AUDIT_RUNS: "3"
+          SIMJURY_EXPECT_CLARITY: "1"
         run: npm run audit:production
       - name: Publish readable summary
         if: always()

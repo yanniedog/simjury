@@ -4,6 +4,7 @@ import { join } from 'node:path'
 
 const target = new URL(process.env.SIMJURY_AUDIT_URL ?? 'https://simjury.com/')
 const runCount = Math.max(1, Number.parseInt(process.env.SIMJURY_AUDIT_RUNS ?? '1', 10) || 1)
+const expectClarity = process.env.SIMJURY_EXPECT_CLARITY === '1'
 const output = join(process.cwd(), 'test-results', 'production-audit')
 const audioStartTimeoutMs = 15_000
 const controlTimeoutMs = 5_000
@@ -20,7 +21,7 @@ type Severity = 'high' | 'medium' | 'low'
 type Finding = { severity: Severity; category: string; profile: string; message: string }
 type Action = { label: string; milliseconds: number; blocked: boolean }
 type Metrics = { ttfbMs: number; lcpMs: number; cls: number; entryBytes: number; overflowPx: number; smallTargets: number }
-type Journey = { profile: string; run: number; status: 'PASS' | 'FAIL' | 'BLOCKED'; sessions: string[]; actions: Action[]; metrics?: Metrics }
+type Journey = { profile: string; run: number; status: 'PASS' | 'FAIL' | 'BLOCKED'; sessions: string[]; actions: Action[]; clarityCollects: number; metrics?: Metrics }
 
 const findings: Finding[] = []
 const journeys: Journey[] = []
@@ -32,6 +33,10 @@ const add = (severity: Severity, category: string, profileName: string, message:
 const safeUrl = (value: string) => {
   const url = new URL(value)
   return `${url.origin}${url.pathname}`
+}
+const isClarityCollect = (value: string) => {
+  const url = new URL(value)
+  return url.protocol === 'https:' && url.hostname.endsWith('.clarity.ms') && url.pathname === '/collect'
 }
 
 async function pointerClick(page: Page, locator: Locator, label: string, actions: Action[]) {
@@ -98,6 +103,7 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
   const screenshotPath = join(output, `${id}.webp`)
   const actions: Action[] = []
   const sessions: string[] = []
+  let clarityCollects = 0
   const browser = await chromium.launch({ headless: true })
   const context = await browser.newContext({
     viewport: { width: profileInfo.width, height: profileInfo.height },
@@ -132,6 +138,10 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
     add('high', 'network', id, `${request.method()} ${safeUrl(request.url())} failed: ${reason}`)
   })
   page.on('request', (request) => {
+    if (request.method() === 'POST' && isClarityCollect(request.url())) {
+      clarityCollects += 1
+      return
+    }
     if (!['GET', 'HEAD'].includes(request.method())) add('high', 'network', id, `Unexpected ${request.method()} request to ${safeUrl(request.url())}`)
   })
   page.on('response', (response) => {
@@ -142,7 +152,7 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
     const response = await gotoPublicPage(page, id)
     const challenged = response?.headers()['cf-mitigated'] === 'challenge' || await page.locator('#challenge-running, .cf-challenge').count() > 0
     if (challenged) {
-      journeys.push({ profile: profileInfo.name, run, status: 'BLOCKED', sessions, actions })
+      journeys.push({ profile: profileInfo.name, run, status: 'BLOCKED', sessions, actions, clarityCollects })
       return
     }
     await page.getByRole('heading', { name: 'Eleven Minutes' }).waitFor({ state: 'visible', timeout: 15_000 })
@@ -210,10 +220,11 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
     actions.filter((action) => action.blocked).forEach((action) => add('high', 'click-blocker', id, `${action.label} was obscured at its centre point.`))
     actions.filter((action) => action.milliseconds > 1_000).forEach((action) => add('high', 'performance', id, `${action.label} took ${action.milliseconds}ms.`))
     journeys.push({ profile: profileInfo.name, run, status: findings.some((item) => item.profile === id && item.severity === 'high') ? 'FAIL' : 'PASS', sessions, actions,
+      clarityCollects,
       metrics: { ttfbMs: navigation.responseStart, lcpMs: vital.lcp, cls: vital.cls, entryBytes, overflowPx: layout.overflow, smallTargets: layout.small.length } })
   } catch (error) {
     add('high', 'journey', id, error instanceof Error ? error.message : String(error))
-    journeys.push({ profile: profileInfo.name, run, status: 'FAIL', sessions, actions })
+    journeys.push({ profile: profileInfo.name, run, status: 'FAIL', sessions, actions, clarityCollects })
   } finally {
     await context.tracing.stop({ path: tracePath }).catch(() => undefined)
     await context.close()
@@ -223,6 +234,9 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
 
 await mkdir(output, { recursive: true })
 for (let run = 1; run <= runCount; run += 1) for (const item of profiles) await runJourney(item, run)
+if (expectClarity && journeys.reduce((sum, journey) => sum + journey.clarityCollects, 0) === 0) {
+  add('high', 'analytics', 'all profiles', 'Microsoft Clarity did not send any collection requests.')
+}
 const median = (values: number[]) => [...values].sort((left, right) => left - right)[Math.floor(values.length / 2)] ?? 0
 const performanceSummary: Record<string, { ttfbMs: number; lcpMs: number; cls: number; entryBytes: number }> = {}
 for (const item of profiles) {
@@ -246,7 +260,7 @@ const markdown = [
   `# SimJury production browser audit: ${status}`,
   '', `Target: ${target.href}`, `Runs: ${runCount} per profile`,
   '', '## Coverage',
-  ...journeys.map((item) => `- ${item.profile} run ${item.run}: ${item.status}; ${item.sessions.length} session openings; ${item.actions.length} pointer actions`),
+  ...journeys.map((item) => `- ${item.profile} run ${item.run}: ${item.status}; ${item.sessions.length} session openings; ${item.actions.length} pointer actions; ${item.clarityCollects} Clarity collections`),
   '', '## Median performance',
   ...Object.entries(performanceSummary).map(([name, value]) => `- ${name}: TTFB ${Math.round(value.ttfbMs)}ms; LCP ${Math.round(value.lcpMs)}ms; CLS ${value.cls.toFixed(3)}; entry ${(value.entryBytes / 1024).toFixed(0)}KiB`),
   '', '## Findings',
