@@ -80,7 +80,7 @@ async function gotoPublicPage(page: Page, profileName: string): Promise<Response
   return response
 }
 
-async function inspectLayout(page: Page, profileName: string) {
+async function inspectLayout(page: Page, profileName: string, scope = '') {
   const layout = await page.evaluate(() => {
     const controls = [...document.querySelectorAll<HTMLElement>('button, a[href], input, select, textarea')]
       .filter((element) => {
@@ -109,10 +109,11 @@ async function inspectLayout(page: Page, profileName: string) {
       brokenImages: images.length,
     }
   })
-  if (layout.overflow > 1) add('high', 'layout', profileName, `Horizontal overflow is ${layout.overflow}px.`)
-  if (layout.small.length > 0) add('medium', 'accessibility', profileName, `Targets below 44x44px: ${layout.small.join(', ')}.`)
-  if (layout.clipped.length > 0) add('high', 'layout', profileName, `Actionable controls are clipped by the viewport: ${layout.clipped.join(', ')}.`)
-  if (layout.brokenImages > 0) add('high', 'media', profileName, `${layout.brokenImages} visible images failed to decode.`)
+  const prefix = scope ? `${scope}: ` : ''
+  if (layout.overflow > 1) add('high', 'layout', profileName, `${prefix}Horizontal overflow is ${layout.overflow}px.`)
+  if (layout.small.length > 0) add('medium', 'accessibility', profileName, `${prefix}Targets below 44x44px: ${layout.small.join(', ')}.`)
+  if (layout.clipped.length > 0) add('high', 'layout', profileName, `${prefix}Actionable controls are clipped by the viewport: ${layout.clipped.join(', ')}.`)
+  if (layout.brokenImages > 0) add('high', 'media', profileName, `${prefix}${layout.brokenImages} visible images failed to decode.`)
   return layout
 }
 
@@ -184,6 +185,7 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
     await page.getByRole('heading', { name: 'Eleven Minutes' }).waitFor({ state: 'visible', timeout: 20_000 })
 
     const ordinals = profileInfo.allSessions ? [1, 2, 3, 4, 5, 6, 7] : [1]
+    const layouts: Awaited<ReturnType<typeof inspectLayout>>[] = []
     for (const ordinal of ordinals) {
       if (ordinal > 1) {
         await pointerClick(page, page.getByRole('button', { name: 'DEV preview' }), 'Open preview session picker', actions, true)
@@ -231,8 +233,13 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
         await page.getByRole('dialog', { name: 'Your working papers' }).waitFor({ state: 'hidden', timeout: controlTimeoutMs })
         if (recordedAudioPlaying) await pause.waitFor({ state: 'visible', timeout: controlTimeoutMs })
       }
+      layouts.push(await inspectLayout(page, id, `Session ${ordinal}`))
     }
-    const layout = await inspectLayout(page, id)
+    const layout = {
+      overflow: Math.max(0, ...layouts.map((item) => item.overflow)),
+      small: layouts.flatMap((item) => item.small),
+      clipped: layouts.flatMap((item) => item.clipped),
+    }
     const vital = await page.evaluate(() => (window as typeof window & { __simjuryAudit: { lcp: number; cls: number; violations: string[] } }).__simjuryAudit)
     vital.violations.forEach((violation) => add('high', 'csp', id, violation))
     actions.filter((action) => action.blocked).forEach((action) => add('high', 'click-blocker', id, `${action.label} was obscured at its centre point.`))

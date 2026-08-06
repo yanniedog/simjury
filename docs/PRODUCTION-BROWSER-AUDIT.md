@@ -19,7 +19,7 @@ reaches its collection endpoint; automated sessions are tagged as synthetic QA
 by the site loader. Each run writes a stable JSON report, a Markdown summary and
 a complete deterministic log. Raw output and browser traces are never uploaded:
 credentials, IP addresses, email addresses, local paths, URL parameters and any
-browser-storage line are removed and checked before publication. The issue links
+browser-storage lines are removed and checked before publication. The issue links
 to a terminal-style paste when paste.rs is available and always links to the
 90-day GitHub Actions artifact fallback. Paste retention is external and is not
 the evidence system of record.

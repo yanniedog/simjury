@@ -12,11 +12,13 @@ const ipv4Pattern = /\b(?:\d{1,3}\.){3}\d{1,3}\b/gu
 const uuidPattern = /\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b/giu
 const localPathPattern = /(?:[A-Za-z]:\\(?:Users|Windows|runner|workspace)\\|\/(?:home|Users|private|tmp|runner|workspace)\/)[^\s"'<>]*/gu
 const localPathLine = /(?:[A-Za-z]:\\(?:Users|Windows|runner|workspace)\\|\/(?:home|Users|private|tmp|runner|workspace)\/)/iu
+const credentialLine = /^\s*(?:authorization|proxy-authorization|cookie|set-cookie)\s*:/iu
 
 export function deidentify(raw) {
   const withoutStorage = raw.split(/\r?\n/u).map((line) => {
     if (sensitiveLine.test(line)) return '[redacted-browser-storage-line]'
     if (localPathLine.test(line)) return '[redacted-local-path-line]'
+    if (credentialLine.test(line)) return '[redacted-credential-line]'
     return line
   }).join('\n')
   return withoutStorage
@@ -38,7 +40,7 @@ export function deidentify(raw) {
 }
 
 export function assertDeidentified(value) {
-  const forbidden = [secretPattern, emailPattern, ipv4Pattern, localPathPattern, localPathLine, sensitiveLine]
+  const forbidden = [secretPattern, emailPattern, ipv4Pattern, localPathPattern, localPathLine, sensitiveLine, credentialLine]
   for (const pattern of forbidden) {
     pattern.lastIndex = 0
     if (pattern.test(value)) throw new Error(`Deidentified audit still matches ${pattern}`)
@@ -68,7 +70,9 @@ async function github(path, options = {}) {
       ...options.headers,
     },
   })
-  if (!response.ok) throw new Error(`GitHub API ${options.method ?? 'GET'} ${path} returned ${response.status}`)
+  if (!response.ok) {
+    throw new Error(`GitHub API ${options.method ?? 'GET'} ${path} returned ${response.status} ${response.statusText}`)
+  }
   return response.status === 204 ? null : response.json()
 }
 
@@ -76,7 +80,10 @@ async function trackerIssue() {
   const repository = required('GITHUB_REPOSITORY')
   for (let page = 1; ; page += 1) {
     const issues = await github(`/repos/${repository}/issues?state=all&per_page=100&page=${page}`)
-    const match = issues.find((issue) => !issue.pull_request && issue.title === trackerTitle && issue.body?.includes(trackerMarker))
+    const match = issues.find((issue) => !issue.pull_request
+      && issue.user?.login === 'github-actions[bot]'
+      && issue.title === trackerTitle
+      && issue.body?.includes(trackerMarker))
     if (match) return match
     if (issues.length < 100) return null
   }
@@ -87,7 +94,7 @@ async function alreadyReported(issue, marker) {
   const repository = required('GITHUB_REPOSITORY')
   for (let page = 1; ; page += 1) {
     const comments = await github(`/repos/${repository}/issues/${issue.number}/comments?per_page=100&page=${page}`)
-    if (comments.some((comment) => comment.body?.includes(marker))) return true
+    if (comments.some((comment) => comment.user?.login === 'github-actions[bot]' && comment.body?.includes(marker))) return true
     if (comments.length < 100) return false
   }
 }
