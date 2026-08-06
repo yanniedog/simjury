@@ -159,7 +159,8 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
         await page.locator('#cw-developer-day-modal').selectOption(String(ordinal))
         await page.getByRole('heading', { name: 'Eleven Minutes' }).waitFor({ state: 'visible', timeout: 20_000 })
       }
-      await page.getByLabel('Reading mode').check()
+      const auditsAudio = ordinal === 1
+      await page.getByLabel(auditsAudio ? 'Audio and captions' : 'Reading mode').check()
       const started = Date.now()
       await pointerClick(page, page.getByRole('button', { name: 'Take your seat' }), `Take seat session ${ordinal}`, actions)
       await page.locator('.cw-shell').waitFor({ state: 'visible', timeout: 20_000 })
@@ -170,9 +171,26 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
       sessions.push(day.replace(/\s+/gu, ' ').trim())
       await page.mouse.move(profileInfo.width * .75, profileInfo.height * .3, { steps: 16 })
       if (ordinal === 1) {
+        const controls = page.getByLabel('Court playback controls')
+        const pause = controls.getByRole('button', { name: 'Pause' })
+        const unavailable = page.getByText('Audio is unavailable. Reading mode is ready.')
+        const audioState = await Promise.race([
+          pause.waitFor({ state: 'visible', timeout: 15_000 }).then(() => 'playing'),
+          unavailable.waitFor({ state: 'visible', timeout: 15_000 }).then(() => 'unavailable'),
+        ])
+        if (audioState === 'unavailable') {
+          add('high', 'audio', id, 'Narration fell back to reading mode on production Chromium.')
+        } else {
+          await pointerClick(page, pause, 'Pause narration', actions)
+          const resume = controls.getByRole('button', { name: 'Resume' })
+          await resume.waitFor({ state: 'visible', timeout: 5_000 })
+          await pointerClick(page, resume, 'Resume narration', actions)
+          await pause.waitFor({ state: 'visible', timeout: 5_000 })
+        }
         await pointerClick(page, page.getByRole('button', { name: 'Juror desk', exact: true }), 'Open juror desk', actions)
         await page.getByRole('dialog', { name: 'Your working papers' }).waitFor({ state: 'visible' })
         await pointerClick(page, page.getByRole('button', { name: 'Close juror desk' }), 'Close juror desk', actions)
+        if (audioState === 'playing') await pause.waitFor({ state: 'visible', timeout: 5_000 })
       }
     }
     const layout = await inspectLayout(page, id)

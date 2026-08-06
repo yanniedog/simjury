@@ -8,8 +8,9 @@ The audit runs after a successful site deployment, nightly, and on manual
 dispatch. It opens Court Week on mobile and desktop, uses real stepped pointer
 movement and normal browser actionability, detects centre-point click blockers,
 opens every session through the device-local developer preview, checks the
-juror desk, and records performance, layout, CSP, console, request, image and
-touch-target failures. Each run writes a stable JSON report, a Markdown summary,
+juror desk, verifies narration start/pause/resume and desk interruption recovery,
+and records performance, layout, CSP, console, request, image and touch-target
+failures. Each run writes a stable JSON report, a Markdown summary,
 screenshots and Playwright traces under `site/app/test-results/production-audit/`.
 
 ```powershell
@@ -25,5 +26,6 @@ the GitHub runner, correct the owner-controlled zone policy or use an approved
 self-hosted runner.
 
 Automated checks can reliably detect delivery, interaction, layout and media
-failures. Subjective narration quality, legal nuance and whether a design change
-is aesthetically appropriate still require reviewed baselines or human QA.
+availability/control failures. Subjective narration sound quality, legal nuance
+and whether a design change is aesthetically appropriate still require reviewed
+baselines or human QA.
