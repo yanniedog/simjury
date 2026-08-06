@@ -158,7 +158,17 @@ describe('sealed progress import preparation', () => {
       hydrate,
     })).rejects.toThrow(/impossible Court Week chronology/i)
     expect(hydrate).toHaveBeenCalledWith(expect.objectContaining({ persistOpened: false }))
-    await expect(loadOpenedPack(courtWeekBootstrap.id, courtWeekBootstrap.revision, 1)).resolves.toBeNull()
-    await expect(loadOpenedPack(courtWeekBootstrap.id, courtWeekBootstrap.revision, 2)).resolves.toBeNull()
+    await expect(loadOpenedPack(
+      courtWeekBootstrap.id,
+      courtWeekBootstrap.revision,
+      courtWeekBootstrap.releaseTag,
+      1,
+    )).resolves.toBeNull()
+    await expect(loadOpenedPack(
+      courtWeekBootstrap.id,
+      courtWeekBootstrap.revision,
+      courtWeekBootstrap.releaseTag,
+      2,
+    )).resolves.toBeNull()
   })
 })
