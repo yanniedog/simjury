@@ -18,8 +18,9 @@ import re
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 log = logging.getLogger("court-week-audio")
 JOB_SCHEMA_V1 = "simjury.court-week-audio-job/v1"
@@ -47,6 +48,9 @@ KOKORO_REPOSITORY = "hexgrad/Kokoro-82M"
 KOKORO_REVISION = "f3ff3571791e39611d31c381e3a41a3af07b4987"
 KOKORO_CONFIG = "config.json"
 KOKORO_MODEL = "kokoro-v1_0.pth"
+HUGGINGFACE_DOWNLOAD_ATTEMPTS = 4
+HUGGINGFACE_RETRY_BASE_SECONDS = 5.0
+HUGGINGFACE_RETRY_MAX_SECONDS = 30.0
 PINNED_PYTHON_PACKAGES = {
     "kokoro": "0.9.4",
     "soundfile": "0.13.1",
@@ -95,6 +99,103 @@ def sha256_file(path: str | Path) -> str:
         for chunk in iter(lambda: source.read(1024 * 1024), b""):
             digest.update(chunk)
     return f"sha256:{digest.hexdigest()}"
+
+
+def exception_chain(error: BaseException) -> list[BaseException]:
+    chain = []
+    seen: set[int] = set()
+    current: BaseException | None = error
+    while current is not None and id(current) not in seen:
+        seen.add(id(current))
+        chain.append(current)
+        current = current.__cause__ or current.__context__
+    return chain
+
+
+def is_transient_huggingface_error(error: BaseException) -> bool:
+    """Return true only for failures that a fresh Hub request may recover from."""
+    errors = exception_chain(error)
+    message = " ".join(str(item).lower() for item in errors)
+    permanent_markers = (
+        "checksum mismatch",
+        "hash mismatch",
+        "consistency check failed",
+        "revision not found",
+        "repository not found",
+        "entry not found",
+        "unauthorized",
+        "forbidden",
+    )
+    if any(marker in message for marker in permanent_markers):
+        return False
+
+    statuses = []
+    for item in errors:
+        status = getattr(item, "status_code", None)
+        response = getattr(item, "response", None)
+        if status is None and response is not None:
+            status = getattr(response, "status_code", None)
+        if isinstance(status, int):
+            statuses.append(status)
+    if statuses:
+        return any(status in {408, 425, 429} or status >= 500 for status in statuses)
+
+    transient_markers = (
+        "408 request timeout",
+        "425 too early",
+        "429 too many requests",
+        "500 internal server error",
+        "502 bad gateway",
+        "503 service unavailable",
+        "504 gateway timeout",
+        "timed out",
+        "timeout",
+        "temporarily unavailable",
+        "connection reset",
+        "connection aborted",
+        "connection refused",
+        "remote end closed connection",
+        "server disconnected",
+        "incomplete read",
+        "network is unreachable",
+        "name resolution",
+        "ssl eof",
+        "cas service error",
+    )
+    return any(marker in message for marker in transient_markers)
+
+
+def download_huggingface_asset(
+    download: Callable[..., str],
+    filename: str,
+    *,
+    sleep: Callable[[float], None] = time.sleep,
+) -> str:
+    """Download one pinned Kokoro asset with bounded transient retries."""
+    for attempt in range(1, HUGGINGFACE_DOWNLOAD_ATTEMPTS + 1):
+        try:
+            return download(
+                repo_id=KOKORO_REPOSITORY,
+                revision=KOKORO_REVISION,
+                filename=filename,
+            )
+        except Exception as error:
+            if attempt >= HUGGINGFACE_DOWNLOAD_ATTEMPTS or not is_transient_huggingface_error(error):
+                raise
+            delay = min(
+                HUGGINGFACE_RETRY_BASE_SECONDS * (2 ** (attempt - 1)),
+                HUGGINGFACE_RETRY_MAX_SECONDS,
+            )
+            log.warning(
+                "Transient Hugging Face download failure for %s (attempt %d/%d); retrying in %.0fs: %s",
+                filename,
+                attempt,
+                HUGGINGFACE_DOWNLOAD_ATTEMPTS,
+                delay,
+                error,
+            )
+            sleep(delay)
+    raise AssertionError("unreachable")
 
 
 def validate_job(job: dict[str, Any]) -> None:
@@ -476,16 +577,8 @@ def produce(job: dict[str, Any], output_root: Path) -> Path:
     pinned_packages = require_pinned_python_packages()
     torch.manual_seed(0)
     torch.set_num_threads(max(1, min(8, os.cpu_count() or 4)))
-    config_path = hf_hub_download(
-        repo_id=KOKORO_REPOSITORY,
-        revision=KOKORO_REVISION,
-        filename=KOKORO_CONFIG,
-    )
-    model_path = hf_hub_download(
-        repo_id=KOKORO_REPOSITORY,
-        revision=KOKORO_REVISION,
-        filename=KOKORO_MODEL,
-    )
+    config_path = download_huggingface_asset(hf_hub_download, KOKORO_CONFIG)
+    model_path = download_huggingface_asset(hf_hub_download, KOKORO_MODEL)
     model = KModel(
         repo_id=KOKORO_REPOSITORY,
         config=config_path,
@@ -505,11 +598,7 @@ def produce(job: dict[str, Any], output_root: Path) -> Path:
             device="cpu",
         )
     voices = {
-        voice: hf_hub_download(
-            repo_id=KOKORO_REPOSITORY,
-            revision=KOKORO_REVISION,
-            filename=f"voices/{voice}.pt",
-        )
+        voice: download_huggingface_asset(hf_hub_download, f"voices/{voice}.pt")
         for voice in sorted({str(item["voice"]) for item in performance_items})
     }
 

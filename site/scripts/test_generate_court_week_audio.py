@@ -98,6 +98,70 @@ class PauseValidationTests(unittest.TestCase):
             MODULE.validate_job(job)
 
 
+class HuggingFaceDownloadRetryTests(unittest.TestCase):
+    def test_retries_transient_xet_server_failure_with_bounded_backoff(self):
+        calls = []
+        sleeps = []
+
+        def download(**kwargs):
+            calls.append(kwargs)
+            if len(calls) < 3:
+                raise RuntimeError(
+                    "CAS service error: Xet reconstruction failed: "
+                    "HTTP status server error (500 Internal Server Error)"
+                )
+            return "/cache/kokoro-v1_0.pth"
+
+        result = MODULE.download_huggingface_asset(
+            download,
+            MODULE.KOKORO_MODEL,
+            sleep=sleeps.append,
+        )
+
+        self.assertEqual(result, "/cache/kokoro-v1_0.pth")
+        self.assertEqual(len(calls), 3)
+        self.assertEqual(sleeps, [5.0, 10.0])
+        self.assertTrue(all(call["revision"] == MODULE.KOKORO_REVISION for call in calls))
+        self.assertTrue(all(call["repo_id"] == MODULE.KOKORO_REPOSITORY for call in calls))
+        self.assertTrue(all(call["filename"] == MODULE.KOKORO_MODEL for call in calls))
+
+    def test_does_not_retry_integrity_failure(self):
+        calls = []
+        sleeps = []
+
+        def download(**kwargs):
+            calls.append(kwargs)
+            raise OSError("consistency check failed: checksum mismatch")
+
+        with self.assertRaisesRegex(OSError, "checksum mismatch"):
+            MODULE.download_huggingface_asset(
+                download,
+                MODULE.KOKORO_CONFIG,
+                sleep=sleeps.append,
+            )
+
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(sleeps, [])
+
+    def test_stops_after_bounded_attempts(self):
+        calls = []
+        sleeps = []
+
+        def download(**kwargs):
+            calls.append(kwargs)
+            raise TimeoutError("network request timed out")
+
+        with self.assertRaisesRegex(TimeoutError, "timed out"):
+            MODULE.download_huggingface_asset(
+                download,
+                "voices/af_bella.pt",
+                sleep=sleeps.append,
+            )
+
+        self.assertEqual(len(calls), MODULE.HUGGINGFACE_DOWNLOAD_ATTEMPTS)
+        self.assertEqual(sleeps, [5.0, 10.0, 20.0])
+
+
 class CodecQualityTests(unittest.TestCase):
     def test_uses_release_quality_speech_codecs(self):
         expected = {
