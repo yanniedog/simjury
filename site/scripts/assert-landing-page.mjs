@@ -7,6 +7,8 @@ const publicRoot = join(siteRoot, 'public')
 const home = readFileSync(join(publicRoot, 'index.html'), 'utf8')
 const privacy = readFileSync(join(publicRoot, 'privacy', 'index.html'), 'utf8')
 const ready = readFileSync(join(publicRoot, 'ready.js'), 'utf8')
+const clarity = readFileSync(join(publicRoot, 'clarity.js'), 'utf8')
+const appShell = readFileSync(join(siteRoot, 'app', 'index.html'), 'utf8')
 const headers = readFileSync(join(publicRoot, '_headers'), 'utf8')
 const failures = []
 const courtSketchPath = '/assets/40845e3bb93922ec.webp'
@@ -52,13 +54,15 @@ for (const text of [
 ]) forbidText(home, text, `Landing must not retain retired copy/surface: ${text}`)
 
 for (const text of [
-  'no player accounts, analytics or backend player-state service',
+  'no player accounts or backend player-state service',
   'private notes, provisional ballot, final ballot',
   'explicitly export a versioned progress file',
   'GitHub and its release-asset delivery service',
   'Cloudflare Static Assets',
   'There is no SimJury Worker, D1 database, Durable Object or gameplay API.',
   'There is no runtime generative AI, multiplayer room, chat, email waitlist or account.',
+  'Microsoft Clarity is enabled by default',
+  'This can include which controls are used, including ballot controls.',
 ]) requireText(privacy, text, `Privacy page must include: ${text}`)
 
 requireText(ready, 'simjury:fiction-disclosure:v2', 'Landing must retain the versioned adult-fiction gate')
@@ -75,8 +79,20 @@ for (const [route, directive, label] of cacheRules) {
 }
 requireText(headers, '/assets/*', 'Content-addressed landing assets must have a dedicated cache rule')
 requireText(headers, 'Cache-Control: public, max-age=31536000, immutable, no-transform', 'Content-addressed landing assets must be immutable')
-requireText(headers, "script-src 'self'", 'CSP must keep scripts self-only')
-requireText(headers, "connect-src 'self'", 'CSP must keep connections self-only')
+requireText(headers, "script-src 'self' https://*.clarity.ms", 'CSP must allow only Clarity hosts beyond self scripts')
+requireText(headers, "connect-src 'self' https://*.clarity.ms https://c.bing.com", 'CSP must allow the documented Clarity collection hosts')
+for (const source of [appShell, privacy]) {
+  requireText(source, 'data-clarity-mask="true"', 'Every Clarity-enabled page must mask its complete body')
+}
+requireText(appShell, 'src="/src/clarity-loader.ts"', 'Court Week must bundle the reviewed Clarity loader')
+requireText(privacy, 'src="/clarity.js"', 'Privacy must use the reviewed static Clarity loader')
+for (const text of [
+  "const PROJECT_ID = 'xy3peca8h4'",
+  "ad_Storage: 'denied'",
+  "analytics_Storage: analyticsStorage",
+  "window.clarity('consent', false)",
+  "window.localStorage.setItem(OPT_OUT_KEY, '1')",
+]) requireText(clarity, text, `Clarity consent loader must include: ${text}`)
 requireText(home, `content="https://simjury.com${courtSketchPath}"`, 'Landing social metadata must use the content-addressed court sketch')
 if (!existsSync(join(publicRoot, courtSketchPath.slice(1)))) failures.push('Content-addressed landing court sketch is missing')
 

@@ -11,8 +11,9 @@
   <link rel="stylesheet" href="/tokens.css" />
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="/landing-modern.css" />
+  <script defer src="/clarity.js"></script>
 </head>
-<body class="landing privacy">
+<body class="landing privacy" data-clarity-mask="true">
   <a class="skip-link" href="#main">Skip to the privacy details</a>
   <div class="atmosphere" aria-hidden="true"></div>
 
@@ -26,7 +27,7 @@
     <header class="privacy-hero">
       <p class="eyebrow">Plain-language privacy</p>
       <h1>Your Court Week record stays with your browser.</h1>
-      <p>SimJury has no player accounts, analytics or backend player-state service. Progress is useful because it is saved locally; it reaches another browser or device only when you explicitly export and import it.</p>
+      <p>SimJury has no player accounts or backend player-state service. Court Week progress stays local; details about delivery and optional service data are below.</p>
     </header>
 
     <section class="privacy-grid" aria-label="Privacy details">
@@ -53,9 +54,10 @@
 
       <article>
         <p class="privacy-number" aria-hidden="true">04</p>
-        <h2>Static delivery</h2>
+        <h2>Delivery and service data</h2>
         <p>Static pages, application code and small manifests are served through Cloudflare Static Assets. Like any CDN, Cloudflare receives ordinary HTTP request metadata needed to deliver them.</p>
-        <p>SimJury adds no analytics or tracking code and attaches no saved progress, notes or ballots to those requests. There is no SimJury Worker, D1 database, Durable Object or gameplay API.</p>
+        <p>Microsoft Clarity is enabled by default to measure masked page structure, interface use, performance and browser errors. This can include which controls are used, including ballot controls. It does not read or send IndexedDB progress, private notes or stored ballot fields. Advertising storage is denied, and you can opt out below.</p>
+        <p>There is no SimJury Worker, D1 database, Durable Object or gameplay API.</p>
       </article>
 
       <article>
@@ -71,6 +73,15 @@
         <p>The former Daily Docket live-room and email-waitlist services no longer accept data. Their Cloudflare bindings are removed from the active deployment.</p>
         <p>Any retained waitlist export is handled by the operator outside GitHub under the documented quarantine and deletion process; it is never linked to Court Week play.</p>
       </article>
+    </section>
+
+    <section class="privacy-callout" id="analytics" aria-labelledby="analytics-title">
+      <p class="eyebrow">Optional service data</p>
+      <h2 id="analytics-title">Privacy choices</h2>
+      <p data-clarity-status aria-live="polite">Checking this browser's analytics choiceâ€¦</p>
+      <p>Opting out clears Clarity cookies and prevents the Clarity tag loading on later SimJury pages in this browser. You can enable it again here.</p>
+      <button class="btn primary" type="button" data-clarity-opt-out>Opt out of analytics</button>
+      <button class="btn primary" type="button" data-clarity-opt-in hidden>Enable analytics</button>
     </section>
 
     <aside class="privacy-callout">
