@@ -137,6 +137,38 @@ async function expectActiveState(page: Page, expected: Awaited<ReturnType<typeof
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1)
 }
 
+test('Android phone entry reaches its primary action with a touch swipe', async ({ context, page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'android-phone', 'The Android Chromium project owns touch-scroll coverage.')
+  await page.setViewportSize({ width: 412, height: 700 })
+  await page.goto('/')
+
+  const entry = page.locator('.cw-entry')
+  const takeSeat = page.getByRole('button', { name: 'Take your seat' })
+  const before = await entry.evaluate((element) => ({
+    clientHeight: element.clientHeight,
+    scrollHeight: element.scrollHeight,
+    scrollTop: element.scrollTop,
+  }))
+  expect(before.scrollHeight).toBeGreaterThan(before.clientHeight)
+
+  const touch = await context.newCDPSession(page)
+  await touch.send('Input.dispatchTouchEvent', {
+    type: 'touchStart',
+    touchPoints: [{ x: 206, y: 620 }],
+  })
+  for (const y of [540, 460, 380, 300, 220, 140]) {
+    await touch.send('Input.dispatchTouchEvent', {
+      type: 'touchMove',
+      touchPoints: [{ x: 206, y }],
+    })
+  }
+  await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+
+  await expect.poll(() => entry.evaluate((element) => element.scrollTop)).toBeGreaterThan(before.scrollTop)
+  expect(await page.evaluate(() => window.scrollY)).toBe(0)
+  await expect(takeSeat).toBeInViewport()
+})
+
 test('real device context preserves active playback through portrait-to-landscape rotation', async ({ browserName, page }, testInfo) => {
   await enterActiveCourt(page)
   const capabilities = await page.evaluate(() => ({

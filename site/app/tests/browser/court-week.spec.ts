@@ -25,6 +25,34 @@ const viewports = [
   [1280, 800], [1366, 768], [1440, 900], [1920, 1080], [2560, 1440],
 ] as const
 
+test('mobile entry scrolls inside the locked application root', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 })
+  await page.goto('/')
+
+  const entry = page.locator('.cw-entry')
+  const takeSeat = page.getByRole('button', { name: 'Take your seat' })
+  const before = await entry.evaluate((element) => ({
+    clientHeight: element.clientHeight,
+    scrollHeight: element.scrollHeight,
+    overflowX: getComputedStyle(element).overflowX,
+    overflowY: getComputedStyle(element).overflowY,
+  }))
+
+  expect(before).toMatchObject({
+    clientHeight: 568,
+    overflowX: 'hidden',
+    overflowY: 'auto',
+  })
+  expect(before.scrollHeight).toBeGreaterThan(before.clientHeight)
+
+  await entry.hover()
+  await page.mouse.wheel(0, before.scrollHeight)
+  await expect.poll(() => entry.evaluate((element) => element.scrollTop)).toBeGreaterThan(0)
+  expect(await page.evaluate(() => window.scrollY)).toBe(0)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1)
+  await expect(takeSeat).toBeInViewport()
+})
+
 test('local developer mode remains reachable at a 200% compact-phone reflow', async ({ page }) => {
   await page.setViewportSize({ width: 160, height: 284 })
   await page.addInitScript(() => localStorage.removeItem('simjury:court-week:local-profile:v1'))

@@ -340,6 +340,7 @@
 .cw-primary { border-color: var(--cw-brass) !important; background: #302819 !important; font-weight: 750 !important; }
 
 .cw-entry, .cw-loading { min-height: 100vh; min-height: 100svh; padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); display: grid; place-items: center; }
+.cw-entry { box-sizing: border-box; height: 100vh; height: 100svh; height: 100dvh; overflow-x: hidden; overflow-y: auto; overscroll-behavior-y: contain; }
 .cw-entry__panel { width: min(42rem, 100%); min-width: 0; padding: clamp(1rem, 5vw, 2.5rem); border: 1px solid var(--cw-line); border-radius: .75rem; background: #11171a; box-shadow: 0 1rem 4rem rgba(0,0,0,.4); }
 .cw-entry h1 { margin: .2rem 0 1rem; font-family: Georgia, "Times New Roman", serif; font-size: clamp(2rem, 8vw, 4.5rem); font-weight: 500; }
 .cw-entry p { max-width: 60ch; line-height: 1.55; }
