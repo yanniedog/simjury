@@ -59,13 +59,56 @@ interface ContinuousHandoff {
   source: string
 }
 
-function availableSpeechVoice(): SpeechSynthesisVoice | null {
-  if (!canSpeak() || typeof window.speechSynthesis.getVoices !== 'function') return null
+function speakerVoiceHash(speaker: string): number {
+  let hash = 2166136261
+  for (const character of speaker) {
+    hash ^= character.codePointAt(0) ?? 0
+    hash = Math.imul(hash, 16777619)
+  }
+  return hash >>> 0
+}
+
+function availableSpeechVoices(): SpeechSynthesisVoice[] {
+  if (!canSpeak() || typeof window.speechSynthesis.getVoices !== 'function') return []
   const voices = window.speechSynthesis.getVoices()
-  return voices.find((voice) => voice.lang.toLowerCase() === 'en-au')
-    ?? voices.find((voice) => voice.lang.toLowerCase().startsWith('en-'))
-    ?? voices[0]
-    ?? null
+  const australian = voices.filter((voice) => voice.lang.toLowerCase() === 'en-au')
+  const english = voices.filter((voice) => voice.lang.toLowerCase().startsWith('en-'))
+  const pool = australian.length > 0 ? australian : english.length > 0 ? english : voices
+  return [...pool].sort((left, right) =>
+    `${left.lang}\u0000${left.name}`.localeCompare(`${right.lang}\u0000${right.name}`),
+  )
+}
+
+function speechVoiceIdentity(voice: SpeechSynthesisVoice): string {
+  return voice.voiceURI || `${voice.lang}\u0000${voice.name}`
+}
+
+export function availableSpeechVoice(speaker: string): SpeechSynthesisVoice | null {
+  const voices = availableSpeechVoices()
+  return voices[speakerVoiceHash(speaker) % voices.length] ?? null
+}
+
+function assignDistinctSpeechVoices(speakers: string[]): Map<string, SpeechSynthesisVoice> | null {
+  const identities = [...new Set(speakers)]
+  const voices = availableSpeechVoices()
+  if (voices.length < identities.length) return null
+  const assigned = new Map<string, SpeechSynthesisVoice>()
+  const used = new Set<string>()
+  for (const speaker of identities) {
+    const preferred = speakerVoiceHash(speaker) % voices.length
+    let voice: SpeechSynthesisVoice | undefined
+    for (let offset = 0; offset < voices.length; offset += 1) {
+      const candidate = voices[(preferred + offset) % voices.length]
+      if (!used.has(speechVoiceIdentity(candidate))) {
+        voice = candidate
+        break
+      }
+    }
+    if (!voice) return null
+    assigned.set(speaker, voice)
+    used.add(speechVoiceIdentity(voice))
+  }
+  return assigned
 }
 
 export function useCuePlayback(
@@ -236,15 +279,15 @@ export function useCuePlayback(
 
   const speakFallback = useCallback(() => {
     if (speechActive.current) return
-    const voice = availableSpeechVoice()
-    if (!voice) {
+    const turns = cue.turns?.length
+      ? cue.turns
+      : [{ id: cue.id, speaker: cue.speaker, text: cue.text }]
+    const voices = assignDistinctSpeechVoices(turns.map(({ speaker }) => speaker))
+    if (!voices) {
       setStatus('reading-fallback')
       setError('Audio is unavailable. Reading mode is ready.')
       return
     }
-    const turns = cue.turns?.length
-      ? cue.turns
-      : [{ id: cue.id, speaker: cue.speaker, text: cue.text }]
     const currentIndex = Math.max(0, turns.findIndex((turn) => turn.id === activeTurn.current))
     const generation = ++speechGeneration.current
     speechActive.current = true
@@ -256,7 +299,7 @@ export function useCuePlayback(
       const utterance = new SpeechSynthesisUtterance(turn.text)
       utterance.lang = 'en-AU'
       utterance.rate = 0.96
-      utterance.voice = voice
+      utterance.voice = voices.get(turn.speaker) ?? null
       utterance.onend = () => {
         if (!speechActive.current || generation !== speechGeneration.current) return
         if (index + 1 < turns.length) {

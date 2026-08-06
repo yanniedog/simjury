@@ -469,7 +469,10 @@ describe('useCuePlayback', () => {
     let activeUtterance: MockUtterance | null = null
     const synthesis = {
       paused: false,
-      getVoices: vi.fn(() => [{ lang: 'en-AU', name: 'Test voice' }]),
+      getVoices: vi.fn(() => [
+        { lang: 'en-AU', name: 'Counsel voice' },
+        { lang: 'en-AU', name: 'Witness voice' },
+      ]),
       speak: vi.fn((utterance: MockUtterance) => { activeUtterance = utterance }),
       cancel: vi.fn(() => {
         synthesis.paused = false
@@ -504,6 +507,87 @@ describe('useCuePlayback', () => {
 
     await act(async () => repeat.click())
     expect(synthesis.speak).toHaveBeenCalledTimes(3)
+    act(() => root.unmount())
+  })
+
+  it('keeps each identified dynamic speaker on a stable device voice when alternatives exist', async () => {
+    const speechCue: SceneCue = {
+      ...cue,
+      id: 'sun-verdict-return',
+      audio: undefined,
+      turns: [
+        { id: 'sun-verdict-return__narrator', speaker: 'Narrator', text: 'Mara Venn stands.' },
+        { id: 'sun-verdict-return__clerk', speaker: 'Clerk', text: 'Has the jury reached a verdict?' },
+        { id: 'sun-verdict-return__foreperson', speaker: 'Foreperson Edda Rook', text: 'We are unable to agree.' },
+        { id: 'sun-verdict-return__judge', speaker: 'Judge Sel Aven', text: 'I discharge the jury.' },
+      ],
+    }
+    class MockUtterance {
+      lang = ''
+      rate = 1
+      voice: SpeechSynthesisVoice | null = null
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+      constructor(public text: string) {}
+    }
+    const utterances: MockUtterance[] = []
+    const voices = ['Alpha', 'Beta', 'Gamma', 'Delta'].map((name) => ({ lang: 'en-AU', name })) as SpeechSynthesisVoice[]
+    const synthesis = {
+      getVoices: vi.fn(() => voices),
+      speak: vi.fn((utterance: MockUtterance) => { utterances.push(utterance) }),
+      cancel: vi.fn(),
+    }
+    vi.stubGlobal('SpeechSynthesisUtterance', MockUtterance)
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: synthesis })
+
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness activeCue={speechCue} onEnded={() => undefined} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
+    await act(async () => play.click())
+    await act(async () => utterances[0].onend?.())
+    await act(async () => utterances[1].onend?.())
+    await act(async () => utterances[2].onend?.())
+
+    expect(utterances.map(({ voice }) => voice?.name)).toHaveLength(4)
+    expect(new Set(utterances.map(({ voice }) => voice?.name)).size).toBe(4)
+    act(() => root.unmount())
+  })
+
+  it('uses labelled reading instead of merging four speakers into too few device voices', async () => {
+    const speechCue: SceneCue = {
+      ...cue,
+      id: 'sun-verdict-return',
+      audio: undefined,
+      turns: [
+        { id: 'narrator', speaker: 'Narrator', text: 'Mara Venn stands.' },
+        { id: 'clerk', speaker: 'Clerk', text: 'Has the jury reached a verdict?' },
+        { id: 'foreperson', speaker: 'Foreperson Edda Rook', text: 'We are unable to agree.' },
+        { id: 'judge', speaker: 'Judge Sel Aven', text: 'I discharge the jury.' },
+      ],
+    }
+    class MockUtterance {
+      lang = ''
+      rate = 1
+      voice: SpeechSynthesisVoice | null = null
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+      constructor(public text: string) {}
+    }
+    const synthesis = {
+      getVoices: vi.fn(() => ['Alpha', 'Beta'].map((name) => ({ lang: 'en-AU', name })) as SpeechSynthesisVoice[]),
+      speak: vi.fn(),
+      cancel: vi.fn(),
+    }
+    vi.stubGlobal('SpeechSynthesisUtterance', MockUtterance)
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: synthesis })
+
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness activeCue={speechCue} onEnded={() => undefined} />))
+    const [play] = Array.from(container.querySelectorAll('button'))
+    await act(async () => play.click())
+
+    expect(synthesis.speak).not.toHaveBeenCalled()
+    expect(container.querySelector('output')?.textContent).toBe('reading-fallback')
     act(() => root.unmount())
   })
 

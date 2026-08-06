@@ -15,6 +15,7 @@ import {
   evolveAuthoredBallot,
   firstBallotForScene,
   openCourtReturn,
+  openCourtReturnTurns,
   outcomeAnalysis,
   nextSundaySceneId,
 } from './deliberation'
@@ -260,9 +261,15 @@ describe('Court Week deliberation engine', () => {
   })
 
   it('speaks the computed result only as an open-court return', () => {
-    expect(openCourtReturn('murder', 'majority')).toContain('accused stands')
+    expect(openCourtReturn('murder', 'majority')).toContain('Mara Venn stands')
     expect(openCourtReturn('murder', 'majority')).toContain('eleven-to-one')
     expect(openCourtReturn('not-guilty', 'unanimous')).toContain('Not Guilty')
     expect(openCourtReturn('unable-to-agree', 'hung')).toContain('unable to agree')
+    expect(openCourtReturnTurns('murder', 'majority').map(({ speaker }) => speaker)).toEqual([
+      'Narrator',
+      'Clerk',
+      'Foreperson Edda Rook',
+      'Judge Sel Aven',
+    ])
   })
 })

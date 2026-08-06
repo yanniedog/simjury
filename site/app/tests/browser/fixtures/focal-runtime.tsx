@@ -45,10 +45,11 @@ export function Fixture() {
   }, [])
   return <ImmersiveCourtShell
     session={session} scene={scene} cue={cue} releaseBase="/media/court-week/cw-0001"
-    accessMode="reading" playbackStatus="paused" playbackError={null}
+    accessMode="captions" playbackStatus="paused" playbackError={null}
     progressLabel="Scene 1 of 3" deskOpen={false}
     onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
     onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+    onOpenDeveloperPreview={() => undefined}
   />
 }
 

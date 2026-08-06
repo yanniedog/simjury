@@ -90,7 +90,6 @@ describe('ImmersiveCourtShell', () => {
         cue={cue}
         releaseBase="https://example.test/assets"
         accessMode="captions"
-        dataSaver
         playbackStatus="paused"
         playbackError={null}
         progressLabel="Scene 1 of 3"
@@ -105,8 +104,7 @@ describe('ImmersiveCourtShell', () => {
     )
 
     expect(markup).toContain('media="(orientation: portrait) and (max-width: 700px)"')
-    expect(markup).toContain('data-data-saver="true"')
-    expect(markup).toContain('data-ambience="off"')
+    expect(markup).not.toContain('data-data-saver')
     expect(markup).toContain('media="(orientation: landscape) and (max-height: 500px), (min-width: 1100px)"')
     expect(markup).toContain('scenes/scene-1/portrait.avif')
     expect(markup).toContain('scenes/scene-1/tablet.webp')
@@ -161,9 +159,9 @@ describe('ImmersiveCourtShell', () => {
       />,
     )
     expect(markup).toContain('<p id="cw-speaker-name" aria-current="true">Nella Orr')
-    expect(markup).toContain(`<span>${activeTurn.text}</span>`)
+    expect(markup).toContain(`<strong>Nella Orr:</strong> ${activeTurn.text}</span>`)
     expect(markup).toContain(`Nella Orr: ${activeTurn.text}`)
-    expect(markup).not.toContain(`<span>${cue.text}</span>`)
+    expect(markup).not.toContain(`<strong>Defence counsel:</strong> ${cue.text}</span>`)
   })
 
   it('selects one cell from a sealed responsive strip without a fetch or canvas layer', () => {
@@ -185,38 +183,6 @@ describe('ImmersiveCourtShell', () => {
     expect(markup).toContain(`https://example.test/desktop.${'a'.repeat(64)}.avif`)
     expect(markup).toContain('referrerPolicy="no-referrer"')
     expect(markup).toContain('sizes="100vw"')
-  })
-
-  it('uses the smaller single-scene rendition instead of a two-scene strip in data saver', () => {
-    const markup = renderToStaticMarkup(
-      <ImmersiveCourtShell
-        session={session} scene={stripScene} cue={cue} releaseBase="/media"
-        accessMode="reading" dataSaver playbackStatus="paused" playbackError={null}
-        progressLabel="Scene 1 of 3" deskOpen={false}
-        onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
-        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
-      />,
-    )
-    expect(markup).not.toContain('cw-stage__picture--strip')
-    expect(markup).toContain('/media/scenes/scene-1/portrait.avif')
-    expect(markup).not.toContain(`https://example.test/portrait.${'a'.repeat(64)}.avif`)
-    expect(markup).toContain('--cw-focal-portrait:56% 53%')
-    expect(markup).toContain('--cw-focal-tablet:82% 46%')
-    expect(markup).toContain('--cw-focal-desktop:78% 46%')
-    expect(markup).toContain('object-position:var(--cw-focal-active, 82% 46%)')
-  })
-
-  it('locks captions to their stored preference while low-data reading is forced', () => {
-    const markup = renderToStaticMarkup(
-      <ImmersiveCourtShell
-        session={session} scene={scene} cue={cue} releaseBase="/media"
-        accessMode="reading" captionPreference="captions" captionsLocked
-        playbackStatus="idle" playbackError={null} progressLabel="Scene 1 of 3" deskOpen={false}
-        onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
-        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
-      />,
-    )
-    expect(markup).toMatch(/aria-pressed="true" disabled=""[^>]*>Captions/u)
   })
 
   it('does not guess caption fit from character count before browser layout', () => {
