@@ -16,7 +16,9 @@ week must measure 126–154 minutes.
 - The experience is audio-first and fullscreen, with minimal persistent text,
   optional two-line captions, a reading mode, and an on-demand juror desk.
 - Eleven authored jurors deliberate with the player. There is no multiplayer,
-  account, runtime AI, analytics, waitlist, or backend player-state service.
+  account, runtime AI, waitlist, or backend player-state service. Default-on,
+  browser-level Microsoft Clarity analytics is permitted only with full source
+  masking, denied advertising storage and a persistent local opt-out.
 - Progress, private notes and ballots stay on-device in IndexedDB. A versioned
   export/import file is the only cross-device transfer path.
 - The active verdicts are Murder, manslaughter by criminal negligence, Not

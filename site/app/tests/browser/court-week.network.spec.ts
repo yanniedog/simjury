@@ -6,6 +6,7 @@ import { DEFAULT_LOCAL_PROFILE, LOCAL_PROFILE_STORAGE_KEY } from '../../src/cour
 // Vite preview does not apply the Cloudflare `_redirects` proxy used by the
 // canonical root URL, so test the exact built Court Week shell directly.
 const baseUrl = 'http://127.0.0.1:43130/jury/court-week.html'
+const clarityOptOutKey = 'simjury:clarity-opt-out:v1'
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 const acknowledgedProfile = JSON.stringify({
   ...DEFAULT_LOCAL_PROFILE,
@@ -49,7 +50,12 @@ test('HAR proves the initial unlocked journey is static-only and fetches no futu
       cookies: [],
       origins: [{
         origin: new URL(baseUrl).origin,
-        localStorage: [{ name: LOCAL_PROFILE_STORAGE_KEY, value: acknowledgedProfile }],
+        localStorage: [
+          { name: LOCAL_PROFILE_STORAGE_KEY, value: acknowledgedProfile },
+          // Keep this HAR focused on the app's static gameplay contract. The
+          // production audit separately requires the default-on Clarity call.
+          { name: clarityOptOutKey, value: '1' },
+        ],
       }],
     },
   })

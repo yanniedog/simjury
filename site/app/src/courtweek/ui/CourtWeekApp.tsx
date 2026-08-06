@@ -253,6 +253,7 @@ function CourtWeekEntry({
             : persistenceNotice
             ? 'Use Export progress from the juror desk before leaving this tab.'
             : 'Progress and private notes stay on this device unless you export them.'}
+          {' '}<a href="/privacy/">Privacy</a>
         </p>
       </div>
     </main>

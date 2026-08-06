@@ -1,7 +1,7 @@
 import { expect, test, type CDPSession, type Page } from '@playwright/test'
 import { writeFile } from 'node:fs/promises'
 import { DEFAULT_LOCAL_PROFILE, LOCAL_PROFILE_STORAGE_KEY } from '../../src/courtweek/state/localProfile'
-import { PERFORMANCE_BASE_URL } from './environment'
+import { PERFORMANCE_APP_URL, PERFORMANCE_BASE_URL } from './environment'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 const acknowledgedProfile = JSON.stringify({
@@ -67,7 +67,7 @@ test('production entry and first session stay inside the Android 4G budgets', as
   await emulateMidRangeAndroid4g(cdp)
   await installMeasurement(page)
 
-  await page.goto('/jury/', { waitUntil: 'networkidle' })
+  await page.goto(PERFORMANCE_APP_URL, { waitUntil: 'networkidle' })
   await expect(page.getByRole('heading', { name: 'Eleven Minutes' })).toBeVisible()
   await page.waitForTimeout(100)
 
