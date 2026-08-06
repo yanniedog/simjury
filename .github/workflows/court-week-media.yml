@@ -9,7 +9,7 @@ on:
       release_tag:
         description: Immutable tag (court-week-cw-0001-YYYY.MM.DD-rN)
         required: true
-        default: court-week-cw-0001-2026.08.03-r3
+        default: court-week-cw-0001-2026.08.06-r4
       publish:
         description: Publish after validation; false produces a review artifact only
         required: true

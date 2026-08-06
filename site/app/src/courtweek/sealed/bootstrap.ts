@@ -7,7 +7,7 @@ import type { CourtWeekBootstrap } from './types'
 export const courtWeekBootstrap: CourtWeekBootstrap = {
   schemaVersion: 'court-week-sealed-v1',
   id: 'cw-0001',
-  revision: '2026.08.03-r2',
+  revision: '2026.08.06-r3',
   label: 'fiction',
   title: 'Eleven Minutes',
   subtitle: 'One distress call. One deliberate hold. Your week in the jury box.',

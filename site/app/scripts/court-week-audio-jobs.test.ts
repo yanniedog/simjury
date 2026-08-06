@@ -52,8 +52,8 @@ describe('Court Week prerecorded audio jobs', () => {
     expect(saturdayJob.fixedExperienceSeconds).toBe(765)
   })
 
-  it('isolates an r4 review-candidate identity from the pinned r3 runtime', () => {
-    const candidateTag = 'court-week-cw-0001-2026.08.03-r4'
+  it('stages the August 6 r4 review candidate without mutating pinned r3 media', () => {
+    const candidateTag = 'court-week-cw-0001-2026.08.06-r4'
     const normal = buildCourtWeekAudioJobs(elevenMinutesCourtWeek)
     const candidate = buildCourtWeekAudioJobs(elevenMinutesCourtWeek, {
       reviewCandidateReleaseTag: candidateTag,
@@ -61,12 +61,17 @@ describe('Court Week prerecorded audio jobs', () => {
     const pinned = JSON.parse(readFileSync(resolve('media/court-week-media-manifest.pinned.json'), 'utf8'))
 
     expect(elevenMinutesCourtWeek.manifest.releaseTag).toBe('court-week-cw-0001-2026.08.03-r3')
+    expect(elevenMinutesCourtWeek.manifest.revision).toBe('2026.08.06-r3')
     expect(courtWeekBootstrap.releaseTag).toBe(elevenMinutesCourtWeek.manifest.releaseTag)
+    expect(courtWeekBootstrap.revision).toBe(elevenMinutesCourtWeek.manifest.revision)
     expect(pinned.release_tag).toBe(elevenMinutesCourtWeek.manifest.releaseTag)
+    expect(pinned.source_revision).toBe('2026.08.03-r2')
     expect(normal.index.releaseTag).toBe(elevenMinutesCourtWeek.manifest.releaseTag)
+    expect(normal.index.sourceRevision).toBe(elevenMinutesCourtWeek.manifest.revision)
     expect(normal.jobs.every((job) => job.releaseTag === elevenMinutesCourtWeek.manifest.releaseTag))
       .toBe(true)
     expect(candidate.index.releaseTag).toBe(candidateTag)
+    expect(candidate.index.sourceRevision).toBe(elevenMinutesCourtWeek.manifest.revision)
     expect(candidate.jobs.every((job) => job.releaseTag === candidateTag)).toBe(true)
 
     for (const [index, candidateJob] of candidate.jobs.entries()) {

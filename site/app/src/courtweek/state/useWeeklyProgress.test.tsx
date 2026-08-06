@@ -16,7 +16,7 @@ import {
 const initialProgress: StoredWeeklyProgress = {
   schemaVersion: 'court-week-progress-v1',
   courtWeekId: 'cw-0001',
-  revision: '2026.08.03-r2',
+  revision: '2026.08.06-r3',
   highestObservedTime: '2026-08-10T08:30:00+10:00',
   completedSessionIds: [],
   currentSessionId: 'cw-0001-monday',

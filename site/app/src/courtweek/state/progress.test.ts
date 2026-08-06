@@ -15,7 +15,7 @@ import {
 const progress: StoredWeeklyProgress = {
   schemaVersion: 'court-week-progress-v1',
   courtWeekId: 'cw-0001',
-  revision: '2026.08.03-r2',
+  revision: '2026.08.06-r3',
   highestObservedTime: '2026-08-10T08:30:00+10:00',
   completedSessionIds: ['mon'],
   currentSessionId: 'tue',
@@ -143,7 +143,7 @@ describe('weekly progress', () => {
     const exported = exportWeeklyProgress(progress)
     expect(exported).toContain('"accessibilityMode": "captions"')
     expect(exported).not.toContain('Check the warning record.')
-    expect(importWeeklyProgress(exported, 'cw-0001', '2026.08.03-r2')).toEqual({
+    expect(importWeeklyProgress(exported, 'cw-0001', '2026.08.06-r3')).toEqual({
       ...progress,
       notes: '',
     })
@@ -171,7 +171,7 @@ describe('weekly progress', () => {
     const withoutNotes = importWeeklyProgress(
       exportWeeklyProgress(deliberated),
       'cw-0001',
-      '2026.08.03-r2',
+      '2026.08.06-r3',
       elevenMinutesDeliberation,
       elevenMinutesCourtWeek.manifest.sessions,
     )
@@ -179,7 +179,7 @@ describe('weekly progress', () => {
     expect(importWeeklyProgress(
       exportWeeklyProgress(deliberated, true),
       'cw-0001',
-      '2026.08.03-r2',
+      '2026.08.06-r3',
       elevenMinutesDeliberation,
       elevenMinutesCourtWeek.manifest.sessions,
     )).toEqual(deliberated)
@@ -219,7 +219,7 @@ describe('weekly progress', () => {
     }
     for (const forged of [forgedTuesday, forgedAnalysis]) {
       expect(() => importWeeklyProgress(
-        exportWeeklyProgress(forged), 'cw-0001', '2026.08.03-r2',
+        exportWeeklyProgress(forged), 'cw-0001', '2026.08.06-r3',
         elevenMinutesDeliberation, sessions,
       )).toThrow(/impossible Court Week chronology/i)
     }
@@ -282,25 +282,25 @@ describe('weekly progress', () => {
     }
 
     expect(() => importWeeklyProgress(
-      exportWeeklyProgress(forged), 'cw-0001', '2026.08.03-r2', elevenMinutesDeliberation,
+      exportWeeklyProgress(forged), 'cw-0001', '2026.08.06-r3', elevenMinutesDeliberation,
     )).toThrow('outside the authored Court Week journey')
     expect(() => importWeeklyProgress(
-      exportWeeklyProgress(duplicated), 'cw-0001', '2026.08.03-r2', elevenMinutesDeliberation,
+      exportWeeklyProgress(duplicated), 'cw-0001', '2026.08.06-r3', elevenMinutesDeliberation,
     )).toThrow('outside the authored Court Week journey')
 
     expect(() => importWeeklyProgress(exportWeeklyProgress({
       ...progress,
       reasoningContributions: [{ ...contribution, propositionId: 'prop-unknown' }],
-    }), 'cw-0001', '2026.08.03-r2', elevenMinutesDeliberation)).toThrow('outside the authored Court Week journey')
+    }), 'cw-0001', '2026.08.06-r3', elevenMinutesDeliberation)).toThrow('outside the authored Court Week journey')
     expect(() => importWeeklyProgress(exportWeeklyProgress({
       ...progress,
       reasoningContributions: [{ ...contribution, evidenceId: 'ex-warning' }],
-    }), 'cw-0001', '2026.08.03-r2', elevenMinutesDeliberation)).toThrow('outside the authored Court Week journey')
+    }), 'cw-0001', '2026.08.06-r3', elevenMinutesDeliberation)).toThrow('outside the authored Court Week journey')
 
     expect(() => importWeeklyProgress(
       exportWeeklyProgress({ ...progress, reasoningContributions: [contribution] }),
       'cw-0001',
-      '2026.08.03-r2',
+      '2026.08.06-r3',
     )).toThrow(/after the Saturday session has opened/i)
   })
 })
