@@ -39,6 +39,19 @@ describe('Court Week prerecorded audio jobs', () => {
     }
   })
 
+  it('preserves the enforced Saturday causation-reasoning floor in the audio budget', () => {
+    const saturday = elevenMinutesCourtWeek.manifest.sessions.find(({ day }) => day === 'Saturday')
+    if (!saturday) throw new Error('Saturday session is missing from the reviewed Court Week')
+    const causation = saturday.scenes.find(({ id }) => id === 'sat-causation')
+    if (!causation) throw new Error('Saturday causation scene is missing from the reviewed Court Week')
+    const saturdayJob = buildCourtWeekAudioJobs(elevenMinutesCourtWeek).jobs
+      .find(({ sessionId }) => sessionId === saturday.id)
+    if (!saturdayJob) throw new Error('Saturday audio job is missing from the reviewed Court Week')
+
+    expect(causation.interaction?.minimumSeconds).toBe(95)
+    expect(saturdayJob.fixedExperienceSeconds).toBe(765)
+  })
+
   it('isolates an r3 review-candidate identity from the pinned r2 runtime', () => {
     const candidateTag = 'court-week-cw-0001-2026.08.03-r3'
     const normal = buildCourtWeekAudioJobs(elevenMinutesCourtWeek)
