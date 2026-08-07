@@ -9,6 +9,7 @@ import {
   saveWeeklyProgress,
   type StoredWeeklyProgress,
 } from '../state/progress'
+import { WEEKLY_PROGRESS_EVENT } from '../state/useWeeklyProgress'
 import { courtWeekBootstrap } from './bootstrap'
 import { createCourtDayPacks } from './packPlan'
 import { clearOpenedPackMemoryForTests, saveOpenedPack } from './packStore'
@@ -159,7 +160,7 @@ describe('SealedCourtWeekApp', () => {
     await saveWeeklyProgress(progress.courtWeekId, progress)
     const mondayPack = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap)[0]
     let finishLoading: ((packs: (typeof mondayPack)[]) => void) | undefined
-    vi.spyOn(loader, 'loadEligibleCourtPacks').mockImplementation(() => new Promise((resolve) => {
+    const loadEligiblePacks = vi.spyOn(loader, 'loadEligibleCourtPacks').mockImplementation(() => new Promise((resolve) => {
       finishLoading = resolve
     }))
 
@@ -173,10 +174,24 @@ describe('SealedCourtWeekApp', () => {
     expect(container.textContent).toContain('Eleven Minutes')
     expect(container.textContent).toContain('Experience settings')
     expect(container.textContent).not.toContain('Take your seat')
+    expect(loadEligiblePacks).toHaveBeenCalledTimes(1)
+
+    await act(async () => window.dispatchEvent(new CustomEvent<StoredWeeklyProgress>(
+      WEEKLY_PROGRESS_EVENT,
+      { detail: { ...progress, completedSessionIds: [...progress.completedSessionIds] } },
+    )))
+    expect(loadEligiblePacks).toHaveBeenCalledTimes(1)
+
+    await act(async () => window.dispatchEvent(new CustomEvent<StoredWeeklyProgress>(
+      WEEKLY_PROGRESS_EVENT,
+      { detail: { ...progress, notes: 'A real progress change with the same eligible session.' } },
+    )))
+    expect(loadEligiblePacks).toHaveBeenCalledTimes(1)
 
     await act(async () => finishLoading?.([mondayPack]))
     await vi.waitFor(() => expect(container.textContent).toContain('Take your seat'))
     expect(container.querySelector('main')?.hasAttribute('aria-busy')).toBe(false)
+    expect(loadEligiblePacks).toHaveBeenCalledTimes(1)
   })
 
   it('opens Monday while the Saturday deliberation pack remains absent', async () => {
