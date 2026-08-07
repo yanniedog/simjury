@@ -33,7 +33,7 @@ export function CourtWeekCompletion({
   }, [])
 
   return (
-    <main className="cw-entry cw-complete">
+    <main className="cw-entry cw-complete" tabIndex={-1}>
       <div className="cw-entry__panel">
         <p className="cw-kicker">
           {developerPreview ? 'Developer session complete' : 'The court week has concluded'}
