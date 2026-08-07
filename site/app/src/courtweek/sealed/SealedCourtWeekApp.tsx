@@ -50,6 +50,27 @@ function baselineProgress(bootstrap: CourtWeekBootstrap, now: number): StoredWee
   }
 }
 
+function equivalentSnapshotValue(left: unknown, right: unknown): boolean {
+  if (Object.is(left, right)) return true
+  if (!left || !right || typeof left !== 'object' || typeof right !== 'object') return false
+  if (Array.isArray(left) || Array.isArray(right)) {
+    return Array.isArray(left) && Array.isArray(right) &&
+      left.length === right.length &&
+      left.every((value, index) => equivalentSnapshotValue(value, right[index]))
+  }
+
+  const leftRecord = left as Record<string, unknown>
+  const rightRecord = right as Record<string, unknown>
+  const definedKeys = (record: Record<string, unknown>) => Object.keys(record)
+    .filter((key) => record[key] !== undefined)
+    .sort()
+  const leftKeys = definedKeys(leftRecord)
+  const rightKeys = definedKeys(rightRecord)
+  return leftKeys.length === rightKeys.length && leftKeys.every((key, index) => (
+    key === rightKeys[index] && equivalentSnapshotValue(leftRecord[key], rightRecord[key])
+  ))
+}
+
 function sealedPlaceholderSession(
   entry: CourtWeekBootstrap['sessions'][number],
 ): CourtSession {
@@ -172,6 +193,14 @@ function StandardSealedCourtWeekApp({
   const [retry, setRetry] = useState(0)
   const [, setClockTick] = useState(0)
   const errorHeading = useRef<HTMLHeadingElement>(null)
+  const inFlightLoad = useRef<{
+    bootstrap: CourtWeekBootstrap
+    eligibleKey: string
+    fetcher: SealedPackFetcher | undefined
+    packBase: string
+    retry: number
+    promise: Promise<CourtDayPack[]>
+  } | null>(null)
 
   useEffect(() => {
     if (focusEntryHeading && loadError) errorHeading.current?.focus()
@@ -193,7 +222,7 @@ function StandardSealedCourtWeekApp({
     const receiveProgress = (event: Event) => {
       const next = (event as CustomEvent<StoredWeeklyProgress>).detail
       if (next?.courtWeekId === bootstrap.id && next.revision === bootstrap.revision) {
-        setProgress(next)
+        setProgress((current) => current && equivalentSnapshotValue(current, next) ? current : next)
       }
     }
     window.addEventListener(WEEKLY_PROGRESS_EVENT, receiveProgress)
@@ -212,16 +241,31 @@ function StandardSealedCourtWeekApp({
   const eligibleKey = eligible.map((entry) => entry.ordinal).join(',')
 
   useEffect(() => {
-    if (!progress || !missingEligible) return
+    if (!progress || !missingEligible) {
+      if (!missingEligible) inFlightLoad.current = null
+      return
+    }
     let active = true
     setLoadError(null)
-    void loadEligibleCourtPacks({
-      bootstrap,
-      progress,
-      observedNow,
-      baseUrl: packBase,
-      ...(fetcher ? { fetcher } : {}),
-    }).then((loaded) => {
+    const existingLoad = inFlightLoad.current
+    const matchesExisting = existingLoad?.bootstrap === bootstrap &&
+      existingLoad.eligibleKey === eligibleKey &&
+      existingLoad.fetcher === fetcher &&
+      existingLoad.packBase === packBase &&
+      existingLoad.retry === retry
+    const load = matchesExisting
+      ? existingLoad.promise
+      : loadEligibleCourtPacks({
+          bootstrap,
+          progress,
+          observedNow,
+          baseUrl: packBase,
+          ...(fetcher ? { fetcher } : {}),
+        })
+    if (!matchesExisting) {
+      inFlightLoad.current = { bootstrap, eligibleKey, fetcher, packBase, retry, promise: load }
+    }
+    void load.then((loaded) => {
       if (!active) return
       setPacks((current) => {
         const merged = new Map([...current, ...loaded].map((pack) => [pack.ordinal, pack]))
