@@ -200,6 +200,7 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
     const entryBytes = await page.evaluate(() => performance.getEntriesByType('resource').reduce(
       (sum, entry) => sum + (entry as PerformanceResourceTiming).transferSize, 0,
     ))
+    await pointerClick(page, page.locator('.cw-entry__settings > summary'), 'Open experience settings', actions)
     await pointerClick(page, page.locator('.cw-local-profile > summary'), 'Open local profile', actions)
     await pointerClick(page, page.getByRole('button', { name: 'Open all-session preview' }), 'Open developer preview', actions)
     await page.getByRole('heading', { name: 'Eleven Minutes' }).waitFor({ state: 'visible', timeout: 20_000 })
@@ -213,6 +214,10 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
         await page.getByRole('heading', { name: 'Eleven Minutes' }).waitFor({ state: 'visible', timeout: 20_000 })
       }
       const auditsAudio = ordinal === 1
+      const experienceSettings = page.locator('.cw-entry__settings')
+      if (!await experienceSettings.evaluate((element) => element.hasAttribute('open'))) {
+        await pointerClick(page, experienceSettings.locator(':scope > summary'), `Open experience settings for session ${ordinal}`, actions)
+      }
       await page.getByLabel(auditsAudio ? 'Audio and captions' : 'Reading mode').check()
       const started = Date.now()
       await pointerClick(page, page.getByRole('button', { name: 'Take your seat' }), `Take seat session ${ordinal}`, actions)
