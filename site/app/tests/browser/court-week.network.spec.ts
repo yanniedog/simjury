@@ -65,6 +65,7 @@ test('HAR proves the initial unlocked journey is static-only and fetches no futu
   page.on('websocket', (socket) => webSockets.push(socket.url()))
 
   await page.goto(baseUrl)
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await expect(page.locator('.cw-shell')).toBeVisible()

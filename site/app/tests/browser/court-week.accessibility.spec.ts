@@ -21,6 +21,7 @@ async function prepareCourt(page: Page) {
 
 async function enterReadingCourt(page: Page) {
   await prepareCourt(page)
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await expect(page.locator('.cw-shell')).toBeVisible()
@@ -145,23 +146,23 @@ test('keyboard-only entry, skip link and desk expose a visible three-pixel focus
   await prepareCourt(page)
 
   await page.keyboard.press('Tab')
-  const localProfile = page.locator('.cw-local-profile summary')
-  await expect(localProfile).toBeFocused()
-  await expectThreePixelFocusRing(localProfile)
+  const entryButton = page.getByRole('button', { name: 'Take your seat' })
+  await expect(entryButton).toBeFocused()
+  await expectThreePixelFocusRing(entryButton)
+  await page.keyboard.press('Tab')
+  const settings = page.locator('.cw-entry__settings > summary')
+  await expect(settings).toBeFocused()
+  await expectThreePixelFocusRing(settings)
+  await page.keyboard.press('Enter')
   await page.keyboard.press('Tab')
   await expect(page.getByLabel('Audio first')).toBeFocused()
   await page.keyboard.press('ArrowDown')
   await page.keyboard.press('ArrowDown')
   await expect(page.getByLabel('Reading mode')).toBeChecked()
-  await page.keyboard.press('Tab')
-  const fullscreen = page.getByLabel('Ask to enter full screen')
-  if (await fullscreen.count()) {
-    await expect(fullscreen).toBeFocused()
-    await page.keyboard.press('Tab')
-  }
-  const entryButton = page.getByRole('button', { name: 'Take your seat' })
+  await page.keyboard.press('Shift+Tab')
+  await expect(settings).toBeFocused()
+  await page.keyboard.press('Shift+Tab')
   await expect(entryButton).toBeFocused()
-  await expectThreePixelFocusRing(entryButton)
   await page.keyboard.press('Enter')
   await expect(page.locator('.cw-shell')).toBeVisible()
 
@@ -240,6 +241,7 @@ test('juror-desk close resumes active audio exactly once and leaves paused audio
     })
   })
   await mountRecordedAudioCourt(page)
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Audio and captions').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
   const controls = page.getByLabel('Court playback controls')
@@ -299,6 +301,7 @@ test('juror-desk close resumes active audio exactly once and leaves paused audio
 test('mandatory contribution dialogs take and contain focus before returning it to proceedings', async ({ page }) => {
   await page.clock.install({ time: releaseNow })
   await page.goto('/')
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
 
@@ -400,6 +403,7 @@ test('touch, keyboard and mouse interoperate without moving the legal record', a
   const page = await context.newPage()
   try {
     await prepareCourt(page)
+    await page.locator('.cw-entry__settings > summary').tap()
     await page.getByLabel('Reading mode').tap()
     await page.getByRole('button', { name: 'Take your seat' }).tap()
     const before = await capturePosition(page)

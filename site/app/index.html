@@ -18,28 +18,31 @@
     <link rel="canonical" href="https://simjury.com/" />
     <link rel="alternate" type="text/plain" href="/llms.txt" title="SimJury site guide" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <style>
+      :root { color-scheme: dark; background: #090d0f; }
+      body { margin: 0; background: #090d0f; color: #f2ead8; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .cw-boot-shell { box-sizing: border-box; min-height: 100vh; min-height: 100svh; display: grid; place-content: center; padding: max(1.25rem, env(safe-area-inset-top)) max(1.25rem, env(safe-area-inset-right)) max(1.25rem, env(safe-area-inset-bottom)) max(1.25rem, env(safe-area-inset-left)); }
+      .cw-boot-shell div { width: min(36rem, 100%); }
+      .cw-boot-kicker { margin: 0; color: #d6ad61; font-size: .75rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+      .cw-boot-shell h1 { margin: .3rem 0 .8rem; font: 500 clamp(2.4rem, 9vw, 4.5rem)/1.1 Georgia, "Times New Roman", serif; letter-spacing: -.025em; }
+      .cw-boot-status, .cw-boot-copy { margin: 0; color: #c0b8a7; line-height: 1.55; }
+      .cw-boot-shell a { display: inline-flex; min-height: 44px; align-items: center; color: #f2ead8; }
+    </style>
     <script type="module" src="/src/clarity-loader.ts"></script>
   </head>
   <body data-clarity-mask="true">
     <div id="root">
-      <main>
-        <h1>SimJury Court Week: Eleven Minutes</h1>
-        <p>This fictional, audio-first trial unfolds over five weekday court sessions and a weekend jury deliberation, about twenty minutes per session.</p>
-        <ol>
-          <li>Take the juror's oath and hear the judge's preliminary directions.</li>
-          <li>Hear the Crown opening and complete Crown evidence, including examination, cross-examination, re-examination, objections and admitted exhibits.</li>
-          <li>Hear the defence opening and evidence after the Crown closes its case.</li>
-          <li>Hear the Crown closing, defence closing and then the judge's final summing-up.</li>
-          <li>Retire with eleven authored jurors, seal a provisional view and see only the anonymous aggregate first ballot.</li>
-          <li>Reason from admitted evidence, send one jury note and hear the judge's answer in open court.</li>
-          <li>Return Murder, manslaughter, Not Guilty, or remain unable to agree; hear the verdict in open court before reviewing balanced analysis.</li>
-        </ol>
-        <p>Optional captions and reading mode provide the complete record when audio is unavailable. Progress, private notes and ballots stay in this browser. See Privacy for optional service data and choices. There is no account, multiplayer room, gameplay API or runtime AI.</p>
-        <nav aria-label="Public SimJury pages">
-          <a href="/">Court Week</a>
-          <a href="/privacy/">Privacy details</a>
-          <a href="/llms.txt">Machine-readable site guide</a>
-        </nav>
+      <main class="cw-boot-shell" aria-busy="true">
+        <div>
+          <p class="cw-boot-kicker">SimJury Court Week</p>
+          <h1>Eleven Minutes</h1>
+          <p class="cw-boot-status" role="status">Preparing your place in court…</p>
+          <noscript>
+            <style>.cw-boot-status { display: none; }</style>
+            <p class="cw-boot-copy">This fictional, audio-first trial unfolds across seven sessions. JavaScript is required to keep your progress and private notes on this device.</p>
+            <a href="/privacy/">Privacy details</a>
+          </noscript>
+        </div>
       </main>
     </div>
     <script type="module" src="/src/main.tsx"></script>

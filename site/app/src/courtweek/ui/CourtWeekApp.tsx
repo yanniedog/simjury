@@ -52,6 +52,7 @@ export interface CourtWeekAppProps {
   ephemeral?: boolean
   ephemeralAdvisory?: string
   focusEntryHeading?: boolean
+  entryBusy?: boolean
   developerPreview?: {
     selectedOrdinal: number
     sessions: Array<{ ordinal: number; day: string }>
@@ -131,6 +132,9 @@ function CourtWeekEntry({
   ephemeralAdvisory,
   focusHeading,
   localProfile,
+  canEnter,
+  availabilityNote,
+  busy,
 }: {
   title: string
   advisory: string
@@ -142,66 +146,116 @@ function CourtWeekEntry({
   ephemeralAdvisory?: string
   focusHeading: boolean
   localProfile?: CourtWeekAppProps['localProfile']
+  canEnter: boolean
+  availabilityNote?: string
+  busy: boolean
 }) {
   const [fullscreen, setFullscreen] = useState(false)
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const enterButtonRef = useRef<HTMLButtonElement>(null)
+  const settingsSummaryRef = useRef<HTMLElement>(null)
+  const focusAfterAcknowledgement = useRef(false)
   useEffect(() => {
     if (focusHeading) headingRef.current?.focus()
   }, [focusHeading])
   const fullscreenSupported = typeof document !== 'undefined'
     && typeof document.documentElement.requestFullscreen === 'function'
+  const modeLabels: Record<AccessMode, string> = {
+    'audio-first': 'Audio first',
+    captions: 'Audio + captions',
+    reading: 'Reading',
+  }
+  const acknowledged = !localProfile || localProfile.profile.adultFictionAcknowledged
+  useEffect(() => {
+    if (!acknowledged || !focusAfterAcknowledgement.current) return
+    focusAfterAcknowledgement.current = false
+    if (canEnter) enterButtonRef.current?.focus()
+    else settingsSummaryRef.current?.focus()
+  }, [acknowledged, canEnter])
+  const updateAcknowledgement = (adultFictionAcknowledged: boolean) => {
+    if (!localProfile) return
+    focusAfterAcknowledgement.current = adultFictionAcknowledged
+    localProfile.onChange({
+      jurorLabel: localProfile.profile.jurorLabel,
+      adultFictionAcknowledged,
+      developerMode: adultFictionAcknowledged ? localProfile.profile.developerMode : false,
+    })
+  }
   return (
-    <main className="cw-entry" tabIndex={-1}>
+    <main className="cw-entry" tabIndex={-1} aria-busy={busy || undefined}>
       <div className="cw-entry__panel">
-        <p className="cw-kicker">A seven-day fictional jury experience</p>
+        <p className="cw-kicker">One case · Seven sessions · About 20 minutes a day</p>
         <h1 ref={headingRef} tabIndex={focusHeading ? -1 : undefined}>{title}</h1>
-        <p>{ephemeral && ephemeralAdvisory ? ephemeralAdvisory : advisory}</p>
-        <p>SimJury is fictional and intended for adults aged 18 and older.</p>
-        {localProfile ? <LocalProfilePanel {...localProfile} /> : null}
+        <p className="cw-entry__advisory">{ephemeral && ephemeralAdvisory ? ephemeralAdvisory : advisory}</p>
         {persistenceNotice ? <p className="cw-error" role="alert">{persistenceNotice}</p> : null}
-        <p>Choose how the court should be presented. You can change captions later.</p>
-        <fieldset className="cw-mode-picker">
-          <legend>Presentation</legend>
-          {([
-            ['audio-first', 'Audio first', 'Courtroom narration with captions hidden.'],
-            ['captions', 'Audio and captions', 'Large, speaker-labelled captions with reading fallback when two lines cannot fit.'],
-            ['reading', 'Reading mode', 'All dialogue remains visible and audio is optional.'],
-          ] as const).map(([value, label, description]) => (
-            <label key={value}>
-              <input
-                type="radio"
-                name="court-mode"
-                value={value}
-                checked={mode === value}
-                onChange={() => onMode(value)}
-              />
-              <span><strong>{label}</strong><small>{description}</small></span>
-            </label>
-          ))}
-        </fieldset>
-        {fullscreenSupported ? (
-          <label className="cw-entry__fullscreen">
-            <input type="checkbox" checked={fullscreen} onChange={(event) => setFullscreen(event.target.checked)} />
-            Ask to enter full screen
+        {!acknowledged ? (
+          <label className="cw-entry__consent">
+            <input
+              type="checkbox"
+              checked={false}
+              onChange={(event) => updateAcknowledgement(event.target.checked)}
+            />
+            <span>
+              <strong>I’m 18 or older and understand this case is fictional.</strong>
+              <small>It deals directly with a non-graphic death and serious criminal allegations.</small>
+            </span>
           </label>
         ) : null}
-        <button
-          className="cw-primary"
-          type="button"
-          disabled={Boolean(localProfile && !localProfile.profile.adultFictionAcknowledged)}
-          onClick={() => onEnter(fullscreen)}
-        >
-          Take your seat
-        </button>
-        {localProfile && !localProfile.profile.adultFictionAcknowledged ? (
-          <p className="cw-entry__requirement" role="status">Confirm the adult fiction notice in Local profile to continue.</p>
+        {availabilityNote ? <p className="cw-entry__availability" role="status">{availabilityNote}</p> : null}
+        {canEnter ? (
+          <button
+            ref={enterButtonRef}
+            className="cw-primary cw-entry__primary"
+            type="button"
+            disabled={!acknowledged}
+            onClick={() => onEnter(fullscreen)}
+          >
+            Take your seat
+          </button>
         ) : null}
+        <details className="cw-entry__settings">
+          <summary ref={settingsSummaryRef}>
+            <span>Experience settings</span>
+            <small>{modeLabels[mode]}</small>
+          </summary>
+          <div className="cw-entry__settings-body">
+            <p>Audio leads by default. Change this at any time during court.</p>
+            <fieldset className="cw-mode-picker">
+              <legend>Presentation</legend>
+              {([
+                ['audio-first', 'Audio first', 'Listen without visible captions.'],
+                ['captions', 'Audio and captions', 'Listen with speaker-labelled captions.'],
+                ['reading', 'Reading mode', 'Keep the complete dialogue visible.'],
+              ] as const).map(([value, label, description]) => (
+                <label key={value}>
+                  <input
+                    type="radio"
+                    name="court-mode"
+                    value={value}
+                    checked={mode === value}
+                    onChange={() => onMode(value)}
+                  />
+                  <span><strong>{label}</strong><small>{description}</small></span>
+                </label>
+              ))}
+            </fieldset>
+            {fullscreenSupported ? (
+              <label className="cw-entry__fullscreen">
+                <input type="checkbox" checked={fullscreen} onChange={(event) => setFullscreen(event.target.checked)} />
+                Ask to enter full screen
+              </label>
+            ) : null}
+            {localProfile ? (
+              <LocalProfilePanel {...localProfile} showAdultFictionAcknowledgement={false} />
+            ) : null}
+          </div>
+        </details>
         <p className="cw-entry__privacy">
           {ephemeral
             ? 'Preview progress and private notes are discarded when you switch sessions or leave preview.'
             : persistenceNotice
             ? 'Use Export progress from the juror desk before leaving this tab.'
-            : 'Progress and private notes stay on this device unless you export them.'}
+            : 'Private by design. Progress and notes stay on this device.'}
           {' '}<a href="/privacy/">Privacy</a>
         </p>
       </div>
@@ -269,6 +323,7 @@ export function CourtWeekApp({
   ephemeral = false,
   ephemeralAdvisory,
   focusEntryHeading = false,
+  entryBusy = false,
   developerPreview,
   onEnteredChange,
   localProfile,
@@ -578,7 +633,7 @@ export function CourtWeekApp({
     return () => window.clearTimeout(timer)
   }, [interaction, interactionElapsedSeconds, interactionMinimumMet, interactionOpen, isReplay])
 
-  if (!hydrated) return <main className="cw-loading" aria-busy="true"><p>Preparing the courtroom…</p></main>
+  if (!hydrated) return <main className="cw-loading" aria-busy="true"><p role="status">Preparing your place in court…</p></main>
 
   if (!entered) {
     return (
@@ -591,6 +646,15 @@ export function CourtWeekApp({
         ephemeralAdvisory={ephemeralAdvisory}
         focusHeading={focusEntryHeading}
         localProfile={localProfile}
+        canEnter={!entryBusy && Boolean(activeAvailability?.ready || progress.completedSessionIds.includes(activeSession.id))}
+        busy={entryBusy}
+        availabilityNote={entryBusy
+          ? 'Opening today’s court session…'
+          : !activeAvailability?.ready && !progress.completedSessionIds.includes(activeSession.id)
+          ? !activeAvailability?.unlocked
+            ? `Court opens ${formatCourtUnlock(activeSession.unlockAt)}.`
+            : 'Complete the preceding court session before returning.'
+          : undefined}
         onMode={(mode) => updateProgress((current) => ({ ...current, accessibilityMode: mode }))}
         onEnter={(requestFullscreen) => {
           setEntered(true)

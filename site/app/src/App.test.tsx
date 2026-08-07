@@ -9,7 +9,7 @@ describe('Court Week application entry', () => {
 
     expect(elevenMinutesCourtWeek.manifest.title).toBe('Eleven Minutes')
     expect(elevenMinutesCourtWeek.manifest.sessions).toHaveLength(7)
-    expect(markup).toContain('Preparing the courtroom')
+    expect(markup).toContain('Preparing your place in court')
     expect(markup).not.toContain('Daily Docket')
     expect(markup).not.toContain('case library')
     expect(markup).not.toContain('live jury')

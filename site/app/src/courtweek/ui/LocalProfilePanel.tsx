@@ -13,6 +13,7 @@ export interface LocalProfilePanelProps {
   onChange: (profile: LocalProfileInput) => void
   onReset: () => void
   onOpenDeveloperPreview: () => void
+  showAdultFictionAcknowledgement?: boolean
 }
 
 export function LocalProfilePanel({
@@ -22,13 +23,16 @@ export function LocalProfilePanel({
   onChange,
   onReset,
   onOpenDeveloperPreview,
+  showAdultFictionAcknowledgement = true,
 }: LocalProfilePanelProps) {
   const [label, setLabel] = useState(profile.jurorLabel)
-  const [expanded, setExpanded] = useState(!profile.adultFictionAcknowledged)
+  const [expanded, setExpanded] = useState(
+    showAdultFictionAcknowledgement && !profile.adultFictionAcknowledged,
+  )
   useEffect(() => setLabel(profile.jurorLabel), [profile.jurorLabel])
   useEffect(() => {
-    if (!profile.adultFictionAcknowledged) setExpanded(true)
-  }, [profile.adultFictionAcknowledged])
+    if (showAdultFictionAcknowledgement && !profile.adultFictionAcknowledged) setExpanded(true)
+  }, [profile.adultFictionAcknowledged, showAdultFictionAcknowledgement])
 
   const update = (patch: Partial<LocalProfileInput>) => onChange({
     jurorLabel: profile.jurorLabel,
@@ -64,20 +68,22 @@ export function LocalProfilePanel({
             <button type="submit">Save</button>
           </div>
         </form>
-        <label className="cw-local-profile__choice">
-          <input
-            type="checkbox"
-            checked={profile.adultFictionAcknowledged}
-            onChange={(event) => update({
-              adultFictionAcknowledged: event.target.checked,
-              ...(event.target.checked ? {} : { developerMode: false }),
-            })}
-          />
-          <span>
-            <strong>I am 18 or older and understand this case is fictional.</strong>
-            <small>The case deals directly with a non-graphic death and serious criminal allegations.</small>
-          </span>
-        </label>
+        {showAdultFictionAcknowledgement ? (
+          <label className="cw-local-profile__choice">
+            <input
+              type="checkbox"
+              checked={profile.adultFictionAcknowledged}
+              onChange={(event) => update({
+                adultFictionAcknowledged: event.target.checked,
+                ...(event.target.checked ? {} : { developerMode: false }),
+              })}
+            />
+            <span>
+              <strong>I am 18 or older and understand this case is fictional.</strong>
+              <small>The case deals directly with a non-graphic death and serious criminal allegations.</small>
+            </span>
+          </label>
+        ) : null}
         <fieldset className="cw-local-profile__testing">
           <legend>Live testing</legend>
           <label className="cw-local-profile__choice">
