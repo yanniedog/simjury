@@ -151,7 +151,7 @@ function CourtWeekEntry({
   const fullscreenSupported = typeof document !== 'undefined'
     && typeof document.documentElement.requestFullscreen === 'function'
   return (
-    <main className="cw-entry">
+    <main className="cw-entry" tabIndex={-1}>
       <div className="cw-entry__panel">
         <p className="cw-kicker">A seven-day fictional jury experience</p>
         <h1 ref={headingRef} tabIndex={focusHeading ? -1 : undefined}>{title}</h1>
@@ -638,7 +638,7 @@ export function CourtWeekApp({
   }
   if (!activeAvailability?.ready && !progress.completedSessionIds.includes(activeSession.id)) {
     return (
-      <main className="cw-entry">
+      <main className="cw-entry" tabIndex={-1}>
         <div className="cw-entry__panel">
           <p className="cw-kicker">Court stands adjourned</p>
           <h1>{activeSession.day}: {activeSession.title}</h1>
