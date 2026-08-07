@@ -54,7 +54,10 @@ test('first-time mobile entry keeps its primary path in the first viewport', asy
 
 test('local developer mode remains reachable at a 200% compact-phone reflow', async ({ page }) => {
   await page.setViewportSize({ width: 160, height: 284 })
-  await page.addInitScript(() => localStorage.removeItem('simjury:court-week:local-profile:v1'))
+  await page.addInitScript((instant) => {
+    Date.now = () => instant
+    localStorage.removeItem('simjury:court-week:local-profile:v1')
+  }, Date.parse('2026-08-07T09:00:00+10:00'))
   await page.goto('/')
   const surface = page.locator('.cw-entry__panel')
   await expect(page.getByRole('status')).toContainText('Court opens Monday')
