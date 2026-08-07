@@ -78,6 +78,7 @@ async function installDeterministicPlayback(page: Page) {
 async function enterActiveCourt(page: Page) {
   await installDeterministicPlayback(page)
   await page.goto('/')
+  await page.locator('.cw-entry__settings > summary').tap()
   await page.getByLabel('Audio and captions').check()
   await page.getByRole('button', { name: 'Take your seat' }).tap()
   await expect(page.locator('.cw-shell')).toBeVisible()
@@ -137,42 +138,24 @@ async function expectActiveState(page: Page, expected: Awaited<ReturnType<typeof
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1)
 }
 
-test('Android phone entry reaches its primary action with a touch swipe', async ({ context, page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'android-phone', 'The Android Chromium project owns touch-scroll coverage.')
+test('Android phone entry presents its primary action without a touch swipe', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'android-phone', 'The Android Chromium project owns compact-entry coverage.')
   await page.setViewportSize({ width: 412, height: 700 })
+  await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
   await page.goto('/')
 
   const entry = page.locator('.cw-entry')
   const heading = page.getByRole('heading', { name: 'Eleven Minutes' })
   const takeSeat = page.getByRole('button', { name: 'Take your seat' })
-  const before = await entry.evaluate((element) => ({
+  const layout = await entry.evaluate((element) => ({
     clientHeight: element.clientHeight,
     scrollHeight: element.scrollHeight,
-    scrollTop: element.scrollTop,
+    clientWidth: element.clientWidth,
+    scrollWidth: element.scrollWidth,
   }))
-  expect(before.scrollHeight).toBeGreaterThan(before.clientHeight)
+  expect(layout.scrollHeight).toBeLessThanOrEqual(layout.clientHeight + 1)
+  expect(layout.scrollWidth).toBeLessThanOrEqual(layout.clientWidth + 1)
   await expect(heading).toBeInViewport()
-
-  const touch = await context.newCDPSession(page)
-  const entryBox = await entry.boundingBox()
-  if (!entryBox) throw new Error('Court Week entry is not rendered.')
-  const x = entryBox.x + entryBox.width / 2
-  const startY = entryBox.y + entryBox.height * 0.88
-  const endY = entryBox.y + entryBox.height * 0.2
-  await touch.send('Input.dispatchTouchEvent', {
-    type: 'touchStart',
-    touchPoints: [{ x, y: startY }],
-  })
-  for (const progress of [0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1]) {
-    await touch.send('Input.dispatchTouchEvent', {
-      type: 'touchMove',
-      touchPoints: [{ x, y: startY + (endY - startY) * progress }],
-    })
-  }
-  await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
-
-  await expect.poll(() => entry.evaluate((element) => element.scrollTop)).toBeGreaterThan(before.scrollTop)
-  expect(await page.evaluate(() => window.scrollY)).toBe(0)
   await expect(takeSeat).toBeInViewport()
 })
 

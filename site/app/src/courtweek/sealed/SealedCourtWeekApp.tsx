@@ -258,7 +258,7 @@ function StandardSealedCourtWeekApp({
   }, [bootstrap, courtWeek.manifest.sessions, fetcher, now, packBase])
 
   if (!progress) {
-    return <main className="cw-loading" aria-busy="true"><p>Preparing the courtroom…</p></main>
+    return <main className="cw-loading" aria-busy="true"><p role="status">Preparing your place in court…</p></main>
   }
   if (loadError) {
     return (
@@ -275,15 +275,9 @@ function StandardSealedCourtWeekApp({
       </main>
     )
   }
-  // Keep CourtWeekApp mounted once any pack is open so useWeeklyProgress can
-  // flush its debounced IndexedDB save across day-boundary pack fetches.
-  if (missingEligible && packs.length === 0) {
-    return <main className="cw-loading" aria-busy="true"><p>Opening today’s sealed court session…</p></main>
-  }
-
   return (
     <>
-      {missingEligible ? (
+      {missingEligible && packs.length > 0 ? (
         <div className="cw-loading cw-loading--inline" aria-busy="true" role="status">
           Opening today’s sealed court session…
         </div>
@@ -294,6 +288,7 @@ function StandardSealedCourtWeekApp({
         releaseBase={releaseBase}
         prepareProgressImport={prepareProgressImport}
         focusEntryHeading={focusEntryHeading}
+        entryBusy={missingEligible && packs.length === 0}
         localProfile={localProfile ? {
           profile: localProfile.state.profile,
           persistence: localProfile.state.persistence,
@@ -374,7 +369,7 @@ function DeveloperPreview({
       </div>
     </div></main>
   }
-  if (!courtWeek || !previewProgress) return <main className="cw-loading" aria-busy="true"><p>Opening developer preview…</p></main>
+  if (!courtWeek || !previewProgress) return <main className="cw-loading" aria-busy="true"><p role="status">Opening developer preview…</p></main>
   return (
     <div className="cw-developer-preview">
       {!entered ? <aside className="cw-developer-toolbar" aria-label="Developer preview controls">

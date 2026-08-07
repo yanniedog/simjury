@@ -11,6 +11,7 @@ async function downloadText(download: Download): Promise<string> {
 }
 
 async function openDesk(page: Page) {
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
@@ -28,6 +29,7 @@ test('blocked storage stays playable and exports private notes only by explicit 
   await page.goto('/')
   expect(await page.evaluate(() => typeof indexedDB)).toBe('undefined')
   await expect(page.getByRole('alert')).toContainText('Device storage is unavailable')
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await expect(page.getByRole('status')).toContainText('Progress is held in this tab')
@@ -74,6 +76,7 @@ test('quota failure is disclosed after a real gameplay write and play continues'
   }, PROGRESS_DATABASE.store)
   await page.goto('/')
   await expect(page.getByRole('alert')).toHaveCount(0)
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await expect(page.getByRole('alert')).toContainText('could not save progress')
   await page.getByRole('button', { name: 'Take your seat' }).click()

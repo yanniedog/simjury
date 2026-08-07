@@ -13,6 +13,7 @@ async function enterCourt(page: Page) {
     }
   })
   await page.goto('/')
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await expect(page.getByText('Monday', { exact: false }).first()).toBeVisible()
@@ -25,36 +26,30 @@ const viewports = [
   [1280, 800], [1366, 768], [1440, 900], [1920, 1080], [2560, 1440],
 ] as const
 
-test('mobile entry scrolls inside the locked application root', async ({ page }) => {
+test('first-time mobile entry keeps its primary path in the first viewport', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 })
+  await page.addInitScript((instant) => {
+    Date.now = () => instant
+    localStorage.removeItem('simjury:court-week:local-profile:v1')
+  }, releaseNow)
   await page.goto('/')
 
   const entry = page.locator('.cw-entry')
   const heading = page.getByRole('heading', { name: 'Eleven Minutes' })
   const takeSeat = page.getByRole('button', { name: 'Take your seat' })
-  const before = await entry.evaluate((element) => ({
-    clientHeight: element.clientHeight,
-    scrollHeight: element.scrollHeight,
-    viewportHeight: window.innerHeight,
-    overflowX: getComputedStyle(element).overflowX,
-    overflowY: getComputedStyle(element).overflowY,
+  const layout = await entry.evaluate((element) => ({
+    scrollWidth: element.scrollWidth,
+    clientWidth: element.clientWidth,
   }))
 
-  expect(before).toMatchObject({
-    overflowX: 'hidden',
-    overflowY: 'auto',
-  })
-  expect(before.clientHeight).toBe(before.viewportHeight)
-  expect(before.scrollHeight).toBeGreaterThan(before.clientHeight)
-  expect(await entry.evaluate((element) => element.scrollTop)).toBe(0)
+  expect(layout.scrollWidth).toBeLessThanOrEqual(layout.clientWidth + 1)
   await expect(heading).toBeInViewport()
-
-  await entry.hover()
-  await page.mouse.wheel(0, before.scrollHeight)
-  await expect.poll(() => entry.evaluate((element) => element.scrollTop)).toBeGreaterThan(0)
-  expect(await page.evaluate(() => window.scrollY)).toBe(0)
-  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1)
   await expect(takeSeat).toBeInViewport()
+  await expect(takeSeat).toBeDisabled()
+  await expect(page.getByText('Developer mode')).toBeHidden()
+  await page.getByLabel('I’m 18 or older and understand this case is fictional.').click()
+  await expect(takeSeat).toBeEnabled()
+  await expect(takeSeat).toBeFocused()
 })
 
 test('local developer mode remains reachable at a 200% compact-phone reflow', async ({ page }) => {
@@ -62,8 +57,10 @@ test('local developer mode remains reachable at a 200% compact-phone reflow', as
   await page.addInitScript(() => localStorage.removeItem('simjury:court-week:local-profile:v1'))
   await page.goto('/')
   const surface = page.locator('.cw-entry__panel')
-  await expect(page.getByRole('button', { name: 'Take your seat' })).toBeDisabled()
-  await page.getByLabel('I am 18 or older and understand this case is fictional.').check()
+  await expect(page.getByRole('status')).toContainText('Court opens Monday')
+  await page.getByLabel('I’m 18 or older and understand this case is fictional.').click()
+  await page.locator('.cw-entry__settings > summary').click()
+  await page.locator('.cw-local-profile > summary').click()
   await page.getByLabel('Developer mode').check()
   const submit = page.getByRole('button', { name: 'Open all-session preview' })
   await submit.scrollIntoViewIfNeeded()
@@ -82,6 +79,8 @@ test('local profile label controls stay inside their card at supported reflow wi
   for (const [width, height] of [[160, 284], [390, 844], [820, 1180], [1440, 900]] as const) {
     await page.setViewportSize({ width, height })
     await page.goto('/')
+    await page.locator('.cw-entry__settings > summary').click()
+    await page.locator('.cw-local-profile > summary').click()
 
     const containment = await page.locator('.cw-local-profile').evaluate((profile) => {
       const body = profile.querySelector<HTMLElement>('.cw-local-profile__body')
@@ -549,6 +548,7 @@ test('scene safe regions reflow caption lanes through phone, tablet, desktop and
     Object.defineProperty(window, 'Audio', { configurable: true, value: TestAudio })
   }, releaseNow)
   await page.goto('/')
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Audio and captions').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await page.evaluate(() => {
@@ -633,6 +633,7 @@ test('caption runtime uses line fit and collision-free fallback at reported view
   }, releaseNow)
   await page.setViewportSize({ width: 320, height: 568 })
   await page.goto('/')
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Audio and captions').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
 
@@ -688,6 +689,7 @@ test('short landscape reading mode preserves usable copy space', async ({ page, 
   await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
   await page.setViewportSize({ width: 568, height: 320 })
   await page.goto('/')
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await page.locator('.cw-shell').evaluate((shell) => shell.setAttribute('data-media-notice', 'true'))
@@ -780,6 +782,7 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
     }
   }), releaseNow)
   await page.goto('/')
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
 

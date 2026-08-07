@@ -125,6 +125,7 @@ test('caption assistive copy exposes the complete visible cue exactly once', asy
 
 test('reading mode announces each newly displayed legal cue exactly once', async ({ page }) => {
   await prepareCourt(page)
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
 
@@ -204,6 +205,7 @@ test('inspect-exhibit prompts keep admitted exhibits reachable inside the modal 
 test('labelled entry and desk controls retain a 44px effective touch target', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 })
   await prepareCourt(page)
+  await page.locator('.cw-entry__settings > summary').click()
 
   const undersized: Array<{ label: string; height: number }> = []
   for (const label of ['Audio first', 'Audio and captions', 'Reading mode', 'Ask to enter full screen']) {
@@ -231,6 +233,7 @@ test('labelled entry and desk controls retain a 44px effective touch target', as
 test('200% text enlargement keeps reading copy and every core control usable', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 })
   await prepareCourt(page)
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await page.addStyleTag({ content: 'html { font-size: 200% !important; }' })
@@ -250,6 +253,7 @@ test('Monday captions use only enumerated safe-layout and reading fallbacks', as
   test.skip(browserName !== 'chromium', 'Measured production-font geometry runs once; content limits run cross-engine in unit tests.')
   await page.setViewportSize({ width: 390, height: 844 })
   await prepareCourt(page)
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Audio and captions').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await page.evaluate(() => document.fonts.ready)
@@ -343,6 +347,7 @@ test('Tuesday captions use only enumerated safe-layout and reading fallbacks', a
   test.skip(browserName !== 'chromium', 'Measured production-font geometry runs once; content limits run cross-engine in unit tests.')
   await page.setViewportSize({ width: 390, height: 844 })
   await prepareCourt(page)
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Audio and captions').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await page.evaluate(() => document.fonts.ready)

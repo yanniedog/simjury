@@ -19,6 +19,12 @@ async function installDeterministicCourt(page: Page) {
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' })
   await page.addInitScript((instant) => {
     Date.now = () => instant
+    localStorage.setItem('simjury:court-week:local-profile:v1', JSON.stringify({
+      schemaVersion: 'simjury-local-profile-v1',
+      jurorLabel: 'Juror 01',
+      adultFictionAcknowledged: true,
+      developerMode: false,
+    }))
     class TestAudio extends EventTarget {
       src = ''
       currentTime = 0

@@ -78,6 +78,7 @@ test('production entry and first session stay inside the Android 4G budgets', as
   expect(vitals.cls, 'Cumulative Layout Shift').toBeLessThanOrEqual(budgets.cls)
   expect(firstVisibleBytes, 'first visible screen transfer').toBeLessThanOrEqual(budgets.firstVisibleBytes)
 
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   const startedAt = await page.evaluate(() => performance.now())
   await page.getByRole('button', { name: 'Take your seat' }).click()

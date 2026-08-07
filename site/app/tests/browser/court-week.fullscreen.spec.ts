@@ -135,6 +135,7 @@ async function readProgress(page: Page): Promise<ProgressPosition | null> {
 async function enterCourt(page: Page, mode: FullscreenMode, askForFullscreen: boolean) {
   await installFullscreenEnvironment(page, mode)
   await page.goto('/')
+  await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Audio and captions').check()
   const requestOption = page.getByLabel('Ask to enter full screen')
   if (mode === 'unsupported') await expect(requestOption).toHaveCount(0)

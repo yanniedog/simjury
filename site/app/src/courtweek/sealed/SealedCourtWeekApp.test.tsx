@@ -77,7 +77,7 @@ describe('SealedCourtWeekApp', () => {
     await act(async () => root.render(<SealedCourtWeekApp
       bootstrap={courtWeekBootstrap} packBase="/packs/" fetcher={fetcher}
     />))
-    await vi.waitFor(() => expect(container.textContent).toContain('Take your seat'))
+    await vi.waitFor(() => expect(container.textContent).toContain('Court opens Monday'))
     expect(container.querySelector('input[type="password"]')).toBeNull()
     const developerToggle = Array.from(container.querySelectorAll('label')).find(
       ({ textContent }) => textContent?.includes('Developer mode'),
@@ -137,10 +137,46 @@ describe('SealedCourtWeekApp', () => {
     const hydrate = vi.spyOn(loader, 'hydrateCourtPacks')
     history.replaceState(null, '', '/jury/#developer')
     await act(async () => root.render(<SealedCourtWeekApp bootstrap={courtWeekBootstrap} />))
-    await vi.waitFor(() => expect(container.textContent).toContain('Take your seat'))
+    await vi.waitFor(() => expect(container.textContent).toContain('Court opens Monday'))
     expect(container.querySelector('input[type="password"]')).toBeNull()
     expect(container.textContent).not.toContain('DEV PREVIEW')
     expect(hydrate).not.toHaveBeenCalled()
+  })
+
+  it('keeps the entry usable while today’s sealed session opens', async () => {
+    const now = Date.parse('2026-08-10T08:31:00+10:00')
+    const progress: StoredWeeklyProgress = {
+      schemaVersion: 'court-week-progress-v1',
+      courtWeekId: courtWeekBootstrap.id,
+      revision: courtWeekBootstrap.revision,
+      highestObservedTime: new Date(now).toISOString(),
+      completedSessionIds: [],
+      currentSessionId: courtWeekBootstrap.sessions[0].id,
+      notes: '',
+      reasoningContributions: [],
+      majorityDirectionReceived: false,
+    }
+    await saveWeeklyProgress(progress.courtWeekId, progress)
+    const mondayPack = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap)[0]
+    let finishLoading: ((packs: (typeof mondayPack)[]) => void) | undefined
+    vi.spyOn(loader, 'loadEligibleCourtPacks').mockImplementation(() => new Promise((resolve) => {
+      finishLoading = resolve
+    }))
+
+    await act(async () => root.render(<SealedCourtWeekApp
+      bootstrap={courtWeekBootstrap}
+      now={() => now}
+      packBase="/packs/"
+    />))
+    await vi.waitFor(() => expect(container.textContent).toContain('Opening today’s court session'))
+    expect(container.querySelector('main')?.getAttribute('aria-busy')).toBe('true')
+    expect(container.textContent).toContain('Eleven Minutes')
+    expect(container.textContent).toContain('Experience settings')
+    expect(container.textContent).not.toContain('Take your seat')
+
+    await act(async () => finishLoading?.([mondayPack]))
+    await vi.waitFor(() => expect(container.textContent).toContain('Take your seat'))
+    expect(container.querySelector('main')?.hasAttribute('aria-busy')).toBe(false)
   })
 
   it('opens Monday while the Saturday deliberation pack remains absent', async () => {
