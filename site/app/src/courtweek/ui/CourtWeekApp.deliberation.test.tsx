@@ -22,6 +22,16 @@ function clickButton(container: HTMLElement, label: string): void {
   button.click()
 }
 
+/**
+ * The reflection countdown measures monotonic wall time, never the injectable
+ * court clock, so a test that simulates a waiting juror must move both.
+ */
+function installWallClock(start = 1_000): { value: number } {
+  const wall = { value: start }
+  vi.spyOn(performance, 'now').mockImplementation(() => wall.value)
+  return wall
+}
+
 function chooseSelect(container: HTMLElement, label: string, value: string): void {
   const select = Array.from(container.querySelectorAll('label')).find(
     (candidate) => candidate.textContent?.includes(label),
@@ -48,6 +58,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
     container.remove()
     clearMemoryProgressForTests()
     vi.restoreAllMocks()
+    vi.useRealTimers()
   })
 
   it('observes a moving court clock without feeding progress updates back into rendering', async () => {
@@ -120,6 +131,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
     window.addEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
     let clock = Date.parse('2026-08-16T12:00:00+10:00')
     const now = () => clock
+    const wall = installWallClock()
 
     await act(async () => {
       root.render(<CourtWeekApp courtWeek={elevenMinutesCourtWeek} now={now} releaseBase="/media" />)
@@ -128,6 +140,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
     await act(async () => clickButton(container, 'Take your seat'))
     await act(async () => clickButton(container, 'Continue'))
     clock += 120_000
+    wall.value += 120_000
     await act(async () => window.dispatchEvent(new Event('focus')))
 
     expect(container.textContent).toContain('Rely on the accused’s silence')
@@ -208,6 +221,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
     }
     window.addEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
     let clock = Date.parse('2026-08-16T12:00:00+10:00')
+    const wall = installWallClock()
 
     await act(async () => {
       root.render(<CourtWeekApp courtWeek={elevenMinutesCourtWeek} now={() => clock} releaseBase="/media" />)
@@ -216,6 +230,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
     await act(async () => clickButton(container, 'Take your seat'))
     await act(async () => clickButton(container, 'Continue'))
     clock += 120_000
+    wall.value += 120_000
     await act(async () => window.dispatchEvent(new Event('focus')))
 
     expect(container.textContent).toContain('Continue without contributing')
@@ -259,6 +274,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
     }
     window.addEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
     let clock = Date.parse('2026-08-10T12:00:00+10:00')
+    const wall = installWallClock()
     const pause = vi.mocked(HTMLMediaElement.prototype.pause)
     let beginPlaying: (() => void) | undefined
     let finishPlaying: (() => void) | undefined
@@ -301,6 +317,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
     await act(async () => {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
       clock += 120_000
+      wall.value += 120_000
       window.dispatchEvent(new Event('focus'))
     })
     expect({ sceneId: latestProgress.currentSceneId, cueId: latestProgress.currentCueId }).toEqual(frozen)
@@ -309,8 +326,9 @@ describe('CourtWeekApp improper-argument interaction', () => {
     await act(async () => clickButton(container, 'Close'))
     expect(container.querySelector('.cw-interaction')).not.toBeNull()
 
-    const choice = container.querySelector<HTMLButtonElement>('.cw-choice-grid button')!
-    await act(async () => choice.click())
+    // A reflection prompt authors no options, so the only control is the
+    // primary action. A decoy "Continue" choice read as the way forward.
+    expect(container.querySelector('.cw-choice-grid')).toBeNull()
     await act(async () => clickButton(container, 'Continue proceedings'))
     expect(play).toHaveBeenCalledTimes(3)
     expect(latestProgress).toMatchObject({ currentSceneId: 'mon-oath', currentCueId: 'mon-oath' })
@@ -438,6 +456,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
     }
     window.addEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
     let clock = Date.parse('2026-08-16T12:00:00+10:00')
+    const wall = installWallClock()
 
     await act(async () => {
       root.render(<CourtWeekApp courtWeek={elevenMinutesCourtWeek} now={() => clock} releaseBase="/media" />)
@@ -446,6 +465,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
     await act(async () => clickButton(container, 'Take your seat'))
     await act(async () => clickButton(container, 'Continue'))
     clock += 140_000
+    wall.value += 140_000
     await act(async () => window.dispatchEvent(new Event('focus')))
     await act(async () => clickButton(container, 'Guilty of murder'))
     await act(async () => clickButton(container, 'Seal ballot'))
@@ -532,5 +552,68 @@ describe('CourtWeekApp improper-argument interaction', () => {
     )
     expect(primary).toBeTruthy()
     expect(primary?.disabled).toBe(false)
+  })
+
+  it('counts the reflection timer down on wall time even when the court clock is frozen', async () => {
+    const monday = elevenMinutesCourtWeek.manifest.sessions[0]
+    const arrival = monday?.scenes.find((scene) => scene.id === 'mon-arrival')
+    const lastCue = arrival?.cues.at(-1)
+    if (!monday || !arrival || !lastCue) throw new Error('Monday arrival fixtures are missing.')
+    const minimumSeconds = arrival.interaction?.minimumSeconds ?? 0
+    expect(minimumSeconds).toBeGreaterThan(0)
+
+    // A frozen court clock must not pin the countdown: this is the live-site
+    // regression where "Continue in 118s" never moved and no juror could pass.
+    const frozenCourtNow = Date.parse('2026-08-17T09:00:00+10:00')
+    const wall = installWallClock()
+    vi.useFakeTimers()
+    const passSeconds = async (seconds: number) => {
+      wall.value += seconds * 1000
+      await act(async () => { await vi.advanceTimersByTimeAsync(seconds * 1000) })
+    }
+
+    const startedProgress: StoredWeeklyProgress = {
+      schemaVersion: 'court-week-progress-v1',
+      courtWeekId: elevenMinutesCourtWeek.manifest.id,
+      revision: elevenMinutesCourtWeek.manifest.revision,
+      highestObservedTime: new Date(frozenCourtNow).toISOString(),
+      completedSessionIds: [],
+      currentSessionId: monday.id,
+      currentSceneId: arrival.id,
+      currentCueId: lastCue.id,
+      notes: '',
+      reasoningContributions: [],
+      accessibilityMode: 'reading',
+      majorityDirectionReceived: false,
+      openCourtVerdictReturned: false,
+    }
+
+    await act(async () => {
+      root.render(
+        <CourtWeekApp
+          courtWeek={elevenMinutesCourtWeek}
+          now={() => frozenCourtNow}
+          releaseBase="/media"
+          initialProgressOverride={startedProgress}
+        />,
+      )
+      await Promise.resolve()
+    })
+    await act(async () => clickButton(container, 'Take your seat'))
+    await act(async () => clickButton(container, 'Continue'))
+
+    const primaryButton = () => Array.from(container.querySelectorAll<HTMLButtonElement>('button.cw-primary'))[0]
+    expect(primaryButton().textContent?.trim()).toBe(`Continue in ${minimumSeconds}s`)
+    expect(primaryButton().disabled).toBe(true)
+
+    // An options-less interaction must not render a second, inert "Continue".
+    expect(container.querySelector('.cw-choice-grid')).toBeNull()
+
+    await passSeconds(30)
+    expect(primaryButton().textContent?.trim()).toBe(`Continue in ${minimumSeconds - 30}s`)
+
+    await passSeconds(minimumSeconds)
+    expect(primaryButton().textContent?.trim()).toBe('Continue proceedings')
+    expect(primaryButton().disabled).toBe(false)
   })
 })

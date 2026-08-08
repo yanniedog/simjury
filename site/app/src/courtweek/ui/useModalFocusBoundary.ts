@@ -25,6 +25,21 @@ function availableControls(root: HTMLElement): HTMLElement[] {
     .filter((element) => isAvailable(element, root))
 }
 
+/**
+ * Resolves a comma-separated fallback list in the caller's order of preference.
+ * `querySelector` with one grouped selector answers in document order instead,
+ * which returned focus to the first playback control rather than the named
+ * advance control after a mandatory dialog closed.
+ */
+function firstMatch(selectorList?: string): HTMLElement | null {
+  if (!selectorList) return null
+  for (const selector of selectorList.split(',')) {
+    const candidate = document.querySelector<HTMLElement>(selector.trim())
+    if (candidate) return candidate
+  }
+  return null
+}
+
 /** Keeps a mandatory modal's keyboard focus inside it without making Escape an exit. */
 export function useModalFocusBoundary(
   rootRef: RefObject<HTMLElement>,
@@ -70,9 +85,7 @@ export function useModalFocusBoundary(
         if (root.isConnected) return
         const target = returnFocusTo?.isConnected
           ? returnFocusTo
-          : fallbackReturnFocusSelector
-            ? document.querySelector<HTMLElement>(fallbackReturnFocusSelector)
-            : null
+          : firstMatch(fallbackReturnFocusSelector)
         target?.focus()
       })
     }

@@ -321,6 +321,22 @@ function MandatoryInteractionDialog({
   )
 }
 
+/**
+ * Elapsed time for the reflection countdown.
+ *
+ * This must never read the injected court clock. `now` is a *court date*
+ * source and callers are allowed to freeze it (developer preview pins it to a
+ * fixed session date), which pinned elapsed at 0, left "Continue in Ns"
+ * counting down from N forever and made the interaction unpassable. A
+ * monotonic wall clock keeps the countdown honest and is immune to a frozen,
+ * mocked or user-adjusted system clock.
+ */
+const elapsedNow = (): number => (
+  typeof performance !== 'undefined' && typeof performance.now === 'function'
+    ? performance.now()
+    : Date.now()
+)
+
 export function CourtWeekApp({
   courtWeek,
   now = Date.now,
@@ -483,7 +499,7 @@ export function CourtWeekApp({
         document.activeElement instanceof HTMLElement ? document.activeElement : null
       )
       setInteractionOpen(true)
-      setInteractionOpenedAt(now())
+      setInteractionOpenedAt(elapsedNow())
       return
     }
     const nextScene = activeSession.scenes[position.sceneIndex + 1]
@@ -518,7 +534,7 @@ export function CourtWeekApp({
     setInteractionOpenedAt(null)
     setInteractionChoice(null)
     setInteractionSealed(false)
-  }, [accessMode, activeSession, commitPosition, courtWeek.manifest.sessions, deskOpen, interactionOpen, isReplay, now, position, progress.completedSessionIds, updateProgress])
+  }, [accessMode, activeSession, commitPosition, courtWeek.manifest.sessions, deskOpen, interactionOpen, isReplay, position, progress.completedSessionIds, updateProgress])
   const handleCueEnded = useCallback(() => {
     advance()
   }, [advance])
@@ -641,7 +657,7 @@ export function CourtWeekApp({
   )
   const ballotSealed = interactionSealed || persistedBallotSealed
   const interactionElapsedSeconds = interactionOpen && interactionOpenedAt != null
-    ? Math.max(0, (now() - interactionOpenedAt) / 1000)
+    ? Math.max(0, (elapsedNow() - interactionOpenedAt) / 1000)
     : 0
   // Developer/all-session preview is ephemeral: do not park Continue behind
   // the live 15–360s reflection timers while unlocking the whole case.
@@ -1033,15 +1049,15 @@ export function CourtWeekApp({
               </div>
             ) : null}
           </div>
-        ) : (
+        ) : interaction.options?.length ? (
           <div className="cw-choice-grid">
-            {(interaction.options ?? ['Continue']).map((option) => (
+            {interaction.options.map((option) => (
               <button key={option} type="button" aria-pressed={interactionChoice === option} onClick={() => setInteractionChoice(option)}>
                 {option}
               </button>
             ))}
           </div>
-        )}
+        ) : null}
         {firstBallot ? (
           <dl className="cw-ballot" aria-label="Anonymous first ballot">
             {(Object.entries(firstBallot) as [Verdict, number][]).map(([verdict, count]) => (

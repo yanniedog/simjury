@@ -3,7 +3,10 @@ import { elevenMinutesCourtWeek } from '../../src/courtweek/content/elevenMinute
 
 const baseURL = 'http://127.0.0.1:43127'
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
-const firstMandatoryCueId = elevenMinutesCourtWeek.manifest.sessions[0]?.scenes[0]?.cues.at(-1)?.id
+// Reading mode steps by authored utterance, so the mandatory boundary freezes
+// on the utterance that owns the closing caption fragment, not the fragment.
+const lastArrivalCue = elevenMinutesCourtWeek.manifest.sessions[0]?.scenes[0]?.cues.at(-1)
+const firstMandatoryCueId = lastArrivalCue?.sourceCueId ?? lastArrivalCue?.id
 
 if (!firstMandatoryCueId) throw new Error('The first mandatory scene must contain at least one cue.')
 
@@ -312,8 +315,12 @@ test('mandatory contribution dialogs take and contain focus before returning it 
 
   const dialog = page.getByRole('dialog', { name: /Settle into the jury viewpoint/i })
   await expect(dialog).toBeVisible()
-  const choice = dialog.getByRole('button', { name: 'Continue', exact: true })
-  await expect(choice).toBeFocused()
+  // A reflection prompt authors no options, so the countdown leaves no
+  // available control and the labelled dialog itself holds focus. The former
+  // decoy "Continue" choice took focus and read as the way forward while
+  // advancing nothing.
+  await expect(dialog).toBeFocused()
+  await expect(dialog.locator('.cw-choice-grid')).toHaveCount(0)
   await expect(page.locator('.cw-stage')).toHaveAttribute('inert', '')
   await expect(page.locator('.cw-stage')).toHaveAttribute('aria-hidden', 'true')
 
@@ -335,14 +342,14 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   expect(mandatoryPosition).toMatchObject({ currentCueId: firstMandatoryCueId })
   await page.keyboard.press('Escape')
   await expect(dialog).toBeVisible()
-  await expect(choice).toBeFocused()
+  await expect(dialog).toBeFocused()
   await expect.poll(() => readProgressPosition(page)).toEqual(mandatoryPosition)
   await expect(liveCue).toHaveText(frozenCue)
 
   await page.keyboard.press('Tab')
-  await expect(choice).toBeFocused()
+  await expect(dialog).toBeFocused()
   await page.keyboard.press('Shift+Tab')
-  await expect(choice).toBeFocused()
+  await expect(dialog).toBeFocused()
   await expect(page.locator('.cw-controls button:focus')).toHaveCount(0)
 
   await page.clock.fastForward(120_000)
