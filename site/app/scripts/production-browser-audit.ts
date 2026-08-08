@@ -39,15 +39,24 @@ type Journey = { profile: string; run: number; status: 'PASS' | 'FAIL' | 'BLOCKE
 
 const findings: Finding[] = []
 const journeys: Journey[] = []
+// Findings land in whichever sink is active. A journey attempt owns its own
+// sink so an attempt discarded as deployment skew leaves nothing behind.
+// Journeys are awaited one at a time, so a single active sink is unambiguous.
+let sink: Finding[] = findings
 const add = (severity: Severity, category: string, profileName: string, message: string) => {
-  if (!findings.some((item) => item.severity === severity && item.category === category && item.profile === profileName && item.message === message)) {
-    findings.push({ severity, category, profile: profileName, message })
+  if (!sink.some((item) => item.severity === severity && item.category === category && item.profile === profileName && item.message === message)) {
+    sink.push({ severity, category, profile: profileName, message })
   }
 }
 const safeUrl = (value: string) => {
   const url = new URL(value)
   return `${url.origin}${url.pathname}`
 }
+// Every hashed asset under /jury/assets/ ships in the same build as the shell
+// that references it, so inside one deployment such a request cannot miss. A
+// miss means the browser was handed one deployment's shell while the edge
+// answered from another's asset manifest.
+const isBuildAsset = (value: string) => new URL(value).pathname.startsWith('/jury/assets/')
 const isClarityCollect = (value: string) => {
   const url = new URL(value)
   return url.protocol === 'https:' && url.hostname.endsWith('.clarity.ms') && url.pathname === '/collect'
@@ -142,10 +151,15 @@ async function inspectLayout(page: Page, profileName: string, scope = '') {
   return layout
 }
 
-async function runJourney(profileInfo: typeof profiles[number], run: number) {
+type Attempt = { journey: Journey; findings: Finding[]; assetMisses: string[] }
+
+async function attemptJourney(profileInfo: typeof profiles[number], run: number): Promise<Attempt> {
   const id = `${profileInfo.name}-${run}`
   const actions: Action[] = []
   const sessions: string[] = []
+  const attemptFindings: Finding[] = []
+  const assetMisses = new Set<string>()
+  sink = attemptFindings
   let clarityCollects = 0
   const browser = await chromium.launch({ headless: true })
   const context = await browser.newContext({
@@ -180,6 +194,7 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
     const reason = request.failure()?.errorText ?? 'unknown'
     const url = new URL(request.url())
     if (reason.includes('ERR_ABORTED') && url.hostname === 'release-assets.githubusercontent.com') return
+    if (isBuildAsset(request.url())) assetMisses.add(safeUrl(request.url()))
     add('high', 'network', id, `${request.method()} ${safeUrl(request.url())} failed: ${reason}`)
   })
   page.on('request', (request) => {
@@ -190,15 +205,17 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
     if (!['GET', 'HEAD'].includes(request.method())) add('high', 'network', id, `Unexpected ${request.method()} request to ${safeUrl(request.url())}`)
   })
   page.on('response', (response) => {
-    if (response.status() >= 400) add('high', 'network', id, `${response.status()} ${safeUrl(response.url())}`)
+    if (response.status() < 400) return
+    if (isBuildAsset(response.url())) assetMisses.add(safeUrl(response.url()))
+    add('high', 'network', id, `${response.status()} ${safeUrl(response.url())}`)
   })
 
+  const finish = (journey: Journey): Attempt => ({ journey, findings: attemptFindings, assetMisses: [...assetMisses] })
   try {
     const response = await gotoPublicPage(page, id)
     const challenged = response?.headers()['cf-mitigated'] === 'challenge' || await page.locator('#challenge-running, .cf-challenge').count() > 0
     if (challenged) {
-      journeys.push({ profile: profileInfo.name, run, status: 'BLOCKED', sessions, actions, clarityCollects })
-      return
+      return finish({ profile: profileInfo.name, run, status: 'BLOCKED', sessions, actions, clarityCollects })
     }
     await page.getByRole('heading', { name: 'Eleven Minutes' }).waitFor({ state: 'visible', timeout: 15_000 })
     const navigation = await page.evaluate(() => performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)
@@ -278,15 +295,47 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
     actions.filter((action) => action.blocked).forEach((action) => add('high', 'click-blocker', id, `${action.label} was obscured at its centre point.`))
     actions.filter((action) => action.initiallyClipped).forEach((action) => add('high', 'layout', id, `${action.label} required synthetic scrolling because it began outside the viewport.`))
     actions.filter((action) => action.milliseconds > 1_000).forEach((action) => add('high', 'performance', id, `${action.label} took ${action.milliseconds}ms.`))
-    journeys.push({ profile: profileInfo.name, run, status: findings.some((item) => item.profile === id && item.severity === 'high') ? 'FAIL' : 'PASS', sessions, actions,
+    return finish({ profile: profileInfo.name, run, status: attemptFindings.some((item) => item.profile === id && item.severity === 'high') ? 'FAIL' : 'PASS', sessions, actions,
       clarityCollects,
       metrics: { ttfbMs: navigation.responseStart, lcpMs: vital.lcp, cls: vital.cls, entryBytes, overflowPx: layout.overflow, smallTargets: layout.small.length, clippedTargets: layout.clipped.length } })
   } catch (error) {
     add('high', 'journey', id, error instanceof Error ? error.message : String(error))
-    journeys.push({ profile: profileInfo.name, run, status: 'FAIL', sessions, actions, clarityCollects })
+    return finish({ profile: profileInfo.name, run, status: 'FAIL', sessions, actions, clarityCollects })
   } finally {
     await context.close()
     await browser.close()
+    sink = findings
+  }
+}
+
+function commitAttempt(attempt: Attempt) {
+  attempt.findings.forEach((item) => add(item.severity, item.category, item.profile, item.message))
+  journeys.push(attempt.journey)
+}
+
+async function runJourney(profileInfo: typeof profiles[number], run: number) {
+  const id = `${profileInfo.name}-${run}`
+  const first = await attemptJourney(profileInfo, run)
+  if (first.assetMisses.length === 0) {
+    commitAttempt(first)
+    return
+  }
+  // A hashed asset went missing, so this attempt straddled two deployments:
+  // Cloudflare Static Assets served a shell whose chunks the current manifest
+  // no longer carries. Skew does not survive a fresh navigation, a genuinely
+  // broken reference does — so re-run once and keep the second attempt either
+  // way. A repeat miss stays a HIGH finding.
+  await new Promise((resolve) => setTimeout(resolve, 5_000))
+  const second = await attemptJourney(profileInfo, run)
+  commitAttempt(second)
+  if (second.assetMisses.length === 0) {
+    // The discarded attempt is dropped whole rather than filtered, because
+    // every finding in it describes a build that is no longer deployed;
+    // merging any of them into this profile's result would attribute one
+    // build's behaviour to another. Name what was dropped so the superseded
+    // shell still leaves a trace an operator can follow.
+    const discarded = [...new Set(first.findings.filter((item) => item.severity === 'high').map((item) => item.category))]
+    add('low', 'deployment-identity', id, `A superseded shell was served on the first attempt: ${first.assetMisses.join(', ')} was absent from the deployment the edge answered from. That attempt was discarded whole and the retry ran against one coherent deployment. HIGH categories seen against the superseded shell: ${discarded.join(', ') || 'none'}.`)
   }
 }
 
