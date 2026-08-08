@@ -243,7 +243,6 @@ describe('SealedCourtWeekApp', () => {
     expect(loadEligiblePacks).toHaveBeenCalledTimes(1)
 
     await act(async () => finishLoading?.([mondayPack]))
-    await leaveDeveloperPreview()
     await vi.waitFor(() => expect(container.textContent).toContain('Take your seat'))
     expect(container.querySelector('main')?.hasAttribute('aria-busy')).toBe(false)
     expect(loadEligiblePacks).toHaveBeenCalledTimes(1)

@@ -413,7 +413,16 @@ function DeveloperPreview({
       </div>
     </div></main>
   }
-  if (!courtWeek || !previewProgress) return <main className="cw-loading" aria-busy="true"><p role="status">Opening developer preview…</p></main>
+  if (!courtWeek || !previewProgress) {
+    return (
+      <main className="cw-loading" aria-busy="true">
+        <p role="status">Opening developer preview…</p>
+        <div className="cw-button-row">
+          <button type="button" onClick={onLeave}>Leave preview</button>
+        </div>
+      </main>
+    )
+  }
   return (
     <div className="cw-developer-preview" data-entered={entered ? 'true' : 'false'}>
       <aside className="cw-developer-toolbar" aria-label="Developer preview controls">
