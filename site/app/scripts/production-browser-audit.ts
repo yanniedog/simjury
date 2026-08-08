@@ -13,9 +13,14 @@ if (expectedDeploymentSha && !/^[0-9a-f]{40}$/u.test(expectedDeploymentSha)) {
 const output = join(process.cwd(), 'test-results', 'production-audit')
 const audioStartTimeoutMs = 15_000
 const controlTimeoutMs = 5_000
+// Seed the state a returning browser holds before the adult gate: developer
+// mode on, acknowledgement still pending. The audit then walks the same
+// progressive entry a visitor walks, and acknowledging the gate carries the
+// temporary all-session preview default into DEV PREVIEW, which is how the
+// audit reaches sessions beyond the one the live schedule has opened.
 const profile = JSON.stringify({
   schemaVersion: 'simjury-local-profile-v1', jurorLabel: 'Synthetic QA',
-  adultFictionAcknowledged: true, developerMode: true,
+  adultFictionAcknowledged: false, developerMode: true,
 })
 const profiles = [
   { name: 'small-phone', width: 320, height: 568, mobile: true, allSessions: false },
@@ -200,9 +205,12 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
     const entryBytes = await page.evaluate(() => performance.getEntriesByType('resource').reduce(
       (sum, entry) => sum + (entry as PerformanceResourceTiming).transferSize, 0,
     ))
-    await pointerClick(page, page.locator('.cw-entry__settings > summary'), 'Open experience settings', actions)
-    await pointerClick(page, page.locator('.cw-local-profile > summary'), 'Open local profile', actions)
-    await pointerClick(page, page.getByRole('button', { name: 'Open all-session preview' }), 'Open developer preview', actions)
+    // The adult gate is the first control on the entry page, and under the
+    // temporary preview default acknowledging it opens all-session preview
+    // directly — no settings or local-profile detour. When that default is
+    // reverted, restore the explicit `Open all-session preview` path here.
+    await pointerClick(page, page.getByRole('checkbox', { name: /18 or older/u }), 'Acknowledge the adult gate', actions)
+    await page.getByRole('complementary', { name: 'Developer preview controls' }).waitFor({ state: 'visible', timeout: 20_000 })
     await page.getByRole('heading', { name: 'Eleven Minutes' }).waitFor({ state: 'visible', timeout: 20_000 })
 
     const ordinals = profileInfo.allSessions ? [1, 2, 3, 4, 5, 6, 7] : [1]
