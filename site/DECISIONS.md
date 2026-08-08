@@ -63,8 +63,9 @@ decision is [`../COURT-WEEK.md`](../COURT-WEEK.md). Legacy `/today`, `/play` and
   [Static Assets billing terms](https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/)
   before changing this boundary.
 - Progress, private notes and ballots live in IndexedDB. The small local profile
-  (juror label, adult-fiction acknowledgement and default-off Developer mode)
-  lives in validated localStorage. It is not an account and is never transmitted.
+  (juror label, adult-fiction acknowledgement and temporarily default-on
+  Developer mode for pre-release unlock) lives in validated localStorage. It is
+  not an account and is never transmitted.
   A versioned local export/import file is the only cross-device transfer mechanism.
 - Old Daily Docket local-storage records remain untouched but are never read.
 

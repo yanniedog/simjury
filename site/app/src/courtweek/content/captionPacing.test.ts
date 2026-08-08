@@ -2,7 +2,11 @@ import { createHash } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import { buildCourtWeekAudioJobs, splitCueUtterances } from '../../../scripts/court-week-audio-jobs'
 import { elevenMinutesCourtWeek } from './elevenMinutes'
-import { CAPTION_CUE_CHARACTER_LIMIT } from './captionPacing'
+import {
+  CAPTION_CUE_CHARACTER_LIMIT,
+  joinAuthoredCueText,
+  nextAuthoredCue,
+} from './captionPacing'
 import { estimateSessionSeconds } from '../model/validation'
 
 const monday = elevenMinutesCourtWeek.manifest.sessions[0]
@@ -20,6 +24,17 @@ const sourceGroups = mondayCues.reduce<Array<{ id: string; text: string; cues: t
 }, [])
 
 describe('Monday caption pacing', () => {
+  it('rejoins caption fragments and advances by authored utterance for reading mode', () => {
+    const first = mondayCues[0]
+    const joined = joinAuthoredCueText(mondayCues, first)
+    expect(joined.startsWith('Members of the jury panel')).toBe(true)
+    expect(joined).toContain('one running this simulation')
+    expect(joined.length).toBeGreaterThan(CAPTION_CUE_CHARACTER_LIMIT)
+    const next = nextAuthoredCue(mondayCues, 0)
+    expect(next?.id).toBe('mon-arrival-2')
+    expect(nextAuthoredCue(mondayCues, mondayCues.length - 1)).toBeUndefined()
+  })
+
   it('preserves every authored word, event and legal annotation in source order', () => {
     const digest = createHash('sha256')
       .update(JSON.stringify(sourceGroups.map(({ id, text }) => [id, text])))
@@ -78,5 +93,17 @@ describe('Monday caption pacing', () => {
     expect(splitCueUtterances(mixedContinuation).map((cue) => cue.speaker)).toEqual([
       'Defence counsel Corin Dax', 'Nella Orr',
     ])
+
+    const pleaAnswer = mondayCues.find((cue) => cue.id === 'mon-plea--caption-4')!
+    const pleaTail = mondayCues.find((cue) => cue.id === 'mon-plea--caption-5')!
+    expect(pleaAnswer).toMatchObject({
+      speaker: 'Clerk',
+      text: 'The accused answers: Not Guilty. That plea',
+    })
+    expect(pleaTail).toMatchObject({
+      speaker: 'Clerk',
+      text: 'denies every element the Crown must prove.',
+    })
+    expect(splitCueUtterances(pleaTail).map((cue) => cue.speaker)).toEqual(['Clerk'])
   })
 })

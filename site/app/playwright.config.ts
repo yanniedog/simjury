@@ -4,6 +4,9 @@ const acknowledgedProfile = JSON.stringify({
   schemaVersion: 'simjury-local-profile-v1',
   jurorLabel: 'Juror 01',
   adultFictionAcknowledged: true,
+  // Browser matrix exercises the public schedule path. Preview-default product
+  // behavior is covered by dedicated DEV PREVIEW specs that opt in explicitly.
+  // loadLocalProfile skips the temporary false→true migration under webdriver.
   developerMode: false,
 })
 

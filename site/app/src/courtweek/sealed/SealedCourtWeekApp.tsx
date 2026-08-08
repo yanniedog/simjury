@@ -413,23 +413,35 @@ function DeveloperPreview({
       </div>
     </div></main>
   }
-  if (!courtWeek || !previewProgress) return <main className="cw-loading" aria-busy="true"><p role="status">Opening developer preview…</p></main>
+  if (!courtWeek || !previewProgress) {
+    return (
+      <main className="cw-loading" aria-busy="true">
+        <p role="status">Opening developer preview…</p>
+        <div className="cw-button-row">
+          <button type="button" onClick={onLeave}>Leave preview</button>
+        </div>
+      </main>
+    )
+  }
   return (
-    <div className="cw-developer-preview">
-      {!entered ? <aside className="cw-developer-toolbar" aria-label="Developer preview controls">
+    <div className="cw-developer-preview" data-entered={entered ? 'true' : 'false'}>
+      <aside className="cw-developer-toolbar" aria-label="Developer preview controls">
         <strong>DEV PREVIEW</strong>
         <label htmlFor="cw-developer-day">Session</label>
         <select
           ref={sessionSelector}
           id="cw-developer-day"
           value={selectedOrdinal}
-          onChange={(event) => setSelectedOrdinal(Number(event.target.value))}
+          onChange={(event) => {
+            setSelectedOrdinal(Number(event.target.value))
+            setEntered(false)
+          }}
         >
           {bootstrap.sessions.map(({ day, ordinal }) => <option key={ordinal} value={ordinal}>{day}</option>)}
         </select>
         <span role="status">Saved juror progress is untouched. Preview changes are discarded.</span>
         <button type="button" onClick={onLeave}>Leave preview</button>
-      </aside> : null}
+      </aside>
       <CourtWeekApp
         key={selectedOrdinal}
         courtWeek={courtWeek}
@@ -450,17 +462,44 @@ function DeveloperPreview({
   )
 }
 
+function shouldOpenAllSessionPreview(profile: LocalProfileInput | LocalProfileResult['profile']): boolean {
+  return profile.adultFictionAcknowledged === true && profile.developerMode === true
+}
+
 export function SealedCourtWeekApp(props: SealedCourtWeekAppProps) {
-  const [developerMode, setDeveloperMode] = useState<'preview' | 'standard'>('standard')
-  const [focusPublicEntry, setFocusPublicEntry] = useState(false)
   const [localProfile, setLocalProfile] = useState<LocalProfileResult>(loadLocalProfile)
+  const leftPreviewRef = useRef(false)
+  const localProfileRef = useRef(localProfile)
+  localProfileRef.current = localProfile
+  const [developerMode, setDeveloperMode] = useState<'preview' | 'standard'>(() => (
+    shouldOpenAllSessionPreview(loadLocalProfile().profile) ? 'preview' : 'standard'
+  ))
+  const [focusPublicEntry, setFocusPublicEntry] = useState(false)
   const changeLocalProfile = useCallback((profile: LocalProfileInput) => {
-    setLocalProfile(saveLocalProfile(profile))
+    const previous = localProfileRef.current.profile
+    const next = saveLocalProfile(profile)
+    setLocalProfile(next)
+    // Temporary default path: once the adult gate and developer mode are both
+    // on, enter all-session preview automatically. Leaving preview opts out
+    // until the user opens it again explicitly.
+    if (
+      !leftPreviewRef.current
+      && shouldOpenAllSessionPreview(next.profile)
+      && !shouldOpenAllSessionPreview(previous)
+    ) {
+      setFocusPublicEntry(false)
+      setDeveloperMode('preview')
+    }
   }, [])
-  const clearLocalProfile = useCallback(() => setLocalProfile(resetLocalProfile()), [])
+  const clearLocalProfile = useCallback(() => {
+    leftPreviewRef.current = false
+    setLocalProfile(resetLocalProfile())
+    setDeveloperMode('standard')
+  }, [])
   const packBase = props.packBase ?? `${import.meta.env.BASE_URL}court-week/packs/`
   if (developerMode === 'preview') {
     return <DeveloperPreview {...props} packBase={packBase} onLeave={() => {
+      leftPreviewRef.current = true
       setFocusPublicEntry(true)
       setDeveloperMode('standard')
     }} />
@@ -474,7 +513,8 @@ export function SealedCourtWeekApp(props: SealedCourtWeekAppProps) {
       onChange: changeLocalProfile,
       onReset: clearLocalProfile,
       onOpenDeveloperPreview: () => {
-        if (!localProfile.profile.adultFictionAcknowledged || !localProfile.profile.developerMode) return
+        if (!shouldOpenAllSessionPreview(localProfile.profile)) return
+        leftPreviewRef.current = false
         setFocusPublicEntry(false)
         setDeveloperMode('preview')
       },

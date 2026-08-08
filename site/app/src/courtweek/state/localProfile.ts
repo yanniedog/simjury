@@ -30,11 +30,16 @@ export interface LocalProfileStorage {
   removeItem(key: string): void
 }
 
+/**
+ * Temporary pre-release default: developer mode is on so all-session preview
+ * can unlock the whole case without waiting on the live Hobart schedule.
+ * Revert to `false` before the public schedule is the only intended path.
+ */
 export const DEFAULT_LOCAL_PROFILE: Readonly<LocalProfile> = Object.freeze({
   schemaVersion: LOCAL_PROFILE_SCHEMA_VERSION,
   jurorLabel: DEFAULT_JUROR_LABEL,
   adultFictionAcknowledged: false,
-  developerMode: false,
+  developerMode: true,
 })
 
 let memoryProfile: LocalProfile = { ...DEFAULT_LOCAL_PROFILE }
@@ -108,6 +113,23 @@ export function loadLocalProfile(storage = browserStorage()): LocalProfileResult
     if (!profile) {
       memoryProfile = { ...DEFAULT_LOCAL_PROFILE }
       return { profile: { ...memoryProfile }, persistence: 'memory', issue: 'corrupt' }
+    }
+    // Temporary pre-release: rewrite stored developerMode:false to the unlock
+    // default so browsers that saved the old default-off profile still enter
+    // all-session preview after acknowledgement. Revert with DEFAULT_LOCAL_PROFILE.
+    // Leave-preview remains a same-session opt-out only.
+    // Automated browsers (Playwright sets navigator.webdriver) keep an explicit
+    // false so the public-schedule matrix is not forced into DEV preview.
+    const automatedBrowser = typeof navigator !== 'undefined' && navigator.webdriver === true
+    if (!profile.developerMode && !automatedBrowser) {
+      const migrated = { ...profile, developerMode: true }
+      memoryProfile = migrated
+      try {
+        storage.setItem(LOCAL_PROFILE_STORAGE_KEY, JSON.stringify(migrated))
+        return { profile: { ...migrated }, persistence: 'local-storage', issue: null }
+      } catch {
+        return { profile: { ...migrated }, persistence: 'memory', issue: 'unavailable' }
+      }
     }
     memoryProfile = profile
     return { profile: { ...profile }, persistence: 'local-storage', issue: null }

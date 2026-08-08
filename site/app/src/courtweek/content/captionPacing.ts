@@ -29,7 +29,9 @@ function rebalanceShortTail(parts: string[]): string[] {
  * single authored utterance.
  */
 export function paceCueForCaptions(cue: SceneCue): SceneCue[] {
-  if (cue.text.length <= CAPTION_CUE_CHARACTER_LIMIT) return [cue]
+  if (cue.text.length <= CAPTION_CUE_CHARACTER_LIMIT) {
+    return [{ ...cue, sourceCueId: cue.sourceCueId ?? cue.id }]
+  }
   const words = cue.text.trim().split(/\s+/u)
   const parts: string[] = []
   let start = 0
@@ -72,4 +74,38 @@ export function paceCueForCaptions(cue: SceneCue): SceneCue[] {
       text,
     }
   })
+}
+
+/** Caption fragments share one authored utterance id via sourceCueId. */
+export function authoredCueSourceId(cue: Pick<SceneCue, 'id' | 'sourceCueId'>): string {
+  return cue.sourceCueId ?? cue.id
+}
+
+/** Reconstruct the full authored utterance for reading mode. */
+export function joinAuthoredCueText(cues: SceneCue[], cue: SceneCue): string {
+  const sourceId = authoredCueSourceId(cue)
+  return cues
+    .filter((candidate) => authoredCueSourceId(candidate) === sourceId)
+    .map((candidate) => candidate.text)
+    .join(' ')
+}
+
+/**
+ * Advance past every caption fragment of the current authored utterance.
+ * Audio/caption modes still step fragment-by-fragment via nextReplaySafeCue.
+ */
+export function nextAuthoredCue(
+  cues: SceneCue[],
+  currentIndex: number,
+  skip: (cue: SceneCue) => boolean = () => false,
+): SceneCue | undefined {
+  const current = cues[currentIndex]
+  if (!current) return undefined
+  const currentSource = authoredCueSourceId(current)
+  for (let index = currentIndex + 1; index < cues.length; index += 1) {
+    const candidate = cues[index]!
+    if (skip(candidate)) continue
+    if (authoredCueSourceId(candidate) !== currentSource) return candidate
+  }
+  return undefined
 }

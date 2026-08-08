@@ -13,6 +13,11 @@ async function enterCourt(page: Page) {
     }
   })
   await page.goto('/')
+  // Temporary default auto-enters all-session preview; leave so playthroughs use the public schedule.
+  const leavePreview = page.getByRole('button', { name: 'Leave preview' })
+  if (await leavePreview.isVisible().catch(() => false)) {
+    await leavePreview.click()
+  }
   await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
@@ -48,23 +53,52 @@ test('first-time mobile entry keeps its primary path in the first viewport', asy
   await expect(takeSeat).toBeDisabled()
   await expect(page.getByText('Developer mode')).toBeHidden()
   await page.getByLabel('I’m 18 or older and understand this case is fictional.').click()
-  await expect(takeSeat).toBeEnabled()
-  await expect(takeSeat).toBeFocused()
+  // Temporary default: acknowledgement with developer mode on opens all-session preview.
+  await expect(page.getByText('DEV PREVIEW')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Take your seat' })).toBeEnabled()
+})
+
+test('developer toolbar keeps session jump and leave reachable at 320px', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 })
+  await page.addInitScript(() => {
+    localStorage.setItem('simjury:court-week:local-profile:v1', JSON.stringify({
+      schemaVersion: 'simjury-local-profile-v1',
+      jurorLabel: 'Juror 01',
+      adultFictionAcknowledged: true,
+      developerMode: true,
+    }))
+  })
+  await page.goto('/')
+  await expect(page.getByText('DEV PREVIEW')).toBeVisible()
+  const session = page.locator('#cw-developer-day')
+  const leave = page.getByRole('button', { name: 'Leave preview' })
+  await expect(session).toBeInViewport()
+  await expect(leave).toBeInViewport()
+  await session.selectOption('2')
+  await expect(session).toHaveValue('2')
+  await leave.click()
+  await expect(page.getByText('DEV PREVIEW')).toHaveCount(0)
+  await expect(page.getByRole('status')).toContainText('Court opens Monday')
 })
 
 test('local developer mode remains reachable at a 200% compact-phone reflow', async ({ page }) => {
   await page.setViewportSize({ width: 160, height: 284 })
-  await page.addInitScript((instant) => {
-    Date.now = () => instant
-    localStorage.removeItem('simjury:court-week:local-profile:v1')
-  }, Date.parse('2026-08-07T09:00:00+10:00'))
+  await page.addInitScript(() => {
+    localStorage.setItem('simjury:court-week:local-profile:v1', JSON.stringify({
+      schemaVersion: 'simjury-local-profile-v1',
+      jurorLabel: 'Juror 01',
+      adultFictionAcknowledged: true,
+      developerMode: true,
+    }))
+  })
   await page.goto('/')
+  await expect(page.getByText('DEV PREVIEW')).toBeVisible()
+  await page.getByRole('button', { name: 'Leave preview' }).click()
   const surface = page.locator('.cw-entry__panel')
   await expect(page.getByRole('status')).toContainText('Court opens Monday')
-  await page.getByLabel('I’m 18 or older and understand this case is fictional.').click()
   await page.locator('.cw-entry__settings > summary').click()
   await page.locator('.cw-local-profile > summary').click()
-  await page.getByLabel('Developer mode').check()
+  await expect(page.getByLabel('Developer mode')).toBeChecked()
   const submit = page.getByRole('button', { name: 'Open all-session preview' })
   await submit.scrollIntoViewIfNeeded()
   await expect(submit).toBeVisible()
