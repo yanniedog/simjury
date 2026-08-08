@@ -329,7 +329,13 @@ async function runJourney(profileInfo: typeof profiles[number], run: number) {
   const second = await attemptJourney(profileInfo, run)
   commitAttempt(second)
   if (second.assetMisses.length === 0) {
-    add('low', 'deployment-identity', id, `A superseded shell was served on the first attempt: ${first.assetMisses.join(', ')} was absent from the deployment the edge answered from. The retry ran against one coherent deployment.`)
+    // The discarded attempt is dropped whole rather than filtered, because
+    // every finding in it describes a build that is no longer deployed;
+    // merging any of them into this profile's result would attribute one
+    // build's behaviour to another. Name what was dropped so the superseded
+    // shell still leaves a trace an operator can follow.
+    const discarded = [...new Set(first.findings.filter((item) => item.severity === 'high').map((item) => item.category))]
+    add('low', 'deployment-identity', id, `A superseded shell was served on the first attempt: ${first.assetMisses.join(', ')} was absent from the deployment the edge answered from. That attempt was discarded whole and the retry ran against one coherent deployment. HIGH categories seen against the superseded shell: ${discarded.join(', ') || 'none'}.`)
   }
 }
 
