@@ -198,6 +198,9 @@ describe('SealedCourtWeekApp', () => {
   })
 
   it('keeps the entry usable while today’s sealed session opens', async () => {
+    // Public sealed loading must not wait on all-session preview hydration.
+    // Leave-preview is available on the loading state; leave immediately so this
+    // case exercises StandardSealedCourtWeekApp (temporary default opens preview).
     const now = Date.parse('2026-08-10T08:31:00+10:00')
     const progress: StoredWeeklyProgress = {
       schemaVersion: 'court-week-progress-v1',

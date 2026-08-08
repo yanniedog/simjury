@@ -58,6 +58,29 @@ test('first-time mobile entry keeps its primary path in the first viewport', asy
   await expect(page.getByRole('button', { name: 'Take your seat' })).toBeEnabled()
 })
 
+test('developer toolbar keeps session jump and leave reachable at 320px', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 })
+  await page.addInitScript(() => {
+    localStorage.setItem('simjury:court-week:local-profile:v1', JSON.stringify({
+      schemaVersion: 'simjury-local-profile-v1',
+      jurorLabel: 'Juror 01',
+      adultFictionAcknowledged: true,
+      developerMode: true,
+    }))
+  })
+  await page.goto('/')
+  await expect(page.getByText('DEV PREVIEW')).toBeVisible()
+  const session = page.locator('#cw-developer-day')
+  const leave = page.getByRole('button', { name: 'Leave preview' })
+  await expect(session).toBeInViewport()
+  await expect(leave).toBeInViewport()
+  await session.selectOption('2')
+  await expect(session).toHaveValue('2')
+  await leave.click()
+  await expect(page.getByText('DEV PREVIEW')).toHaveCount(0)
+  await expect(page.getByRole('status')).toContainText('Court opens Monday')
+})
+
 test('local developer mode remains reachable at a 200% compact-phone reflow', async ({ page }) => {
   await page.setViewportSize({ width: 160, height: 284 })
   await page.addInitScript(() => {
