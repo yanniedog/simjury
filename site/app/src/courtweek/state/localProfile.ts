@@ -118,7 +118,10 @@ export function loadLocalProfile(storage = browserStorage()): LocalProfileResult
     // default so browsers that saved the old default-off profile still enter
     // all-session preview after acknowledgement. Revert with DEFAULT_LOCAL_PROFILE.
     // Leave-preview remains a same-session opt-out only.
-    if (!profile.developerMode) {
+    // Automated browsers (Playwright sets navigator.webdriver) keep an explicit
+    // false so the public-schedule matrix is not forced into DEV preview.
+    const automatedBrowser = typeof navigator !== 'undefined' && navigator.webdriver === true
+    if (!profile.developerMode && !automatedBrowser) {
       const migrated = { ...profile, developerMode: true }
       memoryProfile = migrated
       try {

@@ -121,6 +121,25 @@ describe('local profile state', () => {
     })
   })
 
+  it('preserves stored developerMode:false under automated browser webdriver', () => {
+    const storage = new MemoryStorage()
+    storage.values.set(LOCAL_PROFILE_STORAGE_KEY, JSON.stringify({
+      schemaVersion: LOCAL_PROFILE_SCHEMA_VERSION,
+      jurorLabel: 'River',
+      adultFictionAcknowledged: true,
+      developerMode: false,
+    }))
+    Object.defineProperty(navigator, 'webdriver', { configurable: true, value: true })
+    try {
+      expect(loadLocalProfile(storage).profile.developerMode).toBe(false)
+      expect(JSON.parse(storage.values.get(LOCAL_PROFILE_STORAGE_KEY) ?? '{}')).toMatchObject({
+        developerMode: false,
+      })
+    } finally {
+      Object.defineProperty(navigator, 'webdriver', { configurable: true, value: false })
+    }
+  })
+
   it('keeps the last valid profile in memory when storage is blocked', () => {
     const durable = new MemoryStorage()
     saveLocalProfile(profile, durable)
