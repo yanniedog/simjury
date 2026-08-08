@@ -75,7 +75,8 @@ export function LocalProfilePanel({
               checked={profile.adultFictionAcknowledged}
               onChange={(event) => update({
                 adultFictionAcknowledged: event.target.checked,
-                ...(event.target.checked ? {} : { developerMode: false }),
+                // Temporary pre-release: checking the adult gate restores unlock default.
+                developerMode: event.target.checked,
               })}
             />
             <span>
@@ -95,7 +96,7 @@ export function LocalProfilePanel({
             />
             <span>
               <strong>Developer mode</strong>
-              <small>Reveals controls for sessions that have not opened yet. This is not authentication.</small>
+              <small>Temporarily on by default. Reveals controls for sessions that have not opened yet. This is not authentication.</small>
             </span>
           </label>
           {profile.adultFictionAcknowledged && profile.developerMode ? (
@@ -108,7 +109,7 @@ export function LocalProfilePanel({
         {issue ? (
           <p className="cw-error" role="status">
             {issue === 'corrupt'
-              ? 'Damaged local settings were ignored. Developer mode is off.'
+              ? 'Damaged local settings were ignored. Developer mode was reset to the temporary default (on).'
               : 'Local storage is unavailable. Settings last only in this tab.'}
           </p>
         ) : persistence === 'memory' ? (

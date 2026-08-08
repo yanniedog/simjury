@@ -73,7 +73,7 @@ describe('local profile state', () => {
     }
   })
 
-  it('fails closed and clears an enabled in-memory developer profile after corruption', () => {
+  it('replaces a corrupt record with the temporary developer-mode default', () => {
     const storage = new MemoryStorage()
     saveLocalProfile(profile, storage)
     storage.values.set(LOCAL_PROFILE_STORAGE_KEY, JSON.stringify({
@@ -81,6 +81,7 @@ describe('local profile state', () => {
       ...profile,
     }))
 
+    expect(DEFAULT_LOCAL_PROFILE.developerMode).toBe(true)
     expect(loadLocalProfile(storage)).toEqual({
       profile: DEFAULT_LOCAL_PROFILE,
       persistence: 'memory',
@@ -91,6 +92,32 @@ describe('local profile state', () => {
       profile: DEFAULT_LOCAL_PROFILE,
       persistence: 'memory',
       issue: 'unavailable',
+    })
+  })
+
+  it('migrates a stored developerMode:false profile to the temporary default-on', () => {
+    const storage = new MemoryStorage()
+    storage.values.set(LOCAL_PROFILE_STORAGE_KEY, JSON.stringify({
+      schemaVersion: LOCAL_PROFILE_SCHEMA_VERSION,
+      jurorLabel: 'River',
+      adultFictionAcknowledged: true,
+      developerMode: false,
+    }))
+
+    expect(loadLocalProfile(storage)).toEqual({
+      profile: {
+        schemaVersion: LOCAL_PROFILE_SCHEMA_VERSION,
+        jurorLabel: 'River',
+        adultFictionAcknowledged: true,
+        developerMode: true,
+      },
+      persistence: 'local-storage',
+      issue: null,
+    })
+    expect(JSON.parse(storage.values.get(LOCAL_PROFILE_STORAGE_KEY) ?? '{}')).toMatchObject({
+      developerMode: true,
+      adultFictionAcknowledged: true,
+      jurorLabel: 'River',
     })
   })
 

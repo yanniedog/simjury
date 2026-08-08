@@ -48,9 +48,12 @@ those guarantees regress.
 
 During the owner-authorised live test, a device-local profile may enable an
 explicit Developer mode and all-session preview. It is not authentication and
-must be labelled as such. Developer mode defaults off; enabling it fetches
-nothing until the user separately chooses **Open all-session preview** after a
-future-session spoiler warning.
+must be labelled as such. Developer mode is temporarily default-on for
+pre-release navigation; after the adult-fiction acknowledgement it opens
+all-session preview automatically. Leaving preview opts out until the user
+chooses **Open all-session preview** again. Enabling developer mode alone
+still fetches nothing until preview is entered. Revert the default to off
+before the public schedule is the only intended path.
 
 The app does not persist decrypted packs, opened-pack cache or preview progress;
 normal browser-managed HTTP caching of public static assets remains possible.

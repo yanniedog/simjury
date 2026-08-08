@@ -11,7 +11,12 @@ import {
   openCourtReturnTurns,
   unanimousVerdict,
 } from '../engine/deliberation'
-import { nextReplaySafeCue, replaySafeCue } from '../engine/replay'
+import {
+  joinAuthoredCueText,
+  nextAuthoredCue,
+} from '../content/captionPacing'
+import { attachCueTurns } from '../content/cueTurns'
+import { isReplaySuppressedCue, nextReplaySafeCue, replaySafeCue } from '../engine/replay'
 import { contributionStage } from '../model/deliberationContract'
 import { useCuePlayback } from '../media/useCuePlayback'
 import {
@@ -178,7 +183,9 @@ function CourtWeekEntry({
     localProfile.onChange({
       jurorLabel: localProfile.profile.jurorLabel,
       adultFictionAcknowledged,
-      developerMode: adultFictionAcknowledged ? localProfile.profile.developerMode : false,
+      // Temporary pre-release: acknowledgement also restores the unlock default
+      // so the adult gate lands in all-session preview without a settings detour.
+      developerMode: adultFictionAcknowledged,
     })
   }
   return (
@@ -428,8 +435,16 @@ export function CourtWeekApp({
         accessibleProposition: 'Balanced analysis presents the strongest lawful rationale and counter-analysis for the returned result without declaring a correct answer.',
       }
     }
+    // Reading mode promises complete dialogue. Caption pacing splits utterances
+    // for audio overlays; rejoin them here so Continue is not fragment-bound.
+    if (accessMode === 'reading') {
+      return attachCueTurns({
+        ...safeCue,
+        text: joinAuthoredCueText(position.scene.cues, safeCue),
+      })
+    }
     return safeCue
-  }, [courtWeek.deliberation, isReplay, position.cue, progress.openCourtVerdictReturned, progress.returnedVerdict, progress.sealedAgreement, progress.sealedVerdict])
+  }, [accessMode, courtWeek.deliberation, isReplay, position.cue, position.scene.cues, progress.openCourtVerdictReturned, progress.returnedVerdict, progress.sealedAgreement, progress.sealedVerdict])
   const commitPosition = useCallback((sessionId: string, sceneId: string, cueId: string, traversedCueId?: string) => {
     updateProgress((current) => ({
       ...current,
@@ -451,7 +466,13 @@ export function CourtWeekApp({
     // A mandatory interaction is a hard legal-state boundary. Stale media
     // completion or programmatic control events must not traverse beneath it.
     if (advanceBlocked.current || interactionOpen || deskOpen) return
-    const nextCue = nextReplaySafeCue(position.scene.cues, position.cueIndex, isReplay)
+    const nextCue = accessMode === 'reading'
+      ? nextAuthoredCue(
+        position.scene.cues,
+        position.cueIndex,
+        isReplay ? isReplaySuppressedCue : () => false,
+      )
+      : nextReplaySafeCue(position.scene.cues, position.cueIndex, isReplay)
     if (nextCue) {
       commitPosition(activeSession.id, position.scene.id, nextCue.id, isReplay ? undefined : position.cue.id)
       return
@@ -497,7 +518,7 @@ export function CourtWeekApp({
     setInteractionOpenedAt(null)
     setInteractionChoice(null)
     setInteractionSealed(false)
-  }, [activeSession, commitPosition, courtWeek.manifest.sessions, deskOpen, interactionOpen, isReplay, now, position, progress.completedSessionIds, updateProgress])
+  }, [accessMode, activeSession, commitPosition, courtWeek.manifest.sessions, deskOpen, interactionOpen, isReplay, now, position, progress.completedSessionIds, updateProgress])
   const handleCueEnded = useCallback(() => {
     advance()
   }, [advance])
@@ -622,16 +643,21 @@ export function CourtWeekApp({
   const interactionElapsedSeconds = interactionOpen && interactionOpenedAt != null
     ? Math.max(0, (now() - interactionOpenedAt) / 1000)
     : 0
+  // Developer/all-session preview is ephemeral: do not park Continue behind
+  // the live 15–360s reflection timers while unlocking the whole case.
+  const requiredInteractionSeconds = ephemeral || Boolean(developerPreview)
+    ? 0
+    : (interaction?.minimumSeconds ?? 0)
   const interactionMinimumMet = !interaction
     || isReplay
     || ballotSealed
-    || interactionElapsedSeconds >= interaction.minimumSeconds
+    || interactionElapsedSeconds >= requiredInteractionSeconds
   useEffect(() => {
     if (!interactionOpen || !interaction || isReplay || interactionMinimumMet) return
-    const remainingMs = Math.max(0, interaction.minimumSeconds * 1000 - interactionElapsedSeconds * 1000)
+    const remainingMs = Math.max(0, requiredInteractionSeconds * 1000 - interactionElapsedSeconds * 1000)
     const timer = window.setTimeout(() => setInteractionTick((value) => value + 1), Math.min(remainingMs + 16, 1000))
     return () => window.clearTimeout(timer)
-  }, [interaction, interactionElapsedSeconds, interactionMinimumMet, interactionOpen, isReplay])
+  }, [interaction, interactionElapsedSeconds, interactionMinimumMet, interactionOpen, isReplay, requiredInteractionSeconds])
 
   if (!hydrated) return <main className="cw-loading" aria-busy="true"><p role="status">Preparing your place in court…</p></main>
 
@@ -1055,8 +1081,8 @@ export function CourtWeekApp({
           onClick={() => finishInteraction()}
         >
           {isReplay ? 'Continue replay'
-            : !interactionMinimumMet
-            ? `Continue in ${Math.max(1, Math.ceil(interaction.minimumSeconds - interactionElapsedSeconds))}s`
+            : !interactionMinimumMet && requiredInteractionSeconds > 0
+            ? `Continue in ${Math.max(1, Math.ceil(requiredInteractionSeconds - interactionElapsedSeconds))}s`
             : ballotSealed
             ? (progress.secondBallotWasUnanimous ? 'Return to court' : 'Continue deliberation')
             : interaction.kind === 'final-vote' ? 'Seal final ballot'

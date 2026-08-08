@@ -358,7 +358,7 @@ export function ImmersiveCourtShell({
               {fullscreen ? 'Exit full screen' : 'Full screen'}
             </button>
           ) : null}
-          {(accessMode === 'reading' || playbackStatus === 'reading-fallback') ? (
+          {(accessMode === 'reading' || playbackStatus === 'reading-fallback') && !overlay ? (
             <button
               type="button"
               className="cw-controls__advance"

@@ -477,4 +477,60 @@ describe('CourtWeekApp improper-argument interaction', () => {
     expect(latestProgress.secondVote).toBe('murder')
     expect(latestProgress.currentSceneId).toBe('sun-persevere')
   })
+
+  it('skips interaction minimum timers in ephemeral developer preview', async () => {
+    const monday = elevenMinutesCourtWeek.manifest.sessions[0]
+    const arrival = monday?.scenes.find((scene) => scene.id === 'mon-arrival')
+    const lastCue = arrival?.cues.at(-1)
+    if (!monday || !arrival || !lastCue) throw new Error('Monday arrival fixtures are missing.')
+    expect(arrival.interaction?.minimumSeconds).toBe(118)
+
+    // Frozen court clock mirrors developer preview: wall time must not gate Continue.
+    const frozenNow = Date.parse('2026-08-17T09:00:00+10:00')
+    const previewProgress: StoredWeeklyProgress = {
+      schemaVersion: 'court-week-progress-v1',
+      courtWeekId: elevenMinutesCourtWeek.manifest.id,
+      revision: elevenMinutesCourtWeek.manifest.revision,
+      highestObservedTime: new Date(frozenNow).toISOString(),
+      completedSessionIds: [],
+      currentSessionId: monday.id,
+      currentSceneId: arrival.id,
+      currentCueId: lastCue.id,
+      notes: '',
+      reasoningContributions: [],
+      accessibilityMode: 'reading',
+      majorityDirectionReceived: false,
+      openCourtVerdictReturned: false,
+    }
+
+    await act(async () => {
+      root.render(
+        <CourtWeekApp
+          courtWeek={elevenMinutesCourtWeek}
+          now={() => frozenNow}
+          releaseBase="/media"
+          initialProgressOverride={previewProgress}
+          ephemeral
+          developerPreview={{
+            selectedOrdinal: 1,
+            sessions: elevenMinutesCourtWeek.manifest.sessions.map(({ day, ordinal }) => ({ day, ordinal })),
+            onSelect: () => undefined,
+            onLeave: () => undefined,
+          }}
+        />,
+      )
+      await Promise.resolve()
+    })
+    await act(async () => clickButton(container, 'Take your seat'))
+    await act(async () => clickButton(container, 'Continue'))
+
+    expect(container.textContent).toContain('Settle into the jury viewpoint and identify the allegation—not an answer.')
+    expect(container.textContent).not.toMatch(/Continue in \d+s/)
+    expect(container.querySelector('button.cw-controls__advance')).toBeNull()
+    const primary = Array.from(container.querySelectorAll<HTMLButtonElement>('button.cw-primary')).find(
+      (button) => button.textContent?.trim() === 'Continue proceedings',
+    )
+    expect(primary).toBeTruthy()
+    expect(primary?.disabled).toBe(false)
+  })
 })

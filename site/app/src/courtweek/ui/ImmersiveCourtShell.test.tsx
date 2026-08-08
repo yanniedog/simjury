@@ -147,6 +147,32 @@ describe('ImmersiveCourtShell', () => {
     expect(markup).toContain('Continue')
   })
 
+  it('hides the shell Continue control while a mandatory overlay owns advancement', () => {
+    const markup = renderToStaticMarkup(
+      <ImmersiveCourtShell
+        session={session}
+        scene={scene}
+        cue={cue}
+        releaseBase="/media"
+        accessMode="reading"
+        playbackStatus="idle"
+        playbackError={null}
+        progressLabel="Scene 1 of 3"
+        deskOpen={false}
+        overlay={<div className="cw-interaction">Interaction</div>}
+        onPlay={() => undefined}
+        onPause={() => undefined}
+        onRepeat={() => undefined}
+        onAdvance={() => undefined}
+        onToggleCaptions={() => undefined}
+        onToggleDesk={() => undefined}
+      />,
+    )
+
+    expect(markup).toContain('cw-interaction')
+    expect(markup).not.toContain('cw-controls__advance')
+  })
+
   it('switches the persistent speaker, visible caption and live region at a spoken-turn boundary', () => {
     const activeTurn = { id: 'cue-1__2', speaker: 'Nella Orr', text: 'No. The warning was separate.' }
     const markup = renderToStaticMarkup(

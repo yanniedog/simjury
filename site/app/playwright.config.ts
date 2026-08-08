@@ -4,7 +4,8 @@ const acknowledgedProfile = JSON.stringify({
   schemaVersion: 'simjury-local-profile-v1',
   jurorLabel: 'Juror 01',
   adultFictionAcknowledged: true,
-  developerMode: false,
+  // Temporary pre-release default: all-session preview unlocks by default.
+  developerMode: true,
 })
 
 const desktopIgnore = [
