@@ -69,6 +69,38 @@ describe('useModalFocusBoundary', () => {
     expect(document.activeElement).toBe(buttons[1])
   })
 
+  it('returns focus to the named fallback control, not the first one in document order', async () => {
+    const controls = document.createElement('nav')
+    controls.className = 'cw-controls'
+    controls.innerHTML = '<button type="button">Play</button>'
+      + '<button type="button" class="cw-controls__advance">Continue</button>'
+    document.body.append(controls)
+    // The court shell removes Continue while a mandatory dialog is open, so the
+    // dialog closes with its trigger gone and must fall back to the advance
+    // control rather than restarting playback.
+    const trigger = document.createElement('button')
+    document.body.prepend(trigger)
+    trigger.focus()
+
+    function FallbackDialog() {
+      const dialog = useRef<HTMLElement>(null)
+      useModalFocusBoundary(dialog, trigger, '.cw-controls__advance, .cw-controls button:not([disabled])')
+      return (
+        <section ref={dialog} role="dialog" tabIndex={-1}>
+          <button type="button">Continue proceedings</button>
+        </section>
+      )
+    }
+    await act(async () => { root.render(<FallbackDialog />) })
+    trigger.remove()
+
+    act(() => root.unmount())
+    await new Promise<void>((resolve) => queueMicrotask(resolve))
+    expect(document.activeElement).toBe(controls.querySelector('.cw-controls__advance'))
+    root = createRoot(host)
+    controls.remove()
+  })
+
   it('skips controls removed from the active focus order', async () => {
     function AvailabilityDialog() {
       const dialog = useRef<HTMLElement>(null)

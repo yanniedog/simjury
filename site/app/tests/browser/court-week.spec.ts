@@ -760,8 +760,16 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
   await page.addInitScript((instant) => {
     let current = instant
     Date.now = () => current
+    // Reflection countdowns measure monotonic wall time, never the court
+    // clock, so an accelerated journey has to move both.
+    let wallOffset = 0
+    const monotonic = performance.now.bind(performance)
+    performance.now = () => monotonic() + wallOffset
     Object.defineProperty(window, '__simjuryAdvanceClock', {
-      value: (milliseconds: number) => { current += milliseconds },
+      value: (milliseconds: number) => {
+        current += milliseconds
+        wallOffset += milliseconds
+      },
       configurable: false,
     })
   }, releaseNow)
