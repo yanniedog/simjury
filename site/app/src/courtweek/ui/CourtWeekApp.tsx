@@ -221,7 +221,7 @@ export function CourtWeekApp({
     [courtWeek, initialProgressOverride, now],
   )
   const {
-    progress, archivedProgress, hydrated, persistence, persistenceIssue,
+    progress, archivedProgress, hydrated, storageUpgradeBlocked, persistence, persistenceIssue,
     updateProgress, commitProgressImport,
   } = useWeeklyProgress(
     baseline,
@@ -559,7 +559,13 @@ export function CourtWeekApp({
   )
   const ballotSealed = interactionSealed || persistedBallotSealed
 
-  if (!hydrated) return <main className="cw-loading" aria-busy="true"><p role="status">Preparing your place in court…</p></main>
+  if (!hydrated) return (
+    <main className="cw-loading" aria-busy="true">
+      <p role="status">{storageUpgradeBlocked
+        ? 'Another SimJury tab may be keeping your saved court record open. Close any other SimJury tabs or windows. This page will continue automatically without replacing your progress.'
+        : 'Preparing your place in court…'}</p>
+    </main>
+  )
 
   if (!entered) {
     return (

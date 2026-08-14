@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   loadWeeklyProgressResult,
   saveWeeklyProgress,
+  subscribeProgressDatabaseUpgradeBlock,
   type StoredWeeklyProgress,
 } from './progress'
 
@@ -9,6 +10,7 @@ export interface WeeklyProgressState {
   progress: StoredWeeklyProgress
   archivedProgress: StoredWeeklyProgress[]
   hydrated: boolean
+  storageUpgradeBlocked: boolean
   persistence: 'indexeddb' | 'memory' | 'pending' | 'ephemeral'
   persistenceIssue: PersistenceIssue
   updateProgress: (
@@ -32,6 +34,7 @@ export function useWeeklyProgress(
   const [progress, setProgress] = useState(initialProgress)
   const [archivedProgress, setArchivedProgress] = useState<StoredWeeklyProgress[]>([])
   const [hydrated, setHydrated] = useState(ephemeral)
+  const [storageUpgradeBlocked, setStorageUpgradeBlocked] = useState(false)
   const [persistence, setPersistence] = useState<WeeklyProgressState['persistence']>(
     ephemeral ? 'ephemeral' : 'pending',
   )
@@ -62,11 +65,19 @@ export function useWeeklyProgress(
   useEffect(() => {
     if (ephemeral) return
     let current = true
+    const slowHydrationNotice = window.setTimeout(() => {
+      if (current) setStorageUpgradeBlocked(true)
+    }, 1_500)
+    const unsubscribeUpgradeBlock = subscribeProgressDatabaseUpgradeBlock((blocked) => {
+      if (current) setStorageUpgradeBlocked(blocked)
+    })
     void loadWeeklyProgressResult(
       initialProgress.courtWeekId,
       initialProgress.revision,
     ).then(({ progress: stored, archives, issue }) => {
       if (!current) return
+      window.clearTimeout(slowHydrationNotice)
+      setStorageUpgradeBlocked(false)
       setArchivedProgress(archives)
       if (stored) setProgress(stored)
       if (issue) {
@@ -79,6 +90,8 @@ export function useWeeklyProgress(
     })
     return () => {
       current = false
+      window.clearTimeout(slowHydrationNotice)
+      unsubscribeUpgradeBlock()
     }
   }, [ephemeral, initialProgress.courtWeekId, initialProgress.revision])
 
@@ -172,7 +185,7 @@ export function useWeeklyProgress(
   }, [ephemeral])
 
   return {
-    progress, archivedProgress, hydrated, persistence, persistenceIssue,
+    progress, archivedProgress, hydrated, storageUpgradeBlocked, persistence, persistenceIssue,
     updateProgress, commitProgressImport,
   }
 }

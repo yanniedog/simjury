@@ -121,8 +121,10 @@ test('a blocked v1 upgrade cannot expose or overwrite an empty baseline', async 
 
   const upgradingPage = await context.newPage()
   await upgradingPage.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
+  await upgradingPage.bringToFront()
   await upgradingPage.goto('/')
-  await expect(upgradingPage.getByRole('status')).toContainText('Preparing your place in court')
+  await expect(upgradingPage.getByRole('status')).toContainText('Close any other SimJury tabs or windows')
+  await expect(upgradingPage.getByRole('status')).toContainText('continue automatically without replacing your progress')
   await expect(upgradingPage.locator('.cw-entry')).toHaveCount(0)
 
   await page.evaluate(() => {
