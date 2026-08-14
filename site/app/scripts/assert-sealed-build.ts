@@ -21,21 +21,20 @@ function filesBelow(directory: string): string[] {
   })
 }
 
+// Build each forbidden marker so this guard does not flag its own definition.
 const retiredDurationMarkers = [
   ['minimum', 'Seconds'].join(''),
   ['transition', 'Seconds'].join(''),
   ['target', 'Minutes'].join(''),
 ]
 const retiredDurationPromise = /\b(?:20|twenty)[ -]minutes?\b/iu
-const guardedSource = [
+const guardedSourceFiles = [
   ...filesBelow(join(appRoot, 'scripts')),
   ...filesBelow(join(appRoot, 'src')),
   ...filesBelow(join(appRoot, 'tests')),
   resolve(appRoot, '..', 'public', 'llms.txt'),
 ]
   .filter((file) => /\.(?:json|ts|tsx|txt)$/u.test(file))
-  .map((file) => readFileSync(file, 'utf8'))
-  .join('\n')
 
 function assertNoRetiredDurationContract(label: string, text: string): void {
   for (const marker of retiredDurationMarkers) {
@@ -46,7 +45,9 @@ function assertNoRetiredDurationContract(label: string, text: string): void {
   }
 }
 
-assertNoRetiredDurationContract('Court Week source', guardedSource)
+for (const file of guardedSourceFiles) {
+  assertNoRetiredDurationContract(relative(appRoot, file), readFileSync(file, 'utf8'))
+}
 assertNoRetiredDurationContract(
   'Court Week authored contract',
   JSON.stringify({ manifest: elevenMinutesCourtWeek.manifest, bootstrap: courtWeekBootstrap }),
