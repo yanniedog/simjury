@@ -323,6 +323,8 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(dialog.locator('.cw-choice-grid')).toBeVisible()
   await expect(page.locator('.cw-stage')).toHaveAttribute('inert', '')
   await expect(page.locator('.cw-stage')).toHaveAttribute('aria-hidden', 'true')
+  await page.clock.fastForward(60_000)
+  await expect(dialog.getByRole('button', { name: 'Continue proceedings' })).toBeDisabled()
 
   const liveCue = page.locator('.cw-cue-live-region')
   const frozenCue = (await liveCue.textContent())?.trim()
@@ -353,7 +355,6 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-controls button:focus')).toHaveCount(0)
 
   await expect(liveCue).toHaveText(frozenCue)
-  await expect(dialog.getByRole('button', { name: 'Continue proceedings' })).toBeDisabled()
   await oath.click()
   await expect(dialog.getByRole('button', { name: 'Continue proceedings' })).toBeEnabled()
   await dialog.getByRole('button', { name: 'Continue proceedings' }).click()

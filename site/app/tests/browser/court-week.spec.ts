@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 import { elevenMinutesSessions } from '../../src/courtweek/content/sessions'
+import { courtWeekBootstrap } from '../../src/courtweek/sealed/bootstrap'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 
@@ -73,9 +74,11 @@ test('preview drawer loads one pack and yields to modal controls at 320px', asyn
   await leave.scrollIntoViewIfNeeded()
   await expect(leave).toBeInViewport()
   expect(packRequests).toHaveLength(1)
+  expect(packRequests[0]).toContain(courtWeekBootstrap.sessions[0].locator)
   await session.selectOption('2')
   await expect(session).toHaveValue('2')
   await expect.poll(() => packRequests.length).toBe(2)
+  expect(packRequests[1]).toContain(courtWeekBootstrap.sessions[1].locator)
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await page.getByRole('button', { name: 'Test session' }).click()
   await expect(page.locator('.cw-modal')).toBeVisible()
@@ -840,8 +843,6 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
   const continueButton = page.getByLabel('Court playback controls').getByRole('button', { name: 'Continue', exact: true })
   await continueButton.click()
   await continueButton.click()
-  await satisfyInteractionTime()
-  await page.locator('.cw-interaction button.cw-primary').click()
   await expect(page.locator('.cw-reading-copy')).toContainText('Strongest lawful rationale:')
   await expect(page.locator('.cw-reading-copy')).toContainText('Strongest counter-analysis:')
   await continueButton.click()

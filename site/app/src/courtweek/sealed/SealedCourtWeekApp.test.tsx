@@ -22,6 +22,11 @@ import {
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
+const okFetcher = async (..._args: Parameters<typeof fetch>) => {
+  void _args
+  return new Response('{}', { status: 200 })
+}
+
 describe('SealedCourtWeekApp', () => {
   let container: HTMLDivElement
   let root: Root
@@ -76,7 +81,7 @@ describe('SealedCourtWeekApp', () => {
   it('opens one preview pack only on the exact test-build route', async () => {
     history.replaceState(null, '', '/__court-week-preview')
     const packs = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap)
-    const fetcher = vi.fn(async () => new Response('{}', { status: 200 }))
+    const fetcher = vi.fn(okFetcher)
     vi.spyOn(loader, 'hydrateCourtPacks').mockImplementation(async ({
       entries,
       fetcher: load,
@@ -89,6 +94,7 @@ describe('SealedCourtWeekApp', () => {
     />))
     await vi.waitFor(() => expect(container.querySelectorAll('.cw-preview-grid select')).toHaveLength(7))
     expect(fetcher).toHaveBeenCalledTimes(1)
+    expect(String(fetcher.mock.calls[0]?.[0])).toBe(`/packs/${courtWeekBootstrap.sessions[0].locator}`)
     await leaveDeveloperPreview()
   })
 
@@ -99,7 +105,7 @@ describe('SealedCourtWeekApp', () => {
       adultFictionAcknowledged: true,
       developerMode: true,
     }))
-    const fetcher = vi.fn(async () => new Response('{}', { status: 200 }))
+    const fetcher = vi.fn(okFetcher)
     await act(async () => root.render(<SealedCourtWeekApp
       bootstrap={courtWeekBootstrap}
       now={() => Date.parse('2026-08-10T08:29:59+10:00')}
@@ -122,7 +128,7 @@ describe('SealedCourtWeekApp', () => {
       notes: 'Keep this saved note.', reasoningContributions: [], majorityDirectionReceived: false,
     }
     await saveWeeklyProgress(existing.courtWeekId, existing)
-    const fetcher = vi.fn(async () => new Response('{}', { status: 200 }))
+    const fetcher = vi.fn(okFetcher)
     const packs = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap)
     vi.spyOn(loader, 'hydrateCourtPacks').mockImplementation(async ({
       entries,
@@ -143,6 +149,7 @@ describe('SealedCourtWeekApp', () => {
       fetcher={fetcher}
     />))
     await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(1))
+    expect(String(fetcher.mock.calls[0]?.[0])).toBe(`/packs/${courtWeekBootstrap.sessions[0].locator}`)
     expect(container.querySelector('input[type="password"]')).toBeNull()
     expect(container.textContent).toContain('Saved progress is untouched')
     expect(container.textContent).toContain('Temporary progress and private notes are discarded')
@@ -153,6 +160,7 @@ describe('SealedCourtWeekApp', () => {
     selector.value = '7'
     await act(async () => selector.dispatchEvent(new Event('change', { bubbles: true })))
     await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(2))
+    expect(String(fetcher.mock.calls[1]?.[0])).toBe(`/packs/${courtWeekBootstrap.sessions[6].locator}`)
     const reading = container.querySelector<HTMLInputElement>('input[value="reading"]')
     if (reading) await act(async () => reading.click())
     const enter = Array.from(container.querySelectorAll('button')).find(({ textContent }) => textContent?.trim() === 'Take your seat')
@@ -169,11 +177,13 @@ describe('SealedCourtWeekApp', () => {
     modalSelector.value = '6'
     await act(async () => modalSelector.dispatchEvent(new Event('change', { bubbles: true })))
     await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(3))
+    expect(String(fetcher.mock.calls[2]?.[0])).toBe(`/packs/${courtWeekBootstrap.sessions[5].locator}`)
     await vi.waitFor(() => expect(container.textContent).toContain('Other days remain available'))
     const recoveredSelector = container.querySelector<HTMLSelectElement>('#cw-preview-day')!
     recoveredSelector.value = '5'
     await act(async () => recoveredSelector.dispatchEvent(new Event('change', { bubbles: true })))
     await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(4))
+    expect(String(fetcher.mock.calls[3]?.[0])).toBe(`/packs/${courtWeekBootstrap.sessions[4].locator}`)
     await vi.waitFor(() => expect(container.textContent).toContain('Take your seat'))
 
     const leave = Array.from(container.querySelectorAll('button')).find(
