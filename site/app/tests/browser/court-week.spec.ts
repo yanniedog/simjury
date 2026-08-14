@@ -952,9 +952,11 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
   await analysisDialog.locator('button.cw-primary').click()
 
   await expect(page.getByRole('heading', { name: 'Court Week complete' })).toBeVisible()
+  await expect(page.getByText('Your final device save is still being confirmed. You can export a copy now.')).toBeVisible()
   await page.waitForTimeout(200)
 
   const completion = page.locator('.cw-complete')
+  await expect(completion.getByText('Stored privately on this device.', { exact: false })).toBeVisible()
   await expect(completion.getByText('Private completion record', { exact: true })).toBeVisible()
   await expect(completion.getByText('Not Guilty', { exact: true })).toBeVisible()
   await expect(completion.getByText('Unanimous', { exact: true })).toBeVisible()
