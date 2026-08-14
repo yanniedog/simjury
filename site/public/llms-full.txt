@@ -7,7 +7,8 @@ disclosing case-specific evidence, juror state, outcomes or analysis.
 
 SimJury's only case is the fictional **Eleven Minutes**. The player serves as a
 juror through five sequential court sessions, then deliberates on Saturday and
-Sunday with eleven authored jurors. Each session targets 18–22 minutes. Possible
+Sunday with eleven authored jurors. Each session is self-paced and lasts only as
+long as its reviewed dialogue and meaningful juror decisions require. Possible
 results are Murder, manslaughter by criminal negligence, Not Guilty, or unable
 to agree. The site never declares one outcome objectively correct.
 

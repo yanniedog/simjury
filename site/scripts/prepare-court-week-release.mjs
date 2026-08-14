@@ -254,8 +254,9 @@ function loadAudioSessions() {
     if (!Array.isArray(session.segments) || session.segments.length < 8 || session.segments.length > 12) {
       throw new Error(`${session.sessionId} must have 8-12 prerecorded audio segments`)
     }
-    if (session.experienceSeconds < 18 * 60 || session.experienceSeconds > 22 * 60) {
-      throw new Error(`${session.sessionId} measures ${(session.experienceSeconds / 60).toFixed(2)} minutes; required 18-22`)
+    if (session.fixedExperienceSeconds !== 0 || session.narrationSeconds <= 0 ||
+        Math.abs(session.experienceSeconds - session.narrationSeconds) > 0.01) {
+      throw new Error(`${session.sessionId} must report its unpadded narration duration`)
     }
     const codecBytes = { opus: 0, aac: 0, mp3: 0 }
     for (const [segmentIndex, segment] of session.segments.entries()) {
