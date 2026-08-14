@@ -34,7 +34,7 @@ function renderDesk(
     saveStatus="Stored privately on this device."
     progressTransferEnabled={false}
     onNotesChange={() => undefined}
-    onImport={() => undefined}
+    onImport={async () => undefined}
     onInspectEvidence={() => undefined}
     onClose={() => undefined}
   />)

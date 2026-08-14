@@ -42,7 +42,7 @@ async function installDeterministicCourt(page: Page) {
 async function seedPosition(page: Page, position: CourtPosition) {
   await page.goto('/robots.txt')
   await page.evaluate(async ({ instant, sceneId, cueId }) => new Promise<void>((resolve, reject) => {
-    const request = indexedDB.open('simjury-court-week-v1', 1)
+    const request = indexedDB.open('simjury-court-week-v1')
     request.onerror = () => reject(request.error)
     request.onupgradeneeded = () => {
       if (!request.result.objectStoreNames.contains('progress')) {

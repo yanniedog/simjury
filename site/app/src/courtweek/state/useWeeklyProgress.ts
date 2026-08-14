@@ -16,6 +16,9 @@ export interface WeeklyProgressState {
       | StoredWeeklyProgress
       | ((current: StoredWeeklyProgress) => StoredWeeklyProgress),
   ) => void
+  commitProgressImport: (
+    commit: () => Promise<StoredWeeklyProgress>,
+  ) => Promise<StoredWeeklyProgress>
 }
 
 export type PersistenceIssue = 'unavailable' | 'save-failed' | 'corrupt' | 'revision-mismatch' | null
@@ -34,6 +37,8 @@ export function useWeeklyProgress(
   )
   const [persistenceIssue, setPersistenceIssue] = useState<PersistenceIssue>(null)
   const saveSequence = useRef(0)
+  const pendingSave = useRef<number | null>(null)
+  const importInFlight = useRef(false)
   const skipHydrationSave = useRef(true)
   const progressRef = useRef(progress)
   const initialProgressRef = useRef(initialProgress)
@@ -90,6 +95,7 @@ export function useWeeklyProgress(
     setPersistence('pending')
     const sequence = ++saveSequence.current
     const timeout = window.setTimeout(() => {
+      pendingSave.current = null
       void saveWeeklyProgress(progress.courtWeekId, progress).then((destination) => {
         if (sequence === saveSequence.current) {
           setPersistence(destination)
@@ -101,17 +107,20 @@ export function useWeeklyProgress(
         }
       })
     }, 120)
+    pendingSave.current = timeout
     return () => {
       window.clearTimeout(timeout)
-      // Flush immediately on unmount so a day-boundary remount cannot lose the
-      // just-recorded completion still sitting in the 120 ms debounce window.
-      void saveWeeklyProgress(progress.courtWeekId, progress)
+      if (pendingSave.current === timeout) {
+        pendingSave.current = null
+        if (!importInFlight.current) void saveWeeklyProgress(progress.courtWeekId, progress)
+      }
     }
   }, [ephemeral, hydrated, progress])
 
   useEffect(() => {
     if (!hydrated || ephemeral) return
     const flushLatest = () => {
+      if (importInFlight.current) return
       const latest = progressRef.current
       void saveWeeklyProgress(latest.courtWeekId, latest)
     }
@@ -135,5 +144,35 @@ export function useWeeklyProgress(
     [],
   )
 
-  return { progress, archivedProgress, hydrated, persistence, persistenceIssue, updateProgress }
+  const commitProgressImport = useCallback(async (
+    commit: () => Promise<StoredWeeklyProgress>,
+  ) => {
+    if (ephemeral) throw new Error('Temporary test sessions cannot import saved progress.')
+    ++saveSequence.current
+    if (pendingSave.current !== null) {
+      window.clearTimeout(pendingSave.current)
+      pendingSave.current = null
+    }
+    importInFlight.current = true
+    setPersistence('pending')
+    try {
+      const imported = await commit()
+      progressRef.current = imported
+      setProgress(imported)
+      return imported
+    } catch (error) {
+      const current = progressRef.current
+      const destination = await saveWeeklyProgress(current.courtWeekId, current)
+      setPersistence(destination)
+      if (destination === 'memory') setPersistenceIssue('save-failed')
+      throw error
+    } finally {
+      importInFlight.current = false
+    }
+  }, [ephemeral])
+
+  return {
+    progress, archivedProgress, hydrated, persistence, persistenceIssue,
+    updateProgress, commitProgressImport,
+  }
 }

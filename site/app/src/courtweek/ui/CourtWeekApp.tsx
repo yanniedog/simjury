@@ -406,7 +406,10 @@ export function CourtWeekApp({
     () => initialProgressOverride ?? initialProgress(courtWeek, now()),
     [courtWeek, initialProgressOverride, now],
   )
-  const { progress, archivedProgress, hydrated, persistence, persistenceIssue, updateProgress } = useWeeklyProgress(
+  const {
+    progress, archivedProgress, hydrated, persistence, persistenceIssue,
+    updateProgress, commitProgressImport,
+  } = useWeeklyProgress(
     baseline,
     { ephemeral },
   )
@@ -1054,9 +1057,10 @@ export function CourtWeekApp({
           prepareImport={prepareProgressImport
             ? (text) => prepareProgressImport(text, progress)
             : undefined}
-          onImport={(imported) => updateProgress((current) => (
-            mergeImportedWeeklyProgress(current, imported)
-          ))}
+          onImport={async (candidate) => {
+            const imported = mergeImportedWeeklyProgress(progress, candidate.progress)
+            await commitProgressImport(() => candidate.commit(imported))
+          }}
           onInspectEvidence={(id, trigger) => {
             playback.pause()
             evidenceTrigger.current = trigger

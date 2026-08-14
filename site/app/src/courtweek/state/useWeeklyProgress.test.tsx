@@ -103,6 +103,43 @@ describe('useWeeklyProgress durability boundaries', () => {
     }
   })
 
+  it('prevents a pending save from overwriting a confirmed import', async () => {
+    function Harness() {
+      state = useWeeklyProgress(initialProgress)
+      return null
+    }
+    const imported: StoredWeeklyProgress = {
+      ...initialProgress,
+      currentSessionId: 'cw-0001-tuesday',
+      currentSceneId: 'tue-dispatcher',
+      currentCueId: 'tue-dispatcher-1',
+      notes: 'Imported private note.',
+    }
+    const root = createRoot(container)
+    await act(async () => root.render(<Harness />))
+    await act(async () => { await Promise.resolve() })
+    act(() => state?.updateProgress((current) => ({ ...current, notes: 'Stale local draft.' })))
+    await act(async () => { await expect(state!.commitProgressImport(async () => { throw new Error('Import failed.') })).rejects.toThrow('Import failed.') })
+    await expect(loadWeeklyProgress('cw-0001', '2026.08.03-r2')).resolves.toMatchObject({ notes: 'Stale local draft.' })
+    clearMemoryProgressForTests()
+
+    let resolveImport!: (progress: StoredWeeklyProgress) => void
+    let importPromise!: Promise<StoredWeeklyProgress>
+    act(() => {
+      importPromise = state!.commitProgressImport(() => new Promise((resolve) => { resolveImport = resolve }))
+    })
+    act(() => window.dispatchEvent(new Event('pagehide')))
+    await expect(loadWeeklyProgress('cw-0001', '2026.08.03-r2')).resolves.toBeNull()
+
+    await act(async () => {
+      resolveImport(imported)
+      await importPromise
+    })
+    await new Promise((resolve) => window.setTimeout(resolve, 150))
+    await expect(loadWeeklyProgress('cw-0001', '2026.08.03-r2')).resolves.toMatchObject(imported)
+    act(() => root.unmount())
+  })
+
   it('keeps ephemeral preview progress entirely in React memory', async () => {
     let progressEvents = 0
     const receiveProgress = () => { progressEvents += 1 }

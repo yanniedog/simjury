@@ -23,8 +23,14 @@ const imported: WeeklyProgress = {
 describe('JurorDesk progress import', () => {
   let host: HTMLDivElement
   let root: Root
-  const onImport = vi.fn<(progress: WeeklyProgress) => void>()
-  beforeEach(() => { host = document.createElement('div'); document.body.append(host); root = createRoot(host); onImport.mockReset() })
+  const onImport = vi.fn<(candidate: PreparedProgressImport) => Promise<void>>()
+  beforeEach(() => {
+    host = document.createElement('div')
+    document.body.append(host)
+    root = createRoot(host)
+    onImport.mockReset()
+    onImport.mockImplementation(async (candidate) => { await candidate.commit(candidate.progress) })
+  })
   afterEach(() => { act(() => root.unmount()); host.remove() })
   const renderDesk = async (prepareImport: (text: string) => Promise<PreparedProgressImport>) => {
     await act(async () => root.render(<JurorDesk
@@ -54,7 +60,10 @@ describe('JurorDesk progress import', () => {
   })
   it('previews without committing, preserves drafts on cancel, then imports only on confirm', async () => {
     let finishCommit!: (progress: WeeklyProgress) => void
-    const commit = vi.fn(() => new Promise<WeeklyProgress>((resolve) => { finishCommit = resolve }))
+    const commit = vi.fn((confirmed: WeeklyProgress) => {
+      expect(confirmed).toEqual(imported)
+      return new Promise<WeeklyProgress>((resolve) => { finishCommit = resolve })
+    })
     const prepareImport = vi.fn(async () => ({ progress: imported, sessions, commit }))
     await renderDesk(prepareImport)
     act(() => host.querySelector<HTMLInputElement>('input[type="checkbox"]')!.click())
@@ -78,8 +87,9 @@ describe('JurorDesk progress import', () => {
     expect(host.querySelector<HTMLButtonElement>('.cw-sheet__close')?.disabled).toBe(true)
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })))
     expect(host.textContent).toContain('Review imported progress')
+    expect(onImport).toHaveBeenCalledWith(expect.objectContaining({ progress: imported }))
     await act(async () => { finishCommit(imported); await Promise.resolve() })
-    await vi.waitFor(() => expect(onImport).toHaveBeenCalledWith(imported))
+    await vi.waitFor(() => expect(host.textContent).toContain('Your working papers'))
     expect(commit).toHaveBeenCalledOnce()
   })
   it('keeps current notes and transfer options when preparation fails', async () => {

@@ -28,7 +28,7 @@ export const MAX_PROGRESS_IMPORT_BYTES = MAX_PROGRESS_TRANSFER_BYTES
 export interface PreparedProgressImport {
   progress: WeeklyProgress
   sessions: CourtSession[]
-  commit: () => Promise<WeeklyProgress>
+  commit: (progress: WeeklyProgress) => Promise<WeeklyProgress>
 }
 
 const verdictLabels: Record<Verdict, string> = {
@@ -55,7 +55,7 @@ export interface JurorDeskProps {
   fallbackReturnFocusSelector?: string
   onNotesChange: (notes: string) => void
   prepareImport?: (text: string) => Promise<PreparedProgressImport>
-  onImport: (progress: WeeklyProgress) => void
+  onImport: (candidate: PreparedProgressImport) => Promise<void>
   progressTransferEnabled?: boolean
   progressImportEnabled?: boolean
   onInspectEvidence: (evidenceId: string, trigger: HTMLButtonElement) => void
@@ -138,7 +138,7 @@ export function JurorDesk({
               deliberation,
               sessions,
             )
-            return { progress: imported, sessions, commit: async () => imported }
+            return { progress: imported, sessions, commit: async (confirmed: WeeklyProgress) => confirmed }
           })()
       setCandidate(prepared)
       setImportError(null)
@@ -154,7 +154,7 @@ export function JurorDesk({
     if (!candidate || importBusy) return
     setImportBusy(true)
     try {
-      onImport(await candidate.commit())
+      await onImport(candidate)
       leavePreview()
     } catch (error) {
       setImportError(error instanceof Error ? error.message : 'Progress could not be imported.')

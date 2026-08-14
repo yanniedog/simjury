@@ -26,7 +26,7 @@ async function prepareCourt(page: Page) {
 async function seedProgress(page: Page, position: Record<string, unknown>) {
   await page.goto('/robots.txt')
   await page.evaluate(async ({ instant, seededPosition }) => new Promise<void>((resolve, reject) => {
-    const request = indexedDB.open('simjury-court-week-v1', 1)
+    const request = indexedDB.open('simjury-court-week-v1')
     request.onerror = () => reject(request.error)
     request.onupgradeneeded = () => request.result.createObjectStore('progress')
     request.onsuccess = () => {
@@ -88,7 +88,7 @@ test('caption assistive copy exposes the complete visible cue exactly once', asy
   }, releaseNow)
   await page.goto('/robots.txt')
   await page.evaluate(async () => new Promise<void>((resolve, reject) => {
-    const request = indexedDB.open('simjury-court-week-v1', 1)
+    const request = indexedDB.open('simjury-court-week-v1')
     request.onerror = () => reject(request.error)
     request.onupgradeneeded = () => request.result.createObjectStore('progress')
     request.onsuccess = () => {

@@ -27,7 +27,7 @@ async function readProgressPosition(page: Page) {
     currentSceneId?: string
     currentCueId?: string
   } | null>((resolve, reject) => {
-    const request = indexedDB.open('simjury-court-week-v1', 1)
+    const request = indexedDB.open('simjury-court-week-v1')
     request.onerror = () => reject(request.error)
     request.onsuccess = () => {
       const database = request.result

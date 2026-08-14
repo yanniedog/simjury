@@ -67,6 +67,11 @@ decision is [`../COURT-WEEK.md`](../COURT-WEEK.md). Legacy `/today`, `/play` and
   Developer mode for pre-release unlock) lives in validated localStorage. It is
   not an account and is never transmitted.
   A versioned local export/import file is the only cross-device transfer mechanism.
+- Progress and opened sealed packs use separate object stores in the same
+  versioned IndexedDB database. A confirmed import writes both stores in one
+  transaction, so interruption cannot expose new packs with old progress or
+  new progress without its packs. The former sealed-pack database remains a
+  read-only compatibility source and is not deleted.
 - Old Daily Docket local-storage records remain untouched but are never read.
 
 ## D-WEB-6 — Device parity

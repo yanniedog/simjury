@@ -93,7 +93,7 @@ async function enterActiveCourt(page: Page) {
 
 async function readProgressPosition(page: Page): Promise<ProgressPosition | null> {
   return page.evaluate(async () => new Promise<ProgressPosition | null>((resolve, reject) => {
-    const request = indexedDB.open('simjury-court-week-v1', 1)
+    const request = indexedDB.open('simjury-court-week-v1')
     request.onerror = () => reject(request.error)
     request.onsuccess = () => {
       const database = request.result
