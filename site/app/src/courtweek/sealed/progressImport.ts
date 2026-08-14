@@ -13,6 +13,8 @@ export type ImportPackHydrator = (input: {
   baseUrl: string
   fetcher?: SealedPackFetcher
   persistOpened: false
+  readOpened: true
+  memoizeOpened: false
 }) => Promise<CourtDayPack[]>
 
 export function requiredImportEntries(
@@ -86,6 +88,8 @@ export async function prepareSealedProgressImport({
     baseUrl,
     ...(fetcher ? { fetcher } : {}),
     persistOpened: false,
+    readOpened: true,
+    memoizeOpened: false,
   })
   if (
     packs.length !== entries.length ||

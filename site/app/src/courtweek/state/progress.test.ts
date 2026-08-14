@@ -174,6 +174,12 @@ describe('weekly progress', () => {
       ...progress,
       notes: '',
     })
+    expect(() => exportWeeklyProgress({ ...progress, notes: 'x'.repeat(1024 * 1024) }, true))
+      .toThrow(/too large to transfer/i)
+  })
+
+  it('keeps receiving-device notes when an export omitted them', () => {
+    expect(mergeImportedWeeklyProgress(progress, { ...progress, notes: '' }).notes).toBe(progress.notes)
   })
 
   it('round-trips ballots and deliberation while keeping notes opt-in', () => {

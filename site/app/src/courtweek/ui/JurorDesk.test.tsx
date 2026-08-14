@@ -21,6 +21,7 @@ function renderDesk(
     currentSessionId: activeSessionId, currentCueId: cueId, notes: '', ...patch,
   }
   return renderToStaticMarkup(<JurorDesk
+    caseTitle="Eleven Minutes"
     trial={{ ...trial, objections: [] }}
     sessions={manifest.sessions}
     deliberation={deliberation}
