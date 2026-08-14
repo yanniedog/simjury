@@ -81,6 +81,10 @@ test('zero available voices enters automatic reading mode', async ({ page }) => 
 
   await expect(page.locator('.cw-reading-copy')).toBeVisible()
   await expect(page.getByText('Audio is unavailable. Reading mode is ready.')).toBeVisible()
+  await expect(page.getByLabel('Presentation mode')).toHaveValue('audio-first')
+  await page.getByLabel('Presentation mode').selectOption('captions')
+  await expect(page.getByLabel('Presentation mode')).toHaveValue('captions')
+  await expect(page.locator('.cw-reading-copy')).toBeVisible()
   expect((await probe(page)).speechCalls).toBe(0)
 })
 

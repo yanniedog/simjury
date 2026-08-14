@@ -167,6 +167,13 @@ describe('SealedCourtWeekApp', () => {
     await act(async () => enter?.click())
     expect(container.textContent).toContain('Sunday')
     expect(container.textContent).toContain('COURT WEEK PREVIEW')
+    const presentation = container.querySelector<HTMLSelectElement>('[aria-label="Presentation mode"]')
+    expect(presentation?.value).toBe('reading')
+    if (presentation) presentation.value = 'captions'
+    await act(async () => presentation?.dispatchEvent(new Event('change', { bubbles: true })))
+    const previewAccess = Array.from(container.querySelectorAll<HTMLSelectElement>('.cw-preview-grid select'))
+      .find((control) => control.parentElement?.textContent?.startsWith('Access'))
+    expect(previewAccess?.value).toBe('captions')
 
     const previewControls = Array.from(container.querySelectorAll('button')).find(
       ({ textContent }) => textContent?.trim() === 'Test session',
@@ -185,6 +192,8 @@ describe('SealedCourtWeekApp', () => {
     await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(4))
     expect(String(fetcher.mock.calls[3]?.[0])).toBe(`/packs/${courtWeekBootstrap.sessions[4].locator}`)
     await vi.waitFor(() => expect(container.textContent).toContain('Take your seat'))
+    expect(container.querySelector<HTMLInputElement>('input[value="captions"]')?.checked).toBe(true)
+    expect(previewAccess?.value).toBe('captions')
 
     const leave = Array.from(container.querySelectorAll('button')).find(
       ({ textContent }) => textContent?.trim() === 'Leave preview',

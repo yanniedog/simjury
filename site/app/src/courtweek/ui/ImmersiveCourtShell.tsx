@@ -31,7 +31,7 @@ export interface ImmersiveCourtShellProps {
   onPause: () => void
   onRepeat: () => void
   onAdvance: (trigger?: HTMLElement) => void
-  onToggleCaptions: () => void
+  onMode: (mode: AccessMode) => void
   onToggleDesk: () => void
   onOpenTestSession?: (trigger: HTMLElement) => void
 }
@@ -79,7 +79,7 @@ export function ImmersiveCourtShell({
   onPause,
   onRepeat,
   onAdvance,
-  onToggleCaptions,
+  onMode,
   onToggleDesk,
   onOpenTestSession,
 }: ImmersiveCourtShellProps) {
@@ -339,16 +339,21 @@ export function ImmersiveCourtShell({
             {playing ? 'Pause' : playbackStatus === 'paused' ? 'Resume' : 'Play'}
           </button>
           <button type="button" onClick={onRepeat}>Repeat</button>
-          <button
-            type="button"
-            onClick={onToggleCaptions}
-            aria-pressed={accessMode === 'captions'}
-          >
-            Captions
-          </button>
           <button type="button" onClick={onToggleDesk} aria-expanded={deskOpen}>
             Juror desk
           </button>
+          <label className="cw-presentation-mode" data-mode={accessMode}>
+            <span className="cw-visually-hidden">Presentation mode</span>
+            <select
+              aria-label="Presentation mode"
+              value={accessMode}
+              onChange={(event) => onMode(event.currentTarget.value as AccessMode)}
+            >
+              <option value="audio-first">Audio</option>
+              <option value="captions">Audio + captions</option>
+              <option value="reading">Reading</option>
+            </select>
+          </label>
           {COURT_WEEK_TEST_HARNESS_ENABLED && onOpenTestSession ? (
             <button type="button" onClick={(event) => onOpenTestSession(event.currentTarget)}>
               Test session

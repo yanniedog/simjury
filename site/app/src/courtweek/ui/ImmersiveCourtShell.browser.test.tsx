@@ -49,6 +49,7 @@ describe('ImmersiveCourtShell browser behavior', () => {
 
   it('treats native full screen as optional and survives viewport changes', async () => {
     const play = vi.fn()
+    const mode = vi.fn()
     const root = createRoot(container)
     const requestFullscreen = vi.fn(async () => undefined)
     Object.defineProperty(HTMLElement.prototype, 'requestFullscreen', {
@@ -61,9 +62,17 @@ describe('ImmersiveCourtShell browser behavior', () => {
         accessMode="audio-first" playbackStatus="paused" playbackError={null}
         progressLabel="Scene 1 of 3" deskOpen={false}
         onPlay={play} onPause={() => undefined} onRepeat={() => undefined}
-        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+        onAdvance={() => undefined} onMode={mode} onToggleDesk={() => undefined}
       />,
     ))
+
+    const presentation = container.querySelector<HTMLSelectElement>('[aria-label="Presentation mode"]')
+    expect(Array.from(presentation?.options ?? []).map(({ text }) => text)).toEqual([
+      'Audio', 'Audio + captions', 'Reading',
+    ])
+    if (presentation) presentation.value = 'reading'
+    await act(async () => presentation?.dispatchEvent(new Event('change', { bubbles: true })))
+    expect(mode).toHaveBeenCalledWith('reading')
 
     const fullscreen = Array.from(container.querySelectorAll('button')).find(
       (button) => button.textContent === 'Full screen',
@@ -76,6 +85,7 @@ describe('ImmersiveCourtShell browser behavior', () => {
       window.dispatchEvent(new Event('orientationchange'))
     })
     expect(play).not.toHaveBeenCalled()
+    expect(mode).toHaveBeenCalledOnce()
     expect(container.querySelector('.cw-shell')).not.toBeNull()
 
     const image = container.querySelector('img')
@@ -120,7 +130,7 @@ describe('ImmersiveCourtShell browser behavior', () => {
         accessMode="audio-first" playbackStatus="playing" playbackError={null}
         progressLabel="Scene 1 of 3" deskOpen={false}
         onPlay={callbacks.play} onPause={callbacks.pause} onRepeat={callbacks.repeat}
-        onAdvance={callbacks.advance} onToggleCaptions={callbacks.captions} onToggleDesk={callbacks.desk}
+        onAdvance={callbacks.advance} onMode={callbacks.captions} onToggleDesk={callbacks.desk}
       />,
     ))
 
@@ -148,7 +158,7 @@ describe('ImmersiveCourtShell browser behavior', () => {
         accessMode="audio-first" playbackStatus="paused" playbackError={null}
         progressLabel="Scene 1 of 3" deskOpen={false}
         onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
-        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+        onAdvance={() => undefined} onMode={() => undefined} onToggleDesk={() => undefined}
       />,
     ))
     await render()
@@ -191,7 +201,7 @@ describe('ImmersiveCourtShell browser behavior', () => {
         accessMode="captions" playbackStatus="paused" playbackError={null}
         progressLabel="Scene 1 of 3" deskOpen={false}
         onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
-        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+        onAdvance={() => undefined} onMode={() => undefined} onToggleDesk={() => undefined}
       />,
     ))
 

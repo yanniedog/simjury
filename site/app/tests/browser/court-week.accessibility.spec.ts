@@ -112,10 +112,43 @@ test('reduced motion switches to static cuts without changing legal position', a
   await expect(page.locator('.cw-reading-copy')).toBeVisible()
 })
 
+test('presentation mode survives cues, the desk, narrow rotation and restoration', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 })
+  await prepareCourt(page)
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+
+  const presentation = page.getByLabel('Presentation mode')
+  await expect(presentation.locator('option')).toHaveText(['Audio', 'Audio + captions', 'Reading'])
+  await presentation.selectOption('reading')
+  await expect(page.locator('.cw-shell')).toHaveAttribute('data-access-mode', 'reading')
+  await expect(page.locator('.cw-reading-copy')).toBeVisible()
+  expect(Math.round((await presentation.boundingBox())?.height ?? 0)).toBeGreaterThanOrEqual(44)
+
+  await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
+  await page.getByRole('button', { name: 'Close juror desk' }).click()
+  await expect(presentation).toHaveValue('reading')
+  const previousCue = (await readProgressPosition(page))?.currentCueId
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await expect.poll(async () => (await readProgressPosition(page))?.currentCueId).not.toBe(previousCue)
+
+  await page.setViewportSize({ width: 568, height: 320 })
+  await page.evaluate(() => window.dispatchEvent(new Event('orientationchange')))
+  await expect(presentation).toHaveValue('reading')
+  await expectNoHorizontalOverflow(page)
+  await page.waitForTimeout(200)
+
+  await page.reload()
+  await expect(page.getByLabel('Reading mode')).toBeChecked()
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  await expect(page.getByLabel('Presentation mode')).toHaveValue('reading')
+})
+
 test('forced colours retain labelled state, visible boundaries and legal position', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'Chromium provides Playwright forced-colours emulation.')
   await enterReadingCourt(page)
-  await page.getByRole('button', { name: 'Captions' }).click()
+  const presentation = page.getByLabel('Presentation mode')
+  await presentation.selectOption('captions')
+  await presentation.focus()
   const before = await capturePosition(page)
 
   await page.emulateMedia({ forcedColors: 'active' })
@@ -123,15 +156,15 @@ test('forced colours retain labelled state, visible boundaries and legal positio
   const audit = await page.evaluate(() => {
     const shell = document.querySelector<HTMLElement>('.cw-shell')!
     const stage = document.querySelector<HTMLElement>('.cw-stage')!
-    const selected = document.querySelector<HTMLElement>('button[aria-pressed="true"]')!
+    const selected = document.querySelector<HTMLSelectElement>('[aria-label="Presentation mode"]')!
     const style = getComputedStyle(selected)
     return {
       forcedColorAdjust: getComputedStyle(shell).forcedColorAdjust,
       stageOverlayDisplay: getComputedStyle(stage, '::after').display,
       outlineStyle: style.outlineStyle,
       outlineWidth: style.outlineWidth,
-      selectedLabel: selected.textContent?.trim(),
-      selectedState: selected.getAttribute('aria-pressed'),
+      selectedLabel: selected.selectedOptions[0]?.text,
+      selectedState: selected.value,
     }
   })
   expect(audit).toMatchObject({
@@ -139,8 +172,8 @@ test('forced colours retain labelled state, visible boundaries and legal positio
     stageOverlayDisplay: 'none',
     outlineStyle: 'solid',
     outlineWidth: '3px',
-    selectedLabel: 'Captions',
-    selectedState: 'true',
+    selectedLabel: 'Audio + captions',
+    selectedState: 'captions',
   })
   await expect(page.getByText('Monday', { exact: false }).first()).toBeVisible()
   await expect(page.locator('#cw-speaker-name')).not.toBeEmpty()
@@ -192,7 +225,7 @@ test('keyboard-only entry, skip link and desk expose a visible three-pixel focus
   await page.keyboard.press('Tab')
   await expect(page.getByRole('button', { name: 'Play' })).toBeFocused()
 
-  for (let index = 0; index < 3; index += 1) await page.keyboard.press('Tab')
+  for (let index = 0; index < 2; index += 1) await page.keyboard.press('Tab')
   const deskTrigger = page.getByRole('button', { name: 'Juror desk', exact: true })
   await expect(deskTrigger).toBeFocused()
   await expectThreePixelFocusRing(deskTrigger)
@@ -402,7 +435,8 @@ for (const screen of [{ width: 320, height: 568 }, { width: 1280, height: 800 }]
       })
       const before = await capturePosition(page)
       await expectNoHorizontalOverflow(page)
-      for (const name of ['Play', 'Repeat', 'Captions', 'Juror desk', 'Full screen', 'Continue']) {
+      await expect(page.getByLabel('Presentation mode')).toBeVisible()
+      for (const name of ['Play', 'Repeat', 'Juror desk', 'Full screen', 'Continue']) {
         const control = page.getByRole('button', { name, exact: true })
         await control.scrollIntoViewIfNeeded()
         await expect(control).toBeVisible()

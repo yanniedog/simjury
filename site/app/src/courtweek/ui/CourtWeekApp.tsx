@@ -66,6 +66,7 @@ export interface CourtWeekAppProps {
     onLeave: () => void
   }
   onEnteredChange?: (entered: boolean) => void
+  onAccessModeChange?: (mode: AccessMode) => void
   localProfile?: {
     profile: LocalProfile
     persistence: LocalProfilePersistence
@@ -330,6 +331,7 @@ export function CourtWeekApp({
   entryBusy = false,
   testSession,
   onEnteredChange,
+  onAccessModeChange,
   localProfile,
 }: CourtWeekAppProps) {
   const baseline = useMemo(
@@ -364,6 +366,10 @@ export function CourtWeekApp({
   const [replaySessionId, setReplaySessionId] = useState<string | null>(null)
   const gesturePlayedCue = useRef<string | null>(null)
   const accessMode = progress.accessibilityMode ?? 'audio-first'
+  const saveAccessMode = useCallback((mode: AccessMode) => {
+    updateProgress((current) => ({ ...current, accessibilityMode: mode }))
+    onAccessModeChange?.(mode)
+  }, [onAccessModeChange, updateProgress])
   const observedTime = observeCourtTime(Date.parse(progress.highestObservedTime), now())
   const availability = getSessionAvailability(
     courtWeek.manifest.sessions.map((session) => ({
@@ -577,6 +583,13 @@ export function CourtWeekApp({
     void playCue()
   }, [playCue, presentedCue.id])
 
+  const selectAccessMode = useCallback((mode: AccessMode) => {
+    if (mode === accessMode) return
+    saveAccessMode(mode)
+    if (mode === 'reading') playback.pause()
+    else playFromGesture()
+  }, [accessMode, playback, playFromGesture, saveAccessMode])
+
   const toggleDesk = useCallback(() => {
     if (deskOpen) {
       if (!interactionOpen) suppressAutoPlayAfterDeskClose.current = true
@@ -654,7 +667,7 @@ export function CourtWeekApp({
             ? `Court opens ${formatCourtUnlock(activeSession.unlockAt)}.`
             : 'Complete the preceding court session before returning.'
           : undefined}
-        onMode={(mode) => updateProgress((current) => ({ ...current, accessibilityMode: mode }))}
+        onMode={saveAccessMode}
         onEnter={(requestFullscreen) => {
           setEntered(true)
           onEnteredChange?.(true)
@@ -1087,10 +1100,7 @@ export function CourtWeekApp({
       onPause={playback.pause}
       onRepeat={() => void playback.repeat()}
       onAdvance={advance}
-      onToggleCaptions={() => updateProgress((current) => ({
-        ...current,
-        accessibilityMode: current.accessibilityMode === 'captions' ? 'audio-first' : 'captions',
-      }))}
+      onMode={selectAccessMode}
       onToggleDesk={toggleDesk}
       onOpenTestSession={COURT_WEEK_TEST_HARNESS_ENABLED && testSession ? (trigger) => {
         interactionReturnFocus.current = trigger

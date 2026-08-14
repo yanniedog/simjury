@@ -98,7 +98,7 @@ describe('ImmersiveCourtShell', () => {
         onPause={() => undefined}
         onRepeat={() => undefined}
         onAdvance={() => undefined}
-        onToggleCaptions={() => undefined}
+        onMode={() => undefined}
         onToggleDesk={() => undefined}
       />,
     )
@@ -113,7 +113,8 @@ describe('ImmersiveCourtShell', () => {
     expect(markup).toContain('data-caption-phone-position="bottom"')
     expect(markup).toContain('--cw-caption-phonePortrait-y:78%')
     expect(markup).toContain('--cw-caption-desktop-height:12%')
-    expect(markup).toContain('aria-pressed="true"')
+    expect(markup).toContain('aria-label="Presentation mode"')
+    expect(markup).toContain('<option value="captions" selected="">Audio + captions</option>')
     expect(markup).toContain('Juror desk')
     expect(markup).not.toContain('Full screen')
     expect(markup).toContain('cross-examination')
@@ -136,7 +137,7 @@ describe('ImmersiveCourtShell', () => {
         onPause={() => undefined}
         onRepeat={() => undefined}
         onAdvance={() => undefined}
-        onToggleCaptions={() => undefined}
+        onMode={() => undefined}
         onToggleDesk={() => undefined}
       />,
     )
@@ -164,7 +165,7 @@ describe('ImmersiveCourtShell', () => {
         onPause={() => undefined}
         onRepeat={() => undefined}
         onAdvance={() => undefined}
-        onToggleCaptions={() => undefined}
+        onMode={() => undefined}
         onToggleDesk={() => undefined}
       />,
     )
@@ -181,7 +182,7 @@ describe('ImmersiveCourtShell', () => {
         accessMode="captions" playbackStatus="playing" playbackError={null}
         progressLabel="Scene 1 of 3" deskOpen={false}
         onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
-        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+        onAdvance={() => undefined} onMode={() => undefined} onToggleDesk={() => undefined}
       />,
     )
     expect(markup).toContain('<p id="cw-speaker-name" aria-current="true">Nella Orr')
@@ -197,7 +198,7 @@ describe('ImmersiveCourtShell', () => {
         accessMode="audio-first" playbackStatus="paused" playbackError={null}
         progressLabel="Scene 1 of 3" deskOpen={false}
         onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
-        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+        onAdvance={() => undefined} onMode={() => undefined} onToggleDesk={() => undefined}
       />,
     )
     expect(markup).toContain('cw-stage__picture--strip')
@@ -222,7 +223,7 @@ describe('ImmersiveCourtShell', () => {
         accessMode="captions" playbackStatus="playing" playbackError={null}
         progressLabel="Scene 1 of 3" deskOpen={false}
         onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
-        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+        onAdvance={() => undefined} onMode={() => undefined} onToggleDesk={() => undefined}
       />,
     )
     expect(markup).toContain('data-complete-captions="false"')
@@ -248,7 +249,7 @@ describe('ImmersiveCourtShell', () => {
         accessMode="captions" playbackStatus="playing" playbackError={null}
         progressLabel="Scene 1 of 3" deskOpen={false}
         onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
-        onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+        onAdvance={() => undefined} onMode={() => undefined} onToggleDesk={() => undefined}
       />,
     )
     expect(markup).toContain('data-caption-phone-fits="false"')
