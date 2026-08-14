@@ -112,7 +112,10 @@ function stateFor(row: SpeechReviewSidecarRow): LegalState {
 function isDeterministicNeighbour(current: SpeechReviewSidecarRow, neighbour: SpeechReviewSidecarRow | undefined): neighbour is SpeechReviewSidecarRow {
   if (!neighbour || current.day !== neighbour.day) return false
   if (current.cueId === neighbour.cueId && current.runtimeVariant === neighbour.runtimeVariant) return true
-  return current.day !== 'sunday' && current.runtimeVariant === null && neighbour.runtimeVariant === null
+  if (current.runtimeVariant !== null || neighbour.runtimeVariant !== null) return false
+  return current.day !== 'sunday' || (
+    current.legalEffect.guard !== null && current.legalEffect.guard === neighbour.legalEffect.guard
+  )
 }
 
 export function buildSpeechReviewSidecar(): SpeechReviewSidecar {

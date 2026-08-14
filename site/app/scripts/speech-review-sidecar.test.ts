@@ -60,9 +60,16 @@ describe('speech review sidecar', () => {
     expect(sidecar.rows[linearIndex]!.precedingLegalState?.rowId).toBe(sidecar.rows[linearIndex - 1]!.rowId)
     const branchIndex = sidecar.rows.findIndex(({ runtimeVariant }) => runtimeVariant !== null)
     expect(sidecar.rows[branchIndex]!.precedingLegalState).toBeNull()
+    const sundayLinearIndex = sidecar.rows.findIndex((row, index) => {
+      const previous = sidecar.rows[index - 1]
+      return row.day === 'sunday' && previous?.day === row.day && previous.cueId !== row.cueId &&
+        row.legalEffect.guard === previous.legalEffect.guard
+    })
+    expect(sidecar.rows[sundayLinearIndex]!.precedingLegalState?.rowId).toBe(sidecar.rows[sundayLinearIndex - 1]!.rowId)
     const sundayBranchIndex = sidecar.rows.findIndex((row, index) => {
       const previous = sidecar.rows[index - 1]
-      return row.day === 'sunday' && row.runtimeVariant === null && previous?.day === row.day && previous.cueId !== row.cueId
+      return row.day === 'sunday' && previous?.day === row.day && previous.cueId !== row.cueId &&
+        row.legalEffect.guard !== previous.legalEffect.guard
     })
     expect(sidecar.rows[sundayBranchIndex]!.precedingLegalState).toBeNull()
     expect(sidecar.rows[sundayBranchIndex - 1]!.followingLegalState).toBeNull()
