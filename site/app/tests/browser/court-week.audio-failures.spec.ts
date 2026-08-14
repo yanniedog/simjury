@@ -9,6 +9,13 @@ type AudioProbe = {
   cancelCalls: number
 }
 
+type GesturePlaybackProbe = {
+  gestureActive: boolean
+  trustedSelections: number
+  playCalls: number
+  blockedPlayCalls: number
+}
+
 async function installFailedMedia(page: Page, voicesWhenOnline: boolean) {
   await page.addInitScript(({ instant, enableVoices }) => {
     Date.now = () => instant
@@ -64,6 +71,12 @@ async function probe(page: Page): Promise<AudioProbe> {
   ).__simjuryAudioProbe)
 }
 
+async function gestureProbe(page: Page): Promise<GesturePlaybackProbe> {
+  return page.evaluate(() => (
+    window as typeof window & { __simjuryGesturePlayback: GesturePlaybackProbe }
+  ).__simjuryGesturePlayback)
+}
+
 test('failed recorded media reaches device speech through the mounted player', async ({ page }) => {
   await installFailedMedia(page, true)
   await page.goto('/')
@@ -72,6 +85,72 @@ test('failed recorded media reaches device speech through the mounted player', a
   await expect.poll(async () => (await probe(page)).speechCalls).toBe(1)
   await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible()
   expect([0, 2]).toContain((await probe(page)).playCalls)
+})
+
+test('reading mode starts either audio mode inside the trusted selector gesture', async ({ page }) => {
+  await page.addInitScript((instant) => {
+    Date.now = () => instant
+    const probe: GesturePlaybackProbe = {
+      gestureActive: false,
+      trustedSelections: 0,
+      playCalls: 0,
+      blockedPlayCalls: 0,
+    }
+    Object.defineProperty(window, '__simjuryGesturePlayback', { value: probe })
+    const markTrustedSelection = (event: Event) => {
+      if (!(event.target instanceof HTMLSelectElement) || !event.target.closest('.cw-presentation-mode')) return
+      probe.gestureActive = event.isTrusted
+      if (event.isTrusted && event.type === 'input') probe.trustedSelections += 1
+      setTimeout(() => { probe.gestureActive = false }, 0)
+    }
+    document.addEventListener('input', markTrustedSelection, true)
+    document.addEventListener('change', markTrustedSelection, true)
+    class GestureAudio extends EventTarget {
+      src = ''
+      currentTime = 0
+      preload = ''
+      ended = false
+      private playing = false
+      canPlayType() { return 'probably' }
+      load() { /* deterministic no-network audio */ }
+      play() {
+        probe.playCalls += 1
+        if (!probe.gestureActive) {
+          probe.blockedPlayCalls += 1
+          return Promise.reject(new DOMException('A user gesture is required.', 'NotAllowedError'))
+        }
+        this.playing = true
+        this.dispatchEvent(new Event('playing'))
+        return Promise.resolve()
+      }
+      pause() {
+        if (!this.playing) return
+        this.playing = false
+        this.dispatchEvent(new Event('pause'))
+      }
+      removeAttribute(name: string) { if (name === 'src') this.src = '' }
+    }
+    Object.defineProperty(window, 'Audio', { configurable: true, value: GestureAudio })
+  }, releaseNow)
+  await page.goto('/')
+  await page.getByText('Experience settings', { exact: true }).click()
+  await page.getByLabel('Reading mode').check()
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+
+  const presentation = page.getByLabel('Presentation mode')
+  await presentation.focus()
+  await page.keyboard.press('Home')
+  await expect(presentation).toHaveValue('audio-first')
+  await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible()
+  await presentation.focus()
+  await page.keyboard.press('End')
+  await expect(presentation).toHaveValue('reading')
+  await expect(page.getByRole('button', { name: 'Resume' })).toBeVisible()
+  await presentation.focus()
+  await page.keyboard.press('ArrowUp')
+  await expect(presentation).toHaveValue('captions')
+  await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible()
+  expect(await gestureProbe(page)).toMatchObject({ trustedSelections: 3, playCalls: 2, blockedPlayCalls: 0 })
 })
 
 test('zero available voices enters automatic reading mode', async ({ page }) => {
