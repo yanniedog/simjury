@@ -66,6 +66,7 @@ export interface CourtWeekAppProps {
     onLeave: () => void
   }
   onEnteredChange?: (entered: boolean) => void
+  onAccessModeChange?: (mode: AccessMode) => void
   localProfile?: {
     profile: LocalProfile
     persistence: LocalProfilePersistence
@@ -359,6 +360,7 @@ export function CourtWeekApp({
   entryBusy = false,
   testSession,
   onEnteredChange,
+  onAccessModeChange,
   localProfile,
 }: CourtWeekAppProps) {
   const baseline = useMemo(
@@ -393,6 +395,10 @@ export function CourtWeekApp({
   const [replaySessionId, setReplaySessionId] = useState<string | null>(null)
   const gesturePlayedCue = useRef<string | null>(null)
   const accessMode = progress.accessibilityMode ?? 'audio-first'
+  const saveAccessMode = useCallback((mode: AccessMode) => {
+    updateProgress((current) => ({ ...current, accessibilityMode: mode }))
+    onAccessModeChange?.(mode)
+  }, [onAccessModeChange, updateProgress])
   const observedTime = observeCourtTime(Date.parse(progress.highestObservedTime), now())
   const availability = getSessionAvailability(
     courtWeek.manifest.sessions.map((session) => ({
@@ -427,7 +433,7 @@ export function CourtWeekApp({
   const isReplay = replaySessionId === activeSession.id
   const position = cuePosition(activeSession, progress.currentSceneId, progress.currentCueId)
   const activeAvailability = availability.find((item) => item.id === activeSession.id)
-  const presentedCue = useMemo<SceneCue>(() => {
+  const playbackCue = useMemo<SceneCue>(() => {
     const safeCue = replaySafeCue(position.cue, isReplay)
     if (safeCue.id === 'sun-verdict-return' && progress.sealedVerdict && progress.sealedAgreement) {
       const turns = openCourtReturnTurns(progress.sealedVerdict, progress.sealedAgreement)
@@ -459,16 +465,20 @@ export function CourtWeekApp({
         accessibleProposition: 'Balanced analysis presents the strongest lawful rationale and counter-analysis for the returned result without declaring a correct answer.',
       }
     }
-    // Reading mode promises complete dialogue. Caption pacing splits utterances
-    // for audio overlays; rejoin them here so Continue is not fragment-bound.
-    if (accessMode === 'reading') {
-      return attachCueTurns({
-        ...safeCue,
-        text: joinAuthoredCueText(position.scene.cues, safeCue),
-      })
-    }
     return safeCue
-  }, [accessMode, courtWeek.deliberation, isReplay, position.cue, position.scene.cues, progress.openCourtVerdictReturned, progress.returnedVerdict, progress.sealedAgreement, progress.sealedVerdict])
+  }, [courtWeek.deliberation, isReplay, position.cue, progress.openCourtVerdictReturned, progress.returnedVerdict, progress.sealedAgreement, progress.sealedVerdict])
+  const presentedCue = useMemo<SceneCue>(() => {
+    if (accessMode !== 'reading' || playbackCue.id === 'sun-verdict-return' || playbackCue.id === 'sun-analysis') {
+      return playbackCue
+    }
+    // Keep the audio cue stable while Reading mode joins paced caption fragments.
+    // A trusted selector gesture can then start audio before React commits the
+    // display-only mode change without cue cleanup cancelling that playback.
+    return attachCueTurns({
+      ...playbackCue,
+      text: joinAuthoredCueText(position.scene.cues, playbackCue),
+    })
+  }, [accessMode, playbackCue, position.scene.cues])
   const commitPosition = useCallback((sessionId: string, sceneId: string, cueId: string, traversedCueId?: string) => {
     updateProgress((current) => ({
       ...current,
@@ -550,7 +560,7 @@ export function CourtWeekApp({
     return nextSceneCue ? replaySafeCue(nextSceneCue, isReplay) : undefined
   }, [activeSession.scenes, isReplay, position.cueIndex, position.scene, position.sceneIndex])
   const playback = useCuePlayback(
-    presentedCue,
+    playbackCue,
     handleCueEnded,
     entered ? activeSession.scenes[position.sceneIndex + 1]?.cues[0] : undefined,
     { deferSourceUntilPlay: true, followingCue: followingPlaybackCue },
@@ -594,17 +604,24 @@ export function CourtWeekApp({
       return
     }
     if (!started || interactionOpen || deskOpen || evidenceId || advanceBlocked.current || accessMode === 'reading') return
-    const alreadyPlayedFromGesture = gesturePlayedCue.current === presentedCue.id
+    const alreadyPlayedFromGesture = gesturePlayedCue.current === playbackCue.id
     gesturePlayedCue.current = null
     if (alreadyPlayedFromGesture) return
     void playCue()
-  }, [accessMode, deskOpen, evidenceId, interactionOpen, playCue, presentedCue.id, started])
+  }, [accessMode, deskOpen, evidenceId, interactionOpen, playCue, playbackCue.id, started])
 
   const playFromGesture = useCallback(() => {
-    gesturePlayedCue.current = presentedCue.id
+    gesturePlayedCue.current = playbackCue.id
     setStarted(true)
     void playCue()
-  }, [playCue, presentedCue.id])
+  }, [playCue, playbackCue.id])
+
+  const selectAccessMode = useCallback((mode: AccessMode) => {
+    if (mode === accessMode) return
+    saveAccessMode(mode)
+    if (mode === 'reading') playback.pause()
+    else playFromGesture()
+  }, [accessMode, playback, playFromGesture, saveAccessMode])
 
   const toggleDesk = useCallback(() => {
     if (deskOpen) {
@@ -684,7 +701,7 @@ export function CourtWeekApp({
             ? `Court opens ${formatCourtUnlock(activeSession.unlockAt)}.`
             : 'Complete the preceding court session before returning.'
           : undefined}
-        onMode={(mode) => updateProgress((current) => ({ ...current, accessibilityMode: mode }))}
+        onMode={saveAccessMode}
         onEnter={(requestFullscreen) => {
           setEntered(true)
           onEnteredChange?.(true)
@@ -1117,10 +1134,7 @@ export function CourtWeekApp({
       onPause={playback.pause}
       onRepeat={() => void playback.repeat()}
       onAdvance={advance}
-      onToggleCaptions={() => updateProgress((current) => ({
-        ...current,
-        accessibilityMode: current.accessibilityMode === 'captions' ? 'audio-first' : 'captions',
-      }))}
+      onMode={selectAccessMode}
       onToggleDesk={toggleDesk}
       onOpenTestSession={COURT_WEEK_TEST_HARNESS_ENABLED && testSession ? (trigger) => {
         interactionReturnFocus.current = trigger
