@@ -1,8 +1,16 @@
-import { expect, test, type Locator, type Page } from '@playwright/test'
+import { expect, test, type Download, type Locator, type Page } from '@playwright/test'
+import { elevenMinutesDeliberation } from '../../src/courtweek/content/deliberation'
 import { elevenMinutesSessions } from '../../src/courtweek/content/sessions'
 import { courtWeekBootstrap } from '../../src/courtweek/sealed/bootstrap'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
+
+async function downloadText(download: Download): Promise<string> {
+  const stream = await download.createReadStream()
+  const chunks: Buffer[] = []
+  for await (const chunk of stream) chunks.push(Buffer.from(chunk))
+  return Buffer.concat(chunks).toString('utf8')
+}
 
 async function enterCourt(page: Page) {
   await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
@@ -839,6 +847,7 @@ async function readStoredProgress(page: Page) {
 
 test('accelerated conclusion returns its verdict before analysis and preserves sealed state on replay', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'The real-duration release gate complements this accelerated conclusion.')
+  await page.setViewportSize({ width: 320, height: 568 })
   await page.addInitScript((instant) => {
     let current = instant
     Date.now = () => current
@@ -869,10 +878,22 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
       prohibited.push(request.url())
     }
   })
+  const reasoning = elevenMinutesDeliberation.propositions.find(
+    ({ id }) => id === 'prop-causation-window-doubt',
+  )!
+  const savedReasoning = {
+    propositionId: reasoning.id,
+    sceneId: 'sat-causation',
+    legalQuestion: reasoning.legalQuestion,
+    evidenceId: 'ex-survival',
+    move: 'challenge-inference',
+    recordedAt: '2026-08-15T11:00:00+10:00',
+    influencePenalty: 0,
+  }
   // Seed from a same-origin static page so no mounted player can race the
   // fixture with its ordinary debounced progress save.
   await page.goto('/robots.txt')
-  await page.evaluate(async (instant) => new Promise<void>((resolve, reject) => {
+  await page.evaluate(async ({ instant, contribution }) => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open('simjury-court-week-v1', 1)
     request.onerror = () => reject(request.error)
     request.onsuccess = () => {
@@ -897,7 +918,7 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
         currentCueId: 'sun-verdict-return',
         notes: 'Private note retained through replay.',
         accessibilityMode: 'reading',
-        reasoningContributions: [],
+        reasoningContributions: [contribution],
         provisionalVote: 'not-guilty',
         secondVote: 'not-guilty',
         secondBallotWasUnanimous: true,
@@ -907,7 +928,7 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
         openCourtVerdictReturned: false,
       }, ['cw-0001', '2026.08.03-r2'])
     }
-  }), releaseNow)
+  }), { instant: releaseNow, contribution: savedReasoning })
   await page.goto('/')
   await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
@@ -933,6 +954,43 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
   await expect(page.getByRole('heading', { name: 'Court Week complete' })).toBeVisible()
   await page.waitForTimeout(200)
 
+  const completion = page.locator('.cw-complete')
+  await expect(completion.getByText('Private completion record', { exact: true })).toBeVisible()
+  await expect(completion.getByText('Not Guilty', { exact: true })).toBeVisible()
+  await expect(completion.getByText('Unanimous', { exact: true })).toBeVisible()
+  const safeDownload = page.waitForEvent('download')
+  await completion.getByRole('button', { name: 'Export progress' }).click()
+  const safeExport = JSON.parse(await downloadText(await safeDownload)).progress
+  expect(safeExport).toMatchObject({ notes: '', returnedVerdict: 'not-guilty', returnedAgreement: 'unanimous' })
+  await completion.getByLabel('Include my private notes in the export').check()
+  const privateDownload = page.waitForEvent('download')
+  await completion.getByRole('button', { name: 'Export progress' }).click()
+  expect(JSON.parse(await downloadText(await privateDownload)).progress.notes).toBe('Private note retained through replay.')
+
+  await completion.locator('summary').filter({ hasText: 'Balanced reasoning for the returned result' }).click()
+  await expect(completion.getByRole('heading', { name: 'Strongest lawful rationale' })).toBeVisible()
+  await expect(completion.getByRole('heading', { name: 'Strongest counter-reading' })).toBeVisible()
+  await completion.locator('summary').filter({ hasText: 'Your saved reasoning trail' }).click()
+  await expect(completion.getByText('Reasoning move', { exact: true })).toBeVisible()
+  await expect(completion.locator('.cw-complete__trail dd').last()).toHaveText(
+    /Connect admitted evidence|Distinguish competing evidence|Test the source|Challenge an inference|Raise a reasonable alternative|Apply the burden of proof/,
+  )
+  await expect(completion.getByText('challenge-inference', { exact: true })).toHaveCount(0)
+  await completion.locator('summary').filter({ hasText: 'Completed-day history and replay' }).click()
+  await expect(completion.getByRole('button', { name: /Replay (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/ })).toHaveCount(7)
+
+  // A 160x284 CSS viewport exercises the same reflow pressure as 320x568 at 200%.
+  await page.setViewportSize({ width: 160, height: 284 })
+  const layout = await completion.evaluate((element) => ({
+    clientWidth: element.clientWidth,
+    scrollWidth: element.scrollWidth,
+  }))
+  expect(layout.scrollWidth).toBeLessThanOrEqual(layout.clientWidth + 1)
+  const targetHeights = await completion.locator('summary, button').evaluateAll((elements) => elements
+    .filter((element) => (element as HTMLElement).offsetParent !== null)
+    .map((element) => Math.round(element.getBoundingClientRect().height)))
+  expect(Math.min(...targetHeights)).toBeGreaterThanOrEqual(44)
+
   const beforeReplay = await readStoredProgress(page)
   expect(beforeReplay?.completedSessionIds).toHaveLength(7)
   const protectedBefore = {
@@ -948,7 +1006,12 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
     returnedAgreement: beforeReplay?.returnedAgreement,
   }
 
-  await page.getByRole('button', { name: /Replay Monday/i }).click()
+  const replayMonday = completion.getByRole('button', { name: /Replay Monday/i })
+  await replayMonday.scrollIntoViewIfNeeded()
+  await expect(replayMonday).toBeInViewport()
+  expect(await completion.evaluate((element) => element.scrollTop)).toBeGreaterThan(0)
+  expect(await page.evaluate(() => window.scrollY)).toBe(0)
+  await replayMonday.click()
   await expect(page.getByText('Monday', { exact: false }).first()).toBeVisible()
   await expect(page.locator('.cw-reading-copy')).toBeVisible()
   await page.getByLabel('Court playback controls').getByRole('button', { name: 'Continue', exact: true }).click()

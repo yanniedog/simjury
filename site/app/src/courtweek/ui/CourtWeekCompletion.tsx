@@ -1,9 +1,33 @@
-import { useEffect, useRef, useState } from 'react'
-import type { CourtSession } from '../model/schema'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import type { CourtSession, DeliberationPack, ReasoningMove, TrialRecord, Verdict } from '../model/schema'
+import type { StoredWeeklyProgress } from '../state/progress'
 import { COURT_WEEK_TEST_HARNESS_ENABLED } from '../testHarness'
+
+const verdictLabels: Record<Verdict, string> = {
+  murder: 'Guilty of murder',
+  manslaughter: 'Guilty of manslaughter by criminal negligence',
+  'not-guilty': 'Not Guilty',
+  'unable-to-agree': 'Unable to agree',
+}
+const agreementLabels = {
+  unanimous: 'Unanimous',
+  majority: 'Majority',
+  hung: 'Jury unable to agree',
+} as const
+const reasoningMoveLabels: Record<ReasoningMove, string> = {
+  connect: 'Connect admitted evidence',
+  distinguish: 'Distinguish competing evidence',
+  'test-source': 'Test the source',
+  'challenge-inference': 'Challenge an inference',
+  'raise-alternative': 'Raise a reasonable alternative',
+  'apply-burden': 'Apply the burden of proof',
+}
 
 export interface CourtWeekCompletionProps {
   sessions: CourtSession[]
+  progress: StoredWeeklyProgress
+  deliberation: Pick<DeliberationPack, 'outcomePaths'>
+  evidence: TrialRecord['evidence']
   persistence: 'indexeddb' | 'memory' | 'pending' | 'ephemeral'
   onReplay: (session: CourtSession) => void
   onSettings: () => void
@@ -18,6 +42,9 @@ export interface CourtWeekCompletionProps {
 
 export function CourtWeekCompletion({
   sessions,
+  progress,
+  deliberation,
+  evidence,
   persistence,
   onReplay,
   onSettings,
@@ -30,6 +57,19 @@ export function CourtWeekCompletion({
   const testDay = activeTestSession?.sessions.find(
     ({ ordinal }) => ordinal === activeTestSession.selectedOrdinal,
   )?.day
+  const completedSessions = sessions.filter(({ id }) => progress.completedSessionIds.includes(id))
+  const outcome = deliberation.outcomePaths.find(({ verdict }) => verdict === progress.returnedVerdict)
+  const evidenceLabels = useMemo(
+    () => new Map(evidence.map(({ id, label }) => [id, label])),
+    [evidence],
+  )
+  const contributions = progress.reasoningContributions ?? []
+  const persistenceMessage = {
+    indexeddb: 'Stored privately on this device. SimJury does not receive your result, reasoning trail or notes.',
+    memory: 'Progress is held in this tab only. Export it before leaving or the completed result and notes will be lost.',
+    pending: 'Your final device save is still being confirmed. You can export a copy now.',
+    ephemeral: 'Temporary progress and private notes are discarded when you switch sessions or leave this session.',
+  }[persistence]
   useEffect(() => {
     headingRef.current?.focus()
   }, [])
@@ -38,48 +78,98 @@ export function CourtWeekCompletion({
     <main className="cw-entry cw-complete" tabIndex={-1}>
       <div className="cw-entry__panel">
         <p className="cw-kicker">
-          {activeTestSession ? 'Test session complete' : 'The court week has concluded'}
+          {activeTestSession ? 'Test session complete' : 'Private completion record'}
         </p>
         <h1 ref={headingRef} tabIndex={-1}>
           {activeTestSession ? `${testDay ?? 'Session'} test complete` : 'Court Week complete'}
         </h1>
-        {persistence === 'memory' ? (
-          <div className="cw-complete__persistence-warning">
-            <p role="status">
-              Progress is held in this tab only. Export it before leaving or the
-              completed verdict and notes will be lost.
-            </p>
-            {onExportProgress ? (
-              <>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={includeNotes}
-                    onChange={(event) => setIncludeNotes(event.target.checked)}
-                  />
-                  Include my private notes in the export
-                </label>
-                <button type="button" onClick={() => onExportProgress(includeNotes)}>Export progress</button>
-              </>
-            ) : null}
-          </div>
-        ) : null}
-        <p>{activeTestSession
-          ? 'Choose another session to inspect, replay this session, or leave the test session.'
-          : 'The complete record remains available. Replaying a session does not change your private notes, reasoning contributions, sealed ballots or returned result.'}
+        <p className="cw-entry__advisory">
+          Review your returned result, then open the parts of the record you want to revisit.
         </p>
-        <nav className="cw-session-schedule" aria-label="Completed court sessions">
-          <ol>
-            {sessions.map((session) => (
-              <li key={session.id}>
-                <button type="button" onClick={() => onReplay(session)}>
-                  <span>Replay {session.day}</span>
-                  <small>{session.title}</small>
-                </button>
-              </li>
-            ))}
-          </ol>
-        </nav>
+        <p className="cw-complete__storage" role={persistence === 'indexeddb' ? undefined : 'status'}>
+          {persistenceMessage}
+        </p>
+
+        <section className="cw-complete__result" aria-labelledby="cw-complete-result-heading">
+          <h2 id="cw-complete-result-heading">Returned result</h2>
+          <dl>
+            <div><dt>Verdict</dt><dd>{progress.returnedVerdict ? verdictLabels[progress.returnedVerdict] : 'Not recorded'}</dd></div>
+            <div><dt>Agreement</dt><dd>{progress.returnedAgreement ? agreementLabels[progress.returnedAgreement] : 'Not recorded'}</dd></div>
+          </dl>
+        </section>
+
+        {onExportProgress ? (
+          <section className="cw-complete__export" aria-labelledby="cw-complete-export-heading">
+            <h2 id="cw-complete-export-heading">Keep a copy</h2>
+            <p>Export your progress, ballots, returned result and reasoning trail. Private notes are omitted unless you opt in.</p>
+            <label>
+              <input
+                type="checkbox"
+                checked={includeNotes}
+                onChange={(event) => setIncludeNotes(event.target.checked)}
+              />
+              Include my private notes in the export
+            </label>
+            <button type="button" onClick={() => onExportProgress(includeNotes)}>Export progress</button>
+          </section>
+        ) : null}
+
+        {outcome ? (
+          <details className="cw-complete__disclosure">
+            <summary>Balanced reasoning for the returned result</summary>
+            <div className="cw-complete__disclosure-body">
+              <p>The strongest lawful reading is set beside the strongest counter-reading from the admitted record. Neither is ranked.</p>
+              <h2>Strongest lawful rationale</h2>
+              <p>{outcome.lawfulRationale}</p>
+              <h2>Strongest counter-reading</h2>
+              <p>{outcome.counterAnalysis}</p>
+            </div>
+          </details>
+        ) : null}
+
+        <details className="cw-complete__disclosure">
+          <summary>Your saved reasoning trail <small>{contributions.length} contributions</small></summary>
+          <div className="cw-complete__disclosure-body">
+            <p>Each entry records the legal question, admitted evidence and reasoning move you selected.</p>
+            {contributions.length ? (
+              <ol className="cw-complete__trail">
+                {contributions.map((contribution, index) => {
+                  const day = sessions.find((session) => session.scenes.some(({ id }) => id === contribution.sceneId))?.day
+                  return (
+                    <li key={`${contribution.recordedAt}:${contribution.propositionId}`}>
+                      <strong>{day ? `${day} contribution ${index + 1}` : `Contribution ${index + 1}`}</strong>
+                      <dl>
+                        <div><dt>Legal question</dt><dd>{contribution.legalQuestion}</dd></div>
+                        <div><dt>Admitted evidence</dt><dd>{evidenceLabels.get(contribution.evidenceId) ?? 'Admitted exhibit'}</dd></div>
+                        <div><dt>Reasoning move</dt><dd>{reasoningMoveLabels[contribution.move]}</dd></div>
+                      </dl>
+                    </li>
+                  )
+                })}
+              </ol>
+            ) : <p>No structured reasoning contributions were saved.</p>}
+          </div>
+        </details>
+
+        <details className="cw-complete__disclosure">
+          <summary>Completed-day history and replay <small>{completedSessions.length} of {sessions.length}</small></summary>
+          <div className="cw-complete__disclosure-body">
+            <p>Replay is read-only and does not change your notes, reasoning trail, ballots or returned result.</p>
+            <nav className="cw-session-schedule" aria-label="Completed court sessions">
+              <ol>
+                {completedSessions.map((session) => (
+                  <li key={session.id}>
+                    <button type="button" onClick={() => onReplay(session)}>
+                      <span>Replay {session.day}</span>
+                      <small>{session.title}</small>
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </div>
+        </details>
+
         {activeTestSession ? (
           <div className="cw-button-row" aria-label="Test session controls">
             <label htmlFor="cw-developer-day-complete">Test session</label>
@@ -94,11 +184,6 @@ export function CourtWeekCompletion({
             </select>
             <button type="button" onClick={activeTestSession.onLeave}>Leave test session</button>
           </div>
-        ) : null}
-        {persistence === 'ephemeral' ? (
-          <p role="status">
-            Temporary progress and private notes are discarded when you switch sessions or leave this session.
-          </p>
         ) : null}
         <button type="button" onClick={onSettings}>Presentation settings</button>
       </div>
