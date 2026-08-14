@@ -33,7 +33,7 @@ describe('weekly progress', () => {
     Object.defineProperty(globalThis, 'indexedDB', { configurable: true, value: undefined })
     try {
       await expect(saveWeeklyProgress('cw-0001', progress)).resolves.toBe('memory')
-      await expect(loadWeeklyProgress('cw-0001')).resolves.toEqual(progress)
+      await expect(loadWeeklyProgress('cw-0001', progress.revision)).resolves.toEqual(progress)
     } finally {
       if (descriptor) Object.defineProperty(globalThis, 'indexedDB', descriptor)
       else delete (globalThis as { indexedDB?: IDBFactory }).indexedDB
@@ -48,7 +48,33 @@ describe('weekly progress', () => {
     Object.defineProperty(globalThis, 'indexedDB', { configurable: true, value: factory })
     try {
       await expect(saveWeeklyProgress('cw-0001', progress)).resolves.toBe('memory')
-      await expect(loadWeeklyProgress('cw-0001')).resolves.toEqual(progress)
+      await expect(loadWeeklyProgress('cw-0001', progress.revision)).resolves.toEqual(progress)
+    } finally {
+      if (descriptor) Object.defineProperty(globalThis, 'indexedDB', descriptor)
+      else delete (globalThis as { indexedDB?: IDBFactory }).indexedDB
+    }
+  })
+
+  it('keeps revisions separate and never treats an archived ballot as current', async () => {
+    const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'indexedDB')
+    Object.defineProperty(globalThis, 'indexedDB', { configurable: true, value: undefined })
+    const archived = {
+      ...progress,
+      revision: '2026.08.03-r1',
+      provisionalVote: 'murder' as const,
+      sealedVerdict: 'murder' as const,
+      sealedAgreement: 'unanimous' as const,
+    }
+    try {
+      await saveWeeklyProgress(archived.courtWeekId, archived)
+      await expect(loadWeeklyProgressResult(progress.courtWeekId, progress.revision)).resolves.toMatchObject({
+        progress: null,
+        archives: [{ revision: archived.revision, provisionalVote: 'murder' }],
+      })
+
+      await saveWeeklyProgress(progress.courtWeekId, progress)
+      await expect(loadWeeklyProgress(progress.courtWeekId, archived.revision)).resolves.toEqual(archived)
+      await expect(loadWeeklyProgress(progress.courtWeekId, progress.revision)).resolves.toEqual(progress)
     } finally {
       if (descriptor) Object.defineProperty(globalThis, 'indexedDB', descriptor)
       else delete (globalThis as { indexedDB?: IDBFactory }).indexedDB
@@ -85,8 +111,9 @@ describe('weekly progress', () => {
     } as unknown as IDBFactory
     Object.defineProperty(globalThis, 'indexedDB', { configurable: true, value: factory })
     try {
-      await expect(loadWeeklyProgressResult('cw-0001')).resolves.toEqual({
+      await expect(loadWeeklyProgressResult('cw-0001', progress.revision)).resolves.toEqual({
         progress: null,
+        archives: [],
         issue: 'corrupt',
       })
     } finally {
@@ -132,7 +159,7 @@ describe('weekly progress', () => {
 
     try {
       await expect(saveWeeklyProgress('cw-0001', progress)).resolves.toBe('memory')
-      await expect(loadWeeklyProgress('cw-0001')).resolves.toEqual(progress)
+      await expect(loadWeeklyProgress('cw-0001', progress.revision)).resolves.toEqual(progress)
     } finally {
       if (descriptor) Object.defineProperty(globalThis, 'indexedDB', descriptor)
       else delete (globalThis as { indexedDB?: IDBFactory }).indexedDB
