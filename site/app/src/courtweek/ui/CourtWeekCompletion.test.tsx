@@ -46,7 +46,7 @@ describe('CourtWeekCompletion', () => {
         persistence="ephemeral"
         onReplay={() => undefined}
         onSettings={() => undefined}
-        developerPreview={{
+        testSession={{
           selectedOrdinal: 7,
           sessions: elevenMinutesSessions,
           onSelect: () => undefined,
@@ -55,11 +55,11 @@ describe('CourtWeekCompletion', () => {
       />,
     )
 
-    expect(markup).toContain('Developer session')
-    expect(markup).toContain('Sunday preview complete')
+    expect(markup).toContain('Test session')
+    expect(markup).toContain('Sunday test complete')
     expect(markup).not.toContain('Court Week complete')
-    expect(markup).toContain('Leave preview')
-    expect(markup).toContain('Preview progress and private notes are discarded')
+    expect(markup).toContain('Leave test session')
+    expect(markup).toContain('Temporary progress and private notes are discarded')
     expect(markup).toContain('<option value="7" selected="">Sunday</option>')
   })
 
@@ -75,7 +75,7 @@ describe('CourtWeekCompletion', () => {
         persistence="ephemeral"
         onReplay={() => undefined}
         onSettings={() => undefined}
-        developerPreview={{
+        testSession={{
           selectedOrdinal: 1,
           sessions: elevenMinutesSessions,
           onSelect,
@@ -89,7 +89,7 @@ describe('CourtWeekCompletion', () => {
     selector.value = '7'
     act(() => selector.dispatchEvent(new Event('change', { bubbles: true })))
     const leave = Array.from(container.querySelectorAll('button')).find(
-      ({ textContent }) => textContent?.trim() === 'Leave preview',
+      ({ textContent }) => textContent?.trim() === 'Leave test session',
     )
     act(() => leave?.click())
 

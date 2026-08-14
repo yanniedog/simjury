@@ -35,7 +35,6 @@ describe('SealedCourtWeekApp', () => {
     saveLocalProfile({
       jurorLabel: 'Juror 01',
       adultFictionAcknowledged: true,
-      developerMode: true,
     })
     container = document.createElement('div')
     document.body.append(container)
@@ -53,7 +52,6 @@ describe('SealedCourtWeekApp', () => {
     vi.restoreAllMocks()
     history.replaceState(null, '', '/')
   })
-
 
   async function leaveDeveloperPreview(): Promise<void> {
     await vi.waitFor(() => {
@@ -75,8 +73,8 @@ describe('SealedCourtWeekApp', () => {
     })
   }
 
-
-  it('opens all-session preview automatically when the temporary developer default is already acknowledged', async () => {
+  it('opens all-session preview only on the explicit test-build route', async () => {
+    history.replaceState(null, '', '/?developer-preview=all')
     const packs = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap)
     const fetcher = vi.fn(async () => new Response('{}', { status: 200 }))
     vi.spyOn(loader, 'hydrateCourtPacks').mockImplementation(async ({
@@ -91,33 +89,32 @@ describe('SealedCourtWeekApp', () => {
     />))
     await vi.waitFor(() => expect(container.textContent).toContain('DEV PREVIEW'))
     expect(fetcher).toHaveBeenCalledTimes(7)
+    await leaveDeveloperPreview()
   })
 
-  it('migrates a stored developerMode:false profile into automatic all-session preview', async () => {
-    saveLocalProfile({
+  it('ignores and strips a retired public developer preference', async () => {
+    localStorage.setItem('simjury:court-week:local-profile:v1', JSON.stringify({
+      schemaVersion: 'simjury-local-profile-v1',
       jurorLabel: 'Juror 01',
       adultFictionAcknowledged: true,
-      developerMode: false,
-    })
-    const packs = createCourtDayPacks(elevenMinutesCourtWeek, courtWeekBootstrap)
+      developerMode: true,
+    }))
     const fetcher = vi.fn(async () => new Response('{}', { status: 200 }))
-    vi.spyOn(loader, 'hydrateCourtPacks').mockImplementation(async ({
-      entries,
-      fetcher: load,
-    }) => {
-      await Promise.all(entries.map(({ locator }) => load?.(`/packs/${locator}`)))
-      return packs
-    })
     await act(async () => root.render(<SealedCourtWeekApp
-      bootstrap={courtWeekBootstrap} packBase="/packs/" fetcher={fetcher}
+      bootstrap={courtWeekBootstrap}
+      now={() => Date.parse('2026-08-10T08:29:59+10:00')}
+      packBase="/packs/"
+      fetcher={fetcher}
     />))
-    await vi.waitFor(() => expect(container.textContent).toContain('DEV PREVIEW'))
-    expect(fetcher).toHaveBeenCalledTimes(7)
+    await vi.waitFor(() => expect(container.textContent).toContain('Court opens Monday'))
+    expect(container.textContent).not.toMatch(/Developer preview|DEV PREVIEW/u)
+    expect(fetcher).not.toHaveBeenCalled()
     expect(JSON.parse(localStorage.getItem('simjury:court-week:local-profile:v1') ?? '{}'))
-      .toMatchObject({ developerMode: true })
+      .not.toHaveProperty('developerMode')
   })
 
-  it('hydrates all seven packs in the temporary default preview and leaves saved progress untouched', async () => {
+  it('keeps route-preview state ephemeral and leaves saved progress untouched', async () => {
+    history.replaceState(null, '', '/?developer-preview=all')
     const existing: StoredWeeklyProgress = {
       schemaVersion: 'court-week-progress-v1', courtWeekId: courtWeekBootstrap.id,
       revision: courtWeekBootstrap.revision, highestObservedTime: '2026-08-06T08:31:00.000Z',
@@ -139,7 +136,10 @@ describe('SealedCourtWeekApp', () => {
       return packs
     })
     await act(async () => root.render(<SealedCourtWeekApp
-      bootstrap={courtWeekBootstrap} packBase="/packs/" fetcher={fetcher}
+      bootstrap={courtWeekBootstrap}
+      now={() => Date.parse('2026-08-10T08:29:59+10:00')}
+      packBase="/packs/"
+      fetcher={fetcher}
     />))
     await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(7))
     expect(container.querySelector('input[type="password"]')).toBeNull()
@@ -147,7 +147,7 @@ describe('SealedCourtWeekApp', () => {
       container.querySelector('#cw-developer-day'),
     ))
     expect(container.textContent).toContain('Saved juror progress is untouched')
-    expect(container.textContent).toContain('Preview progress and private notes are discarded')
+    expect(container.textContent).toContain('Temporary progress and private notes are discarded')
     expect(container.textContent).not.toContain('progress remains on this device')
 
     const selector = container.querySelector<HTMLSelectElement>('#cw-developer-day')
@@ -159,10 +159,10 @@ describe('SealedCourtWeekApp', () => {
     const enter = Array.from(container.querySelectorAll('button')).find(({ textContent }) => textContent?.trim() === 'Take your seat')
     await act(async () => enter?.click())
     expect(container.textContent).toContain('Sunday')
-    expect(container.textContent).toContain('DEV preview')
+    expect(container.textContent).toContain('DEV PREVIEW')
 
     const previewControls = Array.from(container.querySelectorAll('button')).find(
-      ({ textContent }) => textContent?.trim() === 'DEV preview',
+      ({ textContent }) => textContent?.trim() === 'Test session',
     )
     await act(async () => previewControls?.click())
     const modalSelector = container.querySelector<HTMLSelectElement>('#cw-developer-day-modal')
@@ -188,19 +188,16 @@ describe('SealedCourtWeekApp', () => {
 
   it('does not treat the retired developer hash as authentication', async () => {
     history.replaceState(null, '', '/jury/#developer')
-    await act(async () => root.render(<SealedCourtWeekApp bootstrap={courtWeekBootstrap} />))
-    // Temporary default opens preview from the local profile, not from #developer.
-    await vi.waitFor(() => expect(container.textContent).toMatch(/Developer preview|DEV PREVIEW/))
+    await act(async () => root.render(<SealedCourtWeekApp
+      bootstrap={courtWeekBootstrap}
+      now={() => Date.parse('2026-08-10T08:29:59+10:00')}
+    />))
+    await vi.waitFor(() => expect(container.textContent).toContain('Court opens Monday'))
     expect(container.querySelector('input[type="password"]')).toBeNull()
-    await leaveDeveloperPreview()
-    expect(container.textContent).toContain('Court opens Monday')
     expect(container.textContent).not.toMatch(/Developer preview|DEV PREVIEW/)
   })
 
   it('keeps the entry usable while today’s sealed session opens', async () => {
-    // Public sealed loading must not wait on all-session preview hydration.
-    // Leave-preview is available on the loading state; leave immediately so this
-    // case exercises StandardSealedCourtWeekApp (temporary default opens preview).
     const now = Date.parse('2026-08-10T08:31:00+10:00')
     const progress: StoredWeeklyProgress = {
       schemaVersion: 'court-week-progress-v1',
@@ -225,7 +222,6 @@ describe('SealedCourtWeekApp', () => {
       now={() => now}
       packBase="/packs/"
     />))
-    await leaveDeveloperPreview()
     await vi.waitFor(() => expect(container.textContent).toContain('Opening today’s court session'))
     expect(container.querySelector('main')?.getAttribute('aria-busy')).toBe('true')
     expect(container.textContent).toContain('Eleven Minutes')
@@ -281,7 +277,6 @@ describe('SealedCourtWeekApp', () => {
         />,
       )
     })
-    await leaveDeveloperPreview()
     await vi.waitFor(() => expect(container.textContent).toContain('Take your seat'))
     expect(courtWeekBootstrap.contentAdvisory).toBe(elevenMinutesCourtWeek.manifest.contentAdvisory)
     expect(container.textContent).toContain('acted distress call')
@@ -327,7 +322,6 @@ describe('SealedCourtWeekApp', () => {
       releaseBase="/media"
       packBase="/packs/"
     />))
-    await leaveDeveloperPreview()
     await vi.waitFor(() => expect(container.textContent).toContain('Take your seat'))
     const click = async (label: string) => {
       const button = Array.from(container.querySelectorAll('button')).find(

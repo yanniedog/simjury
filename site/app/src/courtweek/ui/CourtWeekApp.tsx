@@ -37,6 +37,7 @@ import type {
   LocalProfilePersistence,
 } from '../state/localProfile'
 import { useWeeklyProgress, type PersistenceIssue } from '../state/useWeeklyProgress'
+import { COURT_WEEK_TEST_HARNESS_ENABLED } from '../testHarness'
 import { EvidenceViewer } from './EvidenceViewer'
 import { CourtWeekCompletion } from './CourtWeekCompletion'
 import { ImmersiveCourtShell } from './ImmersiveCourtShell'
@@ -58,7 +59,7 @@ export interface CourtWeekAppProps {
   ephemeralAdvisory?: string
   focusEntryHeading?: boolean
   entryBusy?: boolean
-  developerPreview?: {
+  testSession?: {
     selectedOrdinal: number
     sessions: Array<{ ordinal: number; day: string }>
     onSelect: (ordinal: number) => void
@@ -71,7 +72,6 @@ export interface CourtWeekAppProps {
     issue: LocalProfileIssue
     onChange: (profile: LocalProfileInput) => void
     onReset: () => void
-    onOpenDeveloperPreview: () => void
   }
 }
 const verdictLabels: Record<Verdict, string> = {
@@ -183,9 +183,6 @@ function CourtWeekEntry({
     localProfile.onChange({
       jurorLabel: localProfile.profile.jurorLabel,
       adultFictionAcknowledged,
-      // Temporary pre-release: acknowledgement also restores the unlock default
-      // so the adult gate lands in all-session preview without a settings detour.
-      developerMode: adultFictionAcknowledged,
     })
   }
   return (
@@ -259,7 +256,7 @@ function CourtWeekEntry({
         </details>
         <p className="cw-entry__privacy">
           {ephemeral
-            ? 'Preview progress and private notes are discarded when you switch sessions or leave preview.'
+            ? 'Temporary progress and private notes are discarded when you switch sessions or leave this session.'
             : persistenceNotice
             ? 'Use Export progress from the juror desk before leaving this tab.'
             : 'Private by design. Progress and notes stay on this device.'}
@@ -325,8 +322,8 @@ function MandatoryInteractionDialog({
  * Elapsed time for the reflection countdown.
  *
  * This must never read the injected court clock. `now` is a *court date*
- * source and callers are allowed to freeze it (developer preview pins it to a
- * fixed session date), which pinned elapsed at 0, left "Continue in Ns"
+ * source and deterministic callers are allowed to freeze it to a fixed
+ * session date, which pinned elapsed at 0, left "Continue in Ns"
  * counting down from N forever and made the interaction unpassable. A
  * monotonic wall clock keeps the countdown honest and is immune to a frozen,
  * mocked or user-adjusted system clock.
@@ -347,7 +344,7 @@ export function CourtWeekApp({
   ephemeralAdvisory,
   focusEntryHeading = false,
   entryBusy = false,
-  developerPreview,
+  testSession,
   onEnteredChange,
   localProfile,
 }: CourtWeekAppProps) {
@@ -659,9 +656,8 @@ export function CourtWeekApp({
   const interactionElapsedSeconds = interactionOpen && interactionOpenedAt != null
     ? Math.max(0, (elapsedNow() - interactionOpenedAt) / 1000)
     : 0
-  // Developer/all-session preview is ephemeral: do not park Continue behind
-  // the live 15–360s reflection timers while unlocking the whole case.
-  const requiredInteractionSeconds = ephemeral || Boolean(developerPreview)
+  // Ephemeral sessions do not wait behind live reflection timers.
+  const requiredInteractionSeconds = ephemeral
     ? 0
     : (interaction?.minimumSeconds ?? 0)
   const interactionMinimumMet = !interaction
@@ -724,7 +720,7 @@ export function CourtWeekApp({
         onExportProgress={ephemeral
           ? undefined
           : (includePrivateNotes) => downloadWeeklyProgress(progress, includePrivateNotes)}
-        developerPreview={developerPreview}
+        testSession={COURT_WEEK_TEST_HARNESS_ENABLED ? testSession : undefined}
         onReplay={(session) => {
           const firstScene = session.scenes[0]
           setReplaySessionId(session.id)
@@ -902,19 +898,19 @@ export function CourtWeekApp({
   }
 
   let overlay = null
-  if (developerPreviewOpen && developerPreview) {
+  if (COURT_WEEK_TEST_HARNESS_ENABLED && developerPreviewOpen && testSession) {
     overlay = (
       <MandatoryInteractionDialog returnFocusTo={interactionReturnFocus.current}>
-        <p className="cw-kicker">DEV PREVIEW</p>
-        <h2 id="cw-interaction-heading">Developer preview controls</h2>
-        <p>Saved juror progress is untouched. Preview changes are discarded.</p>
+        <p className="cw-kicker">TEST SESSION</p>
+        <h2 id="cw-interaction-heading">Test session controls</h2>
+        <p>Saved juror progress is untouched. Test changes are discarded.</p>
         <label className="cw-developer-day" htmlFor="cw-developer-day-modal">Session</label>
         <select
           id="cw-developer-day-modal"
-          value={developerPreview.selectedOrdinal}
-          onChange={(event) => developerPreview.onSelect(Number(event.target.value))}
+          value={testSession.selectedOrdinal}
+          onChange={(event) => testSession.onSelect(Number(event.target.value))}
         >
-          {developerPreview.sessions.map(({ day, ordinal }) => (
+          {testSession.sessions.map(({ day, ordinal }) => (
             <option key={ordinal} value={ordinal}>{day}</option>
           ))}
         </select>
@@ -926,8 +922,8 @@ export function CourtWeekApp({
           <button type="button" onClick={() => {
             setDeveloperPreviewOpen(false)
             advanceBlocked.current = false
-            developerPreview.onLeave()
-          }}>Leave preview</button>
+            testSession.onLeave()
+          }}>Leave test session</button>
         </div>
       </MandatoryInteractionDialog>
     )
@@ -1143,7 +1139,7 @@ export function CourtWeekApp({
         accessibilityMode: current.accessibilityMode === 'captions' ? 'audio-first' : 'captions',
       }))}
       onToggleDesk={toggleDesk}
-      onOpenDeveloperPreview={developerPreview ? (trigger) => {
+      onOpenTestSession={COURT_WEEK_TEST_HARNESS_ENABLED && testSession ? (trigger) => {
         interactionReturnFocus.current = trigger
         advanceBlocked.current = true
         playback.pause()

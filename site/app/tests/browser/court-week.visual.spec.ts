@@ -23,8 +23,6 @@ async function installDeterministicCourt(page: Page) {
       schemaVersion: 'simjury-local-profile-v1',
       jurorLabel: 'Juror 01',
       adultFictionAcknowledged: true,
-      // Temporary pre-release default; visual shots leave preview for the public entry.
-      developerMode: true,
     }))
     class TestAudio extends EventTarget {
       src = ''
@@ -81,11 +79,6 @@ async function enterCourt(page: Page, position: CourtPosition) {
   await installDeterministicCourt(page)
   await seedPosition(page, position)
   await page.goto('/')
-  // Temporary default auto-enters preview; leave so baselines stay on the public path.
-  const leavePreview = page.getByRole('button', { name: 'Leave preview' })
-  if (await leavePreview.isVisible().catch(() => false)) {
-    await leavePreview.click()
-  }
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await expect(page.locator('.cw-shell')).toBeVisible()
   await expect(page.locator('.cw-reading-copy')).toBeVisible()

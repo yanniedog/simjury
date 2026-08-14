@@ -12,7 +12,6 @@ export interface LocalProfilePanelProps {
   issue: LocalProfileIssue
   onChange: (profile: LocalProfileInput) => void
   onReset: () => void
-  onOpenDeveloperPreview: () => void
   showAdultFictionAcknowledgement?: boolean
 }
 
@@ -22,7 +21,6 @@ export function LocalProfilePanel({
   issue,
   onChange,
   onReset,
-  onOpenDeveloperPreview,
   showAdultFictionAcknowledgement = true,
 }: LocalProfilePanelProps) {
   const [label, setLabel] = useState(profile.jurorLabel)
@@ -37,7 +35,6 @@ export function LocalProfilePanel({
   const update = (patch: Partial<LocalProfileInput>) => onChange({
     jurorLabel: profile.jurorLabel,
     adultFictionAcknowledged: profile.adultFictionAcknowledged,
-    developerMode: profile.developerMode,
     ...patch,
   })
   const saveLabel = (event: FormEvent<HTMLFormElement>) => {
@@ -73,11 +70,7 @@ export function LocalProfilePanel({
             <input
               type="checkbox"
               checked={profile.adultFictionAcknowledged}
-              onChange={(event) => update({
-                adultFictionAcknowledged: event.target.checked,
-                // Temporary pre-release: checking the adult gate restores unlock default.
-                developerMode: event.target.checked,
-              })}
+              onChange={(event) => update({ adultFictionAcknowledged: event.target.checked })}
             />
             <span>
               <strong>I am 18 or older and understand this case is fictional.</strong>
@@ -85,31 +78,10 @@ export function LocalProfilePanel({
             </span>
           </label>
         ) : null}
-        <fieldset className="cw-local-profile__testing">
-          <legend>Live testing</legend>
-          <label className="cw-local-profile__choice">
-            <input
-              type="checkbox"
-              checked={profile.developerMode}
-              disabled={!profile.adultFictionAcknowledged}
-              onChange={(event) => update({ developerMode: event.target.checked })}
-            />
-            <span>
-              <strong>Developer mode</strong>
-              <small>Temporarily on by default. Reveals controls for sessions that have not opened yet. This is not authentication.</small>
-            </span>
-          </label>
-          {profile.adultFictionAcknowledged && profile.developerMode ? (
-            <div className="cw-local-profile__warning">
-              <p><strong>Spoiler warning:</strong> the preview can reveal every future session and verdict path.</p>
-              <button type="button" onClick={onOpenDeveloperPreview}>Open all-session preview</button>
-            </div>
-          ) : null}
-        </fieldset>
         {issue ? (
           <p className="cw-error" role="status">
             {issue === 'corrupt'
-              ? 'Damaged local settings were ignored. Developer mode was reset to the temporary default (on).'
+              ? 'Damaged local settings were ignored. The local profile was reset.'
               : 'Local storage is unavailable. Settings last only in this tab.'}
           </p>
         ) : persistence === 'memory' ? (
