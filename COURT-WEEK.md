@@ -5,8 +5,9 @@
 SimJury's only product is a single, substantial fictional criminal trial:
 **Eleven Minutes**. The player occupies one jury seat across five weekday court
 sessions and deliberates on Saturday and Sunday. Each session must measure
-18–22 minutes from actual authored audio plus required interaction; the complete
-week must measure 126–154 minutes.
+only as long as its reviewed dialogue and meaningful juror decisions require.
+The experience is self-paced: interaction must never be padded with countdowns,
+passive observation gates or artificial transition time.
 
 ## Product contract
 
