@@ -7,7 +7,7 @@ pinned production manifest, publish media, or authorise a voice donor.
 
 - Inference runs on owned/donated hardware or a manually started, demonstrably
   non-billable cloud GPU. Never allow paid fallback or a billable endpoint.
-- Incremental spend is capped at AUD 20 and recurring spend at AUD 0. Gameplay
+- Incremental spend is capped at AUD 50 and recurring spend at AUD 0. Gameplay
   remains prerecorded; inference never enters the browser or a runtime service.
 - Never commit raw references, consent documents, donor names or local paths.
   Free-cloud reference processing additionally needs explicit donor consent,

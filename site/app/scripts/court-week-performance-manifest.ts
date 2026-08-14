@@ -63,7 +63,7 @@ export const performanceManifestSchema = z.object({
   sourceDigest: digestSchema,
   performanceDigest: digestSchema,
   computePolicy: z.object({
-    maxIncrementalSpendAud: z.literal(20), recurringSpendAud: z.literal(0), billableEndpointsAllowed: z.literal(false),
+    maxIncrementalSpendAud: z.literal(50), recurringSpendAud: z.literal(0), billableEndpointsAllowed: z.literal(false),
     execution: z.tuple([z.literal('owned-or-donated-consumer-hardware'), z.literal('manual-non-billable-cloud-gpu')]),
     freeCloudRequiresManualStart: z.literal(true), freeCloudReferenceConsentRequired: z.literal(true), resumableUnit: z.literal('utterance'),
   }).strict(),
@@ -158,7 +158,7 @@ export function buildCourtWeekPerformanceManifest(): CourtWeekPerformanceManifes
     schema: PERFORMANCE_MANIFEST_SCHEMA, stage: 'bakeoff', sourceContract: 'legacy-inferred', caseId: 'cw-0001',
     sourceRevision: elevenMinutesCourtWeek.manifest.revision,
     sourceDigest: courtWeekPerformanceSourceDigest(),
-    computePolicy: { maxIncrementalSpendAud: 20, recurringSpendAud: 0, billableEndpointsAllowed: false, execution: ['owned-or-donated-consumer-hardware', 'manual-non-billable-cloud-gpu'], freeCloudRequiresManualStart: true, freeCloudReferenceConsentRequired: true, resumableUnit: 'utterance' },
+    computePolicy: { maxIncrementalSpendAud: 50, recurringSpendAud: 0, billableEndpointsAllowed: false, execution: ['owned-or-donated-consumer-hardware', 'manual-non-billable-cloud-gpu'], freeCloudRequiresManualStart: true, freeCloudReferenceConsentRequired: true, resumableUnit: 'utterance' },
     providers: providers.map((provider) => ({ ...provider, components: provider.components.map((component) => ({ ...component })) })),
     identities: CANONICAL_PERFORMANCE_IDENTITIES.map((identity) => ({ ...identity, speakerLabels: [...identity.speakerLabels], assignment: null })),
     pronunciationProjections: [

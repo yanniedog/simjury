@@ -27,7 +27,7 @@ describe('Court Week offline performance manifest', () => {
     expect(first.sourceDigest).toMatch(/^sha256:[0-9a-f]{64}$/u)
     expect(first.performanceDigest).toMatch(/^sha256:[0-9a-f]{64}$/u)
     expect(first.performanceDigest).not.toBe(first.sourceDigest)
-    expect(first.computePolicy).toMatchObject({ maxIncrementalSpendAud: 20, recurringSpendAud: 0, billableEndpointsAllowed: false, resumableUnit: 'utterance' })
+    expect(first.computePolicy).toMatchObject({ maxIncrementalSpendAud: 50, recurringSpendAud: 0, billableEndpointsAllowed: false, resumableUnit: 'utterance' })
     expect(JSON.stringify(first)).not.toMatch(/referencePath|consentPath|donorName/iu)
   })
 
