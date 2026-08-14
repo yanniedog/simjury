@@ -1,7 +1,7 @@
 name: site
 
 # simjury.com (Cloudflare Static Assets) CI/CD.
-#   - On PRs touching site/**: build + Court Week checks + wrangler dry-run (no deploy).
+#   - On PRs touching site/**: static, browser and performance checks (no deploy).
 #   - On push to main (i.e. AFTER a PR merges through the bot gates): deploy.
 # Deploys never run from a PR — only from a merged change on main.
 
@@ -21,7 +21,7 @@ permissions:
 
 concurrency:
   group: site-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   check:
@@ -42,9 +42,54 @@ jobs:
         working-directory: site
         run: npm run check
 
+  app:
+    name: site-app-check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site/app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: site/app/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Test
+        run: npm test
+      - name: Audit scene-art contract
+        run: npm run media:art:test
+      - name: Validate Court Week (schema + legal-quality gate)
+        run: npm run validate:cases
+      - name: Build
+        run: npm run build
+      - name: Install browser engines
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Browser and responsive matrix
+        run: npm run test:browser
+      - name: Production performance budgets
+        run: npm run test:performance
+      - name: Upload browser QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: court-week-browser-qa
+          path: |
+            site/app/playwright-report/
+            site/app/playwright-performance-report/
+            site/app/test-results/
+          if-no-files-found: ignore
+          retention-days: 14
+
   deploy:
     name: site-deploy
-    needs: check
+    needs: [check, app]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:

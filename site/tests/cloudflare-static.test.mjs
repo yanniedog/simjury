@@ -36,6 +36,18 @@ test('retired runtime implementation remains absent', () => {
   }
 })
 
+test('site deployment is gated by the full Court Week browser suite', () => {
+  const workflowUrl = new URL('../../.github/workflows/site.yml', import.meta.url)
+  const workflow = readFileSync(workflowUrl, 'utf8').replaceAll('\r\n', '\n')
+  assert.equal(existsSync(new URL('../../.github/workflows/site-app-ci.yml', import.meta.url)), false)
+  assert.match(workflow, /cancel-in-progress: \$\{\{ github\.event_name == 'pull_request' \}\}/u)
+  const app = workflow.slice(workflow.indexOf('\n  app:\n'), workflow.indexOf('\n  deploy:\n'))
+  assert.match(app, /^\n  app:\n    name: site-app-check\n/u)
+  assert.match(app, /run: npm run test:browser/u)
+  assert.match(app, /run: npm run test:performance/u)
+  assert.match(workflow, /\n  deploy:\n    name: site-deploy\n    needs: \[check, app\]\n/u)
+})
+
 test('legacy product paths redirect to the canonical Court Week route', () => {
   const redirects = readFileSync(new URL('../public/_redirects', import.meta.url), 'utf8')
   assert.match(redirects, /^\/ \/jury\/court-week 200$/m)
