@@ -8,6 +8,13 @@ active source and captions, but nothing imports those candidates into a pack or
 the player. The current fallbacks must remain until one separately reviewed,
 atomic content-and-media cutover completes every item below.
 
+The generated `site/app/content-reviews/cw-0001.speech-review-sidecar.json` is
+also non-runtime. It records exact source/candidate hashes, token boundaries,
+speaker/legal metadata and eight pending human-review dimensions for every
+ledger turn and runtime branch. `npm run review:speech:export` regenerates it;
+`npm run review:speech:verify` (also included in `validate:cases`) rejects
+missing, stale, reordered or unreferenced approval claims. Pending is not approval.
+
 ## Required atomic cutover
 
 1. Merge each candidate cue and explicit turn into `content/sessions.ts` while
