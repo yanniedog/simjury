@@ -112,7 +112,7 @@ function stateFor(row: SpeechReviewSidecarRow): LegalState {
 function isDeterministicNeighbour(current: SpeechReviewSidecarRow, neighbour: SpeechReviewSidecarRow | undefined): neighbour is SpeechReviewSidecarRow {
   if (!neighbour || current.day !== neighbour.day) return false
   if (current.cueId === neighbour.cueId && current.runtimeVariant === neighbour.runtimeVariant) return true
-  return current.runtimeVariant === null && neighbour.runtimeVariant === null
+  return current.day !== 'sunday' && current.runtimeVariant === null && neighbour.runtimeVariant === null
 }
 
 export function buildSpeechReviewSidecar(): SpeechReviewSidecar {
@@ -186,6 +186,19 @@ function immutableReviewData(value: Record<string, unknown>): Record<string, unk
   return copy
 }
 
+function isPristinePendingSidecar(value: unknown): boolean {
+  if (!isRecord(value) || !Array.isArray(value.rows) || !value.rows.length) return false
+  return value.rows.every((row) => {
+    if (!isRecord(row) || !isRecord(row.decisions)) return false
+    const decisions = row.decisions
+    return Object.keys(decisions).length === REVIEW_DIMENSIONS.length && REVIEW_DIMENSIONS.every((dimension) => {
+      const decision = decisions[dimension]
+      return isRecord(decision) && decision.status === 'pending' &&
+        decision.reviewReference === null && decision.note === null
+    })
+  })
+}
+
 export function assertSpeechReviewSidecar(value: unknown): asserts value is SpeechReviewSidecar {
   const expected = buildSpeechReviewSidecar()
   if (!isRecord(value) || !Array.isArray(value.rows)) throw new Error('speech review sidecar is malformed')
@@ -219,8 +232,26 @@ export function assertSpeechReviewSidecar(value: unknown): asserts value is Spee
 }
 
 export async function writeSpeechReviewSidecar(path = SPEECH_REVIEW_SIDECAR_PATH): Promise<void> {
+  const generated = buildSpeechReviewSidecar()
+  let existing: SpeechReviewSidecar | null = null
+  try {
+    const raw = await readFile(path, 'utf8')
+    let candidate: unknown
+    try { candidate = JSON.parse(raw) } catch { throw new Error(`refusing to overwrite invalid speech review sidecar: ${path}`) }
+    try {
+      assertSpeechReviewSidecar(candidate)
+      existing = candidate
+    } catch (error) {
+      if (!isPristinePendingSidecar(candidate)) throw error
+    }
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+  }
+  if (existing) for (const [index, row] of generated.rows.entries()) {
+    row.decisions = existing.rows[index]!.decisions
+  }
   await mkdir(dirname(path), { recursive: true })
-  await writeFile(path, JSON.stringify(buildSpeechReviewSidecar()) + '\n', 'utf8')
+  await writeFile(path, JSON.stringify(generated) + '\n', 'utf8')
 }
 
 export async function verifySpeechReviewSidecarFile(path = SPEECH_REVIEW_SIDECAR_PATH): Promise<void> {
