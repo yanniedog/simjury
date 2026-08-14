@@ -5,7 +5,10 @@
 SimJury is served entirely as static assets. Progress, private notes and ballots
 stay in the browser; an explicit local export/import file provides device
 transfer. Reviewed media comes from one pinned GitHub Release. There is no runtime AI,
-analytics, account, multiplayer room, waitlist or gameplay API.
+server-side analytics, account, multiplayer room, waitlist or gameplay API. Masked
+client-side Microsoft Clarity analytics is enabled by default and may observe control
+interaction, including ballot-control interaction; stored ballot choices, progress,
+notes and free-text reasoning remain local. A browser-local opt-out is available.
 
 ## Canonical public pages
 
