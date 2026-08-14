@@ -200,7 +200,7 @@ export function JurorDesk({
           }}
           placeholder={progressTransferEnabled
             ? 'Your notes stay on this device unless you choose to export them.'
-            : 'Preview notes are discarded when you switch sessions or leave preview.'}
+            : 'Temporary notes are discarded when you switch sessions or leave this session.'}
         />
       </section>
 

@@ -1,7 +1,17 @@
 import type { CourtWeek } from '../model/schema'
 import type { StoredWeeklyProgress } from '../state/progress'
 
-export const DEVELOPER_PREVIEW_NOW = Date.parse('2026-08-17T09:00:00+10:00')
+export const DEVELOPER_PREVIEW_QUERY_KEY = 'developer-preview'
+export const DEVELOPER_PREVIEW_NOW_ISO = '2026-08-17T09:00:00+10:00'
+export const DEVELOPER_PREVIEW_NOW = Date.parse(DEVELOPER_PREVIEW_NOW_ISO)
+export const DEVELOPER_PREVIEW_ASSET_MARKERS = [
+  DEVELOPER_PREVIEW_QUERY_KEY,
+  'cw-test-harness',
+  'cw-developer-toolbar',
+  'cw-developer-day',
+  'DEV PREVIEW',
+  'Test session controls',
+] as const
 
 export function developerProgressForDay(courtWeek: CourtWeek, ordinal: number): StoredWeeklyProgress {
   const session = courtWeek.manifest.sessions[ordinal - 1]

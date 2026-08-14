@@ -11,7 +11,6 @@ const baseProfile: LocalProfile = {
   schemaVersion: LOCAL_PROFILE_SCHEMA_VERSION,
   jurorLabel: 'Juror 01',
   adultFictionAcknowledged: true,
-  developerMode: false,
 }
 
 describe('LocalProfilePanel', () => {
@@ -21,51 +20,23 @@ describe('LocalProfilePanel', () => {
     document.body.replaceChildren()
   })
 
-  it('keeps future-session loading behind an explicit developer action', async () => {
+  it('contains only public, on-device profile settings', async () => {
     const container = document.createElement('div')
     document.body.append(container)
     const root = createRoot(container)
     roots.push(root)
     const onChange = vi.fn()
-    const onOpenDeveloperPreview = vi.fn()
     await act(async () => root.render(<LocalProfilePanel
       profile={baseProfile}
       persistence="local-storage"
       issue={null}
       onChange={onChange}
       onReset={vi.fn()}
-      onOpenDeveloperPreview={onOpenDeveloperPreview}
     />))
 
     expect(container.textContent).toContain('No account')
-    expect(container.textContent).not.toContain('Open all-session preview')
-    const developer = Array.from(container.querySelectorAll('label')).find(
-      ({ textContent }) => textContent?.includes('Developer mode'),
-    )?.querySelector<HTMLInputElement>('input')
-    await act(async () => developer?.click())
-    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ developerMode: true }))
-    expect(onOpenDeveloperPreview).not.toHaveBeenCalled()
-  })
-
-  it('shows the spoiler action only for an enabled local profile', async () => {
-    const container = document.createElement('div')
-    document.body.append(container)
-    const root = createRoot(container)
-    roots.push(root)
-    const onOpenDeveloperPreview = vi.fn()
-    await act(async () => root.render(<LocalProfilePanel
-      profile={{ ...baseProfile, adultFictionAcknowledged: true, developerMode: true }}
-      persistence="local-storage"
-      issue={null}
-      onChange={vi.fn()}
-      onReset={vi.fn()}
-      onOpenDeveloperPreview={onOpenDeveloperPreview}
-    />))
-    const open = Array.from(container.querySelectorAll('button')).find(
-      ({ textContent }) => textContent === 'Open all-session preview',
-    )
-    await act(async () => open?.click())
-    expect(onOpenDeveloperPreview).toHaveBeenCalledOnce()
+    expect(container.textContent).not.toMatch(/developer|all-session preview/iu)
+    expect(onChange).not.toHaveBeenCalled()
   })
 
   it('reopens when an external reset clears the adult acknowledgement', async () => {
@@ -78,7 +49,6 @@ describe('LocalProfilePanel', () => {
       issue: null,
       onChange: vi.fn(),
       onReset: vi.fn(),
-      onOpenDeveloperPreview: vi.fn(),
     }
     await act(async () => root.render(<LocalProfilePanel profile={baseProfile} {...props} />))
     expect(container.querySelector('details')?.open).toBe(false)
