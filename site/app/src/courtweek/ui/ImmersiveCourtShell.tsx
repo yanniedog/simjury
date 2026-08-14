@@ -12,6 +12,7 @@ import {
   type CaptionRect,
 } from './captionPlacement'
 import { speakerCaptionColour } from './speakerPresentation'
+import { DEFAULT_ADVANCE_ACTION } from './proceduralActions'
 
 export type { AccessMode } from '../state/progress'
 
@@ -74,7 +75,7 @@ export function ImmersiveCourtShell({
   playbackStatus,
   playbackError,
   progressLabel,
-  advanceLabel = 'Read the next court step',
+  advanceLabel = DEFAULT_ADVANCE_ACTION,
   deskOpen,
   overlay,
   onPlay,

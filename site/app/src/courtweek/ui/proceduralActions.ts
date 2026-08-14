@@ -2,6 +2,8 @@ import type { CourtEvent, Scene } from '../model/schema'
 
 type InteractionKind = NonNullable<Scene['interaction']>['kind']
 
+export const DEFAULT_ADVANCE_ACTION = 'Read the next court step'
+
 const eventActions: Record<CourtEvent, string> = {
   arrival: 'Read the court instructions',
   empanelment: 'Read the empanelment',
@@ -39,7 +41,7 @@ const eventActions: Record<CourtEvent, string> = {
 }
 
 const interactionOpenActions: Record<InteractionKind, string> = {
-  observe: 'Read the next court step',
+  observe: DEFAULT_ADVANCE_ACTION,
   'inspect-exhibit': 'Inspect the admitted exhibit',
   'choose-focus': 'Choose your review focus',
   'seal-vote': 'Open the provisional ballot',
@@ -53,31 +55,77 @@ export function courtEventAction(event: CourtEvent): string {
   return eventActions[event]
 }
 
-export function interactionOpenAction(kind: InteractionKind): string {
+function isOathChoice(kind: InteractionKind, prompt: string): boolean {
+  return kind === 'choose-focus' && /\boath or affirmation\b/iu.test(prompt)
+}
+
+export function interactionOpenAction({
+  kind,
+  prompt,
+  replay,
+}: {
+  kind: InteractionKind
+  prompt: string
+  replay: boolean
+}): string {
+  if (replay) return 'Review this interaction'
+  if (isOathChoice(kind, prompt)) return 'Choose oath or affirmation'
   return interactionOpenActions[kind]
+}
+
+export function courtAdvanceAction({
+  targetEvent,
+  interaction,
+  nextEvent,
+  replay,
+  sessionEndAction,
+}: {
+  targetEvent?: CourtEvent
+  interaction?: Scene['interaction']
+  nextEvent?: CourtEvent
+  replay: boolean
+  sessionEndAction: string
+}): string {
+  if (targetEvent) return courtEventAction(targetEvent)
+  if (interaction && interaction.kind !== 'observe') {
+    return interactionOpenAction({ kind: interaction.kind, prompt: interaction.prompt, replay })
+  }
+  if (nextEvent) return courtEventAction(nextEvent)
+  return replay ? 'End replay' : sessionEndAction
 }
 
 export function interactionPrimaryAction({
   kind,
   replay,
+  replayEnds,
   ballotSealed,
   secondBallotWasUnanimous,
+  prompt,
+  recordsReasoning,
 }: {
   kind: InteractionKind
   replay: boolean
+  replayEnds: boolean
   ballotSealed: boolean
   secondBallotWasUnanimous: boolean
+  prompt: string
+  recordsReasoning: boolean
 }): string {
-  if (replay) return 'Resume replay'
-  if (kind === 'seal-vote') return ballotSealed ? 'View anonymous aggregate' : 'Seal provisional ballot'
-  if (kind === 'second-vote') {
-    if (!ballotSealed) return 'Seal second ballot'
-    return secondBallotWasUnanimous ? 'Return to court' : 'Return to court for direction'
+  if (replay) return replayEnds ? 'End replay' : 'Resume replay'
+  switch (kind) {
+    case 'observe': return DEFAULT_ADVANCE_ACTION
+    case 'seal-vote': return ballotSealed ? 'Continue toward the anonymous aggregate' : 'Seal provisional ballot'
+    case 'second-vote':
+      if (!ballotSealed) return 'Seal second ballot'
+      return secondBallotWasUnanimous ? 'Return to court' : 'Return to court for direction'
+    case 'final-vote': return 'Seal final ballot'
+    case 'reasoning': return recordsReasoning
+      ? 'Record reasoning contribution'
+      : 'Continue without saving reflection'
+    case 'choose-focus': return isOathChoice(kind, prompt)
+      ? 'Confirm oath or affirmation'
+      : 'Confirm review focus'
+    case 'inspect-exhibit': return 'Finish exhibit review'
+    case 'jury-note': return 'Return to court for overnight separation'
   }
-  if (kind === 'final-vote') return 'Seal final ballot'
-  if (kind === 'reasoning') return 'Record reasoning contribution'
-  if (kind === 'choose-focus') return 'Confirm review focus'
-  if (kind === 'inspect-exhibit') return 'Finish exhibit review'
-  if (kind === 'jury-note') return 'Return to deliberation'
-  return 'Read the next court step'
 }

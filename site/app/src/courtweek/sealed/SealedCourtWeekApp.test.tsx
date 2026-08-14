@@ -367,6 +367,7 @@ describe('SealedCourtWeekApp', () => {
     expect(container.textContent).toContain('Legal question')
     expect(container.textContent).toContain('Admitted evidence')
     expect(container.textContent).toContain('connect')
+    expect(container.querySelector('.cw-primary')?.textContent).toContain('Continue without saving reflection')
     expect(container.textContent).not.toContain(elevenMinutesCourtWeek.deliberation.jurors[0].occupation)
   })
 })

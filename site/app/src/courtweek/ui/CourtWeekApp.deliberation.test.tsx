@@ -337,7 +337,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
 
     expect(container.querySelector('.cw-choice-grid')).not.toBeNull()
     await act(async () => clickButton(container, 'Oath'))
-    await act(async () => clickButton(container, 'Confirm review focus'))
+    await act(async () => clickButton(container, 'Confirm oath or affirmation'))
     expect(play).toHaveBeenCalledTimes(3)
     expect(latestProgress).toMatchObject({ currentSceneId: 'mon-crown-opening', currentCueId: 'mon-crown-opening-1' })
     expect(container.querySelector('.cw-interaction')).toBeNull()
@@ -588,7 +588,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
       await Promise.resolve()
     })
     await act(async () => clickButton(container, 'Take your seat'))
-    await act(async () => clickButton(container, 'Continue'))
+    await act(async () => clickButton(container, 'Finish Monday session'))
 
     expect(container.textContent).toContain('Next sitting: Tuesday')
     expect(container.textContent).toMatch(/Tuesday,? 11 August 2026/)
@@ -637,7 +637,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
     await act(async () => clickAdvance(container))
 
     const primaryButton = () => Array.from(container.querySelectorAll<HTMLButtonElement>('button.cw-primary'))[0]
-    expect(primaryButton().textContent?.trim()).toBe('Confirm review focus')
+    expect(primaryButton().textContent?.trim()).toBe('Confirm oath or affirmation')
     expect(primaryButton().disabled).toBe(true)
     await act(async () => clickButton(container, 'Oath'))
     expect(primaryButton().disabled).toBe(false)

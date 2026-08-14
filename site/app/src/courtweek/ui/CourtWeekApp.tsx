@@ -45,7 +45,7 @@ import { ImmersiveCourtShell } from './ImmersiveCourtShell'
 import { JurorDesk } from './JurorDesk'
 import { LocalProfilePanel } from './LocalProfilePanel'
 import { useModalFocusBoundary } from './useModalFocusBoundary'
-import { courtEventAction, interactionOpenAction, interactionPrimaryAction } from './proceduralActions'
+import { courtAdvanceAction, interactionPrimaryAction } from './proceduralActions'
 import '../courtweek.css'
 
 export interface CourtWeekAppProps {
@@ -847,17 +847,15 @@ export function CourtWeekApp({
     ? nextAuthoredCue(position.scene.cues, position.cueIndex, isReplay ? isReplaySuppressedCue : () => false)
     : nextReplaySafeCue(position.scene.cues, position.cueIndex, isReplay)
   const nextScene = activeSession.scenes[position.sceneIndex + 1]
-  const advanceLabel = advanceTargetCue
-    ? courtEventAction(advanceTargetCue.event)
-    : position.scene.interaction?.kind && position.scene.interaction.kind !== 'observe'
-      ? interactionOpenAction(position.scene.interaction.kind)
-      : nextScene?.cues[0]
-        ? courtEventAction(nextScene.cues[0].event)
-        : isReplay
-          ? 'End replay'
-          : activeSession.ordinal === courtWeek.manifest.sessions.length
-            ? 'Complete Court Week'
-            : `Finish ${activeSession.day} session`
+  const advanceLabel = courtAdvanceAction({
+    targetEvent: advanceTargetCue?.event,
+    interaction: position.scene.interaction,
+    nextEvent: nextScene?.cues[0]?.event,
+    replay: isReplay,
+    sessionEndAction: activeSession.ordinal === courtWeek.manifest.sessions.length
+      ? 'Complete Court Week'
+      : `Finish ${activeSession.day} session`,
+  })
   const firstBallot = firstBallotForScene(
     courtWeek.deliberation, position.scene.id, progress.provisionalVote,
   )
@@ -1201,8 +1199,11 @@ export function CourtWeekApp({
           {interactionPrimaryAction({
             kind: interaction.kind,
             replay: isReplay,
+            replayEnds: !nextScene,
             ballotSealed,
             secondBallotWasUnanimous: progress.secondBallotWasUnanimous ?? false,
+            prompt: interaction.prompt,
+            recordsReasoning: recordsInfluence,
           })}
         </button>
         {!isReplay && interaction.kind === 'reasoning' && interaction.optional ? (
