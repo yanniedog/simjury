@@ -23,7 +23,9 @@ npm run media:performance:manifest -- --output ../../.court-week-voice-review/pe
 npm run media:performance:manifest -- --input ../../.court-week-voice-review/performance.json
 ```
 
-`sourceDigest` covers the ordered canonical cues and directly separated turns.
+`sourceDigest` currently covers ordered cues and legacy-separated turns for
+bake-off only. Release readiness remains blocked until explicit reviewed turns
+replace inference and `sourceContract` becomes `explicit-reviewed`.
 `performanceDigest` additionally covers providers, casting, consent/reference
 hashes and pronunciation projections. Do not copy either digest after a change.
 

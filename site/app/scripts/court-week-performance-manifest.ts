@@ -6,7 +6,6 @@ import { z } from 'zod'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
 import { splitCueTurns } from '../src/courtweek/content/cueTurns'
 import type { CourtWeek } from '../src/courtweek/model/schema'
-
 export const PERFORMANCE_MANIFEST_SCHEMA = 'simjury.court-week-performance/v1' as const
 const digestSchema = z.string().regex(/^sha256:[0-9a-f]{64}$/u)
 const httpsUrl = z.string().url().refine((value) => value.startsWith('https://'), 'HTTPS is required')
@@ -58,6 +57,7 @@ const projectionSchema = z.object({
 export const performanceManifestSchema = z.object({
   schema: z.literal(PERFORMANCE_MANIFEST_SCHEMA),
   stage: z.enum(['bakeoff', 'approved']),
+  sourceContract: z.enum(['legacy-inferred', 'explicit-reviewed']),
   caseId: z.literal('cw-0001'),
   sourceRevision: z.string().min(1),
   sourceDigest: digestSchema,
@@ -105,7 +105,6 @@ export const CANONICAL_PERFORMANCE_IDENTITIES = [
   { id: 'tovan-mir', speakerLabels: ['Tovan Mir'], castingBrief: 'Meticulous records language, times and identifiers.' },
   { id: 'yara-merrow', speakerLabels: ['Yara Merrow'], castingBrief: 'Quiet analytical confidence and operational precision.' },
 ] as const
-
 const providers: CourtWeekPerformanceManifest['providers'] = [
   { id: 'chatterbox-v3', label: 'Chatterbox Multilingual V3', configuration: 'English with consented Australian reference; t3_model=v3', components: [
     { kind: 'engine', name: 'Chatterbox', repository: 'https://github.com/resemble-ai/chatterbox', revision: '5de7a54aa4e5e2baadb0182dde554908b48b85c2', selector: 'ChatterboxMultilingualTTS', licenseSpdx: 'MIT', licenseUrl: 'https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/LICENSE', acquisition: 'pending', artifactInventorySha256: null },
@@ -122,7 +121,6 @@ const providers: CourtWeekPerformanceManifest['providers'] = [
     { kind: 'model', name: 'OpenVoice V2 weights', repository: 'https://huggingface.co/myshell-ai/OpenVoiceV2', revision: 'f36e7edfe1684461a8343844af60babc2efbb727', selector: 'converter', licenseSpdx: 'MIT', licenseUrl: 'https://huggingface.co/myshell-ai/OpenVoiceV2/blob/f36e7edfe1684461a8343844af60babc2efbb727/README.md', acquisition: 'pending', artifactInventorySha256: null },
   ] },
 ]
-
 const canonicalJson = (value: unknown): string => {
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`
   if (value !== null && typeof value === 'object') return `{${Object.entries(value)
@@ -157,7 +155,7 @@ export function refreshPerformanceDigest(value: unknown): CourtWeekPerformanceMa
 
 export function buildCourtWeekPerformanceManifest(): CourtWeekPerformanceManifest {
   const payload: PerformancePayload = {
-    schema: PERFORMANCE_MANIFEST_SCHEMA, stage: 'bakeoff', caseId: 'cw-0001',
+    schema: PERFORMANCE_MANIFEST_SCHEMA, stage: 'bakeoff', sourceContract: 'legacy-inferred', caseId: 'cw-0001',
     sourceRevision: elevenMinutesCourtWeek.manifest.revision,
     sourceDigest: courtWeekPerformanceSourceDigest(),
     computePolicy: { maxIncrementalSpendAud: 20, recurringSpendAud: 0, billableEndpointsAllowed: false, execution: ['owned-or-donated-consumer-hardware', 'manual-non-billable-cloud-gpu'], freeCloudRequiresManualStart: true, freeCloudReferenceConsentRequired: true, resumableUnit: 'utterance' },
@@ -184,6 +182,7 @@ export function validateCourtWeekPerformanceManifest(value: unknown, requireRead
   if (new Set(providerIds).size !== providerIds.length) throw new Error('Provider ids must be unique')
   const assigned = manifest.identities.flatMap(({ assignment }) => assignment ? [assignment] : [])
   if (assigned.some(({ providerId }) => !providerIds.includes(providerId))) throw new Error('An assignment names an unknown provider')
+  if (new Set(assigned.map(({ consentReceiptSha256 }) => consentReceiptSha256)).size !== assigned.length) throw new Error('Assigned identities must use distinct donor consent receipts')
   if (new Set(assigned.map(({ referenceAudioSha256 }) => referenceAudioSha256)).size !== assigned.length) throw new Error('Assigned identities must use distinct reference recordings')
   if (new Set(assigned.map(({ providerId, voiceProfileId }) => `${providerId}:${voiceProfileId}`)).size !== assigned.length) throw new Error('Assigned identities must use distinct provider voice profiles')
   const sourceText = canonicalJson(elevenMinutesCourtWeek.manifest.sessions)
@@ -193,6 +192,7 @@ export function validateCourtWeekPerformanceManifest(value: unknown, requireRead
   const ready = requireReady || manifest.stage === 'approved'
   if (ready) {
     if (assigned.length !== 28) throw new Error('Every performance identity requires a consented reference assignment')
+    if (manifest.sourceContract !== 'explicit-reviewed') throw new Error('Release requires the explicit reviewed-turn source contract')
     const selected = new Set(assigned.map(({ providerId }) => providerId))
     if (manifest.providers.filter(({ id }) => selected.has(id)).flatMap(({ components }) => components)
       .some(({ acquisition }) => acquisition !== 'verified')) throw new Error('Selected provider artifacts are not verified offline acquisitions')
