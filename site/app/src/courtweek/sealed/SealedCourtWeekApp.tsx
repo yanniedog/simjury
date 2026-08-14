@@ -28,6 +28,8 @@ import { prepareSealedProgressImport } from './progressImport'
 import type { CourtDayPack, CourtWeekBootstrap } from './types'
 import { DEVELOPER_PREVIEW_NOW, developerProgressForDay } from './developerPreview'
 
+const DEVELOPER_PREVIEW_ENABLED = import.meta.env.DEV || import.meta.env.MODE === 'test'
+
 export interface SealedCourtWeekAppProps {
   bootstrap: CourtWeekBootstrap
   now?: () => number
@@ -184,7 +186,6 @@ function StandardSealedCourtWeekApp({
     state: LocalProfileResult
     onChange: (profile: LocalProfileInput) => void
     onReset: () => void
-    onOpenDeveloperPreview: () => void
   }
 }) {
   const [progress, setProgress] = useState<StoredWeeklyProgress | null>(null)
@@ -339,16 +340,15 @@ function StandardSealedCourtWeekApp({
           issue: localProfile.state.issue,
           onChange: localProfile.onChange,
           onReset: localProfile.onReset,
-          onOpenDeveloperPreview: localProfile.onOpenDeveloperPreview,
         } : undefined}
       />
     </>
   )
 }
 
-const DEVELOPER_PREVIEW_ADVISORY = [
+const DEVELOPER_PREVIEW_ADVISORY = /* @__PURE__ */ [
   'Fictional, non-graphic marine-emergency death, including an acted distress call.',
-  'Pause or leave at any time; preview progress is discarded when you switch sessions or leave preview.',
+  'Pause or leave at any time; temporary progress is discarded when you switch or leave this session.',
   'Suitable for adults.',
 ].join(' ')
 
@@ -389,9 +389,6 @@ function DeveloperPreview({
     return () => { active = false }
   }, [bootstrap, fetcher, packBase, retry])
 
-  // Entering preview asks the parent to hide the toolbar. Keep the hydrated
-  // Court Week identity stable across that parent render so a playing cue is
-  // not torn down and immediately paused.
   const courtWeek = useMemo(
     () => packs
       ? runtimeCourtWeek(bootstrap, packs.filter(({ ordinal }) => ordinal <= selectedOrdinal))
@@ -424,7 +421,7 @@ function DeveloperPreview({
     )
   }
   return (
-    <div className="cw-developer-preview" data-entered={entered ? 'true' : 'false'}>
+    <div className="cw-test-harness" data-entered={entered ? 'true' : 'false'}>
       <aside className="cw-developer-toolbar" aria-label="Developer preview controls">
         <strong>DEV PREVIEW</strong>
         <label htmlFor="cw-developer-day">Session</label>
@@ -451,7 +448,7 @@ function DeveloperPreview({
         ephemeral
         ephemeralAdvisory={DEVELOPER_PREVIEW_ADVISORY}
         onEnteredChange={setEntered}
-        developerPreview={{
+        testSession={{
           selectedOrdinal,
           sessions: bootstrap.sessions,
           onSelect: (ordinal) => { setSelectedOrdinal(ordinal); setEntered(false) },
@@ -462,46 +459,30 @@ function DeveloperPreview({
   )
 }
 
-function shouldOpenAllSessionPreview(profile: LocalProfileInput | LocalProfileResult['profile']): boolean {
-  return profile.adultFictionAcknowledged === true && profile.developerMode === true
+function developerPreviewRouteRequested(): boolean {
+  return DEVELOPER_PREVIEW_ENABLED
+    && typeof window !== 'undefined'
+    && new URLSearchParams(window.location.search).get('developer-preview') === 'all'
 }
 
 export function SealedCourtWeekApp(props: SealedCourtWeekAppProps) {
   const [localProfile, setLocalProfile] = useState<LocalProfileResult>(loadLocalProfile)
-  const leftPreviewRef = useRef(false)
-  const localProfileRef = useRef(localProfile)
-  localProfileRef.current = localProfile
-  const [developerMode, setDeveloperMode] = useState<'preview' | 'standard'>(() => (
-    shouldOpenAllSessionPreview(loadLocalProfile().profile) ? 'preview' : 'standard'
-  ))
+  const [previewRoute, setPreviewRoute] = useState(developerPreviewRouteRequested)
   const [focusPublicEntry, setFocusPublicEntry] = useState(false)
   const changeLocalProfile = useCallback((profile: LocalProfileInput) => {
-    const previous = localProfileRef.current.profile
-    const next = saveLocalProfile(profile)
-    setLocalProfile(next)
-    // Temporary default path: once the adult gate and developer mode are both
-    // on, enter all-session preview automatically. Leaving preview opts out
-    // until the user opens it again explicitly.
-    if (
-      !leftPreviewRef.current
-      && shouldOpenAllSessionPreview(next.profile)
-      && !shouldOpenAllSessionPreview(previous)
-    ) {
-      setFocusPublicEntry(false)
-      setDeveloperMode('preview')
-    }
+    setLocalProfile(saveLocalProfile(profile))
   }, [])
   const clearLocalProfile = useCallback(() => {
-    leftPreviewRef.current = false
     setLocalProfile(resetLocalProfile())
-    setDeveloperMode('standard')
   }, [])
   const packBase = props.packBase ?? `${import.meta.env.BASE_URL}court-week/packs/`
-  if (developerMode === 'preview') {
+  if (DEVELOPER_PREVIEW_ENABLED && previewRoute && localProfile.profile.adultFictionAcknowledged) {
     return <DeveloperPreview {...props} packBase={packBase} onLeave={() => {
-      leftPreviewRef.current = true
+      const url = new URL(window.location.href)
+      url.searchParams.delete('developer-preview')
+      window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`)
       setFocusPublicEntry(true)
-      setDeveloperMode('standard')
+      setPreviewRoute(false)
     }} />
   }
   return <StandardSealedCourtWeekApp
@@ -512,12 +493,6 @@ export function SealedCourtWeekApp(props: SealedCourtWeekAppProps) {
       state: localProfile,
       onChange: changeLocalProfile,
       onReset: clearLocalProfile,
-      onOpenDeveloperPreview: () => {
-        if (!shouldOpenAllSessionPreview(localProfile.profile)) return
-        leftPreviewRef.current = false
-        setFocusPublicEntry(false)
-        setDeveloperMode('preview')
-      },
     }}
   />
 }

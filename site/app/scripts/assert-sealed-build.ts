@@ -24,6 +24,10 @@ const publicCode = files
   .filter((file) => /\.(?:html|js|css)$/u.test(file))
   .map((file) => readFileSync(file, 'utf8'))
   .join('\n')
+const developerPreviewSentinels = ['preview', '2026-08-17T09:00:00+10:00', '1786921200000']
+for (const sentinel of developerPreviewSentinels) if (publicCode.toLowerCase().includes(sentinel.toLowerCase())) {
+  throw new Error(`Developer preview leaked into the production build: ${sentinel}`)
+}
 const sensitiveStrings = elevenMinutesCourtWeek.manifest.sessions.flatMap((session) =>
   session.scenes.flatMap((scene) => [
     ...(scene.visual.fallbackId === 'courtroom' ? [] : [scene.visual.fallbackId]),
@@ -110,4 +114,4 @@ for (const packName of packNames) {
   }
 }
 
-console.log('Sealed build contains no authored dialogue/media map in code, HTML, maps or pack plaintext.')
+console.log('Sealed production build contains no developer preview, authored dialogue/media map, maps or pack plaintext.')
