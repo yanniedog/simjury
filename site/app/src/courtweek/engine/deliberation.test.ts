@@ -18,6 +18,8 @@ import {
   openCourtReturnTurns,
   outcomeAnalysis,
   nextSundaySceneId,
+  runtimeOpenCourtReturnCue,
+  runtimeOutcomeAnalysisCue,
 } from './deliberation'
 
 const orderedScenes = elevenMinutesSessions.flatMap((session) => session.scenes)
@@ -271,5 +273,23 @@ describe('Court Week deliberation engine', () => {
       'Foreperson Edda Rook',
       'Judge Sel Aven',
     ])
+  })
+
+  it('builds the exact dynamic cues consumed by playback and media review', () => {
+    const returnSource = orderedScenes.flatMap(({ cues }) => cues).find(({ id }) => id === 'sun-verdict-return')!
+    const analysisSource = orderedScenes.flatMap(({ cues }) => cues).find(({ id }) => id === 'sun-analysis')!
+    const returned = runtimeOpenCourtReturnCue(returnSource, 'murder', 'majority')
+    expect(returned.text).toContain('eleven-to-one')
+    expect(returned.turns?.map(({ speaker }) => speaker)).toEqual([
+      'Narrator', 'Clerk', 'Foreperson Edda Rook', 'Judge Sel Aven',
+    ])
+    expect(returned.audio).toBeUndefined()
+    expect(returned.accessibleProposition).toContain('majority result')
+
+    const sealed = runtimeOutcomeAnalysisCue(analysisSource, elevenMinutesDeliberation, false)
+    expect(sealed.text).toMatch(/remains sealed/i)
+    const analysis = runtimeOutcomeAnalysisCue(analysisSource, elevenMinutesDeliberation, true, 'not-guilty')
+    expect(analysis.text).toMatch(/Strongest lawful rationale:.*Strongest counter-analysis:/s)
+    expect(analysis.accessibleProposition).toMatch(/without declaring a correct answer/i)
   })
 })

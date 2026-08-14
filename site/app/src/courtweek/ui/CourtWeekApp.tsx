@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { CourtWeek, CourtSession, LegalPhase, ReasoningMove, SceneCue, Verdict } from '../model/schema'
 import {
-  analysisForReturnedVerdict,
   assessReasoningContribution,
   calculateFinalBallot,
   calculateSecondBallot,
   firstBallotForScene,
   nextSundaySceneId,
-  openCourtReturn,
-  openCourtReturnTurns,
+  runtimeOpenCourtReturnCue,
+  runtimeOutcomeAnalysisCue,
   unanimousVerdict,
 } from '../engine/deliberation'
 import {
@@ -297,34 +296,12 @@ export function CourtWeekApp({
   const playbackCue = useMemo<SceneCue>(() => {
     const safeCue = replaySafeCue(position.cue, isReplay)
     if (safeCue.id === 'sun-verdict-return' && progress.sealedVerdict && progress.sealedAgreement) {
-      const turns = openCourtReturnTurns(progress.sealedVerdict, progress.sealedAgreement)
-      return {
-        ...safeCue,
-        text: openCourtReturn(progress.sealedVerdict, progress.sealedAgreement),
-        turns,
-        // The sealed outcome is dynamic. Static placeholder narration cannot
-        // truthfully voice it, so device speech speaks each identified turn.
-        audio: undefined,
-        accessibleProposition: `The accused stands while the ${progress.sealedAgreement} result is spoken and recorded in open court.`,
-      }
+      return runtimeOpenCourtReturnCue(safeCue, progress.sealedVerdict, progress.sealedAgreement)
     }
     if (safeCue.id === 'sun-analysis') {
-      if (!progress.openCourtVerdictReturned || !progress.returnedVerdict) {
-        return {
-          ...safeCue,
-          text: 'Analysis remains sealed until the jury has returned its result in open court.',
-          turns: undefined,
-          accessibleProposition: 'Post-verdict analysis is not available before the open-court return.',
-        }
-      }
-      const analysis = analysisForReturnedVerdict(courtWeek.deliberation, progress.returnedVerdict)
-      if (!analysis) return safeCue
-      return {
-        ...safeCue,
-        text: `Strongest lawful rationale: ${analysis.lawfulRationale}\n\nStrongest counter-analysis: ${analysis.counterAnalysis}`,
-        turns: undefined,
-        accessibleProposition: 'Balanced analysis presents the strongest lawful rationale and counter-analysis for the returned result without declaring a correct answer.',
-      }
+      return runtimeOutcomeAnalysisCue(
+        safeCue, courtWeek.deliberation, progress.openCourtVerdictReturned, progress.returnedVerdict,
+      )
     }
     return safeCue
   }, [courtWeek.deliberation, isReplay, position.cue, progress.openCourtVerdictReturned, progress.returnedVerdict, progress.sealedAgreement, progress.sealedVerdict])

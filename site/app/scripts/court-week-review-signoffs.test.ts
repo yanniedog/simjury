@@ -31,7 +31,7 @@ describe('Court Week reviewed-source signoffs', () => {
     expect(courtWeekMediaSourceDigest()).toBe(courtWeekMediaSourceDigest())
   })
 
-  it('separates retired duration metadata from exact media source', () => {
+  it('separates retired duration metadata but binds compatibility to the audited migration', () => {
     const changed = structuredClone(elevenMinutesCourtWeek)
     const session = changed.manifest.sessions[0]
     const scene = session.scenes.find(({ interaction }) => interaction)!
@@ -47,10 +47,10 @@ describe('Court Week reviewed-source signoffs', () => {
     )) as ReviewSignoffSource
     const report = assessReviewSignoffs(ledger, changed)
     expect(report.exactSourceMatch).toBe(false)
-    expect(report.pinnedMediaCompatible).toBe(true)
+    expect(report.pinnedMediaCompatible).toBe(false)
     expect(() => requirePinnedMediaCompatibility(
       report, ledger.pinnedMedia!.releaseReviewDigest, report.revision, ledger.pinnedMedia!.releaseTag,
-    )).not.toThrow()
+    )).toThrow('current reviewed source or media projection differs')
   })
 
   it('invalidates media compatibility for prerecorded captions or dynamic analysis drift', () => {
@@ -144,7 +144,7 @@ describe('Court Week reviewed-source signoffs', () => {
     const stale = assessReviewSignoffs(checkedIn)
     expect(stale.pinnedMediaCompatible).toBe(false)
     expect(() => requirePinnedMediaCompatibility(stale, checkedIn.pinnedMedia!.releaseReviewDigest, stale.revision, checkedIn.pinnedMedia!.releaseTag))
-      .toThrow('current dialogue, captions, audio or art differ')
+      .toThrow('current reviewed source or media projection differs')
 
     const current = assessReviewSignoffs(JSON.parse(readFileSync(
       join(process.cwd(), 'content-reviews/cw-0001.review-signoffs.json'),

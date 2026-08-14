@@ -15,6 +15,7 @@ const releaseTag = 'court-week-cw-0001-2026.08.03-r2'
 const revision = '2026.08.03-r2'
 const approvedSourceCommit = 'da395a60865af7b0a744145eddf3f0aff4a2f357'
 const metadataMigrationCommit = '3e2e8f9a5ad14fb5efc74e322893c4dd0cb80fa2'
+const postMigrationReviewDigest = 'sha256:bd30414ae04005e61961c82b81a4918f9aa17cfc82b2bb8a0f348392aef886cc'
 
 function assetName(label, extension) {
   return `${createHash('sha256').update(label).digest('hex')}${extension}`
@@ -94,12 +95,13 @@ test('accepts matching identity and the exact content-addressed runtime asset se
 
 test('accepts approved immutable media through an exact metadata-only compatibility record', () => {
   const manifests = matchedManifests()
-  manifests.reviewSignoffs.contentDigest = `sha256:${'b'.repeat(64)}`
+  manifests.reviewSignoffs.contentDigest = postMigrationReviewDigest
   manifests.reviewSignoffs.signoffs.forEach((entry) => { entry.decision = 'pending' })
   manifests.reviewSignoffs.pinnedMedia = {
     schema: 'simjury.court-week-pinned-media-compatibility/v1',
     releaseTag,
     releaseReviewDigest: manifests.release.review_content_digest,
+    postMigrationReviewDigest,
     mediaSourceDigest: `sha256:${'c'.repeat(64)}`,
     releaseSourceCommit: approvedSourceCommit,
     metadataMigrationCommit,
@@ -116,6 +118,7 @@ test('rejects a compatibility record detached from the immutable Release', async
   for (const [name, mutate] of [
     ['release digest', (pinned) => { pinned.releaseReviewDigest = `sha256:${'f'.repeat(64)}` }],
     ['release tag', (pinned) => { pinned.releaseTag += '-stale' }],
+    ['post-migration source', (pinned) => { pinned.postMigrationReviewDigest = `sha256:${'b'.repeat(64)}` }],
     ['media source digest', (pinned) => { pinned.mediaSourceDigest = 'not-a-digest' }],
     ['approval commit', (pinned) => { pinned.releaseSourceCommit = 'd'.repeat(40) }],
     ['migration commit', (pinned) => { pinned.metadataMigrationCommit = 'e'.repeat(40) }],
@@ -125,6 +128,7 @@ test('rejects a compatibility record detached from the immutable Release', async
     manifests.reviewSignoffs.pinnedMedia = {
       schema: 'simjury.court-week-pinned-media-compatibility/v1', releaseTag,
       releaseReviewDigest: manifests.release.review_content_digest,
+      postMigrationReviewDigest,
       mediaSourceDigest: `sha256:${'c'.repeat(64)}`,
       releaseSourceCommit: approvedSourceCommit, metadataMigrationCommit,
       basis: 'retired-duration-metadata-only',

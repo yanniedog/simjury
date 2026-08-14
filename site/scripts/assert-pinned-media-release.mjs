@@ -14,6 +14,7 @@ const AUDIO_SOURCE_EXTENSIONS = {
 const ART_SOURCE_EXTENSIONS = { avif: '.avif', webp: '.webp' }
 const APPROVED_RELEASE_SOURCE_COMMIT = 'da395a60865af7b0a744145eddf3f0aff4a2f357'
 const RETIRED_DURATION_MIGRATION_COMMIT = '3e2e8f9a5ad14fb5efc74e322893c4dd0cb80fa2'
+const POST_MIGRATION_REVIEW_DIGEST = 'sha256:bd30414ae04005e61961c82b81a4918f9aa17cfc82b2bb8a0f348392aef886cc'
 const REQUIRED_REVIEW_ROLES = [
   'prosecution',
   'defence',
@@ -195,6 +196,8 @@ function assertExactReviewSignoffs(reviewSignoffs, runtimeManifest, releaseManif
       pinned.schema !== 'simjury.court-week-pinned-media-compatibility/v1' ||
       pinned.releaseTag !== releaseManifest.release_tag ||
       pinned.releaseReviewDigest !== releaseManifest.review_content_digest ||
+      pinned.postMigrationReviewDigest !== POST_MIGRATION_REVIEW_DIGEST ||
+      pinned.postMigrationReviewDigest !== reviewSignoffs.contentDigest ||
       !/^sha256:[0-9a-f]{64}$/u.test(pinned.mediaSourceDigest ?? '') ||
       pinned.releaseSourceCommit !== APPROVED_RELEASE_SOURCE_COMMIT ||
       pinned.metadataMigrationCommit !== RETIRED_DURATION_MIGRATION_COMMIT ||
