@@ -125,6 +125,13 @@ describe('inactive Tuesday reviewed speech candidate', () => {
       { cueId: 'tue-recording-foundation', index: 6, evidenceId: 'ex-distress', status: 'provisional', operativeTurnId: 'tue-recording-foundation__4', warningTurnId: 'tue-recording-foundation__5' },
       { cueId: 'tue-recording-final-admission', index: 17, evidenceId: 'ex-distress', status: 'final', operativeTurnId: 'tue-recording-final-admission__1' },
     ])
+    const turnIds = new Set(TUESDAY_SPEECH_CANDIDATE.flatMap(({ turns }) => turns.map(({ id }) => id)))
+    for (const transition of transitions) {
+      expect(turnIds.has(transition.operativeTurnId), transition.operativeTurnId).toBe(true)
+      if ('warningTurnId' in transition) {
+        expect(turnIds.has(transition.warningTurnId), transition.warningTurnId).toBe(true)
+      }
+    }
     expect(cueById('tue-resume-1').sourceText).toContain('Its evidentiary status and any limits will be stated before it is played.')
 
     const provisionalTurns = cueById('tue-recording-foundation').turns

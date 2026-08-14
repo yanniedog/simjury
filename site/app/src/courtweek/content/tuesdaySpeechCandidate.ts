@@ -19,10 +19,11 @@ export const TUESDAY_SOURCE_CUE_IDS = [
 ] as const
 
 export type TuesdaySourceCueId = typeof TUESDAY_SOURCE_CUE_IDS[number]
+export type TuesdayTurnId = `${TuesdaySourceCueId}__${number}`
 
 export type RecordingAdmissionTransition =
-  | { evidenceId: 'ex-distress'; status: 'provisional'; operativeTurnId: string; warningTurnId: string }
-  | { evidenceId: 'ex-distress'; status: 'final'; operativeTurnId: string }
+  | { evidenceId: 'ex-distress'; status: 'provisional'; operativeTurnId: TuesdayTurnId; warningTurnId: TuesdayTurnId }
+  | { evidenceId: 'ex-distress'; status: 'final'; operativeTurnId: TuesdayTurnId }
 
 export interface TuesdaySpeechCandidateCue extends ReviewedSpeechCue {
   id: TuesdaySourceCueId
@@ -34,7 +35,7 @@ export interface TuesdaySpeechCandidateCue extends ReviewedSpeechCue {
 type QuoteSpec = readonly [excerpt: string, source: QuotedSpan['source'], sourceActorId?: ActorId]
 
 function turn(
-  id: string,
+  id: TuesdayTurnId,
   actorId: ActorId,
   displayLabel: string,
   speechMode: SpeechMode,
