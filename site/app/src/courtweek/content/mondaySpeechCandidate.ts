@@ -59,6 +59,7 @@ function cue(
 function writtenQuote(text: string, excerpt: string, sourceActorId: ActorId): QuotedSpan {
   const start = text.indexOf(excerpt)
   if (start < 0) throw new Error(`Missing reviewed written quotation: ${excerpt}`)
+  if (start !== text.lastIndexOf(excerpt)) throw new Error(`Ambiguous reviewed written quotation: ${excerpt}`)
   return { start, end: start + excerpt.length, source: 'written', sourceActorId }
 }
 
