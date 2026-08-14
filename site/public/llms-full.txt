@@ -40,6 +40,8 @@ The privacy page provides a browser-local opt-out.
 
 ## Discovery and HTTP behavior
 
+- `https://simjury.com` is the sole canonical origin in page metadata, crawl
+  guides and the sitemap.
 - `robots.txt` permits public assistant/search fetchers, excludes known
   model-training crawlers, and prevents ordinary indexing of hashed app assets.
 - Static responses publish `Content-Signal: search=yes, ai-input=yes,

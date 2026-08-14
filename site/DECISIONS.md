@@ -79,6 +79,21 @@ decision is [`../COURT-WEEK.md`](../COURT-WEEK.md). Legacy `/today`, `/play` and
 - Captions are optional in audio-first mode and mandatory when audio fails. No
   legal fact may be exclusive to image, crop, colour or sound.
 
+## D-WEB-7 — Canonical HTTPS origin
+
+- `https://simjury.com` is the sole public origin. Canonical, Open Graph,
+  Twitter, sitemap and crawl-guide URLs use HTTPS and the apex hostname.
+- Scheme and hostname canonicalisation belongs to one zone-level Cloudflare
+  **Single Redirect**, before Static Assets: match
+  `(http.host eq "www.simjury.com") or (http.host eq "simjury.com" and not ssl)`,
+  send a permanent `301` to the dynamic target
+  `concat("https://simjury.com", http.request.uri.path)`, and preserve the query
+  string. Both DNS hostnames must be proxied. Verify representative nested paths
+  and query strings after applying the dashboard rule.
+- Static Assets `_redirects` remains path-only. It cannot match a hostname, so
+  it must not be used as a substitute for the zone rule. No Worker, Function,
+  binding or paid runtime service is permitted for canonicalisation.
+
 ## Removed decisions
 
 Daily case supply, a seven-case selector, guided introduction, streaks, live
