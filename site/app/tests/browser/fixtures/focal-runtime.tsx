@@ -49,7 +49,7 @@ export function Fixture() {
     progressLabel="Scene 1 of 3" deskOpen={false}
     onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
     onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
-    onOpenDeveloperPreview={() => undefined}
+    onOpenTestSession={() => undefined}
   />
 }
 
