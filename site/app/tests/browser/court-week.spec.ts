@@ -24,19 +24,22 @@ async function swipeUp(page: Page, surface: Locator) {
   const box = await surface.boundingBox()
   expect(box).not.toBeNull()
   const session = await page.context().newCDPSession(page)
-  await session.send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 1 })
-  const x = Math.round(box!.x + box!.width / 2)
-  const startY = Math.round(box!.y + box!.height * .8)
-  const endY = Math.round(box!.y + box!.height * .2)
-  await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: startY }] })
-  for (let step = 1; step <= 5; step += 1) {
-    await session.send('Input.dispatchTouchEvent', {
-      type: 'touchMove',
-      touchPoints: [{ x, y: Math.round(startY + (endY - startY) * step / 5) }],
-    })
+  try {
+    await session.send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 1 })
+    const x = Math.round(box!.x + box!.width / 2)
+    const startY = Math.round(box!.y + box!.height * .8)
+    const endY = Math.round(box!.y + box!.height * .2)
+    await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: startY }] })
+    for (let step = 1; step <= 5; step += 1) {
+      await session.send('Input.dispatchTouchEvent', {
+        type: 'touchMove',
+        touchPoints: [{ x, y: Math.round(startY + (endY - startY) * step / 5) }],
+      })
+    }
+    await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  } finally {
+    await session.detach()
   }
-  await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
-  await session.detach()
 }
 
 const viewports = [
