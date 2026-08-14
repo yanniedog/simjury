@@ -198,6 +198,13 @@ describe('CourtWeekApp improper-argument interaction', () => {
     })
     expect(container.querySelector('.cw-interaction')).toBeNull()
     expect(container.querySelector('.cw-desk')?.getAttribute('role')).toBe('dialog')
+    expect(Array.from(container.querySelectorAll('button')).some(
+      (button) => button.textContent?.trim() === 'Export progress',
+    )).toBe(true)
+    expect(Array.from(container.querySelectorAll('button')).some(
+      (button) => button.textContent?.trim() === 'Import progress',
+    )).toBe(false)
+    expect(container.querySelector('.cw-desk input[type="file"]')).toBeNull()
     await act(async () => {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
       await Promise.resolve()
