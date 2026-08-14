@@ -961,7 +961,15 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
   const safeDownload = page.waitForEvent('download')
   await completion.getByRole('button', { name: 'Export progress' }).click()
   const safeExport = JSON.parse(await downloadText(await safeDownload)).progress
-  expect(safeExport).toMatchObject({ notes: '', returnedVerdict: 'not-guilty', returnedAgreement: 'unanimous' })
+  expect(safeExport).toMatchObject({
+    notes: '',
+    returnedVerdict: 'not-guilty',
+    returnedAgreement: 'unanimous',
+    reasoningContributions: [expect.objectContaining({
+      propositionId: reasoning.id,
+      move: 'challenge-inference',
+    })],
+  })
   await completion.getByLabel('Include my private notes in the export').check()
   const privateDownload = page.waitForEvent('download')
   await completion.getByRole('button', { name: 'Export progress' }).click()
