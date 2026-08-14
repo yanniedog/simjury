@@ -41,6 +41,7 @@ export interface JurorDeskProps {
   prepareImport?: (text: string) => Promise<WeeklyProgress>
   onImport: (progress: WeeklyProgress) => void
   progressTransferEnabled?: boolean
+  progressImportEnabled?: boolean
   onInspectEvidence: (evidenceId: string, trigger: HTMLButtonElement) => void
   onClose: () => void
 }
@@ -63,6 +64,7 @@ export function JurorDesk({
   prepareImport,
   onImport,
   progressTransferEnabled = true,
+  progressImportEnabled = true,
   onInspectEvidence,
   onClose,
 }: JurorDeskProps) {
@@ -111,7 +113,7 @@ export function JurorDesk({
         <button type="button" onClick={() => downloadWeeklyProgress(progress, includeNotes)}>
           Export progress
         </button>
-        {!readOnly ? (
+        {!readOnly && progressImportEnabled ? (
           <button type="button" onClick={() => importInput.current?.click()}>
             Import progress
           </button>
@@ -264,7 +266,7 @@ export function JurorDesk({
           />
           Include my private notes in the export
         </label>
-        {!readOnly ? (
+        {!readOnly && progressImportEnabled ? (
           <input
             ref={importInput}
             className="cw-visually-hidden"
