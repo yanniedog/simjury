@@ -28,7 +28,7 @@ describe('inactive Tuesday reviewed speech candidate', () => {
     expect(new Set(TUESDAY_SPEECH_CANDIDATE.map(({ sourceCueId }) => sourceCueId)).size).toBe(20)
 
     const turnIds = TUESDAY_SPEECH_CANDIDATE.flatMap(({ turns }) => turns.map(({ id }) => id))
-    expect(turnIds).toHaveLength(60)
+    expect(turnIds).toHaveLength(58)
     expect(new Set(turnIds).size).toBe(turnIds.length)
   })
 
@@ -72,7 +72,7 @@ describe('inactive Tuesday reviewed speech candidate', () => {
       'tue-re-direction': ['judge:direction'],
       'tue-mir-chief-1': ['tovan-mir:foundation', 'crown-counsel:tender', 'judge:admission'],
       'tue-mir-chief-2': ['tovan-mir:foundation', 'crown-counsel:tender', 'judge:admission'],
-      'tue-mir-chief-3': ['tovan-mir:foundation', 'crown-counsel:tender', 'judge:admission'],
+      'tue-mir-chief-3': ['tovan-mir:foundation'],
       'tue-mir-cross-1': ['defence-counsel:question', 'tovan-mir:answer', 'defence-counsel:question', 'tovan-mir:answer', 'defence-counsel:question', 'tovan-mir:answer', 'defence-counsel:question', 'tovan-mir:answer'],
       'tue-log-direction': ['judge:direction'],
       'tue-recording-final-admission': ['judge:admission', 'judge:limitation-direction'],

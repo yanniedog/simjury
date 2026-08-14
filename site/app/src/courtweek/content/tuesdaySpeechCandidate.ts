@@ -141,8 +141,6 @@ export const TUESDAY_SPEECH_CANDIDATE: readonly TuesdaySpeechCandidateCue[] = [
   ]),
   cue('tue-mir-chief-3', 'witness-chief', [
     turn('tue-mir-chief-3__1', 'tovan-mir', 'Tovan Mir', 'live-proceeding', 'foundation', 'The console automatically recorded the distress channel. I exported the copy played here from the write-once incident archive; its SHA-256 hash matches the archived file, so the copy is complete and unedited. The North Station snapshot’s digest and incident identifier also match the archive manifest. It is complete for that timestamp and shows READY exactly as retained, but the main tile did not display the separate warning detail.'),
-    turn('tue-mir-chief-3__2', 'crown-counsel', 'Crown counsel Asha Renn', 'advocacy', 'tender', 'I tender the North Station snapshot.'),
-    turn('tue-mir-chief-3__3', 'judge', 'Judge Sel Aven', 'judicial-direction', 'admission', 'The North Station snapshot is admitted.'),
   ]),
   cue('tue-mir-cross-1', 'witness-cross', [
     turn('tue-mir-cross-1__1', 'defence-counsel', 'Defence counsel Corin Dax', 'live-proceeding', 'question', 'The confirmation screen used the words “Apply selected priority?”', [['“Apply selected priority?”', 'written']]),
