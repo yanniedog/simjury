@@ -85,7 +85,9 @@ test('production entry and first session stay inside the Android 4G budgets', as
   await expect(page.locator('.cw-shell')).toBeVisible()
   await expect(page.locator('.cw-stage img')).toHaveJSProperty('complete', true)
   await expect.poll(() => page.locator('.cw-stage img').evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0)
-  await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
+  const advanceControl = page.locator('.cw-controls__advance')
+  await expect(advanceControl).toBeVisible()
+  await expect(advanceControl).toHaveAccessibleName('Read the empanelment')
   const playableMs = await page.evaluate((start) => performance.now() - start, startedAt)
   expect(playableMs, 'Take your seat to playable session').toBeLessThanOrEqual(budgets.playableMs)
 

@@ -355,13 +355,19 @@ describe('SealedCourtWeekApp', () => {
       if (!button) throw new Error(`Button not found: ${label}`)
       await act(async () => button.click())
     }
+    const advance = async () => {
+      const button = container.querySelector<HTMLButtonElement>('.cw-controls__advance')
+      if (!button) throw new Error('Court advance action not found')
+      await act(async () => button.click())
+    }
     await click('Take your seat')
-    await click('Continue')
-    await click('Continue')
+    await advance()
+    await advance()
 
     expect(container.textContent).toContain('Legal question')
     expect(container.textContent).toContain('Admitted evidence')
     expect(container.textContent).toContain('connect')
+    expect(container.querySelector('.cw-primary')?.textContent).toContain('Continue without saving reflection')
     expect(container.textContent).not.toContain(elevenMinutesCourtWeek.deliberation.jurors[0].occupation)
   })
 })
