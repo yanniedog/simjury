@@ -724,6 +724,9 @@ export function CourtWeekApp({
     return (
       <CourtWeekCompletion
         sessions={courtWeek.manifest.sessions}
+        progress={progress}
+        deliberation={courtWeek.deliberation}
+        evidence={courtWeek.trial.evidence}
         persistence={persistence}
         onExportProgress={ephemeral
           ? undefined

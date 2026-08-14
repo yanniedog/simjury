@@ -62,6 +62,7 @@ describe('useWeeklyProgress durability boundaries', () => {
       currentCueId: 'mon-arrival-2',
       notes: 'Latest private note.',
     })))
+    expect(state?.persistence).toBe('pending')
     act(() => window.dispatchEvent(new Event('pagehide')))
 
     await expect(loadWeeklyProgress('cw-0001', '2026.08.03-r2')).resolves.toMatchObject({

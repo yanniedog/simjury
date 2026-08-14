@@ -87,6 +87,7 @@ export function useWeeklyProgress(
       skipHydrationSave.current = false
       return
     }
+    setPersistence('pending')
     const sequence = ++saveSequence.current
     const timeout = window.setTimeout(() => {
       void saveWeeklyProgress(progress.courtWeekId, progress).then((destination) => {
