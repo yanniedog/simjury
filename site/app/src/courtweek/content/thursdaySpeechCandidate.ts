@@ -54,6 +54,9 @@ function turn(
   const quotedSpans = quoteSpecs.map(([excerpt, source, sourceActorId]) => {
     const start = text.indexOf(excerpt)
     if (start < 0) throw new Error(`${id}: missing reviewed quotation ${excerpt}`)
+    if (start !== text.lastIndexOf(excerpt)) {
+      throw new Error(`${id}: ambiguous reviewed quotation ${excerpt}`)
+    }
     return { start, end: start + excerpt.length, source, ...(sourceActorId ? { sourceActorId } : {}) }
   })
   return { id, actorId, displayLabel, speechMode, legalAction, text, ...(quotedSpans.length ? { quotedSpans } : {}) }
