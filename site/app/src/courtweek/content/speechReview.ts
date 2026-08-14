@@ -33,7 +33,6 @@ export const COURT_WEEK_ACTORS = [
   { id: 'omri-cade', label: 'Omri Cade', role: 'juror', aliases: ['Omri'] },
   { id: 'narrator', label: 'Narrator', role: 'narrator', aliases: [] },
   { id: 'recorded-channel', label: 'Recorded channel', role: 'recording', aliases: ['Channel'] },
-  { id: 'neutral-case-note', label: 'Judge’s neutral case note', role: 'document', aliases: [] },
 ] as const satisfies readonly ActorRecord[]
 
 export type ActorId = typeof COURT_WEEK_ACTORS[number]['id']
