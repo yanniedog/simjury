@@ -61,7 +61,7 @@ describe('Court Week reviewed speech contract', () => {
     }
     expect(() => assertReviewedSpeechCue(cue)).not.toThrow()
   })
-  it('enforces actor authority for pleas and evidence subacts', () => {
+  it('enforces actor authority for pleas, evidence subacts and jury notes', () => {
     expect(() => assertLegalActionAuthority(turn({
       id: 'wrong-plea', actorId: 'clerk', text: 'Not Guilty.', legalAction: 'plea-answer',
     }))).toThrow(/cannot perform plea-answer/i)
@@ -73,6 +73,10 @@ describe('Court Week reviewed speech contract', () => {
     }))).not.toThrow()
     expect(() => assertLegalActionAuthority(turn({
       id: 'admission', actorId: 'judge', text: 'Exhibit admitted.', legalAction: 'admission',
+    }))).not.toThrow()
+    expect(() => assertLegalActionAuthority(turn({
+      id: 'jury-note', actorId: 'edda-rook', text: 'Written jury question.',
+      speechMode: 'written-text-read', legalAction: 'jury-note',
     }))).not.toThrow()
     expect(() => assertLegalActionAuthority(turn({
       id: 'wrong-foreperson', actorId: 'niko-hale', text: 'Guilty.', legalAction: 'verdict-return',
