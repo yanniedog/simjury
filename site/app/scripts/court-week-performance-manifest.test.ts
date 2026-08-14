@@ -26,7 +26,8 @@ describe('Court Week governed performance manifest', () => {
     })
     expect(first.providers).toContainEqual(expect.objectContaining({
       id: 'google-chirp3-hd-en-au', delivery: 'managed-batch-api',
-      voiceInventory: expect.objectContaining({ locale: 'en-AU', count: 30 }),
+      voiceInventory: expect.objectContaining({ locale: 'en-AU', count: 30, status: 'verified',
+        inventorySha256: expect.stringMatching(/^sha256:[0-9a-f]{64}$/u) }),
     }))
     expect(JSON.stringify(first)).not.toMatch(/referencePath|consentPath|donorName/iu)
   })
