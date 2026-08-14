@@ -7,7 +7,8 @@
     "schema": "simjury.court-week-pinned-media-compatibility/v1",
     "releaseTag": "court-week-cw-0001-2026.08.03-r3",
     "releaseReviewDigest": "sha256:acf35d82827884b22c8a7edbc7097b315155991c76fdf9d6cbf7b8181999b3af",
-    "mediaSourceDigest": "sha256:6ef3aea733f1eb734943e7ce757861ae56b1e9fed55c6762ac432a79063ac006",
+    "postMigrationReviewDigest": "sha256:bd30414ae04005e61961c82b81a4918f9aa17cfc82b2bb8a0f348392aef886cc",
+    "mediaSourceDigest": "sha256:cc292731de923f37a09ac1c0b6a056e94f7240e2422c19b2406ab5d7721a15ab",
     "releaseSourceCommit": "da395a60865af7b0a744145eddf3f0aff4a2f357",
     "metadataMigrationCommit": "3e2e8f9a5ad14fb5efc74e322893c4dd0cb80fa2",
     "basis": "retired-duration-metadata-only"

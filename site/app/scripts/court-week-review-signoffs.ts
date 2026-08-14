@@ -3,7 +3,7 @@ import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
-import { openCourtReturnTurns, type Agreement } from '../src/courtweek/engine/deliberation'
+import { runtimeOpenCourtReturnCue, runtimeOutcomeAnalysisCue, type Agreement } from '../src/courtweek/engine/deliberation'
 import type { CourtWeek } from '../src/courtweek/model/schema'
 import { buildCourtWeekAudioJobs } from './court-week-audio-jobs'
 
@@ -25,6 +25,7 @@ export interface PinnedMediaCompatibility {
   schema: 'simjury.court-week-pinned-media-compatibility/v1'
   releaseTag: string
   releaseReviewDigest: string
+  postMigrationReviewDigest: string
   mediaSourceDigest: string
   releaseSourceCommit: string
   metadataMigrationCommit: string
@@ -103,10 +104,15 @@ const RETURN_VARIANTS: readonly (readonly [CourtWeek['deliberation']['outcomePat
 ]
 const APPROVED_RELEASE_SOURCE_COMMIT = 'da395a60865af7b0a744145eddf3f0aff4a2f357'
 const RETIRED_DURATION_MIGRATION_COMMIT = '3e2e8f9a5ad14fb5efc74e322893c4dd0cb80fa2'
+const POST_MIGRATION_REVIEW_DIGEST = 'sha256:bd30414ae04005e61961c82b81a4918f9aa17cfc82b2bb8a0f348392aef886cc'
 
 /** Exact static-media and runtime speech projection; excludes session/interaction UX metadata. */
 export function courtWeekMediaSourceDigest(courtWeek: CourtWeek = elevenMinutesCourtWeek, sceneAssetRoot = defaultSceneAssetRoot): string {
   const jobs = buildCourtWeekAudioJobs(courtWeek).jobs.map(({ sessionId, sourceDigest }) => ({ sessionId, sourceDigest }))
+  const cues = courtWeek.manifest.sessions.flatMap(({ scenes }) => scenes.flatMap(({ cues }) => cues))
+  const returnCue = cues.find(({ id }) => id === 'sun-verdict-return')
+  const analysisCue = cues.find(({ id }) => id === 'sun-analysis')
+  if (!returnCue || !analysisCue) throw new Error('Court Week media source is missing a runtime outcome cue')
   const mediaSource = {
     caseId: courtWeek.manifest.id,
     revision: courtWeek.manifest.revision,
@@ -117,13 +123,11 @@ export function courtWeekMediaSourceDigest(courtWeek: CourtWeek = elevenMinutesC
     prerecordedAudioJobs: jobs,
     runtimeSpeech: {
       returns: RETURN_VARIANTS.map(([verdict, agreement]) => ({
-        verdict, agreement, turns: openCourtReturnTurns(verdict, agreement),
-        accessibleProposition: `The accused stands while the ${agreement} result is spoken and recorded in open court.`,
+        verdict, agreement, cue: runtimeOpenCourtReturnCue(returnCue, verdict, agreement),
       })),
-      analyses: courtWeek.deliberation.outcomePaths.map((analysis) => ({
-        ...analysis,
-        text: `Strongest lawful rationale: ${analysis.lawfulRationale}\n\nStrongest counter-analysis: ${analysis.counterAnalysis}`,
-        accessibleProposition: 'Balanced analysis presents the strongest lawful rationale and counter-analysis for the returned result without declaring a correct answer.',
+      sealedAnalysis: runtimeOutcomeAnalysisCue(analysisCue, courtWeek.deliberation, false),
+      analyses: courtWeek.deliberation.outcomePaths.map(({ verdict }) => ({
+        verdict, cue: runtimeOutcomeAnalysisCue(analysisCue, courtWeek.deliberation, true, verdict),
       })),
     },
     renderedSceneAssets: digestSceneAssets(sceneAssetRoot),
@@ -137,11 +141,12 @@ function validDigest(value: string): boolean {
 
 function assertPinnedMediaRecord(record: PinnedMediaCompatibility): void {
   if (record.schema !== 'simjury.court-week-pinned-media-compatibility/v1') throw new Error('Unsupported pinned media compatibility schema')
-  if (!validDigest(record.releaseReviewDigest) || !validDigest(record.mediaSourceDigest)) throw new Error('Pinned media compatibility requires SHA-256 digests')
+  if (!validDigest(record.releaseReviewDigest) || !validDigest(record.postMigrationReviewDigest) || !validDigest(record.mediaSourceDigest)) throw new Error('Pinned media compatibility requires SHA-256 digests')
   if (record.releaseSourceCommit !== APPROVED_RELEASE_SOURCE_COMMIT || record.metadataMigrationCommit !== RETIRED_DURATION_MIGRATION_COMMIT) {
     throw new Error('Pinned media compatibility requires the audited approval and migration commits')
   }
   if (record.basis !== 'retired-duration-metadata-only') throw new Error('Unsupported pinned media compatibility basis')
+  if (record.postMigrationReviewDigest !== POST_MIGRATION_REVIEW_DIGEST) throw new Error('Pinned media compatibility requires the audited post-migration source')
 }
 
 export function assessReviewSignoffs(
@@ -170,7 +175,9 @@ export function assessReviewSignoffs(
     : []
   const pendingRoles = COURT_WEEK_REVIEW_ROLES.filter((role) => !approvedRoles.includes(role))
   if (source.pinnedMedia) assertPinnedMediaRecord(source.pinnedMedia)
-  const pinnedMediaCompatible = sameCaseRevision && source.pinnedMedia?.mediaSourceDigest === mediaSourceDigest
+  const pinnedMediaCompatible = exactSourceMatch
+    && source.pinnedMedia?.postMigrationReviewDigest === contentDigest
+    && source.pinnedMedia.mediaSourceDigest === mediaSourceDigest
   return {
     schema: 'simjury.court-week-review-report/v1',
     caseId: courtWeek.manifest.id,
@@ -211,7 +218,7 @@ export function requirePinnedMediaCompatibility(
   expectedReleaseTag: string,
 ): void {
   const pinned = report.pinnedMedia
-  if (!report.pinnedMediaCompatible || !pinned) throw new Error('Pinned media blocked: current dialogue, captions, audio or art differ from the compatibility record')
+  if (!report.pinnedMediaCompatible || !pinned) throw new Error('Pinned media blocked: current reviewed source or media projection differs from the audited compatibility record')
   if (report.revision !== expectedRevision || pinned.releaseReviewDigest !== expectedReleaseDigest || pinned.releaseTag !== expectedReleaseTag) {
     throw new Error('Pinned media blocked: immutable Release identity differs from the compatibility record')
   }

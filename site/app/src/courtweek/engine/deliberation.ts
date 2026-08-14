@@ -1,6 +1,7 @@
 import type {
   DeliberationPack,
   ReasoningContribution,
+  SceneCue,
   SceneCueTurn,
   Verdict,
 } from '../model/schema'
@@ -273,6 +274,38 @@ export function openCourtReturnTurns(verdict: Verdict, agreement: Agreement): Sc
 
 export function openCourtReturn(verdict: Verdict, agreement: Agreement): string {
   return openCourtReturnTurns(verdict, agreement).map(({ text }) => text).join(' ')
+}
+
+export function runtimeOpenCourtReturnCue(cue: SceneCue, verdict: Verdict, agreement: Agreement): SceneCue {
+  const turns = openCourtReturnTurns(verdict, agreement)
+  return {
+    ...cue,
+    text: turns.map(({ text }) => text).join(' '),
+    turns,
+    audio: undefined,
+    accessibleProposition: `The accused stands while the ${agreement} result is spoken and recorded in open court.`,
+  }
+}
+
+export function runtimeOutcomeAnalysisCue(
+  cue: SceneCue,
+  pack: DeliberationPack,
+  openCourtVerdictReturned: boolean | undefined,
+  returnedVerdict?: Verdict,
+): SceneCue {
+  if (!openCourtVerdictReturned || !returnedVerdict) return {
+    ...cue,
+    text: 'Analysis remains sealed until the jury has returned its result in open court.',
+    turns: undefined,
+    accessibleProposition: 'Post-verdict analysis is not available before the open-court return.',
+  }
+  const analysis = outcomeAnalysis(pack, returnedVerdict)
+  return {
+    ...cue,
+    text: `Strongest lawful rationale: ${analysis.lawfulRationale}\n\nStrongest counter-analysis: ${analysis.counterAnalysis}`,
+    turns: undefined,
+    accessibleProposition: 'Balanced analysis presents the strongest lawful rationale and counter-analysis for the returned result without declaring a correct answer.',
+  }
 }
 
 export function matchImproperArgument(pack: DeliberationPack, claim: string) {

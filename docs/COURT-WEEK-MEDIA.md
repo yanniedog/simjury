@@ -57,17 +57,21 @@ U4a at
 scene and interaction duration metadata and correctly left the new broad digest
 `sha256:bd30414ae04005e61961c82b81a4918f9aa17cfc82b2bb8a0f348392aef886cc`
 pending. The separate media-source digest is
-`sha256:6ef3aea733f1eb734943e7ce757861ae56b1e9fed55c6762ac432a79063ac006`;
+`sha256:cc292731de923f37a09ac1c0b6a056e94f7240e2422c19b2406ab5d7721a15ab`;
 it covers every ordered cue/caption, deterministic prerecorded-audio job, all seven open-court return
 variants, all four analyses and every rendered art byte. It deliberately omits
 non-media session/scene/interaction UX metadata.
 
 Production recomputes that projection and requires its exact compatibility
 record to name the pinned immutable Release tag and its original broad review
-digest. Any dialogue, caption, voice, pause, dynamic outcome or art drift blocks
-deployment. This does not approve the current broad ledger: publishing any new
-media Release still requires all eight roles to approve the exact current broad
-digest through `--require-approved`.
+digest. The exception is also bound to the audited post-U4a broad digest, so any
+later broad-source change—including another non-media metadata change—blocks
+until it has its own explicit reviewed migration. Runtime verdict and analysis
+cues are built by one shared function used by both gameplay and this digest.
+Any dialogue, caption, voice, pause, dynamic outcome or art drift therefore
+blocks deployment. This does not approve the current broad ledger: publishing
+any new media Release still requires all eight roles to approve the exact
+current broad digest through `--require-approved`.
 
 Normal validation and `publish: false` report pending roles but continue so the
 private media artifact can be reviewed. That artifact carries the exact digest.
