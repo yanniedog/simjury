@@ -37,7 +37,7 @@ for (const reference of new Set(references)) {
 
 for (const text of [
   'One grave case · Seven sessions',
-  'About 20 minutes a day',
+  'Seven self-paced sessions',
   'Progress saved locally',
   'Eleven Minutes',
   'five trial days',

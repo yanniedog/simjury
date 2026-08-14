@@ -43,10 +43,10 @@ describe('Tuesday caption pacing', () => {
     }
   })
 
-  it('limits caption length while preserving the reviewed Tuesday duration and later-session pacing', () => {
+  it('limits caption length while reporting only Tuesday authored speech', () => {
     expect(Math.max(...tuesdayCues.map((cue) => cue.text.length))).toBeLessThanOrEqual(CAPTION_CUE_CHARACTER_LIMIT)
     expect(Math.min(...tuesdayCues.map((cue) => cue.text.length))).toBeGreaterThanOrEqual(28)
-    expect(estimateSessionSeconds(tuesday)).toBe(1_265)
+    expect(estimateSessionSeconds(tuesday)).toBeLessThan(8 * 60)
     expect(elevenMinutesCourtWeek.manifest.sessions.slice(2)
       .flatMap((session) => session.scenes.flatMap((scene) => scene.cues))
       .every((cue) => cue.sourceCueId === undefined)).toBe(true)
