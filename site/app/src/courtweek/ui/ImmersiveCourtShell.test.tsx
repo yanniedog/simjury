@@ -32,7 +32,6 @@ const scene: Scene = {
     },
   },
   cues: [cue],
-  transitionSeconds: 3,
 }
 const session: CourtSession = {
   id: 'monday',
@@ -40,7 +39,6 @@ const session: CourtSession = {
   day: 'Monday',
   title: 'The call',
   unlockAt: '2026-08-10T08:30:00+10:00',
-  targetMinutes: 20,
   prerequisiteSessionIds: [],
   scenes: [scene, scene, scene],
 }

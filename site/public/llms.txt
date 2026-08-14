@@ -1,6 +1,6 @@
 # SimJury
 
-> SimJury is one account-free fictional courtroom experience. Eleven Minutes unfolds over five weekday court sessions and a weekend jury deliberation, about twenty minutes per session. The player listens to both sides, tests admitted evidence with eleven authored jurors, and may return Murder, manslaughter, Not Guilty, or remain unable to agree.
+> SimJury is one account-free fictional courtroom experience. Eleven Minutes unfolds over five weekday court sessions and a weekend jury deliberation. The player listens to both sides, tests admitted evidence with eleven authored jurors, and may return Murder, manslaughter, Not Guilty, or remain unable to agree.
 
 SimJury is served entirely as static assets. Progress, private notes and ballots
 stay in the browser; an explicit local export/import file provides device

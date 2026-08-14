@@ -9,7 +9,7 @@ const cue: SceneCue = {
   accessibleProposition: 'The witness gives evidence.', tone: 'chief', evidenceIds: [], replayable: false,
 }
 const scene: Scene = {
-  id: 'scene-1', title: 'Evidence', phase: 'crown-case', transitionSeconds: 3, cues: [cue],
+  id: 'scene-1', title: 'Evidence', phase: 'crown-case', cues: [cue],
   visual: {
     fallbackId: 'witness', alt: 'Witness in court.', focalPoint: { x: 50, y: 50 }, captionPosition: 'top',
     sources: {
@@ -35,7 +35,7 @@ const scene: Scene = {
 }
 const session: CourtSession = {
   id: 'monday', ordinal: 1, day: 'Monday', title: 'Evidence', unlockAt: '2026-08-10T08:30:00+10:00',
-  targetMinutes: 20, prerequisiteSessionIds: [], scenes: [scene, scene, scene],
+  prerequisiteSessionIds: [], scenes: [scene, scene, scene],
 }
 
 export function Fixture() {

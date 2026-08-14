@@ -105,7 +105,6 @@ function sealedPlaceholderSession(
       captionPosition: 'bottom' as const,
     },
     cues: [placeholderCue],
-    transitionSeconds: 3,
   }
   return {
     id: entry.id,
@@ -113,7 +112,6 @@ function sealedPlaceholderSession(
     day: entry.day,
     title: `${entry.day} session`,
     unlockAt: entry.unlockAt,
-    targetMinutes: 20,
     prerequisiteSessionIds: [...entry.prerequisiteSessionIds, `sealed:${entry.id}`],
     scenes: [placeholderScene, placeholderScene, placeholderScene],
   }
