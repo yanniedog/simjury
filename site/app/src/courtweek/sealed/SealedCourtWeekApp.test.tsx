@@ -167,7 +167,7 @@ describe('SealedCourtWeekApp', () => {
     await act(async () => enter?.click())
     expect(container.textContent).toContain('Sunday')
     expect(container.textContent).toContain('COURT WEEK PREVIEW')
-    const presentation = container.querySelector<HTMLSelectElement>('[aria-label="Presentation mode"]')
+    const presentation = container.querySelector<HTMLSelectElement>('.cw-presentation-mode select')
     expect(presentation?.value).toBe('reading')
     if (presentation) presentation.value = 'captions'
     await act(async () => presentation?.dispatchEvent(new Event('change', { bubbles: true })))

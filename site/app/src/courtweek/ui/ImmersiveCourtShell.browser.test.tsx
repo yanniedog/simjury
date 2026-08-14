@@ -66,7 +66,7 @@ describe('ImmersiveCourtShell browser behavior', () => {
       />,
     ))
 
-    const presentation = container.querySelector<HTMLSelectElement>('[aria-label="Presentation mode"]')
+    const presentation = container.querySelector<HTMLSelectElement>('.cw-presentation-mode select')
     expect(Array.from(presentation?.options ?? []).map(({ text }) => text)).toEqual([
       'Audio', 'Audio + captions', 'Reading',
     ])

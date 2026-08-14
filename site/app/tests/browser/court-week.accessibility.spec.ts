@@ -156,7 +156,7 @@ test('forced colours retain labelled state, visible boundaries and legal positio
   const audit = await page.evaluate(() => {
     const shell = document.querySelector<HTMLElement>('.cw-shell')!
     const stage = document.querySelector<HTMLElement>('.cw-stage')!
-    const selected = document.querySelector<HTMLSelectElement>('[aria-label="Presentation mode"]')!
+    const selected = document.querySelector<HTMLSelectElement>('.cw-presentation-mode select')!
     const style = getComputedStyle(selected)
     return {
       forcedColorAdjust: getComputedStyle(shell).forcedColorAdjust,

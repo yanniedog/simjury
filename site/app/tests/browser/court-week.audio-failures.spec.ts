@@ -81,11 +81,19 @@ test('zero available voices enters automatic reading mode', async ({ page }) => 
 
   await expect(page.locator('.cw-reading-copy')).toBeVisible()
   await expect(page.getByText('Audio is unavailable. Reading mode is ready.')).toBeVisible()
-  await expect(page.getByLabel('Presentation mode')).toHaveValue('audio-first')
-  await page.getByLabel('Presentation mode').selectOption('captions')
-  await expect(page.getByLabel('Presentation mode')).toHaveValue('captions')
+  const presentation = page.getByLabel('Presentation mode')
+  const callsAfterFallback = await probe(page)
+  await expect(presentation).toHaveValue('audio-first')
+  await presentation.selectOption('captions')
+  await expect(presentation).toHaveValue('captions')
   await expect(page.locator('.cw-reading-copy')).toBeVisible()
-  expect((await probe(page)).speechCalls).toBe(0)
+  await presentation.selectOption('audio-first')
+  await expect(presentation).toHaveValue('audio-first')
+  await expect(page.locator('.cw-reading-copy')).toBeVisible()
+  expect(await probe(page)).toMatchObject({
+    playCalls: callsAfterFallback.playCalls,
+    speechCalls: 0,
+  })
 })
 
 test('temporary offline fallback resumes at the same cue without duplicate speech', async ({ page }) => {

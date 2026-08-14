@@ -345,7 +345,6 @@ export function ImmersiveCourtShell({
           <label className="cw-presentation-mode" data-mode={accessMode}>
             <span className="cw-visually-hidden">Presentation mode</span>
             <select
-              aria-label="Presentation mode"
               value={accessMode}
               onChange={(event) => onMode(event.currentTarget.value as AccessMode)}
             >
