@@ -76,7 +76,8 @@ describe('CourtSheet', () => {
     ><p id="sheet-description">Scrollable content</p></CourtSheet>
 
     await act(async () => { root.render(render(true)) })
-    const dialog = host.querySelector<HTMLElement>('[role="dialog"]')!
+    const dialog = host.querySelector<HTMLElement>('.cw-sheet')!
+    expect(dialog.hasAttribute('role')).toBe(false)
     expect(dialog.hasAttribute('inert')).toBe(true)
     expect(dialog.getAttribute('aria-hidden')).toBe('true')
     expect(dialog.hasAttribute('aria-modal')).toBe(false)
@@ -86,6 +87,7 @@ describe('CourtSheet', () => {
 
     await act(async () => { root.render(render(false)) })
     expect(dialog.hasAttribute('inert')).toBe(false)
+    expect(dialog.getAttribute('role')).toBe('dialog')
     expect(dialog.getAttribute('aria-modal')).toBe('true')
     expect(document.activeElement).toBe(dialog.querySelector('.cw-sheet__close'))
     expect(dialog.querySelector('.cw-sheet__header')).not.toBeNull()

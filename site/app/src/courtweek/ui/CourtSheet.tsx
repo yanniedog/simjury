@@ -43,7 +43,7 @@ export function CourtSheet({
     <section
       ref={sheet}
       className={['cw-sheet', className].filter(Boolean).join(' ')}
-      role="dialog"
+      role={inactive ? undefined : 'dialog'}
       aria-modal={inactive ? undefined : 'true'}
       aria-hidden={inactive || undefined}
       aria-labelledby={labelledBy}
