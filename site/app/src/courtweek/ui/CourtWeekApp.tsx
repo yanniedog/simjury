@@ -18,7 +18,7 @@ import {
 import { attachCueTurns } from '../content/cueTurns'
 import { isReplaySuppressedCue, nextReplaySafeCue, replaySafeCue } from '../engine/replay'
 import { deriveEvidenceLedger } from '../engine/evidenceLedger'
-import { contributionStage } from '../model/deliberationContract'
+import { contributionStage, reasoningMoveLabels } from '../model/deliberationContract'
 import { useCuePlayback } from '../media/useCuePlayback'
 import {
   getSessionAvailability,
@@ -877,6 +877,9 @@ export function CourtWeekApp({
         .filter(({ legalQuestion }) => legalQuestion === reasoningQuestion)
         .flatMap(({ evidenceIds }) => evidenceIds)
     : courtWeek.trial.evidence.filter(({ status }) => status === 'admitted').map(({ id }) => id))
+  const admittedEvidenceIds = new Set(evidenceLedger
+    .filter(({ state }) => state === 'admitted')
+    .map(({ evidence: item }) => item.id))
   const reasoningMoves = new Set(recordsInfluence
     ? reviewedPropositions
         .filter(({ legalQuestion, evidenceIds }) => (
@@ -887,6 +890,7 @@ export function CourtWeekApp({
   const selectedProposition = reviewedPropositions.find((proposition) => (
     proposition.legalQuestion === reasoningQuestion &&
     proposition.evidenceIds.includes(reasoningEvidence) &&
+    admittedEvidenceIds.has(reasoningEvidence) &&
     proposition.moves.includes(interactionChoice as ReasoningMove)
   ))
   const finishInteraction = (skipOptionalReasoning = false) => {
@@ -1043,6 +1047,7 @@ export function CourtWeekApp({
           progressTransferEnabled={!ephemeral}
           readOnly={isReplay}
           inactive={Boolean(evidence)}
+          fallbackReturnFocusSelector={interactionOpen ? '#cw-interaction-desk' : undefined}
           onNotesChange={(notes) => updateProgress((current) => ({ ...current, notes }))}
           prepareImport={prepareProgressImport
             ? (text) => prepareProgressImport(text, progress)
@@ -1105,14 +1110,16 @@ export function CourtWeekApp({
                 setInteractionChoice(null)
               }}>
                 <option value="">Choose admitted evidence</option>
-                {courtWeek.trial.evidence.filter((item) => reasoningEvidenceIds.has(item.id)).map((item) => (
+                {courtWeek.trial.evidence.filter((item) => (
+                  reasoningEvidenceIds.has(item.id) && admittedEvidenceIds.has(item.id)
+                )).map((item) => (
                   <option key={item.id} value={item.id}>{item.label}</option>
                 ))}
               </select>
             </label>
             {(interaction.options ?? []).filter((option) => reasoningMoves.has(option as ReasoningMove)).map((option) => (
               <button key={option} type="button" aria-pressed={interactionChoice === option} onClick={() => setInteractionChoice(option)}>
-                {option}
+                {reasoningMoveLabels[option as ReasoningMove]}
               </button>
             ))}
             {reviewsImproperArgument ? (
@@ -1178,7 +1185,9 @@ export function CourtWeekApp({
           </dl>
         ) : null}
         {interaction.kind === 'inspect-exhibit' ? (
-          <button type="button" onClick={toggleDesk}>Open juror desk to inspect admitted exhibits</button>
+          <button id="cw-interaction-desk" type="button" onClick={toggleDesk}>Open juror desk to inspect admitted exhibits</button>
+        ) : interaction.kind === 'reasoning' || (isVote && !ballotSealed && !isReplay) ? (
+          <button id="cw-interaction-desk" type="button" onClick={toggleDesk}>Review juror desk and admitted evidence</button>
         ) : null}
         <button
           className="cw-primary"
