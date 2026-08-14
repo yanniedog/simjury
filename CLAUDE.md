@@ -27,8 +27,9 @@ rolling supply, live rooms and waitlist. None may be reintroduced.
   progress, notes and ballots stay on-device.
 - **Cloudflare Static Assets only:** no Worker, route, D1, Durable Object, KV,
   R2, Queue, AI, rate limiter, variables or observability.
-- **Audio-first, device-complete:** 18–22 measured minutes per day, minimal
-  persistent text, optional captions and reading mode, with equivalent play on
+- **Audio-first, device-complete:** each session lasts only as long as its
+  reviewed dialogue and meaningful juror decisions require, with minimal
+  persistent text, optional captions and reading mode, and equivalent play on
   supported phone, tablet and desktop browsers.
 - **Preserve provenance:** both `archive/daily-v1/` and
   `archive/daily-v2-2026-08-03/` are retained and excluded from builds.
