@@ -19,4 +19,12 @@ describe('developer preview boundary', () => {
       expect(progress.provisionalVote).toBe(session.ordinal === 7 ? 'unable-to-agree' : undefined)
     }
   })
+
+  it('seeds an explicit cue, access mode, ballot and returned outcome', () => {
+    const progress = developerProgressForDay(elevenMinutesCourtWeek, 7, {
+      sceneId: 'sun-analysis', cueId: 'sun-analysis', accessMode: 'captions', ballot: 'not-guilty', outcome: 'not-guilty:unanimous',
+    })
+    expect(progress).toMatchObject({ currentSceneId: 'sun-analysis', currentCueId: 'sun-analysis', accessibilityMode: 'captions', provisionalVote: 'not-guilty',
+      sealedVerdict: 'not-guilty', sealedAgreement: 'unanimous', openCourtVerdictReturned: true, returnedVerdict: 'not-guilty' })
+  })
 })

@@ -48,10 +48,10 @@ test('first-time mobile entry keeps its primary path in the first viewport', asy
   await expect(takeSeat).toBeDisabled()
   await page.getByLabel('I’m 18 or older and understand this case is fictional.').click()
   await expect(page.getByRole('button', { name: 'Take your seat' })).toBeEnabled()
-  await expect(page.getByText('DEV PREVIEW')).toHaveCount(0)
+  await expect(page.getByText('COURT WEEK PREVIEW')).toHaveCount(0)
 })
 
-test('developer toolbar keeps session jump and leave reachable at 320px', async ({ page }) => {
+test('preview drawer loads one pack and yields to modal controls at 320px', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 })
   await page.addInitScript(() => {
     localStorage.setItem('simjury:court-week:local-profile:v1', JSON.stringify({
@@ -60,16 +60,30 @@ test('developer toolbar keeps session jump and leave reachable at 320px', async 
       adultFictionAcknowledged: true,
     }))
   })
-  await page.goto('/?developer-preview=all')
-  await expect(page.getByText('DEV PREVIEW')).toBeVisible()
-  const session = page.locator('#cw-developer-day')
+  const packRequests: string[] = []
+  page.on('request', (request) => { if (request.url().endsWith('.sjp')) packRequests.push(request.url()) })
+  await page.goto('/__court-week-preview')
+  const drawer = page.locator('.cw-preview-drawer')
+  await drawer.locator('summary').click()
+  await expect(page.getByText('COURT WEEK PREVIEW')).toBeVisible()
+  const session = page.locator('#cw-preview-day')
   const leave = page.getByRole('button', { name: 'Leave preview' })
+  await session.scrollIntoViewIfNeeded()
   await expect(session).toBeInViewport()
+  await leave.scrollIntoViewIfNeeded()
   await expect(leave).toBeInViewport()
+  expect(packRequests).toHaveLength(1)
   await session.selectOption('2')
   await expect(session).toHaveValue('2')
+  await expect.poll(() => packRequests.length).toBe(2)
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  await page.getByRole('button', { name: 'Test session' }).click()
+  await expect(page.locator('.cw-modal')).toBeVisible()
+  await expect(drawer).toBeHidden()
+  await page.getByRole('button', { name: 'Close' }).click()
+  await leave.scrollIntoViewIfNeeded()
   await leave.click()
-  await expect(page.getByText('DEV PREVIEW')).toHaveCount(0)
+  await expect(page.getByText('COURT WEEK PREVIEW')).toHaveCount(0)
   await expect(page.getByRole('heading', { name: 'Eleven Minutes' })).toBeVisible()
 })
 
@@ -82,15 +96,17 @@ test('local developer route remains reachable at a 200% compact-phone reflow', a
       adultFictionAcknowledged: true,
     }))
   })
-  await page.goto('/?developer-preview=all')
-  await expect(page.getByText('DEV PREVIEW')).toBeVisible()
-  await expect(page.locator('.cw-developer-toolbar')).toHaveCSS('position', 'fixed')
-  const session = page.locator('#cw-developer-day')
+  await page.goto('/__court-week-preview')
+  const drawer = page.locator('.cw-preview-drawer')
+  await expect(page.getByText('COURT WEEK PREVIEW')).toBeVisible()
+  await expect(drawer).toHaveCSS('position', 'fixed')
+  await drawer.locator('summary').click()
+  const session = page.locator('#cw-preview-day')
   await session.scrollIntoViewIfNeeded()
   await expect(session).toBeVisible()
-  expect(await page.locator('.cw-developer-toolbar').evaluate(
-    (element) => element.scrollWidth <= element.clientWidth,
-  )).toBe(true)
+  expect(await drawer.evaluate(
+    (element) => element.scrollWidth - element.clientWidth,
+  )).toBeLessThanOrEqual(1)
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth
     && document.body.scrollWidth <= window.innerWidth)).toBe(true)
   await session.focus()

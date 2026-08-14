@@ -47,8 +47,8 @@ those guarantees regress.
 ### Local developer preview exception
 
 All-session Developer Preview is a compile-time development and test harness, not a public profile preference or authentication boundary.
-In `vite dev`, the browser matrix and explicit test-mode builds, `/?developer-preview=all` opens the harness after the adult-fiction acknowledgement.
-Production builds replace the feature flag with `false`, remove the preview implementation, fixed clock and labels from the output, and ignore the query parameter.
+`npm run dev:preview` and test builds compile in the `VITE_COURT_WEEK_PREVIEW` capability; only then does the exact `/__court-week-preview` route open the harness after the adult-fiction acknowledgement.
+Production builds replace the capability with `disabled`, remove the preview implementation, fixed clock and labels from the output, and ignore the route.
 No public setting can enable it or cause future packs to hydrate.
 
 The app does not persist decrypted packs, opened-pack cache or preview progress;
