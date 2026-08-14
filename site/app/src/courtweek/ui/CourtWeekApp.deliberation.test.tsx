@@ -15,9 +15,12 @@ import { CourtWeekApp } from './CourtWeekApp'
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
 function clickButton(container: HTMLElement, label: string): void {
-  const button = Array.from(container.querySelectorAll('button')).find(
+  const exact = Array.from(container.querySelectorAll('button')).find(
     (candidate) => candidate.textContent?.trim() === label,
   )
+  const button = exact ?? (label === 'Take your seat'
+    ? container.querySelector<HTMLButtonElement>('.cw-entry__primary')
+    : null)
   if (!button) throw new Error(`Button not found: ${label}`)
   button.click()
 }
@@ -546,6 +549,49 @@ describe('CourtWeekApp improper-argument interaction', () => {
     expect(container.textContent).toContain('Choose an oath or affirmation.')
     expect(container.textContent).not.toMatch(/Continue in \d+s/)
     expect(container.querySelector('[role="dialog"]')).toBeNull()
+  })
+
+  it('pauses between ready sittings without revealing the sealed session title', async () => {
+    const monday = elevenMinutesCourtWeek.manifest.sessions[0]
+    const adjournment = monday?.scenes.at(-1)
+    const finalCue = adjournment?.cues.at(-1)
+    if (!monday || !adjournment || !finalCue) throw new Error('Monday adjournment fixtures are missing.')
+    const frozenNow = Date.parse('2026-08-17T09:00:00+10:00')
+
+    await act(async () => {
+      root.render(<CourtWeekApp
+        courtWeek={elevenMinutesCourtWeek}
+        now={() => frozenNow}
+        releaseBase="/media"
+        ephemeral
+        initialProgressOverride={{
+          schemaVersion: 'court-week-progress-v1',
+          courtWeekId: elevenMinutesCourtWeek.manifest.id,
+          revision: elevenMinutesCourtWeek.manifest.revision,
+          highestObservedTime: new Date(frozenNow).toISOString(),
+          completedSessionIds: [],
+          currentSessionId: monday.id,
+          currentSceneId: adjournment.id,
+          currentCueId: finalCue.id,
+          notes: '',
+          reasoningContributions: [],
+          accessibilityMode: 'reading',
+          majorityDirectionReceived: false,
+        }}
+      />)
+      await Promise.resolve()
+    })
+    await act(async () => clickButton(container, 'Take your seat'))
+    await act(async () => clickButton(container, 'Continue'))
+
+    expect(container.textContent).toContain('Next sitting: Tuesday')
+    expect(container.textContent).toMatch(/Tuesday,? 11 August 2026/)
+    expect(container.textContent).not.toContain('The call')
+    expect(container.textContent).not.toMatch(/countdown|\d+\s*(?:seconds?|minutes?)\s+(?:left|remaining)/i)
+    expect(container.querySelectorAll('button.cw-primary')).toHaveLength(1)
+    await act(async () => clickButton(container, 'Enter Tuesday sitting'))
+    expect(container.querySelector('.cw-shell')).not.toBeNull()
+    expect(container.textContent).toContain('Tuesday · crown case')
   })
 
   it('enables a required choice as soon as the juror makes it', async () => {

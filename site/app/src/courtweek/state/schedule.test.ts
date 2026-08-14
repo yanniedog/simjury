@@ -33,6 +33,7 @@ describe('court week schedule', () => {
   })
 
   it('describes the fixed Hobart court time', () => {
-    expect(formatCourtUnlock(sessions[0].unlockAt, 'en-AU')).toMatch(/Monday.*8:30.*AEST/i)
+    expect(formatCourtUnlock(sessions[0].unlockAt, 'en-AU'))
+      .toMatch(/Monday,? 10 August 2026.*8:30.*AEST/i)
   })
 })

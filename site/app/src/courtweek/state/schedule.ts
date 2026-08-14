@@ -51,6 +51,9 @@ export function formatCourtUnlock(
 ): string {
   return new Intl.DateTimeFormat(locale, {
     weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
     timeZone: 'Australia/Hobart',

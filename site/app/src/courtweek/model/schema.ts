@@ -353,6 +353,7 @@ export const weeklyProgressSchema = z.object({
   currentSessionId: z.string().optional(),
   currentSceneId: z.string().optional(),
   currentCueId: z.string().optional(),
+  hasEnteredCourt: z.boolean().optional(),
   notes: z.string(),
   provisionalVote: verdictSchema.optional(),
   secondVote: verdictSchema.optional(),

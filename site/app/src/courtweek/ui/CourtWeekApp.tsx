@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import type { CourtWeek, CourtSession, ReasoningMove, SceneCue, Verdict } from '../model/schema'
+import type { CourtWeek, CourtSession, LegalPhase, ReasoningMove, SceneCue, Verdict } from '../model/schema'
 import {
   analysisForReturnedVerdict,
   assessReasoningContribution,
@@ -81,6 +81,16 @@ const verdictLabels: Record<Verdict, string> = {
   'not-guilty': 'Not Guilty',
   'unable-to-agree': 'Unable to agree',
 }
+const legalPhaseLabels: Record<LegalPhase, string> = {
+  arrival: 'Opening formalities',
+  'crown-case': 'Crown case',
+  'defence-case': 'Defence case',
+  addresses: 'Closing addresses',
+  directions: 'Judge’s directions',
+  deliberation: 'Jury deliberation',
+  verdict: 'Verdict return',
+  analysis: 'Completion review',
+}
 const improperBasisLabels = [
   'Rely on the accused’s silence',
   'Consider the likely sentence',
@@ -127,8 +137,32 @@ function cuePosition(session: CourtSession, sceneId?: string, cueId?: string) {
   const cueIndex = Math.max(0, scene.cues.findIndex((cue) => cue.id === cueId))
   return { sceneIndex, scene, cueIndex, cue: scene.cues[cueIndex] ?? scene.cues[0] }
 }
+function hasResumableProgress(courtWeek: CourtWeek, progress: StoredWeeklyProgress): boolean {
+  const firstSession = courtWeek.manifest.sessions[0]
+  const firstScene = firstSession?.scenes[0]
+  const firstCue = firstScene?.cues[0]
+  const firstSittingLoaded = !firstScene?.id.startsWith('sealed-')
+  const authoredSceneId = progress.currentSceneId?.startsWith('sealed-') ? undefined : progress.currentSceneId
+  const authoredCueId = progress.currentCueId?.startsWith('sealed-') ? undefined : progress.currentCueId
+  return Boolean(
+    progress.hasEnteredCourt ||
+    progress.completedSessionIds.length > 0 ||
+    Boolean(progress.currentSessionId && progress.currentSessionId !== firstSession?.id) ||
+    Boolean(firstSittingLoaded && authoredSceneId && authoredSceneId !== firstScene?.id) ||
+    Boolean(firstSittingLoaded && authoredCueId && authoredCueId !== firstCue?.id) ||
+    progress.notes ||
+    progress.provisionalVote ||
+    progress.secondVote ||
+    progress.finalVote ||
+    progress.sealedVerdict ||
+    progress.returnedVerdict ||
+    progress.reasoningContributions?.length,
+  )
+}
 function CourtWeekEntry({
   title,
+  kicker,
+  enterLabel,
   advisory,
   mode,
   onMode,
@@ -144,6 +178,8 @@ function CourtWeekEntry({
   archivedProgress,
 }: {
   title: string
+  kicker: string
+  enterLabel: string
   advisory: string
   mode: AccessMode
   onMode: (mode: AccessMode) => void
@@ -192,7 +228,7 @@ function CourtWeekEntry({
   return (
     <main className="cw-entry" tabIndex={-1} aria-busy={busy || undefined}>
       <div className="cw-entry__panel">
-        <p className="cw-kicker">One case · Seven self-paced sessions</p>
+        <p className="cw-kicker">{kicker}</p>
         <h1 ref={headingRef} tabIndex={focusHeading ? -1 : undefined}>{title}</h1>
         <p className="cw-entry__advisory">{ephemeral && ephemeralAdvisory ? ephemeralAdvisory : advisory}</p>
         {persistenceNotice ? <p className="cw-error" role="alert">{persistenceNotice}</p> : null}
@@ -218,7 +254,8 @@ function CourtWeekEntry({
             disabled={!acknowledged}
             onClick={() => onEnter(fullscreen)}
           >
-            Take your seat
+            {enterLabel}
+            {enterLabel.startsWith('Resume ') ? <span className="cw-visually-hidden"> — Take your seat</span> : null}
           </button>
         ) : null}
         <details className="cw-entry__settings">
@@ -433,6 +470,11 @@ export function CourtWeekApp({
   const isReplay = replaySessionId === activeSession.id
   const position = cuePosition(activeSession, progress.currentSceneId, progress.currentCueId)
   const activeAvailability = availability.find((item) => item.id === activeSession.id)
+  const returnVisit = !ephemeral && hasResumableProgress(courtWeek, progress)
+  const entryPhase = position.scene.id.startsWith('sealed-')
+    ? 'Court adjourned'
+    : legalPhaseLabels[position.scene.phase]
+  const entryPosition = `Next sitting: ${activeSession.day}. Current phase: ${entryPhase}.`
   const playbackCue = useMemo<SceneCue>(() => {
     const safeCue = replaySafeCue(position.cue, isReplay)
     if (safeCue.id === 'sun-verdict-return' && progress.sealedVerdict && progress.sealedAgreement) {
@@ -616,6 +658,19 @@ export function CourtWeekApp({
     void playCue()
   }, [playCue, playbackCue.id])
 
+  const enterCourt = useCallback((requestFullscreen = false) => {
+    setEntered(true)
+    onEnteredChange?.(true)
+    updateProgress((current) => current.hasEnteredCourt ? current : { ...current, hasEnteredCourt: true })
+    if (!allSessionsCompleted || replaySessionId) {
+      if (accessMode !== 'reading') playFromGesture()
+      else setStarted(true)
+    }
+    if (requestFullscreen) {
+      void document.documentElement.requestFullscreen?.().catch(() => undefined)
+    }
+  }, [accessMode, allSessionsCompleted, onEnteredChange, playFromGesture, replaySessionId, updateProgress])
+
   const selectAccessMode = useCallback((mode: AccessMode) => {
     if (mode === accessMode) return
     saveAccessMode(mode)
@@ -684,6 +739,16 @@ export function CourtWeekApp({
     return (
       <CourtWeekEntry
         title={courtWeek.manifest.title}
+        kicker={allSessionsCompleted
+          ? 'Your private completion record'
+          : returnVisit
+            ? 'Return to your jury seat'
+            : 'One fictional case · Seven self-paced sittings'}
+        enterLabel={allSessionsCompleted
+          ? 'View completion record'
+          : returnVisit
+            ? `Resume ${activeSession.day}`
+            : 'Take your seat'}
         advisory={courtWeek.manifest.contentAdvisory}
         mode={accessMode}
         persistenceNotice={storageNotice}
@@ -695,28 +760,18 @@ export function CourtWeekApp({
         busy={entryBusy}
         archivedProgress={archivedProgress}
         availabilityNote={entryBusy
-          ? 'Opening today’s court session…'
+          ? `${returnVisit ? `${entryPosition} ` : ''}Opening today’s court session…`
           : !activeAvailability?.ready && !progress.completedSessionIds.includes(activeSession.id)
           ? !activeAvailability?.unlocked
-            ? `Court opens ${formatCourtUnlock(activeSession.unlockAt)}.`
-            : 'Complete the preceding court session before returning.'
-          : undefined}
+            ? `${returnVisit ? `${entryPosition} ` : ''}Court opens ${formatCourtUnlock(activeSession.unlockAt)}.`
+            : `${returnVisit ? `${entryPosition} ` : ''}Complete the preceding sitting before returning.`
+          : allSessionsCompleted
+            ? 'Court Week complete. Your private completion record is ready.'
+            : returnVisit
+              ? entryPosition
+              : undefined}
         onMode={saveAccessMode}
-        onEnter={(requestFullscreen) => {
-          setEntered(true)
-          onEnteredChange?.(true)
-          if (allSessionsCompleted && !replaySessionId) {
-            if (requestFullscreen) {
-              void document.documentElement.requestFullscreen?.().catch(() => undefined)
-            }
-            return
-          }
-          if (accessMode !== 'reading') playFromGesture()
-          else setStarted(true)
-          if (requestFullscreen) {
-            void document.documentElement.requestFullscreen?.().catch(() => undefined)
-          }
-        }}
+        onEnter={enterCourt}
       />
     )
   }
@@ -748,18 +803,29 @@ export function CourtWeekApp({
       />
     )
   }
-  if (!activeAvailability?.ready && !progress.completedSessionIds.includes(activeSession.id)) {
+  const betweenSittings = !isReplay && !started && progress.completedSessionIds.length > 0
+  if (betweenSittings || (!activeAvailability?.ready && !progress.completedSessionIds.includes(activeSession.id))) {
+    const sittingOpened = Boolean(activeAvailability?.unlocked)
     return (
       <main className="cw-entry" tabIndex={-1}>
         <div className="cw-entry__panel">
-          <p className="cw-kicker">Court stands adjourned</p>
-          <h1>{activeSession.day}: {activeSession.title}</h1>
-          {!activeAvailability?.unlocked ? (
-            <p>This session opens {formatCourtUnlock(activeSession.unlockAt)}.</p>
+          <p className="cw-kicker">{activeAvailability?.ready ? 'Next sitting ready' : 'Court stands adjourned'}</p>
+          <h1>Next sitting: {activeSession.day}</h1>
+          {!sittingOpened ? (
+            <p>Court opens {formatCourtUnlock(activeSession.unlockAt)}.</p>
           ) : (
-            <p>Complete the preceding court session before returning.</p>
+            <p>
+              This sitting opened {formatCourtUnlock(activeSession.unlockAt)}.
+              {!activeAvailability?.ready ? ' Complete the preceding sitting before returning.' : ' Continue when you are ready.'}
+            </p>
           )}
-          <button type="button" onClick={() => { setEntered(false); onEnteredChange?.(false) }}>Presentation settings</button>
+          {activeAvailability?.ready ? (
+            <button className="cw-primary cw-entry__primary" type="button" onClick={() => enterCourt()}>
+              Enter {activeSession.day} sitting
+            </button>
+          ) : (
+            <button type="button" onClick={() => { setEntered(false); onEnteredChange?.(false) }}>Presentation settings</button>
+          )}
         </div>
       </main>
     )
