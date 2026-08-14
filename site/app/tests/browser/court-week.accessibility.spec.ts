@@ -109,7 +109,7 @@ test('reduced motion switches to static cuts without changing legal position', a
   await expect.poll(() => readProgressPosition(page)).toEqual(before)
 
   const previousCue = before?.currentCueId
-  await page.getByRole('button', { name: 'Continue' }).press('Enter')
+  await page.locator('.cw-controls__advance').press('Enter')
   await expect.poll(async () => (await readProgressPosition(page))?.currentCueId).not.toBe(previousCue)
   await expect(page.locator('.cw-reading-copy')).toBeVisible()
 })
@@ -130,7 +130,7 @@ test('presentation mode survives cues, the desk, narrow rotation and restoration
   await page.getByRole('button', { name: 'Close juror desk' }).click()
   await expect(presentation).toHaveValue('reading')
   const previousCue = (await readProgressPosition(page))?.currentCueId
-  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.locator('.cw-controls__advance').click()
   await expect.poll(async () => (await readProgressPosition(page))?.currentCueId).not.toBe(previousCue)
 
   await page.setViewportSize({ width: 568, height: 320 })
@@ -359,18 +359,18 @@ test('mandatory contribution dialogs take and contain focus before returning it 
 
   for (let cue = 0; cue < 30; cue += 1) {
     if (await page.locator('.cw-interaction').count()) break
-    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.locator('.cw-controls__advance').click()
   }
 
   const dialog = page.getByRole('dialog', { name: /Choose oath or affirmation privately/i })
   await expect(dialog).toBeVisible()
-  const oath = dialog.getByRole('button', { name: 'Oath' })
+  const oath = dialog.getByRole('button', { name: 'Oath', exact: true })
   await expect(oath).toBeFocused()
   await expect(dialog.locator('.cw-choice-grid')).toBeVisible()
   await expect(page.locator('.cw-stage')).toHaveAttribute('inert', '')
   await expect(page.locator('.cw-stage')).toHaveAttribute('aria-hidden', 'true')
   await page.clock.fastForward(60_000)
-  await expect(dialog.getByRole('button', { name: 'Continue proceedings' })).toBeDisabled()
+  await expect(dialog.getByRole('button', { name: 'Confirm oath or affirmation' })).toBeDisabled()
 
   const liveCue = page.locator('.cw-cue-live-region')
   const frozenCue = (await liveCue.textContent())?.trim()
@@ -395,19 +395,19 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(liveCue).toHaveText(frozenCue)
 
   await page.keyboard.press('Tab')
-  await expect(dialog.getByRole('button', { name: 'Affirmation' })).toBeFocused()
+  await expect(dialog.getByRole('button', { name: 'Affirmation', exact: true })).toBeFocused()
   await page.keyboard.press('Shift+Tab')
   await expect(oath).toBeFocused()
   await expect(page.locator('.cw-controls button:focus')).toHaveCount(0)
 
   await expect(liveCue).toHaveText(frozenCue)
   await oath.click()
-  await expect(dialog.getByRole('button', { name: 'Continue proceedings' })).toBeEnabled()
-  await dialog.getByRole('button', { name: 'Continue proceedings' }).click()
+  await expect(dialog.getByRole('button', { name: 'Confirm oath or affirmation' })).toBeEnabled()
+  await dialog.getByRole('button', { name: 'Confirm oath or affirmation' }).click()
 
   await expect(dialog).toHaveCount(0)
   await expect(page.locator('.cw-stage')).not.toHaveAttribute('inert', '')
-  await expect(page.getByRole('button', { name: 'Continue' })).toBeFocused()
+  await expect(page.locator('.cw-controls__advance')).toBeFocused()
   await expect(page.locator('.cw-reading-copy')).toContainText('At 21:16 the accused heard a distress call')
   await expect(liveCue).not.toHaveText(frozenCue)
 })
@@ -423,7 +423,7 @@ async function newReflowContext(browser: Browser, screen: { width: number; heigh
   })
 }
 
-for (const screen of [{ width: 320, height: 568 }, { width: 1280, height: 800 }]) {
+for (const screen of [{ width: 320, height: 568 }, { width: 1000, height: 1400 }, { width: 1280, height: 800 }]) {
   test(`200% effective reflow on ${screen.width}x${screen.height} retains every core action`, async ({ browser, browserName }) => {
     test.skip(browserName !== 'chromium', 'Chromium owns the effective browser-zoom reflow contexts.')
     const context = await newReflowContext(browser, screen)
@@ -438,11 +438,14 @@ for (const screen of [{ width: 320, height: 568 }, { width: 1280, height: 800 }]
       const before = await capturePosition(page)
       await expectNoHorizontalOverflow(page)
       await expect(page.getByLabel('Presentation mode')).toBeVisible()
-      for (const name of ['Play', 'Repeat', 'Juror desk', 'Full screen', 'Continue']) {
+      for (const name of ['Play', 'Repeat', 'Juror desk', 'Full screen']) {
         const control = page.getByRole('button', { name, exact: true })
         await control.scrollIntoViewIfNeeded()
         await expect(control).toBeVisible()
       }
+      const advanceControl = page.locator('.cw-controls__advance')
+      await expect(advanceControl).toBeVisible()
+      await expect(advanceControl).toHaveAccessibleName('Read the empanelment')
       await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
       await expect(page.getByRole('heading', { name: 'The charge' })).toBeVisible()
       await expectNoHorizontalOverflow(page)

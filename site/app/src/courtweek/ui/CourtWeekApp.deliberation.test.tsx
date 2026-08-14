@@ -25,6 +25,12 @@ function clickButton(container: HTMLElement, label: string): void {
   button.click()
 }
 
+function clickAdvance(container: HTMLElement): void {
+  const button = container.querySelector<HTMLButtonElement>('.cw-controls__advance')
+  if (!button) throw new Error('Court advance action not found')
+  button.click()
+}
+
 /** Keep media-time fixtures independent from the injectable court schedule. */
 function installWallClock(start = 1_000): { value: number } {
   const wall = { value: start }
@@ -141,7 +147,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
       await Promise.resolve()
     })
     await act(async () => clickButton(container, 'Take your seat'))
-    await act(async () => clickButton(container, 'Continue'))
+    await act(async () => clickAdvance(container))
     clock += 120_000
     wall.value += 120_000
     await act(async () => window.dispatchEvent(new Event('focus')))
@@ -181,7 +187,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
     expect(correction?.textContent).toContain(silenceArgument.correction)
     expect(correction?.textContent).toContain('receives no influence')
 
-    await act(async () => clickButton(container, 'Continue proceedings'))
+    await act(async () => clickButton(container, 'Record reasoning contribution'))
     window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
 
     const saved = latestProgress.reasoningContributions?.at(-1)
@@ -231,13 +237,13 @@ describe('CourtWeekApp improper-argument interaction', () => {
       await Promise.resolve()
     })
     await act(async () => clickButton(container, 'Take your seat'))
-    await act(async () => clickButton(container, 'Continue'))
+    await act(async () => clickAdvance(container))
     clock += 120_000
     wall.value += 120_000
     await act(async () => window.dispatchEvent(new Event('focus')))
 
-    expect(container.textContent).toContain('Continue without contributing')
-    await act(async () => clickButton(container, 'Continue without contributing'))
+    expect(container.textContent).toContain('Skip this contribution')
+    await act(async () => clickButton(container, 'Skip this contribution'))
     window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
 
     expect(latestProgress.reasoningContributions).toEqual([])
@@ -331,7 +337,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
 
     expect(container.querySelector('.cw-choice-grid')).not.toBeNull()
     await act(async () => clickButton(container, 'Oath'))
-    await act(async () => clickButton(container, 'Continue proceedings'))
+    await act(async () => clickButton(container, 'Confirm oath or affirmation'))
     expect(play).toHaveBeenCalledTimes(3)
     expect(latestProgress).toMatchObject({ currentSceneId: 'mon-crown-opening', currentCueId: 'mon-crown-opening-1' })
     expect(container.querySelector('.cw-interaction')).toBeNull()
@@ -384,7 +390,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
     expect(latestProgress.openCourtVerdictReturned).toBe(false)
     expect(latestProgress.returnedVerdict).toBeUndefined()
 
-    await act(async () => clickButton(container, 'Continue'))
+    await act(async () => clickAdvance(container))
     expect(latestProgress).toMatchObject({
       currentCueId: 'sun-verdict-confirm',
       openCourtVerdictReturned: true,
@@ -425,7 +431,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
     })
     await act(async () => clickButton(container, 'Take your seat'))
     expect(latestProgress.majorityDirectionReceived).toBe(false)
-    await act(async () => clickButton(container, 'Continue'))
+    await act(async () => clickAdvance(container))
     expect(latestProgress).toMatchObject({
       currentCueId: 'sun-majority-limit',
       majorityDirectionReceived: true,
@@ -465,12 +471,12 @@ describe('CourtWeekApp improper-argument interaction', () => {
       await Promise.resolve()
     })
     await act(async () => clickButton(container, 'Take your seat'))
-    await act(async () => clickButton(container, 'Continue'))
+    await act(async () => clickAdvance(container))
     clock += 140_000
     wall.value += 140_000
     await act(async () => window.dispatchEvent(new Event('focus')))
     await act(async () => clickButton(container, 'Guilty of murder'))
-    await act(async () => clickButton(container, 'Seal ballot'))
+    await act(async () => clickButton(container, 'Seal second ballot'))
 
     expect(container.querySelector('[aria-label="Anonymous second ballot"]')).not.toBeNull()
     const notGuilty = Array.from(container.querySelectorAll('button')).find(
@@ -488,13 +494,13 @@ describe('CourtWeekApp improper-argument interaction', () => {
       await Promise.resolve()
     })
     await act(async () => clickButton(container, 'Take your seat'))
-    await act(async () => clickButton(container, 'Continue'))
+    await act(async () => clickAdvance(container))
     expect(container.querySelector('[aria-label="Anonymous second ballot"]')).not.toBeNull()
     expect(Array.from(container.querySelectorAll<HTMLButtonElement>('.cw-verdict-grid button')).every(
       (button) => button.disabled,
     )).toBe(true)
 
-    await act(async () => clickButton(container, 'Continue deliberation'))
+    await act(async () => clickButton(container, 'Return to court for direction'))
     window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
     expect(latestProgress.secondVote).toBe('murder')
     expect(latestProgress.currentSceneId).toBe('sun-persevere')
@@ -544,7 +550,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
       await Promise.resolve()
     })
     await act(async () => clickButton(container, 'Take your seat'))
-    await act(async () => clickButton(container, 'Continue'))
+    await act(async () => clickAdvance(container))
 
     expect(container.textContent).toContain('Choose an oath or affirmation.')
     expect(container.textContent).not.toMatch(/Continue in \d+s/)
@@ -582,7 +588,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
       await Promise.resolve()
     })
     await act(async () => clickButton(container, 'Take your seat'))
-    await act(async () => clickButton(container, 'Continue'))
+    await act(async () => clickButton(container, 'Finish Monday session'))
 
     expect(container.textContent).toContain('Next sitting: Tuesday')
     expect(container.textContent).toMatch(/Tuesday,? 11 August 2026/)
@@ -628,10 +634,10 @@ describe('CourtWeekApp improper-argument interaction', () => {
       await Promise.resolve()
     })
     await act(async () => clickButton(container, 'Take your seat'))
-    await act(async () => clickButton(container, 'Continue'))
+    await act(async () => clickAdvance(container))
 
     const primaryButton = () => Array.from(container.querySelectorAll<HTMLButtonElement>('button.cw-primary'))[0]
-    expect(primaryButton().textContent?.trim()).toBe('Continue proceedings')
+    expect(primaryButton().textContent?.trim()).toBe('Confirm oath or affirmation')
     expect(primaryButton().disabled).toBe(true)
     await act(async () => clickButton(container, 'Oath'))
     expect(primaryButton().disabled).toBe(false)

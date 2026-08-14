@@ -12,6 +12,7 @@ import {
   type CaptionRect,
 } from './captionPlacement'
 import { speakerCaptionColour } from './speakerPresentation'
+import { DEFAULT_ADVANCE_ACTION } from './proceduralActions'
 
 export type { AccessMode } from '../state/progress'
 
@@ -25,6 +26,7 @@ export interface ImmersiveCourtShellProps {
   playbackStatus: PlaybackStatus
   playbackError: string | null
   progressLabel: string
+  advanceLabel?: string
   deskOpen: boolean
   overlay?: ReactNode
   onPlay: () => void
@@ -73,6 +75,7 @@ export function ImmersiveCourtShell({
   playbackStatus,
   playbackError,
   progressLabel,
+  advanceLabel = DEFAULT_ADVANCE_ACTION,
   deskOpen,
   overlay,
   onPlay,
@@ -369,7 +372,7 @@ export function ImmersiveCourtShell({
               className="cw-controls__advance"
               onClick={(event) => onAdvance(event.currentTarget)}
             >
-              Continue
+              {advanceLabel}
             </button>
           ) : null}
         </nav>

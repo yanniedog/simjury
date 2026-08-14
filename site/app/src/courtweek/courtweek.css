@@ -569,7 +569,7 @@
   .cw-interaction { right: 8rem; bottom: max(.5rem, env(safe-area-inset-bottom)); }
 }
 
-@media (max-width: 430px), (max-height: 650px) {
+@media (max-width: 699px), (max-height: 650px) {
   .cw-controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .cw-controls button, .cw-presentation-mode select { width: 100%; min-width: 0; padding-inline: .35rem; font-size: .8rem; overflow-wrap: anywhere; }
   .cw-speaker { bottom: calc(max(7.5rem, env(safe-area-inset-bottom) + 7rem) + 3.7rem); }
@@ -616,6 +616,7 @@
    legally material copy behind a fixed cinematic stage. */
 @media (max-width: 240px), (max-height: 319px) {
   .cw-shell { overflow-x: hidden; overflow-y: auto; }
+  .cw-sheet { display: block; overflow-x: hidden; overflow-y: auto; }
   .cw-stage {
     position: relative;
     inset: auto;
@@ -668,7 +669,8 @@
     width: auto;
     max-height: none;
   }
-  .cw-sheet__header, .cw-sheet__footer { gap: .25rem; padding: .25rem; }
+  .cw-sheet__header, .cw-sheet__footer { position: static; gap: .25rem; padding: .25rem; }
+  .cw-sheet > .cw-sheet__body { overflow: visible; }
   .cw-sheet__header h2 { font-size: 1rem; }
   .cw-sheet__header .cw-kicker { font-size: .65rem; }
   .cw-desk .cw-sheet__footer .cw-button-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }

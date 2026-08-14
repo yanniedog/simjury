@@ -138,7 +138,7 @@ test('reading mode announces each newly displayed legal cue exactly once', async
   await expect(page.locator('.cw-cue-live-region')).toHaveAttribute('aria-live', 'off')
   await expect(page.locator('.cw-cue-live-region')).toHaveAttribute('aria-hidden', 'true')
 
-  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.locator('.cw-controls__advance').click()
   await expect(readingCopy).not.toHaveText(firstCue ?? '')
   await expect(page.locator('[aria-live="polite"]')).toHaveCount(1)
   await expect(page.locator('.cw-cue-live-region')).toHaveAttribute('aria-live', 'off')
@@ -174,7 +174,7 @@ test('mandatory deliberation selects retain 44px targets and a three-pixel focus
   })
   await page.goto('/')
   await page.getByRole('button', { name: 'Take your seat' }).click()
-  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.locator('.cw-controls__advance').click()
 
   const dialog = page.getByRole('dialog', { name: /Optionally test this opening concern/i })
   for (const [index, label] of ['Legal question', 'Admitted evidence'].entries()) {
@@ -196,7 +196,7 @@ test('inspect-exhibit prompts keep admitted exhibits reachable inside the modal 
   await seedProgress(page, { currentSceneId: scene.id, currentCueId: scene.cues.at(-1)!.id })
   await prepareCourt(page)
   await page.getByRole('button', { name: 'Take your seat' }).click()
-  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.locator('.cw-controls__advance').click()
   const interaction = page.getByRole('dialog', { name: /Inspect the admitted route diagram/i })
   await interaction.getByRole('button', { name: /Open juror desk/i }).click()
   await expect(page.getByRole('dialog', { name: 'Your working papers' })).toBeVisible()
@@ -240,13 +240,14 @@ test('200% text enlargement keeps reading copy and every core control usable', a
 
   await expect(page.locator('.cw-reading-copy')).toBeVisible()
   await expect(page.getByLabel('Presentation mode')).toBeVisible()
-  for (const name of ['Play', 'Repeat', 'Juror desk', 'Full screen', 'Continue']) {
+  for (const name of ['Play', 'Repeat', 'Juror desk', 'Full screen']) {
     const control = page.getByRole('button', { name, exact: true })
     if (await control.count()) {
       await control.scrollIntoViewIfNeeded()
       await expect(control).toBeVisible()
     }
   }
+  await expect(page.locator('.cw-controls__advance')).toBeVisible()
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1)
 })
 

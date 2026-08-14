@@ -313,7 +313,7 @@ test.describe('responsive Court Week shell', () => {
         if (width === 320 && height === 568 && zoom === 2) {
           await expect(page.locator('.cw-status')).toBeVisible()
           await expect(page.locator('.cw-reading-copy')).toBeVisible()
-          const continueButton = page.getByRole('button', { name: 'Continue' })
+          const continueButton = page.locator('.cw-controls__advance')
           await continueButton.scrollIntoViewIfNeeded()
           await expect(continueButton).toBeVisible()
         }
@@ -998,7 +998,7 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
   await expect(page.locator('.cw-reading-copy')).toContainText('The jury returns to the courtroom. Mara Venn stands.')
   await expect(page.locator('.cw-reading-copy')).not.toContainText('The jury returns. The accused stands.')
   await expect(page.locator('.cw-reading-copy')).not.toContainText('Strongest lawful rationale:')
-  const continueButton = page.getByLabel('Court playback controls').getByRole('button', { name: 'Continue', exact: true })
+  const continueButton = page.getByLabel('Court playback controls').locator('.cw-controls__advance')
   await continueButton.click()
   await continueButton.click()
   await expect(page.locator('.cw-reading-copy')).toContainText('Strongest lawful rationale:')
@@ -1085,7 +1085,7 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
   await replayMonday.click()
   await expect(page.getByText('Monday', { exact: false }).first()).toBeVisible()
   await expect(page.locator('.cw-reading-copy')).toBeVisible()
-  await page.getByLabel('Court playback controls').getByRole('button', { name: 'Continue', exact: true }).click()
+  await page.getByLabel('Court playback controls').locator('.cw-controls__advance').click()
   await page.waitForTimeout(200)
 
   const afterReplay = await readStoredProgress(page)
