@@ -4,6 +4,11 @@ import { fileURLToPath } from 'node:url'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content'
 import { courtWeekBootstrap } from '../src/courtweek/sealed/bootstrap'
 import { BUILD_UNLOCK_FRAGMENTS } from '../src/courtweek/sealed/buildKeys'
+import {
+  DEVELOPER_PREVIEW_ASSET_MARKERS,
+  DEVELOPER_PREVIEW_NOW,
+  DEVELOPER_PREVIEW_NOW_ISO,
+} from '../src/courtweek/sealed/developerPreview'
 import { hasSemanticUnlockModuleReference } from './sealed-build-names'
 
 const appRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -24,9 +29,15 @@ const publicCode = files
   .filter((file) => /\.(?:html|js|css)$/u.test(file))
   .map((file) => readFileSync(file, 'utf8'))
   .join('\n')
-const developerPreviewSentinels = ['preview', '2026-08-17T09:00:00+10:00', '1786921200000']
-for (const sentinel of developerPreviewSentinels) if (publicCode.toLowerCase().includes(sentinel.toLowerCase())) {
-  throw new Error(`Developer preview leaked into the production build: ${sentinel}`)
+const developerPreviewSentinels = [
+  ...DEVELOPER_PREVIEW_ASSET_MARKERS,
+  DEVELOPER_PREVIEW_NOW_ISO,
+  String(DEVELOPER_PREVIEW_NOW),
+]
+for (const sentinel of developerPreviewSentinels) {
+  if (publicCode.includes(sentinel)) {
+    throw new Error(`Developer preview leaked into the production build: ${sentinel}`)
+  }
 }
 const sensitiveStrings = elevenMinutesCourtWeek.manifest.sessions.flatMap((session) =>
   session.scenes.flatMap((scene) => [

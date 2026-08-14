@@ -84,6 +84,7 @@ test('local developer route remains reachable at a 200% compact-phone reflow', a
   })
   await page.goto('/?developer-preview=all')
   await expect(page.getByText('DEV PREVIEW')).toBeVisible()
+  await expect(page.locator('.cw-developer-toolbar')).toHaveCSS('position', 'fixed')
   const session = page.locator('#cw-developer-day')
   await session.scrollIntoViewIfNeeded()
   await expect(session).toBeVisible()

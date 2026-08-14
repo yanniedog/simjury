@@ -26,9 +26,14 @@ import {
 import { saveOpenedPack } from './packStore'
 import { prepareSealedProgressImport } from './progressImport'
 import type { CourtDayPack, CourtWeekBootstrap } from './types'
-import { DEVELOPER_PREVIEW_NOW, developerProgressForDay } from './developerPreview'
+import {
+  DEVELOPER_PREVIEW_NOW,
+  DEVELOPER_PREVIEW_QUERY_KEY,
+  developerProgressForDay,
+} from './developerPreview'
 
 const DEVELOPER_PREVIEW_ENABLED = import.meta.env.DEV || import.meta.env.MODE === 'test'
+if (DEVELOPER_PREVIEW_ENABLED) void import('./developerPreview.css')
 
 export interface SealedCourtWeekAppProps {
   bootstrap: CourtWeekBootstrap
@@ -462,7 +467,7 @@ function DeveloperPreview({
 function developerPreviewRouteRequested(): boolean {
   return DEVELOPER_PREVIEW_ENABLED
     && typeof window !== 'undefined'
-    && new URLSearchParams(window.location.search).get('developer-preview') === 'all'
+    && new URLSearchParams(window.location.search).get(DEVELOPER_PREVIEW_QUERY_KEY) === 'all'
 }
 
 export function SealedCourtWeekApp(props: SealedCourtWeekAppProps) {
@@ -479,7 +484,7 @@ export function SealedCourtWeekApp(props: SealedCourtWeekAppProps) {
   if (DEVELOPER_PREVIEW_ENABLED && previewRoute && localProfile.profile.adultFictionAcknowledged) {
     return <DeveloperPreview {...props} packBase={packBase} onLeave={() => {
       const url = new URL(window.location.href)
-      url.searchParams.delete('developer-preview')
+      url.searchParams.delete(DEVELOPER_PREVIEW_QUERY_KEY)
       window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`)
       setFocusPublicEntry(true)
       setPreviewRoute(false)

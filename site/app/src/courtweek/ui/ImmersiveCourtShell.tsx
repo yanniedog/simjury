@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperti
 import type { CourtSession, Scene, SceneCue, SceneCueTurn } from '../model/schema'
 import type { PlaybackStatus } from '../media/useCuePlayback'
 import type { AccessMode } from '../state/progress'
+import { COURT_WEEK_TEST_HARNESS_ENABLED } from '../testHarness'
 import {
   captionPlacementStyle,
   captionViewportForSize,
@@ -348,7 +349,7 @@ export function ImmersiveCourtShell({
           <button type="button" onClick={onToggleDesk} aria-expanded={deskOpen}>
             Juror desk
           </button>
-          {onOpenTestSession ? (
+          {COURT_WEEK_TEST_HARNESS_ENABLED && onOpenTestSession ? (
             <button type="button" onClick={(event) => onOpenTestSession(event.currentTarget)}>
               Test session
             </button>

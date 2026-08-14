@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { CourtSession } from '../model/schema'
+import { COURT_WEEK_TEST_HARNESS_ENABLED } from '../testHarness'
 
 export interface CourtWeekCompletionProps {
   sessions: CourtSession[]
@@ -25,8 +26,9 @@ export function CourtWeekCompletion({
 }: CourtWeekCompletionProps) {
   const headingRef = useRef<HTMLHeadingElement>(null)
   const [includeNotes, setIncludeNotes] = useState(false)
-  const testDay = testSession?.sessions.find(
-    ({ ordinal }) => ordinal === testSession.selectedOrdinal,
+  const activeTestSession = COURT_WEEK_TEST_HARNESS_ENABLED ? testSession : undefined
+  const testDay = activeTestSession?.sessions.find(
+    ({ ordinal }) => ordinal === activeTestSession.selectedOrdinal,
   )?.day
   useEffect(() => {
     headingRef.current?.focus()
@@ -36,10 +38,10 @@ export function CourtWeekCompletion({
     <main className="cw-entry cw-complete" tabIndex={-1}>
       <div className="cw-entry__panel">
         <p className="cw-kicker">
-          {testSession ? 'Test session complete' : 'The court week has concluded'}
+          {activeTestSession ? 'Test session complete' : 'The court week has concluded'}
         </p>
         <h1 ref={headingRef} tabIndex={-1}>
-          {testSession ? `${testDay ?? 'Session'} test complete` : 'Court Week complete'}
+          {activeTestSession ? `${testDay ?? 'Session'} test complete` : 'Court Week complete'}
         </h1>
         {persistence === 'memory' ? (
           <div className="cw-complete__persistence-warning">
@@ -62,7 +64,7 @@ export function CourtWeekCompletion({
             ) : null}
           </div>
         ) : null}
-        <p>{testSession
+        <p>{activeTestSession
           ? 'Choose another session to inspect, replay this session, or leave the test session.'
           : 'The complete record remains available. Replaying a session does not change your private notes, reasoning contributions, sealed ballots or returned result.'}
         </p>
@@ -78,19 +80,19 @@ export function CourtWeekCompletion({
             ))}
           </ol>
         </nav>
-        {testSession ? (
+        {activeTestSession ? (
           <div className="cw-button-row" aria-label="Test session controls">
             <label htmlFor="cw-developer-day-complete">Test session</label>
             <select
               id="cw-developer-day-complete"
-              value={testSession.selectedOrdinal}
-              onChange={(event) => testSession.onSelect(Number(event.target.value))}
+              value={activeTestSession.selectedOrdinal}
+              onChange={(event) => activeTestSession.onSelect(Number(event.target.value))}
             >
-              {testSession.sessions.map(({ day, ordinal }) => (
+              {activeTestSession.sessions.map(({ day, ordinal }) => (
                 <option key={ordinal} value={ordinal}>{day}</option>
               ))}
             </select>
-            <button type="button" onClick={testSession.onLeave}>Leave test session</button>
+            <button type="button" onClick={activeTestSession.onLeave}>Leave test session</button>
           </div>
         ) : null}
         {persistence === 'ephemeral' ? (

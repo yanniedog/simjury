@@ -37,6 +37,7 @@ import type {
   LocalProfilePersistence,
 } from '../state/localProfile'
 import { useWeeklyProgress, type PersistenceIssue } from '../state/useWeeklyProgress'
+import { COURT_WEEK_TEST_HARNESS_ENABLED } from '../testHarness'
 import { EvidenceViewer } from './EvidenceViewer'
 import { CourtWeekCompletion } from './CourtWeekCompletion'
 import { ImmersiveCourtShell } from './ImmersiveCourtShell'
@@ -655,8 +656,8 @@ export function CourtWeekApp({
   const interactionElapsedSeconds = interactionOpen && interactionOpenedAt != null
     ? Math.max(0, (elapsedNow() - interactionOpenedAt) / 1000)
     : 0
-  // Ephemeral test sessions do not wait behind live reflection timers.
-  const requiredInteractionSeconds = ephemeral || Boolean(testSession)
+  // Ephemeral sessions do not wait behind live reflection timers.
+  const requiredInteractionSeconds = ephemeral
     ? 0
     : (interaction?.minimumSeconds ?? 0)
   const interactionMinimumMet = !interaction
@@ -719,7 +720,7 @@ export function CourtWeekApp({
         onExportProgress={ephemeral
           ? undefined
           : (includePrivateNotes) => downloadWeeklyProgress(progress, includePrivateNotes)}
-        testSession={testSession}
+        testSession={COURT_WEEK_TEST_HARNESS_ENABLED ? testSession : undefined}
         onReplay={(session) => {
           const firstScene = session.scenes[0]
           setReplaySessionId(session.id)
@@ -897,7 +898,7 @@ export function CourtWeekApp({
   }
 
   let overlay = null
-  if (developerPreviewOpen && testSession) {
+  if (COURT_WEEK_TEST_HARNESS_ENABLED && developerPreviewOpen && testSession) {
     overlay = (
       <MandatoryInteractionDialog returnFocusTo={interactionReturnFocus.current}>
         <p className="cw-kicker">TEST SESSION</p>
@@ -1138,7 +1139,7 @@ export function CourtWeekApp({
         accessibilityMode: current.accessibilityMode === 'captions' ? 'audio-first' : 'captions',
       }))}
       onToggleDesk={toggleDesk}
-      onOpenTestSession={testSession ? (trigger) => {
+      onOpenTestSession={COURT_WEEK_TEST_HARNESS_ENABLED && testSession ? (trigger) => {
         interactionReturnFocus.current = trigger
         advanceBlocked.current = true
         playback.pause()
