@@ -7,6 +7,7 @@ import {
 
 export interface WeeklyProgressState {
   progress: StoredWeeklyProgress
+  archivedProgress: StoredWeeklyProgress[]
   hydrated: boolean
   persistence: 'indexeddb' | 'memory' | 'pending' | 'ephemeral'
   persistenceIssue: PersistenceIssue
@@ -26,6 +27,7 @@ export function useWeeklyProgress(
   { ephemeral = false }: { ephemeral?: boolean } = {},
 ): WeeklyProgressState {
   const [progress, setProgress] = useState(initialProgress)
+  const [archivedProgress, setArchivedProgress] = useState<StoredWeeklyProgress[]>([])
   const [hydrated, setHydrated] = useState(ephemeral)
   const [persistence, setPersistence] = useState<WeeklyProgressState['persistence']>(
     ephemeral ? 'ephemeral' : 'pending',
@@ -46,21 +48,24 @@ export function useWeeklyProgress(
   initialProgressRef.current = initialProgress
 
   useEffect(() => {
-    if (ephemeral) setProgress(initialProgressRef.current)
+    if (ephemeral) {
+      setProgress(initialProgressRef.current)
+      setArchivedProgress([])
+    }
   }, [ephemeral, ephemeralResetKey])
 
   useEffect(() => {
     if (ephemeral) return
     let current = true
-    void loadWeeklyProgressResult(initialProgress.courtWeekId).then(({ progress: stored, issue }) => {
+    void loadWeeklyProgressResult(
+      initialProgress.courtWeekId,
+      initialProgress.revision,
+    ).then(({ progress: stored, archives, issue }) => {
       if (!current) return
-      const incompatible = stored && stored.revision !== initialProgress.revision
-      if (stored && !incompatible) setProgress(stored)
-      if (incompatible) {
-        setPersistence('memory')
-        setPersistenceIssue('revision-mismatch')
-      } else if (issue) {
-        setPersistence('memory')
+      setArchivedProgress(archives)
+      if (stored) setProgress(stored)
+      if (issue) {
+        setPersistence(issue === 'revision-mismatch' ? 'indexeddb' : 'memory')
         setPersistenceIssue(issue)
       } else if (stored) {
         setPersistence('indexeddb')
@@ -129,5 +134,5 @@ export function useWeeklyProgress(
     [],
   )
 
-  return { progress, hydrated, persistence, persistenceIssue, updateProgress }
+  return { progress, archivedProgress, hydrated, persistence, persistenceIssue, updateProgress }
 }

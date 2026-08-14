@@ -21,7 +21,9 @@ passive observation gates or artificial transition time.
   browser-level Microsoft Clarity analytics is permitted only with full source
   masking, denied advertising storage and a persistent local opt-out.
 - Progress, private notes and ballots stay on-device in IndexedDB. A versioned
-  export/import file is the only cross-device transfer path.
+  export/import file is the only cross-device transfer path. Records are keyed
+  by case and content revision: a revised trial starts clean while older records
+  remain available for review or export and never hydrate legal conclusions.
 - The active verdicts are Murder, manslaughter by criminal negligence, Not
   Guilty, and unable to agree. No outcome is presented as objectively correct.
 - Individual juror positions stay sealed. An anonymous aggregate ballot is
