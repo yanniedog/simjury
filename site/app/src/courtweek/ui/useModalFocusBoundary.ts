@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 
 const focusableSelector = [
   'a[href]:not([tabindex="-1"])',
@@ -40,25 +40,48 @@ function firstMatch(selectorList?: string): HTMLElement | null {
   return null
 }
 
-/** Keeps a mandatory modal's keyboard focus inside it without making Escape an exit. */
+export interface ModalFocusBoundaryOptions {
+  active?: boolean
+  onEscape?: () => void
+}
+
+/** Keeps keyboard focus inside one active modal and restores its opening control. */
 export function useModalFocusBoundary(
   rootRef: RefObject<HTMLElement>,
   preferredReturnFocus?: HTMLElement | null,
   fallbackReturnFocusSelector?: string,
+  { active = true, onEscape }: ModalFocusBoundaryOptions = {},
 ): void {
+  const onEscapeRef = useRef(onEscape)
+  const returnFocusRef = useRef<HTMLElement | null>()
+  onEscapeRef.current = onEscape
+
   useEffect(() => {
     const root = rootRef.current
     if (!root) return
     const activeBeforeOpen = document.activeElement instanceof HTMLElement
       ? document.activeElement
       : null
-    const returnFocusTo = preferredReturnFocus && preferredReturnFocus !== document.body
+    const preferred = preferredReturnFocus && preferredReturnFocus !== document.body
       ? preferredReturnFocus
-      : activeBeforeOpen
+      : null
+    if (preferred && !returnFocusRef.current?.isConnected) {
+      returnFocusRef.current = preferred
+    } else if (returnFocusRef.current === undefined) {
+      returnFocusRef.current = activeBeforeOpen === document.body ? null : activeBeforeOpen
+    }
 
-    ;(availableControls(root)[0] ?? root).focus()
+    if (active && !root.contains(document.activeElement)) {
+      ;(availableControls(root)[0] ?? root).focus()
+    }
 
     const keepFocusInside = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && onEscapeRef.current) {
+        event.preventDefault()
+        event.stopPropagation()
+        onEscapeRef.current()
+        return
+      }
       if (event.key !== 'Tab') return
       const available = availableControls(root)
       const first = available[0]
@@ -78,16 +101,16 @@ export function useModalFocusBoundary(
       }
     }
 
-    document.addEventListener('keydown', keepFocusInside)
+    if (active) document.addEventListener('keydown', keepFocusInside)
     return () => {
       document.removeEventListener('keydown', keepFocusInside)
       queueMicrotask(() => {
         if (root.isConnected) return
-        const target = returnFocusTo?.isConnected
-          ? returnFocusTo
+        const target = returnFocusRef.current?.isConnected
+          ? returnFocusRef.current
           : firstMatch(fallbackReturnFocusSelector)
         target?.focus()
       })
     }
-  }, [fallbackReturnFocusSelector, preferredReturnFocus, rootRef])
+  }, [active, fallbackReturnFocusSelector, preferredReturnFocus, rootRef])
 }
