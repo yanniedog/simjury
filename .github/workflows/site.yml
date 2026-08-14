@@ -115,18 +115,20 @@ jobs:
       - name: Install exact-source review verifier
         working-directory: site/app
         run: npm ci
-      - name: Recompute and require exact deployed-source signoffs
+      - name: Recompute and require exact pinned-media source
         working-directory: site/app
         env:
           RELEASE_MANIFEST: ${{ runner.temp }}/court-week-release/release-manifest.json
+          RELEASE_TAG: court-week-cw-0001-2026.08.03-r3
         run: |
           expected_digest="$(node -p 'require(process.env.RELEASE_MANIFEST).review_content_digest')"
           expected_revision="$(node -p 'require(process.env.RELEASE_MANIFEST).court_week_revision')"
           npm run review:signoffs -- \
             --source content-reviews/cw-0001.review-signoffs.json \
-            --require-approved \
+            --require-pinned-media \
             --expected-digest "$expected_digest" \
-            --expected-revision "$expected_revision"
+            --expected-revision "$expected_revision" \
+            --expected-release-tag "$RELEASE_TAG"
       - name: Install
         working-directory: site
         run: npm ci
