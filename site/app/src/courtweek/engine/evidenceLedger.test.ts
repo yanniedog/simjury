@@ -20,7 +20,10 @@ describe('point-in-time evidence admission ledger', () => {
     expect(evidenceState(provisional, 'ex-distress')).toBe('provisional')
     expect(provisional.find(({ evidence }) => evidence.id === 'ex-distress')?.effectiveTransition)
       .toMatchObject({ cueId: 'tue-recording-foundation', basis: 'provisional-admission' })
-    expect(evidenceState(at('tue-recording-play', true), 'ex-distress')).toBe('provisional')
+    const afterPlayback = at('tue-recording-play', true)
+    expect(evidenceState(afterPlayback, 'ex-distress')).toBe('provisional')
+    expect(afterPlayback.find(({ evidence }) => evidence.id === 'ex-distress')?.effectiveTransition)
+      .toMatchObject({ cueId: 'tue-recording-foundation', basis: 'provisional-admission' })
     expect(evidenceState(at('tue-recording-final-admission'), 'ex-distress')).toBe('provisional')
     expect(evidenceState(at('tue-recording-final-admission', true), 'ex-distress')).toBe('admitted')
   })
@@ -34,6 +37,8 @@ describe('point-in-time evidence admission ledger', () => {
   it('admits the oral expert opinion only after its evidence is given', () => {
     expect(evidenceState(at('wed-vos-chief-1'), 'ex-survival')).toBe('unavailable')
     expect(evidenceState(at('wed-vos-chief-1', true), 'ex-survival')).toBe('admitted')
+    expect(at('wed-vos-cross-1', true).find(({ evidence }) => evidence.id === 'ex-survival')?.effectiveTransition)
+      .toMatchObject({ cueId: 'wed-vos-chief-1', basis: 'oral-expert-evidence' })
   })
 
   it('marks excluded oral material struck only when the ruling is complete', () => {

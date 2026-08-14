@@ -99,8 +99,12 @@ export function deriveEvidenceLedger(
       const history = transitions.get(transition.evidenceId) ?? []
       const previous = history.at(-1)?.state
       if (previous === 'struck' || (previous === 'admitted' && transition.state === 'provisional')) {
-        throw new Error(`${transition.evidenceId}: invalid evidence-state regression at ${transition.cueId}`)
+        throw new Error(
+          `${transition.evidenceId}: invalid evidence-state regression at ${transition.cueId} `
+          + `(previous=${previous}, next=${transition.state})`,
+        )
       }
+      if (previous === transition.state) continue
       const publicTransition: EvidenceLedgerTransition = {
         cueId: transition.cueId, state: transition.state, basis: transition.basis,
       }
