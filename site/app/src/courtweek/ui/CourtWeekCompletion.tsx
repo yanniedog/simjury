@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import type { CourtSession, DeliberationPack, ReasoningMove, TrialRecord, Verdict } from '../model/schema'
+import type { CourtSession, DeliberationPack, TrialRecord, Verdict } from '../model/schema'
+import { reasoningMoveLabels } from '../model/deliberationContract'
 import type { StoredWeeklyProgress } from '../state/progress'
 import { COURT_WEEK_TEST_HARNESS_ENABLED } from '../testHarness'
 
@@ -14,15 +15,6 @@ const agreementLabels = {
   majority: 'Majority',
   hung: 'Jury unable to agree',
 } as const
-const reasoningMoveLabels: Record<ReasoningMove, string> = {
-  connect: 'Connect admitted evidence',
-  distinguish: 'Distinguish competing evidence',
-  'test-source': 'Test the source',
-  'challenge-inference': 'Challenge an inference',
-  'raise-alternative': 'Raise a reasonable alternative',
-  'apply-burden': 'Apply the burden of proof',
-}
-
 export interface CourtWeekCompletionProps {
   sessions: CourtSession[]
   progress: StoredWeeklyProgress

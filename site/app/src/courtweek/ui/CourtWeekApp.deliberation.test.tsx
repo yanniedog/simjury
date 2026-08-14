@@ -3,6 +3,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { elevenMinutesCourtWeek } from '../content'
+import { reasoningMoveLabels } from '../model/deliberationContract'
 import {
   clearMemoryProgressForTests,
   loadWeeklyProgress,
@@ -173,8 +174,9 @@ describe('CourtWeekApp improper-argument interaction', () => {
       chooseSelect(container, 'Legal question', legalQuestion)
       chooseSelect(container, 'Admitted evidence', evidenceId)
       expect(proposition.moves.length).toBeGreaterThanOrEqual(2)
-      proposition.moves.forEach((reviewedMove) => expect(container.textContent).toContain(reviewedMove))
-      clickButton(container, move)
+      proposition.moves.forEach((reviewedMove) => expect(container.textContent).toContain(reasoningMoveLabels[reviewedMove]))
+      expect(container.textContent).not.toContain('test-source')
+      clickButton(container, reasoningMoveLabels[move])
       const radio = Array.from(container.querySelectorAll<HTMLInputElement>('input[name="reasoning-basis"]')).find(
         (candidate) => candidate.value === 'improper:0',
       )
@@ -186,6 +188,31 @@ describe('CourtWeekApp improper-argument interaction', () => {
     expect(correction?.textContent).toContain('Juror correction')
     expect(correction?.textContent).toContain(silenceArgument.correction)
     expect(correction?.textContent).toContain('receives no influence')
+
+    const deskTrigger = container.querySelector<HTMLButtonElement>('#cw-interaction-desk')
+    if (!deskTrigger) throw new Error('Reasoning desk trigger is missing.')
+    await act(async () => {
+      deskTrigger.focus()
+      deskTrigger.click()
+      await Promise.resolve()
+    })
+    expect(container.querySelector('.cw-interaction')).toBeNull()
+    expect(container.querySelector('.cw-desk')?.getAttribute('role')).toBe('dialog')
+    await act(async () => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+      await Promise.resolve()
+      await Promise.resolve()
+    })
+
+    const restoredDeskTrigger = container.querySelector<HTMLButtonElement>('#cw-interaction-desk')
+    const [restoredQuestion, restoredEvidence] = Array.from(
+      container.querySelectorAll<HTMLSelectElement>('.cw-interaction select'),
+    )
+    expect(document.activeElement).toBe(restoredDeskTrigger)
+    expect(restoredQuestion.value).toBe(legalQuestion)
+    expect(restoredEvidence.value).toBe(evidenceId)
+    expect(container.querySelector(`button[aria-pressed="true"]`)?.textContent).toContain(reasoningMoveLabels[move])
+    expect(container.querySelector<HTMLInputElement>('input[value="improper:0"]')?.checked).toBe(true)
 
     await act(async () => clickButton(container, 'Record reasoning contribution'))
     window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
@@ -476,6 +503,22 @@ describe('CourtWeekApp improper-argument interaction', () => {
     wall.value += 140_000
     await act(async () => window.dispatchEvent(new Event('focus')))
     await act(async () => clickButton(container, 'Guilty of murder'))
+    const deskTrigger = container.querySelector<HTMLButtonElement>('#cw-interaction-desk')
+    if (!deskTrigger) throw new Error('Pre-seal ballot desk trigger is missing.')
+    await act(async () => {
+      deskTrigger.focus()
+      deskTrigger.click()
+      await Promise.resolve()
+    })
+    await act(async () => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+      await Promise.resolve()
+      await Promise.resolve()
+    })
+    expect(document.activeElement).toBe(container.querySelector('#cw-interaction-desk'))
+    expect(Array.from(container.querySelectorAll<HTMLButtonElement>('.cw-verdict-grid button')).find(
+      (button) => button.textContent?.trim() === 'Guilty of murder',
+    )?.getAttribute('aria-pressed')).toBe('true')
     await act(async () => clickButton(container, 'Seal second ballot'))
 
     expect(container.querySelector('[aria-label="Anonymous second ballot"]')).not.toBeNull()

@@ -1,4 +1,14 @@
-import type { DeliberationPack, ReasoningContribution } from './schema'
+import type { DeliberationPack, ReasoningContribution, ReasoningMove } from './schema'
+
+/** Human-facing copy; saved records continue to use the canonical move tokens. */
+export const reasoningMoveLabels: Readonly<Record<ReasoningMove, string>> = {
+  connect: 'Connect admitted evidence',
+  distinguish: 'Distinguish competing evidence',
+  'test-source': 'Test the source',
+  'challenge-inference': 'Challenge an inference',
+  'raise-alternative': 'Raise a reasonable alternative',
+  'apply-burden': 'Apply the burden of proof',
+}
 
 export const preSecondBallotContributionSceneIds = [
   'sat-room',

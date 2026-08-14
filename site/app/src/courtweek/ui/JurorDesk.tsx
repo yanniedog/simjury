@@ -2,8 +2,9 @@ import { useRef, useState } from 'react'
 import { authoredCueSourceId } from '../content/captionPacing'
 import { observedCourtCues, type EvidenceLedgerEntry } from '../engine/evidenceLedger'
 import type {
-  CourtEvent, CourtSession, DeliberationPack, LegalPhase, ReasoningMove, TrialRecord, WeeklyProgress,
+  CourtEvent, CourtSession, DeliberationPack, LegalPhase, TrialRecord, WeeklyProgress,
 } from '../model/schema'
+import { reasoningMoveLabels } from '../model/deliberationContract'
 import {
   downloadWeeklyProgress,
   importWeeklyProgress,
@@ -15,11 +16,6 @@ const phaseLabels: Record<LegalPhase, string> = {
   arrival: 'Arrival and empanelment', 'crown-case': 'Crown case', 'defence-case': 'Defence case',
   addresses: 'Closing addresses', directions: 'Judge’s directions', deliberation: 'Deliberation',
   verdict: 'Verdict in open court', analysis: 'Post-verdict analysis',
-}
-const moveLabels: Record<ReasoningMove, string> = {
-  connect: 'Connect evidence', distinguish: 'Distinguish competing explanations',
-  'test-source': 'Test the source', 'challenge-inference': 'Challenge an inference',
-  'raise-alternative': 'Raise a reasonable alternative', 'apply-burden': 'Apply the burden of proof',
 }
 const directionEvents = new Set<CourtEvent>([
   'preliminary-direction', 'silence-direction', 'summing-up', 'judge-response',
@@ -40,6 +36,7 @@ export interface JurorDeskProps {
   saveStatus: string
   readOnly?: boolean
   inactive?: boolean
+  fallbackReturnFocusSelector?: string
   onNotesChange: (notes: string) => void
   prepareImport?: (text: string) => Promise<WeeklyProgress>
   onImport: (progress: WeeklyProgress) => void
@@ -61,6 +58,7 @@ export function JurorDesk({
   saveStatus,
   readOnly = false,
   inactive = false,
+  fallbackReturnFocusSelector,
   onNotesChange,
   prepareImport,
   onImport,
@@ -131,6 +129,7 @@ export function JurorDesk({
       headingId="cw-desk-heading"
       closeLabel="Close juror desk"
       inactive={inactive}
+      fallbackReturnFocusSelector={fallbackReturnFocusSelector}
       footer={transferActions}
       onClose={onClose}
     >
@@ -227,7 +226,7 @@ export function JurorDesk({
         {reasoning.length ? <details>
           <summary>Review saved reasoning ({reasoning.length})</summary>
           <ol>{reasoning.map((entry) => <li key={`${entry.sceneId}:${entry.recordedAt}`}>
-            <strong>{moveLabels[entry.move]}:</strong> {entry.legalQuestion}{' '}
+            <strong>{reasoningMoveLabels[entry.move]}:</strong> {entry.legalQuestion}{' '}
             <small>Evidence: {trial.evidence.find(({ id }) => id === entry.evidenceId)?.label ?? 'admitted item'}</small>
           </li>)}</ol>
         </details> : null}
