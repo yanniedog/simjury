@@ -16,6 +16,7 @@ export default defineConfig({
   timeout: 45_000,
   expect: { timeout: 8_000 },
   retries: process.env.CI ? 1 : 0,
+  workers: 1,
   reporter: process.env.CI ? [['line'], ['html', { open: 'never' }]] : 'line',
   use: {
     baseURL: 'http://127.0.0.1:43127',
@@ -39,7 +40,7 @@ export default defineConfig({
     { name: 'android-tablet', testMatch: /court-week\.devices\.spec\.ts/u, use: { ...devices['Galaxy Tab S9'] } },
   ],
   webServer: {
-    command: 'npm run dev -- --host 127.0.0.1 --port 43127 --strictPort',
+    command: 'npm run dev:preview -- --host 127.0.0.1 --port 43127 --strictPort',
     url: 'http://127.0.0.1:43127',
     reuseExistingServer: !process.env.CI,
   },

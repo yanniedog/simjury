@@ -14,9 +14,14 @@ import react from '@vitejs/plugin-react'
 //     than an inlined `data:`/inline resource.
 // `base` is only rewritten for the production build so `vite dev`/preview stay
 // at `/`.
-export default defineConfig(({ command }) => ({
+export default defineConfig(({ command, mode }) => ({
   base: command === 'build' ? '/jury/' : '/',
   plugins: [react()],
+  define: {
+    'import.meta.env.VITE_COURT_WEEK_PREVIEW': JSON.stringify(
+      mode === 'court-week-preview' || mode === 'test' ? 'enabled' : 'disabled',
+    ),
+  },
   build: {
     outDir: '../public/jury',
     emptyOutDir: true,
