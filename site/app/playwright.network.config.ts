@@ -15,15 +15,15 @@ export default defineConfig({
     // Vite preview serves the built files but does not implement Cloudflare's
     // `_redirects` proxy. Exercise the internal shell that `/` maps to in
     // production instead of accidentally testing the marketing fallback.
-    baseURL: 'http://127.0.0.1:43130/jury/court-week.html',
+    baseURL: 'http://127.0.0.1:49317/jury/court-week.html',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     serviceWorkers: 'block',
   },
   projects: [{ name: 'production-static-chromium', use: { browserName: 'chromium' } }],
   webServer: {
-    command: 'npm run preview -- --outDir ../public --host 127.0.0.1 --port 43130 --strictPort',
-    url: 'http://127.0.0.1:43130/jury/court-week.html',
+    command: 'npm run preview -- --outDir ../public --host 127.0.0.1 --port 49317 --strictPort',
+    url: 'http://127.0.0.1:49317/jury/court-week.html',
     reuseExistingServer: false,
   },
 })

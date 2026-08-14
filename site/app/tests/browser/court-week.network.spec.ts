@@ -3,9 +3,6 @@ import { expect, test } from '@playwright/test'
 import { courtWeekBootstrap } from '../../src/courtweek/sealed/bootstrap'
 import { DEFAULT_LOCAL_PROFILE, LOCAL_PROFILE_STORAGE_KEY } from '../../src/courtweek/state/localProfile'
 
-// Vite preview does not apply the Cloudflare `_redirects` proxy used by the
-// canonical root URL, so test the exact built Court Week shell directly.
-const baseUrl = 'http://127.0.0.1:43130/jury/court-week.html'
 const clarityOptOutKey = 'simjury:clarity-opt-out:v1'
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 const acknowledgedProfile = JSON.stringify({
@@ -42,6 +39,8 @@ function isPinnedReleaseRequest(url: URL): boolean {
 }
 
 test('HAR proves the initial unlocked journey is static-only and fetches no future pack', async ({ browser }, testInfo) => {
+  const baseUrl = testInfo.project.use.baseURL
+  if (typeof baseUrl !== 'string') throw new Error('Network test requires a configured baseURL')
   const harPath = testInfo.outputPath('court-week-network.har')
   const context = await browser.newContext({
     serviceWorkers: 'block',
