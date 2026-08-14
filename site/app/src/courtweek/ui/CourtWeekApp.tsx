@@ -188,7 +188,7 @@ function CourtWeekEntry({
   return (
     <main className="cw-entry" tabIndex={-1} aria-busy={busy || undefined}>
       <div className="cw-entry__panel">
-        <p className="cw-kicker">One case · Seven sessions · About 20 minutes a day</p>
+        <p className="cw-kicker">One case · Seven self-paced sessions</p>
         <h1 ref={headingRef} tabIndex={focusHeading ? -1 : undefined}>{title}</h1>
         <p className="cw-entry__advisory">{ephemeral && ephemeralAdvisory ? ephemeralAdvisory : advisory}</p>
         {persistenceNotice ? <p className="cw-error" role="alert">{persistenceNotice}</p> : null}
@@ -318,22 +318,6 @@ function MandatoryInteractionDialog({
   )
 }
 
-/**
- * Elapsed time for the reflection countdown.
- *
- * This must never read the injected court clock. `now` is a *court date*
- * source and deterministic callers are allowed to freeze it to a fixed
- * session date, which pinned elapsed at 0, left "Continue in Ns"
- * counting down from N forever and made the interaction unpassable. A
- * monotonic wall clock keeps the countdown honest and is immune to a frozen,
- * mocked or user-adjusted system clock.
- */
-const elapsedNow = (): number => (
-  typeof performance !== 'undefined' && typeof performance.now === 'function'
-    ? performance.now()
-    : Date.now()
-)
-
 export function CourtWeekApp({
   courtWeek,
   now = Date.now,
@@ -372,7 +356,6 @@ export function CourtWeekApp({
   const suppressAutoPlayAfterDeskClose = useRef(false)
   const [interactionOpen, setInteractionOpen] = useState(false)
   const [developerPreviewOpen, setDeveloperPreviewOpen] = useState(false)
-  const [interactionOpenedAt, setInteractionOpenedAt] = useState<number | null>(null)
   const [interactionChoice, setInteractionChoice] = useState<string | null>(null)
   const [interactionSealed, setInteractionSealed] = useState(false)
   const [reasoningQuestion, setReasoningQuestion] = useState('')
@@ -380,7 +363,6 @@ export function CourtWeekApp({
   const [reasoningBasis, setReasoningBasis] = useState('')
   const [replaySessionId, setReplaySessionId] = useState<string | null>(null)
   const gesturePlayedCue = useRef<string | null>(null)
-  const [, setInteractionTick] = useState(0)
   const accessMode = progress.accessibilityMode ?? 'audio-first'
   const observedTime = observeCourtTime(Date.parse(progress.highestObservedTime), now())
   const availability = getSessionAvailability(
@@ -490,19 +472,17 @@ export function CourtWeekApp({
       commitPosition(activeSession.id, position.scene.id, nextCue.id, isReplay ? undefined : position.cue.id)
       return
     }
-    if (position.scene.interaction && !interactionOpen) {
+    if (position.scene.interaction?.kind !== 'observe' && position.scene.interaction && !interactionOpen) {
       advanceBlocked.current = true
       interactionReturnFocus.current = trigger ?? (
         document.activeElement instanceof HTMLElement ? document.activeElement : null
       )
       setInteractionOpen(true)
-      setInteractionOpenedAt(elapsedNow())
       return
     }
     const nextScene = activeSession.scenes[position.sceneIndex + 1]
     if (nextScene) {
       setInteractionOpen(false)
-      setInteractionOpenedAt(null)
       setInteractionChoice(null)
       setInteractionSealed(false)
       commitPosition(activeSession.id, nextScene.id, nextScene.cues[0].id, isReplay ? undefined : position.cue.id)
@@ -512,7 +492,6 @@ export function CourtWeekApp({
       setReplaySessionId(null)
       setStarted(false)
       setInteractionOpen(false)
-      setInteractionOpenedAt(null)
       setInteractionChoice(null)
       setInteractionSealed(false)
       return
@@ -528,7 +507,6 @@ export function CourtWeekApp({
     }))
     setStarted(false)
     setInteractionOpen(false)
-    setInteractionOpenedAt(null)
     setInteractionChoice(null)
     setInteractionSealed(false)
   }, [accessMode, activeSession, commitPosition, courtWeek.manifest.sessions, deskOpen, interactionOpen, isReplay, position, progress.completedSessionIds, updateProgress])
@@ -653,23 +631,6 @@ export function CourtWeekApp({
     persistedInteractionVote && (interaction?.kind === 'seal-vote' || interaction?.kind === 'second-vote'),
   )
   const ballotSealed = interactionSealed || persistedBallotSealed
-  const interactionElapsedSeconds = interactionOpen && interactionOpenedAt != null
-    ? Math.max(0, (elapsedNow() - interactionOpenedAt) / 1000)
-    : 0
-  // Ephemeral sessions do not wait behind live reflection timers.
-  const requiredInteractionSeconds = ephemeral
-    ? 0
-    : (interaction?.minimumSeconds ?? 0)
-  const interactionMinimumMet = !interaction
-    || isReplay
-    || ballotSealed
-    || interactionElapsedSeconds >= requiredInteractionSeconds
-  useEffect(() => {
-    if (!interactionOpen || !interaction || isReplay || interactionMinimumMet) return
-    const remainingMs = Math.max(0, requiredInteractionSeconds * 1000 - interactionElapsedSeconds * 1000)
-    const timer = window.setTimeout(() => setInteractionTick((value) => value + 1), Math.min(remainingMs + 16, 1000))
-    return () => window.clearTimeout(timer)
-  }, [interaction, interactionElapsedSeconds, interactionMinimumMet, interactionOpen, isReplay, requiredInteractionSeconds])
 
   if (!hydrated) return <main className="cw-loading" aria-busy="true"><p role="status">Preparing your place in court…</p></main>
 
@@ -726,7 +687,6 @@ export function CourtWeekApp({
           setReplaySessionId(session.id)
           setStarted(false)
           setInteractionOpen(false)
-          setInteractionOpenedAt(null)
           setInteractionChoice(null)
           setInteractionSealed(false)
           setReasoningQuestion('')
@@ -793,7 +753,6 @@ export function CourtWeekApp({
   ))
   const finishInteraction = (skipOptionalReasoning = false) => {
     if (!interaction) return
-    if (!interactionMinimumMet) return
     if (isReplay) {
       let nextScene: CourtSession['scenes'][number] | undefined = activeSession.scenes[position.sceneIndex + 1]
       const sundayNext = activeSession.day === 'Sunday'
@@ -801,7 +760,6 @@ export function CourtWeekApp({
         : null
       if (sundayNext) nextScene = activeSession.scenes.find((scene) => scene.id === sundayNext)
       setInteractionOpen(false)
-      setInteractionOpenedAt(null)
       setInteractionChoice(null)
       setInteractionSealed(false)
       setReasoningQuestion('')
@@ -888,7 +846,6 @@ export function CourtWeekApp({
       currentCueId: nextScene?.cues[0]?.id ?? nextSession?.scenes[0]?.cues[0]?.id,
     }))
     setInteractionOpen(false)
-    setInteractionOpenedAt(null)
     setInteractionChoice(null)
     setInteractionSealed(false)
     setReasoningQuestion('')
@@ -1080,7 +1037,6 @@ export function CourtWeekApp({
           type="button"
           disabled={
             !isReplay && (
-              !interactionMinimumMet ||
               (!effectiveInteractionChoice && (isVote || Boolean(interaction.options?.length))) ||
               (interaction.kind === 'reasoning' && (
                 (recordsInfluence
@@ -1093,8 +1049,6 @@ export function CourtWeekApp({
           onClick={() => finishInteraction()}
         >
           {isReplay ? 'Continue replay'
-            : !interactionMinimumMet && requiredInteractionSeconds > 0
-            ? `Continue in ${Math.max(1, Math.ceil(requiredInteractionSeconds - interactionElapsedSeconds))}s`
             : ballotSealed
             ? (progress.secondBallotWasUnanimous ? 'Return to court' : 'Continue deliberation')
             : interaction.kind === 'final-vote' ? 'Seal final ballot'
@@ -1103,7 +1057,6 @@ export function CourtWeekApp({
         {!isReplay && interaction.kind === 'reasoning' && interaction.optional ? (
           <button
             type="button"
-            disabled={!interactionMinimumMet}
             onClick={() => finishInteraction(true)}
           >
             Continue without contributing

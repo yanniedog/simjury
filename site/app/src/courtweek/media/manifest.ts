@@ -71,7 +71,7 @@ export const courtWeekSessionMediaSchema = z.object({
   session_id: z.string().min(1),
   day: z.enum(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']),
   narration_seconds: z.number().positive(),
-  experience_seconds: z.number().min(18 * 60).max(22 * 60),
+  experience_seconds: z.number().positive(),
   segments: z.array(runtimeSegmentSchema).min(8).max(12),
   art: runtimeArtSchema,
 }).strict()

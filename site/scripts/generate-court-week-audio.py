@@ -735,11 +735,9 @@ def produce(job: dict[str, Any], output_root: Path) -> Path:
             "loudness": loudness,
         })
 
-    experience = total_duration + float(job["fixedExperienceSeconds"])
-    if not 18 * 60 <= experience <= 22 * 60:
-        raise RuntimeError(
-            f"{session_id} measures {experience / 60:.2f} minutes with authored interactions; required 18-22"
-        )
+    if float(job["fixedExperienceSeconds"]) != 0:
+        raise RuntimeError(f"{session_id} must not add fixed interaction time")
+    experience = total_duration
     manifest = {
         "schema": SESSION_SCHEMA,
         "caseId": job["caseId"],
