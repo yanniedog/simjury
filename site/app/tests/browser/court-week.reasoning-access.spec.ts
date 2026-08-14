@@ -1,21 +1,25 @@
 import { expect, test, type Page } from '@playwright/test'
 import { elevenMinutesDeliberation } from '../../src/courtweek/content/deliberation'
 import { elevenMinutesSessions } from '../../src/courtweek/content/sessions'
+import { PROGRESS_DATABASE, PROGRESS_PACK_STORE } from '../../src/courtweek/state/progress'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 
 async function seedProgress(page: Page, position: Record<string, unknown>) {
   await page.goto('/robots.txt')
-  await page.evaluate(async ({ instant, position }) => new Promise<void>((resolve, reject) => {
-    const request = indexedDB.open('simjury-court-week-v1', 1)
+  await page.evaluate(async ({ instant, position, contract, packStore }) => new Promise<void>((resolve, reject) => {
+    const request = indexedDB.open(contract.name, contract.version)
     request.onerror = () => reject(request.error)
-    request.onupgradeneeded = () => request.result.createObjectStore('progress')
+    request.onupgradeneeded = () => {
+      request.result.createObjectStore(contract.store)
+      request.result.createObjectStore(packStore)
+    }
     request.onsuccess = () => {
       const database = request.result
-      const transaction = database.transaction('progress', 'readwrite')
+      const transaction = database.transaction(contract.store, 'readwrite')
       transaction.onerror = () => reject(transaction.error)
       transaction.oncomplete = () => { database.close(); resolve() }
-      transaction.objectStore('progress').put({
+      transaction.objectStore(contract.store).put({
         schemaVersion: 'court-week-progress-v1', courtWeekId: 'cw-0001', revision: '2026.08.03-r2',
         highestObservedTime: new Date(instant).toISOString(), completedSessionIds: [],
         currentSessionId: 'cw-0001-monday', currentSceneId: 'mon-arrival', currentCueId: 'mon-arrival-1',
@@ -23,7 +27,7 @@ async function seedProgress(page: Page, position: Record<string, unknown>) {
         ...position,
       }, ['cw-0001', '2026.08.03-r2'])
     }
-  }), { instant: releaseNow, position })
+  }), { instant: releaseNow, position, contract: PROGRESS_DATABASE, packStore: PROGRESS_PACK_STORE })
 }
 
 async function openInteraction(page: Page, action: string) {

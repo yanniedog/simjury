@@ -9,6 +9,7 @@ import {
   loadWeeklyProgressResult,
   loadWeeklyProgress,
   mergeImportedWeeklyProgress,
+  openProgressDatabase,
   saveWeeklyProgress,
 } from './progress'
 
@@ -49,6 +50,33 @@ describe('weekly progress', () => {
     try {
       await expect(saveWeeklyProgress('cw-0001', progress)).resolves.toBe('memory')
       await expect(loadWeeklyProgress('cw-0001', progress.revision)).resolves.toEqual(progress)
+    } finally {
+      if (descriptor) Object.defineProperty(globalThis, 'indexedDB', descriptor)
+      else delete (globalThis as { indexedDB?: IDBFactory }).indexedDB
+    }
+  })
+
+  it('keeps a blocked database upgrade pending until the saved record can be read', async () => {
+    const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'indexedDB')
+    const openRequest = {} as IDBOpenDBRequest
+    const database = { close: () => undefined } as unknown as IDBDatabase
+    Object.defineProperty(openRequest, 'result', { value: database })
+    const factory = {
+      open: () => {
+        queueMicrotask(() => openRequest.onblocked?.({} as IDBVersionChangeEvent))
+        return openRequest
+      },
+    } as unknown as IDBFactory
+    Object.defineProperty(globalThis, 'indexedDB', { configurable: true, value: factory })
+    try {
+      let settled = false
+      const opening = openProgressDatabase().then((result) => { settled = true; return result })
+      await Promise.resolve()
+      await Promise.resolve()
+      expect(settled).toBe(false)
+
+      openRequest.onsuccess?.({} as Event)
+      await expect(opening).resolves.toBe(database)
     } finally {
       if (descriptor) Object.defineProperty(globalThis, 'indexedDB', descriptor)
       else delete (globalThis as { indexedDB?: IDBFactory }).indexedDB

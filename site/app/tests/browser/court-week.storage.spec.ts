@@ -90,6 +90,52 @@ test('quota failure is disclosed after a real gameplay write and play continues'
   await expect(page.getByRole('status')).toContainText('Progress is held in this tab')
 })
 
+test('a blocked v1 upgrade cannot expose or overwrite an empty baseline', async ({ context, page }) => {
+  const saved = {
+    schemaVersion: 'court-week-progress-v1', courtWeekId: 'cw-0001', revision: '2026.08.03-r2',
+    highestObservedTime: new Date(releaseNow).toISOString(), completedSessionIds: [],
+    currentSessionId: 'cw-0001-monday', currentSceneId: 'mon-arrival', currentCueId: 'mon-arrival-1',
+    notes: 'Saved before the storage upgrade.', reasoningContributions: [],
+    majorityDirectionReceived: false,
+  }
+  await page.route('**/robots.txt', (route) => route.fulfill({
+    contentType: 'text/html',
+    body: '<!doctype html><title>Legacy storage holder</title>',
+  }))
+  await page.goto('/robots.txt')
+  await page.evaluate(async ({ name, store, record }) => new Promise<void>((resolve, reject) => {
+    const request = indexedDB.open(name, 1)
+    request.onerror = () => reject(request.error)
+    request.onupgradeneeded = () => request.result.createObjectStore(store)
+    request.onsuccess = () => {
+      const database = request.result
+      const transaction = database.transaction(store, 'readwrite')
+      transaction.onerror = () => reject(transaction.error)
+      transaction.oncomplete = () => {
+        ;(window as typeof window & { legacyDatabase?: IDBDatabase }).legacyDatabase = database
+        resolve()
+      }
+      transaction.objectStore(store).put(record, [record.courtWeekId, record.revision])
+    }
+  }), { name: PROGRESS_DATABASE.name, store: PROGRESS_DATABASE.store, record: saved })
+
+  const upgradingPage = await context.newPage()
+  await upgradingPage.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
+  await upgradingPage.goto('/')
+  await expect(upgradingPage.getByRole('status')).toContainText('Preparing your place in court')
+  await expect(upgradingPage.locator('.cw-entry')).toHaveCount(0)
+
+  await page.evaluate(() => {
+    ;(window as typeof window & { legacyDatabase?: IDBDatabase }).legacyDatabase?.close()
+  })
+  await expect(upgradingPage.locator('.cw-entry')).toBeVisible()
+  await upgradingPage.locator('.cw-entry__settings > summary').click()
+  await upgradingPage.getByLabel('Reading mode').check()
+  await upgradingPage.locator('.cw-entry button.cw-primary').click()
+  await upgradingPage.getByRole('button', { name: 'Juror desk', exact: true }).click()
+  await expect(upgradingPage.getByLabel('Your private notes')).toHaveValue(saved.notes)
+})
+
 test('a prior revision is archived while the revised trial starts without its ballot', async ({ page }) => {
   const archived = {
     schemaVersion: 'court-week-progress-v1',
