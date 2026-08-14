@@ -21,6 +21,38 @@ function filesBelow(directory: string): string[] {
   })
 }
 
+// Build each forbidden marker so this guard does not flag its own definition.
+const retiredDurationMarkers = [
+  ['minimum', 'Seconds'].join(''),
+  ['transition', 'Seconds'].join(''),
+  ['target', 'Minutes'].join(''),
+]
+const retiredDurationPromise = /\b(?:20|twenty)[ -]minutes?\b/iu
+const guardedSourceFiles = [
+  ...filesBelow(join(appRoot, 'scripts')),
+  ...filesBelow(join(appRoot, 'src')),
+  ...filesBelow(join(appRoot, 'tests')),
+  ...filesBelow(resolve(appRoot, '..', 'public')),
+]
+  .filter((file) => /\.(?:css|html|js|json|ts|tsx|txt|xml)$/u.test(file))
+
+function assertNoRetiredDurationContract(label: string, text: string): void {
+  for (const marker of retiredDurationMarkers) {
+    if (text.includes(marker)) throw new Error(`${label} retains retired duration marker: ${marker}`)
+  }
+  if (retiredDurationPromise.test(text)) {
+    throw new Error(`${label} retains a retired fixed-session duration promise.`)
+  }
+}
+
+for (const file of guardedSourceFiles) {
+  assertNoRetiredDurationContract(relative(appRoot, file), readFileSync(file, 'utf8'))
+}
+assertNoRetiredDurationContract(
+  'Court Week authored contract',
+  JSON.stringify({ manifest: elevenMinutesCourtWeek.manifest, bootstrap: courtWeekBootstrap }),
+)
+
 const files = filesBelow(buildRoot)
 const sourceMaps = files.filter((file) => extname(file) === '.map')
 if (sourceMaps.length) throw new Error(`Production source maps are forbidden: ${sourceMaps.join(', ')}`)
@@ -29,6 +61,7 @@ const publicCode = files
   .filter((file) => /\.(?:html|js|css)$/u.test(file))
   .map((file) => readFileSync(file, 'utf8'))
   .join('\n')
+assertNoRetiredDurationContract('Production build', publicCode)
 const developerPreviewSentinels = [
   ...DEVELOPER_PREVIEW_ASSET_MARKERS,
   DEVELOPER_PREVIEW_NOW_ISO,
@@ -125,4 +158,4 @@ for (const packName of packNames) {
   }
 }
 
-console.log('Sealed production build contains no developer preview, authored dialogue/media map, maps or pack plaintext.')
+console.log('Sealed production build contains no developer preview, retired duration contract, authored dialogue/media map, maps or pack plaintext.')
