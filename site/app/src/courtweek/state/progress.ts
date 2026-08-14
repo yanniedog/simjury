@@ -10,8 +10,9 @@ import { calculateFinalBallot, calculateSecondBallot, unanimousVerdict } from '.
 export const PROGRESS_DATABASE = {
   name: 'simjury-court-week-v1',
   store: 'progress',
-  version: 1,
+  version: 2,
 } as const
+export const PROGRESS_PACK_STORE = 'opened-packs' as const
 
 export const PROGRESS_FORMAT = 'simjury-court-week-progress-v1' as const
 export const MAX_PROGRESS_TRANSFER_BYTES = 1024 * 1024
@@ -156,17 +157,36 @@ function archivedProgress(
   )
 }
 
-function openProgressDatabase(): Promise<IDBDatabase> {
+export function openProgressDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
+    let blocked = false
     const request = indexedDB.open(PROGRESS_DATABASE.name, PROGRESS_DATABASE.version)
     request.onerror = () => reject(request.error)
+    request.onblocked = () => {
+      blocked = true
+      reject(new Error('Another SimJury tab is blocking the private-storage upgrade.'))
+    }
     request.onupgradeneeded = () => {
       if (!request.result.objectStoreNames.contains(PROGRESS_DATABASE.store)) {
         request.result.createObjectStore(PROGRESS_DATABASE.store)
       }
+      if (!request.result.objectStoreNames.contains(PROGRESS_PACK_STORE)) {
+        request.result.createObjectStore(PROGRESS_PACK_STORE)
+      }
     }
-    request.onsuccess = () => resolve(request.result)
+    request.onsuccess = () => {
+      if (blocked) {
+        request.result.close()
+        return
+      }
+      request.result.onversionchange = () => request.result.close()
+      resolve(request.result)
+    }
   })
+}
+
+export function rememberWeeklyProgress(progress: StoredWeeklyProgress): void {
+  memoryProgress.set(memoryStorageKey(progress.courtWeekId, progress.revision), progress)
 }
 
 async function withStore<T>(
@@ -273,8 +293,7 @@ export async function saveWeeklyProgress(
   progress: StoredWeeklyProgress,
 ): Promise<'indexeddb' | 'memory'> {
   if (progress.courtWeekId !== caseId) throw new Error('Progress case identity does not match its storage key.')
-  const key = memoryStorageKey(caseId, progress.revision)
-  memoryProgress.set(key, progress)
+  rememberWeeklyProgress(progress)
   if (!hasIndexedDb()) return 'memory'
   try {
     await withStore('readwrite', (store) => store.put(

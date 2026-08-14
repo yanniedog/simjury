@@ -24,7 +24,7 @@ import {
   loadEligibleCourtPacks,
   type SealedPackFetcher,
 } from './loader'
-import { saveOpenedPack } from './packStore'
+import { commitImportedCourtWeek } from './packStore'
 import { prepareSealedProgressImport } from './progressImport'
 import type { CourtDayPack, CourtWeekBootstrap } from './types'
 import {
@@ -304,13 +304,13 @@ function StandardSealedCourtWeekApp({
     return {
       progress: prepared.progress,
       sessions: courtWeek.manifest.sessions.map((session) => preparedSessions.get(session.id) ?? session),
-      commit: async () => {
-        await Promise.all(prepared.packs.map((pack) => saveOpenedPack(pack, bootstrap.releaseTag)))
+      commit: async (confirmedProgress: StoredWeeklyProgress) => {
+        await commitImportedCourtWeek(prepared.packs, bootstrap.releaseTag, confirmedProgress)
         setPacks((existing) => {
           const merged = new Map([...existing, ...prepared.packs].map((pack) => [pack.ordinal, pack]))
           return Array.from(merged.values()).sort((left, right) => left.ordinal - right.ordinal)
         })
-        return prepared.progress
+        return confirmedProgress
       },
     }
   }, [bootstrap, courtWeek.manifest.sessions, fetcher, now, packBase])

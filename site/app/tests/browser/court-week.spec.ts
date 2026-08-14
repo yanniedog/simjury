@@ -35,7 +35,7 @@ async function enterCourt(page: Page, routeAvailable = false) {
 async function hasOpenedPack(page: Page, ordinal: number) {
   const key = `${courtWeekBootstrap.id}:${courtWeekBootstrap.revision}:${courtWeekBootstrap.releaseTag}:${ordinal}`
   return page.evaluate((packKey) => new Promise<boolean>((resolve, reject) => {
-    const open = indexedDB.open('simjury-court-week-sealed-v1', 1)
+    const open = indexedDB.open('simjury-court-week-v1')
     open.onerror = () => reject(open.error)
     open.onsuccess = () => {
       const database = open.result
@@ -463,7 +463,13 @@ test('import stays read-only through preview and cancel, then commits from the k
   await page.keyboard.press('Enter')
   await expect(desk).toHaveAccessibleName('Your working papers')
   await expect(desk.getByLabel('Your private notes')).toHaveValue('Transferred private note.')
-  await expect.poll(() => hasOpenedPack(page, 2)).toBe(true)
+  expect(await hasOpenedPack(page, 2)).toBe(true)
+  expect(await readStoredProgress(page)).toMatchObject({
+    completedSessionIds: [elevenMinutesSessions[0].id],
+    currentSessionId: tuesday.id,
+    currentSceneId: tuesday.scenes[0].id,
+    notes: 'Transferred private note.',
+  })
 })
 
 test.describe('device-sized admitted exhibit viewer', () => {
@@ -618,7 +624,7 @@ async function seedTuesdayPosition(
 ) {
   await page.goto('/robots.txt')
   await page.evaluate(async ({ instant, currentSceneId, currentCueId, accessibilityMode }) => new Promise<void>((resolve, reject) => {
-    const request = indexedDB.open('simjury-court-week-v1', 1)
+    const request = indexedDB.open('simjury-court-week-v1')
     request.onerror = () => reject(request.error)
     request.onupgradeneeded = () => request.result.createObjectStore('progress')
     request.onsuccess = () => {
@@ -970,7 +976,7 @@ test('short landscape reading mode preserves usable copy space', async ({ page, 
 
 async function readStoredProgress(page: Page) {
   return page.evaluate(async () => new Promise<Record<string, unknown> | null>((resolve, reject) => {
-    const request = indexedDB.open('simjury-court-week-v1', 1)
+    const request = indexedDB.open('simjury-court-week-v1')
     request.onerror = () => reject(request.error)
     request.onsuccess = () => {
       const database = request.result
@@ -1034,7 +1040,7 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
   // fixture with its ordinary debounced progress save.
   await page.goto('/robots.txt')
   await page.evaluate(async ({ instant, contribution }) => new Promise<void>((resolve, reject) => {
-    const request = indexedDB.open('simjury-court-week-v1', 1)
+    const request = indexedDB.open('simjury-court-week-v1')
     request.onerror = () => reject(request.error)
     request.onsuccess = () => {
       const database = request.result
