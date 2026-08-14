@@ -58,6 +58,7 @@ export async function loadOpenedPack(
   revision: string,
   releaseTag: string,
   ordinal: number,
+  memoize = true,
 ): Promise<CourtDayPack | null> {
   const key = cacheKey(caseId, revision, releaseTag, ordinal)
   const memory = memoryPacks.get(key)
@@ -66,7 +67,7 @@ export async function loadOpenedPack(
   try {
     const parsed = courtDayPackSchema.safeParse(await readIndexed(key))
     if (!parsed.success) return null
-    memoryPacks.set(key, parsed.data)
+    if (memoize) memoryPacks.set(key, parsed.data)
     return parsed.data
   } catch {
     return null

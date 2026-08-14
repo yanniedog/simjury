@@ -42,7 +42,7 @@ import { COURT_WEEK_TEST_HARNESS_ENABLED } from '../testHarness'
 import { EvidenceViewer } from './EvidenceViewer'
 import { CourtWeekCompletion } from './CourtWeekCompletion'
 import { ImmersiveCourtShell } from './ImmersiveCourtShell'
-import { JurorDesk } from './JurorDesk'
+import { JurorDesk, type PreparedProgressImport } from './JurorDesk'
 import { LocalProfilePanel } from './LocalProfilePanel'
 import { useModalFocusBoundary } from './useModalFocusBoundary'
 import { courtAdvanceAction, interactionPrimaryAction } from './proceduralActions'
@@ -55,7 +55,7 @@ export interface CourtWeekAppProps {
   prepareProgressImport?: (
     text: string,
     current: StoredWeeklyProgress,
-  ) => Promise<StoredWeeklyProgress>
+  ) => Promise<PreparedProgressImport>
   initialProgressOverride?: StoredWeeklyProgress
   ephemeral?: boolean
   ephemeralAdvisory?: string
@@ -1030,6 +1030,7 @@ export function CourtWeekApp({
     overlay = (
       <>
         <JurorDesk
+          caseTitle={courtWeek.manifest.title}
           trial={courtWeek.trial}
           sessions={courtWeek.manifest.sessions}
           deliberation={courtWeek.deliberation.propositions ? courtWeek.deliberation : undefined}

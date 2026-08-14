@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { authoredCueSourceId } from '../content/captionPacing'
 import { observedCourtCues, type EvidenceLedgerEntry } from '../engine/evidenceLedger'
 import type {
-  CourtEvent, CourtSession, DeliberationPack, LegalPhase, TrialRecord, WeeklyProgress,
+  CourtEvent, CourtSession, DeliberationPack, LegalPhase, TrialRecord, Verdict, WeeklyProgress,
 } from '../model/schema'
 import { reasoningMoveLabels } from '../model/deliberationContract'
 import {
@@ -22,8 +22,23 @@ const directionEvents = new Set<CourtEvent>([
   'perseverance-direction', 'majority-direction',
 ])
 const rulingEvents = new Set<CourtEvent>(['objection', 'ruling'])
+export const MAX_PROGRESS_IMPORT_BYTES = 1024 * 1024
+
+export interface PreparedProgressImport {
+  progress: WeeklyProgress
+  sessions: CourtSession[]
+  commit: () => Promise<WeeklyProgress>
+}
+
+const verdictLabels: Record<Verdict, string> = {
+  murder: 'Guilty of murder',
+  manslaughter: 'Guilty of manslaughter by criminal negligence',
+  'not-guilty': 'Not Guilty',
+  'unable-to-agree': 'Unable to agree',
+}
 
 export interface JurorDeskProps {
+  caseTitle: string
   trial: TrialRecord
   sessions: CourtSession[]
   deliberation?: DeliberationPack
@@ -38,7 +53,7 @@ export interface JurorDeskProps {
   inactive?: boolean
   fallbackReturnFocusSelector?: string
   onNotesChange: (notes: string) => void
-  prepareImport?: (text: string) => Promise<WeeklyProgress>
+  prepareImport?: (text: string) => Promise<PreparedProgressImport>
   onImport: (progress: WeeklyProgress) => void
   progressTransferEnabled?: boolean
   progressImportEnabled?: boolean
@@ -47,6 +62,7 @@ export interface JurorDeskProps {
 }
 
 export function JurorDesk({
+  caseTitle,
   trial,
   sessions,
   deliberation,
@@ -69,8 +85,12 @@ export function JurorDesk({
   onClose,
 }: JurorDeskProps) {
   const importInput = useRef<HTMLInputElement>(null)
+  const importButton = useRef<HTMLButtonElement>(null)
+  const previewHeading = useRef<HTMLHeadingElement>(null)
   const [includeNotes, setIncludeNotes] = useState(false)
   const [importError, setImportError] = useState<string | null>(null)
+  const [importBusy, setImportBusy] = useState(false)
+  const [candidate, setCandidate] = useState<PreparedProgressImport | null>(null)
   const observedCues = observedCourtCues(sessions, {
     cueId: currentCueId, authoredCueComplete: currentCueComplete,
   })
@@ -87,35 +107,99 @@ export function JurorDesk({
   const struckCount = evidenceLedger.filter(({ state }) => state === 'struck').length
   const reasoning = progress.reasoningContributions ?? []
 
+  useEffect(() => {
+    if (candidate) previewHeading.current?.focus()
+  }, [candidate])
+
+  const leavePreview = () => {
+    setCandidate(null)
+    setImportError(null)
+    window.setTimeout(() => importButton.current?.focus(), 0)
+  }
+
   const readImport = async (file: File | undefined) => {
     if (!file) return
+    if (file.size > MAX_PROGRESS_IMPORT_BYTES) {
+      setImportError('That file is too large. SimJury progress files must be 1 MB or smaller.')
+      if (importInput.current) importInput.current.value = ''
+      return
+    }
+    setImportBusy(true)
     try {
       const text = await file.text()
-      const imported = prepareImport
+      const prepared = prepareImport
         ? await prepareImport(text)
-        : importWeeklyProgress(
-            text,
-            progress.courtWeekId,
-            progress.revision,
-            deliberation,
-            sessions,
-          )
-      onImport(imported)
+        : (() => {
+            const imported = importWeeklyProgress(
+              text,
+              progress.courtWeekId,
+              progress.revision,
+              deliberation,
+              sessions,
+            )
+            return { progress: imported, sessions, commit: async () => imported }
+          })()
+      setCandidate(prepared)
       setImportError(null)
     } catch (error) {
       setImportError(error instanceof Error ? error.message : 'Progress could not be imported.')
+    } finally {
+      setImportBusy(false)
+      if (importInput.current) importInput.current.value = ''
     }
   }
 
-  const transferActions = progressTransferEnabled ? (
+  const confirmImport = async () => {
+    if (!candidate || importBusy) return
+    setImportBusy(true)
+    try {
+      onImport(await candidate.commit())
+      leavePreview()
+    } catch (error) {
+      setImportError(error instanceof Error ? error.message : 'Progress could not be imported.')
+    } finally {
+      setImportBusy(false)
+    }
+  }
+
+  const candidateProgress = candidate?.progress
+  const candidateSessions = candidate?.sessions ?? sessions
+  const completedDays = candidateProgress
+    ? candidateSessions.filter(({ id }) => candidateProgress.completedSessionIds.includes(id)).map(({ day }) => day)
+    : []
+  const currentSession = candidateProgress
+    ? candidateSessions.find(({ id }) => id === candidateProgress.currentSessionId)
+    : undefined
+  const currentScene = currentSession?.scenes.find(({ id }) => id === candidateProgress?.currentSceneId)
+  const phase = (currentScene?.phase ?? 'session').replace(/-/gu, ' ')
+  const currentPhase = candidateProgress?.completedSessionIds.length === candidateSessions.length
+    ? 'Court Week complete'
+    : currentSession
+      ? `${currentSession.day}: ${phase.charAt(0).toUpperCase()}${phase.slice(1)}${currentScene ? ` - ${currentScene.title}` : ''}`
+      : 'Not recorded'
+  const ballots: Array<[string, Verdict]> = []
+  if (candidateProgress?.provisionalVote) ballots.push(['Provisional', candidateProgress.provisionalVote])
+  if (candidateProgress?.secondVote) ballots.push(['Second', candidateProgress.secondVote])
+  if (candidateProgress?.finalVote) ballots.push(['Final', candidateProgress.finalVote])
+  const transferActions = progressTransferEnabled ? candidateProgress ? (
+    <div className="cw-desk__transfer-actions">
+      <div className="cw-button-row" role="group" aria-label="Import confirmation">
+        <button type="button" disabled={importBusy} onClick={leavePreview}>Cancel import</button>
+        <button type="button" disabled={importBusy} onClick={() => void confirmImport()}>
+          {importBusy ? 'Importing...' : 'Confirm import'}
+        </button>
+      </div>
+      {importError ? <p className="cw-error" role="alert">{importError}</p> : null}
+    </div>
+  ) : (
     <div className="cw-desk__transfer-actions">
       <div className="cw-button-row" role="group" aria-labelledby="cw-desk-transfer-heading">
         <button type="button" onClick={() => downloadWeeklyProgress(progress, includeNotes)}>
           Export progress
         </button>
         {!readOnly && progressImportEnabled ? (
-          <button type="button" onClick={() => importInput.current?.click()}>
-            Import progress
+          <button ref={importButton} type="button" disabled={importBusy} onClick={() => importInput.current?.click()}>
+            {importBusy ? 'Checking progress...' : 'Import progress'}
           </button>
         ) : null}
       </div>
@@ -126,15 +210,35 @@ export function JurorDesk({
   return (
     <CourtSheet
       className="cw-desk"
-      title="Your working papers"
-      kicker="Private juror desk"
+      title={candidateProgress ? 'Review imported progress' : 'Your working papers'}
+      kicker={candidateProgress ? 'Before anything changes' : 'Private juror desk'}
       headingId="cw-desk-heading"
-      closeLabel="Close juror desk"
+      closeLabel={candidateProgress ? 'Close import review' : 'Close juror desk'}
       inactive={inactive}
       fallbackReturnFocusSelector={fallbackReturnFocusSelector}
       footer={transferActions}
-      onClose={onClose}
+      onClose={candidateProgress ? leavePreview : onClose}
     >
+      {candidateProgress ? (
+        <section className="cw-desk__import-preview" aria-labelledby="cw-import-preview-heading">
+          <h3 id="cw-import-preview-heading" ref={previewHeading} tabIndex={-1}>Candidate summary</h3>
+          <p>Nothing changes on this device until you confirm this import.</p>
+          <dl>
+            <div><dt>Case</dt><dd>{caseTitle} ({candidateProgress.courtWeekId})</dd></div>
+            <div><dt>Revision</dt><dd>{candidateProgress.revision}</dd></div>
+            <div><dt>Completed days</dt><dd>{completedDays.join(', ') || 'None'}</dd></div>
+            <div><dt>Current phase</dt><dd>{currentPhase}</dd></div>
+            <div><dt>Ballots</dt><dd>{ballots.length
+              ? ballots.map(([label, verdict]) => `${label}: ${verdictLabels[verdict]}`).join('; ')
+              : 'None saved'}</dd></div>
+            <div><dt>Sealed result</dt><dd>{candidateProgress.sealedVerdict && candidateProgress.sealedAgreement
+              ? `${verdictLabels[candidateProgress.sealedVerdict]} - ${candidateProgress.sealedAgreement}`
+              : 'Not sealed'}</dd></div>
+            <div><dt>Reasoning trail</dt><dd>{candidateProgress.reasoningContributions?.length ?? 0} saved</dd></div>
+            <div><dt>Private notes</dt><dd>{candidateProgress.notes.length ? 'Included' : 'Not included'}</dd></div>
+          </dl>
+        </section>
+      ) : <>
       <section>
         <h3>Court week</h3>
         <p><strong>Current phase:</strong> {phaseLabels[activePhase]}</p>
@@ -277,6 +381,7 @@ export function JurorDesk({
           />
         ) : null}
       </section> : null}
+      </>}
     </CourtSheet>
   )
 }

@@ -56,7 +56,7 @@ export async function loadEligibleCourtPacks({
   })
 }
 
-/** Fetch and authenticate an already-authorised entry set; import preparation keeps it unpersisted. */
+/** Fetch and authenticate an authorised entry set; import may read cache without memoising or persisting. */
 export async function hydrateCourtPacks({
   bootstrap,
   entries,
@@ -64,6 +64,7 @@ export async function hydrateCourtPacks({
   fetcher = window.fetch.bind(window),
   persistOpened = false,
   readOpened = true,
+  memoizeOpened = true,
 }: {
   bootstrap: CourtWeekBootstrap
   entries: CourtWeekScheduleEntry[]
@@ -71,6 +72,7 @@ export async function hydrateCourtPacks({
   fetcher?: SealedPackFetcher
   persistOpened?: boolean
   readOpened?: boolean
+  memoizeOpened?: boolean
 }): Promise<CourtDayPack[]> {
   const packs: CourtDayPack[] = []
 
@@ -79,7 +81,7 @@ export async function hydrateCourtPacks({
       throw new Error('The requested session is not part of this Court Week revision.')
     }
     const cached = readOpened
-      ? await loadOpenedPack(bootstrap.id, bootstrap.revision, bootstrap.releaseTag, entry.ordinal)
+      ? await loadOpenedPack(bootstrap.id, bootstrap.revision, bootstrap.releaseTag, entry.ordinal, memoizeOpened)
       : null
     if (cached) {
       packs.push(cached)

@@ -66,6 +66,8 @@ describe('sealed progress import preparation', () => {
     expect(hydrate).toHaveBeenCalledWith(expect.objectContaining({
       entries: courtWeekBootstrap.sessions.slice(0, 2),
       persistOpened: false,
+      readOpened: true,
+      memoizeOpened: false,
     }))
     expect(prepared.packs.map(({ ordinal }) => ordinal)).toEqual([1, 2])
     expect(prepared.progress).toMatchObject({
@@ -115,6 +117,8 @@ describe('sealed progress import preparation', () => {
     expect(hydrate).toHaveBeenCalledWith(expect.objectContaining({
       entries: courtWeekBootstrap.sessions.slice(0, 1),
       persistOpened: false,
+      readOpened: true,
+      memoizeOpened: false,
     }))
     expect(prepared.packs.map(({ ordinal }) => ordinal)).toEqual([1])
     expect(prepared.progress).toMatchObject({
@@ -157,7 +161,11 @@ describe('sealed progress import preparation', () => {
       baseUrl: '/packs/',
       hydrate,
     })).rejects.toThrow(/impossible Court Week chronology/i)
-    expect(hydrate).toHaveBeenCalledWith(expect.objectContaining({ persistOpened: false }))
+    expect(hydrate).toHaveBeenCalledWith(expect.objectContaining({
+      persistOpened: false,
+      readOpened: true,
+      memoizeOpened: false,
+    }))
     await expect(loadOpenedPack(
       courtWeekBootstrap.id,
       courtWeekBootstrap.revision,

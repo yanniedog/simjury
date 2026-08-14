@@ -2,6 +2,7 @@ import { expect, test, type Download, type Locator, type Page } from '@playwrigh
 import { elevenMinutesDeliberation } from '../../src/courtweek/content/deliberation'
 import { elevenMinutesSessions } from '../../src/courtweek/content/sessions'
 import { courtWeekBootstrap } from '../../src/courtweek/sealed/bootstrap'
+import { exportWeeklyProgress, type StoredWeeklyProgress } from '../../src/courtweek/state/progress'
 import { seedRouteAvailable } from './court-week.progress-fixture'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
@@ -29,6 +30,20 @@ async function enterCourt(page: Page, routeAvailable = false) {
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await expect(page.getByText('Monday', { exact: false }).first()).toBeVisible()
   return prohibited
+}
+
+async function hasOpenedPack(page: Page, ordinal: number) {
+  const key = `${courtWeekBootstrap.id}:${courtWeekBootstrap.revision}:${courtWeekBootstrap.releaseTag}:${ordinal}`
+  return page.evaluate((packKey) => new Promise<boolean>((resolve, reject) => {
+    const open = indexedDB.open('simjury-court-week-sealed-v1', 1)
+    open.onerror = () => reject(open.error)
+    open.onsuccess = () => {
+      const database = open.result
+      const get = database.transaction('opened-packs', 'readonly').objectStore('opened-packs').get(packKey)
+      get.onerror = () => reject(get.error)
+      get.onsuccess = () => { database.close(); resolve(Boolean(get.result)) }
+    }
+  }), key)
 }
 
 async function swipeUp(page: Page, surface: Locator) {
@@ -385,6 +400,70 @@ test('the juror desk traps keyboard focus and restores its trigger', async ({ pa
   await page.keyboard.press('Escape')
   await expect(desk).toHaveCount(0)
   await expect(trigger).toBeFocused()
+})
+
+test('import stays read-only through preview and cancel, then commits from the keyboard', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'One narrow-browser proof complements the engine desk checks.')
+  await page.setViewportSize({ width: 320, height: 568 })
+  await enterCourt(page)
+  await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
+  const desk = page.getByRole('dialog')
+  await desk.getByLabel('Your private notes').fill('Keep this local draft.')
+  await desk.getByLabel('Include my private notes in the export').check()
+  const tuesday = elevenMinutesSessions[1]
+  const imported: StoredWeeklyProgress = {
+    schemaVersion: 'court-week-progress-v1', courtWeekId: courtWeekBootstrap.id,
+    revision: courtWeekBootstrap.revision, highestObservedTime: new Date(releaseNow).toISOString(),
+    completedSessionIds: [elevenMinutesSessions[0].id], currentSessionId: tuesday.id,
+    currentSceneId: tuesday.scenes[0].id, currentCueId: tuesday.scenes[0].cues[0].id,
+    notes: 'Transferred private note.', reasoningContributions: [], majorityDirectionReceived: false,
+  }
+  const selectImport = async () => {
+    const chooser = page.waitForEvent('filechooser')
+    await desk.getByRole('button', { name: 'Import progress' }).click()
+    await (await chooser).setFiles({
+      name: 'court-week.simjury-progress.json', mimeType: 'application/json',
+      buffer: Buffer.from(exportWeeklyProgress(imported, true)),
+    })
+  }
+
+  await selectImport()
+  await expect(desk).toHaveAccessibleName('Review imported progress')
+  await expect(desk.getByText('Eleven Minutes (cw-0001)', { exact: true })).toBeVisible()
+  await expect(desk.getByText(courtWeekBootstrap.revision, { exact: true })).toBeVisible()
+  await expect(desk.getByText('Monday', { exact: true })).toBeVisible()
+  await expect(desk.getByText(/Tuesday: .* - /)).toBeVisible()
+  await expect(desk.getByText('None saved', { exact: true })).toBeVisible()
+  await expect(desk.getByText('Not sealed', { exact: true })).toBeVisible()
+  await expect(desk.getByText('0 saved', { exact: true })).toBeVisible()
+  await expect(desk.getByText('Included', { exact: true })).toBeVisible()
+  await expect(desk.getByRole('heading', { name: 'Candidate summary' })).toBeFocused()
+  expect(await hasOpenedPack(page, 2)).toBe(false)
+
+  await page.setViewportSize({ width: 160, height: 284 })
+  const layout = await desk.evaluate((element) => ({ width: element.clientWidth, scrollWidth: element.scrollWidth }))
+  expect(layout.scrollWidth).toBeLessThanOrEqual(layout.width + 1)
+  for (const box of await desk.locator('button').evaluateAll((buttons) => buttons.map((button) => button.getBoundingClientRect()))) {
+    expect(box.width).toBeGreaterThanOrEqual(44)
+    expect(box.height).toBeGreaterThanOrEqual(44)
+  }
+  await page.keyboard.press('Escape')
+  await expect(desk).toHaveAccessibleName('Your working papers')
+  await expect(desk.getByLabel('Your private notes')).toHaveValue('Keep this local draft.')
+  await expect(desk.getByLabel('Include my private notes in the export')).toBeChecked()
+  await expect(desk.getByRole('button', { name: 'Import progress' })).toBeFocused()
+  expect(await hasOpenedPack(page, 2)).toBe(false)
+
+  await selectImport()
+  await expect(desk.getByRole('heading', { name: 'Candidate summary' })).toBeFocused()
+  await page.keyboard.press('Tab')
+  await expect(desk.getByRole('button', { name: 'Cancel import', exact: true })).toBeFocused()
+  await page.keyboard.press('Tab')
+  await expect(desk.getByRole('button', { name: 'Confirm import' })).toBeFocused()
+  await page.keyboard.press('Enter')
+  await expect(desk).toHaveAccessibleName('Your working papers')
+  await expect(desk.getByLabel('Your private notes')).toHaveValue('Transferred private note.')
+  await expect.poll(() => hasOpenedPack(page, 2)).toBe(true)
 })
 
 test.describe('device-sized admitted exhibit viewer', () => {
