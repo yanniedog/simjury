@@ -239,7 +239,8 @@ test('200% text enlargement keeps reading copy and every core control usable', a
   await page.addStyleTag({ content: 'html { font-size: 200% !important; }' })
 
   await expect(page.locator('.cw-reading-copy')).toBeVisible()
-  for (const name of ['Play', 'Repeat', 'Captions', 'Juror desk', 'Full screen', 'Continue']) {
+  await expect(page.getByLabel('Presentation mode')).toBeVisible()
+  for (const name of ['Play', 'Repeat', 'Juror desk', 'Full screen', 'Continue']) {
     const control = page.getByRole('button', { name, exact: true })
     if (await control.count()) {
       await control.scrollIntoViewIfNeeded()

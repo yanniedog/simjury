@@ -375,6 +375,7 @@ function DeveloperPreview({
   const [outcome, setOutcome] = useState<PreviewOutcome>('none')
   const [retry, setRetry] = useState(0)
   const [entered, setEntered] = useState(false)
+  const [accessResetKey, setAccessResetKey] = useState(0)
   const [drawerOpen, setDrawerOpen] = useState(() => (
     typeof matchMedia !== 'function' || !matchMedia('(max-width: 640px)').matches
   ))
@@ -450,7 +451,10 @@ function DeveloperPreview({
     setSelectedOrdinal(ordinal); setSceneId(''); setCueId(''); setEntered(false)
   }
   const resetEntry = () => setEntered(false)
-  const previewKey = [selectedOrdinal, selectedScene?.id, selectedCue?.id, accessMode, admissionState, ballot, outcome].join(':')
+  const changeAccessMode = (mode: AccessMode) => {
+    setAccessMode(mode); setAccessResetKey((value) => value + 1); resetEntry()
+  }
+  const previewKey = [selectedOrdinal, selectedScene?.id, selectedCue?.id, accessResetKey, admissionState, ballot, outcome].join(':')
   return (
     <div className="cw-test-harness cw-preview-harness" data-entered={entered ? 'true' : 'false'}>
       <details className="cw-developer-toolbar cw-preview-drawer" open={drawerOpen} onToggle={(event) => setDrawerOpen(event.currentTarget.open)}>
@@ -465,7 +469,7 @@ function DeveloperPreview({
           <label>Cue<select value={selectedCue?.id ?? ''} disabled={!selectedCue} onChange={(event) => {
             setCueId(event.target.value); resetEntry()
           }}>{selectedScene?.cues.map((cue) => <option key={cue.id} value={cue.id}>{cue.speaker}: {cue.id}</option>)}</select></label>
-          <label>Access<select value={accessMode} onChange={(event) => { setAccessMode(event.target.value as AccessMode); resetEntry() }}>
+          <label>Access<select value={accessMode} onChange={(event) => changeAccessMode(event.target.value as AccessMode)}>
             <option value="audio-first">Audio first</option><option value="captions">Captions</option><option value="reading">Reading</option>
           </select></label>
           <label>Admission<select value={admissionState} onChange={(event) => { setAdmissionState(event.target.value as PreviewAdmissionState); resetEntry() }}>
@@ -489,7 +493,8 @@ function DeveloperPreview({
       ) : <CourtWeekApp
         key={previewKey} courtWeek={courtWeek} now={() => DEVELOPER_PREVIEW_NOW} releaseBase={releaseBase}
         initialProgressOverride={previewProgress} ephemeral ephemeralAdvisory={DEVELOPER_PREVIEW_ADVISORY}
-        onEnteredChange={setEntered} testSession={{ selectedOrdinal, sessions: bootstrap.sessions, onSelect: changeDay, onLeave }}
+        onEnteredChange={setEntered} onAccessModeChange={setAccessMode}
+        testSession={{ selectedOrdinal, sessions: bootstrap.sessions, onSelect: changeDay, onLeave }}
       />}
     </div>
   )

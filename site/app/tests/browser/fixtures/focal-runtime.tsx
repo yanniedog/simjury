@@ -48,7 +48,7 @@ export function Fixture() {
     accessMode="captions" playbackStatus="paused" playbackError={null}
     progressLabel="Scene 1 of 3" deskOpen={false}
     onPlay={() => undefined} onPause={() => undefined} onRepeat={() => undefined}
-    onAdvance={() => undefined} onToggleCaptions={() => undefined} onToggleDesk={() => undefined}
+    onAdvance={() => undefined} onMode={() => undefined} onToggleDesk={() => undefined}
     onOpenTestSession={() => undefined}
   />
 }
