@@ -6,6 +6,8 @@ const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 const publicRoot = join(siteRoot, 'public')
 const home = readFileSync(join(publicRoot, 'index.html'), 'utf8')
 const privacy = readFileSync(join(publicRoot, 'privacy', 'index.html'), 'utf8')
+const llms = readFileSync(join(publicRoot, 'llms.txt'), 'utf8')
+const llmsFull = readFileSync(join(publicRoot, 'llms-full.txt'), 'utf8')
 const ready = readFileSync(join(publicRoot, 'ready.js'), 'utf8')
 const clarity = readFileSync(join(publicRoot, 'clarity.js'), 'utf8')
 const appShell = readFileSync(join(siteRoot, 'app', 'index.html'), 'utf8')
@@ -62,8 +64,19 @@ for (const text of [
   'There is no SimJury Worker, D1 database, Durable Object or gameplay API.',
   'There is no runtime generative AI, multiplayer room, chat, email waitlist or account.',
   'Microsoft Clarity is enabled by default',
-  'This can include which controls are used, including ballot controls.',
+  'including the timing and sequence of ballot-control interactions',
+  'It does not receive the ballot choice stored in IndexedDB',
 ]) requireText(privacy, text, `Privacy page must include: ${text}`)
+
+for (const text of [
+  'Default-on masked analytics may record interface use, including ballot-control interactions',
+  'not the choice stored in your ballot',
+]) requireText(home, text, `Landing page must include: ${text}`)
+
+for (const source of [llms, llmsFull]) {
+  requireText(source, 'client-side Microsoft Clarity', 'Machine-readable guides must disclose client-side Clarity')
+  requireText(source, 'ballot-control', 'Machine-readable guides must disclose ballot-control observation')
+}
 
 requireText(ready, 'simjury:fiction-disclosure:v2', 'Landing must retain the versioned adult-fiction gate')
 requireText(headers, 'Cache-Control: no-transform', 'Static responses must block transformations')

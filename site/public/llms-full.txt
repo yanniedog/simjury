@@ -32,7 +32,11 @@ required.
 
 The privacy page explains local IndexedDB state, explicit export/import, GitHub
 media-request metadata, Cloudflare static-delivery metadata, and the absence of
-accounts, analytics, runtime AI and backend player state.
+accounts, server-side analytics, runtime AI and backend player state. Masked
+client-side Microsoft Clarity analytics is enabled by default. It may observe
+control interaction, including ballot-control timing and sequence, but does not
+receive the stored ballot choice, progress, private notes or free-text reasoning.
+The privacy page provides a browser-local opt-out.
 
 ## Discovery and HTTP behavior
 
@@ -51,6 +55,9 @@ media is content-addressed and pinned to one explicit GitHub Release tag.
 Cloudflare serves Static Assets only: no Worker, Worker-first route, D1, Durable
 Object, KV, R2, Queue, AI, WebSocket, rate limiter, variable, observability or
 dynamic rendering. Progress, notes and ballots remain local.
+The sole analytics exception is the default-on, fully masked client-side Clarity
+tag disclosed above; advertising storage is denied and opting out clears its
+cookies and prevents the tag loading on later SimJury pages in that browser.
 
 ## Spoiler and publication boundary
 
