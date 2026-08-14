@@ -1,5 +1,6 @@
 import { expect, test, type Browser, type BrowserContext, type Locator, type Page } from '@playwright/test'
 import { elevenMinutesCourtWeek } from '../../src/courtweek/content/elevenMinutes'
+import { seedRouteAvailable } from './court-week.progress-fixture'
 
 const baseURL = 'http://127.0.0.1:43127'
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
@@ -19,14 +20,15 @@ interface ProgressPosition {
   currentCueId?: string
 }
 
-async function prepareCourt(page: Page) {
+async function prepareCourt(page: Page, routeAvailable = false) {
   await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
+  if (routeAvailable) await seedRouteAvailable(page, releaseNow)
   await page.goto('/')
   await expect(page.getByRole('button', { name: 'Take your seat' })).toBeVisible()
 }
 
-async function enterReadingCourt(page: Page) {
-  await prepareCourt(page)
+async function enterReadingCourt(page: Page, routeAvailable = false) {
+  await prepareCourt(page, routeAvailable)
   await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
@@ -145,7 +147,7 @@ test('presentation mode survives cues, the desk, narrow rotation and restoration
 
 test('forced colours retain labelled state, visible boundaries and legal position', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'Chromium provides Playwright forced-colours emulation.')
-  await enterReadingCourt(page)
+  await enterReadingCourt(page, true)
   const presentation = page.getByLabel('Presentation mode')
   await presentation.selectOption('captions')
   await presentation.focus()
@@ -456,7 +458,7 @@ test('touch, keyboard and mouse interoperate without moving the legal record', a
   const context = await browser.newContext({ baseURL, viewport: { width: 820, height: 900 }, hasTouch: true })
   const page = await context.newPage()
   try {
-    await prepareCourt(page)
+    await prepareCourt(page, true)
     await page.locator('.cw-entry__settings > summary').tap()
     await page.getByLabel('Reading mode').tap()
     await page.getByRole('button', { name: 'Take your seat' }).tap()

@@ -2,6 +2,7 @@ import { expect, test, type Download, type Locator, type Page } from '@playwrigh
 import { elevenMinutesDeliberation } from '../../src/courtweek/content/deliberation'
 import { elevenMinutesSessions } from '../../src/courtweek/content/sessions'
 import { courtWeekBootstrap } from '../../src/courtweek/sealed/bootstrap'
+import { seedRouteAvailable } from './court-week.progress-fixture'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 
@@ -12,8 +13,9 @@ async function downloadText(download: Download): Promise<string> {
   return Buffer.concat(chunks).toString('utf8')
 }
 
-async function enterCourt(page: Page) {
+async function enterCourt(page: Page, routeAvailable = false) {
   await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
+  if (routeAvailable) await seedRouteAvailable(page, releaseNow)
   const prohibited: string[] = []
   page.on('request', (request) => {
     const url = new URL(request.url())
@@ -341,7 +343,7 @@ test('does not request sealed packs or unlock chunks before court time', async (
 })
 
 test('core flow remains playable across browser engines', async ({ page }) => {
-  const prohibited = await enterCourt(page)
+  const prohibited = await enterCourt(page, true)
   await page.getByRole('button', { name: 'Juror desk' }).click()
   await expect(page.getByRole('dialog', { name: 'Your working papers' })).toBeVisible()
   await page.getByRole('button', { name: /Route diagram/i }).click()
@@ -396,7 +398,7 @@ test.describe('device-sized admitted exhibit viewer', () => {
     for (const zoom of [1, 2]) {
       test(`${device} at ${zoom * 100}% zoom`, async ({ page }) => {
         await page.setViewportSize({ width: Math.floor(width / zoom), height: Math.floor(height / zoom) })
-        const prohibited = await enterCourt(page)
+        const prohibited = await enterCourt(page, true)
         await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
         await page.getByRole('button', { name: /Route diagram/i }).click()
         const viewer = page.getByRole('dialog', { name: /Harbour route diagram/i })
@@ -409,7 +411,17 @@ test.describe('device-sized admitted exhibit viewer', () => {
         await expect(viewer.locator('.cw-evidence-document')).toHaveAttribute('style', /translate\(24px, 0px\) scale\(1\.2\)/)
         await viewer.getByRole('button', { name: 'Reset' }).click()
         await expect(viewer.locator('.cw-evidence-document')).toHaveAttribute('style', /translate\(0px, 0px\) scale\(1\)/)
-        await viewer.getByText('Evidence foundation').click()
+        const foundation = viewer.getByText('Evidence foundation')
+        await foundation.scrollIntoViewIfNeeded()
+        if (width === 320 && zoom === 2) {
+          await expect(foundation).toBeInViewport()
+          expect(await foundation.evaluate((summary) => {
+            const footer = summary.closest('.cw-sheet')?.querySelector('.cw-sheet__footer')
+            if (!footer) throw new Error('Evidence footer is missing.')
+            return footer.getBoundingClientRect().top - summary.getBoundingClientRect().bottom
+          })).toBeGreaterThanOrEqual(0)
+        }
+        await foundation.click()
         await expect(viewer.getByText(/Prepared from the service chart/)).toBeVisible()
         await expect(viewer.getByText('Not proof of visibility, sea state or survival time')).toBeVisible()
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
@@ -423,7 +435,7 @@ test.describe('device-sized admitted exhibit viewer', () => {
 test('exhibit viewer survives 200% phone reflow without clipping controls', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'Responsive geometry is exercised once.')
   await page.setViewportSize({ width: 160, height: 284 })
-  await enterCourt(page)
+  await enterCourt(page, true)
   await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
   await page.getByRole('button', { name: /Route diagram/i }).click()
   const viewer = page.getByRole('dialog', { name: /Harbour route diagram/i })
@@ -450,7 +462,7 @@ test('exhibit viewer survives 200% phone reflow without clipping controls', asyn
 })
 
 test('exhibit viewer traps focus and restores the exact inspection trigger', async ({ page }) => {
-  await enterCourt(page)
+  await enterCourt(page, true)
   await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
   const desk = page.getByRole('dialog', { name: 'Your working papers' })
   const trigger = desk
@@ -484,7 +496,7 @@ test('exhibit viewer traps focus and restores the exact inspection trigger', asy
 test('320x568 touch scrolling keeps migrated sheet actions fixed and nested ownership singular', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'Chromium exposes deterministic touch dispatch.')
   await page.setViewportSize({ width: 320, height: 568 })
-  await enterCourt(page)
+  await enterCourt(page, true)
   const deskTrigger = page.getByRole('button', { name: 'Juror desk', exact: true })
   await deskTrigger.click()
   const desk = page.getByRole('dialog', { name: 'Your working papers' })
@@ -553,17 +565,16 @@ async function seedTuesdayPosition(
   }), { instant: observedAt, currentSceneId, currentCueId, accessibilityMode })
 }
 
-test('recording replay stays sealed until its final admission has been heard', async ({ page, browserName }) => {
+test('recording inspection stays absent before it is put before the jury', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'The cue-level legal gate is exercised once.')
   await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
   await seedTuesdayPosition(page, 'tue-resume', 'tue-resume-1', 'reading')
   await page.goto('/')
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
-  await page.getByRole('button', { name: 'Distress recording' }).click()
-  const viewer = page.getByRole('dialog', { name: 'Distress recording' })
-  await expect(viewer.getByRole('button', { name: 'Replay admitted recording' })).toHaveCount(0)
-  await expect(viewer.getByText('Admitted recording', { exact: true })).toHaveCount(0)
+  const desk = page.getByRole('dialog', { name: 'Your working papers' })
+  await expect(desk.getByText('Distress recording')).toHaveCount(0)
+  await expect(desk.getByRole('button', { name: /Distress recording/i })).toHaveCount(0)
 })
 
 test('admitted recording replay keeps its legal direction, captions and compact-device controls together', async ({ page, browserName }) => {

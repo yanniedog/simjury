@@ -11,8 +11,8 @@ const viewports = [
 ] as const
 
 type CourtPosition = {
-  sceneId: 'mon-arrival' | 'mon-orr-chief'
-  cueId: 'mon-arrival-1' | 'mon-orr-chief-1'
+  sceneId: 'mon-arrival' | 'mon-orr-chief' | 'mon-elements'
+  cueId: 'mon-arrival-1' | 'mon-orr-chief-1' | 'mon-elements-1'
 }
 
 async function installDeterministicCourt(page: Page) {
@@ -83,7 +83,8 @@ async function enterCourt(page: Page, position: CourtPosition) {
   await expect(page.locator('.cw-shell')).toBeVisible()
   await expect(page.locator('.cw-reading-copy')).toBeVisible()
   await expect(page.locator('#cw-speaker-name')).toHaveText(
-    position.sceneId === 'mon-arrival' ? 'Court officer' : 'Nella Orr',
+    position.sceneId === 'mon-arrival' ? 'Court officer'
+      : position.sceneId === 'mon-elements' ? 'Judge Sel Aven' : 'Nella Orr',
   )
   await page.locator('.cw-stage__picture img').evaluate(async (image: HTMLImageElement) => {
     if (!image.complete) await new Promise((resolve) => image.addEventListener('load', resolve, { once: true }))
@@ -141,7 +142,7 @@ test.describe('Court Week visual contract', () => {
 
     test(`${viewport.name}: admitted evidence viewer`, async ({ page }) => {
       await page.setViewportSize(viewport)
-      await enterCourt(page, { sceneId: 'mon-orr-chief', cueId: 'mon-orr-chief-1' })
+      await enterCourt(page, { sceneId: 'mon-elements', cueId: 'mon-elements-1' })
       await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
       await page.getByRole('button', { name: /Route diagram/i }).click()
       const viewer = page.getByRole('dialog', { name: /Harbour route diagram/i })

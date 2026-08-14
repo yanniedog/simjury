@@ -17,6 +17,7 @@ import {
 } from '../content/captionPacing'
 import { attachCueTurns } from '../content/cueTurns'
 import { isReplaySuppressedCue, nextReplaySafeCue, replaySafeCue } from '../engine/replay'
+import { deriveEvidenceLedger } from '../engine/evidenceLedger'
 import { contributionStage } from '../model/deliberationContract'
 import { useCuePlayback } from '../media/useCuePlayback'
 import {
@@ -692,9 +693,16 @@ export function CourtWeekApp({
     playback.pause()
     setDeskOpen(true)
   }, [deskOpen, interactionOpen, playback])
+  const evidenceLedger = useMemo(() => deriveEvidenceLedger(
+    courtWeek.trial,
+    courtWeek.manifest.sessions,
+    { cueId: position.cue.id, authoredCueComplete: interactionOpen },
+  ), [courtWeek.manifest.sessions, courtWeek.trial, interactionOpen, position.cue.id])
   const evidence = useMemo(() => (
-    evidenceId ? courtWeek.trial.evidence.find((item) => item.id === evidenceId) : undefined
-  ), [courtWeek.trial.evidence, evidenceId])
+    evidenceId
+      ? evidenceLedger.find(({ evidence: item, state }) => item.id === evidenceId && state === 'admitted')?.evidence
+      : undefined
+  ), [evidenceId, evidenceLedger])
   const recordingReplayCues = useMemo(() => (
     evidence?.replaySourceCueId
       ? (() => {
@@ -1008,6 +1016,16 @@ export function CourtWeekApp({
           sessions={courtWeek.manifest.sessions}
           deliberation={courtWeek.deliberation.propositions ? courtWeek.deliberation : undefined}
           progress={progress}
+          activeSessionId={activeSession.id}
+          activePhase={position.scene.phase}
+          currentCueId={position.cue.id}
+          currentCueComplete={interactionOpen}
+          evidenceLedger={evidenceLedger}
+          saveStatus={isReplay ? 'Replay keeps saved work unchanged.'
+            : persistence === 'indexeddb' ? 'Stored privately on this device.'
+              : persistence === 'ephemeral' ? 'Test-session work is discarded when you leave.'
+                : persistence === 'pending' ? 'Checking device storage.'
+                  : 'Held in this tab only; export before leaving.'}
           progressTransferEnabled={!ephemeral}
           readOnly={isReplay}
           inactive={Boolean(evidence)}
