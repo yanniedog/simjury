@@ -4,13 +4,13 @@
   "revision": "2026.08.03-r2",
   "contentDigest": "sha256:bd30414ae04005e61961c82b81a4918f9aa17cfc82b2bb8a0f348392aef886cc",
   "signoffs": [
-    { "role": "prosecution", "decision": "approved" },
-    { "role": "defence", "decision": "approved" },
-    { "role": "judicial-neutrality", "decision": "approved" },
-    { "role": "accessibility", "decision": "approved" },
-    { "role": "sensitivity", "decision": "approved" },
-    { "role": "read-aloud", "decision": "approved" },
-    { "role": "blind-balance", "decision": "approved" },
-    { "role": "fixed-scope-criminal-law", "decision": "approved" }
+    { "role": "prosecution", "decision": "pending" },
+    { "role": "defence", "decision": "pending" },
+    { "role": "judicial-neutrality", "decision": "pending" },
+    { "role": "accessibility", "decision": "pending" },
+    { "role": "sensitivity", "decision": "pending" },
+    { "role": "read-aloud", "decision": "pending" },
+    { "role": "blind-balance", "decision": "pending" },
+    { "role": "fixed-scope-criminal-law", "decision": "pending" }
   ]
 }

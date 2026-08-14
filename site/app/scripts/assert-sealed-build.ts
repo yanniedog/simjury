@@ -32,9 +32,9 @@ const guardedSourceFiles = [
   ...filesBelow(join(appRoot, 'scripts')),
   ...filesBelow(join(appRoot, 'src')),
   ...filesBelow(join(appRoot, 'tests')),
-  resolve(appRoot, '..', 'public', 'llms.txt'),
+  ...filesBelow(resolve(appRoot, '..', 'public')),
 ]
-  .filter((file) => /\.(?:json|ts|tsx|txt)$/u.test(file))
+  .filter((file) => /\.(?:css|html|js|json|ts|tsx|txt|xml)$/u.test(file))
 
 function assertNoRetiredDurationContract(label: string, text: string): void {
   for (const marker of retiredDurationMarkers) {
