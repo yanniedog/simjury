@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 import { fileURLToPath } from 'node:url'
+import { openProgressSeedDocument } from './court-week.progress-fixture'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 const screenshotStyle = fileURLToPath(new URL('./court-week.visual.css', import.meta.url))
@@ -40,7 +41,7 @@ async function installDeterministicCourt(page: Page) {
 }
 
 async function seedPosition(page: Page, position: CourtPosition) {
-  await page.goto('/robots.txt')
+  await openProgressSeedDocument(page)
   await page.evaluate(async ({ instant, sceneId, cueId }) => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open('simjury-court-week-v1')
     request.onerror = () => reject(request.error)

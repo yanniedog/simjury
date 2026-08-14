@@ -1,5 +1,6 @@
 import { expect, test, type Download, type Page } from '@playwright/test'
 import { PROGRESS_DATABASE } from '../../src/courtweek/state/progress'
+import { openProgressSeedDocument } from './court-week.progress-fixture'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 
@@ -98,11 +99,7 @@ test('a blocked v1 upgrade cannot expose or overwrite an empty baseline', async 
     notes: 'Saved before the storage upgrade.', reasoningContributions: [],
     majorityDirectionReceived: false,
   }
-  await page.route('**/robots.txt', (route) => route.fulfill({
-    contentType: 'text/html',
-    body: '<!doctype html><title>Legacy storage holder</title>',
-  }))
-  await page.goto('/robots.txt')
+  await openProgressSeedDocument(page)
   await page.evaluate(async ({ name, store, record }) => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open(name, 1)
     request.onerror = () => reject(request.error)
@@ -161,7 +158,7 @@ test('a prior revision is archived while the revised trial starts without its ba
     returnedAgreement: 'hung',
     reasoningContributions: [],
   }
-  await page.goto('/robots.txt')
+  await openProgressSeedDocument(page)
   await page.evaluate(async ({ contract, archivedProgress }) => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open(contract.name, contract.version)
     request.onerror = () => reject(request.error)
@@ -233,7 +230,7 @@ test('a newer same-revision legacy record prevents rollback to its composite cop
     notes: 'Older composite note.',
   }
   const newer = { ...older, highestObservedTime: '2026-08-16T09:00:00+10:00', notes: 'Newer legacy note.' }
-  await page.goto('/robots.txt')
+  await openProgressSeedDocument(page)
   await page.evaluate(async ({ contract, olderRecord, newerRecord }) => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open(contract.name, contract.version)
     request.onerror = () => reject(request.error)
@@ -259,7 +256,7 @@ test('corrupt current progress is disclosed while its valid archive remains expo
     schemaVersion: 'court-week-progress-v1', courtWeekId: 'cw-0001', revision: '2026.08.03-r1',
     highestObservedTime: '2026-08-15T09:00:00+10:00', completedSessionIds: [], notes: 'Recoverable archive.',
   }
-  await page.goto('/robots.txt')
+  await openProgressSeedDocument(page)
   await page.evaluate(async ({ contract, archivedProgress }) => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open(contract.name, contract.version)
     request.onerror = () => reject(request.error)
