@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
 import { splitCueTurns } from '../src/courtweek/content/cueTurns'
 import type { CourtWeek } from '../src/courtweek/model/schema'
+import { GOOGLE_CHIRP3_INVENTORY_DIGEST } from './court-week-chirp-source'
 export const PERFORMANCE_MANIFEST_SCHEMA = 'simjury.court-week-performance/v1' as const
 const digestSchema = z.string().regex(/^sha256:[0-9a-f]{64}$/u)
 const httpsUrl = z.string().url().refine((value) => value.startsWith('https://'), 'HTTPS is required')
@@ -130,7 +131,7 @@ export const CANONICAL_PERFORMANCE_IDENTITIES = [
   { id: 'yara-merrow', speakerLabels: ['Yara Merrow'], castingBrief: 'Quiet analytical confidence and operational precision.' },
 ] as const
 const providers: CourtWeekPerformanceManifest['providers'] = [
-  { id: 'google-chirp3-hd-en-au', label: 'Google Cloud Chirp 3 HD en-AU', delivery: 'managed-batch-api', configuration: 'One-off stock-voice synthesis only; no runtime dependency or automatic retry', serviceModel: 'Chirp 3: HD voices', documentationUrl: 'https://docs.cloud.google.com/text-to-speech/docs/chirp3-hd', pricingUrl: 'https://cloud.google.com/text-to-speech/pricing', voiceInventory: { locale: 'en-AU', count: 30, status: 'pending', inventorySha256: null } },
+  { id: 'google-chirp3-hd-en-au', label: 'Google Cloud Chirp 3 HD en-AU', delivery: 'managed-batch-api', configuration: 'One-off stock-voice synthesis only; no runtime dependency or automatic retry', serviceModel: 'Chirp 3: HD voices', documentationUrl: 'https://docs.cloud.google.com/text-to-speech/docs/chirp3-hd', pricingUrl: 'https://cloud.google.com/text-to-speech/pricing', voiceInventory: { locale: 'en-AU', count: 30, status: 'verified', inventorySha256: GOOGLE_CHIRP3_INVENTORY_DIGEST } },
   { id: 'chatterbox-v3', label: 'Chatterbox Multilingual V3', delivery: 'offline-model', configuration: 'English with consented Australian reference; t3_model=v3', components: [
     { kind: 'engine', name: 'Chatterbox', repository: 'https://github.com/resemble-ai/chatterbox', revision: '5de7a54aa4e5e2baadb0182dde554908b48b85c2', selector: 'ChatterboxMultilingualTTS', licenseSpdx: 'MIT', licenseUrl: 'https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/LICENSE', acquisition: 'pending', artifactInventorySha256: null },
     { kind: 'model', name: 'Chatterbox V3 weights', repository: 'https://huggingface.co/ResembleAI/chatterbox', revision: '5bb1f6ee58e50c3b8d408bc82a6d3740c2db6e18', selector: 't3_mtl23ls_v3.safetensors', licenseSpdx: 'MIT', licenseUrl: 'https://huggingface.co/ResembleAI/chatterbox/blob/5bb1f6ee58e50c3b8d408bc82a6d3740c2db6e18/README.md', acquisition: 'pending', artifactInventorySha256: null },
