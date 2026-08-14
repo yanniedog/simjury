@@ -346,9 +346,12 @@ describe('SealedCourtWeekApp', () => {
     />))
     await vi.waitFor(() => expect(container.textContent).toContain('Take your seat'))
     const click = async (label: string) => {
-      const button = Array.from(container.querySelectorAll('button')).find(
+      const exact = Array.from(container.querySelectorAll('button')).find(
         (candidate) => candidate.textContent?.trim() === label,
       )
+      const button = exact ?? (label === 'Take your seat'
+        ? container.querySelector<HTMLButtonElement>('.cw-entry__primary')
+        : null)
       if (!button) throw new Error(`Button not found: ${label}`)
       await act(async () => button.click())
     }
