@@ -106,7 +106,7 @@ const modeAuthority: Readonly<Record<SpeechMode, readonly ActorRole[]>> = {
   'reported-testimony': ['witness'],
   'recording-playback': ['recorded-participant', 'accused', 'witness', 'recording'],
   advocacy: ['counsel'], 'judicial-direction': ['judge'],
-  'written-text-read': ['judge', 'clerk', 'counsel', 'witness', 'document'],
+  'written-text-read': ['judge', 'clerk', 'counsel', 'witness', 'juror', 'document'],
   narration: ['narrator', 'document'],
   'system-template': ['narrator', 'document'],
 }
