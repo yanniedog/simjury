@@ -159,13 +159,12 @@ function archivedProgress(
 
 export function openProgressDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    let blocked = false
     const request = indexedDB.open(PROGRESS_DATABASE.name, PROGRESS_DATABASE.version)
     request.onerror = () => reject(request.error)
-    request.onblocked = () => {
-      blocked = true
-      reject(new Error('Another SimJury tab is blocking the private-storage upgrade.'))
-    }
+    // A pre-upgrade tab can temporarily hold the v1 connection open. Keep
+    // hydration pending until that tab releases it; falling back to an empty
+    // memory record here could later overwrite the genuine saved progress.
+    request.onblocked = () => undefined
     request.onupgradeneeded = () => {
       if (!request.result.objectStoreNames.contains(PROGRESS_DATABASE.store)) {
         request.result.createObjectStore(PROGRESS_DATABASE.store)
@@ -175,10 +174,6 @@ export function openProgressDatabase(): Promise<IDBDatabase> {
       }
     }
     request.onsuccess = () => {
-      if (blocked) {
-        request.result.close()
-        return
-      }
       request.result.onversionchange = () => request.result.close()
       resolve(request.result)
     }
