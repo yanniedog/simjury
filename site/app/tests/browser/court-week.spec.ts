@@ -490,7 +490,7 @@ async function seedTuesdayPosition(
         accessibilityMode,
         reasoningContributions: [],
         majorityDirectionReceived: false,
-      }, 'cw-0001')
+      }, ['cw-0001', '2026.08.03-r2'])
     }
   }), { instant: releaseNow, currentSceneId, currentCueId, accessibilityMode })
 }
@@ -827,7 +827,7 @@ async function readStoredProgress(page: Page) {
     request.onsuccess = () => {
       const database = request.result
       const transaction = database.transaction('progress', 'readonly')
-      const get = transaction.objectStore('progress').get('cw-0001')
+      const get = transaction.objectStore('progress').get(['cw-0001', '2026.08.03-r2'])
       get.onerror = () => reject(get.error)
       get.onsuccess = () => {
         database.close()
@@ -905,7 +905,7 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
         sealedVerdict: 'not-guilty',
         sealedAgreement: 'unanimous',
         openCourtVerdictReturned: false,
-      }, 'cw-0001')
+      }, ['cw-0001', '2026.08.03-r2'])
     }
   }), releaseNow)
   await page.goto('/')

@@ -70,7 +70,7 @@ async function seedPosition(page: Page, position: CourtPosition) {
         reasoningContributions: [],
         majorityDirectionReceived: false,
         accessibilityMode: 'reading',
-      }, 'cw-0001')
+      }, ['cw-0001', '2026.08.03-r2'])
     }
   }), { instant: releaseNow, ...position })
 }

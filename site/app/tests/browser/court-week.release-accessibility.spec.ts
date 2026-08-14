@@ -48,7 +48,7 @@ async function seedProgress(page: Page, position: Record<string, unknown>) {
         accessibilityMode: 'reading',
         majorityDirectionReceived: false,
         ...seededPosition,
-      }, 'cw-0001')
+      }, ['cw-0001', '2026.08.03-r2'])
     }
   }), { instant: releaseNow, seededPosition: position })
 }
@@ -109,7 +109,7 @@ test('caption assistive copy exposes the complete visible cue exactly once', asy
         reasoningContributions: [],
         accessibilityMode: 'captions',
         majorityDirectionReceived: false,
-      }, 'cw-0001')
+      }, ['cw-0001', '2026.08.03-r2'])
     }
   }))
   await page.goto('/')

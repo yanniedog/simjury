@@ -95,7 +95,7 @@ function improperBasisToken(index: number): string {
 function persistenceNotice(issue: PersistenceIssue): string | null {
   switch (issue) {
     case 'corrupt': return 'Saved progress is damaged and could not be recovered. A new session has started; export it if you need a separate copy.'
-    case 'revision-mismatch': return 'Saved progress belongs to a different case revision and was not loaded. A new session has started.'
+    case 'revision-mismatch': return 'A previous record belongs to an earlier case revision. This revised trial has started cleanly; no ballot or evidentiary conclusion was carried forward. Review or export the archived record below.'
     case 'unavailable': return 'Device storage is unavailable. Progress is held in this tab; export it before leaving.'
     case 'save-failed': return 'Device storage could not save progress. Progress is held in this tab; export it before leaving.'
     case null: return null
@@ -141,6 +141,7 @@ function CourtWeekEntry({
   canEnter,
   availabilityNote,
   busy,
+  archivedProgress,
 }: {
   title: string
   advisory: string
@@ -155,8 +156,10 @@ function CourtWeekEntry({
   canEnter: boolean
   availabilityNote?: string
   busy: boolean
+  archivedProgress: StoredWeeklyProgress[]
 }) {
   const [fullscreen, setFullscreen] = useState(false)
+  const [includeArchiveNotes, setIncludeArchiveNotes] = useState(false)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const enterButtonRef = useRef<HTMLButtonElement>(null)
   const settingsSummaryRef = useRef<HTMLElement>(null)
@@ -255,6 +258,32 @@ function CourtWeekEntry({
             ) : null}
           </div>
         </details>
+        {archivedProgress.length > 0 ? (
+          <details className="cw-entry__settings cw-entry__archives">
+            <summary><span>Previous trial records</span><small>{archivedProgress.length}</small></summary>
+            <div className="cw-entry__settings-body">
+              <p>These records remain separate from this revision. Their ballots and evidentiary conclusions are available only in an explicit archive export.</p>
+              <label className="cw-entry__archive-notes">
+                <input
+                  type="checkbox"
+                  checked={includeArchiveNotes}
+                  onChange={(event) => setIncludeArchiveNotes(event.target.checked)}
+                />
+                Include private notes in archive exports
+              </label>
+              <ul className="cw-entry__archive-list">
+                {archivedProgress.map((archived) => (
+                  <li key={archived.revision}>
+                    <span><strong>Case revision {archived.revision}</strong><small>{archived.completedSessionIds.length} sessions completed</small></span>
+                    <button type="button" onClick={() => downloadWeeklyProgress(archived, includeArchiveNotes)}>
+                      Export revision {archived.revision}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </details>
+        ) : null}
         <p className="cw-entry__privacy">
           {ephemeral
             ? 'Temporary progress and private notes are discarded when you switch sessions or leave this session.'
@@ -338,7 +367,7 @@ export function CourtWeekApp({
     () => initialProgressOverride ?? initialProgress(courtWeek, now()),
     [courtWeek, initialProgressOverride, now],
   )
-  const { progress, hydrated, persistence, persistenceIssue, updateProgress } = useWeeklyProgress(
+  const { progress, archivedProgress, hydrated, persistence, persistenceIssue, updateProgress } = useWeeklyProgress(
     baseline,
     { ephemeral },
   )
@@ -660,6 +689,7 @@ export function CourtWeekApp({
         localProfile={localProfile}
         canEnter={!entryBusy && Boolean(activeAvailability?.ready || progress.completedSessionIds.includes(activeSession.id))}
         busy={entryBusy}
+        archivedProgress={archivedProgress}
         availabilityNote={entryBusy
           ? 'Opening today’s court session…'
           : !activeAvailability?.ready && !progress.completedSessionIds.includes(activeSession.id)

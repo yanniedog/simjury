@@ -222,7 +222,7 @@ function StandardSealedCourtWeekApp({
 
   useEffect(() => {
     let active = true
-    void loadWeeklyProgress(bootstrap.id).then((stored) => {
+    void loadWeeklyProgress(bootstrap.id, bootstrap.revision).then((stored) => {
       if (!active) return
       setProgress(stored?.revision === bootstrap.revision
         ? stored
