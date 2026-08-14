@@ -25,6 +25,7 @@ export interface ImmersiveCourtShellProps {
   playbackStatus: PlaybackStatus
   playbackError: string | null
   progressLabel: string
+  advanceLabel?: string
   deskOpen: boolean
   overlay?: ReactNode
   onPlay: () => void
@@ -73,6 +74,7 @@ export function ImmersiveCourtShell({
   playbackStatus,
   playbackError,
   progressLabel,
+  advanceLabel = 'Read the next court step',
   deskOpen,
   overlay,
   onPlay,
@@ -369,7 +371,7 @@ export function ImmersiveCourtShell({
               className="cw-controls__advance"
               onClick={(event) => onAdvance(event.currentTarget)}
             >
-              Continue
+              {advanceLabel}
             </button>
           ) : null}
         </nav>

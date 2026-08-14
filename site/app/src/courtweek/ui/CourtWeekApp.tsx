@@ -45,6 +45,7 @@ import { ImmersiveCourtShell } from './ImmersiveCourtShell'
 import { JurorDesk } from './JurorDesk'
 import { LocalProfilePanel } from './LocalProfilePanel'
 import { useModalFocusBoundary } from './useModalFocusBoundary'
+import { courtEventAction, interactionOpenAction, interactionPrimaryAction } from './proceduralActions'
 import '../courtweek.css'
 
 export interface CourtWeekAppProps {
@@ -842,6 +843,21 @@ export function CourtWeekApp({
     `https://github.com/yanniedog/simjury/releases/download/${encodeURIComponent(courtWeek.manifest.releaseTag)}`
   const sceneCount = activeSession.scenes.length
   const progressLabel = `Scene ${position.sceneIndex + 1} of ${sceneCount}`
+  const advanceTargetCue = accessMode === 'reading'
+    ? nextAuthoredCue(position.scene.cues, position.cueIndex, isReplay ? isReplaySuppressedCue : () => false)
+    : nextReplaySafeCue(position.scene.cues, position.cueIndex, isReplay)
+  const nextScene = activeSession.scenes[position.sceneIndex + 1]
+  const advanceLabel = advanceTargetCue
+    ? courtEventAction(advanceTargetCue.event)
+    : position.scene.interaction?.kind && position.scene.interaction.kind !== 'observe'
+      ? interactionOpenAction(position.scene.interaction.kind)
+      : nextScene?.cues[0]
+        ? courtEventAction(nextScene.cues[0].event)
+        : isReplay
+          ? 'End replay'
+          : activeSession.ordinal === courtWeek.manifest.sessions.length
+            ? 'Complete Court Week'
+            : `Finish ${activeSession.day} session`
   const firstBallot = firstBallotForScene(
     courtWeek.deliberation, position.scene.id, progress.provisionalVote,
   )
@@ -1182,18 +1198,19 @@ export function CourtWeekApp({
           }
           onClick={() => finishInteraction()}
         >
-          {isReplay ? 'Continue replay'
-            : ballotSealed
-            ? (progress.secondBallotWasUnanimous ? 'Return to court' : 'Continue deliberation')
-            : interaction.kind === 'final-vote' ? 'Seal final ballot'
-              : isVote ? 'Seal ballot' : 'Continue proceedings'}
+          {interactionPrimaryAction({
+            kind: interaction.kind,
+            replay: isReplay,
+            ballotSealed,
+            secondBallotWasUnanimous: progress.secondBallotWasUnanimous ?? false,
+          })}
         </button>
         {!isReplay && interaction.kind === 'reasoning' && interaction.optional ? (
           <button
             type="button"
             onClick={() => finishInteraction(true)}
           >
-            Continue without contributing
+            Skip this contribution
           </button>
         ) : null}
       </MandatoryInteractionDialog>
@@ -1213,6 +1230,7 @@ export function CourtWeekApp({
         persistence === 'memory' ? 'Progress is held in this tab. Export it before leaving.' : null
       )].filter(Boolean).join(' ') || null}
       progressLabel={progressLabel}
+      advanceLabel={advanceLabel}
       deskOpen={deskOpen}
       overlay={overlay}
       onPlay={() => {

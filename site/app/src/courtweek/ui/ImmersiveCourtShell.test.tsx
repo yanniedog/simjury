@@ -144,7 +144,7 @@ describe('ImmersiveCourtShell', () => {
     expect(markup).toContain('cw-reading-copy')
     expect(markup).not.toContain('class="cw-captions"')
     expect(markup).toContain('aria-live="off"')
-    expect(markup).toContain('Continue')
+    expect(markup).toContain('Read the next court step')
   })
 
   it('hides the shell Continue control while a mandatory overlay owns advancement', () => {
