@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 import { elevenMinutesSessions } from '../../src/courtweek/content/sessions'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
@@ -18,6 +18,25 @@ async function enterCourt(page: Page) {
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await expect(page.getByText('Monday', { exact: false }).first()).toBeVisible()
   return prohibited
+}
+
+async function swipeUp(page: Page, surface: Locator) {
+  const box = await surface.boundingBox()
+  expect(box).not.toBeNull()
+  const session = await page.context().newCDPSession(page)
+  await session.send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 1 })
+  const x = Math.round(box!.x + box!.width / 2)
+  const startY = Math.round(box!.y + box!.height * .8)
+  const endY = Math.round(box!.y + box!.height * .2)
+  await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: startY }] })
+  for (let step = 1; step <= 5; step += 1) {
+    await session.send('Input.dispatchTouchEvent', {
+      type: 'touchMove',
+      touchPoints: [{ x, y: Math.round(startY + (endY - startY) * step / 5) }],
+    })
+  }
+  await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  await session.detach()
 }
 
 const viewports = [
@@ -348,7 +367,7 @@ test('exhibit viewer traps focus and restores the exact inspection trigger', asy
   await page.keyboard.press('Enter')
   const viewer = page.getByRole('dialog', { name: /Harbour route diagram/i })
   const close = viewer.getByRole('button', { name: 'Close exhibit' })
-  const lastFocusable = viewer.getByText('Evidence foundation')
+  const lastFocusable = viewer.getByRole('button', { name: 'Reset' })
   await expect(close).toBeFocused()
   await expect(page.locator('.cw-desk')).toHaveAttribute('inert', '')
 
@@ -365,6 +384,43 @@ test('exhibit viewer traps focus and restores the exact inspection trigger', asy
   await page.keyboard.press('Enter')
   await expect(viewer).toBeVisible()
   await expect(close).toBeFocused()
+})
+
+test('320x568 touch scrolling keeps migrated sheet actions fixed and nested ownership singular', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Chromium exposes deterministic touch dispatch.')
+  await page.setViewportSize({ width: 320, height: 568 })
+  await enterCourt(page)
+  const deskTrigger = page.getByRole('button', { name: 'Juror desk', exact: true })
+  await deskTrigger.click()
+  const desk = page.getByRole('dialog', { name: 'Your working papers' })
+  const deskBody = desk.locator('.cw-sheet__body')
+  const deskHeader = desk.locator('.cw-sheet__header')
+  const deskFooter = desk.locator('.cw-sheet__footer')
+  const deskChrome = await Promise.all([deskHeader.boundingBox(), deskFooter.boundingBox()])
+  await swipeUp(page, deskBody)
+  await expect.poll(() => deskBody.evaluate((element) => element.scrollTop)).toBeGreaterThan(0)
+  expect((await deskHeader.boundingBox())?.y).toBeCloseTo(deskChrome[0]!.y, 0)
+  expect((await deskFooter.boundingBox())?.y).toBeCloseTo(deskChrome[1]!.y, 0)
+
+  const route = desk.getByRole('button', { name: /Route diagram/i })
+  await route.click()
+  const viewer = page.getByRole('dialog', { name: /Harbour route diagram/i })
+  const deskSurface = page.locator('.cw-desk')
+  await expect(deskSurface).toHaveAttribute('inert', '')
+  const viewerBody = viewer.locator('.cw-sheet__body')
+  const viewerHeader = viewer.locator('.cw-sheet__header')
+  const viewerFooter = viewer.locator('.cw-sheet__footer')
+  const viewerChrome = await Promise.all([viewerHeader.boundingBox(), viewerFooter.boundingBox()])
+  await swipeUp(page, viewerBody)
+  await expect.poll(() => viewerBody.evaluate((element) => element.scrollTop)).toBeGreaterThan(0)
+  expect((await viewerHeader.boundingBox())?.y).toBeCloseTo(viewerChrome[0]!.y, 0)
+  expect((await viewerFooter.boundingBox())?.y).toBeCloseTo(viewerChrome[1]!.y, 0)
+  await page.keyboard.press('Escape')
+  await expect(deskSurface).not.toHaveAttribute('inert', '')
+  await expect(route).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(deskTrigger).toBeFocused()
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1)
 })
 
 async function seedTuesdayPosition(

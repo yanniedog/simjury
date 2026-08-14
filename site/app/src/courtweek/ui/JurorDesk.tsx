@@ -1,19 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import type { CourtSession, DeliberationPack, TrialRecord, WeeklyProgress } from '../model/schema'
 import {
   downloadWeeklyProgress,
   importWeeklyProgress,
 } from '../state/progress'
-
-const focusableSelector = [
-  'a[href]',
-  'button:not([disabled])',
-  'input:not([disabled]):not([tabindex="-1"])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  'summary',
-  '[tabindex]:not([tabindex="-1"])',
-].join(',')
+import { CourtSheet } from './CourtSheet'
 
 export interface JurorDeskProps {
   trial: TrialRecord
@@ -45,77 +36,8 @@ export function JurorDesk({
   onClose,
 }: JurorDeskProps) {
   const importInput = useRef<HTMLInputElement>(null)
-  const desk = useRef<HTMLElement>(null)
-  const onCloseRef = useRef(onClose)
-  const returnFocusTo = useRef<HTMLElement | null>(null)
   const [includeNotes, setIncludeNotes] = useState(false)
   const [importError, setImportError] = useState<string | null>(null)
-  onCloseRef.current = onClose
-
-  const closeDesk = useCallback(() => {
-    const target = returnFocusTo.current
-    onCloseRef.current()
-    queueMicrotask(() => {
-      if (target?.isConnected) target.focus()
-    })
-  }, [])
-
-  useEffect(() => {
-    const root = desk.current
-    if (!root) return
-    const active = document.activeElement
-    if (!returnFocusTo.current && active instanceof HTMLElement && !root.contains(active)) {
-      returnFocusTo.current = active
-    }
-    root.querySelector<HTMLElement>(focusableSelector)?.focus()
-    return () => {
-      queueMicrotask(() => {
-        if (!root.isConnected && returnFocusTo.current?.isConnected) {
-          returnFocusTo.current.focus()
-        }
-      })
-    }
-  }, [])
-
-  useEffect(() => {
-    const root = desk.current
-    if (!root || inactive) return
-    const focusable = () => Array.from(root.querySelectorAll<HTMLElement>(focusableSelector))
-      .filter((element) => !element.hasAttribute('disabled') && element.getAttribute('aria-hidden') !== 'true')
-    const keepFocusInDialog = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.preventDefault()
-        event.stopPropagation()
-        closeDesk()
-        return
-      }
-      if (event.key !== 'Tab') return
-
-      const available = focusable()
-      const first = available[0]
-      const last = available.at(-1)
-      if (!first || !last) {
-        event.preventDefault()
-        root.focus()
-        return
-      }
-      const active = document.activeElement
-      if (event.shiftKey && (active === first || !root.contains(active))) {
-        event.preventDefault()
-        last.focus()
-      } else if (!event.shiftKey && (active === last || !root.contains(active))) {
-        event.preventDefault()
-        first.focus()
-      }
-    }
-    document.addEventListener('keydown', keepFocusInDialog)
-    return () => document.removeEventListener('keydown', keepFocusInDialog)
-  }, [closeDesk, inactive])
-
-  useEffect(() => {
-    if (inactive) desk.current?.setAttribute('inert', '')
-    else desk.current?.removeAttribute('inert')
-  }, [inactive])
 
   const readImport = async (file: File | undefined) => {
     if (!file) return
@@ -137,23 +59,30 @@ export function JurorDesk({
     }
   }
 
-  return (
-    <aside
-      ref={desk}
-      className="cw-desk"
-      role="dialog"
-      aria-modal={inactive ? undefined : 'true'}
-      aria-labelledby="cw-desk-heading"
-      tabIndex={-1}
-    >
-      <header className="cw-modal__header">
-        <div>
-          <p className="cw-kicker">Private juror desk</p>
-          <h2 id="cw-desk-heading">Your working papers</h2>
-        </div>
-        <button type="button" onClick={closeDesk} aria-label="Close juror desk">Close</button>
-      </header>
+  const transferActions = progressTransferEnabled ? (
+    <div className="cw-button-row" role="group" aria-labelledby="cw-desk-transfer-heading">
+      <button type="button" onClick={() => downloadWeeklyProgress(progress, includeNotes)}>
+        Export progress
+      </button>
+      {!readOnly ? (
+        <button type="button" onClick={() => importInput.current?.click()}>
+          Import progress
+        </button>
+      ) : null}
+    </div>
+  ) : undefined
 
+  return (
+    <CourtSheet
+      className="cw-desk"
+      title="Your working papers"
+      kicker="Private juror desk"
+      headingId="cw-desk-heading"
+      closeLabel="Close juror desk"
+      inactive={inactive}
+      footer={transferActions}
+      onClose={onClose}
+    >
       <section>
         <h3>The charge</h3>
         <p>{trial.charge}. Plea: {trial.plea}.</p>
@@ -205,7 +134,7 @@ export function JurorDesk({
       </section>
 
       {progressTransferEnabled ? <section className="cw-desk__transfer">
-        <h3>Move progress between devices</h3>
+        <h3 id="cw-desk-transfer-heading">Move progress between devices</h3>
         {readOnly ? (
           <p>Import is unavailable during replay so sealed ballots stay intact. Export remains available.</p>
         ) : null}
@@ -217,16 +146,6 @@ export function JurorDesk({
           />
           Include my private notes in the export
         </label>
-        <div className="cw-button-row">
-          <button type="button" onClick={() => downloadWeeklyProgress(progress, includeNotes)}>
-            Export progress
-          </button>
-          {!readOnly ? (
-            <button type="button" onClick={() => importInput.current?.click()}>
-              Import progress
-            </button>
-          ) : null}
-        </div>
         {!readOnly ? (
           <input
             ref={importInput}
@@ -239,6 +158,6 @@ export function JurorDesk({
         ) : null}
         {importError ? <p className="cw-error" role="alert">{importError}</p> : null}
       </section> : null}
-    </aside>
+    </CourtSheet>
   )
 }
