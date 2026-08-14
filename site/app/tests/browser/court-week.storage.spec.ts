@@ -23,12 +23,16 @@ test.beforeEach(async ({ page, browserName }) => {
 })
 
 test('blocked storage stays playable and exports private notes only by explicit opt-in', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 })
   await page.addInitScript(() => {
     Object.defineProperty(window, 'indexedDB', { configurable: true, value: undefined })
   })
   await page.goto('/')
   expect(await page.evaluate(() => typeof indexedDB)).toBe('undefined')
   await expect(page.getByRole('alert')).toContainText('Device storage is unavailable')
+  await expect(page.getByText('One fictional case · Seven self-paced sittings', { exact: true })).toBeVisible()
+  await expect(page.getByRole('alert')).toContainText('Progress is held in this tab')
+  await expect(page.locator('.cw-entry button.cw-primary')).toHaveCount(1)
   await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()

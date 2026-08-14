@@ -74,12 +74,60 @@ test('first-time mobile entry keeps its primary path in the first viewport', asy
   }))
 
   expect(layout.scrollWidth).toBeLessThanOrEqual(layout.clientWidth + 1)
+  await expect(page.getByText('One fictional case · Seven self-paced sittings', { exact: true })).toBeVisible()
+  await expect(page.getByText('Progress and notes stay on this device.', { exact: false })).toBeVisible()
+  await expect(page.locator('.cw-entry button.cw-primary')).toHaveCount(1)
   await expect(heading).toBeInViewport()
   await expect(takeSeat).toBeInViewport()
   await expect(takeSeat).toBeDisabled()
   await page.getByLabel('I’m 18 or older and understand this case is fictional.').click()
   await expect(page.getByRole('button', { name: 'Take your seat' })).toBeEnabled()
+  await page.addStyleTag({ content: 'html { font-size: 200% !important; }' })
+  expect(await entry.evaluate((element) => element.scrollWidth - element.clientWidth)).toBeLessThanOrEqual(1)
+  await entry.hover()
+  for (let step = 0; step < 6; step += 1) await page.mouse.wheel(0, 800)
+  await expect.poll(() => entry.evaluate((element) => element.scrollTop)).toBeGreaterThan(0)
+  await expect(page.getByRole('link', { name: 'Privacy' })).toBeInViewport()
+  expect(await page.evaluate(() => window.scrollY)).toBe(0)
   await expect(page.getByText('COURT WEEK PREVIEW')).toHaveCount(0)
+  await takeSeat.click()
+  await expect(page.locator('.cw-shell')).toBeVisible()
+  await page.waitForTimeout(200)
+  await page.reload()
+  await expect(page.getByText('Return to your jury seat', { exact: true })).toBeVisible()
+})
+
+test('return entry names the next sitting and current phase without its sealed title', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Focused local-progress entry semantics run once.')
+  await page.setViewportSize({ width: 320, height: 568 })
+  await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
+  await seedTuesdayPosition(page, 'tue-recording', 'tue-recording-foundation', 'reading')
+  await page.goto('/')
+
+  await expect(page.getByText('Return to your jury seat', { exact: true })).toBeVisible()
+  await expect(page.getByText('Next sitting: Tuesday. Current phase: Crown case.', { exact: true })).toBeVisible()
+  await expect(page.getByText('The call', { exact: true })).toHaveCount(0)
+  await expect(page.locator('.cw-entry button.cw-primary')).toHaveCount(1)
+  const resume = page.getByRole('button', { name: /Resume Tuesday/ })
+  await expect(resume).toBeVisible()
+  await resume.click()
+  await expect(page.locator('.cw-shell')).toBeVisible()
+})
+
+test('locked return names the next sitting and exact Hobart opening without a countdown', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Fixed schedule entry semantics run once.')
+  const beforeTuesday = Date.parse('2026-08-11T08:29:59+10:00')
+  await page.setViewportSize({ width: 320, height: 568 })
+  await page.addInitScript((instant) => { Date.now = () => instant }, beforeTuesday)
+  await seedTuesdayPosition(page, 'tue-resume', 'tue-resume-1', 'reading', beforeTuesday)
+  await page.goto('/')
+
+  const status = page.getByRole('status')
+  await expect(status).toContainText('Next sitting: Tuesday. Current phase: Court adjourned.')
+  await expect(status).toContainText(/Court opens Tuesday,? 11 August 2026.*8:30.*AEST/i)
+  await expect(page.getByText('The call', { exact: true })).toHaveCount(0)
+  await expect(page.locator('.cw-entry button.cw-primary')).toHaveCount(0)
+  await expect(page.locator('.cw-entry')).not.toContainText(/countdown|\d+\s*(?:seconds?|minutes?)\s+(?:left|remaining)/i)
 })
 
 test('preview drawer loads one pack and yields to modal controls at 320px', async ({ page }) => {
@@ -475,11 +523,13 @@ async function seedTuesdayPosition(
   currentSceneId: string,
   currentCueId: string,
   accessibilityMode: 'audio-first' | 'captions' | 'reading' = 'audio-first',
+  observedAt = releaseNow,
 ) {
   await page.goto('/robots.txt')
   await page.evaluate(async ({ instant, currentSceneId, currentCueId, accessibilityMode }) => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open('simjury-court-week-v1', 1)
     request.onerror = () => reject(request.error)
+    request.onupgradeneeded = () => request.result.createObjectStore('progress')
     request.onsuccess = () => {
       const database = request.result
       const transaction = database.transaction('progress', 'readwrite')
@@ -500,7 +550,7 @@ async function seedTuesdayPosition(
         majorityDirectionReceived: false,
       }, ['cw-0001', '2026.08.03-r2'])
     }
-  }), { instant: releaseNow, currentSceneId, currentCueId, accessibilityMode })
+  }), { instant: observedAt, currentSceneId, currentCueId, accessibilityMode })
 }
 
 test('recording replay stays sealed until its final admission has been heard', async ({ page, browserName }) => {
