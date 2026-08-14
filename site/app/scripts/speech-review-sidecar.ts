@@ -1,7 +1,7 @@
-import { createHash } from 'node:crypto'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { createHash, randomUUID } from 'node:crypto'
+import { mkdir, readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
-import { dirname, resolve } from 'node:path'
+import { basename, dirname, join, resolve } from 'node:path'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
 import { authoredCueSourceId } from '../src/courtweek/content/captionPacing'
 import { elevenMinutesSessions } from '../src/courtweek/content/sessions'
@@ -14,6 +14,7 @@ export const REVIEW_DIMENSIONS = [
   'attribution', 'chronology', 'legalAccuracy', 'evidentiarySupport',
   'neutrality', 'plainLanguage', 'sensitivity', 'readAloud',
 ] as const
+const DECISION_FIELDS = ['note', 'reviewReference', 'status']
 
 type ReviewDimension = typeof REVIEW_DIMENSIONS[number]
 type ReviewDecision = {
@@ -196,7 +197,9 @@ function isPristinePendingSidecar(value: unknown): boolean {
     const decisions = row.decisions
     return Object.keys(decisions).length === REVIEW_DIMENSIONS.length && REVIEW_DIMENSIONS.every((dimension) => {
       const decision = decisions[dimension]
-      return isRecord(decision) && decision.status === 'pending' &&
+      return isRecord(decision) &&
+        JSON.stringify(Object.keys(decision).sort()) === JSON.stringify(DECISION_FIELDS) &&
+        decision.status === 'pending' &&
         decision.reviewReference === null && decision.note === null
     })
   })
@@ -217,7 +220,7 @@ export function assertSpeechReviewSidecar(value: unknown): asserts value is Spee
       if (!isRecord(decision) || !['pending', 'approved', 'changes-required'].includes(String(decision.status))) {
         throw new Error(`${String(candidate.rowId ?? index)}: ${dimension} decision is malformed`)
       }
-      if (JSON.stringify(Object.keys(decision).sort()) !== JSON.stringify(['note', 'reviewReference', 'status'])) {
+      if (JSON.stringify(Object.keys(decision).sort()) !== JSON.stringify(DECISION_FIELDS)) {
         throw new Error(`${String(candidate.rowId ?? index)}: ${dimension} decision fields are missing or extra`)
       }
       if ((decision.reviewReference !== null && typeof decision.reviewReference !== 'string') ||
@@ -234,7 +237,25 @@ export function assertSpeechReviewSidecar(value: unknown): asserts value is Spee
   }
 }
 
-export async function writeSpeechReviewSidecar(path = SPEECH_REVIEW_SIDECAR_PATH): Promise<void> {
+type TempWriter = (path: string, contents: string) => Promise<void>
+const writeTemp: TempWriter = async (path, contents) => {
+  await writeFile(path, contents, { encoding: 'utf8', flag: 'wx' })
+}
+
+async function replaceAtomically(path: string, contents: string, writer: TempWriter): Promise<void> {
+  const temporary = join(dirname(path), `.${basename(path)}.${process.pid}.${randomUUID()}.tmp`)
+  try {
+    await writer(temporary, contents)
+    await rename(temporary, path)
+  } catch (error) {
+    await unlink(temporary).catch(() => undefined)
+    throw error
+  }
+}
+
+export async function writeSpeechReviewSidecar(
+  path = SPEECH_REVIEW_SIDECAR_PATH, writer: TempWriter = writeTemp,
+): Promise<void> {
   const generated = buildSpeechReviewSidecar()
   let existing: SpeechReviewSidecar | null = null
   try {
@@ -254,7 +275,7 @@ export async function writeSpeechReviewSidecar(path = SPEECH_REVIEW_SIDECAR_PATH
     row.decisions = existing.rows[index]!.decisions
   }
   await mkdir(dirname(path), { recursive: true })
-  await writeFile(path, JSON.stringify(generated) + '\n', 'utf8')
+  await replaceAtomically(path, JSON.stringify(generated) + '\n', writer)
 }
 
 export async function verifySpeechReviewSidecarFile(path = SPEECH_REVIEW_SIDECAR_PATH): Promise<void> {

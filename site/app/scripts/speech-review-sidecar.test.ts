@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -63,6 +63,8 @@ describe('speech review sidecar', () => {
     const sundayLinearIndex = sidecar.rows.findIndex((row, index) => {
       const previous = sidecar.rows[index - 1]
       return row.day === 'sunday' && previous?.day === row.day && previous.cueId !== row.cueId &&
+        row.runtimeVariant === null && previous.runtimeVariant === null &&
+        row.legalEffect.guard !== null &&
         row.legalEffect.guard === previous.legalEffect.guard
     })
     expect(sidecar.rows[sundayLinearIndex]!.precedingLegalState?.rowId).toBe(sidecar.rows[sundayLinearIndex - 1]!.rowId)
@@ -119,6 +121,15 @@ describe('speech review sidecar', () => {
       await writeSpeechReviewSidecar(path)
       const reviewed = JSON.parse(await readFile(path, 'utf8'))
       expect(reviewed.rows[0].candidateSha256).not.toBe('0'.repeat(64))
+
+      const malformedPending = structuredClone(reviewed)
+      malformedPending.rows[0].decisions.attribution.extra = true
+      await writeFile(path, JSON.stringify(malformedPending) + '\n', 'utf8')
+      const malformed = await readFile(path, 'utf8')
+      await expect(writeSpeechReviewSidecar(path)).rejects.toThrow(/decision fields are missing or extra/u)
+      await expect(readFile(path, 'utf8')).resolves.toBe(malformed)
+
+      await writeFile(path, JSON.stringify(reviewed) + '\n', 'utf8')
       reviewed.rows[0].decisions.attribution = {
         status: 'approved', reviewReference: 'review/example', note: 'Checked by a human.',
       }
@@ -126,6 +137,14 @@ describe('speech review sidecar', () => {
       await writeSpeechReviewSidecar(path)
       const preserved = JSON.parse(await readFile(path, 'utf8'))
       expect(preserved.rows[0].decisions.attribution).toEqual(reviewed.rows[0].decisions.attribution)
+
+      const beforeFailure = await readFile(path, 'utf8')
+      await expect(writeSpeechReviewSidecar(path, async (temporary) => {
+        await writeFile(temporary, 'partial', 'utf8')
+        throw new Error('forced temporary write failure')
+      })).rejects.toThrow(/forced temporary write failure/u)
+      await expect(readFile(path, 'utf8')).resolves.toBe(beforeFailure)
+      await expect(readdir(directory)).resolves.toEqual(['sidecar.json'])
 
       preserved.rows[0].candidateSha256 = '0'.repeat(64)
       await writeFile(path, JSON.stringify(preserved) + '\n', 'utf8')
