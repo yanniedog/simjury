@@ -12,6 +12,14 @@ import { completeRuntimeMediaFixture } from './runtimeManifest.fixture'
 import { RUNTIME_DEPENDENT_CUE_IDS } from './runtimeCues'
 
 describe('pinned text-free Court Week media manifest', () => {
+  it('accepts an unpadded narration-only experience duration', () => {
+    const fixture = completeRuntimeMediaFixture()
+    fixture.sessions[0].narration_seconds = 360
+    fixture.sessions[0].experience_seconds = 360
+
+    expect(() => courtWeekRuntimeMediaManifestSchema.parse(fixture)).not.toThrow()
+  })
+
   it('strictly maps all prerecorded cues and 55 scenes without carrying authored prose', () => {
     const fixture = completeRuntimeMediaFixture()
     expect(() => assertRuntimeMediaCoverage(elevenMinutesCourtWeek, fixture)).not.toThrow()

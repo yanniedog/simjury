@@ -142,7 +142,8 @@ export type SceneCue = z.infer<typeof sceneCueSchema>
 export const interactionSchema = z.object({
   kind: z.enum(['observe', 'inspect-exhibit', 'choose-focus', 'seal-vote', 'reasoning', 'jury-note', 'second-vote', 'final-vote']),
   prompt: z.string().min(1),
-  minimumSeconds: z.number().int().min(15).max(360),
+  /** Legacy reviewed-revision metadata. The runtime never enforces it. */
+  minimumSeconds: z.number().int().min(0).max(360).optional(),
   options: z.array(z.string().min(1)).max(8).optional(),
   optional: z.boolean().optional(),
 })
@@ -153,7 +154,8 @@ export const sceneSchema = z.object({
   phase: legalPhaseSchema,
   visual: visualSchema,
   cues: z.array(sceneCueSchema).min(1),
-  transitionSeconds: z.number().int().min(2).max(45),
+  /** Deprecated sealed-pack metadata. It never delays navigation. */
+  transitionSeconds: z.number().int().min(0).max(45).optional(),
   interaction: interactionSchema.optional(),
 })
 export type Scene = z.infer<typeof sceneSchema>
@@ -164,7 +166,8 @@ export const courtSessionSchema = z.object({
   day: z.enum(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']),
   title: z.string().min(1),
   unlockAt: z.string().datetime({ offset: true }),
-  targetMinutes: z.literal(20),
+  /** Descriptive legacy metadata only; session length is not padded to a target. */
+  targetMinutes: z.number().positive().optional(),
   prerequisiteSessionIds: z.array(z.string().min(1)),
   scenes: z.array(sceneSchema).min(3),
 })
