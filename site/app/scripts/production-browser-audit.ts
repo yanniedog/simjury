@@ -13,14 +13,11 @@ if (expectedDeploymentSha && !/^[0-9a-f]{40}$/u.test(expectedDeploymentSha)) {
 const output = join(process.cwd(), 'test-results', 'production-audit')
 const audioStartTimeoutMs = 15_000
 const controlTimeoutMs = 5_000
-// Seed the state a returning browser holds before the adult gate: developer
-// mode on, acknowledgement still pending. The audit then walks the same
-// progressive entry a visitor walks, and acknowledging the gate carries the
-// temporary all-session preview default into DEV PREVIEW, which is how the
-// audit reaches sessions beyond the one the live schedule has opened.
+// Seed only the public profile state held before the adult gate. Production
+// audits must never rely on the local/test-only all-session harness.
 const profile = JSON.stringify({
   schemaVersion: 'simjury-local-profile-v1', jurorLabel: 'Synthetic QA',
-  adultFictionAcknowledged: false, developerMode: true,
+  adultFictionAcknowledged: false,
 })
 const profiles = [
   { name: 'small-phone', width: 320, height: 568, mobile: true, allSessions: false },
@@ -28,7 +25,7 @@ const profiles = [
   { name: 'phone-landscape', width: 568, height: 320, mobile: true, allSessions: false },
   { name: 'tablet-portrait', width: 768, height: 1024, mobile: true, allSessions: false },
   { name: 'desktop-200-percent', width: 720, height: 450, mobile: false, allSessions: false },
-  { name: 'desktop', width: 1440, height: 900, mobile: false, allSessions: true },
+  { name: 'desktop', width: 1440, height: 900, mobile: false, allSessions: false },
 ] as const
 
 type Severity = 'high' | 'medium' | 'low'
@@ -222,12 +219,7 @@ async function attemptJourney(profileInfo: typeof profiles[number], run: number)
     const entryBytes = await page.evaluate(() => performance.getEntriesByType('resource').reduce(
       (sum, entry) => sum + (entry as PerformanceResourceTiming).transferSize, 0,
     ))
-    // The adult gate is the first control on the entry page, and under the
-    // temporary preview default acknowledging it opens all-session preview
-    // directly — no settings or local-profile detour. When that default is
-    // reverted, restore the explicit `Open all-session preview` path here.
     await pointerClick(page, page.getByRole('checkbox', { name: /18 or older/u }), 'Acknowledge the adult gate', actions)
-    await page.getByRole('complementary', { name: 'Developer preview controls' }).waitFor({ state: 'visible', timeout: 20_000 })
     await page.getByRole('heading', { name: 'Eleven Minutes' }).waitFor({ state: 'visible', timeout: 20_000 })
 
     const ordinals = profileInfo.allSessions ? [1, 2, 3, 4, 5, 6, 7] : [1]

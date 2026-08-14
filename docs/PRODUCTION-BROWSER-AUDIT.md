@@ -11,7 +11,7 @@ deployed commit. It opens Court Week at 320x568, browser-chrome-reduced phone,
 phone landscape, tablet, 200% desktop reflow and desktop sizes, uses real
 stepped pointer movement and normal browser actionability, detects centre-point
 click blockers and controls clipped outside the viewport,
-opens every session through the device-local developer preview, checks the
+opens the current public session through the real schedule gate, checks the
 juror desk, verifies narration start/pause/resume and desk interruption recovery,
 and records performance, layout, CSP, console, request, image and touch-target
 failures. It also verifies that the default-on Microsoft Clarity integration

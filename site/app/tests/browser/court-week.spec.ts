@@ -13,11 +13,6 @@ async function enterCourt(page: Page) {
     }
   })
   await page.goto('/')
-  // Temporary default auto-enters all-session preview; leave so playthroughs use the public schedule.
-  const leavePreview = page.getByRole('button', { name: 'Leave preview' })
-  if (await leavePreview.isVisible().catch(() => false)) {
-    await leavePreview.click()
-  }
   await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
@@ -51,11 +46,9 @@ test('first-time mobile entry keeps its primary path in the first viewport', asy
   await expect(heading).toBeInViewport()
   await expect(takeSeat).toBeInViewport()
   await expect(takeSeat).toBeDisabled()
-  await expect(page.getByText('Developer mode')).toBeHidden()
   await page.getByLabel('I’m 18 or older and understand this case is fictional.').click()
-  // Temporary default: acknowledgement with developer mode on opens all-session preview.
-  await expect(page.getByText('DEV PREVIEW')).toBeVisible()
   await expect(page.getByRole('button', { name: 'Take your seat' })).toBeEnabled()
+  await expect(page.getByText('DEV PREVIEW')).toHaveCount(0)
 })
 
 test('developer toolbar keeps session jump and leave reachable at 320px', async ({ page }) => {
@@ -65,10 +58,9 @@ test('developer toolbar keeps session jump and leave reachable at 320px', async 
       schemaVersion: 'simjury-local-profile-v1',
       jurorLabel: 'Juror 01',
       adultFictionAcknowledged: true,
-      developerMode: true,
     }))
   })
-  await page.goto('/')
+  await page.goto('/?developer-preview=all')
   await expect(page.getByText('DEV PREVIEW')).toBeVisible()
   const session = page.locator('#cw-developer-day')
   const leave = page.getByRole('button', { name: 'Leave preview' })
@@ -78,36 +70,31 @@ test('developer toolbar keeps session jump and leave reachable at 320px', async 
   await expect(session).toHaveValue('2')
   await leave.click()
   await expect(page.getByText('DEV PREVIEW')).toHaveCount(0)
-  await expect(page.getByRole('status')).toContainText('Court opens Monday')
+  await expect(page.getByRole('heading', { name: 'Eleven Minutes' })).toBeVisible()
 })
 
-test('local developer mode remains reachable at a 200% compact-phone reflow', async ({ page }) => {
+test('local developer route remains reachable at a 200% compact-phone reflow', async ({ page }) => {
   await page.setViewportSize({ width: 160, height: 284 })
   await page.addInitScript(() => {
     localStorage.setItem('simjury:court-week:local-profile:v1', JSON.stringify({
       schemaVersion: 'simjury-local-profile-v1',
       jurorLabel: 'Juror 01',
       adultFictionAcknowledged: true,
-      developerMode: true,
     }))
   })
-  await page.goto('/')
+  await page.goto('/?developer-preview=all')
   await expect(page.getByText('DEV PREVIEW')).toBeVisible()
-  await page.getByRole('button', { name: 'Leave preview' }).click()
-  const surface = page.locator('.cw-entry__panel')
-  await expect(page.getByRole('status')).toContainText('Court opens Monday')
-  await page.locator('.cw-entry__settings > summary').click()
-  await page.locator('.cw-local-profile > summary').click()
-  await expect(page.getByLabel('Developer mode')).toBeChecked()
-  const submit = page.getByRole('button', { name: 'Open all-session preview' })
-  await submit.scrollIntoViewIfNeeded()
-  await expect(submit).toBeVisible()
-  expect(await surface.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true)
+  await expect(page.locator('.cw-developer-toolbar')).toHaveCSS('position', 'fixed')
+  const session = page.locator('#cw-developer-day')
+  await session.scrollIntoViewIfNeeded()
+  await expect(session).toBeVisible()
+  expect(await page.locator('.cw-developer-toolbar').evaluate(
+    (element) => element.scrollWidth <= element.clientWidth,
+  )).toBe(true)
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth
     && document.body.scrollWidth <= window.innerWidth)).toBe(true)
-  await submit.focus()
-  await expect(submit).toBeFocused()
-  await expect(submit).toBeVisible()
+  await session.focus()
+  await expect(session).toBeFocused()
 })
 
 test('local profile label controls stay inside their card at supported reflow widths', async ({ page }) => {
