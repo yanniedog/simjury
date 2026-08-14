@@ -29,10 +29,19 @@ export interface ProgressEnvelope {
 
 export type ProgressLoadResult = {
   progress: StoredWeeklyProgress | null
-  issue: 'unavailable' | 'corrupt' | null
+  archives: StoredWeeklyProgress[]
+  issue: 'unavailable' | 'corrupt' | 'revision-mismatch' | null
 }
 
 const memoryProgress = new Map<string, StoredWeeklyProgress>()
+
+export function weeklyProgressStorageKey(caseId: string, revision: string): [string, string] {
+  return [caseId, revision]
+}
+
+function memoryStorageKey(caseId: string, revision: string): string {
+  return JSON.stringify(weeklyProgressStorageKey(caseId, revision))
+}
 
 function validateStoredProgress(value: unknown): StoredWeeklyProgress | null {
   const validated = weeklyProgressSchema.safeParse(value)
@@ -126,6 +135,26 @@ function hasIndexedDb(): boolean {
   return typeof indexedDB !== 'undefined'
 }
 
+function archivedProgress(
+  values: Iterable<unknown>,
+  caseId: string,
+  currentRevision: string,
+): StoredWeeklyProgress[] {
+  const revisions = new Map<string, StoredWeeklyProgress>()
+  for (const value of values) {
+    const candidate = validateStoredProgress(value)
+    if (!candidate || candidate.courtWeekId !== caseId || candidate.revision === currentRevision) continue
+    const existing = revisions.get(candidate.revision)
+    if (!existing || Date.parse(candidate.highestObservedTime) > Date.parse(existing.highestObservedTime)) {
+      revisions.set(candidate.revision, candidate)
+    }
+  }
+  return Array.from(revisions.values()).sort((left, right) =>
+    Date.parse(right.highestObservedTime) - Date.parse(left.highestObservedTime)
+    || right.revision.localeCompare(left.revision),
+  )
+}
+
 function openProgressDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(PROGRESS_DATABASE.name, PROGRESS_DATABASE.version)
@@ -172,27 +201,69 @@ async function withStore<T>(
 
 export async function loadWeeklyProgress(
   caseId: string,
+  revision: string,
 ): Promise<StoredWeeklyProgress | null> {
-  return (await loadWeeklyProgressResult(caseId)).progress
+  return (await loadWeeklyProgressResult(caseId, revision)).progress
 }
 
-export async function loadWeeklyProgressResult(caseId: string): Promise<ProgressLoadResult> {
+export async function loadWeeklyProgressResult(
+  caseId: string,
+  revision: string,
+): Promise<ProgressLoadResult> {
+  const key = memoryStorageKey(caseId, revision)
+  const memoryArchives = () => archivedProgress(memoryProgress.values(), caseId, revision)
+  const indexedArchives = async () => archivedProgress(
+    await withStore<unknown[]>('readonly', (store) => store.getAll()),
+    caseId,
+    revision,
+  )
   if (!hasIndexedDb()) {
-    return { progress: memoryProgress.get(caseId) ?? null, issue: 'unavailable' }
+    return { progress: memoryProgress.get(key) ?? null, archives: memoryArchives(), issue: 'unavailable' }
   }
   try {
     const storedValue = await withStore<unknown>(
       'readonly',
-      (store) => store.get(caseId),
+      (store) => store.get(weeklyProgressStorageKey(caseId, revision)),
     )
+    const legacyValue = await withStore<unknown>('readonly', (store) => store.get(caseId))
     const stored = validateStoredProgress(storedValue)
-    if (stored) memoryProgress.set(caseId, stored)
+    const legacy = validateStoredProgress(legacyValue)
+    const corrupt = (storedValue != null && (!stored || stored.courtWeekId !== caseId || stored.revision !== revision))
+      || (legacyValue != null && (!legacy || legacy.courtWeekId !== caseId))
+    if (corrupt) {
+      if (legacy?.courtWeekId === caseId && legacy.revision !== revision) {
+        memoryProgress.set(memoryStorageKey(caseId, legacy.revision), legacy)
+      }
+      let archives = memoryArchives()
+      try { archives = await indexedArchives() } catch { /* retain recoverable memory archives */ }
+      return { progress: null, archives, issue: 'corrupt' }
+    }
+    const current = legacy?.revision === revision && (!stored
+      || Date.parse(legacy.highestObservedTime) > Date.parse(stored.highestObservedTime)) ? legacy : stored
+    if (current) memoryProgress.set(key, current)
+    if (legacy && legacy.revision !== revision) {
+      memoryProgress.set(memoryStorageKey(caseId, legacy.revision), legacy)
+    }
+    const archives = await indexedArchives()
+    if (legacy) {
+      const copy = legacy.revision === revision
+        ? current!
+        : archives.find(({ revision: archivedRevision }) => archivedRevision === legacy.revision) ?? legacy
+      memoryProgress.set(memoryStorageKey(caseId, copy.revision), copy)
+      // Preserve the legacy key while repairing its revision-keyed copy with
+      // the newest record, including writes made by a pre-deploy tab.
+      await withStore('readwrite', (store) => store.put(copy, weeklyProgressStorageKey(caseId, copy.revision)))
+    }
+    for (const archive of archives) {
+      memoryProgress.set(memoryStorageKey(caseId, archive.revision), archive)
+    }
     return {
-      progress: stored ?? memoryProgress.get(caseId) ?? null,
-      issue: storedValue != null && !stored ? 'corrupt' : null,
+      progress: current ?? memoryProgress.get(key) ?? null,
+      archives,
+      issue: !current && archives.length > 0 ? 'revision-mismatch' : null,
     }
   } catch {
-    return { progress: memoryProgress.get(caseId) ?? null, issue: 'unavailable' }
+    return { progress: memoryProgress.get(key) ?? null, archives: memoryArchives(), issue: 'unavailable' }
   }
 }
 
@@ -200,10 +271,15 @@ export async function saveWeeklyProgress(
   caseId: string,
   progress: StoredWeeklyProgress,
 ): Promise<'indexeddb' | 'memory'> {
-  memoryProgress.set(caseId, progress)
+  if (progress.courtWeekId !== caseId) throw new Error('Progress case identity does not match its storage key.')
+  const key = memoryStorageKey(caseId, progress.revision)
+  memoryProgress.set(key, progress)
   if (!hasIndexedDb()) return 'memory'
   try {
-    await withStore('readwrite', (store) => store.put(progress, caseId))
+    await withStore('readwrite', (store) => store.put(
+      progress,
+      weeklyProgressStorageKey(caseId, progress.revision),
+    ))
     return 'indexeddb'
   } catch {
     return 'memory'
@@ -294,7 +370,7 @@ export function downloadWeeklyProgress(
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
-  link.download = `${progress.courtWeekId}-progress.simjury-progress.json`
+  link.download = `${progress.courtWeekId}-${progress.revision}-progress.simjury-progress.json`
   link.click()
   URL.revokeObjectURL(url)
 }

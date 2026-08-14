@@ -89,7 +89,10 @@ describe('CourtWeekApp improper-argument interaction', () => {
     })
 
     const saved = await act(async () => vi.waitFor(async () => {
-      const candidate = await loadWeeklyProgress(elevenMinutesCourtWeek.manifest.id)
+      const candidate = await loadWeeklyProgress(
+        elevenMinutesCourtWeek.manifest.id,
+        elevenMinutesCourtWeek.manifest.revision,
+      )
       expect(Date.parse(candidate?.highestObservedTime ?? '')).toBeGreaterThan(Date.parse(persistedTime))
       return candidate
     }, { timeout: 1_000, interval: 20 }))

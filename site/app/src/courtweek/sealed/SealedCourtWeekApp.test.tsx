@@ -196,7 +196,7 @@ describe('SealedCourtWeekApp', () => {
 
     act(() => window.dispatchEvent(new Event('pagehide')))
     await new Promise((resolve) => window.setTimeout(resolve, 150))
-    await expect(loadWeeklyProgress(existing.courtWeekId)).resolves.toMatchObject({ notes: existing.notes })
+    await expect(loadWeeklyProgress(existing.courtWeekId, existing.revision)).resolves.toMatchObject({ notes: existing.notes })
   })
 
   it('does not treat the retired developer hash as authentication', async () => {

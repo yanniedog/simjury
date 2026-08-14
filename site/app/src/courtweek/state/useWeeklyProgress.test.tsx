@@ -64,7 +64,7 @@ describe('useWeeklyProgress durability boundaries', () => {
     })))
     act(() => window.dispatchEvent(new Event('pagehide')))
 
-    await expect(loadWeeklyProgress('cw-0001')).resolves.toMatchObject({
+    await expect(loadWeeklyProgress('cw-0001', '2026.08.03-r2')).resolves.toMatchObject({
       currentCueId: 'mon-arrival-2',
       notes: 'Latest private note.',
     })
@@ -90,7 +90,7 @@ describe('useWeeklyProgress durability boundaries', () => {
     Object.defineProperty(document, 'visibilityState', { configurable: true, value: 'hidden' })
     act(() => document.dispatchEvent(new Event('visibilitychange')))
 
-    await expect(loadWeeklyProgress('cw-0001')).resolves.toMatchObject({
+    await expect(loadWeeklyProgress('cw-0001', '2026.08.03-r2')).resolves.toMatchObject({
       currentCueId: 'mon-arrival-3',
       notes: 'Hidden-state private note.',
     })
@@ -120,7 +120,7 @@ describe('useWeeklyProgress durability boundaries', () => {
     await new Promise((resolve) => window.setTimeout(resolve, 150))
 
     expect(progressEvents).toBe(0)
-    await expect(loadWeeklyProgress('cw-0001')).resolves.toBeNull()
+    await expect(loadWeeklyProgress('cw-0001', '2026.08.03-r2')).resolves.toBeNull()
     act(() => root.unmount())
     window.removeEventListener(WEEKLY_PROGRESS_EVENT, receiveProgress)
   })
