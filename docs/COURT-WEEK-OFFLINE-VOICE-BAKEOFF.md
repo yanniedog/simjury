@@ -39,3 +39,33 @@ The frozen catalogue verifies availability, not suitability. Audition all 30,
 select 28 only after blind listening, and test the selected cast on headphones,
 laptop, and phone. Reject word, attribution, accent, identity, or emotion defects.
 Publish only a new immutable static release with rollback.
+
+## Chirp audition operator gate
+
+`npm run media:chirp:audition` only prints a deterministic 30-voice plan. It
+does not inspect credentials, write files or call Google. The same short,
+non-production courtroom passage is submitted once per frozen stock voice and
+the gross estimate deliberately applies no free tier.
+
+Execution is a separate, manual operator action. Create an output directory
+outside this repository, enable billing and Text-to-Speech for the intended
+quota project, then obtain a short-lived token from Application Default
+Credentials without printing or committing it:
+
+```powershell
+gcloud auth application-default login
+$env:GOOGLE_OAUTH_ACCESS_TOKEN = gcloud auth application-default print-access-token
+$env:GOOGLE_CLOUD_QUOTA_PROJECT = '<reviewed-project-id>'
+npm run media:chirp:audition -- --execute --output '<existing-outside-repo-directory>' --acknowledge-cost-aud '<exact value printed by the plan>'
+Remove-Item Env:GOOGLE_OAUTH_ACCESS_TOKEN
+```
+
+The runner uses Google's synchronous REST endpoint once per unfinished job,
+never retries, and writes content-addressed MP3/JSON pairs exclusively. A
+matching pair resumes without a request; a partial or mismatched pair stops
+without overwrite. Sidecars retain request, response and audio hashes plus
+allowlisted provider metadata, never the token, project header or local path.
+
+Technical contracts: [REST synthesis](https://docs.cloud.google.com/text-to-speech/docs/reference/rest/v1/text/synthesize),
+[REST authentication](https://docs.cloud.google.com/docs/authentication/rest),
+and [pricing](https://cloud.google.com/text-to-speech/pricing).
