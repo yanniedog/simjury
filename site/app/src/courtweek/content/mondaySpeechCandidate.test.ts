@@ -110,6 +110,8 @@ describe('inactive Monday reviewed speech candidate', () => {
     const openingTurn = cueById('mon-crown-opening-1').turns[0]!
     const span = openingTurn.quotedSpans?.[0]
     expect(span).toMatchObject({ source: 'written', sourceActorId: 'accused' })
+    const quote = openingTurn.text.slice(span?.start, span?.end)
+    expect(openingTurn.text.indexOf(quote)).toBe(openingTurn.text.lastIndexOf(quote))
     expect(openingTurn.text.slice(span?.start, span?.end)).toBe('“hold—readiness.”')
   })
 })

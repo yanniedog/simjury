@@ -114,6 +114,9 @@ describe('inactive Tuesday reviewed speech candidate', () => {
       const literalQuotes = [...turn.text.matchAll(/“[^”]+”/gu)].map(([text]) => text)
       const reviewedQuotes = (turn.quotedSpans ?? []).map((span) => turn.text.slice(span.start, span.end))
       expect(reviewedQuotes, turn.id).toEqual(literalQuotes)
+      for (const quote of reviewedQuotes) {
+        expect(turn.text.indexOf(quote), `${turn.id}: ${quote}`).toBe(turn.text.lastIndexOf(quote))
+      }
     }
   })
 
