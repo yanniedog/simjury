@@ -22,8 +22,9 @@ passive observation gates or artificial transition time.
   masking, denied advertising storage and a persistent local opt-out.
 - Progress, private notes and ballots stay on-device in IndexedDB. A versioned
   export/import file is the only cross-device transfer path. Records are keyed
-  by case and content revision: a revised trial starts clean while older records
-  remain available for review or export and never hydrate legal conclusions.
+  by case and content revision. A revised trial starts clean: no earlier ballot,
+  reasoning, evidentiary conclusion or verdict populates it. Older records remain
+  separately available for review or export.
 - The active verdicts are Murder, manslaughter by criminal negligence, Not
   Guilty, and unable to agree. No outcome is presented as objectively correct.
 - Individual juror positions stay sealed. An anonymous aggregate ballot is

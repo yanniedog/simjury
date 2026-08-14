@@ -212,6 +212,11 @@ export async function loadWeeklyProgressResult(
 ): Promise<ProgressLoadResult> {
   const key = memoryStorageKey(caseId, revision)
   const memoryArchives = () => archivedProgress(memoryProgress.values(), caseId, revision)
+  const indexedArchives = async () => archivedProgress(
+    await withStore<unknown[]>('readonly', (store) => store.getAll()),
+    caseId,
+    revision,
+  )
   if (!hasIndexedDb()) {
     return { progress: memoryProgress.get(key) ?? null, archives: memoryArchives(), issue: 'unavailable' }
   }
@@ -220,37 +225,42 @@ export async function loadWeeklyProgressResult(
       'readonly',
       (store) => store.get(weeklyProgressStorageKey(caseId, revision)),
     )
-    let stored = validateStoredProgress(storedValue)
-    if (storedValue != null && (
-      !stored || stored.courtWeekId !== caseId || stored.revision !== revision
-    )) return { progress: null, archives: [], issue: 'corrupt' }
-    if (!stored) {
-      const legacyValue = await withStore<unknown>('readonly', (store) => store.get(caseId))
-      const legacy = validateStoredProgress(legacyValue)
-      if (legacyValue != null && (!legacy || legacy.courtWeekId !== caseId)) {
-        return { progress: null, archives: [], issue: 'corrupt' }
-      }
-      if (legacy) {
+    const legacyValue = await withStore<unknown>('readonly', (store) => store.get(caseId))
+    const stored = validateStoredProgress(storedValue)
+    const legacy = validateStoredProgress(legacyValue)
+    const corrupt = (storedValue != null && (!stored || stored.courtWeekId !== caseId || stored.revision !== revision))
+      || (legacyValue != null && (!legacy || legacy.courtWeekId !== caseId))
+    if (corrupt) {
+      if (legacy?.courtWeekId === caseId && legacy.revision !== revision) {
         memoryProgress.set(memoryStorageKey(caseId, legacy.revision), legacy)
-        // Copy every valid legacy record to its revision key without deleting
-        // the original. Interrupted migrations therefore remain recoverable.
-        await withStore('readwrite', (store) => store.put(
-          legacy,
-          weeklyProgressStorageKey(caseId, legacy.revision),
-        ))
-        if (legacy.revision === revision) stored = legacy
       }
+      let archives = memoryArchives()
+      try { archives = await indexedArchives() } catch { /* retain recoverable memory archives */ }
+      return { progress: null, archives, issue: 'corrupt' }
     }
-    if (stored) memoryProgress.set(key, stored)
-    const storedValues = await withStore<unknown[]>('readonly', (store) => store.getAll())
-    const archives = archivedProgress(storedValues, caseId, revision)
+    const current = legacy?.revision === revision && (!stored
+      || Date.parse(legacy.highestObservedTime) > Date.parse(stored.highestObservedTime)) ? legacy : stored
+    if (current) memoryProgress.set(key, current)
+    if (legacy && legacy.revision !== revision) {
+      memoryProgress.set(memoryStorageKey(caseId, legacy.revision), legacy)
+    }
+    const archives = await indexedArchives()
+    if (legacy) {
+      const copy = legacy.revision === revision
+        ? current!
+        : archives.find(({ revision: archivedRevision }) => archivedRevision === legacy.revision) ?? legacy
+      memoryProgress.set(memoryStorageKey(caseId, copy.revision), copy)
+      // Preserve the legacy key while repairing its revision-keyed copy with
+      // the newest record, including writes made by a pre-deploy tab.
+      await withStore('readwrite', (store) => store.put(copy, weeklyProgressStorageKey(caseId, copy.revision)))
+    }
     for (const archive of archives) {
       memoryProgress.set(memoryStorageKey(caseId, archive.revision), archive)
     }
     return {
-      progress: stored ?? memoryProgress.get(key) ?? null,
+      progress: current ?? memoryProgress.get(key) ?? null,
       archives,
-      issue: !stored && archives.length > 0 ? 'revision-mismatch' : null,
+      issue: !current && archives.length > 0 ? 'revision-mismatch' : null,
     }
   } catch {
     return { progress: memoryProgress.get(key) ?? null, archives: memoryArchives(), issue: 'unavailable' }

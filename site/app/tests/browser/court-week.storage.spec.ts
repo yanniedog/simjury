@@ -11,7 +11,7 @@ async function downloadText(download: Download): Promise<string> {
 }
 
 async function openDesk(page: Page) {
-  await page.locator('.cw-entry__settings > summary').click()
+  await page.getByText('Experience settings', { exact: true }).click()
   await page.getByLabel('Reading mode').check()
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await page.getByRole('button', { name: 'Juror desk', exact: true }).click()
@@ -130,13 +130,13 @@ test('a prior revision is archived while the revised trial starts without its ba
   await expect(page.getByText('Case revision 2026.08.03-r1')).toBeVisible()
 
   const safeDownload = page.waitForEvent('download')
-  await page.getByRole('button', { name: 'Export archived record' }).click()
+  await page.getByRole('button', { name: `Export revision ${archived.revision}` }).click()
   const safeExport = JSON.parse(await downloadText(await safeDownload))
   expect(safeExport.progress).toMatchObject({ revision: archived.revision, provisionalVote: 'unable-to-agree', notes: '' })
 
   await page.getByLabel('Include private notes in archive exports').check()
   const privateDownload = page.waitForEvent('download')
-  await page.getByRole('button', { name: 'Export archived record' }).click()
+  await page.getByRole('button', { name: `Export revision ${archived.revision}` }).click()
   expect(JSON.parse(await downloadText(await privateDownload)).progress.notes).toBe(archived.notes)
 
   await page.getByText('Experience settings', { exact: true }).click()
@@ -173,9 +173,42 @@ test('a prior revision is archived while the revised trial starts without its ba
   expect(revised).not.toHaveProperty('sealedVerdict')
 })
 
-test('corrupt stored progress is disclosed and not silently overwritten on hydration', async ({ page }) => {
+test('a newer same-revision legacy record prevents rollback to its composite copy', async ({ page }) => {
+  const older = {
+    schemaVersion: 'court-week-progress-v1', courtWeekId: 'cw-0001', revision: '2026.08.03-r2',
+    highestObservedTime: '2026-08-16T08:00:00+10:00', completedSessionIds: [],
+    currentSessionId: 'cw-0001-monday', currentSceneId: 'mon-arrival', currentCueId: 'mon-arrival-1',
+    notes: 'Older composite note.',
+  }
+  const newer = { ...older, highestObservedTime: '2026-08-16T09:00:00+10:00', notes: 'Newer legacy note.' }
   await page.goto('/robots.txt')
-  await page.evaluate(async (contract) => new Promise<void>((resolve, reject) => {
+  await page.evaluate(async ({ contract, olderRecord, newerRecord }) => new Promise<void>((resolve, reject) => {
+    const request = indexedDB.open(contract.name, contract.version)
+    request.onerror = () => reject(request.error)
+    request.onupgradeneeded = () => request.result.createObjectStore(contract.store)
+    request.onsuccess = () => {
+      const database = request.result
+      const transaction = database.transaction(contract.store, 'readwrite')
+      transaction.oncomplete = () => { database.close(); resolve() }
+      transaction.onerror = () => reject(transaction.error)
+      const store = transaction.objectStore(contract.store)
+      store.put(olderRecord, ['cw-0001', '2026.08.03-r2'])
+      store.put(newerRecord, 'cw-0001')
+    }
+  }), { contract: PROGRESS_DATABASE, olderRecord: older, newerRecord: newer })
+
+  await page.goto('/')
+  await openDesk(page)
+  await expect(page.getByLabel('Your private notes')).toHaveValue(newer.notes)
+})
+
+test('corrupt current progress is disclosed while its valid archive remains exportable', async ({ page }) => {
+  const archived = {
+    schemaVersion: 'court-week-progress-v1', courtWeekId: 'cw-0001', revision: '2026.08.03-r1',
+    highestObservedTime: '2026-08-15T09:00:00+10:00', completedSessionIds: [], notes: 'Recoverable archive.',
+  }
+  await page.goto('/robots.txt')
+  await page.evaluate(async ({ contract, archivedProgress }) => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open(contract.name, contract.version)
     request.onerror = () => reject(request.error)
     request.onupgradeneeded = () => request.result.createObjectStore(contract.store)
@@ -188,11 +221,14 @@ test('corrupt stored progress is disclosed and not silently overwritten on hydra
         { courtWeekId: 'cw-0001', notes: 'partial' },
         ['cw-0001', '2026.08.03-r2'],
       )
+      transaction.objectStore(contract.store).put(archivedProgress, ['cw-0001', archivedProgress.revision])
     }
-  }), PROGRESS_DATABASE)
+  }), { contract: PROGRESS_DATABASE, archivedProgress: archived })
 
   await page.goto('/')
   await expect(page.getByRole('alert')).toContainText('damaged and could not be recovered')
+  await page.getByText('Previous trial records', { exact: true }).click()
+  await expect(page.getByRole('button', { name: `Export revision ${archived.revision}` })).toBeVisible()
   await page.waitForTimeout(250)
   const stored = await page.evaluate(async (contract) => new Promise<unknown>((resolve, reject) => {
     const request = indexedDB.open(contract.name, contract.version)

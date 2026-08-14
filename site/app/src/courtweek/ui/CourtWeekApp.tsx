@@ -275,7 +275,7 @@ function CourtWeekEntry({
                   <li key={archived.revision}>
                     <span><strong>Case revision {archived.revision}</strong><small>{archived.completedSessionIds.length} sessions completed</small></span>
                     <button type="button" onClick={() => downloadWeeklyProgress(archived, includeArchiveNotes)}>
-                      Export archived record
+                      Export revision {archived.revision}
                     </button>
                   </li>
                 ))}
