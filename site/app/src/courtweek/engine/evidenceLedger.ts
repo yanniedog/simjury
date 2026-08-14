@@ -55,11 +55,33 @@ function orderedAuthoredCues(sessions: readonly CourtSession[]): AuthoredCue[] {
   return result
 }
 
+function includedAuthoredCues(
+  sessions: readonly CourtSession[], cursor: EvidenceLedgerCursor,
+): AuthoredCue[] {
+  const authoredCues = orderedAuthoredCues(sessions)
+  const cursorIndex = authoredCues.findIndex(({ id, pacedCueIds }) => (
+    id === cursor.cueId || pacedCueIds.includes(cursor.cueId)
+  ))
+  if (cursorIndex < 0) throw new Error(`Evidence cursor references unknown cue ${cursor.cueId}`)
+  const cursorCue = authoredCues[cursorIndex]!
+  if (cursor.authoredCueComplete && cursor.cueId !== cursorCue.id && cursor.cueId !== cursorCue.pacedCueIds.at(-1)) {
+    throw new Error(`${cursor.cueId}: a partial caption cue cannot complete its authored legal event`)
+  }
+  return authoredCues.slice(0, cursorIndex + (cursor.authoredCueComplete ? 1 : 0))
+}
+
+/** Fully observed authored cues, suitable for non-transcript legal summaries. */
+export function observedCourtCues(
+  sessions: readonly CourtSession[], cursor: EvidenceLedgerCursor,
+): readonly SceneCue[] {
+  return includedAuthoredCues(sessions, cursor).map(({ cue }) => cue)
+}
+
 function transitionsAtCue(trial: TrialRecord, authored: AuthoredCue): CandidateTransition[] {
   const transitions: CandidateTransition[] = []
   for (const evidenceId of authored.evidenceIds) {
     const evidence = trial.evidence.find(({ id }) => id === evidenceId)
-    if (!evidence) throw new Error(`${authored.id}: unknown evidence ${evidenceId}`)
+    if (!evidence) continue
     if (authored.cue.admissionStatus === 'provisional') {
       transitions.push({ evidenceId, cueId: authored.id, state: 'provisional', basis: 'provisional-admission' })
     } else if (authored.cue.admissionStatus === 'final' || authored.cue.event === 'exhibit-admitted') {
@@ -83,18 +105,8 @@ export function deriveEvidenceLedger(
   sessions: readonly CourtSession[],
   cursor: EvidenceLedgerCursor,
 ): readonly EvidenceLedgerEntry[] {
-  const authoredCues = orderedAuthoredCues(sessions)
-  const cursorIndex = authoredCues.findIndex(({ id, pacedCueIds }) => (
-    id === cursor.cueId || pacedCueIds.includes(cursor.cueId)
-  ))
-  if (cursorIndex < 0) throw new Error(`Evidence cursor references unknown cue ${cursor.cueId}`)
-  const cursorCue = authoredCues[cursorIndex]!
-  if (cursor.authoredCueComplete && cursor.cueId !== cursorCue.id && cursor.cueId !== cursorCue.pacedCueIds.at(-1)) {
-    throw new Error(`${cursor.cueId}: a partial caption cue cannot complete its authored legal event`)
-  }
-  const includedCueCount = cursorIndex + (cursor.authoredCueComplete ? 1 : 0)
   const transitions = new Map<string, EvidenceLedgerTransition[]>()
-  for (const authored of authoredCues.slice(0, includedCueCount)) {
+  for (const authored of includedAuthoredCues(sessions, cursor)) {
     for (const transition of transitionsAtCue(trial, authored)) {
       const history = transitions.get(transition.evidenceId) ?? []
       const previous = history.at(-1)?.state

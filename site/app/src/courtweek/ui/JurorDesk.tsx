@@ -1,16 +1,43 @@
 import { useRef, useState } from 'react'
-import type { CourtSession, DeliberationPack, TrialRecord, WeeklyProgress } from '../model/schema'
+import { authoredCueSourceId } from '../content/captionPacing'
+import { observedCourtCues, type EvidenceLedgerEntry } from '../engine/evidenceLedger'
+import type {
+  CourtEvent, CourtSession, DeliberationPack, LegalPhase, ReasoningMove, TrialRecord, WeeklyProgress,
+} from '../model/schema'
 import {
   downloadWeeklyProgress,
   importWeeklyProgress,
 } from '../state/progress'
+import { formatCourtUnlock } from '../state/schedule'
 import { CourtSheet } from './CourtSheet'
+
+const phaseLabels: Record<LegalPhase, string> = {
+  arrival: 'Arrival and empanelment', 'crown-case': 'Crown case', 'defence-case': 'Defence case',
+  addresses: 'Closing addresses', directions: 'Judge’s directions', deliberation: 'Deliberation',
+  verdict: 'Verdict in open court', analysis: 'Post-verdict analysis',
+}
+const moveLabels: Record<ReasoningMove, string> = {
+  connect: 'Connect evidence', distinguish: 'Distinguish competing explanations',
+  'test-source': 'Test the source', 'challenge-inference': 'Challenge an inference',
+  'raise-alternative': 'Raise a reasonable alternative', 'apply-burden': 'Apply the burden of proof',
+}
+const directionEvents = new Set<CourtEvent>([
+  'preliminary-direction', 'silence-direction', 'summing-up', 'judge-response',
+  'perseverance-direction', 'majority-direction',
+])
+const rulingEvents = new Set<CourtEvent>(['objection', 'ruling'])
 
 export interface JurorDeskProps {
   trial: TrialRecord
   sessions: CourtSession[]
   deliberation?: DeliberationPack
   progress: WeeklyProgress
+  activeSessionId: string
+  activePhase: LegalPhase
+  currentCueId: string
+  currentCueComplete?: boolean
+  evidenceLedger: readonly EvidenceLedgerEntry[]
+  saveStatus: string
   readOnly?: boolean
   inactive?: boolean
   onNotesChange: (notes: string) => void
@@ -26,6 +53,12 @@ export function JurorDesk({
   sessions,
   deliberation,
   progress,
+  activeSessionId,
+  activePhase,
+  currentCueId,
+  currentCueComplete = false,
+  evidenceLedger,
+  saveStatus,
   readOnly = false,
   inactive = false,
   onNotesChange,
@@ -38,6 +71,21 @@ export function JurorDesk({
   const importInput = useRef<HTMLInputElement>(null)
   const [includeNotes, setIncludeNotes] = useState(false)
   const [importError, setImportError] = useState<string | null>(null)
+  const observedCues = observedCourtCues(sessions, {
+    cueId: currentCueId, authoredCueComplete: currentCueComplete,
+  })
+  const uniqueCues = (events: ReadonlySet<CourtEvent>) => Array.from(new Map(observedCues
+    .filter(({ event }) => events.has(event)).map((cue) => [authoredCueSourceId(cue), cue])).values())
+  const duty = trial.offences.find(({ id }) => id === 'orinth-eca-s41')
+  const directions = uniqueCues(directionEvents).filter(({ event }) => (
+    !(progress.secondBallotWasUnanimous && (
+      event === 'perseverance-direction' || event === 'majority-direction'
+    )) && !(event === 'majority-direction' && !progress.majorityDirectionReceived)
+  ))
+  const rulings = uniqueCues(rulingEvents)
+  const availableEvidence = evidenceLedger.filter(({ state }) => state === 'provisional' || state === 'admitted')
+  const struckCount = evidenceLedger.filter(({ state }) => state === 'struck').length
+  const reasoning = progress.reasoningContributions ?? []
 
   const readImport = async (file: File | undefined) => {
     if (!file) return
@@ -87,12 +135,37 @@ export function JurorDesk({
       onClose={onClose}
     >
       <section>
+        <h3>Court week</h3>
+        <p><strong>Current phase:</strong> {phaseLabels[activePhase]}</p>
+        <ol className="cw-desk__schedule">
+          {sessions.map((session) => {
+            const active = session.id === activeSessionId
+            const completed = progress.completedSessionIds.includes(session.id)
+            const status = active
+              ? `${readOnly ? 'Replay' : 'Current'} · ${phaseLabels[activePhase]}`
+              : completed ? 'Completed' : `Opens ${formatCourtUnlock(session.unlockAt)}`
+            return <li key={session.id} aria-current={active ? 'step' : undefined}>
+              <span><strong>{session.day}</strong> · {active || completed ? session.title : 'Sealed session'}</span>
+              <small>{status}</small>
+            </li>
+          })}
+        </ol>
+      </section>
+
+      <section>
         <h3>The charge</h3>
         <p>{trial.charge}. Plea: {trial.plea}.</p>
       </section>
 
+      {duty ? <section>
+        <h3>Section 41 duty</h3>
+        <p><strong>{duty.title} — {duty.citation}</strong></p>
+        <p>{duty.text}</p>
+        <ol>{duty.elementQuestions.map((question) => <li key={question}>{question}</li>)}</ol>
+      </section> : null}
+
       <section>
-        <h3>Questions of law</h3>
+        <h3>Charge questions</h3>
         {trial.offences.slice(0, 2).map((offence) => (
           <details key={offence.id}>
             <summary>{offence.title} — {offence.citation}</summary>
@@ -103,18 +176,61 @@ export function JurorDesk({
       </section>
 
       <section>
-        <h3>Admitted exhibits</h3>
+        <h3>Rulings and directions</h3>
+        <p>Legal summaries only. Oral evidence is not stored as a searchable transcript.</p>
+        <details>
+          <summary>Directions recorded ({directions.length})</summary>
+          {directions.length ? <ol>{directions.map((cue) => (
+            <li key={authoredCueSourceId(cue)}>{cue.accessibleProposition}</li>
+          ))}</ol> : <p>No judicial direction has yet been completed.</p>}
+        </details>
+        <details>
+          <summary>Rulings recorded ({rulings.length})</summary>
+          {rulings.length ? <ol>{rulings.map((cue) => (
+            <li key={authoredCueSourceId(cue)}>{cue.accessibleProposition}</li>
+          ))}</ol> : <p>No ruling has yet been completed.</p>}
+        </details>
+      </section>
+
+      <section>
+        <h3>Evidence ledger</h3>
+        <p>Only material already put before the jury appears. Open its limits before relying on it.</p>
         <div className="cw-desk__evidence-list">
-          {trial.evidence.filter((item) => item.status === 'admitted').map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={(event) => onInspectEvidence(item.id, event.currentTarget)}
-            >
-              {item.label}
-            </button>
-          ))}
+          {availableEvidence.map(({ evidence: item, state }) => <article key={item.id}>
+            <div className="cw-desk__evidence-heading">
+              {state === 'admitted' ? <button
+                type="button"
+                onClick={(event) => onInspectEvidence(item.id, event.currentTarget)}
+              >{item.label}</button> : <strong>{item.label}</strong>}
+              <small className="cw-desk__state">{state === 'admitted' ? 'Final admission' : 'Provisional'}</small>
+            </div>
+            {state === 'provisional' ? <p>Inspection and replay remain unavailable until final admission.</p> : null}
+            <details>
+              <summary>Permitted use and limitations</summary>
+              <p><strong>Use only for:</strong> {item.allowedUses.join('; ')}.</p>
+              <ul>{item.limitations.map((limit) => <li key={limit}>{limit}</li>)}</ul>
+            </details>
+          </article>)}
         </div>
+        {!availableEvidence.length && !struckCount ? <p>No exhibit has yet been admitted.</p> : null}
+        {struckCount ? <p className="cw-desk__struck"><strong>Struck — do not use.</strong>{' '}
+          {struckCount} excluded {struckCount === 1 ? 'item has' : 'items have'} been removed from inspection and reasoning.
+        </p> : null}
+      </section>
+
+      <section>
+        <h3>Saved work</h3>
+        <p><strong>{saveStatus}</strong></p>
+        <p>{progress.notes.trim() ? 'Private notes are present.' : 'No private notes yet.'}{' '}
+          {reasoning.length} evidence-linked {reasoning.length === 1 ? 'reason is' : 'reasons are'} saved.
+        </p>
+        {reasoning.length ? <details>
+          <summary>Review saved reasoning ({reasoning.length})</summary>
+          <ol>{reasoning.map((entry) => <li key={`${entry.sceneId}:${entry.recordedAt}`}>
+            <strong>{moveLabels[entry.move]}:</strong> {entry.legalQuestion}{' '}
+            <small>Evidence: {trial.evidence.find(({ id }) => id === entry.evidenceId)?.label ?? 'admitted item'}</small>
+          </li>)}</ol>
+        </details> : null}
       </section>
 
       <section>

@@ -1,9 +1,11 @@
 import { expect, test, type Page } from '@playwright/test'
+import { seedRouteAvailable } from './court-week.progress-fixture'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 
 async function enterCourt(page: Page, mode: 'Reading mode' | 'Audio and captions' = 'Reading mode') {
   await page.addInitScript((instant) => { Date.now = () => instant }, releaseNow)
+  await seedRouteAvailable(page, releaseNow)
   await page.goto('/')
   await page.locator('.cw-entry__settings > summary').click()
   await page.getByLabel(mode).check()
