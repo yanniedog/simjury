@@ -1,0 +1,95 @@
+.cw-test-harness {
+  --cw-ground: #090d0f;
+  --cw-surface: #11171a;
+  --cw-raised: #182126;
+  --cw-paper: #f2ead8;
+  --cw-muted: #c0b8a7;
+  --cw-brass: #d6ad61;
+  --cw-line: #566166;
+  --cw-focus: #f4cf7b;
+  --cw-developer-toolbar-offset: 5.8rem;
+  width: 100%;
+  height: 100vh;
+  min-height: 100svh;
+  height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  color: var(--cw-paper);
+  background: var(--cw-ground);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.cw-test-harness * { box-sizing: border-box; }
+.cw-test-harness button, .cw-test-harness select { font: inherit; }
+.cw-test-harness button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: .65rem .9rem;
+  border: 1px solid var(--cw-line);
+  border-radius: .5rem;
+  color: var(--cw-paper);
+  background: var(--cw-surface);
+  cursor: pointer;
+}
+.cw-test-harness button:hover { background: var(--cw-raised); }
+.cw-test-harness button:focus-visible, .cw-test-harness select:focus-visible {
+  outline: 3px solid var(--cw-focus);
+  outline-offset: 3px;
+}
+
+/* Stay above the fixed courtroom shell so session jumps remain available mid-interaction. */
+.cw-developer-toolbar {
+  position: fixed;
+  top: max(.35rem, env(safe-area-inset-top));
+  left: 50%;
+  z-index: 1100;
+  display: flex;
+  flex-wrap: wrap;
+  width: min(42rem, calc(100% - 1rem));
+  min-height: 44px;
+  align-items: center;
+  gap: .45rem .55rem;
+  padding: .35rem .6rem;
+  transform: translateX(-50%);
+  color: var(--cw-paper);
+  border: 1px solid var(--cw-brass);
+  border-radius: .4rem;
+  background: #11171a;
+  box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .45);
+}
+.cw-test-harness .cw-shell {
+  top: var(--cw-developer-toolbar-offset);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: auto;
+  min-height: 0;
+}
+.cw-test-harness .cw-entry { padding-top: var(--cw-developer-toolbar-offset); }
+.cw-developer-toolbar strong { color: var(--cw-brass); white-space: nowrap; }
+.cw-developer-toolbar label, .cw-developer-toolbar button { flex: 0 0 auto; }
+.cw-developer-toolbar select {
+  flex: 1 1 7rem;
+  min-width: 0;
+  min-height: 44px;
+  padding-inline: .5rem;
+  color: var(--cw-paper);
+  border: 1px solid var(--cw-line);
+  background: #080c0e;
+}
+.cw-developer-toolbar span {
+  flex: 1 1 12rem;
+  max-width: 33ch;
+  color: var(--cw-muted);
+  font-size: .75rem;
+  line-height: 1.25;
+}
+
+@media (max-width: 640px) {
+  .cw-test-harness { --cw-developer-toolbar-offset: 7.6rem; }
+  .cw-developer-toolbar span { flex-basis: 100%; max-width: none; }
+}
+
+@media (max-width: 430px) {
+  .cw-test-harness { --cw-developer-toolbar-offset: 8.6rem; }
+}
