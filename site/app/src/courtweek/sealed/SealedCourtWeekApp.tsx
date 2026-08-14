@@ -7,7 +7,12 @@ import type {
   Verdict,
 } from '../model/schema'
 import { attachSessionArt, attachSessionAudio } from '../media/manifest'
-import { loadWeeklyProgress, type AccessMode, type StoredWeeklyProgress } from '../state/progress'
+import {
+  loadWeeklyProgress,
+  subscribeProgressDatabaseUpgradeBlock,
+  type AccessMode,
+  type StoredWeeklyProgress,
+} from '../state/progress'
 import { observeCourtTime } from '../state/schedule'
 import { WEEKLY_PROGRESS_EVENT } from '../state/useWeeklyProgress'
 import {
@@ -195,6 +200,7 @@ function StandardSealedCourtWeekApp({
   }
 }) {
   const [progress, setProgress] = useState<StoredWeeklyProgress | null>(null)
+  const [storageUpgradeBlocked, setStorageUpgradeBlocked] = useState(false)
   const [packs, setPacks] = useState<CourtDayPack[]>([])
   const [loadError, setLoadError] = useState<string | null>(null)
   const [retry, setRetry] = useState(0)
@@ -220,8 +226,16 @@ function StandardSealedCourtWeekApp({
 
   useEffect(() => {
     let active = true
+    const slowHydrationNotice = window.setTimeout(() => {
+      if (active) setStorageUpgradeBlocked(true)
+    }, 1_500)
+    const unsubscribeUpgradeBlock = subscribeProgressDatabaseUpgradeBlock((blocked) => {
+      if (active) setStorageUpgradeBlocked(blocked)
+    })
     void loadWeeklyProgress(bootstrap.id, bootstrap.revision).then((stored) => {
       if (!active) return
+      window.clearTimeout(slowHydrationNotice)
+      setStorageUpgradeBlocked(false)
       setProgress(stored?.revision === bootstrap.revision
         ? stored
         : baselineProgress(bootstrap, now()))
@@ -235,6 +249,8 @@ function StandardSealedCourtWeekApp({
     window.addEventListener(WEEKLY_PROGRESS_EVENT, receiveProgress)
     return () => {
       active = false
+      window.clearTimeout(slowHydrationNotice)
+      unsubscribeUpgradeBlock()
       window.removeEventListener(WEEKLY_PROGRESS_EVENT, receiveProgress)
     }
   }, [bootstrap, now])
@@ -316,7 +332,13 @@ function StandardSealedCourtWeekApp({
   }, [bootstrap, courtWeek.manifest.sessions, fetcher, now, packBase])
 
   if (!progress) {
-    return <main className="cw-loading" aria-busy="true"><p role="status">Preparing your place in court…</p></main>
+    return (
+      <main className="cw-loading" aria-busy="true">
+        <p role="status">{storageUpgradeBlocked
+          ? 'Another SimJury tab may be keeping your saved court record open. Close any other SimJury tabs or windows. This page will continue automatically without replacing your progress.'
+          : 'Preparing your place in court…'}</p>
+      </main>
+    )
   }
   if (loadError) {
     return (

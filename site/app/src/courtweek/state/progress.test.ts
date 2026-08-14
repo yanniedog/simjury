@@ -70,9 +70,12 @@ describe('weekly progress', () => {
     Object.defineProperty(globalThis, 'indexedDB', { configurable: true, value: factory })
     try {
       let settled = false
-      const opening = openProgressDatabase().then((result) => { settled = true; return result })
+      let reportedBlocked = false
+      const opening = openProgressDatabase(() => { reportedBlocked = true })
+        .then((result) => { settled = true; return result })
       await Promise.resolve()
       await Promise.resolve()
+      expect(reportedBlocked).toBe(true)
       expect(settled).toBe(false)
 
       openRequest.onsuccess?.({} as Event)

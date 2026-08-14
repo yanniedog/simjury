@@ -157,14 +157,37 @@ function archivedProgress(
   )
 }
 
-export function openProgressDatabase(): Promise<IDBDatabase> {
+const blockedDatabaseRequests = new Set<IDBOpenDBRequest>()
+const blockedDatabaseListeners = new Set<(blocked: boolean) => void>()
+
+function reportDatabaseUpgradeBlock(request: IDBOpenDBRequest, blocked: boolean): void {
+  const wasBlocked = blockedDatabaseRequests.size > 0
+  if (blocked) blockedDatabaseRequests.add(request)
+  else blockedDatabaseRequests.delete(request)
+  const isBlocked = blockedDatabaseRequests.size > 0
+  if (wasBlocked !== isBlocked) for (const listener of blockedDatabaseListeners) listener(isBlocked)
+}
+
+export function subscribeProgressDatabaseUpgradeBlock(listener: (blocked: boolean) => void): () => void {
+  blockedDatabaseListeners.add(listener)
+  listener(blockedDatabaseRequests.size > 0)
+  return () => blockedDatabaseListeners.delete(listener)
+}
+
+export function openProgressDatabase(onUpgradeBlocked?: () => void): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(PROGRESS_DATABASE.name, PROGRESS_DATABASE.version)
-    request.onerror = () => reject(request.error)
+    request.onerror = () => {
+      reportDatabaseUpgradeBlock(request, false)
+      reject(request.error)
+    }
     // A pre-upgrade tab can temporarily hold the v1 connection open. Keep
     // hydration pending until that tab releases it; falling back to an empty
     // memory record here could later overwrite the genuine saved progress.
-    request.onblocked = () => undefined
+    request.onblocked = () => {
+      reportDatabaseUpgradeBlock(request, true)
+      onUpgradeBlocked?.()
+    }
     request.onupgradeneeded = () => {
       if (!request.result.objectStoreNames.contains(PROGRESS_DATABASE.store)) {
         request.result.createObjectStore(PROGRESS_DATABASE.store)
@@ -174,6 +197,7 @@ export function openProgressDatabase(): Promise<IDBDatabase> {
       }
     }
     request.onsuccess = () => {
+      reportDatabaseUpgradeBlock(request, false)
       request.result.onversionchange = () => request.result.close()
       resolve(request.result)
     }
