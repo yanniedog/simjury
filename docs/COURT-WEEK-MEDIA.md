@@ -9,7 +9,7 @@ part of gameplay.
 `site/app/scripts/court-week-audio-jobs.ts` reads the checked-in
 `TrialRecord`/`SessionPresentation` and emits deterministic JSON jobs. The job
 digest covers the case revision, release tag, session, cue order, exact spoken
-text, voice casting, pauses and fixed interaction/transition time.
+text, voice casting, pauses and the fixed zero-duration media compatibility field.
 
 Every authored speaker has an explicit Kokoro voice. A new, removed or renamed
 speaker fails the build until the casting map is reviewed. The week currently
@@ -47,6 +47,27 @@ approval to a new digest. Check the current release blocker with:
 cd site/app
 npm run review:signoffs
 ```
+
+The ledger also carries one narrowly scoped pinned-media compatibility record.
+The historical source at `da395a60865af7b0a744145eddf3f0aff4a2f357`
+contains all eight real approvals for broad digest
+`sha256:acf35d82827884b22c8a7edbc7097b315155991c76fdf9d6cbf7b8181999b3af`;
+U4a at
+`3e2e8f9a5ad14fb5efc74e322893c4dd0cb80fa2` removed only retired session,
+scene and interaction duration metadata and correctly left the new broad digest
+`sha256:bd30414ae04005e61961c82b81a4918f9aa17cfc82b2bb8a0f348392aef886cc`
+pending. The separate media-source digest is
+`sha256:6ef3aea733f1eb734943e7ce757861ae56b1e9fed55c6762ac432a79063ac006`;
+it covers every ordered cue/caption, deterministic prerecorded-audio job, all seven open-court return
+variants, all four analyses and every rendered art byte. It deliberately omits
+non-media session/scene/interaction UX metadata.
+
+Production recomputes that projection and requires its exact compatibility
+record to name the pinned immutable Release tag and its original broad review
+digest. Any dialogue, caption, voice, pause, dynamic outcome or art drift blocks
+deployment. This does not approve the current broad ledger: publishing any new
+media Release still requires all eight roles to approve the exact current broad
+digest through `--require-approved`.
 
 Normal validation and `publish: false` report pending roles but continue so the
 private media artifact can be reviewed. That artifact carries the exact digest.

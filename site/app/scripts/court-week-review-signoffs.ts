@@ -3,7 +3,9 @@ import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { elevenMinutesCourtWeek } from '../src/courtweek/content/elevenMinutes'
+import { openCourtReturnTurns, type Agreement } from '../src/courtweek/engine/deliberation'
 import type { CourtWeek } from '../src/courtweek/model/schema'
+import { buildCourtWeekAudioJobs } from './court-week-audio-jobs'
 
 export const COURT_WEEK_REVIEW_ROLES = [
   'prosecution',
@@ -19,11 +21,22 @@ export const COURT_WEEK_REVIEW_ROLES = [
 type ReviewRole = typeof COURT_WEEK_REVIEW_ROLES[number]
 type ReviewDecision = 'pending' | 'approved'
 
+export interface PinnedMediaCompatibility {
+  schema: 'simjury.court-week-pinned-media-compatibility/v1'
+  releaseTag: string
+  releaseReviewDigest: string
+  mediaSourceDigest: string
+  releaseSourceCommit: string
+  metadataMigrationCommit: string
+  basis: 'retired-duration-metadata-only'
+}
+
 export interface ReviewSignoffSource {
   schema: 'simjury.court-week-review-signoffs/v1'
   caseId: string
   revision: string
   contentDigest: string
+  pinnedMedia?: PinnedMediaCompatibility
   signoffs: Array<{ role: ReviewRole; decision: ReviewDecision }>
 }
 
@@ -32,11 +45,14 @@ export interface ReviewSignoffReport {
   caseId: string
   revision: string
   contentDigest: string
+  mediaSourceDigest: string
   signoffRevision: string
   signoffDigest: string
   approvedRoles: ReviewRole[]
   pendingRoles: ReviewRole[]
   exactSourceMatch: boolean
+  pinnedMediaCompatible: boolean
+  pinnedMedia?: PinnedMediaCompatibility
   readyToPublish: boolean
 }
 
@@ -79,7 +95,60 @@ export function courtWeekReviewDigest(courtWeek: CourtWeek = elevenMinutesCourtW
   return `sha256:${createHash('sha256').update(canonicalJson(exactReviewedSource)).digest('hex')}`
 }
 
-export function assessReviewSignoffs(source: ReviewSignoffSource): ReviewSignoffReport {
+const RETURN_VARIANTS: readonly (readonly [CourtWeek['deliberation']['outcomePaths'][number]['verdict'], Agreement])[] = [
+  ['murder', 'unanimous'], ['murder', 'majority'],
+  ['manslaughter', 'unanimous'], ['manslaughter', 'majority'],
+  ['not-guilty', 'unanimous'], ['not-guilty', 'majority'],
+  ['unable-to-agree', 'hung'],
+]
+const APPROVED_RELEASE_SOURCE_COMMIT = 'da395a60865af7b0a744145eddf3f0aff4a2f357'
+const RETIRED_DURATION_MIGRATION_COMMIT = '3e2e8f9a5ad14fb5efc74e322893c4dd0cb80fa2'
+
+/** Exact static-media and runtime speech projection; excludes session/interaction UX metadata. */
+export function courtWeekMediaSourceDigest(courtWeek: CourtWeek = elevenMinutesCourtWeek, sceneAssetRoot = defaultSceneAssetRoot): string {
+  const jobs = buildCourtWeekAudioJobs(courtWeek).jobs.map(({ sessionId, sourceDigest }) => ({ sessionId, sourceDigest }))
+  const mediaSource = {
+    caseId: courtWeek.manifest.id,
+    revision: courtWeek.manifest.revision,
+    releaseTag: courtWeek.manifest.releaseTag,
+    cueProjection: courtWeek.manifest.sessions.map(({ id, day, scenes }) => ({
+      id, day, scenes: scenes.map(({ id: sceneId, cues }) => ({ id: sceneId, cues })),
+    })),
+    prerecordedAudioJobs: jobs,
+    runtimeSpeech: {
+      returns: RETURN_VARIANTS.map(([verdict, agreement]) => ({
+        verdict, agreement, turns: openCourtReturnTurns(verdict, agreement),
+        accessibleProposition: `The accused stands while the ${agreement} result is spoken and recorded in open court.`,
+      })),
+      analyses: courtWeek.deliberation.outcomePaths.map((analysis) => ({
+        ...analysis,
+        text: `Strongest lawful rationale: ${analysis.lawfulRationale}\n\nStrongest counter-analysis: ${analysis.counterAnalysis}`,
+        accessibleProposition: 'Balanced analysis presents the strongest lawful rationale and counter-analysis for the returned result without declaring a correct answer.',
+      })),
+    },
+    renderedSceneAssets: digestSceneAssets(sceneAssetRoot),
+  }
+  return `sha256:${createHash('sha256').update(canonicalJson(mediaSource)).digest('hex')}`
+}
+
+function validDigest(value: string): boolean {
+  return /^sha256:[0-9a-f]{64}$/u.test(value)
+}
+
+function assertPinnedMediaRecord(record: PinnedMediaCompatibility): void {
+  if (record.schema !== 'simjury.court-week-pinned-media-compatibility/v1') throw new Error('Unsupported pinned media compatibility schema')
+  if (!validDigest(record.releaseReviewDigest) || !validDigest(record.mediaSourceDigest)) throw new Error('Pinned media compatibility requires SHA-256 digests')
+  if (record.releaseSourceCommit !== APPROVED_RELEASE_SOURCE_COMMIT || record.metadataMigrationCommit !== RETIRED_DURATION_MIGRATION_COMMIT) {
+    throw new Error('Pinned media compatibility requires the audited approval and migration commits')
+  }
+  if (record.basis !== 'retired-duration-metadata-only') throw new Error('Unsupported pinned media compatibility basis')
+}
+
+export function assessReviewSignoffs(
+  source: ReviewSignoffSource,
+  courtWeek: CourtWeek = elevenMinutesCourtWeek,
+  sceneAssetRoot = defaultSceneAssetRoot,
+): ReviewSignoffReport {
   if (source.schema !== 'simjury.court-week-review-signoffs/v1') throw new Error('Unsupported Court Week review signoff schema')
   const roles = source.signoffs.map(({ role }) => role)
   const expectedRoles = new Set<string>(COURT_WEEK_REVIEW_ROLES)
@@ -90,25 +159,31 @@ export function assessReviewSignoffs(source: ReviewSignoffSource): ReviewSignoff
     throw new Error('Court Week review decisions must be pending or approved')
   }
 
-  const contentDigest = courtWeekReviewDigest()
-  const revision = elevenMinutesCourtWeek.manifest.revision
-  const exactSourceMatch = source.caseId === elevenMinutesCourtWeek.manifest.id
-    && source.revision === revision
+  const contentDigest = courtWeekReviewDigest(courtWeek, sceneAssetRoot)
+  const mediaSourceDigest = courtWeekMediaSourceDigest(courtWeek, sceneAssetRoot)
+  const revision = courtWeek.manifest.revision
+  const sameCaseRevision = source.caseId === courtWeek.manifest.id && source.revision === revision
+  const exactSourceMatch = sameCaseRevision
     && source.contentDigest === contentDigest
   const approvedRoles = exactSourceMatch
     ? source.signoffs.filter(({ decision }) => decision === 'approved').map(({ role }) => role)
     : []
   const pendingRoles = COURT_WEEK_REVIEW_ROLES.filter((role) => !approvedRoles.includes(role))
+  if (source.pinnedMedia) assertPinnedMediaRecord(source.pinnedMedia)
+  const pinnedMediaCompatible = sameCaseRevision && source.pinnedMedia?.mediaSourceDigest === mediaSourceDigest
   return {
     schema: 'simjury.court-week-review-report/v1',
-    caseId: elevenMinutesCourtWeek.manifest.id,
+    caseId: courtWeek.manifest.id,
     revision,
     contentDigest,
+    mediaSourceDigest,
     signoffRevision: source.revision,
     signoffDigest: source.contentDigest,
     approvedRoles,
     pendingRoles,
     exactSourceMatch,
+    pinnedMediaCompatible,
+    pinnedMedia: source.pinnedMedia,
     readyToPublish: exactSourceMatch && pendingRoles.length === 0,
   }
 }
@@ -129,6 +204,19 @@ export function requirePublishableReview(
   }
 }
 
+export function requirePinnedMediaCompatibility(
+  report: ReviewSignoffReport,
+  expectedReleaseDigest: string,
+  expectedRevision: string,
+  expectedReleaseTag: string,
+): void {
+  const pinned = report.pinnedMedia
+  if (!report.pinnedMediaCompatible || !pinned) throw new Error('Pinned media blocked: current dialogue, captions, audio or art differ from the compatibility record')
+  if (report.revision !== expectedRevision || pinned.releaseReviewDigest !== expectedReleaseDigest || pinned.releaseTag !== expectedReleaseTag) {
+    throw new Error('Pinned media blocked: immutable Release identity differs from the compatibility record')
+  }
+}
+
 function argument(name: string): string | undefined {
   const index = process.argv.indexOf(name)
   return index < 0 ? undefined : process.argv[index + 1]
@@ -138,13 +226,16 @@ export function reportCourtWeekReviewSignoffs(options: {
   sourcePath?: string
   reportPath?: string
   requireApproved?: boolean
+  requirePinnedMedia?: boolean
   expectedDigest?: string
   expectedRevision?: string
+  expectedReleaseTag?: string
 } = {}): ReviewSignoffReport {
   const sourcePath = resolve(options.sourcePath ?? 'content-reviews/cw-0001.review-signoffs.json')
   const source = JSON.parse(readFileSync(sourcePath, 'utf8')) as ReviewSignoffSource
   const report = assessReviewSignoffs(source)
   console.log(`Court Week reviewed-source digest: ${report.contentDigest} (${report.revision})`)
+  console.log(`Court Week media-source digest: ${report.mediaSourceDigest}`)
   console.log(report.readyToPublish
     ? `Review signoffs complete: ${report.approvedRoles.join(', ')}`
     : `Review signoffs pending: ${report.pendingRoles.join(', ')}`)
@@ -155,6 +246,11 @@ export function reportCourtWeekReviewSignoffs(options: {
     writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`)
   }
   if (options.requireApproved) requirePublishableReview(report, options.expectedDigest, options.expectedRevision)
+  if (options.requirePinnedMedia) {
+    if (!options.expectedDigest || !options.expectedRevision || !options.expectedReleaseTag) throw new Error('Pinned media verification requires expected digest, revision and Release tag')
+    requirePinnedMediaCompatibility(report, options.expectedDigest, options.expectedRevision, options.expectedReleaseTag)
+    console.log(`Pinned media compatibility verified for ${options.expectedReleaseTag}.`)
+  }
   return report
 }
 
@@ -164,6 +260,8 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
     reportPath: argument('--report'),
     expectedDigest: argument('--expected-digest'),
     expectedRevision: argument('--expected-revision'),
+    expectedReleaseTag: argument('--expected-release-tag'),
     requireApproved: process.argv.includes('--require-approved'),
+    requirePinnedMedia: process.argv.includes('--require-pinned-media'),
   })
 }

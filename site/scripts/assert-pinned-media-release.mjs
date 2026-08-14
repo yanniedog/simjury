@@ -12,6 +12,8 @@ const AUDIO_SOURCE_EXTENSIONS = {
   captions: '.vtt',
 }
 const ART_SOURCE_EXTENSIONS = { avif: '.avif', webp: '.webp' }
+const APPROVED_RELEASE_SOURCE_COMMIT = 'da395a60865af7b0a744145eddf3f0aff4a2f357'
+const RETIRED_DURATION_MIGRATION_COMMIT = '3e2e8f9a5ad14fb5efc74e322893c4dd0cb80fa2'
 const REQUIRED_REVIEW_ROLES = [
   'prosecution',
   'defence',
@@ -176,19 +178,35 @@ function assertExactReviewSignoffs(reviewSignoffs, runtimeManifest, releaseManif
   ) {
     throw new Error(`Court Week review revision mismatch: signoffs=${reviewSignoffs.revision ?? 'missing'}, runtime=${runtimeManifest.source_revision}, release=${releaseManifest.court_week_revision}.`)
   }
-  if (
-    !/^sha256:[0-9a-f]{64}$/u.test(reviewSignoffs.contentDigest ?? '') ||
-    reviewSignoffs.contentDigest !== releaseManifest.review_content_digest
-  ) {
-    throw new Error(`Court Week reviewed-source digest mismatch: signoffs=${reviewSignoffs.contentDigest ?? 'missing'}, release=${releaseManifest.review_content_digest ?? 'missing'}.`)
-  }
   if (!Array.isArray(reviewSignoffs.signoffs)) {
     throw new Error('Court Week review signoffs must contain all eight required roles.')
   }
   const decisions = new Map(reviewSignoffs.signoffs.map((entry) => [entry?.role, entry?.decision]))
+  const validLedger = reviewSignoffs.signoffs.length === REQUIRED_REVIEW_ROLES.length &&
+    decisions.size === REQUIRED_REVIEW_ROLES.length &&
+    REQUIRED_REVIEW_ROLES.every((role) => ['pending', 'approved'].includes(decisions.get(role)))
+  if (!validLedger || !/^sha256:[0-9a-f]{64}$/u.test(reviewSignoffs.contentDigest ?? '')) {
+    throw new Error('Court Week review ledger must contain one valid decision for every required role and an exact digest.')
+  }
+
+  if (reviewSignoffs.pinnedMedia) {
+    const pinned = requireObject(reviewSignoffs.pinnedMedia, 'Pinned media compatibility')
+    if (
+      pinned.schema !== 'simjury.court-week-pinned-media-compatibility/v1' ||
+      pinned.releaseTag !== releaseManifest.release_tag ||
+      pinned.releaseReviewDigest !== releaseManifest.review_content_digest ||
+      !/^sha256:[0-9a-f]{64}$/u.test(pinned.mediaSourceDigest ?? '') ||
+      pinned.releaseSourceCommit !== APPROVED_RELEASE_SOURCE_COMMIT ||
+      pinned.metadataMigrationCommit !== RETIRED_DURATION_MIGRATION_COMMIT ||
+      pinned.basis !== 'retired-duration-metadata-only'
+    ) throw new Error('Pinned media compatibility does not match the immutable Release provenance.')
+    return
+  }
+
+  if (reviewSignoffs.contentDigest !== releaseManifest.review_content_digest) {
+    throw new Error(`Court Week reviewed-source digest mismatch: signoffs=${reviewSignoffs.contentDigest}, release=${releaseManifest.review_content_digest ?? 'missing'}.`)
+  }
   if (
-    reviewSignoffs.signoffs.length !== REQUIRED_REVIEW_ROLES.length ||
-    decisions.size !== REQUIRED_REVIEW_ROLES.length ||
     REQUIRED_REVIEW_ROLES.some((role) => decisions.get(role) !== 'approved')
   ) {
     const pending = REQUIRED_REVIEW_ROLES.filter((role) => decisions.get(role) !== 'approved')
