@@ -3,3 +3,4 @@ export { ImmersiveCourtShell, type ImmersiveCourtShellProps } from './ImmersiveC
 export { EvidenceViewer, type EvidenceViewerProps } from './EvidenceViewer'
 export { JurorDesk, type JurorDeskProps } from './JurorDesk'
 export { CourtWeekCompletion, type CourtWeekCompletionProps } from './CourtWeekCompletion'
+export { CourtSheet, type CourtSheetProps } from './CourtSheet'
