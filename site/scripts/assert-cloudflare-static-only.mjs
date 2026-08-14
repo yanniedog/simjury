@@ -47,6 +47,12 @@ for (const path of [
 }
 
 const redirects = readFileSync(join(siteRoot, 'public', '_redirects'), 'utf8')
+for (const line of redirects.split(/\r?\n/u).map((entry) => entry.trim()).filter((entry) => entry && !entry.startsWith('#'))) {
+  const [source] = line.split(/\s+/u)
+  if (!source.startsWith('/')) {
+    failures.push(`Static Assets _redirects source must be a path, not a scheme or hostname: ${source}`)
+  }
+}
 for (const route of ['/today / 302', '/play / 302', '/install / 302']) {
   if (!redirects.includes(route)) failures.push(`Compatibility redirect missing: ${route}`)
 }

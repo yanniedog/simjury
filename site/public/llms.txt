@@ -25,4 +25,4 @@ notes and free-text reasoning remain local. A browser-local opt-out is available
 
 These guides do not reproduce or link case facts, testimony, exhibits, juror
 rules, ballots, outcomes or analysis. `/jury/`, `/today/`, `/play/` and `/install/` are
-compatibility redirects to the bare domain.
+compatibility redirects to the canonical HTTPS apex.
