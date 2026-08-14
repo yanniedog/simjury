@@ -1045,6 +1045,7 @@ export function CourtWeekApp({
                 : persistence === 'pending' ? 'Checking device storage.'
                   : 'Held in this tab only; export before leaving.'}
           progressTransferEnabled={!ephemeral}
+          progressImportEnabled={!interactionOpen}
           readOnly={isReplay}
           inactive={Boolean(evidence)}
           fallbackReturnFocusSelector={interactionOpen ? '#cw-interaction-desk' : undefined}
