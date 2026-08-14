@@ -11,8 +11,6 @@ export interface CourtWeekScheduleEntry {
   ordinal: number
   day: CourtSession['day']
   unlockAt: string
-  /** Legacy descriptive metadata. It is never a navigation timer. */
-  targetMinutes?: number
   prerequisiteSessionIds: string[]
   locator: string
 }
