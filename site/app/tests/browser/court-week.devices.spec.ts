@@ -119,6 +119,7 @@ async function captureActiveState(page: Page) {
     cue: await page.locator('.cw-cue-live-region').textContent(),
     speaker: await page.locator('#cw-speaker-name').textContent(),
     progressLabel: await page.locator('.cw-status p').nth(1).textContent(),
+    accessMode: await page.getByLabel('Presentation mode').inputValue(),
     stored: await readProgressPosition(page),
     media: await page.evaluate(() => ({ ...(
       window as typeof window & { __simjuryMediaAudit: MediaAuditState }
@@ -130,6 +131,7 @@ async function expectActiveState(page: Page, expected: Awaited<ReturnType<typeof
   await expect(page.locator('.cw-cue-live-region')).toHaveText(expected.cue ?? '')
   await expect(page.locator('#cw-speaker-name')).toHaveText(expected.speaker ?? '')
   await expect(page.locator('.cw-status p').nth(1)).toHaveText(expected.progressLabel ?? '')
+  await expect(page.getByLabel('Presentation mode')).toHaveValue(expected.accessMode)
   await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible()
   await expect.poll(() => readProgressPosition(page)).toEqual(expected.stored)
   await expect.poll(() => page.evaluate(() => ({ ...(

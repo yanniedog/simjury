@@ -43,7 +43,7 @@ test('compact mobile captions identify the speaker and keep every control reacha
     expect(Number.parseFloat(await caption.evaluate((node) => getComputedStyle(node).fontSize))).toBeGreaterThanOrEqual(18)
 
     const geometry = await page.locator('.cw-shell').evaluate((shell) => {
-      const controls = [...shell.querySelectorAll<HTMLButtonElement>('.cw-controls button')]
+      const controls = [...shell.querySelectorAll<HTMLElement>('.cw-controls button, .cw-controls select')]
       return {
         pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         controls: controls.map((control) => {
