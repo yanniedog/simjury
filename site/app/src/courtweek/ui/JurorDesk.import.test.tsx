@@ -10,42 +10,29 @@ Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 const sessions = elevenMinutesCourtWeek.manifest.sessions
 const firstCue = sessions[0].scenes[0].cues[0]
 const current: WeeklyProgress = {
-  schemaVersion: 'court-week-progress-v1', courtWeekId: elevenMinutesCourtWeek.manifest.id,
-  revision: elevenMinutesCourtWeek.manifest.revision, highestObservedTime: '2026-08-17T09:00:00+10:00',
-  completedSessionIds: [], currentSessionId: sessions[0].id, currentSceneId: sessions[0].scenes[0].id,
+  schemaVersion: 'court-week-progress-v1', courtWeekId: elevenMinutesCourtWeek.manifest.id, revision: elevenMinutesCourtWeek.manifest.revision,
+  highestObservedTime: '2026-08-17T09:00:00+10:00', completedSessionIds: [], currentSessionId: sessions[0].id, currentSceneId: sessions[0].scenes[0].id,
   currentCueId: firstCue.id, notes: 'Keep this draft.', reasoningContributions: [], majorityDirectionReceived: false,
 }
 const imported: WeeklyProgress = {
-  ...current, completedSessionIds: sessions.map(({ id }) => id), provisionalVote: 'not-guilty',
-  secondVote: 'not-guilty', sealedVerdict: 'not-guilty', sealedAgreement: 'unanimous',
-  notes: 'Transferred private note.', reasoningContributions: [{
-    propositionId: 'prop-causation-window-doubt', sceneId: 'sat-causation',
-    legalQuestion: 'Was survival excluded beyond reasonable doubt?', evidenceId: 'ex-survival',
-    move: 'challenge-inference', recordedAt: '2026-08-15T11:00:00+10:00', influencePenalty: 0,
-  }],
+  ...current, completedSessionIds: sessions.map(({ id }) => id), provisionalVote: 'not-guilty', secondVote: 'not-guilty',
+  sealedVerdict: 'not-guilty', sealedAgreement: 'unanimous', notes: 'Transferred private note.', reasoningContributions: [{
+    propositionId: 'prop-causation-window-doubt', sceneId: 'sat-causation', legalQuestion: 'Was survival excluded beyond reasonable doubt?',
+    evidenceId: 'ex-survival', move: 'challenge-inference', recordedAt: '2026-08-15T11:00:00+10:00', influencePenalty: 0 }],
 }
 describe('JurorDesk progress import', () => {
   let host: HTMLDivElement
   let root: Root
   const onImport = vi.fn<(progress: WeeklyProgress) => void>()
-  beforeEach(() => {
-    host = document.createElement('div')
-    document.body.append(host)
-    root = createRoot(host)
-    onImport.mockReset()
-  })
-  afterEach(() => {
-    act(() => root.unmount())
-    host.remove()
-  })
+  beforeEach(() => { host = document.createElement('div'); document.body.append(host); root = createRoot(host); onImport.mockReset() })
+  afterEach(() => { act(() => root.unmount()); host.remove() })
   const renderDesk = async (prepareImport: (text: string) => Promise<PreparedProgressImport>) => {
     await act(async () => root.render(<JurorDesk
       caseTitle="Eleven Minutes" trial={elevenMinutesCourtWeek.trial} sessions={sessions}
       deliberation={elevenMinutesCourtWeek.deliberation} progress={current}
       activeSessionId={sessions[0].id} activePhase="arrival" currentCueId={firstCue.id}
-      evidenceLedger={deriveEvidenceLedger(elevenMinutesCourtWeek.trial, sessions, {
-        cueId: firstCue.id, authoredCueComplete: false,
-      })}
+      evidenceLedger={deriveEvidenceLedger(elevenMinutesCourtWeek.trial, sessions,
+        { cueId: firstCue.id, authoredCueComplete: false })}
       saveStatus="Stored privately on this device." onNotesChange={() => undefined}
       prepareImport={prepareImport} onImport={onImport} onInspectEvidence={() => undefined} onClose={() => undefined}
     />))
@@ -53,10 +40,7 @@ describe('JurorDesk progress import', () => {
   const selectFile = async (file: File) => {
     const input = host.querySelector<HTMLInputElement>('input[type="file"]')!
     Object.defineProperty(input, 'files', { configurable: true, value: [file] })
-    await act(async () => {
-      input.dispatchEvent(new Event('change', { bubbles: true }))
-      await new Promise((resolve) => window.setTimeout(resolve, 0))
-    })
+    await act(async () => { input.dispatchEvent(new Event('change', { bubbles: true })); await new Promise((resolve) => window.setTimeout(resolve, 0)) })
   }
   it('rejects an oversized file before reading or preparing it', async () => {
     const prepareImport = vi.fn()
@@ -69,20 +53,16 @@ describe('JurorDesk progress import', () => {
     expect(host.querySelector<HTMLTextAreaElement>('textarea')?.value).toBe('Keep this draft.')
   })
   it('previews without committing, preserves drafts on cancel, then imports only on confirm', async () => {
-    const commit = vi.fn(async () => imported)
+    let finishCommit!: (progress: WeeklyProgress) => void
+    const commit = vi.fn(() => new Promise<WeeklyProgress>((resolve) => { finishCommit = resolve }))
     const prepareImport = vi.fn(async () => ({ progress: imported, sessions, commit }))
     await renderDesk(prepareImport)
     act(() => host.querySelector<HTMLInputElement>('input[type="checkbox"]')!.click())
     const file = { size: 100, text: vi.fn(async () => '{}') } as unknown as File
     await selectFile(file)
-    expect(host.textContent).toContain('Review imported progress')
-    expect(host.textContent).toContain('Eleven Minutes (cw-0001)')
-    expect(host.textContent).toContain(imported.revision)
-    expect(host.textContent).toContain('Court Week complete')
-    expect(host.textContent).toContain('Provisional: Not Guilty; Second: Not Guilty')
-    expect(host.textContent).toContain('Not Guilty - unanimous')
-    expect(host.textContent).toContain('1 saved')
-    expect(host.textContent).toContain('Private notesIncluded')
+    for (const text of ['Review imported progress', 'Eleven Minutes (cw-0001)', imported.revision,
+      'Court Week complete', 'Provisional: Not Guilty; Second: Not Guilty', 'Not Guilty - unanimous',
+      '1 saved', 'Private notesIncluded; replaces current notes']) expect(host.textContent).toContain(text)
     expect(document.activeElement).toBe(host.querySelector('#cw-import-preview-heading'))
     expect(commit).not.toHaveBeenCalled()
     expect(onImport).not.toHaveBeenCalled()
@@ -93,9 +73,12 @@ describe('JurorDesk progress import', () => {
     expect(document.activeElement?.textContent).toBe('Import progress')
     expect(commit).not.toHaveBeenCalled()
     await selectFile(file)
-    await act(async () => Array.from(host.querySelectorAll('button')).find(
-      ({ textContent }) => textContent === 'Confirm import',
-    )?.click())
+    act(() => Array.from(host.querySelectorAll('button')).find(
+      ({ textContent }) => textContent === 'Confirm import')?.click())
+    expect(host.querySelector<HTMLButtonElement>('.cw-sheet__close')?.disabled).toBe(true)
+    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })))
+    expect(host.textContent).toContain('Review imported progress')
+    await act(async () => { finishCommit(imported); await Promise.resolve() })
     await vi.waitFor(() => expect(onImport).toHaveBeenCalledWith(imported))
     expect(commit).toHaveBeenCalledOnce()
   })

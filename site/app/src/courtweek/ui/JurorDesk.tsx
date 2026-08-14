@@ -8,6 +8,7 @@ import { reasoningMoveLabels } from '../model/deliberationContract'
 import {
   downloadWeeklyProgress,
   importWeeklyProgress,
+  MAX_PROGRESS_TRANSFER_BYTES,
 } from '../state/progress'
 import { formatCourtUnlock } from '../state/schedule'
 import { CourtSheet } from './CourtSheet'
@@ -22,7 +23,7 @@ const directionEvents = new Set<CourtEvent>([
   'perseverance-direction', 'majority-direction',
 ])
 const rulingEvents = new Set<CourtEvent>(['objection', 'ruling'])
-export const MAX_PROGRESS_IMPORT_BYTES = 1024 * 1024
+export const MAX_PROGRESS_IMPORT_BYTES = MAX_PROGRESS_TRANSFER_BYTES
 
 export interface PreparedProgressImport {
   progress: WeeklyProgress
@@ -194,7 +195,10 @@ export function JurorDesk({
   ) : (
     <div className="cw-desk__transfer-actions">
       <div className="cw-button-row" role="group" aria-labelledby="cw-desk-transfer-heading">
-        <button type="button" onClick={() => downloadWeeklyProgress(progress, includeNotes)}>
+        <button type="button" onClick={() => {
+          try { downloadWeeklyProgress(progress, includeNotes); setImportError(null) }
+          catch (error) { setImportError(error instanceof Error ? error.message : 'Progress could not be exported.') }
+        }}>
           Export progress
         </button>
         {!readOnly && progressImportEnabled ? (
@@ -214,6 +218,7 @@ export function JurorDesk({
       kicker={candidateProgress ? 'Before anything changes' : 'Private juror desk'}
       headingId="cw-desk-heading"
       closeLabel={candidateProgress ? 'Close import review' : 'Close juror desk'}
+      closeDisabled={Boolean(candidateProgress && importBusy)}
       inactive={inactive}
       fallbackReturnFocusSelector={fallbackReturnFocusSelector}
       footer={transferActions}
@@ -235,7 +240,9 @@ export function JurorDesk({
               ? `${verdictLabels[candidateProgress.sealedVerdict]} - ${candidateProgress.sealedAgreement}`
               : 'Not sealed'}</dd></div>
             <div><dt>Reasoning trail</dt><dd>{candidateProgress.reasoningContributions?.length ?? 0} saved</dd></div>
-            <div><dt>Private notes</dt><dd>{candidateProgress.notes.length ? 'Included' : 'Not included'}</dd></div>
+            <div><dt>Private notes</dt><dd>{candidateProgress.notes.length
+              ? 'Included; replaces current notes'
+              : 'Not included; current notes stay on this device'}</dd></div>
           </dl>
         </section>
       ) : <>

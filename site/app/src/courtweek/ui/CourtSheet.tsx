@@ -8,6 +8,7 @@ export interface CourtSheetProps {
   kicker?: ReactNode
   footer?: ReactNode
   closeLabel?: string
+  closeDisabled?: boolean
   headingId?: string
   descriptionId?: string
   returnFocusTo?: HTMLElement | null
@@ -24,6 +25,7 @@ export function CourtSheet({
   kicker,
   footer,
   closeLabel = 'Close sheet',
+  closeDisabled = false,
   headingId,
   descriptionId,
   returnFocusTo,
@@ -36,7 +38,7 @@ export function CourtSheet({
   const labelledBy = headingId ?? `cw-sheet-${generatedHeadingId.replace(/:/gu, '')}`
   useModalFocusBoundary(sheet, returnFocusTo, fallbackReturnFocusSelector, {
     active: !inactive,
-    onEscape: onClose,
+    onEscape: closeDisabled ? undefined : onClose,
   })
 
   return (
@@ -56,7 +58,7 @@ export function CourtSheet({
           {kicker ? <p className="cw-kicker">{kicker}</p> : null}
           <h2 id={labelledBy}>{title}</h2>
         </div>
-        <button className="cw-sheet__close" type="button" onClick={onClose} aria-label={closeLabel}>
+        <button className="cw-sheet__close" type="button" disabled={closeDisabled} onClick={onClose} aria-label={closeLabel}>
           Close
         </button>
       </header>

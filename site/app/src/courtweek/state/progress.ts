@@ -14,6 +14,7 @@ export const PROGRESS_DATABASE = {
 } as const
 
 export const PROGRESS_FORMAT = 'simjury-court-week-progress-v1' as const
+export const MAX_PROGRESS_TRANSFER_BYTES = 1024 * 1024
 
 export type AccessMode = 'audio-first' | 'captions' | 'reading'
 
@@ -298,7 +299,11 @@ export function exportWeeklyProgress(
     exportedAt: new Date().toISOString(),
     progress: exportedProgress,
   }
-  return JSON.stringify(envelope, null, 2)
+  const serialized = JSON.stringify(envelope, null, 2)
+  if (new TextEncoder().encode(serialized).byteLength > MAX_PROGRESS_TRANSFER_BYTES) {
+    throw new Error('Progress is too large to transfer. Shorten your private notes before exporting.')
+  }
+  return serialized
 }
 
 export function importWeeklyProgress(
@@ -353,6 +358,7 @@ export function mergeImportedWeeklyProgress(
 ): StoredWeeklyProgress {
   return {
     ...imported,
+    notes: imported.notes || current.notes,
     highestObservedTime: new Date(Math.max(
       Date.parse(current.highestObservedTime),
       Date.parse(imported.highestObservedTime),

@@ -436,7 +436,7 @@ test('import stays read-only through preview and cancel, then commits from the k
   await expect(desk.getByText('None saved', { exact: true })).toBeVisible()
   await expect(desk.getByText('Not sealed', { exact: true })).toBeVisible()
   await expect(desk.getByText('0 saved', { exact: true })).toBeVisible()
-  await expect(desk.getByText('Included', { exact: true })).toBeVisible()
+  await expect(desk.getByText('Included; replaces current notes', { exact: true })).toBeVisible()
   await expect(desk.getByRole('heading', { name: 'Candidate summary' })).toBeFocused()
   expect(await hasOpenedPack(page, 2)).toBe(false)
 
