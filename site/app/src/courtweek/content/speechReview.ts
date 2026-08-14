@@ -90,7 +90,9 @@ for (const actor of COURT_WEEK_ACTORS) {
   }
 }
 
-const authority: Readonly<Partial<Record<LegalAction, readonly ActorRole[]>>> = {
+const allRoles = [...new Set(COURT_WEEK_ACTORS.map(({ role }) => role))]
+const authority: Readonly<Record<LegalAction, readonly ActorRole[]>> = {
+  none: allRoles,
   'charge-read': ['clerk'], 'plea-question': ['clerk'], 'plea-answer': ['accused'],
   question: ['counsel'], answer: ['witness'], objection: ['counsel'],
   submission: ['counsel'], foundation: ['witness'], tender: ['counsel'], admission: ['judge'],
@@ -99,9 +101,13 @@ const authority: Readonly<Partial<Record<LegalAction, readonly ActorRole[]>>> = 
   'ballot-administration': ['juror', 'court-officer'], 'verdict-question': ['clerk'],
   'verdict-return': ['juror'], narration: ['narrator', 'document'],
 }
-const modeAuthority: Readonly<Partial<Record<SpeechMode, readonly ActorRole[]>>> = {
+const modeAuthority: Readonly<Record<SpeechMode, readonly ActorRole[]>> = {
+  'live-proceeding': ['judge', 'clerk', 'court-officer', 'counsel', 'accused', 'witness', 'juror'],
+  'reported-testimony': ['witness'],
+  'recording-playback': ['recorded-participant', 'accused', 'witness', 'recording'],
   advocacy: ['counsel'], 'judicial-direction': ['judge'],
-  'reported-testimony': ['witness'], narration: ['narrator', 'document'],
+  'written-text-read': ['judge', 'clerk', 'counsel', 'witness', 'document'],
+  narration: ['narrator', 'document'],
   'system-template': ['narrator', 'document'],
 }
 
@@ -112,26 +118,29 @@ function escapePattern(value: string): string {
 const actorReferences = [...referenceToActor.keys()]
   .sort((left, right) => right.length - left.length).map(escapePattern).join('|')
 const labelPattern = /(?:^|\s)([\p{Lu}][\p{L}’'-]*(?:\s+[\p{Lu}][\p{L}’'-]*){0,3}):/gu
+const proseLabels = new Set(['first', 'second', 'third', 'fourth', 'question', 'answer', 'note'])
 const speechVerbPattern = new RegExp(
   `\\b(${actorReferences}|Someone|Another voice)\\s+` +
-  '(answers?|adds?|asks?|replies?|objects?|rules?|says?|stops?|writes?|tells?|told me)\\b:?',
+  '(answers?|adds?|asks?|confirms?|continues?|explains?|interjects?|objects?|reads?|replies?|' +
+  'reports?|responds?|returns?|rules?|says?|states?|stops?|writes?|tells?|told me)\\b:?',
   'giu',
 )
-
-export interface PotentialAttribution { marker: string; actorId?: ActorId }
-
+type AttributionSyntax = 'label' | 'verb'
+export interface PotentialAttribution { marker: string; actorId?: ActorId; syntax: AttributionSyntax }
+const normalizeReference = (value: string): string => value.toLocaleLowerCase('en-AU')
 export function findPotentialAttributions(text: string): PotentialAttribution[] {
   const findings = new Map<string, PotentialAttribution>()
   for (const match of text.matchAll(labelPattern)) {
     const marker = `${match[1]}:`
-    findings.set(marker.toLocaleLowerCase('en-AU'), {
-      marker, actorId: referenceToActor.get(match[1].toLocaleLowerCase('en-AU')),
+    if (proseLabels.has(normalizeReference(match[1]))) continue
+    findings.set(normalizeReference(marker), {
+      marker, actorId: referenceToActor.get(normalizeReference(match[1])), syntax: 'label',
     })
   }
   for (const match of text.matchAll(speechVerbPattern)) {
     const marker = match[0].trim()
-    findings.set(marker.toLocaleLowerCase('en-AU'), {
-      marker, actorId: referenceToActor.get(match[1].toLocaleLowerCase('en-AU')),
+    findings.set(normalizeReference(marker), {
+      marker, actorId: referenceToActor.get(normalizeReference(match[1])), syntax: 'verb',
     })
   }
   return [...findings.values()]
@@ -152,19 +161,30 @@ export function assertLegalActionAuthority(turn: SpokenTurn): void {
   if (allowedModes && !allowedModes.includes(actor.role)) {
     throw new Error(`${turn.id}: ${actor.label} cannot use ${turn.speechMode}`)
   }
+  if (turn.legalAction === 'verdict-return' && turn.actorId !== 'edda-rook') {
+    throw new Error(`${turn.id}: only Foreperson Edda Rook can return the verdict`)
+  }
 }
 
 export function assertReviewedSpeechCue(cue: ReviewedSpeechCue): void {
   if (cue.turns.length === 0) throw new Error(`${cue.id}: reviewed cue needs an explicit turn`)
   const ids = cue.turns.map(({ id }) => id)
   if (new Set(ids).size !== ids.length) throw new Error(`${cue.id}: turn ids must be unique`)
+  let sourceOffset = 0
   for (const turn of cue.turns) {
     if (!turn.text.trim()) throw new Error(`${turn.id}: spoken text is empty`)
+    const nextOffset = cue.sourceText.indexOf(turn.text, sourceOffset)
+    if (nextOffset < 0) throw new Error(`${turn.id}: exact turn text is missing or reordered in source`)
+    sourceOffset = nextOffset + turn.text.length
     assertLegalActionAuthority(turn)
     let previousEnd = 0
     for (const span of turn.quotedSpans ?? []) {
-      if (span.start < previousEnd || span.end <= span.start || span.end > turn.text.length) {
+      if (!Number.isInteger(span.start) || !Number.isInteger(span.end) ||
+          span.start < previousEnd || span.end <= span.start || span.end > turn.text.length) {
         throw new Error(`${turn.id}: quoted spans must be ordered, non-empty and in range`)
+      }
+      if (span.source === 'recorded' && !span.sourceActorId) {
+        throw new Error(`${turn.id}: recorded quotation needs a source actor`)
       }
       if (span.sourceActorId && !actorsById.has(span.sourceActorId)) {
         throw new Error(`${turn.id}: quoted span has an unknown source actor`)
@@ -176,25 +196,36 @@ export function assertReviewedSpeechCue(cue: ReviewedSpeechCue): void {
   const findings = findPotentialAttributions(cue.sourceText)
   const attributionEntries = cue.attributions ?? []
   const declarations = new Map(attributionEntries.map((entry) => [
-    entry.marker.toLocaleLowerCase('en-AU'), entry,
+    normalizeReference(entry.marker), entry,
   ]))
   if (declarations.size !== attributionEntries.length) {
     throw new Error(`${cue.id}: attribution markers must be unique`)
   }
   for (const finding of findings) {
     if (!finding.actorId) throw new Error(`${cue.id}: unknown attributed speaker in "${finding.marker}"`)
-    const declared = declarations.get(finding.marker.toLocaleLowerCase('en-AU'))
+    const declared = declarations.get(normalizeReference(finding.marker))
     if (!declared) throw new Error(`${cue.id}: undeclared attributed speech "${finding.marker}"`)
     if (declared.actorId !== finding.actorId) {
       throw new Error(`${cue.id}: attributed speaker mismatch for "${finding.marker}"`)
     }
+    if (finding.syntax === 'label' && declared.kind !== 'live') {
+      throw new Error(`${cue.id}: speaker label "${finding.marker}" must be live speech`)
+    }
     if (declared.kind === 'live' && !cue.turns.some(({ actorId }) => actorId === declared.actorId)) {
       throw new Error(`${cue.id}: live attribution "${finding.marker}" has no matching turn`)
     }
+    const quotationSource = declared.kind === 'reported' || declared.kind === 'recorded' || declared.kind === 'written'
+      ? declared.kind : undefined
+    if (declared.kind !== 'live' && !quotationSource) {
+      throw new Error(`${cue.id}: attribution "${finding.marker}" has an unsupported kind`)
+    }
+    if (quotationSource && !cue.turns.some(({ quotedSpans }) => quotedSpans?.some(
+      (span) => span.source === quotationSource && span.sourceActorId === declared.actorId,
+    ))) throw new Error(`${cue.id}: ${declared.kind} attribution "${finding.marker}" lacks quotation provenance`)
   }
-  for (const marker of declarations.keys()) {
-    if (!findings.some((finding) => finding.marker.toLocaleLowerCase('en-AU') === marker)) {
-      throw new Error(`${cue.id}: stale attribution declaration "${marker}"`)
+  for (const declaration of attributionEntries) {
+    if (!findings.some((finding) => normalizeReference(finding.marker) === normalizeReference(declaration.marker))) {
+      throw new Error(`${cue.id}: stale attribution declaration "${declaration.marker}"`)
     }
   }
 }
