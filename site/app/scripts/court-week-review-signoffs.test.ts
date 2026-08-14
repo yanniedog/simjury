@@ -57,7 +57,7 @@ describe('Court Week reviewed-source signoffs', () => {
     expect(report.pendingRoles).toEqual(COURT_WEEK_REVIEW_ROLES)
   })
 
-  it('pins the checked-in approved ledger to the exact reviewed source', () => {
+  it('pins the checked-in pending ledger to the exact reviewed source', () => {
     const checkedIn = JSON.parse(readFileSync(
       join(process.cwd(), 'content-reviews/cw-0001.review-signoffs.json'),
       'utf8',
@@ -65,9 +65,9 @@ describe('Court Week reviewed-source signoffs', () => {
     const report = assessReviewSignoffs(checkedIn)
 
     expect(report.exactSourceMatch).toBe(true)
-    expect(report.readyToPublish).toBe(true)
-    expect(report.approvedRoles).toEqual(COURT_WEEK_REVIEW_ROLES)
-    expect(report.pendingRoles).toEqual([])
+    expect(report.readyToPublish).toBe(false)
+    expect(report.approvedRoles).toEqual([])
+    expect(report.pendingRoles).toEqual(COURT_WEEK_REVIEW_ROLES)
   })
 
   it('accepts all required roles only when they approve the exact source', () => {
