@@ -527,7 +527,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
           releaseBase="/media"
           initialProgressOverride={previewProgress}
           ephemeral
-          developerPreview={{
+          testSession={{
             selectedOrdinal: 1,
             sessions: elevenMinutesCourtWeek.manifest.sessions.map(({ day, ordinal }) => ({ day, ordinal })),
             onSelect: () => undefined,

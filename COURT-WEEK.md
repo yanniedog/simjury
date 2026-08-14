@@ -47,25 +47,18 @@ those guarantees regress.
 
 ### Local developer preview exception
 
-During the owner-authorised live test, a device-local profile may enable an
-explicit Developer mode and all-session preview. It is not authentication and
-must be labelled as such. Developer mode is temporarily default-on for
-pre-release navigation; after the adult-fiction acknowledgement it opens
-all-session preview automatically. Leaving preview opts out until the user
-chooses **Open all-session preview** again. Enabling developer mode alone
-still fetches nothing until preview is entered. Revert the default to off
-before the public schedule is the only intended path.
+All-session Developer Preview is a compile-time development and test harness, not a public profile preference or authentication boundary.
+In `vite dev`, the browser matrix and explicit test-mode builds, `/?developer-preview=all` opens the harness after the adult-fiction acknowledgement.
+Production builds replace the feature flag with `false`, remove the preview implementation, fixed clock and labels from the output, and ignore the query parameter.
+No public setting can enable it or cause future packs to hydrate.
 
 The app does not persist decrypted packs, opened-pack cache or preview progress;
 normal browser-managed HTTP caching of public static assets remains possible.
-Preview uses a fixed developer clock and explicit day selector; its ephemeral
-progress must never read or write normal IndexedDB progress. The former password
-and hidden `#developer` route are retired. The local profile contains only a
-short juror label, the combined fiction/adult acknowledgement and the testing
-preference; it is not an account and is never sent over the network.
+The harness uses a fixed developer clock and explicit day selector; its ephemeral progress must never read or write normal IndexedDB progress.
+The former password and hidden `#developer` route are retired. The local profile contains only a short juror label and the combined fiction/adult acknowledgement;
+it is not an account and is never sent over the network.
 
-The preview adds no backend, runtime operation, binding or recurring cost.
-Outside it, the ordinary schedule and prerequisite gates remain binding.
+The harness adds no backend, production runtime operation, binding or recurring cost. Outside it, the ordinary schedule and prerequisite gates remain binding.
 
 ## Legal-order invariants
 

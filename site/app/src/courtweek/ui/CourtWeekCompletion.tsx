@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { CourtSession } from '../model/schema'
+import { COURT_WEEK_TEST_HARNESS_ENABLED } from '../testHarness'
 
 export interface CourtWeekCompletionProps {
   sessions: CourtSession[]
@@ -7,7 +8,7 @@ export interface CourtWeekCompletionProps {
   onReplay: (session: CourtSession) => void
   onSettings: () => void
   onExportProgress?: (includePrivateNotes: boolean) => void
-  developerPreview?: {
+  testSession?: {
     selectedOrdinal: number
     sessions: Array<{ ordinal: number; day: string }>
     onSelect: (ordinal: number) => void
@@ -21,12 +22,13 @@ export function CourtWeekCompletion({
   onReplay,
   onSettings,
   onExportProgress,
-  developerPreview,
+  testSession,
 }: CourtWeekCompletionProps) {
   const headingRef = useRef<HTMLHeadingElement>(null)
   const [includeNotes, setIncludeNotes] = useState(false)
-  const previewDay = developerPreview?.sessions.find(
-    ({ ordinal }) => ordinal === developerPreview.selectedOrdinal,
+  const activeTestSession = COURT_WEEK_TEST_HARNESS_ENABLED ? testSession : undefined
+  const testDay = activeTestSession?.sessions.find(
+    ({ ordinal }) => ordinal === activeTestSession.selectedOrdinal,
   )?.day
   useEffect(() => {
     headingRef.current?.focus()
@@ -36,10 +38,10 @@ export function CourtWeekCompletion({
     <main className="cw-entry cw-complete" tabIndex={-1}>
       <div className="cw-entry__panel">
         <p className="cw-kicker">
-          {developerPreview ? 'Developer session complete' : 'The court week has concluded'}
+          {activeTestSession ? 'Test session complete' : 'The court week has concluded'}
         </p>
         <h1 ref={headingRef} tabIndex={-1}>
-          {developerPreview ? `${previewDay ?? 'Session'} preview complete` : 'Court Week complete'}
+          {activeTestSession ? `${testDay ?? 'Session'} test complete` : 'Court Week complete'}
         </h1>
         {persistence === 'memory' ? (
           <div className="cw-complete__persistence-warning">
@@ -62,8 +64,8 @@ export function CourtWeekCompletion({
             ) : null}
           </div>
         ) : null}
-        <p>{developerPreview
-          ? 'Choose another session to inspect, replay this session, or leave the developer preview.'
+        <p>{activeTestSession
+          ? 'Choose another session to inspect, replay this session, or leave the test session.'
           : 'The complete record remains available. Replaying a session does not change your private notes, reasoning contributions, sealed ballots or returned result.'}
         </p>
         <nav className="cw-session-schedule" aria-label="Completed court sessions">
@@ -78,24 +80,24 @@ export function CourtWeekCompletion({
             ))}
           </ol>
         </nav>
-        {developerPreview ? (
-          <div className="cw-button-row" aria-label="Developer preview controls">
-            <label htmlFor="cw-developer-day-complete">Developer session</label>
+        {activeTestSession ? (
+          <div className="cw-button-row" aria-label="Test session controls">
+            <label htmlFor="cw-developer-day-complete">Test session</label>
             <select
               id="cw-developer-day-complete"
-              value={developerPreview.selectedOrdinal}
-              onChange={(event) => developerPreview.onSelect(Number(event.target.value))}
+              value={activeTestSession.selectedOrdinal}
+              onChange={(event) => activeTestSession.onSelect(Number(event.target.value))}
             >
-              {developerPreview.sessions.map(({ day, ordinal }) => (
+              {activeTestSession.sessions.map(({ day, ordinal }) => (
                 <option key={ordinal} value={ordinal}>{day}</option>
               ))}
             </select>
-            <button type="button" onClick={developerPreview.onLeave}>Leave preview</button>
+            <button type="button" onClick={activeTestSession.onLeave}>Leave test session</button>
           </div>
         ) : null}
         {persistence === 'ephemeral' ? (
           <p role="status">
-            Preview progress and private notes are discarded when you switch sessions or leave preview.
+            Temporary progress and private notes are discarded when you switch sessions or leave this session.
           </p>
         ) : null}
         <button type="button" onClick={onSettings}>Presentation settings</button>

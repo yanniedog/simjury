@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperti
 import type { CourtSession, Scene, SceneCue, SceneCueTurn } from '../model/schema'
 import type { PlaybackStatus } from '../media/useCuePlayback'
 import type { AccessMode } from '../state/progress'
+import { COURT_WEEK_TEST_HARNESS_ENABLED } from '../testHarness'
 import {
   captionPlacementStyle,
   captionViewportForSize,
@@ -32,7 +33,7 @@ export interface ImmersiveCourtShellProps {
   onAdvance: (trigger?: HTMLElement) => void
   onToggleCaptions: () => void
   onToggleDesk: () => void
-  onOpenDeveloperPreview?: (trigger: HTMLElement) => void
+  onOpenTestSession?: (trigger: HTMLElement) => void
 }
 
 function legacyAssetUrl(base: string, id: string, composition: string, format: string) {
@@ -80,7 +81,7 @@ export function ImmersiveCourtShell({
   onAdvance,
   onToggleCaptions,
   onToggleDesk,
-  onOpenDeveloperPreview,
+  onOpenTestSession,
 }: ImmersiveCourtShellProps) {
   const stage = useRef<HTMLElement>(null)
   const captionOverlay = useRef<HTMLDivElement>(null)
@@ -348,9 +349,9 @@ export function ImmersiveCourtShell({
           <button type="button" onClick={onToggleDesk} aria-expanded={deskOpen}>
             Juror desk
           </button>
-          {onOpenDeveloperPreview ? (
-            <button type="button" onClick={(event) => onOpenDeveloperPreview(event.currentTarget)}>
-              DEV preview
+          {COURT_WEEK_TEST_HARNESS_ENABLED && onOpenTestSession ? (
+            <button type="button" onClick={(event) => onOpenTestSession(event.currentTarget)}>
+              Test session
             </button>
           ) : null}
           {fullscreenSupported ? (
