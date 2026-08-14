@@ -84,6 +84,7 @@ export const performanceManifestSchema = z.object({
   sourceRevision: z.string().min(1),
   sourceDigest: digestSchema,
   performanceDigest: digestSchema,
+  governanceDigest: digestSchema,
   computePolicy: z.object({
     maxIncrementalSpendAud: z.literal(50), recurringSpendAud: z.literal(0), managedBatchApisAllowed: z.literal(true),
     runtimeInferenceAllowed: z.literal(false), cloudflareRuntimeAllowed: z.literal(false),
@@ -96,7 +97,7 @@ export const performanceManifestSchema = z.object({
 }).strict()
 
 export type CourtWeekPerformanceManifest = z.infer<typeof performanceManifestSchema>
-type PerformancePayload = Omit<CourtWeekPerformanceManifest, 'performanceDigest'>
+type PerformancePayload = Omit<CourtWeekPerformanceManifest, 'performanceDigest' | 'governanceDigest'>
 
 export const CANONICAL_PERFORMANCE_IDENTITIES = [
   { id: 'ari-tem', speakerLabels: ['Ari Tem'], castingBrief: 'Analytical, clipped and grounded without sounding robotic.' },
@@ -145,6 +146,11 @@ const providers: CourtWeekPerformanceManifest['providers'] = [
     { kind: 'model', name: 'OpenVoice V2 weights', repository: 'https://huggingface.co/myshell-ai/OpenVoiceV2', revision: 'f36e7edfe1684461a8343844af60babc2efbb727', selector: 'converter', licenseSpdx: 'MIT', licenseUrl: 'https://huggingface.co/myshell-ai/OpenVoiceV2/blob/f36e7edfe1684461a8343844af60babc2efbb727/README.md', acquisition: 'pending', artifactInventorySha256: null },
   ] },
 ]
+const REQUIRED_PRONUNCIATION_PROJECTIONS = [
+  { id: 'section-18', canonical: 's 18', spoken: 'section eighteen' },
+  { id: 'section-22', canonical: 's 22', spoken: 'section twenty-two' },
+  { id: 'sha-256', canonical: 'SHA-256', spoken: 'S H A two fifty-six' },
+]
 const canonicalJson = (value: unknown): string => {
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`
   if (value !== null && typeof value === 'object') return `{${Object.entries(value)
@@ -160,46 +166,66 @@ export function courtWeekPerformanceSourceDigest(courtWeek: CourtWeek = elevenMi
     id: session.id, day: session.day, scenes: session.scenes.map((scene) => ({
       id: scene.id, cues: scene.cues.map((cue) => ({
         id: cue.id, sourceCueId: cue.sourceCueId ?? null, speaker: cue.speaker, tone: cue.tone, text: cue.text,
-        turns: splitCueTurns(cue).map(({ id, speaker, text }) => ({ id, speaker, text })),
+        turns: hasExplicitReviewedTurns(cue)
+          ? (cue as unknown as { turns: unknown }).turns
+          : splitCueTurns(cue).map(({ id, speaker, text }) => ({ id, speaker, text })),
       })),
     })),
   }))
   return sha256({ schema: 'simjury.court-week-performance-source/v1', caseId: courtWeek.manifest.id, revision: courtWeek.manifest.revision, sessions: source })
 }
 
-export const calculatePerformanceDigest = (payload: PerformancePayload): string => sha256(payload)
+const hasExplicitReviewedTurns = (cue: unknown): boolean => Array.isArray((cue as { turns?: unknown }).turns)
+  && ((cue as { turns: unknown[] }).turns).every((turn) => typeof turn === 'object' && turn !== null
+    && 'actorId' in turn && 'displayLabel' in turn && 'speechMode' in turn && 'legalAction' in turn)
+
+export const courtWeekPerformanceSourceContract = (courtWeek: CourtWeek = elevenMinutesCourtWeek) => (
+  courtWeek.manifest.sessions.every(({ scenes }) => scenes.every(({ cues }) => cues.every(
+    hasExplicitReviewedTurns,
+  ))) ? 'explicit-reviewed' : 'legacy-inferred'
+)
+
+const synthesisPayload = (payload: PerformancePayload) => ({
+  sourceDigest: payload.sourceDigest,
+  providers: payload.providers.map((provider) => provider.delivery === 'offline-model'
+    ? { ...provider, components: provider.components.map(({ kind, name, repository, revision, selector, licenseSpdx, licenseUrl, artifactInventorySha256 }) => ({ kind, name, repository, revision, selector, licenseSpdx, licenseUrl, artifactInventorySha256 })) }
+    : { ...provider, voiceInventory: { locale: provider.voiceInventory.locale, count: provider.voiceInventory.count, inventorySha256: provider.voiceInventory.inventorySha256 } }),
+  identities: payload.identities,
+  pronunciationProjections: payload.pronunciationProjections.map(({ id, canonical, spoken }) => ({ id, canonical, spoken })),
+})
+export const calculatePerformanceDigest = (payload: PerformancePayload): string => sha256(synthesisPayload(payload))
+const calculateGovernanceDigest = (payload: PerformancePayload): string => sha256(payload)
 
 export function refreshPerformanceDigest(value: unknown): CourtWeekPerformanceManifest {
   const manifest = performanceManifestSchema.parse(value)
   const payload: Partial<CourtWeekPerformanceManifest> = { ...manifest }
   delete payload.performanceDigest
+  delete payload.governanceDigest
   const performancePayload = payload as PerformancePayload
-  return { ...performancePayload, performanceDigest: calculatePerformanceDigest(performancePayload) }
+  return { ...performancePayload, performanceDigest: calculatePerformanceDigest(performancePayload), governanceDigest: calculateGovernanceDigest(performancePayload) }
 }
 
 export function buildCourtWeekPerformanceManifest(): CourtWeekPerformanceManifest {
   const payload: PerformancePayload = {
-    schema: PERFORMANCE_MANIFEST_SCHEMA, stage: 'bakeoff', sourceContract: 'legacy-inferred', caseId: 'cw-0001',
+    schema: PERFORMANCE_MANIFEST_SCHEMA, stage: 'bakeoff', sourceContract: courtWeekPerformanceSourceContract(), caseId: 'cw-0001',
     sourceRevision: elevenMinutesCourtWeek.manifest.revision,
     sourceDigest: courtWeekPerformanceSourceDigest(),
     computePolicy: { maxIncrementalSpendAud: 50, recurringSpendAud: 0, managedBatchApisAllowed: true, runtimeInferenceAllowed: false, cloudflareRuntimeAllowed: false, manualRunApprovalRequired: true, maximumProviderCharacters: 1_000_000, referenceConsentRequired: true, resumableUnit: 'utterance' },
     providers: structuredClone(providers),
     identities: CANONICAL_PERFORMANCE_IDENTITIES.map((identity) => ({ ...identity, speakerLabels: [...identity.speakerLabels], assignment: null })),
-    pronunciationProjections: [
-      { id: 'section-18', canonical: 's 18', spoken: 'section eighteen', status: 'proposed' },
-      { id: 'section-22', canonical: 's 22', spoken: 'section twenty-two', status: 'proposed' },
-      { id: 'sha-256', canonical: 'SHA-256', spoken: 'S H A two fifty-six', status: 'proposed' },
-    ],
+    pronunciationProjections: REQUIRED_PRONUNCIATION_PROJECTIONS.map((projection) => ({ ...projection, status: 'proposed' })),
   }
-  return { ...payload, performanceDigest: calculatePerformanceDigest(payload) }
+  return { ...payload, performanceDigest: calculatePerformanceDigest(payload), governanceDigest: calculateGovernanceDigest(payload) }
 }
 
 export function validateCourtWeekPerformanceManifest(value: unknown, requireReady = false): CourtWeekPerformanceManifest {
   const manifest = performanceManifestSchema.parse(value)
-  const { performanceDigest, ...payload } = manifest
+  const { performanceDigest, governanceDigest, ...payload } = manifest
   if (performanceDigest !== calculatePerformanceDigest(payload)) throw new Error('Performance digest does not match manifest bytes')
+  if (governanceDigest !== calculateGovernanceDigest(payload)) throw new Error('Governance digest does not match manifest bytes')
   if (manifest.sourceRevision !== elevenMinutesCourtWeek.manifest.revision) throw new Error('Performance manifest targets a different Court Week revision')
   if (manifest.sourceDigest !== courtWeekPerformanceSourceDigest()) throw new Error('Performance manifest targets a different Court Week source')
+  if (manifest.sourceContract !== courtWeekPerformanceSourceContract()) throw new Error('Performance manifest misstates its source contract')
   const canonical = manifest.identities.map(({ id, speakerLabels, castingBrief }) => ({ id, speakerLabels, castingBrief }))
   if (canonicalJson(canonical) !== canonicalJson(CANONICAL_PERFORMANCE_IDENTITIES)) throw new Error('Performance identities differ from the canonical 28-role cast')
   const providerIds = manifest.providers.map(({ id }) => id)
@@ -211,6 +237,8 @@ export function validateCourtWeekPerformanceManifest(value: unknown, requireRead
   if (new Set(referenced.map(({ referenceAudioSha256 }) => referenceAudioSha256)).size !== referenced.length) throw new Error('Referenced identities must use distinct reference recordings')
   if (new Set(assigned.map(({ providerId, voiceProfileId }) => `${providerId}:${voiceProfileId}`)).size !== assigned.length) throw new Error('Assigned identities must use distinct provider voice profiles')
   const sourceText = canonicalJson(elevenMinutesCourtWeek.manifest.sessions)
+  const projectionDefinitions = manifest.pronunciationProjections.map(({ id, canonical, spoken }) => ({ id, canonical, spoken }))
+  if (canonicalJson(projectionDefinitions) !== canonicalJson(REQUIRED_PRONUNCIATION_PROJECTIONS)) throw new Error('Required pronunciation projections differ from the canonical set')
   for (const projection of manifest.pronunciationProjections) {
     if (!sourceText.includes(projection.canonical)) throw new Error(`Pronunciation projection ${projection.id} is absent from source`)
   }
