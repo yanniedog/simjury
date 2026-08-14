@@ -14,14 +14,11 @@ describe('Eleven Minutes Court Week', () => {
       session.prerequisiteSessionIds[0] === manifest.sessions[index].id)).toBe(true)
   })
 
-  it('reports authored speech without padding sessions to a target duration', () => {
+  it('reports authored speech duration without a padding contract', () => {
     const { durationSeconds } = validateCourtWeek(elevenMinutesCourtWeek)
     expect(Object.values(durationSeconds)).toHaveLength(7)
     Object.values(durationSeconds).forEach((seconds) => expect(seconds).toBeGreaterThan(0))
     expect(Object.values(durationSeconds).reduce((total, seconds) => total + seconds, 0)).toBeLessThan(7 * 18 * 60)
-    // The signed r2 source retains its legacy duration metadata, but estimates
-    // and runtime navigation do not consume it.
-    expect(elevenMinutesCourtWeek.manifest.sessions.every(({ targetMinutes }) => targetMinutes === 20)).toBe(true)
   })
 
   it('pins the three Orinth legal provisions and ordered alternative verdicts', () => {

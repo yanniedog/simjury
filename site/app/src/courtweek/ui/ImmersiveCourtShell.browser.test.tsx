@@ -12,11 +12,11 @@ const cue: SceneCue = {
 const scene: Scene = {
   id: 'scene-1', title: 'Evidence', phase: 'crown-case',
   visual: { fallbackId: 'witness', alt: 'Witness in court.', focalPoint: { x: 50, y: 50 }, captionPosition: 'bottom' },
-  cues: [cue], transitionSeconds: 3,
+  cues: [cue],
 }
 const session: CourtSession = {
   id: 'monday', ordinal: 1, day: 'Monday', title: 'Evidence',
-  unlockAt: '2026-08-10T08:30:00+10:00', targetMinutes: 20,
+  unlockAt: '2026-08-10T08:30:00+10:00',
   prerequisiteSessionIds: [], scenes: [scene, scene, scene],
 }
 
