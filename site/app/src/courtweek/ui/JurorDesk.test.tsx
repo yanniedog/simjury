@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { elevenMinutesCourtWeek } from '../content/elevenMinutes'
 import { deriveEvidenceLedger } from '../engine/evidenceLedger'
 import type { LegalPhase, WeeklyProgress } from '../model/schema'
+import { formatCourtUnlock } from '../state/schedule'
 import { JurorDesk } from './JurorDesk'
 
 const { manifest, trial, deliberation } = elevenMinutesCourtWeek
@@ -20,7 +21,7 @@ function renderDesk(
     currentSessionId: activeSessionId, currentCueId: cueId, notes: '', ...patch,
   }
   return renderToStaticMarkup(<JurorDesk
-    trial={trial}
+    trial={{ ...trial, objections: [] }}
     sessions={manifest.sessions}
     deliberation={deliberation}
     progress={progress}
@@ -68,15 +69,15 @@ describe('JurorDesk legal memory', () => {
       },
     )
 
-    for (const day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']) {
-      expect(markup).toContain(day)
-    }
+    for (const { day } of manifest.sessions) expect(markup).toContain(day)
     expect(markup).not.toContain('The verdict')
+    expect(markup).toContain(`Opens ${formatCourtUnlock(manifest.sessions[3].unlockAt)}`)
     expect(markup).toContain('Current phase:</strong> Crown case')
     expect(markup).toContain('Section 41 duty')
     expect(markup).toContain('Were reasonable dispatch steps available?')
-    expect(markup).toContain('Rulings and directions')
-    expect(markup).toContain('The volunteered rumour is struck and must be entirely disregarded')
+    expect(markup).toContain('A pre-answer defence relevance objection is overruled')
+    expect(markup).toContain('Resentment is not criminal character evidence')
+    expect(markup.match(/The volunteered rumour is struck and must be entirely disregarded/gu)).toHaveLength(1)
     expect(markup).toContain('Struck — do not use.')
     expect(markup).not.toContain('Struck workplace rumour')
     expect(markup).toContain('Final admission')

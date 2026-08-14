@@ -8,6 +8,7 @@ import {
   downloadWeeklyProgress,
   importWeeklyProgress,
 } from '../state/progress'
+import { formatCourtUnlock } from '../state/schedule'
 import { CourtSheet } from './CourtSheet'
 
 const phaseLabels: Record<LegalPhase, string> = {
@@ -24,6 +25,7 @@ const directionEvents = new Set<CourtEvent>([
   'preliminary-direction', 'silence-direction', 'summing-up', 'judge-response',
   'perseverance-direction', 'majority-direction',
 ])
+const rulingEvents = new Set<CourtEvent>(['objection', 'ruling'])
 
 export interface JurorDeskProps {
   trial: TrialRecord
@@ -72,17 +74,15 @@ export function JurorDesk({
   const observedCues = observedCourtCues(sessions, {
     cueId: currentCueId, authoredCueComplete: currentCueComplete,
   })
-  const reachedBySource = new Map(observedCues.map((cue) => [authoredCueSourceId(cue), cue]))
+  const uniqueCues = (events: ReadonlySet<CourtEvent>) => Array.from(new Map(observedCues
+    .filter(({ event }) => events.has(event)).map((cue) => [authoredCueSourceId(cue), cue])).values())
   const duty = trial.offences.find(({ id }) => id === 'orinth-eca-s41')
-  const directions = observedCues.filter(({ event }) => directionEvents.has(event)).filter(({ event }) => (
+  const directions = uniqueCues(directionEvents).filter(({ event }) => (
     !(progress.secondBallotWasUnanimous && (
       event === 'perseverance-direction' || event === 'majority-direction'
     )) && !(event === 'majority-direction' && !progress.majorityDirectionReceived)
   ))
-  const rulings = trial.objections.flatMap((objection) => {
-    const cue = reachedBySource.get(objection.cueId)
-    return cue ? [{ ...objection, summary: cue.accessibleProposition }] : []
-  })
+  const rulings = uniqueCues(rulingEvents)
   const availableEvidence = evidenceLedger.filter(({ state }) => state === 'provisional' || state === 'admitted')
   const struckCount = evidenceLedger.filter(({ state }) => state === 'struck').length
   const reasoning = progress.reasoningContributions ?? []
@@ -140,11 +140,12 @@ export function JurorDesk({
         <ol className="cw-desk__schedule">
           {sessions.map((session) => {
             const active = session.id === activeSessionId
+            const completed = progress.completedSessionIds.includes(session.id)
             const status = active
               ? `${readOnly ? 'Replay' : 'Current'} · ${phaseLabels[activePhase]}`
-              : progress.completedSessionIds.includes(session.id) ? 'Completed' : 'Not yet completed'
+              : completed ? 'Completed' : `Opens ${formatCourtUnlock(session.unlockAt)}`
             return <li key={session.id} aria-current={active ? 'step' : undefined}>
-              <span><strong>{session.day}</strong> · {active || status === 'Completed' ? session.title : 'Sealed session'}</span>
+              <span><strong>{session.day}</strong> · {active || completed ? session.title : 'Sealed session'}</span>
               <small>{status}</small>
             </li>
           })}
@@ -184,11 +185,10 @@ export function JurorDesk({
           ))}</ol> : <p>No judicial direction has yet been completed.</p>}
         </details>
         <details>
-          <summary>Objection rulings recorded ({rulings.length})</summary>
-          {rulings.length ? <ol>{rulings.map((ruling) => <li key={ruling.id}>
-            <strong>{ruling.madeBy} objection ({ruling.ground}) — {ruling.ruling}.</strong>{' '}
-            {ruling.summary}
-          </li>)}</ol> : <p>No objection ruling has yet been completed.</p>}
+          <summary>Rulings recorded ({rulings.length})</summary>
+          {rulings.length ? <ol>{rulings.map((cue) => (
+            <li key={authoredCueSourceId(cue)}>{cue.accessibleProposition}</li>
+          ))}</ol> : <p>No ruling has yet been completed.</p>}
         </details>
       </section>
 
