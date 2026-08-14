@@ -127,7 +127,7 @@ pre-authored; no inference runs during play.
 - All ten former daily sittings and their canonical media are archived under
   `archive/daily-v2-2026-08-03/`, with SHA-256 provenance. Existing narration
   Releases are preserved and must never be clobbered because a source was moved.
-- The bare domain `/` is canonical. `/jury`, `/jury/`, `/today`, `/today/*`,
+- The HTTPS apex `https://simjury.com/` is canonical. `/jury`, `/jury/`, `/today`, `/today/*`,
   `/play`, `/play/*`, `/install` and `/install/*` redirect to `/`. The static
   build remains under `/jury/` internally so the sealed asset contract stays
   stable; a Cloudflare Static Assets proxy serves it at `/` without a Worker.

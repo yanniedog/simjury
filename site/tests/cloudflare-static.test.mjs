@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import test from 'node:test'
 
 const config = JSON.parse(readFileSync(new URL('../wrangler.json', import.meta.url), 'utf8'))
+const decisions = readFileSync(new URL('../DECISIONS.md', import.meta.url), 'utf8')
 const forbidden = [
   'main', 'route', 'routes', 'vars', 'observability', 'durable_objects',
   'migrations', 'd1_databases', 'kv_namespaces', 'r2_buckets', 'queues', 'ai',
@@ -45,6 +46,43 @@ test('legacy product paths redirect to the canonical Court Week route', () => {
     assert.match(redirects, new RegExp(`^${path.replace('/', '\\/')} \\/ 302$`, 'm'))
     assert.match(redirects, new RegExp(`^${path.replace('/', '\\/')}\\/\\* \\/ 302$`, 'm'))
   }
+})
+
+test('Static Assets redirects remain path-only', () => {
+  const redirects = readFileSync(new URL('../public/_redirects', import.meta.url), 'utf8')
+  const rules = redirects.split(/\r?\n/u)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#'))
+  assert.ok(rules.length > 0)
+  for (const rule of rules) {
+    const [source] = rule.split(/\s+/u)
+    assert.match(source, /^\//u, `domain-level source is unsupported in Static Assets _redirects: ${source}`)
+  }
+})
+
+test('canonical-origin zone redirect contract preserves paths and queries', () => {
+  assert.match(
+    decisions,
+    /\(http\.host eq "www\.simjury\.com"\) or \(http\.host eq "simjury\.com" and not ssl\)/u,
+  )
+  assert.match(decisions, /concat\("https:\/\/simjury\.com", http\.request\.uri\.path\)/u)
+  assert.match(decisions, /preserve the query\s+string/u)
+
+  const canonicalRedirect = (input) => {
+    const request = new URL(input)
+    const alternateHost = request.hostname === 'www.simjury.com'
+    const insecureApex = request.hostname === 'simjury.com' && request.protocol === 'http:'
+    return alternateHost || insecureApex
+      ? `https://simjury.com${request.pathname}${request.search}`
+      : null
+  }
+  for (const [input, expected] of [
+    ['http://simjury.com/', 'https://simjury.com/'],
+    ['http://simjury.com/privacy/?from=audit&case=1', 'https://simjury.com/privacy/?from=audit&case=1'],
+    ['https://www.simjury.com/jury/session/?day=2', 'https://simjury.com/jury/session/?day=2'],
+    ['http://www.simjury.com/install?source=old', 'https://simjury.com/install?source=old'],
+  ]) assert.equal(canonicalRedirect(input), expected)
+  assert.equal(canonicalRedirect('https://simjury.com/privacy/?from=canonical'), null)
 })
 
 test('Court Week media publishing is trusted, manual and non-clobbering', () => {
