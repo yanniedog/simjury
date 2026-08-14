@@ -8,6 +8,7 @@ import {
 } from './speechReview'
 
 const turn = (value: Partial<SpokenTurn> & Pick<SpokenTurn, 'id' | 'actorId' | 'text'>): SpokenTurn => ({
+  displayLabel: COURT_WEEK_ACTORS.find(({ id }) => id === value.actorId)?.label ?? value.actorId,
   speechMode: 'live-proceeding', legalAction: 'none', ...value,
 })
 
@@ -21,7 +22,9 @@ describe('Court Week reviewed speech contract', () => {
 
   it.each([
     ['plea', 'Mara Venn, how do you plead? The accused answers: Not Guilty.'],
-    ['named summary', 'Ari asks about intent. Sola Iven answers that the beacon matters.'],
+    ['Sola summary', 'Sola Iven answers that the beacon matters.'],
+    ['Kessa summary', 'Kessa answers immediately that the warning matters.'],
+    ['another voice', 'Another voice asks whether READY proves safety.'],
     ['anonymous summary', 'Someone says that silence proves guilt.'],
     ['unknown label', 'Qill: The warning permitted launch.'],
   ])('fails closed on undeclared or unknown attributed speech: %s', (_label, sourceText) => {
@@ -51,7 +54,7 @@ describe('Court Week reviewed speech contract', () => {
       id: 'reported', sourceText: 'Venn told me, “Seventy-one waits.”',
       turns: [turn({
         id: 'reported__1', actorId: 'peli-dorn', text: 'Venn told me, “Seventy-one waits.”',
-        speechMode: 'reported-testimony', legalAction: 'witness-answer',
+        speechMode: 'reported-testimony', legalAction: 'answer',
       })],
       attributions: [{ marker: 'Venn told me', actorId: 'accused', kind: 'reported' }],
     }
@@ -71,6 +74,19 @@ describe('Court Week reviewed speech contract', () => {
     expect(() => assertLegalActionAuthority(turn({
       id: 'admission', actorId: 'judge', text: 'Exhibit admitted.', legalAction: 'admission',
     }))).not.toThrow()
+  })
+
+  it('rejects false display identities and malformed quotation provenance', () => {
+    expect(() => assertLegalActionAuthority(turn({
+      id: 'false-label', actorId: 'accused', displayLabel: 'Clerk', text: 'Not guilty.',
+    }))).toThrow(/display label/i)
+    expect(() => assertReviewedSpeechCue({
+      id: 'bad-span', sourceText: 'I heard "wait".',
+      turns: [turn({
+        id: 'bad-span__1', actorId: 'peli-dorn', text: 'I heard "wait".',
+        quotedSpans: [{ start: 20, end: 24, sourceActorId: 'accused', source: 'reported' }],
+      })],
+    })).toThrow(/quoted spans/i)
   })
 
   it('rejects stale declarations and live attributions without a matching turn', () => {

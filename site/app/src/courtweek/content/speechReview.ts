@@ -39,20 +39,29 @@ export const COURT_WEEK_ACTORS = [
 export type ActorId = typeof COURT_WEEK_ACTORS[number]['id']
 export type SpeechMode =
   | 'live-proceeding' | 'reported-testimony' | 'recording-playback' | 'advocacy'
-  | 'judicial-direction' | 'written-document' | 'narrator-summary' | 'system-template'
+  | 'judicial-direction' | 'written-text-read' | 'narration' | 'system-template'
 export type LegalAction =
   | 'none' | 'charge-read' | 'plea-question' | 'plea-answer'
-  | 'witness-question' | 'witness-answer' | 'objection' | 'submission'
+  | 'question' | 'answer' | 'objection' | 'submission'
   | 'foundation' | 'tender' | 'admission' | 'ruling' | 'direction'
   | 'limitation-direction' | 'exhibit-playback' | 'jury-note'
   | 'ballot-administration' | 'verdict-question' | 'verdict-return' | 'narration'
 
+export interface QuotedSpan {
+  start: number
+  end: number
+  sourceActorId?: ActorId
+  source: 'reported' | 'recorded' | 'written'
+}
+
 export interface SpokenTurn {
   id: string
   actorId: ActorId
+  displayLabel: string
   text: string
   speechMode: SpeechMode
   legalAction: LegalAction
+  quotedSpans?: readonly QuotedSpan[]
 }
 
 export interface SpeechAttribution {
@@ -83,7 +92,7 @@ for (const actor of COURT_WEEK_ACTORS) {
 
 const authority: Readonly<Partial<Record<LegalAction, readonly ActorRole[]>>> = {
   'charge-read': ['clerk'], 'plea-question': ['clerk'], 'plea-answer': ['accused'],
-  'witness-question': ['counsel'], 'witness-answer': ['witness'], objection: ['counsel'],
+  question: ['counsel'], answer: ['witness'], objection: ['counsel'],
   submission: ['counsel'], foundation: ['witness'], tender: ['counsel'], admission: ['judge'],
   ruling: ['judge'], direction: ['judge'], 'limitation-direction': ['judge'],
   'exhibit-playback': ['recording'], 'jury-note': ['juror'],
@@ -92,7 +101,7 @@ const authority: Readonly<Partial<Record<LegalAction, readonly ActorRole[]>>> = 
 }
 const modeAuthority: Readonly<Partial<Record<SpeechMode, readonly ActorRole[]>>> = {
   advocacy: ['counsel'], 'judicial-direction': ['judge'],
-  'reported-testimony': ['witness'], 'narrator-summary': ['narrator', 'document'],
+  'reported-testimony': ['witness'], narration: ['narrator', 'document'],
   'system-template': ['narrator', 'document'],
 }
 
@@ -105,7 +114,7 @@ const actorReferences = [...referenceToActor.keys()]
 const labelPattern = /(?:^|\s)([\p{Lu}][\p{L}’'-]*(?:\s+[\p{Lu}][\p{L}’'-]*){0,3}):/gu
 const speechVerbPattern = new RegExp(
   `\\b(${actorReferences}|Someone|Another voice)\\s+` +
-  '(answers?|adds?|asks?|replies?|objects?|rules?|says?|stops?|tells?|told me)\\b:?',
+  '(answers?|adds?|asks?|replies?|objects?|rules?|says?|stops?|writes?|tells?|told me)\\b:?',
   'giu',
 )
 
@@ -131,6 +140,10 @@ export function findPotentialAttributions(text: string): PotentialAttribution[] 
 export function assertLegalActionAuthority(turn: SpokenTurn): void {
   const actor = actorsById.get(turn.actorId)
   if (!actor) throw new Error(`${turn.id}: unknown actor ${turn.actorId}`)
+  const displayLabels: readonly string[] = [actor.label, ...actor.aliases]
+  if (!displayLabels.includes(turn.displayLabel)) {
+    throw new Error(`${turn.id}: display label does not identify ${actor.label}`)
+  }
   const allowed = authority[turn.legalAction]
   if (allowed && !allowed.includes(actor.role)) {
     throw new Error(`${turn.id}: ${actor.label} cannot perform ${turn.legalAction}`)
@@ -148,6 +161,16 @@ export function assertReviewedSpeechCue(cue: ReviewedSpeechCue): void {
   for (const turn of cue.turns) {
     if (!turn.text.trim()) throw new Error(`${turn.id}: spoken text is empty`)
     assertLegalActionAuthority(turn)
+    let previousEnd = 0
+    for (const span of turn.quotedSpans ?? []) {
+      if (span.start < previousEnd || span.end <= span.start || span.end > turn.text.length) {
+        throw new Error(`${turn.id}: quoted spans must be ordered, non-empty and in range`)
+      }
+      if (span.sourceActorId && !actorsById.has(span.sourceActorId)) {
+        throw new Error(`${turn.id}: quoted span has an unknown source actor`)
+      }
+      previousEnd = span.end
+    }
   }
 
   const findings = findPotentialAttributions(cue.sourceText)
