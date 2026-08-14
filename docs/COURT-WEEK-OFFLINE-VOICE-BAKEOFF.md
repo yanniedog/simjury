@@ -28,8 +28,14 @@ and governance digests, verified provider inventory, and approved pronunciations
 
 Sources: [Chirp voices](https://cloud.google.com/text-to-speech/docs/voices), [Chirp pricing](https://cloud.google.com/text-to-speech/pricing), [Cloudflare pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/), [Aura 2](https://developers.cloudflare.com/workers-ai/models/aura-2-en/), [Cloudflare Melo](https://developers.cloudflare.com/workers-ai/models/melotts/), [Chatterbox](https://github.com/resemble-ai/chatterbox), [Melo](https://github.com/myshell-ai/MeloTTS), and [OpenVoice](https://github.com/myshell-ai/OpenVoice).
 
-At 41,018 characters, one Chirp pass is about USD 1.23 after free allowance.
-Cloudflare Aura 2 has the same USD 0.03/1,000-character rate, so it is not cheaper
-like-for-like; Melo is cheaper but fails casting. Blind-test every selected voice
-on headphones, laptop, and phone. Reject word, attribution, accent, identity, or
-emotion defects. Publish only a new immutable static release with rollback.
+The reviewed candidate currently plans 45,260 provider characters. At the frozen
+14 August 2026 RBA rate, one complete Chirp pass is about USD 1.36 / AUD 1.92
+before free usage, and potentially AUD 0 within Google's one-million-character
+monthly allowance. Billing must still be enabled and the plan conservatively
+budgets the gross amount. Cloudflare Aura 2 has the same gross character price
+but only two documented Australian voices, so it cannot meet the 28-identity cast.
+
+The frozen catalogue verifies availability, not suitability. Audition all 30,
+select 28 only after blind listening, and test the selected cast on headphones,
+laptop, and phone. Reject word, attribution, accent, identity, or emotion defects.
+Publish only a new immutable static release with rollback.
