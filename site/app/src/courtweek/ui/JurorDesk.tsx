@@ -60,15 +60,18 @@ export function JurorDesk({
   }
 
   const transferActions = progressTransferEnabled ? (
-    <div className="cw-button-row" role="group" aria-labelledby="cw-desk-transfer-heading">
-      <button type="button" onClick={() => downloadWeeklyProgress(progress, includeNotes)}>
-        Export progress
-      </button>
-      {!readOnly ? (
-        <button type="button" onClick={() => importInput.current?.click()}>
-          Import progress
+    <div className="cw-desk__transfer-actions">
+      <div className="cw-button-row" role="group" aria-labelledby="cw-desk-transfer-heading">
+        <button type="button" onClick={() => downloadWeeklyProgress(progress, includeNotes)}>
+          Export progress
         </button>
-      ) : null}
+        {!readOnly ? (
+          <button type="button" onClick={() => importInput.current?.click()}>
+            Import progress
+          </button>
+        ) : null}
+      </div>
+      {importError ? <p className="cw-error" role="alert">{importError}</p> : null}
     </div>
   ) : undefined
 
@@ -156,7 +159,6 @@ export function JurorDesk({
             onChange={(event) => void readImport(event.target.files?.[0])}
           />
         ) : null}
-        {importError ? <p className="cw-error" role="alert">{importError}</p> : null}
       </section> : null}
     </CourtSheet>
   )

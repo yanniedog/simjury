@@ -348,13 +348,20 @@ test('exhibit viewer survives 200% phone reflow without clipping controls', asyn
   const geometry = await viewer.evaluate((element) => {
     const viewerBox = element.getBoundingClientRect()
     const closeBox = element.querySelector<HTMLElement>('[aria-label="Close exhibit"]')!.getBoundingClientRect()
+    const toolWidths = [...element.querySelectorAll<HTMLElement>('.cw-evidence-tools button')]
+      .map((button) => button.getBoundingClientRect().width)
     return {
       internalOverflow: element.scrollWidth - element.clientWidth,
       closeInsideViewer: closeBox.left >= viewerBox.left && closeBox.right <= viewerBox.right,
       closeInsideViewport: closeBox.left >= 0 && closeBox.right <= document.documentElement.clientWidth,
+      toolWidths,
     }
   })
-  expect(geometry).toEqual({ internalOverflow: 0, closeInsideViewer: true, closeInsideViewport: true })
+  expect(geometry.internalOverflow).toBe(0)
+  expect(geometry.closeInsideViewer).toBe(true)
+  expect(geometry.closeInsideViewport).toBe(true)
+  expect(geometry.toolWidths).not.toHaveLength(0)
+  expect(Math.min(...geometry.toolWidths)).toBeGreaterThanOrEqual(44)
 })
 
 test('exhibit viewer traps focus and restores the exact inspection trigger', async ({ page }) => {

@@ -62,7 +62,9 @@ test('blocked storage stays playable and exports private notes only by explicit 
     mimeType: 'application/json',
     buffer: Buffer.from(JSON.stringify(damaged)),
   })
-  await expect(page.getByRole('alert')).toContainText('different case revision')
+  const importAlert = page.locator('.cw-sheet__footer').getByRole('alert')
+  await expect(importAlert).toContainText('different case revision')
+  await expect(importAlert).toBeInViewport()
   await expect(page.getByLabel('Your private notes')).toHaveValue('Private causation note.')
 })
 
