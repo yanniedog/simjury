@@ -1,98 +1,61 @@
-# Court Week offline Australian-voice bake-off
+# Court Week governed Australian-voice bake-off
 
-**Status:** authoring infrastructure only. It does not replace Kokoro, alter the
-pinned production manifest, publish media, or authorise a voice donor.
+**Status:** review infrastructure only. It does not replace Kokoro, alter the
+pinned production manifest, publish media, enable billing, or authorise a run.
 
 ## Hard boundary
 
-- Inference runs on owned/donated hardware or a manually started, demonstrably
-  non-billable cloud GPU. Never allow paid fallback or a billable endpoint.
-- Incremental spend is capped at AUD 50 and recurring spend at AUD 0. Gameplay
-  remains prerecorded; inference never enters the browser or a runtime service.
-- Never commit raw references, consent documents, donor names or local paths.
-  Free-cloud reference processing additionally needs explicit donor consent,
-  ephemeral encrypted transfer and confirmed zero persistence; store only hashes.
-- Generate and cache one attributed utterance per source/performance digest.
-  Jobs resume by utterance; models never infer speakers in a multi-party cue.
+- One-off managed batch TTS is permitted. Incremental spend is capped at AUD 50,
+  recurring spend at AUD 0, and every run requires explicit manual approval.
+- Gameplay remains prerecorded. No TTS, Workers AI, Cloudflare Worker, storage,
+  queue, database, or other inference service enters production.
+- A client ledger stops before 1,000,000 submitted characters, forbids blind
+  retries, caches each utterance, and records the final provider bill.
+- Never commit references, consent records, donor names, credentials, or paths.
+  A provider receiving reference audio needs explicit donor consent.
+- Generate one explicit attributed turn at a time and resume by utterance.
 
-Generate the review-only starting manifest and inspect its pinned revisions:
+Generate with `npm run media:performance:manifest -- --output <file>` and validate
+that file with `--input`. Release stays blocked until explicit reviewed turns
+replace inference. The two digests separate source from performance decisions.
 
-```powershell
-cd site/app
-npm run media:performance:manifest -- --output ../../.court-week-voice-review/performance.json
-npm run media:performance:manifest -- --input ../../.court-week-voice-review/performance.json
-```
+## Provider verification
 
-`sourceDigest` currently covers ordered cues and legacy-separated turns for
-bake-off only. Release readiness remains blocked until explicit reviewed turns
-replace inference and `sourceContract` becomes `explicit-reviewed`.
-`performanceDigest` additionally covers providers, casting, consent/reference
-hashes and pronunciation projections. Do not copy either digest after a change.
+For offline candidates, acquire only manifest-pinned revisions, review licences,
+and hash a file/size/SHA-256 inventory. Verify its digest and render network-off.
 
-## Verified acquisition, then no network
+For managed providers, record the exact model, docs, price, reviewed terms, and
+voice-inventory digest. `pending` cannot release. Clones retain only consent and
+reference hashes; stock assignments retain exact provider voice IDs.
 
-On a quarantined acquisition machine, fetch only the repositories and model
-snapshots at the exact 40-character revisions in the manifest. Review each
-licence from the pinned source. Build a canonical inventory containing relative
-path, byte count and SHA-256 for every acquired file; store the SHA-256 of that
-inventory as `artifactInventorySha256` and change that component to `verified`.
-Do not substitute `main`, `latest`, an inference endpoint, or an unrecorded
-package-manager download.
+## Candidate order
 
-Move the verified bundle to the render host, then disable networking at the
-container/VM boundary. Also set `HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1` and
-`PIP_NO_INDEX=1`. A successful render must use an empty network capture; a cache
-miss is a hard failure, not permission to reconnect. Keep the encrypted donor
-bank on a separate read-only mount excluded from output artifacts.
+Use identical source turns and loudness-matched exports. Quality selects the winner.
 
-For each identity, independently hash the signed consent receipt and the exact
-curated reference WAV. Record only those hashes plus a non-identifying
-`voiceProfileId`. Consent must cover synthetic generation, public distribution
-of outputs, regeneration for the fictional role and revocation handling.
-After an intentional edit, refresh and immediately revalidate its digest with
-`--input performance.json --refresh-digest --output performance.json`.
+1. **Google Cloud Chirp 3 HD `en-AU`** is the practical front-runner. Its current
+   official inventory has 30 Australian-English stock voices: enough for 28
+   identities without donor recordings or local neural inference.
+2. **Cloudflare screening:** Aura 2 has only two documented Australian voices;
+   hosted MeloTTS exposes `lang: en` without 28 selectable Australian identities.
+   Reconsider only if a verified inventory reaches 28 distinct en-AU voices and
+   passes the same blinded test.
+3. **Chatterbox V3/Turbo and Melo EN-AU plus OpenVoice V2** remain optional
+   challengers if external compute and consented references become available.
 
-## Required three-way bake-off
+Sources: [Chirp voices](https://cloud.google.com/text-to-speech/docs/voices), [Chirp pricing](https://cloud.google.com/text-to-speech/pricing), [Cloudflare pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/), [Aura 2](https://developers.cloudflare.com/workers-ai/models/aura-2-en/), [Cloudflare Melo](https://developers.cloudflare.com/workers-ai/models/melotts/), [Chatterbox](https://github.com/resemble-ai/chatterbox), [MeloTTS](https://github.com/myshell-ai/MeloTTS), and [OpenVoice](https://github.com/myshell-ai/OpenVoice).
 
-Use identical source utterances, pronunciation projections and loudness-matched
-review exports for:
+At 41,018 characters, Chirp is about USD 1.23 per full pass after free allowance;
+Google currently lists the first million monthly characters free but requires
+billing. Cloudflare Aura 2 is the same USD 0.03 per 1,000 characters and is not
+cheaper per unit; its two en-AU voices fail casting. Cloudflare Melo is cheaper
+but fails voice diversity.
 
-1. **Chatterbox Multilingual V3** — English with the consented Australian
-   reference; start at upstream neutral CFG/exaggeration settings.
-2. **Chatterbox Turbo** — the same identity and text using its curated reference
-   clip; treat paralinguistic tags as forbidden unless the source authors them.
-3. **MeloTTS `EN-AU` + OpenVoice V2** — Melo supplies accent/prosody and
-   OpenVoice converts only consented tone colour. OpenVoice's own QA warns that
-   reference audio does not supply accent or emotion.
+## Release hand-off
 
-Primary sources: [Chatterbox](https://github.com/resemble-ai/chatterbox),
-[MeloTTS](https://github.com/myshell-ai/MeloTTS), and
-[OpenVoice](https://github.com/myshell-ai/OpenVoice). All pinned candidates in
-the initial manifest identify MIT-licensed code and model metadata; re-check the
-exact acquired snapshots before approval.
-
-Target an ordinary eight-core PC with 32 GB RAM; an 8-12 GB consumer GPU is
-optional, not assumed. CPU Melo is valid. A free cloud GPU may be started
-manually only while its UI shows zero charge; abort before any paid upgrade.
-
-## Approval and release hand-off
-
-Use volume-matched blinded listening on reference headphones and a phone.
-Reject any invented, missing, repeated or mispronounced legally material word;
-speaker confusion; caricatured/non-Australian accent; unstable identity; or
-misleading emotional emphasis. Pronunciation projections remain `proposed`
-until legal read-aloud and accessibility reviewers approve them.
-
-Before a later production-integration PR, all 28 identities must have distinct
-reference hashes and provider voice profiles, every selected provider component
-must be a verified offline acquisition, and every projection must be approved:
-
-```powershell
-npm run media:performance:manifest -- `
-  --input ../../.court-week-voice-review/performance.json --require-ready
-```
-
-That later PR must retain the current eight exact-source signoffs, produce a new
-immutable release tag, keep the current release as rollback, and re-run codec,
-caption, loudness, asset-budget and browser-fallback gates. This bake-off file
-is never a public Release asset or gameplay API.
+Blind-test on headphones, laptop, and phone. Reject any word error, speaker
+confusion, non-Australian/caricatured accent, unstable identity, or misleading
+emotion. Before integration, all 28 identities need distinct profiles; every
+selected managed inventory or offline acquisition and pronunciation projection
+must be approved. Validate with `--require-ready`, publish a new immutable release,
+keep the current release as rollback, and rerun codec, caption, loudness,
+asset-budget, and browser-fallback gates. The review manifest is never public.

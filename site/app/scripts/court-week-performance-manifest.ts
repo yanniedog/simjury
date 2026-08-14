@@ -26,19 +26,41 @@ const componentSchema = z.object({
   }
 })
 
-const providerSchema = z.object({
+const providerBaseSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/u),
   label: z.string().min(1),
   configuration: z.string().min(1),
-  components: z.array(componentSchema).min(2),
-}).strict()
+})
 
-const assignmentSchema = z.object({
+const providerSchema = z.discriminatedUnion('delivery', [providerBaseSchema.extend({
+  delivery: z.literal('offline-model'),
+  components: z.array(componentSchema).min(2),
+}).strict(), providerBaseSchema.extend({
+  delivery: z.literal('managed-batch-api'),
+  serviceModel: z.string().min(1),
+  documentationUrl: httpsUrl,
+  pricingUrl: httpsUrl,
+  voiceInventory: z.object({
+    locale: z.literal('en-AU'), count: z.number().int().min(28),
+    status: z.enum(['pending', 'verified']), inventorySha256: digestSchema.nullable(),
+  }).strict().superRefine((inventory, context) => {
+    if ((inventory.status === 'verified') !== (inventory.inventorySha256 !== null)) {
+      context.addIssue({ code: 'custom', message: 'Verified voice inventory requires its digest' })
+    }
+  }),
+}).strict()])
+
+const assignmentBaseSchema = z.object({
   providerId: z.string().regex(/^[a-z0-9-]+$/u),
   voiceProfileId: z.string().regex(/^[a-z0-9-]+$/u),
+})
+const assignmentSchema = z.discriminatedUnion('source', [assignmentBaseSchema.extend({
+  source: z.literal('provider-stock'),
+}).strict(), assignmentBaseSchema.extend({
+  source: z.literal('consented-reference'),
   consentReceiptSha256: digestSchema,
   referenceAudioSha256: digestSchema,
-}).strict()
+}).strict()])
 
 const identitySchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/u),
@@ -63,9 +85,10 @@ export const performanceManifestSchema = z.object({
   sourceDigest: digestSchema,
   performanceDigest: digestSchema,
   computePolicy: z.object({
-    maxIncrementalSpendAud: z.literal(50), recurringSpendAud: z.literal(0), billableEndpointsAllowed: z.literal(false),
-    execution: z.tuple([z.literal('owned-or-donated-consumer-hardware'), z.literal('manual-non-billable-cloud-gpu')]),
-    freeCloudRequiresManualStart: z.literal(true), freeCloudReferenceConsentRequired: z.literal(true), resumableUnit: z.literal('utterance'),
+    maxIncrementalSpendAud: z.literal(50), recurringSpendAud: z.literal(0), managedBatchApisAllowed: z.literal(true),
+    runtimeInferenceAllowed: z.literal(false), cloudflareRuntimeAllowed: z.literal(false),
+    manualRunApprovalRequired: z.literal(true), maximumProviderCharacters: z.literal(1_000_000),
+    referenceConsentRequired: z.literal(true), resumableUnit: z.literal('utterance'),
   }).strict(),
   providers: z.array(providerSchema).min(1),
   identities: z.array(identitySchema).length(28),
@@ -106,15 +129,16 @@ export const CANONICAL_PERFORMANCE_IDENTITIES = [
   { id: 'yara-merrow', speakerLabels: ['Yara Merrow'], castingBrief: 'Quiet analytical confidence and operational precision.' },
 ] as const
 const providers: CourtWeekPerformanceManifest['providers'] = [
-  { id: 'chatterbox-v3', label: 'Chatterbox Multilingual V3', configuration: 'English with consented Australian reference; t3_model=v3', components: [
+  { id: 'google-chirp3-hd-en-au', label: 'Google Cloud Chirp 3 HD en-AU', delivery: 'managed-batch-api', configuration: 'One-off stock-voice synthesis only; no runtime dependency or automatic retry', serviceModel: 'Chirp 3: HD voices', documentationUrl: 'https://docs.cloud.google.com/text-to-speech/docs/chirp3-hd', pricingUrl: 'https://cloud.google.com/text-to-speech/pricing', voiceInventory: { locale: 'en-AU', count: 30, status: 'pending', inventorySha256: null } },
+  { id: 'chatterbox-v3', label: 'Chatterbox Multilingual V3', delivery: 'offline-model', configuration: 'English with consented Australian reference; t3_model=v3', components: [
     { kind: 'engine', name: 'Chatterbox', repository: 'https://github.com/resemble-ai/chatterbox', revision: '5de7a54aa4e5e2baadb0182dde554908b48b85c2', selector: 'ChatterboxMultilingualTTS', licenseSpdx: 'MIT', licenseUrl: 'https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/LICENSE', acquisition: 'pending', artifactInventorySha256: null },
     { kind: 'model', name: 'Chatterbox V3 weights', repository: 'https://huggingface.co/ResembleAI/chatterbox', revision: '5bb1f6ee58e50c3b8d408bc82a6d3740c2db6e18', selector: 't3_mtl23ls_v3.safetensors', licenseSpdx: 'MIT', licenseUrl: 'https://huggingface.co/ResembleAI/chatterbox/blob/5bb1f6ee58e50c3b8d408bc82a6d3740c2db6e18/README.md', acquisition: 'pending', artifactInventorySha256: null },
   ] },
-  { id: 'chatterbox-turbo', label: 'Chatterbox Turbo', configuration: 'English with consented Australian 10-second reference', components: [
+  { id: 'chatterbox-turbo', label: 'Chatterbox Turbo', delivery: 'offline-model', configuration: 'English with consented Australian 10-second reference', components: [
     { kind: 'engine', name: 'Chatterbox', repository: 'https://github.com/resemble-ai/chatterbox', revision: '5de7a54aa4e5e2baadb0182dde554908b48b85c2', selector: 'ChatterboxTurboTTS', licenseSpdx: 'MIT', licenseUrl: 'https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/LICENSE', acquisition: 'pending', artifactInventorySha256: null },
     { kind: 'model', name: 'Chatterbox Turbo weights', repository: 'https://huggingface.co/ResembleAI/chatterbox-turbo', revision: '749d1c1a46eb10492095d68fbcf55691ccf137cd', selector: 'ChatterboxTurboTTS', licenseSpdx: 'MIT', licenseUrl: 'https://huggingface.co/ResembleAI/chatterbox-turbo/blob/749d1c1a46eb10492095d68fbcf55691ccf137cd/README.md', acquisition: 'pending', artifactInventorySha256: null },
   ] },
-  { id: 'melo-en-au-openvoice-v2', label: 'MeloTTS EN-AU plus OpenVoice V2', configuration: 'MeloTTS EN-AU accent base followed by consented tone-colour conversion', components: [
+  { id: 'melo-en-au-openvoice-v2', label: 'MeloTTS EN-AU plus OpenVoice V2', delivery: 'offline-model', configuration: 'MeloTTS EN-AU accent base followed by consented tone-colour conversion', components: [
     { kind: 'engine', name: 'MeloTTS', repository: 'https://github.com/myshell-ai/MeloTTS', revision: '209145371cff8fc3bd60d7be902ea69cbdb7965a', selector: 'TTS(language=EN); speaker=EN-AU', licenseSpdx: 'MIT', licenseUrl: 'https://github.com/myshell-ai/MeloTTS/blob/209145371cff8fc3bd60d7be902ea69cbdb7965a/LICENSE', acquisition: 'pending', artifactInventorySha256: null },
     { kind: 'model', name: 'MeloTTS English weights', repository: 'https://huggingface.co/myshell-ai/MeloTTS-English', revision: 'bb4fb7346d566d277ba8c8c7dbfdf6786139b8ef', selector: 'EN-AU', licenseSpdx: 'MIT', licenseUrl: 'https://huggingface.co/myshell-ai/MeloTTS-English/blob/bb4fb7346d566d277ba8c8c7dbfdf6786139b8ef/README.md', acquisition: 'pending', artifactInventorySha256: null },
     { kind: 'engine', name: 'OpenVoice', repository: 'https://github.com/myshell-ai/OpenVoice', revision: '74a1d147b17a8c3092dd5430504bd83ef6c7eb23', selector: 'ToneColorConverter v2', licenseSpdx: 'MIT', licenseUrl: 'https://github.com/myshell-ai/OpenVoice/blob/74a1d147b17a8c3092dd5430504bd83ef6c7eb23/LICENSE', acquisition: 'pending', artifactInventorySha256: null },
@@ -158,8 +182,8 @@ export function buildCourtWeekPerformanceManifest(): CourtWeekPerformanceManifes
     schema: PERFORMANCE_MANIFEST_SCHEMA, stage: 'bakeoff', sourceContract: 'legacy-inferred', caseId: 'cw-0001',
     sourceRevision: elevenMinutesCourtWeek.manifest.revision,
     sourceDigest: courtWeekPerformanceSourceDigest(),
-    computePolicy: { maxIncrementalSpendAud: 50, recurringSpendAud: 0, billableEndpointsAllowed: false, execution: ['owned-or-donated-consumer-hardware', 'manual-non-billable-cloud-gpu'], freeCloudRequiresManualStart: true, freeCloudReferenceConsentRequired: true, resumableUnit: 'utterance' },
-    providers: providers.map((provider) => ({ ...provider, components: provider.components.map((component) => ({ ...component })) })),
+    computePolicy: { maxIncrementalSpendAud: 50, recurringSpendAud: 0, managedBatchApisAllowed: true, runtimeInferenceAllowed: false, cloudflareRuntimeAllowed: false, manualRunApprovalRequired: true, maximumProviderCharacters: 1_000_000, referenceConsentRequired: true, resumableUnit: 'utterance' },
+    providers: structuredClone(providers),
     identities: CANONICAL_PERFORMANCE_IDENTITIES.map((identity) => ({ ...identity, speakerLabels: [...identity.speakerLabels], assignment: null })),
     pronunciationProjections: [
       { id: 'section-18', canonical: 's 18', spoken: 'section eighteen', status: 'proposed' },
@@ -182,8 +206,9 @@ export function validateCourtWeekPerformanceManifest(value: unknown, requireRead
   if (new Set(providerIds).size !== providerIds.length) throw new Error('Provider ids must be unique')
   const assigned = manifest.identities.flatMap(({ assignment }) => assignment ? [assignment] : [])
   if (assigned.some(({ providerId }) => !providerIds.includes(providerId))) throw new Error('An assignment names an unknown provider')
-  if (new Set(assigned.map(({ consentReceiptSha256 }) => consentReceiptSha256)).size !== assigned.length) throw new Error('Assigned identities must use distinct donor consent receipts')
-  if (new Set(assigned.map(({ referenceAudioSha256 }) => referenceAudioSha256)).size !== assigned.length) throw new Error('Assigned identities must use distinct reference recordings')
+  const referenced = assigned.filter((assignment) => assignment.source === 'consented-reference')
+  if (new Set(referenced.map(({ consentReceiptSha256 }) => consentReceiptSha256)).size !== referenced.length) throw new Error('Referenced identities must use distinct donor consent receipts')
+  if (new Set(referenced.map(({ referenceAudioSha256 }) => referenceAudioSha256)).size !== referenced.length) throw new Error('Referenced identities must use distinct reference recordings')
   if (new Set(assigned.map(({ providerId, voiceProfileId }) => `${providerId}:${voiceProfileId}`)).size !== assigned.length) throw new Error('Assigned identities must use distinct provider voice profiles')
   const sourceText = canonicalJson(elevenMinutesCourtWeek.manifest.sessions)
   for (const projection of manifest.pronunciationProjections) {
@@ -191,11 +216,14 @@ export function validateCourtWeekPerformanceManifest(value: unknown, requireRead
   }
   const ready = requireReady || manifest.stage === 'approved'
   if (ready) {
-    if (assigned.length !== 28) throw new Error('Every performance identity requires a consented reference assignment')
+    if (assigned.length !== 28) throw new Error('Every performance identity requires a reviewed voice assignment')
     if (manifest.sourceContract !== 'explicit-reviewed') throw new Error('Release requires the explicit reviewed-turn source contract')
     const selected = new Set(assigned.map(({ providerId }) => providerId))
-    if (manifest.providers.filter(({ id }) => selected.has(id)).flatMap(({ components }) => components)
-      .some(({ acquisition }) => acquisition !== 'verified')) throw new Error('Selected provider artifacts are not verified offline acquisitions')
+    const selectedProviders = manifest.providers.filter(({ id }) => selected.has(id))
+    if (selectedProviders.some((provider) => provider.delivery === 'offline-model'
+      && provider.components.some(({ acquisition }) => acquisition !== 'verified'))) throw new Error('Selected offline provider artifacts are not verified acquisitions')
+    if (selectedProviders.some((provider) => provider.delivery === 'managed-batch-api'
+      && provider.voiceInventory.status !== 'verified')) throw new Error('Selected managed provider voice inventory is not verified')
     if (manifest.pronunciationProjections.some(({ status }) => status !== 'approved')) throw new Error('Pronunciation projections still require approval')
   }
   return manifest
@@ -203,7 +231,8 @@ export function validateCourtWeekPerformanceManifest(value: unknown, requireRead
 
 function argument(name: string): string | undefined {
   const index = process.argv.indexOf(name)
-  return index >= 0 ? process.argv[index + 1] : undefined
+  const value = index >= 0 ? process.argv[index + 1] : undefined
+  return value && !value.startsWith('-') ? value : undefined
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {

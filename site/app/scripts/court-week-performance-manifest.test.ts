@@ -13,7 +13,7 @@ const payloadOf = (manifest: ReturnType<typeof buildCourtWeekPerformanceManifest
   Object.fromEntries(Object.entries(manifest).filter(([key]) => key !== 'performanceDigest')) as
   Parameters<typeof calculatePerformanceDigest>[0]
 
-describe('Court Week offline performance manifest', () => {
+describe('Court Week governed performance manifest', () => {
   it('binds exactly 28 provider-neutral identities to the current authored speakers', () => {
     const first = buildCourtWeekPerformanceManifest()
     const second = buildCourtWeekPerformanceManifest()
@@ -27,7 +27,15 @@ describe('Court Week offline performance manifest', () => {
     expect(first.sourceDigest).toMatch(/^sha256:[0-9a-f]{64}$/u)
     expect(first.performanceDigest).toMatch(/^sha256:[0-9a-f]{64}$/u)
     expect(first.performanceDigest).not.toBe(first.sourceDigest)
-    expect(first.computePolicy).toMatchObject({ maxIncrementalSpendAud: 50, recurringSpendAud: 0, billableEndpointsAllowed: false, resumableUnit: 'utterance' })
+    expect(first.computePolicy).toMatchObject({
+      maxIncrementalSpendAud: 50, recurringSpendAud: 0, managedBatchApisAllowed: true,
+      runtimeInferenceAllowed: false, cloudflareRuntimeAllowed: false,
+      maximumProviderCharacters: 1_000_000, resumableUnit: 'utterance',
+    })
+    expect(first.providers).toContainEqual(expect.objectContaining({
+      id: 'google-chirp3-hd-en-au', delivery: 'managed-batch-api',
+      voiceInventory: expect.objectContaining({ locale: 'en-AU', count: 30 }),
+    }))
     expect(JSON.stringify(first)).not.toMatch(/referencePath|consentPath|donorName/iu)
   })
 
@@ -53,7 +61,7 @@ describe('Court Week offline performance manifest', () => {
 
     const rawReference = structuredClone(buildCourtWeekPerformanceManifest()) as unknown as { identities: Array<{ assignment: Record<string, unknown> | null }> }
     rawReference.identities[0].assignment = {
-      providerId: 'chatterbox-v3', voiceProfileId: 'ari-tem-v1',
+      source: 'consented-reference', providerId: 'chatterbox-v3', voiceProfileId: 'ari-tem-v1',
       consentReceiptSha256: `sha256:${'a'.repeat(64)}`,
       referenceAudioSha256: `sha256:${'b'.repeat(64)}`,
       referencePath: 'private/ari.wav',
@@ -62,15 +70,13 @@ describe('Court Week offline performance manifest', () => {
 
     const unknownProvider = structuredClone(buildCourtWeekPerformanceManifest())
     unknownProvider.identities[0].assignment = {
-      providerId: 'unknown', voiceProfileId: 'ari-tem-v1',
-      consentReceiptSha256: `sha256:${'a'.repeat(64)}`,
-      referenceAudioSha256: `sha256:${'b'.repeat(64)}`,
+      source: 'provider-stock', providerId: 'unknown', voiceProfileId: 'ari-tem-v1',
     }
     unknownProvider.performanceDigest = refreshPerformanceDigest(unknownProvider).performanceDigest
     expect(() => validateCourtWeekPerformanceManifest(unknownProvider)).toThrow('unknown provider')
 
     expect(() => validateCourtWeekPerformanceManifest(
       buildCourtWeekPerformanceManifest(), true,
-    )).toThrow('consented reference assignment')
+    )).toThrow('reviewed voice assignment')
   })
 })
