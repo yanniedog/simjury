@@ -3,7 +3,7 @@ import { elevenMinutesDeliberation } from '../../src/courtweek/content/deliberat
 import { elevenMinutesSessions } from '../../src/courtweek/content/sessions'
 import { courtWeekBootstrap } from '../../src/courtweek/sealed/bootstrap'
 import { exportWeeklyProgress, type StoredWeeklyProgress } from '../../src/courtweek/state/progress'
-import { seedRouteAvailable } from './court-week.progress-fixture'
+import { openProgressSeedDocument, seedRouteAvailable } from './court-week.progress-fixture'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 
@@ -622,7 +622,7 @@ async function seedTuesdayPosition(
   accessibilityMode: 'audio-first' | 'captions' | 'reading' = 'audio-first',
   observedAt = releaseNow,
 ) {
-  await page.goto('/robots.txt')
+  await openProgressSeedDocument(page)
   await page.evaluate(async ({ instant, currentSceneId, currentCueId, accessibilityMode }) => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open('simjury-court-week-v1')
     request.onerror = () => reject(request.error)
@@ -1036,12 +1036,13 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
     recordedAt: '2026-08-15T11:00:00+10:00',
     influencePenalty: 0,
   }
-  // Seed from a same-origin static page so no mounted player can race the
+  // Seed from an inert same-origin page so no mounted player can race the
   // fixture with its ordinary debounced progress save.
-  await page.goto('/robots.txt')
+  await openProgressSeedDocument(page)
   await page.evaluate(async ({ instant, contribution }) => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open('simjury-court-week-v1')
     request.onerror = () => reject(request.error)
+    request.onupgradeneeded = () => request.result.createObjectStore('progress')
     request.onsuccess = () => {
       const database = request.result
       const transaction = database.transaction('progress', 'readwrite')

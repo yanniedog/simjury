@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import { elevenMinutesSessions } from '../../src/courtweek/content/sessions'
 import { responsiveCaptionPlacements, type CaptionViewport } from '../../src/courtweek/ui/captionPlacement'
+import { openProgressSeedDocument } from './court-week.progress-fixture'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 
@@ -24,7 +25,7 @@ async function prepareCourt(page: Page) {
 }
 
 async function seedProgress(page: Page, position: Record<string, unknown>) {
-  await page.goto('/robots.txt')
+  await openProgressSeedDocument(page)
   await page.evaluate(async ({ instant, seededPosition }) => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open('simjury-court-week-v1')
     request.onerror = () => reject(request.error)
@@ -86,7 +87,7 @@ test('caption assistive copy exposes the complete visible cue exactly once', asy
       },
     })
   }, releaseNow)
-  await page.goto('/robots.txt')
+  await openProgressSeedDocument(page)
   await page.evaluate(async () => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open('simjury-court-week-v1')
     request.onerror = () => reject(request.error)

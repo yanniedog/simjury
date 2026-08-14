@@ -2,11 +2,12 @@ import { expect, test, type Page } from '@playwright/test'
 import { elevenMinutesDeliberation } from '../../src/courtweek/content/deliberation'
 import { elevenMinutesSessions } from '../../src/courtweek/content/sessions'
 import { PROGRESS_DATABASE, PROGRESS_PACK_STORE } from '../../src/courtweek/state/progress'
+import { openProgressSeedDocument } from './court-week.progress-fixture'
 
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
 
 async function seedProgress(page: Page, position: Record<string, unknown>) {
-  await page.goto('/robots.txt')
+  await openProgressSeedDocument(page)
   await page.evaluate(async ({ instant, position, contract, packStore }) => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open(contract.name, contract.version)
     request.onerror = () => reject(request.error)
