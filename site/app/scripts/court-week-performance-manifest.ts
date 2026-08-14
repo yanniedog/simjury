@@ -136,7 +136,7 @@ const providers: CourtWeekPerformanceManifest['providers'] = [
   ] },
   { id: 'chatterbox-turbo', label: 'Chatterbox Turbo', delivery: 'offline-model', configuration: 'English with consented Australian 10-second reference', components: [
     { kind: 'engine', name: 'Chatterbox', repository: 'https://github.com/resemble-ai/chatterbox', revision: '5de7a54aa4e5e2baadb0182dde554908b48b85c2', selector: 'ChatterboxTurboTTS', licenseSpdx: 'MIT', licenseUrl: 'https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/LICENSE', acquisition: 'pending', artifactInventorySha256: null },
-    { kind: 'model', name: 'Chatterbox Turbo weights', repository: 'https://huggingface.co/ResembleAI/chatterbox-turbo', revision: '749d1c1a46eb10492095d68fbcf55691ccf137cd', selector: 'ChatterboxTurboTTS', licenseSpdx: 'MIT', licenseUrl: 'https://huggingface.co/ResembleAI/chatterbox-turbo/blob/749d1c1a46eb10492095d68fbcf55691ccf137cd/README.md', acquisition: 'pending', artifactInventorySha256: null },
+    { kind: 'model', name: 'Chatterbox Turbo weights', repository: 'https://huggingface.co/ResembleAI/chatterbox-turbo', revision: '749d1c1a46eb10492095d68fbcf55691ccf137cd', selector: 't3_turbo_v1.safetensors', licenseSpdx: 'MIT', licenseUrl: 'https://huggingface.co/ResembleAI/chatterbox-turbo/blob/749d1c1a46eb10492095d68fbcf55691ccf137cd/README.md', acquisition: 'pending', artifactInventorySha256: null },
   ] },
   { id: 'melo-en-au-openvoice-v2', label: 'MeloTTS EN-AU plus OpenVoice V2', delivery: 'offline-model', configuration: 'MeloTTS EN-AU accent base followed by consented tone-colour conversion', components: [
     { kind: 'engine', name: 'MeloTTS', repository: 'https://github.com/myshell-ai/MeloTTS', revision: '209145371cff8fc3bd60d7be902ea69cbdb7965a', selector: 'TTS(language=EN); speaker=EN-AU', licenseSpdx: 'MIT', licenseUrl: 'https://github.com/myshell-ai/MeloTTS/blob/209145371cff8fc3bd60d7be902ea69cbdb7965a/LICENSE', acquisition: 'pending', artifactInventorySha256: null },
@@ -148,7 +148,7 @@ const providers: CourtWeekPerformanceManifest['providers'] = [
 const canonicalJson = (value: unknown): string => {
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`
   if (value !== null && typeof value === 'object') return `{${Object.entries(value)
-    .sort(([left], [right]) => left.localeCompare(right))
+    .sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))
     .map(([key, entry]) => `${JSON.stringify(key)}:${canonicalJson(entry)}`).join(',')}}`
   return JSON.stringify(value)
 }
@@ -231,8 +231,10 @@ export function validateCourtWeekPerformanceManifest(value: unknown, requireRead
 
 function argument(name: string): string | undefined {
   const index = process.argv.indexOf(name)
-  const value = index >= 0 ? process.argv[index + 1] : undefined
-  return value && !value.startsWith('-') ? value : undefined
+  if (index < 0) return undefined
+  const value = process.argv[index + 1]
+  if (!value || value.startsWith('-')) throw new Error(`${name} requires a value`)
+  return value
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {

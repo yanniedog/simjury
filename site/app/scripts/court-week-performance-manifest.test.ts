@@ -66,7 +66,7 @@ describe('Court Week governed performance manifest', () => {
       referenceAudioSha256: `sha256:${'b'.repeat(64)}`,
       referencePath: 'private/ari.wav',
     }
-    expect(() => validateCourtWeekPerformanceManifest(rawReference)).toThrow()
+    expect(() => validateCourtWeekPerformanceManifest(rawReference)).toThrow(/referencePath/u)
 
     const unknownProvider = structuredClone(buildCourtWeekPerformanceManifest())
     unknownProvider.identities[0].assignment = {
