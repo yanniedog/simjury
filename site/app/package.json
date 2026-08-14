@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "npm run build:packs && vite",
+    "dev:preview": "npm run build:packs && vite --mode court-week-preview",
     "build:packs": "tsx scripts/build-court-week-packs.ts",
     "verify:sealed-build": "tsx scripts/assert-sealed-build.ts",
     "build": "npm run build:packs && tsc --noEmit && vite build && npm run finalize:root-shell && npm run verify:sealed-build",

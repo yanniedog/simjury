@@ -4,9 +4,10 @@ import type {
   CourtWeek,
   DeliberationPack,
   TrialRecord,
+  Verdict,
 } from '../model/schema'
 import { attachSessionArt, attachSessionAudio } from '../media/manifest'
-import { loadWeeklyProgress, type StoredWeeklyProgress } from '../state/progress'
+import { loadWeeklyProgress, type AccessMode, type StoredWeeklyProgress } from '../state/progress'
 import { observeCourtTime } from '../state/schedule'
 import { WEEKLY_PROGRESS_EVENT } from '../state/useWeeklyProgress'
 import {
@@ -28,11 +29,13 @@ import { prepareSealedProgressImport } from './progressImport'
 import type { CourtDayPack, CourtWeekBootstrap } from './types'
 import {
   DEVELOPER_PREVIEW_NOW,
-  DEVELOPER_PREVIEW_QUERY_KEY,
+  DEVELOPER_PREVIEW_PATH,
   developerProgressForDay,
+  type PreviewAdmissionState,
+  type PreviewOutcome,
 } from './developerPreview'
 
-const DEVELOPER_PREVIEW_ENABLED = import.meta.env.DEV || import.meta.env.MODE === 'test'
+const DEVELOPER_PREVIEW_ENABLED = import.meta.env.VITE_COURT_WEEK_PREVIEW === 'enabled'
 if (DEVELOPER_PREVIEW_ENABLED) void import('./developerPreview.css')
 
 export interface SealedCourtWeekAppProps {
@@ -365,101 +368,131 @@ function DeveloperPreview({
   onLeave,
 }: Required<Pick<SealedCourtWeekAppProps, 'bootstrap' | 'packBase'>> &
   Pick<SealedCourtWeekAppProps, 'releaseBase' | 'fetcher'> & { onLeave: () => void }) {
-  const [packs, setPacks] = useState<CourtDayPack[] | null>(null)
-  const [loadError, setLoadError] = useState('')
   const [selectedOrdinal, setSelectedOrdinal] = useState(1)
+  const [sceneId, setSceneId] = useState('')
+  const [cueId, setCueId] = useState('')
+  const [accessMode, setAccessMode] = useState<AccessMode>('reading')
+  const [admissionState, setAdmissionState] = useState<PreviewAdmissionState>('at-cue')
+  const [ballot, setBallot] = useState<Verdict | 'auto'>('auto')
+  const [outcome, setOutcome] = useState<PreviewOutcome>('none')
   const [retry, setRetry] = useState(0)
   const [entered, setEntered] = useState(false)
-  const sessionSelector = useRef<HTMLSelectElement>(null)
-
-  useEffect(() => {
-    if (!entered) sessionSelector.current?.focus()
-  }, [entered, packs, selectedOrdinal])
+  const [drawerOpen, setDrawerOpen] = useState(() => (
+    typeof matchMedia !== 'function' || !matchMedia('(max-width: 640px)').matches
+  ))
+  const [load, setLoad] = useState<{ ordinal: number; courtWeek?: CourtWeek; error?: string }>({ ordinal: 1 })
+  const packLoad = useRef<{ key: string; promise: Promise<CourtDayPack[]> } | null>(null)
 
   useEffect(() => {
     let active = true
-    setLoadError('')
-    void hydrateCourtPacks({
-      bootstrap,
-      entries: bootstrap.sessions,
-      baseUrl: packBase,
-      ...(fetcher ? { fetcher } : {}),
-      persistOpened: false,
-      readOpened: false,
-    }).then((opened) => {
-      if (active) setPacks(opened)
+    const entry = bootstrap.sessions[selectedOrdinal - 1]
+    setLoad({ ordinal: selectedOrdinal })
+    const loadKey = `${bootstrap.releaseTag}:${entry?.locator}:${retry}`
+    const packPromise = packLoad.current?.key === loadKey
+      ? packLoad.current.promise
+      : hydrateCourtPacks({
+          bootstrap, entries: entry ? [entry] : [], baseUrl: packBase,
+          ...(fetcher ? { fetcher } : {}), persistOpened: false, readOpened: false,
+        })
+    packLoad.current = { key: loadKey, promise: packPromise }
+    void Promise.all([
+      packPromise,
+      import('../content').then(({ elevenMinutesCourtWeek }) => elevenMinutesCourtWeek),
+    ]).then(([opened, authored]) => {
+      if (!active || !opened[0]) return
+      const runtime = runtimeCourtWeek(bootstrap, [opened[0]])
+      setLoad({
+        ordinal: selectedOrdinal,
+        courtWeek: {
+          ...authored,
+          manifest: {
+            ...runtime.manifest,
+            sessions: authored.manifest.sessions.map((session, index) => (
+              index === selectedOrdinal - 1 ? runtime.manifest.sessions[index] : session
+            )),
+          },
+        },
+      })
     }).catch(() => {
-      if (active) setLoadError('The developer sessions could not be opened.')
+      if (active) setLoad({ ordinal: selectedOrdinal, error: `Session ${selectedOrdinal} could not be opened.` })
     })
     return () => { active = false }
-  }, [bootstrap, fetcher, packBase, retry])
+  }, [bootstrap, fetcher, packBase, retry, selectedOrdinal])
 
-  const courtWeek = useMemo(
-    () => packs
-      ? runtimeCourtWeek(bootstrap, packs.filter(({ ordinal }) => ordinal <= selectedOrdinal))
-      : null,
-    [bootstrap, packs, selectedOrdinal],
-  )
+  const baseCourtWeek = load.ordinal === selectedOrdinal ? load.courtWeek : undefined
+  const selectedSession = baseCourtWeek?.manifest.sessions[selectedOrdinal - 1]
+  const selectedScene = selectedSession?.scenes.find(({ id }) => id === sceneId) ?? selectedSession?.scenes[0]
+  const selectedCue = selectedScene?.cues.find(({ id }) => id === cueId) ?? selectedScene?.cues[0]
+  const courtWeek = useMemo(() => {
+    if (!baseCourtWeek || !selectedCue) return null
+    const orderedCues = baseCourtWeek.manifest.sessions.flatMap((session) => session.scenes.flatMap((scene) => scene.cues))
+    const currentIndex = orderedCues.findIndex(({ id }) => id === selectedCue.id)
+    const admittedIds = new Set(orderedCues.slice(0, currentIndex + 1)
+      .filter((cue) => cue.event === 'exhibit-admitted' && (
+        admissionState === 'include-provisional' || cue.admissionStatus !== 'provisional'
+      )).flatMap(({ evidenceIds }) => evidenceIds))
+    return {
+      ...baseCourtWeek,
+      trial: {
+        ...baseCourtWeek.trial,
+        evidence: baseCourtWeek.trial.evidence.filter(({ id, status }) => status === 'admitted' && (
+          admissionState === 'all-admitted' || admittedIds.has(id)
+        )),
+      },
+    }
+  }, [admissionState, baseCourtWeek, selectedCue])
   const previewProgress = useMemo(
-    () => courtWeek ? developerProgressForDay(courtWeek, selectedOrdinal) : null,
-    [courtWeek, selectedOrdinal],
+    () => courtWeek ? developerProgressForDay(courtWeek, selectedOrdinal, {
+      sceneId: selectedScene?.id, cueId: selectedCue?.id, accessMode, ballot, outcome,
+    }) : null,
+    [accessMode, ballot, courtWeek, outcome, selectedCue?.id, selectedOrdinal, selectedScene?.id],
   )
 
-  if (loadError) {
-    return <main className="cw-entry"><div className="cw-entry__panel">
-      <p className="cw-kicker">Developer preview</p><h1>Sessions unavailable</h1>
-      <p role="alert">{loadError}</p>
-      <div className="cw-button-row">
-        <button type="button" onClick={() => setRetry((value) => value + 1)}>Try again</button>
-        <button type="button" onClick={onLeave}>Leave preview</button>
-      </div>
-    </div></main>
+  const changeDay = (ordinal: number) => {
+    setSelectedOrdinal(ordinal); setSceneId(''); setCueId(''); setEntered(false)
   }
-  if (!courtWeek || !previewProgress) {
-    return (
-      <main className="cw-loading" aria-busy="true">
-        <p role="status">Opening developer preview…</p>
-        <div className="cw-button-row">
-          <button type="button" onClick={onLeave}>Leave preview</button>
-        </div>
-      </main>
-    )
-  }
+  const resetEntry = () => setEntered(false)
+  const previewKey = [selectedOrdinal, selectedScene?.id, selectedCue?.id, accessMode, admissionState, ballot, outcome].join(':')
   return (
-    <div className="cw-test-harness" data-entered={entered ? 'true' : 'false'}>
-      <aside className="cw-developer-toolbar" aria-label="Developer preview controls">
-        <strong>DEV PREVIEW</strong>
-        <label htmlFor="cw-developer-day">Session</label>
-        <select
-          ref={sessionSelector}
-          id="cw-developer-day"
-          value={selectedOrdinal}
-          onChange={(event) => {
-            setSelectedOrdinal(Number(event.target.value))
-            setEntered(false)
-          }}
-        >
-          {bootstrap.sessions.map(({ day, ordinal }) => <option key={ordinal} value={ordinal}>{day}</option>)}
-        </select>
-        <span role="status">Saved juror progress is untouched. Preview changes are discarded.</span>
-        <button type="button" onClick={onLeave}>Leave preview</button>
-      </aside>
-      <CourtWeekApp
-        key={selectedOrdinal}
-        courtWeek={courtWeek}
-        now={() => DEVELOPER_PREVIEW_NOW}
-        releaseBase={releaseBase}
-        initialProgressOverride={previewProgress}
-        ephemeral
-        ephemeralAdvisory={DEVELOPER_PREVIEW_ADVISORY}
-        onEnteredChange={setEntered}
-        testSession={{
-          selectedOrdinal,
-          sessions: bootstrap.sessions,
-          onSelect: (ordinal) => { setSelectedOrdinal(ordinal); setEntered(false) },
-          onLeave,
-        }}
-      />
+    <div className="cw-test-harness cw-preview-harness" data-entered={entered ? 'true' : 'false'}>
+      <details className="cw-developer-toolbar cw-preview-drawer" open={drawerOpen} onToggle={(event) => setDrawerOpen(event.currentTarget.open)}>
+        <summary><strong>COURT WEEK PREVIEW</strong><span>{bootstrap.sessions[selectedOrdinal - 1]?.day}</span></summary>
+        <div className="cw-preview-grid">
+          <label>Day<select id="cw-preview-day" value={selectedOrdinal} onChange={(event) => changeDay(Number(event.target.value))}>
+            {bootstrap.sessions.map(({ day, ordinal }) => <option key={ordinal} value={ordinal}>{day}</option>)}
+          </select></label>
+          <label>Scene<select value={selectedScene?.id ?? ''} disabled={!selectedScene} onChange={(event) => {
+            setSceneId(event.target.value); setCueId(''); resetEntry()
+          }}>{selectedSession?.scenes.map((scene) => <option key={scene.id} value={scene.id}>{scene.title}</option>)}</select></label>
+          <label>Cue<select value={selectedCue?.id ?? ''} disabled={!selectedCue} onChange={(event) => {
+            setCueId(event.target.value); resetEntry()
+          }}>{selectedScene?.cues.map((cue) => <option key={cue.id} value={cue.id}>{cue.speaker}: {cue.id}</option>)}</select></label>
+          <label>Access<select value={accessMode} onChange={(event) => { setAccessMode(event.target.value as AccessMode); resetEntry() }}>
+            <option value="audio-first">Audio first</option><option value="captions">Captions</option><option value="reading">Reading</option>
+          </select></label>
+          <label>Admission<select value={admissionState} onChange={(event) => { setAdmissionState(event.target.value as PreviewAdmissionState); resetEntry() }}>
+            <option value="at-cue">Final at cue</option><option value="include-provisional">Include provisional</option><option value="all-admitted">All admitted</option>
+          </select></label>
+          <label>Ballot<select value={ballot} onChange={(event) => { setBallot(event.target.value as Verdict | 'auto'); resetEntry() }}>
+            <option value="auto">Automatic</option><option value="murder">Murder</option><option value="manslaughter">Manslaughter</option><option value="not-guilty">Not Guilty</option><option value="unable-to-agree">Unable to agree</option>
+          </select></label>
+          <label>Outcome<select value={outcome} onChange={(event) => { setOutcome(event.target.value as PreviewOutcome); resetEntry() }}>
+            <option value="none">Not returned</option><option value="murder:unanimous">Murder · unanimous</option><option value="manslaughter:majority">Manslaughter · majority</option><option value="not-guilty:unanimous">Not Guilty · unanimous</option><option value="unable-to-agree:hung">Unable to agree · hung</option>
+          </select></label>
+        </div>
+        <footer><span role="status">{load.error ? 'Selected pack failed.' : courtWeek ? 'One pack loaded.' : 'Opening one pack.'} Saved progress is untouched.</span><button type="button" onClick={onLeave}>Leave preview</button></footer>
+      </details>
+      {load.error ? <main className="cw-entry"><div className="cw-entry__panel">
+        <p className="cw-kicker">Preview pack unavailable</p><h1>{bootstrap.sessions[selectedOrdinal - 1]?.day} could not open</h1>
+        <p role="alert">{load.error} Other days remain available.</p>
+        <button type="button" onClick={() => setRetry((value) => value + 1)}>Retry this pack</button>
+      </div></main> : !courtWeek || !previewProgress ? (
+        <main className="cw-loading" aria-busy="true"><p role="status">Opening selected preview pack…</p></main>
+      ) : <CourtWeekApp
+        key={previewKey} courtWeek={courtWeek} now={() => DEVELOPER_PREVIEW_NOW} releaseBase={releaseBase}
+        initialProgressOverride={previewProgress} ephemeral ephemeralAdvisory={DEVELOPER_PREVIEW_ADVISORY}
+        onEnteredChange={setEntered} testSession={{ selectedOrdinal, sessions: bootstrap.sessions, onSelect: changeDay, onLeave }}
+      />}
     </div>
   )
 }
@@ -467,7 +500,7 @@ function DeveloperPreview({
 function developerPreviewRouteRequested(): boolean {
   return DEVELOPER_PREVIEW_ENABLED
     && typeof window !== 'undefined'
-    && new URLSearchParams(window.location.search).get(DEVELOPER_PREVIEW_QUERY_KEY) === 'all'
+    && window.location.pathname === DEVELOPER_PREVIEW_PATH
 }
 
 export function SealedCourtWeekApp(props: SealedCourtWeekAppProps) {
@@ -483,9 +516,7 @@ export function SealedCourtWeekApp(props: SealedCourtWeekAppProps) {
   const packBase = props.packBase ?? `${import.meta.env.BASE_URL}court-week/packs/`
   if (DEVELOPER_PREVIEW_ENABLED && previewRoute && localProfile.profile.adultFictionAcknowledged) {
     return <DeveloperPreview {...props} packBase={packBase} onLeave={() => {
-      const url = new URL(window.location.href)
-      url.searchParams.delete(DEVELOPER_PREVIEW_QUERY_KEY)
-      window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`)
+      window.history.replaceState(window.history.state, '', '/')
       setFocusPublicEntry(true)
       setPreviewRoute(false)
     }} />

@@ -3,10 +3,13 @@ import { elevenMinutesCourtWeek } from '../../src/courtweek/content/elevenMinute
 
 const baseURL = 'http://127.0.0.1:43127'
 const releaseNow = Date.parse('2026-08-17T09:00:00+10:00')
-// Reading mode steps by authored utterance, so the mandatory boundary freezes
-// on the utterance that owns the closing caption fragment, not the fragment.
-const lastArrivalCue = elevenMinutesCourtWeek.manifest.sessions[0]?.scenes[0]?.cues.at(-1)
-const firstMandatoryCueId = lastArrivalCue?.sourceCueId ?? lastArrivalCue?.id
+// Passive observation gates are gone. The first real contribution boundary is
+// the oath-or-affirmation choice at the end of the next scene.
+const firstMandatoryScene = elevenMinutesCourtWeek.manifest.sessions[0]?.scenes.find(
+  ({ interaction }) => interaction?.kind !== 'observe',
+)
+const firstMandatoryCue = firstMandatoryScene?.cues.at(-1)
+const firstMandatoryCueId = firstMandatoryCue?.sourceCueId ?? firstMandatoryCue?.id
 
 if (!firstMandatoryCueId) throw new Error('The first mandatory scene must contain at least one cue.')
 
@@ -324,16 +327,15 @@ test('mandatory contribution dialogs take and contain focus before returning it 
     await page.getByRole('button', { name: 'Continue' }).click()
   }
 
-  const dialog = page.getByRole('dialog', { name: /Settle into the jury viewpoint/i })
+  const dialog = page.getByRole('dialog', { name: /Choose oath or affirmation privately/i })
   await expect(dialog).toBeVisible()
-  // A reflection prompt authors no options, so the countdown leaves no
-  // available control and the labelled dialog itself holds focus. The former
-  // decoy "Continue" choice took focus and read as the way forward while
-  // advancing nothing.
-  await expect(dialog).toBeFocused()
-  await expect(dialog.locator('.cw-choice-grid')).toHaveCount(0)
+  const oath = dialog.getByRole('button', { name: 'Oath' })
+  await expect(oath).toBeFocused()
+  await expect(dialog.locator('.cw-choice-grid')).toBeVisible()
   await expect(page.locator('.cw-stage')).toHaveAttribute('inert', '')
   await expect(page.locator('.cw-stage')).toHaveAttribute('aria-hidden', 'true')
+  await page.clock.fastForward(60_000)
+  await expect(dialog.getByRole('button', { name: 'Continue proceedings' })).toBeDisabled()
 
   const liveCue = page.locator('.cw-cue-live-region')
   const frozenCue = (await liveCue.textContent())?.trim()
@@ -353,25 +355,25 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   expect(mandatoryPosition).toMatchObject({ currentCueId: firstMandatoryCueId })
   await page.keyboard.press('Escape')
   await expect(dialog).toBeVisible()
-  await expect(dialog).toBeFocused()
+  await expect(oath).toBeFocused()
   await expect.poll(() => readProgressPosition(page)).toEqual(mandatoryPosition)
   await expect(liveCue).toHaveText(frozenCue)
 
   await page.keyboard.press('Tab')
-  await expect(dialog).toBeFocused()
+  await expect(dialog.getByRole('button', { name: 'Affirmation' })).toBeFocused()
   await page.keyboard.press('Shift+Tab')
-  await expect(dialog).toBeFocused()
+  await expect(oath).toBeFocused()
   await expect(page.locator('.cw-controls button:focus')).toHaveCount(0)
 
-  await page.clock.fastForward(120_000)
   await expect(liveCue).toHaveText(frozenCue)
+  await oath.click()
   await expect(dialog.getByRole('button', { name: 'Continue proceedings' })).toBeEnabled()
   await dialog.getByRole('button', { name: 'Continue proceedings' }).click()
 
   await expect(dialog).toHaveCount(0)
   await expect(page.locator('.cw-stage')).not.toHaveAttribute('inert', '')
   await expect(page.getByRole('button', { name: 'Continue' })).toBeFocused()
-  await expect(page.locator('.cw-reading-copy')).toContainText('Choose an oath or affirmation')
+  await expect(page.locator('.cw-reading-copy')).toContainText('At 21:16 the accused heard a distress call')
   await expect(liveCue).not.toHaveText(frozenCue)
 })
 
