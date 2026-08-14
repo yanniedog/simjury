@@ -336,10 +336,9 @@ export function buildCourtWeekAudioJobs(
     if (segments.length < 8 || segments.length > 12) {
       throw new Error(`${session.id} has ${segments.length} synthesizable audio segments after omitting runtime-dependent cues; need 8-12`)
     }
-    // Count only interaction time the player enforces (minimumSeconds). Scene
-    // transitionSeconds are atmospheric and are not gated in CourtWeekApp.
-    const fixedExperienceSeconds = session.scenes.reduce((total, scene) =>
-      total + (scene.interaction?.minimumSeconds ?? 0), 0)
+    // Retained in the v1 job shape for media-tool compatibility. Court Week is
+    // self-paced, so no non-audio duration may be added to the experience.
+    const fixedExperienceSeconds = 0
     const digestInput = {
       schema: AUDIO_JOB_SCHEMA,
       caseId: courtWeek.manifest.id,
