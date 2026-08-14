@@ -107,7 +107,7 @@ Production packaging fails unless:
 - every source cue has exactly one ordered time range and no generated asset is
   unreferenced;
 - every day has 8-12 segment files in all three codecs plus VTT;
-- measured narration plus authored interactions/transitions is 18-22 minutes;
+- measured experience duration reports the unpadded narration duration;
 - every codec remains between -20 and -16 integrated LUFS, below -0.5 dBTP and
   at or below 12 LU loudness range;
 - each codec's daily transfer is at most 15 MB and its seven-day path at most

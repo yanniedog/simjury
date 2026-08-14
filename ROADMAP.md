@@ -3,9 +3,10 @@
 ## Active product
 
 **Eleven Minutes** is SimJury's only case: five sequential weekday court
-sessions followed by Saturday and Sunday deliberation. Each day measures 18–22
-minutes. `/` is the canonical route, compatibility paths redirect there, and the case remains playable after its
-shared launch week.
+sessions followed by Saturday and Sunday deliberation. Each session is
+self-paced and lasts only as long as its reviewed dialogue and meaningful juror
+decisions require. `/` is the canonical route, compatibility paths redirect
+there, and the case remains playable after its shared launch week.
 
 The binding product, legal, privacy and hosting contract is
 [`COURT-WEEK.md`](COURT-WEEK.md). Interface rules are in
@@ -28,7 +29,8 @@ The binding product, legal, privacy and hosting contract is
 ## Release gates
 
 - One active case and exactly seven sequential sessions.
-- 18–22 measured minutes per session; all legal procedure gates pass.
+- No countdowns, passive observation gates or artificial transition padding;
+  all legal procedure gates pass.
 - Equivalent complete play at 320×568 through 2560×1440, including 200% zoom,
   reduced motion, forced colours, keyboard and screen-reader journeys.
 - Zero critical/high device defects and no known audio or progress loss.
