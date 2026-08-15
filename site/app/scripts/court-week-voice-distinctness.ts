@@ -19,9 +19,11 @@ const canonicalJson = (value: unknown): string => {
     .map(([key, entry]) => `${JSON.stringify(key)}:${canonicalJson(entry)}`).join(',')}}`
   return JSON.stringify(value)
 }
-const digest = (value: unknown): string => `sha256:${createHash('sha256').update(canonicalJson(value)).digest('hex')}`
+export const voiceReviewDigest = (value: unknown): string => `sha256:${createHash('sha256').update(canonicalJson(value)).digest('hex')}`
+const digest = voiceReviewDigest
 const audioDigest = (value: Buffer): string => `sha256:${createHash('sha256').update(value).digest('hex')}`
 const pairId = (left: string, right: string): string => [left, right].sort().join('::')
+type PairReason = 'adjacent-role' | 'closest-same-gender'
 
 function roleAdjacencyPairs(): { leftIdentityId: string; rightIdentityId: string }[] {
   const identityByLabel = new Map<string, string>(CANONICAL_PERFORMANCE_IDENTITIES.flatMap((identity) =>
@@ -55,8 +57,10 @@ const castingContract = () => ({
   requirements: { selectedVoiceCount: 28 as const, uniqueVoicePerIdentity: true as const,
     completeSameGenderRankingForEverySelectedVoice: true as const, everyRequiredPairMustBeDistinguishable: true as const },
 })
+export const VOICE_CASTING_CONTRACT_DIGEST = digest(castingContract())
 
 export type VoiceDistinctnessBundle = ReturnType<typeof buildVoiceDistinctnessBundle>
+export type VoiceDistinctnessApproval = ReturnType<typeof approveVoiceDistinctness>
 
 /** Reads only the private audition directory; the listener contract contains no voice ids or absolute paths. */
 export function buildVoiceDistinctnessBundle(auditionInput: string) {
@@ -152,35 +156,52 @@ export function approveVoiceDistinctness(bundle: VoiceDistinctnessBundle, input:
     || canonicalJson(decisions.sameGenderRankings.map(({ blindId }) => blindId)) !== canonicalJson(selected)) {
     throw new Error('Every selected voice requires a complete same-gender ranking')
   }
-  const requiredPairs = new Set<string>()
+  const requiredPairs = new Map<string, Set<PairReason>>()
+  const requirePair = (id: string, reason: PairReason): void => {
+    const reasons = requiredPairs.get(id) ?? new Set<PairReason>()
+    reasons.add(reason); requiredPairs.set(id, reasons)
+  }
   for (const { blindId, rankedBlindIds } of decisions.sameGenderRankings) {
     const clip = known.get(blindId)
     const cohort = selected.filter((id) => id !== blindId && known.get(id)?.presentedGender === clip?.presentedGender).sort()
     if (!clip || !Array.isArray(rankedBlindIds) || canonicalJson([...rankedBlindIds].sort()) !== canonicalJson(cohort)) {
       throw new Error(`${blindId}: same-gender ranking is incomplete or invalid`)
     }
-    requiredPairs.add(pairId(blindId, rankedBlindIds[0]!))
+    requirePair(pairId(blindId, rankedBlindIds[0]!), 'closest-same-gender')
   }
   const blindByIdentity = new Map(decisions.assignments.map(({ identityId, blindId }) => [identityId, blindId]))
-  for (const pair of bundle.listener.adjacentRolePairs) requiredPairs.add(pairId(
+  for (const pair of bundle.listener.adjacentRolePairs) requirePair(pairId(
     blindByIdentity.get(pair.leftIdentityId)!, blindByIdentity.get(pair.rightIdentityId)!,
-  ))
+  ), 'adjacent-role')
   const reviewedPairs = new Map((decisions.pairDecisions ?? []).map((decision) => [
     pairId(decision.leftBlindId, decision.rightBlindId), decision,
   ]))
   if (reviewedPairs.size !== decisions.pairDecisions?.length || reviewedPairs.size !== requiredPairs.size
     || [...reviewedPairs.keys()].some((id) => !requiredPairs.has(id))) throw new Error('Pair decisions must exactly cover closest and adjacent-role comparisons')
-  for (const id of requiredPairs) {
+  for (const id of requiredPairs.keys()) {
     const decision = reviewedPairs.get(id)
     if (!decision?.distinguishable || !decision.reviewReference?.trim()) throw new Error(`${id}: distinctness review has not passed`)
   }
   const voiceByBlind = new Map(bundle.operatorKey.voices.map(({ blindId, voiceId }) => [blindId, voiceId]))
   const assignments = decisions.assignments.map(({ identityId, blindId }) => ({ identityId, voiceId: voiceByBlind.get(blindId)! }))
+  const identityByBlind = new Map(decisions.assignments.map(({ identityId, blindId }) => [blindId, identityId]))
+  const rankingByBlind = new Map(decisions.sameGenderRankings.map(({ blindId, rankedBlindIds }) => [blindId, rankedBlindIds]))
+  const recognitionCohorts = decisions.assignments.map(({ identityId, blindId }) => ({ identityId,
+    distractorIdentityIds: rankingByBlind.get(blindId)!.slice(0, 3).map((id) => identityByBlind.get(id)!),
+  }))
+  const requiredIdentityPairs = [...requiredPairs].map(([id, reasons]) => {
+    const [leftBlindId, rightBlindId] = id.split('::')
+    const identities = [identityByBlind.get(leftBlindId!)!, identityByBlind.get(rightBlindId!)!].sort()
+    return { leftIdentityId: identities[0]!, rightIdentityId: identities[1]!, reasons: [...reasons].sort() }
+  }).sort((left, right) => pairId(left.leftIdentityId, left.rightIdentityId)
+    .localeCompare(pairId(right.leftIdentityId, right.rightIdentityId), 'en'))
   const payload = {
     schema: VOICE_DISTINCTNESS_APPROVAL_SCHEMA, auditionPlanDigest: buildChirpAuditionPlan().planDigest,
     listenerDigest: bundle.listener.listenerDigest, castingContractDigest: digest(castingContract()),
     assignmentDigest: digest(assignments), decisionDigest: digest(decisions),
-    requiredPairCount: requiredPairs.size, allowed: true as const,
+    requiredPairCount: requiredPairs.size, requiredIdentityPairs,
+    requiredIdentityPairDigest: digest(requiredIdentityPairs), recognitionCohorts,
+    recognitionCohortDigest: digest(recognitionCohorts), allowed: true as const,
   }
   return { ...payload, approvalDigest: digest(payload) }
 }
@@ -192,9 +213,41 @@ export function validateVoiceDistinctnessApproval(value: unknown, assignments: r
     || approval.auditionPlanDigest !== buildChirpAuditionPlan().planDigest
     || approval.castingContractDigest !== digest(castingContract())
     || !sha256Pattern.test(approval.listenerDigest) || !sha256Pattern.test(approval.decisionDigest)
+    || !sha256Pattern.test(approval.requiredIdentityPairDigest)
+    || !sha256Pattern.test(approval.recognitionCohortDigest)
     || approval.assignmentDigest !== digest(assignments)
     || approvalDigest !== digest(payload)) {
     throw new Error('Perceptual-distinctness approval is missing, stale or does not match the registry')
+  }
+  const identityIds: string[] = CANONICAL_PERFORMANCE_IDENTITIES.map(({ id }) => id)
+  const assignmentRows = assignments as { identityId: string; voiceId: string }[]
+  const genderByVoice = new Map(GOOGLE_CHIRP3_SOURCE.inventory.voices.map(({ voiceId, presentedGender }) => [voiceId, presentedGender]))
+  const genderByIdentity = new Map(assignmentRows.map(({ identityId, voiceId }) => [identityId, genderByVoice.get(voiceId)]))
+  const adjacent = new Set(roleAdjacencyPairs().map(({ leftIdentityId, rightIdentityId }) => pairId(leftIdentityId, rightIdentityId)))
+  const requiredPairs = approval.requiredIdentityPairs ?? []
+  if (canonicalJson(assignmentRows.map(({ identityId }) => identityId)) !== canonicalJson(identityIds)
+    || new Set(assignmentRows.map(({ voiceId }) => voiceId)).size !== 28
+    || [...genderByIdentity.values()].some((gender) => !gender)
+    || requiredPairs.length !== approval.requiredPairCount || digest(requiredPairs) !== approval.requiredIdentityPairDigest
+    || new Set(requiredPairs.map(({ leftIdentityId, rightIdentityId }) => pairId(leftIdentityId, rightIdentityId))).size !== requiredPairs.length
+    || [...adjacent].some((id) => !requiredPairs.some(({ leftIdentityId, rightIdentityId, reasons }) =>
+      pairId(leftIdentityId, rightIdentityId) === id && reasons.includes('adjacent-role')))
+    || requiredPairs.some(({ leftIdentityId, rightIdentityId, reasons }) => !identityIds.includes(leftIdentityId)
+      || !identityIds.includes(rightIdentityId) || leftIdentityId >= rightIdentityId || !reasons.length
+      || reasons.some((reason) => !['adjacent-role', 'closest-same-gender'].includes(reason))
+      || (reasons.includes('closest-same-gender') && genderByIdentity.get(leftIdentityId) !== genderByIdentity.get(rightIdentityId)))
+    || identityIds.some((id) => !requiredPairs.some(({ leftIdentityId, rightIdentityId, reasons }) =>
+      reasons.includes('closest-same-gender') && (leftIdentityId === id || rightIdentityId === id)))) {
+    throw new Error('Perceptual-distinctness pair contract is invalid')
+  }
+  const cohorts = approval.recognitionCohorts ?? []
+  if (digest(cohorts) !== approval.recognitionCohortDigest
+    || canonicalJson(cohorts.map(({ identityId }) => identityId)) !== canonicalJson(identityIds)
+    || cohorts.some(({ identityId, distractorIdentityIds }) => distractorIdentityIds.length !== 3
+      || new Set(distractorIdentityIds).size !== 3 || distractorIdentityIds.includes(identityId)
+      || distractorIdentityIds.some((id) => !identityIds.includes(id)
+        || genderByIdentity.get(id) !== genderByIdentity.get(identityId)))) {
+    throw new Error('Perceptual recognition cohorts are invalid')
   }
   return approval
 }

@@ -30,4 +30,15 @@ describe('sealed build semantic module names', () => {
       .toBe('simjury.court-week-raw-asr/v1')
     expect(reviewOnlyContractMarker('simjury.court-week-raw-asr.v1')).toBeUndefined()
   })
+
+  it.each([
+    'bundle', 'operator-key', 'exact-source', 'loudness-analysis', 'name-projection',
+    'decisions', 'approval',
+  ])('rejects voice acceptance %s JSON', (suffix) => {
+    const marker = suffix === 'bundle' || suffix === 'operator-key'
+      ? `simjury.court-week-voice-acceptance-${suffix}/v1`
+      : suffix === 'decisions' || suffix === 'approval'
+        ? `simjury.court-week-voice-acceptance-${suffix}/v1` : `simjury.court-week-voice-${suffix}/v1`
+    expect(reviewOnlyContractMarker(JSON.stringify({ schema: marker }))).toBe(marker)
+  })
 })
