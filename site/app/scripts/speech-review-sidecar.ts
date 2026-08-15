@@ -191,25 +191,21 @@ function immutableReviewData(value: Record<string, unknown>): Record<string, unk
   return copy
 }
 
-function isPristinePendingSidecar(value: unknown): boolean {
-  if (!isRecord(value) || !Array.isArray(value.rows) || !value.rows.length) return false
-  return value.rows.every((row) => {
-    if (!isRecord(row) || !isRecord(row.decisions)) return false
-    const decisions = row.decisions
-    return Object.keys(decisions).length === REVIEW_DIMENSIONS.length && REVIEW_DIMENSIONS.every((dimension) => {
-      const decision = decisions[dimension]
-      return isRecord(decision) &&
-        JSON.stringify(Object.keys(decision).sort()) === JSON.stringify(DECISION_FIELDS) &&
-        decision.status === 'pending' &&
-        decision.reviewReference === null && decision.note === null
-    })
-  })
-}
-
 export function assertSpeechReviewSidecar(value: unknown): asserts value is SpeechReviewSidecar {
   const expected = buildSpeechReviewSidecar()
-  if (!isRecord(value) || !Array.isArray(value.rows)) throw new Error('speech review sidecar is malformed')
+  assertReviewDecisions(value)
   if (value.rows.length !== expected.rows.length) throw new Error('speech review sidecar has missing or extra rows')
+  if (JSON.stringify(immutableReviewData(value)) !== JSON.stringify(immutableReviewData(expected))) {
+    throw new Error('speech review sidecar is stale or reordered')
+  }
+}
+
+function assertReviewDecisions(
+  value: unknown,
+): asserts value is Record<string, unknown> & { rows: SpeechReviewSidecarRow[] } {
+  if (!isRecord(value) || !Array.isArray(value.rows) || !value.rows.length) {
+    throw new Error('speech review sidecar is malformed')
+  }
   for (const [index, candidate] of value.rows.entries()) {
     if (!isRecord(candidate) || !isRecord(candidate.decisions)) throw new Error(`speech review row ${index} is malformed`)
     const keys = Object.keys(candidate.decisions).sort()
@@ -233,9 +229,29 @@ export function assertSpeechReviewSidecar(value: unknown): asserts value is Spee
       }
     }
   }
-  if (JSON.stringify(immutableReviewData(value)) !== JSON.stringify(immutableReviewData(expected))) {
-    throw new Error('speech review sidecar is stale or reordered')
+}
+
+function migratableSpeechReviewRows(value: unknown): SpeechReviewSidecarRow[] {
+  assertReviewDecisions(value)
+  if (value.schema !== 'simjury.court-week-speech-review-sidecar/v1' ||
+      value.caseId !== elevenMinutesCourtWeek.manifest.id ||
+      value.sourceRevision !== elevenMinutesCourtWeek.manifest.revision ||
+      value.hashAlgorithm !== 'sha256' ||
+      !Array.isArray(value.sources) || !Array.isArray(value.runtimeVariants) ||
+      !/^[a-f0-9]{64}$/u.test(String(value.ledgerSha256)) ||
+      JSON.stringify(value.tokenTupleFields) !== JSON.stringify(['text', 'start', 'end', 'kind'])) {
+    throw new Error('speech review sidecar migration provenance is malformed')
   }
+  const rowIds = new Set<string>()
+  for (const [index, row] of value.rows.entries()) {
+    if (!isRecord(row) || typeof row.rowId !== 'string' ||
+        !/^[a-f0-9]{64}$/u.test(String(row.ledgerRowSha256))) {
+      throw new Error(`speech review row ${index} migration identity is malformed`)
+    }
+    if (rowIds.has(row.rowId)) throw new Error(`${row.rowId}: duplicate speech review migration row`)
+    rowIds.add(row.rowId)
+  }
+  return value.rows
 }
 
 type TempWriter = (path: string, contents: string) => Promise<void>
@@ -258,22 +274,26 @@ export async function writeSpeechReviewSidecar(
   path = SPEECH_REVIEW_SIDECAR_PATH, writer: TempWriter = writeTemp,
 ): Promise<void> {
   const generated = buildSpeechReviewSidecar()
-  let existing: SpeechReviewSidecar | null = null
+  let existingRows: readonly SpeechReviewSidecarRow[] = []
   try {
     const raw = await readFile(path, 'utf8')
     let candidate: unknown
     try { candidate = JSON.parse(raw) } catch { throw new Error(`refusing to overwrite invalid speech review sidecar: ${path}`) }
     try {
       assertSpeechReviewSidecar(candidate)
-      existing = candidate
-    } catch (error) {
-      if (!isPristinePendingSidecar(candidate)) throw error
+      existingRows = candidate.rows
+    } catch {
+      existingRows = migratableSpeechReviewRows(candidate)
     }
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
   }
-  if (existing) for (const [index, row] of generated.rows.entries()) {
-    row.decisions = existing.rows[index]!.decisions
+  if (existingRows.length) {
+    const existingById = new Map(existingRows.map((row) => [row.rowId, row]))
+    for (const row of generated.rows) {
+      const prior = existingById.get(row.rowId)
+      if (prior?.ledgerRowSha256 === row.ledgerRowSha256) row.decisions = prior.decisions
+    }
   }
   await mkdir(dirname(path), { recursive: true })
   await replaceAtomically(path, JSON.stringify(generated) + '\n', writer)
