@@ -62,6 +62,12 @@ const publicCode = files
   .map((file) => readFileSync(file, 'utf8'))
   .join('\n')
 assertNoRetiredDurationContract('Production build', publicCode)
+const reviewOnlyMarkers = [
+  ['simjury', 'court-week-pronounceability', 'v1'].join('.'),
+]
+for (const marker of reviewOnlyMarkers) if (publicCode.includes(marker)) {
+  throw new Error(`Review-only authoring contract leaked into the production build: ${marker}`)
+}
 const developerPreviewSentinels = [
   ...DEVELOPER_PREVIEW_ASSET_MARKERS,
   DEVELOPER_PREVIEW_NOW_ISO,
