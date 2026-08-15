@@ -9,7 +9,7 @@ import {
   type SpeechCandidateDay,
 } from './speechReviewLedger'
 
-const EXPECTED_LEDGER_SHA256 = 'b864f5e820e6a80a8f0f1fcd3ebb44e727175920ed144e231d31c833896379be'
+const EXPECTED_LEDGER_SHA256 = '93b23b86123ca922f39613d3368e4f59fb2f53f2cb28fb3efc8ad6770632d527'
 
 function digest(
   days: readonly SpeechCandidateDay[] = COURT_WEEK_SPEECH_CANDIDATES, sessions = elevenMinutesSessions,

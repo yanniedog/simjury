@@ -38,9 +38,9 @@ stereotypical Australian names merely to steer a speech engine.
 
 Sources: [Chirp voices](https://cloud.google.com/text-to-speech/docs/voices), [Chirp pricing](https://cloud.google.com/text-to-speech/pricing), [Cloudflare pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/), [Aura 2](https://developers.cloudflare.com/workers-ai/models/aura-2-en/), [Cloudflare Melo](https://developers.cloudflare.com/workers-ai/models/melotts/), [Chatterbox](https://github.com/resemble-ai/chatterbox), [Melo](https://github.com/myshell-ai/MeloTTS), and [OpenVoice](https://github.com/myshell-ai/OpenVoice).
 
-The reviewed candidate currently plans 47,832 provider characters because
+The reviewed candidate currently plans 47,729 provider characters because
 pending pronunciation proposals may not alter provider text. At the frozen
-14 August 2026 RBA rate, one complete Chirp pass is about USD 1.36 / AUD 1.92
+14 August 2026 RBA rate, one complete Chirp pass is about USD 1.43 / AUD 2.03
 before free usage, and potentially AUD 0 within Google's one-million-character
 monthly allowance. Billing must still be enabled and the plan conservatively
 budgets the gross amount. Cloudflare Aura 2 has the same gross character price

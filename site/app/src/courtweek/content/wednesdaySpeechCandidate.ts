@@ -176,12 +176,12 @@ export const WEDNESDAY_SPEECH_CANDIDATE: readonly WednesdaySpeechCandidateCue[] 
   cue('wed-blurt', 'witness-cross', [
     turn('wed-blurt__1', 'defence-counsel', 'Defence counsel Corin Dax', 'live-proceeding', 'question', 'Apart from that unfinished memorandum, you had no personal knowledge of another prior delay by Venn?'),
     turn('wed-blurt__2', 'oren-vale', 'Oren Vale', 'live-proceeding', 'answer', 'No personal knowledge.'),
-    turn('wed-blurt__3', 'oren-vale', 'Oren Vale', 'reported-testimony', 'answer', 'People in the office said she had done this before.'),
+    turn('wed-blurt__3', 'oren-vale', 'Oren Vale', 'reported-testimony', 'answer', 'People in the office said she had done this before—'),
     turn('wed-blurt__4', 'defence-counsel', 'Defence counsel Corin Dax', 'live-proceeding', 'objection', 'Objection.'),
   ]),
   cue('wed-postanswer-ruling', 'ruling', [
     turn('wed-postanswer-ruling__1', 'judge', 'Judge Sel Aven', 'judicial-direction', 'ruling', 'I uphold the objection. The volunteered words are excluded and are not evidence.'),
-    turn('wed-postanswer-ruling__2', 'judge', 'Judge Sel Aven', 'judicial-direction', 'limitation-direction', 'Those words are untested hearsay, not evidence of any earlier act, habit or character. Reason as though they were never spoken. Do not replay or repeat them. They must not appear in exhibits, the notes index, closings, deliberation prompts or later analysis. Counsel, move to another subject.'),
+    turn('wed-postanswer-ruling__2', 'judge', 'Judge Sel Aven', 'judicial-direction', 'limitation-direction', 'Put those words out of your minds. They are untested hearsay, not evidence of any earlier act, habit or character. Do not use or discuss them for any purpose. Counsel, move to another subject.'),
   ], { strikeRuling: { targetTurnId: 'wed-blurt__3', objectionTurnId: 'wed-blurt__4', operativeTurnId: 'wed-postanswer-ruling__1', restrictionTurnId: 'wed-postanswer-ruling__2', replay: 'forbidden' } }),
   cue('wed-record-admitted', 'exhibit-admitted', [
     turn('wed-record-admitted__1', 'crown-counsel', 'Crown counsel Asha Renn', 'advocacy', 'tender', 'I tender the complete concurrent incident export. Its archive link, digital fingerprint and verified clock rest on Mir’s evidence tested yesterday; Dorn identified the assignments.'),
@@ -193,10 +193,10 @@ export const WEDNESDAY_SPEECH_CANDIDATE: readonly WednesdaySpeechCandidateCue[] 
     turn('wed-crown-close-1__1', 'crown-counsel', 'Crown counsel Asha Renn', 'advocacy', 'submission', 'Your Honour, that is the case for the Crown.'),
   ]),
   cue('wed-adjourn-1', 'adjournment', [
-    turn('wed-adjourn-1__1', 'judge', 'Judge Sel Aven', 'judicial-direction', 'direction', 'Do not treat the end of the Crown case as a time for a verdict. The defence may call evidence or may require the Crown to stand on what it has proved. Neither choice changes the burden. The struck words are legally absent. If they recur in your mind, identify that intrusion and put it aside without discussing their content.'),
+    turn('wed-adjourn-1__1', 'judge', 'Judge Sel Aven', 'judicial-direction', 'direction', 'Do not treat the end of the Crown case as a time for a verdict. The defence may call evidence or may require the Crown to stand on what it has proved. Neither choice changes the burden. The struck words are legally absent. If they recur in your mind, put them aside without discussing their content. Court is adjourned until tomorrow morning.'),
   ]),
   cue('wed-adjourn-2', 'adjournment', [
-    turn('wed-adjourn-2__1', 'court-officer', 'Court officer', 'live-proceeding', 'none', 'All rise. Court is adjourned.'),
+    turn('wed-adjourn-2__1', 'court-officer', 'Court officer', 'live-proceeding', 'none', 'All rise.'),
     turn('wed-adjourn-2__2', 'narrator', 'Narrator', 'narration', 'narration', 'Tomorrow the defence will open and call two witnesses. Keep your notes provisional and private.'),
   ]),
 ]

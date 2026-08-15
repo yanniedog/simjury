@@ -134,9 +134,20 @@ describe('inactive Wednesday reviewed speech candidate', () => {
 
     const ruling = cueById('wed-postanswer-ruling').turns
     expect(ruling[0]).toMatchObject({ actorId: 'judge', legalAction: 'ruling' })
-    expect(ruling[1]?.text).toMatch(/do not replay.*exhibits.*notes index.*closings.*deliberation prompts.*later analysis/is)
+    expect(ruling[1]?.text).toMatch(/put those words out of your minds.*untested hearsay.*not evidence.*do not use or discuss them/is)
+    expect(ruling.map(({ text }) => text).join(' ')).not.toMatch(/\breplay\b|notes index|deliberation prompts|later analysis/iu)
     expect(WEDNESDAY_SPEECH_CANDIDATE.slice(14).flatMap(({ sourceText }) => sourceText))
       .not.toContain('she had done this before')
+  })
+
+  it('leaves adjournment authority with the Judge and the ceremonial response with the officer', () => {
+    expect(cueById('wed-adjourn-1').turns.at(-1)).toMatchObject({
+      actorId: 'judge', legalAction: 'direction', text: expect.stringMatching(/court is adjourned/iu),
+    })
+    expect(cueById('wed-adjourn-2').turns).toMatchObject([
+      { actorId: 'court-officer', legalAction: 'none', text: 'All rise.' },
+      { actorId: 'narrator', legalAction: 'narration' },
+    ])
   })
 
   it('records every literal quotation with ordered source provenance', () => {
