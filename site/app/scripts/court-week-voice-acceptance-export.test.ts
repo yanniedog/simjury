@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import { execFileSync } from 'node:child_process'
 import { mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
@@ -128,6 +129,7 @@ describe('private five-listener acceptance export', () => {
     expect(result).toMatchObject({ bundleDigest, listenerId: 'listener-01', clipCount: 82 })
     const assets = readdirSync(output).filter((name) => !name.endsWith('.mp3'))
       .map((name) => readFileSync(join(output, name), 'utf8')).join('\n')
+    execFileSync(process.execPath, ['--check', join(output, 'review-shell.js')])
     expect(assets).toContain("connect-src 'none'"); expect(assets).not.toMatch(/https?:\/\/|fetch\(|XMLHttpRequest|serviceWorker/iu)
     expect(assets).not.toMatch(/legacy-private-id|candidateClipId|operatorKey|identityId|providerId/iu)
     expect(assets).toContain(bundleDigest); expect(assets).toContain(result.packageDigest)
