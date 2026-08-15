@@ -92,6 +92,12 @@ describe('offline Whisper ASR and forced-alignment receipt', () => {
   })
   it('rejects stale source/media bindings and public or runtime receipt paths', () => {
     const expected = context(); const candidate = receipt(expected)
+    const missingContract = structuredClone(expected) as Partial<VoiceAsrContext>; delete missingContract.mediaContract
+    expect(() => validate(candidate, missingContract as VoiceAsrContext)).toThrow(/validated candidate media projection/i)
+    const wrongContract = { ...expected, mediaContract: 'receipt-controlled' } as unknown as VoiceAsrContext
+    expect(() => validate(candidate, wrongContract)).toThrow(/validated candidate media projection/i)
+    const staleDuration = structuredClone(expected); staleDuration.turns[0]!.durationMs += 1
+    expect(() => validate(candidate, staleDuration)).toThrow(/validated candidate media projection/i)
     expect(() => validate({ ...candidate, bindings: { ...candidate.bindings,
       candidateDigest: digest('0') } }, expected)).toThrow(/stale case or digest/i)
     expected.turns[0]!.displayLabel = 'Helen Marsh'; expect(() => validate(candidate, expected)).toThrow(/activation projection/i); expected.turns[0]!.displayLabel = 'Helen Mercer'

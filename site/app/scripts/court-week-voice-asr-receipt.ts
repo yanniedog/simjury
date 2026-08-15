@@ -91,6 +91,7 @@ export type VoiceAsrReceipt = z.infer<typeof voiceAsrReceiptSchema>
 export type VoiceAsrEvidenceResolver = (absolutePath: string) => Uint8Array
 export interface VoiceAsrContext {
   caseId: 'cw-0001'; revision: string; sourceContract: 'explicit-candidate'; candidateDigest: string; sourceDigest: string
+  /** Produced by the separately validated candidate-media step; never copied from the ASR receipt. */
   performanceDigest: string; activationProjectionDigest: string; mediaContract: 'validated-candidate-media'; mediaDigest: string
   validatedRun: z.infer<typeof validatedRunSchema>
   turns: readonly { turnId: string; actorId: string; displayLabel: string; text: string; mediaSha256: string; durationMs: number
