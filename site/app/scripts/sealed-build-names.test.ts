@@ -33,11 +33,11 @@ describe('sealed build semantic module names', () => {
 
   it.each([
     'bundle', 'operator-key', 'exact-source', 'loudness-analysis', 'name-projection',
-    'decisions', 'approval',
+    'decisions', 'listener-submission', 'approval',
   ])('rejects voice acceptance %s JSON', (suffix) => {
     const marker = suffix === 'bundle' || suffix === 'operator-key'
       ? `simjury.court-week-voice-acceptance-${suffix}/v1`
-      : suffix === 'decisions' || suffix === 'approval'
+      : ['decisions', 'listener-submission', 'approval'].includes(suffix)
         ? `simjury.court-week-voice-acceptance-${suffix}/v1` : `simjury.court-week-voice-${suffix}/v1`
     expect(reviewOnlyContractMarker(JSON.stringify({ schema: marker }))).toBe(marker)
   })

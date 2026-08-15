@@ -128,6 +128,7 @@ describe('five-listener Australian voice acceptance', () => {
     }
     reject((value) => { value.listeners.pop() }, /exactly five/i)
     reject((value) => value.listeners.forEach((listener, index) => { listener.nativeAustralianEnglishSelfAttested = index < 2 }), /three listeners/i)
+    reject((value) => { value.listeners[0]!.devices = [] }, /device evidence/i)
     reject((value) => value.listeners.forEach((listener) => { listener.devices = ['reference-headphones'] }), /phone must all be covered/i)
     reject((value) => value.listeners.forEach((listener) => listener.clipRatings.forEach((rating) => { rating.naturalness = 3.9 })), /mean naturalness/i)
     const firstCandidate = bundle.operatorKey.comparisons[0]!.candidateClipId
