@@ -24,24 +24,24 @@ describe('Court Week pronounceability gate', () => {
     expect(buildCourtWeekPronounceabilityAudit()).toEqual(first)
     expect(first.counts).toMatchObject({
       'speaker-name': 24,
-      clock: 3,
-      statute: 6,
-      identifier: 4,
+      clock: 1,
+      statute: 4,
+      identifier: 2,
       abbreviation: 0,
-      homograph: 63,
-      'all-caps': 5,
-      number: 1,
-      'hyphenated-construction': 40,
-      'em-dash': 8,
+      homograph: 60,
+      'all-caps': 1,
+      number: 0,
+      'hyphenated-construction': 37,
+      'em-dash': 6,
     })
-    expect(first.findings).toHaveLength(154)
+    expect(first.findings).toHaveLength(135)
     expect(first.findings).toHaveLength(Object.values(first.counts).reduce((sum, count) => sum + count, 0))
     expect(new Set(first.findings.map(({ id }) => id)).size).toBe(first.findings.length)
     for (const entry of first.findings) {
       expect(entry.utf16EndExclusive).toBeGreaterThan(entry.utf16Start)
       expect(entry.tokenEndExclusive).toBeGreaterThan(entry.tokenStart)
     }
-    expect(first.coverage).toEqual({ actors: 28, turns: 379, runtimeVariants: 13 })
+    expect(first.coverage).toEqual({ actors: 28, turns: 380, runtimeVariants: 13 })
     expect(first.impact.actorIds).toHaveLength(26)
     expect(first.impact.runtimeVariants).toHaveLength(11)
     expect(first.auditDigest).toMatch(/^sha256:[0-9a-f]{64}$/u)
