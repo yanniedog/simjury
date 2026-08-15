@@ -12,6 +12,7 @@ import {
   buildCourtWeekPronounceabilityAudit,
   type PronounceabilityDisposition,
 } from './court-week-pronounceability'
+import { GOOGLE_CHIRP3_SOURCE } from './court-week-chirp-source'
 import { COURT_WEEK_REVIEW_ROLES } from './court-week-review-signoffs'
 import {
   buildCourtWeekChirpPlan,
@@ -84,6 +85,17 @@ describe('offline Court Week Chirp 3 HD plan', () => {
     })
     expect(first.policy).toMatchObject({ stockVoicesOnly: true, donorRecordingsRequired: false, recurringSpendAud: 0 })
     expect(JSON.stringify(COURT_WEEK_SPEECH_CANDIDATES)).toBe(before)
+
+    const grossUsdMicros = first.characterTotals.providerCharacters
+      * GOOGLE_CHIRP3_SOURCE.pricing.usdMicrosPerMillionCharactersAfterFreeTier / 1_000_000
+    const grossAudMicros = Math.ceil(
+      grossUsdMicros * GOOGLE_CHIRP3_SOURCE.audConversion.audMicrosPerUsd / 1_000_000,
+    )
+    const bakeoff = readFileSync(new URL('../../../docs/COURT-WEEK-OFFLINE-VOICE-BAKEOFF.md', import.meta.url), 'utf8')
+    expect(grossUsdMicros).toBe(1_489_260)
+    expect(grossAudMicros).toBe(2_107_046)
+    expect(bakeoff).toContain(`plans ${first.characterTotals.providerCharacters.toLocaleString('en-AU')} provider characters`)
+    expect(bakeoff).toContain('about USD 1.49 / AUD 2.11')
   })
 
   it('keeps canonical words immutable and never applies pending pronunciation changes', () => {

@@ -1,7 +1,9 @@
-# Court Week governed Australian-voice bake-off
+# Court Week governed Australian-voice programme
 
-**Status:** review infrastructure only; it does not replace Kokoro, publish media,
-enable billing, or authorise a synthesis run.
+**Status:** review infrastructure only; it does not activate dialogue, publish
+media, enable billing, or authorise a synthesis run. Google Chirp 3 HD `en-AU`
+is the sole provider approved for any new generation. The pinned Kokoro release
+remains immutable as a rollback and A/B comparator; it must not be regenerated.
 
 ## Contract
 
@@ -28,23 +30,25 @@ Character names must sound natural in a contemporary, culturally varied
 Australian courtroom. Do not use fantasy-style names, phonetic respellings or
 stereotypical Australian names merely to steer a speech engine.
 
-## Candidates
+## Provider decision
 
-1. **Google Chirp 3 HD `en-AU`** leads: its official inventory has 30 Australian
-   voices, enough for 28 identities without donor audio or local neural inference.
-2. **Cloudflare:** Aura 2 has only two documented Australian voices and hosted
-   Melo exposes no 28-voice en-AU inventory. Re-screen if that catalogue changes.
-3. Chatterbox V3/Turbo and Melo EN-AU plus OpenVoice remain optional challengers.
+**Google Chirp 3 HD `en-AU` is the selected sole provider.** Its official
+inventory has 30 Australian voices, enough for 28 identities without donor audio
+or local neural inference. No Cloudflare or open-source engine is an approved
+challenger or fallback: Aura 2 has only two documented Australian voices, hosted
+Melo exposes no 28-voice en-AU inventory, and local engines are outside the locked
+programme. Existing Kokoro bytes may be used only for rollback or A/B comparison.
 
-Sources: [Chirp voices](https://cloud.google.com/text-to-speech/docs/voices), [Chirp pricing](https://cloud.google.com/text-to-speech/pricing), [Cloudflare pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/), [Aura 2](https://developers.cloudflare.com/workers-ai/models/aura-2-en/), [Cloudflare Melo](https://developers.cloudflare.com/workers-ai/models/melotts/), [Chatterbox](https://github.com/resemble-ai/chatterbox), [Melo](https://github.com/myshell-ai/MeloTTS), and [OpenVoice](https://github.com/myshell-ai/OpenVoice).
+Sources: [Chirp voices](https://cloud.google.com/text-to-speech/docs/voices),
+[Chirp pricing](https://cloud.google.com/text-to-speech/pricing), and
+[RBA exchange rates](https://www.rba.gov.au/statistics/frequency/exchange-rates.html).
 
-The reviewed candidate currently plans 48,242 provider characters because
+The reviewed candidate currently plans 49,642 provider characters because
 pending pronunciation proposals may not alter provider text. At the frozen
-14 August 2026 RBA rate, one complete Chirp pass is about USD 1.45 / AUD 2.05
-before free usage, and potentially AUD 0 within Google's one-million-character
+14 August 2026 RBA rate, one complete Chirp pass is about USD 1.49 / AUD 2.11
+before free usage. It is potentially AUD 0 within Google's one-million-character
 monthly allowance. Billing must still be enabled and the plan conservatively
-budgets the gross amount. Cloudflare Aura 2 has the same gross character price
-but only two documented Australian voices, so it cannot meet the 28-identity cast.
+budgets the gross amount.
 
 The frozen catalogue verifies availability, not suitability. Audition all 30,
 select 28 only after blind listening, and test the selected cast on headphones,
