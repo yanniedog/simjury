@@ -103,8 +103,9 @@ type PerformancePayload = Omit<CourtWeekPerformanceManifest, 'performanceDigest'
 export const CANONICAL_PERFORMANCE_IDENTITIES = [
   { id: 'ari-tem', speakerLabels: ['Ari Tem'], castingBrief: 'Analytical, clipped and grounded without sounding robotic.' },
   { id: 'bram-tey', speakerLabels: ['Bram Tey'], castingBrief: 'Thoughtful, design-literate and conversationally restrained.' },
-  { id: 'clerk', speakerLabels: ['Clerk'], castingBrief: 'Crisp formal procedure with exceptional intelligibility.' },
-  { id: 'court-officer', speakerLabels: ['Court officer'], castingBrief: 'Warm procedural authority, distinct from clerk and judge.' },
+  // Legacy labels are migration-only; remove them at the explicit-source/media cutover.
+  { id: 'clerk', speakerLabels: ['Judge’s Associate', 'Clerk'], castingBrief: 'Crisp formal procedure with exceptional intelligibility.' },
+  { id: 'court-officer', speakerLabels: ['Court Attendant', 'Court officer'], castingBrief: 'Warm procedural authority, distinct from the associate and judge.' },
   { id: 'asha-renn', speakerLabels: ['Crown counsel Asha Renn'], castingBrief: 'Precise confidence and controlled urgency without aggression.' },
   { id: 'daro-sen', speakerLabels: ['Daro Sen'], castingBrief: 'Grounded, methodical reconstruction of sequence and time.' },
   { id: 'corin-dax', speakerLabels: ['Defence counsel Corin Dax'], castingBrief: 'Agile measured scepticism with understated authority.' },

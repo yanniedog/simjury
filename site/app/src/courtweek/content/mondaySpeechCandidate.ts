@@ -69,7 +69,7 @@ function oathCue(
   id: MondayOathCandidateCue['id'], runtimeVariant: MondayOathVariant,
   jurorAction: MondayOathCandidateCue['jurorAction'], text: string,
 ): MondayOathCandidateCue {
-  const turns = [turn(`${id}__1`, 'clerk', 'Clerk', 'live-proceeding', 'oath-administered', text)]
+  const turns = [turn(`${id}__1`, 'court-officer', 'Court Attendant', 'live-proceeding', 'oath-administered', text)]
   return { id, sourceCueId: 'mon-oath', event: 'oath', runtimeVariant, jurorAction, turns, sourceText: text }
 }
 
@@ -101,14 +101,14 @@ export const MONDAY_OATH_CANDIDATES: readonly MondayOathCandidateCue[] = [
 export const MONDAY_SPEECH_CANDIDATE: readonly MondaySpeechCandidateCue[] = [
   cue('mon-arrival-1', 'arrival', [
     turn('mon-arrival-1__1', 'narrator', 'Narrator', 'narration', 'narration', 'Eleven Minutes is a fictional trial for adults. Every person, place, organisation and event in it is invented. The courtroom is in the fictional State of Calder.'),
-    turn('mon-arrival-1__2', 'court-officer', 'Court officer', 'live-proceeding', 'none', 'Members of the jury panel, please switch off and put away every other device. Do not search for any name, subject or procedure mentioned in this trial. If you are empanelled, decide only from evidence admitted in court and the law the judge gives you.'),
+    turn('mon-arrival-1__2', 'court-officer', 'Court Attendant', 'live-proceeding', 'none', 'Members of the jury panel, please switch off and put away every other device. Do not search for any name, subject or procedure mentioned in this trial. If you are empanelled, decide only from evidence admitted in court and the law the judge gives you.'),
   ]),
   cue('mon-arrival-2', 'empanelment', [
     turn('mon-arrival-2__1', 'judge', 'Judge Sel Aven', 'judicial-direction', 'direction', 'You have now been empanelled as the jury in this trial. Each side had the opportunity to raise lawful challenges. Nothing in that process suggests any view about the evidence. Keep an open mind and decide the case only on the evidence admitted in court and the law I give you.'),
   ]),
   cue('mon-plea', 'plea', [
-    turn('mon-plea__1', 'clerk', 'Clerk', 'live-proceeding', 'charge-read', 'Mara Venn, you are charged with the murder of Ilan Saye. The charge alleges that, in the State of Calder, while under a duty to dispatch emergency assistance, you intentionally withheld rescue action, thereby causing Ilan Saye’s death, and that you did so intending to cause death or really serious injury.'),
-    turn('mon-plea__2', 'clerk', 'Clerk', 'live-proceeding', 'plea-question', 'How do you plead?'),
+    turn('mon-plea__1', 'clerk', 'Judge’s Associate', 'live-proceeding', 'charge-read', 'Mara Venn, you are charged with the murder of Ilan Saye. The charge alleges that, in the State of Calder, while under a duty to dispatch emergency assistance, you intentionally withheld rescue action, thereby causing Ilan Saye’s death, and that you did so intending to cause death or really serious injury.'),
+    turn('mon-plea__2', 'clerk', 'Judge’s Associate', 'live-proceeding', 'plea-question', 'How do you plead?'),
     turn('mon-plea__3', 'accused', 'Mara Venn', 'live-proceeding', 'plea-answer', 'Not guilty.'),
     turn('mon-plea__4', 'judge', 'Judge Sel Aven', 'judicial-direction', 'direction', 'That plea puts the charge in issue. It is not evidence. The Crown must prove every element of the charge beyond reasonable doubt. Mara Venn is not required to prove anything.'),
   ]),
@@ -167,7 +167,7 @@ export const MONDAY_SPEECH_CANDIDATE: readonly MondaySpeechCandidateCue[] = [
     turn('mon-adjourn-1__1', 'judge', 'Judge Sel Aven', 'judicial-direction', 'direction', 'The Crown’s opening is not evidence. Orr’s evidence and the route diagram are evidence, subject to the limits you heard. Between sittings, do not research emergency law, weather, rescue craft, hypothermia or any supposed real analogue. Do not let another person inspect your juror notes. Court is adjourned until tomorrow morning.'),
   ]),
   cue('mon-adjourn-2', 'adjournment', [
-    turn('mon-adjourn-2__1', 'court-officer', 'Court officer', 'live-proceeding', 'none', 'All rise.'),
+    turn('mon-adjourn-2__1', 'court-officer', 'Court Attendant', 'live-proceeding', 'none', 'All rise.'),
     turn('mon-adjourn-2__2', 'narrator', 'Narrator', 'narration', 'narration', 'Your progress is saved on this device. The court will resume with the junior dispatcher and evidence about the distress recording. Until then, no conclusion is required of you. The discipline of postponing judgment is part of the task.'),
   ]),
 ]

@@ -195,7 +195,7 @@ export const TUESDAY_SPEECH_CANDIDATE: readonly TuesdaySpeechCandidateCue[] = [
     turn('tue-adjourn-1__1', 'judge', 'Judge Sel Aven', 'judicial-direction', 'direction', 'You may replay the admitted distress recording and inspect the exhibits in your juror desk. Counsel’s descriptions are not evidence. Tomorrow you will hear from the rescue supervisor, a medical expert and the compliance director. In particular, causation and alleged motive remain contested.'),
   ]),
   cue('tue-adjourn-2', 'adjournment', [
-    turn('tue-adjourn-2__1', 'court-officer', 'Court officer', 'live-proceeding', 'none', 'All rise. Court is adjourned.'),
+    turn('tue-adjourn-2__1', 'court-officer', 'Court Attendant', 'live-proceeding', 'none', 'All rise. Court is adjourned.'),
     turn('tue-adjourn-2__2', 'narrator', 'Narrator', 'narration', 'narration', 'Save observations rather than a verdict. A useful note distinguishes what the system records from what the record may mean.'),
   ]),
 ]

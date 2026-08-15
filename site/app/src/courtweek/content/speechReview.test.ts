@@ -3,6 +3,7 @@ import {
   assertLegalActionAuthority,
   assertReviewedSpeechCue,
   COURT_WEEK_ACTORS,
+  findPotentialAttributions,
   type ReviewedSpeechCue,
   type SpokenTurn,
 } from './speechReview'
@@ -14,9 +15,20 @@ const turn = (value: Partial<SpokenTurn> & Pick<SpokenTurn, 'id' | 'actorId' | '
 describe('Court Week reviewed speech contract', () => {
   it('has one stable actor id and one foreperson alias for every reviewed entity', () => {
     expect(new Set(COURT_WEEK_ACTORS.map(({ id }) => id)).size).toBe(COURT_WEEK_ACTORS.length)
+    expect(COURT_WEEK_ACTORS.find(({ id }) => id === 'clerk')).toMatchObject({
+      label: 'Judge’s Associate', aliases: expect.arrayContaining(['Clerk', 'the Clerk']),
+    })
+    expect(COURT_WEEK_ACTORS.find(({ id }) => id === 'court-officer')).toMatchObject({
+      label: 'Court Attendant', aliases: expect.arrayContaining(['Court officer', 'the court officer']),
+    })
     expect(COURT_WEEK_ACTORS.find(({ id }) => id === 'edda-rook')).toMatchObject({
       label: 'Edda Rook', aliases: expect.arrayContaining(['Foreperson Edda Rook']),
     })
+  })
+  it('recognises current and legacy officer references as the same stable actors', () => {
+    expect(findPotentialAttributions(
+      'Judge’s Associate asks. Clerk replies. Court Attendant says. Court officer confirms.',
+    ).map(({ actorId }) => actorId)).toEqual(['clerk', 'clerk', 'court-officer', 'court-officer'])
   })
   it.each([
     ['plea', 'Mara Venn, how do you plead? The accused answers: Not Guilty.'],
@@ -68,6 +80,14 @@ describe('Court Week reviewed speech contract', () => {
     expect(() => assertLegalActionAuthority(turn({
       id: 'wrong-direction', actorId: 'clerk', text: 'The law is...', speechMode: 'judicial-direction',
     }))).toThrow(/cannot use judicial-direction/i)
+    expect(() => assertLegalActionAuthority(turn({
+      id: 'attendant-oath', actorId: 'court-officer', text: 'You and each of you affirm.',
+      legalAction: 'oath-administered',
+    }))).not.toThrow()
+    expect(() => assertLegalActionAuthority(turn({
+      id: 'associate-oath', actorId: 'clerk', text: 'You and each of you affirm.',
+      legalAction: 'oath-administered',
+    }))).toThrow(/cannot perform oath-administered/i)
     expect(() => assertLegalActionAuthority(turn({
       id: 'foundation', actorId: 'sera-quill', text: 'This is my entry.', legalAction: 'foundation',
     }))).not.toThrow()

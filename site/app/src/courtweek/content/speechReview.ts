@@ -6,8 +6,14 @@ type ActorRecord = { id: string; label: string; role: ActorRole; aliases: readon
 
 export const COURT_WEEK_ACTORS = [
   { id: 'judge', label: 'Judge Sel Aven', role: 'judge', aliases: ['Judge', 'the Judge'] },
-  { id: 'clerk', label: 'Clerk', role: 'clerk', aliases: ['the Clerk'] },
-  { id: 'court-officer', label: 'Court officer', role: 'court-officer', aliases: ['the court officer'] },
+  {
+    id: 'clerk', label: 'Judge’s Associate', role: 'clerk',
+    aliases: ['the Judge’s Associate', 'Clerk', 'the Clerk'],
+  },
+  {
+    id: 'court-officer', label: 'Court Attendant', role: 'court-officer',
+    aliases: ['the Court Attendant', 'Attendant', 'the Attendant', 'Court officer', 'the court officer'],
+  },
   { id: 'crown-counsel', label: 'Crown counsel Asha Renn', role: 'counsel', aliases: ['Crown', 'Renn', 'the Crown'] },
   { id: 'defence-counsel', label: 'Defence counsel Corin Dax', role: 'counsel', aliases: ['Defence', 'Dax', 'the defence'] },
   { id: 'accused', label: 'Mara Venn', role: 'accused', aliases: ['Venn', 'the accused'] },
@@ -92,7 +98,7 @@ for (const actor of COURT_WEEK_ACTORS) {
 const allRoles = [...new Set(COURT_WEEK_ACTORS.map(({ role }) => role))]
 const authority: Readonly<Record<LegalAction, readonly ActorRole[]>> = {
   none: allRoles,
-  'oath-administered': ['clerk'],
+  'oath-administered': ['court-officer'],
   'charge-read': ['clerk'], 'plea-question': ['clerk'], 'plea-answer': ['accused'],
   question: ['counsel'], answer: ['witness'], objection: ['counsel'],
   submission: ['counsel'], foundation: ['witness'], tender: ['counsel'], admission: ['judge'],

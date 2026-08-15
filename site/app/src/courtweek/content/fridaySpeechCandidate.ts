@@ -57,7 +57,7 @@ export const FRIDAY_SPEECH_CANDIDATE: readonly FridaySpeechCandidateCue[] = [
     turn('fri-submissions-1__1', 'narrator', 'Narrator', 'narration', 'narration', 'The jury waits outside while legal argument takes place beyond its hearing. You do not hear what counsel says there. Nothing from that argument becomes evidence before you, and the waiting time tells you nothing about either case.'),
   ]),
   cue('fri-submissions-2', 'adjournment', 'jury-recall', [
-    turn('fri-submissions-2__1', 'court-officer', 'Court officer', 'live-proceeding', 'none', 'Members of the jury, please return to court.'),
+    turn('fri-submissions-2__1', 'court-officer', 'Court Attendant', 'live-proceeding', 'none', 'Members of the jury, please return to court.'),
     turn('fri-submissions-2__2', 'judge', 'Judge Sel Aven', 'judicial-direction', 'direction', 'Counsel will address you, and I will then give you the law in open court. Decide the case only on the evidence admitted in your presence and the directions I give you. Do not speculate about what occurred while you were outside.'),
   ]),
   cue('fri-crown-closing-1', 'crown-closing', 'crown-address', [
@@ -107,10 +107,10 @@ export const FRIDAY_SPEECH_CANDIDATE: readonly FridaySpeechCandidateCue[] = [
   ]),
   cue('fri-retire', 'retire', 'retirement', [
     turn('fri-retire__1', 'judge', 'Judge Sel Aven', 'judicial-direction', 'direction', 'Members of the jury, you may now retire to consider your verdict. Take only the admitted exhibits and question trail. Your deliberations are private.'),
-    turn('fri-retire__2', 'court-officer', 'Court officer', 'live-proceeding', 'none', 'All rise. Members of the jury, please follow me to the jury room. The accused remains before the court.'),
+    turn('fri-retire__2', 'court-officer', 'Court Attendant', 'live-proceeding', 'none', 'All rise. Members of the jury, please follow me to the jury room. The accused remains before the court.'),
   ]),
   cue('fri-adjourn', 'adjournment', 'overnight-adjournment', [
-    turn('fri-adjourn__1', 'court-officer', 'Court officer', 'live-proceeding', 'none', 'Members of the jury, please return briefly to court.'),
+    turn('fri-adjourn__1', 'court-officer', 'Court Attendant', 'live-proceeding', 'none', 'Members of the jury, please return briefly to court.'),
     turn('fri-adjourn__2', 'judge', 'Judge Sel Aven', 'judicial-direction', 'direction', 'I am told you have appointed a foreperson and identified the questions requiring discussion, but have taken no ballot. I authorise you to separate until tomorrow. Do not discuss or research the case. Your retirement has begun; deliberations resume only when all twelve are together.'),
   ]),
 ]

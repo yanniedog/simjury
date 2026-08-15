@@ -47,6 +47,10 @@ describe('inactive next-revision candidate projection', () => {
         sourceCueIds: ['mon-oath'], variant: selected === 'mon-oath-oath'
           ? 'juror-promise:oath' : 'juror-promise:affirmation',
         jurorAction: selected === 'mon-oath-oath' ? 'I swear' : 'I affirm',
+        turns: [expect.objectContaining({
+          actorId: 'court-officer', displayLabel: 'Court Attendant',
+          legalAction: 'oath-administered',
+        })],
       })
     }
     const plea = monday.primary.find(({ id }) => id === 'mon-plea')!

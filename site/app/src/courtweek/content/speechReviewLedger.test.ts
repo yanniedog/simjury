@@ -9,7 +9,7 @@ import {
   type SpeechCandidateDay,
 } from './speechReviewLedger'
 
-const EXPECTED_LEDGER_SHA256 = 'd7d7d78ee9d1669d5ed4744c5afcefe01cb3b133aa3fc27f869432573df7d3b7'
+const EXPECTED_LEDGER_SHA256 = '471fbb78881dee3e92dae8b2a6203712423b42596746f6b99d4f9886955eb171'
 
 function digest(
   days: readonly SpeechCandidateDay[] = COURT_WEEK_SPEECH_CANDIDATES, sessions = elevenMinutesSessions,
@@ -81,11 +81,11 @@ describe('Court Week exhaustive speech-review ledger', () => {
       actorId, legalAction, variant, jurorAction,
     }))).toEqual([
       {
-        actorId: 'clerk', legalAction: 'oath-administered',
+        actorId: 'court-officer', legalAction: 'oath-administered',
         variant: 'juror-promise:oath', jurorAction: 'I swear',
       },
       {
-        actorId: 'clerk', legalAction: 'oath-administered',
+        actorId: 'court-officer', legalAction: 'oath-administered',
         variant: 'juror-promise:affirmation', jurorAction: 'I affirm',
       },
     ])
@@ -159,6 +159,14 @@ describe('Court Week exhaustive speech-review ledger', () => {
       ...cue, turns: [{ ...cue.turns[0]!, id: 'mon-wrong__1' }, ...cue.turns.slice(1)],
     }))
     expect(() => assertCourtWeekSpeechCandidates(turnPrefix)).toThrow(/unknown turn prefix/i)
+  })
+
+  it('requires current reviewed officer labels while retaining stable actor ids', () => {
+    const rows = buildCourtWeekSpeechReviewLedger().rows
+    expect(new Set(rows.filter(({ actorId }) => actorId === 'clerk').map(({ displayLabel }) => displayLabel)))
+      .toEqual(new Set(['Judge’s Associate']))
+    expect(new Set(rows.filter(({ actorId }) => actorId === 'court-officer').map(({ displayLabel }) => displayLabel)))
+      .toEqual(new Set(['Court Attendant']))
   })
 
   it('rejects actor/action violations and incomplete exact quote provenance', () => {
