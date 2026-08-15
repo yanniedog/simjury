@@ -33,7 +33,7 @@ export type SpeechReviewSidecarRow = {
   sourceCueIds: readonly string[]; captionIds: readonly string[]
   sourceSha256: string; candidateSha256: string; ledgerRowSha256: string
   actor: { id: string; role: string; displayLabel: string }
-  speechMode: string; legalAction: string
+  speechMode: string; legalAction: string; jurorAction?: string
   candidateTokens: Token[]
   quoteProvenance: SpeechReviewLedgerRow['quotes']
   legalEffect: { legalPhases: string[]; sourceEvents: string[]; candidateEvent: string | null; procedureStage: string | null; guard: string | null }
@@ -137,6 +137,7 @@ export function buildSpeechReviewSidecar(): SpeechReviewSidecar {
       ledgerRowSha256: sha256(JSON.stringify(row)),
       actor: { id: actor.id, role: actor.role, displayLabel: row.displayLabel },
       speechMode: row.speechMode, legalAction: row.legalAction,
+      ...(row.jurorAction ? { jurorAction: row.jurorAction } : {}),
       candidateTokens: tokeniseForReview(row.text), quoteProvenance: row.quotes,
       legalEffect: {
         legalPhases: unique(sourceEffect.flatMap(({ legalPhases }) => legalPhases)),

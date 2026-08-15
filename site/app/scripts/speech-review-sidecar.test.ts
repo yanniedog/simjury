@@ -20,7 +20,8 @@ describe('speech review sidecar', () => {
     expect(new Set(sidecar.rows.map(({ rowId }) => rowId)).size).toBe(ledger.rows.length)
     expect(sidecar.runtimeVariants).toEqual([
       'analysis:manslaughter', 'analysis:murder', 'analysis:not-guilty',
-      'analysis:unable-to-agree', 'manslaughter:majority', 'manslaughter:unanimous',
+      'analysis:unable-to-agree', 'juror-promise:affirmation', 'juror-promise:oath',
+      'manslaughter:majority', 'manslaughter:unanimous',
       'murder:majority', 'murder:unanimous', 'not-guilty:majority',
       'not-guilty:unanimous', 'unable-to-agree:hung',
     ])
@@ -46,6 +47,7 @@ describe('speech review sidecar', () => {
       expect(row.actor.id).toBe(source.actorId)
       expect(row.speechMode).toBe(source.speechMode)
       expect(row.legalAction).toBe(source.legalAction)
+      expect(row.jurorAction).toBe(source.jurorAction)
       expect(row.quoteProvenance).toEqual(source.quotes)
     }
     expect(sidecar.rows.flatMap(({ candidateTokens }) => candidateTokens).some((token) => token[3] === 'punctuation')).toBe(true)

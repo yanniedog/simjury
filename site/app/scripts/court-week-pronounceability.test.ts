@@ -32,16 +32,16 @@ describe('Court Week pronounceability gate', () => {
       'all-caps': 8,
       number: 1,
       'hyphenated-construction': 52,
-      'em-dash': 8,
+      'em-dash': 9,
     })
-    expect(first.findings).toHaveLength(179)
+    expect(first.findings).toHaveLength(180)
     expect(first.findings).toHaveLength(Object.values(first.counts).reduce((sum, count) => sum + count, 0))
     expect(new Set(first.findings.map(({ id }) => id)).size).toBe(first.findings.length)
     for (const entry of first.findings) {
       expect(entry.utf16EndExclusive).toBeGreaterThan(entry.utf16Start)
       expect(entry.tokenEndExclusive).toBeGreaterThan(entry.tokenStart)
     }
-    expect(first.coverage).toEqual({ actors: 28, turns: 351, runtimeVariants: 11 })
+    expect(first.coverage).toEqual({ actors: 28, turns: 354, runtimeVariants: 13 })
     expect(first.impact.actorIds).toHaveLength(26)
     expect(first.impact.runtimeVariants).toHaveLength(11)
     expect(first.auditDigest).toMatch(/^sha256:[0-9a-f]{64}$/u)

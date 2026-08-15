@@ -40,7 +40,7 @@ export type SpeechMode =
   | 'live-proceeding' | 'reported-testimony' | 'recording-playback' | 'advocacy'
   | 'judicial-direction' | 'written-text-read' | 'narration' | 'system-template'
 export type LegalAction =
-  | 'none' | 'charge-read' | 'plea-question' | 'plea-answer'
+  | 'none' | 'oath-administered' | 'charge-read' | 'plea-question' | 'plea-answer'
   | 'question' | 'answer' | 'objection' | 'submission'
   | 'foundation' | 'tender' | 'admission' | 'ruling' | 'direction'
   | 'limitation-direction' | 'exhibit-playback' | 'jury-note'
@@ -92,6 +92,7 @@ for (const actor of COURT_WEEK_ACTORS) {
 const allRoles = [...new Set(COURT_WEEK_ACTORS.map(({ role }) => role))]
 const authority: Readonly<Record<LegalAction, readonly ActorRole[]>> = {
   none: allRoles,
+  'oath-administered': ['clerk'],
   'charge-read': ['clerk'], 'plea-question': ['clerk'], 'plea-answer': ['accused'],
   question: ['counsel'], answer: ['witness'], objection: ['counsel'],
   submission: ['counsel'], foundation: ['witness'], tender: ['counsel'], admission: ['judge'],

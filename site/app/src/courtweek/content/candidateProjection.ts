@@ -81,6 +81,7 @@ function sourceIds(cue: LedgerCandidateCue): readonly string[] {
 }
 
 function variantKey(cue: LedgerCandidateCue): string | null {
+  if (cue.runtimeVariant) return cue.runtimeVariant
   if (cue.verdict && cue.agreement) return `${cue.verdict}:${cue.agreement}`
   return cue.verdict ? `analysis:${cue.verdict}` : null
 }
@@ -114,6 +115,7 @@ function projectCue(cue: LedgerCandidateCue, sources: Map<string, SourceGroup>) 
     })),
     sourceText: cue.sourceText,
     variant: variantKey(cue),
+    ...(cue.jurorAction ? { jurorAction: cue.jurorAction } : {}),
     event: cue.event ?? null,
     verdict: cue.verdict ?? null,
     agreement: cue.agreement ?? null,
@@ -140,7 +142,7 @@ export function buildCourtWeekCandidateProjection(
     const variants = day.variants.map((cue) => projectCue(cue, sources))
     return {
       day: day.day, sessionId: day.sessionId,
-      sourceCueIds: [...day.sourceCueIds], primary, variants,
+      sourceCueIds: [...day.sourceCueIds], reviewOrder: [...day.reviewOrder], primary, variants,
     }
   })
   const payload = {
