@@ -27,8 +27,8 @@ const evidence = {
 }
 
 function fixtureRegistry(): ChirpRegistry {
-  const voiceIds = CANONICAL_PERFORMANCE_IDENTITIES
-    .map((_, index) => `TEST-ONLY-VOICE-${String(index + 1).padStart(2, '0')}`).sort()
+  const voiceIds = GOOGLE_CHIRP3_SOURCE.inventory.voices.slice(0, 28)
+    .map(({ voiceId }) => voiceId).sort()
   return {
     schema: 'simjury.google-chirp3-hd-registry/v1',
     providerId: 'google-chirp3-hd-en-au', model: 'Chirp 3: HD voices', locale: 'en-AU',
@@ -51,11 +51,28 @@ function fixtureRegistry(): ChirpRegistry {
   }
 }
 
+function fixturePerformanceManifest(registry: ChirpRegistry) {
+  const manifest = buildCourtWeekPerformanceManifest()
+  manifest.identities.forEach((identity, index) => {
+    identity.assignment = {
+      source: 'provider-stock', providerId: registry.providerId,
+      voiceProfileId: registry.assignments[index]!.voiceId,
+    }
+  })
+  return refreshPerformanceDigest(manifest)
+}
+
+type PlanReview = Parameters<typeof buildCourtWeekChirpPlan>[2]
+const planReview = (registry: ChirpRegistry, review: Partial<PlanReview> = {}): PlanReview => ({
+  performanceManifest: fixturePerformanceManifest(registry), ...review,
+})
+
 describe('offline Court Week Chirp 3 HD plan', () => {
   it('maps every explicit candidate and runtime variant deterministically to 28 stock voices', () => {
     const before = JSON.stringify(COURT_WEEK_SPEECH_CANDIDATES)
-    const first = buildCourtWeekChirpPlan(fixtureRegistry())
-    expect(buildCourtWeekChirpPlan(fixtureRegistry())).toEqual(first)
+    const registry = fixtureRegistry()
+    const first = buildCourtWeekChirpPlan(registry, undefined, planReview(registry))
+    expect(buildCourtWeekChirpPlan(registry, undefined, planReview(registry))).toEqual(first)
     expect(first.jobs).toHaveLength(379)
     expect(first.characterTotals).toEqual({
       billingUnit: 'unicode-code-points', canonicalCharacters: 51_062, providerCharacters: 51_062,
@@ -99,7 +116,8 @@ describe('offline Court Week Chirp 3 HD plan', () => {
   })
 
   it('keeps canonical words immutable and never applies pending pronunciation changes', () => {
-    const plan = buildCourtWeekChirpPlan(fixtureRegistry())
+    const registry = fixtureRegistry()
+    const plan = buildCourtWeekChirpPlan(registry, undefined, planReview(registry))
     const rows = new Map(buildCourtWeekSpeechReviewLedger().rows.map((row) => [row.turnId, row]))
     expect(plan.jobs.reduce((total, job) => total + [...job.canonicalText].length, 0))
       .toBe(plan.characterTotals.canonicalCharacters)
@@ -128,9 +146,10 @@ describe('offline Court Week Chirp 3 HD plan', () => {
       rationale: 'Preserve the exact visible identifier while speaking it unambiguously.',
       reviewReference: 'review:exact-source', listeningReference: 'listen:section-18',
     }
-    const governance = structuredClone(buildCourtWeekPerformanceManifest())
+    const registry = fixtureRegistry()
+    const governance = fixturePerformanceManifest(registry)
     governance.pronunciationProjections.find(({ canonical }) => canonical === target.canonical)!.status = 'approved'
-    const plan = buildCourtWeekChirpPlan(fixtureRegistry(), COURT_WEEK_SPEECH_CANDIDATES, {
+    const plan = buildCourtWeekChirpPlan(registry, COURT_WEEK_SPEECH_CANDIDATES, {
       dispositions: [disposition], performanceManifest: refreshPerformanceDigest(governance),
     })
     const projectedJobs = plan.jobs.filter(({ pronunciationProjections }) => pronunciationProjections.length)
@@ -159,6 +178,7 @@ describe('offline Court Week Chirp 3 HD plan', () => {
   })
 
   it('rejects stale or ungoverned pronunciation dispositions', () => {
+    const registry = fixtureRegistry()
     const target = buildCourtWeekPronounceabilityAudit().findings.find(({ kind }) => kind === 'identifier')!
     const disposition: PronounceabilityDisposition = {
       findingId: target.id,
@@ -167,12 +187,28 @@ describe('offline Court Week Chirp 3 HD plan', () => {
       rationale: 'test-only invalid projection',
       reviewReference: 'review:test', listeningReference: 'listen:test',
     }
-    expect(() => buildCourtWeekChirpPlan(fixtureRegistry(), COURT_WEEK_SPEECH_CANDIDATES, {
+    expect(() => buildCourtWeekChirpPlan(registry, COURT_WEEK_SPEECH_CANDIDATES, planReview(registry, {
       dispositions: [{ ...disposition, canonicalTextSha256: `sha256:${'0'.repeat(64)}` }],
-    })).toThrow(/digest is stale/i)
-    expect(() => buildCourtWeekChirpPlan(fixtureRegistry(), COURT_WEEK_SPEECH_CANDIDATES, {
+    }))).toThrow(/digest is stale/i)
+    expect(() => buildCourtWeekChirpPlan(registry, COURT_WEEK_SPEECH_CANDIDATES, planReview(registry, {
       dispositions: [disposition],
-    })).toThrow(/not approved by the performance manifest/i)
+    }))).toThrow(/not approved by the performance manifest/i)
+  })
+
+  it('binds every planned identity and voice to the v2 performance manifest', () => {
+    const registry = fixtureRegistry()
+    expect(() => buildCourtWeekChirpPlan(registry, undefined, {
+      performanceManifest: buildCourtWeekPerformanceManifest(),
+    })).toThrow(/lacks its Chirp stock-voice assignment/i)
+    const mismatched = fixturePerformanceManifest(registry)
+    const first = mismatched.identities[0]!.assignment!
+    const second = mismatched.identities[1]!.assignment!
+    const firstVoice = first.voiceProfileId
+    first.voiceProfileId = second.voiceProfileId
+    second.voiceProfileId = firstVoice
+    expect(() => buildCourtWeekChirpPlan(registry, undefined, {
+      performanceManifest: refreshPerformanceDigest(mismatched),
+    })).toThrow(/do not match the closed Chirp registry/i)
   })
 
   it('rejects role sharing, unknown voices and incomplete closed registries', () => {
@@ -190,10 +226,11 @@ describe('offline Court Week Chirp 3 HD plan', () => {
   it('rejects missing dynamic variants and estimates that exceed AUD 50', () => {
     const missingVariant = COURT_WEEK_SPEECH_CANDIDATES.map((day) => day.day === 'sunday'
       ? { ...day, variants: day.variants.slice(1) } : day)
-    expect(() => buildCourtWeekChirpPlan(fixtureRegistry(), missingVariant)).toThrow(/runtime branches/i)
+    const registry = fixtureRegistry()
+    expect(() => buildCourtWeekChirpPlan(registry, missingVariant, planReview(registry))).toThrow(/runtime branches/i)
     const costly = fixtureRegistry()
     costly.pricing.usdMicrosPerMillionCharacters = 2_000_000_000
-    expect(() => buildCourtWeekChirpPlan(costly)).toThrow(/AUD 50/i)
+    expect(() => buildCourtWeekChirpPlan(costly, undefined, planReview(costly))).toThrow(/AUD 50/i)
   })
 
   it('requires pinned authoritative inputs and cannot export into shipped assets', () => {
@@ -203,14 +240,17 @@ describe('offline Court Week Chirp 3 HD plan', () => {
     const unofficial = fixtureRegistry()
     unofficial.inventory.sourceUrl = 'https://example.invalid/voices'
     expect(() => validateChirpRegistry(unofficial)).toThrow(/Official Google Cloud/i)
-    expect(() => writeCourtWeekChirpPlan('unused.json', resolve(process.cwd(), 'public/chirp-plan.json')))
+    expect(() => writeCourtWeekChirpPlan('unused.json', 'unused-manifest.json', resolve(process.cwd(), 'public/chirp-plan.json')))
       .toThrow(/runtime or Cloudflare/i)
     const temporary = mkdtempSync(join(tmpdir(), 'simjury-chirp-plan-'))
     try {
       const registryPath = join(temporary, 'registry.json')
+      const performanceManifestPath = join(temporary, 'performance-manifest.json')
       const outputPath = join(temporary, 'plan.json')
-      writeFileSync(registryPath, JSON.stringify(fixtureRegistry()))
-      writeCourtWeekChirpPlan(registryPath, outputPath)
+      const registry = fixtureRegistry()
+      writeFileSync(registryPath, JSON.stringify(registry))
+      writeFileSync(performanceManifestPath, JSON.stringify(fixturePerformanceManifest(registry)))
+      writeCourtWeekChirpPlan(registryPath, performanceManifestPath, outputPath)
       expect(JSON.parse(readFileSync(outputPath, 'utf8')).jobs).toHaveLength(379)
     } finally {
       rmSync(temporary, { recursive: true, force: true })

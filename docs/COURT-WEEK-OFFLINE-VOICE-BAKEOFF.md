@@ -21,6 +21,8 @@ Generate the version 2 Chirp-only contract with
 `npm run media:performance:manifest -- --output <file>` and recheck with
 `--input <file>`. Release requires explicit authored turns, separate synthesis
 and governance digests, verified stock-voice inventory, and approved pronunciations.
+`media:chirp:plan` additionally requires `--performance-manifest <v2-file>`;
+its 28 identity-to-voice assignments must exactly match the closed Chirp registry.
 
 Canonical turn text is also the spoken script: write names, times, ordinary
 numbers, abbreviations and homographs so an Australian reader can say them one

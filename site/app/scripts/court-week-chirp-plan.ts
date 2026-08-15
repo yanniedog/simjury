@@ -158,16 +158,21 @@ export function buildCourtWeekChirpPlan(
   days: readonly SpeechCandidateDay[] = COURT_WEEK_SPEECH_CANDIDATES,
   review: {
     dispositions?: readonly PronounceabilityDisposition[]
-    performanceManifest?: CourtWeekPerformanceManifest
+    performanceManifest: CourtWeekPerformanceManifest
     distinctnessApproval?: unknown
-  } = {},
+  },
 ) {
   const registry = validateChirpRegistry(registryInput)
   const distinctnessApproval = review.distinctnessApproval
     ? validateVoiceDistinctnessApproval(review.distinctnessApproval, registry.assignments) : null
-  const governance = review.performanceManifest
-    ? validateCourtWeekPerformanceManifest(review.performanceManifest)
-    : buildCourtWeekPerformanceManifest()
+  const governance = validateCourtWeekPerformanceManifest(review.performanceManifest)
+  const governedAssignments = governance.identities.map(({ id, assignment }) => {
+    if (!assignment) throw new Error(`${id}: performance manifest lacks its Chirp stock-voice assignment`)
+    return { identityId: id, voiceId: assignment.voiceProfileId }
+  })
+  if (!same(governedAssignments, registry.assignments)) {
+    throw new Error('Performance manifest assignments do not match the closed Chirp registry')
+  }
   const ledger = buildCourtWeekSpeechReviewLedger(days)
   const pronounceability = buildCourtWeekPronounceabilityAudit(ledger.rows)
   const dispositions = [...(review.dispositions ?? [])]
@@ -291,12 +296,15 @@ const isWithin = (root: string, target: string): boolean => {
   return targetKey === rootKey || targetKey.startsWith(rootKey + sep)
 }
 
-export function writeCourtWeekChirpPlan(registryPath: string, outputPath: string, approvalPath?: string): void {
+export function writeCourtWeekChirpPlan(
+  registryPath: string, performanceManifestPath: string, outputPath: string, approvalPath?: string,
+): void {
   const output = resolve(outputPath)
   if (blockedOutputRoots.some((root) => isWithin(root, output))) throw new Error('Chirp plans must not enter a runtime or Cloudflare asset path')
   const registry = JSON.parse(readFileSync(resolve(registryPath), 'utf8'))
+  const performanceManifest = JSON.parse(readFileSync(resolve(performanceManifestPath), 'utf8'))
   const approval = approvalPath ? JSON.parse(readFileSync(resolve(approvalPath), 'utf8')) : undefined
-  const plan = buildCourtWeekChirpPlan(registry, undefined, { distinctnessApproval: approval })
+  const plan = buildCourtWeekChirpPlan(registry, undefined, { performanceManifest, distinctnessApproval: approval })
   mkdirSync(dirname(output), { recursive: true })
   writeFileSync(output, `${JSON.stringify(plan, null, 2)}\n`)
 }
@@ -309,6 +317,6 @@ function requiredArgument(name: string): string {
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
-  writeCourtWeekChirpPlan(requiredArgument('--registry'), requiredArgument('--output'),
+  writeCourtWeekChirpPlan(requiredArgument('--registry'), requiredArgument('--performance-manifest'), requiredArgument('--output'),
     process.argv.includes('--distinctness-approval') ? requiredArgument('--distinctness-approval') : undefined)
 }
