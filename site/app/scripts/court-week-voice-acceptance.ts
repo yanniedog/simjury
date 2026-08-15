@@ -13,7 +13,7 @@ const exact = (left: unknown, right: unknown): boolean => voiceReviewDigest(left
 
 type Rating = { roleId: string; clipId: string; naturalness: number | null; australianAuthenticity: number | null
   accentAssessment: 'australian' | 'not-australian' | null }
-type ListenerDecision = {
+export type ListenerDecision = {
   listenerId: string; blindingConfirmed: boolean | null; nativeAustralianEnglishSelfAttested: boolean | null
   devices: string[]; clipRatings: Rating[]
   preferences: { pairId: string; preferredClipId: string | 'tie' | null }[]
@@ -68,7 +68,7 @@ export function approveVoiceAcceptance(
     if (record.blindingConfirmed !== true || typeof record.nativeAustralianEnglishSelfAttested !== 'boolean'
       || !record.reviewReference?.trim()) throw new Error(`${record.listenerId}: blind review is incomplete`)
     if (record.nativeAustralianEnglishSelfAttested) nativeCount += 1
-    if (!Array.isArray(record.devices) || record.devices.some((device) => !VOICE_ACCEPTANCE_DEVICES.includes(
+    if (!Array.isArray(record.devices) || record.devices.length === 0 || record.devices.some((device) => !VOICE_ACCEPTANCE_DEVICES.includes(
       device as typeof VOICE_ACCEPTANCE_DEVICES[number]))) throw new Error(`${record.listenerId}: device evidence is invalid`)
     record.devices.forEach((device) => devices.add(device))
     if (!exact(record.clipRatings?.map(({ roleId, clipId }) => ({ roleId, clipId })), expectedRatings)

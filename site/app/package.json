@@ -32,6 +32,7 @@
     "media:chirp:plan": "tsx scripts/court-week-chirp-plan.ts",
     "media:chirp:audition": "tsx scripts/court-week-chirp-audition.ts",
     "media:chirp:distinctness": "tsx scripts/court-week-voice-distinctness.ts",
+    "media:chirp:acceptance:export": "tsx scripts/court-week-voice-acceptance-export.ts",
     "media:chirp:names": "tsx scripts/court-week-name-audition.ts",
     "media:voice:asr-receipt": "tsx scripts/court-week-voice-asr-receipt.ts",
     "media:art:requirements": "tsx scripts/scene-art-requirements.ts",
