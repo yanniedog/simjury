@@ -35,6 +35,8 @@ describe('manual Google Chirp 3 HD audition contract', () => {
     expect(plan.jobs.every(({ request }) => request.input.text === CHIRP_AUDITION_TEXT)).toBe(true)
     expect(plan.audition).toEqual({ text: CHIRP_AUDITION_TEXT, characterCount: 224, identicalAcrossVoices: true })
     expect(plan.characterTotals).toEqual({ jobCount: 30, providerCharacters: 6_720 })
+    expect(plan).not.toHaveProperty('binding')
+    expect(plan.planDigest).toBe('sha256:7829e66018a9f2cd838a4982cb0db1371c62d501ab53b2042899d0f01e3fff12')
   })
 
   it('pins conservative gross cost and official-source provenance', () => {
