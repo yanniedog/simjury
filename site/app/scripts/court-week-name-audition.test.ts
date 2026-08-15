@@ -27,9 +27,9 @@ describe('pending Australian courtroom name audition', () => {
       schema: COURT_WEEK_NAME_CLEARANCE_SCHEMA,
       digest: audition.proposalDigest,
     })
-    expect(audition.candidateDigest).toBe('sha256:94087bcb572b988aa38dee41c3338d12e4e22e2dd7c1f605628e55ac89adcab9')
-    expect(audition.proposalDigest).toBe('sha256:878dcab05dee83a1b96b9cd83a6e3e1cf804abe4ae0640f539a3a00c45f9d3ca')
-    expect(audition.plan.planDigest).toBe('sha256:57eaec0da814543c9f7d081fe534f3cf12effae1f7081d489e0f339b6a31d47a')
+    expect(audition.candidateDigest).toBe('sha256:e28870b497113025dccdf25462b83292c41cf9a3e95956065aacf4e8b1e7bc92')
+    expect(audition.proposalDigest).toBe('sha256:34b1f574bd5e7beaef1f717f6b32b5de33f3658c9c616861dc71b3df7a2fc62e')
+    expect(audition.plan.planDigest).toBe('sha256:0e9deb6ccc119bee3d4793d8762203ee387487fa2021183a9c0629d5ac0612d0')
     for (const proposal of COURT_WEEK_NAME_PROPOSALS.filter(({ proposedPersonalName }) => proposedPersonalName)) {
       expect(audition.plan.audition.text.split(proposal.proposedPersonalName!).length).toBe(2)
     }
