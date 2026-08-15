@@ -29,7 +29,7 @@ describe('inactive Wednesday reviewed speech candidate', () => {
     expect(new Set(WEDNESDAY_SPEECH_CANDIDATE.map(({ sourceCueId }) => sourceCueId)).size).toBe(19)
 
     const turnIds = WEDNESDAY_SPEECH_CANDIDATE.flatMap(({ turns }) => turns.map(({ id }) => id))
-    expect(turnIds).toHaveLength(61)
+    expect(turnIds).toHaveLength(86)
     expect(new Set(turnIds).size).toBe(turnIds.length)
   })
 
@@ -53,22 +53,22 @@ describe('inactive Wednesday reviewed speech candidate', () => {
     })).toThrow(/undeclared attributed speech/i)
   })
 
-  it('locks actor and legal-action ownership for all sixty-one turns', () => {
+  it('locks actor and legal-action ownership for every Wednesday turn', () => {
     const ownership = Object.fromEntries(WEDNESDAY_SPEECH_CANDIDATE.map(({ id, turns }) => [
       id, turns.map(({ actorId, legalAction }) => `${actorId}:${legalAction}`),
     ]))
     expect(ownership).toEqual({
       'wed-resume-1': ['judge:direction'],
       'wed-resume-2': ['judge:direction'],
-      'wed-pell-chief-1': ['jaro-pell:answer'],
-      'wed-ready-admitted': ['jaro-pell:foundation', 'crown-counsel:tender', 'judge:admission', 'judge:limitation-direction'],
+      'wed-pell-chief-1': ['crown-counsel:question', 'jaro-pell:answer', 'crown-counsel:question', 'jaro-pell:answer', 'crown-counsel:question', 'jaro-pell:answer', 'crown-counsel:question', 'jaro-pell:answer', 'crown-counsel:question', 'jaro-pell:answer'],
+      'wed-ready-admitted': ['crown-counsel:question', 'jaro-pell:foundation', 'crown-counsel:question', 'jaro-pell:answer', 'crown-counsel:question', 'jaro-pell:answer', 'crown-counsel:tender', 'judge:admission', 'judge:limitation-direction'],
       'wed-pell-cross-1': ['defence-counsel:question', 'jaro-pell:answer', 'defence-counsel:question', 'jaro-pell:answer', 'defence-counsel:question', 'jaro-pell:answer', 'defence-counsel:question', 'jaro-pell:answer'],
       'wed-pell-re-1': ['crown-counsel:question', 'jaro-pell:answer', 'crown-counsel:question', 'jaro-pell:answer'],
-      'wed-vos-chief-1': ['eren-vos:foundation', 'eren-vos:answer'],
+      'wed-vos-chief-1': ['crown-counsel:question', 'eren-vos:foundation', 'crown-counsel:question', 'eren-vos:foundation', 'crown-counsel:question', 'eren-vos:answer'],
       'wed-vos-cross-1': ['defence-counsel:question', 'eren-vos:answer', 'defence-counsel:question', 'eren-vos:answer', 'defence-counsel:question', 'eren-vos:answer'],
       'wed-vos-re-1': ['crown-counsel:question', 'eren-vos:answer'],
       'wed-def-objection': ['crown-counsel:question', 'defence-counsel:objection', 'defence-counsel:submission', 'crown-counsel:submission', 'judge:ruling', 'judge:limitation-direction'],
-      'wed-vale-chief-1': ['oren-vale:foundation', 'oren-vale:answer', 'crown-counsel:tender', 'defence-counsel:submission', 'judge:admission', 'judge:limitation-direction'],
+      'wed-vale-chief-1': ['crown-counsel:question', 'oren-vale:answer', 'crown-counsel:question', 'oren-vale:foundation', 'crown-counsel:question', 'oren-vale:answer', 'crown-counsel:question', 'oren-vale:answer', 'crown-counsel:tender', 'defence-counsel:submission', 'judge:admission', 'judge:limitation-direction'],
       'wed-motive-ruling': ['judge:limitation-direction'],
       'wed-vale-cross-1': ['defence-counsel:question', 'oren-vale:answer', 'defence-counsel:question', 'oren-vale:answer', 'defence-counsel:question', 'oren-vale:answer'],
       'wed-blurt': ['defence-counsel:question', 'oren-vale:answer', 'oren-vale:answer', 'defence-counsel:objection'],
@@ -76,7 +76,7 @@ describe('inactive Wednesday reviewed speech candidate', () => {
       'wed-record-admitted': ['crown-counsel:tender', 'defence-counsel:submission', 'judge:admission', 'judge:limitation-direction'],
       'wed-crown-close-1': ['crown-counsel:submission'],
       'wed-adjourn-1': ['judge:direction'],
-      'wed-adjourn-2': ['court-officer:none'],
+      'wed-adjourn-2': ['court-officer:none', 'narrator:narration'],
     })
   })
 
@@ -93,8 +93,8 @@ describe('inactive Wednesday reviewed speech candidate', () => {
       candidate.evidenceAdmission ? [{ cueId: candidate.id, index, ...candidate.evidenceAdmission }] : []
     ))
     expect(admissions).toEqual([
-      { cueId: 'wed-ready-admitted', index: 3, evidenceId: 'ex-ready-display', status: 'final', operativeTurnId: 'wed-ready-admitted__3', limitationTurnId: 'wed-ready-admitted__4' },
-      { cueId: 'wed-vale-chief-1', index: 10, evidenceId: 'ex-review', status: 'final', operativeTurnId: 'wed-vale-chief-1__5', limitationTurnId: 'wed-vale-chief-1__6' },
+      { cueId: 'wed-ready-admitted', index: 3, evidenceId: 'ex-ready-display', status: 'final', operativeTurnId: 'wed-ready-admitted__8', limitationTurnId: 'wed-ready-admitted__9' },
+      { cueId: 'wed-vale-chief-1', index: 10, evidenceId: 'ex-review', status: 'final', operativeTurnId: 'wed-vale-chief-1__11', limitationTurnId: 'wed-vale-chief-1__12' },
       { cueId: 'wed-record-admitted', index: 15, evidenceId: 'ex-competing', status: 'final', operativeTurnId: 'wed-record-admitted__3', limitationTurnId: 'wed-record-admitted__4' },
     ])
     for (const admission of admissions) {
@@ -144,11 +144,11 @@ describe('inactive Wednesday reviewed speech candidate', () => {
     const provenance = allTurns.flatMap((turn) => (turn.quotedSpans ?? []).map((span) =>
       `${turn.id}|${turn.text.slice(span.start, span.end)}|${span.source}|${span.sourceActorId ?? '-'}`))
     expect(provenance).toEqual([
-      'wed-pell-chief-1__1|“Kestrel ready, warning monitored.”|reported|jaro-pell',
-      'wed-vale-chief-1__2|“Ilan was trying to end my career.”|reported|accused',
+      'wed-pell-chief-1__8|“Kestrel ready, warning monitored.”|reported|jaro-pell',
+      'wed-vale-chief-1__8|“Ilan was trying to end my career.”|reported|accused',
     ])
     expect(allTurns.filter(({ speechMode }) => speechMode === 'reported-testimony').map(({ id }) => id)).toEqual([
-      'wed-pell-chief-1__1', 'wed-vale-chief-1__2', 'wed-blurt__3',
+      'wed-pell-chief-1__8', 'wed-vale-chief-1__8', 'wed-blurt__3',
     ])
     for (const turn of allTurns) {
       const literalQuotes = [...turn.text.matchAll(/“[^”]+”/gu)].map(([text]) => text)
