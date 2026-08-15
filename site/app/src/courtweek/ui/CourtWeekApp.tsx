@@ -255,26 +255,69 @@ export function CourtWeekApp({
   }, [availability, courtWeek.manifest.sessions, progress.completedSessionIds, progress.currentSessionId, replaySessionId])
   const isReplay = replaySessionId === activeSession.id
   const position = cuePosition(activeSession, progress.currentSceneId, progress.currentCueId)
-  const freshSceneIndex = activeSession.scenes.findIndex(({ id }) => id === 'sun-fresh-unanimity-ballot')
-  const majoritySceneIndex = activeSession.scenes.findIndex(({ id }) => id === 'sun-majority')
-  const finalSceneIndex = activeSession.scenes.findIndex(({ id }) => id === 'sun-final-ballot')
-  const verdictSceneIndex = activeSession.scenes.findIndex(({ id }) => id === 'sun-verdict')
-  const freshUnanimityBallotRequired = freshSceneIndex >= 0
+  const freshBallotSession = courtWeek.manifest.sessions.find((session) =>
+    session.scenes.some(({ id }) => id === 'sun-fresh-unanimity-ballot'))
+  const freshSceneIndex = freshBallotSession?.scenes.findIndex(({ id }) => id === 'sun-fresh-unanimity-ballot') ?? -1
+  const majoritySceneIndex = freshBallotSession?.scenes.findIndex(({ id }) => id === 'sun-majority') ?? -1
+  const finalSceneIndex = freshBallotSession?.scenes.findIndex(({ id }) => id === 'sun-final-ballot') ?? -1
+  const verdictSceneIndex = freshBallotSession?.scenes.findIndex(({ id }) => id === 'sun-verdict') ?? -1
+  const freshUnanimityBallotRequired = Boolean(freshBallotSession)
   const freshRouteComplete = majoritySceneIndex > freshSceneIndex && finalSceneIndex > majoritySceneIndex &&
     verdictSceneIndex > finalSceneIndex
-  const invalidFreshBallotJourney = freshUnanimityBallotRequired && !allSessionsCompleted && !isReplay &&
-    !progress.secondBallotWasUnanimous && (!freshRouteComplete || (
-      position.sceneIndex >= majoritySceneIndex && position.sceneIndex < verdictSceneIndex
-        ? progress.freshBallotWasUnanimous !== false ||
-          (position.sceneIndex >= finalSceneIndex && !progress.majorityDirectionReceived)
-        : position.sceneIndex >= verdictSceneIndex && (
-            progress.freshBallotWasUnanimous === undefined ||
-            (progress.freshBallotWasUnanimous === false &&
-              (!progress.finalVote || !progress.majorityDirectionReceived)) ||
-            (progress.freshBallotWasUnanimous === true &&
-              Boolean(progress.finalVote || progress.majorityDirectionReceived))
-          )
+  const calculatedSecondVerdict = progress.secondVote
+    ? unanimousVerdict(calculateSecondBallot(
+        courtWeek.deliberation, progress.secondVote, progress.reasoningContributions ?? [],
+      ))
+    : null
+  const secondBallotWasUnanimous = progress.secondVote
+    ? Boolean(calculatedSecondVerdict)
+    : undefined
+  const secondBallotRecordValid = Boolean(progress.secondVote) ===
+    (progress.secondBallotWasUnanimous !== undefined) && (
+      !progress.secondVote || progress.secondBallotWasUnanimous === secondBallotWasUnanimous
+    )
+  const calculatedFreshVerdict = progress.freshUnanimityVote
+    ? unanimousVerdict(calculateFreshUnanimityBallot(
+        courtWeek.deliberation, progress.freshUnanimityVote, progress.reasoningContributions ?? [],
+      ))
+    : null
+  const freshBallotWasUnanimous = progress.freshUnanimityVote
+    ? Boolean(calculatedFreshVerdict)
+    : undefined
+  const hasFreshBallotState = progress.freshUnanimityVote !== undefined ||
+    progress.freshBallotWasUnanimous !== undefined
+  const freshBallotRecordValid = Boolean(progress.freshUnanimityVote) ===
+    (progress.freshBallotWasUnanimous !== undefined) && (
+      !progress.freshUnanimityVote || progress.freshBallotWasUnanimous === freshBallotWasUnanimous
+    )
+  const inFreshBallotSession = activeSession.id === freshBallotSession?.id
+  const atOrAfterFreshBallot = allSessionsCompleted ||
+    (inFreshBallotSession && position.sceneIndex >= freshSceneIndex)
+  const onMajorityRoute = inFreshBallotSession &&
+    position.sceneIndex >= majoritySceneIndex && position.sceneIndex < verdictSceneIndex
+  const atOrAfterFinalBallot = onMajorityRoute && position.sceneIndex >= finalSceneIndex
+  const atOrAfterVerdict = allSessionsCompleted ||
+    (inFreshBallotSession && position.sceneIndex >= verdictSceneIndex)
+  const hasMajorityState = Boolean(progress.majorityDirectionReceived || progress.finalVote)
+  const invalidFreshBallotJourney = freshUnanimityBallotRequired && !isReplay && (
+    !freshRouteComplete || !secondBallotRecordValid || !freshBallotRecordValid ||
+    (secondBallotWasUnanimous === true && (
+      hasFreshBallotState || hasMajorityState ||
+      (inFreshBallotSession && position.sceneIndex >= freshSceneIndex && position.sceneIndex < verdictSceneIndex)
+    )) ||
+    (secondBallotWasUnanimous !== true && (
+      (hasFreshBallotState && !atOrAfterFreshBallot) ||
+      (atOrAfterFreshBallot && secondBallotWasUnanimous !== false) ||
+      (onMajorityRoute && freshBallotWasUnanimous !== false) ||
+      (atOrAfterFinalBallot && !progress.majorityDirectionReceived) ||
+      (atOrAfterVerdict && (
+        freshBallotWasUnanimous === undefined ||
+        (freshBallotWasUnanimous === false &&
+          (!progress.finalVote || !progress.majorityDirectionReceived)) ||
+        (freshBallotWasUnanimous === true && hasMajorityState)
+      ))
     ))
+  )
   const activeAvailability = availability.find((item) => item.id === activeSession.id)
   const returnVisit = !ephemeral && hasResumableProgress(courtWeek, progress)
   const entryPhase = position.scene.id.startsWith('sealed-')
@@ -661,9 +704,9 @@ export function CourtWeekApp({
     if (isReplay) {
       let nextScene: CourtSession['scenes'][number] | undefined = activeSession.scenes[position.sceneIndex + 1]
       const sundayNext = activeSession.day === 'Sunday'
-        ? nextSundaySceneId(
-            position.scene.id, progress.secondBallotWasUnanimous ?? false,
-            freshUnanimityBallotRequired, progress.freshBallotWasUnanimous ?? false,
+          ? nextSundaySceneId(
+            position.scene.id, secondBallotWasUnanimous ?? false,
+            freshUnanimityBallotRequired, freshBallotWasUnanimous ?? false,
           )
         : null
       if (sundayNext) nextScene = activeSession.scenes.find((scene) => scene.id === sundayNext)
@@ -728,9 +771,9 @@ export function CourtWeekApp({
         secondVote,
         finalVote: vote,
         contributions,
-        secondBallotWasUnanimous: progress.secondBallotWasUnanimous ?? false,
+        secondBallotWasUnanimous: secondBallotWasUnanimous ?? false,
         freshUnanimityBallotRequired,
-        freshBallotWasUnanimous: progress.freshBallotWasUnanimous,
+        freshBallotWasUnanimous,
         majorityDirectionReceived: progress.majorityDirectionReceived ?? false,
         elapsedCourtHours: 8.5,
       })
@@ -748,9 +791,9 @@ export function CourtWeekApp({
 
     let nextScene: CourtSession['scenes'][number] | undefined = activeSession.scenes[position.sceneIndex + 1]
     const sundayNext = activeSession.day === 'Sunday' ? nextSundaySceneId(
-      position.scene.id, patch.secondBallotWasUnanimous ?? progress.secondBallotWasUnanimous ?? false,
+      position.scene.id, patch.secondBallotWasUnanimous ?? secondBallotWasUnanimous ?? false,
       freshUnanimityBallotRequired,
-      patch.freshBallotWasUnanimous ?? progress.freshBallotWasUnanimous ?? false,
+      patch.freshBallotWasUnanimous ?? freshBallotWasUnanimous ?? false,
     ) : null
     if (sundayNext) nextScene = activeSession.scenes.find((scene) => scene.id === sundayNext)
     const completed = !nextScene
@@ -884,8 +927,8 @@ export function CourtWeekApp({
           replay: isReplay,
           replayEnds: !nextScene,
           ballotSealed,
-          secondBallotWasUnanimous: progress.secondBallotWasUnanimous ?? false,
-          freshBallotWasUnanimous: progress.freshBallotWasUnanimous ?? false,
+          secondBallotWasUnanimous: secondBallotWasUnanimous ?? false,
+          freshBallotWasUnanimous: freshBallotWasUnanimous ?? false,
           prompt: interaction.prompt,
           recordsReasoning: recordsInfluence,
         })}
@@ -1013,7 +1056,7 @@ export function CourtWeekApp({
           </dl>
         ) : null}
         {interaction.kind === 'fresh-unanimity-vote' && ballotSealed ? (
-          <p role="status">Fresh private ballot: {progress.freshBallotWasUnanimous
+          <p role="status">Fresh private ballot: {freshBallotWasUnanimous
             ? 'unanimity was reached.'
             : 'no unanimous verdict was reached.'} No vote or split is shown.</p>
         ) : null}
