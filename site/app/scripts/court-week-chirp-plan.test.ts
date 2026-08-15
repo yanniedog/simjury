@@ -55,9 +55,9 @@ describe('offline Court Week Chirp 3 HD plan', () => {
     const before = JSON.stringify(COURT_WEEK_SPEECH_CANDIDATES)
     const first = buildCourtWeekChirpPlan(fixtureRegistry())
     expect(buildCourtWeekChirpPlan(fixtureRegistry())).toEqual(first)
-    expect(first.jobs).toHaveLength(288)
+    expect(first.jobs).toHaveLength(297)
     expect(first.characterTotals).toEqual({
-      billingUnit: 'unicode-code-points', canonicalCharacters: 45_158, providerCharacters: 45_158,
+      billingUnit: 'unicode-code-points', canonicalCharacters: 45_869, providerCharacters: 45_869,
     })
     expect(first.voiceTotals).toHaveLength(28)
     expect(new Set(first.jobs.map(({ actorId }) => actorId)).size).toBe(28)
@@ -67,7 +67,7 @@ describe('offline Court Week Chirp 3 HD plan', () => {
       'not-guilty:unanimous', 'not-guilty:majority', 'unable-to-agree:hung',
       'analysis:murder', 'analysis:manslaughter', 'analysis:not-guilty', 'analysis:unable-to-agree',
     ])
-    expect(first.forensicLedgerDigest).toBe('sha256:9d9918e825d618c899939d45156bd97a5fa654b8ec13092a7943e4b981931396')
+    expect(first.forensicLedgerDigest).toBe('sha256:d27b30f00165a2885a9165bc83dbb623dde706f6f449a9f15de31fb40f3093b3')
     expect(first.costEstimate.withinBudget).toBe(true)
     expect(first.costEstimate.estimatedAudMicros).toBeLessThanOrEqual(50_000_000)
     expect(first.generationGate.allowed).toBe(false)
@@ -78,8 +78,8 @@ describe('offline Court Week Chirp 3 HD plan', () => {
       'approved-pronunciation-projections', 'approved-performance-manifest',
     ])
     expect(first.pronounceabilityReview).toMatchObject({
-      coverage: { actors: 28, turns: 288, runtimeVariants: 11 },
-      affectedActorCount: 27, unresolvedFindingCount: 236,
+      coverage: { actors: 28, turns: 297, runtimeVariants: 11 },
+      affectedActorCount: 26, unresolvedFindingCount: 214,
     })
     expect(first.policy).toMatchObject({ stockVoicesOnly: true, donorRecordingsRequired: false, recurringSpendAud: 0 })
     expect(JSON.stringify(COURT_WEEK_SPEECH_CANDIDATES)).toBe(before)
@@ -198,7 +198,7 @@ describe('offline Court Week Chirp 3 HD plan', () => {
       const outputPath = join(temporary, 'plan.json')
       writeFileSync(registryPath, JSON.stringify(fixtureRegistry()))
       writeCourtWeekChirpPlan(registryPath, outputPath)
-      expect(JSON.parse(readFileSync(outputPath, 'utf8')).jobs).toHaveLength(288)
+      expect(JSON.parse(readFileSync(outputPath, 'utf8')).jobs).toHaveLength(297)
     } finally {
       rmSync(temporary, { recursive: true, force: true })
     }

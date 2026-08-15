@@ -46,6 +46,7 @@ const HAZARD_PATTERNS: readonly HazardPattern[] = [
   { kind: 'hyphenated-construction', pattern: /\b[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)+\b/gu },
   { kind: 'em-dash', pattern: /—/gu },
 ]
+const SAFE_SPOKEN_NUMBER = /^(?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)-(?:one|two|three|four|five|six|seven|eight|nine)$/u
 const HOMOGRAPHS = new Set([
   'read', 'lead', 'live', 'record', 'close', 'minute', 'does', 'present',
   'refuse', 'separate', 'content', 'resume', 'permit', 'produce', 'subject', 'digest',
@@ -93,6 +94,7 @@ export function scanPronounceabilityText(
   for (const { kind, pattern } of HAZARD_PATTERNS) {
     pattern.lastIndex = 0
     for (const match of text.matchAll(pattern)) {
+      if (kind === 'hyphenated-construction' && SAFE_SPOKEN_NUMBER.test(match[0].toLocaleLowerCase('en-AU'))) continue
       const start = match.index
       const end = start + match[0].length
       if (overlaps(start, end, occupied)) continue
